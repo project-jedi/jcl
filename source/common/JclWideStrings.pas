@@ -608,7 +608,7 @@ end;
 function StrMoveW(Dest: PWideChar; const Source: PWideChar; Count: Cardinal): PWideChar;
 begin
   Result := Dest;
-  Move(Source^, Dest^, Count * SizeOf(WideChar));
+  Move(Source^, Dest^, Integer(Count) * SizeOf(WideChar));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2036,6 +2036,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/10/25 15:12:30  marquardt
+// fix internal error
+//
 // Revision 1.6  2004/10/17 21:49:03  rrossmair
 // added CVS Log entries
 //
