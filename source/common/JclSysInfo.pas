@@ -272,7 +272,7 @@ Result: The major version number of the latest installed Service Pack. In case o
 Author: Jean-Fabien Connault
 }
 
-{ TODO -cHelp : Author: Scott Price; Contributer: Peter J. Haas;
+{ TODO -cHelp : Author: Scott Price; Contributor: Peter J. Haas;
                 return OpenGL version for window rendering }
 function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean; overload;
 { TODO -cHelp : Author: Peter J. Haas, return OpenGL version for bitmap rendering }
@@ -634,7 +634,7 @@ implementation
 uses
   SysUtils,
   {$IFDEF MSWINDOWS}
-  Messages, Winsock, Snmp,           Graphics,
+  Messages, Winsock, Snmp,
   JclRegistry, JclWin32,
   {$IFNDEF FPC}
   TLHelp32, PsApi,
@@ -2505,7 +2505,7 @@ begin
       Result := InternalGetOpenGLVersion(Version, Vendor, DCHandle, PFD_DRAW_TO_BITMAP);
     finally
       SelectObject(DCHandle, OldBitmapHandle);
-      CloseHandle(BmpHandle);
+      DeleteObject(BmpHandle);
     end;
   finally
     ReleaseDC(0, DCHandle);
@@ -4016,6 +4016,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.14  2004/04/18 05:14:11  rrossmair
+// fixed GetOpenGLVersion (draw to bitmap overload); removed VCL dependency ("uses Graphics")
+//
 // Revision 1.13  2004/04/18 00:43:19  peterjhaas
 // modify und bugfix GetOpenGLVersion, add second function for bitmap rendering
 //
