@@ -47,6 +47,19 @@
 // - Fixed a bug: So-called "CotH" function was CosH
 // - Added functions: CommercialRound, CotH
 
+// mt, October 2003:
+// - Added EulerMascheroni constant.
+// - Added GoldenMean constant
+// - Added Bernstein constant
+// - Added Catalan constant
+// -
+// -
+// -
+// -
+// -
+// -
+
+
 unit JclMath;
 
 {$I jcl.inc}
@@ -61,34 +74,38 @@ uses
 { Mathematical constants }
 
 const
-  Cbrt2: Float   = 1.2599210498948731647672106072782;  // CubeRoot(2)
-  Cbrt3: Float   = 1.4422495703074083823216383107801;  // CubeRoot(3)
-  Cbrt10: Float  = 2.1544346900318837217592935665194;  // CubeRoot(10)
-  Cbrt100: Float = 4.6415888336127788924100763509194;  // CubeRoot(100)
-  CbrtPi: Float  = 1.4645918875615232630201425272638;  // CubeRoot(PI)
-  Pi: Float      = 3.1415926535897932384626433832795;  // PI
-  PiOn2: Float   = 1.5707963267948966192313216916398;  // PI / 2
-  PiOn3: Float   = 1.0471975511965977461542144610932;  // PI / 3
-  PiOn4: Float   = 0.78539816339744830961566084581988; // PI / 4
-  Sqrt2: Float   = 1.4142135623730950488016887242097;  // Sqrt(2)
-  Sqrt3: Float   = 1.7320508075688772935274463415059;  // Sqrt(3)
-  Sqrt5: Float   = 2.2360679774997896964091736687313;  // Sqrt(5)
-  Sqrt10: Float  = 3.1622776601683793319988935444327;  // Sqrt(10)
-  SqrtPi: Float  = 1.7724538509055160272981674833411;  // Sqrt(PI)
-  Sqrt2Pi: Float = 2.506628274631000502415765284811;   // Sqrt(2 * PI)
-  TwoPi: Float   = 6.283185307179586476925286766559;   // 2 * PI
-  ThreePi: Float = 9.4247779607693797153879301498385;  // 3 * PI
-  Ln2: Float     = 0.69314718055994530941723212145818; // Ln(2)
-  Ln10: Float    = 2.3025850929940456840179914546844;  // Ln(10)
-  LnPi: Float    = 1.1447298858494001741434273513531;  // Ln(PI)
-  Log2: Float    = 0.30102999566398119521373889472449; // Log10(2)
-  Log3: Float    = 0.47712125471966243729502790325512; // Log10(3)
-  LogPi: Float   = 0.4971498726941338543512682882909;  // Log10(PI)
-  LogE: Float    = 0.43429448190325182765112891891661; // Log10(E)
-  E: Float       = 2.7182818284590452353602874713527;  // Natural constant
-  hLn2Pi: Float  = 0.91893853320467274178032973640562; // Ln(2*PI)/2
-  inv2Pi: Float  = 0.159154943091895;                  // 0.5 / Pi
-  TwoToPower63: Float = 9223372036854775808.0;         // 2^63
+  Bernstein: Float = 0.2801694990238691330364364912307;  // Bernstein constant
+  Cbrt2: Float     = 1.2599210498948731647672106072782;  // CubeRoot(2)
+  Cbrt3: Float     = 1.4422495703074083823216383107801;  // CubeRoot(3)
+  Cbrt10: Float    = 2.1544346900318837217592935665194;  // CubeRoot(10)
+  Cbrt100: Float   = 4.6415888336127788924100763509194;  // CubeRoot(100)
+  CbrtPi: Float    = 1.4645918875615232630201425272638;  // CubeRoot(PI)
+  Catalan: Float   = 0.9159655941772190150546035149324;  // Catalan constant
+  Pi: Float        = 3.1415926535897932384626433832795;  // PI
+  PiOn2: Float     = 1.5707963267948966192313216916398;  // PI / 2
+  PiOn3: Float     = 1.0471975511965977461542144610932;  // PI / 3
+  PiOn4: Float     = 0.78539816339744830961566084581988; // PI / 4
+  Sqrt2: Float     = 1.4142135623730950488016887242097;  // Sqrt(2)
+  Sqrt3: Float     = 1.7320508075688772935274463415059;  // Sqrt(3)
+  Sqrt5: Float     = 2.2360679774997896964091736687313;  // Sqrt(5)
+  Sqrt10: Float    = 3.1622776601683793319988935444327;  // Sqrt(10)
+  SqrtPi: Float    = 1.7724538509055160272981674833411;  // Sqrt(PI)
+  Sqrt2Pi: Float   = 2.506628274631000502415765284811;   // Sqrt(2 * PI)
+  TwoPi: Float     = 6.283185307179586476925286766559;   // 2 * PI
+  ThreePi: Float   = 9.4247779607693797153879301498385;  // 3 * PI
+  Ln2: Float       = 0.69314718055994530941723212145818; // Ln(2)
+  Ln10: Float      = 2.3025850929940456840179914546844;  // Ln(10)
+  LnPi: Float      = 1.1447298858494001741434273513531;  // Ln(PI)
+  Log2: Float      = 0.30102999566398119521373889472449; // Log10(2)
+  Log3: Float      = 0.47712125471966243729502790325512; // Log10(3)
+  LogPi: Float     = 0.4971498726941338543512682882909;  // Log10(PI)
+  LogE: Float      = 0.43429448190325182765112891891661; // Log10(E)
+  E: Float         = 2.7182818284590452353602874713527;  // Natural constant
+  hLn2Pi: Float    = 0.91893853320467274178032973640562; // Ln(2*PI)/2
+  inv2Pi: Float    = 0.159154943091895;                  // 0.5 / Pi
+  TwoToPower63: Float = 9223372036854775808.0;           // 2^63
+  GoldenMean: Float   = 1.618033988749894848204586834365638;  // GoldenMean
+  EulerMascheroni: Foat = 0.5772156649015328606065120900824;  // Euler GAMMA
 
 
 const
@@ -141,7 +158,7 @@ function ArcCsc(X: Float): Float;
 function ArcSec(X: Float): Float;
 function ArcSin(X: Float): Float;
 function ArcTan(X: Float): Float;
-function ArcTan2(Y, X: Float): Float; 
+function ArcTan2(Y, X: Float): Float;
 function Cos(X: Float): Float;
 function Cot(X: Float): Float;
 function Coversine(X: Float): Float;
@@ -470,7 +487,7 @@ uses
 // (PIC, used by shared objects)
 
 {$IFDEF PIC}
-function GetGOT: Pointer;
+function GetGOT: Pointer; export;
 begin
   asm
         MOV Result, EBX
@@ -738,7 +755,7 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-       
+
 function ArcSin(X: Float): Float;
 
   function FArcSin(X: Float): Float; assembler;
@@ -1213,7 +1230,7 @@ begin
         Result := 0.0
       else
         {$IFDEF MATH_EXT_EXTREMEVALUES}
-        Result := Infinity; 
+        Result := Infinity;
         {$ELSE}
         raise EJclMathError.Create('Power function: Result is infinite');
         {$ENDIF}
@@ -2319,7 +2336,7 @@ const
 
 function _FPClass: TFloatingPointClass;
 // In: ST(0) Value to examine
-//     ECX   address of GOT (PIC only)   
+//     ECX   address of GOT (PIC only)
 asm
         FXAM
         XOR     EDX, EDX
