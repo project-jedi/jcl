@@ -898,6 +898,9 @@ type
 
   EJclPathError = class(EJclError);
   EJclFileUtilsError = class(EJclError);
+  {$IFDEF UNIX}
+  EJclTempFileStreamError = class(EJclFileUtilsError);
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   EJclTempFileStreamError = class(EJclWin32Error);
   EJclFileMappingError = class(EJclWin32Error);
@@ -961,7 +964,8 @@ const
 
 {$IFDEF UNIX}
 const
-  ERROR_NO_MORE_FILES = -1;
+  ERROR_NO_MORE_FILES  = -1;
+  INVALID_HANDLE_VALUE = THandle(-1);
 {$ENDIF UNIX}
 
 //==================================================================================================
@@ -1012,7 +1016,7 @@ end;
 destructor TJclTempFileStream.Destroy;
 begin
   if THandle(Handle) <> INVALID_HANDLE_VALUE then
-    CloseHandle(Handle);
+    FileClose(Handle);
   inherited Destroy;
 end;
 
@@ -5941,6 +5945,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.34  2004/11/18 10:13:24  rrossmair
+// - fixed for Unix
+//
 // Revision 1.33  2004/11/18 00:42:59  rrossmair
 // - fixed mantis #1667
 //
