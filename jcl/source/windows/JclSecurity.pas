@@ -1,30 +1,29 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclSecurity.pas.                                        }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Various NT security related routines to perform commen asks such as enabling }
-{ and disabling privileges.                                                    }
-{                                                                              }
-{ Unit owner: Peter Friese                                                     }
-{ Last modified: January 29, 2000                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclSecurity.pas.                                                            }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Various NT security related routines to perform commen asks such as enabling and disabling       }
+{ privileges.                                                                                      }
+{                                                                                                  }
+{ Unit owner: Peter Friese                                                                         }
+{ Last modified: January 29, 2000                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSecurity;
 
@@ -38,18 +37,18 @@ uses
   Windows, SysUtils,
   JclBase;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Access Control
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function AllowRegKeyForEveryone(Key: HKEY; Path: string): Boolean;
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Privileges
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsAdministrator: Boolean;
 function EnableProcessPrivilege(const Enable: Boolean;
@@ -62,9 +61,9 @@ function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 function GetUserObjectName(hUserObject: THandle): string;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Account Information
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
@@ -78,9 +77,9 @@ uses
   {$ENDIF COMPILER5_UP}
   JclStrings, JclSysInfo, JclWin32;
 
-//==============================================================================
+//==================================================================================================
 // Access Control
-//==============================================================================
+//==================================================================================================
 
 function AllowRegKeyForEveryone(Key: HKEY; Path: string): Boolean;
 var
@@ -105,7 +104,7 @@ begin
   FreeMem(WidePath);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
@@ -121,7 +120,7 @@ begin
   Result := @Sa;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 begin
@@ -131,9 +130,9 @@ begin
   Result := @Sa;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Privileges
-//==============================================================================
+//==================================================================================================
 
 function IsAdministrator: Boolean;
 var
@@ -164,9 +163,11 @@ begin
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
       for I := 0 to TokenInfo^.GroupCount - 1 do
       begin
-        {$R-} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
+        {$RANGECHECKS OFF} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
         Result := EqualSid(psidAdmin, TokenInfo^.Groups[I].Sid);
-        {$R+}
+        {$IFDEF RANGECHECKS_ON}
+        {$RANGECHECKS ON}
+        {$ENDIF RANGECHECKS_ON}
         if Result then
           Break;
       end;
@@ -181,7 +182,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function EnableProcessPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
@@ -204,7 +205,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function EnableThreadPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
@@ -234,7 +235,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsPrivilegeEnabled(const Privilege: string): Boolean;
 var
@@ -258,7 +259,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 var
@@ -279,7 +280,7 @@ begin
     Result:= '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 var
@@ -296,7 +297,7 @@ begin
   LocalFree(HLOCAL(Sd));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetUserObjectName(hUserObject: THandle): string;
 var
@@ -312,9 +313,9 @@ begin
     Result := '';
 end;
 
-//==============================================================================
+//==================================================================================================
 // Account Information
-//==============================================================================
+//==================================================================================================
 
 procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
 var
@@ -331,7 +332,7 @@ begin
   SetLength(Name, StrLen(PChar(Name)));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass;
   var Buffer: Pointer);
@@ -358,17 +359,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-type
-  _TOKEN_USER = record
-    User: SID_AND_ATTRIBUTES;
-  end;
-  {$EXTERNALSYM _TOKEN_USER}
-  TOKEN_USER = _TOKEN_USER;
-  {$EXTERNALSYM TOKEN_USER}
-  TTokenUser = TOKEN_USER;
-  PTokenUser = ^TOKEN_USER;
+//--------------------------------------------------------------------------------------------------
 
 function GetInteractiveUserName: string;
 var
