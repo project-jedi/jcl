@@ -15,8 +15,13 @@
 { The Initial Developer of the Original Code is Ralf Junker.                                       }
 { Portions created by Ralf Junker are Copyright (C) Ralf Junker. All rights reserved.              }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Marcel van Brakel, Ralf Junker, Robert Marquardt, Robert Rossmair, Matthias Thoma, Petr Vones  }
+{ Contributors:                                                                                    }
+{   Marcel van Brakel                                                                              }
+{   Ralf Junker                                                                                    }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -645,6 +650,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/12 18:29:52  rrossmair
+// cleanup
+//
 // Revision 1.9  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //
@@ -659,9 +667,6 @@ end;
 //
 // Revision 1.5  2004/04/09 20:21:11  mthoma
 // Updated to Ralfs latest release. That also fixed 0000406.
-//
-// Revision 1.4  2004/04/06 04:53:18  peterjhaas
-// adapt compiler conditions, add log entry
 //
 
 end.

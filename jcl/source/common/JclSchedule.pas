@@ -1784,6 +1784,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/12 18:29:52  rrossmair
+// cleanup
+//
 // Revision 1.9  2004/08/01 05:52:12  marquardt
 // move constructors/destructors
 //
@@ -1798,9 +1801,6 @@ end;
 //
 // Revision 1.5  2004/05/05 00:09:59  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.4  2004/04/06 04:53:18  peterjhaas
-// adapt compiler conditions, add log entry
 //
 
 end.
