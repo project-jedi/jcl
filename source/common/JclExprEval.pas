@@ -160,6 +160,9 @@ type
     etUser16, etUser17, etUser18, etUser19, etUser20, etUser21, etUser22, etUser23,
     etUser24, etUser25, etUser26, etUser27, etUser28, etUser29, etUser30, etUser31,
 
+    etAnd,
+    etOr,
+
     // compound tokens
     etNotEqual, // <>
     etLessEqual, // <=
@@ -1227,6 +1230,12 @@ end;
 function TExprEvalParser.Evaluate: TFloat;
 begin
   Result := EvalExpr(False);
+
+  if (Lexer.CurrTok <> etEof) then
+  begin
+    raise EJclExprEvalError.CreateResRecFmt(@RsExprEvalUnknownSymbol,
+      [Lexer.TokenAsString]);
+  end;
 end;
 
 function TExprEvalParser.EvalExpr(ASkip: Boolean): TFloat;
@@ -1328,11 +1337,14 @@ end;
 
 function TExprEvalParser.EvalFactor: TFloat;
 begin
-  case Lexer.CurrTok of
-    etIdentifier:
-      Result := EvalIdentFactor;
-    etLParen:
-      begin
+    case Lexer.CurrTok of
+     etIdentifier:
+       begin
+         Result := EvalIdentFactor;
+       end;
+
+     etLParen:
+     begin
         Result := EvalExpr(True);
         if Lexer.CurrTok <> etRParen then
           raise EJclExprEvalError.CreateResRec(@RsExprEvalRParenExpected);
@@ -1342,10 +1354,11 @@ begin
       begin
         Result := Lexer.TokenAsNumber;
         Lexer.NextTok;
+      //  b := true;
       end;
-  else
-    raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
-  end;
+    else
+      raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
+   end;
 end;
 
 function TExprEvalParser.EvalIdentFactor: TFloat;
@@ -3980,6 +3993,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/02/26 23:18:46  mthoma
+// *** empty log message ***
+//
 // Revision 1.12  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
