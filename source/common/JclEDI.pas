@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: October 22, 2003                                                                  }
+{ Last modified: October 26, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -1683,12 +1683,7 @@ function TEDILoopStack.Push(SegmentId, OwnerLoopId, ParentLoopId: string; StartI
 begin
   // Add to loop stack
   SetLength(FStack, Length(FStack) + 1);
-  // (rom) better call UpdateStackData here
-  FStack[High(FStack)].SegmentId := SegmentId;
-  FStack[High(FStack)].OwnerLoopId := OwnerLoopId;
-  FStack[High(FStack)].ParentLoopId := ParentLoopId;
-  FStack[High(FStack)].SpecStartIndex := StartIndex;
-  FStack[High(FStack)].EDIObject := EDIObject;
+  UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId, StartIndex, EDIObject);
   Result := High(FStack);
 end;
 
