@@ -25,7 +25,7 @@
 {                                                                              }
 {******************************************************************************}
 
-eunit JclStrings;
+unit JclStrings;
 
 {$I JCL.INC}
 
@@ -3575,7 +3575,7 @@ begin
   try
     len := Length(Contents);
     if len > 0 then
-      fs.WriteBuffer(Contents[1], Length(Contents) e;
+      fs.WriteBuffer(Contents[1], Length(Contents));
   finally
     fs.Free;
   end;
