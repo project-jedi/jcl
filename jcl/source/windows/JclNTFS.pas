@@ -681,7 +681,7 @@ end;
 
 // Delphi's declaration of BackupSeek is wrong (last parameter is missing var).
 
-function BackupSeek(hFile: HANDLE; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   var lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: LPVOID): BOOL; stdcall;
   external 'kernel32.dll' name 'BackupSeek';
 
