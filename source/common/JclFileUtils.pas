@@ -72,9 +72,9 @@ function PathRemoveExtension(const Path: string): string;
 //------------------------------------------------------------------------------
 
 type
-  TDelTreeProgress = function (const FileName: string): Boolean;
+  TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
 
-function BuildFileList(const Path: string; const Attr: Integer; var List: TStrings): Boolean;
+function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function CloseVolume(const Volume: THandle): Boolean; // TODO DOC MASSIMO
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
@@ -107,7 +107,9 @@ function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boo
 procedure ShredFile(const FileName: string; Times: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF});
 function UnLockVolume(var Handle: THandle): Boolean;
 
-{ TFileVersionInfo }
+//------------------------------------------------------------------------------
+// TFileVersionInfo
+//------------------------------------------------------------------------------
 
 type
   TFileFlag = (ffDebug, ffInfoInferred, ffPatched, ffPreRelease, ffPrivateBuild,
@@ -292,13 +294,13 @@ uses
 
 constructor TJclTempFileStream.Create(const Prefix: string);
 var
-  AHandle: THandle;
+  FileHandle: THandle;
 begin
   FFileName := Prefix;
-  AHandle := FileCreateTemp(FFileName);
-  if AHandle = INVALID_HANDLE_VALUE then
+  FileHandle := FileCreateTemp(FFileName);
+  if FileHandle = INVALID_HANDLE_VALUE then
     raise EJclTempFileStreamError.CreateResRec(@RsFileStreamCreate);
-  inherited Create(AHandle);
+  inherited Create(FileHandle);
 end;
 
 //------------------------------------------------------------------------------
@@ -338,7 +340,7 @@ begin
   if (Size = 0) and (FileMap is TJclFileMapping) then
   begin
     Size := GetFileSize(TJclFileMapping(FileMap).FFileHandle, nil);
-    if Size = $FFFFFFFF then
+    if Size = DWORD(-1) then
       raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
   end;
   SetPointer(BaseAddress, Size);
@@ -477,6 +479,8 @@ procedure TJclCustomFileMapping.ClearViews;
 var
   I: Integer;
 begin
+  // Note that the view destructor removes the view object from the FViews
+  // list so we must loop downwards from count to 0 
   for I := FViews.Count - 1 downto 0 do
     TJclFileMappingView(FViews[I]).Free;
 end;
@@ -609,7 +613,8 @@ end;
 
 destructor TJclFileMapping.Destroy;
 begin
-  CloseHandle(FFileHandle);
+  if FFileHandle > 0 then
+    CloseHandle(FFileHandle);
   inherited Destroy;
 end;
 
@@ -621,7 +626,7 @@ constructor TJclSwapFileMapping.Create(const Name: string; Protect: Cardinal;
   const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
 begin
   inherited Create;
-  InternalCreate($FFFFFFFF, Name, Protect, MaximumSize, SecAttr);
+  InternalCreate(INVALID_HANDLE_VALUE, Name, Protect, MaximumSize, SecAttr);
 end;
 
 //==============================================================================
@@ -904,7 +909,7 @@ end;
 // Files and Directories
 //==============================================================================
 
-function BuildFileList(const Path: string; const Attr: Integer; var List: TStrings): Boolean;
+function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 var
   SearchRec: TSearchRec;
   R: Integer;
@@ -941,13 +946,13 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DelTreeEx(Path: string; AbortOnFailure: Boolean;
-  Progress: TDelTreeProgress): Boolean;
+function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 var
   Files: TStrings;
   FileName: string;
   I: Integer;
   PartialResult: Boolean;
+  Attr: DWORD;
 begin
   Result := True;
   Files := TStringList.Create;
@@ -958,12 +963,15 @@ begin
     begin
       FileName := Path + '\' + Files[I];
       PartialResult := True;
-      if IsDirectory(FileName) then
+      //if IsDirectory(FileName) then
+      //  PartialResult := DelTreeEx(FileName, AbortOnFailure, Progress)
+      Attr := GetFileAttributes(PChar(FileName));
+      if (Attr <> DWORD(-1)) and ((Attr and FILE_ATTRIBUTE_DIRECTORY) <> 0) then
         PartialResult := DelTreeEx(FileName, AbortOnFailure, Progress)
       else
       begin
         if Assigned(Progress) then
-          PartialResult := Progress(FileName);
+          PartialResult := Progress(FileName, Attr);
         if PartialResult then
         begin
           PartialResult := SetFileAttributes(PChar(FileName), FILE_ATTRIBUTE_NORMAL);
@@ -1307,7 +1315,7 @@ var
   R: DWORD;
 begin
   R := GetFileAttributes(PChar(FileName));
-  Result := (R <> $FFFFFFFF) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
+  Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
 end;
 
 //------------------------------------------------------------------------------
