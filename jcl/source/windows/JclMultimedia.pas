@@ -21,7 +21,7 @@
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
 { Unit owner: Jan Jacobs                                                                           }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -34,10 +34,7 @@ unit JclMultimedia;
 interface
 
 uses
-  Windows, Messages, Classes, MMSystem,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Windows, Messages, Classes, MMSystem, Contnrs,
   JclBase, JclSynch, JclStrings;
 
 type
