@@ -33,9 +33,10 @@
 {    the provisions above, a recipient may use your version of this file       }
 {    under either the MPL or the LPGL License.                                 }
 {                                                                              }
-{    $Id$              }
-{                                                                              }
 { **************************************************************************** }
+
+// Last modified: $Date$
+// For history, see end of file
 
 unit JppParser;
 
@@ -85,6 +86,7 @@ begin
   FLexer := TPppLexer.Create(AStream);
   FState := APppState;
   FTriState := ttDefined;
+  FState.Undef('PROTOTYPE');
 end;
 
 destructor TJppParser.Destroy;
@@ -350,6 +352,13 @@ begin
   State.Undef(Lexer.TokenAsString);
   Lexer.NextTok;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/18 06:19:06  rrossmair
+// introduced pre-undefined symbol "PROTOTYPE"
+//
 
 end.
 
