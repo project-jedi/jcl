@@ -103,7 +103,7 @@ uses
 
 const
 
-// Misc. often used character definitions 
+// Misc. often used character definitions
 
   AnsiNull           = AnsiChar(#0);
   AnsiBell           = AnsiChar(#7);
@@ -1672,7 +1672,7 @@ asm
         JZ      @@EXIT
 
         PUSH    EBX
-        MOV     EDX, EAX                 // save pointer 
+        MOV     EDX, EAX                 // save pointer
 @L1:    MOV     EBX, [EAX]               // read 4 bytes
         ADD     EAX, 4                   // increment pointer
         LEA     ECX, [EBX-$01010101]     // subtract 1 from each byte
@@ -2241,7 +2241,7 @@ asm
         JL      @@IndexIsSmall
 
         // EBX will hold the case table, ESI pointer to Str, EDI pointer
-        // to Substr and EBP # of chars in Substr to compare 
+        // to Substr and EBP # of chars in Substr to compare
 
         PUSH    EBX
         PUSH    ESI
@@ -3049,7 +3049,7 @@ var
   P: PChar;
 begin
   Assert(Dest <> nil);
-  Dest.Clear;  
+  Dest.Clear;
   if Source <> nil then
   begin
     P := Source;
