@@ -103,7 +103,7 @@ object MainForm: TMainForm
       ' '
       '|')
     ItemIndex = 0
-    TabOrder = 6
+    TabOrder = 13
     Text = ','
     OnChange = BlockSeparatorSelectorChange
   end
@@ -151,7 +151,7 @@ object MainForm: TMainForm
     Top = 64
     Width = 81
     Height = 23
-    Max = 64
+    Max = 12
     Min = 1
     TabOrder = 3
     Value = 3
@@ -200,7 +200,7 @@ object MainForm: TMainForm
       #215
       '*')
     ItemIndex = 0
-    TabOrder = 5
+    TabOrder = 18
     Text = #215
     OnChange = MultiplierSelectorChange
   end
