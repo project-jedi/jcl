@@ -2644,12 +2644,36 @@ var
   Counter: Integer;
   LocAttr: Integer;
 
-  procedure FillFolderList;
+  procedure BuildFolderList;
+  Var FindInfo: TSearchRec;
+      Result: Integer;
+  begin
+    Counter := Folders.Count - 1;
+    CurrentItem := 0;
+    while CurrentItem <= Counter do begin
+      // searching for subfolders
+      Result := FindFirst(Folders[CurrentItem] + '*.*', faDirectory, FindInfo);
+      try
+        While Result = 0 Do Begin
+          If (FindInfo.Name <> '.') And (FindInfo.Name <> '..') And
+             (FindInfo.Attr and faDirectory = faDirectory) Then
+            Folders.Add(Folders[CurrentItem] + FindInfo.Name + '\');
+          Result := FindNext(FindInfo);
+        End;
+      finally
+        FindClose(FindInfo);
+      end;
+      Counter := Folders.Count - 1;
+      Inc(CurrentItem);
+    end;    // while
+  end;
+
+  procedure FillFileList(CurrentCounter: Integer);
   Var FindInfo: TSearchRec;
       Result: Integer;
       CurrentFolder: String;
   Begin
-    CurrentFolder := Folders[CurrentItem];
+    CurrentFolder := Folders[CurrentCounter];
     Result := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
     try
       While Result = 0 Do Begin
@@ -2662,22 +2686,6 @@ var
       End;
     finally
       FindClose(FindInfo);
-    end;
-
-    // searching for subfolders
-    if flRecursive in Options then begin
-      Result := FindFirst(CurrentFolder + '*.*', faDirectory, FindInfo);
-      try
-        While Result = 0 Do Begin
-          If (FindInfo.Name <> '.') And (FindInfo.Name <> '..') Then
-            if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, FindInfo.Name)<>0)) or
-                 (not (flMaskedSubfolders in Options))) Then
-              Folders.Add(CurrentFolder + FindInfo.Name + '\');
-          Result := FindNext(FindInfo);
-        End;
-      finally
-        FindClose(FindInfo);
-      end;
     end;
   End;
 
@@ -2694,15 +2702,15 @@ begin
     LocAttr := Attr;
 
   // here's the recursive search for nested folders
-  CurrentItem := 0;
-  Counter := Folders.Count - 1;
-  While CurrentItem <= Counter Do Begin
-    FillFolderList;
-    Inc(CurrentItem);
-    Counter := Folders.Count - 1;
-  end;
-  Folders.Free;
+  if flRecursive in Options then
+    BuildFolderList;
 
+  for Counter := 0 to Folders.Count - 1 do begin
+     if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, Folders[Counter])<>0)) or
+        (not (flMaskedSubfolders in Options))) Then
+    FillFileList(Counter);
+  end;    // for
+  Folders.Free;
   Result := True;
 end;
 
