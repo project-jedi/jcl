@@ -775,15 +775,16 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclEmailLogonOptions = set of (loLogonUI, loNewSession);
+TJclEmailLogonOptions = set of (loLogonUI, loNewSession, loForceDownload);
 [ShortDescr]
 Logon options
 [Description]
 Logon options
 [Enumeration]
-Count=2
+Count=3
 1=loLoginUI=Login with a user interface (i.e.. show login dialog of client).
 2=loNewSession=Start a new session.
+3=loForceDownload=Force mails and attachments to be downloaded.
 [Quick Info]
 Kind=Type
 BCB=4,5
