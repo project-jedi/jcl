@@ -43,7 +43,7 @@
 {                                                                              }
 {******************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 (*
@@ -82,15 +82,15 @@
 
   The following directives indicate for a visual library. In a Delphi
   application you need to define VisualCLX in the project options, if you want
-  to use the CLX. Alternative you can use the IDE expert, which is distributed
+  to use the VisualCLX. Alternative you can use the IDE expert, which is distributed
   with the JCL to do this automatically.
 
   Directive    Description
   ------------------------------------------------------------------------------
   COMPLIB_VCL  Defined when application do not define VisualCLX, obsolete, use VCL
-  COMPLIB_CLX  Defined when application use the CLX, obsolete, use VisualCLX
+  COMPLIB_CLX  Defined when application use the VisualCLX, obsolete, use VisualCLX
   VCL          Defined when application do not define VisualCLX
-  VisualCLX    Defined when application use the CLX
+  VisualCLX    Defined when application use the VisualCLX
 
 
 - Delphi Versions
@@ -730,8 +730,7 @@
 
 {$IFDEF FPC}
   {$IFDEF  VER1_0}
-     Please go away. Your compiler version is 20th century technology.
-     Use FPC 1.1 or later to compile this.
+     Please use FPC 1.1 or later to compile this.
   {$ELSE}
     {$DEFINE SUPPORTS_OUTPARAMS}
     {$DEFINE SUPPORTS_WIDECHAR}
@@ -824,7 +823,7 @@
   {$DEFINE SUPPORTS_DEPRECATED}
   {$DEFINE SUPPORTS_LIBRARY}
   {$DEFINE SUPPORTS_PLATFORM}
-  {$DEFINE SUPPORTS_LOCAL}       { TODO : Compiler 6 or Compiler 7? }
+  {$DEFINE SUPPORTS_LOCAL}
   {$DEFINE ACCEPT_DEPRECATED}
   {$DEFINE ACCEPT_PLATFORM}
   {$DEFINE ACCEPT_LIBRARY}
@@ -933,6 +932,11 @@
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 
 // $Log$
+// Revision 1.8  2004/04/14 20:26:33  mthoma
+// Changed data to date
+// Local is Delphi 6 - removed todo comment
+// Replaced CLX with VisualCLX to be consistent with Borlands current definition of what "CLX" is.
+//
 // Revision 1.7  2004/04/06 05:06:12  peterjhaas
 // add support for Kylix, FPC, RTL, versions, some speaking directives
 //
