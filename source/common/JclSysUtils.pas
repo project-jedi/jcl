@@ -113,7 +113,9 @@ type
 
 function GetVirtualMethodCount(AClass: TClass): Integer;
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
+{$IFDEF WIN32}
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // Dynamic Methods
@@ -185,7 +187,9 @@ function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry
 // Class Parent
 //------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
+{$ENDIF WIN32}
 function GetClassParent(AClass: TClass): TClass;
 
 function IsClass(Address: Pointer): Boolean;
@@ -600,6 +604,8 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
+
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 var
   WrittenBytes: DWORD;
@@ -618,6 +624,8 @@ begin
   // make sure that everything keeps working in a dual processor setting
   FlushInstructionCache(GetCurrentProcess, PatchAddress, SizeOf(Pointer));
 end;
+
+{$ENDIF WIN32}
 
 //==============================================================================
 // Dynamic Methods
@@ -739,6 +747,8 @@ end;
 // Class Parent methods
 //==============================================================================
 
+{$IFDEF WIN32}
+
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 var
   WrittenBytes: DWORD;
@@ -755,6 +765,8 @@ begin
   // make sure that everything keeps working in a dual processor setting
   FlushInstructionCache(GetCurrentProcess, PatchAddress, SizeOf(Pointer));
 end;
+
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
