@@ -1030,7 +1030,7 @@ begin
   Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
   Result := Strings.Count - Cnt;
   Strings.Add('');
-  Strings.Add(WrapText(Body, MaxWidth));
+  Strings.Add(WrapText(Body, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
 end;
 
 //------------------------------------------------------------------------------
