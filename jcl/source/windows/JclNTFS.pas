@@ -23,7 +23,7 @@
 { higher!                                                                                          }
 {                                                                                                  }
 { Unit Owner: Marcel van Brakel                                                                    }
-{ Last modified: May 5, 2002                                                                       }
+{ Last modified: June 1, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,8 +36,15 @@ unit JclNTFS;
 interface
 
 uses
-  Windows,
+  Windows, Classes,
   JclBase, JclWin32;
+
+//--------------------------------------------------------------------------------------------------
+// NTFS Exception
+//--------------------------------------------------------------------------------------------------
+
+type
+  EJclNtfsError = class (EJclWin32Error);
 
 //--------------------------------------------------------------------------------------------------
 // NTFS - Compression
@@ -144,14 +151,117 @@ function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds; var 
 function NtfsFindNextStream(var Data: TFindStreamData): Boolean;
 function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 
+//--------------------------------------------------------------------------------------------------
+// Hard links
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cDOC : Hard links }
+//
+// CreateHardLinkNT
+//
+// Creates a hard link on NT 4. Both LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
+//
+// LinkName: Name of the hard link to create
+// ExistingFileName: Fully qualified path of the file for which to create a hard link
+// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
+//
+// Remarks: On Windows 2000 and up you should favor the usage of CreateHardLinkNT5.
+//          You must be a member of the Administrators or Backup Operators group.
+// Requirements: Windows NT 3.51, 4.0, 2000 or XP
+
+//
+// CreateHardLink2000
+//
+// Creates a hard link on NT 5. Simple wrapper around CreateHardLink API function. See PSDK docs for more details.
+//
+// LinkName: Name of the hard link to create
+// ExistingFileName: Fully qualified path of the file for which to create a hard link
+// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
+//
+// Remarks: On Windows NT 4 and earlier you can use CreateHardLinkNT.
+// Requirements: Windows 2000 or XP
+//
+
+//
+// NtfsCreateHardLink
+//
+// Creates a hard link. Both LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
+//
+// LinkName: Name of the hard link to create
+// ExistingFileName: Fully qualified path of the file for which to create a hard link
+// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
+//
+// Remarks: On NT 3.51 and 4.0 you must be a member of the Administrators or Backup Operators group.
+// Requirements: Windows NT 3.51, 4.0, 2000 or XP
+//
+
+//
+// NtfsGetHardLinkInfo
+//
+// Returns information about a hard link. Specifically it's link count and fileindex.
+//
+// LinkName: Name of the file for which to get hard link information
+// Info: A TNtfsHardLinkInfo containing the requested information
+// Result: If the function succeeds it returns True, otherwise it returns False.
+//
+// Requirements: The specified file must reside on an NTFS formatted volume
+//
+
+//
+// NtfsFindHardLinks
+//
+// Builds a list of fully qualified hard link path names for the specified file. The function recursively searches
+// the specified directory and all it's subdirectories. Usually you set Path to the root of a volume to search the
+// entire volume for hard links, but this is not strictly necessary.
+//
+// Path: The path where the function should search for hard links, without trailing backslash
+// FileIndexHigh, FileIndexLow: The file-index of the file for which to find the hard links. You can obtain the
+// file-index by calling the NtfsGetHardLinkInfo function.
+// List: A TStrings derivative that receives the fully qualified path names of all found hard links.
+// Result: If the function succeeds it returns True, otherwise it returns False. In the latter case, some hard links
+// may have been found and stored in List but it's not guarenteed to be all hard links.
+//
+// Remarks: It's possible that this function doesn't find all hard links due to access rights...
+// Requirements: Path must point to a directory on an NTFS formatted volume.
+//
+
+//
+// NtfsDeleteHardLinks
+//
+// Given the name of a file, this function deletes all hard links (including the specified one). This will result in
+// the file actually being deleted, including all of it's hard links. This in contrast to the DeleteFile function that
+// only deleted the specified hard link but doesn't affect other hard links (if any exist the file remains).
+//
+// FileName: The name of the file to delete
+// Result: If the function succeeds it returns True, otherwise it returns False.
+//
+// Remarks: Note that in case of failure the function attempts to restore the hard links it had already deleted, but
+// it can't be guarenteed that this will succeed. So in case of failure, some hard links might already have been deleted
+//
+
+function NtfsCreateHardLink(const LinkFileName, ExistingFileName: string): Boolean;
+
 type
-  EJclNtfsError = class (EJclWin32Error);
+  TNtfsHardLinkInfo = record
+    LinkCount: Cardinal;
+    case Integer of
+    0: (
+      FileIndexHigh: Cardinal;
+      FileIndexLow: Cardinal);
+    1: (
+      FileIndex: Int64);
+  end;
+
+function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
+
+function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
+function NtfsDeleteHardLinks(const FileName: string): Boolean;
 
 implementation
 
 uses
   SysConst, SysUtils,
-  JclFileUtils, JclResources;
+  JclFileUtils, JclResources, JclSecurity;
 
 //==================================================================================================
 // NTFS - Compression
@@ -403,8 +513,8 @@ begin
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     if Result then
     begin
-      ZeroDataInfo.FileOffset := First;
-      ZeroDataInfo.BeyondFinalZero := Last;
+      ZeroDataInfo.FileOffset.QuadPart := First;
+      ZeroDataInfo.BeyondFinalZero.QuadPart := Last;
       Result := DeviceIoControl(Handle, FSCTL_SET_ZERO_DATA, @ZeroDataInfo,
         SizeOf(ZeroDataInfo), nil, 0, BytesReturned, nil);
     end;
@@ -448,8 +558,8 @@ var
   SearchRange: TFileAllocatedRangeBuffer;
   BufferSize: Cardinal;
 begin
-  SearchRange.FileOffset := Offset;
-  SearchRange.Length := Count;
+  SearchRange.FileOffset.QuadPart := Offset;
+  SearchRange.Length.QuadPart := Count;
   BufferSize := 4 * 64 * SizeOf(TFileAllocatedRangeBuffer);
   Ranges := AllocMem(BufferSize);
   Result := DeviceIoControl(Handle, FSCTL_QUERY_ALLOCATED_RANGES, @SearchRange,
@@ -1007,5 +1117,251 @@ begin
   else
     SetLastError(ERROR_INVALID_HANDLE);
 end;
+
+//==================================================================================================
+// Hard links
+//==================================================================================================
+
+function CreateHardLinkNT(const LinkFileName, ExistingFileName: string): BOOL;
+var
+  BackupPriv, RestorePriv: Boolean;      // we're these privileges enabled on entry?
+  HardLink: THandle;                     // handle for hard link
+  HardLinkName: WideString;              // full path name of the hard link in unicode
+  FullPath: string;                      // full path name of the hard link in ansi
+  FilePart: PChar;                       // we need this to call GetFullPathName but don't use it
+  StreamId: TWin32StreamId;              // the stream header record
+  Context: Pointer;                      // context pointer for BackupWrite
+  BytesToWrite, BytesWritten: Cardinal;  // number of bytes to write, that got written
+begin
+  // always the pessimist...
+  Result := False;
+  // test if the required privileges are enabled
+  BackupPriv := IsPrivilegeEnabled(SE_BACKUP_NAME);
+  RestorePriv := IsPrivilegeEnabled(SE_RESTORE_NAME);
+  try
+    // if not enable them now, just in case we're not an administrator
+    if not BackupPriv then
+      Win32Check(EnableThreadPrivilege(True, SE_BACKUP_NAME));
+    if not RestorePriv then
+      Win32Check(EnableThreadPrivilege(True, SE_RESTORE_NAME));
+    // test if the hard link already exists, if so bail out
+    HardLink := CreateFile(PChar(LinkFileName), 0, 0, nil, OPEN_EXISTING, 0, 0);
+    if HardLink <> INVALID_HANDLE_VALUE then
+    begin
+      CloseHandle(HardLink);
+      SetLastError(ERROR_ALREADY_EXISTS);
+      Exit;
+    end;
+    // open the _existing_ file. this may seem counter intuitive but creating a hard link consists of writing a
+    // backup_link stream to the existing file containing the path of the hard link. in response NTFS will add the
+    // hard link name as an alternate filename and create a directory entry for the hard link.
+    HardLink := CreateFile(PChar(ExistingFileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_POSIX_SEMANTICS, 0);
+    if HardLink <> INVALID_HANDLE_VALUE then
+    try
+      // get the full unicode path name for the hard link
+      SetLength(FullPath, MAX_PATH);
+      GetFullPathName(PChar(LinkFileName), MAX_PATH, PChar(FullPath), FilePart);
+      SetLength(FullPath, StrLen(PChar(FullPath)));
+      HardLinkName := FullPath;
+      // initialize and write the stream header
+      FillChar(StreamId, SizeOf(StreamId), 0);
+      StreamId.dwStreamId := BACKUP_LINK;
+      StreamId.Size := (Length(HardLinkName) + 1) * SizeOf(WideChar);
+      BytesToWrite := DWORD(@StreamId.cStreamName[0]) - DWORD(@StreamId.dwStreamId);
+      Context := nil;
+      Win32Check(BackupWrite(HardLink, @StreamId, BytesToWrite, BytesWritten, False, False, @Context));
+      if BytesToWrite <> BytesWritten then
+        RaiseLastOSError;
+      // now write the hard link name
+      Win32Check(BackupWrite(HardLink, @HardLinkName[1], StreamId.Size, BytesWritten, False, False, @Context));
+      if BytesWritten <> StreamId.Size then
+        RaiseLastOSError;
+      // and finally release the context
+      BackupWrite(HardLink, nil, 0, BytesWritten, True, False, @Context);
+      Result := True;
+    finally
+      CloseHandle(HardLink);
+    end;
+  finally
+    // if we enabled them we should disable as well
+    if not BackupPriv then
+      Win32Check(EnableThreadPrivilege(False, SE_BACKUP_NAME));
+    if not RestorePriv then
+      Win32Check(EnableThreadPrivilege(False, SE_RESTORE_NAME));
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function CreateHardLink2000(const LinkFileName, ExistingFileName: string): BOOL;
+type
+  TCreateHardLink = function (lpFileName, lpExistingFileName: LPCSTR; lpSecurityAttributes: Pointer): BOOL; stdcall;
+var
+  Kernel32Module: HMODULE;
+  CreateHardLink: TCreateHardLink;
+begin
+  Result := False;
+  Kernel32Module := GetModuleHandle(kernel32);
+  if Kernel32Module <> 0 then
+  begin
+    @CreateHardLink := GetProcAddress(Kernel32Module, 'CreateHardLinkA');
+    if @CreateHardLink <> nil then
+      Result := CreateHardLink(PChar(LinkFileName), PChar(ExistingFileName), nil);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function NtfsCreateHardLink(const LinkFileName, ExistingFileName: string): Boolean;
+begin
+  // first try the official CreateHardLink Windows API function, which only exists for Windows 2000 and up
+  Result := CreateHardLink2000(LinkFileName, ExistingFileName);
+  // if that fails try the akward NT method using the Tapi Backup API
+  if not Result then
+    Result := CreateHardLinkNT(LinkFileName, ExistingFileName);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
+var
+  F: THandle;
+  FileInfo: TByHandleFileInformation;
+begin
+  Result := False;
+  F := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
+  if F <> INVALID_HANDLE_VALUE then
+  try
+    if GetFileInformationByHandle(F, FileInfo) then
+    begin
+      Info.LinkCount := FileInfo.nNumberOfLinks;
+      Info.FileIndexHigh := FileInfo.nFileIndexHigh;
+      Info.FileIndexLow := FileInfo.nFileIndexLow;
+      Result := True;
+    end;
+  finally
+    CloseHandle(F);
+  end
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
+var
+  SearchRec: TSearchRec;
+  R: Integer;
+  Info: TNtfsHardLinkInfo;
+begin
+  // start the search
+  R := FindFirst(Path + '\*.*', faAnyFile, SearchRec);
+  Result := (R = 0);
+  if Result then
+  try
+    while R = 0 do
+    begin
+      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+      begin
+        if (SearchRec.Attr and faDirectory) = faDirectory then
+        begin
+          // recurse into subdirectory
+          Result := NtfsFindHardLinks(Path + '\' + SearchRec.Name, FileIndexHigh, FileIndexLow, List);
+          if not Result then
+            Break;
+        end
+        else
+        begin
+          // found a file, is it a hard link?
+          if NtfsGetHardLinkInfo(Path + '\' + SearchRec.Name, Info) then
+          begin
+            if (Info.FileIndexHigh = FileIndexHigh) and (Info.FileIndexLow = FileIndexLow) then
+              List.Add(Path + '\' + SearchRec.Name);
+          end;
+        end;
+      end;
+      R := FindNext(SearchRec);
+    end;
+    Result := R = ERROR_NO_MORE_FILES;
+  finally
+    SysUtils.FindClose(SearchRec);
+  end;
+  if R = ERROR_ACCESS_DENIED then
+    Result := True;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function NtfsDeleteHardLinks(const FileName: string): Boolean;
+var
+  FullPathName: string;
+  FilePart: PChar;
+  Files: TStrings;
+  I: Integer;
+  Info: TNtfsHardLinkInfo;
+begin
+  Result := False;
+  // get the full pathname of the specified file
+  SetLength(FullPathName, MAX_PATH);
+  GetFullPathName(PChar(FileName), MAX_PATH, PChar(FullPathName), FilePart);
+  SetLength(FullPathName, StrLen(PChar(FullPathName)));
+  // get hard link information
+  if NtfsGetHardLinkInfo(FullPathName, Info) then
+  begin
+    Files := TStringList.Create;
+    try
+      if Info.LinkCount > 1 then
+      begin
+        // find all hard links for this file
+        if not NtfsFindHardLinks(FullPathName[1] + ':', Info.FileIndexHigh, Info.FileIndexLow, Files) then
+          Exit;
+        // first delete the originally specified file from the list, we don't delete that one until all hard links
+        // are succesfully deleted so we can use it to restore them if anything goes wrong. Theoretically one could
+        // use any of the hard links but in case the restore goes wrong, at least the specified file still exists...
+        for I := 0 to Files.Count - 1 do
+        begin
+          if CompareStr(FullPathName, Files[I]) = 0 then
+          begin
+            Files.Delete(I);
+            Break;
+          end;
+        end;
+        // delete all found hard links
+        I := 0;
+        while I < Files.Count do
+        begin
+          if not DeleteFile(PChar(Files[I])) then
+            Break;
+          Inc(I);
+        end;
+        if I = Files.Count then
+        begin
+          // all hard links succesfully deleted, now delete the originally specified file. if this fails we set
+          // I to Files.Count - 1 so that the next code block will restore all hard links we just deleted.
+          Result := DeleteFile(PChar(FullPathName));
+          if not Result then
+            I := Files.Count - 1;
+        end;
+        if I < Files.Count then
+        begin
+          // not all hard links could be deleted, attempt to restore the ones that were
+          while I >= 0 do
+          begin
+            // ignore result, just attempt to restore...
+            NtfsCreateHardLink(Files[I], FullPathName);
+            Dec(I);
+          end;
+        end;
+      end
+      else
+      begin
+        // there are no hard links, just delete the file
+        Result := DeleteFile(PChar(FullPathName));
+      end;
+    finally
+      Files.Free;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
