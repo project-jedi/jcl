@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: July 10, 2002                                                                     }
+{ Last modified: September 5, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -788,11 +788,26 @@ resourcestring
   RsRTTIVarType =           'Variant type: ';
 
 //--------------------------------------------------------------------------------------------------
+// JclSchedule
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsScheduleInvalidTime     = 'Invalid time specification';
+  RsScheduleEndBeforeStart  = 'End time can not be before start time';
+  RsScheduleIntervalZero    = 'Interval should be larger than 0';
+  RsScheduleNoDaySpecified  = 'At least one day of the week should be specified';
+  RsScheduleIndexValueSup   = 'Property IndexValue not supported for current IndexKind';
+  RsScheduleIndexValueZero  = 'IndexValue can not be 0';
+  RsScheduleDayNotSupported = 'Property Day not supported for current IndexKind';
+  RsScheduleDayInRange      = 'Day values should fall in the range 1 .. 31';
+  RsScheduleMonthInRange    = 'Month values should fall in the range 1 .. 12';
+  
+//--------------------------------------------------------------------------------------------------
 // JclStrings
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsInvalidEmptyStringItem = 'String list passed to StringsToMultiSz cannot contain empty strings.';
+  RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
   
 //--------------------------------------------------------------------------------------------------
