@@ -325,6 +325,28 @@ resourcestring
   RsNaNSignal          = 'NaN signaling %d';
 
 //--------------------------------------------------------------------------------------------------
+// JclMidi
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsOctaveC      = 'C';
+  RsOctaveCSharp = 'C#';
+  RsOctaveD      = 'D';
+  RsOctaveDSharp = 'D#';
+  RsOctaveE      = 'E';
+  RsOctaveF      = 'F';
+  RsOctaveFSharp = 'F#';
+  RsOctaveG      = 'G';
+  RsOctaveGSharp = 'G#';
+  RsOctaveA      = 'A';
+  RsOctaveASharp = 'A#';
+  RsOctaveB      = 'B';
+
+  RsMidiInUnknownError    = 'Unknown MIDI-In error No. %d';
+  RsMidiOutUnknownError   = 'Unknown MIDI-Out error No. %d';
+  RsInvalidMidiChannelNum = 'Invalid MIDI channel number (%d)';
+
+//--------------------------------------------------------------------------------------------------
 // JclMiscel
 //--------------------------------------------------------------------------------------------------
 
