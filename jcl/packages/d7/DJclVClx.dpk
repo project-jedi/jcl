@@ -22,7 +22,7 @@ package DJclVClx;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $48000000}
-{$DESCRIPTION ' for Delphi 7'}
+{$DESCRIPTION 'JEDI Code Library VisualCLX package for Delphi 7'}
 {$LIBSUFFIX '70'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
