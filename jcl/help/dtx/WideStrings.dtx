@@ -81,6 +81,11 @@ Parameters:
   S - The WideString to add at the end of the list.
 Result:
   Zero based index of the newly inserted WideString.
+See also:
+  Insert
+  InsertObject
+  Append
+  AddObject
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -101,6 +106,11 @@ Parameters:
   AObject - The object to associate with the WideString. You can later retrieve the object by using the Objects property.
 Result:
   Zero based index at which the object is inserted.
+See also:
+  Insert
+  InsertObject
+  Append
+  Add
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -120,6 +130,11 @@ Description:
   descendant classes for which the index does not have any meaning.
 Parameters:
   S - The WideString to add to the list.
+See also:
+  Insert
+  InsertObject
+  Add
+  AddObject
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -140,6 +155,9 @@ Description:
   on the systems locale for the overloaded method that accepts a TStrings.
 Parameters:
   Strings - The source list from which to copy the items to this list.
+See also:
+  Assign
+  AssignTo
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -200,6 +218,8 @@ Description:
   descendants can optimize updates such as refreshing/repainting visible controls.
 Notes:
   Calls to BeginUpdate and EndUpdate can be nested in all imaginable ways, but eventually the calls must be balanced.
+See also:
+  EndUpdate
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -256,6 +276,8 @@ Description:
   descendants can optimize updates such as refreshing/repainting visible controls.
 Notes:
   Calls to BeginUpdate and EndUpdate can be nested in all imaginable ways, but eventually the calls must be balanced.
+See also:
+  BeginUpdate
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -358,6 +380,9 @@ Parameters:
 Result:
   Zero based index of the first occurrence of S in the list. If S does not exist in
   the list -1 is returned.
+See also:
+  IndexOfName
+  IndexOfObject
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -381,6 +406,9 @@ Parameters:
 Result:
   Zero based index of the first occurrence of a string whose Name part matches the
   specified name. If no occurrence is found -1 is returned.
+See also:
+  IndexOf
+  IndexOfObject
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -422,6 +450,11 @@ Description:
 Parameters:
   Index - The zero based index at which to insert the new string.
   S - The string to insert at the specified position.
+See also:
+  InsertObject
+  Add
+  AddObject
+  Append
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -465,6 +498,10 @@ Parameters:
   FileName - The fully qualified name of the file containing the text to load.
 Notes:
   The class remembers whether an opened file originally contained Unicode by setting the SaveUnicode property appropriately.
+See also:
+  LoadFromStream
+  SaveToFile
+  SaveToStream
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -487,6 +524,10 @@ Parameters:
   Stream - The TStream from which to load the text.
 Notes:
   The class remembers whether an opened stream originally contained Unicode by setting the SaveUnicode property appropriately.
+See also:
+  LoadFromFile
+  SaveToFile
+  SaveToStream
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -533,6 +574,9 @@ Parameters:
   FileName - Fully qualified name of the file to save the strings to.
 Notes:
   Upon exit the Saved property is updated to reflect the result of the method.
+See also:
+  SaveToStream
+  OnConfirmConversion
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -561,6 +605,9 @@ Parameters:
   WithBOM - WithBOM determines whether to write a <B>B</B>yte <B>O</B>rder <B>M</B>ark or not.  <B>Note:</B> when saved as ANSI text there will never be a BOM.
 Notes:
   Upon exit the Saved property is updated to reflect the result of the method.
+See also:
+  SaveToFile
+  OnConfirmConversion
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -693,6 +740,9 @@ Description:
   string with the specified Name, reading this property will return an empty string
   and writing will cause the string to be added to the list. Setting the Value part
   to an empty string causes the entire WideString to be deleted from the list.
+See also:
+  Names
+  Items
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -710,6 +760,9 @@ Description:
   property to access the Name part of these strings. Index is the zero based index
   of the string whose name part to retrieve. If the string is not of the form
   Name=Value the property will return an empty string.
+See also:
+  Values
+  Items
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -801,6 +854,8 @@ Description:
   The supplied string is separated into individual strings based on the presence
   of a carriage-return or linefeed (they don't have to appear in pairs). An
   alternative to the Text property is the CommaText property.
+See also:
+  CommaText
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -826,6 +881,8 @@ Description:
   event is triggered so there is no need to explicitly assign True). If there is
   no event handler attached the save is implicitly aborted. You can use the Saved
   property to check whether the list was actually saved.
+See also:
+  CommaText
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1250,6 +1307,10 @@ Summary:
 Description:
   Changed is called every time after a change has occurred to the list. If the list
   is being updated Changed does nothing, otherwise it fires the OnChange event.
+See also:
+  Changing
+  <LINK OnChanged,OnChange>
+  OnChanging
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1264,6 +1325,10 @@ Description:
   Changing is called every time before a change is about to be made to the list. If
   the list is being updated Changing does nothing, otherwise it fires the
   OnChanging event.
+See also:
+  Changed
+  <LINK OnChanged,OnChange>
+  OnChanging
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1500,6 +1565,8 @@ Description:
   the OnChanging event is fired.
 Notes:
   This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate calls are balanced).
+See also:
+  OnChanging
 Quick info:
   Unit: JclUnicode
   Category: Unicode
@@ -1520,6 +1587,8 @@ Description:
   made the OnChange event is fired.
 Notes:
   This event is only fired when the UpdateCount is 0 (BeginUpdate and EndUpdate calls are balanced).
+See also:
+  OnChange
 Quick info:
   Unit: JclUnicode
   Category: Unicode
