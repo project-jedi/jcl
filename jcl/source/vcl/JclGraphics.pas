@@ -36,6 +36,7 @@
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   (Dejoy)                                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -50,6 +51,7 @@ interface
 uses
   Windows,
   Classes, SysUtils,
+  Controls,
   Graphics, JclGraphUtils,
   JclBase;
 
@@ -171,6 +173,8 @@ type
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
+    constructor CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND); overload;
+    constructor CreateMapWindow(InitialRegion: TJclRegion; ControlFrom, ControlTo: TWinControl); overload;
     destructor Destroy; override;
     procedure Clip(Canvas: TCanvas);
     procedure Combine(DestRegion, SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
@@ -2106,6 +2110,12 @@ begin
   Result := True;
 end;
 
+function MapWindowRect(hWndFrom,hWndTo:HWND;ARect:TRect):TRect;
+begin
+  MapWindowPoints(hWndFrom,hWndTo,ARect,2);
+  Result := ARect;
+end;
+
 //=== { TJclDesktopCanvas } ==================================================
 
 constructor TJclDesktopCanvas.Create;
@@ -2244,6 +2254,42 @@ begin
   if RegionInfo = nil then
     raise EJclGraphicsError.CreateRes(@RsInvalidRegionInfo);
   Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
+end;
+
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion; hWndFrom, hWndTo: HWND);
+var
+  RectRegion: HRGN;
+  CurrentRegionInfo : TJclRegionInfo;
+  SimpleRect: TRect;
+  Index:integer;
+begin
+  Create(CreateRectRgn(0, 0, 0, 0), True);
+  if (hWndFrom <> 0) or (hWndTo <> 0 ) then
+  begin
+    CurrentRegionInfo := InitialRegion.GetRegionInfo;
+    try
+      for Index := 0 to CurrentRegionInfo.Count-1 do
+      begin
+        SimpleRect := CurrentRegionInfo.Rectangles[Index];
+        SimpleRect := MapWindowRect(hWndFrom,hWndTo,SimpleRect);
+        RectRegion := CreateRectRgnIndirect(SimpleRect);
+        if RectRegion <> 0 then
+        begin
+          CombineRgn(Handle, Handle, RectRegion, RGN_OR);
+          DeleteObject(RectRegion);
+        end;
+      end;
+    finally
+      CurrentRegionInfo.Free;
+      GetBox;
+    end;
+  end;
+end;
+
+constructor TJclRegion.CreateMapWindow(InitialRegion: TJclRegion;
+  ControlFrom, ControlTo: TWinControl);
+begin
+  CreateMapWindow(InitialRegion,ControlFrom.Handle,ControlTo.Handle);
 end;
 
 destructor TJclRegion.Destroy;
