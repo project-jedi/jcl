@@ -239,13 +239,12 @@ function Min(const B1, B2: Int64): Int64; overload;
 implementation
 
 uses
-  {$IFDEF WIN32}
-  Windows, { for PByte }
-  {$ENDIF WIN32}
   JclBase, JclResources;
 
+type
+  PByte = ^Byte;
+    
 const
-
   // Constants defining the number of bits in each Integer type
 
   BitsPerNibble   = 4;
@@ -582,7 +581,7 @@ function ClearBit(const Value: Int64; const Bit: TBitRange): Int64;
 begin
   Result := Value and not (Int64(1) shl (Bit mod BitsPerInt64));
 end;
-
+               
 //------------------------------------------------------------------------------
 
 procedure ClearBitBuffer(var Value; const Bit: TBitRange);
