@@ -112,12 +112,20 @@
 {                                                                                                  }
 { The Original Code is JclWin32.pas.                                                               }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel. Portions created by Marcel van  }
+{ Brakel are Copyright (C) Marcel van Brakel. All Rights Reserved.                                 }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Andreas Hausladen (ahuser)                                                                     }
+{   Flier Lu (flier)                                                                               }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -140,10 +148,12 @@ unit JclWin32;
 interface
 
 uses
-  Windows, ActiveX, SysUtils, WinSpool,
-  {$IFNDEF FPC}
+  {$IFDEF FPC}
+  JwaWinNT,
+  {$ELSE}
   AccCtrl,
   {$ENDIF FPC}
+  Windows, ActiveX, SysUtils,
   JclBase;
 
 {$HPPEMIT '#include <winnt.h>'}
@@ -2534,11 +2544,9 @@ function UnDecorateSymbolName(
 const
   ImageHlpLib = 'imagehlp.dll';
 
-{$IFNDEF FPC}
 type
   PPImageSectionHeader = ^PImageSectionHeader;
-{$ENDIF ~FPC}
-  
+
 //--------------------------------------------------------------------------------------------------
 // Alternative conversions
 //--------------------------------------------------------------------------------------------------
@@ -3081,7 +3089,7 @@ end;
 
 function WinSpoolHandle: HModule;
 begin
-  Result := JclLoadLibrary(_WinSpoolHandle, winspl);
+  Result := JclLoadLibrary(_WinSpoolHandle, 'winspool.drv');
 end;
 
 function ImageHlpHandle: HModule;
@@ -4016,6 +4024,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.18  2004/05/05 05:38:38  rrossmair
+// Changes for FPC compatibility; header updated according to new policy: initial developers, contributors listed
+//
 // Revision 1.17  2004/04/18 00:45:05  peterjhaas
 // add run-time dynamic linking support for GetOpenGLVersion
 //
