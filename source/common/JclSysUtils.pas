@@ -1863,7 +1863,7 @@ function TJclNumericFormat.IntToStr(const Value: Int64): string;
 var
   FirstDigitPos: Integer;
 begin
-  IntToStr(Value, FirstDigitPos);
+  Result := IntToStr(Value, FirstDigitPos);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2513,6 +2513,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2004/12/27 17:11:57  rrossmair
+// - fixed Mantis #2433
+//
 // Revision 1.29  2004/12/05 17:08:59  rrossmair
 // - fixed call to EJclError.CreateResRec in ReadKey function
 //
