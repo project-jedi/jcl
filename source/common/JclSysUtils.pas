@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: March 07, 2002                                                                    }
+{ Last modified: March 08, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -93,6 +93,50 @@ function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
+
+//--------------------------------------------------------------------------------------------------
+// Binary search
+//--------------------------------------------------------------------------------------------------
+
+function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer): Integer;
+function SearchNearestSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer): Integer;
+
+type
+  TUntypedSearchCompare = function(Param: Pointer; ItemIndex: Integer; const Value): Integer;
+
+function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
+  const Value): Integer;
+function SearchNearestSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
+  const Value): Integer;
+
+//--------------------------------------------------------------------------------------------------
+// Dynamic array sort and search routines
+//--------------------------------------------------------------------------------------------------
+
+type
+  TDynArraySortCompare = function (Item1, Item2: Pointer): Integer;
+
+procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
+// Usage: SortDynArray(Array, SizeOf(Array[0]), SortFunction);
+function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
+  ValuePtr: Pointer): Integer;
+// Usage: SearchDynArray(Array, SizeOf(Array[0]), SortFunction, @SearchedValue);
+
+{ Various compare functions for basic types }
+
+function DynArrayCompareShortInt(Item1, Item2: Pointer): Integer;
+function DynArrayCompareSmallInt(Item1, Item2: Pointer): Integer;
+function DynArrayCompareInteger(Item1, Item2: Pointer): Integer;
+function DynArrayCompareInt64(Item1, Item2: Pointer): Integer;
+
+function DynArrayCompareSingle(Item1, Item2: Pointer): Integer;
+function DynArrayCompareDouble(Item1, Item2: Pointer): Integer;
+function DynArrayCompareExtended(Item1, Item2: Pointer): Integer;
+
+function DynArrayCompareAnsiString(Item1, Item2: Pointer): Integer;
+function DynArrayCompareAnsiText(Item1, Item2: Pointer): Integer;
+function DynArrayCompareString(Item1, Item2: Pointer): Integer;
+function DynArrayCompareText(Item1, Item2: Pointer): Integer;
 
 //--------------------------------------------------------------------------------------------------
 // Object lists
@@ -576,6 +620,366 @@ begin
 end;
 
 //==================================================================================================
+// Binary search
+//==================================================================================================
+
+function SearchSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer): Integer;
+var
+  L, H, I, C: Integer;
+  B: Boolean;
+begin
+  Result := -1;
+  if List <> nil then
+  begin
+    L := 0;
+    H := List.Count - 1;
+    B := False;
+    while L <= H do
+    begin
+      I := (L + H) shr 1;
+      C := SortFunc(List.List^[I], Item);
+      if C < 0 then
+        L := I + 1
+      else
+      begin
+        H := I - 1;
+        if C = 0 then
+        begin
+          B := True;
+          L := I;
+        end;
+      end;
+    end;
+    if B then
+      Result := L;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SearchNearestSortedList(List: TList; SortFunc: TListSortCompare; Item: Pointer): Integer;
+var
+  L, H, I, C: Integer;
+  B: Boolean;
+begin
+  Result := -1;
+  if List <> nil then
+  begin
+    L := 0;
+    H := List.Count - 1;
+    B := False;
+    while L <= H do
+    begin
+      I := (L + H) shr 1;
+      C := SortFunc(List.List^[I], Item);
+      if C < 0 then
+        L := I + 1
+      else
+      begin
+        H := I - 1;
+        if C = 0 then
+        begin
+          B := True;
+          L := I;
+        end;
+      end;
+    end;
+    if B then
+      Result := L
+    else
+    if H >= 0 then
+      Result := H;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SearchSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
+  const Value): Integer;
+var
+  L, H, I, C: Integer;
+  B: Boolean;
+begin
+  Result := -1;
+  if ItemCount > 0 then
+  begin
+    L := 0;
+    H := ItemCount - 1;
+    B := False;
+    while L <= H do
+    begin
+      I := (L + H) shr 1;
+      C := SearchFunc(Param, I, Value);
+      if C < 0 then
+        L := I + 1
+      else
+      begin
+        H := I - 1;
+        if C = 0 then
+        begin
+          B := True;
+          L := I;
+        end;
+      end;
+    end;
+    if B then
+      Result := L;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SearchNearestSortedUntyped(Param: Pointer; ItemCount: Integer; SearchFunc: TUntypedSearchCompare;
+  const Value): Integer;
+var
+  L, H, I, C: Integer;
+  B: Boolean;
+begin
+  Result := -1;
+  if ItemCount > 0 then
+  begin
+    L := 0;
+    H := ItemCount - 1;
+    B := False;
+    while L <= H do
+    begin
+      I := (L + H) shr 1;
+      C := SearchFunc(Param, I, Value);
+      if C < 0 then
+        L := I + 1
+      else
+      begin
+        H := I - 1;
+        if C = 0 then
+        begin
+          B := True;
+          L := I;
+        end;
+      end;
+    end;
+    if B then
+      Result := L
+    else  
+    if H >= 0 then
+      Result := H;
+  end;
+end;
+
+//==================================================================================================
+// Dynamic array sort and search routines
+//==================================================================================================
+
+procedure SortDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare);
+var
+  TempBuf: Pointer;
+
+  function ArrayItemPointer(Item: Integer): Pointer;
+  begin
+    Result := Pointer(Cardinal(ArrayPtr) + (Cardinal(Item) * ElementSize));
+  end;
+
+  procedure QuickSort(L, R: Integer);
+  var
+    I, J, T: Integer;
+    P, IPtr, JPtr: Pointer;
+  begin
+    repeat
+      I := L;
+      J := R;
+      P := ArrayItemPointer((L + R) shr 1);
+      repeat
+        while SortFunc(ArrayItemPointer(I), P) < 0 do
+          Inc(I);
+        while SortFunc(ArrayItemPointer(J), P) > 0 do
+          Dec(J);
+        if I <= J then
+        begin
+          IPtr := ArrayItemPointer(I);
+          JPtr := ArrayItemPointer(J);
+          case ElementSize of
+            SizeOf(Byte):
+              begin
+                T := PByte(IPtr)^;
+                PByte(IPtr)^ := PByte(JPtr)^;
+                PByte(JPtr)^ := T;
+              end;
+            SizeOf(Word):
+              begin
+                T := PWord(IPtr)^;
+                PWord(IPtr)^ := PWord(JPtr)^;
+                PWord(JPtr)^ := T;
+              end;
+            SizeOf(Integer):
+              begin
+                T := PInteger(IPtr)^;
+                PInteger(IPtr)^ := PInteger(JPtr)^;
+                PInteger(JPtr)^ := T;
+              end;
+          else
+            Move(IPtr^, TempBuf^, ElementSize);
+            Move(JPtr^, IPtr^, ElementSize);
+            Move(TempBuf^, JPtr^, ElementSize);
+          end;
+          if P = IPtr then
+            P := JPtr
+          else
+          if P = JPtr then
+            P := IPtr;
+          Inc(I);
+          Dec(J);
+        end;
+      until I > J;
+      if L < J then
+        QuickSort(L, J);
+      L := I;
+    until I >= R;
+  end;
+
+begin
+  if ArrayPtr <> nil then
+  begin
+    GetMem(TempBuf, ElementSize);
+    try
+      QuickSort(0, PInteger(Cardinal(ArrayPtr) - 4)^ - 1);
+    finally
+      FreeMem(TempBuf);
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SearchDynArray(const ArrayPtr: Pointer; ElementSize: Cardinal; SortFunc: TDynArraySortCompare;
+  ValuePtr: Pointer): Integer;
+var
+  L, H, I, C: Integer;
+  B: Boolean;
+begin
+  Result := -1;
+  if ArrayPtr <> nil then
+  begin
+    L := 0;
+    H := PInteger(Cardinal(ArrayPtr) - 4)^ - 1;
+    B := False;
+    while L <= H do
+    begin
+      I := (L + H) shr 1;
+      C := SortFunc(Pointer(Cardinal(ArrayPtr) + (Cardinal(I) * ElementSize)), ValuePtr);
+      if C < 0 then
+        L := I + 1
+      else
+      begin
+        H := I - 1;
+        if C = 0 then
+        begin
+          B := True;
+          L := I;
+        end;
+      end;
+    end;
+    if B then
+      Result := L;
+  end;    
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ Various compare functions for basic types }
+
+function DynArrayCompareShortInt(Item1, Item2: Pointer): Integer;
+begin
+  Result := PShortInt(Item1)^ - PShortInt(Item2)^;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareSmallInt(Item1, Item2: Pointer): Integer;
+begin
+  Result := PSmallInt(Item1)^ - PSmallInt(Item2)^;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareInteger(Item1, Item2: Pointer): Integer;
+begin
+  Result := PInteger(Item1)^ - PInteger(Item2)^;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareInt64(Item1, Item2: Pointer): Integer;
+begin
+  Result := PInt64(Item1)^ - PInt64(Item2)^;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareSingle(Item1, Item2: Pointer): Integer;
+begin
+  if PSingle(Item1)^ < PSingle(Item2)^ then
+    Result := -1
+  else
+  if PSingle(Item1)^ > PSingle(Item2)^ then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareDouble(Item1, Item2: Pointer): Integer;
+begin
+  if PDouble(Item1)^ < PDouble(Item2)^ then
+    Result := -1
+  else
+  if PDouble(Item1)^ > PDouble(Item2)^ then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareExtended(Item1, Item2: Pointer): Integer;
+begin
+  if PExtended(Item1)^ < PExtended(Item2)^ then
+    Result := -1
+  else
+  if PExtended(Item1)^ > PExtended(Item2)^ then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareAnsiString(Item1, Item2: Pointer): Integer;
+begin
+  Result := AnsiCompareStr(PAnsiString(Item1)^, PAnsiString(Item2)^);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareAnsiText(Item1, Item2: Pointer): Integer;
+begin
+  Result := AnsiCompareText(PAnsiString(Item1)^, PAnsiString(Item2)^);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareString(Item1, Item2: Pointer): Integer;
+begin
+  Result := CompareStr(PAnsiString(Item1)^, PAnsiString(Item2)^);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function DynArrayCompareText(Item1, Item2: Pointer): Integer;
+begin
+  Result := CompareText(PAnsiString(Item1)^, PAnsiString(Item2)^);
+end;
+
+//==================================================================================================
 // Object lists
 //==================================================================================================
 
@@ -958,6 +1362,7 @@ end;
 //==================================================================================================
 
 function GetImplementorOfInterface(const I: IInterface): TObject;
+{ TODO -cTesting : Check the implemetation for any further version of compiler }
 const
   AddByte = $04244483; // opcode for ADD DWORD PTR [ESP+4], Shortint
   AddLong = $04244481; // opcode for ADD DWORD PTR [ESP+4], Longint
