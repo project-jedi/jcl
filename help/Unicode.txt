@@ -1588,25 +1588,6 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function WideComposeHangul(const Source: WideString): WideString;
-[ShortDescr]
-Transforms a string into a composed string.
-[Description]
-TODO
-[Parameters]
-Count=1
-1=Source:WideString=The string for which to compose the individual characters.
-[Result]
-The string with all characters composed, where possible.
-[Quick Info]
-Unit=JclUnicode
-Category=Unicode
-SubCat=WideString routines
-Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
-<DECL>--------------------------------------------------------------------------
-[Declaration]
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
 [ShortDescr]
 Returns the index of the first occurrence of Ch in S. 
@@ -3653,6 +3634,7 @@ UnicodeComposePair maps the sequence of First and Second to a composed codepoint
 Count=3
 1=First:UCS4=The first sequence.
 2=Second:USC4=The second sequence.
+3=Composite:USC4=Composed version of the First and Second sequence.
 [Result]
 UnicodeComposePair returns True if there was a mapping (in which case Composite
 is the composed version of First and Second) otherwise it returns False.
