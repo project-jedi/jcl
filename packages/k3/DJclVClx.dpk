@@ -22,7 +22,7 @@ package DJclVClx;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION ''}
+{$DESCRIPTION 'JEDI Code Library VisualCLX package for Kylix 3'}
 {$LIBSUFFIX 'K3'}
 {$LIBVERSION '1.90.0'}
 {$RUNONLY}
