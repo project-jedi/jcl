@@ -16,7 +16,15 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 21, 2000                                                 }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains routines and classes which makes working with the Windows }
+{ Shell a bit easier. Included are routines for working with PIDL's, special   }
+{ folder's, file and folder manipulation through shell interfaces, shortcut's  }
+{ and program execution.                                                       }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: November 08, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -69,8 +77,8 @@ function SHEnumSpecialFolderFirst(SpecialFolder: DWORD; Flags: TEnumFolderFlags;
 procedure SHEnumFolderClose(var F: TEnumFolderRec);
 function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 
-function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean;
-function DisplayPropDialogPidl(const Handle: HWND; const Item: PItemIdList): Boolean;
+function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean; overload;
+function DisplayPropDialog(const Handle: HWND; const Item: PItemIdList): Boolean; overload;
 
 function DisplayContextMenuPidl(const Handle: HWND; const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
@@ -169,10 +177,17 @@ function ShellExecAndWait(const FileName: string;
   const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
+
+//TODOC   
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
 function ShellRunControlPanel(const NameOrFileName: string;
   AppletNumber: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+
+type
+  TJclFileExeType = (etError, etMsDos, etWin16, etWin32Gui, etWin32Con);
+
+function GetFileExeType(const FileName: TFileName): TJclFileExeType;
 
 implementation
 
@@ -414,7 +429,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DisplayPropDialogPidl(const Handle: HWND; const Item: PItemIdList): Boolean;
+function DisplayPropDialog(const Handle: HWND; const Item: PItemIdList): Boolean;
 var
   Info: TShellExecuteInfo;
 begin
@@ -439,28 +454,28 @@ end;
 // note: storing the IContextMenu2 pointer in the window's user data was
 // 'inspired' by (read: copied from) code by Brad Stowers.
 
-function MenuCallback(Wnd: HWND; Msg: UINT; WParam: WPARAM;
-  LParam: LPARAM): LRESULT; stdcall;
+function MenuCallback(Wnd: HWND; Msg: UINT; wParam: WPARAM;
+  lParam: LPARAM): LRESULT; stdcall;
 var
   ContextMenu2: IContextMenu2;
 begin
   case Msg of
   WM_CREATE:
     begin
-      ContextMenu2 := IContextMenu2(PCreateStruct(LParam).lpCreateParams);
+      ContextMenu2 := IContextMenu2(PCreateStruct(lParam).lpCreateParams);
       SetWindowLong(Wnd, GWL_USERDATA, Longint(ContextMenu2));
-      Result := DefWindowProc(Wnd, Msg, WParam, LParam);
+      Result := DefWindowProc(Wnd, Msg, wParam, lParam);
     end;
   WM_INITMENUPOPUP:
     begin
       ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
-      ContextMenu2.HandleMenuMsg(Msg, WParam, LParam);
+      ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
       Result := 0;
     end;
   WM_DRAWITEM, WM_MEASUREITEM:
     begin
       ContextMenu2 := IContextMenu2(GetWindowLong(Wnd, GWL_USERDATA));
-      ContextMenu2.HandleMenuMsg(Msg, WParam, LParam);
+      ContextMenu2.HandleMenuMsg(Msg, wParam, lParam);
       Result := 1;
     end;
   else
@@ -1253,6 +1268,29 @@ begin
   begin
     Result := False;
     SetLastError(ERROR_FILE_NOT_FOUND);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFileExeType(const FileName: TFileName): TJclFileExeType;
+var
+  FileInfo: TSHFileInfo;
+  R: DWORD;
+begin
+  R := SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_EXETYPE);
+  case LoWord(R) of
+    IMAGE_DOS_SIGNATURE:
+      Result := etMsDos;
+    IMAGE_OS2_SIGNATURE:
+      Result := etWin16;
+    Word(IMAGE_NT_SIGNATURE):
+      if HiWord(R) = 0 then
+        Result := etWin32Con
+      else
+        Result := etWin32Gui;
+  else
+    Result := etError;
   end;
 end;
 
