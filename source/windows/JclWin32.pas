@@ -204,8 +204,6 @@ const
   FILE_SUPPORTS_SPARSE_FILES         = $00000040;
   FILE_SUPPORTS_REPARSE_POINTS       = $00000080;
 
-  REPARSE_GUID_DATA_BUFFER_HEADER_SIZE = 24;
-
   IO_REPARSE_TAG_MOUNT_POINT = DWORD($A0000003);
   IO_REPARSE_TAG_HSM         = DWORD($C0000004);
   IO_REPARSE_TAG_SIS         = DWORD($80000007);
@@ -324,6 +322,68 @@ function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCST
 function DeleteVolumeMountPointA(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
 function DeleteVolumeMountPointW(lpszVolumeMountPoint: LPCWSTR): BOOL; stdcall;
 function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
+
+//------------------------------------------------------------------------------
+// NTFS Reparse Points
+//------------------------------------------------------------------------------
+
+//
+// The reparse structure is used by layered drivers to store data in a
+// reparse point. The constraints on reparse tags are defined below.
+// This version of the reparse data buffer is only for Microsoft tags.
+//
+
+type
+  PReparseDataBuffer = ^TReparseDataBuffer;
+  _REPARSE_DATA_BUFFER = record
+    ReparseTag: DWORD;
+    ReparseDataLength: WORD;
+    Reserved: WORD;
+    case Integer of
+      0: ( // SymbolicLinkReparseBuffer and MountPointReparseBuffer
+        SubstituteNameOffset: WORD;
+        SubstituteNameLength: WORD;
+        PrintNameOffset: WORD;
+        PrintNameLength: WORD;
+        PathBuffer: array [0..0] of WCHAR);
+      1: ( // GenericReparseBuffer
+        DataBuffer: array [0..0] of BYTE);
+  end;
+  TReparseDataBuffer = _REPARSE_DATA_BUFFER;
+
+const
+  REPARSE_DATA_BUFFER_HEADER_SIZE = 8;
+  REPARSE_GUID_DATA_BUFFER_HEADER_SIZE = 24;
+
+type
+  PReparsePointInformation = ^TReparsePointInformation;
+  _REPARSE_POINT_INFORMATION = record
+    ReparseDataLength: WORD;
+    UnparsedNameLength: WORD;
+  end;
+  TReparsePointInformation = _REPARSE_POINT_INFORMATION;
+
+const
+  MAXIMUM_REPARSE_DATA_BUFFER_SIZE = 16 * 1024;
+
+  IO_REPARSE_TAG_RESERVED_ZERO  = (0);
+  IO_REPARSE_TAG_RESERVED_ONE   = (1);
+  IO_REPARSE_TAG_RESERVED_RANGE = IO_REPARSE_TAG_RESERVED_ONE;
+  IO_REPARSE_TAG_VALID_VALUES   = DWORD($E000FFFF);
+
+type
+  PReparseGuidDataBuffer = ^TReparseGuidDataBuffer;
+  _REPARSE_GUID_DATA_BUFFER = record
+    ReparseTag: DWORD;
+    ReparseDataLength: WORD;
+    Reserved: WORD;
+    ReparseGuid: TGUID;
+    DataBuffer: array [0..0] of BYTE;
+  end;
+  TReparseGuidDataBuffer = _REPARSE_GUID_DATA_BUFFER;
+
+const
+  FILE_FLAG_OPEN_REPARSE_POINT = $00200000;
 
 //==============================================================================
 // PSAPI (not included in delphi 3)
