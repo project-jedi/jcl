@@ -21,7 +21,7 @@
 { Various classes and support routines for sending e-mail through MAPI         }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 07, 2001                                             }
+{ Last modified: February 08, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -1082,13 +1082,18 @@ begin
     FSubject := Msg^.lpszSubject;
     FBody := AdjustLineBreaks(Msg^.lpszNoteText);
     Files := Msg^.lpFiles;
-    for I := 0 to Msg^.nFileCount - 1 do
-    begin
-      Attachments.Add(Files^.lpszFileName);
-      Inc(Files);
-    end;
+    if Files <> nil then
+      for I := 0 to Msg^.nFileCount - 1 do
+      begin
+        if Files^.lpszPathName <> nil then
+          Attachments.Add(Files^.lpszPathName)
+        else
+          Attachments.Add(Files^.lpszFileName);
+        Inc(Files);
+      end;
     FReadMsg.MessageType := Msg^.lpszMessageType;
-    FReadMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
+    if Msg^.lpszDateReceived <> nil then
+      FReadMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
     FReadMsg.ConversationID := Msg^.lpszConversationID;
     FReadMsg.Flags := Msg^.flFlags;
     Result := True;
