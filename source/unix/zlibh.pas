@@ -78,7 +78,7 @@ interface
 uses
   Libc;
 
-{$HPPEMIT '#include <zlib.h>'}
+{$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
 { zlib.h -- interface of the 'zlib' general purpose compression library
   version 1.2.1, November 17th, 2003

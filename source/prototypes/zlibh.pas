@@ -138,7 +138,7 @@ uses
   Libc;
   {$ENDIF UNIX}
 
-{$HPPEMIT '#include <zlib.h>'}
+{$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }  
 
 { zlib.h -- interface of the 'zlib' general purpose compression library
   version 1.2.1, November 17th, 2003
@@ -1644,6 +1644,9 @@ end;
 //    - compiler symbol to hide platform specific comments
 //
 //   $Log$
+//   Revision 1.3  2004/04/28 15:48:45  peterjhaas
+//   - add include of zutil.h for C compilers
+//
 //   Revision 1.2  2004/04/20 01:34:06  rrossmair
 //   "uses LibC" changed to "uses Libc" (unit names are case-sensitive on Unix)
 //
