@@ -23,9 +23,9 @@ they are specific to the Windows shell.
 <TITLE Files and Directories>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$FilesandIO.FilesandDirectories.TJclFileVersionInfo
+@@$FilesandIO.FilesandDirectories.FileVersionInfo
 <GROUP $FilesandIO.FilesandDirectories>
-<TITLE TJclFileVersionInfo>
+<TITLE File Version Information>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$FilesandIO.FileSystems
@@ -48,30 +48,10 @@ they are specific to the Windows shell.
 <TITLE Streams>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@$FilesandIO.Streams.TJclCustomFileMapping
+@@$FilesandIO.Streams.FileMapping
 <GROUP $FilesandIO.Streams>
-<TITLE TJclCustomFileMapping>
+<TITLE File Mapping>
 <TOPICORDER 100>
---------------------------------------------------------------------------------
-@@$FilesandIO.Streams.TJclFileMapping
-<GROUP $FilesandIO.Streams>
-<TITLE TJclFileMapping>
-<TOPICORDER 200>
---------------------------------------------------------------------------------
-@@$FilesandIO.Streams.TJclFileMappingView
-<GROUP $FilesandIO.Streams>
-<TITLE TJclFileMappingView>
-<TOPICORDER 300>
---------------------------------------------------------------------------------
-@@$FilesandIO.Streams.TJclSwapFileMapping
-<GROUP $FilesandIO.Streams>
-<TITLE TJclSwapFileMapping>
-<TOPICORDER 400>
---------------------------------------------------------------------------------
-@@$FilesandIO.Streams.TJclTempFileStream
-<GROUP $FilesandIO.Streams>
-<TITLE TJclTempFileStream>
-<TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@DriveLetters
 <GROUP $FilesandIO.Pathmanipulation>
@@ -130,7 +110,7 @@ Donator: David Hervieux (Win32 code)
 Contributor: Robert Rossmair (Unix code)
 --------------------------------------------------------------------------------
 @@TJclFileMappingView
-<GROUP $FilesandIO.Streams.TJclFileMappingView>
+<GROUP $FilesandIO.Streams.FileMapping>
 Summary:
   Implements a file mapping view object.
 Description:
@@ -235,7 +215,7 @@ Description:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclCustomFileMapping
-<GROUP $FilesandIO.Streams.TJclCustomFileMapping>
+<GROUP $FilesandIO.Streams.FileMapping>
 Summary:
   Wrapper for Win32 filemapping object.
 Description:
@@ -406,7 +386,7 @@ Description:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclFileMapping
-<GROUP $FilesandIO.Streams.TJclFileMapping>
+<GROUP $FilesandIO.Streams.FileMapping>
 Summary:
   Implements a filemapping object backed by an actual disk file.
 Description:
@@ -452,7 +432,7 @@ Description:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclSwapFileMapping
-<GROUP $FilesandIO.Streams.TJclSwapFileMapping>
+<GROUP $FilesandIO.Streams.FileMapping>
 Summary:
   Implements a filemapping object backed by the swap file.
 Description:
@@ -478,7 +458,7 @@ Parameters:
 Donator: Wim De Cleen
 --------------------------------------------------------------------------------
 @@TJclTempFileStream
-<GROUP $FilesandIO.Streams.TJclTempFileStream>
+<GROUP $FilesandIO.Streams>
 Summary:
   Implements a temporary file-stream.
 Description:
@@ -1579,7 +1559,7 @@ Result:
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
 @@TFileFlags
-<GROUP $FilesandIO.FilesandDirectories.TJclFileVersionInfo>
+<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
 Description:
 * ffDebug
   Included if the file contains debugging information or is compiled with debugging features enabled.
@@ -1599,7 +1579,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@VersionResourceAvailable
-<GROUP $FilesandIO.FilesandDirectories.TJclFileVersionInfo>
+<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Tests if a file has a version resource.
 Description:
@@ -1617,7 +1597,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OSIdentToString
-<GROUP $FilesandIO.FilesandDirectories.TJclFileVersionInfo>
+<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Maps an OS identifier as to a string.
 Description:
@@ -1976,7 +1956,7 @@ See also:
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo
-<GROUP $FilesandIO.FilesandDirectories.TJclFileVersionInfo>
+<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary:
   Enables reading of version information from executables.
 Description:
@@ -2178,7 +2158,7 @@ Donator: Unknown
 Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@VersionFixedFileInfo
-<GROUP $FilesandIO.FilesandDirectories.TJclFileVersionInfo>
+<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
 Summary
   Retrieves the root block of version information resource from the specified
   file.
@@ -2200,12 +2180,15 @@ See Also
   VersionResourceAvailable, TJclFileVersionInfo
 --------------------------------------------------------------------------------
 @@CreateSymbolicLink
+<GROUP $FilesandIO.FilesandDirectories>
 Parameters
   const Name :  The name of the symbolic link.
   const Target: The file the link points to.
 Donator: Robert Rossmair
+Platforms: Unix
 --------------------------------------------------------------------------------
 @@SymbolicLinkTarget
+<GROUP $FilesandIO.FilesandDirectories>
 Parameters
   const Name :  The name of the symbolic link
 Result

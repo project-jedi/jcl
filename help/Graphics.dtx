@@ -8,55 +8,50 @@
 <TITLE Bitmaps>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$Graphics.Icons
-<GROUP $Graphics>
-<TITLE Icons>
-<TOPICORDER 200>
---------------------------------------------------------------------------------
 @@$Graphics.Clipping
 <GROUP $Graphics>
 <TITLE Clipping>
-<TOPICORDER 300>
+<TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$Graphics.Colors
 <GROUP $Graphics>
 <TITLE Colors>
-<TOPICORDER 400>
+<TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@$Graphics.Conversion
 <GROUP $Graphics>
 <TITLE Conversion>
+<TOPICORDER 400>
+--------------------------------------------------------------------------------
+@@$Graphics.Desktop
+<GROUP $Graphics>
+<TITLE Desktop>
 <TOPICORDER 500>
+--------------------------------------------------------------------------------
+@@$Graphics.Icons
+<GROUP $Graphics>
+<TITLE Icons>
+<TOPICORDER 600>
 --------------------------------------------------------------------------------
 @@$Graphics.Points
 <GROUP $Graphics>
 <TITLE Points>
-<TOPICORDER 600>
+<TOPICORDER 700>
 --------------------------------------------------------------------------------
 @@$Graphics.Rectangles
 <GROUP $Graphics>
 <TITLE Rectangles>
-<TOPICORDER 700>
---------------------------------------------------------------------------------
-@@$Graphics.TJclDesktopCanvas
-<GROUP $Graphics>
-<TITLE TJclDesktopCanvas>
 <TOPICORDER 800>
 --------------------------------------------------------------------------------
-@@$Graphics.TJclRegion
+@@$Graphics.Regions
 <GROUP $Graphics>
-<TITLE TJclRegion>
+<TITLE Regions>
 <TOPICORDER 900>
---------------------------------------------------------------------------------
-@@$Graphics.TJclRegionInfo
-<GROUP $Graphics>
-<TITLE TJclRegionInfo>
-<TOPICORDER 1000>
 --------------------------------------------------------------------------------
 @@$Graphics.Types
 <GROUP $Graphics>
 <TITLE Types>
-<TOPICORDER 1100>
+<TOPICORDER 1000>
 --------------------------------------------------------------------------------
 @@JclGraphics.pas
 The resampling algorithms and methods used in this library
@@ -78,11 +73,9 @@ Parameters:
 Result:
   The brightened channel.
 See also:
-  BrightColor
-  DarkColor
+  BrightColor,
+  DarkColor,
   DarkColorChannel
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@DarkColorChannel
@@ -97,11 +90,9 @@ Parameters:
 Result:
   The darkened channel.
 See also:
-  BrightColor
-  DarkColor
+  BrightColor,
+  DarkColor,
   BrightColorChannel
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@DarkColor
@@ -116,11 +107,9 @@ Parameters:
 Result:
   The darkened color.
 See also:
-  BrightColor
-  BrightColorChannel
+  BrightColor,
+  BrightColorChannel,
   DarkColorChannel
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@BrightColor
@@ -135,11 +124,9 @@ Parameters:
 Result:
   The brightened color.
 See also:
-  BrightColorChannel
-  DarkColor
+  BrightColorChannel,
+  DarkColor,
   DarkColorChannel
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetRGBValue
@@ -156,10 +143,8 @@ Parameters:
   Green - The intensity of the Green component.
   Blue - The intensity of the Blue component.
 See also:
-  SetRGBValue
+  SetRGBValue,
   GetColorFlag
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@SetRGBValue
@@ -178,8 +163,6 @@ Result:
   The TColor value initialized with the supplied values.
 See also:
   GetRGBValue
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@SetColorRed
@@ -194,12 +177,10 @@ Parameters:
 Result:
   Copy of the supplied color after the Red component has been modified.
 See also:
-  SetRGBValue
-  SetColorGreen
-  SetColorBlue
+  SetRGBValue,
+  SetColorGreen,
+  SetColorBlue,
   SetColorFlag
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@SetColorGreen
@@ -214,12 +195,10 @@ Parameters:
 Result:
   Copy of the supplied color after the Green component has been modified.
 See also:
-  SetRGBValue
-  SetColorRed
-  SetColorBlue
+  SetRGBValue,
+  SetColorRed,
+  SetColorBlue,
   SetColorFlag
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@SetColorBlue
@@ -234,12 +213,10 @@ Parameters:
 Result:
   Copy of the supplied color after the Blue component has been modified.
 See also:
-  SetRGBValue
-  SetColorRed
-  SetColorGreen
+  SetRGBValue,
+  SetColorRed,
+  SetColorGreen,
   SetColorFlag
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@SetColorFlag
@@ -265,12 +242,10 @@ Parameters:
 Result:
   Copy of the supplied color after the Flag component has been modified.
 See also:
-  SetRGBValue
-  SetColorRed
-  SetColorGreen
+  SetRGBValue,
+  SetColorRed,
+  SetColorGreen,
   SetColorBlue
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetColorRed
@@ -284,12 +259,10 @@ Parameters:
 Result:
   The Red component from the supplied TColor. The value ranges from 0 to 255.
 See also:
-  GetRGBValue
-  <LINK ,GetColorBlue(Color: TColor): Byte>
-  <LINK ,GetColorGreen(Color: TColor): Byte>
-  <LINK ,GetColorFlag(Color: TColor): Byte>
-Quick info:
-  Category: Graphics
+  GetRGBValue,
+  GetColorBlue,
+  GetColorGreen,
+  GetColorFlag
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetColorBlue
@@ -303,12 +276,10 @@ Parameters:
 Result:
   The Blue component from the supplied TColor. The value ranges from 0 to 255.
 See also:
-  GetRGBValue
-  <LINK ,GetColorRed(Color: TColor): Byte>
-  <LINK ,GetColorGreen(Color: TColor): Byte>
-  <LINK ,GetColorFlag(Color: TColor): Byte>
-Quick info:
-  Category: Graphics
+  GetRGBValue,
+  GetColorRed,
+  GetColorGreen,
+  GetColorFlag
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetColorGreen
@@ -322,12 +293,10 @@ Parameters:
 Result:
   The Green component from the supplied TColor. The value ranges from 0 to 255.
 See also:
-  GetRGBValue
-  <LINK ,GetColorRed(Color: TColor): Byte>
-  <LINK ,GetColorBlue(Color: TColor): Byte>
-  <LINK ,GetColorFlag(Color: TColor): Byte>
-Quick info:
-  Category: Graphics
+  GetRGBValue,
+  GetColorRed,
+  GetColorBlue,
+  GetColorFlag
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@GetColorFlag
@@ -352,12 +321,10 @@ Parameters:
 Result:
   The Flag component from the supplied TColor. The value ranges from 0 to 2.
 See also:
-  GetRGBValue
-  <LINK ,GetColorRed(Color: TColor): Byte>
-  <LINK ,GetColorBlue(Color: TColor): Byte>
-  <LINK ,GetColorGreen(Color: TColor): Byte>
-Quick info:
-  Category: Graphics
+  GetRGBValue,
+  GetColorRed,
+  GetColorGreen,
+  GetColorBlue
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@PointAssign
@@ -371,8 +338,6 @@ Parameters:
   Y - Y value for the new TPoint.
 Result:
   A TPoint initialized with X and Y.
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PointCopy
@@ -385,8 +350,6 @@ Description:
 Parameters:
   Dest - Destination point.
   Source - Source point from which the values are copied.
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PointEqual
@@ -401,8 +364,6 @@ Parameters:
 Result:
   If the two points are equal (identical values for X and Y) the function returns
   True otherwise it returns False.
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PointIsNull
@@ -416,8 +377,6 @@ Parameters:
 Result:
   If the supplied point equals the null point (a TPoint with both X and Y set to 0)
   the function returns True, otherwise it returns False.
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PointMove
@@ -432,8 +391,6 @@ Parameters:
   DeltaY - The amount by which to offset the Y member of the TPoint.
 Result:
   The moved point (P.X = P.X + DeltaX, P.Y = P.Y + DeltaY).
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@NullPoint
@@ -444,8 +401,6 @@ Description:
   NullPoint returns a TPoint with both it's X and Y member initialized to 0.
 Result:
   A TPoint initialized to (X, Y) = (0, 0).
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RectIsEmpty
@@ -459,8 +414,6 @@ Parameters:
   R - The rectangle to test.
 Result:
   If the rectangle is empty the function returns True, otherwise it returns False.
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RectNormalize
@@ -474,8 +427,6 @@ Description:
   the rectangle by swapping Left with Right and/or Top with Bottom.
 Parameters:
   R - The rectangle to normalize.
-Quick info:
-  Category: Graphics
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RectUnion
@@ -491,8 +442,6 @@ Parameters:
   R2 - The second rectangle.
 Result:
   The union of the two rectangles, or a null rectangle if the union is empty.
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIsSquare
@@ -505,8 +454,6 @@ Parameters:
   R - The rectangle to test.
 Result:
   If the rectangle is square the function returns True, otherwise it returns False.
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectCenter
@@ -522,8 +469,6 @@ Parameters:
   R - The rectangle.
 Result:
   TPoint representing the center of the rectangle.
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectEqual
@@ -537,8 +482,6 @@ Parameters:
   R2 - The second rectangle.
 Result:
   If the rectangles are equal the function returns True, otherwise it returns False.
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIsNull
@@ -553,8 +496,6 @@ Parameters:
   R - The rectangle to test.
 Result:
   If the rectangle is a null rectangle the function returns True, otherwise it returns False.
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@NullRect
@@ -566,8 +507,6 @@ Description:
   members initialized to 0. Some functions return a null rectangle to indicate failure.
 Result:
   The null rectangle.
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIsValid
@@ -584,8 +523,6 @@ Result:
   If the rectangle is valid the function returns True, otherwise it returns False.
 See also:
   RectsAreValid
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectsAreValid
@@ -602,8 +539,6 @@ Result:
   If all rectangles are valid the function returns True, otherwise it returns False.
 See also:
   RectIsValid
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIntersectRect
@@ -623,8 +558,6 @@ Result:
   If the two rectangles intersect the function returns True, otherwise it returns False.
 See also:
   RectIntersection
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIntersection
@@ -643,8 +576,6 @@ Result:
   a null rectangle is returned.
 See also:
   RectIntersectRect
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIncludesPoint
@@ -664,8 +595,6 @@ Result:
   True, otherwise it returns False.
 See also:
   RectIncludesRect
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectIncludesRect
@@ -684,8 +613,6 @@ Result:
   otherwise it returns False.
 See also:
   RectIncludesPoint
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectBounds
@@ -706,8 +633,6 @@ See also:
   RectAssignPoints
   RectCopy
   RectAssign
-Quick info:
-  Category: Graphics
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectAssign
@@ -728,8 +653,8 @@ See also:
   RectAssignPoints
   RectCopy
   RectBounds
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectAssignPoints
@@ -748,8 +673,8 @@ See also:
   RectAssign
   RectCopy
   RectBounds
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectCopy
@@ -765,8 +690,8 @@ See also:
   RectAssign
   RectAssignPoints
   RectBounds
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@RectMove
@@ -782,8 +707,8 @@ Parameters:
   DeltaY - The amount to move the rectangle in the vertical direction.
 See also:
   RectMoveTo
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectMoveTo
@@ -799,8 +724,8 @@ Parameters:
   Y - The new Y coordinate of the top-left corner of the rectangle.
 See also:
   RectMove
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectGrow
@@ -818,8 +743,8 @@ Parameters:
 See also:
   RectGrowX
   RectGrowY
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectGrowX
@@ -837,8 +762,8 @@ Parameters:
 See also:
   RectGrow
   RectGrowY
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectGrowY
@@ -856,8 +781,8 @@ Parameters:
 See also:
   RectGrow
   RectGrowX
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectHeight
@@ -872,8 +797,8 @@ Result:
   The height of the rectangle in pixels.
 See also:
   RectWidth
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectWidth
@@ -888,12 +813,12 @@ Result:
   The width of the rectangle in pixels.
 See also:
   RectHeight
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@DrawBitmap
-<GROUP $Graphics>
+<GROUP $Graphics.Bitmaps>
 Summary:
   Draws a bitmap to a device context.
 Description:
@@ -908,8 +833,8 @@ Parameters:
   Y - Vertical position of the upper left corner in the destination DC where to draw the bitmap.
   Width - Width of the destination bitmap.
   Height - Height of the destination bitmap.
-Quick info:
-  Category: Graphics
+
+
 Donator: Charlie Calvert
 --------------------------------------------------------------------------------
 @@BitmapToJPeg
@@ -924,8 +849,8 @@ Parameters:
   FileName - Name of the bitmap file to convert to a JPEG image.
 See also:
   JPegToBitmap
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@JPegToBitmap
@@ -940,12 +865,12 @@ Parameters:
   FileName - Name of the JPEG image file to convert to a bitmap.
 See also:
   BitmapToJpeg
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ExtractIconCount
-<GROUP $Graphics>
+<GROUP $Graphics.Icons>
 Summary:
   Returns the number of icons in a file.
 Description:
@@ -959,8 +884,8 @@ Parameters:
 Result:
   The number of icons in the specified file. If the file does not contain icons
   the result is 0.
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@BitmapToIcon
@@ -976,8 +901,8 @@ Parameters:
 Result:
   Handle to the icon or 0 on failure. Caller is responsible for eventually releasing
   the icon resource by calling DestroyIcon.
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IconToBitmap
@@ -991,8 +916,8 @@ Parameters:
 Result:
   Handle to the bitmap or 0 on failure. The caller is responsible for freeing the
   resources associated with this bitmap by calling DeleteObject.
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Stretch@Cardinal@Cardinal@TResamplingFilter@Single@TGraphic@TBitmap
@@ -1023,7 +948,7 @@ Source :      The source graphic.
 Target :      The target bitmap.
 
 QuickInfo
-  Category: Graphics
+
 Donator: Mike Lischke
   Contributor: Robert Rossmair
   Platforms: VCL, VisualCLX
@@ -1036,7 +961,7 @@ TResamplingFilter
 <COMBINE Stretch@Cardinal@Cardinal@TResamplingFilter@Single@TGraphic@TBitmap>
 --------------------------------------------------------------------------------
 @@TResamplingFilter
-<GROUP $Graphics>
+<GROUP $Graphics.Bitmaps>
 Summary:
   Filters for stretch function.
 Description:
@@ -1050,12 +975,12 @@ Description:
   filters are suitable. The quality resulting from those filters is only on average level.
   Filters like Lanczos3 or Bell produce much better results which are well comparable with those of
   Photoshop's bicubic interpolation.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@GetAntialiasedBitmap
-<GROUP $Graphics.Conversion>
+<GROUP $Graphics.Bitmaps, $Graphics.Conversion>
 Summary:
   Antialiases a bitmap.
 Description:
@@ -1065,8 +990,8 @@ Parameters:
 Result:
   An antialiased true color bitmap shrunk 2 times on each dimension. Output bitmap is
   created inside the function and should be manually freed.
-Quick info:
-  Category: Graphics
+
+
 Donator: Marcin Wieczorek (T-1000)
 --------------------------------------------------------------------------------
 @@CIED65ToCIED50
@@ -1080,8 +1005,8 @@ Parameters:
   X - X Color D65.
   Y - Y Color D65.
   Z - Z Color D65.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@Gray16
@@ -1095,8 +1020,8 @@ Parameters:
   Source - The source pointer to a stream of 16 bit colors.
   Target - The target pointer to a stream of 8 bit colors.
   Count - Number of samples to convert.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@CMYK2BGR
@@ -1110,8 +1035,8 @@ Parameters:
   Target - Target pointer of the stream of BRG records, this are 3 byte records representing BGR colors
   BitsPerSample - The bits per color component of the source stream, this can be 8 or 16 bits.
   Count - Number of samples to convert.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@CIELAB2BGR
@@ -1125,8 +1050,8 @@ Parameters:
   Source - The source pointer to a stream of CIELAB records, the size of the records is always 3 bytes per record.
   Target - The target pointer to a stream of BGR records, the size is always 3 bytes per record.
   Count - Number of samples to convert.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@RGB2BGR
@@ -1140,8 +1065,8 @@ Parameters:
   Target - Target pointer to a stream of BGR records that are 3 bytes long.
   BitsPerSample - The bits per sample of the source stream, this can be 8 or 16 bits.
   Count - Number of samples to convert.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@RGBA2BGRA
@@ -1156,8 +1081,8 @@ Parameters:
   Target - The pointer to the target stream of BGRA records, the size of the records is 4 bytes per record.
   BitsPerSample - The bits per sample of the source stream, this can be 8 or 16 bits.
   Count - Number of samples to convert.
-Quick info:
-  Category: Graphics
+
+
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@WinColor2OpenGLColor
@@ -1171,8 +1096,8 @@ Parameters:
   Red - The Red OpenGLColor channel between 0.0 and 1.0.
   Green - The Green OpenGLColor channel between 0.0 and 1.0.
   Blue - The Blue OpenGLColor channel between 0.0 and 1.0.
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
 @@OpenGLColor2WinColor
@@ -1187,20 +1112,20 @@ Parameters:
   Blue - The Blue OpenGLColor channel between 0.0 and 1.0.
 Result:
   The windows color.
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas
-<GROUP $Graphics.TJclDesktopCanvas>
+<GROUP $Graphics.Desktop>
 Summary:
   Access the desktop canvas.
 Description:
   This class gives you access to the desktop canvas. It inherits everything from the canvas
   class. When using this canvas don't change the handle of the canvas this will remove the
   functionality of the class.
-Quick info:
-  Category: Graphics
+
+
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas.Create
@@ -1208,8 +1133,8 @@ Summary:
   Creates the desktop canvas class.
 Description:
   Gets the desktop graphics device handle from the operating system and initializes the canvas.
-Quick info:
-  Category: Graphics
+
+
   Visibility: Public
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
@@ -1218,8 +1143,8 @@ Summary:
   Destroys the desktop canvas class.
 Description:
   Destroys the desktop canvas class.
-Quick info:
-  Category: Graphics
+
+
   Visibility: Public
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
@@ -1229,8 +1154,8 @@ Summary:
   TColor32 represents an ARGB color quad.
 Description:
   TColor32 represents an ARGB color quad.
-Quick info:
-  Category: Graphics
+
+
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TColor32Array
@@ -1239,8 +1164,8 @@ Summary:
   TColor32 Arrays.
 Description:
   TColor32 Arrays.
-Quick info:
-  Category: Graphics
+
+
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TPalette32
@@ -1249,8 +1174,7 @@ Summary:
   TPalette32 types are mostly used to simulate palette-based operations.
 Description:
   TPalette32 types are mostly used to simulate palette-based operations.
-Quick info:
-  Category: Graphics
+
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@PointIsNull
@@ -1264,8 +1188,7 @@ Parameters:
 Result:
   If the supplied point equals the null point (a TPoint with both X and Y set to 0)
   the function returns True, otherwise it returns False.
-Quick info:
-  Category: Graphics
+
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ClipLine
@@ -1284,8 +1207,7 @@ Parameters:
 Result:
   True, if some section of the line lies inside of the clipping rectangle (and eventually shall be
   drawn), False otherwise.
-Quick info:
-Category: Graphics
+
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@DrawPolyLine
@@ -1300,8 +1222,7 @@ Parameters:
   Canvas - The canvas to draw on.
   Points - The array of points that define the line sequence.
   ClipRect - The clipping rectangle.
-Quick info:
-Category: Graphics
+
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetIconFromBitmap
@@ -1318,15 +1239,15 @@ Parameters
 Bitmap :   The TBitmap object that provides the icon image
 Icon :     The TIcon object that receives the bitmap image.
 
-QuickInfo
 Donator: Robert Rossmair
 Platform: VCL
 
 SeeAlso
-BitmapToIcon, WriteIcon@TStream@HBitmap@HBitmap@Boolean
+BitmapToIcon, <LINK WriteIcon@TStream@HBITMAP@HBITMAP@Boolean, WriteIcon>
 --------------------------------------------------------------------------------
 @@WriteIcon@TStream@HICON@Boolean
 <GROUP $Graphics.Icons>
+<TITLE WriteIcon>
 
 Description
 Use WriteIcon to write the icon image (specified by its
@@ -1345,15 +1266,15 @@ Stream :        the stream object that receives the memory image of
 WriteLength :   Determines whether a Longint containing the data size
                 is written to the stream prior to the icon data.
 
-QuickInfo
 Donator: Robert Rossmair
 Platform: Win32
 
 See Also
-WriteIcon@TStream@HBitmap@HBitmap@Boolean, SaveIconToFile
+<LINK WriteIcon@TStream@HBITMAP@HBITMAP@Boolean, WriteIcon>, SaveIconToFile
 --------------------------------------------------------------------------------
-@@WriteIcon@TStream@HBitmap@HBitmap@Boolean
-<GROUP $Graphics.Bitmaps, $Graphics.Icons, $Graphics.Conversion>
+@@WriteIcon@TStream@HBITMAP@HBITMAP@Boolean
+<GROUP $Graphics.Icons, $Graphics.Bitmaps, $Graphics.Conversion>
+<TITLE WriteIcon>
 
 Description
 Use WriteIcon to write the icon image (specified by its
@@ -1373,12 +1294,11 @@ WriteLength :   Determines whether a Longint containing the data
                 size is written to the stream prior to the icon
                 data.
 
-QuickInfo
 Donator: Robert Rossmair
 Platform: Win32
 
 See Also
-WriteIcon@TStream@HICON@Boolean, BitmapToIcon
+<LINK WriteIcon@TStream@HICON@Boolean, WriteIcon>, BitmapToIcon
 --------------------------------------------------------------------------------
 @@SaveIconToFile
 <GROUP $Graphics.Icons>
@@ -1398,15 +1318,14 @@ FileName :   The name of the file to which to write the icon
              data.
 Icon :       The icon to save, specified by its handle.
 
-QuickInfo
 Donator: Robert Rossmair
 Platform: Win32
 
 See Also
-WriteIcon@TStream@HICON@Boolean
+<LINK WriteIcon@TStream@HICON@Boolean, WriteIcon>
 --------------------------------------------------------------------------------
 @@ScreenShot@TBitmap@Integer@Integer@Integer@Integer@HWND
-<GROUP $Graphics>
+<GROUP $Graphics.Bitmaps>
 Summary
   Stores the image of a window into a bitmap.
 
@@ -1424,12 +1343,11 @@ Parameters
   Height - Height of the image to take.
   Window - The window of which to retrieve an image.
 
-QuickInfo
 Platform: Win32
 Donator: Bernhard Berger
 
 @@ScreenShot@TBitmap
-<GROUP $Graphics>
+<GROUP $Graphics.Bitmaps>
 <COMBINE ScreenShot@TBitmap@Integer@Integer@Integer@Integer@HWND>
 --------------------------------------------------------------------------------
 
