@@ -738,7 +738,7 @@ procedure ParseLoopDataOfSETSDefinition(Data: string; Loop: TEDISEFLoop;
   SEFFile: TEDISEFFile);
 procedure ParseTableDataOfSETSDefinition(Data: string; Table: TEDISEFTable;
   SEFFile: TEDISEFFile);
-procedure ParseSetsDataOfSETSDefinition(Data: string; Set_: TEDISEFSet; SEFFile: TEDISEFFile);
+procedure ParseSetsDataOfSETSDefinition(Data: string; ASet: TEDISEFSet; SEFFile: TEDISEFFile);
 
 procedure ExtractFromDataObjectGroup(DataObjectClass: TEDISEFDataObjectClass;
   DataObjectGroup: TEDISEFDataObjectGroup; ObjectList: TObjectList); overload;
@@ -1809,15 +1809,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure ParseSetsDataOfSETSDefinition(Data: string; Set_: TEDISEFSet; SEFFile: TEDISEFFile);
+procedure ParseSetsDataOfSETSDefinition(Data: string; ASet: TEDISEFSet; SEFFile: TEDISEFFile);
 var
   I, J: Integer;
   Table: TEDISEFTable;
   TableData: string;
 begin
-  Set_.EDISEFDataObjects.Clear;
+  ASet.EDISEFDataObjects.Clear;
   I := StrSearch(SEFDelimiter_EqualSign, Data, 1);
-  Set_.Id := Copy(Data, 1, I - 1);
+  ASet.Id := Copy(Data, 1, I - 1);
   while I > 0 do
   begin
     // Start search
@@ -1825,7 +1825,7 @@ begin
     J := StrSearch(SEFDelimiter_Caret, Data, I + 1);
     if I = 0 then
     begin
-      Table := Set_.AddTable;
+      Table := ASet.AddTable;
       Table.Data := Data;
       Table.Disassemble;
     end
@@ -1841,7 +1841,7 @@ begin
         TableData := Copy(Data, I + 1, J - (I + 1));
         I := J;
       end;
-      Table := Set_.AddTable;
+      Table := ASet.AddTable;
       Table.Data := TableData;
       Table.Disassemble;
     end;
@@ -4112,6 +4112,7 @@ begin
   // Misc
   if Tables.Count = 3 then
   begin
+    // (rom) make resourcestrings?
     Table[0].Id := 'Heading';             
     Table[1].Id := 'Detail';
     Table[2].Id := 'Summary';

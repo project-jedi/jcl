@@ -3487,7 +3487,7 @@ begin
   for I := Low(Value) to High(Value) do
   begin
     Len := Length(Value[I]);
-    Assert(Len > 0, 'StringsToMultiString with empty item');
+    Assert(Len > 0, LoadResString(@RsStringsToMultiStringAssertion));
     if Len > 0 then
       Inc(LenSum, Len + 1);
   end;
@@ -3516,7 +3516,7 @@ begin
   for I := Low(Value) to High(Value) do
   begin
     Len := Length(Value[I]);
-    Assert(Len > 0, 'StringsToWideMultiString with empty item');
+    Assert(Len > 0, LoadResString(@RsStringsToWideMultiStringAssertion));
     if Len > 0 then
       Inc(LenSum, Len + 1);
   end;
@@ -3545,7 +3545,7 @@ begin
   for I := Low(Value) to High(Value) do
   begin
     Len := Length(Value[I]);
-    Assert(Len > 0, 'StringsToMultiString with empty item');
+    Assert(Len > 0, LoadResString(@RsStringsToMultiStringAssertion));
     if Len > 0 then
       Inc(LenSum, Len + 1);
   end;
@@ -3574,7 +3574,7 @@ begin
   for I := Low(Value) to High(Value) do
   begin
     Len := Length(Value[I]);
-    Assert(Len > 0, 'StringsToWideMultiString with empty item');
+    Assert(Len > 0, LoadResString(@RsStringsToWideMultiStringAssertion));
     if Len > 0 then
       Inc(LenSum, Len + 1);
   end;
@@ -3605,7 +3605,7 @@ begin
   for I := 0 to Value.Count - 1 do
   begin
     Len := Length(Value[I]);
-    Assert(Len > 0, 'StringsToMultiString with empty item');
+    Assert(Len > 0, LoadResString(@RsStringsToMultiStringAssertion));
     if Len > 0 then
       Inc(LenSum, Len + 1);
   end;
@@ -3636,7 +3636,7 @@ begin
   for I := 0 to Value.Count - 1 do
   begin
     Len := Length(Value[I]);
-    Assert(Len > 0, 'StringsToWideMultiString with empty item');
+    Assert(Len > 0, LoadResString(@RsStringsToWideMultiStringAssertion));
     if Len > 0 then
       Inc(LenSum, Len + 1);
   end;
@@ -4221,6 +4221,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.24  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.23  2004/07/30 07:20:25  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate
 //

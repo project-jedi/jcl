@@ -580,7 +580,9 @@ function GetCapsLockKeyState: Boolean;
 type
   TFreeSysResKind = (rtSystem, rtGdi, rtUser);
   TFreeSystemResources = record
-    SystemRes, GdiRes, UserRes: Integer;
+    SystemRes: Integer;
+    GdiRes: Integer;
+    UserRes: Integer;
   end;
 
 function IsSystemResourcesMeterPresent: Boolean;
@@ -613,7 +615,7 @@ uses
   JclShell,
   {$ENDIF FPC}
   {$ENDIF MSWINDOWS}
-  JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
+  Jcl8087, JclBase, JclFileUtils, JclIniFiles, JclStrings;
 
 {$IFDEF FPC}
 {$I JclSysInfo.fpc}
@@ -627,7 +629,7 @@ function DelEnvironmentVar(const Name: string): Boolean;
 begin
   {$IFDEF UNIX}
   UnSetEnv(PChar(Name));
-  Result := True ;
+  Result := True;
   {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), nil);
@@ -662,6 +664,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
+
 function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
 begin
   Value := getenv(PChar(Name));
@@ -672,8 +675,11 @@ function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolea
 begin
   Result := GetEnvironmentVar(Name, Value); // Expand is there just for x-platform compatibility
 end;
+
 {$ENDIF UNIX}
+
 {$IFDEF MSWINDOWS}
+
 function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
 begin
   Result := GetEnvironmentVar(Name, Value, True);
@@ -696,6 +702,7 @@ begin
       ExpandEnvironmentVar(Value);
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -726,7 +733,9 @@ begin
   Result := GetEnvironmentVars(Vars); // Expand is there just for x-platform compatibility
 end;
 {$ENDIF UNIX}
+
 {$IFDEF MSWINDOWS}
+
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
 begin
   Result := GetEnvironmentVars(Vars, True);
@@ -761,24 +770,26 @@ begin
     Vars.EndUpdate;
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
-{$IFDEF UNIX}
+  {$IFDEF UNIX}
   SetEnv(PChar(Name), PChar(Value), 1);
-  Result := True ;
-{$ENDIF UNIX}
-{$IFDEF MSWINDOWS}
+  Result := True;
+  {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), PChar(Value));
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
+
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 const
   RegLocalEnvironment = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
@@ -843,6 +854,32 @@ begin
   end;
 end;
 
+(* (rom) to be integrated
+procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create;
+  Reg.OpenKey('Environment', False);
+  Reg.WriteString(VariableName, VariableContent);
+  Reg.Free;
+  SetEnvironmentVariable(PChar(VariableName), PChar(VariableContent));
+  SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar('Environment')));
+end;
+
+procedure RemoveGlobalEnvironmentVariable(VariableName: string);
+var
+  Reg: TRegistry;
+begin
+  Reg := TRegistry.Create;
+  Reg.OpenKey('Environment', False);
+  Reg.DeleteValue(VariableName);
+  Reg.Free;
+  SetEnvironmentVariable(PChar(VariableName), nil);
+  SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar('Environment')));
+end;
+*)
+
 //==================================================================================================
 // Common Folders
 //==================================================================================================
@@ -870,6 +907,7 @@ begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS,
     'CommonFilesDir', '');
 end;
+
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -908,7 +946,9 @@ begin
     StrResetLength(Result);
   end;
 end;
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 { TODO : Check for documented solution }
@@ -982,21 +1022,23 @@ function GetProgramsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
 end;
+
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetPersonalFolder: string;
 begin
-{$IFDEF UNIX}
+  {$IFDEF UNIX}
   Result := GetEnvironmentVariable('HOME');
-{$ENDIF UNIX}
-{$IFDEF MSWINDOWS}
+  {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
   Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
-//--------------------------------------------------------------------------------------------------
 {$IFDEF MSWINDOWS}
+//--------------------------------------------------------------------------------------------------
+
 function GetFavoritesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
@@ -1250,10 +1292,12 @@ begin
     WSACleanup;
   end;
 end;
+
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetLocalComputerName: string;
+// (rom) UNIX or LINUX?
 {$IFDEF LINUX}
 var
   MachineInfo: utsname;
@@ -1300,8 +1344,9 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 {$IFDEF MSWINDOWS}
+//--------------------------------------------------------------------------------------------------
+
 function GetRegisteredCompany: string;
 begin
   { TODO : check for MSDN documentation }
@@ -1355,13 +1400,14 @@ begin
   else
     Result := '';  // Win9x/ME
 end;
+
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetDomainName: string;
 {$IFDEF UNIX}
 var
-  MachineInfo: utsname ;
+  MachineInfo: utsname;
 begin
   uname(MachineInfo);
   Result := MachineInfo.domainname;
@@ -1373,14 +1419,15 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 {$IFDEF MSWINDOWS}
+//--------------------------------------------------------------------------------------------------
+
+// Reference: How to Obtain BIOS Information from the Registry
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;q195268
 
 function GetBIOSName: string;
 const
   Win9xBIOSInfoKey = 'Enum\Root\*PNP0C01\0000';
-// Reference: How to Obtain BIOS Information from the Registry
-// http://support.microsoft.com/default.aspx?scid=kb;en-us;q195268
 begin
   if IsWinNT then
     Result := ''
@@ -1421,7 +1468,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 // Reference: How to Obtain BIOS Information from the Registry
-// http://support.microsoft.com/default.aspx?scid=kb;EN-US;195268
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;q195268
 
 { TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
@@ -1476,6 +1523,7 @@ begin
   end;
   {$ENDIF RTL150_UP}
 end;
+
 {$ENDIF MSWINDOWS}
 
 //==================================================================================================
@@ -1547,6 +1595,7 @@ begin
     end;
   end;
 end;
+
 {$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
@@ -2691,16 +2740,12 @@ var
 begin
   Result := '';
   if D <> 0 then
-  begin
     for I := Low(IntelCacheDescription) to High(IntelCacheDescription) do
-    begin
       if IntelCacheDescription[I].D = D then
       begin
         Result := IntelCacheDescription[I].I;
         Break;
       end;
-    end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2750,12 +2795,12 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   { TODO : GetCPUSpeed: Solution for Linux }
   Result := False;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
   T0, T1: Int64;
@@ -3536,17 +3581,17 @@ begin
     RaiseLastOSError
   else
   begin
-    if (SystemPowerStatus.BatteryFlag and 1)>0 then
+    if (SystemPowerStatus.BatteryFlag and 1) <> 0 then
       Result := Result + [abfHigh];
-    if (SystemPowerStatus.BatteryFlag and 2)>0 then
+    if (SystemPowerStatus.BatteryFlag and 2) <> 0 then
       Result := Result + [abfLow];
-    if (SystemPowerStatus.BatteryFlag and 4)>0 then
+    if (SystemPowerStatus.BatteryFlag and 4) <> 0 then
       Result := Result + [abfCritical];
-    if (SystemPowerStatus.BatteryFlag and 8)>0 then
+    if (SystemPowerStatus.BatteryFlag and 8) <> 0 then
       Result := Result + [abfCharging];
-    if (SystemPowerStatus.BatteryFlag and 128)>0 then
+    if (SystemPowerStatus.BatteryFlag and 128) <> 0 then
       Result := Result + [abfNoBattery];
-    if (SystemPowerStatus.BatteryFlag = 255) then
+    if SystemPowerStatus.BatteryFlag = 255 then
       Result := Result + [abfUnknown];
   end;
 end;
@@ -3658,7 +3703,7 @@ var
   SystemInf: TSysInfo;
 begin
   SysInfo(SystemInf);
-  Result := SystemInf.totalswap ;
+  Result := SystemInf.totalswap;
 end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
@@ -3682,7 +3727,7 @@ var
 begin
   SysInfo(SystemInf);
   with SystemInf do
-    Result := 100 - Trunc( 100 * FreeSwap / TotalSwap );
+    Result := 100 - Trunc(100 * FreeSwap / TotalSwap);
 end;
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
@@ -3837,7 +3882,7 @@ end;
 { TODO -oPJH : compare to Win9xFreeSysResources }
 var
   ResmeterLibHandle: THandle;
-  MyGetFreeSystemResources: function (ResType: UINT): UINT; stdcall;
+  MyGetFreeSystemResources: function(ResType: UINT): UINT; stdcall;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3913,7 +3958,6 @@ var
   Kernel32FileName: string;
   VerFixedFileInfo: TVSFixedFileInfo;
 begin
-
   { processor information related initialization }
 
   FillChar(SystemInfo, SizeOf(SystemInfo), 0);
@@ -3994,6 +4038,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.27  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.26  2004/07/31 06:21:01  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

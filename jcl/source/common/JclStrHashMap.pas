@@ -309,7 +309,7 @@ end;
 
 constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
 begin
-  Assert(ATraits <> nil, 'HashList must have traits');
+  Assert(ATraits <> nil, LoadResString(@RsStringHashMapNoTraits));
   SetHashSize(AHashSize);
   FTraits := ATraits;
 end;
@@ -852,6 +852,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.7  2004/07/31 06:21:01  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //
