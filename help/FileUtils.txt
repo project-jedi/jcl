@@ -2139,7 +2139,7 @@ Count=3
 3=GetFileLastWrite
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function BuildFileList(const Path: string; Attr: Integer; var List: TStrings): Boolean;
+function BuildFileList(const Path: string; Attr: Integer; const List: TStrings): Boolean;
 [ShortDescr]
 Builds a list of files and folders in a directory.
 [Description]
@@ -2150,6 +2150,8 @@ FindFirst, FindNext and FindClose functions.
 Count=3
 1=Path:string=Directory and filename mask for which you want to build the list.
 For example this can be 'c:\winnt\*.dll'.
+This parameter works like the Path parameter in FindFirst. In Windows it is case insensitive and applies to short and long filenames, so "*.*" will find all files.
+In Linux it's case sensitive and "*.*" will find only files that contain a ".".
 2=Attr:Integer=The Attr parameter specifies the special files to include in
 addition to all normal files. Choose from these file attribute constants when
 specifying the Attr parameter (declared in SysUtils.pas):
@@ -2178,6 +2180,62 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=AdvBuildFileList
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings; const Options: TFileListOptions = [];  const SubfoldersMask: string = ''): Boolean;
+[ShortDescr]
+AdvBuildFileList works like BuildFileList if called with only three parameters, but it accepts two optional parameters for extended functionality.
+[Description]
+AdvBuildFileList builds a list of files and folders in the specified Path that
+matches the specified attributes. 
+[Parameters]
+Count=5
+1=Path:string=Directory and file name mask for which you want to build the list.
+For example this can be 'c:\winnt\*.dll'.
+This parameter works like the Path parameter in FindFirst. In Windows it is case insensitive and applies to short and long filenames, so "*.*" will find all files.
+In Linux it's case sensitive and "*.*" will find only files that contain a ".".
+2=Attr:Integer=The Attr parameter specifies the special files to include in
+addition to all normal files. Choose from these file attribute constants when
+specifying the Attr parameter (declared in SysUtils.pas):
+ <UL>
+ <LI>faReadOnly Read-only files
+ <LI>faHidden Hidden files
+ <LI>faSysFile System files
+ <LI>faVolumeID Volume ID files
+ <LI>faDirectory Directory files
+ <LI>faArchive Archive files
+ <LI>faAnyFile Any file
+ </UL>
+3=List:TStrings=A TStrings descendant in which the file list according to the parameters is returned. Note that this list is not cleared by the routine
+before the found entries are added.
+4=Options:TFileListOptions=Set of additional option:
+ <UL>
+ <LI>flFullNames: if set, the full path is included with each listed file name.
+ <LI> flRecursive: if set, all subdirectories of the directory given in PATH are scanned.
+ <LI>flMaskedSubfolders: if set, files are only listed if their directory path, relative to the directory given in the Path parameter, matches the Subfolder Mask parameter.
+ </UL>
+5=SubfoldersMask:string=if flMaskedSubfolders is set, the remaining directory path, relative to the directory given in the Path parameter, is matched against this parameter. 
+In Windows the matching is done case insensitively, in Linux it's done case sensitively. In Windows (with long file names enabled) only the long name is matched, 
+so "*.*" will find only directories that contain a ".".
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In case of
+failure the list contains the entries that were retrieved up to the point of
+failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=BuildFileList
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
