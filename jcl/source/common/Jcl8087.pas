@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 20, 2000                                            }
+{ Last modified: October 20, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -32,25 +32,44 @@ type
   T8087Precision = (pcSingle, pcReserved, pcDouble, pcExtended);
   T8087Rounding = (rcNearestOrEven, rcDownInfinity, rcUpInfinity, rcChopOrTruncate);
   T8087Infinity = (icProjective, icAffine);
+  T8087Exception = (emInvalidOp, emDenormalizedOperand, emZeroDivide, emOverflow,
+    emUnderflow, emPrecision);
+  T8087Exceptions = set of T8087Exception;
+
+const
+  All8087Exceptions = [Low(T8087Exception)..High(T8087Exception)];
 
 function Get8087ControlWord: Word;
 function Get8087Infinity: T8087Infinity;
 function Get8087Precision: T8087Precision;
 function Get8087Rounding: T8087Rounding;
 function Get8087StatusWord(ClearExceptions: Boolean): Word;
+
 function Set8087Infinity(const Infinity: T8087Infinity): T8087Infinity;
 function Set8087Precision(const Precision: T8087Precision): T8087Precision;
 function Set8087Rounding(const Rounding: T8087Rounding): T8087Rounding;
 function Set8087ControlWord(const Control: Word): Word;
 
+function ClearPending8087Exceptions: T8087Exceptions;
+function GetPending8087Exceptions: T8087Exceptions;
+function GetMasked8087Exceptions: T8087Exceptions;
+function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
+function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+
 implementation
 
+const
+  X87ExceptBits = $3F;
+
+//------------------------------------------------------------------------------
+
 function Get8087ControlWord: Word; assembler;
-var
-  CW: Word;
 asm
-        FSTCW   [CW]
-        MOV     AX, [CW]
+        SUB     ESP, TYPE WORD
+        FSTCW   [ESP]
+        FWAIT
+        POP AX
 end;
 
 //------------------------------------------------------------------------------
@@ -122,15 +141,84 @@ end;
 //------------------------------------------------------------------------------
 
 function Set8087ControlWord(const Control: Word): Word; assembler;
-var
-  CW: Word;
+//var
+//CW: Word;
 asm
-        FSTCW   [CW]         // get current control word
-        MOV     CX, [CW]
-        MOV     [CW], AX
-        FNCLEX               // supress exceptions due to change in flags
-        FLDCW   [CW]         // set control word
-        MOV     AX, CX       // return old control word
+//      FSTCW   [CW]         // get current control word
+//      MOV     CX, [CW]
+//      MOV     [CW], AX
+//      FNCLEX               // supress exceptions due to change in flags
+//      FLDCW   [CW]         // set control word
+//      MOV     AX, CX       // return old control word
+        FNCLEX
+        FSTCW   Default8087CW
+        XCHG    Default8087CW, AX
+        FLDCW   Default8087CW
+end;
+
+//------------------------------------------------------------------------------
+
+function ClearPending8087Exceptions: T8087Exceptions;
+asm
+        FNSTSW  AX
+        AND     AX, X87ExceptBits
+        FNCLEX
+end;
+
+//------------------------------------------------------------------------------
+
+function GetPending8087Exceptions: T8087Exceptions;
+asm
+        FNSTSW AX
+        AND    AX, X87ExceptBits
+end;
+
+//------------------------------------------------------------------------------
+
+function GetMasked8087Exceptions: T8087Exceptions;
+asm
+        SUB    ESP, TYPE Word
+        FSTCW  [ESP]
+        FWAIT
+        POP    AX
+        AND    AX, X87ExceptBits
+end;
+
+//------------------------------------------------------------------------------
+
+function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+asm
+        TEST   DL, DL             // if ClearBefore then
+        JZ     @1
+        FNCLEX                    // clear pending exceptions
+@1:
+        FSTCW  Default8087CW
+        FWAIT
+        AND    AX, X87ExceptBits  // mask exception mask bits 0..5
+        MOV    DX, Default8087CW
+        AND    Default8087CW, NOT X87ExceptBits
+        OR     Default8087CW, AX
+        FLDCW  Default8087CW
+        MOV    AX, DX
+        AND    AX, X87ExceptBits
+end;
+
+//------------------------------------------------------------------------------
+
+function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
+begin
+  Result := GetMasked8087Exceptions;
+  Exceptions := Exceptions + Result;
+  SetMasked8087Exceptions(Exceptions, False);
+end;
+
+//------------------------------------------------------------------------------
+
+function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+begin
+  Result := GetMasked8087Exceptions;
+  Exceptions := Result - Exceptions;
+  SetMasked8087Exceptions(Exceptions, ClearBefore);
 end;
 
 end.
