@@ -1290,7 +1290,7 @@ begin
     end;
     {$IFDEF MSWINDOWS}
     // quotes not required with short path names
-    Result := Execute(StrTrimQuotes(PathGetShortName(PackageName)));
+    Result := Execute(PathGetShortName(ExtractFileDir(PackageName)) + PathSeparator + ExtractFileName(PackageName));
     {$ELSE}
     Result := Execute(StrDoubleQuote(StrTrimQuotes(PackageName)));
     {$ENDIF}
@@ -1304,7 +1304,15 @@ begin
   Options.Clear;
   AddPathOption('U', Installation.LibFolderName);
   if Installation.RadToolKind = brCppBuilder then
+  begin
     AddPathOption('U', Installation.LibFolderName + PathAddSeparator('obj'));
+    {$IFNDEF KYLIX}
+    if Installation.VersionNumber = 5 then
+      Options.Add('-LUvcl50')
+    else
+      Options.Add('-LUrtl');
+    {$ENDIF ~KYLIX}
+  end;
 end;
 
 function TJclDCC.SupportsLibSuffix: Boolean;
@@ -2510,6 +2518,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.41  2005/03/22 03:36:09  rrossmair
+// - fixed PathGetShortName usage for packages
+// - TJclDCC.SetDefaultOptions extended for BCB
+//
 // Revision 1.40  2005/03/21 04:24:34  rrossmair
 // - identifier mistake fixed (Kylix)
 //
