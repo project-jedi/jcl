@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 26, 2002                                                                 }
+{ Last modified: February 27, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -52,6 +52,44 @@ procedure Trace(const Msg: string);
 procedure TraceFmt(const Fmt: string; const Args: array of const);
 procedure TraceLoc(const Msg: string);
 procedure TraceLocFmt(const Fmt: string; const Args: array of const);
+
+//--------------------------------------------------------------------------------------------------
+// Optimized functionality of JclSysInfo functions ModuleFromAddr and IsSystemModule
+//--------------------------------------------------------------------------------------------------
+
+type
+  TJclModuleInfo = class (TObject)
+  private
+    FSize: Cardinal;
+    FEndAddr: Pointer;
+    FStartAddr: Pointer;
+    FSystemModule: Boolean;
+    function GetFileName: string;
+  public
+    property EndAddr: Pointer read FEndAddr;
+    property FileName: string read GetFileName;
+    property Size: Cardinal read FSize;
+    property StartAddr: Pointer read FStartAddr;
+    property SystemModule: Boolean read FSystemModule;
+  end;
+
+  TJclModuleInfoList = class (TObjectList)
+  private
+    FDynamicBuild: Boolean;
+    FSystemModulesOnly: Boolean;
+    function GetItems(Index: Integer): TJclModuleInfo;
+    function GetModuleFromAddress(Addr: Pointer): TJclModuleInfo;
+  protected
+    procedure BuildModulesList;
+    function CreateItemForAddress(Addr: Pointer; SystemModule: Boolean): TJclModuleInfo;
+  public
+    constructor Create(ADynamicBuild, ASystemModulesOnly: Boolean);
+    function IsSystemModuleAddress(Addr: Pointer): Boolean;
+    function IsValidModuleAddress(Addr: Pointer): Boolean;
+    property DynamicBuild: Boolean read FDynamicBuild;
+    property Items[Index: Integer]: TJclModuleInfo read GetItems;
+    property ModuleFromAddress[Addr: Pointer]: TJclModuleInfo read GetModuleFromAddress;
+  end;
 
 //--------------------------------------------------------------------------------------------------
 // MAP file abstract parser
@@ -351,9 +389,6 @@ type
 // Source location functions
 //--------------------------------------------------------------------------------------------------
 
-function ModuleFromAddr(const Addr: Pointer): HMODULE;
-function IsSystemModule(const Module: HMODULE): Boolean;
-
 function Caller(Level: Integer = 0): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
@@ -448,7 +483,9 @@ type
     function GetItems(Index: Integer): TJclStackInfoItem;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
-    procedure AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean = False);
+    destructor Destroy; override;
+    procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
+      IncludeOffset: Boolean = False);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
@@ -727,6 +764,131 @@ begin
   S := Format('%s:%u (%s) ', [FileByLevel(1), LineByLevel(1), ProcByLevel(1)]) +
     Format(StrDoubleQuote(Fmt), Args);
   OutputDebugString(PChar(S));
+end;
+
+//==================================================================================================
+// TJclModuleInfo
+//==================================================================================================
+
+function TJclModuleInfo.GetFileName: string;
+begin
+  Result := GetModulePath(HMODULE(FStartAddr));
+end;
+
+//==================================================================================================
+// TJclModuleInfoList
+//==================================================================================================
+
+procedure TJclModuleInfoList.BuildModulesList;
+var
+  List: TStringList;
+  I: Integer;
+  CurModule: PLibModule;
+begin
+  if FSystemModulesOnly then
+  begin
+    CurModule := LibModuleList;
+    while CurModule <> nil do
+    begin
+      CreateItemForAddress(Pointer(CurModule.Instance), True);
+      CurModule := CurModule.Next;
+    end;
+  end
+  else
+  begin
+    List := TStringList.Create;
+    try
+      LoadedModulesList(List, GetCurrentProcessId, True);
+      for I := 0 to List.Count - 1 do
+        CreateItemForAddress(List.Objects[I], False);
+    finally
+      List.Free;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclModuleInfoList.Create(ADynamicBuild, ASystemModulesOnly: Boolean);
+begin
+  inherited Create(True);
+  FDynamicBuild := ADynamicBuild;
+  FSystemModulesOnly := ASystemModulesOnly;
+  if not FDynamicBuild then
+    BuildModulesList;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclModuleInfoList.CreateItemForAddress(Addr: Pointer; SystemModule: Boolean): TJclModuleInfo;
+var
+  Module: HMODULE;
+  NtHeaders: PImageNtHeaders;
+begin
+  Result := nil;
+  Module := ModuleFromAddr(Addr);
+  if Module > 0 then
+  begin
+    NtHeaders := PeMapImgNtHeaders(Pointer(Module));
+    if NtHeaders <> nil then
+    begin
+      Result := TJclModuleInfo.Create;
+      Result.FStartAddr := Pointer(Module);
+      Result.FSize := NtHeaders^.OptionalHeader.SizeOfImage;
+      Result.FEndAddr := Pointer(Module + Result.FSize - 1);
+      if SystemModule then
+        Result.FSystemModule := True
+      else
+        Result.FSystemModule := IsSystemModule(Module);
+    end;
+  end;
+  if Result <> nil then
+    Add(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclModuleInfoList.GetItems(Index: Integer): TJclModuleInfo;
+begin
+  Result := TJclModuleInfo(inherited Items[Index]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclModuleInfoList.GetModuleFromAddress(Addr: Pointer): TJclModuleInfo;
+var
+  I: Integer;
+  Item: TJclModuleInfo;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+  begin
+    Item := Items[I];
+    if (Cardinal(Item.StartAddr) <= Cardinal(Addr)) and (Cardinal(Item.EndAddr) > Cardinal(Addr)) then
+    begin
+      Result := Item;
+      Break;
+    end;
+  end;
+  if DynamicBuild and (Result = nil) then
+    Result := CreateItemForAddress(Addr, False);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclModuleInfoList.IsSystemModuleAddress(Addr: Pointer): Boolean;
+var
+  Item: TJclModuleInfo;
+begin
+  Item := ModuleFromAddress[Addr];
+  Result := (Item <> nil) and Item.SystemModule;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclModuleInfoList.IsValidModuleAddress(Addr: Pointer): Boolean;
+begin
+  Result := ModuleFromAddress[Addr] <> nil;
 end;
 
 //==================================================================================================
@@ -2488,41 +2650,6 @@ end;
 // Source location functions
 //==================================================================================================
 
-function ModuleFromAddr(const Addr: Pointer): HMODULE;
-var
-  MI: TMemoryBasicInformation;
-begin
-  VirtualQuery(Addr, MI, SizeOf(MI));
-  if MI.State <> MEM_COMMIT then
-    Result := 0
-  else
-    Result := HMODULE(MI.AllocationBase);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function IsSystemModule(const Module: HMODULE): Boolean;
-var
-  CurModule: PLibModule;
-begin
-  Result := False;
-  if Module <> 0 then
-  begin
-    CurModule := LibModuleList;
-    while CurModule <> nil do
-    begin
-      if CurModule.Instance = Module then
-      begin
-        Result := True;
-        Break;
-      end;
-      CurModule := CurModule.Next;
-    end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 {$STACKFRAMES ON}
 
 function Caller(Level: Integer): Pointer;
@@ -2967,8 +3094,9 @@ end;
 {$STACKFRAMES OFF}
 
 threadvar
-  TopOfStack: DWORD;
-  BaseOfStack: DWORD;
+  TopOfStack: Cardinal;
+  BaseOfStack: Cardinal;
+  ModuleInfoList: TJclModuleInfoList;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2979,12 +3107,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ValidCodeAddr(CodeAddr: DWORD): Boolean;
+function ValidCodeAddr(CodeAddr: DWORD; ModuleList: TJclModuleInfoList): Boolean;
 begin
   if stAllModules in JclStackTrackingOptions then
+    Result := ModuleList.IsValidModuleAddress(Pointer(CodeAddr))
+  else
+    Result := ModuleList.IsSystemModuleAddress(Pointer(CodeAddr));
+{  if stAllModules in JclStackTrackingOptions then
     Result := (ModuleFromAddr(Pointer(CodeAddr)) <> 0)
   else
-    Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
+    Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3006,7 +3138,7 @@ begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P)) and
+  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), ModuleInfoList) and
     not IsBadReadPtr(C8P, 8) and not IsBadCodePtr(C8P) and not IsBadCodePtr(C4P);
 
   // Now check to see if the instruction preceding the return address
@@ -3045,7 +3177,7 @@ end;
 
 {$OVERFLOWCHECKS OFF}
 
-function NextStackFrame(var StackFrame: PStackFrame; var StackInfo : TStackInfo): Boolean;
+function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
 begin
   // Only report this stack frame into the StockInfo structure
   // if the StackFrame pointer, EBP on the stack and return
@@ -3053,7 +3185,7 @@ begin
   while ValidStackAddr(DWORD(StackFrame)) do
   begin
     // CallerAdr within current process space, code segment etc.
-    if ValidCodeAddr(StackFrame^.CallerAdr) then
+    if ValidCodeAddr(StackFrame^.CallerAdr, ModuleInfoList) then
     begin
       Inc(StackInfo.Level);
       StackInfo.StackFrame := StackFrame;
@@ -3212,18 +3344,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStackInfoList.AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean);
+procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeOffset: Boolean);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName));
+    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName, IncludeOffset));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD;
-  FirstCaller: Pointer);
+constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
 var
   Item: TJclStackInfoItem;
 begin
@@ -3236,10 +3367,19 @@ begin
     Item.FStackInfo.CallerAdr := DWORD(FirstCaller);
     Add(Item);
   end;
+  ModuleInfoList := TJclModuleInfoList.Create(False, not (stAllModules in JclStackTrackingOptions));
   if Raw then
     TraceStackRaw(Self)
   else
     TraceStackFrames(Self);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclStackInfoList.Destroy;
+begin
+  FreeAndNil(ModuleInfoList);
+  inherited;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3446,16 +3586,22 @@ procedure TJclExceptFrameList.TraceExceptionFrames;
 var
   FS: PExcFrame;
   Level: Integer;
+  ModulesList: TJclModuleInfoList;
 begin
   Clear;
-  Level := 0;
-  FS := GetFS;
-  while Longint(FS) <> -1 do
-  begin
-    if (Level >= IgnoreLevels) and (ValidCodeAddr(DWORD(FS.Desc))) then
-      AddFrame(FS);
-    Inc(Level);
-    FS := FS.next;
+  ModulesList := TJclModuleInfoList.Create(False, not (stAllModules in JclStackTrackingOptions));
+  try
+    Level := 0;
+    FS := GetFS;
+    while Longint(FS) <> -1 do
+    begin
+      if (Level >= IgnoreLevels) and ValidCodeAddr(DWORD(FS.Desc), ModulesList) then
+        AddFrame(FS);
+      Inc(Level);
+      FS := FS.next;
+    end;
+  finally
+    ModulesList.Free;
   end;
 end;
 
@@ -3746,7 +3892,7 @@ begin
     begin
       FList.Delete(I);
       DoThreadUnregistered(ThreadID);
-    end;  
+    end;
   finally
     FLock.Leave;
   end;
