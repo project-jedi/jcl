@@ -832,19 +832,24 @@ var
     Feature: array[Boolean] of Cardinal = (
       FID_JCL_MakeRelease + FID_StandaloneParent,
       FID_JCL_MakeDebug + FID_StandaloneParent);
+  {$IFDEF MSWINDOWS}
   var
     Node: TTreeNode;
   begin
     Node := AddNode(Parent, Caption[DebugSettings], Feature[DebugSettings]);
-    {$IFDEF MSWINDOWS}
     if Installation.VersionNumber >= 6 then
     begin
       if Installation.SupportsVisualCLX then
         AddNode(Node, RsMakeVClx, Feature[DebugSettings] or FID_JCL_VClx);
     end;
-    {$ENDIF}
   end;
-
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  begin
+    AddNode(Parent, Caption[DebugSettings], Feature[DebugSettings]);
+  end;
+  {$ENDIF UNIX}
+  
 begin
   Result := Assigned(Installation) and Installation.Valid;
   Nodes.BeginUpdate;
