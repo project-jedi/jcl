@@ -37,9 +37,9 @@ interface
 
 uses
   Windows, Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs,
-  {$ENDIF COMPILER5_UP}
+  {$ENDIF RTL130_UP}
   WinSvc,
   JclBase, JclSysUtils;
 
@@ -1359,8 +1359,11 @@ end;
 // History:
 
 // $Log$
-// Revision 1.5  2004/04/07 14:01:15  obones
+// Revision 1.6  2004/04/07 18:43:02  peterjhaas
 // *** empty log message ***
+//
+// Revision 1.5  2004/04/07 14:01:15  obones
+// Removed stupid compilation directives
 //
 // Revision 1.4  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
