@@ -23,7 +23,7 @@ DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT)
 BRCC = $(ROOT)\bin\brcc32.exe $**
 jpp = ..\source\prototypes\jpp.exe
 #---------------------------------------------------------------------------------------------------
-default:	clean install
+default:	clean prototypes install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
@@ -55,7 +55,7 @@ clean:
         @echo cleaning up first...
 	-@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o 
 	cd lib
-	-@del /f /s *.obj
+	-@del /f /s *.obj *.res
 	cd ..\install
 
 prototypes: VclUnits ClxUnits
