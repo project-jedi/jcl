@@ -20,7 +20,7 @@
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: March 10, 2002                                                                    }
+{ Last modified: March 17, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1199,7 +1199,7 @@ var
 
   function FormatProcName(const ProcName: string): string;
   var
-    pchSecondAt: PChar;
+    pchSecondAt, P: PChar;
   begin
     Result := ProcName;
     if (Length(ProcName) > 0) and (ProcName[1] = '@') then
@@ -1208,7 +1208,15 @@ var
       if pchSecondAt <> nil then
       begin
         Inc(pchSecondAt);
-        Result := StringReplace(pchSecondAt, '@', '.', [rfReplaceAll]);
+        Result := pchSecondAt;
+        P := PChar(Result);
+        while P^ <> #0 do
+        begin
+          if (pchSecondAt^ = '@') and ((pchSecondAt - 1)^ <> '@') then
+            P^ := '.';
+          Inc(P);
+          Inc(pchSecondAt);
+        end;
       end;
     end;
   end;
