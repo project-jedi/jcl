@@ -39,14 +39,12 @@ uses
 //------------------------------------------------------------------------------
 
 const
-  JclVersionMajor   = 0;
-  JclVersionMinor   = 7;
-  JclVersionRelease = 0;
-  JclVersionBuild   = 145;
+  JclVersionMajor   = 0;   // 0=pre-release|beta/1, 2, ...=final
+  JclVersionMinor   = 4;   // third minor release
+  JclVersionRelease = 0;   // 0=pre-release|beta/1=release
+  JclVersionBuild   = 214; // days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
-
-
 
 //------------------------------------------------------------------------------
 // FreePascal Support
