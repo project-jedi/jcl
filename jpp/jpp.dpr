@@ -45,7 +45,12 @@
 program jpp;
 
 uses
+  {$IFDEF MSWINDOWS}
   Windows,
+  {$ENDIF}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF}
   SysUtils,
   Classes,
   TypInfo,
@@ -66,7 +71,7 @@ const
 procedure Syntax;
 begin
   Writeln(
-    'Pascal PreProcessor'#10,
+    'JEDI PreProcessor'#10,
     'Copyright (C) 2001 Barry Kelly'#10,
     #10,
     'Syntax:'#10,
