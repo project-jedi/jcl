@@ -332,19 +332,31 @@ function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
 function GetLocationInfoStr(const Addr: Pointer): string;
 procedure ClearLocationData;
 
+function FileByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
+function ModuleByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
+function ProcByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
+function LineByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer;
+function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
+
+function FileOfAddr(const Addr: Pointer): string;
+function ModuleOfAddr(const Addr: Pointer): string;
+function ProcOfAddr(const Addr: Pointer): string;
+function LineOfAddr(const Addr: Pointer): Integer;
+function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+
+// Original function names
 function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer;
 function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
-
 function __FILE_OF_ADDR__(const Addr: Pointer): string;
 function __MODULE_OF_ADDR__(const Addr: Pointer): string;
 function __PROC_OF_ADDR__(const Addr: Pointer): string;
 function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
-
 
 //------------------------------------------------------------------------------
 // Stack info routines
@@ -573,8 +585,8 @@ end;
 
 procedure TraceLoc(const Msg: string);
 begin
-  OutputDebugString(PChar(Format('%s:%u (%s) "%s"', [__FILE__(1), __LINE__(1),
-    __PROC__(1), Msg])));
+  OutputDebugString(PChar(Format('%s:%u (%s) "%s"', [FileByLevel(1), LineByLevel(1),
+    ProcByLevel(1), Msg])));
 end;
 
 //------------------------------------------------------------------------------
@@ -583,7 +595,7 @@ procedure TraceLocFmt(const Fmt: string; const Args: array of const);
 var
   S: string;
 begin
-  S := Format('%s:%u (%s) ', [__FILE__(1), __LINE__(1), __PROC__(1)]) +
+  S := Format('%s:%u (%s) ', [FileByLevel(1), LineByLevel(1), ProcByLevel(1)]) +
     Format('"' + Fmt + '"', Args);
   OutputDebugString(PChar(S));
 end;
@@ -2203,38 +2215,65 @@ end;
 
 {$STACKFRAMES ON}
 
-function __FILE__(const Level: Integer): string;
+function FileByLevel(const Level: Integer): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).SourceName;
 end;
 
 //------------------------------------------------------------------------------
 
-function __MODULE__(const Level: Integer): string;
+function ModuleByLevel(const Level: Integer): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).UnitName;
 end;
 
 //------------------------------------------------------------------------------
 
-function __PROC__(const Level: Integer): string;
+function ProcByLevel(const Level: Integer): string;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).ProcedureName;
 end;
 
 //------------------------------------------------------------------------------
 
-function __LINE__(const Level: Integer): Integer;
+function LineByLevel(const Level: Integer): Integer;
 begin
   Result := GetLocationInfo(Caller(Level + 1)).LineNumber;
 end;
 
 //------------------------------------------------------------------------------
 
-function __MAP__(const Level: Integer; var _File, _Module, _Proc: string;
+function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 begin
-  Result := __MAP_OF_ADDR__(Caller(Level + 1), _File, _Module, _Proc, _Line);
+  Result := MapOfAddr(Caller(Level + 1), _File, _Module, _Proc, _Line);
+end;
+
+//------------------------------------------------------------------------------
+
+function __FILE__(const Level: Integer): string;
+begin
+  Result := FileByLevel(Level + 1);
+end;
+
+function __MODULE__(const Level: Integer): string;
+begin
+  Result := ModuleByLevel(Level + 1);
+end;
+
+function __PROC__(const Level: Integer): string;
+begin
+  Result := ProcByLevel(Level + 1);
+end;
+
+function __LINE__(const Level: Integer): Integer;
+begin
+  Result := LineByLevel(Level + 1);
+end;
+
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
+begin
+  Result := MapByLevel(Level + 1, _File, _Module, _Proc, _Line);
 end;
 
 {$IFNDEF StackFramesWasOn}
@@ -2243,35 +2282,35 @@ end;
 
 //------------------------------------------------------------------------------
 
-function __FILE_OF_ADDR__(const Addr: Pointer): string;
+function FileOfAddr(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).SourceName;
 end;
 
 //------------------------------------------------------------------------------
 
-function __MODULE_OF_ADDR__(const Addr: Pointer): string;
+function ModuleOfAddr(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).UnitName;
 end;
 
 //------------------------------------------------------------------------------
 
-function __PROC_OF_ADDR__(const Addr: Pointer): string;
+function ProcOfAddr(const Addr: Pointer): string;
 begin
   Result := GetLocationInfo(Addr).ProcedureName;
 end;
 
 //------------------------------------------------------------------------------
 
-function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
+function LineOfAddr(const Addr: Pointer): Integer;
 begin
   Result := GetLocationInfo(Addr).LineNumber;
 end;
 
 //------------------------------------------------------------------------------
 
-function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
+function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 var
   LocInfo: TJclLocationInfo;
@@ -2285,6 +2324,34 @@ begin
     _Proc := LocInfo.ProcedureName;
     _Line := LocInfo.LineNumber;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function __FILE_OF_ADDR__(const Addr: Pointer): string;
+begin
+  Result := FileOfAddr(Addr);
+end;
+
+function __MODULE_OF_ADDR__(const Addr: Pointer): string;
+begin
+  Result := ModuleOfAddr(Addr);
+end;
+
+function __PROC_OF_ADDR__(const Addr: Pointer): string;
+begin
+  Result := ProcOfAddr(Addr);
+end;
+
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
+begin
+  Result := LineOfAddr(Addr);
+end;
+
+function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
+  var _Line: Integer): Boolean;
+begin
+  Result := MapOfAddr(Addr, _File, _Module, _Proc, _Line); 
 end;
 
 //==============================================================================
