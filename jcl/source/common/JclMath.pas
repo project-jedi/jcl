@@ -23,7 +23,7 @@
 { routines, NAN and INF support and more.                                                          }
 {                                                                                                  }
 { Unit owner: Matthias Thoma                                                                       }
-{ Last modified: December 15, 2001                                                                 }
+{ Last modified: April 21, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 // - Added functions: Versine, Coversine, Haversine, exsecand
@@ -42,6 +42,10 @@
 // - Fixed a bug: Rational.Add(TRational) was buggy and delivered wrong results.
 // - Fixed a bug: Rational.Subtract(TRational) was buggy and delivered wrong results.
 
+// rr, April 2003:
+// - Made assembler code PIC-ready where necessary (Linux)
+// - Fixed a bug: So-called "CotH" function was CosH
+// - Added functions: CommercialRound, CotH
 
 unit JclMath;
 
@@ -201,6 +205,7 @@ procedure SetPrecisionToleranceToEpsilon;
 
 function Ackermann(const A, B: Integer): Integer;
 function Ceiling(const X: Float): Integer;
+function CommercialRound(const X: Float): Int64;
 function Factorial(const N: Integer): Float;
 function Fibonacci(const N: Integer): Integer;
 function Floor(const X: Float): Integer;
@@ -461,6 +466,20 @@ uses
 // Internal helper routines
 //==================================================================================================
 
+// Linux: Get Global Offset Table (GOT) adress for Position Independent Code
+// (PIC, used by shared objects)
+
+{$IFDEF PIC}
+function GetGOT: Pointer;
+begin
+  asm
+        MOV Result, EBX
+  end;
+end;
+{$ENDIF}
+
+//--------------------------------------------------------------------------------------------------
+
 // to be independent from JclLogic
 
 function Min(const X, Y: Integer): Integer;
@@ -519,8 +538,15 @@ const
 
 procedure FDegToRad; assembler;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+{$ENDIF PIC}
         FLDPI
+{$IFDEF PIC}
+        FIDIV   [EAX][_180]
+{$ELSE}
         FIDIV   [_180]
+{$ENDIF}
         FMUL
         FWAIT
 end;
@@ -532,10 +558,17 @@ end;
 
 procedure FRadToDeg; assembler;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+{$ENDIF PIC}
         FLD1
         FLDPI
         FDIV
-        FLD     [_180]
+{$IFDEF PIC}
+        FLD   [EAX][_180]
+{$ELSE}
+        FLD   [_180]
+{$ENDIF}
         FMUL
         FMUL
         FWAIT
@@ -548,8 +581,15 @@ end;
 
 procedure FGradToRad; assembler;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+{$ENDIF PIC}
         FLDPI
+{$IFDEF PIC}
+        FIDIV   [EAX][_200]
+{$ELSE}
         FIDIV   [_200]
+{$ENDIF}
         FMUL
         FWAIT
 end;
@@ -561,10 +601,17 @@ end;
 
 procedure FRadToGrad; assembler;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+{$ENDIF PIC}
         FLD1
         FLDPI
         FDIV
-        FLD     [_200]
+{$IFDEF PIC}
+        FLD   [EAX][_200]
+{$ELSE}
+        FLD   [_200]
+{$ENDIF}
         FMUL
         FMUL
         FWAIT
@@ -976,24 +1023,29 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function CosH(X: Float): Float;
+{$IFDEF PUREPASCAL}
 begin
   Result := 0.5 * (Exp(X) + Exp(-X));
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-function CotH(X: Float): Float; assembler;
+{$ELSE}
 const
   RoundDown: Word = $177F;
   OneHalf: Float = 0.5;
 var
   ControlWW: Word;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+{$ENDIF PIC}
         FLD     X  // TODO Legal values for X?
         FLDL2E
         FMULP   ST(1), ST
         FSTCW   ControlWW
+{$IFDEF PIC}
+        FLDCW   [EAX].RoundDown
+{$ELSE}
         FLDCW   RoundDown
+{$ENDIF PIC}
         FLD     ST(0)
         FRNDINT
         FLDCW   ControlWW
@@ -1007,9 +1059,21 @@ asm
         FLD1
         FDIVRP  ST(1), ST
         FADDP   ST(1), ST
+{$IFDEF PIC}
+        FLD     [EAX].OneHalf
+{$ELSE}
         FLD     OneHalf
+{$ENDIF PIC}
         FMULP   ST(1), ST
         FWAIT
+end;
+{$ENDIF PUREPASCAL}
+
+//--------------------------------------------------------------------------------------------------
+
+function CotH(X: Float): Float;
+begin
+  Result := 1 / TanH(X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1039,11 +1103,18 @@ const
 var
   ControlWW: Word;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+{$ENDIF PIC}
         FLD     X // TODO Legal values for X?
         FLDL2E
         FMULP   ST(1), ST
         FSTCW   ControlWW
+{$IFDEF PIC}
+        FLDCW   [EAX].RoundDown
+{$ELSE}
         FLDCW   RoundDown
+{$ENDIF PIC}
         FLD     ST(0)
         FRNDINT
         FLDCW   ControlWW
@@ -1057,7 +1128,11 @@ asm
         FLD1
         FDIVRP  ST(1), ST
         FSUBP   ST(1), ST
+{$IFDEF PIC}
+        FLD     [EAX].OneHalf
+{$ELSE}
         FLD     OneHalf
+{$ENDIF PIC}
         FMULP   ST(1), ST
         FWAIT
 end;
@@ -1414,6 +1489,15 @@ begin
   Result := Integer(Trunc(X));
   if Frac(X) > 0 then
     Inc(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function CommercialRound(const X: Float): Int64;
+begin
+  Result := Trunc(X);
+  if Frac(Abs(X)) >= 0.5 then
+    Result := Result + Sgn(X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2235,6 +2319,7 @@ const
 
 function _FPClass: TFloatingPointClass;
 // In: ST(0) Value to examine
+//     ECX   address of GOT (PIC only)   
 asm
         FXAM
         XOR     EDX, EDX
@@ -2247,13 +2332,21 @@ asm
         RCL     EDX, 1
         BT      EAX, 8  // C0
         RCL     EDX, 1
+{$IFDEF PIC}
+        MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
+{$ELSE}
         MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
+{$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+        MOV     ECX, EAX
+{$ENDIF PIC}
         FLD     Value
         CALL    _FPClass
 end;
@@ -2262,6 +2355,10 @@ end;
 
 function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+        MOV     ECX, EAX
+{$ENDIF PIC}
         FLD     Value
         CALL    _FPClass
 end;
@@ -2270,10 +2367,13 @@ end;
 
 function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 asm
+{$IFDEF PIC}
+        CALL    GetGOT
+        MOV     ECX, EAX
+{$ENDIF PIC}
         FLD     Value
         CALL    _FPClass
 end;
-
 
 //===================================================================================================
 // NaN and Infinity support
