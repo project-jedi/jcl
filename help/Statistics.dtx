@@ -109,7 +109,7 @@ Quick info:
 @@Median
 <GROUP MathRoutines.Statistics>
 Summary:
-  Returns the median of an array of floats.
+  Returns the median of an (sorted) array of floats.
 Description:
   Median returns the median (2nd quartiles) of an array of floats. The supplied
   array <U>must be sorted</U> and cannot be empty. The median of a set of values
@@ -122,6 +122,20 @@ Result:
   exception is raised.
 Quick info:
   Donator: ESB Consultancy
+--------------------------------------------------------------------------------
+@@MedianUnsorted
+<GROUP MathRoutines.Statistics>
+Summary:
+  Returns the median of an (unsorted) array of floats.
+Description:
+  Median returns the median (2nd quartiles) of an array of floats. The supplied
+  array cannot be empty. The median of a set of values is the value which evenly
+  separates the set of values so that one half of the set is greater than the median.
+Parameters:
+  X - The array for which you want the median value.
+Result:
+  The median value of the supplied array. If the array is empty an EMathError
+  exception is raised.
 --------------------------------------------------------------------------------
 @@MinFloatArray
 <GROUP MathRoutines.Statistics>
