@@ -24,7 +24,7 @@
 { and program execution.                                                       }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 08, 2000                                             }
+{ Last modified: November 20, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -40,6 +40,7 @@ uses
   {$IFDEF WIN32}
   Windows, ShlObj,
   {$ENDIF}
+  SysUtils,
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -195,7 +196,6 @@ uses
   {$IFDEF WIN32}
   ActiveX, CommCtrl, ComObj, Messages, ShellApi,
   {$ENDIF}
-  SysUtils,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 //==============================================================================
