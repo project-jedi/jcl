@@ -39,6 +39,8 @@ Result:
   code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
 Notes:
   The caller is responsible for freeing the memory associated with the lpSecurityDescriptor member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
+See also:
+  CreateInheritable
 Quick info:
   Unit: JclSecurity
   Category: Security
@@ -63,6 +65,8 @@ Parameters:
 Result:
   A pointer to the passed in TSecurityAttributes structure. This allows you to write
   code such as CreateFile(..., CreateInheritable(Sa), ...).
+See also:
+  CreateNullDacl
 Quick info:
   Unit: JclSecurity
   Category: Security
@@ -88,6 +92,9 @@ Result:
   If the specified privilege is enabled for the calling thread then the function
   returns True, otherwise the function returns False - this is also the return
   value if the function fails in retrieving the status of the specified privilege.
+See also:
+  EnableProcessPrivilege
+  EnableThreadPrivilege
 Quick info:
   Unit: JclSecurity
   Category: Security
@@ -114,6 +121,9 @@ Result:
   If the function succeeds the result is True, otherwise the result is False. Failure
   is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
   to enable or disable privileges.
+See also:
+  EnableThreadPrivilege
+  IsPrivilegeEnabled
 Quick info:
   Unit: JclSecurity
   Category: Security
@@ -141,6 +151,9 @@ Result:
   If the function succeeds the result is True, otherwise the result is False. Failure
   is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
   to enable or disable privileges.
+See also:
+  EnableProcessPrivilege
+  IsPrivilegeEnabled
 Quick info:
   Unit: JclSecurity
   Category: Security
