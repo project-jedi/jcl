@@ -18,7 +18,6 @@
 { Contributor(s):                                                                                  }
 {   Barry Kelly                                                                                    }
 {   Matthias Thoma (mthoma)                                                                        }
-{   Peter Haas (peterjhaas)                                                                        }
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -4581,6 +4580,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/12 17:20:50  rrossmair
+// cleanup
+//
 // Revision 1.9  2004/08/02 15:30:16  marquardt
 // hunting down (rom) comments
 //
@@ -4598,9 +4600,5 @@ end;
 //
 // Revision 1.4  2004/05/05 00:04:11  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.3  2004/04/06 04:53:18  peterjhaas
-// adapt compiler conditions, add log entry
-//
 
 end.
