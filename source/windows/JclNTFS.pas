@@ -196,8 +196,8 @@ uses
   {$IFDEF FPC}
   WinSysUt,
   {$ENDIF FPC}
-  SysUtils,
-  JclFileUtils, JclResources, JclSecurity, Hardlink;
+  SysUtils, Hardlinks,
+  JclFileUtils, JclResources, JclSecurity;
 
 //==================================================================================================
 // NTFS - Compression
@@ -1295,6 +1295,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2004/10/20 19:52:15  rrossmair
+// - renamed Hardlink to Hardlinks
+// - Hardlinks now generated from prototype unit
+//
 // Revision 1.18  2004/10/19 06:26:48  marquardt
 // JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
 //
