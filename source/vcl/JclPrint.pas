@@ -180,7 +180,7 @@ begin
   Defaults.pDevMode := nil;
   Defaults.DesiredAccess := PRINTER_ACCESS_USE;
   Count := Length(Data);
-  if not OpenPrinter(PChar(Printer), PrinterHandle, nil) then
+  if not OpenPrinter(PChar(Printer), PrinterHandle, @Defaults) then
     raise EJclPrinterError.CreateResRec(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
   DocInfo.DocName := 'My Document';
