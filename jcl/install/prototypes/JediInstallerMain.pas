@@ -352,18 +352,6 @@ begin
   end;
 end;
 
-procedure TMainForm.SetBPLPath(Installation: TJclBorRADToolInstallation; const Value: string);
-begin
-  with Installation do
-    View(Installation).BplPathEdit.Text := Value;
-end;
-
-procedure TMainForm.SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
-begin
-  with Installation do
-    View(Installation).DcpPathEdit.Text := Value;
-end;
-
 function TMainForm.SystemPathValid(const Path: string): Boolean;
 begin
   Result := FSystemPaths.IndexOf({$IFDEF MSWINDOWS}AnsiUpperCase{$ENDIF}(Path)) <> -1;
@@ -512,7 +500,6 @@ procedure TMainForm.InstallBtnClick(Sender: TObject);
 begin
   if ({$IFDEF MSWINDOWS} IsDebuggerAttached or {$ENDIF} not CheckRunningInstances) and
     (Dialog(RsConfirmInstall, dtConfirmation, [drYes, drNo]) = drYes) then
-    //(MessageBox(RsConfirmInstall, mtConfirmation, [mbYes, mbNo]{$IFDEF VisualCLX}, mbNo{$ENDIF}) = mrYes) then
   begin
     Install;
     QuitBtn.SetFocus;
