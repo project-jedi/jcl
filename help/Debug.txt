@@ -2325,20 +2325,20 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TExcFrameType = (eftUnknown, eftFinally, eftAnyException, eftOnException,
-  eftAutoException);
+TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
+  efkAutoException);
 [ShortDescr]
 Exception frame kind.
 [Description]
-TExcFrameType determines the exception frame type.
+TExceptFrameKind determines the exception frame type.
 [Enumeration]
 Count=5
-1=eftUnknown=Unknown exception frame (most likely an exception frame inside a
+1=efkUnknown=Unknown exception frame (most likely an exception frame inside a
 non-Borland library.
-2=eftFinally=A try...finally frame
-3=eftAnyException=A try...except frame
-4=eftOnException=A try...except on.... frame
-5=eftAutoException=A try..except frame around an automated call (these are implicit
+2=efkFinally=A try...finally frame
+3=efkAnyException=A try...except frame
+4=efkOnException=A try...except on.... frame
+5=efkAutoException=A try..except frame around an automated call (these are implicit
 frames inserted by the compiler).
 [Quick Info]
 BCB=4,5
@@ -2395,10 +2395,10 @@ function Handles(ExceptObj: TObject): Boolean;
 [ShortDescr]
 Checks if an exception will be handled by the frame.
 [Description]
-Handles checks if an exception would be handled by the frame. An eftFinally frame
-will never handle an exception (although the code would be executed). eftUnknown
+Handles checks if an exception would be handled by the frame. An efkFinally frame
+will never handle an exception (although the code would be executed). efkUnknown
 frames are assumed to handle the exception (there's no way of knowing for sure)
-as are eftAnyException and eftAutoException frames. For eftOnException the handler
+as are efkAnyException and efkAutoException frames. For efkOnException the handler
 table is scanned to check for an appropiate handler.
 [Parameters]
 Count=1
@@ -2424,10 +2424,10 @@ function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
 Checks if an exception will be handled by the frame and at which location.
 [Description]
 HandlerInfo checks if an exception would be handled by the frame and where the
-handler is located. An eftFinally frame will never handle an exception (although
-the code would be executed). eftUnknown frames are assumed to handle the exception
-(there's no way of knowing for sure) as are eftAnyException and eftAutoException
-frames. For eftOnException the handler table is scanned to check for an appropiate
+handler is located. An efkFinally frame will never handle an exception (although
+the code would be executed). efkUnknown frames are assumed to handle the exception
+(there's no way of knowing for sure) as are efkAnyException and efkAutoException
+frames. For efkOnException the handler table is scanned to check for an appropiate
 handler.
 [Parameters]
 Count=2
@@ -2437,6 +2437,31 @@ Count=2
 If the frame will handle the exception the function returns True and the HandlerAt
 parameter will contain the address of the handler. If the frame won't handle the
 exception the function returns False and HandlerAt will be undefined.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrame
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CodeLocation: Pointer;
+[ShortDescr]
+Returns the location of the code for non efkOnException frames.
+[Description]
+CodeLocation determines the location of the code for non efkOnException frames.
+The Delphi linker sometimes adds a JMP-instruction that jumps to handler. With
+this method you'll always get the location of the handler, inspite of a JMP-
+instruction being inserted or not.
+[Result]
+If there's a JMP-instruction at the "official" location, the function will return
+the destination of that address, otherwise the function just returns the "official"
+location.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -2469,11 +2494,11 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property FrameType: TExcFrameType read FFrameType;
+property FrameKind: TExceptFrameKind read FFrameKind;
 [ShortDescr]
 Holds the frame kind.
 [Description]
-FrameType holds the kind of except frame this object references. The type is
+FrameKind holds the kind of except frame this object references. The type is
 determined when the object is created by checking the code and see if it jumps
 to any of the known Borland handlers.
 [Quick Info]
