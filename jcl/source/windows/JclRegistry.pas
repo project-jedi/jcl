@@ -268,8 +268,9 @@ end;
 
 procedure GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; var RegPath: string);
 begin
-  Key := HKEY_CURRENT_USER;
-  if ExecKind in [ekMachineRun, ekMachineRunOnce] then
+  if ExecKind in [ekUserRun, ekUserRunOnce] then
+    Key := HKEY_CURRENT_USER
+  else
     Key := HKEY_LOCAL_MACHINE;
   RegPath := 'Software\Microsoft\Windows\CurrentVersion\';
   case ExecKind of
