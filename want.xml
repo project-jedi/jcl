@@ -36,15 +36,17 @@
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="22"/>
+  <property name="version.minor"    value="90"/>
   <property name="version"          value="${version.major}.${version.minor}"/>
 
+  <regexp property="ver.dir" pattern="\.0" subst="." text="D%{delphi.version}" />
   <property name="bin.dir"          value="${basedir}/bin"/>
-  <property name="dcu.dir"          value="${basedir}/dcu"/>
+  <property name="lib.dir"          value="${basedir}/lib/${ver.dir}"/>
   <property name="dist.dir"         value="${basedir}/dist"/>
+  <property name="qa.dir"           value="${basedir}/qa"/>
   <property name="samp.dir"         value="${basedir}/examples"/>
   <property name="help.dir"         value="${basedir}/help"/>
-  <property name="pack.dir"         value="${basedir}/packages"/>
+  <property name="pack.dir"         value="${basedir}/packages/${ver.dir}"/>
   <property name="src.dir"          value="${basedir}/source"/>
 
   <property name="zipname"          value="JCL${version.major}_${version.minor}.zip" />
@@ -56,18 +58,18 @@
   <property name="compile.hint"     value="compile the source and sample files" />
   <property name="dist.hint"        value="build .zip file" />
 
-  <patternset id="src.files" >
-    <include  name="${src.dir}" />
+  <patternset id="src.dirs" >
+    <include  name="${src.dir}/**" />
+    <exclude  name="${src.dir}/Prototypes" />
   </patternset>
 
-  <patternset id="samp.files" >
-    <include  name="${samp.dir}" />
+  <patternset id="samp.dirs" >
     <include  name="${samp.dir}/**" />
   </patternset>
 
-  <patternset id="source.files" >
-    <patternset refid="src.files" />
-    <patternset refid="samp.files" />
+  <patternset id="source.dirs" >
+    <patternset refid="src.dirs" />
+    <patternset refid="samp.dirs" />
   </patternset>
 
   <target name="help" >
@@ -87,7 +89,8 @@
 
   <target name="clean" description="${clean.hint}" >
     <!-- <delete dir="${dist.dir}" -->
-    <delete file="${dcu.dir}/*.dcu" />
+    <delete file="${lib.dir}/*.dcu" />
+    <delete file="${lib.dir}/*.dpu" />
     <delete file="${bin.dir}/*.exe" />
     <delete file="${bin.dir}/*.dll" />
     <delete file="${bin.dir}/*.map" />
@@ -99,30 +102,37 @@
 
   <target name="compile" depends="clean,prepare,versioninfo" description="${compile.hint}" >
     <echo message="compile the source files..." />
-    <brcc file="${src.dir}/JclUnicode.rc" output="${src.dir}/JclUnicode.res" />
-    <dcc basedir="${src.dir}" source="*.pas" >
-      <dcuoutput path="${dcu.dir}" />
+    <brcc file="${src.dir}/Windows/JclUnicode.rc" output="${src.dir}/Windows/JclUnicode.res" />
+    <dcc basedir="${pack.dir}" source="${pack.dir}/*.dpk" >
+      <dcuoutput path="${lib.dir}" />
       <exeoutput path="${bin.dir}" />
       <debug value="true" />
       <build value="true" />
 
-      <unitpath path="${src.dir}" />
-      <resourcepath path="${src.dir}" />
+      <unitpath     refid="src.dirs" />
+      <includepath>
+        <include    name="${src.dir}/Common" />
+      </includepath>
+      <resourcepath>
+        <include    name="${src.dir}/Common" />
+      </resourcepath>
     </dcc>
 
+    <!-- compiling examples gives AV when executing dcc32?
     <echo message="" />
     <echo message="compile the sample files..." />
 
-    <dcc basedir="${samp.dir}" source="*.dpr" >
-      <dcuoutput path="${dcu.dir}" />
-      <exeoutput path="${bin.dir}"     />
+    <dcc basedir="${samp.dir}" source="${samp.dir}/**/*.dpr" >
+      <dcuoutput path="${lib.dir}" />
+      <exeoutput path="${bin.dir}" />
       <debug value="true" />
       <build value="true" />
 
-      <unitpath     refid="source.files" />
-      <includepath  refid="source.files" />
-      <resourcepath refid="source.files" />
+      <unitpath     refid="samp.dirs" />
+      <includepath  refid="samp.dirs" />
+      <resourcepath  refid="samp.dirs" />
     </dcc>
+    -->
   </target>
 
   <target name="dist" description="${dist.hint}" >
@@ -130,6 +140,8 @@
     <delete file="${zipfile}" />
     <zip zipfile="${zipfile}" >
       <exclude name="${dist.dir}/**" />
+      <exclude name="${help.dir}/**" />
+      <exclude name="${qa.dir}/**" />
 
       <include name="**/*.pas" />
       <include name="**/*.dfm" />
@@ -148,8 +160,8 @@
       <include name="**/*.res" />
       <include name="**/*.ico" />
 
-      <include name="**/*.hlp" />
-      <include name="**/*.cnt" />
+      <include name="${help.dir}/JCLHelp.hlp" />
+      <include name="${help.dir}/JCLHelp.cnt" />
 
       <include name="**/*.tlb" />
 
