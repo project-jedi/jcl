@@ -23,7 +23,7 @@
 { conversion to user displayable values and 'is'/'as' operator hooking.        }
 {                                                                              }
 { Unit owner: Marcel Bestebroer                                                }
-{ Last modified: June 24, 2001                                                 }
+{ Last modified: July 19, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -929,7 +929,7 @@ var
 begin
   BaseInfo := BaseType as IJclOrdinalRangeTypeInfo;
   FirstBit := BaseInfo.MinValue mod 8;
-  LastBit := BaseInfo.MaxValue - BaseInfo.MinValue + Pred(FirstBit);
+  LastBit := BaseInfo.MaxValue - (BaseInfo.MinValue - FirstBit);
   Bit := FirstBit;
   StartBit := -1;
   while Bit < LastBit do
