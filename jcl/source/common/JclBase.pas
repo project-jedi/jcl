@@ -51,8 +51,8 @@ uses
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 94;   // Fourth minor release since JCL 1.90
-  JclVersionRelease = 0;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1758; // build number, days since march 1, 2000
+  JclVersionRelease = 1;    // 0=pre-release|beta/1=release
+  JclVersionBuild   = 1802; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -313,6 +313,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.28  2005/02/05 14:21:59  rrossmair
+// - version information updated
+//
 // Revision 1.27  2005/01/06 18:48:31  marquardt
 // AnsiLineBreak, AnsiLineFeed, AnsiCarriageReturn, AnsiCrLf moved to JclBase JclStrings now reexports the names
 //
