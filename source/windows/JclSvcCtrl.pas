@@ -20,7 +20,7 @@
 { This unit contains routines and classes to control NT service                                    }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: March 10, 2002                                                                    }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -34,9 +34,9 @@ interface
 
 uses
   Windows, Classes, SysUtils,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   WinSvc,
   JclBase, JclSysUtils;
 
