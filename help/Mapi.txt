@@ -1,0 +1,160 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+EJclMapiError = EJclError;
+[ShortDescr]
+Exception class for MAPI-errors
+[Description]
+The exception class that is raised when an MAPI error occurs
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=unknown
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclMapiTaskWindows = class (TObject)
+[ShortDescr]
+Store / restore MAPI-task windows
+[Description]
+TJclMapiTaskWindows class is able to save and/or restore Task windows. This
+class is used when sending mail with TJclEmail.SendMail or TJclEmail.SimpleSendMail.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclMapiTaskWindows
+Author=unknown
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=TJclMail;..\TJclMail\TJclMail
+2=TJclMail.SendMail;..\TJclMail\Methods\SendMail
+3=TJclMail.SimpleSendMail;..\TJclMail\Methods\SimpleSendMail
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create;
+[ShortDescr]
+Creates an instance of a JclMapiTaskWindows class.
+[Description]
+Creates an instance of a <REF Target"..\TJclMapiTaskWindows>JclMapiTaskWindows</REF> class.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclMapiTaskWindows
+Author=unknown
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=Destroy
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+destructor Destroy; override
+[ShortDescr]
+Destroys an instance of a JclMapiTaskWindows class.
+[Description]
+Destroys an instance of a <REF Target"..\TJclMapiTaskWindows>JclMapiTaskWindows</REF> class.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclMapiTaskWindows
+Author=unknown
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=Create
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure RestoreTaskWindowsState;
+[ShortDescr]
+Restores the saved state of all task windows.
+[Description]
+Reverts the state of all task windows to the state when <REF>SaveTaskWindowsState</REF>
+was called.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclMapiTaskWindows
+Author=unknown
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=SaveTaskWindowsState
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SaveTaskWindowsState;
+[ShortDescr]
+Saves the state of all task windows.
+[Description]
+Saves the state of all task windows. This state can later be restored by
+calling <REF>RestoreTaskWindowsState</REF>.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclMapiTaskWindows
+Author=unknown
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=RestoreTaskWindowsState
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclMapiClient = record
+  ClientName: string;
+  ClientPath: string;
+  RegKeyName: string;
+  Valid: Boolean;
+end;
+[ShortDescr]
+MAPI-Client record
+[Description]
+TJclMapiClient show information on each installed and registered MAPI-Client.
+[RecordFields]
+Count=3
+1=ClientName:string=Name of MAPI-client
+2=ClientPath:string=Path where MAPI-client is located
+3=RegKeyName:string=Registry key for MAPI-client
+4=Valid:Boolean=Validity of client (i.e. does it actually support Simple MAPI calls?)
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=unknown
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclMapiClientType = (ctAutomatic, ctMapi, ctDirect);
+[ShortDescr]
+MAPI-Client type
+[Description]
+TJclMapiClientType determines the type of client
+[Enumeration]
+Count=3
+1=ctAutomatic=TODO
+2=ctMapi=TODO
+3=ctDirect=TODO
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=unknown
+Delphi=4,5
+
