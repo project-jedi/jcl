@@ -1011,7 +1011,7 @@ constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
 begin
   {$IFDEF MSWINDOWS}
   Assert(not IsBadReadPtr(Ptr, Size));
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   inherited Create;
   SetPointer(Ptr, Size);
 end;
