@@ -46,8 +46,9 @@ Kind=Constant
 Unit=JclBase
 Category=Base Services
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 EJclWin32Error = class (<REF Target"..\Types\EJclError">EJclError</REF>)
@@ -66,8 +67,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(const Msg: string);
@@ -89,8 +91,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateFmt(const Msg: string; const Args: array of const);
@@ -114,8 +117,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateRes(Ident: Integer);
@@ -135,8 +139,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateResRec
@@ -158,8 +163,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateRes
@@ -178,8 +184,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=LastErrorMsg
@@ -197,8 +204,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 EJclError = class (Exception);
@@ -218,8 +226,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclError
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
@@ -247,8 +256,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclError
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateResRec
@@ -275,8 +285,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=EJclError
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateResRecFmt
@@ -297,8 +308,9 @@ Kind=Type
 Unit=JclBase
 Category=Base Services
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 LongWord = Cardinal;
@@ -313,8 +325,9 @@ Kind=Type
 Unit=JclBase
 Category=Base Services
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
-BCB=3
+Delphi=
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TSysCharSet = set of Char;
@@ -329,8 +342,9 @@ Kind=Type
 Unit=JclBase
 Category=Base Services
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
-BCB=3
+Delphi=
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 Int64 = packed record
@@ -359,8 +373,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=Int64 support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
-BCB=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=I64Copy
@@ -379,12 +394,13 @@ Count=3
 2=Low:Longint=Low 32 bits for the Int64
 3=High:Longint=High 32 bits for the Int64
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Int64 support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=I64Copy
@@ -401,12 +417,13 @@ Count=2
 1=Dest:Int64=Destination Int64
 2=Source:Int64=Source Int64
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Int64 support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=I64Assign
@@ -427,12 +444,13 @@ If I1 equals I2 the result is 0, if I1 is larger than I2 the result is greater t
 0 (more specifically 1) and if I1 is smaller than I2 the result is smaller than 0
 (more specifically -1).
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Int64 support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=I64Assign
@@ -450,12 +468,13 @@ Count=3
 2=LowPart:Cardinal=Low 32 bits for the supplied Int64
 3=HighPart:Cardinal=High 32 bits for the supplied Int64
 [Quick Info]
-BCB=5
 Unit=JclBase
 Category=Base Services
 SubCat=Int64 support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=5
+Delphi=5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=I64ToCardinals
@@ -472,12 +491,13 @@ Count=3
 2=LowPart:Cardinal=Low 32 bits of the supplied Int64
 3=HighPart:Cardinal=High 32 bits of the supplied Int64
 [Quick Info]
-BCB=5
 Unit=JclBase
 Category=Base Services
 SubCat=Int64 support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=5
+Delphi=5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CardinalsToI64
@@ -552,8 +572,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 DynArrayHigh = 2^31 div SizeOf(ArrayType);
@@ -588,8 +609,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
-BCB=3
+Delphi=
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DynArrayAllocSize(const A): Longint;
@@ -608,12 +630,13 @@ or the result will be unpredictable.
 [Result]
 The amount of dynamic memory, in bytes, reserved for the dynamic array.
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DynArrayLength
@@ -637,12 +660,13 @@ Count=1
 [Result]
 The length of the supplied dynamic array in terms of number of elements.
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DynArrayAllocSize
@@ -665,12 +689,13 @@ Count=1
 [Result]
 The size of an individual element, in bytes.
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DynArrayAllocSize
@@ -702,12 +727,13 @@ number of elements and initializes them to 0. You can immediately start to use
 them without the need to call <REF>DynArraySetLength</REF>. You can pass 0 if you
 don't want to initialize the length of the array.
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DynArrayAllocSize
@@ -729,12 +755,13 @@ memory associated with the dynamic array.
 Count=1
 1=A:TDynXxxArray=The dynamic array variable to finalize. 
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DynArrayAllocSize
@@ -760,12 +787,13 @@ This value must be greater than or equal to 0. Note that setting the array's
 length to 0 does not release all of it's associated memory. You must
 call <REF>DynArrayFinalize</REF> when done using the dynamic array.
 [Quick Info]
-BCB=3
 Unit=JclBase
 Category=Base Services
 SubCat=Dynamic arrays
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3
+Delphi=
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DynArrayAllocSize
@@ -789,8 +817,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=TObjectList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4
-BCB=3,4
+Delphi=4
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Clear; override;
@@ -807,8 +836,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=TObjectList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AOwnsObjects: Boolean = False);
@@ -826,8 +856,9 @@ Unit=JclBase
 Category=Base Services
 SubCat=TObjectList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
@@ -846,5 +877,6 @@ Unit=JclBase
 Category=Base Services
 SubCat=TObjectList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
