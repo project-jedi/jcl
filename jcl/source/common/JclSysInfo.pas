@@ -64,14 +64,18 @@ interface
 uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
-  Windows, {$IFNDEF FPC} ShlObj, {$ENDIF}
-  {$ENDIF}
-  Classes, JclResources;
+  Windows,
+  {$IFNDEF FPC}
+  ShlObj,
+  {$ENDIF FPC}
+  {$ENDIF MSWINDOWS}
+  Classes,
+  JclResources;
 
 //--------------------------------------------------------------------------------------------------
 // Environment Variables
@@ -200,17 +204,17 @@ function GetWindowCaption(Wnd: HWND): string;
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 
-{ $IFNDEF FPC}
+{.$IFNDEF FPC}
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
 function GetMainAppWndFromPid(PID: DWORD): HWND;
-{ $ENDIF}
+{.$ENDIF ~FPC}
 
 function GetShellProcessName: string;
-{ $IFNDEF FPC}
+{.$IFNDEF FPC}
 function GetShellProcessHandle: THandle;
-{ $ENDIF}
+{.$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 // Version Information
@@ -610,8 +614,8 @@ uses
   JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
 
 {$IFDEF FPC}
-  {$INCLUDE JclSysInfo.fpc}
-{$ENDIF}
+{$I JclSysInfo.fpc}
+{$ENDIF FPC}
 
 //==================================================================================================
 // Environment
@@ -619,13 +623,13 @@ uses
 
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
-{$IFDEF UNIX}
+  {$IFDEF UNIX}
   UnSetEnv(PChar(Name));
   Result := True ;
-{$ENDIF UNIX}
-{$IFDEF MSWINDOWS}
+  {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), nil);
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1678,7 +1682,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     if GetModuleInformation(ProcessHandle, Module, ModuleInfo, SizeOf(ModuleInfo)) then
     {$ELSE}
     if GetModuleInformation(ProcessHandle, Module, @ModuleInfo, SizeOf(ModuleInfo)) then
-    {$ENDIF}
+    {$ENDIF FPC}
     begin
       if HandlesOnly then
         List.AddObject('', Pointer(ModuleInfo.lpBaseOfDll))
@@ -1709,7 +1713,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
         if MemInfo._Type = MEM_IMAGE then
         {$ELSE}
         if MemInfo.Type_9 = MEM_IMAGE then
-        {$ENDIF}
+        {$ENDIF FPC}
           AddToList(ProcessHandle, HMODULE(MemInfo.AllocationBase));
         LastAllocBase := MemInfo.AllocationBase;
       end;
@@ -3956,6 +3960,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.21  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.20  2004/06/02 03:23:46  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

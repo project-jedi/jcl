@@ -106,11 +106,11 @@ const
   AnsiSingleQuote = AnsiChar('''');
 
   {$IFDEF MSWINDOWS}
-  AnsiLineBreak      = AnsiCrLf;
-  {$ENDIF}
+  AnsiLineBreak = AnsiCrLf;
+  {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  AnsiLineBreak      = AnsiLineFeed;
-  {$ENDIF}
+  AnsiLineBreak = AnsiLineFeed;
+  {$ENDIF UNIX}
 
 // Misc. character sets
 
@@ -133,19 +133,19 @@ const
   C1_XDIGIT = $0080; // Hexadecimal digits
   C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
 
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   {$IFDEF SUPPORTS_EXTSYM}
-    {$EXTERNALSYM C1_UPPER}
-    {$EXTERNALSYM C1_LOWER}
-    {$EXTERNALSYM C1_DIGIT}
-    {$EXTERNALSYM C1_SPACE}
-    {$EXTERNALSYM C1_PUNCT}
-    {$EXTERNALSYM C1_CNTRL}
-    {$EXTERNALSYM C1_BLANK}
-    {$EXTERNALSYM C1_XDIGIT}
-    {$EXTERNALSYM C1_ALPHA}
-  {$ENDIF}
-{$ENDIF MSWINDOWS}
+  {$EXTERNALSYM C1_UPPER}
+  {$EXTERNALSYM C1_LOWER}
+  {$EXTERNALSYM C1_DIGIT}
+  {$EXTERNALSYM C1_SPACE}
+  {$EXTERNALSYM C1_PUNCT}
+  {$EXTERNALSYM C1_CNTRL}
+  {$EXTERNALSYM C1_BLANK}
+  {$EXTERNALSYM C1_XDIGIT}
+  {$EXTERNALSYM C1_ALPHA}
+  {$ENDIF SUPPORTS_EXTSYM}
+  {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // String Test Routines
@@ -524,11 +524,11 @@ asm
 
         // load case map and prepare variables }
 
-{$IFDEF PIC}
+        {$IFDEF PIC}
         LEA     EBX, [EBX][AnsiCaseMap + EDX]
-{$ELSE}
+        {$ELSE}
         LEA     EBX, [AnsiCaseMap + EDX]
-{$ENDIF}
+        {$ENDIF PIC}
         MOV     ESI, EAX
         XOR     EDX, EDX
         XOR     EAX, EAX
@@ -606,11 +606,11 @@ asm
 
         // load case map and prepare variables
 
-{$IFDEF PIC}
+        {$IFDEF PIC}
         LEA     EBX, [EBX][AnsiCaseMap + EDX]
-{$ELSE}
+        {$ELSE}
         LEA     EBX, [AnsiCaseMap + EDX]
-{$ENDIF}
+        {$ENDIF PIC}
         MOV     ESI, EAX
         XOR     EDX, EDX
         XOR     EAX, EAX
@@ -1073,7 +1073,7 @@ asm
         XOR     EDX, EDX         // MOV     EDX, LoOffset
         JMP     StrCase
 end;
-{$ENDIF}
+{$ENDIF PIC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1088,7 +1088,7 @@ asm
         XOR     EDX, EDX                // MOV     EDX, LoOffset
         JMP     StrCaseBuff
 end;
-{$ENDIF}
+{$ENDIF PIC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1751,7 +1751,7 @@ asm
         MOV     EDX, AnsiUpOffset
         JMP     StrCase
 end;
-{$ENDIF}
+{$ENDIF PIC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1766,7 +1766,7 @@ asm
         MOV     EDX, AnsiUpOffset
         JMP     StrCaseBuff
 end;
-{$ENDIF}
+{$ENDIF PIC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4176,6 +4176,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.22  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.21  2004/05/30 23:54:42  rrossmair
 // Processed documentation TODOs
 //

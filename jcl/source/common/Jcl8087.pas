@@ -74,11 +74,11 @@ const
 
 function Get8087ControlWord: Word; assembler;
 asm
-        {$IFNDEF FPC}
-        SUB     ESP, TYPE WORD
-        {$ELSE}
+        {$IFDEF FPC}
         SUB     ESP, $2
-        {$ENDIF}
+        {$ELSE}
+        SUB     ESP, TYPE WORD
+        {$ENDIF FPC}
         FSTCW   [ESP]
         FWAIT
         POP AX
@@ -155,19 +155,19 @@ end;
 function Set8087ControlWord(const Control: Word): Word; assembler;
 asm
         FNCLEX
-        {$IFNDEF FPC}
-        SUB     ESP, TYPE WORD
-        {$ELSE}
+        {$IFDEF FPC}
         SUB     ESP, $2
-        {$ENDIF}
+        {$ELSE}
+        SUB     ESP, TYPE WORD
+        {$ENDIF FPC}
         FSTCW   [ESP]
         XCHG    [ESP], AX
         FLDCW   [ESP]
-        {$IFNDEF FPC}
-        ADD     ESP, TYPE WORD
-        {$ELSE}
+        {$IFDEF FPC}
         ADD     ESP, $2
-        {$ENDIF}
+        {$ELSE}
+        ADD     ESP, TYPE WORD
+        {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -191,11 +191,11 @@ end;
 
 function GetMasked8087Exceptions: T8087Exceptions;
 asm
-        {$IFNDEF FPC}
-        SUB     ESP, TYPE WORD
-        {$ELSE}
+        {$IFDEF FPC}
         SUB     ESP, $2
-        {$ENDIF}
+        {$ELSE}
+        SUB     ESP, TYPE WORD
+        {$ENDIF FPC}
         FSTCW   [ESP]
         FWAIT
         POP     AX
@@ -210,11 +210,11 @@ asm
         JZ      @1
         FNCLEX                     // clear pending exceptions
 @1:
-        {$IFNDEF FPC}
-        SUB     ESP, TYPE WORD
-        {$ELSE}
+        {$IFDEF FPC}
         SUB     ESP, $2
-        {$ENDIF}
+        {$ELSE}
+        SUB     ESP, TYPE WORD
+        {$ENDIF FPC}
         FSTCW   [ESP]
         FWAIT
         AND     AX, X87ExceptBits  // mask exception mask bits 0..5
@@ -222,11 +222,11 @@ asm
         AND     WORD PTR [ESP], NOT X87ExceptBits
         OR      [ESP], AX
         FLDCW   [ESP]
-        {$IFNDEF FPC}
-        ADD     ESP, TYPE WORD
-        {$ELSE}
+        {$IFDEF FPC}
         ADD     ESP, $2
-        {$ENDIF}
+        {$ELSE}
+        ADD     ESP, TYPE WORD
+        {$ENDIF FPC}
         MOV     AX, DX
         AND     AX, X87ExceptBits
 end;
@@ -258,6 +258,9 @@ end;
 //   "Need imported data reference ($G) to access Default8087CW".
 
 // $Log$
+// Revision 1.5  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.4  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

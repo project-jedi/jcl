@@ -38,7 +38,7 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils, IniFiles, Contnrs,
   JclBase;
 
@@ -52,7 +52,7 @@ type
   TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
   {$ELSE}
   TJclBorRADToolEdition = (deSTD, dePRO, deCSS);
-  {$ENDIF}
+  {$ENDIF KYLIX}
   TJclBorRADToolPath = string;
 
 const
@@ -80,10 +80,12 @@ const
   BorRADToolRepositoryObjectMainForm  = 'DefaultMainForm';
 
   {$IFDEF KYLIX}
-  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar = ('OPEN', 'PRO', 'SVR');
+  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
+    ('OPEN', 'PRO', 'SVR');
   {$ELSE}
-  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar = ('STD', 'PRO', 'CSS');
-  {$ENDIF}
+  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
+    ('STD', 'PRO', 'CSS');
+  {$ENDIF KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 // Installed versions information classes
@@ -298,7 +300,7 @@ type
     FLatestUpdatePack: Integer;
     {$IFDEF MSWINDOWS}
     FOpenHelp: TJclBorlandOpenHelp;
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     FPalette: TJclBorRADToolPalette;
     FRepository: TJclBorRADToolRepository;
     FVersionNumber: Integer;
@@ -361,7 +363,7 @@ type
     property LibraryBrowsingPath: TJclBorRADToolPath read GetLibraryBrowsingPath write SetLibraryBrowsingPath;
     {$IFDEF MSWINDOWS}
     property OpenHelp: TJclBorlandOpenHelp read FOpenHelp;
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     property ConfigData: TCustomIniFile read FConfigData;
     property Globals: TStrings read FGlobals;
     property Make: IJclCommandLineTool read FMake;
@@ -437,9 +439,8 @@ uses
   SysConst,
   {$IFDEF MSWINDOWS}
   Registry,
-  JclRegistry,
-  JclMiscel,
-  {$ENDIF}
+  JclRegistry, JclMiscel,
+  {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
@@ -456,7 +457,7 @@ type
   end;
   {$IFDEF KYLIX}
   TKylixVersion = 1..3;
-  {$ENDIF}
+  {$ENDIF KYLIX}
 
 const
   {$IFDEF MSWINDOWS}
@@ -474,7 +475,7 @@ const
   RootDirValueName           = 'DelphiRoot';
   {$ELSE}
   RootDirValueName           = 'RootDir';
-  {$ENDIF}
+  {$ENDIF KYLIX}
 
   VersionValueName           = 'Version';
 
@@ -519,7 +520,7 @@ const
   {$ENDIF MSWINDOWS}
 
   {$IFDEF KYLIX}
-  IDs: array[1..3] of Integer = (60, 65, 69);
+  IDs: array [1..3] of Integer = (60, 65, 69);
 
   DelphiIdeExeName           = 'delphi';
   BCBIdeExeName              = 'bcblin';
@@ -527,7 +528,7 @@ const
   Bpr2MakExeName             = 'bpr2mak';
   DelphiOptionsFileExtension = '.kof';
 
-  LibSuffixes: array[TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
+  LibSuffixes: array [TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
 
   DCCExeName                 = 'dcc';
   KylixHelpNamePart          = 'k%d';
@@ -546,7 +547,7 @@ const
     ((Version: 5; LatestUpdatePack: 0),
      (Version: 6; LatestUpdatePack: 4),
      (Version: 0; LatestUpdatePack: 0))
-  {$ENDIF}
+  {$ENDIF KYLIX}
   );
 
 resourcestring
@@ -573,7 +574,7 @@ resourcestring
   RsProfessional    = 'Professional';
 
 const
-  RsToolNames: array[TJclBorRADToolKind] of string = (RsDelphiName, RsBCBName);
+  RsToolNames: array [TJclBorRADToolKind] of string = (RsDelphiName, RsBCBName);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -632,7 +633,7 @@ end;
 var
   Pipe: PIOFile;
   Count: Integer;
-  Buffer: array[Byte] of Char;
+  Buffer: array [Byte] of Char;
   Cmd, TempOutput: string;
 begin
   Cmd := Format('%s 2>&1', [CommandLine]);
@@ -1082,12 +1083,12 @@ end;
 
 function TJclDCC.Execute(const CommandLine: string): Boolean;
 const
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ConfFileName = 'DCC32.CFG';
-{$ENDIF WIN32}
-{$IFDEF KYLIX}
+  {$ENDIF WIN32}
+  {$IFDEF KYLIX}
   ConfFileName = 'dcc.conf';
-{$ENDIF KYLIX}
+  {$ENDIF KYLIX}
 begin
   FOutput := '';
   FOptions.SaveToFile(ConfFileName);
@@ -1178,7 +1179,7 @@ begin
   Result := True;
   {$ELSE}
   Result := Installation.VersionNumber >= 6;
-  {$ENDIF}
+  {$ENDIF KYLIX}
 end;
 
 //==================================================================================================
@@ -1391,7 +1392,7 @@ begin
   FFileName := AInstallation.ConfigFileName('dro');
   {$ELSE}
   FFileName := AInstallation.BinFolderName + BorRADToolRepositoryFileName;
-  {$ENDIF}
+  {$ENDIF KYLIX}
   FPages := TStringList.Create;
   IniFile.ReadSection(BorRADToolRepositoryPagesSection, FPages);
   CloseIniFile;
@@ -1540,13 +1541,13 @@ begin
   {$ELSE}
   FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
   FMake := TJclBorlandMake.Create(Self);
-  {$ENDIF}
+  {$ENDIF KYLIX}
   FGlobals := TStringList.Create;
   ReadInformation;
   FIdeTools := TJclBorRADToolIdeTool.Create(Self);
   {$IFNDEF KYLIX}
   FOpenHelp := TJclBorlandOpenHelp.Create(Self);
-  {$ENDIF}
+  {$ENDIF KYLIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1559,7 +1560,7 @@ begin
   FreeAndNil(FIdeTools);
   {$IFDEF MSWINDOWS}
   FreeAndNil(FOpenHelp);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   FreeAndNil(FPalette);
   FreeAndNil(FGlobals);
   {$IFDEF KYLIX}
@@ -1680,7 +1681,7 @@ begin
       else
         Result := RsServerDeveloper;
   end;
-  {$ELSE KYLIX}
+  {$ELSE}
   case Edition of
     deSTD:
       if VersionNumber >= 6 then
@@ -1737,7 +1738,7 @@ begin
   Result := '?';
   {$ELSE}
   Result := VersionFixedFileInfoString(IdeExeFileName, vfFull);
-  {$ENDIF}
+  {$ENDIF KYLIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1849,9 +1850,9 @@ const
   BinDir = 'bin/';
   {$ELSE}
   BinDir = 'Bin\';
-  {$ENDIF}
+  {$ENDIF KYLIX}
   UpdateKeyName = 'Update #';
-  IdeFileNames: array[TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName);
+  IdeFileNames: array [TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName);
 var
   KeyLen, I: Integer;
   Key: string;
@@ -1861,7 +1862,7 @@ begin
   {$IFDEF KYLIX}
   ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
   FRootDir := Globals.Values[RootDirValueName];
-  {$ELSE KYLIX}
+  {$ELSE}
   RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
   FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, ConfigData.FileName, RootDirValueName, '');
 
@@ -1889,20 +1890,20 @@ begin
   end;
 
   for I := 1 to 3 do
-  {$IFDEF KYLIX}
+    {$IFDEF KYLIX}
     if LatestUpdatePacks[I].Version = VersionNumber then
     begin
       FLatestUpdatePack := LatestUpdatePacks[I].LatestUpdatePack;
       Break;
     end;
-  {$ENDIF KYLIX}
-  {$IFDEF MSWINDOWS}
+    {$ENDIF KYLIX}
+    {$IFDEF MSWINDOWS}
     if LatestUpdatePacks[RADToolKind, I].Version = VersionNumber then
     begin
       FLatestUpdatePack := LatestUpdatePacks[RADToolKind, I].LatestUpdatePack;
       Break;
     end;
-  {$ENDIF MSWINDOWS}
+    {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1949,7 +1950,7 @@ begin
   Result := True;
   {$ELSE}
   Result := (Edition <> deSTD) and (VersionNumber >= 6);
-  {$ENDIF}
+  {$ENDIF KYLIX}
 end;
 
 //==================================================================================================
@@ -2178,7 +2179,7 @@ procedure TJclBorRADToolInstallations.ReadInstallations;
 
   procedure CheckForInstallation(RADToolKind: TJclBorRADToolKind; VersionNumber: Integer);
   const
-    RcBaseFileNames: array[TJclBorRADToolKind] of string = ('delphi', 'bcb');
+    RcBaseFileNames: array [TJclBorRADToolKind] of string = ('delphi', 'bcb');
   var
     Item: TJclBorRADToolInstallation;
     RcFileName: string;
@@ -2205,7 +2206,7 @@ begin
 end;
 {$ELSE KYLIX}
 const
-  KeyNames: array[TJclBorRADToolKind] of string = (DelphiKeyName, BCBKeyName);
+  KeyNames: array [TJclBorRADToolKind] of string = (DelphiKeyName, BCBKeyName);
 var
   VersionNumbers: TStringList;
 
@@ -2309,6 +2310,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.11  2004/05/13 16:38:45  rrossmair
 // fixed for paths w/ spaces
 //
