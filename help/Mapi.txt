@@ -1335,6 +1335,33 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
+  const AAttachment: TFileName {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+  AParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+[ShortDescr]
+Brings up the send mail dialog
+[Description]
+JclSimpleBringUpSendMailDialog brings up the send mail dialog.
+[Parameters]
+Count=4
+1=ASubject:string=Subject of the message.
+2=ABody:string=Body of the message.
+3=AAttachment:TFileName=Filename of attachment (optional).
+4=AParentWND:HWND=If non-zero it should be the handle of the main window of 
+your application. In that case, any MAPI dialogs are shown modal. If left 0,
+MAPI dialogs are not shown modal.
+[Result]
+If the dialog was successfully displayed, the function returns True, otherwise 
+it returns False.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean = True): DWORD;
 [ShortDescr]
 Checks the MAPI result code
