@@ -44,6 +44,12 @@ const
 // Misc. often used character definitions
 
   AnsiNull           = AnsiChar(#0);
+  AnsiSoh            = AnsiChar(#1);
+  AnsiStx            = AnsiChar(#2);
+  AnsiEtx            = AnsiChar(#3);
+  AnsiEot            = AnsiChar(#4);
+  AnsiEnq            = AnsiChar(#5);
+  AnsiAck            = AnsiChar(#6);
   AnsiBell           = AnsiChar(#7);
   AnsiBackspace      = AnsiChar(#8);
   AnsiTab            = AnsiChar(#9);
@@ -52,8 +58,24 @@ const
   AnsiFormFeed       = AnsiChar(#12);
   AnsiCarriageReturn = AnsiChar(#13);
   AnsiCrLf           = AnsiString(#13#10);
+  AnsiSo             = AnsiChar(#14);
+  AnsiSi             = AnsiChar(#15);
+  AnsiDle            = AnsiChar(#16);
+  AnsiDc1            = AnsiChar(#17);
+  AnsiDc2            = AnsiChar(#18);
+  AnsiDc3            = AnsiChar(#19);
+  AnsiDc4            = AnsiChar(#20);
+  AnsiNak            = AnsiChar(#21);
+  AnsiSyn            = AnsiChar(#22);
+  AnsiEtb            = AnsiChar(#23);
+  AnsiCan            = AnsiChar(#24);
+  AnsiEm             = AnsiChar(#25);
   AnsiEndOfFile      = AnsiChar(#26);
   AnsiEscape         = AnsiChar(#27);
+  AnsiFs             = AnsiChar(#28);
+  AnsiGs             = AnsiChar(#29);
+  AnsiRs             = AnsiChar(#30);
+  AnsiUs             = AnsiChar(#31);
   AnsiSpace          = AnsiChar(' ');
   AnsiComma          = AnsiChar(',');
   AnsiBackslash      = AnsiChar('\');
@@ -140,7 +162,13 @@ function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrRemoveChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString;
   Flags: TReplaceFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}); // TODOC Robert Lee
+function StrReplaceChar(const S: AnsiString; const C1, C2: Char): AnsiString;
+function StrReplaceChars(const S: AnsiString; const Chars: TSysCharSet;
+  C: Char): AnsiString;
+function StrReplaceButChars(const S: AnsiString; const Chars: TSysCharSet;
+  C: Char): AnsiString;
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
+function StrRepeatLength(const S: AnsiString; Const L: Integer): AnsiString;
 function StrReverse(const S: AnsiString): AnsiString;
 procedure StrReverseInPlace(var S: AnsiString);
 function StrSingleQuote(const S: AnsiString): AnsiString;
@@ -154,6 +182,10 @@ function StrTrimQuotes(const S: AnsiString): AnsiString;
 function StrUpper(const S: AnsiString): AnsiString;
 procedure StrUpperInPlace(var S: AnsiString);
 procedure StrUpperBuff(S: PAnsiChar);
+{$IFDEF WIN32}
+function StrOemToAnsi(const S: AnsiString): AnsiString;
+function StrAnsiToOem(const S: AnsiString): AnsiString;
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // String Management
@@ -172,6 +204,8 @@ procedure StrResetLength(var S: AnsiString);
 //------------------------------------------------------------------------------
 
 function StrCharCount(const S: AnsiString; C: AnsiChar): Integer;
+function StrCharsCount(const S: AnsiString; Chars: TSysCharSet): Integer;
+function StrStrCount(const S, SubS: AnsiString): Integer;
 function StrCompare(const S1, S2: AnsiString): Integer;
 function StrCompareRange(const S1, S2: AnsiString; const Index, Count: Integer): Integer;
 function StrFillChar(const C: AnsiChar; const Count: Integer): AnsiString;
@@ -286,6 +320,8 @@ function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 procedure StrTokens(const S: AnsiString; const List: TStrings);
 procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TStrings);
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
+function StrToFloatSafe(const S: AnsiString): Float;
+function StrToIntSafe(const S: AnsiString): Integer;
 
 {$IFNDEF DELPHI5_UP}
 
@@ -1155,6 +1191,28 @@ end;
 
 //------------------------------------------------------------------------------
 
+function StrKeepChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
+var
+  Source, Dest: PChar;
+begin
+  SetLength(Result, Length(S));
+  UniqueString(Result);
+  Source := PChar(S);
+  Dest := PChar(Result);
+  while (Source <> nil) and (Source^ <> #0) do
+  begin
+    if (Source^ in Chars) then
+    begin
+      Dest^ := Source^;
+      Inc(Dest);
+    end;
+    Inc(Source);
+  end;
+  SetLength(Result, (Longint(Dest) - Longint(PChar(Result))) div SizeOf(AnsiChar));
+end;
+
+//------------------------------------------------------------------------------
+
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
 var
   L: Integer;
@@ -1169,6 +1227,30 @@ begin
     P := P + L;
     Dec(Count);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function StrRepeatLength(const S: AnsiString; Const L: Integer): AnsiString;
+var
+  Count: Integer;
+  LenS: Integer;
+  P: PChar;
+begin
+  LenS := Length(S);
+  Count := L div LenS;
+  if Count * LenS < L then
+    Inc(Count);
+  SetLength(Result, Count * LenS);
+  P := Pointer(Result);
+  while Count> 0 do
+  begin
+    Move(Pointer(S)^, P^, LenS);
+    P := P + LenS;
+    Dec(Count);
+  end;
+  if Length(S) > L then
+    SetLength(Result, L);
 end;
 
 //------------------------------------------------------------------------------
@@ -1453,6 +1535,44 @@ begin
   S := WorkStr;
 end;
 *)
+
+//------------------------------------------------------------------------------
+
+function StrReplaceChar(const S: AnsiString; const C1, C2: Char): AnsiString;
+var
+  I: Integer;
+begin
+  Result := S;
+  for I := 1 to Length(S) do
+    if Result[I] = C1 then
+      Result[I] := C2;
+end;
+
+//------------------------------------------------------------------------------
+
+function StrReplaceChars(const S: AnsiString; const Chars: TSysCharSet;
+  C: Char): AnsiString;
+var
+  I: Integer;
+begin
+  Result := S;
+  for I := 1 to Length(S) do
+    if Result[I] in Chars then
+      Result[I] := C;
+end;
+
+//------------------------------------------------------------------------------
+function StrReplaceButChars(const S: AnsiString; const Chars: TSysCharSet;
+  C: Char): AnsiString;
+var
+  I: Integer;
+begin
+  Result := S;
+  for I := 1 to Length(S) do
+    if not(Result[I] in Chars)
+      then Result[I] := C;
+end;
+
 //------------------------------------------------------------------------------
 
 function StrReverse(const S: AnsiString): AnsiString;
@@ -1701,6 +1821,29 @@ asm
         JMP     StrCaseBuff
 end;
 
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+function StrOemToAnsi(const S: AnsiString): AnsiString;
+begin
+  SetLength(Result, Length(S));
+  OemToAnsiBuff(@S[1], @Result[1], Length(S));
+end;
+{$ENDIF WIN32}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+function StrAnsiToOem(const S: AnsiString): AnsiString;
+begin
+  SetLength(Result, Length(S));
+  AnsiToOemBuff(@S[1], @Result[1], Length(S));
+end;
+{$ENDIF WIN32}
+
+//------------------------------------------------------------------------------
+
+
 //==============================================================================
 // String Management
 //==============================================================================
@@ -1830,6 +1973,40 @@ begin
   for I := 1 to Length(S) do
     if S[I] = C then
       Inc(Result);
+end;
+
+//------------------------------------------------------------------------------
+
+function StrCharsCount(const S: AnsiString; Chars: TSysCharSet): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 1 to Length(S) do
+    if S[I] in Chars then
+      Inc(Result);
+end;
+
+//------------------------------------------------------------------------------
+
+function StrStrCount(const S, SubS: AnsiString): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  if (Length(SubS) > Length(S)) or (Length(SubS) = 0) or (Length(S) = 0) then
+    Exit;
+  if Length(SubS) = 1 then
+  begin
+    Result := StrCharCount(S, SubS[1]);
+    Exit;
+  end;
+  I := StrSearch(SubS, S);
+  while (I > 0) and (Length(S) > I+Length(SubS))
+  do begin
+    Inc(Result);
+    I := StrSearch(SubS, S, I+1);
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -3408,6 +3585,47 @@ begin
       Inc(S);
     end;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+Function StrToFloatSafe(const S: AnsiString): Float;
+var
+  TempS: AnsiString;
+  PosL, PosR: Integer;
+  IsNegative: Boolean;
+begin
+  TempS := StrReplaceChar(S, ThousandSeparator, DecimalSeparator);
+  IsNegative   := False;
+  PosL := Pos('-', TempS);
+  while (PosL > 0) do
+  begin
+    IsNegative := True;
+    Delete(TempS, PosL, 1);
+    PosL := Pos('-', TempS);
+  end;
+  TempS := StrKeepChars(TempS, ['0'..'9',DecimalSeparator]);
+  PosR := StrLastPos(DecimalSeparator, TempS);
+  PosL := Pos(DecimalSeparator, TempS);
+  while (PosL <> PosR) and (PosL > 0) do
+  begin
+    Delete(TempS, PosL, 1);
+    PosL := Pos(DecimalSeparator, TempS);
+  end;
+  if Length(TempS) > 0 then
+  begin
+    if TempS[1] = DecimalSeparator then TempS := '0' + TempS;
+    if TempS[length(TempS)] = DecimalSeparator then TempS := TempS + '0';
+    Result := StrToFloat(TempS);
+    if IsNegative then Result := Result * -1;
+  end else Result := 0.0;
+end;
+
+//------------------------------------------------------------------------------
+
+Function StrToIntSafe(const S: AnsiString): Integer;
+begin
+  Result := Trunc(StrToFloatSafe(S));
 end;
 
 //==============================================================================
