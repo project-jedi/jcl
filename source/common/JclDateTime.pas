@@ -254,7 +254,7 @@ begin
               // the last day of year -1 (-693594) to the first days of year 1
       Result := (Year-1) * DaysPerYear + DateTimeBaseDay // BaseDate is 1/1/1
                 + SolarDifference;                       // guarantee a smooth transition at 1/1/10000
-    Result := Trunc(result);            
+    Result := Trunc(result);
     Result := Result + (Month-1) * DaysPerMonth;
     Result := Round(Result) + (Day-1);
   end;
@@ -300,7 +300,7 @@ begin
     else                                      // Year >= 10000
       Date := Date  - SolarDifference;        // guarantee a smooth transition at 1/1/10000
     RDays   := Date - DateTimeBaseDay;        // Days relative to 1/1/0001
-    RMonths := RDays / DaysPerMonth;          // "Months" relative to 1/1/0001 
+    RMonths := RDays / DaysPerMonth;          // "Months" relative to 1/1/0001
     RMonths := RMonths - Year * 12.0;         // 12 "Months" per Year
     if RMonths < 0 then                       // possible truncation glitches
     begin
@@ -460,7 +460,7 @@ var
   M: Integer;
 begin
   M := MonthOfDate(DateTime);
-  if (M = 2) and IsLeapYear(DateTime) then    // Compiler Setting should be  { $B–} 
+  if (M = 2) and IsLeapYear(DateTime) then    // Compiler Setting should be  { $B–}
     Result := 29
   else
     Result := DaysInMonths[M];
@@ -697,7 +697,7 @@ var
   LocalFileTime: TFileTime;
 begin
   ResultCheck(FileTimeToLocalFileTime(FileTime, LocalFileTime));
-  Result := FileTimeToDateTime(LocalFileTime);            
+  Result := FileTimeToDateTime(LocalFileTime);
 end;
 
 //------------------------------------------------------------------------------
