@@ -66,7 +66,7 @@ begin
   Result := Length(X);
   {$ELSE}
   Result := DynArrayLength(X);
-  {$ENDIF};
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ begin
   Result := Length(X);
   {$ELSE}
   Result := DynArrayLength(X);
-  {$ENDIF};
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   if Result = 0 then
     raise EJclMathError.CreateResRec(@RsEmptyArray);
 end;
@@ -92,7 +92,7 @@ begin
   Result := SumFloatArray(X) / Length(X);
   {$ELSE}
   Result := SumFloatArray(X) / DynArrayLength(X);
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -153,7 +153,7 @@ begin
       raise EJclMathError.CreateResRec(@RsNonPositiveArray);
     Result := Result * X^[I];
   end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   Result := Power(Result, 1 / L);
 end;
 
@@ -177,7 +177,7 @@ begin
       raise EJclMathError.CreateResRec(@RsNonPositiveArray);
 
     Result := Result + 1 / X^[I];
-    {$ENDIF}
+    {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
   Result := L / Result;
 end;
@@ -198,7 +198,7 @@ begin
     {$ELSE}
     if X^[I] <= PrecisionTolerance then
       Exit;
-    {$ENDIF}
+    {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
   Result := True;
 end;
@@ -220,7 +220,7 @@ begin
   for I := 1 to L - 1 do
     if B^[I] > Result then
       Result := B^[I];
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ begin
       Max := B^[I];
       Result := I;
     end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ begin
     Result := X^[N div 2]
   else
     Result := (X^[N div 2 - 1] + X^[N div 2]) / 2;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -294,7 +294,7 @@ begin
   for I := 1 to L - 1 do
     if B^[I] > Result then
       Result := B^[I];
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -322,7 +322,7 @@ begin
       Min := B^[I];
       Result := I;
     end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
 end;
 
 //------------------------------------------------------------------------------
@@ -371,7 +371,7 @@ begin
     Result := Result + Sqr(X^[I]);
     Sum := Sum + X^[I];
   end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   Result := Result / L;
   Result := Result - Sqr(Sum / L);
 end;
@@ -400,7 +400,7 @@ begin
     SumSq := SumSq + Sqr(X^[I]);
     Sum := Sum + X^[I];
   end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   Mean := Sum / L;
   Variance := (SumSq / L) - Sqr(Mean);
 end;
@@ -429,7 +429,7 @@ begin
     Result := Result + Sqr(X^[I]);
     Sum := Sum + X^[I];
   end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   if L > 1 then
   begin
     Result := Result / (L - 1);
@@ -463,7 +463,7 @@ begin
     SumSq := SumSq + Sqr(X^[I]);
     Sum := Sum + X^[I];
   end;
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   Mean := Sum / L;
   if L > 1 then
     Variance := (SumSq / (L - 1)) - Sqr(Sum / (L - 1))
@@ -489,7 +489,7 @@ begin
     Result := B^[0];
     for I := 1 to L - 1 do
       Result := Result + B^[I];
-    {$ENDIF}
+    {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
 end;
 
@@ -511,7 +511,7 @@ begin
     Result := Sqr(B^[0] - Diff);
     for I := 1 to L - 1 do
       Result := Result + Sqr(B^[I] - Diff);
-    {$ENDIF}
+    {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
 end;
 
@@ -533,7 +533,7 @@ begin
     Result := Sqr(B^[0]);
     for I := 1 to L - 1 do
       Result := Result + Sqr(B^[I]);
-    {$ENDIF}
+    {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
 end;
 
@@ -548,7 +548,7 @@ begin
   L := Min(Length(X), Length(Y));
   {$ELSE}
   L := Min(DynArrayLength(X), DynArrayLength(Y));
-  {$ENDIF}
+  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   if L <> 0 then
   begin
     {$IFDEF SUPPORTS_DYNAMICARRAYS}
@@ -559,7 +559,7 @@ begin
     Result := X^[0] * Y^[0];
     for I := 1 to L - 1 do
       Result := Result + X^[I] * Y^[I];
-    {$ENDIF}
+    {$ENDIF SUPPORTS_DYNAMICARRAYS}
   end;
 end;
 
