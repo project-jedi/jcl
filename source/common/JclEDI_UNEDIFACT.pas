@@ -24,11 +24,11 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: May 25, 2003                                                                      }
+{ Last modified: July 28, 2003                                                                     }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
-{   Help and Demos at http://24.54.82.216/DelphiJedi/Default.htm                                   }
-{    My website is usually available between 8:00am-10:00pm EST                                    }
+{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -45,6 +45,9 @@ unit JclEDI_UNEDIFACT;
 {$I jedi.inc}
 
 {$WEAKPACKAGEUNIT ON}
+
+{$DEFINE OPTIMIZED_DISASSEMBLE}
+{$DEFINE OPTIMIZED_STRINGREPLACE}
 
 interface
 
@@ -105,8 +108,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     destructor Destroy; override;
     //
     function AddElement: Integer;
@@ -147,8 +149,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     destructor Destroy; override;
     //
     function AddElement: Integer;
@@ -186,22 +187,19 @@ type
 
   TEDIMessageSegment = class(TEDISegment)
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIFunctionalGroupSegment = class(TEDISegment)
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
   TEDIInterchangeControlSegment = class(TEDISegment)
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; ElementCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
   end;
 
@@ -227,8 +225,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; SegmentCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; SegmentCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     function AddSegment: Integer;
@@ -254,6 +251,7 @@ type
   published
     property SegmentUNH: TEDIMessageSegment read FUNHSegment write SetUNHSegment;
     property SegmentUNT: TEDIMessageSegment read FUNTSegment write SetUNTSegment;
+    property SegmentCount: Integer read GetCount;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -278,8 +276,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; MessageCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; MessageCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     function AddMessage: Integer;
@@ -308,6 +305,7 @@ type
   published
     property SegmentUNG: TEDIFunctionalGroupSegment read FUNGSegment write SetUNGSegment;
     property SegmentUNE: TEDIFunctionalGroupSegment read FUNESegment write SetUNESegment;
+    property MessageCount: Integer read GetCount;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -331,9 +329,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject;
-      FunctionalGroupCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     function AddFunctionalGroup: Integer;
@@ -391,8 +387,7 @@ type
     function InternalAssignDelimiters: TEDIDelimiters; override;
     function InternalCreateEDIDataObject: TEDIDataObject; override;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer = 0); reintroduce;
     destructor Destroy; override;
 
     procedure LoadFromFile(const FileName: string);
@@ -428,6 +423,7 @@ type
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
     property Options: TEDIFileOptions read FEDIFileOptions write FEDIFileOptions;
+    property InterchangeControlCount: Integer read GetCount;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -576,29 +572,11 @@ constructor TEDISegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIMessage) then
   begin
-    inherited Create(Parent);
+    inherited Create(Parent, ElementCount);
   end
   else
   begin
-    inherited Create(nil);
-  end;
-  FSegmentID := '';
-  FEDIDOT := ediSegment;
-  FCreateObjectType := ediElement;
-//  FSegmentIdData := TEDICompositeElement.Create(Self);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDISegment.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) and (Parent is TEDIMessage) then
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
+    inherited Create(nil, ElementCount);
   end;
   FSegmentID := '';
   FEDIDOT := ediSegment;
@@ -874,17 +852,6 @@ end;
 
 { TEDIMessageSegment }
 
-constructor TEDIMessageSegment.Create(Parent: TEDIDataObject);
-begin
-  inherited;
-  if Assigned(Parent) and (Parent is TEDIMessage) then
-  begin
-    FParent := Parent;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIMessageSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited;
@@ -906,17 +873,6 @@ end;
 //==================================================================================================
 
 { TEDIFunctionalGroupSegment }
-
-constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject);
-begin
-  inherited;
-  if Assigned(Parent) and (Parent is TEDIFunctionalGroup) then
-  begin
-    FParent := Parent;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -960,17 +916,6 @@ end;
 //==================================================================================================
 
 { TEDIInterchangeControlSegment }
-
-constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject);
-begin
-  inherited;
-  if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-  begin
-    FParent := Parent;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -1082,28 +1027,11 @@ begin
   if Assigned(Parent) and
     ((Parent is TEDIFunctionalGroup) or (Parent is TEDIInterchangeControl)) then
   begin
-    inherited Create(Parent);
+    inherited Create(Parent, SegmentCount);
   end
   else
   begin
-    inherited Create(nil);
-  end;
-  FEDIDOT := ediMessage;
-  InternalCreateHeaderTrailerSegments;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDIMessage.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) and
-    ((Parent is TEDIFunctionalGroup) or (Parent is TEDIInterchangeControl)) then
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
+    inherited Create(nil, SegmentCount);
   end;
   FEDIDOT := ediMessage;
   InternalCreateHeaderTrailerSegments;
@@ -1152,61 +1080,96 @@ procedure TEDIMessage.Disassemble;
 var
   I, StartPos, SearchResult: Integer;
   S, S2: string;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader: TEDIDataObjectLinkedListHeader;
+  LLItem: TEDIDataObjectLinkedListItem;
+  EDISegment: TEDISegment;
+{$ENDIF}
 begin
-  FUNHSegment.Data := '';
-  FUNHSegment.DeleteElements;
-  FUNTSegment.Data := '';
-  FUNTSegment.DeleteElements;
-  DeleteSegments;
-  //Check delimiter assignment
-  if not Assigned(FDelimiters) then
-  begin
-    FDelimiters := InternalAssignDelimiters;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader := TEDIDataObjectLinkedListHeader.Create;
+  try
+{$ENDIF}
+    FUNHSegment.Data := '';
+    FUNHSegment.DeleteElements;
+    FUNTSegment.Data := '';
+    FUNTSegment.DeleteElements;
+    DeleteSegments;
+    //Check delimiter assignment
     if not Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError030);
-    end;
-  end;
-  //Find the first segment
-  StartPos := 1;
-  SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
-  while SearchResult <> 0 do
-  begin
-    S := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1), Length(UNHSegmentId));
-    S2 := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1), Length(UNTSegmentId));
-    if (S <> UNHSegmentId) and (S2 <> UNTSegmentId) then
-    begin
-      I := AddSegment;
-      if ((SearchResult - StartPos) > 0) then //data exists
+      FDelimiters := InternalAssignDelimiters;
+      if not Assigned(FDelimiters) then
       begin
-        FEDIDataObjects[I].Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
-          ((SearchResult - StartPos) + FDelimiters.SDLen));
-        FEDIDataObjects[I].Disassemble;
-      end;
-    end
-    else if S = UNHSegmentId then
-    begin
-      if ((SearchResult - StartPos) > 0) then //data exists
-      begin
-        FUNHSegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
-          ((SearchResult - StartPos) + FDelimiters.SDLen));
-        FUNHSegment.Disassemble;
-      end;
-    end
-    else if S2 = UNTSegmentId then
-    begin
-      if ((SearchResult - StartPos) > 0) then //data exists
-      begin
-        FUNTSegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
-          ((SearchResult - StartPos) + FDelimiters.SDLen));
-        FUNTSegment.Disassemble;
+        raise EJclEDIError.CreateResRec(@RsEDIError030);
       end;
     end;
-    StartPos := SearchResult + FDelimiters.SDLen;
+    //Find the first segment
+    StartPos := 1;
     SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
+    while SearchResult <> 0 do
+    begin
+      S := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1), Length(UNHSegmentId));
+      S2 := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1), Length(UNTSegmentId));
+      if (S <> UNHSegmentId) and (S2 <> UNTSegmentId) then
+      begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+        EDISegment := InternalCreateSegment;
+{$ELSE}
+        I := AddSegment;
+{$ENDIF}
+        if ((SearchResult - StartPos) > 0) then //data exists
+        begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+          EDISegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+            ((SearchResult - StartPos) + FDelimiters.SDLen));
+          EDISegment.Disassemble;
+          LLHeader.AppendEDIDataObject(EDISegment);
+{$ELSE}
+          FEDIDataObjects[I].Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+            ((SearchResult - StartPos) + FDelimiters.SDLen));
+          FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+        end;
+      end
+      else if S = UNHSegmentId then
+      begin
+        if ((SearchResult - StartPos) > 0) then //data exists
+        begin
+          FUNHSegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+            ((SearchResult - StartPos) + FDelimiters.SDLen));
+          FUNHSegment.Disassemble;
+        end;
+      end
+      else if S2 = UNTSegmentId then
+      begin
+        if ((SearchResult - StartPos) > 0) then //data exists
+        begin
+          FUNTSegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+            ((SearchResult - StartPos) + FDelimiters.SDLen));
+          FUNTSegment.Disassemble;
+        end;
+      end;
+      StartPos := SearchResult + FDelimiters.SDLen;
+      SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
+    end;
+    FData := '';
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+    //Add the objects in a chunk
+    AddSegments(LLHeader.ItemCount);
+    I := 0;
+    LLItem := LLHeader.FirstItem;
+    while LLItem <> nil do
+    begin
+      FEDIDataObjects[I] := LLItem.EDIDataObject;
+      LLItem.EDIDataObject := nil;
+      LLItem := LLItem.NextItem;
+      Inc(I);
+    end;
+  finally
+    LLHeader.Free;
   end;
-  FData := '';
-
+{$ENDIF}
   FState := ediDissassembled;
 end;
 
@@ -1424,31 +1387,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIFunctionalGroup.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
-  end;
-  FEDIDOT := ediFunctionalGroup;
-  InternalCreateHeaderTrailerSegments;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIFunctionalGroup.Create(Parent: TEDIDataObject; MessageCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
   begin
-    inherited Create(Parent);
+    inherited Create(Parent, MessageCount);
   end
   else
   begin
-    inherited Create(nil);
+    inherited Create(nil, MessageCount);
   end;
   FEDIDOT := ediFunctionalGroup;
   InternalCreateHeaderTrailerSegments;
@@ -1496,111 +1443,143 @@ end;
 procedure TEDIFunctionalGroup.Disassemble;
 var
   I, StartPos, SearchResult: Integer;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader: TEDIDataObjectLinkedListHeader;
+  LLItem: TEDIDataObjectLinkedListItem;
+  EDIMessage: TEDIMessage;
+{$ENDIF}
 begin
-  FUNGSegment.Data := '';
-  FUNGSegment.DeleteElements;
-  FUNESegment.Data := '';
-  FUNESegment.DeleteElements;
-  DeleteMessages;
-  //Check delimiter assignment
-  if not Assigned(FDelimiters) then
-  begin
-    FDelimiters := InternalAssignDelimiters;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader := TEDIDataObjectLinkedListHeader.Create;
+  try
+{$ENDIF}
+    FUNGSegment.Data := '';
+    FUNGSegment.DeleteElements;
+    FUNESegment.Data := '';
+    FUNESegment.DeleteElements;
+    DeleteMessages;
+    //Check delimiter assignment
     if not Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError019);
-    end;
-  end;
-  //Find Functional Group Header Segment
-  StartPos := 1;
-  //Search for Functional Group Header
-  if UNGSegmentId + FDelimiters.ED = Copy(FData, 1, Length(UNGSegmentId + FDelimiters.ED)) then
-  begin
-    //Search for Functional Group Header Segment Terminator
-    SearchResult := StrSearch(FDelimiters.SD, FData, 1);
-    if (SearchResult - StartPos) > 0 then //data exists
-    begin
-      FUNGSegment.Data := Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
-      FUNGSegment.Disassemble;
-    end
-    else
-    begin
-      raise EJclEDIError.CreateResRec(@RsEDIError021);
-    end;
-  end
-  else
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError022);
-  end;
-  //Search for Message Header
-  SearchResult := StrSearch(FDelimiters.SD + UNHSegmentId + FDelimiters.ED, FData, StartPos);
-  if SearchResult <= 0 then
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError032);
-  end;
-  //Set next start position
-  StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-  //Continue
-  while SearchResult <> 0 do
-  begin
-    //Search for Message Trailer
-    SearchResult := StrSearch(FDelimiters.SD + UNTSegmentId + FDelimiters.ED, FData, StartPos);
-    if SearchResult <> 0 then
-    begin
-      //Set the next start position
-      SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-      //Search for the end of Message Trailer
-      SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
-      if SearchResult <> 0 then
+      FDelimiters := InternalAssignDelimiters;
+      if not Assigned(FDelimiters) then
       begin
-        I := AddMessage;
-        FEDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
-        FEDIDataObjects[I].Disassemble;
+        raise EJclEDIError.CreateResRec(@RsEDIError019);
+      end;
+    end;
+    //Find Functional Group Header Segment
+    StartPos := 1;
+    //Search for Functional Group Header
+    if UNGSegmentId + FDelimiters.ED = Copy(FData, 1, Length(UNGSegmentId + FDelimiters.ED)) then
+    begin
+      //Search for Functional Group Header Segment Terminator
+      SearchResult := StrSearch(FDelimiters.SD, FData, 1);
+      if (SearchResult - StartPos) > 0 then //data exists
+      begin
+        FUNGSegment.Data := Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
+        FUNGSegment.Disassemble;
       end
       else
       begin
-        raise EJclEDIError.CreateResRec(@RsEDIError033);
+        raise EJclEDIError.CreateResRec(@RsEDIError021);
       end;
     end
     else
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError034);
+      raise EJclEDIError.CreateResRec(@RsEDIError022);
+    end;
+    //Search for Message Header
+    SearchResult := StrSearch(FDelimiters.SD + UNHSegmentId + FDelimiters.ED, FData, StartPos);
+    if SearchResult <= 0 then
+    begin
+      raise EJclEDIError.CreateResRec(@RsEDIError032);
+    end;
+    //Set next start position
+    StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+    //Continue
+    while SearchResult <> 0 do
+    begin
+      //Search for Message Trailer
+      SearchResult := StrSearch(FDelimiters.SD + UNTSegmentId + FDelimiters.ED, FData, StartPos);
+      if SearchResult <> 0 then
+      begin
+        //Set the next start position
+        SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+        //Search for the end of Message Trailer
+        SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
+        if SearchResult <> 0 then
+        begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+          EDIMessage := InternalCreateMessage;
+          EDIMessage.Data :=
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+          EDIMessage.Disassemble;
+          LLHeader.AppendEDIDataObject(EDIMessage);
+{$ELSE}
+          I := AddMessage;
+          FEDIDataObjects[I].Data :=
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+          FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+        end
+        else
+        begin
+          raise EJclEDIError.CreateResRec(@RsEDIError033);
+        end;
+      end
+      else
+      begin
+        raise EJclEDIError.CreateResRec(@RsEDIError034);
+      end;
+      //Set the next start position
+      StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+      //
+      //Verify the next record is a Message Header
+      if (UNHSegmentId + FDelimiters.ED) <>
+        Copy(FData, StartPos, (Length(UNHSegmentId) + FDelimiters.EDLen)) then
+      begin
+        Break;
+      end;
     end;
     //Set the next start position
     StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-    //
-    //Verify the next record is a Message Header
-    if (UNHSegmentId + FDelimiters.ED) <>
-      Copy(FData, StartPos, (Length(UNHSegmentId) + FDelimiters.EDLen)) then
+    //Find Functional Group Trailer Segment
+    if (UNESegmentId + FDelimiters.ED) =
+      Copy(FData, StartPos, Length(UNESegmentId + FDelimiters.ED)) then
     begin
-      Break;
-    end;
-  end;
-  //Set the next start position
-  StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-  //Find Functional Group Trailer Segment
-  if (UNESegmentId + FDelimiters.ED) =
-    Copy(FData, StartPos, Length(UNESegmentId + FDelimiters.ED)) then
-  begin
-    //Find Functional Group Trailer Segment Terminator
-    SearchResult := StrSearch(FDelimiters.SD, FData, StartPos + FDelimiters.SDLen);
-    if (SearchResult - StartPos) > 0 then //data exists
-    begin
-      FUNESegment.Data := Copy(FData, StartPos, (SearchResult + FDelimiters.SDLen));
-      FUNESegment.Disassemble;
+      //Find Functional Group Trailer Segment Terminator
+      SearchResult := StrSearch(FDelimiters.SD, FData, StartPos + FDelimiters.SDLen);
+      if (SearchResult - StartPos) > 0 then //data exists
+      begin
+        FUNESegment.Data := Copy(FData, StartPos, (SearchResult + FDelimiters.SDLen));
+        FUNESegment.Disassemble;
+      end
+      else
+      begin
+        raise EJclEDIError.CreateResRec(@RsEDIError023);
+      end;
     end
     else
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError023);
+      raise EJclEDIError.CreateResRec(@RsEDIError024);
     end;
-  end
-  else
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError024);
+    FData := '';
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+    //Add the objects in a chunk
+    AddMessages(LLHeader.ItemCount);
+    I := 0;
+    LLItem := LLHeader.FirstItem;
+    while LLItem <> nil do
+    begin
+      FEDIDataObjects[I] := LLItem.EDIDataObject;
+      LLItem.EDIDataObject := nil;
+      LLItem := LLItem.NextItem;
+      Inc(I);
+    end;
+  finally
+    LLHeader.Free;
   end;
-  FData := '';
-
+{$ENDIF}
   FState := ediDissassembled;
 end;
 
@@ -1813,32 +1792,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) and (Parent is TEDIFile) then
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
-  end;
-  FEDIDOT := ediInterchangeControl;
-  InternalCreateHeaderTrailerSegments;
-  FCreateObjectType := ediFunctionalGroup;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer);
 begin
   if Assigned(Parent) and (Parent is TEDIFile) then
   begin
-    inherited Create(Parent);
+    inherited Create(Parent, FunctionalGroupCount);
   end
   else
   begin
-    inherited Create(nil);
+    inherited Create(nil, FunctionalGroupCount);
   end;
   FEDIDOT := ediInterchangeControl;
   InternalCreateHeaderTrailerSegments;
@@ -1865,149 +1827,196 @@ end;
 procedure TEDIInterchangeControl.Disassemble;
 var
   I, StartPos, SearchResult: Integer;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader: TEDIDataObjectLinkedListHeader;
+  LLItem: TEDIDataObjectLinkedListItem;
+  EDIFunctionalGroup: TEDIFunctionalGroup;
+  EDIMessage: TEDIMessage;
+{$ENDIF}
 begin
-  FUNBSegment.Data := '';
-  FUNBSegment.DeleteElements;
-  FUNZSegment.Data := '';
-  FUNZSegment.DeleteElements;
-  DeleteEDIDataObjects;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader := TEDIDataObjectLinkedListHeader.Create;
+  try
+{$ENDIF}
+    FUNBSegment.Data := '';
+    FUNBSegment.DeleteElements;
+    FUNZSegment.Data := '';
+    FUNZSegment.DeleteElements;
+    DeleteEDIDataObjects;
 
-  if not Assigned(FDelimiters) then
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError012);
-  end;
-
-  StartPos := 1;
-  //Search for Interchange Control Header
-  if UNBSegmentId + FDelimiters.ED = Copy(FData, 1, Length(UNBSegmentId + FDelimiters.ED)) then
-  begin
-    SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
-    if (SearchResult - StartPos) > 0 then //data exists
+    if not Assigned(FDelimiters) then
     begin
-      FUNBSegment.Data := Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
-      FUNBSegment.Disassemble;
-    end
-    else
-    begin
-      raise EJclEDIError.CreateResRec(@RsEDIError014);
+      raise EJclEDIError.CreateResRec(@RsEDIError012);
     end;
-  end
-  else
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError015);
-  end;
-  //Search for Functional Group Header
-  SearchResult := StrSearch(FDelimiters.SD + UNGSegmentId + FDelimiters.ED, FData, StartPos);
-  if SearchResult > 0 then
-  begin
-    //Set next start positon
-    StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-    //Continue
-    while ((StartPos + Length(UNGSegmentId)) < Length(FData)) and (SearchResult > 0) do
+
+    StartPos := 1;
+    //Search for Interchange Control Header
+    if UNBSegmentId + FDelimiters.ED = Copy(FData, 1, Length(UNBSegmentId + FDelimiters.ED)) then
     begin
-      //Search for Functional Group Trailer
-      SearchResult := StrSearch(FDelimiters.SD + UNESegmentId + FDelimiters.ED, FData, StartPos);
-      if SearchResult > 0 then
+      SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
+      if (SearchResult - StartPos) > 0 then //data exists
       begin
-        //Set next start positon
-        SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-        //Search for end of Functional Group Trailer Segment Terminator
-        SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
-        if SearchResult > 0 then
-        begin
-          I := AddFunctionalGroup;
-          FEDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
-          FEDIDataObjects[I].Disassemble;
-        end
-        else
-        begin
-          raise EJclEDIError.CreateResRec(@RsEDIError023);
-        end;
+        FUNBSegment.Data := Copy(FData, 1, (SearchResult + FDelimiters.SDLen) - 1);
+        FUNBSegment.Disassemble;
       end
       else
       begin
-        raise EJclEDIError.CreateResRec(@RsEDIError024);
+        raise EJclEDIError.CreateResRec(@RsEDIError014);
       end;
+    end
+    else
+    begin
+      raise EJclEDIError.CreateResRec(@RsEDIError015);
+    end;
+    //Search for Functional Group Header
+    SearchResult := StrSearch(FDelimiters.SD + UNGSegmentId + FDelimiters.ED, FData, StartPos);
+    if SearchResult > 0 then
+    begin
       //Set next start positon
       StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-      //Verify the next record is a Functional Group Header
-      if (UNGSegmentId + FDelimiters.ED) <>
-        Copy(FData, StartPos, (Length(UNGSegmentId) + FDelimiters.EDLen)) then
+      //Continue
+      while ((StartPos + Length(UNGSegmentId)) < Length(FData)) and (SearchResult > 0) do
       begin
-        Break;
-      end;
-    end;
-  end
-  else //Search for Message Header
-  begin
-    //Search for Message Header
-    SearchResult := StrSearch(FDelimiters.SD + UNHSegmentId + FDelimiters.ED, FData, StartPos);
-    if SearchResult <= 0 then
-    begin
-      raise EJclEDIError.CreateResRec(@RsEDIError032);
-    end;
-    //Set next start position
-    StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-    //Continue
-    while SearchResult <> 0 do
-    begin
-      //Search for Message Trailer
-      SearchResult := StrSearch(FDelimiters.SD + UNTSegmentId + FDelimiters.ED, FData, StartPos);
-      if SearchResult <> 0 then
-      begin
-        //Set the next start position
-        SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-        //Search for the end of Message Trailer
-        SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
-        if SearchResult <> 0 then
+        //Search for Functional Group Trailer
+        SearchResult := StrSearch(FDelimiters.SD + UNESegmentId + FDelimiters.ED, FData, StartPos);
+        if SearchResult > 0 then
         begin
-          I := AddMessage;
-          FEDIDataObjects[I].Data :=
-            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
-          FEDIDataObjects[I].Disassemble;
+          //Set next start positon
+          SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+          //Search for end of Functional Group Trailer Segment Terminator
+          SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
+          if SearchResult > 0 then
+          begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+            EDIFunctionalGroup := InternalCreateFunctionalGroup;
+            EDIFunctionalGroup.Data :=
+              Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+            EDIFunctionalGroup.Disassemble;
+            LLHeader.AppendEDIDataObject(EDIFunctionalGroup);
+{$ELSE}
+            I := AddFunctionalGroup;
+            FEDIDataObjects[I].Data :=
+              Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+            FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+          end
+          else
+          begin
+            raise EJclEDIError.CreateResRec(@RsEDIError023);
+          end;
         end
         else
         begin
-          raise EJclEDIError.CreateResRec(@RsEDIError033);
+          raise EJclEDIError.CreateResRec(@RsEDIError024);
         end;
+        //Set next start positon
+        StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+        //Verify the next record is a Functional Group Header
+        if (UNGSegmentId + FDelimiters.ED) <>
+          Copy(FData, StartPos, (Length(UNGSegmentId) + FDelimiters.EDLen)) then
+        begin
+          Break;
+        end;
+      end; //while
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+      //Add the objects in a chunk
+      AddFunctionalGroups(LLHeader.ItemCount);
+{$ENDIF}
+    end
+    else //Search for Message Header
+    begin
+      //Search for Message Header
+      SearchResult := StrSearch(FDelimiters.SD + UNHSegmentId + FDelimiters.ED, FData, StartPos);
+      if SearchResult <= 0 then
+      begin
+        raise EJclEDIError.CreateResRec(@RsEDIError032);
+      end;
+      //Set next start position
+      StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+      //Continue
+      while SearchResult <> 0 do
+      begin
+        //Search for Message Trailer
+        SearchResult := StrSearch(FDelimiters.SD + UNTSegmentId + FDelimiters.ED, FData, StartPos);
+        if SearchResult <> 0 then
+        begin
+          //Set the next start position
+          SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+          //Search for the end of Message Trailer
+          SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
+          if SearchResult <> 0 then
+          begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+            EDIMessage := InternalCreateMessage;
+            EDIMessage.Data :=
+              Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+            EDIMessage.Disassemble;
+            LLHeader.AppendEDIDataObject(EDIMessage);
+{$ELSE}
+            I := AddMessage;
+            FEDIDataObjects[I].Data :=
+              Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+            FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+          end
+          else
+          begin
+            raise EJclEDIError.CreateResRec(@RsEDIError033);
+          end;
+        end
+        else
+        begin
+          raise EJclEDIError.CreateResRec(@RsEDIError034);
+        end;
+        //Set the next start position
+        StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+        //Verify the next record is a Message Header
+        if (UNHSegmentId + FDelimiters.ED) <>
+          Copy(FData, StartPos, (Length(UNHSegmentId) + FDelimiters.EDLen)) then
+        begin
+          Break;
+        end;
+      end; //while
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+      //Add the objects in a chunk
+      AddMessages(LLHeader.ItemCount);
+{$ENDIF}
+    end;
+    //Verify the next record is a Interchange Control Trailer
+    if (UNZSegmentId + FDelimiters.ED) =
+      Copy(FData, StartPos, Length(UNZSegmentId + FDelimiters.ED)) then
+    begin
+      //Search for the end of Interchange Control Trailer Segment Terminator
+      SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
+      if (SearchResult - StartPos) > 0 then //data exists
+      begin
+        FUNZSegment.Data := Copy(FData, StartPos, (SearchResult + FDelimiters.SDLen));
+        FUNZSegment.Disassemble;
       end
       else
       begin
-        raise EJclEDIError.CreateResRec(@RsEDIError034);
+        raise EJclEDIError.CreateResRec(@RsEDIError016);
       end;
-      //Set the next start position
-      StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-      //Verify the next record is a Message Header
-      if (UNHSegmentId + FDelimiters.ED) <>
-        Copy(FData, StartPos, (Length(UNHSegmentId) + FDelimiters.EDLen)) then
-      begin
-        Break;
-      end;
-    end;
-  end;
-  //Verify the next record is a Interchange Control Trailer
-  if (UNZSegmentId + FDelimiters.ED) =
-    Copy(FData, StartPos, Length(UNZSegmentId + FDelimiters.ED)) then
-  begin
-    //Search for the end of Interchange Control Trailer Segment Terminator
-    SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
-    if (SearchResult - StartPos) > 0 then //data exists
-    begin
-      FUNZSegment.Data := Copy(FData, StartPos, (SearchResult + FDelimiters.SDLen));
-      FUNZSegment.Disassemble;
     end
     else
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError016);
+      raise EJclEDIError.CreateResRec(@RsEDIError017);
     end;
-  end
-  else
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError017);
+    FData := '';
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+    I := 0;
+    LLItem := LLHeader.FirstItem;
+    while LLItem <> nil do
+    begin
+      FEDIDataObjects[I] := LLItem.EDIDataObject;
+      LLItem.EDIDataObject := nil;      
+      LLItem := LLItem.NextItem;
+      Inc(I);
+    end;
+  finally
+    LLHeader.Free;
   end;
-  FData := '';
-  //
+{$ENDIF}
   FState := ediDissassembled;
 end;
 
@@ -2254,27 +2263,11 @@ constructor TEDIFile.Create(Parent: TEDIDataObject; InterchangeCount: Integer);
 begin
   if Assigned(Parent) then
   begin
-    inherited Create(Parent);
+    inherited Create(Parent, InterchangeCount);
   end
   else
   begin
-    inherited Create(nil);
-  end;
-  FEDIFileOptions := [foVariableDelimiterDetection, foRemoveCrLf, foRemoveCr, foRemoveLf];
-  FEDIDOT := ediFile;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDIFile.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) then //and (Parent is TEDIFile)
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
+    inherited Create(nil, InterchangeCount);
   end;
   FEDIFileOptions := [foVariableDelimiterDetection, foRemoveCrLf, foRemoveCr, foRemoveLf];
   FEDIDOT := ediFile;
@@ -2314,84 +2307,50 @@ procedure TEDIFile.Disassemble;
 var
   I, StartPos, SearchResult: Integer;
   UNASegmentData: string;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader: TEDIDataObjectLinkedListHeader;
+  LLItem: TEDIDataObjectLinkedListItem;
+  EDIInterchangeControl: TEDIInterchangeControl;
+{$ENDIF}
 begin
-  DeleteInterchanges;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader := TEDIDataObjectLinkedListHeader.Create;
+  try
+{$ENDIF}
+    DeleteInterchanges;
 
-  if not Assigned(FDelimiters) then
-  begin
-    FDelimiters := InternalAssignDelimiters;
-    FEDIFileOptions := FEDIFileOptions + [foVariableDelimiterDetection];
-  end;
-
-  if foRemoveCrLf in FEDIFileOptions then
-  begin
-    FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
-  end;
-  if foRemoveCr in FEDIFileOptions then
-  begin
-    FData := StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll, rfIgnoreCase]);
-  end;
-  if foRemoveLf in FEDIFileOptions then
-  begin
-    FData := StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll, rfIgnoreCase]);
-  end;
-
-  StartPos := 1;
-  if UNASegmentId = Copy(FData, StartPos, Length(UNASegmentId)) then
-  begin
-    if (foVariableDelimiterDetection in FEDIFileOptions) then
+    if not Assigned(FDelimiters) then
     begin
-      InternalDelimitersDetection(StartPos);
+      FDelimiters := InternalAssignDelimiters;
+      FEDIFileOptions := FEDIFileOptions + [foVariableDelimiterDetection];
     end;
-    SearchResult := StrSearch(FDelimiters.SD + UNBSegmentId + FDelimiters.ED, FData, StartPos);
-    UNASegmentData := Copy(FData, StartPos, (SearchResult - StartPos) + 1);
-    StartPos := SearchResult + 1;
-  end
-  else if UNBSegmentId = Copy(FData, StartPos, Length(UNBSegmentId)) then
-  begin
-    if (foVariableDelimiterDetection in FEDIFileOptions) then
-    begin
-      InternalAlternateDelimitersDetection(StartPos);
-    end;
-  end
-  else
-  begin
-    raise EJclEDIError.CreateResRec(@RsEDIError015);
-  end;
 
-  //Continue
-  while (StartPos + Length(UNBSegmentId)) < Length(FData) do
-  begin
-    //Search for Interchange Control Trailer
-    SearchResult := StrSearch(FDelimiters.SD + UNZSegmentId + FDelimiters.ED, FData, StartPos);
-    if SearchResult > 0 then
+    if foRemoveCrLf in FEDIFileOptions then
     begin
-      SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
-      //Search for the end of Interchange Control Trailer
-      SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
-      if SearchResult > 0 then
-      begin
-        I := AddInterchange;
-        FEDIDataObjects[I].Delimiters :=
-          TEDIDelimiters.Create(FDelimiters.SD, FDelimiters.ED, FDelimiters.SS);
-        TEDIInterchangeControl(FEDIDataObjects[I]).SegmentUNA.Data := UNASegmentData;
-        TEDIInterchangeControl(FEDIDataObjects[I]).SegmentUNA.Disassemble;
-        FEDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
-        FEDIDataObjects[I].Disassemble;
-      end
-      else
-      begin
-        raise EJclEDIError.CreateResRec(@RsEDIError016);
-      end;
-    end
-    else
-    begin
-      raise EJclEDIError.CreateResRec(@RsEDIError017);
+{$IFDEF OPTIMIZED_STRINGREPLACE}
+      FData := JclEDI.StringReplace(FData, AnsiCrLf, '', [rfReplaceAll]);
+{$ELSE}
+      FData := SysUtils.StringReplace(FData, AnsiCrLf, '', [rfReplaceAll]);
+{$ENDIF}
     end;
-    //Set next start position, Move past the delimiter
-    StartPos := SearchResult + FDelimiters.SDLen;
-    //
+    if foRemoveCr in FEDIFileOptions then
+    begin
+{$IFDEF OPTIMIZED_STRINGREPLACE}
+      FData := JclEDI.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
+{$ELSE}
+      FData := SysUtils.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
+{$ENDIF}
+    end;
+    if foRemoveLf in FEDIFileOptions then
+    begin
+{$IFDEF OPTIMIZED_STRINGREPLACE}
+      FData := JclEDI.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
+{$ELSE}
+      FData := SysUtils.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
+{$ENDIF}
+    end;
+
+    StartPos := 1;
     if UNASegmentId = Copy(FData, StartPos, Length(UNASegmentId)) then
     begin
       if (foVariableDelimiterDetection in FEDIFileOptions) then
@@ -2409,13 +2368,95 @@ begin
         InternalAlternateDelimitersDetection(StartPos);
       end;
     end
-    else if (StartPos + Length(UNBSegmentId)) < Length(FData) then
+    else
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError018);
+      raise EJclEDIError.CreateResRec(@RsEDIError015);
     end;
-  end;
-  FData := '';
 
+    //Continue
+    while (StartPos + Length(UNBSegmentId)) < Length(FData) do
+    begin
+      //Search for Interchange Control Trailer
+      SearchResult := StrSearch(FDelimiters.SD + UNZSegmentId + FDelimiters.ED, FData, StartPos);
+      if SearchResult > 0 then
+      begin
+        SearchResult := SearchResult + FDelimiters.SDLen; //Move past the delimiter
+        //Search for the end of Interchange Control Trailer
+        SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
+        if SearchResult > 0 then
+        begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+          EDIInterchangeControl := InternalCreateInterchangeControl;
+          EDIInterchangeControl.Delimiters :=
+            TEDIDelimiters.Create(FDelimiters.SD, FDelimiters.ED, FDelimiters.SS);
+          TEDIInterchangeControl(EDIInterchangeControl).SegmentUNA.Data := UNASegmentData;
+          TEDIInterchangeControl(EDIInterchangeControl).SegmentUNA.Disassemble;
+          EDIInterchangeControl.Data :=
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+          EDIInterchangeControl.Disassemble;
+          LLHeader.AppendEDIDataObject(EDIInterchangeControl);
+{$ELSE}
+          I := AddInterchange;
+          FEDIDataObjects[I].Delimiters :=
+            TEDIDelimiters.Create(FDelimiters.SD, FDelimiters.ED, FDelimiters.SS);
+          TEDIInterchangeControl(FEDIDataObjects[I]).SegmentUNA.Data := UNASegmentData;
+          TEDIInterchangeControl(FEDIDataObjects[I]).SegmentUNA.Disassemble;
+          FEDIDataObjects[I].Data :=
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+          FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+        end
+        else
+        begin
+          raise EJclEDIError.CreateResRec(@RsEDIError016);
+        end;
+      end
+      else
+      begin
+        raise EJclEDIError.CreateResRec(@RsEDIError017);
+      end;
+      //Set next start position, Move past the delimiter
+      StartPos := SearchResult + FDelimiters.SDLen;
+      //
+      if UNASegmentId = Copy(FData, StartPos, Length(UNASegmentId)) then
+      begin
+        if (foVariableDelimiterDetection in FEDIFileOptions) then
+        begin
+          InternalDelimitersDetection(StartPos);
+        end;
+        SearchResult := StrSearch(FDelimiters.SD + UNBSegmentId + FDelimiters.ED, FData, StartPos);
+        UNASegmentData := Copy(FData, StartPos, (SearchResult - StartPos) + 1);
+        StartPos := SearchResult + 1;
+      end
+      else if UNBSegmentId = Copy(FData, StartPos, Length(UNBSegmentId)) then
+      begin
+        if (foVariableDelimiterDetection in FEDIFileOptions) then
+        begin
+          InternalAlternateDelimitersDetection(StartPos);
+        end;
+      end
+      else if (StartPos + Length(UNBSegmentId)) < Length(FData) then
+      begin
+        raise EJclEDIError.CreateResRec(@RsEDIError018);
+      end;
+    end;
+    FData := '';
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+    //Add the objects in a chunk
+    AddInterchanges(LLHeader.ItemCount);
+    I := 0;
+    LLItem := LLHeader.FirstItem;
+    while LLItem <> nil do
+    begin
+      FEDIDataObjects[I] := LLItem.EDIDataObject;
+      LLItem.EDIDataObject := nil;      
+      LLItem := LLItem.NextItem;
+      Inc(I);
+    end;
+  finally
+    LLHeader.Free;
+  end;
+{$ENDIF}
   FState := ediDissassembled;
 end;
 
@@ -2708,26 +2749,11 @@ constructor TEDICompositeElement.Create(Parent: TEDIDataObject; ElementCount: In
 begin
   if Assigned(Parent) and (Parent is TEDISegment) then
   begin
-    inherited Create(Parent);
+    inherited Create(Parent, ElementCount);
   end
   else
   begin
-    inherited Create(nil);
-  end;
-  FEDIDOT := ediElement;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDICompositeElement.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) and (Parent is TEDISegment) then
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
+    inherited Create(nil, ElementCount);
   end;
   FEDIDOT := ediElement;
 end;
@@ -2772,32 +2798,77 @@ end;
 procedure TEDICompositeElement.Disassemble;
 var
   StartPos, SearchResult, I: Integer;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader: TEDIDataObjectLinkedListHeader;
+  LLItem: TEDIDataObjectLinkedListItem;
+  EDIElement: TEDIElement;
+{$ENDIF}
 begin
-  DeleteElements;
-  if not Assigned(FDelimiters) then //Attempt to assign the delimiters
-  begin
-    FDelimiters := InternalAssignDelimiters;
-    if not Assigned(FDelimiters) then
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+  LLHeader := TEDIDataObjectLinkedListHeader.Create;
+  try
+{$ENDIF}
+    DeleteElements;
+    if not Assigned(FDelimiters) then //Attempt to assign the delimiters
     begin
-      raise EJclEDIError.CreateResRec(@RsEDIError037);
+      FDelimiters := InternalAssignDelimiters;
+      if not Assigned(FDelimiters) then
+      begin
+        raise EJclEDIError.CreateResRec(@RsEDIError037);
+      end;
     end;
-  end;
-  StartPos := 1;
-  SearchResult := StrSearch(FDelimiters.SS, FData, StartPos);
-  while SearchResult > 0 do
-  begin
-    I := AddElement;
-    FEDIDataObjects[I].Data := Copy(FData, StartPos, (SearchResult - StartPos));
-    FEDIDataObjects[I].Disassemble;
-    StartPos := SearchResult + 1;
+    StartPos := 1;
     SearchResult := StrSearch(FDelimiters.SS, FData, StartPos);
+    while SearchResult > 0 do
+    begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+      EDIElement := InternalCreateElement;
+      LLHeader.AppendEDIDataObject(EDIElement);
+{$ELSE}
+      I := AddElement;
+{$ENDIF}
+      if ((SearchResult - StartPos) > 0) then //data exists
+      begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+        EDIElement.Data := Copy(FData, StartPos, (SearchResult - StartPos));
+        EDIElement.Disassemble;
+{$ELSE}
+        FEDIDataObjects[I].Data := Copy(FData, StartPos, (SearchResult - StartPos));
+        FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+      end;
+      StartPos := SearchResult + 1;
+      SearchResult := StrSearch(FDelimiters.SS, FData, StartPos);
+    end;
+    if StartPos <= Length(FData) then
+    begin
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+      EDIElement := InternalCreateElement;
+      LLHeader.AppendEDIDataObject(EDIElement);
+      EDIElement.Data := Copy(FData, StartPos, (Length(FData) - StartPos) + 1);
+      EDIElement.Disassemble;
+{$ELSE}
+      I := AddElement;
+      FEDIDataObjects[I].Data := Copy(FData, StartPos, (Length(FData) - StartPos) + 1);
+      FEDIDataObjects[I].Disassemble;
+{$ENDIF}
+    end;
+{$IFDEF OPTIMIZED_DISASSEMBLE}
+    //Add the objects in a chunk
+    AddElements(LLHeader.ItemCount);
+    I := 0;
+    LLItem := LLHeader.FirstItem;
+    while LLItem <> nil do
+    begin
+      FEDIDataObjects[I] := LLItem.EDIDataObject;
+      LLItem.EDIDataObject := nil;
+      LLItem := LLItem.NextItem;
+      Inc(I);
+    end;
+  finally
+    LLHeader.Free;
   end;
-  if StartPos <= Length(FData) then
-  begin
-    I := AddElement;
-    FEDIDataObjects[I].Data := Copy(FData, StartPos, (Length(FData) - StartPos) + 1);
-    FEDIDataObjects[I].Disassemble;
-  end;
+{$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
