@@ -309,8 +309,8 @@ type
   PCharVector = ^PChar;
 
 function StringsToPCharVector(var Dest: PCharVector; const Source: TStrings): PCharVector;
-function PCharVectorCount(const Source: PCharVector): Integer;
-procedure PCharVectorToStrings(const Dest: TStrings; const Source: PCharVector);
+function PCharVectorCount(Source: PCharVector): Integer;
+procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 procedure FreePCharVector(var Dest: PCharVector);
 
 //--------------------------------------------------------------------------------------------------
@@ -3191,7 +3191,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PCharVectorCount(const Source: PCharVector): Integer;
+function PCharVectorCount(Source: PCharVector): Integer;
 var
   P: PChar;
 begin
@@ -3209,7 +3209,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure PCharVectorToStrings(const Dest: TStrings; const Source: PCharVector);
+procedure PCharVectorToStrings(const Dest: TStrings; Source: PCharVector);
 var
   I, Count: Integer;
   List: array of PChar;

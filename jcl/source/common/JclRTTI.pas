@@ -317,7 +317,7 @@ type
   end;
   {$ENDIF COMPILER6_UP}
 
-function JclTypeInfo(const ATypeInfo: PTypeInfo): IJclTypeInfo;
+function JclTypeInfo(ATypeInfo: PTypeInfo): IJclTypeInfo;
 
 //--------------------------------------------------------------------------------------------------
 // Enumeration types
@@ -329,12 +329,12 @@ const
 
   MaxPrefixCut = 250;
 
-function JclEnumValueToIdent(const TypeInfo: PTypeInfo; const Value): string;
+function JclEnumValueToIdent(TypeInfo: PTypeInfo; const Value): string;
 function JclGenerateEnumType(const TypeName: ShortString;
   const Literals: array of string): PTypeInfo;
 function JclGenerateEnumTypeBasedOn(const TypeName: ShortString;
-  const BaseType: PTypeInfo; const PrefixCut: Byte): PTypeInfo;
-function JclGenerateSubRange(const BaseType: PTypeInfo; const TypeName: string;
+  BaseType: PTypeInfo; const PrefixCut: Byte): PTypeInfo;
+function JclGenerateSubRange(BaseType: PTypeInfo; const TypeName: string;
   const MinValue, MaxValue: Integer): PTypeInfo;
 
 //--------------------------------------------------------------------------------------------------
@@ -348,14 +348,14 @@ function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
 // Sets
 //--------------------------------------------------------------------------------------------------
 
-function JclSetToList(const TypeInfo: PTypeInfo; const Value; const WantBrackets: Boolean;
+function JclSetToList(TypeInfo: PTypeInfo; const Value; const WantBrackets: Boolean;
   const WantRanges: Boolean; const Strings: TStrings): string;
-function JclSetToStr(const TypeInfo: PTypeInfo; const Value;
+function JclSetToStr(TypeInfo: PTypeInfo; const Value;
   const WantBrackets: Boolean = False; const WantRanges: Boolean = False): string;
-procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar; const Value: string);
-procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar; const Value: Integer);
-function JclSetToInt(const TypeInfo: PTypeInfo; const SetVar): Integer;
-function JclGenerateSetType(const BaseType: PTypeInfo; const TypeName: ShortString): PTypeInfo;
+procedure JclStrToSet(TypeInfo: PTypeInfo; var SetVar; const Value: string);
+procedure JclIntToSet(TypeInfo: PTypeInfo; var SetVar; const Value: Integer);
+function JclSetToInt(TypeInfo: PTypeInfo; const SetVar): Integer;
+function JclGenerateSetType(BaseType: PTypeInfo; const TypeName: ShortString): PTypeInfo;
 
 //--------------------------------------------------------------------------------------------------
 // GUID
@@ -368,7 +368,7 @@ function JclStringToGUID(const S: string): TGUID;
 // User generated type info managment
 //--------------------------------------------------------------------------------------------------
 
-procedure RemoveTypeInfo(const TypeInfo: PTypeInfo);
+procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 
 //--------------------------------------------------------------------------------------------------
 // Is/As hooking
@@ -545,7 +545,7 @@ type
     procedure WriteTo(const Dest: IJclInfoWriter); virtual;
     procedure DeclarationTo(const Dest: IJclInfoWriter); virtual;
   public
-    constructor Create(const ATypeInfo: PTypeInfo);
+    constructor Create(ATypeInfo: PTypeInfo);
 
     property Name: string read GetName;
     property TypeData: PTypeData read GetTypeData;
@@ -600,7 +600,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclTypeInfo.Create(const ATypeInfo: PTypeInfo);
+constructor TJclTypeInfo.Create(ATypeInfo: PTypeInfo);
 begin
   inherited Create;
   FTypeInfo := ATypeInfo;
@@ -2131,7 +2131,7 @@ end;
 // Typeinfo retreival
 //--------------------------------------------------------------------------------------------------
 
-function JclTypeInfo(const ATypeInfo: PTypeInfo): IJclTypeInfo;
+function JclTypeInfo(ATypeInfo: PTypeInfo): IJclTypeInfo;
 begin
   case ATypeInfo.Kind of
     tkInteger, tkChar, tkWChar:
@@ -2274,7 +2274,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RemoveTypeInfo(const TypeInfo: PTypeInfo);
+procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 var
   I: Integer;
   List: TList;
@@ -2303,7 +2303,7 @@ end;
 // Enumerations
 //--------------------------------------------------------------------------------------------------
 
-function JclEnumValueToIdent(const TypeInfo: PTypeInfo; const Value): string;
+function JclEnumValueToIdent(TypeInfo: PTypeInfo; const Value): string;
 var
   MinEnum: Integer;
   MaxEnum: Integer;
@@ -2397,7 +2397,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function JclGenerateEnumTypeBasedOn(const TypeName: ShortString;
-  const BaseType: PTypeInfo; const PrefixCut: Byte): PTypeInfo;
+  BaseType: PTypeInfo; const PrefixCut: Byte): PTypeInfo;
 var
   BaseInfo: IJclTypeInfo;
   BaseKind: TTypeKind;
@@ -2449,7 +2449,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclGenerateSubRange(const BaseType: PTypeInfo; const TypeName: string;
+function JclGenerateSubRange(BaseType: PTypeInfo; const TypeName: string;
   const MinValue, MaxValue: Integer): PTypeInfo;
 var
   TypeData: PTypeData;
@@ -2540,7 +2540,7 @@ end;
 // Sets
 //--------------------------------------------------------------------------------------------------
 
-function JclSetToList(const TypeInfo: PTypeInfo; const Value;
+function JclSetToList(TypeInfo: PTypeInfo; const Value;
   const WantBrackets: Boolean; const WantRanges: Boolean;
   const Strings: TStrings): string;
 var
@@ -2564,7 +2564,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclSetToStr(const TypeInfo: PTypeInfo; const Value;
+function JclSetToStr(TypeInfo: PTypeInfo; const Value;
   const WantBrackets: Boolean; const WantRanges: Boolean): string;
 var
   Dummy: TStringList;
@@ -2580,7 +2580,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar;
+procedure JclStrToSet(TypeInfo: PTypeInfo; var SetVar;
   const Value: string);
 var
   SetInfo: IJclSetTypeInfo;
@@ -2607,7 +2607,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar;
+procedure JclIntToSet(TypeInfo: PTypeInfo; var SetVar;
   const Value: Integer);
 var
   BitShift: Integer;
@@ -2628,7 +2628,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclSetToInt(const TypeInfo: PTypeInfo; const SetVar): Integer;
+function JclSetToInt(TypeInfo: PTypeInfo; const SetVar): Integer;
 var
   BitShift: Integer;
   TmpInt64: Int64;
@@ -2654,7 +2654,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclGenerateSetType(const BaseType: PTypeInfo;
+function JclGenerateSetType(BaseType: PTypeInfo;
   const TypeName: ShortString): PTypeInfo;
 var
   TypeData: PTypeData;

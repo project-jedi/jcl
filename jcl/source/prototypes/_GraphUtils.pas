@@ -173,7 +173,7 @@ function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes; overl
 function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes; overload;
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean; overload;
 function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
-  const Codes: PClipCodes = nil): Boolean; overload;
+  Codes: PClipCodes = nil): Boolean; overload;
 procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const ClipRect: TRect);
 
 //--------------------------------------------------------------------------------------------------
@@ -2405,7 +2405,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
-  const Codes: PClipCodes): Boolean;
+  Codes: PClipCodes): Boolean;
 var
   Done: Boolean;
   Codes_, Codes1, Codes2: TClipCodes;

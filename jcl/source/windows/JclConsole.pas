@@ -161,7 +161,7 @@ type
     function Write(const Text: string; const X: Smallint; const Y: Smallint;
       const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
     function Write(const Text: string; const X: Smallint; const Y: Smallint;
-      const pAttrs: PWORD): DWORD; overload;
+      pAttrs: PWORD): DWORD; overload;
     function Write(const Text: string;
       const HorizontalAlign: TJclScreenBufferTextHorizontalAlign;
       const VerticalAlign: TJclScreenBufferTextVerticalAlign = tvaCurrent;
@@ -923,7 +923,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclScreenBuffer.Write(const Text: string; const X, Y: Smallint;
-  const pAttrs: PWORD): DWORD;
+  pAttrs: PWORD): DWORD;
 var
   Pos: TCoord;
 begin
