@@ -1452,7 +1452,7 @@ begin
     GetWindowThreadProcessId(Wnd, @PID);
     List := TStringList.Create;
     try
-      if RunningProcessesList(List) then
+      if RunningProcessesList(List, True) then
       begin
         I := List.IndexOfObject(Pointer(PID));
         if I > -1 then
@@ -1474,7 +1474,7 @@ begin
   Result := INVALID_HANDLE_VALUE;
   List := TStringList.Create;
   try
-    if RunningProcessesList(List) then
+    if RunningProcessesList(List, True) then
     begin
       I := List.IndexOf(ProcessName);
       if I > -1 then
@@ -1498,7 +1498,7 @@ begin
   Result := '';
   List := TStringList.Create;
   try
-    if RunningProcessesList(List) then
+    if RunningProcessesList(List, True) then
     begin
       I := List.IndexOfObject(Pointer(PID));
       if I > -1 then
