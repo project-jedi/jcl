@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: July 8, 2003                                                                      }
+{ Last modified: September 29, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -33,31 +33,43 @@ unit JclSysInfo;
 interface
 
 uses
-  Windows, ActiveX, Classes, ShlObj, 
-  JclResources;
+{$IFDEF LINUX}
+  Libc, Types,
+{$ENDIF}
+{$IFDEF MSWINDOWS}
+  Windows, ActiveX, ShlObj,
+{$ENDIF}
+  Classes, JclResources;
 
 //--------------------------------------------------------------------------------------------------
 // Environment Variables
 //--------------------------------------------------------------------------------------------------
-
+{$IFDEF MSWINDOWS}
 type
   TEnvironmentOption = (eoLocalMachine, eoCurrentUser, eoAdditional);
-
   TEnvironmentOptions = set of TEnvironmentOption;
+{$ENDIF MSWINDOWS}
 
 function DelEnvironmentVar(const Name: string): Boolean;
 function ExpandEnvironmentVar(var Value: string): Boolean;
-function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
-function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
+function GetEnvironmentVar(const Name: string; var Value: string): Boolean; overload;
+function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean; overload;
+function GetEnvironmentVars(const Vars: TStrings): Boolean; overload;
+function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean; overload;
 function SetEnvironmentVar(const Name, Value: string): Boolean;
+{$IFDEF MSWINDOWS}
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Common Folder Locations
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function GetCommonFilesFolder: string;
+{$ENDIF MSWINDOWS}
 function GetCurrentFolder: string;
+{$IFDEF MSWINDOWS}
 function GetProgramFilesFolder: string;
 function GetWindowsFolder: string;
 function GetWindowsSystemFolder: string;
@@ -65,7 +77,9 @@ function GetWindowsTempFolder: string;
 
 function GetDesktopFolder: string;
 function GetProgramsFolder: string;
+{$ENDIF MSWINDOWS}
 function GetPersonalFolder: string;
+{$IFDEF MSWINDOWS}
 function GetFavoritesFolder: string;
 function GetStartupFolder: string;
 function GetRecentFolder: string;
@@ -110,13 +124,16 @@ function GetVolumeName(const Drive: string): string;
 function GetVolumeSerialNumber(const Drive: string): string;
 function GetVolumeFileSystem(const Drive: string): string;
 function GetIPAddress(const HostName: string): string;
+{$ENDIF MSWINDOWS}
 function GetLocalComputerName: string;
 function GetLocalUserName: string;
+{$IFDEF MSWINDOWS}
 function GetUserDomainName(const CurUser: string): string;
+{$ENDIF MSWINDOWS}
 function GetDomainName: string;
+{$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
 function GetRegisteredOwner: string;
-
 function GetBIOSName: string;
 function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
@@ -141,7 +158,6 @@ function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
 
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
 function GetWindowCaption(Wnd: HWND): string;
-
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 
@@ -164,7 +180,7 @@ type
                      wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP, wvWin2003);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
                     ptPersonal, ptProfessional, ptDatacenterServer);
-                    
+
 { TODOC
 
   Added to TNtProductType (by Jean-Fabien Connault):
@@ -239,13 +255,17 @@ Result: Surfaces the information provided by the OpenGL library (if any) relatin
         the version and vendor of the OpenGL library in the parameters passed.
 Author: Scott Price
 }
+{$ENDIF MSWINDOWS}
+
+function GetOSVersionString: string;
 
 //--------------------------------------------------------------------------------------------------
 // Hardware
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
-
+{$ENDIF MSWINDOWS}
 function ReadTimeStampCounter: Int64;
 
 type
@@ -511,7 +531,9 @@ procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
 function GetIntelCacheDescription(const D: Byte): string;
 function RoundFrequency(const Frequency: Integer): Integer;
+{$IFDEF MSWINDOWS}
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
+{$ENDIF MSWINDOWS}
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
 
@@ -519,6 +541,7 @@ function TestFDIVInstruction: Boolean;
 // Memory Information
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function GetMaxAppAddress: Integer;
 function GetMinAppAddress: Integer;
 function GetMemoryLoad: Byte;
@@ -561,6 +584,7 @@ function IsSystemResourcesMeterPresent: Boolean;
 
 function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer; overload;
 function GetFreeSystemResources: TFreeSystemResources; overload;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Public global variables
@@ -574,8 +598,12 @@ var
 implementation
 
 uses
-  Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp, 
-  JclBase, Jcl8087, JclFileUtils, JclIniFiles, JclRegistry, JclShell, JclStrings, JclWin32;
+  SysUtils,
+  {$IFDEF MSWINDOWS}
+  Messages, TLHelp32, PsApi, Winsock, Snmp,
+  JclRegistry, JclShell, JclWin32,
+  {$ENDIF MSWINDOWS}
+  JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
 
 //==================================================================================================
 // Environment
@@ -583,12 +611,26 @@ uses
 
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+  UnSetEnv(PChar(Name));
+  Result := True ;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), nil);
+{$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function ExpandEnvironmentVar(var Value: string): Boolean;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+begin
+  Result := True;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   R: Integer;
   Expanded: string;
@@ -603,8 +645,28 @@ begin
     Value := Expanded;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
+begin
+  Value := getenv(PChar(Name));
+  Result := Value <> '';
+end;
+
+function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
+begin
+  Result := GetEnvironmentVar(Name, Value); // Expand is there just for x-platform compatibility
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
+function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
+begin
+  Result := GetEnvironmentVar(Name, Value, True);
+end;
 
 function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
 var
@@ -623,8 +685,37 @@ begin
       ExpandEnvironmentVar(Value);
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF LINUX}
+function GetEnvironmentVars(const Vars: TStrings): Boolean;
+{ TODOc Author: Robert Rossmair }
+var
+  P: PPChar;
+begin
+  Vars.Clear;
+  P := System.envp;
+  Result := P <> nil;
+  while (P <> nil) and (P^ <> nil) do
+  begin
+    Vars.Add(P^);
+    Inc(P);
+  end;
+end;
+
+function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
+begin
+  Result := GetEnvironmentVars(Vars); // Expand is there just for x-platform compatibility
+end;
+
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
+function GetEnvironmentVars(const Vars: TStrings): Boolean;
+begin
+  Result := GetEnvironmentVars(Vars, True);
+end;
 
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 var
@@ -650,16 +741,25 @@ begin
     end;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+  SetEnv(PChar(Name), PChar(Value), 1);
+  Result := True ;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
   Result := SetEnvironmentVariable(PChar(Name), PChar(Value));
+{$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 const
   RegLocalEnvironment = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
@@ -750,10 +850,31 @@ begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS,
     'CommonFilesDir', '');
 end;
-
+{$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetCurrentFolder: string;
+{$IFDEF UNIX}
+{ TODOc Author: Robert Rossmair }
+var
+  Size: Integer;
+begin
+  Size := 64;
+  while True do
+  begin
+    SetLength(Result, Size);
+    if getcwd(PChar(Result), Size) <> nil then
+    begin
+      StrResetLength(Result);
+      Exit;
+    end;
+    if GetLastError <> ERANGE then
+      RaiseLastOSError;
+    Size := Size * 2;
+  end;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   Required: Cardinal;
 begin
@@ -836,16 +957,22 @@ function GetProgramsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
 end;
-
+{$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetPersonalFolder: string;
 begin
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+  Result := GetEnvironmentVariable('HOME');
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
   Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
+{$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
-
+{$IFDEF MSWINDOWS}
 function GetFavoritesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
@@ -1103,10 +1230,20 @@ begin
     WSACleanup;
   end;
 end;
-
+{$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetLocalComputerName: string;
+{$IFDEF LINUX}
+{ TODOc Author: André Snepvangers }
+var
+  MachineInfo: utsname;
+begin
+  uname(MachineInfo);
+  Result := MachineInfo.nodename;
+end;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 var
   Count: DWORD;
 begin
@@ -1118,10 +1255,18 @@ begin
   else
     Result := '';
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetLocalUserName: string;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+begin
+  Result := GetEnv('USER');
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   Count: DWORD;
 begin
@@ -1131,11 +1276,12 @@ begin
   if GetUserName(PChar(Result), Count) then
     StrResetLength(Result)
   else
-    Result := '';  
+    Result := '';
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
-
+{$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
 begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
@@ -1173,15 +1319,27 @@ begin
     FreeMem(Sd);
   end;
 end;
-
+{$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function GetDomainName: string;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+var
+  MachineInfo: utsname ;
+begin
+  uname(MachineInfo);
+  Result := MachineInfo.domainname;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 begin
   Result := GetUserDomainName(GetLocalUserName);
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
+{$IFDEF MSWINDOWS}
 
 function GetBIOSName: string;
 const
@@ -2188,6 +2346,23 @@ begin
     Set8087CW(Save8087CW);
   end;
 end;
+{$ENDIF MSWINDOWS}
+
+function GetOSVersionString: string;
+{ TODOc Author: Robert Rossmair }
+{$IFDEF UNIX}
+var
+  MachineInfo: utsname;
+begin
+  uname(MachineInfo);
+  Result := Format('%s %s', [MachineInfo.sysname, MachineInfo.release]);
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
+begin
+  Result := Format('%s %s', [GetWindowsVersionString, GetWindowsServicePackVersionString]);
+end;
+{$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // Hardware
@@ -2206,6 +2381,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 
   procedure GetMacAddressesNetBios;
@@ -2289,7 +2465,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
           varBindList.list := @varBind[0];
           varBind[0].name := DEFINE_NULLOID;
           varBind[1].name := DEFINE_NULLOID;
-          varBindList.len := 1;      
+          varBindList.len := 1;
           SnmpUtilOidCpy(@varBind[0].name, @MIB_ifEntryNum);
           Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, varBindList, ErrorStatus, ErrorIndex);
           if Ret then
@@ -2339,7 +2515,7 @@ begin
   if (Result <= 0) and (Machine = '') then
     GetMacAddressesSnmp;
 end;
-
+{$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
 function ReadTimeStampCounter: Int64; assembler;
@@ -2375,8 +2551,10 @@ begin
   CpuInfo.IsFDIVOK := TestFDIVInstruction;
   if CpuInfo.HasInstruction then
   begin
+    {$IFDEF MSWINDOWS}
     if (CpuInfo.Features and TSC_FLAG) = TSC_FLAG then
       GetCpuSpeed(CpuInfo.FrequencyInfo);
+    {$ENDIF MSWINDOWS}
     CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   end;
 end;
@@ -2412,6 +2590,13 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
+{$IFDEF LINUX}
+{ TODOc Author: André Snepvangers }
+begin
+  Result := False;
+end;
+{$ENDIF LINUX}
+{$IFDEF MSWINDOWS}
 var
   T0, T1: Int64;
   CountFreq: Int64;
@@ -2495,6 +2680,7 @@ begin
     Result := True;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3090,6 +3276,7 @@ end;
 // Advanced Power Management (APM)
 //==================================================================================================
 
+{$IFDEF MSWINDOWS}
 function GetAPMLineStatus: TAPMLineStatus;
 var
   SystemPowerstatus: TSystemPowerStatus;
@@ -3200,10 +3387,22 @@ begin
   GetSystemInfo(SystemInfo);
   Result := Integer(SystemInfo.lpMinimumApplicationAddress);
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetMemoryLoad: Byte;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+var
+  SystemInf: TSysInfo ;
+begin
+  SysInfo(SystemInf);
+  with SystemInf do
+    Result := 100 - Round(100 * freeram / totalram);
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -3212,10 +3411,21 @@ begin
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwMemoryLoad;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetSwapFileSize: Integer;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+var
+  SystemInf: TSysInfo;
+begin
+  SysInfo(SystemInf);
+  Result := SystemInf.totalswap ;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -3225,10 +3435,22 @@ begin
   with MemoryStatus do
     Result := Trunc(dwTotalPageFile - dwAvailPageFile);
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetSwapFileUsage: Integer;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+var
+  SystemInf: TSysInfo;
+begin
+  SysInfo(SystemInf);
+  with SystemInf do
+    Result := 100 - Trunc( 100 * FreeSwap / TotalSwap );
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -3239,12 +3461,23 @@ begin
     if dwTotalPageFile > 0 then
       Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100)
     else
-      Result := 0;  
+      Result := 0;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetTotalPhysicalMemory: Integer;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+var
+  SystemInf: TSysInfo;
+begin
+  SysInfo(SystemInf);
+  Result := SystemInf.totalram;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -3253,10 +3486,21 @@ begin
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwTotalPhys;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetFreePhysicalMemory: Integer;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers }
+var
+  SystemInf: TSysInfo;
+begin
+  SysInfo(SystemInf);
+  Result := SystemInf.freeram;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 var
   MemoryStatus: TMemoryStatus;
 begin
@@ -3508,5 +3752,5 @@ initialization
 
 finalization
   FinalizeSysInfo;
-
+{$ENDIF MSWINDOWS}
 end.
