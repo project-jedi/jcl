@@ -27,7 +27,7 @@
 unit JclDotNet;
 
 {**************************************************************************************************}
-{ Read this befre Compile!                                                                         }
+{ Read this before compile!                                                                         }
 {**************************************************************************************************}
 { 1. This unit is developed in Delphi6 with MS.Net v1.0.3705,                                      }
 {    you maybe need to modify it for your environment.                                             }
