@@ -48,7 +48,7 @@ type
     InfoPanel: TPanel;
     Label2: TLabel;
     {$IFDEF VisualCLX}
-    InfoDisplay: TTextBrowser;
+    InfoDisplay: TTextViewer;
     {$ELSE VCL}
     InfoDisplay: TMemo;
     {$ENDIF VCL}
@@ -93,7 +93,7 @@ implementation
 {$IFDEF VisualCLX}
 {$R *.xfm}
 
-uses QDialogs;
+uses Qt, QDialogs;
 {$ELSE}
 {$R *.dfm}
 
@@ -307,15 +307,39 @@ begin
     end;
 end;
 
+{$IFDEF VisualCLX}
+function TreeNodeIconHit(TreeView: TTreeView; X, Y: Integer; Node: TTreeNode = nil): Boolean;
+var
+  Level, X1: Integer;
+begin
+  Result := False;
+  if Node = nil then
+    Node := TreeView.GetNodeAt(X, Y);
+  if Assigned(Node) then
+  begin
+    Level := Node.Level;
+    if QListView_rootIsDecorated(TreeView.Handle) then
+      Inc(Level);
+    X1 := QListView_treeStepSize(TreeView.Handle) * Level;
+    Result := (X > X1) and (X <= X1 + TreeView.Images.Width);
+  end;
+end;
+{$ELSE} // VCL
+function TreeNodeIconHit(TreeView: TTreeView; X, Y: Integer): Boolean;
+begin
+  Result := htOnIcon in TreeView.GetHitTestInfoAt(X, Y);
+end;
+{$ENDIF}
+
 procedure TProductFrame.TreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  Node: TTreeNode;
+  Node: TTreeNode;  
 begin
   with TTreeView(Sender) do
   begin
     Node := GetNodeAt(X, Y);
-    if (Button = mbLeft){$IFDEF VCL} and (htOnIcon in GetHitTestInfoAt(X, Y)){$ENDIF} then
+    if (Button = mbLeft) and TreeNodeIconHit(TreeView, X, Y{$IFDEF VisualCLX}, Node{$ENDIF}) then
       ToggleNodeChecked(Node);
   end;
 end;
