@@ -13,12 +13,13 @@ routine.
 [Result]
 If DCOM is installed the routine returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclCom
 Category=Component Object Model
 SubCat=Version Utilities
 Author=Kevin S. Gallagher
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=IsDCOMEnabled
@@ -35,12 +36,13 @@ installed use the IsDCOMInstalled routine.
 [Result]
 If DCOM is installed the routine returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclCOM
 Category=Component Object Model
 SubCat=Version Utilities
 Author=Kevin S. Gallagher
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=IsDCOMInstalled
@@ -57,12 +59,13 @@ Microsoft website http://support.microsoft.com/support/kb/articles/Q235/6/38.ASP
 [Result]
 Returns the DCOM version in the form a.b.c.d.
 [Quick Info]
-BCB=3,4,5
 Unit=JclCom
 Category=Component Object Model
 SubCat=Version Utilities
 Author=Kevin S. Gallagher
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=IsDCOMEnabled
@@ -78,9 +81,10 @@ the target system.
 [Result]
 The MDAC version in the form a.b.c.d
 [Quick Info]
-BCB=3,4,5
 Unit=
 Category=Component Object Model
 SubCat=Version Utilties
 Author=Kevin S. Gallagher
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
