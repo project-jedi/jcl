@@ -129,6 +129,29 @@ resourcestring
   RsVosNTWindows32  = 'Win32 API, running on Windows/NT';
   RsVosDesignedFor  = 'Designed for ';
 
+  // Strings returned from OSFileTypeToString()
+
+  RsVftUnknown = 'Unknown';
+  RsVftApp = 'Application';
+  RsVftDll = 'Library';
+  RsVftDrv = 'Driver';
+  RsVftFont = 'Font';
+  RsVftVxd = 'Virtual device';
+  RsVftStaticLib = 'Static-link library';
+  RsVft2DrvPRINTER = 'Printer';
+  RsVft2DrvKEYBOARD = 'Keyboard';
+  RsVft2DrvLANGUAGE = 'Language';
+  RsVft2DrvDISPLAY = 'Display';
+  RsVft2DrvMOUSE = 'Mouse';
+  RsVft2DrvNETWORK = 'Network';
+  RsVft2DrvSYSTEM = 'System';
+  RsVft2DrvINSTALLABLE = 'Installable';
+  RsVft2DrvSOUND = 'Sound';
+  RsVft2DrvCOMM = 'Communications';
+  RsVft2FontRASTER = 'Raster';
+  RsVft2FontVECTOR = 'Vector';
+  RsVft2FontTRUETYPE = 'TrueType';
+
   // TJclFileStream
 
   RsFileStreamCreate         = 'Unable to create temporary file stream';
