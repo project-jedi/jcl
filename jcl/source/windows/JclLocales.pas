@@ -22,7 +22,7 @@
 { formatting numbers and dates.                                                                    }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 31, 2002                                                                    }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,9 +36,9 @@ interface
 
 uses
   Windows, Classes, SysUtils,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
