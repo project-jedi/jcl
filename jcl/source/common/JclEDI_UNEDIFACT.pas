@@ -56,7 +56,8 @@ unit JclEDI_UNEDIFACT;
 interface
 
 uses
-  SysUtils, Classes, JclEDI;
+  SysUtils, Classes,
+  JclEDI;
 
 const
 
@@ -1622,9 +1623,7 @@ begin
       raise EJclEDIError.CreateResRec(@RsEDIError014);
   end
   else
-  begin
     raise EJclEDIError.CreateResRec(@RsEDIError015);
-  end;
   // Search for Functional Group Header
   SearchResult := StrSearch(FDelimiters.SD + UNGSegmentId + FDelimiters.ED, FData, StartPos);
   if SearchResult > 0 then
