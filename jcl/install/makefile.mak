@@ -57,7 +57,7 @@ qinstall:       $(BIN)\QJediInstaller.exe
 clean:
 	cd ..
 	@echo cleaning up first...
-	-@for %f in (bin\*.exe) do @if not %f==bin\JediInstaller.exe and not %f==bin\QJediInstaller.exe (del %f)
+	-@for %f in (bin\*.exe) do @if not %f==bin\JediInstaller.exe if not %f==bin\QJediInstaller.exe (del %f)
 	-@del /f /s *.~* bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o
 	cd lib
 	-@del /f /s *.obj *.res
