@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: August 16, 2000                                               }
+{ Last modified: September 20, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -79,10 +79,10 @@ end;
 function Get8087StatusWord(ClearExceptions: Boolean): Word; assembler;
 asm
         TEST    AX, AX                // if ClearExceptions then
-        JE      @@NOCLEAREXCEPTIONS
+        JE      @@NoClearExceptions
         FSTSW   AX                    //   get status word (clears exceptions)
         RET
-@@NOCLEAREXCEPTIONS:                  // else
+@@NoClearExceptions:                  // else
         FNSTSW  AX                    //   get status word (without clearing exceptions)
 end;
 
