@@ -1,0 +1,1085 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclLocaleInfo = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(ALocaleID: LCID = LOCALE_SYSTEM_DEFAULT);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CharInfo[InfoType: Integer]: Char read GetCharInfo;
+[ShortDescr]
+Retrieves character typed locale information.
+[Description]
+The CharInfo property lets you read character typed locale information directly.
+The InfoType is an Integer which specifies the locale information type which you
+want to retrieve. You can specify any LOCALE_* information types as documented
+in the Platform SDK documentation on GetLocaleInfo. Note that if the locale
+information type requested is string based, only the first character of the
+string is returned. This property should only be used for those information types
+that are not directly supported by this class through it's properties.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IntegerInfo[InfoType: Integer]: Integer read GetIntegerInfo;
+[ShortDescr]
+Retrieves Integer typed locale information.
+[Description]
+The IntegerInfo property lets you read Integer typed locale information directly.
+The InfoType is an Integer which specifies the locale information type which you
+want to retrieve. You can specify any LOCALE_* information types as documented
+in the Platform SDK documentation on GetLocaleInfo. This property should only be
+used for those information types that are not directly supported by this class
+through it's properties.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property StringInfo[InfoType: Integer]: string read GetStringInfo; default;
+[ShortDescr]
+Retrieves string typed locale information.
+[Description]
+The StringInfo property lets you read string typed locale information directly.
+The InfoType is an Integer which specifies the locale information type which you
+want to retrieve. You can specify any LOCALE_* information types as documented
+in the Platform SDK documentation on GetLocaleInfo. This property should only be
+used for those information types that are not directly supported by this class
+through it's properties.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FontCharset: Byte read GetFontCharset;
+[ShortDescr]
+Returns the font character set associated with the locale.
+[Description]
+FontCharSet returns the font character set associated with the locale. The table
+below defines the possible return values, if the character set couldn't be found
+the property reads DEFAULT_CHARSET.
+  <table>
+  <tr><th>Code page</th><th>Character set</th></tr>
+  <tr>1252<td></td><td>ANSI_CHARSET</td></tr>
+  <tr>1250<td></td><td>EASTEUROPE_CHARSET</td></tr>
+  <tr>1251<td></td><td>RUSSIAN_CHARSET</td></tr>
+  <tr>1253<td></td><td>GREEK_CHARSET</td></tr>
+  <tr>1254<td></td><td>TURKISH_CHARSET</td></tr>
+  <tr>1255<td></td><td>HEBREW_CHARSET</td></tr>
+  <tr>1256<td></td><td>ARABIC_CHARSET</td></tr>
+  <tr>1257<td></td><td>BALTIC_CHARSET</td></tr>
+  <tr>874<td></td><td>THAI_CHARSET</td></tr>
+  <tr>932<td></td><td>SHIFTJIS_CHARSET</td></tr>
+  </table>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LangID: LANGID read GetLangID;
+[ShortDescr]
+Returns the language identifier.
+[Description]
+LangId returns the language identifier for this locale.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LocaleID: LCID read FLocaleID;
+[ShortDescr]
+Returns the locale identifier.
+[Description]
+Returns the locale identifier for which this instance contains information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LangIDPrimary: Word read GetLangIDPrimary;
+[ShortDescr]
+Returns the primary language identifier.
+[Description]
+Extracts the primary language identifier from the language identifier this locale
+information object represents. The return value can be one of the following values:
+  <TABLE>
+  <TR VALIGN="top"><TD width=31%>LANG_AFRIKAANS</TD><TD width=69%>LANG_KONKANI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ALBANIAN</TD><TD width=69%>LANG_KOREAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ARABIC</TD><TD width=69%>LANG_LATVIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ARMENIAN</TD><TD width=69%>LANG_LITHUANIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ASSAMESE</TD><TD width=69%>LANG_MACEDONIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_AZERI</TD><TD width=69%>LANG_MALAY</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_BASQUE</TD><TD width=69%>LANG_MALAYALAM</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_BELARUSIAN</TD><TD width=69%>LANG_MANIPURI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_BENGALI</TD><TD width=69%>LANG_MARATHI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_BULGARIAN</TD><TD width=69%>LANG_NEPALI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_CATALAN</TD><TD width=69%>LANG_NEUTRAL</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_CHINESE</TD><TD width=69%>LANG_NORWEGIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_CROATIAN</TD><TD width=69%>LANG_ORIYA</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_CZECH</TD><TD width=69%>LANG_POLISH</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_DANISH</TD><TD width=69%>LANG_PORTUGUESE</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_DUTCH</TD><TD width=69%>LANG_PUNJABI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ENGLISH</TD><TD width=69%>LANG_ROMANIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ESTONIAN</TD><TD width=69%>LANG_RUSSIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_FAEROESE</TD><TD width=69%>LANG_SANSKRIT</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_FARSI</TD><TD width=69%>LANG_SERBIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_FINNISH</TD><TD width=69%>LANG_SINDHI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_FRENCH</TD><TD width=69%>LANG_SLOVAK</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_GEORGIAN</TD><TD width=69%>LANG_SLOVENIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_GERMAN</TD><TD width=69%>LANG_SPANISH</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_GREEK</TD><TD width=69%>LANG_SWAHILI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_GUJARATI</TD><TD width=69%>LANG_SWEDISH</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_HEBREW</TD><TD width=69%>LANG_TAMIL</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_HINDI</TD><TD width=69%>LANG_TATAR</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_HUNGARIAN</TD><TD width=69%>LANG_TELUGU</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ICELANDIC</TD><TD width=69%>LANG_THAI</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_INDONESIAN</TD><TD width=69%>LANG_TURKISH</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_ITALIAN</TD><TD width=69%>LANG_UKRANIAN</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_JAPANESE</TD><TD width=69%>LANG_URDU</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_KANNADA</TD><TD width=69%>LANG_UZBEK</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_KASHMIRI</TD><TD width=69%>LANG_VIETNAMESE</TD></TR>
+  <TR VALIGN="top"><TD width=31%>LANG_KAZAK</TD><TD width=69%>&nbsp;</TD></TR>
+  </TABLE>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LangIDSub: Word read GetLangIDSub;
+[ShortDescr]
+Returns the sublanguage identifier.
+[Description]
+Extracts the sublanguage identifier from the language identifier this locale
+information object represents. The return value can be one of the following values:
+  <TABLE>
+  <TR VALIGN="top">
+  <TD width=48%>SUBLANG_ARABIC_SAUDI_ARABIA<BR>
+  SUBLANG_ARABIC_IRAQ<BR>
+  SUBLANG_ARABIC_EGYPT<BR>
+  SUBLANG_ARABIC_LIBYA<BR>
+  SUBLANG_ARABIC_ALGERIA<BR>
+  SUBLANG_ARABIC_MOROCCO<BR>
+  SUBLANG_ARABIC_TUNISIA<BR>
+  SUBLANG_ARABIC_OMAN<BR>
+  SUBLANG_ARABIC_YEMEN<BR>
+  SUBLANG_ARABIC_SYRIA<BR>
+  SUBLANG_ARABIC_JORDAN<BR>
+  SUBLANG_ARABIC_LEBANON<BR>
+  SUBLANG_ARABIC_KUWAIT<BR>
+  SUBLANG_ARABIC_UAE<BR>
+  SUBLANG_ARABIC_BAHRAIN<BR>
+  SUBLANG_ARABIC_QATAR<BR>
+  SUBLANG_AZERI_CYRILLIC<BR>
+  SUBLANG_AZERI_LATIN<BR>
+  SUBLANG_CHINESE_SIMPLIFIED<BR>
+  SUBLANG_CHINESE_HONGKONG<BR>
+  SUBLANG_CHINESE_SINGAPORE<BR>
+  SUBLANG_CHINESE_MACAU<BR>
+  SUBLANG_DEFAULT<BR>
+  SUBLANG_DUTCH<BR>
+  SUBLANG_DUTCH_BELGIAN<BR>
+  SUBLANG_ENGLISH_US<BR>
+  SUBLANG_ENGLISH_UK<BR>
+  SUBLANG_ENGLISH_AUS<BR>
+  SUBLANG_ENGLISH_CAN<BR>
+  SUBLANG_ENGLISH_NZ<BR>
+  SUBLANG_ENGLISH_EIRE<BR>
+  SUBLANG_ENGLISH_SOUTH_AFRICA<BR>
+  SUBLANG_ENGLISH_JAMAICA<BR>
+  SUBLANG_ENGLISH_CARIBBEAN<BR>
+  SUBLANG_ENGLISH_BELIZE<BR>
+  SUBLANG_ENGLISH_TRINIDAD<BR>
+  SUBLANG_ENGLISH_PHILIPPINES<BR>
+  SUBLANG_ENGLISH_ZIMBABWE<BR>
+  SUBLANG_FRENCH<BR>
+  SUBLANG_FRENCH_BELGIAN<BR>
+  SUBLANG_FRENCH_CANADIAN<BR>
+  SUBLANG_FRENCH_SWISS<BR>
+  SUBLANG_FRENCH_LUXEMBOURG<BR>
+  SUBLANG_FRENCH_MONACO<BR>
+  SUBLANG_GERMAN<BR>
+  SUBLANG_GERMAN_SWISS</TD>
+  <TD width=52%>SUBLANG_GERMAN_AUSTRIAN<BR>
+  SUBLANG_GERMAN_LUXEMBOURG<BR>
+  SUBLANG_GERMAN_LIECHTENSTEIN<BR>
+  SUBLANG_ITALIAN<BR>
+  SUBLANG_ITALIAN_SWISS<BR>
+  SUBLANG_KASHMIRI_INDIA<BR>
+  SUBLANG_KOREAN<BR>
+  SUBLANG_LITHUANIAN<BR>
+  SUBLANG_MALAY_BRUNEI_DARUSSALAM<BR>
+  SUBLANG_MALAY_MALAYSIA<BR>
+  SUBLANG_NEPALI_INDIA<BR>
+  SUBLANG_NEUTRAL<BR>
+  SUBLANG_NORWEGIAN_BOKMAL<BR>
+  SUBLANG_NORWEGIAN_NYNORSK<BR>
+  SUBLANG_PORTUGUESE<BR>
+  SUBLANG_PORTUGUESE_BRAZILIAN<BR>
+  SUBLANG_SERBIAN_LATIN<BR>
+  SUBLANG_SERBIAN_CYRILLIC<BR>
+  SUBLANG_SPANISH<BR>
+  SUBLANG_SPANISH_MEXICAN<BR>
+  SUBLANG_SPANISH_MODERN<BR>
+  SUBLANG_SPANISH_GUATEMALA<BR>
+  SUBLANG_SPANISH_COSTA_RICA<BR>
+  SUBLANG_SPANISH_PANAMA<BR>
+  SUBLANG_SPANISH_DOMINICAN_REPUBLIC<BR>
+  SUBLANG_SPANISH_VENEZUELA<BR>
+  SUBLANG_SPANISH_COLOMBIA<BR>
+  SUBLANG_SPANISH_PERU<BR>
+  SUBLANG_SPANISH_ARGENTINA<BR>
+  SUBLANG_SPANISH_ECUADOR<BR>
+  SUBLANG_SPANISH_CHILE<BR>
+  SUBLANG_SPANISH_URUGUAY<BR>
+  SUBLANG_SPANISH_PARAGUAY<BR>
+  SUBLANG_SPANISH_BOLIVIA<BR>
+  SUBLANG_SPANISH_EL_SALVADOR<BR>
+  SUBLANG_SPANISH_HONDURAS<BR>
+  SUBLANG_SPANISH_NICARAGUA<BR>
+  SUBLANG_SPANISH_PUERTO_RICO<BR>
+  SUBLANG_SWEDISH<BR>
+  SUBLANG_SWEDISH_FINLAND<BR>
+  SUBLANG_SYS_DEFAULT<BR>
+  SUBLANG_URDU_INDIA<BR>
+  SUBLANG_URDU_PAKISTAN<BR>
+  SUBLANG_UZBEK_CYRILLIC<BR>
+  SUBLANG_UZBEK_LATIN</TD>
+  </TR></TABLE>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property SortID: Word read GetSortID;
+[ShortDescr]
+Returns the sort identifier.
+[Description]
+Extracts the sort identifier from the locale identifier this object represents.
+This property returns one of the following values:
+  <TABLE>
+  <TR VALIGN="top"><TH align=left width=46%>Value</TH><TH align=left width=54%>Meaning</TH></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_CHINESE_BIG5</TD><TD width=54%>Specifies Chinese BIG5 order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_CHINESE_BOPOMOFO</TD><TD width=54%>Traditional Chinese Bopomofo order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_CHINESE_PRC</TD><TD width=54%>PRC Chinese Stroke Count order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_CHINESE_PRCP</TD><TD width=54%>PRC Chinese Phonetic order</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_DEFAULT </TD><TD width=54%>Specifies the default sort.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_GEORGIAN_MODERN</TD><TD width=54%>Georgian Modern order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_GEORGIAN_TRADITIONAL</TD><TD width=54%>Georgian Traditional order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_GERMAN_PHONE_BOOK</TD><TD width=54%>German Phone Book order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_HUNGARIAN_DEFAULT</TD><TD width=54%>Hungarian Default order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_HUNGARIAN_TECHNICAL</TD><TD width=54%>Hungarian Technical order</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_JAPANESE_XJIS</TD><TD width=54%>Specifies Japanese XJIS order.</TD></TR>
+  <TR VALIGN="top"><TD width=46%>SORT_KOREAN_KSC</TD><TD width=54%>Specifies Korean KSC order.</TD></TR>
+  </TABLE>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UseSystemACP: Boolean read FUseSystemACP write SetUseSystemACP;
+[ShortDescr]
+Determines whether the system ACP is used for string translation.
+[Description]
+Determines whether the class uses the system ANSI code page (ACP) for string
+translation instread of the locale's code page. This property is True by default,
+assign False to turn of usage of the system ACP instead.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME read GetStringInfo;
+[ShortDescr]
+Abbreviated name of the country/region, mostly based on the ISO Standard 3166.
+[Description]
+Abbreviated name of the country/region, mostly based on the ISO Standard 3166.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AbbreviatedDayNames[Day: TJclLocalesDays]: string read GetAbbreviatedDayNames;
+[ShortDescr]
+Returns a list of native abbreviated names for the days in a week.
+[Description]
+AbbreviatedDayNames contains a list of abbreviated names, one for each day of the
+week. The list is indexed with a 1-based index which indicates the day for which
+to retrieve the abbreviated name. For example, 1 is monday, 2 is tuesday and so forth.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AbbreviatedLangName: string index LOCALE_SABBREVLANGNAME read GetStringInfo;
+[ShortDescr]
+Abbreviated name of the language.
+[Description]
+Abbreviated name of the language. In most cases it is created by taking the
+two-letter language abbreviation from the ISO Standard 639 and adding a third
+letter, as appropriate, to indicate the sublanguage.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AbbreviatedMonthNames[Month: TJclLocalesMonths]: string read GetAbbreviatedMonthNames;
+[ShortDescr]
+Returns a list of native abbreviated names for the months in a year.
+[Description]
+AbbreviatedMonthNames contains a list of abbreviated names, one for each month of the
+year. The list is indexed with a 1-based index which indicates the month for which
+to retrieve the abbreviated name. For example, 1 is januari, 2 is februari and so forth.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CodePageANSI: Integer index LOCALE_IDEFAULTANSICODEPAGE read GetIntegerInfo;
+[ShortDescr]
+ANSI code page associated with this locale.
+[Description]
+American National Standards Institute (ANSI) code page associated with this locale.
+If the locale does not use an ANSI code page, the value is 0. The maximum number
+of characters allowed for this string is six.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CodePageMAC: Integer index LOCALE_IDEFAULTMACCODEPAGE read GetIntegerInfo;
+[ShortDescr]
+Default Macintosh code page associated with the locale.
+[Description]
+Default Macintosh code page associated with the locale. If the locale does not
+use a Macintosh code page, the value is 2. The maximum number of characters
+allowed for this string is six.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE read GetIntegerInfo;
+[ShortDescr]
+Original equipment manufacturer (OEM) code page associated with the country/region.
+[Description]
+Original equipment manufacturer (OEM) code page associated with the country/region.
+If the locale does not use an OEM code page, the value is 1.The maximum number of
+characters allowed for this string is six.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
+[ShortDescr]
+Code for the principal country/region in this locale.
+[Description]
+Code for the principal country/region in this locale. This is provided so that
+partially specified locales can be completed with default values. The maximum
+number of characters allowed for this string is six.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DateFormats[Format: TJclLocaleDateFormats]: TStrings read GetDateFormats;
+[ShortDescr]
+List of date formats that are available for this locale.
+[Description]
+List of date formats that are available for this locale. The list is indexed by
+a TJclLocaleDateFormats which is defined as:<br>
+  TJclLocaleDateFormats = (ldShort, ldLong);<br>
+As such the index determines whether the returned list contains the long or short
+date formats. The returned string list is only valid as long as you don't read the
+DateFormats property again with a different index. If you need this list to outlive
+subsequent reads than assign it's contents to a different stringlist, for example: <br>
+  <p class=syntax>
+var
+  ShortDateFormats: TStrings;
+  LongDateFormats: TStrings;
+  Info: TJclLocaleInfo;
+  ...
+  ShortDateFormats.Assign(Info.DateFormats[ldShort]);
+  LongDateFormats.Assign(Info.DateFormats[ldLong]);
+  </p>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DecimalSeparator: Char index LOCALE_SDECIMAL read GetCharInfo;
+[ShortDescr]
+Character(s) used as the decimal separator.
+[Description]
+Character(s) used as the decimal separator. The maximum number of characters
+allowed for this string is 4.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property EnglishCountryName: string index LOCALE_SENGCOUNTRY read GetStringInfo;
+[ShortDescr]
+Full English name of the country/region.
+[Description]
+Full English name of the country/region. This is always restricted to characters
+that can be mapped into the ASCII 127-character subset.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property EnglishLangName: string index LOCALE_SENGLANGUAGE read GetStringInfo;
+[ShortDescr]
+Full English name of the language from the ISO standard 639.
+[Description]
+Full English name of the language from the International Organization for
+Standardization (ISO) Standard 639. This is always restricted to characters that
+can be mapped into the ASCII 127-character subset. This is not always equivalent
+to the English version of LOCALE_SLANGUAGE.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LangIdStr: string index LOCALE_ILANGUAGE read GetStringInfo;
+[ShortDescr]
+Language identifier.
+[Description]
+Language identifier. The maximum number of characters allowed for this string is five.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ListItemSeparator: Char index LOCALE_SLIST read GetCharInfo;
+[ShortDescr]
+Character(s) used to separate list items.
+[Description]
+Character(s) used to separate list items. For example, a comma is used in many
+locales. The maximum number of characters allowed for this string is 4.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LocalizedCountryName: string index LOCALE_SCOUNTRY read GetStringInfo;
+[ShortDescr]
+Full localized name of the country/region.
+[Description]
+Full localized name of the country/region. This is based on the localization of
+the product, thus it changes for each localized version.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LocalizedLangName: string index LOCALE_SLANGUAGE read GetStringInfo;
+[ShortDescr]
+Full localized name of the language.
+[Description]
+Full localized name of the language. This name is based on the localization of
+the product, thus the value changes for each localized version.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LongDayNames[Day: TJclLocalesDays]: string read GetLongDayNames;
+[ShortDescr]
+Returns the native long name for the specified day.
+[Description]
+List of native long names for the days in a week. The index into this list is
+a 1 based index of the day for which to retrieve the long name. For example, 1
+is monday, 2 is tuesday and so forth.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LongMonthNames[Month: TJclLocalesMonths]: string read GetLongMonthNames;
+[ShortDescr]
+Returns the native long name for the specified month.
+[Description]
+List of native long names for the months in a year. The index into this list is
+a 1 based index of the month for which to retrieve the long name. For example, 1
+is january, 2 is februari and so forth. The highest possible index is 13 which
+may return an empty string if the 13th month doesn't exist for this locale.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MonetarySymbolIntl: string index LOCALE_SINTLSYMBOL read GetStringInfo;
+[ShortDescr]
+Three characters of the international monetary symbol specified in ISO 4217
+followed by the character separating this string from the amount.
+[Description]
+Three characters of the international monetary symbol specified in ISO 4217
+followed by the character separating this string from the amount.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MonetarySymbolLocal: string index LOCALE_SCURRENCY read GetStringInfo;
+[ShortDescr]
+String used as the local monetary symbol. The maximum number of characters allowed
+for this string is six.
+[Description]
+String used as the local monetary symbol. The maximum number of characters allowed
+for this string is six.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property NativeCountryName: string index LOCALE_SNATIVECTRYNAME read GetStringInfo;
+[ShortDescr]
+Native name of the country/region.
+[Description]
+Native name of the country/region.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property NegativeNumber: Char index LOCALE_INEGNUMBER read GetCharInfo;
+[ShortDescr]
+[Description]
+Negative number mode, that is, the format for a negative number. The maximum number
+of characters allowed for this string is two. The mode can be one of these values.
+ <TABLE>
+ <TR VALIGN="top"><TH align=left width=13%>Value</TH><TH align=left width=87%>Format</TH></TR>
+ <TR VALIGN="top"><TD width=13%>0</TD>
+ <TD width=87%>Left parenthesis, number, right parenthesis. Example: (1.1) </TD></TR>
+ <TR VALIGN="top"><TD width=13%>1</TD>
+ <TD width=87%>Negative sign, number. Example: -1.1</TD></TR>
+ <TR VALIGN="top"><TD width=13%>2</TD>
+ <TD width=87%>Negative sign, space, number. Example: - 1.1</TD></TR>
+ <TR VALIGN="top"><TD width=13%>3</TD>
+ <TD width=87%>Number, negative sign. Example: 1.1-</TD></TR>
+ <TR VALIGN="top"><TD width=13%>4</TD>
+ <TD width=87%>Number, space, negative sign. Example: 1.1 -</TD></TR>
+ </TABLE><BR>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property TimeFormats: TStrings read GetTimeFormats;
+[ShortDescr]
+Formats that are available for this locale.
+[Description]
+Formats that are available for this locale.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ThousandSeparator: Char index LOCALE_STHOUSAND read GetCharInfo;
+[ShortDescr]
+Character(s) used to separate groups of digits to the left of the decimal.
+[Description]
+Character(s) used to separate groups of digits to the left of the decimal. The
+maximum number of characters allowed for this string is four
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocaleInfo
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclLocalesKind = (lkInstalled, lkSupported);
+[ShortDescr]
+TJclLocalesKind is used by the TJclLocalesList class to specify whether the list
+contains elements for all supported or all installed locales and codepages.
+[Description]
+TJclLocalesKind is used by the TJclLocalesList class to specify whether the list
+contains elements for all supported or all installed locales and codepages.
+[Enumeration]
+Count=2
+1=lkInstalled=Only installed locales and codepages.
+2=lkSupported=All supported locales and codepages.
+[Quick Info]
+Kind=Type
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclLocalesList = class (TObjectList)
+[ShortDescr]
+Maintains information about supported locales and codepages.
+[Description]
+TJclLocalesList maintains a list of elements containing information about locales
+and codepages. The list contains either information about all supported locales
+and codepages or all installed locales and codepages depending on how it is
+constructed.
+[Quick Info]
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AKind: TJclLocalesKind = lkSupported);
+[ShortDescr]
+Creates and initialises an instance of TJclLocalesList.
+[Description]
+The Create constructor creates an instance of TJclLocalesList and initialises it
+according to the specified parameter.
+[Parameters]
+Count=1
+1=AKind=TJclLocalesKind=Specifies the kind of items this list will contain after
+construction. If you specify lkSupported the list will contain information for
+all supported locales and codepages on the system. If you specify lkInstalled
+the list will contain information about the installed locales and codepages only.
+See <REF>TJclLocalesKind</REF> for more information. Note that the JclLocales
+unit maintains a global instance of a TJclLocalesList which you can retrieve
+by using the JclLocalesList function.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CodePages: TStrings read FCodePages;
+[ShortDescr]
+List of supported or installed codepages.
+[Description]
+The CodePages property contains a list of all supported or installed codepages
+on the system depending on the Kind property. Each item contains the string
+representation of a code page identifier while the associated Objects item contains
+the numeric representation of the code page identifier (or 0 if the code page
+couldn't be converted to a numerical value).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
+[ShortDescr]
+Returns the TJclLocaleInfo object given a language identifier.
+[Description]
+The ItemFromLangID provides the same list of locale information objects as the
+Items property does except that it allows indexing by language ID instead of a
+zero based index. This allows you to directly retrieve information about a specific
+language without having to traverse the entire list. Note that if the list contains
+no information for the specified language, the property returns nil.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
+[ShortDescr]
+Returns the TJclLocaleInfo object given a primary language ID.
+[Description]
+The ItemFromLangIDPrimary provides the same list of locale information objects as the
+Items property does except that it allows indexing by primary language ID instead of
+a zero based index. This allows you to directly retrieve information about a specific
+language without having to traverse the entire list. Note that if the list contains
+no information for the specified language, the property returns nil.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromLocaleID[LocaleID: LCID]: TJclLocaleInfo read GetItemFromLocaleID;
+[ShortDescr]
+Returns the TJclLocaleInfo object given a locale identifier.
+[Description]
+The ItemFromLocaleID provides the same list of locale information objects as the
+Items property does except that it allows indexing by Locale ID instead of a
+zero based index. This allows you to directly retrieve information about a specific
+locale without having to traverse the entire list. Note that if the list contains
+no information for the specified locale, the property returns nil.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclLocaleInfo read GetItems; default;
+[ShortDescr]
+List of locale information items.
+[Description]
+The Items property contains a list of TJclLocaleInfo objects each of which supplies
+information about a single locale installed or supported (depending on the Kind
+property) on the system.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Kind: TJclLocalesKind read FKind;
+[ShortDescr]
+Returns the Kind of elements contained in the list.
+[Description]
+Kind specifies the kind of elements this list contains. It is a direct copy of
+the AKind parameter of the TJclLocalesList constructor. See <REF>TJclLocalesKind</REF>
+for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclLocales
+Category=Internationalisation
+SubCat=National Language Support\TJclLocalesList
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+BCB=4,5
