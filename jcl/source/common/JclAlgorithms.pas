@@ -592,9 +592,10 @@ begin
   begin
     SepLen := StrLen(PSep);
     repeat
-      SetLength(Item, PPos - PString + 1);
+      //SetLength(Item, PPos - PString + 1);
+      SetLength(Item, PPos - PString);
       Move(PString^, Item[1], PPos - PString);
-      Item[PPos - PString + 1] := #0;
+      //Item[PPos - PString + 1] := #0;
       Obj.Add(Item);
       PString := PPos + SepLen;
       PPos := StrPos(PString, PSep);
@@ -609,6 +610,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/03/02 09:59:30  dade2004
+// - DCLAppendDelimited replaced by JclAbstractContainers.TJclStrCollection.AppendDelimited
+//
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //
