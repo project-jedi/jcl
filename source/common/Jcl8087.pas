@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 25, 2000                                                 }
+{ Last modified: August 16, 2000                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -37,7 +37,7 @@ function Get8087ControlWord: Word;
 function Get8087Infinity: T8087Infinity;
 function Get8087Precision: T8087Precision;
 function Get8087Rounding: T8087Rounding;
-function Get8087StatusWord: Word;
+function Get8087StatusWord(ClearExceptions: Boolean): Word;
 function Set8087Infinity(const Infinity: T8087Infinity): T8087Infinity;
 function Set8087Precision(const Precision: T8087Precision): T8087Precision;
 function Set8087Rounding(const Rounding: T8087Rounding): T8087Rounding;
@@ -76,9 +76,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Get8087StatusWord: Word; assembler;
+function Get8087StatusWord(ClearExceptions: Boolean): Word; assembler;
 asm
-        FSTSW   AX
+        TEST    AX, AX                // if ClearExceptions then
+        JE      @@NOCLEAREXCEPTIONS
+        FSTSW   AX                    //   get status word (clears exceptions)
+        RET
+@@NOCLEAREXCEPTIONS:                  // else
+        FNSTSW  AX                    //   get status word (without clearing exceptions)
 end;
 
 //------------------------------------------------------------------------------
@@ -120,12 +125,12 @@ function Set8087ControlWord(const Control: Word): Word; assembler;
 var
   CW: Word;
 asm
-        FSTCW   [CW]
+        FSTCW   [CW]         // get current control word
         MOV     CX, [CW]
         MOV     [CW], AX
-        FNCLEX
-        FLDCW   [CW]
-        MOV     AX, CX
+        FNCLEX               // supress exceptions due to change in flags
+        FLDCW   [CW]         // set control word
+        MOV     AX, CX       // return old control word
 end;
 
 end.
