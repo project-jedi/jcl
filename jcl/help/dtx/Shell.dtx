@@ -138,7 +138,7 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
 --------------------------------------------------------------------------------
-@@TSHRenameOptions
+@@TSHRenameOption
 <GROUP Shell.FilesandFolders>
 Summary:
   Enumeration used by SHRenameFile to specify the rename options.
@@ -156,12 +156,15 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
-@@TSHRenameOptions.roSilent
+@@TSHRenameOption.roSilent
   Perform the operation without any user interface feedback, including errors.
-@@TSHRenameOptions.roRenameOnCollision
+@@TSHRenameOption.roRenameOnCollision
   If renaming causes a naming conflict (ie the file already exists) then automatically rename the destination file. This will usually result in a name like 'Copy of ...'. If not specified the renaming fails in case of a conflict.
+@@TSHRenameOptions
+<GROUP Shell.FilesandFolders>
+<COMBINE TSHRenameOption>
 --------------------------------------------------------------------------------
-@@TSHDeleteOptions
+@@TSHDeleteOption
 <GROUP Shell.FilesandFolders>
 Summary:
   Enumeration used by SHDeleteFiles and SHDeleteFolder to specify the deletion options.
@@ -180,12 +183,15 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
-@@TSHDeleteOptions.doSilent
+@@TSHDeleteOption.doSilent
   Perform the operation without any user interface feedback, including errors.
-@@TSHDeleteOptions.doAllowUndo
+@@TSHDeleteOption.doAllowUndo
   If possible, allow the operation to be undone through the recycle bin.
-@@TSHDeleteOptions.doFilesOnly
+@@TSHDeleteOption.doFilesOnly
   If a wildcard expression is specified, only delete files, not folders.
+@@TSHDeleteOptions
+<GROUP Shell.FilesandFolders>
+<COMBINE TSHDeleteOption>
 --------------------------------------------------------------------------------
 @@TEnumFolderRec
 <GROUP Shell.FilesandFolders>
@@ -220,7 +226,7 @@ Quick info:
 @@TEnumFolderRec.Folder
   IShellFolder interface of the folder we are enumerating.
 --------------------------------------------------------------------------------
-@@TEnumFolderFlags
+@@TEnumFolderFlag
 <GROUP Shell.FilesandFolders>
 Summary:
   Enumeration used by SHEnumFolderFirst to specify the type of items to include in the enumeration.
@@ -240,12 +246,15 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
-@@TEnumFolderFlags.efFolders
+@@TEnumFolderFlag.efFolders
   include folder items in the enumeration
-@@TEnumFolderFlags.efNonFolders
+@@TEnumFolderFlag.efNonFolders
   include non folder items in the enumeration
-@@TEnumFolderFlags.efIncludeHidden
+@@TEnumFolderFlag.efIncludeHidden
   include hidden items in the enumeration
+@@TEnumFolderFlags
+<GROUP Shell.FilesandFolders>
+<COMBINE TEnumFolderFlag>
 --------------------------------------------------------------------------------
 @@SHEnumFolderFirst
 <GROUP Shell.FilesandFolders>
@@ -549,7 +558,7 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
 --------------------------------------------------------------------------------
-@@TDllVersionInfo
+@@_DllVersionInfo
 <GROUP Shell.Miscellaneous>
 Summary:
   This record is used by SHDllGetVersion to return version information about a specified DLL.
@@ -567,16 +576,22 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
-@@TDllVersionInfo.cbSize
+@@_DllVersionInfo.cbSize
   Set to the size of this record. Initialize is done by SHDllGetVersion.
-@@TDllVersionInfo.dwMajorVersion
+@@_DllVersionInfo.dwMajorVersion
   Major version of the DLL
-@@TDllVersionInfo.dwMinorVersion
+@@_DllVersionInfo.dwMinorVersion
   Minor version of the DLL
-@@TDllVersionInfo.dwBuildNumber
+@@_DllVersionInfo.dwBuildNumber
   Build number of the DLL
-@@TDllVersionInfo.dwPlatformId
+@@_DllVersionInfo.dwPlatformId
   Identifies the platform for which this DLL was built. Can be DLLVER_PLATFORM_WINDOWS or DLLVER_PLATFORM_NT which indicate generic Windows and Windows NT respectively.
+@@TDllVersionInfo
+<GROUP Shell.Miscellaneous>
+<COMBINE _DllVersionInfo>
+@@PDllVersionInfo
+<GROUP Shell.Miscellaneous>
+<COMBINE _DllVersionInfo>
 --------------------------------------------------------------------------------
 @@SHDllGetVersion
 <GROUP Shell.Miscellaneous>
@@ -983,8 +998,11 @@ Quick info:
   Index of the icon in the file specified by IconLocation
 @@TShellLink.HotKey
   Hotkey that activates the shell link. Modifiers, such as CTRL, ALT and SHIFT can be assigned as the high byte of the hotkey field (used 1, 2 and 4 for shift, control and alt respectively).
+@@PShellLink
+<GROUP Shell.Shortcuts>
+<COMBINE TShellLink>
 --------------------------------------------------------------------------------
-@@ShortCutFree
+@@ShellLinkFree
 <GROUP Shell.Shortcuts>
 Summary:
   Releases resources held by the ShellLink record.
