@@ -158,6 +158,7 @@ const
                      ';%0:s\' + JclSrcDirVcl +
                      ';%0:s\' + JclSrcDirVisClx;
   BCBIncludePath    = '%s;%s;$(BCB)\include;$(BCB)\include\vcl';
+  BCBObjectPath     = '%s;%s;$(BCB)\Lib\Obj';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   JclSrcDirOS       = 'unix';
@@ -166,6 +167,7 @@ const
                      ':%0:s\' + JclSrcDirCommon +
                      ':%0:s\' + JclSrcDirVisClx;
   BCBIncludePath    = '%s:%s:$(BCB)/include:$(BCB)/include/vcl';
+  BCBObjectPath     = '%s;%s;$(BCB)\Lib\Obj';
   {$ENDIF UNIX}
 
   DialogsPath       = 'examples' + PathSeparator + 'vcl' + PathSeparator + 'debugextension'
@@ -445,14 +447,28 @@ var
   function CompileUnits: Boolean;
   var
     I: Integer;
+    CompilationOptions: string;
+    SavedDelimiter : Char;
   begin
     Result := True;
     with Installation.DCC do
+    begin
+      if Installation.RADToolKind = brCppBuilder then
+      begin
+        SavedDelimiter := Options.Delimiter;
+        Options.Delimiter := ' ';
+        CompilationOptions := Options.DelimitedText + ' ';
+        CompilationOptions := StringReplace(CompilationOptions, '$(BCB)', Installation.RootDir, [rfReplaceAll]);
+        Options.Delimiter := SavedDelimiter;
+      end
+      else
+        CompilationOptions := '';
       for I := 0 to Units.Count - 1 do
       begin
-        Result := Result and Execute(Units[I]);
+        Result := Result and Execute(CompilationOptions + Units[I]);
         WriteInstallLog(Installation.DCC.Output);
       end;
+    end;
   end;
 
 begin
@@ -492,10 +508,14 @@ begin
         Options.Add('-v');
         Options.Add('-JPHNE');
         Options.Add('--BCB');
+        if Installation.VersionNumber = 5 then
+          Options.Add('-LUvcl50')
+        else
+          Options.Add('-LUvcl -LUvclx');
         LibObjDir := MakePath(Installation, FLibObjDirMask);
         AddPathOption('N0', UnitOutputDir); // .dcu files
         AddPathOption('O', Format(BCBIncludePath, [FJclSourceDir, FJclSourcePath]));
-        AddPathOption('U', Format(BCBIncludePath, [FJclSourceDir, FJclSourcePath]));
+        AddPathOption('U', Format(BCBObjectPath, [FJclSourceDir, FJclSourcePath]));
       end
       else // Delphi
       begin
