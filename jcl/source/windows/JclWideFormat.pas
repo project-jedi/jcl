@@ -75,13 +75,13 @@ function WideFormat(const Format: WideString; const Args: array of const): WideS
 implementation
 
 uses
-  Windows,              // for PByte and MultibytetoWideChar
+  Windows,              // for MultibytetoWideChar
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF ~HAS_UNIT_VARIANTS}
   SysUtils,             // for exceptions and FloatToText
   Classes,              // for TStrings, in error-reporting code
-  JclBase,              // for PCardinal
+  JclBase,              // for PByte and PCardinal
   JclStrings,           // for BooleanToStr, StrLen
   JclMath,              // for TDelphiSet
   JclWideStrings;       // for StrLenW, MoveWideChar
@@ -106,7 +106,6 @@ const
   WidePercent = WideChar('%');
   WideLittleX = WideChar('x');
   WideSpace = WideChar(' '); // Also defined in JclUnicode
-  WideNull = WideChar(#0); // Also defined in JclUnicode
 
   { This array classifies characters within the range of characters considered
     special to the format syntax. Characters outside the range are all
@@ -172,6 +171,17 @@ function FormatBadArgumentTypeError(const VType: Byte; const ArgIndex: Cardinal;
 function FormatBadArgumentTypeErrorEx(const Format: WideString; const FormatStart, FormatEnd: Cardinal; const VType: Byte; const ArgIndex: Cardinal; const Allowed: TDelphiSet): Exception; forward;
 
 function WideFormat(const Format: WideString; const Args: array of const): WideString;
+    procedure EnsureResultLen(const NeededLen: Cardinal; var AResultLen: Cardinal);
+    begin
+      if NeededLen > AResultLen then
+      begin
+        repeat
+          AResultLen := AResultLen * 2;
+        until NeededLen <= AResultLen;
+        SetLength(Result, AResultLen);
+      end;
+    end;
+
 const
   NoPrecision = $ffffffff;
   // For converting strings
@@ -198,7 +208,7 @@ var
   FormatLen: Cardinal;       // Alias for Length(Format)
   ResultLen: Cardinal;       // Alias for Length(Result)
   // Formatting variables
-  ArgIndex: Cardinal; // Which argument to read form the Args array
+  ArgIndex: Cardinal; // Which argument to read from the Args array
   Arg: PVarRec; // Pointer to current argument
   LeftAlign: Boolean; // Whether the "-" character is present
   Width: Cardinal;
@@ -227,17 +237,6 @@ var
   TempExt: Extended;
   TempCurr: Currency;
   {$ENDIF FORMAT_EXTENSIONS}
-
-    procedure EnsureResultLen(const NeededLen: Cardinal);
-    begin
-      if NeededLen > ResultLen then
-      begin
-        repeat
-          ResultLen := ResultLen * 2;
-        until NeededLen <= ResultLen;
-        SetLength(Result, ResultLen);
-      end;
-    end;
 
 begin
   FormatLen := Length(Format);
@@ -279,7 +278,7 @@ begin
           if CharCount > 0 then
           begin
             // Copy accumulated characters into result
-            EnsureResultLen(dest + CharCount - 1);
+            EnsureResultLen(dest + CharCount - 1, ResultLen);
             MoveWideChar(p^, Result[dest], CharCount);
             Inc(dest, CharCount);
             CharCount := 0;
@@ -546,7 +545,7 @@ begin
           // This code prepares for the buffer-copying code.
           MinWidth := CharCount;
           if Width > MinWidth then SpacesNeeded := Width - MinWidth else SpacesNeeded := 0;
-          EnsureResultLen(dest - 1 + MinWidth + SpacesNeeded);
+          EnsureResultLen(dest - 1 + MinWidth + SpacesNeeded, ResultLen);
 
           // This code fills the resultant buffer.
           if (SpacesNeeded > 0) and not LeftAlign then Inc(dest, FillWideChar(Result[dest], SpacesNeeded, WideSpace));
@@ -749,6 +748,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/22 07:55:18  rrossmair
+// - issue #2662 fixed (internal error C6662 when compiling with D2005)
+//
 // Revision 1.1  2005/02/14 00:45:50  rrossmair
 // - initial check-in
 //
