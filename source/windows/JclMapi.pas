@@ -21,7 +21,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI  }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: October 11, 2001                                              }
+{ Last modified: November 7, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -193,6 +193,7 @@ type
     FAttachments: TStrings;
     FBody: string;
     FFindOptions: TJclEmailFindOptions;
+    FHtmlBody: Boolean;
     FLogonOptions: TJclEmailLogonOptions;
     FParentWnd: HWND;
     FReadMsg: TJclEmailReadMsg;
@@ -232,6 +233,7 @@ type
     property Attachments: TStrings read FAttachments;
     property Body: string read FBody write SetBody;
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
+    property HtmlBody: Boolean read FHtmlBody write FHtmlBody;
     property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
     property ParentWnd: HWND read GetParentWnd write FParentWnd;
     property ReadMsg: TJclEmailReadMsg read FReadMsg;
@@ -267,7 +269,7 @@ implementation
 
 uses
   Registry,
-  JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 const
   mapidll = 'mapi32.dll';
@@ -926,84 +928,104 @@ var
   Flags, Res: DWORD;
   I: Integer;
   MsgID: array [0..512] of AnsiChar;
+  HtmlBodyFileName: string;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateResRec(@RsMapiMailNoClient);
 
-  if FAttachments.Count > 0 then
-  begin
-    SetLength(AttachArray, FAttachments.Count);
-    for I := 0 to FAttachments.Count - 1 do
+  HtmlBodyFileName := '';
+  try
+    if FHtmlBody then
     begin
-      if not FileExists(FAttachments[I]) then
-        MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
-      FAttachments[I] := ExpandFileName(FAttachments[I]);
-      FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
-      AttachArray[I].nPosition := DWORD(-1);
-      AttachArray[I].lpszFileName := nil;
-      AttachArray[I].lpszPathName := PChar(FAttachments[I]);
+      HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
+      FAttachments.Insert(0, HtmlBodyFileName);
+      StringToFile(HtmlBodyFileName, FBody);
     end;
-  end
-  else
-    AttachArray := nil;
-
-  if Recipients.Count > 0 then
-  begin
-    SetLength(RecipArray, Recipients.Count);
-    SetLength(RealAdresses, Recipients.Count);
-    for I := 0 to Recipients.Count - 1 do
+    // Create attachments
+    if FAttachments.Count > 0 then
     begin
-      FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
-      with RecipArray[I], Recipients[I] do
+      SetLength(AttachArray, FAttachments.Count);
+      for I := 0 to FAttachments.Count - 1 do
       begin
-        ulRecipClass := RecipClasses[Kind];
-        if Name = '' then // some clients requires Name item always filled
-        begin
-          if FAddress = '' then
-            MapiCheck(MAPI_E_INVALID_RECIPS, False);
-          lpszName := PChar(FAddress);
-        end
-        else
-          lpszName := PChar(FName);
-        if FAddressType <> '' then
-          RealAdresses[I] := FAddressType + ':' + FAddress
-        else
-        if Recipients.AddressesType <> '' then
-          RealAdresses[I] := Recipients.AddressesType + ':' + FAddress
-        else
-          RealAdresses[I] := FAddress;
-        lpszAddress := PCharOrNil(RealAdresses[I]);
+        if not FileExists(FAttachments[I]) then
+          MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
+        FAttachments[I] := ExpandFileName(FAttachments[I]);
+        FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
+        AttachArray[I].nPosition := DWORD(-1);
+        AttachArray[I].lpszFileName := nil;
+        AttachArray[I].lpszPathName := PChar(FAttachments[I]);
       end;
-    end;
-  end
-  else
-  begin
-    if ShowDialog then
-      RecipArray := nil
+    end
     else
-      MapiCheck(MAPI_E_INVALID_RECIPS, False);
+      AttachArray := nil;
+    // Create recipients
+    if Recipients.Count > 0 then
+    begin
+      SetLength(RecipArray, Recipients.Count);
+      SetLength(RealAdresses, Recipients.Count);
+      for I := 0 to Recipients.Count - 1 do
+      begin
+        FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
+        with RecipArray[I], Recipients[I] do
+        begin
+          ulRecipClass := RecipClasses[Kind];
+          if Name = '' then // some clients requires Name item always filled
+          begin
+            if FAddress = '' then
+              MapiCheck(MAPI_E_INVALID_RECIPS, False);
+            lpszName := PChar(FAddress);
+          end
+          else
+            lpszName := PChar(FName);
+          if FAddressType <> '' then
+            RealAdresses[I] := FAddressType + ':' + FAddress
+          else
+          if Recipients.AddressesType <> '' then
+            RealAdresses[I] := Recipients.AddressesType + ':' + FAddress
+          else
+            RealAdresses[I] := FAddress;
+          lpszAddress := PCharOrNil(RealAdresses[I]);
+        end;
+      end;
+    end
+    else
+    begin
+      if ShowDialog then
+        RecipArray := nil
+      else
+        MapiCheck(MAPI_E_INVALID_RECIPS, False);
+    end;
+    // Load MAPI client library
+    LoadClientLib;
+    // Fill MapiMessage structure
+    FillChar(MapiMessage, SizeOf(MapiMessage), #0);
+    MapiMessage.lpszSubject := PChar(FSubject);
+    if FHtmlBody then
+      MapiMessage.lpszNoteText := #0
+    else
+      MapiMessage.lpszNoteText := PChar(FBody);
+    MapiMessage.lpRecips := PMapiRecipDesc(RecipArray);
+    MapiMessage.nRecipCount := Length(RecipArray);
+    MapiMessage.lpFiles := PMapiFileDesc(AttachArray);
+    MapiMessage.nFileCount := Length(AttachArray);
+    Flags := LogonOptionsToFlags(ShowDialog);
+    if Save then
+    begin
+      StrPCopy(MsgID, FSeedMessageID);
+      Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
+      if Res = SUCCESS_SUCCESS then
+        FSeedMessageID := MsgID;
+    end
+    else
+      Res := MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0);
+    Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
+  finally
+    if HtmlBodyFileName <> '' then
+    begin
+      DeleteFile(HtmlBodyFileName);
+      FAttachments.Delete(0);
+    end;
   end;
-
-  LoadClientLib;
-
-  FillChar(MapiMessage, SizeOf(MapiMessage), #0);
-  MapiMessage.lpszSubject := PChar(FSubject);
-  MapiMessage.lpszNoteText := PChar(FBody);
-  MapiMessage.lpRecips := PMapiRecipDesc(RecipArray);
-  MapiMessage.nRecipCount := Length(RecipArray);
-  MapiMessage.lpFiles := PMapiFileDesc(AttachArray);
-  MapiMessage.nFileCount := Length(AttachArray);
-  Flags := LogonOptionsToFlags(ShowDialog);
-  if Save then
-  begin
-    StrPCopy(MsgID, FSeedMessageID);
-    Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
-    if Res = SUCCESS_SUCCESS then
-      FSeedMessageID := MsgID;
-  end
-  else
-    Res := MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0);
-  Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -1202,7 +1224,10 @@ end;
 
 procedure TJclEmail.SetBody(const Value: string);
 begin
-  FBody := StrEnsureSuffix(AnsiCrLf, Value);
+  if Value = '' then
+    FBody := ''
+  else
+    FBody := StrEnsureSuffix(AnsiCrLf, Value);
 end;
 
 //------------------------------------------------------------------------------
