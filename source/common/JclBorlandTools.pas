@@ -379,6 +379,7 @@ type
     FBpr2Mak: TJclBpr2Mak;
   protected
     constructor Create(const AConfigDataLocation: string);
+    function GetVclIncludeDir: string;
   public
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
@@ -388,6 +389,7 @@ type
     {$ENDIF KYLIX}
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; override;
     property Bpr2Mak: TJclBpr2Mak read FBpr2Mak;
+    property VclIncludeDir: string read GetVclIncludeDir;
   end;
 
   TJclDelphiInstallation = class (TJclBorRADToolInstallation)
@@ -556,12 +558,15 @@ resourcestring
   RsBCBName         = 'Kylix %d for C++Builder';
   RsOpenEdition     = 'Open Edition';
   RsServerDeveloper = 'Server Developer';
-  {$ELSE}
+  RsVclIncludeDir   = '/include/vcl/';
+  {$ENDIF KYLIX}
+  {$IFDEF MSWINDOWS}
   RsDelphiName      = 'Delphi %d';
   RsBCBName         = 'C++Builder %d';
   RsClientServer    = 'Client/Server';
   RsStandard        = 'Standard';
-  {$ENDIF}
+  RsVclIncludeDir   = '\Include\Vcl\';
+  {$ENDIF MSWINDOWS}
   RsArchitect       = 'Architect';
   RsEnterprise      = 'Enterprise';
   RsPersonal        = 'Personal';
@@ -2011,6 +2016,11 @@ begin
   Result := RsBCBName;
 end;
 
+function TJclBCBInstallation.GetVclIncludeDir: string;
+begin
+  Result := RootDir + RsVclIncludeDir;
+end;
+
 //==================================================================================================
 // TJclDelphiInstallation
 //==================================================================================================
@@ -2299,6 +2309,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/05/11 11:55:43  rrossmair
+// added TJclBCBInstallation.VclIncludeDir
+//
 // Revision 1.9  2004/05/08 08:44:17  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //
