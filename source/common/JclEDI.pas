@@ -22,21 +22,14 @@
 {                                                                                                  }
 { Contains classes to eaisly parse EDI documents and data. Variable delimiter detection allows     }
 { parsing of the file without knowledge of the standards at an Interchange level.  This enables    }
-{ parsing and construction of EDI documents with different delimiters.  Various EDI  file errors   }
-{ can also be detected.                                                                            }
+{ parsing and construction of EDI documents with different delimiters.                             }
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
-{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   For latest EDI specific demos see http://sourceforge.net/projects/edisdk                       }
 {   See home page for latest news & events and online help.                                        }
-{                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ 04/21/2003 (R.A.)                                                                                }
-{                                                                                                  }
-{   Release notes have been moved to ReleaseNotes.rtf                                              }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -52,11 +45,6 @@ unit JclEDI;
 
 // Add the following directive in project options for debugging memory leaks.
 // {$DEFINE ENABLE_EDI_DEBUGGING}
-
-// (Default) Enable the following directive to use the TEDIObjectList implementation instead of
-// the TEDIDataObjectArray implementation.  This new directive replaces the previous
-// "OPTIMIZED_DISASSEMBLE" directive which was a temporary patch to prevent memory fragmentation.
-{$DEFINE OPTIMIZED_INTERNAL_STRUCTURE}
 
 interface
 
@@ -182,11 +170,7 @@ type
   TEDIDataObjectGroup = class(TEDIDataObject)
   protected
     FGroupIsParent: Boolean;
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     FEDIDataObjects: TEDIDataObjectList;
-    {$ELSE}
-    FEDIDataObjects: TEDIDataObjectArray;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
     FCreateObjectType: TEDIDataObjectType;
     function GetCount: Integer;
     function GetEDIDataObject(Index: Integer): TEDIDataObject;
@@ -218,11 +202,7 @@ type
     //
     property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
       write SetEDIDataObject; default;
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     property EDIDataObjects: TEDIDataObjectList read FEDIDataObjects;
-    {$ELSE}
-    property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property CreateObjectType: TEDIDataObjectType read FCreateObjectType;
     property EDIDataObjectCount: Integer read GetCount;
@@ -665,55 +645,28 @@ end;
 function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
 var
   I: Integer;
-  {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-  J: Integer;
-  {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Result := FEDIDataObjects.Count; // Return position of 1st
   for I := 1 to Count do
     FEDIDataObjects.Add(InternalCreateEDIDataObject);
-  {$ELSE}
-  I := Length(FEDIDataObjects);
-  Result := I; // Return position of 1st
-  // Resize
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-  // Add
-  for J := I to High(FEDIDataObjects) do
-    FEDIDataObjects[J]:= InternalCreateEDIDataObject;
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.AddEDIDataObject: Integer;
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Result := FEDIDataObjects.Count; // Return position
   FEDIDataObjects.Add(InternalCreateEDIDataObject);
-  {$ELSE}
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-  FEDIDataObjects[High(FEDIDataObjects)] := InternalCreateEDIDataObject;
-  Result := High(FEDIDataObjects); // Return position
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIDataObject): Integer;
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Result := FEDIDataObjects.Count; // Return position
   FEDIDataObjects.Add(EDIDataObject);
   if FGroupIsParent then
     EDIDataObject.Parent := Self;
-  {$ELSE}
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-  FEDIDataObjects[High(FEDIDataObjects)] := EDIDataObject;
-  if FGroupIsParent then
-    EDIDataObject.Parent := Self;
-  Result := High(FEDIDataObjects); // Return position
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -721,11 +674,7 @@ end;
 function TEDIDataObjectGroup.AppendEDIDataObjects(EDIDataObjectArray: TEDIDataObjectArray): Integer;
 var
   I: Integer;
-  {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-  J, K: Integer;
-  {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Result := FEDIDataObjects.Count; // Return position of 1st
   for I := Low(EDIDataObjectArray) to High(EDIDataObjectArray) do
   begin
@@ -733,21 +682,6 @@ begin
     if FGroupIsParent then
       EDIDataObjectArray[I].Parent := Self;
   end;
-  {$ELSE}
-  I := 0;
-  J := Length(FEDIDataObjects);
-  Result := J; // Return position of 1st
-  // Resize
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Length(EDIDataObjectArray));
-  // Append
-  for K := J to High(EDIDataObjectArray) do
-  begin
-    FEDIDataObjects[K] := EDIDataObjectArray[I];
-    if FGroupIsParent then
-      FEDIDataObjects[K].Parent := Self;
-    Inc(I);
-  end;
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -760,11 +694,7 @@ begin
     inherited Create(nil);
   FCreateObjectType := ediUnknown;
   FGroupIsParent := True;
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   FEDIDataObjects := TEDIDataObjectList.Create;
-  {$ELSE}
-  SetLength(FEDIDataObjects, 0);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   if EDIDataObjectCount > 0 then
     AddEDIDataObjects(EDIDataObjectCount);
 end;
@@ -772,47 +702,19 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIDataObject);
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-var
-  I: Integer;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   if loAutoUpdateIndexes in FEDIDataObjects.Options then
     FEDIDataObjects.Delete(EDIDataObject)
   else
     FEDIDataObjects.Remove(EDIDataObject);
-  {$ELSE}
-  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-    if FEDIDataObjects[I] = EDIDataObject then
-      DeleteEDIDataObject(I);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObject(Index: Integer);
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-//var
-//  I: Integer;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 begin
   if IndexIsValid(Index) then
-  begin
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
-    FEDIDataObjects.Delete(Index);
-    {$ELSE}
-    // Delete
-    FreeAndNil(FEDIDataObjects[Index]);
-    // Shift (Keep comment here for reference.)
-    //for I := Index + 1 to High(FEDIDataObjects) do
-    //  FEDIDataObjects[I-1] := FEDIDataObjects[I];
-    Move(FEDIDataObjects[Index+1], FEDIDataObjects[Index],
-      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(Index+1)));
-    // Resize
-    SetLength(FEDIDataObjects, High(FEDIDataObjects));
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
-  end
+    FEDIDataObjects.Delete(Index)
   else
     raise EJclEDIError.CreateResRecFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
 end;
@@ -820,20 +722,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-var
-  I: Integer;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   FEDIDataObjects.Clear;
-  {$ELSE}
-  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-    // Delete
-    FreeAndNil(FEDIDataObjects[I]);
-  // Resize
-  SetLength(FEDIDataObjects, 0);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -844,7 +734,6 @@ var
 begin
   if IndexIsValid(Index) then
   begin
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     FEDIDataObjects.Options := FEDIDataObjects.Options - [loAutoUpdateIndexes];
     try
       for I := 1 to Count do
@@ -852,21 +741,6 @@ begin
     finally
       FEDIDataObjects.Options := FEDIDataObjects.Options + [loAutoUpdateIndexes];
     end;
-    {$ELSE}
-    // Delete
-    for I := Index to (Index + Count) - 1 do
-      FreeAndNil(FEDIDataObjects[I]);
-    // Shift (Keep comment here for reference.)
-    //for I := (Index + Count) to High(FEDIDataObjects) do
-    //begin
-    //  FEDIDataObjects[I-Count] := FEDIDataObjects[I];
-    //  FEDIDataObjects[I] := nil;
-    //end;
-    Move(FEDIDataObjects[Index+Count], FEDIDataObjects[Index],
-      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(Index+Count)));
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) - Count);
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   end
   else
     raise EJclEDIError.CreateResRecFmt(@RsEDIError011, [IntToStr(Index)]);
@@ -877,9 +751,7 @@ end;
 destructor TEDIDataObjectGroup.Destroy;
 begin
   DeleteEDIDataObjects;
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   FreeAndNil(FEDIDataObjects);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}  
   inherited Destroy;
 end;
 
@@ -887,7 +759,6 @@ end;
 
 function TEDIDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIDataObject;
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   if FEDIDataObjects.Count > 0 then
     if Index >= 0 then
       if Index <= FEDIDataObjects.Count - 1 then
@@ -902,35 +773,13 @@ begin
       raise EJclEDIError.CreateResRecFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
   else
     raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
-  {$ELSE}
-  if Length(FEDIDataObjects) > 0 then
-    if Index >= Low(FEDIDataObjects) then
-      if Index <= High(FEDIDataObjects) then
-      begin
-        if not Assigned(FEDIDataObjects[Index]) then
-          raise EJclEDIError.CreateResRecFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
-        Result := FEDIDataObjects[Index];
-      end
-      else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError005, [Self.ClassName, IntToStr(Index)])
-    else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError004, [Self.ClassName, IntToStr(Index)])
-  else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Result := FEDIDataObjects.IndexIsValid(Index);
-  {$ELSE}
-  Result := False;
-  if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
-    (Index <= High(FEDIDataObjects)) then Result := True;
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -939,21 +788,7 @@ function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer): Integer;
 begin
   Result := InsertIndex; // Return position
   if IndexIsValid(InsertIndex) then
-  begin
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     FEDIDataObjects.Insert(InsertIndex, InternalCreateEDIDataObject)
-    {$ELSE}
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    // Shift (Keep comment here for reference.)
-    //for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-    //  FEDIDataObjects[I] := FEDIDataObjects[I-1];
-    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+1],
-      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+1)));
-    // Insert
-    FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
-  end
   else
     Result := AddEDIDataObject;
 end;
@@ -966,23 +801,9 @@ begin
   Result := InsertIndex; // Return position
   if IndexIsValid(InsertIndex) then
   begin
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     FEDIDataObjects.Insert(InsertIndex, EDIDataObject);
     if FGroupIsParent then
       EDIDataObject.Parent := Self;
-    {$ELSE}
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    // Shift (Keep comment here for reference.)
-    //for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-    //  FEDIDataObjects[I] := FEDIDataObjects[I-1];
-    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+1],
-      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+1)));
-    // Insert
-    FEDIDataObjects[InsertIndex] := EDIDataObject;
-    if FGroupIsParent then
-      FEDIDataObjects[InsertIndex].Parent := Self;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   end
   else
     Result := AppendEDIDataObject(EDIDataObject);
@@ -994,42 +815,16 @@ function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex: Integer;
   EDIDataObjectArray: TEDIDataObjectArray): Integer;
 var
   I: Integer;
-  {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-  J, K: Integer;
-  {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 begin
   Result := InsertIndex; // Return position of 1st
   if IndexIsValid(InsertIndex) then
   begin
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     for I := High(EDIDataObjectArray) downto Low(EDIDataObjectArray) do
     begin
       FEDIDataObjects.Insert(InsertIndex, EDIDataObjectArray[I]);
       if FGroupIsParent then
         EDIDataObjectArray[I].Parent := Self;
     end;
-    {$ELSE}
-    I := Length(EDIDataObjectArray);
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + I);
-    // Shift (Keep comment here for reference.)
-    //for J := High(FEDIDataObjects) downto InsertIndex + I do
-    //begin
-    //  FEDIDataObjects[J] := FEDIDataObjects[J-I];
-    //  FEDIDataObjects[J-I] := nil;
-    //end;
-    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+I],
-      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+I)));
-    // Insert
-    K := 0;
-    for J := InsertIndex to (InsertIndex + I) - 1 do
-    begin
-      FEDIDataObjects[J] := EDIDataObjectArray[K];
-      if FGroupIsParent then
-        FEDIDataObjects[J].Parent := Self;
-      Inc(K);
-    end;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   end
   else
     Result := AppendEDIDataObjects(EDIDataObjectArray);
@@ -1044,24 +839,8 @@ begin
   Result := InsertIndex; // Return position of 1st
   if IndexIsValid(InsertIndex) then
   begin
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     for I := 1 to Count do
       FEDIDataObjects.Insert(InsertIndex, InternalCreateEDIDataObject);
-    {$ELSE}
-    // Resize
-    SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-    // Shift (Keep comment here for reference.)
-    //for I := High(FEDIDataObjects) downto InsertIndex + Count do
-    //begin
-    //  FEDIDataObjects[I] := FEDIDataObjects[I-Count];
-    //  FEDIDataObjects[I-Count] := nil;
-    //end;
-    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+Count],
-      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+Count)));
-    // Insert
-    for I := InsertIndex to (InsertIndex + Count) - 1 do
-      FEDIDataObjects[I] := InternalCreateEDIDataObject;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   end
   else
     Result := AddEDIDataObjects(Count);
@@ -1071,28 +850,11 @@ end;
 
 procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   if FEDIDataObjects.Count > 0 then
     if Index >= 0 then
       if Index <= FEDIDataObjects.Count - 1 then
       begin
         FEDIDataObjects.Item[Index].FreeAndNilEDIDataObject;
-        FEDIDataObjects[Index] := EDIDataObject;
-        if FGroupIsParent then
-          FEDIDataObjects[Index].Parent := Self;        
-      end
-      else
-        raise EJclEDIError.CreateResRecFmt(@RsEDIError009, [Self.ClassName, IntToStr(Index)])
-    else
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
-  else
-    raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
-  {$ELSE}
-  if Length(FEDIDataObjects) > 0 then
-    if Index >= Low(FEDIDataObjects) then
-      if Index <= High(FEDIDataObjects) then
-      begin
-        FreeAndNil(FEDIDataObjects[Index]);
         FEDIDataObjects[Index] := EDIDataObject;
         if FGroupIsParent then
           FEDIDataObjects[Index].Parent := Self;
@@ -1103,7 +865,6 @@ begin
       raise EJclEDIError.CreateResRecFmt(@RsEDIError008, [Self.ClassName, IntToStr(Index)])
   else
     raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1117,11 +878,7 @@ begin
   if Assigned(Parent) and (Parent is TEDIDataObjectGroup) then
   begin
     ParentGroup := TEDIDataObjectGroup(Parent);
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     for I := 0 to ParentGroup.EDIDataObjectCount - 1 do
-    {$ELSE}
-    for I := Low(ParentGroup.EDIDataObjects) to High(ParentGroup.EDIDataObjects) do
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
       if ParentGroup.EDIDataObject[I] = Self then
       begin
         Result := I;
@@ -1134,11 +891,7 @@ end;
 
 function TEDIDataObjectGroup.GetCount: Integer;
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Result := FEDIDataObjects.Count;
-  {$ELSE}
-  Result := Length(FEDIDataObjects);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //==================================================================================================

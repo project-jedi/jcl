@@ -22,21 +22,14 @@
 {                                                                                                  }
 { Contains classes to easily parse EDI documents and data. Variable delimiter detection allows     }
 { parsing of the file without knowledge of the standards at an Interchange level.  This enables    }
-{ parsing and construction of EDI documents with different delimiters.  Various EDI  file errors   }
-{ can also be detected.                                                                            }
+{ parsing and construction of EDI documents with different delimiters.                             }
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
-{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   For latest EDI specific demos see http://sourceforge.net/projects/edisdk                       }
 {   See home page for latest news & events and online help.                                        }
-{                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ 04/21/2003 (R.A.)                                                                                }
-{                                                                                                  }
-{   Release notes have been moved to ReleaseNotes.rtf                                              }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -52,12 +45,6 @@ unit JclEDI_UNEDIFACT;
 
 // (Default) Enable the following directive to use the optimized JclEDI.StringReplace function.
 {$DEFINE OPTIMIZED_STRINGREPLACE}
-
-// (Default) Enable the following directive to use the TEDIDataObjectList implementation instead of
-// the TEDIDataObjectArray implementation.  This new directive replaces the previous
-// "OPTIMIZED_DISASSEMBLE" directive which was a temporary patch to prevent memory fragmentation.
-// If this directive is defined in JclEDI.pas then it also must be defined in this unit as well.
-{$DEFINE OPTIMIZED_INTERNAL_STRUCTURE}
 
 interface
 
@@ -113,9 +100,6 @@ type
   private
     function GetElement(Index: Integer): TEDIElement;
     procedure SetElement(Index: Integer; Element: TEDIElement);
-    {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-    function GetElements: TEDIElementArray;
-    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
   protected
     function InternalCreateElement: TEDIElement; virtual;
     function InternalAssignDelimiters: TEDIDelimiters; override;
@@ -143,11 +127,7 @@ type
     procedure Disassemble; override;
     //
     property Element[Index: Integer]: TEDIElement read GetElement write SetElement; default;
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     property Elements: TEDIDataObjectList read FEDIDataObjects;
-    {$ELSE}
-    property Elements: TEDIElementArray read GetElements;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   end;
 
   TEDICompositeElementArray = array of TEDICompositeElement;
@@ -266,9 +246,6 @@ type
     FUNTSegment: TEDIMessageSegment;
     function GetSegment(Index: Integer): TEDISegment;
     procedure SetSegment(Index: Integer; Segment: TEDISegment);
-    {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-    function GetSegments: TEDISegmentArray;
-    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
     procedure SetUNHSegment(const UNHSegment: TEDIMessageSegment);
     procedure SetUNTSegment(const UNTSegment: TEDIMessageSegment);
   protected
@@ -299,11 +276,7 @@ type
     procedure Disassemble; override;
 
     property Segment[Index: Integer]: TEDISegment read GetSegment write SetSegment; default;
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     property Segments: TEDIDataObjectList read FEDIDataObjects;
-    {$ELSE}
-    property Segments: TEDISegmentArray read GetSegments;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property SegmentUNH: TEDIMessageSegment read FUNHSegment write SetUNHSegment;
     property SegmentUNT: TEDIMessageSegment read FUNTSegment write SetUNTSegment;
@@ -322,9 +295,6 @@ type
     FUNESegment: TEDIFunctionalGroupSegment;
     function GetMessage(Index: Integer): TEDIMessage;
     procedure SetMessage(Index: Integer; Message: TEDIMessage);
-    {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-    function GetMessages: TEDIMessageArray;
-    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
     procedure SetUNGSegment(const UNGSegment: TEDIFunctionalGroupSegment);
     procedure SetUNESegment(const UNESegment: TEDIFunctionalGroupSegment);
   protected
@@ -357,11 +327,7 @@ type
 
     property Message[Index: Integer]: TEDIMessage read GetMessage
       write SetMessage; default;
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     property Messages: TEDIDataObjectList read FEDIDataObjects;
-    {$ELSE}
-    property Messages: TEDIMessageArray read GetMessages;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property SegmentUNG: TEDIFunctionalGroupSegment read FUNGSegment write SetUNGSegment;
     property SegmentUNE: TEDIFunctionalGroupSegment read FUNESegment write SetUNESegment;
@@ -439,9 +405,6 @@ type
     function GetInterchangeControl(Index: Integer): TEDIInterchangeControl;
     procedure SetInterchangeControl(Index: Integer; Interchange: TEDIInterchangeControl);
     procedure InternalLoadFromFile;
-    {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-    function GetInterchanges: TEDIInterchangeControlArray;
-    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
   protected
     procedure InternalDelimitersDetection(StartPos: Integer); virtual;
     procedure InternalAlternateDelimitersDetection(StartPos: Integer);
@@ -479,11 +442,7 @@ type
 
     property Interchange[Index: Integer]: TEDIInterchangeControl read GetInterchangeControl
       write SetInterchangeControl; default;
-    {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
     property Interchanges: TEDIDataObjectList read FEDIDataObjects;
-    {$ELSE}
-    property Interchanges: TEDIInterchangeControlArray read GetInterchanges;
-    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
@@ -1164,15 +1123,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-function TEDIMessage.GetSegments: TEDISegmentArray;
-begin
-  Result := TEDISegmentArray(FEDIDataObjects);
-end;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
-
-//--------------------------------------------------------------------------------------------------
-
 function TEDIMessage.InsertSegment(InsertIndex: Integer; Segment: TEDISegment): Integer;
 begin
   Result := InsertEDIDataObject(InsertIndex, Segment);
@@ -1556,15 +1506,6 @@ begin
   if Assigned(FUNGSegment) then
     FUNGSegment.Parent := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-function TEDIFunctionalGroup.GetMessages: TEDIMessageArray;
-begin
-  Result := TEDIMessageArray(FEDIDataObjects);
-end;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2342,15 +2283,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-function TEDIFile.GetInterchanges: TEDIInterchangeControlArray;
-begin
-  Result := TEDIInterchangeControlArray(FEDIDataObjects);
-end;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
-
-//--------------------------------------------------------------------------------------------------
-
 function TEDIFile.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := TEDIDelimiters.Create('''','+',':');
@@ -2524,15 +2456,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-function TEDICompositeElement.GetElements: TEDIElementArray;
-begin
-  Result := TEDIElementArray(FEDIDataObjects);
-end;
-{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
-
-//--------------------------------------------------------------------------------------------------
-
 function TEDICompositeElement.InsertElement(InsertIndex: Integer): Integer;
 begin
   Result := InsertEDIDataObject(InsertIndex);
@@ -2621,11 +2544,7 @@ begin
   else
     FParentMessage := nil;
   FEDIDOT := ediLoop;
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   FEDIDataObjects.OwnsObjects := False;
-  {$ELSE}
-  SetLength(FEDIDataObjects, 0);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2670,37 +2589,22 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TEDIMessageLoop.AddLoop(OwnerLoopId, ParentLoopId: string): Integer;
-{$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
 var
   Loop: TEDIMessageLoop;
-{$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 begin
   FCreateObjectType := ediLoop;
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   Loop := TEDIMessageLoop(InternalCreateEDIDataObject);
   Loop.OwnerLoopId := OwnerLoopId;
   Loop.ParentLoopId := ParentLoopId;
   Loop.Parent := Self;
   Result := AppendEDIDataObject(Loop);
-  {$ELSE}
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-  FEDIDataObjects[High(FEDIDataObjects)] := TEDIMessageLoop.Create(Self);
-  TEDIMessageLoop(FEDIDataObjects[High(FEDIDataObjects)]).OwnerLoopId := OwnerLoopId;
-  TEDIMessageLoop(FEDIDataObjects[High(FEDIDataObjects)]).ParentLoopId := ParentLoopId;
-  Result := High(FEDIDataObjects);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDIMessageLoop.AppendSegment(Segment: TEDISegment);
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   AppendEDIDataObject(Segment);
-  {$ELSE}
-  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-  FEDIDataObjects[High(FEDIDataObjects)] := Segment;
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2709,7 +2613,6 @@ procedure TEDIMessageLoop.DeleteEDIDataObjects;
 var
   I: Integer;
 begin
-  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
   for I := 0 to FEDIDataObjects.Count - 1 do
     if Assigned(FEDIDataObjects[I]) then
       try
@@ -2726,30 +2629,11 @@ begin
       end;
   // Resize
   FEDIDataObjects.Clear;
-  {$ELSE}
-  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-    if Assigned(FEDIDataObjects[I]) then
-      try
-        // Delete
-        if FEDIDataObjects[I] is TEDIMessageLoop then
-          FreeAndNil(FEDIDataObjects[I])
-        else
-          // Do not free segments
-          FEDIDataObjects[I] := nil;
-      except
-        // This exception block was put here to capture the case where FEDIDataObjects[I] was
-        // actually destroyed prior to destroying this object.
-        FEDIDataObjects[I] := nil;
-      end;
-  // Resize
-  SetLength(FEDIDataObjects, 0);
-  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TEDIMessageLoop.FindLoop(LoopId: string;
-  var StartIndex: Integer): TEDIMessageLoop;
+function TEDIMessageLoop.FindLoop(LoopId: string; var StartIndex: Integer): TEDIMessageLoop;
 var
   I, J: Integer;
 begin
