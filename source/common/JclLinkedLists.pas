@@ -180,7 +180,8 @@ type
 implementation
 
 uses
-  SysUtils;
+  SysUtils,
+  JclAlgorithms;
 
 type
   TIntfItr = class(TJclAbstractContainer, IIntfIterator)
@@ -2336,6 +2337,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/24 07:36:24  marquardt
+// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //

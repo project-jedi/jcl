@@ -163,7 +163,7 @@ function GetAPMBatteryFullLifeTime: DWORD;
 
 type
   TFileSystemFlag =
-  (
+   (
     fsCaseSensitive,            // The file system supports case-sensitive file names.
     fsCasePreservedNames,       // The file system preserves the case of file names when it places a name on disk.
     fsSupportsUnicodeOnDisk,    // The file system supports Unicode in file names as they appear on disk.
@@ -179,7 +179,7 @@ type
     fsSupportsNamedStreams,     // The file system supports named streams.
     fsVolumeIsReadOnly          // The specified volume is read-only.
                                 //   Windows 2000/NT and Windows Me/98/95:  This value is not supported.
-  );
+   );
 
   TFileSystemFlags = set of TFileSystemFlag;
 
@@ -1378,8 +1378,9 @@ var
   MaximumComponentLength, Flags: Cardinal;
   Flag: TFileSystemFlag;
 begin
-  Win32Check(GetVolumeInformation(PChar(PathAddSeparator(Volume)), nil, 0, nil,
-    MaximumComponentLength, Flags, nil, 0));
+  if not GetVolumeInformation(PChar(PathAddSeparator(Volume)), nil, 0, nil,
+    MaximumComponentLength, Flags, nil, 0) then
+    RaiseLastOSError;
   Result := [];
   for Flag := Low(TFileSystemFlag) to High(TFileSystemFlag) do
     if (Flags and Ord(Flag)) <> 0 then
@@ -1394,45 +1395,43 @@ end;
 
 function GetIPAddress(const HostName: string): string;
 var
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   R: Integer;
   WSAData: TWSAData;
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   HostEnt: PHostEnt;
   Host: string;
   SockAddr: TSockAddrIn;
 begin
   Result := '';
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   R := WSAStartup(MakeWord(1, 1), WSAData);
   if R = 0 then
-  try
-{$ENDIF MSWINDOWS}
-    Host := HostName;
-    if Host = '' then
-    begin
-      SetLength(Host, MAX_PATH);
-      GetHostName(PChar(Host), MAX_PATH);
+    try
+  {$ENDIF MSWINDOWS}
+      Host := HostName;
+      if Host = '' then
+      begin
+        SetLength(Host, MAX_PATH);
+        GetHostName(PChar(Host), MAX_PATH);
+      end;
+      HostEnt := GetHostByName(PChar(Host));
+      if HostEnt <> nil then
+      begin
+        SockAddr.sin_addr.S_addr := Longint(PLongint(HostEnt^.h_addr_list^)^);
+        Result := inet_ntoa(SockAddr.sin_addr);
+      end;
+    {$IFDEF MSWINDOWS}
+    finally
+      WSACleanup;
     end;
-    HostEnt := GetHostByName(PChar(Host));
-    if HostEnt <> nil then
-    begin
-      SockAddr.sin_addr.S_addr := Longint(PLongint(HostEnt^.h_addr_list^)^);
-      Result := inet_ntoa(SockAddr.sin_addr);
-    end;
-{$IFDEF MSWINDOWS}
-  finally
-    WSACleanup;
-  end;
-{$ENDIF MSWINDOWS}
+    {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
-
 { TODO -cDoc: Donator: twm, Contributor rrossmair }
-
 // Returns all IP addresses of the local machine in the form
 // <interface>=<IP-Address> (which allows for access to the interface names
 // by means of Results.Names and the addresses through Results.Values)
@@ -1445,6 +1444,7 @@ end;
 //
 // note that this will append to Results!
 //
+
 procedure GetIpAddresses(Results: TStrings);
 var
   Sock: Integer;
@@ -1462,21 +1462,17 @@ begin
     ListSave := if_nameindex();
     try
       IfList := ListSave;
-
       //walk thru the array returned and query for each
       //interface's address
       while IfList^.if_index <> 0 do
       begin
         //copy in the interface name to look up address of
         strncpy(IfReq.ifrn_name, IfList^.if_name, IFNAMSIZ);
-
         //get the address for this interface
         if ioctl(Sock, SIOCGIFADDR, @IfReq) <> 0 then
           RaiseLastOSError;
-
         //print out the address
         SockAddrPtr := PSockAddrIn(@IfReq.ifru_addr);
-
         Results.Add(Format('%s=%s', [IfReq.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
         Inc(IfList);
       end;
@@ -4288,6 +4284,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.37  2005/02/24 07:36:24  marquardt
+// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
+//
 // Revision 1.36  2005/02/20 04:37:09  rrossmair
 // - added GetIPAddress() and GetIPAddresses() for Unix
 //

@@ -454,43 +454,14 @@ resourcestring
   RsEValueNotFound = 'Value %s not found';
   RsENoCollection = 'Collection = nil';
 
-procedure DCLAppendDelimited(Obj: IStrCollection; const AString, Separator: string);
-
 implementation
-
-uses
-  SysUtils;
-
-procedure DCLAppendDelimited(Obj: IStrCollection; const AString, Separator: string);
-var
-  Item: string;
-  SepLen: Integer;
-  PString, PSep, PPos: PChar;
-begin
-  PString := PChar(AString);
-  PSep := PChar(Separator);
-  PPos := StrPos(PString, PSep);
-  if PPos <> nil then
-  begin
-    SepLen := StrLen(PSep);
-    repeat
-      SetLength(Item, PPos - PString + 1);
-      Move(PString^, Item[1], PPos - PString);
-      Item[PPos - PString + 1] := #0;
-      Obj.Add(Item);
-      PString := PPos + SepLen;
-      PPos := StrPos(PString, PSep);
-    until PPos = nil;
-    if StrLen(PString) > 0 then //ex. hello#world
-      Obj.Add(PString);
-  end
-  else //There isnt a Separator in AString
-    Obj.Add(AString);
-end;
 
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/24 07:36:24  marquardt
+// resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //
