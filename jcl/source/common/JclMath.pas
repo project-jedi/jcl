@@ -187,10 +187,10 @@ function Signe(const X, Y: Float): Float;
 { Prime numbers }
 
 function IsRelativePrime(const X, Y: Cardinal): Boolean;
-function IsPrime(N: Integer): Boolean;
+function IsPrime(N: Cardinal): Boolean;
 function IsPrimeRM(N: Cardinal): Boolean;
-function IsPrimeFactor(const F, N: Integer): Boolean;
-function PrimeFactors(N: Integer): TDynIntegerArray;
+function IsPrimeFactor(const F, N: Cardinal): Boolean;
+function PrimeFactors(N: Cardinal): TDynCardinalArray;
 
 { Floating point value classification }
 
@@ -2098,12 +2098,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-function IsPrime(N: Integer): Boolean;
+function IsPrime(N: Cardinal): Boolean;
 var
-  I, MAX: Integer;
+  I, MAX: Cardinal;
   R: Extended;
 begin
-  N := abs (N);
   if N = 2 then
   begin
     Result := True;
@@ -2142,57 +2141,6 @@ begin
       end;
     until I >= MAX;
     Result := True;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function PrimeFactors(N: Integer): TDynIntegerArray;
-var
-  I, L, Max: Integer;
-  R: Extended;
-begin
-  SetLength(Result, 0);
-  N := abs (N);
-  if N = 1 then
-    Exit
-  else
-  begin
-    if PrimeSet = nil then
-      InitPrimeSet;
-    L := 0;
-    R := N;
-    R := Sqrt(R);
-    Max := Round (R);        // only one factor can be > sqrt (N)
-    if (N and 1) = 0 then    // test even at first
-    begin // 2 is a prime factor
-      Inc(L);
-      SetLength(Result, L);
-      Result[L - 1] := 2;
-      repeat
-        N := N div 2;
-        if N = 1 then        // no more factors
-          Exit;
-      until N mod 2 <> 0;
-    end;
-    I := 3;                  // test all odd factors
-    repeat
-      if IsPrime(I) and (N mod I = 0) then
-      begin // I is a prime factor
-        Inc(L);
-        SetLength(Result, L);
-        Result[L - 1] := I;
-        repeat
-          N := N div I;
-          if N = 1 then      // no more factors
-            Exit;
-        until N mod I <> 0;
-      end;
-      inc (I, 2);
-    until I > Max;
-    Inc(L);                  // final factor (> sqrt(N))
-    SetLength(Result, L);
-    Result[L - 1] := N;
   end;
 end;
 
@@ -2288,7 +2236,57 @@ end;
 
 //------------------------------------------------------------------------------
 
-function IsPrimeFactor(const F, N: Integer): Boolean;
+function PrimeFactors(N: Cardinal): TDynCardinalArray;
+var
+  I, L, Max: Cardinal;
+  R: Extended;
+begin
+  SetLength(Result, 0);
+  if N <= 1 then
+    Exit
+  else
+  begin
+    if PrimeSet = nil then
+      InitPrimeSet;
+    L := 0;
+    R := N;
+    R := Sqrt(R);
+    Max := Round (R);        // only one factor can be > sqrt (N)
+    if N mod 2 = 0 then      // test even at first
+    begin                    // 2 is a prime factor
+      Inc(L);
+      SetLength(Result, L);
+      Result[L - 1] := 2;
+      repeat
+        N := N div 2;
+        if N = 1 then        // no more factors
+          Exit;
+      until N mod 2 <> 0;
+    end;
+    I := 3;                  // test all odd factors
+    repeat
+      if (N mod I = 0) and isprime (I)  then
+      begin                  // I is a prime factor
+        Inc(L);
+        SetLength(Result, L);
+        Result[L - 1] := I;
+        repeat
+          N := N div I;
+          if N = 1 then      // no more factors
+            Exit;
+        until N mod I <> 0;
+      end;
+      inc (I, 2);
+    until I > Max;
+    Inc(L);                  // final factor (> sqrt(N))
+    SetLength(Result, L);
+    Result[L - 1] := N;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function IsPrimeFactor(const F, N: Cardinal): Boolean;
 begin
   Result := (N mod F = 0) and IsPrime(F);
 end;
@@ -2299,6 +2297,9 @@ function IsRelativePrime(const X, Y: Cardinal): Boolean;
 begin
   Result := GCD(X, Y) = 1;
 end;
+
+
+
 
 //==============================================================================
 // Floating point value classification
