@@ -9,7 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL60.bpl JclDebugIde60.bpl ThreadNameExpert60.bpl ProjectAnalyzer60.bpl
+PROJECTS = DJCL60.bpl IdeOpenDlgFavorite60.bpl JclDebugIde60.bpl ProjectAnalyzer60.bpl \
+  ThreadNameExpert60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -24,6 +25,9 @@ ThreadNameExpert60.bpl: ..\examples\debugextension\threadnames\ThreadNameExpert6
   $(DCC)
 
 ProjectAnalyzer60.bpl: ..\examples\projectanalyzer\ProjectAnalyzer60.dpk
+  $(DCC)
+
+IdeOpenDlgFavorite60.bpl: ..\examples\idefavopendialogs\IdeOpenDlgFavorite60.dpk
   $(DCC)
 
 
