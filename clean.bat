@@ -1,2 +1,5 @@
 @echo cleaning...
-@del /q /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o *.obj
+@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o 
+@cd lib
+@del /f /s *.obj
+@cd ..
