@@ -9,18 +9,22 @@ unit Vector;
 
 interface
 
-uses DCL_intf, DCLUtil, AbstractContainer;
+uses
+  DCL_intf, DCLUtil, AbstractContainer;
 
 type
   TIntfVector = class(TAbstractContainer, IIntfCollection, IIntfList,
-  	IIntfArray, IIntfCloneable)
+      IIntfArray, IIntfCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
+    { ICloneable }
+    function Clone: IInterface;
   public
-  { IIntfCollection }
+    Items: TIInterfaceArray;
+    { IIntfCollection }
     function Add(AObject: IInterface): Boolean; overload;
     function AddAll(ACollection: IIntfCollection): Boolean; overload;
     procedure Clear;
@@ -34,8 +38,7 @@ type
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
-  public
-  { IIntfList }
+    { IIntfList }
     procedure Add(Index: Integer; AObject: IInterface); overload;
     function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
@@ -44,28 +47,25 @@ type
     function Remove(Index: Integer): IInterface; overload;
     procedure SetObject(Index: Integer; AObject: IInterface);
     function SubList(First, Count: Integer): IIntfList;
-  protected
-  { ICloneable }
-    function Clone: IInterface;
-  public
-    Items: TIInterfaceArray;
-  public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
     procedure AfterConstruction; override; // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
   end;
 
   TStrVector = class(TAbstractContainer, IStrCollection, IStrList,
-  	IStrArray, ICloneable)
+      IStrArray, ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
+    { ICloneable }
+    function Clone: TObject;
   public
-  { IStrCollection }
+    Items: TStringArray;
+    { IStrCollection }
     function Add(const AString: string): Boolean; overload;
     function AddAll(ACollection: IStrCollection): Boolean; overload;
     procedure Clear;
@@ -79,8 +79,7 @@ type
     function RemoveAll(ACollection: IStrCollection): Boolean;
     function RetainAll(ACollection: IStrCollection): Boolean;
     function Size: Integer;
-  public
-  { IStrList }
+    { IStrList }
     procedure Add(Index: Integer; const AString: string); overload;
     function AddAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
@@ -89,14 +88,8 @@ type
     function Remove(Index: Integer): string; overload;
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IStrList;
-  protected
-  { ICloneable }
-    function Clone: TObject;
-  public
-    Items: TStringArray;
-  public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
     procedure AfterConstruction; override; // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
@@ -111,7 +104,8 @@ type
     procedure Grow; virtual;
     procedure FreeObject(AObject: TObject);
   public
-  { ICollection }
+    Items: TObjectArray;
+    { ICollection }
     function Add(AObject: TObject): Boolean; overload;
     function AddAll(ACollection: ICollection): Boolean; overload;
     procedure Clear;
@@ -125,8 +119,7 @@ type
     function RemoveAll(ACollection: ICollection): Boolean;
     function RetainAll(ACollection: ICollection): Boolean;
     function Size: Integer;
-  public
-  { IList }
+    { IList }
     procedure Add(Index: Integer; AObject: TObject); overload;
     function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
@@ -135,14 +128,10 @@ type
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IList;
-  public
-  { ICloneable }
+    { ICloneable }
     function Clone: TObject;
-  public
-    Items: TObjectArray;
-  public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer; AOwnsObjects: Boolean); overload;
+
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     procedure AfterConstruction; override; // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
@@ -158,7 +147,7 @@ type
     FLastRet: Integer;
     FSize: Integer;
   protected
-  { IIntfIterator}
+    { IIntfIterator}
     procedure Add(AObject: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
@@ -181,7 +170,7 @@ type
     FLastRet: Integer;
     FSize: Integer;
   protected
-  { IStrIterator}
+    { IStrIterator}
     procedure Add(const AString: string);
     function GetString: string;
     function HasNext: Boolean;
@@ -204,7 +193,7 @@ type
     FLastRet: Integer;
     FSize: Integer;
   protected
-  { IIterator}
+    { IIterator}
     procedure Add(AObject: TObject);
     function GetObject: TObject;
     function HasNext: Boolean;
@@ -220,22 +209,7 @@ type
     destructor Destroy; override;
   end;
 
-{ TIntfItr }
-
-procedure TIntfItr.Add(AObject: IInterface);
-begin
-  with FOwnList do
-  begin
-    System.Move(Items[FCursor], Items[FCursor + 1],
-      (FCount - FCursor) * SizeOf(TObject));
-    FCapacity := Length(Items);
-    Items[FCursor] := AObject;
-    Inc(FCount);
-  end;
-  Inc(FSize);
-  Inc(FCursor);
-  FLastRet := -1;
-end;
+//=== { TIntfItr } ===========================================================
 
 constructor TIntfItr.Create(OwnList: TIntfVector);
 begin
@@ -250,7 +224,22 @@ end;
 destructor TIntfItr.Destroy;
 begin
   FOwnList._Release;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TIntfItr.Add(AObject: IInterface);
+begin
+  with FOwnList do
+  begin
+    System.Move(Items[FCursor], Items[FCursor + 1],
+      (FCount - FCursor) * SizeOf(TObject));
+    FCapacity := Length(Items);
+    Items[FCursor] := AObject;
+    Inc(FCount);
+  end;
+  Inc(FSize);
+  Inc(FCursor);
+  FLastRet := -1;
 end;
 
 function TIntfItr.GetObject: IInterface;
@@ -296,9 +285,9 @@ procedure TIntfItr.Remove;
 begin
   with FOwnList do
   begin
-	  Items[FCursor] := nil; // Force Release
-    System.Move(Items[FCursor + 1],	Items[FCursor],
-			(FSize - FCursor) * SizeOf(IInterface));
+    Items[FCursor] := nil; // Force Release
+    System.Move(Items[FCursor + 1], Items[FCursor],
+      (FSize - FCursor) * SizeOf(IInterface));
   end;
   Dec(FOwnList.FCount);
   Dec(FSize);
@@ -309,22 +298,7 @@ begin
   FOwnList.Items[FCursor] := AObject;
 end;
 
-{ TStrItr }
-
-procedure TStrItr.Add(const AString: string);
-begin
-  with FOwnList do
-  begin
-    System.Move(Items[FCursor], Items[FCursor + 1],
-      (FOwnList.FCount - FCursor) * SizeOf(string));
-    FCapacity := Length(Items);
-    Items[FCursor] := AString;
-    Inc(FOwnList.FCount);
-  end;
-  Inc(FSize);
-  Inc(FCursor);
-  FLastRet := -1;
-end;
+//=== { TStrItr } ============================================================
 
 constructor TStrItr.Create(OwnList: TStrVector);
 begin
@@ -339,7 +313,22 @@ end;
 destructor TStrItr.Destroy;
 begin
   FOwnList._Release;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TStrItr.Add(const AString: string);
+begin
+  with FOwnList do
+  begin
+    System.Move(Items[FCursor], Items[FCursor + 1],
+      (FOwnList.FCount - FCursor) * SizeOf(string));
+    FCapacity := Length(Items);
+    Items[FCursor] := AString;
+    Inc(FOwnList.FCount);
+  end;
+  Inc(FSize);
+  Inc(FCursor);
+  FLastRet := -1;
 end;
 
 function TStrItr.GetString: string;
@@ -385,9 +374,9 @@ procedure TStrItr.Remove;
 begin
   with FOwnList do
   begin
-	  Items[FCursor] := '';// Force Release
+    Items[FCursor] := ''; // Force Release
     System.Move(Items[FCursor + 1], Items[FCursor],
-			(FSize - FCursor) * SizeOf(string));
+      (FSize - FCursor) * SizeOf(string));
   end;
   Dec(FOwnList.FCount);
   Dec(FSize);
@@ -402,22 +391,7 @@ begin
   FOwnList.Items[FCursor] := AString;
 end;
 
-{ TItr }
-
-procedure TItr.Add(AObject: TObject);
-begin
-  with FOwnList do
-  begin
-    System.Move(Items[FCursor], Items[FCursor + 1],
-      (FCount - FCursor) * SizeOf(TObject));
-    FCapacity := Length(Items);
-    Items[FCursor] := AObject;
-    Inc(FCount);
-  end;
-  Inc(FSize);
-  Inc(FCursor);
-  FLastRet := -1;
-end;
+//=== { TItr } ===============================================================
 
 constructor TItr.Create(OwnList: TVector);
 begin
@@ -432,7 +406,22 @@ end;
 destructor TItr.Destroy;
 begin
   FOwnList._Release;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TItr.Add(AObject: TObject);
+begin
+  with FOwnList do
+  begin
+    System.Move(Items[FCursor], Items[FCursor + 1],
+      (FCount - FCursor) * SizeOf(TObject));
+    FCapacity := Length(Items);
+    Items[FCursor] := AObject;
+    Inc(FCount);
+  end;
+  Inc(FSize);
+  Inc(FCursor);
+  FLastRet := -1;
 end;
 
 function TItr.GetObject: TObject;
@@ -478,9 +467,9 @@ procedure TItr.Remove;
 begin
   with FOwnList do
   begin
-	  FreeObject(Items[FCursor]);
-    System.Move(Items[FCursor + 1],	Items[FCursor],
-			(FSize - FCursor) * SizeOf(TObject));
+    FreeObject(Items[FCursor]);
+    System.Move(Items[FCursor + 1], Items[FCursor],
+      (FSize - FCursor) * SizeOf(TObject));
   end;
   Dec(FOwnList.FCount);
   Dec(FSize);
@@ -495,12 +484,26 @@ begin
   FOwnList.Items[FCursor] := AObject;
 end;
 
-{ TIntfVector }
+//=== { TIntfVector } ========================================================
+
+constructor TIntfVector.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FCount := 0;
+  FCapacity := Capacity;
+  SetLength(Items, FCapacity);
+end;
+
+destructor TIntfVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 procedure TIntfVector.Add(Index: Integer; AObject: IInterface);
 begin
   System.Move(Items[Index], Items[Index - 1],
-  	(FCount - Index) * SizeOf(IInterface));
+    (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(Items);
   Items[Index] := AObject;
   Inc(FCount);
@@ -508,15 +511,14 @@ end;
 
 function TIntfVector.Add(AObject: IInterface): Boolean;
 begin
-	if FCount = FCapacity then
-  	Grow;
+  if FCount = FCapacity then
+    Grow;
   Items[FCount] := AObject;
   Inc(FCount);
   Result := True;
 end;
 
-function TIntfVector.AddAll(Index: Integer;
-  ACollection: IIntfCollection): Boolean;
+function TIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   Size: Integer;
@@ -528,7 +530,7 @@ begin
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size],
-  	Size * SizeOf(IInterface));
+    Size * SizeOf(IInterface));
   It := ACollection.First;
   while It.HasNext do
   begin
@@ -553,10 +555,10 @@ end;
 
 procedure TIntfVector.Clear;
 var
-	I: Integer;
+  I: Integer;
 begin
   for I := 0 to FCount - 1 do
-  	Items[I] := nil;
+    Items[I] := nil;
   FCount := 0;
 end;
 
@@ -571,16 +573,16 @@ end;
 
 function TIntfVector.Contains(AObject: IInterface): Boolean;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := False;
-	if AObject = nil then
+  Result := False;
+  if AObject = nil then
     Exit;
   for I := 0 to FCount - 1 do
-  	if Items[I] = AObject then
+    if Items[I] = AObject then
     begin
-    	Result := True;
-      Exit;
+      Result := True;
+      Break;
     end;
 end;
 
@@ -588,37 +590,16 @@ function TIntfVector.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
-	Result := True;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
     if not Contains(It.Next) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
-  end;
-end;
-
-constructor TIntfVector.Create;
-begin
-  Create(16);
-end;
-
-constructor TIntfVector.Create(Capacity: Integer);
-begin
-  inherited Create;
-	FCount := 0;
-  FCapacity := Capacity;
-	SetLength(Items, FCapacity);
-end;
-
-destructor TIntfVector.Destroy;
-begin
-  Clear;
-  inherited;
 end;
 
 function TIntfVector.Equals(ACollection: IIntfCollection): Boolean;
@@ -626,57 +607,57 @@ var
   I: Integer;
   It: IIntfIterator;
 begin
-	Result := False;
+  Result := False;
   if ACollection = nil then
     Exit;
   if FCount <> ACollection.Size then
     Exit;
   It := ACollection.First;
   for I := 0 to FCount - 1 do
-		if Items[I] <> It.Next then
+    if Items[I] <> It.Next then
       Exit;
   Result := True;
 end;
 
 function TIntfVector.GetObject(Index: Integer): IInterface;
 begin
-	if (Index < 0) or (Index >= FCount) then
+  if (Index < 0) or (Index >= FCount) then
   begin
     Result := nil;
     Exit;
   end;
-	Result := Items[Index];
+  Result := Items[Index];
 end;
 
 procedure TIntfVector.Grow;
 begin
-	FCapacity := FCapacity + FCapacity div 4;
+  FCapacity := FCapacity + FCapacity div 4;
   SetLength(Items, FCapacity);
 end;
 
 function TIntfVector.IndexOf(AObject: IInterface): Integer;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := -1;
-	if AObject = nil then
+  Result := -1;
+  if AObject = nil then
     Exit;
   for I := 0 to FCount - 1 do
-  	if Items[I] = AObject then
+    if Items[I] = AObject then
     begin
-    	Result := I;
-      Exit;
+      Result := I;
+      Break;
     end;
 end;
 
 function TIntfVector.First: IIntfIterator;
 begin
-	Result := TIntfItr.Create(Self);
+  Result := TIntfItr.Create(Self);
 end;
 
 function TIntfVector.IsEmpty: Boolean;
 begin
-	Result := FCount = 0;
+  Result := FCount = 0;
 end;
 
 function TIntfVector.Last: IIntfIterator;
@@ -686,48 +667,48 @@ begin
   NewIterator := TIntfItr.Create(Self);
   NewIterator.FCursor := NewIterator.FOwnList.FCount;
   NewIterator.FSize := NewIterator.FOwnList.FCount;
-	Result := NewIterator;
+  Result := NewIterator;
 end;
 
 function TIntfVector.LastIndexOf(AObject: IInterface): Integer;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := -1;
-	if AObject = nil then
+  Result := -1;
+  if AObject = nil then
     Exit;
-	for I := FCount - 1 downto 0 do
-  	if Items[I] = AObject then
+  for I := FCount - 1 downto 0 do
+    if Items[I] = AObject then
     begin
-    	Result := I;
-      Exit;
+      Result := I;
+      Break;
     end;
 end;
 
 function TIntfVector.Remove(Index: Integer): IInterface;
 begin
-	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if (Index < 0) or (Index >= FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := nil;
   System.Move(Items[Index + 1], Items[Index],
-  	(FCount - Index) * SizeOf(IInterface));
+    (FCount - Index) * SizeOf(IInterface));
   Dec(FCount);
 end;
 
 function TIntfVector.Remove(AObject: IInterface): Boolean;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := False;
+  Result := False;
   if AObject = nil then
-  	Exit;
+    Exit;
   for I := FCount - 1 downto 0 do
-  	if Items[I] = AObject then // Removes all AObject
+    if Items[I] = AObject then // Removes all AObject
     begin
       Items[I] := nil; // Force Release
-	    System.Move(Items[I + 1], Items[I],
-      	(FCount - I) * SizeOf(IInterface));
+      System.Move(Items[I + 1], Items[I],
+        (FCount - I) * SizeOf(IInterface));
       Dec(FCount);
       Result := True;
     end;
@@ -760,14 +741,14 @@ end;
 procedure TIntfVector.SetObject(Index: Integer;
   AObject: IInterface);
 begin
-	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if (Index < 0) or (Index >= FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
 function TIntfVector.Size: Integer;
 begin
-	Result := FCount;
+  Result := FCount;
 end;
 
 function TIntfVector.SubList(First, Count: Integer): IIntfList;
@@ -780,7 +761,7 @@ begin
     Last := FCount - 1;
   Result := TIntfVector.Create(Count);
   for I := First to Last do
-	  Result.Add(Items[I]);
+    Result.Add(Items[I]);
 end;
 
 procedure TIntfVector.AfterConstruction;
@@ -791,12 +772,26 @@ procedure TIntfVector.BeforeDestruction;
 begin
 end;
 
-{ TStrVector }
+//=== { TStrVector } =========================================================
+
+constructor TStrVector.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FCount := 0;
+  FCapacity := Capacity;
+  SetLength(Items, FCapacity);
+end;
+
+destructor TStrVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 procedure TStrVector.Add(Index: Integer; const AString: string);
 begin
   System.Move(Items[Index], Items[Index - 1],
-  	(FCount - Index) * SizeOf(string));
+    (FCount - Index) * SizeOf(string));
   FCapacity := Length(Items);
   Items[Index] := AString;
   Inc(FCount);
@@ -804,8 +799,8 @@ end;
 
 function TStrVector.Add(const AString: string): Boolean;
 begin
-	if FCount = FCapacity then
-  	Grow;
+  if FCount = FCapacity then
+    Grow;
   Items[FCount] := AString;
   Inc(FCount);
   Result := True;
@@ -824,8 +819,7 @@ begin
   Result := True;
 end;
 
-function TStrVector.AddAll(Index: Integer;
-  ACollection: IStrCollection): Boolean;
+function TStrVector.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   Size: Integer;
@@ -837,7 +831,7 @@ begin
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size],
-  	Size * SizeOf(string));
+    Size * SizeOf(string));
   It := ACollection.First;
   while It.HasNext do
   begin
@@ -857,10 +851,10 @@ end;
 
 procedure TStrVector.Clear;
 var
-	I: Integer;
+  I: Integer;
 begin
   for I := 0 to FCount - 1 do
-  	Items[I] := '';
+    Items[I] := '';
   FCount := 0;
 end;
 
@@ -875,16 +869,16 @@ end;
 
 function TStrVector.Contains(const AString: string): Boolean;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := False;
-	if AString = '' then
+  Result := False;
+  if AString = '' then
     Exit;
   for I := 0 to FCount - 1 do
-  	if Items[I] = AString then
+    if Items[I] = AString then
     begin
-    	Result := True;
-      Exit;
+      Result := True;
+      Break;
     end;
 end;
 
@@ -892,37 +886,16 @@ function TStrVector.ContainsAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
-	Result := True;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
     if not Contains(It.Next) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
-  end;
-end;
-
-constructor TStrVector.Create;
-begin
-  Create(16);
-end;
-
-constructor TStrVector.Create(Capacity: Integer);
-begin
-  inherited Create;
-	FCount := 0;
-  FCapacity := Capacity;
-	SetLength(Items, FCapacity);
-end;
-
-destructor TStrVector.Destroy;
-begin
-  Clear;
-  inherited;
 end;
 
 function TStrVector.Equals(ACollection: IStrCollection): Boolean;
@@ -930,57 +903,57 @@ var
   I: Integer;
   It: IStrIterator;
 begin
-	Result := False;
+  Result := False;
   if ACollection = nil then
     Exit;
   if FCount <> ACollection.Size then
     Exit;
   It := ACollection.First;
   for I := 0 to FCount - 1 do
-		if Items[I] <> It.Next then
+    if Items[I] <> It.Next then
       Exit;
   Result := True;
 end;
 
 function TStrVector.First: IStrIterator;
 begin
-	Result := TStrItr.Create(Self);
+  Result := TStrItr.Create(Self);
 end;
 
 function TStrVector.GetString(Index: Integer): string;
 begin
-	if (Index < 0) or (Index >= FCount) then
+  if (Index < 0) or (Index >= FCount) then
   begin
     Result := '';
     Exit;
   end;
-	Result := Items[Index];
+  Result := Items[Index];
 end;
 
 procedure TStrVector.Grow;
 begin
-	FCapacity := FCapacity + FCapacity div 4;
+  FCapacity := FCapacity + FCapacity div 4;
   SetLength(Items, FCapacity);
 end;
 
 function TStrVector.IndexOf(const AString: string): Integer;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := -1;
-	if AString = '' then
+  Result := -1;
+  if AString = '' then
     Exit;
   for I := 0 to FCount - 1 do
-  	if Items[I] = AString then
+    if Items[I] = AString then
     begin
-    	Result := I;
+      Result := I;
       Exit;
     end;
 end;
 
 function TStrVector.IsEmpty: Boolean;
 begin
-	Result := FCount = 0;
+  Result := FCount = 0;
 end;
 
 function TStrVector.Last: IStrIterator;
@@ -990,37 +963,37 @@ begin
   NewIterator := TStrItr.Create(Self);
   NewIterator.FCursor := NewIterator.FOwnList.FCount;
   NewIterator.FSize := NewIterator.FOwnList.FCount;
-	Result := NewIterator;
+  Result := NewIterator;
 end;
 
 function TStrVector.LastIndexOf(const AString: string): Integer;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := -1;
-	if AString = '' then
+  Result := -1;
+  if AString = '' then
     Exit;
-	for I := FCount - 1 downto 0 do
-  	if Items[I] = AString then
+  for I := FCount - 1 downto 0 do
+    if Items[I] = AString then
     begin
-    	Result := I;
-      Exit;
+      Result := I;
+      Break;
     end;
 end;
 
 function TStrVector.Remove(const AString: string): Boolean;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := False;
+  Result := False;
   if AString = '' then
-  	Exit;
+    Exit;
   for I := FCount - 1 downto 0 do
-  	if Items[I] = AString then // Removes all AObject
+    if Items[I] = AString then // Removes all AObject
     begin
       Items[I] := ''; // Force Release
-	    System.Move(Items[I + 1], Items[I],
-      	(FCount - I) * SizeOf(string));
+      System.Move(Items[I + 1], Items[I],
+        (FCount - I) * SizeOf(string));
       Dec(FCount);
       Result := True;
     end;
@@ -1028,12 +1001,12 @@ end;
 
 function TStrVector.Remove(Index: Integer): string;
 begin
-	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if (Index < 0) or (Index >= FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := '';
   System.Move(Items[Index + 1], Items[Index],
-  	(FCount - Index) * SizeOf(string));
+    (FCount - Index) * SizeOf(string));
   Dec(FCount);
 end;
 
@@ -1063,14 +1036,14 @@ end;
 
 procedure TStrVector.SetString(Index: Integer; const AString: string);
 begin
-	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if (Index < 0) or (Index >= FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AString;
 end;
 
 function TStrVector.Size: Integer;
 begin
-	Result := FCount;
+  Result := FCount;
 end;
 
 function TStrVector.SubList(First, Count: Integer): IStrList;
@@ -1083,15 +1056,30 @@ begin
     Last := FCount - 1;
   Result := TStrVector.Create(Count);
   for I := First to Last do
-	  Result.Add(Items[I]);
+    Result.Add(Items[I]);
 end;
 
-{ TVector }
+//=== { TVector } ============================================================
+
+constructor TVector.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
+begin
+  inherited Create;
+  FCount := 0;
+  FCapacity := Capacity;
+  FOwnsObjects := AOwnsObjects;
+  SetLength(Items, FCapacity);
+end;
+
+destructor TVector.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 procedure TVector.Add(Index: Integer; AObject: TObject);
 begin
   System.Move(Items[Index], Items[Index - 1],
-  	(FCount - Index) * SizeOf(TObject));
+    (FCount - Index) * SizeOf(TObject));
   FCapacity := Length(Items);
   Items[Index] := AObject;
   Inc(FCount);
@@ -1099,8 +1087,8 @@ end;
 
 function TVector.Add(AObject: TObject): Boolean;
 begin
-	if FCount = FCapacity then
-  	Grow;
+  if FCount = FCapacity then
+    Grow;
   Items[FCount] := AObject;
   Inc(FCount);
   Result := True;
@@ -1118,7 +1106,7 @@ begin
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size],
-  	Size * SizeOf(IInterface));
+    Size * SizeOf(IInterface));
   It := ACollection.First;
   while It.HasNext do
   begin
@@ -1143,12 +1131,12 @@ end;
 
 procedure TVector.Clear;
 var
-	I: Integer;
+  I: Integer;
 begin
   for I := 0 to FCount - 1 do
   begin
     FreeObject(Items[I]);
-  	Items[I] := nil;
+    Items[I] := nil;
   end;
   FCount := 0;
 end;
@@ -1164,16 +1152,16 @@ end;
 
 function TVector.Contains(AObject: TObject): Boolean;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := False;
-	if AObject = nil then
+  Result := False;
+  if AObject = nil then
     Exit;
   for I := 0 to FCount - 1 do
-  	if Items[I] = AObject then
+    if Items[I] = AObject then
     begin
-    	Result := True;
-      Exit;
+      Result := True;
+      Break;
     end;
 end;
 
@@ -1181,38 +1169,16 @@ function TVector.ContainsAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
-	Result := True;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
     if not Contains(It.Next) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
-  end;
-end;
-
-constructor TVector.Create;
-begin
-  Create(16, True);
-end;
-
-constructor TVector.Create(Capacity: Integer; AOwnsObjects: Boolean);
-begin
-  inherited Create;
-	FCount := 0;
-  FCapacity := Capacity;
-  FOwnsObjects := AOwnsObjects;
-	SetLength(Items, FCapacity);
-end;
-
-destructor TVector.Destroy;
-begin
-  Clear;
-  inherited;
 end;
 
 function TVector.Equals(ACollection: ICollection): Boolean;
@@ -1220,14 +1186,14 @@ var
   I: Integer;
   It: IIterator;
 begin
-	Result := False;
+  Result := False;
   if ACollection = nil then
     Exit;
   if FCount <> ACollection.Size then
     Exit;
   It := ACollection.First;
   for I := 0 to FCount - 1 do
-		if Items[I] <> It.Next then
+    if Items[I] <> It.Next then
       Exit;
   Result := True;
 end;
@@ -1240,32 +1206,32 @@ end;
 
 function TVector.GetObject(Index: Integer): TObject;
 begin
-	if (Index < 0) or (Index >= FCount) then
+  if (Index < 0) or (Index >= FCount) then
   begin
     Result := nil;
     Exit;
   end;
-	Result := Items[Index];
+  Result := Items[Index];
 end;
 
 procedure TVector.Grow;
 begin
-	FCapacity := FCapacity + FCapacity div 4;
+  FCapacity := FCapacity + FCapacity div 4;
   SetLength(Items, FCapacity);
 end;
 
 function TVector.IndexOf(AObject: TObject): Integer;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := -1;
-	if AObject = nil then
+  Result := -1;
+  if AObject = nil then
     Exit;
   for I := 0 to FCount - 1 do
-  	if Items[I] = AObject then
+    if Items[I] = AObject then
     begin
-    	Result := I;
-      Exit;
+      Result := I;
+      Break;
     end;
 end;
 
@@ -1286,37 +1252,37 @@ begin
   NewIterator := TItr.Create(Self);
   NewIterator.FCursor := NewIterator.FOwnList.FCount;
   NewIterator.FSize := NewIterator.FOwnList.FCount;
-	Result := NewIterator;
+  Result := NewIterator;
 end;
 
 function TVector.LastIndexOf(AObject: TObject): Integer;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := -1;
-	if AObject = nil then
+  Result := -1;
+  if AObject = nil then
     Exit;
-	for I := FCount - 1 downto 0 do
-  	if Items[I] = AObject then
+  for I := FCount - 1 downto 0 do
+    if Items[I] = AObject then
     begin
-    	Result := I;
-      Exit;
+      Result := I;
+      Break;
     end;
 end;
 
 function TVector.Remove(AObject: TObject): Boolean;
 var
-	I: Integer;
+  I: Integer;
 begin
-	Result := False;
+  Result := False;
   if AObject = nil then
-  	Exit;
+    Exit;
   for I := FCount - 1 downto 0 do
-  	if Items[I] = AObject then // Removes all AObject
+    if Items[I] = AObject then // Removes all AObject
     begin
       FreeObject(Items[I]);
-	    System.Move(Items[I + 1], Items[I],
-      	(FCount - I) * SizeOf(TObject));
+      System.Move(Items[I + 1], Items[I],
+        (FCount - I) * SizeOf(TObject));
       Dec(FCount);
       Result := True;
     end;
@@ -1324,12 +1290,12 @@ end;
 
 function TVector.Remove(Index: Integer): TObject;
 begin
-	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if (Index < 0) or (Index >= FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   FreeObject(Items[Index]);
   System.Move(Items[Index + 1], Items[Index],
-  	(FCount - Index) * SizeOf(TObject));
+    (FCount - Index) * SizeOf(TObject));
   Dec(FCount);
 end;
 
@@ -1352,15 +1318,15 @@ begin
   Result := False;
   if ACollection = nil then
     Exit;
-  for I := FCount - 1 to 0 do         
+  for I := FCount - 1 to 0 do
     if not ACollection.Contains(Items[I]) then
       Remove(I);
 end;
 
 procedure TVector.SetObject(Index: Integer; AObject: TObject);
 begin
-	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if (Index < 0) or (Index >= FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
@@ -1379,7 +1345,7 @@ begin
     Last := FCount - 1;
   Result := TVector.Create(Count, FOwnsObjects);
   for I := First to Last do
-	  Result.Add(Items[I]);
+    Result.Add(Items[I]);
 end;
 
 procedure TVector.AfterConstruction;
@@ -1391,3 +1357,4 @@ begin
 end;
 
 end.
+

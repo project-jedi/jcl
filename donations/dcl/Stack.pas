@@ -9,7 +9,8 @@ unit Stack;
 
 interface
 
-uses DCL_intf, DCLUtil, AbstractContainer;
+uses
+  DCL_intf, DCLUtil, AbstractContainer;
 
 type
   TIntfStack = class(TAbstractContainer, IIntfStack)
@@ -19,16 +20,14 @@ type
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-  protected
-  { IIntfStack }
+    { IIntfStack }
     function Contains(AObject: IInterface): Boolean;
     function Empty: Boolean;
     function Pop: IInterface;
     procedure Push(AObject: IInterface);
     function Size: Integer;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer);  overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
   TStrStack = class(TAbstractContainer, IStrStack)
@@ -38,16 +37,14 @@ type
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-  protected
-  { IStrStack }
+    { IStrStack }
     function Contains(const AString: string): Boolean;
     function Empty: Boolean;
     function Pop: string;
     procedure Push(const AString: string);
     function Size: Integer;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer);  overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
   TStack = class(TAbstractContainer, IStack)
@@ -57,32 +54,38 @@ type
     FCapacity: Integer;
   protected
     procedure Grow; virtual;
-  protected
-  { IStack }
+    { IStack }
     function Contains(AObject: TObject): Boolean;
     function Empty: Boolean;
     function Pop: TObject;
     procedure Push(AObject: TObject);
     function Size: Integer;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
 implementation
 
-{ TIntfStack }
+//=== { TIntfStack } =========================================================
+
+constructor TIntfStack.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FCount := 0;
+  FCapacity := Capacity;
+  SetLength(FElements, FCapacity);
+end;
 
 function TIntfStack.Contains(AObject: IInterface): Boolean;
 var
   I: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -90,21 +93,8 @@ begin
     if FElements[I] = AObject then
     begin
       Result := True;
-      Exit;
+      Break;
     end;
-end;
-
-constructor TIntfStack.Create;
-begin
-  Create(16);
-end;
-
-constructor TIntfStack.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FCount := 0;
-  FCapacity := Capacity;
-  SetLength(FElements, FCapacity);
 end;
 
 function TIntfStack.Empty: Boolean;
@@ -122,11 +112,11 @@ function TIntfStack.Pop: IInterface;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if FCount = 0 then
     Exit;
   Dec(FCount);
@@ -137,11 +127,11 @@ procedure TIntfStack.Push(AObject: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if AObject = nil then
     Exit;
   if FCount = FCapacity then
@@ -155,18 +145,26 @@ begin
   Result := FCount;
 end;
 
-{ TStrStack }
+//=== { TStrStack } ==========================================================
+
+constructor TStrStack.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FCount := 0;
+  FCapacity := Capacity;
+  SetLength(FElements, FCapacity);
+end;
 
 function TStrStack.Contains(const AString: string): Boolean;
 var
   I: Integer;
 {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -176,19 +174,6 @@ begin
       Result := True;
       Exit;
     end;
-end;
-
-constructor TStrStack.Create;
-begin
-  Create(16);
-end;
-
-constructor TStrStack.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FCount := 0;
-  FCapacity := Capacity;
-  SetLength(FElements, FCapacity);
 end;
 
 function TStrStack.Empty: Boolean;
@@ -206,11 +191,11 @@ function TStrStack.Pop: string;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if FCount = 0 then
     Exit;
   Dec(FCount);
@@ -221,11 +206,11 @@ procedure TStrStack.Push(const AString: string);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if AString = '' then
     Exit;
   if FCount = FCapacity then
@@ -239,18 +224,26 @@ begin
   Result := FCount;
 end;
 
-{ TStack }
+//=== { TStack } =============================================================
+
+constructor TStack.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FCount := 0;
+  FCapacity := Capacity;
+  SetLength(FElements, FCapacity);
+end;
 
 function TStack.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -258,21 +251,8 @@ begin
     if FElements[I] = AObject then
     begin
       Result := True;
-      Exit;
+      Break;
     end;
-end;
-
-constructor TStack.Create;
-begin
-  Create(16);
-end;
-
-constructor TStack.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FCount := 0;
-  FCapacity := Capacity;
-  SetLength(FElements, FCapacity);
 end;
 
 function TStack.Empty: Boolean;
@@ -290,11 +270,11 @@ function TStack.Pop: TObject;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FCount = 0 then
     Exit;
@@ -306,11 +286,11 @@ procedure TStack.Push(AObject: TObject);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if AObject = nil then
     Exit;
   if FCount = FCapacity then

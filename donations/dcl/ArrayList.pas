@@ -47,8 +47,7 @@ type
     { IIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity); overload;
     constructor Create(ACollection: IIntfCollection); overload;
     destructor Destroy; override;
   end;
@@ -88,8 +87,7 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity); overload;
     constructor Create(ACollection: IStrCollection); overload;
     destructor Destroy; override;
   end;
@@ -130,9 +128,8 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer; AOwnsObjects: Boolean); overload;
-    constructor Create(ACollection: ICollection; AOwnsObjects: Boolean); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True); overload;
+    constructor Create(ACollection: ICollection; AOwnsObjects: Boolean = True); overload;
     destructor Destroy; override;
   end;
 
@@ -614,7 +611,7 @@ end;
 
 //=== { TIntfArrayList } =====================================================
 
-constructor TIntfArrayList.Create(Capacity: Integer);
+constructor TIntfArrayList.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FSize := 0;
@@ -626,18 +623,14 @@ constructor TIntfArrayList.Create(ACollection: IIntfCollection);
 var
   It: IIntfIterator;
 begin
-  inherited Create;
+  // (rom) disabled because the following Create already calls inherited
+  // inherited Create;
   if ACollection = nil then
     raise Exception.Create('Collection = nil');
   Create(ACollection.Size);
   It := ACollection.First;
   while It.HasNext do
     Add(It.Next);
-end;
-
-constructor TIntfArrayList.Create;
-begin
-  Create(16);
 end;
 
 destructor TIntfArrayList.Destroy;
@@ -1019,30 +1012,26 @@ end;
 
 //=== { TStrArrayList } ======================================================
 
-constructor TStrArrayList.Create;
+constructor TStrArrayList.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
-  Create(16);
+  inherited Create;
+  FSize := 0;
+  FCapacity := Capacity;
+  SetLength(FElementData, FCapacity);
 end;
 
 constructor TStrArrayList.Create(ACollection: IStrCollection);
 var
   It: IStrIterator;
 begin
-  inherited Create;
+  // (rom) disabled because the following Create already calls inherited
+  // inherited Create;
   if ACollection = nil then
     raise Exception.Create('Collection = nil');
   Create(ACollection.Size);
   It := ACollection.First;
   while it.HasNext do
     Add(It.Next);
-end;
-
-constructor TStrArrayList.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FSize := 0;
-  FCapacity := Capacity;
-  SetLength(FElementData, FCapacity);
 end;
 
 destructor TStrArrayList.Destroy;
@@ -1423,7 +1412,7 @@ end;
 
 //=== { TArrayList } =========================================================
 
-constructor TArrayList.Create(Capacity: Integer; AOwnsObjects: Boolean);
+constructor TArrayList.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
 begin
   inherited Create;
   FSize := 0;
@@ -1432,22 +1421,18 @@ begin
   SetLength(FElementData, FCapacity);
 end;
 
-constructor TArrayList.Create(ACollection: ICollection; AOwnsObjects: Boolean);
+constructor TArrayList.Create(ACollection: ICollection; AOwnsObjects: Boolean = True);
 var
   It: IIterator;
 begin
-  inherited Create;
+  // (rom) disabled because the following Create already calls inherited
+  // inherited Create;
   if ACollection = nil then
     raise Exception.Create('Collection = nil');
   Create(ACollection.Size, AOwnsObjects);
   It := ACollection.First;
-  while it.HasNext do
+  while It.HasNext do
     Add(It.Next);
-end;
-
-constructor TArrayList.Create;
-begin
-  Create(16, True);
 end;
 
 destructor TArrayList.Destroy;

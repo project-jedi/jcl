@@ -9,7 +9,8 @@ unit HashMap;
 
 interface
 
-uses DCL_intf, AbstractContainer;
+uses
+  DCL_intf, DCLUtil, AbstractContainer;
 
 type
   TIntfIntfEntry = record
@@ -107,8 +108,7 @@ type
     { IIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
     property HashFunction: THashFunction read FHashFunction write FHashFunction;
   end;
@@ -139,8 +139,7 @@ type
     { IIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
     property HashFunction: THashFunction read FHashFunction write FHashFunction;
   end;
@@ -171,8 +170,7 @@ type
     { IIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
     property HashFunction: THashFunction read FHashFunction write FHashFunction;
   end;
@@ -205,8 +203,7 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer; AOwnsObjects: Boolean); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     property HashFunction: THashFunction read FHashFunction write FHashFunction;
   end;
@@ -239,8 +236,7 @@ type
     function Size: Integer;
     function Values: ICollection;
 
-    constructor Create; overload;
-    constructor Create(Capacity: Integer; AOwnsObjects: Boolean); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     property HashFunction: THashFunction read FHashFunction write FHashFunction;
   end;
@@ -252,7 +248,7 @@ uses
 
 //=== { TIntfIntfHashMap } ===================================================
 
-constructor TIntfIntfHashMap.Create(Capacity: Integer);
+constructor TIntfIntfHashMap.Create(Capacity: Integer = DCLDefaultCapacity);
 var
   I: Integer;
 begin
@@ -262,11 +258,6 @@ begin
   for I := 0 to FCapacity - 1 do
     SetLength(FBuckets[I].Entries, 1);
   FHashFunction := HashMul;
-end;
-
-constructor TIntfIntfHashMap.Create;
-begin
-  Create(16);
 end;
 
 destructor TIntfIntfHashMap.Destroy;
@@ -574,12 +565,7 @@ end;
 
 //=== { TStrIntfHashMap } ====================================================
 
-constructor TStrIntfHashMap.Create;
-begin
-  Create(16);
-end;
-
-constructor TStrIntfHashMap.Create(Capacity: Integer);
+constructor TStrIntfHashMap.Create(Capacity: Integer = DCLDefaultCapacity);
 var
   I: Integer;
 begin
@@ -913,12 +899,7 @@ end;
 
 //=== { TStrStrHashMap } =====================================================
 
-constructor TStrStrHashMap.Create;
-begin
-  Create(16);
-end;
-
-constructor TStrStrHashMap.Create(Capacity: Integer);
+constructor TStrStrHashMap.Create(Capacity: Integer = DCLDefaultCapacity);
 var
   I: Integer;
 begin
@@ -1250,12 +1231,7 @@ end;
 
 //=== { TStrHashMap } ========================================================
 
-constructor TStrHashMap.Create;
-begin
-  Create(16, True);
-end;
-
-constructor TStrHashMap.Create(Capacity: Integer; AOwnsObjects: Boolean);
+constructor TStrHashMap.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
 var
   I: Integer;
 begin
@@ -1602,12 +1578,7 @@ end;
 
 //=== { THashMap } ===========================================================
 
-constructor THashMap.Create;
-begin
-  Create(16, True);
-end;
-
-constructor THashMap.Create(Capacity: Integer; AOwnsObjects: Boolean);
+constructor THashMap.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
 var
   I: Integer;
 begin

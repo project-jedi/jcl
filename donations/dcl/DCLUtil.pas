@@ -10,13 +10,8 @@ interface
 uses
   DCL_Intf, SysUtils;
 
-resourcestring
-  RsEOutOfBounds = 'Out of bounds';
-  //RsENoSuchElement = 'No such element';
-  //RsEIllegalState = 'Illegal state';
-  //RsEConcurrentModification = 'Concurrent modification';
-  //RsEIllegalArgument = 'Illegal argument';
-  RsEOperationNotSupported = 'Operation not supported';
+const
+  DCLDefaultCapacity = 16;
 
 type
   TIInterfaceArray = array of IInterface;
@@ -31,6 +26,14 @@ type
   EDCLConcurrentModification = class(EDCLException);
   EDCLIllegalArgument = class(EDCLException);
   EDCLOperationNotSupported = class(EDCLException);
+
+resourcestring
+  RsEOutOfBounds = 'Out of bounds';
+  //RsENoSuchElement = 'No such element';
+  //RsEIllegalState = 'Illegal state';
+  //RsEConcurrentModification = 'Concurrent modification';
+  //RsEIllegalArgument = 'Illegal argument';
+  RsEOperationNotSupported = 'Operation not supported';
 
 implementation
 

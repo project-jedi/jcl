@@ -9,7 +9,8 @@ unit Queue;
 
 interface
 
-uses DCL_intf, DCLUtil, AbstractContainer;
+uses
+  DCL_intf, DCLUtil, AbstractContainer;
 
 type
   TIntfQueue = class(TAbstractContainer, IIntfQueue)
@@ -19,15 +20,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
-  { IIntfQueue }
+    { IIntfQueue }
     function Contains(AObject: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
     procedure Enqueue(AObject: IInterface);
     function Size: Integer;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
   TStrQueue = class(TAbstractContainer, IStrQueue)
@@ -37,15 +37,14 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
-  { IStrQueue }
+    { IStrQueue }
     function Contains(const AString: string): Boolean;
     function Dequeue: string;
     function Empty: Boolean;
     procedure Enqueue(const AString: string);
     function Size: Integer;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
   TQueue = class(TAbstractContainer, IQueue)
@@ -55,31 +54,39 @@ type
     FHead: Integer;
     FTail: Integer;
   protected
-  { IQueue }
+    { IQueue }
     function Contains(AObject: TObject): Boolean;
     function Dequeue: TObject;
     function Empty: Boolean;
     procedure Enqueue(AObject: TObject);
     function Size: Integer;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
 implementation
 
-{ TIntfQueue }
+//=== { TIntfQueue } =========================================================
+
+constructor TIntfQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FHead := 0;
+  FTail := 0;
+  FCapacity := Capacity;
+  SetLength(FElements, FCapacity);
+end;
 
 function TIntfQueue.Contains(AObject: IInterface): Boolean;
 var
   I: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -89,35 +96,21 @@ begin
     if FElements[I] = AObject then
     begin
       Result := True;
-      Exit;
+      Break;
     end;
     I := (I + 1) mod FCapacity;
   end;
-end;
-
-constructor TIntfQueue.Create;
-begin
-  Create(16);
-end;
-
-constructor TIntfQueue.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FHead := 0;
-  FTail := 0;
-  FCapacity := Capacity;
-  SetLength(FElements, FCapacity);
 end;
 
 function TIntfQueue.Dequeue: IInterface;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FTail = FHead then
     Exit;
@@ -135,11 +128,11 @@ procedure TIntfQueue.Enqueue(AObject: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if AObject = nil then
     Exit;
   FElements[FTail] := AObject;
@@ -151,18 +144,27 @@ begin
   Result := FTail - FHead;
 end;
 
-{ TStrQueue }
+//=== { TStrQueue } ==========================================================
+
+constructor TStrQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FHead := 0;
+  FTail := 0;
+  FCapacity := Capacity;
+  SetLength(FElements, FCapacity);
+end;
 
 function TStrQueue.Contains(const AString: string): Boolean;
 var
   I: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -172,35 +174,21 @@ begin
     if FElements[I] = AString then
     begin
       Result := True;
-      Exit;
+      Break;
     end;
     I := (I + 1) mod FCapacity;
   end;
-end;
-
-constructor TStrQueue.Create;
-begin
-  Create(16);
-end;
-
-constructor TStrQueue.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FHead := 0;
-  FTail := 0;
-  FCapacity := Capacity;
-  SetLength(FElements, FCapacity);
 end;
 
 function TStrQueue.Dequeue: string;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := '';
   if FTail = FHead then
     Exit;
@@ -218,11 +206,11 @@ procedure TStrQueue.Enqueue(const AString: string);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if AString = '' then
     Exit;
   FElements[FTail] := AString;
@@ -234,18 +222,25 @@ begin
   Result := FTail - FHead;
 end;
 
-{ TQueue }
+//=== { TQueue } =============================================================
+
+constructor TQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+begin
+  inherited Create;
+  FCapacity := Capacity;
+  SetLength(FElements, FCapacity);
+end;
 
 function TQueue.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -255,33 +250,21 @@ begin
     if FElements[I] = AObject then
     begin
       Result := True;
-      Exit;
+      Break;
     end;
     I := (I + 1) mod FCapacity;
   end;
-end;
-
-constructor TQueue.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FCapacity := Capacity;
-  SetLength(FElements, FCapacity);
-end;
-
-constructor TQueue.Create;
-begin
-  Create(16);
 end;
 
 function TQueue.Dequeue: TObject;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := nil;
   if FTail = FHead then
     Exit;
@@ -299,11 +282,11 @@ procedure TQueue.Enqueue(AObject: TObject);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
-{$ENDIF}
+{$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   if AObject = nil then
     Exit;
   FElements[FTail] := AObject;

@@ -10,7 +10,7 @@ unit HashSet;
 interface
 
 uses
-  DCL_intf, HashMap, AbstractContainer;
+  DCL_intf, DCLUtil, HashMap, AbstractContainer;
 
 type
   TIntfHashSet = class(TAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
@@ -38,8 +38,7 @@ type
     { IIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
   end;
 
@@ -68,8 +67,7 @@ type
     { IIntfCloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity);
     destructor Destroy; override;
   end;
 
@@ -98,8 +96,7 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Capacity: Integer; AOwnsObject: Boolean); overload;
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
     destructor Destroy; override;
   end;
 
@@ -114,12 +111,7 @@ var
 
 //=== { TIntfHashSet } =======================================================
 
-constructor TIntfHashSet.Create;
-begin
-  Create(16);
-end;
-
-constructor TIntfHashSet.Create(Capacity: Integer);
+constructor TIntfHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FMap := TIntfIntfHashMap.Create(Capacity);
@@ -275,15 +267,10 @@ end;
 
 //=== { TStrHashSet } ========================================================
 
-constructor TStrHashSet.Create(Capacity: Integer);
+constructor TStrHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FMap := TStrHashMap.Create(Capacity, False);
-end;
-
-constructor TStrHashSet.Create;
-begin
-  Create(16);
 end;
 
 destructor TStrHashSet.Destroy;
@@ -434,12 +421,7 @@ end;
 
 //=== { THashSet } ===========================================================
 
-constructor THashSet.Create;
-begin
-  Create(16, False);
-end;
-
-constructor THashSet.Create(Capacity: Integer; AOwnsObject: Boolean);
+constructor THashSet.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
 begin
   inherited Create;
   FMap := THashMap.Create(Capacity, AOwnsObject);
