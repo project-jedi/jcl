@@ -22,7 +22,7 @@
 { versions of Delphi as well as FPC.                                           }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: June 6, 2001                                                }
+{ Last modified: August 24, 2001                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -296,6 +296,19 @@ type
 
 {$IFNDEF DELPHI6_UP}
 procedure RaiseLastOSError;
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+// Interface compatibility
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_INTERFACE}
+{$IFNDEF COMPILER6_UP}
+
+type
+  IInterface = IUnknown;
+
+{$ENDIF}
 {$ENDIF}
 
 
