@@ -49,7 +49,7 @@ const
   JclVersionRelease = 1;    // 0=pre-release|beta/1=release
   JclVersionBuild   = 749;  // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
-               (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
+    (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
 //--------------------------------------------------------------------------------------------------
 // FreePascal Support
@@ -78,7 +78,7 @@ var
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclError = class (Exception)
+  EJclError = class(Exception)
   public
     constructor CreateResRec(ResStringRec: PResStringRec);
     constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
@@ -91,7 +91,7 @@ type
 {$IFDEF MSWINDOWS}
 
 type
-  EJclWin32Error = class (EJclError)
+  EJclWin32Error = class(EJclError)
   private
     FLastError: DWORD;
     FLastErrorMsg: string;
@@ -150,11 +150,11 @@ type
   PLargeInteger = ^TLargeInteger;
   TLargeInteger = record
     case Integer of
-    0: (
-      LowPart: LongWord;
+    0:
+     (LowPart: LongWord;
       HighPart: Longint);
-    1: (
-      QuadPart: Int64);
+    1:
+     (QuadPart: Int64);
   end;
 
 // Redefinition of TULargeInteger to relieve dependency on Windows.pas
@@ -163,11 +163,11 @@ type
   PULargeInteger = ^TULargeInteger;
   TULargeInteger = record
     case Integer of
-    0: (
-      LowPart: LongWord;
+    0:
+     (LowPart: LongWord;
       HighPart: LongWord);
-    1: (
-      QuadPart: Int64);
+    1:
+     (QuadPart: Int64);
   end;
 
 //--------------------------------------------------------------------------------------------------
