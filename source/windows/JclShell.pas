@@ -78,6 +78,8 @@ function SHEnumSpecialFolderFirst(SpecialFolder: DWORD; Flags: TEnumFolderFlags;
 procedure SHEnumFolderClose(var F: TEnumFolderRec);
 function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 
+function GetSpecialFolderLocation(const Folder: Integer): string;
+
 function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean; overload;
 function DisplayPropDialog(const Handle: HWND; const Item: PItemIdList): Boolean; overload;
 
@@ -406,6 +408,20 @@ begin
   finally
     PidlFree(FolderPidl);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetSpecialFolderLocation(const Folder: Integer): string;
+var
+  FolderPidl: PItemIdList;
+begin
+  if Succeeded(SHGetSpecialFolderLocation(0, Folder, FolderPidl)) then
+  begin
+    Result := PidlToPath(FolderPidl);
+    PidlFree(FolderPidl);
+  end else
+    Result := '';
 end;
 
 //------------------------------------------------------------------------------
