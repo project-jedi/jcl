@@ -36,6 +36,7 @@ interface
 
 uses
   Windows,
+  SysUtils,
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -68,7 +69,6 @@ uses
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
   {$ENDIF COMPILER5_UP}
-  SysUtils,
   JclStrings, JclWin32;
 
 //==============================================================================
@@ -151,7 +151,8 @@ begin
         SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
         psidAdmin));
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
-        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then RaiseLastWin32Error;
+       (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
+         RaiseLastOSError;
       TokenInfo := PTokenGroups(AllocMem(Count));
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
       for I := 0 to TokenInfo^.GroupCount - 1 do
