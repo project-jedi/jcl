@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 28, 2002                                                                    }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,9 +36,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF DELPHI5_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF DELPHI5_UP}
+  {$ENDIF COMPILER5_UP}
   JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 //--------------------------------------------------------------------------------------------------
@@ -436,17 +436,17 @@ function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
-function __FILE__(const Level: Integer = 0): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __MODULE__(const Level: Integer = 0): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __PROC__(const Level: Integer  = 0): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __LINE__(const Level: Integer = 0): Integer; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
-function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __FILE__(const Level: Integer = 0): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __MODULE__(const Level: Integer = 0): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __PROC__(const Level: Integer  = 0): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __LINE__(const Level: Integer = 0): Integer; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+  var _Line: Integer): Boolean; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 // Stack info routines base list
@@ -1823,9 +1823,13 @@ begin
       Assert(NtHeaders <> nil);
       Sections := PeMapImgSections(NtHeaders);
       Assert(Sections <> nil);
-      // Check whether there is not a section with the name already. This
-      // should never occur.
-      Assert(PeMapImgFindSection(NtHeaders, JclDbgDataResName) = nil);
+      // Check whether there is not a section with the name already. If so, return True (#0000069)
+      if PeMapImgFindSection(NtHeaders, JclDbgDataResName) <> nil then
+      begin
+        Result := True;
+        Exit;
+      end;
+
       LastSection := Sections;
       Inc(LastSection, NtHeaders^.FileHeader.NumberOfSections - 1);
       JclDebugSection := LastSection;
