@@ -31,6 +31,8 @@ unit JclSecurity;
 
 {$WEAKPACKAGEUNIT ON}
 
+{$HPPEMIT '#define TTokenInformationClass TOKEN_INFORMATION_CLASS'}
+
 interface
 
 uses
