@@ -12,15 +12,15 @@ VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x.\Q
 VclOptions      = -c -dVCL -dVCL -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -uKYLIX -x.\\
 #---------------------------------------------------------------------------------------------------
 SRC = ..\source
-UNIT = $(ROOT)\Lib;$(ROOT)\Lib\Obj;$(SRC)\common;$(SRC)\windows
+UNIT = "$(ROOT)\Lib;$(ROOT)\Lib\Obj;$(SRC)\common;$(SRC)\windows"
 RES =
 BIN = ..\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
-MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
-BRCC = $(ROOT)\bin\brcc32.exe $**
+MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**
+DCC = "$(ROOT)\bin\dcc32.exe" -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
+BRCC = "$(ROOT)\bin\brcc32.exe" $**
 jpp = ..\devtools\jpp.exe
 #---------------------------------------------------------------------------------------------------
 default:	clean install
@@ -69,8 +69,8 @@ prototypes:	JediInstallerMain.pas \
 		QProductFrames.pas
 
 JediInstallerMain.pas ProductFrames.pas:
-	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
+	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak VclUnits
 
 QJediInstallerMain.pas QProductFrames.pas:
-	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
+	@if exist prototypes "$(MAKEDIR)\make.exe" -fprototypes.mak ClxUnits
 
