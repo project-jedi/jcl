@@ -37,7 +37,7 @@ uses
   JclBase;
 
 type
-  EJclMapiError = class (EJclError)
+  EJclMapiError = class(EJclError)
   private
     FErrorCode: DWORD;
   public
@@ -57,7 +57,7 @@ type
 
   TJclMapiClientConnect = (ctAutomatic, ctMapi, ctDirect);
 
-  TJclSimpleMapi = class (TObject)
+  TJclSimpleMapi = class(TObject)
   private
     FAnyClientInstalled: Boolean;
     FBeforeUnloadClient: TNotifyEvent;
@@ -145,7 +145,7 @@ const
 type
   TJclEmailRecipKind = (rkOriginator, rkTO, rkCC, rkBCC);
 
-  TJclEmailRecip = class (TObject)
+  TJclEmailRecip = class(TObject)
   private
     FAddress: string;
     FAddressType: string;
@@ -162,7 +162,7 @@ type
     property Name: string read FName write FName;
   end;
 
-  TJclEmailRecips = class (TObjectList)
+  TJclEmailRecips = class(TObjectList)
   private
     FAddressesType: string;
     function GetItems(Index: Integer): TJclEmailRecip;
@@ -195,7 +195,7 @@ type
 
   TJclTaskWindowsList = array of HWND;
 
-  TJclEmail = class (TJclSimpleMapi)
+  TJclEmail = class(TJclSimpleMapi)
   private
     FAttachments: TStrings;
     FBody: string;
@@ -283,19 +283,20 @@ uses
 const
   MapiDll = 'mapi32.dll';
   MapiExportNames: array [0..11] of PChar =
-    ('MAPIAddress',
-     'MAPIDeleteMail',
-     'MAPIDetails',
-     'MAPIFindNext',
-     'MAPIFreeBuffer',
-     'MAPILogoff',
-     'MAPILogon',
-     'MAPIReadMail',
-     'MAPIResolveName',
-     'MAPISaveMail',
-     'MAPISendDocuments',
-     'MAPISendMail'
-     );
+   (
+    'MAPIAddress',
+    'MAPIDeleteMail',
+    'MAPIDetails',
+    'MAPIFindNext',
+    'MAPIFreeBuffer',
+    'MAPILogoff',
+    'MAPILogon',
+    'MAPIReadMail',
+    'MAPIResolveName',
+    'MAPISaveMail',
+    'MAPISendDocuments',
+    'MAPISendMail'
+   );
   AddressTypeDelimiter = ':';
 
 //--------------------------------------------------------------------------------------------------
@@ -438,31 +439,9 @@ end;
 // TJclSimpleMapi
 //==================================================================================================
 
-procedure TJclSimpleMapi.BeforeUnloadClientLib;
-begin
-  if Assigned(FBeforeUnloadClient) then
-    FBeforeUnloadClient(Self);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclSimpleMapi.CheckListIndex(I, ArrayLength: Integer);
-begin
-  if (I < 0) or (I >= ArrayLength) then
-    raise EJclMapiError.CreateResRecFmt(@RsMapiInvalidIndex, [I]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclSimpleMapi.ClientLibLoaded: Boolean;
-begin
-  Result := FClientLibHandle <> 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclSimpleMapi.Create;
 begin
+  inherited Create;
   SetLength(FFunctions, Length(MapiExportNames));
   FFunctions[0] := @@FMapiAddress;
   FFunctions[1] := @@FMapiDeleteMail;
@@ -487,7 +466,30 @@ end;
 destructor TJclSimpleMapi.Destroy;
 begin
   UnloadClientLib;
-  inherited;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclSimpleMapi.BeforeUnloadClientLib;
+begin
+  if Assigned(FBeforeUnloadClient) then
+    FBeforeUnloadClient(Self);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclSimpleMapi.CheckListIndex(I, ArrayLength: Integer);
+begin
+  if (I < 0) or (I >= ArrayLength) then
+    raise EJclMapiError.CreateResRecFmt(@RsMapiInvalidIndex, [I]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclSimpleMapi.ClientLibLoaded: Boolean;
+begin
+  Result := FClientLibHandle <> 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -824,6 +826,27 @@ end;
 // TJclEmail
 //==================================================================================================
 
+constructor TJclEmail.Create;
+begin
+  inherited Create;
+  FAttachments := TStringList.Create;
+  FLogonOptions := [loLogonUI];
+  FFindOptions := [foFifo];
+  FRecipients := TJclEmailRecips.Create(True);
+  FRecipients.AddressesType := MapiAddressTypeSMTP;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclEmail.Destroy;
+begin
+  FreeAndNil(FAttachments);
+  FreeAndNil(FRecipients);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclEmail.Address(const Caption: string; EditFields: Integer): Boolean;
 var
   NewRecipCount: ULONG;
@@ -865,18 +888,6 @@ begin
   FReadMsg.DateReceived := 0;
   FReadMsg.ConversationID := '';
   FReadMsg.Flags := 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclEmail.Create;
-begin
-  inherited;
-  FAttachments := TStringList.Create;
-  FLogonOptions := [loLogonUI];
-  FFindOptions := [foFifo];
-  FRecipients := TJclEmailRecips.Create(True);
-  FRecipients.AddressesType := MapiAddressTypeSMTP;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -926,15 +937,6 @@ begin
   LoadClientLib;
   Result := MapiCheck(MapiDeleteMail(FSessionHandle, 0, PChar(MessageID), 0, 0),
     False) = SUCCESS_SUCCESS;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclEmail.Destroy;
-begin
-  FreeAndNil(FAttachments);
-  FreeAndNil(FRecipients);
-  inherited;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1385,7 +1387,5 @@ begin
   Result := SimpleSendHelper('', '', Subject, Body, Attachment, True, ParentWND,
     ProfileName, Password, MapiAddressTypeSMTP);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.
