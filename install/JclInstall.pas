@@ -20,6 +20,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.9  2004/03/13 09:06:23  rrossmair
+// minor fixes
+//
 // Revision 1.8  2004/03/13 07:46:49  rrossmair
 // Kylix/Delphi installation fixed; C++ incomplete
 //
@@ -293,6 +296,8 @@ begin
     Tool.UpdateStatus(Format('Compiling %s ...', [LibDescriptor]));
     BuildFileList(Format('%ssource' + PathSeparator + '%s' + PathSeparator + '*.pas',
       [FJclPath, SubDir]), faAnyFile, Units);
+    for I := 0 to Units.Count -1 do
+      Units[I] := Copy(Units[I], 1, Length(Units[I]) - 4);
     with Installation.DCC do
     begin
       Options.Clear;
@@ -363,12 +368,13 @@ begin
         for I := 0 to Units.Count - 1 do
         begin
           Execute(Units[I]);
-          Tool.WriteInstallLog(Format('Compiling %s...', [Units[i]]));
+          Tool.WriteInstallLog(Format('Compiling %s.dcu ...', [Units[i]]));
           Tool.WriteInstallLog(Installation.DCC.Output);
           {$IFDEF KYLIX}
           J := Options.Add('-P');   // generate position independent code (PIC)
           Execute(Units[I]);
           Options.Delete(J);        // remove PIC option
+          Tool.WriteInstallLog(Format('Compiling %s.dpu...', [Units[i]]));
           Tool.WriteInstallLog(Installation.DCC.Output);
           {$ENDIF KYLIX}
         end;
@@ -645,7 +651,7 @@ begin
         AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames);
       {$ENDIF MSWINDOWS}
       InstallationNode.Expand(True);
-      MakeNode.Collapse(True);
+      //MakeNode.Collapse(True);
     end;
   finally
     Nodes.EndUpdate;
