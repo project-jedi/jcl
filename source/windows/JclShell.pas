@@ -18,7 +18,6 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Jeff                                                                                           }
 {   Aleksej Kudinov                                                                                }
 {   Robert Marquardt (marquardt)                                                                   }
@@ -1332,18 +1331,36 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO: Dynamic linking - move TRasDialDlgA to JclWin32}
+
+type
+  TRasDialDlgA = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
+
 function ShellRasDial(const EntryName: string): Boolean;
-var
-  Info: TRasDialDlg;
+ var
+   Info: TRasDialDlg;
+   RasDlg: HModule;
+   RasDialDlgA: TRasDialDlgA;
 begin
-  if IsWinNT then
-  begin
-    FillChar(Info, SizeOf(Info), 0);
-    Info.dwSize := SizeOf(Info);
-    Result := RtdlRasDialDlgA(nil, PChar(EntryName), nil, @Info);
-  end
-  else
-    Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
+   if IsWinNT then
+   begin
+     Result := False;
+     RasDlg := LoadLibrary(PChar('rasdlg.dll'));
+     if RasDlg <> 0 then
+     try
+       @RasDialDlgA := GetProcAddress(RasDlg, PChar('RasDialDlgA'));
+       if @RasDialDlgA <> nil then
+       begin
+         FillChar(Info, SizeOf(Info), 0);
+         Info.dwSize := SizeOf(Info);
+         Result := RasDialDlgA(nil, PChar(EntryName), nil, @Info);
+       end;   
+     finally   
+       FreeLibrary(RasDlg);   
+     end;   
+   end 
+   else
+     Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL); 
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1446,6 +1463,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/10/17 21:48:07  mthoma
+// Removed ShellRasDial contribution. Rewrite needed as soon as dynmic linking support in JclWin32 has been redesigned.
+//
 // Revision 1.14  2004/10/17 21:00:16  mthoma
 // cleaning
 //
@@ -1469,3 +1489,5 @@ end;
 //
 
 end.
+
+
