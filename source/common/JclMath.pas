@@ -427,6 +427,10 @@ type
 
 procedure DomainCheck(Err: Boolean);
 
+{ Checksums }
+
+function GetParity(Buffer: PByte; Len: Integer): Boolean;
+
 { CRC }
 
 function Crc16_P(X: PByteArray; N: Integer; Crc: Word = 0): Word;
@@ -3358,6 +3362,35 @@ begin
   FN := System.Sqr(FN);
 end;
 
+//--------------------------------------------------------------------------------------------------
+// Checksums
+//--------------------------------------------------------------------------------------------------
+
+// See also: CountBitsSet in JclLogic (bug fixing etc.) - similar algorithm!
+
+function GetParity(Buffer: PByte; Len: Integer): Boolean;
+const
+  lu : packed array[0..15] of Byte = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
+var
+  b: Byte;
+  BitsSet: Cardinal;
+  
+begin
+  BitsSet := 0;
+  while Len > 0 do
+  begin
+    b := PByte(Buffer)^;
+    // lower Nibble
+    Inc(BitsSet, lu[b and $0F]);
+    // upper Nibble
+    Inc(BitsSet, lu[b shr 4]);
+
+    Dec(Len);
+    Inc(PByte(Buffer));
+  end;
+
+  Result := (BitsSet mod 2) = 0;
+end;
 
 
 //--------------------------------------------------------------------------------------------------
@@ -4209,6 +4242,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.20  2005/02/13 09:40:24  mthoma
+// Added Parity checksum functionality.
+//
 // Revision 1.19  2004/12/11 18:50:45  obones
 // Added EnsureRange
 //
