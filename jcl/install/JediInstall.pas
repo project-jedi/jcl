@@ -26,8 +26,8 @@ unit JediInstall;
 interface
 
 uses
-  Classes,
-  JclBorlandTools;
+  SysUtils, Classes,
+  JclSysUtils, JclBorlandTools;
 
 type
   TJediInstallOption =
@@ -63,6 +63,7 @@ type
   TInstallOptionData = record
     Parent: TJediInstallOption;
     Caption: string;
+    Hint: string;
   end;
 
 const
@@ -76,6 +77,8 @@ type
 
   TInstallationEvent = procedure (Installation: TJclBorRADToolInstallation) of object;
   TInstallationProgressEvent = procedure (Percent: Cardinal) of object;
+
+  EJediInstallInitFailure = class(Exception);
 
   IJediInstallTool = interface
     ['{85408C67-92B5-42D0-84E0-D30201C0400D}']
@@ -99,17 +102,31 @@ type
   IJediInstall = interface
     ['{2C4A8C85-18BB-4A67-B37F-806C60632569}']
     function FeatureInfoFileName(FeatureID: Cardinal): string;
+    function GetHint(Option: TJediInstallOption): string;
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
+    function Uninstall: Boolean;
     function ReadmeFileName: string;
+    //function InitFailures: TJediInstallInitFailures;
     procedure SetTool(const Value: IJediInstallTool);
     procedure SetOnProgress(Value: TInstallationProgressEvent);
     function Supports(Installation: TJclBorRADToolInstallation): Boolean;
+    procedure SetOnWriteLog(Installation: TJclBorRADToolInstallation; Value: TTextHandler);
     procedure SetOnStarting(Value: TInstallationEvent);
     procedure SetOnEnding(Value: TInstallationEvent); // OnEnding called on success only
   end;
 
 function OptionToStr(const Option: TJediInstallOption): string;
+
+resourcestring
+  RsCantFindFiles   = 'Can not find installation files, check your installation.';
+  RsCloseRADTool    = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
+  RsConfirmInstall  = 'Are you sure to install all selected features?';
+  RsInstallSuccess  = 'Installation finished';
+  RsInstallFailure  = 'Installation failed.'#10'Check compiler output for details.';
+  RsNoInstall       = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
+  RsUpdateNeeded    = 'You should install latest Update Pack #%d for %s.'#13#10 +
+                      'Would you like to open Borland support web page?';
 
 implementation
 
@@ -124,6 +141,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/11/14 05:55:55  rrossmair
+// - installer refactoring (continued)
+//
 // Revision 1.8  2004/11/09 07:51:37  rrossmair
 // - installer refactoring (incomplete)
 //
