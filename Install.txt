@@ -45,6 +45,12 @@ To execute for
 1) Delphi/Win32
 - click on "Install.bat" file in the JCL root directory.
 
+  Note:	If you have Delphi 8 for Microsoft .NET installed, you probably will have 
+	to specify the make.exe to use for JCL installation; on the commandline, 
+	type (for example):
+
+	>install "C:\Program Files\Borland\Delphi5\Bin\make.exe"
+
 2) Kylix 3 for Delphi
 - open a shell window
 - cd into JCL root directory
