@@ -15,7 +15,7 @@ PROJECTS = DJCL50.bpl IdeOpenDlgFavorite50.bpl JclDebugIde50.bpl ProjectAnalyzer
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-DJCL50.bpl: DJCL50.dpk
+DJCL50.bpl: D5\DJCL50.dpk
   $(DCC)
 
 JclDebugIde50.bpl: ..\examples\debugextension\JclDebugIde50.dpk
