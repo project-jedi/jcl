@@ -20,15 +20,13 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: April 16, 2003                                                                    }
+{ Last modified: September 30, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
 unit JclResources;
 
 {$I jcl.inc}
-
-{$WEAKPACKAGEUNIT ON}
 
 interface
 
@@ -956,7 +954,7 @@ resourcestring
   RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
   RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
   RsInvalidDigit = 'Invalid base %d digit ''%s'' encountered.';
-  RsInvalidDigitValue = 'Don''t know a digit for %d';
+  RsInvalidDigitValue = 'There is no valid base %d digit for decimal value %d';
 
 //--------------------------------------------------------------------------------------------------
 // JclTD32
