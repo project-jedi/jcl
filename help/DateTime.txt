@@ -17,12 +17,13 @@ Count=1
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DosDateTimeToSystemTime
@@ -54,12 +55,13 @@ to succesfully use it you must ensure that either JclDateTime is listed
 after Windows in the uses clause or you prefix the call with the unit name
 (JclDateTime.FileTimeToDosDateTime). Failure to do so may lead to a compiler error.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DosDateTimeToSystemTime
@@ -89,12 +91,13 @@ to succesfully use it you must ensure that either JclDateTime is listed
 after Windows in the uses clause or you prefix the call with the unit name
 (JclDateTime.FileTimeToSystemTime). Failure to do so may lead to a compiler error.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DosDateTimeToSystemTime
@@ -121,12 +124,13 @@ Count=1
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=DosDateTimeToSystemTime
@@ -153,12 +157,13 @@ Count=1
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -184,12 +189,13 @@ Count=1
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -218,12 +224,13 @@ to succesfully use it you must ensure that either JclDateTime is listed
 after Windows in the uses clause or you prefix the call with the unit name
 (JclDateTime.SystemTimeToFileTime). Failure to do so may lead to a compiler error.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -248,12 +255,13 @@ Count=1
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -277,12 +285,13 @@ The TDosDateTime converted to TDateTime.
 Count=1
 1=This function performs the same operation as the procedure DateTimeToFileDate from SysUtils.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -314,12 +323,13 @@ to succesfully use it you must ensure that either JclDateTime is listed
 after Windows in the uses clause or you prefix the call with the unit name
 (JclDateTime.DosDateTimeToFileTime). Failure to do so may lead to a compiler error.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -343,12 +353,13 @@ The TDateTime converted to TDosDateTime.
 Count=1
 1=This function performs the same operation as DateTimeToFileDate from SysUtils.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -374,12 +385,13 @@ Count=1
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -412,12 +424,13 @@ to succesfully use it you must ensure that either JclDateTime is listed
 after SysUtils in the uses clause or you prefix the call with the unit name
 (JclDateTime.DateTimeToSystemTime). Failure to do so may lead to a compiler error.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=FileTimeToDateTime
@@ -442,12 +455,13 @@ The UNC based TDateTime. If the function fails it raises an EJclDateTimeError ex
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
@@ -466,12 +480,13 @@ The UNC based TFileTime. If the function fails it raises an EJclDateTimeError ex
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
@@ -490,12 +505,13 @@ The local TDateTime. If the function fails it raises an EJclDateTimeError except
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FileTimeToStr(const FileTime: TFileTime): string;
@@ -509,12 +525,13 @@ Count=1
 [Result]
 The string representation of FileTime.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DosDateTimeToStr(DateTime: Integer): string;
@@ -528,14 +545,15 @@ Count=1
 [Result]
 String representation of the DOS DateTime or an empty string on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
@@ -554,12 +572,13 @@ The number of seconds in the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Heri Bender;hbender@ergonomics.ch
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
@@ -578,12 +597,13 @@ The number of milliseconds in the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function HoursToMSecs(Hours: Integer): Integer;
@@ -598,12 +618,13 @@ Count=1
 [Result]
 The number of milliseconds corresponding with Hours.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Charlie Calvert;ccalvert@inprise.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MinutesToMSecs(Minutes: Integer): Integer;
@@ -618,12 +639,13 @@ Count=1
 [Result]
 The number of milliseconds corresponding with Minutes.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Charlie Calvert;ccalvert@inprise.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SecondsToMSecs(Seconds: Integer): Integer;
@@ -638,12 +660,13 @@ Count=1
 [Result]
 The number of milliseconds corresponding with Seconds.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 SubCat=Conversion
 Author=Charlie Calvert;ccalvert@inprise.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ISOWeekNumber(DateTime: TDateTime): Integer;
@@ -672,13 +695,14 @@ Count=3
 3=The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility.
 Other values might be useful in some instances and can be set in the source code.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Peter J. Haas;PeterJHaas@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ISOWeekToDateTime
@@ -704,13 +728,14 @@ Count=3
 3=The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility, 
 Other values might be useful in some instances and can be set in the source code.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Peter J. Haas;PeterJHaas@t-online.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ISOWeekNumber
@@ -729,13 +754,14 @@ Count=1
 [Result]
 The function returns the number of the day in that year.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;mschnell@marianne.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=DayOfTheYearToDateTime
@@ -753,13 +779,14 @@ Count=2
 [Result]
 The function returns the DateTime denoted by a year and the number of a day in that year. 
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;mschnell@marianne.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=DayOfTheYear
@@ -777,11 +804,12 @@ Count=1
 [Result]
 The date of Easter Sunday in the specified year.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Marc Convents;marc.convents@progen.be
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CenturyOfDate(const DateTime: TDateTime): Integer;
@@ -800,11 +828,12 @@ The century of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Anthony Steele;asteele@iafrica.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=CenturyBaseYear
@@ -829,11 +858,12 @@ The year "00" of the century of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=CenturyOfDate
@@ -858,11 +888,12 @@ The year of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=CenturyOfDate
@@ -887,11 +918,12 @@ The month of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=CenturyOfDate
@@ -916,11 +948,12 @@ The day of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=CenturyOfDate
@@ -946,11 +979,12 @@ Count=2
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 2=12:00:00 AM evaluates to 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MinuteOfTime(const DateTime: TDateTime): Integer;
@@ -969,11 +1003,12 @@ The minutes of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SecondOfTime(const DateTime: TDateTime): Integer;
@@ -992,11 +1027,12 @@ The seconds of the specified DateTime.
 Count=1
 1=The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsLeapYear(const DateTime: TDateTime): Boolean; 
@@ -1015,11 +1051,12 @@ Count=1
 1=The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
 2=The overloaded function avoids an erroneous result if the user thinks he calls SysUtils.IsLeapYear
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DaysInMonth(const DateTime: TDateTime): Integer;
@@ -1036,11 +1073,12 @@ The number of days in the month in which DateTime lies.
 Count=1
 1=The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Nick Hodges;nick@xapware.com
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Make4DigitYear(Year, Pivot: Integer): Integer;
@@ -1060,11 +1098,12 @@ The 4 digit year.
 Count=1
 1=If Year or Pivot is 100 they are converted to 0 first.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=MakeYear4Digit
@@ -1089,11 +1128,12 @@ The 4 digit year.
 Count=1
 1=If Year is 100 it is converted to 0 first.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Anthony Steele
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Make4DigitYear
@@ -1119,11 +1159,12 @@ we just use the solar year and a month = 1/12 of a solar year in such years.
 3=Year 0 does not exist.
 4=To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.EncodeDate.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=DecodeDate
@@ -1150,11 +1191,12 @@ we just use the solar year and a month = 1/12 of a solar year in such years.
 3=Year 0 does not exist.
 4=To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.DecodeDate.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=EncodeDate
@@ -1171,11 +1213,12 @@ Count=1
 [Result]
 The creation date date of the file specified by SR, converted to TDateTime.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LastAccessDateTimeOfFile
@@ -1193,11 +1236,12 @@ Count=1
 [Result]
 The last access date date of the file specified by SR, converted to TDateTime.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CreationDateTimeOfFile
@@ -1215,11 +1259,12 @@ Count=1
 [Result]
 The last write date date of the file specified by SR, converted to TDateTime.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CreationDateTimeOfFile
@@ -1268,11 +1313,12 @@ Count=2
 1=To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.FormatDateTime.
 2=The help for SysUtils.FormatDateTime does not state that unrecognized characters in the format string are passed unchanged. If this feature was erroneously used, JCLDateTime.FormatDateTime is not 100% compatible, as it defines additional tokens.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean;
@@ -1292,8 +1338,9 @@ Count=2
 1=A TFiletime can be seen as an Int64 or as a record of two Integers.
 2=Use DateTimeToFileTime if one argument is a TDatetime.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
