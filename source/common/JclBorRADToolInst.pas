@@ -2201,7 +2201,8 @@ var
     Item: TJclBorRADToolInstallation;
     VersionKeyName: string;
   begin
-    if RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyNames[RADToolKind], VersionNumbers) then
+    if RegKeyExists(HKEY_LOCAL_MACHINE, KeyNames[RADToolKind]) and
+      RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyNames[RADToolKind], VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
       begin
         VersionKeyName := KeyNames[RADToolKind] + PathSeparator + VersionNumbers[I];
