@@ -88,7 +88,6 @@ function TJclCounter.Stop: Float;
 begin
   QueryPerformanceCounter(FStop);
   FCounting := False;
-  // FElapsedTime := (FStop.QuadPart - FStart.QuadPart) / FFrequency.QuadPart;
   FElapsedTime := (FStop - FStart) / FFrequency;
   Result := FElapsedTime;
 end;
@@ -109,7 +108,7 @@ begin
   if Counter <> nil then
   begin
     Result := Counter.Stop;
-    FreeAndNil(TObject(Counter));
+    FreeAndNil(Counter);
   end;
 end;
 
