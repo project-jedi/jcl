@@ -21,8 +21,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Date$
-
 // TODO/Issues:
 // - Uninstall functionality lacking
 
@@ -71,8 +69,10 @@ type
   protected
     constructor Create(JclDistribution: TJclDistribution; InstallTarget: TJclBorRADToolInstallation);
     function CompileLibraryUnits(const SubDir: string; Debug: Boolean): Boolean;
+    {$IFDEF MSWINDOWS}
     procedure AddHelpToIdeTools;
     procedure AddHelpToOpenHelp;
+    {$ENDIF MSWINDOWS}
     function BplPath: string;
     function DcpPath: string;
     procedure CleanupRepository;
@@ -101,10 +101,12 @@ type
     FJclSourcePath: string;
     FClxDialogFileName: string;
     FClxDialogIconFileName: string;
+    {$IFDEF MSWINDOWS}
     FVclDialogFileName: string;
     FVclDialogSendFileName: string;
     FVclDialogIconFileName: string;
     FVclDialogSendIconFileName: string;
+    {$ENDIF MSWINDOWS}
     FJclChmHelpFileName: string;
     FJclHlpHelpFileName: string;
     FJclReadmeFileName: string;
@@ -246,12 +248,18 @@ const
     );
 
 const
+  {$IFDEF KYLIX}
+  VersionDir = '/k%d';
+  VersionDirExp = '/k%%d';
+  {$ELSE}
   VersionDir = '\%s%d';
   VersionDirExp = '\%%s%%d';
+  {$ENDIF}
 
   JclSrcDirCommon   = 'common';
   JclSrcDirVisClx   = 'visclx';
 
+  {$IFDEF MSWINDOWS}
   {$IFNDEF RTL140_UP}
   PathSep = ';';
   {$ENDIF RTL140_UP}
@@ -274,6 +282,16 @@ const
                      ';%0:s\' + JclSrcDirVisClx;
   BCBIncludePath    = '%s;%s;$(BCB)\include;$(BCB)\include\vcl';
   BCBObjectPath     = '%s;%s;$(BCB)\Lib\Obj';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  JclSrcDirOS       = 'unix';
+  JclSourceDirs: array[0..2] of string = (JclSrcDirCommon, JclSrcDirOS, JclSrcDirVisClx);
+  JclSourcePath     = '%0:s\' + JclSrcDirOS +
+                     ':%0:s\' + JclSrcDirCommon +
+                     ':%0:s\' + JclSrcDirVisClx;
+  BCBIncludePath    = '%s:%s:$(BCB)/include:$(BCB)/include/vcl';
+  BCBObjectPath     = BCBIncludePath;
+  {$ENDIF UNIX}
 
   DialogsPath       = 'examples' + PathSeparator + 'vcl' + PathSeparator + 'debugextension'
                       + PathSeparator + 'dialog' + PathSeparator;
@@ -292,9 +310,13 @@ const
 resourcestring
   RsStatusMessage   = 'Installing %s...';
   RsStatusDetailMessage = 'Installing %s for %s...';
-  RsInstallFailed   = 'Target of %s failed, see %s-install.log for details.';
+  RsInstallFailed   = 'Installation of %s failed, see %s-install.log for details.';
   RsLibDescriptor   = '%s library %sunits for %s';
+  {$IFDEF VisualCLX}
+  RsReadmeFileName  = 'Readme.html';
+  {$ELSE}
   RsReadmeFileName  = 'Readme.txt';
+  {$ENDIF}
   RsIniFileName = 'JCL-install.ini';
 
 function CreateJclInstall: IJediInstall;
@@ -351,7 +373,7 @@ begin
   begin
     Prefix := Prefixes[RADToolKind];
     if DCC.SupportsLibSuffix then
-      Result := Format(S + '%s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension])
+      Result := Format(S + '%s', [{$IFNDEF KYLIX}AnsiLowerCase(Prefix), {$ENDIF}VersionNumber, Prefix, BaseName, PackageSourceFileExtension])
     else
       Result := Format(S + '%1:d0%4:s', [AnsiLowerCase(Prefix), VersionNumber, Prefix, BaseName, PackageSourceFileExtension]);
   end;
@@ -401,6 +423,7 @@ begin
     '...done.', [DialogFileName, DialogIconFileName]));
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJclInstallation.AddHelpToIdeTools;
 var
   ToolsIndex: Integer;
@@ -423,6 +446,7 @@ procedure TJclInstallation.AddHelpToOpenHelp;
 begin
   Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName);
 end;
+{$ENDIF MSWINDOWS}
 
 function TJclInstallation.BplPath: string;
 begin
@@ -440,8 +464,10 @@ begin
     with Target.Repository do
     begin
       RemoveObjects(DialogsPath, ClxDialogFileName, BorRADToolRepositoryFormTemplate);
+      {$IFDEF MSWINDOWS}
       RemoveObjects(DialogsPath, VclDialogFileName, BorRADToolRepositoryFormTemplate);
       RemoveObjects(DialogsPath, VclDlgSndFileName, BorRADToolRepositoryFormTemplate);
+      {$ENDIF MSWINDOWS}
     end;
 end;
 
@@ -465,9 +491,23 @@ var
   end;
 
   function CompileUnits: Boolean;
+  {$IFDEF COMPILE_SEPARATE}
+  var
+    I: Integer;
   begin
-    Result := Target.DCC.Execute(CompilationOptions + StringsToStr(Units, ' '));
+    Result := True;
+    for I := 0 to Units.Count - 1 do
+    begin
+      Result := Target.DCC.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}Units[I]);
+      if not Result then
+        Break;
+    end;
   end;
+  {$ELSE}
+  begin
+    Result := Target.DCC.Execute({$IFNDEF KYLIX}CompilationOptions + {$ENDIF}StringsToStr(Units, ' '));
+  end;
+  {$ENDIF}
 
 begin
   if Debug then
@@ -477,7 +517,7 @@ begin
   Units := TStringList.Create;
   try
     Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
-    Path := Format('%ssource' + PathSeparator + '%s', [Distribution.Path, SubDir]);
+    Path := Format('%s' + PathSeparator + '%s', [Distribution.SourceDir, SubDir]);
     GetUnits(SubDir, Units);
     with Target.DCC do
     begin
@@ -506,10 +546,14 @@ begin
         Options.Add('-v');
         Options.Add('-JPHNE');
         Options.Add('--BCB');
+        {$IFDEF KYLIX}
+        //Options.Add('-LUrtl -LUvisualclx');
+        {$ELSE ~KYLIX}
         if Target.VersionNumber = 5 then
           Options.Add('-LUvcl50')
         else
-          Options.Add('-LUvcl -LUvclx');
+          Options.Add('-LUrtl');
+        {$ENDIF ~KYLIX}
         AddPathOption('N0', UnitOutputDir); // .dcu files
         AddPathOption('O', Format(BCBIncludePath, [Distribution.SourceDir, Distribution.SourcePath]));
         AddPathOption('U', Format(BCBObjectPath, [Distribution.SourceDir, Distribution.SourcePath]));
@@ -558,6 +602,12 @@ begin
           Result := Result and CopyHppFiles(Units, (Target as TJclBCBInstallation).VclIncludeDir);
           WriteLog('Copying .hpp files...');
         end;
+        {$IFDEF KYLIX}
+        Options.Add('-P');   // generate position independent code (PIC)
+        WriteLog('');
+        WriteLog('Compiling dpu files...');
+        Result := Result and CompileUnits;
+        {$ENDIF KYLIX}
       finally
         SetCurrentDir(SaveDir);
       end;
@@ -680,7 +730,7 @@ begin
   AddMakeNodes(MakeNode, True);
   if (Target is TJclBCBInstallation) then
     AddNode(MakeNode, ioJclCopyHppFiles, False, False);
-
+  {$IFDEF MSWINDOWS}
   with Distribution do
     if (HlpHelpFileName <> '') or (ChmHelpFileName <> '') then
     begin
@@ -690,15 +740,18 @@ begin
       if ChmHelpFileName <> '' then
         AddNode(TempNode, ioJclHelpChm);
     end;
+  {$ENDIF MSWINDOWS}
   TempNode := AddNode(ProductNode, ioJclExcDialog);
-
+  {$IFDEF MSWINDOWS}
   AddNode(TempNode, ioJclExcDialogVCL);
   AddNode(TempNode, ioJclExcDialogVCLSnd);
   if Target.SupportsVisualCLX then
+  {$ENDIF MSWINDOWS}
     AddNode(TempNode, ioJclExcDialogCLX);
   TempNode := AddNode(ProductNode, ioJclPackages, True);
   if (Target is TJclBCBInstallation) then
     AddNode(TempNode, ioJclCopyPackagesHppFiles, False, False);
+  {$IFDEF MSWINDOWS}
   if not (Target is TJclBCBInstallation) then
   begin
     { TODO -orrossmair :
@@ -711,6 +764,7 @@ Leave these options unchecked for Win9x/WinME until that has been examined. }
     if Target.VersionNumber <= 6 then
       AddNode(TempNode, ioJclExpertsThrNames, False, IsWinNT);
   end;
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclInstallation.InstallSelectedOptions: Boolean;
@@ -733,6 +787,7 @@ begin
 end;
 
 function TJclInstallation.InstallOption(Option: TJediInstallOption): Boolean;
+{$IFDEF MSWINDOWS}
 const
   ExpertPaths: array[ioJclExpertDebug..ioJclExpertsThrNames] of string =
     (
@@ -741,6 +796,7 @@ const
       JclIdeFavoriteDpk,
       JclIdeThrNamesDpk
     );
+{$ENDIF MSWINDOWS}
 begin
   Result := True;
   case Option of
@@ -769,6 +825,7 @@ begin
         if Target.VersionNumber >= 6 then
           Result := Result and InstallRunTimePackage('JclVcl');
       end;
+    {$IFDEF MSWINDOWS}
     // ioJclExperts:
     ioJclExpertDebug..ioJclExpertsThrNames:
       Result := InstallPackage(ExpertPaths[Option]);
@@ -782,15 +839,18 @@ begin
       with Distribution do
         AddDialogToRepository(VclDialogNameSend, FVclDialogSendFileName,
           FVclDialogSendIconFileName, BorRADToolRepositoryDesignerDfm, FVclDialogFileName);
+    {$ENDIF MSWINDOWS}
     ioJclExcDialogCLX:
       with Distribution do
         AddDialogToRepository(ClxDialogName, FClxDialogFileName, FClxDialogIconFileName,
           BorRADToolRepositoryDesignerXfm);
+    {$IFDEF MSWINDOWS}
     // ioJclHelp:
     ioJclHelpHlp:
       AddHelpToOpenHelp;
     ioJclHelpChm:
       AddHelpToIdeTools;
+    {$ENDIF MSWINDOWS}
   end;
   Progress(ProgressWeight(Option));
 end;
@@ -816,7 +876,12 @@ end;
 
 function TJclInstallation.InstallPackage(const Name: string): Boolean;
 const
+  {$IFDEF MSWINDOWS}
   Bcb2MakTemplate = '\BCB.bmk';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF KYLIX}
+  Bcb2MakTemplate = '/bcb.gmk';
+  {$ENDIF KYLIX}
 var
   PackageFileName: string;
 begin
@@ -835,11 +900,17 @@ begin
     begin
       Bpr2Mak.Options.Clear;
       Bpr2Mak.Options.Add('-t..' + Bcb2MakTemplate);
+      {$IFDEF KYLIX}
+      SetEnvironmentVar('OBJDIR', LibObjDir);
+      SetEnvironmentVar('BPILIBDIR', DcpPath);
+      SetEnvironmentVar('BPLDIR', BplPath);
+      {$ELSE}
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', DcpPath);
       Make.AddPathOption('DBPLDIR=', BplPath);
       if OptionSelected(ioJclCopyPackagesHppFiles) then
         Make.AddPathOption('DHPPDIR=', (Target as TJclBCBInstallation).VclIncludeDir);
+      {$ENDIF}
       Result := Target.InstallPackage(PackageFileName, BplPath,
         DcpPath);
     end;
@@ -860,8 +931,12 @@ end;
 
 function TJclInstallation.MakePath(const FormatStr: string): string;
 begin
+  {$IFDEF KYLIX}
+  Result := Format(FormatStr, [Target.VersionNumber]);
+  {$ELSE ~KYLIX}
   with Target do
     Result := Format(FormatStr, [Prefixes[RADToolKind], VersionNumber]);
+  {$ENDIF ~KYLIX}
 end;
 
 function TJclInstallation.MakeUnits(Debug: Boolean): Boolean;
@@ -871,8 +946,10 @@ begin
   Result := True;
   for I := Low(JclSourceDirs) to High(JclSourceDirs) do
   begin
+    {$IFDEF MSWINDOWS}
     if (JclSourceDirs[I] = 'visclx') and not OptionSelected(ioJclMakeReleaseVClx) then
       Continue;
+    {$ENDIF MSWINDOWS}
     Result := Result and CompileLibraryUnits(JclSourceDirs[I], Debug);
   end;
 end;
@@ -1014,7 +1091,7 @@ function TJclDistribution.InitInformation(const ApplicationFileName: string): Bo
 var
   I: Integer;
 begin
-  FJclPath := PathAddSeparator(PathCanonicalize(PathExtractFileDirFixed(ApplicationFileName) + '..'));
+  FJclPath := PathAddSeparator(ExpandFileName(PathExtractFileDirFixed(ApplicationFileName) + '..'));
   FLibDirMask := Format('%slib' + VersionDirExp, [FJclPath]);
   FLibDebugDirMask := FLibDirMask + PathSeparator + 'debug';
   FLibObjDirMask := FLibDirMask + PathSeparator + 'obj';
@@ -1025,18 +1102,26 @@ begin
     FJclSourcePath := FJclSourcePath +
       Format('%s' + PathSeparator + '%s' + PathSep, [FJclSourceDir, JclSourceDirs[I]]);
 
+  {$IFDEF MSWINDOWS}
   FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  FClxDialogFileName := FJclPath + DialogsPath + ClxDialogFileName;
+  {$ENDIF UNIX}
   FClxDialogIconFileName := ChangeFileExt(FClxDialogFileName, '.ico');
+  {$IFDEF MSWINDOWS}
   FVclDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDialogFileName);
   FVclDialogSendFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDlgSndFileName);
   FVclDialogIconFileName := ChangeFileExt(FVclDialogFileName, '.ico');
   FVclDialogSendIconFileName := ChangeFileExt(FVclDialogSendFileName, '.ico');
+  {$ENDIF MSWINDOWS}
   FJclChmHelpFileName := FJclPath + JclChmHelpFile;
   FJclHlpHelpFileName := FJclPath + JclHlpHelpFile;
   if not FileExists(FJclChmHelpFileName) then
     FJclChmHelpFileName := '';
   if not FileExists(FJclHlpHelpFileName) then
     FJclHlpHelpFileName := '';
+  {$IFDEF MSWINDOWS}
   // Reset ReadOnly flag for dialog forms
   FileSetAttr(FClxDialogFileName, faArchive);
   FileSetAttr(ChangeFileExt(FClxDialogFileName, '.xfm'), faArchive);
@@ -1044,9 +1129,11 @@ begin
   FileSetAttr(ChangeFileExt(FVclDialogFileName, '.dfm'), faArchive);
   FileSetAttr(FVclDialogSendFileName, faArchive);
   FileSetAttr(ChangeFileExt(FVclDialogSendFileName, '.dfm'), faArchive);
+  {$ENDIF MSWINDOWS}
   Result := FileExists(FClxDialogFileName) and FileExists(FClxDialogIconFileName)
+  {$IFDEF MSWINDOWS}
     and FileExists(FVclDialogFileName)  and FileExists(FVclDialogIconFileName)
-  ;
+  {$ENDIF MSWINDOWS};
   FJclReadmeFileName := DocFileName(RsReadmeFileName);
   if FileExists(FJclReadmeFileName) then
     Tool.Readme := FJclReadmeFileName;
@@ -1128,15 +1215,22 @@ end;
 
 function TJclDistribution.Supports(Target: TJclBorRADToolInstallation): Boolean;
 begin
+  {$IFDEF KYLIX}
+  Result := Target.VersionNumber = 3;
+  {$ELSE ~KYLIX}
   if Target.RADToolKind = brCppBuilder then
     Result := Target.VersionNumber in [5..6]
   else
     Result := Target.VersionNumber in [5..7];
+  {$ENDIF ~KYLIX}
 end;
 
 // History:
 
 // $Log$
+// Revision 1.37  2004/11/10 05:18:11  rrossmair
+// - fixed for Kylix
+//
 // Revision 1.36  2004/11/09 07:51:37  rrossmair
 // - installer refactoring (incomplete)
 //
