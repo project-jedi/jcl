@@ -320,7 +320,7 @@ type
   end;
   {$ENDIF COMPILER6_UP}
 
-  EJclRTTI = class(EJclError);
+  EJclRTTIError = class(EJclError);
 
 function JclTypeInfo(ATypeInfo: PTypeInfo): IJclTypeInfo;
 
@@ -353,10 +353,6 @@ procedure JclIntToSet(TypeInfo: PTypeInfo; var SetVar; const Value: Integer);
 function JclSetToInt(TypeInfo: PTypeInfo; const SetVar): Integer;
 function JclGenerateSetType(BaseType: PTypeInfo; const TypeName: ShortString): PTypeInfo;
 
-// GUID
-function JclGUIDToString(const GUID: TGUID): string;
-function JclStringToGUID(const S: string): TGUID;
-
 // User generated type info managment
 procedure RemoveTypeInfo(TypeInfo: PTypeInfo);
 
@@ -371,7 +367,7 @@ uses
   RtlConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysConst,
-  JclLogic, JclResources, JclStrings;     
+  JclLogic, JclResources, JclStrings, JclSysUtils;     
 
 //=== { TJclInfoWriter } =====================================================
 
@@ -899,9 +895,9 @@ begin
           FirstOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(FirstIdent);
           LastOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(LastIdent);
           if FirstOrd = -1 then
-            raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
+            raise EJclRTTIError.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
           if LastOrd = -1 then
-            raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
+            raise EJclRTTIError.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
         end
         else
         begin
@@ -2142,7 +2138,7 @@ begin
   BaseInfo := JclTypeInfo(BaseType);
   BaseKind := BaseInfo.TypeKind;
   if BaseInfo.TypeKind <> tkEnumeration then
-    raise EJclRTTI.CreateResRecFmt(@RsRTTIInvalidBaseType, [BaseInfo.Name,
+    raise EJclRTTIError.CreateResRecFmt(@RsRTTIInvalidBaseType, [BaseInfo.Name,
       JclEnumValueToIdent(System.TypeInfo(TTypeKind), BaseKind)]);
   with BaseInfo as IJclEnumerationTypeInfo do
   begin
@@ -2360,7 +2356,7 @@ begin
   EnumMax := GetTypeData(CompType).MaxValue;
   ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
   if (EnumMax - EnumMin) > 32 then
-    raise EJclRTTI.CreateResRecFmt(@RsRTTIValueOutOfRange,
+    raise EJclRTTIError.CreateResRecFmt(@RsRTTIValueOutOfRange,
       [IntToStr(EnumMax - EnumMin) + ' ' + LoadResString(@RsRTTIBits)]);
   BitShift := EnumMin mod 8;
   Move(SetVar, TmpInt64, ResBytes + 1);
@@ -2412,33 +2408,6 @@ begin
     raise;
   end;
   ReferenceType(BaseType);
-end;
-
-//=== GUID ===================================================================
-
-function JclGUIDToString(const GUID: TGUID): string;
-begin
-  Result := Format('{%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x}',
-    [GUID.D1, GUID.D2, GUID.D3, GUID.D4[0], GUID.D4[1], GUID.D4[2],
-     GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
-end;
-
-function JclStringToGUID(const S: string): TGUID;
-begin
-  if (Length(S) <> 38) or (S[1] <> '{') or (S[10] <> '-') or (S[15] <> '-') or
-      (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
-    raise EJclRTTI.CreateResRecFmt(@RsRTTIInvalidGUIDString, [S]);
-  Result.D1 := StrToInt('$' + Copy(S, 2, 8));
-  Result.D2 := StrToInt('$' + Copy(S, 11, 4));
-  Result.D3 := StrToInt('$' + Copy(S, 16, 4));
-  Result.D4[0] := StrToInt('$' + Copy(S, 21, 2));
-  Result.D4[1] := StrToInt('$' + Copy(S, 23, 2));
-  Result.D4[2] := StrToInt('$' + Copy(S, 26, 2));
-  Result.D4[3] := StrToInt('$' + Copy(S, 28, 2));
-  Result.D4[4] := StrToInt('$' + Copy(S, 30, 2));
-  Result.D4[5] := StrToInt('$' + Copy(S, 32, 2));
-  Result.D4[6] := StrToInt('$' + Copy(S, 34, 2));
-  Result.D4[7] := StrToInt('$' + Copy(S, 36, 2));
 end;
 
 //=== Is/As hooking ==========================================================
@@ -2537,6 +2506,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.20  2005/03/06 18:15:02  marquardt
+// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
+//
 // Revision 1.19  2005/03/01 00:10:26  ahuser
 // Delphi 2005 inline support
 //

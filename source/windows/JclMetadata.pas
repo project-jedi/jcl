@@ -1621,15 +1621,10 @@ type
 implementation
 
 uses
-  {$IFNDEF RTL140_UP}
-  ComObj,  // need for GuidToString
-  {$ENDIF ~RTL140_UP}
   Math,
   JclCIL, JclResources, JclStrings;
 
 const
-  CrLf = #13#10;
-
   MAX_CLASS_NAME = 1024;
   MAX_PATH_NAME  = 260;
 
@@ -2230,7 +2225,7 @@ end;
 
 function TJclClrTableModuleRow.DumpIL: string;
 begin
-  Result := '.module ' + Name + ' // MVID:' + GuidToString(Mvid) + CrLf;
+  Result := '.module ' + Name + ' // MVID:' + JclGUIDToString(Mvid) + AnsiLineBreak;
 end;
 
 function TJclClrTableModule.GetRow(const Idx: Integer): TJclClrTableModuleRow;
@@ -2253,7 +2248,7 @@ end;
 
 function TJclClrTableModuleRefRow.DumpIL: string;
 begin
-  Result := '.module extern ' + Name + CrLf;
+  Result := '.module extern ' + Name + AnsiLineBreak;
 end;
 
 function TJclClrTableModuleRefRow.GetName: WideString;
@@ -3809,25 +3804,25 @@ begin
 
   if Assigned(MethodBody) then
   begin
-    Result := Result + CrLf + '{' + CrLf +
-      '.maxstack ' + IntToStr(MethodBody.MaxStack) + CrLf;
+    Result := Result + AnsiLineBreak + '{' + AnsiLineBreak +
+      '.maxstack ' + IntToStr(MethodBody.MaxStack) + AnsiLineBreak;
 
     if MethodBody.LocalVarSignToken <> 0 then
     begin
-      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + CrLf;
+      Result := Result + '.locals /* ' + IntToHex(MethodBody.LocalVarSignToken, 8) + ' */ init(' + AnsiLineBreak;
       for I := 0 to MethodBody.LocalVarSign.LocalVarCount-1 do
       begin
         Result := Format(Result+'  %s V_%d', [LocalVarToString(MethodBody.LocalVarSign.LocalVars[I]), I]);
         if I = MethodBody.LocalVarSign.LocalVarCount-1 then
-          Result := Result + ')' + CrLf
+          Result := Result + ')' + AnsiLineBreak
         else
-          Result := Result + ',' + CrLf;
+          Result := Result + ',' + AnsiLineBreak;
       end;
     end;
 
     with TJclClrILGenerator.Create(MethodBody) do
       try
-        Result := Result + CrLf + DumpIL(InstructionDumpILAllOption);
+        Result := Result + AnsiLineBreak + DumpIL(InstructionDumpILAllOption);
       finally
         Free;
       end;
@@ -4816,6 +4811,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/06 18:15:03  marquardt
+// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
+//
 // Revision 1.12  2005/02/25 07:20:15  marquardt
 // add section lines
 //
