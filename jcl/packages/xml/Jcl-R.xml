@@ -7,8 +7,6 @@
   <C6Libs/>
   <Requires>
     <Package Name="rtl" Targets="C6,D6,D7,K3" Condition=""/>
-    <Package Name="bcbie" Targets="C6" Condition=""/>
-    <Package Name="bcbie50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5,D5" Condition=""/>
   </Requires>
