@@ -420,7 +420,8 @@ end;
 
 procedure TSafeGuard.FreeItem;
 begin
-  if FItem <> nil then FreeMem(FItem);
+  if FItem <> nil then
+    FreeMem(FItem);
   FItem := nil;
 end;
 
@@ -507,7 +508,8 @@ end;
 
 function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
 begin
-  if SafeGuard = nil then SafeGuard := TMultiSafeGuard.Create;
+  if SafeGuard = nil then
+    SafeGuard := TMultiSafeGuard.Create;
   Result := SafeGuard.AddItem(Mem);
 end;
 
@@ -525,7 +527,8 @@ end;
 
 function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 begin
-  if SafeGuard = nil then SafeGuard := TObjMultiSafeGuard.Create;
+  if SafeGuard = nil then
+    SafeGuard := TObjMultiSafeGuard.Create;
   Result := SafeGuard.AddItem(Obj);
 end;
 
