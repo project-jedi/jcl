@@ -21,7 +21,7 @@
 { Unit which provides a central place for all resource strings used in the JCL }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: April 14, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -226,6 +226,8 @@ resourcestring
 resourcestring
   RsMapiError         = 'MAPI Error: (%d) "%s"';
   RsMapiMissingExport = 'Function "%s" is not exported by client';
+  RsMapiInvalidIndex  = 'Client index is out ot range';
+  RsMapiMailNoClient  = 'No Simple MAPI client installed, cannot send the message';
 
   RsMapiErrUSER_ABORT               = 'User abort';
   RsMapiErrFAILURE                  = 'General MAPI failure';
@@ -252,8 +254,6 @@ resourcestring
   RsMapiErrINVALID_EDITFIELDS       = 'Invalid edit fields';
   RsMapiErrINVALID_RECIPS           = 'Invalid recipients';
   RsMapiErrNOT_SUPPORTED            = 'Not supported';
-
-  RsMapiMailNoClient = 'No Simple MAPI client installed, cannot send the message';
 
   RsMapiMailORIG        = 'From';
   RsMapiMailTO          = 'To';
