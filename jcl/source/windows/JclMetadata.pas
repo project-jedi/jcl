@@ -45,7 +45,7 @@ uses
   {$IFDEF RTL130_UP}
   Contnrs,
   {$ENDIF RTL130_UP}
-  JclBase, JclSysUtils, JclFileUtils, JclPeImage, JclClr;
+  JclBase, JclClr, JclFileUtils, JclPeImage, JclSysUtils;
 
 type
   TJclClrElementType = (etEnd, etVoid, etBoolean, etChar,
@@ -983,19 +983,15 @@ type
     function IsModifierType(const AElementType: TJclClrElementType): Boolean;
     function IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
 
-    function Inc(var pData: PByteArray; Step: Integer = 1): PByte;
+    function Inc(var DataPtr: PByteArray; Step: Integer = 1): PByte;
 
-    function UncompressedDataSize(pData: PByteArray): Integer;
-    function UncompressData(pData: PByteArray; var Value: DWord): Integer;
-    function UncompressToken(pData: PByteArray; var Token: TJclClrToken): Integer;
-
-    function UncompressCallingConv(pData: PByteArray): Byte;
-
-    function UncompressSignedInt(pData: PByteArray; var Value: Integer): Integer;
-
-    function UncompressElementType(pData: PByteArray): TJclClrElementType;
-
-    function UncompressTypeSignature(pData: PByteArray): string;
+    function UncompressedDataSize(DataPtr: PByteArray): Integer;
+    function UncompressData(DataPtr: PByteArray; var Value: DWord): Integer;
+    function UncompressToken(DataPtr: PByteArray; var Token: TJclClrToken): Integer;
+    function UncompressCallingConv(DataPtr: PByteArray): Byte;
+    function UncompressSignedInt(DataPtr: PByteArray; var Value: Integer): Integer;
+    function UncompressElementType(DataPtr: PByteArray): TJclClrElementType;
+    function UncompressTypeSignature(DataPtr: PByteArray): string;
   public
     constructor Create(const ABlob: TJclClrBlobRecord);
 
@@ -1189,9 +1185,7 @@ type
     function GetMethodImplFlags: TJclClrMethodImplFlags;
   protected
     constructor Create(const ATable: TJclClrTable); override;
-
     procedure Update; override;
-
     procedure SetParentToken(const ARow: TJclClrTableTypeDefRow);
   public
     function DumpIL: string; override;
@@ -1419,7 +1413,6 @@ type
     property PropertyCount: Integer read GetPropertyCount;
   end;
 
-
   TJclClrTablePropertyMap = class(TJclClrTable)
   private
     function GetRow(const Idx: Integer): TJclClrTablePropertyMapRow;
@@ -1632,7 +1625,7 @@ uses
   ComObj,  // need for GuidToString
   {$ENDIF ~RTL140_UP}
   Math,
-  JclStrings, JclCIL, JclResources;
+  JclCIL, JclResources, JclStrings;
 
 const
   CrLf = #13#10;
@@ -2050,12 +2043,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressedDataSize(pData: PByteArray): Integer;
+function TJclClrSignature.UncompressedDataSize(DataPtr: PByteArray): Integer;
 begin
-  if (pData[0] and $80) = 0 then
+  if (DataPtr[0] and $80) = 0 then
     Result := 1
   else
-  if (pData[0] and $C0) = $80 then
+  if (DataPtr[0] and $C0) = $80 then
     Result := 2
   else
     Result := 4;
@@ -2063,54 +2056,54 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressData(pData: PByteArray; var Value: DWord): Integer;
+function TJclClrSignature.UncompressData(DataPtr: PByteArray; var Value: DWord): Integer;
 begin
-  if (pData[0] and $80) = 0 then // 0??? ????
+  if (DataPtr[0] and $80) = 0 then // 0??? ????
   begin
-    Value  := pData[0];
+    Value  := DataPtr[0];
     Result := 1;
   end
   else
-  if (pData[0] and $C0) = $80 then // 10?? ????
+  if (DataPtr[0] and $C0) = $80 then // 10?? ????
   begin
-    Value  := (pData[0] and $3F) shl 8 + pData[1];
+    Value  := (DataPtr[0] and $3F) shl 8 + DataPtr[1];
     Result := 2;
   end
   else
-  if (pData[0] and $E0) = $C0 then // 110? ????
+  if (DataPtr[0] and $E0) = $C0 then // 110? ????
   begin
-    Value  := (pData[0] and $1F) shl 24 + pData[1] shl 16 + pData[2] shl 8 + pData[3];
+    Value  := (DataPtr[0] and $1F) shl 24 + DataPtr[1] shl 16 + DataPtr[2] shl 8 + DataPtr[3];
     Result := 4;
   end
   else
     raise EJclMetadataError.CreateResFmt(@RsInvalidSignatureData,
-      [pData[0], pData[1], pData[2], pData[3]]);
+      [DataPtr[0], DataPtr[1], DataPtr[2], DataPtr[3]]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressToken(pData: PByteArray; var Token: TJclClrToken): Integer;
+function TJclClrSignature.UncompressToken(DataPtr: PByteArray; var Token: TJclClrToken): Integer;
 const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
-  Result := UncompressData(pData, Token);
+  Result := UncompressData(DataPtr, Token);
   Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressCallingConv(pData: PByteArray): Byte;
+function TJclClrSignature.UncompressCallingConv(DataPtr: PByteArray): Byte;
 begin
-  Result := pData[0];
+  Result := DataPtr[0];
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressSignedInt(pData: PByteArray; var Value: Integer): Integer;
+function TJclClrSignature.UncompressSignedInt(DataPtr: PByteArray; var Value: Integer): Integer;
 var
   Data: DWord;
 begin
-  Result := UncompressData(pData, Data);
+  Result := UncompressData(DataPtr, Data);
 
   if (Data and 1) <> 0 then
   begin
@@ -2127,10 +2120,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressElementType(pData: PByteArray): TJclClrElementType;
+function TJclClrSignature.UncompressElementType(DataPtr: PByteArray): TJclClrElementType;
 begin
   for Result := Low(TJclClrElementType) to High(TJclClrElementType) do
-    if ClrElementTypeMapping[Result] = (pData[0] and $7F) then
+    if ClrElementTypeMapping[Result] = (DataPtr[0] and $7F) then
       Break;
 end;
 
@@ -2138,18 +2131,18 @@ end;
 
 function TJclClrSignature.UncompressFieldSignature: string;
 var
-  pData: PByteArray;
+  DataPtr: PByteArray;
 begin
-  pData := Blob.Memory;
+  DataPtr := Blob.Memory;
 
-  Assert(pData[0] = IMAGE_CEE_CS_CALLCONV_FIELD);
-  Inc(pData);
-  Result := UncompressTypeSignature(pData);
+  Assert(DataPtr[0] = IMAGE_CEE_CS_CALLCONV_FIELD);
+  Inc(DataPtr);
+  Result := UncompressTypeSignature(DataPtr);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressTypeSignature(pData: PByteArray): string;
+function TJclClrSignature.UncompressTypeSignature(DataPtr: PByteArray): string;
 const
   SimpleTypeName: array [etVoid..etString] of PChar =
    ('void', 'bool', 'char',
@@ -2162,7 +2155,7 @@ var
   ElementType: TJclClrElementType;
   Token: TJclClrToken;
 begin
-  ElementType := UncompressElementType(pData);
+  ElementType := UncompressElementType(DataPtr);
 
   case ElementType of
     etVoid, etBoolean, etChar, etI1, etU1, etI2, etU2, etI4, etU4, etI8, etU8, etR4, etR8, etString:
@@ -2177,7 +2170,7 @@ begin
       Result := 'Typed By Ref';
     etPtr, etByRef, etValueType, etClass:
       begin
-        UncompressToken(pData, Token);
+        UncompressToken(DataPtr, Token);
         Result := Format('%s /*%.8x*/', [TypedTypeName[ElementType], Token]);
       end;
     etSzArray:
@@ -2196,10 +2189,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.Inc(var pData: PByteArray; Step: Integer): PByte;
+function TJclClrSignature.Inc(var DataPtr: PByteArray; Step: Integer): PByte;
 begin
-  Result := PByte(Integer(pData) + Step);
-  pData  := PByteArray(Result);
+  Result := PByte(Integer(DataPtr) + Step);
+  DataPtr := PByteArray(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2467,32 +2460,32 @@ end;
 function TJclClrTableAssemblyRow.DumpIL: string;
 var
   I: Integer;
-  tblCustomAttribute: TJclClrTableCustomAttribute;
+  TblCustomAttribute: TJclClrTableCustomAttribute;
 begin
   with TStringList.Create do
-  try
-    Add(Format('.assembly /*%.8x*/ %s', [Token, Name]));
-    Add('{');
+    try
+      Add(Format('.assembly /*%.8x*/ %s', [Token, Name]));
+      Add('{');
 
-    if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(tblCustomAttribute)) then
-    for I := 0 to tblCustomAttribute.RowCount-1 do
-      if tblCustomAttribute.Rows[I].Parent = Self then
-        Add('  ' + tblCustomAttribute.Rows[I].DumpIL);
+      if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(TblCustomAttribute)) then
+        for I := 0 to TblCustomAttribute.RowCount-1 do
+          if TblCustomAttribute.Rows[I].Parent = Self then
+            Add('  ' + TblCustomAttribute.Rows[I].DumpIL);
 
-    if FPublicKeyOffset <> 0 then
-      Add(PublicKey.Dump('  .publickey = '));
-      
-    Add('  .hash algorithm 0x' + IntToHex(HashAlgId, 8));
+      if FPublicKeyOffset <> 0 then
+        Add(PublicKey.Dump('  .publickey = '));
+        
+      Add('  .hash algorithm 0x' + IntToHex(HashAlgId, 8));
 
-    if FCultureOffset <> 0 then
-      Add('  .culture "' + Culture + '"');
+      if FCultureOffset <> 0 then
+        Add('  .culture "' + Culture + '"');
 
-    Add('  .ver ' + Version);
-    Add('}');
-    Result := Text;
-  finally
-    Free;
-  end;
+      Add('  .ver ' + Version);
+      Add('}');
+      Result := Text;
+    finally
+      Free;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2593,53 +2586,52 @@ end;
 function TJclClrTableAssemblyRefRow.DumpIL: string;
 var
   I: Integer;
-  tblCustomAttribute: TJclClrTableCustomAttribute;
+  TblCustomAttribute: TJclClrTableCustomAttribute;
 
   function DumpPublicKey: string;
   var
     I: Integer;
-    pch: PChar;
+    Pch: PChar;
     HexStr, AsciiStr: string;
   begin
-    pch := PChar(PublicKeyOrToken.Memory);
+    Pch := PChar(PublicKeyOrToken.Memory);
     for I := 0 to PublicKeyOrToken.Size do
     begin
-      HexStr := HexStr + IntToHex(Integer(pch[I]), 2) + ' ';
-      if CharIsAlphaNum(pch[I]) then
-        AsciiStr := AsciiStr + pch[I]
+      HexStr := HexStr + IntToHex(Integer(Pch[I]), 2) + ' ';
+      if CharIsAlphaNum(Pch[I]) then
+        AsciiStr := AsciiStr + Pch[I]
       else
         AsciiStr := AsciiStr + '.';
     end;
-
     Result := '(' + HexStr + ')                    // ' + AsciiStr;
   end;
 
 begin
   with TStringList.Create do
-  try
-    Add(Format('.assembly extern /*%.8x*/ %s', [Token, Name]));
-    Add('{');
+    try
+      Add(Format('.assembly extern /*%.8x*/ %s', [Token, Name]));
+      Add('{');
 
-    if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(tblCustomAttribute)) then
-    for I := 0 to tblCustomAttribute.RowCount-1 do
-      if tblCustomAttribute.Rows[I].Parent = Self then
-        Add('  ' + tblCustomAttribute.Rows[I].DumpIL);
+      if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(TblCustomAttribute)) then
+        for I := 0 to TblCustomAttribute.RowCount-1 do
+          if TblCustomAttribute.Rows[I].Parent = Self then
+            Add('  ' + TblCustomAttribute.Rows[I].DumpIL);
 
-    if Assigned(HashValue) then
-      Add(PublicKeyOrToken.Dump('  .hash = '));
+      if Assigned(HashValue) then
+        Add(PublicKeyOrToken.Dump('  .hash = '));
 
-    if Assigned(PublicKeyOrToken) then
-      Add(PublicKeyOrToken.Dump('  .publickeytoken = '));
+      if Assigned(PublicKeyOrToken) then
+        Add(PublicKeyOrToken.Dump('  .publickeytoken = '));
 
-    if FCultureOffset <> 0 then
-      Add('  .culture "' + Culture + '"');
-      
-    Add('  .ver ' + Version);
-    Add('}');
-    Result := Text;
-  finally
-    Free;
-  end;
+      if FCultureOffset <> 0 then
+        Add('  .culture "' + Culture + '"');
+
+      Add('  .ver ' + Version);
+      Add('}');
+      Result := Text;
+    finally
+      Free;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2868,7 +2860,7 @@ end;
 function TJclClrTableConstantRow.GetParent: TJclClrTableRow;
 const
   HasConstantMapping: array [0..2] of TJclClrTableKind =
-  (ttFieldDef, ttParamDef, ttPropertyDef);
+    (ttFieldDef, ttParamDef, ttPropertyDef);
 begin
   Assert(FParentIdx and 3 <> 3);
   Result := Table.Stream.Tables[HasConstantMapping[FParentIdx and 3]].Rows[FParentIdx shr 2 - 1];
@@ -3157,7 +3149,8 @@ end;
 
 function TJclClrTableFieldDefRow.DumpIL: string;
 const
-  StaticName: array [Boolean] of PChar = ('', 'static ');
+  StaticName: array [Boolean] of PChar =
+    ('', 'static ');
   VisibilityName: array [TJclClrTableFieldDefVisibility] of PChar =
     ('', 'private', 'famandassem', 'assembly', 'family', 'famandassem', 'public');
 var
@@ -3178,11 +3171,11 @@ var
   function DumpSignature: string;
   begin
     with TJclClrSignature.Create(Signature) do
-    try
-      Result := UncompressFieldSignature;
-    finally
-      Free;
-    end;
+      try
+        Result := UncompressFieldSignature;
+      finally
+        Free;
+      end;
   end;
 
 begin
@@ -3193,12 +3186,12 @@ begin
   if ffHasDefault in Flags then
   begin
     with TJclClrTableConstant(Table.Stream.Tables[ttConstant]) do
-    for I := 0 to RowCount-1 do
-      if Rows[I].Parent = Self then
-      begin
-        Result := Result + Rows[I].DumpIL;
-        Break;
-      end;
+      for I := 0 to RowCount-1 do
+        if Rows[I].Parent = Self then
+        begin
+          Result := Result + Rows[I].DumpIL;
+          Break;
+        end;
   end
   else
   if ffHasFieldRVA in Flags then
@@ -3491,8 +3484,8 @@ begin
     Result := TJclClrTableTypeRefRow(ImplInterface).DumpIL
   else
   if ImplInterface is TJclClrTableTypeDefRow then
-  with TJclClrTableTypeDefRow(ImplInterface) do
-    Result := Format('%s.%s/*%.8x*/', [Namespace, Name, Token])
+    with TJclClrTableTypeDefRow(ImplInterface) do
+      Result := Format('%s.%s/*%.8x*/', [Namespace, Name, Token])
   else
     Result := 'Unknown';
 end;
@@ -3547,36 +3540,30 @@ const
     ('public', 'private');
 var
   I: Integer;
-  tblCustomAttribute: TJclClrTableCustomAttribute;
+  TblCustomAttribute: TJclClrTableCustomAttribute;
 begin
   with TStringList.Create do
-  try
-    Add(Format('.mresource /*%.8x*/ %s %s', [Token, VisibilityName[Visibility], Name]));
-    Add('(');
+    try
+      Add(Format('.mresource /*%.8x*/ %s %s', [Token, VisibilityName[Visibility], Name]));
+      Add('(');
 
-    if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(tblCustomAttribute)) then
-    for I := 0 to tblCustomAttribute.RowCount-1 do
-      if tblCustomAttribute.Rows[I].Parent = Self then
-        Add('  ' + tblCustomAttribute.Rows[I].DumpIL);
+      if Table.Stream.FindTable(ttCustomAttribute, TJclClrTable(TblCustomAttribute)) then
+        for I := 0 to TblCustomAttribute.RowCount-1 do
+          if TblCustomAttribute.Rows[I].Parent = Self then
+            Add('  ' + TblCustomAttribute.Rows[I].DumpIL);
 
-    if FImplementationIdx <> 0 then
-    begin
-      if ImplementationRow is TJclClrTableAssemblyRefRow then
-      begin
-        Add('  .assembly extern ' +
-          TJclClrTableAssemblyRefRow(ImplementationRow).Name);
-      end
-      else
-      begin
-        Add(Format('  .file %s at %d',
-          [TJclClrTableFileRow(ImplementationRow).Name, Offset]));
-      end;
+      if FImplementationIdx <> 0 then
+        if ImplementationRow is TJclClrTableAssemblyRefRow then
+          Add('  .assembly extern ' +
+            TJclClrTableAssemblyRefRow(ImplementationRow).Name)
+        else
+          Add(Format('  .file %s at %d',
+            [TJclClrTableFileRow(ImplementationRow).Name, Offset]));
+      Add(')');
+      Result := Text;
+    finally
+      Free;
     end;
-    Add(')');
-    Result := Text;
-  finally
-    Free;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4082,23 +4069,23 @@ var
   Idx, MaxParamListIdx: DWORD;
 begin
   with Table as TJclClrTableMethodDef do
-  if not Assigned(FParams) and (ParamListIdx <> 0) and
-     Stream.FindTable(ttParamDef, TJclClrTable(ParamTable)) then
-  begin
-    if RowCount > (Index+1) then
-      MaxParamListIdx := Rows[Index+1].ParamListIdx-1
-    else
-      MaxParamListIdx := ParamTable.RowCount;
-    if (ParamListIdx-1) < MaxParamListIdx then
+    if not Assigned(FParams) and (ParamListIdx <> 0) and
+      Stream.FindTable(ttParamDef, TJclClrTable(ParamTable)) then
     begin
-      FParams := TList.Create;
-      for Idx := ParamListIdx-1 to MaxParamListIdx-1 do
+      if RowCount > (Index+1) then
+        MaxParamListIdx := Rows[Index+1].ParamListIdx-1
+      else
+        MaxParamListIdx := ParamTable.RowCount;
+      if (ParamListIdx-1) < MaxParamListIdx then
       begin
-        FParams.Add(ParamTable.Rows[Idx]);
-        ParamTable.Rows[Idx].SetMethod(Self);
+        FParams := TList.Create;
+        for Idx := ParamListIdx-1 to MaxParamListIdx-1 do
+        begin
+          FParams.Add(ParamTable.Rows[Idx]);
+          ParamTable.Rows[Idx].SetMethod(Self);
+        end;
       end;
     end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4132,6 +4119,16 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.DumpIL: string;
+const
+  MemberAccessNames: array [TJclClrMemberAccess] of PChar =
+    ('compilercontrolled', 'private', 'famandassem',
+     'assembly', 'family', 'famorassem', 'public');
+  CodeTypeNames: array [TJclClrMethodCodeType] of PChar =
+    ('cil', 'native', 'optil', 'runtime');
+  ManagedNames: array [Boolean] of PChar =
+    ('unmanaged', 'managed');
+var
+  I: Integer;
 
   function LocalVarToString(LocalVar: TJclClrLocalVar): string;
   var
@@ -4192,60 +4189,51 @@ function TJclClrTableMethodDefRow.DumpIL: string;
     Row: TJclClrTableRow;
   begin
     case Param.ElementType of
-    etVoid, etBoolean, etChar,
-    etI1, etU1, etI2, etU2, etI4, etU4,
-    etI8, etU8, etR4, etR8, etString:
-      Result := BuildInTypeNames[Param.ElementType];
-    etI:
-      Result := 'System.IntPtr';
-    etU:
-      Result := 'System.UIntPtr';
-    etObject:
-      Result := 'object';
-    etClass:
-      begin
-        Row := Table.Stream.Metadata.Tokens[Param.Token];
-        if Row is TJclClrTableTypeDefRow then
-          Result := TJclClrTableTypeDefRow(Row).FullName
-        else
-        if Row is TJclClrTableTypeRefRow then
-          Result := TJclClrTableTypeRefRow(Row).FullName;
+      etVoid, etBoolean, etChar,
+      etI1, etU1, etI2, etU2, etI4, etU4,
+      etI8, etU8, etR4, etR8, etString:
+        Result := BuildInTypeNames[Param.ElementType];
+      etI:
+        Result := 'System.IntPtr';
+      etU:
+        Result := 'System.UIntPtr';
+      etObject:
+        Result := 'object';
+      etClass:
+        begin
+          Row := Table.Stream.Metadata.Tokens[Param.Token];
+          if Row is TJclClrTableTypeDefRow then
+            Result := TJclClrTableTypeDefRow(Row).FullName
+          else
+          if Row is TJclClrTableTypeRefRow then
+            Result := TJclClrTableTypeRefRow(Row).FullName;
 
-        Result := Result + ' /* ' + IntToHex(Param.Token, 8) + ' */';
-      end;
-    etSzArray:
-      Result := 'char *';
+          Result := Result + ' /* ' + IntToHex(Param.Token, 8) + ' */';
+        end;
+      etSzArray:
+        Result := 'char *';
     end;
     if Param.ByRef then
       Result := 'ref ' + Result;
   end;
-const
-  MemberAccessNames: array [TJclClrMemberAccess] of PChar =
-    ('compilercontrolled', 'private', 'famandassem',
-     'assembly', 'family', 'famorassem', 'public');
-  CodeTypeNames: array [TJclClrMethodCodeType] of PChar =
-    ('cil', 'native', 'optil', 'runtime');
-  ManagedNames: array [Boolean] of PChar =
-    ('unmanaged', 'managed');
-var
-  I: Integer;
+
 begin
   Result := Format('.method /*%.8x*/ %s %s%s %s(', [Token,
     MemberAccessNames[MemberAccess], GetMethodFlagDescription,
     GetParamTypeName(Signature.RetType), Name]);
   if HasParam then
-  for I := 0 to Min(ParamCount, Signature.ParamCount)-1 do
-  begin
-    Result := Result + GetParamTypeName(Signature.Params[I]) + ' ' + Params[I].Name;
-    if I <> ParamCount-1 then
-      Result := Result + ', ';
-  end;
+    for I := 0 to Min(ParamCount, Signature.ParamCount)-1 do
+    begin
+      Result := Result + GetParamTypeName(Signature.Params[I]) + ' ' + Params[I].Name;
+      if I <> ParamCount-1 then
+        Result := Result + ', ';
+    end;
   Result := Result + ') ' + CodeTypeNames[CodeType] + ' ' + ManagedNames[Managed] + GetMethodImplFlagDescription;
 
   if Assigned(MethodBody) then
   begin
     Result := Result + CrLf + '{' + CrLf +
-              '.maxstack ' + IntToStr(MethodBody.MaxStack) + CrLf;
+      '.maxstack ' + IntToStr(MethodBody.MaxStack) + CrLf;
 
     if MethodBody.LocalVarSignToken <> 0 then
     begin
@@ -4261,11 +4249,11 @@ begin
     end;
 
     with TJclClrILGenerator.Create(MethodBody) do
-    try
-      Result := Result + CrLf + DumpIL(InstructionDumpILAllOption);
-    finally
-      Free;
-    end;
+      try
+        Result := Result + CrLf + DumpIL(InstructionDumpILAllOption);
+      finally
+        Free;
+      end;
     Result := Result + '}';
   end;
 end;
@@ -4283,7 +4271,6 @@ function TJclClrTableMethodDefRow.GetSignature: TJclClrMethodSign;
 begin
   if not Assigned(FSignature) then
     FSignature := TJclClrMethodSign.Create(SignatureData);
-
   Result := FSignature;
 end;
 
@@ -4358,7 +4345,6 @@ end;
 constructor TJclClrTableMethodPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-
   FMethodIdx := Table.ReadIndex([ttMethodDef]);
 end;
 
@@ -4424,8 +4410,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrTableMethodSemantics.GetRow(
-  const Idx: Integer): TJclClrTableMethodSemanticsRow;
+function TJclClrTableMethodSemantics.GetRow(const Idx: Integer): TJclClrTableMethodSemanticsRow;
 begin
   Result := TJclClrTableMethodSemanticsRow(inherited GetRow(Idx));
 end;
@@ -4646,8 +4631,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrTablePropertyMap.GetRow(
-  const Idx: Integer): TJclClrTablePropertyMapRow;
+function TJclClrTablePropertyMap.GetRow(const Idx: Integer): TJclClrTablePropertyMapRow;
 begin
   Result := TJclClrTablePropertyMapRow(inherited GetRow(Idx));
 end;
@@ -4667,14 +4651,14 @@ var
 begin
   J := 0;
   with TJclClrTablePropertyDef(Stream.Tables[ttPropertyDef]) do
-  for I := 0 to RowCount-1 do
-  begin
-    if I >= Integer(Self.Rows[J].PropertyListIdx) then
-      Inc(J);
-    if J >= Self.RowCount then
-      Break;
-    Self.Rows[J].Add(Rows[I]);
-  end;
+    for I := 0 to RowCount-1 do
+    begin
+      if I >= Integer(Self.Rows[J].PropertyListIdx) then
+        Inc(J);
+      if J >= Self.RowCount then
+        Break;
+      Self.Rows[J].Add(Rows[I]);
+    end;
 end;
 
 //==================================================================================================
@@ -4716,15 +4700,15 @@ end;
 constructor TJclClrTableTypeDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
-  FFlags            := Table.ReadDWord;
-  FNameOffset       := Table.ReadIndex(hkString);
-  FNamespaceOffset  := Table.ReadIndex(hkString);
-  FExtendsIdx       := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
-  FFieldListIdx     := Table.ReadIndex([ttFieldDef]);
-  FMethodListIdx    := Table.ReadIndex([ttMethodDef]);
+  FFlags           := Table.ReadDWord;
+  FNameOffset      := Table.ReadIndex(hkString);
+  FNamespaceOffset := Table.ReadIndex(hkString);
+  FExtendsIdx      := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
+  FFieldListIdx    := Table.ReadIndex([ttFieldDef]);
+  FMethodListIdx   := Table.ReadIndex([ttMethodDef]);
 
-  FFields           := nil;
-  FMethods          := nil;
+  FFields := nil;
+  FMethods := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4800,23 +4784,23 @@ var
   Idx, MaxFieldListIdx: DWORD;
 begin
   with Table as TJclClrTableTypeDef do
-  if not Assigned(FFields) and (FieldListIdx <> 0) and
-     Stream.FindTable(ttFieldDef, TJclClrTable(FieldTable)) then
-  begin
-    if RowCount > (Index+1) then
-      MaxFieldListIdx := Rows[Index+1].FieldListIdx-1
-    else
-      MaxFieldListIdx := FieldTable.RowCount;
-    if (FieldListIdx-1) < MaxFieldListIdx then
+    if not Assigned(FFields) and (FieldListIdx <> 0) and
+      Stream.FindTable(ttFieldDef, TJclClrTable(FieldTable)) then
     begin
-      FFields := TList.Create;
-      for Idx := FieldListIdx-1 to MaxFieldListIdx-1 do
+      if RowCount > (Index+1) then
+        MaxFieldListIdx := Rows[Index+1].FieldListIdx-1
+      else
+        MaxFieldListIdx := FieldTable.RowCount;
+      if (FieldListIdx-1) < MaxFieldListIdx then
       begin
-        FFields.Add(FieldTable.Rows[Idx]);
-        FieldTable.Rows[Idx].SetParentToken(Self);
+        FFields := TList.Create;
+        for Idx := FieldListIdx-1 to MaxFieldListIdx-1 do
+        begin
+          FFields.Add(FieldTable.Rows[Idx]);
+          FieldTable.Rows[Idx].SetParentToken(Self);
+        end;
       end;
     end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4827,23 +4811,23 @@ var
   Idx, MaxMethodListIdx: DWORD;
 begin
   with Table as TJclClrTableTypeDef do
-  if not Assigned(FMethods) and (MethodListIdx <> 0) and
-     Stream.FindTable(ttMethodDef, TJclClrTable(MethodTable)) then
-  begin
-    if RowCount > (Index+1) then
-      MaxMethodListIdx := Rows[Index+1].MethodListIdx-1
-    else
-      MaxMethodListIdx := MethodTable.RowCount;
-    if (MethodListIdx-1) < MaxMethodListIdx then
+    if not Assigned(FMethods) and (MethodListIdx <> 0) and
+      Stream.FindTable(ttMethodDef, TJclClrTable(MethodTable)) then
     begin
-      FMethods := TList.Create;
-      for Idx := MethodListIdx-1 to MaxMethodListIdx-1 do
+      if RowCount > (Index+1) then
+        MaxMethodListIdx := Rows[Index+1].MethodListIdx-1
+      else
+        MaxMethodListIdx := MethodTable.RowCount;
+      if (MethodListIdx-1) < MaxMethodListIdx then
       begin
-        FMethods.Add(MethodTable.Rows[Idx]);
-        MethodTable.Rows[Idx].SetParentToken(Self);
+        FMethods := TList.Create;
+        for Idx := MethodListIdx-1 to MaxMethodListIdx-1 do
+        begin
+          FMethods.Add(MethodTable.Rows[Idx]);
+          MethodTable.Rows[Idx].SetParentToken(Self);
+        end;
       end;
     end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4953,6 +4937,11 @@ const
   TypeAttributeName: array [TJclClrTypeAttribute] of PChar =
     ('abstract', 'sealed', 'specialname', '' {'import'},
      'serializable', 'beforefieldinit', 'rtspecialname', '' {'hassecurity'});
+  Indent = '  ';
+  IntfPrefix: array [Boolean] of PChar = ('           ', 'implements ');
+var
+  I, J: Integer;
+  ListIntfs: TList;
 
   function GetTypeAttributesName: string;
   var
@@ -4967,6 +4956,7 @@ const
   begin
     Result := Format('%s.%s/* %.8x */', [Row.Namespace, Row.Name, Row.Token]);
   end;
+
   function GetExtends(const Row: TJclClrTableRow): string; overload;
   begin
     if Row is TJclClrTableTypeDefRow then
@@ -4981,61 +4971,55 @@ const
       Result := 'Unknown Extends ' + Row.ClassName;
   end;
 
-const
-  Indent = '  ';
-  IntfPrefix: array [Boolean] of PChar = ('           ', 'implements ');
-var
-  I, J: Integer;
-  lstIntfs: TList;
 begin
   with TStringList.Create do
-  try
-    Add(Format('.%s /*%.8x*/ %s %s %s %s%s.%s',
-      [ClassSemanticName[ClassSemantics], Token,
-       VisibilityName[Visibility], ClassLayoutName[ClassLayout],
-       StringFormattingName[StringFormatting], GetTypeAttributesName,
-       Namespace, Name]));
-
-    if ExtendsIdx <> 0 then
-      Add(Indent + 'extends ' + GetExtends(Extends));
-
-    lstIntfs := TList.Create;
     try
-      if Assigned(Table.Stream.Tables[ttInterfaceImpl]) then
-      with TJclClrTableInterfaceImpl(Table.Stream.Tables[ttInterfaceImpl]) do
-      for I := 0 to RowCount-1 do
-        if Rows[I].ClassIdx = DWORD(Index + 1) then
-          lstIntfs.Add(Rows[I]);
+      Add(Format('.%s /*%.8x*/ %s %s %s %s%s.%s',
+        [ClassSemanticName[ClassSemantics], Token,
+         VisibilityName[Visibility], ClassLayoutName[ClassLayout],
+         StringFormattingName[StringFormatting], GetTypeAttributesName,
+         Namespace, Name]));
 
-      if lstIntfs.Count > 0 then
-      for I := 0 to lstIntfs.Count-1 do
-        Add(Indent + IntfPrefix[I = 0] + TJclClrTableInterfaceImplRow(lstIntfs[I]).DumpIL);
+      if ExtendsIdx <> 0 then
+        Add(Indent + 'extends ' + GetExtends(Extends));
+
+      ListIntfs := TList.Create;
+      try
+        if Assigned(Table.Stream.Tables[ttInterfaceImpl]) then
+          with TJclClrTableInterfaceImpl(Table.Stream.Tables[ttInterfaceImpl]) do
+            for I := 0 to RowCount-1 do
+              if Rows[I].ClassIdx = DWORD(Index + 1) then
+                ListIntfs.Add(Rows[I]);
+
+        if ListIntfs.Count > 0 then
+          for I := 0 to ListIntfs.Count-1 do
+            Add(Indent + IntfPrefix[I = 0] + TJclClrTableInterfaceImplRow(ListIntfs[I]).DumpIL);
+      finally
+        ListIntfs.Free;
+      end;
+
+      Add('(');
+
+      if HasField then
+      for I := 0 to FieldCount-1 do
+        Add(Indent + Fields[I].DumpIL);
+
+      if HasMethod then
+      for I := 0 to MethodCount-1 do
+        Add(Indent + Methods[I].DumpIL);
+
+      if Assigned(Table.Stream.Tables[ttPropertyMap]) then
+        with TJclClrTablePropertyMap(Table.Stream.Tables[ttPropertyMap]) do
+          for I := 0 to RowCount-1 do
+            if Rows[I].Parent = Self then
+              for J := 0 to Rows[I].PropertyCount-1 do
+                Add(Indent + Rows[I].Properties[J].DumpIL);
+
+      Add(') // end of class ' + Name);
+      Result := Text;
     finally
-      lstIntfs.Free;
+      Free;
     end;
-
-    Add('(');
-
-    if HasField then
-    for I := 0 to FieldCount-1 do
-      Add(Indent + Fields[I].DumpIL);
-
-    if HasMethod then
-    for I := 0 to MethodCount-1 do
-      Add(Indent + Methods[I].DumpIL);
-
-    if Assigned(Table.Stream.Tables[ttPropertyMap]) then
-    with TJclClrTablePropertyMap(Table.Stream.Tables[ttPropertyMap]) do
-    for I := 0 to RowCount-1 do
-      if Rows[I].Parent = Self then
-        for J := 0 to Rows[I].PropertyCount-1 do
-          Add(Indent + Rows[I].Properties[J].DumpIL);
-
-    Add(') // end of class ' + Name);
-    Result := Text;
-  finally
-    Free;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5069,8 +5053,7 @@ end;
 function TJclClrTableTypeRefRow.DumpIL: string;
 begin
   Result := Format('[%s/* %.8x */]%s.%s/* %.8x */',
-    [ResolutionScopeName, ResolutionScope.Token,
-     Namespace, Name, Token]);
+    [ResolutionScopeName, ResolutionScope.Token, Namespace, Name, Token]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5284,12 +5267,12 @@ begin
     ElemType := ReadByte;
 
     case ElemType of
-    ELEMENT_TYPE_PINNED:
-      LocalVar.Flags := LocalVar.Flags + [lvfPinned];
-    ELEMENT_TYPE_BYREF:
-      LocalVar.Flags := LocalVar.Flags + [lvfByRef];
-    ELEMENT_TYPE_END:
-      Break;
+      ELEMENT_TYPE_PINNED:
+        LocalVar.Flags := LocalVar.Flags + [lvfPinned];
+      ELEMENT_TYPE_BYREF:
+        LocalVar.Flags := LocalVar.Flags + [lvfByRef];
+      ELEMENT_TYPE_END:
+        Break;
     else
       for T := Low(TJclClrElementType) to High(TJclClrElementType) do
         if ClrElementTypeMapping[T] = ElemType then
@@ -5423,22 +5406,22 @@ begin
   begin
     By := ReadByte;
     case By of
-    ELEMENT_TYPE_CMOD_REQD, ELEMENT_TYPE_CMOD_OPT:
-      begin
-        Blob.Seek(-SizeOf(Byte), soFromCurrent);
-        FCustomMods.Add(TJclClrCustomModifierSign.Create(Blob));
-      end;
-    ELEMENT_TYPE_BYREF:
-      FByRef := True;
+      ELEMENT_TYPE_CMOD_REQD, ELEMENT_TYPE_CMOD_OPT:
+        begin
+          Blob.Seek(-SizeOf(Byte), soFromCurrent);
+          FCustomMods.Add(TJclClrCustomModifierSign.Create(Blob));
+        end;
+      ELEMENT_TYPE_BYREF:
+        FByRef := True;
     else
       FElementType := TJclClrElementType(By);
       case FElementType of
-      etPtr, etTypedByRef, etValueType, etClass:
-        FToken := ReadToken;
-      etFnPtr:
-        FMethodSign := TJclClrMethodSign.Create(Blob);
-      etArray:
-        FArraySign := TJclClrArraySign.Create(Blob);
+        etPtr, etTypedByRef, etValueType, etClass:
+          FToken := ReadToken;
+        etFnPtr:
+          FMethodSign := TJclClrMethodSign.Create(Blob);
+        etArray:
+          FArraySign := TJclClrArraySign.Create(Blob);
       end;
       Finished := True;
     end;
@@ -5471,6 +5454,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/30 12:42:57  marquardt
+// style cleaning
+//
 // Revision 1.8  2004/06/16 07:30:30  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
