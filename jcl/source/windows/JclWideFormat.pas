@@ -156,7 +156,8 @@ const
   );
   { This table is used in converting an ordinal value to a string in either
     decimal or hexadecimal format. }
-  ConvertChars: array [0..$f] of WideChar = ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+  ConvertChars: array [0..15] of WideChar =
+    ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
 
 function FillWideChar(var X; Count: Cardinal; const Value: WideChar): Cardinal; forward;
 function GetPClassName(const Cls: TClass): Pointer; forward;
@@ -783,6 +784,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/03/08 16:10:10  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.7  2005/03/08 08:33:23  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -568,8 +568,8 @@ end;
 procedure TJclOrdinalTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(LoadResString(@RsRTTIOrdinalType) + JclEnumValueToIdent(
-    System.TypeInfo(TOrdType), TypeData.OrdType));
+  Dest.Writeln(LoadResString(@RsRTTIOrdinalType) +
+    JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
 end;
 
 //=== { TJclOrdinalRangeTypeInfo } ===========================================
@@ -1283,6 +1283,11 @@ begin
 end;
 
 procedure TJclClassTypeInfo.WriteTo(const Dest: IJclInfoWriter);
+const
+  cFmt1 = '[%s %d]';
+  cFmt2 = '[%s %s $%p]';
+  cFmt3 = '[%s=%s]';
+  cFmt4 = '[%s=%s $%p]';
 var
   I: Integer;
   Prop: IJclPropInfo;
@@ -1302,55 +1307,55 @@ begin
       Dest.Indent;
       try
         if Prop.HasIndex then
-          Dest.Writeln(Format('[%s %d]', [LoadResString(@RsRTTIIndex), Prop.Index]));
+          Dest.Writeln(Format(cFmt1, [LoadResString(@RsRTTIIndex), Prop.Index]));
         if Prop.HasDefault then
-          Dest.Writeln(Format('[%s %d]', [LoadResString(@RsRTTIDefault), Prop.Default]));
+          Dest.Writeln(Format(cFmt1, [LoadResString(@RsRTTIDefault), Prop.Default]));
         case Prop.ReaderType of
           pskStaticMethod:
-            Dest.Writeln(Format('[%s %s $%p]',
+            Dest.Writeln(Format(cFmt2,
               [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIStaticMethod),
                Pointer(Prop.ReaderValue)]));
           pskField:
-            Dest.Writeln(Format('[%s %s $%p]',
+            Dest.Writeln(Format(cFmt2,
               [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIField),
                Pointer(Prop.ReaderValue)]));
           pskVirtualMethod:
-            Dest.Writeln(Format('[%s %s $%p]',
+            Dest.Writeln(Format(cFmt2,
               [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIVirtualMethod),
                Pointer(Prop.ReaderValue)]));
         end;
         case Prop.WriterType of
           pskStaticMethod:
-            Dest.Writeln(Format('[%s %s $%p]',
+            Dest.Writeln(Format(cFmt2,
               [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIStaticMethod),
                Pointer(Prop.WriterValue)]));
           pskField:
-            Dest.Writeln(Format('[%s %s $%p]',
+            Dest.Writeln(Format(cFmt2,
               [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIField),
                Pointer(Prop.WriterValue)]));
           pskVirtualMethod:
-            Dest.Writeln(Format('[%s %s $%p]',
+            Dest.Writeln(Format(cFmt2,
               [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIVirtualMethod),
                Pointer(Prop.WriterValue)]));
         end;
         case Prop.StoredType of
           pskConstant:
             if Boolean(Prop.StoredValue) then
-              Dest.Writeln(Format('[%s=%s]',
+              Dest.Writeln(Format(cFmt3,
                 [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTITrue)]))
             else
-              Dest.Writeln(Format('[%s=%s]',
+              Dest.Writeln(Format(cFmt3,
                 [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIFalse)]));
           pskStaticMethod:
-            Dest.Writeln(Format('[%s=%s $%p]',
+            Dest.Writeln(Format(cFmt4,
               [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIStaticMethod),
                Pointer(Prop.StoredValue)]));
           pskField:
-            Dest.Writeln(Format('[%s=%s $%p]',
+            Dest.Writeln(Format(cFmt4,
               [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIField),
                Pointer(Prop.StoredValue)]));
           pskVirtualMethod:
-            Dest.Writeln(Format('[%s=%s $%p]',
+            Dest.Writeln(Format(cFmt4,
               [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIVirtualMethod),
                Pointer(Prop.StoredValue)]));
         end;
@@ -2147,7 +2152,7 @@ begin
     begin
       S := Names[I];
       if PrefixCut = PREFIX_CUT_LOWERCASE then
-        while (Length(S) > 0) and (S[1] in ['a' .. 'z']) do
+        while (Length(S) > 0) and (S[1] in AnsiLowercaseLetters) do
           Delete(S, 1, 1);
       if (PrefixCut > 0) and (PrefixCut < MaxPrefixCut) then
         Delete(S, 1, PrefixCut);
@@ -2506,6 +2511,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.22  2005/03/08 16:10:08  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.21  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -1938,7 +1938,7 @@ begin
   begin
     Delimiter := Copy(FData, I, 1);
     if not (Delimiter[1] in
-      ['0'..'9', 'A'..'Z', 'a'..'z', FDelimiters.ED[1], FDelimiters.SD[1]]) then
+      AnsiLetters + AnsiDecDigits + [FDelimiters.ED[1], FDelimiters.SD[1]]) then
     begin
       FDelimiters.SS := Copy(FData, I, 1);
       Break;

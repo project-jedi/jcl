@@ -4585,7 +4585,7 @@ begin
   begin
     FEDISEFWhereType := twElementOrCompositeElement;
     try
-      if WhereLocation[2][1] in ['0'..'9'] then
+      if WhereLocation[2][1] in AnsiDecDigits then
         FWhereElement := StrToInt(WhereLocation[2]);
     except
       // Eat this error if it occurs for now
@@ -4595,7 +4595,7 @@ begin
   begin
     FEDISEFWhereType := twSubElement;
     try
-      if WhereLocation[3][1] in ['0'..'9'] then
+      if WhereLocation[3][1] in AnsiDecDigits then
         FWhereSubElement := StrToInt(WhereLocation[3]);
     except
       // Eat this error if it occurs for now

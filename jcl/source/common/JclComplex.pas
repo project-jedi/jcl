@@ -401,7 +401,7 @@ begin
   end
   else
   begin
-    if (StrRight(StrToParse, 1) = 'i') or (StrRight(StrToParse, 1) = 'I') then
+    if (StrToParse[Length(StrToParse)] = 'i') or (StrToParse[Length(StrToParse)] = 'I') then
     begin
       RealPart := 0.0;
       try
@@ -1528,6 +1528,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/03/08 16:10:07  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.13  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

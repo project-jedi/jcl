@@ -176,6 +176,15 @@ const
   AnsiLineBreak = AnsiLineFeed;
   {$ENDIF UNIX}
 
+  AnsiSigns                  = ['-', '+'];
+  AnsiUppercaseLetters       = ['A'..'Z'];
+  AnsiLowercaseLetters       = ['a'..'z'];
+  AnsiLetters                = ['A'..'Z', 'a'..'z'];
+  AnsiDecDigits              = ['0'..'9'];
+  AnsiOctDigits              = ['0'..'7'];
+  AnsiHexDigits              = ['0'..'9', 'A'..'F', 'a'..'f'];
+  AnsiValidIdentifierLetters = ['0'..'9', 'A'..'Z', 'a'..'z', '_'];
+
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
@@ -249,6 +258,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.33  2005/03/08 16:10:07  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.32  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

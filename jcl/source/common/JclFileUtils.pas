@@ -2207,7 +2207,7 @@ var
         Inc(P);
       end
       else
-      if P^ in ['0'..'9'] then
+      if P^ in AnsiDecDigits then
         Inc(P)
       else
       begin
@@ -2446,20 +2446,19 @@ end;
 {$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
-
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
 begin
   Result := False;
-  if Drive in ['a'..'z'] then
-    Dec(Drive, $20);
-  Assert(Drive in ['A'..'Z']);
-  if Drive in ['A'..'Z'] then
+  Assert(Drive in DriveLetters);
+  if Drive in DriveLetters then
   begin
-  { try to access the drive, it doesn't really matter how we access the drive and as such calling
-    DiskSize is more or less a random choice. The call to SetErrorMode supresses the system provided
-    error dialog if there is no disk in the drive and causes the to DiskSize to fail. }
+    if Drive in AnsiLowercaseLetters then
+      Dec(Drive, $20);
+    { try to access the drive, it doesn't really matter how we access the drive and as such calling
+      DiskSize is more or less a random choice. The call to SetErrorMode supresses the system provided
+      error dialog if there is no disk in the drive and causes the to DiskSize to fail. }
     ErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
     try
       Result := DiskSize(Ord(Drive) - $40) <> -1;
@@ -2468,7 +2467,6 @@ begin
     end;
   end;
 end;
-
 {$ENDIF MSWINDOWS}
 
 function FileCreateTemp(var Prefix: string): THandle;
@@ -2954,7 +2952,7 @@ var
   DriveType: Integer;
   DriveStr: string;
 begin
-  if not (Drive in ['a'..'z', 'A'..'Z']) then
+  if not (Drive in DriveLetters) then
     raise EJclPathError.CreateResFmt(@RsPathInvalidDrive, [Drive]);
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
@@ -5432,6 +5430,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.42  2005/03/08 16:10:08  marquardt
+// standard char sets extended and used, some optimizations for string literals
+//
 // Revision 1.41  2005/03/08 08:33:16  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
