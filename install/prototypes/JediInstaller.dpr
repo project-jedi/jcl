@@ -14,7 +14,7 @@ uses
   JediInstallerMain in 'JediInstallerMain.pas' {MainForm},
   ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
   {$ENDIF VCL}
-  JclBorRADToolInst in '..\source\common\JclBorRADToolInst.pas';
+  JclBorlandTools in '..\source\common\JclBorlandTools.pas';
 
 {$R *.res}
 

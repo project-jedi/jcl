@@ -66,6 +66,13 @@ object ProductFrame: TProductFrame
       Width = 412
       Height = 305
       Anchors = [akLeft, akTop, akRight, akBottom]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Lucida Console'
+      Font.Pitch = fpFixed
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
     end
     object OptionsGroupBox: TGroupBox

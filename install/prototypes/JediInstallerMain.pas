@@ -40,7 +40,7 @@ uses
   Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls, ImgList,
   ProductFrames, JediInstallIntf,
   {$ENDIF}
-  JclBorRADToolInst;
+  JclBorlandTools;
 
 const
   {$IFDEF VisualCLX}
@@ -70,20 +70,27 @@ type
     procedure TreeViewCollapsing(Sender: TObject; Node: TTreeNode;
       var AllowCollapse: Boolean);
     procedure TreeViewChange(Sender: TObject; Node: TTreeNode);
+    procedure TreeViewChanging(Sender: TObject; Node: TTreeNode;
+      var AllowChange: Boolean);
+    procedure TreeViewEnter(Sender: TObject);
+    procedure TreeViewExit(Sender: TObject);
     procedure BplPathEditChange(Sender: TObject);
   private
     FBorRADToolInstallations: TJclBorRADToolInstallations;
     FJediInstall: IJediInstall;
     FInstallLog: TFileStream;
     FSystemPaths: TStringList;
+    function ActiveView: TProductFrame;
     function CheckUpdatePack(Installation: TJclBorRADToolInstallation): Boolean;
     function CreateView(Installation: TJclBorRADToolInstallation): Boolean;
+    function InfoFile(Node: TTreeNode): string;
     procedure ReadSystemPaths;
     function View(Installation: TJclBorRADToolInstallation): TProductFrame; overload;
     function View(RADToolKind: TJclBorRADToolKind; Version: Integer): TProductFrame; overload;
     {$IFDEF VCL}
     procedure UMCheckUpdates(var Message: TMessage); message UM_CHECKUPDATES;
     {$ENDIF VCL}
+    procedure UpdateFeatureInfo(Node: TTreeNode);
   protected
     {$IFDEF VisualCLX}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
@@ -160,7 +167,25 @@ resourcestring
   RsUpdateNeeded    = 'You should install latest Update Pack #%d for %s.'#13#10 +
                       'Would you like to open Borland support web page?';
 
+function FeatureID(Node: TTreeNode): Cardinal;
+begin
+  Result := Cardinal(Node.Data) and FID_NumberMask;
+end;
+
 { TMainForm }
+
+function TMainForm.ActiveView: TProductFrame;
+var
+  Page: TTabSheet;
+begin
+  Page := ProductsPageControl.ActivePage;
+  Result := Page.Controls[0] as TProductFrame;
+end;
+
+function TMainForm.InfoFile(Node: TTreeNode): string;
+begin
+  Result := FJediInstall.FeatureInfoFileName(FeatureID(Node));
+end;
 
 function TMainForm.CreateView(Installation: TJclBorRADToolInstallation): Boolean;
 var
@@ -180,6 +205,11 @@ begin
     ProductFrame := TProductFrame.Create(Self);
     ProductFrame.Installation := Installation;
     ProductFrame.TreeView.Images := ImageList;
+    ProductFrame.TreeView.OnChanging := TreeViewChanging;
+    ProductFrame.TreeView.OnChange := TreeViewChange;
+    ProductFrame.TreeView.OnCollapsing := TreeViewCollapsing;
+    ProductFrame.TreeView.OnEnter := TreeViewEnter;
+    ProductFrame.TreeView.OnExit := TreeViewExit;
     ProductFrame.Align := alClient;
     ProductFrame.Parent := Page;
   end;
@@ -360,6 +390,15 @@ begin
   Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
+procedure TMainForm.BplPathEditChange(Sender: TObject);
+begin
+  with (Sender as TEdit) do
+    if SystemPathValid(Text) then
+      Font.Color := clWindowText
+    else
+      Font.Color := clRed;
+end;
+
 function TMainForm.FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
 begin
   Result := View(Installation).FeatureChecked(FeatureID);
@@ -468,16 +507,67 @@ end;
 
 procedure TMainForm.TreeViewChange(Sender: TObject; Node: TTreeNode);
 begin
+  UpdateFeatureInfo(Node);
   FJediInstall.SelectedNodeChanged(Node);
 end;
 
-procedure TMainForm.BplPathEditChange(Sender: TObject);
+procedure TMainForm.TreeViewChanging(Sender: TObject; Node: TTreeNode; var AllowChange: Boolean);
 begin
-  with (Sender as TEdit) do
-    if SystemPathValid(Text) then
-      Font.Color := clWindowText
+  {$IFDEF VCL}
+  with ActiveView do
+    if InfoDisplay.Modified then
+    begin
+      InfoDisplay.Lines.SaveToFile(InfoFile(TreeView.Selected));
+      InfoDisplay.Modified := False;
+    end;
+  {$ENDIF}
+  //FJediInstall.SelectedNodeChanging(Node);
+end;
+
+procedure TMainForm.TreeViewEnter(Sender: TObject);
+begin
+  with ActiveView  do
+    {$IFDEF VCL}if InfoDisplay.ReadOnly then{$ENDIF}
+      UpdateFeatureInfo(TreeView.Selected);
+end;
+
+procedure TMainForm.TreeViewExit(Sender: TObject);
+begin
+  with ActiveView.InfoDisplay do
+    {$IFDEF VCL}
+    if ReadOnly then
+      Lines.LoadFromFile(FJediInstall.ReadmeFileName);
+    {$ELSE}
+      FileName := FJediInstall.ReadmeFileName;
+    {$ENDIF}
+end;
+
+procedure TMainForm.UpdateFeatureInfo(Node: TTreeNode);
+const
+  SFileNotFound = '%s: File not found';
+var
+  FileName: string;
+begin
+  with ActiveView do
+  begin
+    if Assigned(Node) then
+      FileName := InfoFile(Node);
+    {$IFDEF VCL}
+    if FileExists(FileName) then
+      InfoDisplay.Lines.LoadFromFile(FileName)
     else
-      Font.Color := clRed;
+    begin
+      InfoDisplay.Lines.Clear;
+      InfoDisplay.Lines.Add(Format(SFileNotFound, [FileName]));
+      InfoDisplay.Modified := False;
+    end;
+    {$ELSE}
+    if FileExists(FileName) then
+      InfoDisplay.Text := FileToString(FileName)
+    else
+      InfoDisplay.Text := Format(SFileNotFound, [FileName]);
+    {$ENDIF}
+  end;
 end;
 
 end.
