@@ -29,7 +29,7 @@
 
 unit JclLogic;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
