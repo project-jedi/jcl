@@ -2,7 +2,8 @@ unit MyObjectList;
 
 interface
 
-uses DCL_Intf, ArrayList;
+uses
+  JclDCL_Intf, JclArrayList;
 
 type
   TMyObject = class(TObject)
@@ -11,12 +12,12 @@ type
     FStr: string;
   public
     property Int: Integer read FInt write FInt;
-    property Str: string read FStr Write FStr;
+    property Str: string read FStr write FStr;
   end;
 
   // An ArrayList typed with TMyObject
   IMyObjectList = interface
-	['{DB2B366E-2CA6-4AFC-A2C9-3285D252DC3E}']
+    ['{DB2B366E-2CA6-4AFC-A2C9-3285D252DC3E}']
     function Add(AObject: TMyObject): Boolean; overload;
     function AddAll(ACollection: ICollection): Boolean; overload;
     procedure Clear;
@@ -41,7 +42,7 @@ type
     function SubList(First, Count: Integer): IList;
   end;
 
-  TMyObjectList = class(TArrayList, IMyObjectList)
+  TMyObjectList = class(TJclArrayList, IMyObjectList)
   protected
   { ICollection }
     function Add(AObject: TMyObject): Boolean; overload;
@@ -71,7 +72,6 @@ type
 
 implementation
 
-
 { TMyObjectList }
 
 procedure TMyObjectList.Add(Index: Integer; AObject: TMyObject);
@@ -97,7 +97,7 @@ end;
 
 function TMyObjectList.Contains(AObject: TMyObject): Boolean;
 begin
-  Result := inherited Contains(AObject);
+Result := inherited contains(AObject);
 end;
 
 function TMyObjectList.GetObject(Index: Integer): TMyObject;
@@ -131,3 +131,4 @@ begin
 end;
 
 end.
+

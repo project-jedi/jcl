@@ -3,12 +3,12 @@ unit Unit1;
 interface
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF}
+  {$IFDEF LINUX}
   QForms, QControls, QStdCtrls,
-{$ENDIF}
+  {$ENDIF}
   SysUtils, Classes;
 
 type
@@ -43,7 +43,7 @@ type
   end;
 
   IIntfMyObject = interface
-  ['{B2CB604F-4F5F-44D8-A86F-6138CD329B42}']
+    ['{B2CB604F-4F5F-44D8-A86F-6138CD329B42}']
     function GetInt: Integer;
     function GetStr: string;
     procedure SetInt(Value: Integer);
@@ -70,7 +70,7 @@ type
     FStr: string;
   public
     property Int: Integer read FInt write FInt;
-    property Str: string read FStr Write FStr;
+    property Str: string read FStr write FStr;
   end;
 
 var
@@ -80,7 +80,7 @@ implementation
 
 {$R *.dfm}
 
-uses DCL_intf, HashMap, HashSet, ArraySet;
+uses JclDCL_intf, JclHashMap, JclHashSet, JclArraySet;
 
 { TIntfMyObject }
 
@@ -111,7 +111,7 @@ var
   KeyObject: TInterfacedObject;
   It: IIntfIterator;
 begin
-  Map := TIntfIntfHashMap.Create;
+  Map := TJclIntfIntfHashMap.Create;
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -133,7 +133,7 @@ var
   Map: IStrIntfMap;
   MyObject: IIntfMyObject;
 begin
-  Map := TStrIntfHashMap.Create;
+  Map := TJclStrIntfHashMap.Create;
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -154,7 +154,7 @@ var
   KeyObject: TObject;
   It: IIterator;
 begin
-  Map := THashMap.Create;
+  Map := TJclHashMap.Create;
   MyObject := TMyObject.Create;
   KeyObject := TObject.Create;
   try
@@ -179,7 +179,7 @@ var
   MyObject: IIntfMyObject;
   It: IIntfIterator;
 begin
-  MySet := TIntfHashSet.Create;
+  MySet := TJclIntfHashSet.Create;
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -198,7 +198,7 @@ var
   MyObject: TMyObject;
   It: IIterator;
 begin
-  MySet := THashSet.Create;
+  MySet := TJclHashSet.Create;
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -217,7 +217,7 @@ var
   MyObject: IIntfMyObject;
   It: IIntfIterator;
 begin
-  MySet := TIntfArraySet.Create;
+  MySet := TJclIntfArraySet.Create;
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -236,7 +236,7 @@ var
   MyObject: TMyObject;
   It: IIterator;
 begin
-  MySet := TArraySet.Create;
+  MySet := TJclArraySet.Create;
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -254,7 +254,7 @@ var
   Map: IStrStrMap;
   It: IStrIterator;
 begin
-  Map := TStrStrHashMap.Create;
+  Map := TJclStrStrHashMap.Create;
   Map.PutValue('MyKey1', 'MyString1');
   Map.PutValue('MyKey2', 'MyString2');
   Map.PutValue('MyKey3', 'MyString3');
@@ -270,30 +270,16 @@ begin
 end;
 
 type
-  TLinks = class(TStrHashMap)
-  public
-    constructor Create;
-    destructor Destroy;
-  end;
-
-constructor TLinks.Create;
-begin
-  inherited;
-end;
-
-destructor TLinks.Destroy;
-begin
-  inherited;
-end;
+  TLinks = class(TJclStrHashMap);
 
 procedure TfrmHash.btnStrHashMapClick(Sender: TObject);
 var
   Map: IStrMap;
   MyObject: TMyObject;
-  It: IStrIterator;
+  //It: IStrIterator;
   Links: TLinks;
 begin
-  Map := TStrHashMap.Create;
+  Map := TJclStrHashMap.Create;
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -317,7 +303,7 @@ var
   MySet: IStrSet;
   It: IStrIterator;
 begin
-  MySet := TStrHashSet.Create;
+  MySet := TJclStrHashSet.Create;
   MySet.Add('MyString');
   MySet.Add('MyString');
   It := MySet.First;
@@ -332,7 +318,7 @@ var
   MySet: IStrSet;
   It: IStrIterator;
 begin
-  MySet := TStrArraySet.Create;
+  MySet := TJclStrArraySet.Create;
   MySet.Add('MyString');
   MySet.Add('MyString');
   It := MySet.First;

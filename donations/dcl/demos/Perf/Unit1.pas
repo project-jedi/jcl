@@ -3,12 +3,12 @@ unit Unit1;
 interface
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF WIN32}
+  {$IFDEF LINUX}
   QForms, QStdCtrls, QControls,
-{$ENDIF}
+  {$ENDIF LINUX}
   SysUtils, Classes;
 
 type
@@ -63,20 +63,13 @@ type
     procedure btnBucketListClick(Sender: TObject);
     procedure btnHashedStringClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-  private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
-  TMyObject = class(TInterfacedObject)
-  public
-    constructor Create;
-    destructor Destroy; override;
-  end;
+  TMyObject = class(TInterfacedObject);
 
 var
-  frmPerf: TfrmPerf; 
+  frmPerf: TfrmPerf;
 
 implementation
 
@@ -85,25 +78,15 @@ implementation
 {$R *.dfm}
 
 uses
-{$IFDEF DELPHI5_UP}
-  contnrs, inifiles,
-{$ENDIF}
-  DCL_intf, DCLUtil, ArrayList, LinkedList, HashMap, Vector, Math;
+  {$IFDEF DELPHI5_UP}
+  Contnrs, IniFiles,
+  {$ENDIF DELPHI5_UP}
+  Math,
+  JclDCL_intf, JclDCLUtil, JclArrayList, JclLinkedList, JclHashMap, JclVector;
 
 const
   ResultFormat = '%.1f ms';
-
-  { TMyObject }
-
-constructor TMyObject.Create;
-begin
-  inherited;
-end;
-
-destructor TMyObject.Destroy;
-begin
-  inherited;
-end;
+  MsecsPerDay = 24 * 60 * 60 * 1000;
 
 procedure TfrmPerf.btnTArrayListClick(Sender: TObject);
 var
@@ -116,11 +99,10 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    List := TArrayList.Create(16, False);
+    List := TJclArrayList.Create(16, False);
     for I := 0 to 2000000 do
       List.Add(TObject(I));
-    lblArrayAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblArrayAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     // Fast but Specific ArrayList
     //for I := 0 to List.Size - 1 do
@@ -129,25 +111,21 @@ begin
     It := List.First;
     while It.HasNext do
       I := Integer(It.Next);
-    lblArrayNext.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblArrayNext.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
       Res := List.IndexOf(TObject(Random(1000000)));
-    lblArrayRandom.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblArrayRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     It := List.First;
     for I := 0 to 10 do
       It.Next;
     for I := 0 to 100 do
       It.Add(TObject(I));
-    lblArrayAdd10.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblArrayAdd10.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
-    lblArrayClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblArrayClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     Screen.Cursor := crDefault;
   end;
@@ -166,25 +144,22 @@ begin
   try
     for I := 0 to 2000000 do
       List.Add(Pointer(I));
-    lblAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to List.Count - 1 do
       Res := Integer(List[I]);
-    lblNext.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblNext.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
       Res := List.IndexOf(Pointer(Random(1000000)));
-    lblRandom.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100 do
       List.Insert(10, Pointer(I));
-    lblAdd10.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblAdd10.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
-    lblClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     List.Free;
     Screen.Cursor := crDefault;
@@ -202,34 +177,29 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    List := TLinkedList.Create(False);
+    List := TJclLinkedList.Create(nil, False);
     for I := 0 to 2000000 do
       List.Add(TObject(I));
-    lblLinkedAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblLinkedAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     It := List.First;
     while It.HasNext do
       I := Integer(It.Next);
-    lblLinkedNext.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblLinkedNext.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
       Res := List.IndexOf(TObject(Random(1000000)));
-    lblLinkedRandom.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblLinkedRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     It := List.First;
     for I := 0 to 10 do
       It.Next;
     for I := 0 to 100 do
       It.Add(TObject(I));
-    lblLinkedAdd10.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblLinkedAdd10.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
-    lblLinkedClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblLinkedClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     Screen.Cursor := crDefault;
   end;
@@ -237,29 +207,26 @@ end;
 
 procedure TfrmPerf.btnTSpeedListClick(Sender: TObject);
 var
-  List: TVector;
+  List: TJclVector;
   I, res: Integer;
   Start: TDateTime;
 begin
   Randomize;
   Screen.Cursor := crHourGlass;
   Start := Now;
-  List := TVector.Create(16, False);
+  List := TJclVector.Create(16, False);
   try
     for I := 0 to 2000000 do
       List.Add(TObject(I));
-    lblSpeedAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblSpeedAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to List.Size - 1 do
       Res := Integer(List.Items[I]);
-    lblSpeedNext.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblSpeedNext.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 200 do
       Res := List.IndexOf(TObject(Random(1000000)));
-    lblSpeedRandom.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblSpeedRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 10 do
     begin
@@ -267,12 +234,10 @@ begin
         (List.Size - 10) * SizeOf(TObject));
       List.Items[10] := TObject(I);
     end;
-    lblSpeedAdd10.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblSpeedAdd10.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
-    lblSpeedClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblSpeedClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     List.Free;
     Screen.Cursor := crDefault;
@@ -289,20 +254,17 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := HashMap.THashMap.Create(256, False);
+    Map := JclHashMap.TJclHashMap.Create(256, False);
     for I := 0 to 100000 do
       Map.PutValue(TObject(Random(100000)), TObject(I));
-    lblHashAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblHashAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
       Res := Integer(Map.GetValue(TObject(Random(100000))));
-    lblHashRandom.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblHashRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     Map.Clear;
-    lblHashClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *
-      1000]);
+    lblHashClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     Screen.Cursor := crDefault;
   end;
@@ -314,9 +276,9 @@ var
   I, Res: Integer;
   Start: TDateTime;
   List: TBucketList;
-{$ENDIF}
+  {$ENDIF DELPHI6_UP}
 begin
-{$IFDEF DELPHI6_UP}
+  {$IFDEF DELPHI6_UP}
   Randomize;
   Screen.Cursor := crHourGlass;
   Start := Now;
@@ -324,19 +286,19 @@ begin
   try
     for I := 0 to 100000 do
       List.Add(TObject(I), TObject(I));
-    lblBucketAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblBucketAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
       Res := Integer(List.Data[TObject(Random(100000))]);
-    lblBucketRandom.Caption := Format(ResultFormat, [(Now - Start) * 24*3600*1000]);
+    lblBucketRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
-    lblBucketClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *      1000]);
+    lblBucketClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     List.Free;
     Screen.Cursor := crDefault;
   end;
-{$ENDIF}
+  {$ENDIF DELPHI6_UP}
 end;
 
 function GenId(Value: Integer): string;
@@ -347,13 +309,13 @@ end;
 procedure TfrmPerf.btnHashedStringClick(Sender: TObject);
 {$IFDEF DELPHI6_UP}
 var
-	I: Integer;
+  I: Integer;
   Index: Integer;
-	List: THashedStringList;
+  List: THashedStringList;
   Start: TDateTime;
-{$ENDIF}
+{$ENDIF DELPHI6_UP}
 begin
-{$IFDEF DELPHI6_UP}
+  {$IFDEF DELPHI6_UP}
   Randomize;
   Screen.Cursor := crHourGlass;
   Start := Now;
@@ -361,21 +323,21 @@ begin
   try
     for I := 0 to 100000 do
       List.Add(GenId(123));
-    lblHashedStringAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblHashedStringAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
     begin
       Index := List.IndexOf(GenId(123));
     end;
-    lblHashedStringRandom.Caption := Format(ResultFormat, [(Now - Start) * 24*3600*1000]);
+    lblHashedStringRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     List.Clear;
-    lblHashedStringClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 *      1000]);
+    lblHashedStringClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     List.Free;
     Screen.Cursor := crDefault;
   end;
-{$ENDIF}
+  {$ENDIF DELPHI6_UP}
 end;
 
 procedure TfrmPerf.Button2Click(Sender: TObject);
@@ -389,21 +351,20 @@ begin
   Screen.Cursor := crHourGlass;
   try
     Start := Now;
-    Map := TStrStrHashMap.Create(256);
+    Map := TJclStrStrHashMap.Create(256);
     for I := 0 to 100000 do
       Map.PutValue(GenId(123), '');
-    lblStrStrHashAdd.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblStrStrHashAdd.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     for I := 0 to 100000 do
       Res := Map.GetValue(GenId(123));
-    lblStrStrHashRandom.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblStrStrHashRandom.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
     Start := Now;
     Map.Clear;
-    lblStrStrHashClear.Caption := Format(ResultFormat, [(Now - Start) * 24 * 3600 * 1000]);
+    lblStrStrHashClear.Caption := Format(ResultFormat, [(Now - Start) * MsecsPerDay]);
   finally
     Screen.Cursor := crDefault;
   end;
-
 end;
 
 end.

@@ -3,15 +3,15 @@ unit Unit1;
 interface
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows, Messages, Forms, ComCtrls, Graphics, Controls,
   Dialogs, StdCtrls,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF}
+  {$IFDEF LINUX}
   QForms, QStdCtrls, QControls, QComCtrls,
-{$ENDIF}
+  {$ENDIF}
   SysUtils, Classes,
-  DCL_intf, ArrayList, LinkedList;
+  JclDCL_intf, JclArrayList, JclLinkedList;
 
 type
   TfrmAlgos = class(TForm)
@@ -71,7 +71,7 @@ implementation
 
 {$R *.dfm}
 
-uses Algorithms;
+uses JclAlgorithms;
 
 procedure TfrmAlgos.btnApplyGenerateClick(Sender: TObject);
 var
@@ -80,7 +80,7 @@ var
 begin
   List.Clear;
   for I := 1 to 10 do
-	  List.Add(TObject(I));
+    List.Add(TObject(I));
   lbxApply.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -89,7 +89,7 @@ end;
 
 procedure TfrmAlgos.FormCreate(Sender: TObject);
 begin
-  List := TArrayList.Create(16, False);
+  List := TJclArrayList.Create(16, False);
 end;
 
 function Add2(AObject: TObject): TObject;
@@ -103,12 +103,12 @@ var
   Value: Integer;
 begin
   Value := StrToIntDef(edtApply.Text, 0);
-  Algorithms.Apply(List.First, Value, Add2);
+  JclAlgorithms.Apply(List.First, Value, Add2);
   lbxApply.Items.Clear;
   It := List.First;
   while It.HasNext do
     lbxApply.Items.Add(IntToStr(Integer(It.Next)));
-end;                    
+end;
 
 procedure TfrmAlgos.btnFindGenerateClick(Sender: TObject);
 var
@@ -117,7 +117,7 @@ var
 begin
   List.Clear;
   for I := 1 to 10 do
-	  List.Add(TObject(I));
+    List.Add(TObject(I));
   lbxFind.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -130,7 +130,7 @@ var
   Value: Integer;
 begin
   Value := StrToIntDef(edtFind.Text, 0);
-  It := Algorithms.Find(List.First, List.Size, TObject(Value), SimpleCompare);
+  It := JclAlgorithms.Find(List.First, List.Size, TObject(Value), SimpleCompare);
   if It = nil then
     lblFound.Caption := 'Not found'
   else
@@ -145,7 +145,7 @@ begin
   Randomize;
   List.Clear;
   for I := 1 to 10 do
-	  List.Add(TObject(Random(10)+1));
+    List.Add(TObject(Random(10) + 1));
   lbxCount.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -158,7 +158,7 @@ var
   Value: Integer;
 begin
   Value := StrToIntDef(edtCount.Text, 0);
-  Count := Algorithms.CountObject(List.First, List.Size, TObject(Value), SimpleCompare);
+  Count := JclAlgorithms.CountObject(List.First, List.Size, TObject(Value), SimpleCompare);
   lblCount.Caption := IntToStr(Count);
 end;
 
@@ -170,7 +170,7 @@ begin
   Randomize;
   List.Clear;
   for I := 1 to 10 do
-	  List.Add(TObject(Random(10)+1));
+    List.Add(TObject(Random(10) + 1));
   lbxCopySrc.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -182,9 +182,9 @@ var
   AnotherList: IList;
   It: IIterator;
 begin
-  AnotherList := TArrayList.Create(16, False);
-  Algorithms.Generate(AnotherList, 10, TObject(0));
-  Algorithms.Copy(List.First, List.Size, AnotherList.First);
+  AnotherList := TJclArrayList.Create(16, False);
+  JclAlgorithms.Generate(AnotherList, 10, TObject(0));
+  JclAlgorithms.Copy(List.First, List.Size, AnotherList.First);
   lbxCopyDes.Items.Clear;
   It := AnotherList.First;
   while It.HasNext do
@@ -198,7 +198,7 @@ var
 begin
   List.Clear;
   for I := 1 to 10 do
-	  List.Add(TObject(I));
+    List.Add(TObject(I));
   lbxReverse.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -209,7 +209,7 @@ procedure TfrmAlgos.btnReverseClick(Sender: TObject);
 var
   It: IIterator;
 begin
-  Algorithms.Reverse(List.First, List.Last);
+  JclAlgorithms.Reverse(List.First, List.Last);
   lbxReverse.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -224,7 +224,7 @@ begin
   Randomize;
   List.Clear;
   for I := 1 to 10 do
-	  List.Add(TObject(Random(10)+1));
+    List.Add(TObject(Random(10) + 1));
   lbxSort.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -235,7 +235,7 @@ procedure TfrmAlgos.btnSortClick(Sender: TObject);
 var
   It: IIterator;
 begin
-  Algorithms.Sort(List, 0, 9, IntegerCompare);
+  JclAlgorithms.Sort(List, 0, 9, IntegerCompare);
   lbxSort.Items.Clear;
   It := List.First;
   while It.HasNext do
@@ -243,3 +243,4 @@ begin
 end;
 
 end.
+

@@ -3,12 +3,12 @@ unit Unit1;
 interface
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF}
+  {$IFDEF LINUX}
   QForms, QControls, QStdCtrls,
-{$ENDIF}
+  {$ENDIF}
   SysUtils, Classes;
 
 type
@@ -41,7 +41,7 @@ type
   end;
 
   IIntfMyObject = interface
-  ['{BA33CBCC-9CB2-4672-BF54-F52C2A0BEFFE}']
+    ['{BA33CBCC-9CB2-4672-BF54-F52C2A0BEFFE}']
     function GetInt: Integer;
     function GetStr: string;
     procedure SetInt(Value: Integer);
@@ -63,7 +63,7 @@ type
   end;
 
   IPerson = interface
-  ['{755C857B-A9E2-4D9D-8418-541CAEA79679}']
+    ['{755C857B-A9E2-4D9D-8418-541CAEA79679}']
     function GetAge: Integer;
     function GetMarried: Boolean;
     function GetName: string;
@@ -97,13 +97,13 @@ implementation
 
 {$R *.dfm}
 
-uses DCL_intf, ArrayList, LinkedList, Vector, MyObjectList;
+uses JclDCL_intf, JclArrayList, JclLinkedList, JclVector, MyObjectList;
 
 { TIntfMyObject }
 
 function TIntfMyObject.GetInt: Integer;
 begin
-  Result := FInt; 
+  Result := FInt;
 end;
 
 function TIntfMyObject.GetStr: string;
@@ -130,7 +130,7 @@ var
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TIntfArrayList.Create;
+  List := TJclIntfArrayList.Create;
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -164,12 +164,12 @@ end;
 
 procedure TfrmList.btnIntfLinkedListClick(Sender: TObject);
 var
-	List, Sub: IIntfList;
+  List, Sub: IIntfList;
   MyObject: IIntfMyObject;
   It: IIntfIterator;
 begin
   memResult.Lines.Clear;
-  List := TIntfLinkedList.Create;
+  List := TJclIntfLinkedList.Create;
   MyObject := TIntfMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -194,13 +194,13 @@ end;
 
 procedure TfrmList.btnIntfVectorClick(Sender: TObject);
 var
-  List: TIntfVector;
+  List: TJclIntfVector;
   MyObject: IIntfMyObject;
   It: IIntfIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TIntfVector.Create;
+  List := TJclIntfVector.Create;
   try
     MyObject := TIntfMyObject.Create;
     MyObject.Int := 42;
@@ -239,7 +239,7 @@ var
   It: IIterator;
 begin
   memResult.Lines.Clear;
-  List := TArrayList.Create;
+  List := TJclArrayList.Create;
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -260,7 +260,7 @@ begin
   end;
   It := List.First;
   while It.HasNext do
-  	It.Remove;
+    It.Remove;
 end;
 
 procedure TfrmList.btnLinkedListClick(Sender: TObject);
@@ -270,7 +270,7 @@ var
   It: IIterator;
 begin
   memResult.Lines.Clear;
-  List := TLinkedList.Create;
+  List := TJclLinkedList.Create;
   MyObject := TMyObject.Create;
   MyObject.Int := 42;
   MyObject.Str := 'MyString';
@@ -293,13 +293,13 @@ end;
 
 procedure TfrmList.btnVectorClick(Sender: TObject);
 var
-  List: TVector;
+  List: TJclVector;
   MyObject: TMyObject;
   It: IIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TVector.Create;
+  List := TJclVector.Create;
   try
     MyObject := TMyObject.Create;
     MyObject.Int := 42;
@@ -325,7 +325,7 @@ begin
       MyObject := TMyObject(List.Items[I]);
       memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
     end;
-	  List.Clear;
+    List.Clear;
   finally
     It := nil; // Force release Iterator before free list !
     List.Free; // No ref count
@@ -356,7 +356,7 @@ var
   S: string;
 begin
   memResult.Lines.Clear;
-  List := TStrArrayList.Create;
+  List := TJclStrArrayList.Create;
   List.Add('MyString');
 
   S := List.GetString(0);
@@ -413,15 +413,14 @@ begin
   FName := Value;
 end;
 
-
 procedure TfrmList.btnStrLinkedListClick(Sender: TObject);
 var
-	List, Sub: IStrList;
+  List, Sub: IStrList;
   S: string;
   It: IStrIterator;
 begin
   memResult.Lines.Clear;
-  List := TStrLinkedList.Create;
+  List := TJclStrLinkedList.Create;
   List.Add('MyString');
   memResult.Lines.Add(List.GetString(0));
 
@@ -439,13 +438,13 @@ end;
 
 procedure TfrmList.btnStrVectorClick(Sender: TObject);
 var
-  List: TStrVector;
+  List: TJclStrVector;
   S: string;
   It: IStrIterator;
   I: Integer;
 begin
   memResult.Lines.Clear;
-  List := TStrVector.Create;
+  List := TJclStrVector.Create;
   try
     List.Add('MyString');
     S := List.GetString(0);
@@ -473,3 +472,4 @@ begin
 end;
 
 end.
+
