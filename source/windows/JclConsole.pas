@@ -46,8 +46,7 @@ unit JclConsole;
 interface
 
 uses
-  {$IFDEF FPC} JwaWinNT, {$ENDIF}
-  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
+  Windows,
   Classes, SysUtils, Contnrs,
   JclBase;
 
@@ -345,7 +344,7 @@ type
     procedure InternalSetSize(const X, Y: SmallInt);
   protected
     constructor Create(const AScrBuf: TJclScreenBuffer);
-    procedure DoResize({$IFNDEF FPC}const{$ENDIF} NewRect: TSmallRect; bAbsolute: Boolean = True);
+    procedure DoResize(const NewRect: TSmallRect; bAbsolute: Boolean = True);
   public
     procedure Scroll(const cx, cy: Smallint);
     property ScreenBuffer: TJclScreenBuffer read FScreenBuffer;
@@ -400,6 +399,9 @@ type
 implementation
 
 uses
+  {$IFDEF FPC}
+  WinSysUt, JwaWinNT,
+  {$ENDIF FPC}
   Math, TypInfo,
   JclFileUtils, JclResources;
 
@@ -1409,7 +1411,7 @@ procedure TJclScreenWindow.InternalSetPosition(const X, Y: SmallInt);
 var
   NewRect: TSmallRect;
 begin
-  if (NewRect.Left <> X) or (NewRect.Top <> Y) then
+  if (GetLeft <> X) or (GetTop <> Y) then
   begin
     NewRect.Left := X;
     NewRect.Top := Y;
@@ -1551,7 +1553,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclScreenWindow.DoResize({$IFNDEF FPC}const{$ENDIF} NewRect: TSmallRect; bAbsolute: Boolean);
+procedure TJclScreenWindow.DoResize(const NewRect: TSmallRect; bAbsolute: Boolean);
 begin
   Win32Check(SetConsoleWindowInfo(ScreenBuffer.Handle, bAbsolute, NewRect));
 end;
@@ -1722,6 +1724,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/05/13 04:23:21  rrossmair
+// fixed TJclScreenWindow.InternalSetPosition; FPC-related changes
+//
 // Revision 1.8  2004/05/06 22:37:09  rrossmair
 // contributor list updated
 //
