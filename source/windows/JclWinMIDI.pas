@@ -43,7 +43,7 @@ uses
 type
   TStereoChannel = (scLeft, scRight);
   
-// MIDI Out
+  // MIDI Out
   IJclWinMidiOut = interface(IJclMidiOut)
     ['{F3FCE71C-B924-462C-BA0D-8C2DC118DADB}']
     // property access methods
@@ -123,7 +123,8 @@ begin
     raise EJclMidiError.Create(GetMidiOutErrorMessage(Code));
 end;
 
-// MidiOut implementation
+//=== { TMidiOut } ===========================================================
+
 type
   TMidiOut = class(TJclMidiOut, IJclWinMidiOut)
   private
@@ -277,6 +278,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.13  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.12  2005/02/24 16:34:53  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -144,7 +144,8 @@ begin
   StringToWideChar(Str, PWideChar(Result), iLen);
 end;
 
-// DCOM and MDAC Related Tests and Utility Routines
+//=== DCOM and MDAC Related Tests and Utility Routines =======================
+
 function IsDCOMInstalled: Boolean;
 var
   OLE32: HMODULE;
@@ -210,6 +211,7 @@ begin
 end;
 
 // Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream"
+
 function MarshalInterThreadInterfaceInVarArray(const iid: TIID; unk: IUnknown;
   var VarArray: OleVariant): HRESULT;
 var
@@ -359,7 +361,8 @@ begin
     Result := E_FAIL;
 end;
 
-// Internet Explorer Component Categories Routines
+//=== Internet Explorer Component Categories Routines ========================
+
 function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HRESULT;
 var
   CatRegister: ICatRegister;
@@ -453,7 +456,8 @@ begin
   Result := hr;
 end;
 
-// Stream Related Routines
+//=== Stream Related Routines ================================================
+
 function ResetIStreamToStart(Stream: IStream): Boolean;
 var
   i64Pos: Largeint;
@@ -648,6 +652,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.11  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -121,8 +121,6 @@ const
   cMsdosSys = 'C:\MSDOS.SYS';
 
 type
-{ TJclMsdosSys class }
-
   TJclMsdosSys = class(TInterfacedObject, IJclMsdosSys)
   private
     FUninstallDir: Char;
@@ -631,6 +629,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.7  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -616,7 +616,7 @@ end;
   AnsiString. }
 function GetPClassName(const Cls: TClass): Pointer;
 asm
-        mov    eax, [eax].vmtClassName
+        MOV     EAX, [EAX].vmtClassName
   // Result := JclSysUtils.GetVirtualMethod(Cls, vmtClassName div SizeOf(Pointer));
 end;
 
@@ -625,13 +625,13 @@ function ModDiv32(const Dividend, Divisor: Cardinal; out Quotient: Cardinal): Ca
 // Quotient := Dividend div Divisor;
 // Result := Dividend mod Divisor;
 asm
-        push   ecx
-        mov    ecx, edx
-        xor    edx, edx
-        div    ecx
-        pop    ecx
-        mov    [ecx], eax
-        mov    eax, edx
+        PUSH    ECX
+        MOV     ECX, EDX
+        XOR     EDX, EDX
+        DIV     ECX
+        POP     ECX
+        MOV     [ECX], EAX
+        MOV     EAX, EDX
 end;
 
 function ConvertInt32(Value: Cardinal; const Base: Cardinal; var Buffer: PWideChar): Cardinal;
@@ -655,26 +655,26 @@ function ModDiv64(var Dividend: Int64; const Divisor: Cardinal; out Quotient: In
   Quotient := Dividend div Divisor;
   Result := Dividend mod Divisor; }
 asm
-        push   0 // prepare for second division
-        push   edx
+        PUSH    0 // prepare for second division
+        PUSH    EDX
 
-        push   dword ptr [eax] // save dividend
-        push   dword ptr [eax+4]
+        PUSH    DWORD PTR [EAX] // save dividend
+        PUSH    DWORD PTR [EAX+4]
 
-        push   ecx // save quotient
+        PUSH    ECX // save quotient
 
-        push   0 // prepare for first division
-        push   edx
-        mov    edx, [eax+4]
-        mov    eax, [eax]
-        call   System.@_lludiv
-        pop    ecx // restore quotient
-        mov    [ecx], eax // store quotient
-        mov    [ecx+4], edx
+        PUSH    0 // prepare for first division
+        PUSH    EDX
+        MOV     EDX, [EAX+4]
+        MOV     EAX, [EAX]
+        CALL    System.@_lludiv
+        POP     ECX // restore quotient
+        MOV     [ECX], EAX // store quotient
+        MOV     [ECX+4], EDX
 
-        pop    edx // restore dividend
-        pop    eax
-        call   System.@_llumod
+        POP     EDX // restore dividend
+        POP     EAX
+        CALL    System.@_llumod
 end;
 
 function ConvertInt64(Value: Int64; const Base: Cardinal; var Buffer: PWideChar): Cardinal;
@@ -781,6 +781,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.3  2005/02/24 07:36:25  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

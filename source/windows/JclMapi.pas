@@ -50,7 +50,7 @@ type
     property ErrorCode: DWORD read FErrorCode;
   end;
 
-// Simple MAPI interface
+  // Simple MAPI interface
   TJclMapiClient = record
     ClientName: string;
     ClientPath: string;
@@ -137,8 +137,8 @@ type
     property MapiSendMail: TFNMapiSendMail read FMapiSendMail;
   end;
 
-// Simple email classes
 const
+  // Simple email classes
   MapiAddressTypeSMTP = 'SMTP';
   MapiAddressTypeFAX  = 'FAX';
   MapiAddressTypeTLX  = 'TLX';
@@ -293,7 +293,8 @@ const
     'MAPISendMail');
   AddressTypeDelimiter = ':';
 
-// MAPI Errors check
+//=== MAPI Errors check ======================================================
+
 function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean): DWORD;
 var
   Error: EJclMapiError;
@@ -420,7 +421,8 @@ begin
   EnumThreadWindows(MainThreadID, @SaveTaskWnds, Integer(@Result));
 end;
 
-// TJclSimpleMapi
+//=== { TJclSimpleMapi } =====================================================
+
 constructor TJclSimpleMapi.Create;
 begin
   inherited Create;
@@ -666,7 +668,8 @@ begin
   end;
 end;
 
-// TJclEmailRecip
+//=== { TJclEmailRecip } =====================================================
+
 function TJclEmailRecip.AddressAndName: string;
 var
   N: string;
@@ -703,9 +706,10 @@ begin
     Result := FName;
 end;
 
-// TJclEmailRecips
-function TJclEmailRecips.Add(const Address, Name: string;const Kind: TJclEmailRecipKind;
-  const AddressType: string): Integer;
+//=== { TJclEmailRecips } ====================================================
+
+function TJclEmailRecips.Add(const Address, Name: string;
+  const Kind: TJclEmailRecipKind; const AddressType: string): Integer;
 var
   Item: TJclEmailRecip;
 begin
@@ -756,7 +760,8 @@ begin
   Sort(EmailRecipsCompare);
 end;
 
-// TJclEmail
+//=== { TJclEmail } ==========================================================
+
 constructor TJclEmail.Create;
 begin
   inherited Create;
@@ -1227,7 +1232,8 @@ begin
   FAttachments.Sort;
 end;
 
-// Simple email send function
+//=== Simple email send function =============================================
+
 function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: string; const AAttachment: string;
   AShowDialog: Boolean; AParentWND: HWND; const AProfileName, APassword, AAddressType: string): Boolean;
 begin
@@ -1276,6 +1282,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.12  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -175,14 +175,14 @@ function ShellFindExecutable(const FileName, DefaultDir: string): string;
 type
   INSTALLSTATE = Longint;
 const
-  MSILIB='msi.dll';
+  MSILIB = 'msi.dll';
 var
-  RtdlMsiLibHandle:  TModuleHandle = INVALID_MODULEHANDLE_VALUE;
-  RtdlMsiGetShortcutTarget: function (szShortcutPath: LPCSTR; szProductCode: LPSTR;
-                                    szFeatureId: LPSTR; szComponentCode: LPSTR): UINT; stdcall = nil;
+  RtdlMsiLibHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+  RtdlMsiGetShortcutTarget: function(szShortcutPath: LPCSTR; szProductCode: LPSTR;
+    szFeatureId: LPSTR; szComponentCode: LPSTR): UINT; stdcall = nil;
 
-  RtdlMsiGetComponentPath: function (szProduct: LPCSTR; szComponent: LPCSTR;
-                                  lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE; stdcall =nil;
+  RtdlMsiGetComponentPath: function(szProduct: LPCSTR; szComponent: LPCSTR;
+    lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE; stdcall = nil;
 
 implementation
 
@@ -198,7 +198,8 @@ const
   cVerbProperties = 'properties';
   cVerbOpen = 'open';
 
-// Files and Folders
+//=== Files and Folders ======================================================
+
 // Helper function and constant to map a TSHDeleteOptions set to a Cardinal
 
 const
@@ -621,7 +622,8 @@ begin
   end;
 end;
 
-// Memory Management
+//=== Memory Management ======================================================
+
 function SHAllocMem(out P: Pointer; Count: Integer): Boolean;
 var
   Malloc: IMalloc;
@@ -682,7 +684,8 @@ begin
   end;
 end;
 
-// Paths and PIDLs
+//=== Paths and PIDLs ========================================================
+
 function DriveToPidlBind(const DriveName: string; out Folder: IShellFolder): PItemIdList;
 var
   Attr: ULONG;
@@ -700,8 +703,7 @@ begin
         Pointer(Folder))) then
       begin
         MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(PathAddSeparator(DriveName)), -1, Path, MAX_PATH);
-        if FAILED(Folder.ParseDisplayName(0, nil, Path, Eaten, Result,
-          Attr)) then
+        if Failed(Folder.ParseDisplayName(0, nil, Path, Eaten, Result, Attr)) then
         begin
           Folder := nil;
           // Failure probably means that this is not a drive. However, do not
@@ -746,8 +748,7 @@ begin
       if Succeeded(DesktopFolder.BindToObject(PathIdList, nil, IID_IShellFolder,
         Pointer(Folder))) then
       begin
-        if FAILED(Folder.ParseDisplayName(0, nil, ItemName, Eaten, Result,
-          Attr)) then
+        if Failed(Folder.ParseDisplayName(0, nil, ItemName, Eaten, Result, Attr)) then
         begin
           Folder := nil;
           Result := DriveToPidlBind(FileName, Folder);
@@ -904,15 +905,16 @@ begin
   end;
 end;
 
-// ShortCuts / Shell link
+//=== ShortCuts / Shell link =================================================
+
 procedure ShellLinkFree(var Link: TShellLink);
 begin
   PidlFree(Link.IdList);
 end;
 
 const
-  IID_IShellLink: TGUID = ( { IID_IShellLinkA }
-    D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
+  IID_IShellLink: TGUID = { IID_IShellLinkA }
+    (D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
 
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
   const FileName: string): HRESULT;
@@ -982,28 +984,28 @@ var
   Buffer: string;
   Win32FindData: TWin32FindData;
   FullPath: string;
-  ProductGuid: array[0..38] of char;
-  FeatureID: array[0..MAX_FEATURE_CHARS] of char;
-  ComponentGUID: array[0..38] of char;
-  TargetFile: array[0..MAX_PATH] of Char;
+  ProductGuid: array [0..38] of Char;
+  FeatureID: array [0..MAX_FEATURE_CHARS] of Char;
+  ComponentGUID: array [0..38] of Char;
+  TargetFile: array [0..MAX_PATH] of Char;
   PathSize: DWORD;
   TargetResolved: Boolean;
 begin
   Result := CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
-                             IID_IShellLink, ShellLink);
+    IID_IShellLink, ShellLink);
 
   if Succeeded(Result) then
   begin
-    TargetResolved:=False;
+    TargetResolved := False;
 
-    //Handle MSI style shortcuts without invoking the Windows installer if the feature was
-    //set to "Install on first use"
+    // Handle MSI style shortcuts without invoking the Windows installer if
+    // the feature was set to "Install on first use"
     if RtdlLoadMsiFuncs then
     begin
       FillChar(ProductGuid, SizeOf(ProductGuid), #0);
       FillChar(FeatureID, SizeOf(FeatureID), #0);
       FillChar(ComponentGuid, SizeOf(ComponentGuid), #0);
-      FillChar(TargetFile, SizeOf(TargetFile),#0);
+      FillChar(TargetFile, SizeOf(TargetFile), #0);
 
       if RtdlMsiGetShortcutTarget(PAnsiChar(FileName), ProductGuid, FeatureID, ComponentGuid) = ERROR_SUCCESS then
       begin
@@ -1013,7 +1015,7 @@ begin
         if TargetFile <> '' then
         begin
           Link.Target := TargetFile;
-          TargetResolved:=True;
+          TargetResolved := True;
         end;
       end;
     end;
@@ -1021,8 +1023,7 @@ begin
     PersistFile := ShellLink as IPersistFile;
     // PersistFile.Load fails if the filename is not fully qualified
     FullPath := ExpandFileName(FileName);
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1,
-                        LinkName, MAX_PATH);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1, LinkName, MAX_PATH);
     Result := PersistFile.Load(LinkName, STGM_READ);
 
     if Succeeded(Result) then
@@ -1104,7 +1105,8 @@ begin
     Result := 0;
 end;
 
-// Miscellaneous
+//=== Miscellaneous ==========================================================
+
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
 var
   QueryInfo: IQueryInfo;
@@ -1166,7 +1168,7 @@ begin
   if Source <> 0 then
   begin
     if (ImageList_AddIcon(Source, Icon) <> -1) and
-       (ImageList_AddIcon(Source, Overlay) <> -1) then
+      (ImageList_AddIcon(Source, Overlay) <> -1) then
     begin
       Dest := HIMAGELIST(ImageList_Merge(Source, 0, Source, 1, 0, 0));
       if Dest <> 0 then
@@ -1247,7 +1249,6 @@ var
   Sei: TShellExecuteInfo;
   Res: LongBool;
   Msg: tagMSG;
-
 begin
   FillChar(Sei, SizeOf(Sei), #0);
   Sei.cbSize := SizeOf(Sei);
@@ -1261,8 +1262,7 @@ begin
   if Result then
   begin
     WaitForInputIdle(Sei.hProcess, INFINITE);
-    while (WaitForSingleObject(Sei.hProcess, 10) = WAIT_TIMEOUT) do
-    begin
+    while WaitForSingleObject(Sei.hProcess, 10) = WAIT_TIMEOUT do
       repeat
         Res := PeekMessage(Msg, Sei.Wnd, 0, 0, PM_REMOVE);
         if Res then
@@ -1270,8 +1270,7 @@ begin
           TranslateMessage(Msg);
           DispatchMessage(Msg);
         end;
-      until (Res = False);
-    end;
+      until not Res;
     CloseHandle(Sei.hProcess);
   end;
 end;
@@ -1287,10 +1286,10 @@ type
   TRasDialDlgA = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
 
 function ShellRasDial(const EntryName: string): Boolean;
- var
-   Info: TRasDialDlg;
-   RasDlg: HModule;
-   RasDialDlgA: TRasDialDlgA;
+var
+  Info: TRasDialDlg;
+  RasDlg: HModule;
+  RasDialDlgA: TRasDialDlgA;
 begin
    if IsWinNT then
    begin
@@ -1402,12 +1401,16 @@ end;
 
 initialization
   //We don't load the msi functions until the first attempt to resolve an MSI link
+
 finalization
   UnloadModule(rtdlMsiLibHandle);
 
 // History:
 
 // $Log$
+// Revision 1.20  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.19  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

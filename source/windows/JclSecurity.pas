@@ -83,7 +83,8 @@ uses
   {$ENDIF FPC}
   JclResources, JclStrings, JclSysInfo, JclWin32;
 
-// Access Control
+//=== Access Control =========================================================
+
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
 begin
@@ -120,7 +121,8 @@ begin
     Result := nil;
 end;
 
-// Privileges
+//=== Privileges =============================================================
+
 function IsAdministrator: Boolean;
 var
   psidAdmin: Pointer;
@@ -220,8 +222,7 @@ begin
   HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_ADJUST_PRIVILEGES,
     False, Token);
   if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
-    HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES,
-      Token);
+    HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, Token);
   if HaveToken then
   begin
     TokenPriv.PrivilegeCount := 1;
@@ -319,7 +320,8 @@ begin
     Result := '';
 end;
 
-// Account Information
+//=== Account Information ====================================================
+
 procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 var
   NameSize, DomainSize: DWORD;
@@ -344,8 +346,8 @@ begin
   end;
 end;
 
-procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass;
-  var Buffer: Pointer);
+procedure QueryTokenInformation(Token: THandle;
+  InformationClass: TTokenInformationClass; var Buffer: Pointer);
 var
   Ret: BOOL;
   Length, LastError: DWORD;
@@ -417,6 +419,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.16  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

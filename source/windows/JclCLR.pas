@@ -1624,7 +1624,7 @@ function TJclClrHeaderEx.HasVTableFixup: Boolean;
 begin
   with Header.VTableFixups do
   Result := Assigned(FVTableFixups) or
-            ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+    ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
 end;
 
 function TJclClrHeaderEx.GetStrongNameSignature: TCustomMemoryStream;
@@ -1740,6 +1740,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.11  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -1633,7 +1633,7 @@ const
   MAX_CLASS_NAME = 1024;
   MAX_PATH_NAME  = 260;
 
-// Assembly attr bits, used by DefineAssembly.
+  // Assembly attr bits, used by DefineAssembly.
   afPublicKey                  = $0001; // The assembly ref holds the full (unhashed) public key.
   afCompatibilityMask          = $0070;
   afSideBySideCompatible       = $0000; // The assembly is side by side compatible.
@@ -1659,7 +1659,7 @@ const
   ManifestResourceVisibilityMapping: array [TJclClrTableManifestResourceVisibility] of DWORD =
     (mrPublic, mrPrivate);
 
-// MethodDef attr bits, Used by DefineMethod.
+  // MethodDef attr bits, Used by DefineMethod.
   // member access mask - Use this mask to retrieve accessibility information.
   mdMemberAccessMask      = $0007;
   mdPrivateScope          = $0000;     // Member not referenceable.
@@ -1698,7 +1698,7 @@ const
   mdHasSecurity           = $4000;     // Method has security associate with it.
   mdRequireSecObject      = $8000;     // Method calls another method containing security code.
 
-// MethodImpl attr bits, used by DefineMethodImpl.
+  // MethodImpl attr bits, used by DefineMethodImpl.
   // code impl mask
   miCodeTypeMask     = $0003;   // Flags about code type.
   miIL               = $0000;   // Method impl is IL.
@@ -1723,7 +1723,7 @@ const
   miNoInlining       = $0008;   // Method may not be inlined.
   miMaxMethodImplVal = $ffff;   // Range check value
 
-// Calling convention flags.
+  // Calling convention flags.
   IMAGE_CEE_CS_CALLCONV_DEFAULT      = $0;
   IMAGE_CEE_CS_CALLCONV_VARARG       = $5;
   IMAGE_CEE_CS_CALLCONV_FIELD        = $6;
@@ -1736,7 +1736,7 @@ const
   IMAGE_CEE_CS_CALLCONV_HASTHIS      = $20;  // Top bit indicates a 'this' parameter
   IMAGE_CEE_CS_CALLCONV_EXPLICITTHIS = $40;  // This parameter is explicitly in the signature
 
-// TypeDef/ExportedType attr bits, used by DefineTypeDef.
+  // TypeDef/ExportedType attr bits, used by DefineTypeDef.
   // Use this mask to retrieve the type visibility information.
   tdVisibilityMask     = $00000007;
   tdNotPublic          = $00000000;     // Class is not public scope.
@@ -1784,7 +1784,7 @@ const
   tdRTSpecialName      = $00000800;     // Runtime should check name encoding.
   tdHasSecurity        = $00040000;     // Class has security associate with it.
 
-// FieldDef attr bits, used by DefineField.
+  // FieldDef attr bits, used by DefineField.
   // member access mask - Use this mask to retrieve accessibility information.
   fdFieldAccessMask = $0007;
   fdPrivateScope    = $0000;     // Member not referenceable.
@@ -1814,7 +1814,7 @@ const
   fdHasDefault      = $8000;     // Field has default.
   fdHasFieldRVA     = $0100;     // Field has RVA.
 
-// Flags for Params
+  // Flags for Params
   pdIn              = $0001;     // Param is [In]
   pdOut             = $0002;     // Param is [out]
   pdOptional        = $0010;     // Param is optional
@@ -1829,7 +1829,7 @@ const
   ClrParamKindMapping: array [TJclClrParamKind] of DWORD =
     (pdIn, pdOut, pdOptional, pdHasDefault, pdHasFieldMarshal);
 
-// Element type for Cor signature
+  // Element type for Cor signature
   ELEMENT_TYPE_END        = $0;
   ELEMENT_TYPE_VOID       = $1;
   ELEMENT_TYPE_BOOLEAN    = $2;
@@ -1901,10 +1901,7 @@ const
   ClrMethodImplFlagMapping: array [TJclClrMethodImplFlag] of Word =
    (miForwardRef, miPreserveSig, miInternalCall, miSynchronized, miNoInlining);
 
-////////////////////////////////////////////////
-// Property attr bits, used by DefineProperty.
-//
-
+  // Property attr bits, used by DefineProperty.
   prSpecialName   = $0200;     // property is special.  Name describes how.
 
   // Reserved flags for Runtime use only.
@@ -1917,10 +1914,7 @@ const
   ClrTablePropertyFlagMapping: array [TJclClrTablePropertyFlag] of Word =
    (prSpecialName, prRTSpecialName, prHasDefault);
 
-//////////////////////////////////////////
-// Event attr bits, used by DefineEvent.
-//
-
+  // Event attr bits, used by DefineEvent.
   evSpecialName   = $0200;     // event is special.  Name describes how.
 
   // Reserved flags for Runtime use only.
@@ -1930,10 +1924,7 @@ const
   ClrTableEventFlagMapping: array [TJclClrTableEventFlag] of Word =
    (evSpecialName, evRTSpecialName);
 
-////////////////////////////////////////////////////////
-// DeclSecurity attr bits, used by DefinePermissionSet
-//
-
+  // DeclSecurity attr bits, used by DefinePermissionSet
   dclActionMask        = $000f;     // Mask allows growth of enum.
   dclActionNil         = $0000;
   dclRequest           = $0001;
@@ -1953,9 +1944,7 @@ const
   dclNonCasInheritance = $000f;
   dclMaximumValue      = $000f;     // Maximum legal value
 
-///////////////////////////////////////////////////
-// PinvokeMap attr bits, used by DefinePinvokeMap
-//
+  // PinvokeMap attr bits, used by DefinePinvokeMap
   pmNoMangle        = $0001;   // Pinvoke is to use the member name as specified.
 
   // Use this mask to retrieve the CharSet information.
@@ -1991,7 +1980,8 @@ begin
   Result := (Value and Flag) = Flag;
 end;
 
-// TJclClrSignature
+//=== { TJclClrSignature } ===================================================
+
 constructor TJclClrSignature.Create(const ABlob: TJclClrBlobRecord);
 begin
   inherited Create;
@@ -2171,7 +2161,8 @@ begin
   FBlob.Seek(1, soFromCurrent);
 end;
 
-// TJclClrArraySign
+//=== { TJclClrArraySign } ===================================================
+
 constructor TJclClrArraySign.Create(const ABlob: TJclClrBlobRecord);
 var
   I: Integer;
@@ -2191,7 +2182,8 @@ begin
     FBounds[I][adLowBound] := ReadInteger;
 end;
 
-// TJclClrTableModuleRow
+//=== { TJclClrTableModuleRow } ==============================================
+
 constructor TJclClrTableModuleRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2251,7 +2243,8 @@ begin
   Result := TJclClrTableModuleRow;
 end;
 
-// TJclClrTableModuleRefRow
+//=== { TJclClrTableModuleRefRow } ===========================================
+
 constructor TJclClrTableModuleRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2278,7 +2271,8 @@ begin
   Result := TJclClrTableModuleRefRow;
 end;
 
-// TJclClrTableAssemblyRow
+//=== { TJclClrTableAssemblyRow } ============================================
+
 constructor TJclClrTableAssemblyRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2383,7 +2377,8 @@ begin
   Result := TJclClrTableAssemblyRow;
 end;
 
-// TJclClrTableAssemblyOSRow
+//=== { TJclClrTableAssemblyOSRow } ==========================================
+
 constructor TJclClrTableAssemblyOSRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2408,7 +2403,8 @@ begin
   Result := TJclClrTableAssemblyOSRow;
 end;
 
-// TJclClrTableAssemblyProcessorRow
+//=== { TJclClrTableAssemblyProcessorRow } ===================================
+
 constructor TJclClrTableAssemblyProcessorRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2425,7 +2421,8 @@ begin
   Result := TJclClrTableAssemblyProcessorRow;
 end;
 
-// TJclClrTableAssemblyRefRow
+//=== { TJclClrTableAssemblyRefRow } =========================================
+
 constructor TJclClrTableAssemblyRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2534,7 +2531,8 @@ begin
   Result := TJclClrTableAssemblyRefRow;
 end;
 
-// TJclClrTableAssemblyRefOSRow
+//=== { TJclClrTableAssemblyRefOSRow } =======================================
+
 constructor TJclClrTableAssemblyRefOSRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2561,7 +2559,8 @@ begin
   Result := TJclClrTableAssemblyRefOSRow;
 end;
 
-// TJclClrTableAssemblyRefProcessorRow
+//=== { TJclClrTableAssemblyRefProcessorRow } ================================
+
 constructor TJclClrTableAssemblyRefProcessorRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2589,7 +2588,8 @@ begin
   Result := TJclClrTableAssemblyRefProcessorRow;
 end;
 
-// TJclClrTableClassLayoutRow
+//=== { TJclClrTableClassLayoutRow } =========================================
+
 constructor TJclClrTableClassLayoutRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2608,7 +2608,8 @@ begin
   Result := TJclClrTableClassLayoutRow;
 end;
 
-// TJclClrTableConstantRow
+//=== { TJclClrTableConstantRow } ============================================
+
 constructor TJclClrTableConstantRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2693,7 +2694,8 @@ begin
   Result := TJclClrTableConstantRow;
 end;
 
-// TJclClrTableCustomAttributeRow
+//=== { TJclClrTableCustomAttributeRow } =====================================
+
 constructor TJclClrTableCustomAttributeRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2766,7 +2768,8 @@ begin
   Result := TJclClrTableCustomAttributeRow;
 end;
 
-// TJclClrTableDeclSecurityRow
+//=== { TJclClrTableDeclSecurityRow } ========================================
+
 constructor TJclClrTableDeclSecurityRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2785,7 +2788,8 @@ begin
   Result := TJclClrTableDeclSecurityRow;
 end;
 
-// TJclClrTableEventMapRow
+//=== { TJclClrTableEventMapRow } ============================================
+
 constructor TJclClrTableEventMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2803,7 +2807,8 @@ begin
   Result := TJclClrTableEventMapRow;
 end;
 
-// TJclClrTableEventDefRow
+//=== { TJclClrTableEventDefRow } ============================================
+
 constructor TJclClrTableEventDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2827,7 +2832,8 @@ begin
   Result := TJclClrTableEventDefRow;
 end;
 
-// TJclClrTableEventPtrRow
+//=== { TJclClrTableEventPtrRow } ============================================
+
 constructor TJclClrTableEventPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2849,7 +2855,8 @@ begin
   Result := TJclClrTableEventPtrRow;
 end;
 
-// TJclClrTableExportedTypeRow
+//=== { TJclClrTableExportedTypeRow } ========================================
+
 constructor TJclClrTableExportedTypeRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2880,7 +2887,8 @@ begin
   Result := TJclClrTableExportedTypeRow;
 end;
 
-// TJclClrTableFieldDefRow
+//=== { TJclClrTableFieldDefRow } ============================================
+
 constructor TJclClrTableFieldDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2989,7 +2997,8 @@ begin
   Result := TJclClrTableFieldDefRow;
 end;
 
-// TJclClrTableFieldPtrRow
+//=== { TJclClrTableFieldPtrRow } ============================================
+
 constructor TJclClrTableFieldPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3011,7 +3020,8 @@ begin
   Result := TJclClrTableFieldPtrRow;
 end;
 
-// TJclClrTableFieldLayoutRow
+//=== { TJclClrTableFieldLayoutRow } =========================================
+
 constructor TJclClrTableFieldLayoutRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3030,7 +3040,8 @@ begin
   Result := TJclClrTableFieldLayoutRow;
 end;
 
-// TJclClrTableFieldMarshalRow
+//=== { TJclClrTableFieldMarshalRow } ========================================
+
 constructor TJclClrTableFieldMarshalRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3049,7 +3060,8 @@ begin
   Result := TJclClrTableFieldMarshalRow;
 end;
 
-// TJclClrTableFieldRVARow
+//=== { TJclClrTableFieldRVARow } ============================================
+
 constructor TJclClrTableFieldRVARow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3067,7 +3079,8 @@ begin
   Result := TJclClrTableFieldRVARow;
 end;
 
-// TJclClrTableFileRow
+//=== { TJclClrTableFileRow } ================================================
+
 constructor TJclClrTableFileRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3115,7 +3128,8 @@ begin
   Result := TJclClrTableFileRow;
 end;
 
-// TJclClrTableImplMapRow
+//=== { TJclClrTableImplMapRow } =============================================
+
 constructor TJclClrTableImplMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3140,7 +3154,8 @@ begin
   Result := TJclClrTableImplMapRow;
 end;
 
-// TJclClrTableInterfaceImplRow
+//=== { TJclClrTableInterfaceImplRow } =======================================
+
 constructor TJclClrTableInterfaceImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3181,7 +3196,8 @@ begin
   Result := TJclClrTableInterfaceImplRow;
 end;
 
-// TJclClrTableManifestResourceRow
+//=== { TJclClrTableManifestResourceRow } ====================================
+
 constructor TJclClrTableManifestResourceRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3252,7 +3268,8 @@ begin
   Result := TJclClrTableManifestResourceRow;
 end;
 
-// TJclClrTableMemberRefRow
+//=== { TJclClrTableMemberRefRow } ===========================================
+
 constructor TJclClrTableMemberRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3319,7 +3336,8 @@ begin
   Result := TJclClrTableMemberRefRow;
 end;
 
-// TJclClrTableParamDefRow
+//=== { TJclClrTableParamDefRow } ============================================
+
 constructor TJclClrTableParamDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3376,7 +3394,8 @@ begin
   Result := TJclClrTableParamDefRow;
 end;
 
-// TJclClrTableParamPtrRow
+//=== { TJclClrTableParamPtrRow } ============================================
+
 constructor TJclClrTableParamPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3398,8 +3417,10 @@ begin
   Result := TJclClrTableParamPtrRow;
 end;
 
-// Indicates the format for the COR_ILMETHOD header
+//=== { TJclClrExceptionHandler } ============================================
+
 const
+  // Indicates the format for the COR_ILMETHOD header
   CorILMethod_FormatShift     = 2;
   CorILMethod_FormatMask      = ((1 shl CorILMethod_FormatShift) - 1);
 
@@ -3431,7 +3452,6 @@ const
    (COR_ILEXCEPTION_CLAUSE_NONE, COR_ILEXCEPTION_CLAUSE_FILTER,
     COR_ILEXCEPTION_CLAUSE_FINALLY, COR_ILEXCEPTION_CLAUSE_FAULT);
 
-// TJclClrExceptionHandler
 constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseSmall);
 begin
   FFlags               := EHClause.Flags;
@@ -3480,7 +3500,8 @@ begin
       Include(Result, AFlag);
 end;
 
-// TJclClrMethodBody
+//=== { TJclClrMethodBody } ==================================================
+
 constructor TJclClrMethodBody.Create(const AMethod: TJclClrTableMethodDefRow);
 var
   ILMethod: PImageCorILMethodHeader;
@@ -3584,7 +3605,8 @@ begin
   Result := TJclClrTableStandAloneSigRow(FMethod.Table.Stream.Metadata.Tokens[FLocalVarSignToken]).Signature;
 end;
 
-// TJclClrTableMethodDefRow
+//=== { TJclClrTableMethodDefRow } ===========================================
+
 constructor TJclClrTableMethodDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3873,7 +3895,8 @@ begin
   Result := TJclClrTableMethodDefRow;
 end;
 
-// TJclClrTableMethodPtrRow
+//=== { TJclClrTableMethodPtrRow } ===========================================
+
 constructor TJclClrTableMethodPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3895,7 +3918,8 @@ begin
   Result := TJclClrTableMethodPtrRow;
 end;
 
-// TJclClrTableMethodImplRow
+//=== { TJclClrTableMethodImplRow } ==========================================
+
 constructor TJclClrTableMethodImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3915,7 +3939,8 @@ begin
   Result := TJclClrTableMethodImplRow;
 end;
 
-// TJclClrTableMethodSemanticsRow
+//=== { TJclClrTableMethodSemanticsRow } =====================================
+
 constructor TJclClrTableMethodSemanticsRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3934,7 +3959,8 @@ begin
   Result := TJclClrTableMethodSemanticsRow;
 end;
 
-// TJclClrTableMethodSpecRow
+//=== { TJclClrTableMethodSpecRow } ==========================================
+
 constructor TJclClrTableMethodSpecRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3965,7 +3991,8 @@ begin
   Result := TJclClrTableMethodSpecRow;
 end;
 
-// TJclClrTableNestedClassRow
+//=== { TJclClrTableNestedClassRow } =========================================
+
 constructor TJclClrTableNestedClassRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3983,7 +4010,8 @@ begin
   Result := TJclClrTableNestedClassRow;
 end;
 
-// TJclClrTablePropertyDefRow
+//=== { TJclClrTablePropertyDefRow } =========================================
+
 constructor TJclClrTablePropertyDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4031,7 +4059,8 @@ begin
   Result := TJclClrTablePropertyDefRow;
 end;
 
-// TJclClrTablePropertyPtrRow
+//=== { TJclClrTablePropertyPtrRow } =========================================
+
 constructor TJclClrTablePropertyPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4053,7 +4082,8 @@ begin
   Result := TJclClrTablePropertyPtrRow;
 end;
 
-// TJclClrTablePropertyMapRow
+//=== { TJclClrTablePropertyMapRow } =========================================
+
 constructor TJclClrTablePropertyMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4114,7 +4144,8 @@ begin
     end;
 end;
 
-// TJclClrTableStandAloneSigRow
+//=== { TJclClrTableStandAloneSigRow } =======================================
+
 constructor TJclClrTableStandAloneSigRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4137,7 +4168,8 @@ begin
   Result := TJclClrTableStandAloneSigRow;
 end;
 
-// TJclClrTableTypeDefRow
+//=== { TJclClrTableTypeDefRow } =============================================
+
 constructor TJclClrTableTypeDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4433,7 +4465,8 @@ begin
   Result := TJclClrTableTypeDefRow(inherited GetRow(Idx));
 end;
 
-// TJclClrTableTypeRefRow
+//=== { TJclClrTableTypeRefRow } =============================================
+
 constructor TJclClrTableTypeRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4496,7 +4529,8 @@ begin
   Result := TJclClrTableTypeRefRow(inherited GetRow(Idx));
 end;
 
-// TJclClrTableTypeSpecRow
+//=== { TJclClrTableTypeSpecRow } ============================================
+
 constructor TJclClrTableTypeSpecRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4518,7 +4552,8 @@ begin
   Result := TJclClrTableTypeSpecRow;
 end;
 
-// TJclClrTableENCMapRow
+//=== { TJclClrTableENCMapRow } ==============================================
+
 constructor TJclClrTableENCMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4535,7 +4570,8 @@ begin
   Result := TJclClrTableENCMapRow;
 end;
 
-// TJclClrTableENCLogRow
+//=== { TJclClrTableENCLogRow } ==============================================
+
 constructor TJclClrTableENCLogRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4587,7 +4623,8 @@ begin
   end;
 end;
 
-// TJclClrLocalVarSign
+//=== { TJclClrLocalVarSign } ================================================
+
 constructor TJclClrLocalVarSign.Create(const ABlob: TJclClrBlobRecord);
 var
   Sign, ElemType: Byte;
@@ -4658,7 +4695,8 @@ begin
   Result := FLocalVars.Count;
 end;
 
-// TJclClrMethodSign
+//=== { TJclClrMethodSign } ==================================================
+
 constructor TJclClrMethodSign.Create(const ABlob: TJclClrBlobRecord);
 var
   Sign: Byte;
@@ -4707,16 +4745,17 @@ begin
   Result := FParams.Count;
 end;
 
-// TJclClrCustomModifierSign
+//=== { TJclClrCustomModifierSign } ==========================================
+
 constructor TJclClrCustomModifierSign.Create(const ABlob: TJclClrBlobRecord);
 begin
   inherited Create(ABlob);
-
   FRequired := ReadByte = ELEMENT_TYPE_CMOD_REQD;
   FToken    := ReadToken;
 end;
 
-// TJclClrMethodParam
+//=== { TJclClrMethodParam } =================================================
+
 constructor TJclClrMethodParam.Create(const ABlob: TJclClrBlobRecord);
 var
   By: Byte;
@@ -4777,6 +4816,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.11  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //
