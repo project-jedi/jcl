@@ -114,7 +114,7 @@ function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal;
 
 function MimeDecodePartial(var InputBuffer; const InputBytesCount: Cardinal;
   var OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
-  
+ 
 function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
   const ByteBufferSpace: Cardinal): Cardinal;
 
