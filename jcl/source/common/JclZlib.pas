@@ -2120,6 +2120,21 @@ end;
 
 //  History:                                                                  
 
+//  $Log$
+//  Revision 1.8  2004/05/31 22:11:35  rrossmair
+//  added Log CVS key word.
+//
+//
+//  Revision 1.9  2004/05/31 22:04:22  rrossmair
+//  added PJH disclaimer; some formatting. Not longer generated file.
+//
+//  Revision 1.8  2004/05/09 00:18:21  peterjhaas
+//  - old history in reverse order like CVS log
+//  - change interface crc32 to avoid FPC compatibility problems
+//  - change GetZlibErrorText implementation for FPC compatibility
+//  - change OctalToInt implementation FPC compatibility
+//  - change Char to AnsiChar in fixed structures
+//
 //  Revision 1.7  2004/05/08 08:44:18  rrossmair
 //  introduced & applied symbol HAS_UNIT_LIBC
 //
