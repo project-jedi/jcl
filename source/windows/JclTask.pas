@@ -33,14 +33,12 @@ interface
 {$WEAKPACKAGEUNIT ON}
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   {$IFDEF COMPILER5_UP}
   Contnrs,
   {$ENDIF COMPILER5_UP}
-  JwaMsTask,
+  JwaWinBase, JwaMsTask,
   JclBase, JclSysUtils, JclSysInfo;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
@@ -328,8 +326,8 @@ type
     function GetExitCode: DWORD;
     function GetDeadlineMinutes: Word;
     function GetIdleMinutes: Word;
-    function GetMostRecentRunTime: TSystemTime;
-    function GetNextRunTime: TSystemTime;
+    function GetMostRecentRunTime: Windows.TSystemTime;
+    function GetNextRunTime: Windows.TSystemTime;
     function GetStatus: TJclScheduledTaskStatus;
     function GetErrorRetryCount: Word;
     procedure SetErrorRetryCount(const Value: Word);
@@ -363,8 +361,8 @@ type
     property OwnerData: TStream read GetData write SetData;
     property IdleMinutes: Word read GetIdleMinutes;
     property DeadlineMinutes: Word read GetDeadlineMinutes;
-    property MostRecentRunTime: TSystemTime read GetMostRecentRunTime;
-    property NextRunTime: TSystemTime read GetNextRunTime;
+    property MostRecentRunTime: Windows.TSystemTime read GetMostRecentRunTime;
+    property NextRunTime: Windows.TSystemTime read GetNextRunTime;
     property Status: TJclScheduledTaskStatus read GetStatus;
     property Flags: TJclScheduledTaskFlags read GetFlags write SetFlags;
     property Triggers[const Idx: Integer]: TJclTaskTrigger read GetTrigger; default;
@@ -401,8 +399,7 @@ implementation
 
 uses
   ActiveX, ComObj, CommCtrl,
-  JclSvcCtrl,
-  JwaWinBase;
+  JclSvcCtrl;
 
 const
   TaskFlagMapping: array [TJclScheduledTaskFlag] of DWORD =
@@ -928,23 +925,23 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclScheduledWorkItem.GetMostRecentRunTime: TSystemTime;
+function TJclScheduledWorkItem.GetMostRecentRunTime: Windows.TSystemTime;
 begin
-  OleCheck(FScheduledWorkItem.GetMostRecentRunTime(Result));
+  OleCheck(FScheduledWorkItem.GetMostRecentRunTime(JwaWinBase.SystemTime(Result)));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclScheduledWorkItem.GetNextRunTime: TSystemTime;
+function TJclScheduledWorkItem.GetNextRunTime: Windows.TSystemTime;
 begin
-  OleCheck(FScheduledWorkItem.GetNextRunTime(Result));
+  OleCheck(FScheduledWorkItem.GetNextRunTime(JwaWinBase.SystemTime(Result)));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetRunTimes(const BeginTime, EndTime: TDateTime): TDateTimeArray;
 var
-  BeginSysTime, EndSysTime: TSystemTime;
+  BeginSysTime, EndSysTime: Windows.TSystemTime;
   I, Count: Word;
   TaskTimes: LPSYSTEMTIME;
 begin
@@ -959,7 +956,7 @@ begin
   SetLength(Result, Count);
   for I:=0 to Count-1 do
   begin
-    Result[I] := SystemTimeToDateTime(TaskTimes^);
+    Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
     Inc(TaskTimes);
   end;
 
