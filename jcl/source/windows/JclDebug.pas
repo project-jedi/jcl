@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: April 6, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -412,7 +412,8 @@ function Caller(Level: Integer = 0; FastStackWalk: Boolean = False): Pointer;
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
-  IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False): string;
+  IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
+  IncludeVAdress: Boolean = False): string;
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
@@ -515,7 +516,8 @@ type
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
     destructor Destroy; override;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
-      IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False);
+      IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
+      IncludeVAdress: Boolean = False);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
@@ -524,7 +526,8 @@ function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: P
 
 function JclLastExceptStackList: TJclStackInfoList;
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
-  IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False): Boolean;
+  IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False;
+  IncludeVAdress: Boolean = False): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Exception frame info routines
@@ -698,14 +701,9 @@ function IsHandleValid(Handle: THandle): Boolean;
 
 {$ENDIF MSWINDOWS}
 
-
 {$IFDEF SUPPORTS_EXTSYM}
-
-// centralized EXTERNALSYMs to keep this Delphi 3 compatible
-
-{$EXTERNALSYM __FILE__}
-{$EXTERNALSYM __LINE__}
-
+  {$EXTERNALSYM __FILE__}
+  {$EXTERNALSYM __LINE__}
 {$ENDIF}
 
 implementation
@@ -719,6 +717,9 @@ uses
 //==================================================================================================
 // Helper assembler routines
 //==================================================================================================
+
+const
+  ModuleCodeOffset = $1000;
 
 {$STACKFRAMES OFF}
 
@@ -2460,7 +2461,7 @@ end;
 
 function TJclDebugInfoSource.VAFromAddr(const Addr: Pointer): DWORD;
 begin
-  Result := DWORD(Addr) - FModule - $1000;
+  Result := DWORD(Addr) - FModule - ModuleCodeOffset;
 end;
 
 //==================================================================================================
@@ -2863,15 +2864,16 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset: Boolean): string;
+  IncludeStartProcLineOffset: Boolean; IncludeVAdress: Boolean): string;
 var
   Info, StartProcInfo: TJclLocationInfo;
   OffsetStr, StartProcOffsetStr: string;
+  Module : HMODULE;
 begin
+  OffsetStr := '';
   if GetLocationInfo(Addr, Info) then
   with Info do
   begin
-    OffsetStr := '';
     if LineNumber > 0 then
     begin
       if IncludeStartProcLineOffset and GetLocationInfo(Pointer(Cardinal(Info.Address) -
@@ -2901,8 +2903,15 @@ begin
   end
   else
     Result := Format('[%p]', [Addr]);
-  if IncludeModuleName then
-    Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(ModuleFromAddr(Addr)))]), Result, 11);
+  if IncludeVAdress or IncludeModuleName then
+  begin
+    Module := ModuleFromAddr(Addr);
+    if IncludeVAdress then
+      OffsetStr :=  Format('(%p) ', [Pointer(DWORD(Addr) - Module - ModuleCodeOffset)]);
+    if IncludeModuleName then
+      Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(Module))]), Result, 11);
+    Result := OffsetStr + Result;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3422,14 +3431,15 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset: Boolean): Boolean;
+  IncludeStartProcLineOffset, IncludeVAdress: Boolean): Boolean;
 var
   List: TJclStackInfoList;
 begin
   List := JclLastExceptStackList;
   Result := Assigned(List);
   if Result then
-    List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset);
+    List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset,
+      IncludeVAdress);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3461,13 +3471,13 @@ end;
 //==================================================================================================
 
 procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset: Boolean);
+  IncludeStartProcLineOffset, IncludeVAdress: Boolean);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
     Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
-      IncludeStartProcLineOffset));
+      IncludeStartProcLineOffset, IncludeVAdress));
 end;
 
 //--------------------------------------------------------------------------------------------------
