@@ -21,13 +21,12 @@
 { from the VERXXX directives defined by Delphi and C++ Builder to friendly     }
 { names such as DELPHI5 and SUPPORTS_WIDESTRING. These friendly names are      }
 { subsequently used in both libraries to test for compiler versions and/or     }
-{ whether the compiler supports certain features (such as widestring's or 64   }
+{ whether the compiler supports certain features (such as widestrings or 64    }
 { bit integers. Both libraries provide an additional, library specific,        }
 { include file. For the JCL this is JCL.INC. These files should be included in }
 { source files instead of this file (which is pulled in automatically).        }
 {                                                                              }
-{ Maintainer: Marcel van Brakel                                                }
-{ Last modified: Nov  23, 2003                                                 }
+{ Last modified: Dec  27, 2003                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -439,6 +438,15 @@
 {$ENDIF}
 
 //------------------------------------------------------------------------------
+// Free Pascal specific
+//------------------------------------------------------------------------------
+
+{$IFDEF FPC}
+  {$MODE DELPHI}
+  {$ASMMODE Intel}
+{$ENDIF FPC}
+
+//------------------------------------------------------------------------------
 // Map COMPILERX_UP to friendly feature names
 //------------------------------------------------------------------------------
 
@@ -469,6 +477,15 @@
   {$DEFINE HAS_UNIT_TYPES}
   {$DEFINE HAS_UNIT_VARIANTS}
 {$ENDIF COMPILER6_UP}
+
+{$IFDEF FPC}
+  {$DEFINE SUPPORTS_WIDESTRING}
+  {$DEFINE SUPPORTS_INTERFACE}
+  {$DEFINE SUPPORTS_INT64}
+  {$DEFINE SUPPORTS_DYNAMICARRAYS}
+  {$DEFINE SUPPORTS_DEFAULTPARAMS}
+  {$DEFINE SUPPORTS_OVERLOAD}
+{$ENDIF FPC}
 
 //------------------------------------------------------------------------------
 // Cross-platform related defines
