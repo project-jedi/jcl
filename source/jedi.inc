@@ -1,3 +1,6 @@
+{$IFNDEF JEDI_INC}
+{$DEFINE JEDI_INC}
+
 {******************************************************************************}
 {                                                                              }
 {  The contents of this file are subject to the Mozilla Public License         }
@@ -235,44 +238,48 @@
 
   Directive              Description
   ------------------------------------------------------------------------------
-  SUPPORTS_CONSTPARAMS     Compiler supports const parameters (D1 up)
-  SUPPORTS_SINGLE          Compiler supports the Single type (D1 up)
-  SUPPORTS_DOUBLE          Compiler supports the Double type (D1 up)
-  SUPPORTS_EXTENDED        Compiler supports the Extended type (D1 up)
-  SUPPORTS_CURRENCY        Compiler supports the Currency type (D2 up)
-  SUPPORTS_THREADVAR       Compiler supports threadvar declarations (D2 up)
-  SUPPORTS_OUTPARAMS       Compiler supports out parameters (D3 up)
-  SUPPORTS_VARIANT         Compiler supports variant (D2 up)
-  SUPPORTS_WIDECHAR        Compiler supports the WideChar type (D2 up)
-  SUPPORTS_WIDESTRING      Compiler supports the WideString type (D3/BCB3 up)
-  SUPPORTS_INTERFACE       Compiler supports interfaces (D3/BCB3)
-  SUPPORTS_DISPINTERFACE   Compiler supports dispinterfaces (D3/BCB3)
-  SUPPORTS_EXTSYM          Compiler supports the $EXTERNALSYM directive (D4/BCB3)
-  SUPPORTS_NODEFINE        Compiler supports the $NODEFINE directive (D4/BCB3)
-  SUPPORTS_LONGWORD        Compiler supports the LongWord type (unsigned 32 bit) (D4/BCB4)
-  SUPPORTS_INT64           Compiler supports the Int64 type (D4/BCB4)
-  SUPPORTS_DYNAMICARRAYS   Compiler supports dynamic arrays (D4/BCB4)
-  SUPPORTS_DEFAULTPARAMS   Compiler supports default parameters (D4/BCB4)
-  SUPPORTS_OVERLOAD        Compiler supports overloading (D4/BCB4)
-  SUPPORTS_IMPLEMENTS      Compiler supports implements (D4/BCB4)
-  SUPPORTS_DEPRECATED      Compiler supports the deprecated directive (D6/BCB6)
-  SUPPORTS_PLATFORM        Compiler supports the platform directive (D6/BCB6)
-  SUPPORTS_LIBRARY         Compiler supports the library directive (D6/BCB6)
-  SUPPORTS_LOCAL           Compiler supports the local directive (D6/BCB6)
-  ACCEPT_DEPRECATED        Compiler supports or ignore the deprecated directive (D6/BCB6/FPC)
-  ACCEPT_PLATFORM          Compiler supports or ignore the platform directive (D6/BCB6)
-  ACCEPT_LIBRARY           Compiler supports or ignore the library directive (D6/BCB6)
-  SUPPORTS_CUSTOMVARIANTS  Compiler supports custom variants (D6/BCB6)
-  SUPPORTS_VARARGS         Compiler supports varargs (D6/BCB6)
-  SUPPORTS_ENUMVALUE       Compiler supports values for enums (D6/BCB6)
-  SUPPORTS_UNSAFE_WARNINGS Compiler supports unsafe warnings (D7)
-  SUPPORTS_WEAKPACKAGEUNIT Compiler supports the WEAKPACKAGEUNIT directive (don't valid for trial)
-  HAS_UNIT_LIBC            The unit Libc exists (Kylix, FPC on Linux)
-  HAS_UNIT_RTLCONSTS       The unit RTLConsts exists (D6/BCB6)
-  HAS_UNIT_TYPES           The unit Types exists (D6/BCB6)
-  HAS_UNIT_VARIANTS        The unit Variants exists (D6/BCB6)
-  HAS_UNIT_STRUTILS        The unit StrUtils exists (D6/BCB6)
-  XPLATFORM_RTL            The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6/BCB6/FPC)
+  SUPPORTS_CONSTPARAMS          Compiler supports const parameters (D1+)
+  SUPPORTS_SINGLE               Compiler supports the Single type (D1+)
+  SUPPORTS_DOUBLE               Compiler supports the Double type (D1+)
+  SUPPORTS_EXTENDED             Compiler supports the Extended type (D1+)
+  SUPPORTS_CURRENCY             Compiler supports the Currency type (D2+)
+  SUPPORTS_THREADVAR            Compiler supports threadvar declarations (D2+)
+  SUPPORTS_OUTPARAMS            Compiler supports out parameters (D3+)
+  SUPPORTS_VARIANT              Compiler supports variant (D2+)
+  SUPPORTS_WIDECHAR             Compiler supports the WideChar type (D2+)
+  SUPPORTS_WIDESTRING           Compiler supports the WideString type (D3+/BCB3+)
+  SUPPORTS_INTERFACE            Compiler supports interfaces (D3+/BCB3+)
+  SUPPORTS_DISPINTERFACE        Compiler supports dispinterfaces (D3+/BCB3+)
+  SUPPORTS_EXTSYM               Compiler supports the $EXTERNALSYM directive (D4+/BCB3+)
+  SUPPORTS_NODEFINE             Compiler supports the $NODEFINE directive (D4+/BCB3+)
+  SUPPORTS_LONGWORD             Compiler supports the LongWord type (unsigned 32 bit) (D4+/BCB4+)
+  SUPPORTS_INT64                Compiler supports the Int64 type (D4+/BCB4+)
+  SUPPORTS_DYNAMICARRAYS        Compiler supports dynamic arrays (D4+/BCB4+)
+  SUPPORTS_DEFAULTPARAMS        Compiler supports default parameters (D4+/BCB4+)
+  SUPPORTS_OVERLOAD             Compiler supports overloading (D4+/BCB4+)
+  SUPPORTS_IMPLEMENTS           Compiler supports implements (D4+/BCB4+)
+  SUPPORTS_DEPRECATED           Compiler supports the deprecated directive (D6+/BCB6+)
+  SUPPORTS_PLATFORM             Compiler supports the platform directive (D6+/BCB6+)
+  SUPPORTS_LIBRARY              Compiler supports the library directive (D6+/BCB6+)
+  SUPPORTS_LOCAL                Compiler supports the local directive (D6+/BCB6+)
+  ACCEPT_DEPRECATED             Compiler supports or ignore the deprecated directive (D6/BCB6/FPC)
+  ACCEPT_PLATFORM               Compiler supports or ignore the platform directive (D6+/BCB6+)
+  ACCEPT_LIBRARY                Compiler supports or ignore the library directive (D6+/BCB6+)
+  SUPPORTS_CUSTOMVARIANTS       Compiler supports custom variants (D6+/BCB6+)
+  SUPPORTS_VARARGS              Compiler supports varargs (D6+/BCB6+)
+  SUPPORTS_ENUMVALUE            Compiler supports values for enums (D6+/BCB6+)
+  SUPPORTS_DEPRECATED_WARNINGS  Compiler supports deprecated warnings (D6+/BCB6+)
+  SUPPORTS_LIBRARY_WARNINGS     Compiler supports library warnings (D6+/BCB6+)
+  SUPPORTS_PLATFORM_WARNINGS    Compiler supports platform warnings (D6+/BCB6+)
+  SUPPORTS_UNSAFE_WARNINGS      Compiler supports unsafe warnings (D7)
+  SUPPORTS_WEAKPACKAGEUNIT      Compiler supports the WEAKPACKAGEUNIT directive
+  SUPPORTS_COMPILETIME_MESSAGES Compiler supports the MESSAGE directive
+  HAS_UNIT_LIBC                 The unit Libc exists (Kylix, FPC on Linux)
+  HAS_UNIT_RTLCONSTS            The unit RTLConsts exists (D6+/BCB6+)
+  HAS_UNIT_TYPES                The unit Types exists (D6+/BCB6+)
+  HAS_UNIT_VARIANTS             The unit Variants exists (D6+/BCB6+)
+  HAS_UNIT_STRUTILS             The unit StrUtils exists (D6+/BCB6+)
+  XPLATFORM_RTL                 The RTL supports crossplatform function names (e.g. RaiseLastOSError) (D6+/BCB6+/FPC)
 
 - Compiler Settings
 
@@ -751,6 +758,7 @@
     {$DEFINE ACCEPT_LIBRARY}
     {$DEFINE SUPPORTS_EXTSYM}
     {$DEFINE SUPPORTS_NODEFINE}
+    {$DEFINE SUPPORTS_COMPILETIME_MESSAGES}
 
     {$DEFINE SUPPORTS_CUSTOMVARIANTS}
     {$DEFINE SUPPORTS_VARARGS}
@@ -814,9 +822,13 @@
   {$DEFINE ACCEPT_DEPRECATED}
   {$DEFINE ACCEPT_PLATFORM}
   {$DEFINE ACCEPT_LIBRARY}
+  {$DEFINE SUPPORTS_DEPRECATED_WARNINGS}
+  {$DEFINE SUPPORTS_LIBRARY_WARNINGS}
+  {$DEFINE SUPPORTS_PLATFORM_WARNINGS}
   {$DEFINE SUPPORTS_CUSTOMVARIANTS}
   {$DEFINE SUPPORTS_VARARGS}
   {$DEFINE SUPPORTS_ENUMVALUE}
+  {$DEFINE SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER7_UP}
@@ -894,34 +906,17 @@
 { WARNINGS }
 {$IFOPT X+} {$DEFINE EXTENDEDSYNTAX_ON} {$ENDIF}
 
+// for Delphi/BCB trial versions remove the point from the line below
+{.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
+
 // History:
 
-// 2003-10-30, Peter J. Haas
-//  - correct and complete comments
-//  - add Kylix definitions
-//  - add RTL definitions
-//  - add FPC definitions
-
-// 2003-11-14, Peter J. Haas
-//  - add SUPPORTS_VARARGS
-
-// 2003-12-03, Peter J. Haas
-//  - add SUPPORTS_ENUMVALUE
-
-// 2004-03-16, Peter J. Haas
-//  - add HAS_UNIT_STRUTILS
-//  - add XPLATFORM_RTL
-
-// 2004-03-18, Peter J. Haas
-//  - add SUPPORTS_LONGWORD
-
-// 2004-03-20, Peter J. Haas
-//  - add SUPPORTS_LOCAL
-
-// 2004-03-22, Peter J. Haas
-//  - add SUPPORTS_WEAKPACKAGEUNIT
-
 // $Log$
+// Revision 1.14  2004/06/21 01:10:17  rrossmair
+// - $IFDEFed contents (to prevent from repeated inclusion)
+// - introduced symbols SUPPORTS_DEPRECATED_WARNINGS, SUPPORTS_LIBRARY_WARNINGS, SUPPORTS_PLATFORM_WARNINGS, SUPPORTS_COMPILETIME_MESSAGES
+// - reordered pre-CVS history
+//
 // Revision 1.13  2004/05/08 08:44:20  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //
@@ -948,7 +943,29 @@
 // Revision 1.7  2004/04/06 05:06:12  peterjhaas
 // add support for Kylix, FPC, RTL, versions, some speaking directives
 //
+// 2004-03-22, Peter J. Haas
+//  - add SUPPORTS_WEAKPACKAGEUNIT
+//
+// 2004-03-20, Peter J. Haas
+//  - add SUPPORTS_LOCAL
+//
+// 2004-03-18, Peter J. Haas
+//  - add SUPPORTS_LONGWORD
+//
+// 2004-03-16, Peter J. Haas
+//  - add HAS_UNIT_STRUTILS
+//  - add XPLATFORM_RTL
+//
+// 2003-12-03, Peter J. Haas
+//  - add SUPPORTS_ENUMVALUE
+//
+// 2003-11-14, Peter J. Haas
+//  - add SUPPORTS_VARARGS
+//
+// 2003-10-30, Peter J. Haas
+//  - correct and complete comments
+//  - add Kylix definitions
+//  - add RTL definitions
+//  - add FPC definitions
 
-// for Delphi/BCB trial versions remove the point from the line below
-{.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
-
+{$ENDIF ~JEDI_INC}
