@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 15, 2000                                            }
+{ Last modified: September 23, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -80,6 +80,7 @@ function BuildFileList(const Path: string; const Attr: Integer; const List: TStr
 function CloseVolume(const Volume: THandle): Boolean; // TODO DOC MASSIMO
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
+function DirectoryExists(const Name: string): Boolean;
 function DiskInDrive(Drive: Char): Boolean;
 function FileCreateTemp(var Prefix: string): THandle;
 function FileExists(const FileName: string): Boolean;
@@ -87,6 +88,7 @@ function FileGetDisplayName(const FileName: string): string;
 function FileGetSize(const FileName: string): Integer;
 function FileGetTempName(const Prefix: string): string;
 function FileGetTypeName(const FileName: string): string;
+function ForceDirectories(Name: string): Boolean;
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
@@ -279,6 +281,7 @@ type
 { Exceptions }
 
   EJclPathError = class (EJclError);
+  EJclFileUtilsError = class (EJclError);
   EJclTempFileStreamError = class (EJclWin32Error);
   EJclFileMappingError = class (EJclWin32Error);
   EJclFileMappingViewError = class (EJclWin32Error);
@@ -290,6 +293,13 @@ uses
   ActiveX, ShellApi, ShlObj,
   {$ENDIF}
   JclResources, JclSecurity, JclSysUtils, JclWin32;
+
+{ Some general notes. This unit redeclares some function from FileCtrl.pas to
+  avoid a dependeny on that unit in the JCL. The problem is that FileCtrl.pas
+  uses some units (eg Forms.pas) which have ridiculous initialization requirements.
+  They add 4KB to the executable and roughly 1 second of startup. That
+  initialization is only necessary for GUI applications and is unacceptable for
+  services or console apps. }
 
 //==============================================================================
 // TJclTempFileStream
@@ -1058,6 +1068,16 @@ end;
 
 //------------------------------------------------------------------------------
 
+function DirectoryExists(const Name: string): Boolean;
+var
+  R: DWORD;
+begin
+  R := GetFileAttributes(PChar(Name));
+  Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
+end;
+
+//------------------------------------------------------------------------------
+
 function DiskInDrive(Drive: Char): Boolean;
 var
   ErrorMode: Cardinal;
@@ -1067,10 +1087,10 @@ begin
     Dec(Drive, $20);
   if Drive in ['A'..'Z'] then
   begin
-    // try to access the drive, it doesn't really matter how we access the drive
-    // and as such calling DiskSize is more or less a random choice. The call to
-    // SetErrorMode supresses the system provided error dialog if there is no
-    // disk in the drive and causes the to DiskSize to fail.
+  { try to access the drive, it doesn't really matter how we access the drive
+    and as such calling DiskSize is more or less a random choice. The call to
+    SetErrorMode supresses the system provided error dialog if there is no
+    disk in the drive and causes the to DiskSize to fail. }
     ErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
     try
       Result := DiskSize(Ord(Drive) - $40) <> -1;
@@ -1185,6 +1205,26 @@ begin
     Delete(Result, 1, 1);
     Result := TrimLeft(UpperCase(Result) + ' File'); // TODO Localize
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsCannotCreateDir = 'Unable to create directory'; // TODO move to Resources
+
+// This routine is copied from FileCtrl.pas to avoid dependency on that unit.
+// See the remark at the top of this section
+
+function ForceDirectories(Name: string): Boolean;
+begin
+  Result := True;
+  if Length(Name) = 0 then
+    raise EJclFileUtilsError.CreateResRec(@RsCannotCreateDir);
+  Name := PathRemoveSeparator(Name);
+  if (Length(Name) < 3) or DirectoryExists(Name)
+    or (ExtractFilePath(Name) = Name) then
+    Exit;
+  Result := ForceDirectories(ExtractFilePath(Name)) and CreateDir(Name);
 end;
 
 //------------------------------------------------------------------------------
