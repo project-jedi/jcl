@@ -1991,56 +1991,50 @@ Quick info:
 @@SetPrimalityTest
 <GROUP MathRoutines.Miscellaneous>
 Summary
-Set the primality test to use within the JCL.
-
+  Set the primality test to use within the JCL.
 Description
-This procedures sets the primality test to use within the
-JCL. Currently two different algorithms are available:
-Rabin-Miller strong primality test and the more traditional
-and straight forward Trial Division method.
+  This procedures sets the primality test to use within the
+  JCL. Currently two different algorithms are available:
+  Rabin-Miller strong primality test and the more traditional
+  and straight forward Trial Division method.
 
-If you need to implement a new primality test please follow
-these rules:
+  If you need to implement a new primality test please follow
+  these rules:
 
-First you need to add a function similar to IsPrimeRM. Per
-definition, each new primality test function name starts with
-IsPrime followed by the kind of primality test. A future
-function concerning the Lehmann primality test would be
-called, for example, IsPrimeLehmann.
+  First you need to add a function similar to IsPrimeRM. Per
+  definition, each new primality test function name starts with
+  IsPrime followed by the kind of primality test. A future
+  function concerning the Lehmann primality test would be
+  called, for example, IsPrimeLehmann.
 
+  <CODE>
+  function IsPrimeLehmann(X: Cardinal): Boolean;
+  begin
+  [...]
+  end;
+  </CODE>
 
-<CODE>
-function IsPrimeLehmann(X: Cardinal): Boolean;
-begin
-[...]
-end;
-</CODE>
+  The next step is to add your new test to the
+  TPrimalityTestMethod set.
 
+  <CODE>
+  type
+    TPrimalityTestMethod = (ptTrialDivision, ptRabinMiller, ptLehmann);
+  </CODE>
 
-The next step is to add your new test to the
-TPrimalityTestMethod set.
+  Furthermore you'll need to add a new case to SetPrimality
+  test.
 
+  <CODE>
+  case Method of
+    ptTrialDivision: IsPrime := IsPrimeTD;
+    ptRabinMiller: IsPrime := IsPrimeRM;
+    ptLehmann: IsPrime := IsPrimeLehmann;
+  end;
+  </CODE>
 
-<CODE>
-type
-  TPrimalityTestMethod = (ptTrialDivision, ptRabinMiller, ptLehmann);
-</CODE>
-
-
-Furthermore you'll need to add a new case to SetPrimality
-test.
-
-
-<CODE>
-case Method of
-  ptTrialDivision: IsPrime := IsPrimeTD;
-  ptRabinMiller: IsPrime := IsPrimeRM;
-  ptLehmann: IsPrime := IsPrimeLehmann;
-end;
-</CODE>
-
-Now you are done. Anyway, please consider to donate your
-function to the main JCL branch.
+  Now you are done. Anyway, please consider to donate your
+  function to the main JCL branch.
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -2051,48 +2045,48 @@ Quick info:
 --------------------------------------------------------------------------------
 @@MathConstants
 <TITLE Constants used in JclMath>
+<GROUP MathRoutines>
+Description
+  The JCL provides many mathematical constants. Some to speed
+  up a function and some just because they are common within
+  math calculations. All these constants are provided with the
+  greatest possible precision.
 
-The JCL provides many mathematical constants. Some to speed
-up a function and some just because they are common within
-math calculations. All these constants are provided with the
-greatest possible precision.
-
-
-<TABLE>
-constant name           Description         Value
-------------------      -----------------   -------------------------------------
-Cbrt2                   CubeRoot (2)         1.2599210498948731647672106072782
-Cbrt3                   CubeRoot (3)         1.4422495703074083823216383107801
-Cbrt10                  CubeRoot (10)        2.1544346900318837217592935665194
-Cbrt100                 CubeRoot (100)       4.6415888336127788924100763509194
-CbrtPi                  CubeRoot (PI)        1.4645918875615232630201425272638
-PiOn2                   PI / 2               1.5707963267948966192313216916398
-PiOn3                   PI / 3               1.0471975511965977461542144610932
-PiOn4                   PI / 4               0.78539816339744830961566084581988
-Sqrt2                   Sqrt (2)             1.4142135623730950488016887242097
-Sqrt3                   Sqrt (3)             1.7320508075688772935274463415059
-Sqrt5                   Sqrt (5)             2.2360679774997896964091736687313
-Sqrt10                  Sqrt (10)            3.1622776601683793319988935444327
-SqrtPi                  Sqrt (PI)            1.7724538509055160272981674833411
-Sqrt2Pi                 Sqrt (2 * PI)        2.506628274631000502415765284811
-TwoPi                   2 * PI               6.283185307179586476925286766559;
-ThreePi                 3 * PI               9.4247779607693797153879301498385
-Ln2                     Ln(2)                0.69314718055994530941723212145818
-Ln10                    Ln(10)               2.3025850929940456840179914546844
-LnPi                    Ln(PI)               1.1447298858494001741434273513531
-Log2                    Log10(2)             0.30102999566398119521373889472449
-Log3                    Log10(3)             0.47712125471966243729502790325512
-LogPi                   Log10(PI)            0.4971498726941338543512682882909
-LogE                    Log10(E)             0.43429448190325182765112891891661
-E                       Natural constant     2.7182818284590452353602874713527
-hLn2Pi                  Ln(2*PI)/2           0.91893853320467274178032973640562
-inv2Pi                  0.5 / Pi             0.159154943091895
-TwoToPower63            2^63                 9223372036854775808.0
-MaxAngle                                     Depends on selected float data type.
-MaxTanH                                      Depends on selected float data type.
-MaxFactorial                                 Depends on selected float data type.
-MaxFloatingPoint                             Depends on selected float data type.
-MinFloatingPoint                             Depends on selected float data type.
+  <TABLE>
+  constant name           Description         Value
+  ------------------      -----------------   -------------------------------------
+  Cbrt2                   CubeRoot (2)         1.2599210498948731647672106072782
+  Cbrt3                   CubeRoot (3)         1.4422495703074083823216383107801
+  Cbrt10                  CubeRoot (10)        2.1544346900318837217592935665194
+  Cbrt100                 CubeRoot (100)       4.6415888336127788924100763509194
+  CbrtPi                  CubeRoot (PI)        1.4645918875615232630201425272638
+  PiOn2                   PI / 2               1.5707963267948966192313216916398
+  PiOn3                   PI / 3               1.0471975511965977461542144610932
+  PiOn4                   PI / 4               0.78539816339744830961566084581988
+  Sqrt2                   Sqrt (2)             1.4142135623730950488016887242097
+  Sqrt3                   Sqrt (3)             1.7320508075688772935274463415059
+  Sqrt5                   Sqrt (5)             2.2360679774997896964091736687313
+  Sqrt10                  Sqrt (10)            3.1622776601683793319988935444327
+  SqrtPi                  Sqrt (PI)            1.7724538509055160272981674833411
+  Sqrt2Pi                 Sqrt (2 * PI)        2.506628274631000502415765284811
+  TwoPi                   2 * PI               6.283185307179586476925286766559;
+  ThreePi                 3 * PI               9.4247779607693797153879301498385
+  Ln2                     Ln(2)                0.69314718055994530941723212145818
+  Ln10                    Ln(10)               2.3025850929940456840179914546844
+  LnPi                    Ln(PI)               1.1447298858494001741434273513531
+  Log2                    Log10(2)             0.30102999566398119521373889472449
+  Log3                    Log10(3)             0.47712125471966243729502790325512
+  LogPi                   Log10(PI)            0.4971498726941338543512682882909
+  LogE                    Log10(E)             0.43429448190325182765112891891661
+  E                       Natural constant     2.7182818284590452353602874713527
+  hLn2Pi                  Ln(2*PI)/2           0.91893853320467274178032973640562
+  inv2Pi                  0.5 / Pi             0.159154943091895
+  TwoToPower63            2^63                 9223372036854775808.0
+  MaxAngle                                     Depends on selected float data type.
+  MaxTanH                                      Depends on selected float data type.
+  MaxFactorial                                 Depends on selected float data type.
+  MaxFloatingPoint                             Depends on selected float data type.
+  MinFloatingPoint                             Depends on selected float data type.
 </TABLE>
 
 @@Cbrt2
@@ -2249,4 +2243,3 @@ Description:
   Several JCL functions and procedures are using PrecisionTolerance. For example,
   IsFloatZero uses this variable to determine if a value is zero or near by zero.
 --------------------------------------------------------------------------------
-
