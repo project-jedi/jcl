@@ -16,7 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 24, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ Class for working with complex numbers.                                      }
+{                                                                              }
+{ Unit owner: Alexei Koudinov                                                  }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
