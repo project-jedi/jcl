@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: July 16, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -359,6 +359,7 @@ type
     function GetDataEntry: PImageResourceDataEntry;
     function GetIsDirectory: Boolean;
     function GetIsName: Boolean;
+    function GetLangID: LANGID;
     function GetList: TJclPeResourceList;
     function GetName: string;
     function GetParameterName: string;
@@ -380,6 +381,7 @@ type
     property Image: TJclPeImage read FImage;
     property IsDirectory: Boolean read GetIsDirectory;
     property IsName: Boolean read GetIsName;
+    property LangID: LANGID read GetLangID;
     property List: TJclPeResourceList read GetList;
     property Level: Byte read FLevel;
     property Name: string read GetName;
@@ -2439,8 +2441,14 @@ end;
 //==================================================================================================
 
 function TJclPeResourceItem.CompareName(AName: PChar): Boolean;
+var
+  P: PChar;
 begin
-  Result := CompareResourceName(AName, PChar(Entry^.Name));
+  if IsName then
+    P := PChar(Name)
+  else
+    P := PChar(FEntry^.Name and $FFFF);
+  Result := CompareResourceName(AName, P);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2488,6 +2496,22 @@ end;
 function TJclPeResourceItem.GetIsName: Boolean;
 begin
   Result := FEntry^.Name and IMAGE_RESOURCE_NAME_IS_STRING <> 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPeResourceItem.GetLangID: LANGID;
+begin
+  if IsDirectory then
+  begin
+    GetList;
+    if FList.Count = 1 then
+      Result := StrToIntDef(FList[0].Name, 0)
+    else
+      Result := 0;
+  end
+  else
+    Result := StrToIntDef(Name, 0);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2766,7 +2790,7 @@ end;
 function TJclPeRootResourceList.ListResourceNames(ResourceType: TJclPeResourceKind;
   const Strings: TStrings): Boolean;
 var
-  ResTypeItem: TJclPeResourceItem;
+  ResTypeItem, TempItem: TJclPeResourceItem;
   I: Integer;
 begin
   ResTypeItem := FindResource(ResourceType, '');
@@ -2774,7 +2798,10 @@ begin
   if Result then
     with ResTypeItem.List do
       for I := 0 to Count - 1 do
-        Strings.Add(Items[I].Name);
+      begin
+        TempItem := Items[I];
+        Strings.AddObject(TempItem.Name, Pointer(TempItem.IsName));
+      end;  
 end;
 
 //==================================================================================================
