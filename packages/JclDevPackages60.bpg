@@ -9,16 +9,13 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJcl60.bpl DJclWin70.bpl DJclVcl60.bpl DJclVClx60.bpl
+PROJECTS = DJcl60.bpl DJclVcl60.bpl DJclVClx60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 
 DJcl60.bpl: D6\DJcl.dpk
-  $(DCC)
-
-DJclWin70.bpl: D6\DJclWin.dpk
   $(DCC)
 
 DJclVcl60.bpl: D6.dev\DJclVcl.dpk
