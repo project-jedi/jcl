@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: July 25, 2002                                                                     }
+{ Last modified: September 19, 2002                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1298,7 +1298,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         end
         else
         begin
-          if IsWin2k then
+          if IsWin2k or IsWinXP then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -1306,7 +1306,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
           end
           else
           begin
-            FileName := ProcEntry.szExeFile; 
+            FileName := ProcEntry.szExeFile;
             if not FullPath then
               FileName := ExtractFileName(FileName);
           end;
@@ -1346,7 +1346,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
           8:
             // On Win2K PID 8 is the "System Process" but this name cannot be
             // retrieved from the system and has to be fabricated.
-            if IsWin2K then
+            if IsWin2k or IsWinXP then
               FileName := RsSystemProcess
             else
               FileName := ProcessFileName(PIDs[I]);
