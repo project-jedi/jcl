@@ -804,11 +804,9 @@ begin
   hHeap := NtMyGetProcessHeap;
   // If both are assigned ...
   if (szLinkName <> nil) and (szLinkTarget <> nil) then
-    (
       // Determine DOS path type for both link name and target
       if (RtlDetermineDosPathNameType_U(szLinkName) <> UNC_PATH) and
         (RtlDetermineDosPathNameType_U(szLinkTarget) <> UNC_PATH) then
-        (
           // Convert the link target into a UNICODE_STRING
           if RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, usNtFilePath) then
           try
@@ -943,9 +941,9 @@ begin
             RtlFreeHeap(hHeap, 0, usNtName_LinkTarget.Buffer);
           end
           else // if RtlDosPathNameToNtPathName_U(lpExistingFileName, NtName, nil, NtFilePath) then
-            SetLastError(ERROR_PATH_NOT_FOUND))
+            SetLastError(ERROR_PATH_NOT_FOUND)
       else // if (RtlDetermineDosPathNameType_U(szLinkName) <> UNC_PATH) and ...
-        SetLastError(ERROR_INVALID_NAME))
+        SetLastError(ERROR_INVALID_NAME)
   else // if (lpFileName <> nil) and (lpExistingFileName <> nil) then
     SetLastError(ERROR_INVALID_PARAMETER);
 end;
@@ -1088,6 +1086,9 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.5  2004/10/25 15:05:12  marquardt
+// remove strange round braces in Hardlinks.pas, bugfix JclRegistry.pas
+//
 // Revision 1.4  2004/10/22 01:26:50  rrossmair
 // - fixed style cleaning collateral damage (as far as required to make it compile)
 //
