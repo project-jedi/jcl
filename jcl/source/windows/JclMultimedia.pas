@@ -25,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclMultimedia;
@@ -439,7 +439,7 @@ begin
   else
   begin
     CurrentTime := GetTime;
-    if CurrentTime > FStartTime then
+    if CurrentTime >= FStartTime then
       Result := CurrentTime - FStartTime
     else
       Result := (High(Cardinal) - FStartTime) + CurrentTime;
@@ -1528,6 +1528,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/04/08 16:59:17  mthoma
+// Fixed #1115. Changed $Data$ to $Date$
+//
 // Revision 1.6  2004/04/06 04:55:17  peterjhaas
 // adapt compiler conditions, add log entry
 //
