@@ -33,11 +33,10 @@
 {    the provisions above, a recipient may use your version of this file       }
 {    under either the MPL or the LPGL License.                                 }
 {                                                                              }
-{    $Id$                    }
-{                                                                              }
 { **************************************************************************** }
 
-// Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
+// Last modified: $Date$
+// For history, see end of file
 
 {$APPTYPE CONSOLE}
 program jpp;
@@ -63,7 +62,7 @@ uses
   PCharUtils in 'PCharUtils.pas';
 
 const
-  ProcessedExtension = '.pas';
+  ProcessedExtension = '.jpp';
   SWarningJppGenerated =
     '{**************************************************************************************************}'#13#10 +
     '{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }'#13#10 +
@@ -88,8 +87,8 @@ begin
     '  -uxxx    Assume preprocessor conditional symbol xxx as not defined'#10,
     '  -x[n:]yyy  Strip first n characters from file name; precede filename by prefix yyy'#10,
     #10,
-    'Preprocessed files will be written to new files with extension ',
-        ProcessedExtension, #10,
+    'When required to prevent the original file from being overwritten, '#10 +
+    'the processed file''s extension will be changed to ', ProcessedExtension, #10,
     'If you have any suggestions or bug-reports, contact me at'#10,
     'barry_j_kelly@hotmail.com'
   );
@@ -210,7 +209,7 @@ var
 
   function HandleFiles(cp: PChar): PChar;
   var
-    tmp: string;
+    NewName, tmp: string;
     iter: IFindFileIterator;
   begin
     while not (cp^ in ['-', #0]) do
@@ -220,7 +219,10 @@ var
       if CreateFindFile(ExpandUNCFileName(tmp), faAnyFile and not faDirectory, iter) then
         repeat
           try
-            Process(pppState, iter.Name, Prefix + ChangeFileExt(Copy(ExtractFileName(iter.Name), StripLength + 1, Length(iter.Name)), ProcessedExtension));
+            NewName := Prefix + Copy(ExtractFileName(iter.Name), StripLength + 1, Length(iter.Name));
+            if iter.Name = ExpandUNCFileName(NewName) then
+              ChangeFileExt(NewName, ProcessedExtension);
+            Process(pppState, iter.Name, NewName);
           except
             on e: Exception do
               Writeln('Error: ', iter.Name, e.Message);
@@ -269,4 +271,13 @@ begin
     on e: Exception do
       Writeln(e.Message);
   end;
+
+// History:
+
+// Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
+// $Log$
+// Revision 1.5  2004/04/18 06:25:07  rrossmair
+// extension change for processed file only when necessary
+//
+
 end.
