@@ -453,18 +453,22 @@ Count=3
 3=DecLimitClamp
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function ReverseBits(const Value: Byte): Byte; overload;
-function ReverseBits(const Value: Word): Word; overload;
-function ReverseBits(const Value: Integer): Integer; overload;
-function ReverseBits(const Value: Int64): Int64; overload;
+function ReverseBits(Value: Byte): Byte; overload;
+function ReverseBits(Value: Word): Word; overload;
+function ReverseBits(Value: Integer): Integer; overload;
+function ReverseBits(Value: Cardinal): Integer; overload;
+function ReverseBits(Value: Int64): Int64; overload;
 function ReverseBits(P: Pointer; Count: Integer): Pointer; overload;
 [ShortDescr]
 Reverses the bits of Value.
 [Description]
 ReverseBits reverses the bits in the passed parameter. That is, assuming a byte,
 bit 0 is swapped with bit 7, bit 1 is swapped with bit 6 and so on. This function
-exists in 4 forms, one for each Integer type. The last overload is a generalisation
-of this which reverses the bits in the supplied buffer.
+exists in 5 forms, one for each Integer type. The last overload is a generalisation
+of this which reverses the bits in the supplied buffer. Note that all overloads
+use a table based approach to reversing the bits. The simple types overloads use
+only a 15 byte table while the pointer overload uses a 255 byte table. Due to
+this the pointer overload is much faster when used on large buffers.
 [Parameters]
 Count=3
 1=Value:IntegerType=The integer type whose bits to reverse.
