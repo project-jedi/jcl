@@ -56,7 +56,6 @@ contains
   JclPrint in '..\Source\JclPrint.pas',
   JclRegistry in '..\Source\JclRegistry.pas',
   JclResources in '..\Source\JclResources.pas',
-  JclRTF in '..\Source\JclRTF.pas',
   JclSecurity in '..\Source\JclSecurity.pas',
   JclShell in '..\Source\JclShell.pas',
   JclStatistics in '..\Source\JclStatistics.pas',
