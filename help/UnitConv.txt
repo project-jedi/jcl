@@ -1261,6 +1261,7 @@ Converts a velocity from knot to meters per second.
 [Description]
 The KnotToMs routine converts the specified velocity, in knots, to the corresponding velocity in meters per second.
 [Parameters]
+Count=1
 1=Knot:Float=The velocity, in Knot, to convert to meters per second.
 [Result]
 The velocity after conversion to meters per second.
@@ -1279,6 +1280,7 @@ Converts a power from horsepower to Watt.
 [Description]
 The HpElectricToWatt routine converts the specified power, in horsepower, to the corresponding power in Watt.
 [Parameters]
+Count=1
 1=HpE:Float=The power, in horsepower, to convert to Watt.
 [Result]
 The power after conversion to Watt.
@@ -1297,6 +1299,7 @@ Converts a power from metric horsepower to Watt.
 [Description]
 The HpMetricToWatt routine converts the specified power, in metric horsepower, to the corresponding power in Watt.
 [Parameters]
+Count=1
 1=HpM:Float=The power, in metric horsepower, to convert to Watt.
 [Result]
 The power after conversion to Watt.
@@ -1315,6 +1318,7 @@ Converts a velocity from meters per second to knots.
 [Description]
 The MsToKnot routine converts the specified velocity, in meters per second, to the corresponding velocity in knots.
 [Parameters]
+Count=1
 1=ms:Float=The velocity, in meters per second, to convert to knots.
 [Result]
 The velocity after conversion to knots.
@@ -1333,6 +1337,7 @@ Converts a power from Watt to horsepower.
 [Description]
 The WattToHpElectric routine converts the specified power, in Watt, to the corresponding power in horsepower.
 [Parameters]
+Count=1
 1=W:Float=The power, in Watt, to convert to horsepower.
 [Result]
 The power after conversion to horsepower.
@@ -1351,6 +1356,7 @@ Converts a power from Watt to metric horsepower.
 [Description]
 The WattToHpMetric routine converts the specified power, in Watt, to the corresponding power in metric horsepower.
 [Parameters]
+Count=1
 1=W:Float=The power, in Watt, to convert to metric horsepower.
 [Result]
 The power after conversion to metric horsepower.
