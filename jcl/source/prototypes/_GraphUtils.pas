@@ -2061,10 +2061,12 @@ begin
   end;
 end;
 
+{$IFNDEF DROP_OBSOLETE_CODE}
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
 begin
   HLSToRGB(H, L, S, R, G, B);
 end;
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 function HSLToRGB(const H, S, L: Single): TColor32;
 var
@@ -2112,10 +2114,12 @@ begin
   end;
 end;
 
-procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); 
+{$IFNDEF DROP_OBSOLETE_CODE}
+procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single);
 begin
   RGBToHLS(R, G, B, H, L, S);
 end;
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
 begin
@@ -2626,6 +2630,10 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.19  2005/03/05 06:28:24  rrossmair
+// - fixed DROP_OBSOLETE_CODE usage
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.18  2005/02/24 16:34:41  marquardt
 // remove divider lines, add section lines (unfinished)
 //
@@ -2635,7 +2643,6 @@ finalization
 // Revision 1.16  2004/11/14 06:05:05  rrossmair
 // - some source formatting
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.15  2004/10/18 16:22:14  marquardt
 // corrected typo
 //
