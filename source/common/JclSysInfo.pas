@@ -136,6 +136,8 @@ function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResul
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
+function GetShellProcessName: string;
+function GetShellProcessHandle: THandle;
 
 //------------------------------------------------------------------------------
 // Version Information
@@ -481,7 +483,7 @@ var
 implementation
 
 uses
-  Messages, SysUtils, TLHelp32, Winsock,
+  Messages, Registry, SysUtils, TLHelp32, Winsock,
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
@@ -1542,6 +1544,77 @@ begin
   finally
     List.Free;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsProcessNotFound = 'Process %s not found.';
+
+function GetProcessPid(const Name: string): Longword;
+var
+  Snapshot: THandle;
+  Process: TProcessEntry32;
+  Success, NextEntryFound: Boolean;
+begin
+  Result := 0;
+  Success := False;
+  Snapshot := CreateToolHelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  if Snapshot <> INVALID_HANDLE_VALUE then
+  try
+    FillChar(Process, SizeOf(Process), 0);
+    Process.dwSize := SizeOf(Process);
+    NextEntryFound := Process32First(Snapshot, Process);
+    while NextEntryFound do
+    begin
+      if CompareText(Process.szExeFile, Name) = 0 then
+      begin
+        Result := Process.th32ProcessID;
+        Success := True;
+        Break;
+      end;
+      NextEntryFound := Process32Next(Snapshot, Process);
+    end;
+  finally
+    CloseHandle(Snapshot);
+  end;
+  if not Success then raise Exception.CreateResFmt(@RsProcessNotFound, [Name]);
+end;
+
+//------------------------------------------------------------------------------
+
+function GetShellProcessName: string;
+const
+  ShellKey = 'Software\Microsoft\Windows NT\CurrentVersion\WinLogon';
+  ShellValue = 'Shell';
+  ShellDefault = 'explorer.exe';
+var
+  Reg: TRegistry;
+begin
+  Result := '';
+  Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.KeyExists(ShellKey) then
+    begin
+      Reg.OpenKeyReadOnly(ShellKey);
+      if Reg.ValueExists(ShellValue) then Result := Reg.ReadString(ShellValue);
+    end;
+    if Result = '' then Result := ShellDefault;
+  finally
+    Reg.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetShellProcessHandle: THandle;
+var
+  Pid: Longword;
+begin
+  Pid := GetProcessPid(GetShellProcessName);
+  Result := OpenProcess(PROCESS_ALL_ACCESS, False, Pid);
+  if Result = 0 then RaiseLastWin32Error;
 end;
 
 //==============================================================================
