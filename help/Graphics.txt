@@ -17,8 +17,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=BrightColor
@@ -43,8 +44,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=BrightColor
@@ -69,8 +71,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=BrightColor
@@ -95,8 +98,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=BrightColorChannel
@@ -122,8 +126,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SetRGBValue
@@ -149,8 +154,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetRGBValue
@@ -172,8 +178,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=SetRGBValue
@@ -198,8 +205,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=SetRGBValue
@@ -224,8 +232,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=SetRGBValue
@@ -266,8 +275,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=SetRGBValue
@@ -291,8 +301,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=GetRGBValue
@@ -316,8 +327,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=GetRGBValue
@@ -341,8 +353,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=GetRGBValue
@@ -382,8 +395,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=GetRGBValue
@@ -408,8 +422,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure PointCopy(var Dest: TPoint; const Source: TPoint);
@@ -427,8 +442,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PointEqual(const P1, P2: TPoint): Boolean;
@@ -448,8 +464,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PointIsNull(const P: TPoint): Boolean;
@@ -468,8 +485,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure PointMove(var P: TPoint; const DeltaX, DeltaY: Integer);
@@ -489,8 +507,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function NullPoint: TPoint;
@@ -505,8 +524,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Points
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectIsEmpty(const R: TRect): Boolean;
@@ -525,8 +545,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RectNormalize(var R: TRect);
@@ -545,8 +566,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectUnion(const R1, R2: TRect): TRect;
@@ -567,8 +589,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectIsSquare(const R: TRect): Boolean;
@@ -586,8 +609,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectCenter(const R: TRect): TPoint;
@@ -608,8 +632,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectEqual(const R1, R2: TRect): Boolean;
@@ -628,8 +653,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectIsNull(const R: TRect): Boolean;
@@ -649,8 +675,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function NullRect: TRect;
@@ -666,8 +693,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RectIsValid(const R: TRect): Boolean;
@@ -687,8 +715,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectsAreValid
@@ -711,8 +740,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectIsValid
@@ -738,8 +768,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectIntersection
@@ -764,8 +795,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectIntersectRect
@@ -791,8 +823,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectIncludesRect
@@ -817,8 +850,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectIncludesPoint
@@ -843,8 +877,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RectAssignPoints
@@ -871,8 +906,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RectAssignPoints
@@ -897,8 +933,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RectAssign
@@ -920,8 +957,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RectAssign
@@ -945,8 +983,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectMoveTo
@@ -968,8 +1007,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectMove
@@ -992,8 +1032,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RectGrowX
@@ -1017,8 +1058,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RectGrow
@@ -1042,8 +1084,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RectGrow
@@ -1065,8 +1108,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectWidth
@@ -1087,8 +1131,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Rectangles
 Author=Pelle F. S. Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RectHeight
@@ -1111,13 +1156,14 @@ Count=6
 5=Width:Integer=Width of the destination bitmap.
 6=Height:Integer=Height of the destination bitmap.
 [Quick Info]
-BCB=3,4,5
 Unit=JclGraphics
 Category=Graphics
 Author=Charlie Calvert;ccalvert@inprise.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure BitmapToJPeg(const FileName: string);
@@ -1131,14 +1177,15 @@ If the function fails at any point it raises an exception.
 Count=1
 1=FileName:string=Name of the bitmap file to convert to a JPEG image.
 [Quick Info]
-BCB=3,4,5
 Unit=JclGraphics
 Category=Graphics
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=JPegToBitmap
@@ -1155,14 +1202,15 @@ function fails at any point it raises an exception.
 Count=1
 1=FileName:string=Name of the JPEG image file to convert to a bitmap.
 [Quick Info]
-BCB=3,4,5
 Unit=JclGraphics
 Category=Graphics
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=BitmapToJpeg
@@ -1185,13 +1233,14 @@ of icons. This can be any executable file, dynamic link library or icon file.
 The number of icons in the specified file. If the file does not contain icons
 the result is 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclGraphics
 Category=Graphics
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
@@ -1208,14 +1257,15 @@ Count=3
 Handle to the icon or 0 on failure. Caller is responsible for eventually releasing
 the icon resource by calling DestroyIcon.
 [Quick Info]
-BCB=3,4,5
 Unit=JclGraphics
 Category=Graphics
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IconToBitmap(Icon: HICON): HBITMAP;
@@ -1230,14 +1280,15 @@ Count=1
 Handle to the bitmap or 0 on failure. The caller is responsible for freeing the
 resources associated with this bitmap by calling DeleteObject.
 [Quick Info]
-BCB=3,4,5
 Unit=JclGraphics
 Category=Graphics
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
@@ -1267,8 +1318,9 @@ replaced with the resulting bitmap.
 Unit=JclGraphics
 Category=Graphics
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TResamplingFilter
@@ -1293,8 +1345,9 @@ Photoshop's bicubic interpolation.
 Unit=JclGraphics
 Category=Graphics
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
@@ -1313,8 +1366,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Conversion
 Author=Marcin Wieczorek (T-1000);wieczor@polbox.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CIED65ToCIED50(var X, Y, Z: Extended);
@@ -1333,8 +1387,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Gray16(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal);
@@ -1353,8 +1408,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CMYK2BGR(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal); overload;
@@ -1377,8 +1433,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CIELAB2BGR(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal); overload;
@@ -1400,8 +1457,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RGB2BGR(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal); overload;
@@ -1422,8 +1480,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RGBA2BGRA(Source, Target: Pointer; BitsPerSample: Byte; Count: Cardinal);
@@ -1445,8 +1504,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Mike Lischke;public@lischke-online.de
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure WinColor2OpenGLColor(Color : TColor; out Red, Green, Blue: Float);
@@ -1465,8 +1525,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function OpenGLColor2WinColor(Red, Green, Blue : Float) : TColor;
@@ -1486,8 +1547,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Colors
 Author=Pelle Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclDesktopCanvas = class(TCanvas);
@@ -1502,8 +1564,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=TJclDesktopCanvas
 Author=Pelle Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create;
@@ -1518,8 +1581,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=TJclDesktopCanvas
 Author=Pelle Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -1534,8 +1598,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=TJclDesktopCanvas
 Author=Pelle Liljendal;pelle@liljendal.dk
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TColor32 = type Longword;
@@ -1557,8 +1622,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Types
 Author=Alex Denissov;denisso@uwindsor.ca
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TColor32Array = array [0..0] of TColor32;
@@ -1575,8 +1641,9 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Types
 Author=Alex Denissov;denisso@uwindsor.ca
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TPalette32 = array [Byte] of TColor32;
@@ -1590,5 +1657,6 @@ Unit=JclGraphics
 Category=Graphics
 SubCat=Types
 Author=Alex Denissov;denisso@uwindsor.ca
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
