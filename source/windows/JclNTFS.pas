@@ -1053,13 +1053,12 @@ var
   LastError: DWORD;
 begin
   Result := Data.Internal.FileHandle <> INVALID_HANDLE_VALUE;
+  LastError := ERROR_SUCCESS
   if Result then
   begin
     // Call BackupRead one last time to signal that we're done with it
     Result := Windows.BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
-    if Result then
-      LastError := ERROR_SUCCESS
-    else
+    if not Result then
       LastError := GetLastError;
     CloseHandle(Data.Internal.FileHandle);
     Data.Internal.FileHandle := INVALID_HANDLE_VALUE;
@@ -1296,6 +1295,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/10/18 18:42:49  assarbad
+// Just removed a stupidity (BTW: introduced by PH)
+//
 // Revision 1.16  2004/10/18 18:20:55  assarbad
 // Completely replaced the CreateHardLink() implementation. For the sake of brevity it is kept in the separate unit Hardlink.pas now.
 //
