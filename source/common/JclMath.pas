@@ -272,7 +272,6 @@ function IsInfinity(const d: Double): Boolean;
 
 { Rational numbers }
 
-{$IFDEF SUPPORTS_OVERLOAD}
 
 type
   TRational = class (TObject)
@@ -342,14 +341,12 @@ type
     procedure Power(const V: Float); overload;
   end;
 
-{$ENDIF}
 
 { CRC }
 
-{$IFDEF DELPHI4_UP}
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal): Cardinal;
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
-{$ENDIF}
+
 
 type
   EJclMathError = class (EJclError);
@@ -2172,7 +2169,6 @@ end;
 // Rational Numbers
 //==============================================================================
 
-{$IFDEF SUPPORTS_OVERLOAD}
 
 constructor TRational.Create(const Numerator: Integer; const Denominator: Integer);
 begin
@@ -2556,6 +2552,5 @@ begin
   FN := System.Sqr(FN);
 end;
 
-{$ENDIF} // SUPPORTS_OVERLOAD
 
 end.
