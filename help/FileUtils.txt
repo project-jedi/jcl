@@ -1618,6 +1618,8 @@ directory. Use <REF>SetDirLastWrite</REF> for that.
 Count=2
 1=FileName:string=The name of the file for which to set the time of last write.
 2=DateTime:TDateTime=The date and time to set the file's last write stamp to.
+You must supply the UTC based date and time. To convert from a local date and
+time use the LocalDateTimeToDateTime function from JclDateTime.
 [Result]
 If the function succeeds the result is True, otherwise it's False.
 [Quick Info]
@@ -1649,6 +1651,8 @@ directory. Use <REF>SetDirLastAccess</REF> for that.
 Count=2
 1=FileName:string=The name of the file for which to set the time of last access.
 2=DateTime:TDateTime=The date and time to set the file's last access stamp to.
+You must supply the UTC based date and time. To convert from a local date and
+time use the LocalDateTimeToDateTime function from JclDateTime.
 [Result]
 If the function succeeds the result is True, otherwise it's False.
 [Quick Info]
@@ -1675,11 +1679,13 @@ Sets the file's creation time stamp.
 [Description]
 SetFileCreation sets the specified file's creation timestamp to the supplied
 datetime. This routine cannot be used to set the creation timestamp of a
-directory. See <REF>SetDirCreation</REF> for that.        
+directory. See <REF>SetDirCreation</REF> for that.
 [Parameters]
 Count=2
 1=FileName:string=The name of the file for which to set the time of creation.
 2=DateTime:TDateTime=The date and time to set the file's creation stamp to.
+You must supply the UTC based date and time. To convert from a local date and
+time use the LocalDateTimeToDateTime function from JclDateTime.
 [Result]
 If the function succeeds the result is True, otherwise it's False.
 [Quick Info]
@@ -1713,6 +1719,8 @@ privileges (SE_BACKUP_NAME and SE_RESTORE_NAME).
 Count=2
 1=DirName:string=The name of the directory for which to set the time of last write.
 2=DateTime:TDateTime=The date and time to set the file's last write stamp to.
+You must supply the UTC based date and time. To convert from a local date and
+time use the LocalDateTimeToDateTime function from JclDateTime.
 [Result]
 If the function succeeds the result is True, otherwise it's False.
 [Quick Info]
@@ -1723,7 +1731,7 @@ SubCat=Files and Directories
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
-Windows 95/98=Requires Windows 95 or later.
+Windows 95/98=Unsupported
 [SeeAlso]
 Count=2
 1=SetDirLastAccess
@@ -1743,6 +1751,8 @@ privileges (SE_BACKUP_NAME and SE_RESTORE_NAME).
 Count=2
 1=DirName:string=The name of the directory for which to set the time of last write.
 2=DateTime:TDateTime=The date and time to set the file's last write stamp to.
+You must supply the UTC based date and time. To convert from a local date and
+time use the LocalDateTimeToDateTime function from JclDateTime.
 [Result]
 If the function succeeds the result is True, otherwise it's False.
 [Quick Info]
@@ -1753,7 +1763,7 @@ SubCat=Files and Directories
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
-Windows 95/98=Requires Windows 95 or later.
+Windows 95/98=Unsupported
 [SeeAlso]
 Count=2
 1=SetDirLastWrite
@@ -1773,6 +1783,8 @@ privileges (SE_BACKUP_NAME and SE_RESTORE_NAME).
 Count=2
 1=DirName:string=The name of the directory for which to set the time of last write.
 2=DateTime:TDateTime=The date and time to set the file's last write stamp to.
+You must supply the UTC based date and time. To convert from a local date and
+time use the LocalDateTimeToDateTime function from JclDateTime.
 [Result]
 If the function succeeds the result is True, otherwise it's False.
 [Quick Info]
@@ -1783,7 +1795,7 @@ SubCat=Files and Directories
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
-Windows 95/98=Requires Windows 95 or later.
+Windows 95/98=Unsupported
 [SeeAlso]
 Count=2
 1=SetDirLastAccess
