@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: July 18, 2000                                                 }
+{ Last modified: September 18, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -30,7 +30,7 @@ uses
   Windows, Classes,
   {$IFDEF DELPHI5_UP}
   Contnrs,
-  {$ENDIF}
+  {$ENDIF DELPHI5_UP}
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -221,28 +221,28 @@ end;
 
 function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
 begin
-  Result := usPrimaryLanguage or usSubLanguage shl 10;
+  Result := usPrimaryLanguage or (usSubLanguage shl 10);
 end;
 
 //------------------------------------------------------------------------------
 
 function PRIMARYLANGID(const lgid: Word): Word;
 begin
-  Result := lgid and $03FF;
+  Result := (lgid and $03FF);
 end;
 
 //------------------------------------------------------------------------------
 
 function SUBLANGID(const lgid: Word): Word;
 begin
-  Result := lgid shr 10;
+  Result := (lgid shr 10);
 end;
 
 //------------------------------------------------------------------------------
 
 function MAKELCID(const wLanguageID, wSortID: Word): LCID;
 begin
-  Result := wLanguageID or wSortID shl 16;
+  Result := wLanguageID or (wSortID shl 16);
 end;
 
 //------------------------------------------------------------------------------
@@ -691,14 +691,14 @@ end;
 
 function TJclKeyboardLayout.GetDeviceHandle: Word;
 begin
-  Result := HIWORD(FLayout);
+  Result := HiWord(FLayout);
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclKeyboardLayout.GetLocaleID: Word;
 begin
-  Result := LOWORD(FLayout);
+  Result := LoWord(FLayout);
 end;
 
 //------------------------------------------------------------------------------
