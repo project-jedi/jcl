@@ -27,6 +27,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.10  2004/03/17 17:39:03  rrossmair
+// Win32 installation fixed
+//
 // Revision 1.9  2004/03/15 18:29:52  rrossmair
 // didn't compile for Win32 anymore; fixed
 //
@@ -187,20 +190,26 @@ type
   IJclCommandLineTool = interface
     ['{A0034B09-A074-D811-847D-0030849E4592}']
     function GetExeName: string;
+    function GetOptions: TStrings;
     function GetOutput: string;
+    procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean;
     property ExeName: string read GetExeName;
+    property Options: TStrings read GetOptions;
     property Output: string read GetOutput;
   end;
 
   TJclCommandLineTool = class(TInterfacedObject, IJclCommandLineTool)
   private
     FExeName: string;
+    FOptions: TStrings;
     FOutput: string;
   protected
     function GetExeName: string;
     function GetOutput: string;
+    function GetOptions: TStrings;
     constructor Create(const AExeName: string);
+    procedure AddPathOption(const Option, Path: string);
     function Execute(const CommandLine: string): Boolean;
     property ExeName: string read GetExeName;
     property Output: string read GetOutput;
@@ -208,12 +217,13 @@ type
 
   TJcBorlandCommandLineTool = class (TJclBorRADToolInstallationObject)
   private
-    FOutput: string;
     FOptions: TStrings;
+    FOutput: string;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
     function GetExeName: string; virtual;
     function GetFileName: string;
+    function GetOptions: TStrings;
   public
     destructor Destroy; override;
     procedure AddPathOption(const Option, Path: string);
@@ -1001,7 +1011,7 @@ end;
 function TJcBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
 const
   {$IFDEF MSWINDOWS}
-  S = '"%s" "%s"';
+  S = '"%s" %s';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   S = '%s %s';
@@ -1025,6 +1035,13 @@ end;
 function TJcBorlandCommandLineTool.GetFileName: string;
 begin
   Result := Installation.BinFolderName + GetExeName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJcBorlandCommandLineTool.GetOptions: TStrings;
+begin
+  Result := FOptions;
 end;
 
 //==================================================================================================
@@ -1951,8 +1968,8 @@ begin
   SetCurrentDir(PackagePath);
   try
     // Kylix bprmak doesn't like full file names
-    Result := Bpr2Mak.Execute(ExtractFileName(PackageName));
-    Result := Result and Make.Execute(Format('-f%s', [ChangeFileExt(PackageName, '.mak')]));
+    Result := Bpr2Mak.Execute(StringsToStr(Bpr2Mak.Options, ' ') + ' ' + ExtractFileName(PackageName));
+    Result := Result and Make.Execute(Format('%s -f%s', [StringsToStr(Make.Options, ' '), ChangeFileExt(PackageName, '.mak')]));
   finally
     SetCurrentDir(SaveDir);
   end;
@@ -2191,10 +2208,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclCommandLineTool.AddPathOption(const Option, Path: string);
+begin
+  GetOptions.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclCommandLineTool.Execute(const CommandLine: string): Boolean;
 const
   {$IFDEF MSWINDOWS}
-  S = '"%s" "%s"';
+  S = '"%s" %s';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   S = '%s %s';
@@ -2208,6 +2232,13 @@ end;
 function TJclCommandLineTool.GetExeName: string;
 begin
   Result := FExeName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclCommandLineTool.GetOptions: TStrings;
+begin
+  Result := FOptions;
 end;
 
 //--------------------------------------------------------------------------------------------------

@@ -76,19 +76,19 @@ object ProductFrame: TProductFrame
       Anchors = [akLeft, akRight, akBottom]
       Caption = '&Advanced Options'
       TabOrder = 1
-      object Label3: TLabel
+      object BPLPathLabel: TLabel
         Left = 8
         Top = 19
-        Width = 44
+        Width = 41
         Height = 13
-        Caption = 'BPL path'
+        Caption = '.bpl path'
       end
-      object Label4: TLabel
+      object DCPPathLabel: TLabel
         Left = 8
         Top = 51
-        Width = 46
+        Width = 45
         Height = 13
-        Caption = 'DCP path'
+        Caption = '.dcp path'
       end
       object BplPathEdit: TEdit
         Left = 68

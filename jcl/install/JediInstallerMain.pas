@@ -24,7 +24,10 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.5  2004/03/12 04:59:56  rrossmair
+// Revision 1.6  2004/03/17 17:39:03  rrossmair
+// Win32 installation fixed
+//
+// Revision 1.7  2004/03/12 04:59:56  rrossmair
 // BCB/Win32 support basically working now
 //
 

@@ -22,10 +22,8 @@
 { Contributor(s): Robert Rossmair (crossplatform & BCB support)                                    }
 {                                                                                                  }
 {**************************************************************************************************}
-{                                                                                                  }
-{ Last modified: March 9, 2004                                                                     }
-{                                                                                                  }
-{**************************************************************************************************}
+
+// $Id$
 
 unit JediInstallIntf;
 
@@ -37,13 +35,15 @@ uses
 
 const
   // Feature masks
-  FID_Product              = $7F000000;
+  FID_Product              = $1F000000;
   FID_IsProduct            = $00FFFFFF;
   FID_Category             = $00FF0000;
   FID_IsCategory           = $0000FFFF;
   FID_Level2               = $0000FF00;
   FID_IsLevel2             = $000000FF;
   FID_Level3               = $000000FF;
+  FID_Expandable           = $20000000;
+  FID_StandaloneParent     = $40000000; // do not auto-uncheck when all child nodes are unchecked
   FID_Checked              = $80000000;
   FID_NumberMask           = $7FFFFFFF;
 

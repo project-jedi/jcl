@@ -29,7 +29,7 @@ Y=1
 Z=1
 ShowHints=1
 ShowWarnings=1
-UnitAliases=
+UnitAliases=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [Linker]
 MapFile=3
 OutputObjs=0
@@ -45,8 +45,8 @@ OutputDir=..\bin
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=$(DELPHI)\Lib\Debug
-Packages=
+SearchPath=$(DELPHI)\Lib\Debug;I:\Quellen\jedi\jcl\lib\D6\debug
+Packages=vcl;rtl;vclx;VclSmp;vclshlctrls;dbrtl;adortl;vcldb;bdertl;dsnap;cds;bdecds;teeui;teedb;tee;vcldbx;ibxpress;visualclx;visualdbclx;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;dbexpress;dbxcds;indy;dclOffice2k;teeqr;EPCOTAUtils60
 Conditionals=JCLINSTALL;VisualCLX
 DebugSourceDirs=
 UsePackages=0
@@ -58,7 +58,7 @@ UseLauncher=0
 DebugCWD=
 [Language]
 ActiveLang=
-ProjectLang=$00000407
+ProjectLang=
 RootDir=
 [Version Info]
 IncludeVerInfo=1
@@ -84,3 +84,15 @@ LegalTrademarks=
 OriginalFilename=JediInstaller.dpr
 ProductName=Jedi Installer
 ProductVersion=2.0
+[HistoryLists\hlConditionals]
+Count=1
+Item0=JCLINSTALL;VisualCLX
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=$(DELPHI)\Lib\Debug;I:\Quellen\jedi\jcl\lib\D6\debug
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=..\bin
