@@ -1,4 +1,4 @@
-# Hey Emacs, this is a -*- Makefile -*- 
+# Hey Emacs, this is a -*- Makefile -*-
 # ---------------------------------------------------------------------------
 ifndef BCB
 BCB = !BCB!
@@ -44,41 +44,26 @@ PATHOBJ = .:$(LIBPATH)
 CFLAG1 = !CFLAG1!
 IDLCFLAGS = !IDLCFLAGS!
 
-ifneq "$(BPILIBDIR)" ""
-N0BPILIBDIR = -N0"$(BPILIBDIR)"
-else
-N0BPILIBDIR =
-endif
+BPILIBDIR = !BPILIBDIR!
 
 ifneq "$(BPLDIR)" ""
 LIBPATH = $(BPLDIR):!LIBPATH!
-PROJECT = $(BPLDIR)/!PROJECT!
-endif
-
-ifneq "$(OBJDIR)" ""
-N2OBJDIR = -N2"$(OBJDIR)"
+BPL = $(BPLDIR)/!PROJECT!
 else
-N2OBJDIR =
+BPL = !PROJECT!
 endif
 
-PFLAGS = -I../../source $(N0BPILIBDIR) $(N2OBJDIR) -P -$$$$Y- -$$$$L- -$$$$D- -$$$$A8 -v -JPHNE -M
+BPLFILE = \"$(BPL)\"
+
+PFLAGS = -I../../source -N0\"$(BPILIBDIR)\" -N2\"$(OBJDIR)\" -P -$$$$Y- -$$$$L- -$$$$D- -$$$$A8 -v -JPHNE -M
 RFLAGS = !RFLAGS!
 AFLAGS = !AFLAGS!
 
 ifneq "$(BPILIBDIR)" ""
 LIBPATH = $(BPILIBDIR):!LIBPATH!
-lBPILIBDIR = -l"$(BPILIBDIR)"
-else
-lBPILIBDIR =
 endif
 
-ifneq "$(OBJDIR)" ""
-IOBJDIR = -I"$(OBJDIR)"
-else
-IOBJDIR =
-endif
-
-LFLAGS = $(lBPILIBDIR) $(IOBJDIR) -GB"CJcl" -N"" -D"" -aa -Tpp -Gpr -x -Gn -Gl -Gi
+LFLAGS = -l\"$(BPILIBDIR)\" -I\"$(OBJDIR)\" -GB"CJcl" -N"" -D"" -aa -Tpp -Gpr -x -Gn -Gl -Gi
 # ---------------------------------------------------------------------------
 ALLOBJ = !ALLOBJ!
 ALLRES = !ALLRES!
@@ -165,14 +150,14 @@ endif
 # This section of the project file is not used by the BCB IDE.  It is for
 # the benefit of building from the command-line using the MAKE utility.
 # ---------------------------------------------------------------------------
-"$(PROJECT)": $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
+$(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
 	echo ALLLIB = $(ALLLIB)
-	echo ALLOBJ = $(ALLOBJ)
+	echo N2OBJDIR = $(N2OBJDIR)
 	echo ALLRES = $(ALLRES)
 	$(LINKER) \
-	$(LFLAGS) -L"$(LIBPATH)" \
+	$(LFLAGS) -L\"$(LIBPATH)\" \
 	$(ALLOBJ), \
-	"$(PROJECT)",, \
+	$(BPLFILE),, \
 	$(ALLLIB), \
 	$(DEFFILE), \
 	$(ALLRES)
