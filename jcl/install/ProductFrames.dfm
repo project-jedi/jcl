@@ -107,6 +107,7 @@ object ProductFrame: TProductFrame
         Caption = '...'
         TabOrder = 1
         TabStop = False
+        OnClick = PathSelectBtnClick
       end
       object Button2: TButton
         Left = 373
