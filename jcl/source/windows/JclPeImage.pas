@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 11, 2002                                                                    }
+{ Last modified: April 28, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -921,6 +921,8 @@ function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
 
 function PeMapImgExportedVariables(const Module: HMODULE; const VariablesList: TStrings): Boolean;
 
+function PeMapImgResolvePackageThunk(Address: Pointer): Pointer;
+
 function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
   const ResourceName: string): Pointer;
 
@@ -973,6 +975,7 @@ type
     class function IsWin9xDebugThunk(P: Pointer): Boolean;
     class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
     class function SystemBase: Pointer;
+    procedure UnhookAll;
     function UnhookByNewAddress(NewAddress: Pointer): Boolean;
     property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
     property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
@@ -5151,6 +5154,28 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function PeMapImgResolvePackageThunk(Address: Pointer): Pointer;
+const
+  JmpInstructionCode = $25FF;
+type
+  PPackageThunk = ^TPackageThunk;
+  TPackageThunk = packed record
+    JmpInstruction: Word;
+    JmpAddress: PPointer;
+  end;
+begin
+  if not IsCompiledWithPackages then
+    Result := Address
+  else
+  if not IsBadReadPtr(Address, SizeOf(TPackageThunk)) and
+    (PPackageThunk(Address)^.JmpInstruction = JmpInstructionCode) then
+    Result := PPackageThunk(Address)^.JmpAddress^
+  else
+    Result := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
   const ResourceName: string): Pointer;
 var
@@ -5355,6 +5380,7 @@ var
   CurrName: PChar;
   ImportEntry: PImageThunkData;
   FoundProc: Boolean;
+  BW: DWORD;
 begin
   Result := False;
   FromProcDebugThunk := PWin9xDebugThunk(FromProc);
@@ -5381,11 +5407,9 @@ begin
         end
         else
           FoundProc := Pointer(ImportEntry^.Function_) = FromProc;
-        if FoundProc and not IsBadStringPtr(Pointer(ImportEntry^.Function_), 4) then
-        begin
-          Pointer(ImportEntry^.Function_) := ToProc;
-          Result := True;
-        end;
+        if FoundProc and WriteProcessMemory(GetCurrentProcess, Pointer(@ImportEntry^.Function_),
+          @ToProc, SizeOf(ToProc), BW) and (BW = SizeOf(ToProc)) then
+            Result := True;
         Inc(ImportEntry);
       end;
     end;
@@ -5397,7 +5421,19 @@ end;
 
 class function TJclPeMapImgHooks.SystemBase: Pointer;
 begin
-  Result := Pointer(FindClassHInstance(System.TObject));
+  Result := Pointer(SystemTObjectInstance);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclPeMapImgHooks.UnhookAll;
+var
+  I: Integer;
+begin
+  I := 0;
+  while I < Count do
+    if not Items[I].Unhook then
+      Inc(I);
 end;
 
 //--------------------------------------------------------------------------------------------------
