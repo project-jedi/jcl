@@ -272,9 +272,8 @@ function IsInfinity(const d: Double): Boolean;
 
 { Rational numbers }
 
-
 type
-  TRational = class (TObject)
+  TJclRational = class (TObject)
   private
     FT: Integer;
     FN: Integer;
@@ -295,15 +294,15 @@ type
     property AsString: string read GetAsString write SetAsString;
     property AsFloat: Float read GetAsFloat write SetAsFloat;
 
-    procedure Assign(const R: TRational); overload;
+    procedure Assign(const R: TJclRational); overload;
     procedure Assign(const R: Float); overload;
     procedure Assign(const Numerator: Integer; const Denominator: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 
     procedure AssignZero;
     procedure AssignOne;
-    function Duplicate: TRational;
+    function Duplicate: TJclRational;
 
-    function IsEqual(const R: TRational): Boolean; reintroduce; overload;
+    function IsEqual(const R: TJclRational): Boolean; reintroduce; overload;
     function IsEqual(const Numerator: Integer;
       const Denominator: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Boolean; reintroduce; overload;
     function IsEqual(const R: Float): Boolean; reintroduce; overload;
@@ -311,11 +310,11 @@ type
     function IsZero: Boolean;
     function IsOne: Boolean;
 
-    procedure Add(const R: TRational); overload;
+    procedure Add(const R: TJclRational); overload;
     procedure Add(const V: Float); overload;
     procedure Add(const V: Integer); overload;
 
-    procedure Subtract(const R: TRational); overload;
+    procedure Subtract(const R: TJclRational); overload;
     procedure Subtract(const V: Float); overload;
     procedure Subtract(const V: Integer); overload;
 
@@ -323,20 +322,20 @@ type
     procedure Abs;
     function Sgn: Integer;
 
-    procedure Multiply(const R: TRational); overload;
+    procedure Multiply(const R: TJclRational); overload;
     procedure Multiply(const V: Float); overload;
     procedure Multiply(const V: Integer); overload;
 
     procedure Reciprocal;
 
-    procedure Divide(const R: TRational); overload;
+    procedure Divide(const R: TJclRational); overload;
     procedure Divide(const V: Float); overload;
     procedure Divide(const V: Integer); overload;
 
     procedure Sqrt;
     procedure Sqr;
 
-    procedure Power(const R: TRational); overload;
+    procedure Power(const R: TJclRational); overload;
     procedure Power(const V: Integer); overload;
     procedure Power(const V: Float); overload;
   end;
@@ -2170,7 +2169,7 @@ end;
 //==============================================================================
 
 
-constructor TRational.Create(const Numerator: Integer; const Denominator: Integer);
+constructor TJclRational.Create(const Numerator: Integer; const Denominator: Integer);
 begin
   inherited Create;
   Assign(Numerator, Denominator);
@@ -2178,7 +2177,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-constructor TRational.Create;
+constructor TJclRational.Create;
 begin
   inherited Create;
   AssignZero;
@@ -2186,7 +2185,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-constructor TRational.Create(const R: Float);
+constructor TJclRational.Create(const R: Float);
 begin
   inherited Create;
   Assign(R);
@@ -2194,7 +2193,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Simplify;
+procedure TJclRational.Simplify;
 var
   I: Integer;
 begin
@@ -2214,7 +2213,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Assign(const Numerator: Integer; const Denominator: Integer);
+procedure TJclRational.Assign(const Numerator: Integer; const Denominator: Integer);
 begin
   if Denominator = 0 then
     raise EJclMathError.CreateResRec(@RsInvalidRational);
@@ -2226,7 +2225,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Assign(const R: TRational);
+procedure TJclRational.Assign(const R: TJclRational);
 begin
   FT := R.FT;
   FN := R.FN;
@@ -2234,27 +2233,27 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Assign(const R: Float);
+procedure TJclRational.Assign(const R: Float);
 var
-  T: TRational;
+  T: TJclRational;
   Z: Integer;
 
-  function CalcFrac(const R: Float; const Level: Integer): TRational;
+  function CalcFrac(const R: Float; const Level: Integer): TJclRational;
   var
     I: Float;
     Z: Integer;
   begin
     if IsFloatZero(R) or (Level = 12) then // 0 (if Level = 12 we get an approximation)
-      Result := TRational.Create
+      Result := TJclRational.Create
     else
     if FloatsEqual(R, 1.0) then // 1
     begin
-      Result := TRational.Create;
+      Result := TJclRational.Create;
       Result.AssignOne;
     end
     else
     if IsFloatZero(Frac(R * 1E8)) then // terminating decimal (<8)
-      Result := TRational.Create(Trunc(R * 1E8), 100000000)
+      Result := TJclRational.Create(Trunc(R * 1E8), 100000000)
     else
     begin // recursive process
       I := 1.0 / R;
@@ -2278,7 +2277,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.AssignOne;
+procedure TJclRational.AssignOne;
 begin
   FT := 1;
   FN := 1;
@@ -2286,7 +2285,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.AssignZero;
+procedure TJclRational.AssignZero;
 begin
   FT := 0;
   FN := 1;
@@ -2294,60 +2293,60 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TRational.IsEqual(const Numerator: Integer; const Denominator: Integer): Boolean;
+function TJclRational.IsEqual(const Numerator: Integer; const Denominator: Integer): Boolean;
 var
-  R: TRational;
+  R: TJclRational;
 begin
-  R := TRational.Create(Numerator, Denominator);
+  R := TJclRational.Create(Numerator, Denominator);
   Result := IsEqual(R);
   R.Free;
 end;
 
 //------------------------------------------------------------------------------
 
-function TRational.IsEqual(const R: TRational): Boolean;
+function TJclRational.IsEqual(const R: TJclRational): Boolean;
 begin
   Result := (FT = R.FT) and (FN = R.FN);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRational.IsEqual(const R: Float): Boolean;
+function TJclRational.IsEqual(const R: Float): Boolean;
 begin
   Result := FloatsEqual(R, GetAsFloat);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRational.IsOne: Boolean;
+function TJclRational.IsOne: Boolean;
 begin
   Result := (FT = 1) and (FN = 1);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRational.IsZero: Boolean;
+function TJclRational.IsZero: Boolean;
 begin
   Result := FT = 0;
 end;
 
 //------------------------------------------------------------------------------
 
-function TRational.Duplicate: TRational;
+function TJclRational.Duplicate: TJclRational;
 begin
-  Result := TRational.Create(FT, FN);
+  Result := TJclRational.Create(FT, FN);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.SetAsFloat(const R: Float);
+procedure TJclRational.SetAsFloat(const R: Float);
 begin
   Assign(R);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.SetAsString(const S: string);
+procedure TJclRational.SetAsString(const S: string);
 var
   F: Integer;
 begin
@@ -2360,21 +2359,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TRational.GetAsFloat: Float;
+function TJclRational.GetAsFloat: Float;
 begin
   Result := FT / FN;
 end;
 
 //------------------------------------------------------------------------------
 
-function TRational.GetAsString: string;
+function TJclRational.GetAsString: string;
 begin
   Result := IntToStr(FT) + '/' + IntToStr(FN);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Add(const R: TRational);
+procedure TJclRational.Add(const R: TJclRational);
 begin
   FT := FT * R.FN + R.FT;
   FN := FN * R.FN;
@@ -2383,28 +2382,28 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Add(const V: Integer);
+procedure TJclRational.Add(const V: Integer);
 begin
   Inc(FT, FN * V);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Add(const V: Float);
+procedure TJclRational.Add(const V: Float);
 begin
   Assign(GetAsFloat + V);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Subtract(const V: Float);
+procedure TJclRational.Subtract(const V: Float);
 begin
   Assign(GetAsFloat - V);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Subtract(const R: TRational);
+procedure TJclRational.Subtract(const R: TJclRational);
 begin
   FT := FT * R.FN - R.FT;
   FN := FN * R.FN;
@@ -2413,21 +2412,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Subtract(const V: Integer);
+procedure TJclRational.Subtract(const V: Integer);
 begin
   Dec(FT, FN * V);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Negate;
+procedure TJclRational.Negate;
 begin
   FT := -FT;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Abs;
+procedure TJclRational.Abs;
 begin
   FT := System.Abs(FT);
   FN := System.Abs(FN);
@@ -2435,7 +2434,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TRational.Sgn: Integer;
+function TJclRational.Sgn: Integer;
 begin
   if FT = 0 then
     Result := 0
@@ -2450,7 +2449,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Divide(const V: Integer);
+procedure TJclRational.Divide(const V: Integer);
 begin
   if V = 0 then
     raise EJclMathError.CreateResRec(@RsDivByZero);
@@ -2461,7 +2460,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Divide(const R: TRational);
+procedure TJclRational.Divide(const R: TJclRational);
 begin
   if R.FT = 0 then
     raise EJclMathError.CreateResRec(@RsRationalDivByZero);
@@ -2473,14 +2472,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Divide(const V: Float);
+procedure TJclRational.Divide(const V: Float);
 begin
   Assign(GetAsFloat / V);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Reciprocal;
+procedure TJclRational.Reciprocal;
 begin
   if FT = 0 then
     raise EJclMathError.CreateResRec(@RsRationalDivByZero);
@@ -2489,7 +2488,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Multiply(const R: TRational);
+procedure TJclRational.Multiply(const R: TJclRational);
 begin
   FT := FT * R.FT;
   FN := FN * R.FN;
@@ -2498,7 +2497,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Multiply(const V: Integer);
+procedure TJclRational.Multiply(const V: Integer);
 begin
   FT := FT * V;
   Simplify;
@@ -2506,21 +2505,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Multiply(const V: Float);
+procedure TJclRational.Multiply(const V: Float);
 begin
   Assign(GetAsFloat * V);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Power(const R: TRational);
+procedure TJclRational.Power(const R: TJclRational);
 begin
   Assign(JclMath.Power(GetAsFloat, R.GetAsFloat));
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Power(const V: Integer);
+procedure TJclRational.Power(const V: Integer);
 var
   T, N: Extended;
 begin
@@ -2532,21 +2531,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Power(const V: Float);
+procedure TJclRational.Power(const V: Float);
 begin
   Assign(JclMath.Power(FT, V) / JclMath.Power(FN, V));
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Sqrt;
+procedure TJclRational.Sqrt;
 begin
   Assign(System.Sqrt(FT / FN));
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRational.Sqr;
+procedure TJclRational.Sqr;
 begin
   FT := System.Sqr(FT);
   FN := System.Sqr(FN);
