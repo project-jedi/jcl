@@ -1,4 +1,4 @@
-{******************************************************************************}
+ {******************************************************************************}
 {                                                                              }
 { Project JEDI Code Library (JCL) http://delphi-jedi.org                       }
 {                                                                              }
@@ -80,7 +80,7 @@ function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width:
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
-function PathGetLongName(const Path: string): string;
+function PathGetLongName(Path: string): string;
 function PathGetLongName2(const Path: string): string;
 function PathGetShortName(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
@@ -1119,30 +1119,47 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PathGetLongName(const Path: string): string;
+function PathGetLongName(Path: String): String;
 var
-  PIDL: PItemIDList;
-  Desktop: IShellFolder;
-  AnsiName: AnsiString;
-  WideName: array [0..MAX_PATH] of WideChar;
-  Eaten, Attr: ULONG; // both unused but API requires them (incorrect translation)
+  I : Integer;
+  SearchHandle : THandle;
+  FindData : TWin32FindData;
+  IsBackSlash : Boolean;
 begin
-  Result := Path;
-  if Path <> '' then
+  Path := ExpandFileName(Path);
+  Result := ExtractFileDrive(Path);
+  I := Length(Result);
+  if Length(Path) <= I then Exit;   // only drive
+  if Path[I + 1] = '\' then
   begin
-    if Succeeded(SHGetDesktopFolder(Desktop)) then
-    begin
-      MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WideName, MAX_PATH);
-      if Succeeded(Desktop.ParseDisplayName(0, nil, WideName, Eaten, PIDL, Attr)) then
-      try
-        SetLength(AnsiName, MAX_PATH);
-        if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
-          Result := PChar(AnsiName);
-      finally
-        CoTaskMemFree(PIDL);
-      end;
-    end;
+    Result := Result + '\';
+    Inc(I);
   end;
+  Delete(Path, 1, I);
+  repeat
+    I := Pos('\', Path);
+    IsBackSlash := I > 0;
+    if Not IsBackSlash then
+      I := Length(Path) + 1;
+    SearchHandle := FindFirstFile(PChar(Result + Copy(Path, 1, 
+      I - 1)), FindData);
+    if SearchHandle <> INVALID_HANDLE_VALUE then
+    begin
+      try
+        Result := Result + FindData.cFileName;
+        if IsBackSlash then
+          Result := Result + '\';
+      finally
+        Windows.FindClose(SearchHandle);
+      end;
+    end
+    else
+    begin
+      Result := Result + Path;
+      Break;
+    end;
+    Delete(Path, 1, I);
+  until Length(Path) = 0;
 end;
 
 //------------------------------------------------------------------------------
