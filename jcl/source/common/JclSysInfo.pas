@@ -2705,7 +2705,7 @@ var
   Keys: TKeyboardState;
 begin
   GetKeyBoardState(Keys);
-  Result := Keys[VirtualKey] = 1;
+  Result := Keys[VirtualKey] and $80 <> 0;
 end;
 
 //------------------------------------------------------------------------------
