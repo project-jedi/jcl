@@ -528,7 +528,7 @@ const
   {60} ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,
   {68} ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken,
   {70} ptToken,  ptToken,  ptToken,  ptToken,  ptToken,  ptToken,  ptVoid,   ptVoid,
-  {78} ptVoid,   ptToken,  ptToken,  ptToken,  ptToken,  ptToken,  ptToken,  ptToken,
+  {78} ptVoid,   ptToken,  ptVoid,   ptToken,  ptToken,  ptToken,  ptToken,  ptToken,
   {80} ptToken,  ptToken,  ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,
   {88} ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptToken,  ptToken,  ptVoid,   ptToken,
   {90} ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,   ptVoid,
@@ -916,25 +916,37 @@ begin
       ptVoid: ; // do nothing
       ptToken:
       begin
-        Row := Owner.Method.Method.Table.Stream.Metadata.Tokens[TVarData(Param).VLongWord];
-        if Row is TJclClrTableTypeDefRow then
-          Result := TJclClrTableTypeDefRow(Row).FullName
-        else if Row is TJclClrTableTypeRefRow then
-        with TJclClrTableTypeRefRow(Row) do
-          Result := FullName
-        else if Row is TJclClrTableMethodDefRow then
-        with TJclClrTableMethodDefRow(Row) do
-          Result := ParentToken.FullName + '.' + Name
-        else if Row is TJclClrTableFieldDefRow then
-        with TJclClrTableFieldDefRow(Row) do
-          Result := ParentToken.FullName + '.' + Name
+        if Byte(TJclPeMetadata.TokenTable(TVarData(Param).VLongWord)) = $70 then
+          Result := '"' + Owner.Method.Method.Table.Stream.Metadata.UserStringAt(TJclPeMetadata.TokenIndex(TVarData(Param).VLongWord)) + '"'
         else
-          Result := Row.DumpIL;
-
-        Result := Result + ' /* ' + IntToHex(TVarData(FParam).VLongWord, 4) + ' */';
+        begin
+          Row := Owner.Method.Method.Table.Stream.Metadata.Tokens[TVarData(Param).VLongWord];
+          if Assigned(Row) then
+          begin
+            if Row is TJclClrTableTypeDefRow then
+              Result := TJclClrTableTypeDefRow(Row).FullName
+            else if Row is TJclClrTableTypeRefRow then
+            with TJclClrTableTypeRefRow(Row) do
+              Result := FullName
+            else if Row is TJclClrTableMethodDefRow then
+            with TJclClrTableMethodDefRow(Row) do
+              Result := ParentToken.FullName + '.' + Name
+            else if Row is TJclClrTableMemberRefRow then
+            with TJclClrTableMemberRefRow(Row) do
+              Result := FullName
+            else if Row is TJclClrTableFieldDefRow then
+            with TJclClrTableFieldDefRow(Row) do
+              Result := ParentToken.FullName + '.' + Name
+            else
+              Result := Row.DumpIL;
+          end
+          else
+            Result := '';
+        end;
+        Result := Result + ' /* ' + IntToHex(TVarData(FParam).VLongWord, 8) + ' */';
       end;
-      ptSOff:  Result := FormatLabel(Offset + Size + TVarData(Param).VByte - 1);
-      ptLOff:  Result := FormatLabel(Offset + Size + TVarData(Param).VLongWord - 1);
+      ptSOff:  Result := FormatLabel(Offset + Size + TVarData(Param).VShortInt - 1);
+      ptLOff:  Result := FormatLabel(Offset + Size + TVarData(Param).VInteger - 1);
       ptArray:
       begin
         for I:= VarArrayHighBound(FParam, 1) to VarArrayLowBound(FParam, 1) do
