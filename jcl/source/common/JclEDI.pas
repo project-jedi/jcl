@@ -749,8 +749,8 @@ end;
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObject(Index: Integer);
 {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-var
-  I: Integer;
+//var
+//  I: Integer;
 {$ENDIF}
 begin
   if IndexIsValid(Index) then
@@ -760,10 +760,11 @@ begin
     {$ELSE}
     // Delete
     FreeAndNil(FEDIDataObjects[Index]);
-    // (rom) please replace with a call to Move() throughout the file
-    // Shift
-    for I := Index + 1 to High(FEDIDataObjects) do
-      FEDIDataObjects[I-1] := FEDIDataObjects[I];
+    // Shift (Keep comment here for reference.)
+    //for I := Index + 1 to High(FEDIDataObjects) do
+    //  FEDIDataObjects[I-1] := FEDIDataObjects[I];
+    Move(FEDIDataObjects[Index+1], FEDIDataObjects[Index],
+      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(Index+1)));
     // Resize
     SetLength(FEDIDataObjects, High(FEDIDataObjects));
     {$ENDIF}
@@ -806,12 +807,14 @@ begin
     // Delete
     for I := Index to (Index + Count) - 1 do
       FreeAndNil(FEDIDataObjects[I]);
-    // Shift
-    for I := (Index + Count) to High(FEDIDataObjects) do
-    begin
-      FEDIDataObjects[I-Count] := FEDIDataObjects[I];
-      FEDIDataObjects[I] := nil;
-    end;
+    // Shift (Keep comment here for reference.)
+    //for I := (Index + Count) to High(FEDIDataObjects) do
+    //begin
+    //  FEDIDataObjects[I-Count] := FEDIDataObjects[I];
+    //  FEDIDataObjects[I] := nil;
+    //end;
+    Move(FEDIDataObjects[Index+Count], FEDIDataObjects[Index],
+      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(Index+Count)));
     // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) - Count);
     {$ENDIF}
@@ -886,8 +889,8 @@ end;
 
 function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer): Integer;
 {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-var
-  I: Integer;
+//var
+//  I: Integer;
 {$ENDIF}
 begin
   Result := InsertIndex; // Return position
@@ -898,9 +901,11 @@ begin
     {$ELSE}
     // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    // Shift
-    for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-      FEDIDataObjects[I] := FEDIDataObjects[I-1];
+    // Shift (Keep comment here for reference.)
+    //for I := High(FEDIDataObjects) downto InsertIndex + 1 do
+    //  FEDIDataObjects[I] := FEDIDataObjects[I-1];
+    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+1],
+      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+1)));
     // Insert
     FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
     {$ENDIF}
@@ -914,8 +919,8 @@ end;
 function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer;
   EDIDataObject: TEDIDataObject): Integer;
 {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
-var
-  I: Integer;
+//var
+//  I: Integer;
 {$ENDIF}
 begin
   Result := InsertIndex; // Return position
@@ -928,9 +933,11 @@ begin
     {$ELSE}
     // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    // Shift
-    for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-      FEDIDataObjects[I] := FEDIDataObjects[I-1];
+    // Shift (Keep comment here for reference.)
+    //for I := High(FEDIDataObjects) downto InsertIndex + 1 do
+    //  FEDIDataObjects[I] := FEDIDataObjects[I-1];
+    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+1],
+      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+1)));
     // Insert
     FEDIDataObjects[InsertIndex] := EDIDataObject;
     if FGroupIsParent then
@@ -962,12 +969,14 @@ begin
     I := Length(EDIDataObjectArray);
     // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + I);
-    // Shift
-    for J := High(FEDIDataObjects) downto InsertIndex + I do
-    begin
-      FEDIDataObjects[J] := FEDIDataObjects[J-I];
-      FEDIDataObjects[J-I] := nil;
-    end;
+    // Shift (Keep comment here for reference.)
+    //for J := High(FEDIDataObjects) downto InsertIndex + I do
+    //begin
+    //  FEDIDataObjects[J] := FEDIDataObjects[J-I];
+    //  FEDIDataObjects[J-I] := nil;
+    //end;
+    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+I],
+      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+I)));
     // Insert
     K := 0;
     for J := InsertIndex to (InsertIndex + I) - 1 do
@@ -998,12 +1007,14 @@ begin
     {$ELSE}
     // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-    // Shift
-    for I := High(FEDIDataObjects) downto InsertIndex + Count do
-    begin
-      FEDIDataObjects[I] := FEDIDataObjects[I-Count];
-      FEDIDataObjects[I-Count] := nil;
-    end;
+    // Shift (Keep comment here for reference.)
+    //for I := High(FEDIDataObjects) downto InsertIndex + Count do
+    //begin
+    //  FEDIDataObjects[I] := FEDIDataObjects[I-Count];
+    //  FEDIDataObjects[I-Count] := nil;
+    //end;
+    Move(FEDIDataObjects[InsertIndex], FEDIDataObjects[InsertIndex+Count],
+      SizeOf(FEDIDataObjects[0]) * (Length(FEDIDataObjects)-(InsertIndex+Count)));
     // Insert
     for I := InsertIndex to (InsertIndex + Count) - 1 do
       FEDIDataObjects[I] := InternalCreateEDIDataObject;
