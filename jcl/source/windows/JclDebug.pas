@@ -41,7 +41,7 @@ uses
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  JclBase, JclFileUtils, JclPeImage;
+  JclBase, JclFileUtils, JclPeImage, JclSynch;
 
 //------------------------------------------------------------------------------
 // Diagnostics
@@ -363,17 +363,17 @@ function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
-function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
-function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated{$ENDIF};
+  var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
 
 //------------------------------------------------------------------------------
 // Info routines base list
@@ -384,11 +384,9 @@ type
   private
     FThreadID: DWORD;
     FTimeStamp: TDateTime;
-    function GetThreadInfo: string;
   public
     constructor Create;
     property ThreadID: DWORD read FThreadID;
-    property ThreadInfo: string read GetThreadInfo;
     property TimeStamp: TDateTime read FTimeStamp;
   end;
 
@@ -544,11 +542,9 @@ type
   TJclDebugThread = class (TThread)
   private
     FSyncException: Exception;
-    FThreadName: string;
     procedure DoHandleException;
     function GetThreadInfo: string;
-    procedure RegisterThread;
-    procedure UnRegisterThread;
+    function GetThreadName: string;
   protected
     procedure DoNotify;
     procedure DoSyncHandleException; dynamic;
@@ -558,18 +554,46 @@ type
     destructor Destroy; override;
     property SyncException: Exception read FSyncException;
     property ThreadInfo: string read GetThreadInfo;
-    property ThreadName: string read FThreadName;
+    property ThreadName: string read GetThreadName;
   end;
 
-  TJclThreadExceptNotifyProc = procedure (Thread: TJclDebugThread);
-  TJclThreadExceptNotifyMethod = procedure (Thread: TJclDebugThread) of object;
+  TJclDebugThreadNotifyEvent = procedure (Thread: TJclDebugThread) of object;
+  TJclThreadIDNotifyEvent = procedure (ThreadID: DWORD) of object;
 
-var
-  SyncThreadExceptNotifyProc: TJclThreadExceptNotifyProc;
-  SyncThreadExceptNotifyMethod: TJclThreadExceptNotifyMethod;
+  TJclDebugThreadList = class (TObject)
+  private
+    FList: TStringList;
+    FLock: TJclCriticalSection;
+    FOnSyncException: TJclDebugThreadNotifyEvent;
+    FOnThreadRegistered: TJclThreadIDNotifyEvent;
+    FOnThreadUnregistered: TJclThreadIDNotifyEvent;
+    function GetCount: Integer;
+    function GetThreadNames(ThreadID: DWORD; Index: Integer): string;
+    function GetThreadIDs(Index: Integer): DWORD;
+  protected
+    procedure DoSyncException(Thread: TJclDebugThread);
+    procedure DoThreadRegistered(ThreadID: DWORD);
+    procedure DoThreadUnregistered(ThreadID: DWORD);
+    procedure InternalRegisterThread(ThreadID: DWORD; const ThreadName, ThreadClassName: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RegisterThread(ThreadID: DWORD; const ThreadName: string); overload;
+    procedure RegisterThread(Thread: TThread; const ThreadName: string); overload;
+    procedure UnregisterThread(ThreadID: DWORD); overload;
+    procedure UnregisterThread(Thread: TThread); overload;
+    property Count: Integer read GetCount;
+    property Lock: TJclCriticalSection read FLock;
+    property ThreadClassNames[ThreadID: DWORD]: string index 1 read GetThreadNames;
+    property ThreadIDs[Index: Integer]: DWORD read GetThreadIDs;
+    property ThreadInfos[ThreadID: DWORD]: string index 2 read GetThreadNames;
+    property ThreadNames[ThreadID: DWORD]: string index 0 read GetThreadNames;
+    property OnSyncException: TJclDebugThreadNotifyEvent read FOnSyncException write FOnSyncException;
+    property OnThreadRegistered: TJclThreadIDNotifyEvent read FOnThreadRegistered write FOnThreadRegistered;
+    property OnThreadUnregistered: TJclThreadIDNotifyEvent read FOnThreadUnregistered write FOnThreadUnregistered;
+  end;
 
-function JclFindDebugThread(ThreadID: DWORD): TJclDebugThread;
-function JclDebugThreadInfoStr(ThreadID: DWORD): string;
+function JclDebugThreadList: TJclDebugThreadList;
 
 //------------------------------------------------------------------------------
 // Miscellanuous
@@ -589,7 +613,7 @@ uses
   {$IFDEF WIN32}
   JclRegistry,
   {$ENDIF WIN32}
-  JclHookExcept, JclStrings, JclSynch, JclSysInfo, JclSysUtils;
+  JclHookExcept, JclStrings, JclSysInfo, JclSysUtils;
 
 //==============================================================================
 // Helper assembler routines
@@ -2660,13 +2684,6 @@ begin
   FTimeStamp := Now;
 end;
 
-//------------------------------------------------------------------------------
-
-function TJclStackBaseList.GetThreadInfo: string;
-begin
-  Result := JclDebugThreadInfoStr(FThreadID);
-end;
-
 //==============================================================================
 // TJclGlobalStackList
 //==============================================================================
@@ -3339,48 +3356,15 @@ end;
 //==============================================================================
 
 var
-  RegisteredThreads: TStringList;
+  RegisteredThreadList: TJclDebugThreadList;
 
 //------------------------------------------------------------------------------
 
-function JclFindDebugThread(ThreadID: DWORD): TJclDebugThread;
-var
-  I: Integer;
+function JclDebugThreadList: TJclDebugThreadList;
 begin
-  Result := nil;
-  DebugInfoCritSect.Enter;
-  try
-    if RegisteredThreads <> nil then
-    begin
-      I := RegisteredThreads.IndexOf(IntToHex(ThreadID, 8));
-      if I >= 0 then
-        Result := TJclDebugThread(RegisteredThreads.Objects[I]);
-    end;
-  finally
-    DebugInfoCritSect.Leave;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclDebugThreadInfoStr(ThreadID: DWORD): string;
-var
-  Thread: TJclDebugThread;
-begin
-  try
-    if ThreadID = MainThreadID then
-      Result := Format('[%.8x] MainThread', [ThreadID])
-    else
-    begin
-      Thread := JclFindDebugThread(ThreadID);
-      if Thread = nil then
-        Result := Format('[%.8x] ???', [ThreadID])
-      else
-        Result := Format('[%.8x - %s] "%s"', [ThreadID, Thread.ClassName, Thread.ThreadName]);
-    end;
-  except
-    Result := '';
-  end;
+  if RegisteredThreadList = nil then
+    RegisteredThreadList := TJclDebugThreadList.Create;
+  Result := RegisteredThreadList;
 end;
 
 //==============================================================================
@@ -3390,8 +3374,7 @@ end;
 constructor TJclDebugThread.Create(Suspended: Boolean; const AThreadName: string);
 begin
   inherited Create(True);
-  FThreadName := AThreadName;
-  RegisterThread;
+  JclDebugThreadList.RegisterThread(Self, AThreadName);
   if not Suspended then
     Resume;
 end;
@@ -3401,7 +3384,7 @@ end;
 destructor TJclDebugThread.Destroy;
 begin
   inherited;
-  UnRegisterThread;
+  JclDebugThreadList.UnregisterThread(Self);
 end;
 
 //------------------------------------------------------------------------------
@@ -3420,10 +3403,7 @@ end;
 
 procedure TJclDebugThread.DoNotify;
 begin
-  if Assigned(SyncThreadExceptNotifyProc) then
-    SyncThreadExceptNotifyProc(Self);
-  if Assigned(SyncThreadExceptNotifyMethod) then
-    SyncThreadExceptNotifyMethod(Self);
+  RegisteredThreadList.DoSyncException(Self);
 end;
 
 //------------------------------------------------------------------------------
@@ -3442,7 +3422,14 @@ end;
 
 function TJclDebugThread.GetThreadInfo: string;
 begin
-  Result := JclDebugThreadInfoStr(ThreadID);
+  Result := JclDebugThreadList.ThreadInfos[ThreadID];
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclDebugThread.GetThreadName: string;
+begin
+  Result := JclDebugThreadList.ThreadNames[ThreadID];
 end;
 
 //------------------------------------------------------------------------------
@@ -3458,40 +3445,157 @@ begin
   end;
 end;
 
+//==============================================================================
+// TJclDebugThreadList
+//==============================================================================
+
+constructor TJclDebugThreadList.Create;
+begin
+  FLock := TJclCriticalSection.Create;
+  FList := TStringList.Create;
+end;
+
 //------------------------------------------------------------------------------
 
-procedure TJclDebugThread.RegisterThread;
+destructor TJclDebugThreadList.Destroy;
 begin
-  DebugInfoCritSect.Enter;
+  FreeAndNil(FList);
+  FreeAndNil(FLock);
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.DoSyncException(Thread: TJclDebugThread);
+begin
+  if Assigned(FOnSyncException) then
+    FOnSyncException(Thread);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.DoThreadRegistered(ThreadID: DWORD);
+begin
+  if Assigned(FOnThreadRegistered) then
+    FOnThreadRegistered(ThreadID);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.DoThreadUnregistered(ThreadID: DWORD);
+begin
+  if Assigned(FOnThreadUnregistered) then
+    FOnThreadUnregistered(ThreadID);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclDebugThreadList.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclDebugThreadList.GetThreadIDs(Index: Integer): DWORD;
+begin
+  Result := DWORD(FList.Objects[Index]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclDebugThreadList.GetThreadNames(ThreadID: DWORD; Index: Integer): string;
+var
+  I: Integer;
+
+  function ThreadName: string;
+  begin
+    Result := FList[I];
+    Delete(Result, 1, Pos('=', Result));
+  end;
+
+begin
+  FLock.Enter;
   try
-    if RegisteredThreads = nil then
+    I := FList.IndexOfObject(Pointer(ThreadID));
+    if I <> -1 then
     begin
-      RegisteredThreads := TStringList.Create;
-      RegisteredThreads.Sorted := True;
-    end;
-    RegisteredThreads.AddObject(IntToHex(ThreadID, 8), Self);
+      case Index of
+        0: Result := ThreadName;
+        1: Result := FList.Names[I];
+        2: Result := Format('%.8x [%s] "%s"', [ThreadID, ThreadName, FList.Names[I]]);
+      end;
+    end
+    else
+      Result := '';
   finally
-    DebugInfoCritSect.Leave;
+    FLock.Leave;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclDebugThread.UnRegisterThread;
+procedure TJclDebugThreadList.InternalRegisterThread(ThreadID: DWORD; const ThreadName, ThreadClassName: string);
+var
+  I: Integer;
+
+  function FormatInternalName: string;
+  begin
+    Result := Format('%s=%s', [ThreadClassName, ThreadName]);
+  end;
+
+begin
+  FLock.Enter;
+  try
+    I := FList.IndexOfObject(Pointer(ThreadID));
+    if I = -1 then
+      FList.AddObject(FormatInternalName, Pointer(ThreadID))
+    else
+      FList[I] := FormatInternalName;
+    DoThreadRegistered(ThreadID);  
+  finally
+    FLock.Leave;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.RegisterThread(ThreadID: DWORD; const ThreadName: string);
+begin
+  InternalRegisterThread(ThreadID, ThreadName, '');
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.RegisterThread(Thread: TThread; const ThreadName: string);
+begin
+  InternalRegisterThread(Thread.ThreadID, ThreadName, Thread.ClassName);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.UnregisterThread(ThreadID: DWORD);
 var
   I: Integer;
 begin
-  DebugInfoCritSect.Enter;
+  FLock.Enter;
   try
-    with RegisteredThreads do
+    I := FList.IndexOfObject(Pointer(ThreadID));
+    if I <> -1 then
     begin
-      I := IndexOfObject(Self);
-      if I >= 0 then
-        Delete(I);
-    end;
+      FList.Delete(I);
+      DoThreadUnregistered(ThreadID);
+    end;  
   finally
-    DebugInfoCritSect.Leave;
+    FLock.Leave;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.UnregisterThread(Thread: TThread);
+begin
+  UnregisterThread(Thread.ThreadID);
 end;
 
 //==============================================================================
@@ -3575,7 +3679,7 @@ finalization
   JclStopExceptionTracking;
   FreeAndNil(DebugInfoList);
   FreeAndNil(GlobalStackList);
-  FreeAndNil(RegisteredThreads);
+  FreeAndNil(RegisteredThreadList);
   FreeAndNil(DebugInfoCritSect);
 
 end.
