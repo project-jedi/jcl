@@ -17,6 +17,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Flier Lu                                                                                       }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -350,10 +351,16 @@ type
     property OrderAsc: Boolean read FOrderAsc write SetOrderAsc;
   end;
 
+// helper functions
+{ TODO -cHelp : Author Peter J. Haas }
+function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
+{ TODO -cHelp : Author Peter J. Haas }
+function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWord;
+
 implementation
 
 uses
-  RegStr, Math,
+  RegStr, Math, 
   JclStrings, JclRegistry, JclSysInfo;
 
 const
@@ -965,7 +972,7 @@ end;
 
 procedure TJclSCManager.Open;
 begin
-  FHandle := OpenSCManager(PChar(FMachineName), PChar(FDatabaseName), FDesiredAccess);
+  FHandle := OpenSCManager(Pointer(FMachineName), Pointer(FDatabaseName), FDesiredAccess);
   Win32Check(FHandle <> INVALID_SCM_HANDLE);
 end;
 
@@ -1374,9 +1381,65 @@ begin
       Include(Result, ACtrl);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
+var
+  SvcStatus: TServiceStatus;
+begin
+  if not QueryServiceStatus(ServiceHandle, SvcStatus) then
+    RaiseLastOSError;
+  Result := SvcStatus.dwCurrentState;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWord;
+var
+  SvcStatus: TServiceStatus;
+  Pending: Boolean;
+  StartTickCount, OldCheckPoint, WaitTime: DWord;
+begin
+  if not QueryServiceStatus(ServiceHandle, SvcStatus) then
+    RaiseLastOSError;
+  Result := SvcStatus.dwCurrentState;
+  Pending := Result in [SERVICE_START_PENDING, SERVICE_STOP_PENDING,
+    SERVICE_CONTINUE_PENDING, SERVICE_PAUSE_PENDING];
+  if Pending then
+  begin
+    StartTickCount := GetTickCount;
+    OldCheckPoint := SvcStatus.dwCheckPoint;
+    repeat
+      WaitTime := SvcStatus.dwWaitHint div 10;
+      if WaitTime < 1000 then
+        WaitTime := 1000
+      else if WaitTime > 10000 then
+        WaitTime := 10000;
+      Sleep(WaitTime);
+      // check the status again
+      if not QueryServiceStatus(ServiceHandle, SvcStatus) then
+        RaiseLastOSError;
+      Result := SvcStatus.dwCurrentState;
+      Pending := Result in [SERVICE_START_PENDING, SERVICE_STOP_PENDING,
+        SERVICE_CONTINUE_PENDING, SERVICE_PAUSE_PENDING];
+      if SvcStatus.dwCheckPoint > OldCheckPoint then
+      begin
+        // The service is making progress.
+        StartTickCount := GetTickCount;
+        OldCheckPoint := SvcStatus.dwCheckPoint;
+      end;
+    // Status not pending or no progress made within the wait hint
+    until not Pending or (GetTickCount - StartTickCount > SvcStatus.dwWaitHint);
+  end;
+end;
+
 // History:
 
 // $Log$
+// Revision 1.11  2004/04/26 04:25:46  peterjhaas
+// - add GetServiceStatus
+// - add GetServiceStatusWaitingIfPending
+//
 // Revision 1.10  2004/04/12 22:04:38  peterjhaas
 // Bugfix: TJclSCManager.Refresh EnumServiceGroups
 //
