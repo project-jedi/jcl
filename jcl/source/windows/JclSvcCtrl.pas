@@ -15,9 +15,10 @@
 { The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
 { Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
 {   Flier Lu (flier)                                                                               }
+{   Robert Rossmair (rrossmair)                                                                    }
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
@@ -1447,6 +1448,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/05/06 22:37:10  rrossmair
+// contributor list updated
+//
 // Revision 1.13  2004/05/06 22:29:19  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //
