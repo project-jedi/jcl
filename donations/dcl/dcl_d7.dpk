@@ -1,0 +1,46 @@
+package DCL_D7;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS OFF}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl;
+
+contains
+  Vector in 'Vector.pas',
+  AbstractContainer in 'AbstractContainer.pas',
+  Algorithms in 'Algorithms.pas',
+  ArrayList in 'ArrayList.pas',
+  ArraySet in 'ArraySet.pas',
+  DCL_intf in 'DCL_intf.pas',
+  DCLUtil in 'DCLUtil.pas',
+  HashMap in 'HashMap.pas',
+  HashSet in 'HashSet.pas',
+  LinkedList in 'LinkedList.pas',
+  Queue in 'Queue.pas',
+  Stack in 'Stack.pas',
+  BinaryTree in 'BinaryTree.pas';
+
+end.
