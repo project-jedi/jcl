@@ -11,8 +11,8 @@ interface
 uses
   SysUtils, Classes, JclDFM, JclDFMUtils,
 
-  Graphics, Controls, Forms, Dialogs, StdCtrls, ComCtrls, ExtCtrls;
 
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QComCtrls, QExtCtrls;
   
 
 
@@ -83,8 +83,8 @@ var
 implementation
 
 
-{$R *.dfm}
 
+{$R *.xfm}
 
 
 procedure AddDFMObjectToTree(ATreeView: TTreeView; ANode: TTreeNode; ADFMObj: TJclDFMComponent);
