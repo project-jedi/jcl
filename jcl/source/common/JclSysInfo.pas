@@ -1488,7 +1488,7 @@ begin
           FileName := '';
 
           if FullPath then
-            FileName := ResolveSymLink(Format('/proc/%s/exe', [PtrDirEnt^.d_name]));
+            FileName := SymbolicLinkTarget(Format('/proc/%s/exe', [PtrDirEnt^.d_name]));
 
           if FileName = '' then // usually due to insufficient access rights
           begin
