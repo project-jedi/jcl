@@ -77,6 +77,7 @@ type
     function GetCount: Integer;
 
     procedure Add(Info: PUnitVersionInfo);
+    function IndexOfInfo(Info: PUnitVersionInfo): Integer;
   public
     constructor Create(AInstance: THandle);
     destructor Destroy; override;
@@ -344,6 +345,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TUnitVersioningModule.IndexOfInfo(Info: PUnitVersionInfo): Integer;
+begin
+  for Result := 0 to FItems.Count - 1 do
+    if Items[Result].FInfo = Info then
+      Exit;
+  Result := -1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioningModule.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
 var
   Index: Integer;
@@ -364,7 +375,7 @@ begin
       if LogPath = '*' then
         Exit
       else
-      if CompareFilenames(LogPath, Items[Result].LogPath) = 0 then
+      if CompareFilenames(LogPath, Trim(Items[Result].LogPath)) = 0 then
         Exit;
   Result := -1;
 end;
@@ -397,7 +408,8 @@ begin
   for I := 0 to FModules.Count - 1 do
     if Modules[I].Instance = Instance then
     begin
-      Modules[I].Add(Info);
+      if Modules[I].IndexOfInfo(Info) = -1 then
+        Modules[I].Add(Info);
       Exit;
     end;
   // create a new module entry
@@ -558,6 +570,7 @@ const
 var
   {$IFDEF MSWINDOWS}
   SysInfo: TSystemInfo;
+  MemInfo: TMemoryBasicInformation;
   {$ENDIF MSWINDOWS}
   Requested, Allocated: PNPARecord;
   Pages: Integer;
@@ -617,13 +630,27 @@ begin
       Break // new block allocated
     else
     begin
-      if (Requested.Signature1 = Signature1 xor pid) and
-        (Requested.Signature2 = Signature2 xor pid) and
-        (Requested.Id = Id) then
-        Break; // Found correct, already existing block.
+      {$IFDEF MSWINDOWS}
+      VirtualQuery(Requested, MemInfo, SizeOf(MemInfo));
+      if (MemInfo.RegionSize >= SizeOf(TNPARecord)) and
+        (MemInfo.Protect and PAGE_READWRITE = PAGE_READWRITE) then
+      {$ENDIF MSWINDOWS}
+      {$IFDEF UNIX}
+      try
+      {$ENDIF UNIX}
+        if (Requested.Signature1 = Signature1 xor pid) and
+          (Requested.Signature2 = Signature2 xor pid) and
+          (Requested.Id = Id) then
+          Break; // Found correct, already existing block.
+      {$IFDEF UNIX}
+      except
+        // ignore
+      end;
+      {$ENDIF UNIX}
     end;
 
     Inc(Pages);
+    Requested := nil;
   until Pages > MaxPages;
 
   Result := nil;
@@ -640,16 +667,11 @@ begin
       RefCount := 1;
     end;
   end
-  else
+  else if Requested <> nil then
   begin
-    if (Requested.Signature1 = Signature1 xor pid) and
-      (Requested.Signature2 = Signature2 xor pid) and
-      (Requested.Id = Id) then
-    begin
-      Inc(Requested.RefCount);
-      Result := @Requested.Data;
-      RefCount := Requested.RefCount;
-    end;
+    Inc(Requested.RefCount);
+    Result := @Requested.Data;
+    RefCount := Requested.RefCount;
   end;
 end;
 
@@ -776,6 +798,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/10/28 22:42:33  ahuser
+// Fixed Mantis 2270 and 2260 (Access Violation with activated UnitVersioning)
+//
 // Revision 1.7  2004/10/27 15:54:47  ahuser
 // Update
 //
