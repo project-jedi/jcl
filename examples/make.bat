@@ -1,16 +1,30 @@
-REM CommandInterpreter: $(COMSPEC)
+@echo off
+echo CommandInterpreter: %COMSPEC%
 
-echo %JCL%
 IF NOT %JCL%!==! SET JCL=
-echo %JCL%
+
+REM check for compiler version 13.0 (Delphi/BCB 5)
+REM eventually skip examples which require at least D6/BCB6 
+dcc32 | grep -q+ "Version 13"
+if not errorlevel 1 goto compiler5
+
+REM pushd vcl\clr
+REM make
+REM popd
+
+pushd visclx\filesearch
+make
+popd
+pushd visclx\numformat
+make
+popd
+
+:compiler5
 
 pushd vcl\appinst
 make
 popd
 pushd vcl\asuser
-make
-popd
-pushd vcl\clr
 make
 popd
 pushd vcl\delphitools
@@ -72,9 +86,5 @@ REM popd
 pushd vcl\textreader
 make
 popd
-pushd visclx\filesearch
-make
-popd
-pushd visclx\numformat
-make
-popd
+
+:exit
