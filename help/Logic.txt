@@ -283,12 +283,12 @@ Count=1
 1=Max
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte = 1); overload;
-procedure DecLimit(var B: ShortInt; const Limit: Shortint; const Decr: ShortInt = 1); overload;
-procedure DecLimit(var B: Word; const Limit: Word; const Decr: Word = 1); overload;
-procedure DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer = 1); overload;
-procedure DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1); overload;
-procedure DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 = 1); overload;
+function DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
+function DecLimit(var B: ShortInt; const Limit: Shortint; const Decr: ShortInt = 1): Shortint; overload;
+function DecLimit(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
+function DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
+function DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
+function DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 = 1): Int64; overload;
 [ShortDescr]
 Decrements an ordinal up to limit.
 [Description]
@@ -304,6 +304,7 @@ Count=3
 3=Decr:IntegerType=The amount to decrement.
 [Result]
 B contains the decremented value if within limit, otherwise it contains the original value.
+This same valus is returned as the function result.
 [Quick Info]
 BCB=3,4,5
 Unit=JclLogic
@@ -312,16 +313,18 @@ SubCat=Arithmetic
 Author=ESB Consultancy;glenn@esbconsult.com.au
 Delphi=3,4,5
 [SeeAlso]
-Count=1
+Count=3
 1=IncLimit
+2=IncLimitClamp
+3=DecLimitClamp
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte = 1); overload;
-procedure IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1); overload;
-procedure IncLimit(var B: Word; const Limit: Word; const Incr: Word = 1); overload;
-procedure IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer = 1); overload;
-procedure IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1); overload;
-procedure IncLimit(var B: Int64; const Limit: Int64; const Incr: Int64 = 1); overload;
+function IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte; overload;
+function IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1): Shortint; overload;
+function IncLimit(var B: Word; const Limit: Word; const Incr: Word = 1): Word; overload;
+function IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer = 1): Integer; overload;
+function IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1): Cardinal; overload;
+function IncLimit(var B: Int64; const Limit: Int64; const Incr: Int64 = 1): Int64; overload;
 [ShortDescr]
 Increments an ordinal up to limit.
 [Description]
@@ -337,6 +340,7 @@ Count=3
 3=Incr:IntegerType=The amount to increment.
 [Result]
 B contains the incremented value if within limit, otherwise it contains the original value.
+This same value is returned as the function result.
 [Quick Info]
 BCB=3,4,5
 Unit=JclLogic
@@ -345,23 +349,111 @@ SubCat=Arithmetic
 Author=ESB Consultancy;glenn@esbconsult.com.au
 Delphi=3,4,5
 [SeeAlso]
-Count=1
+Count=3
 1=DecLimit
+2=DecLimitClamp
+3=IncLimitClamp
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DecLimitClamp(var B: Byte; const Limit: Byte; const Decr: Byte = 1): Byte; overload;
+function DecLimitClamp(var B: ShortInt; const Limit: Shortint; const Decr: ShortInt = 1): Shortint; overload;
+function DecLimitClamp(var B: Word; const Limit: Word; const Decr: Word = 1): Word; overload;
+function DecLimitClamp(var B: Integer; const Limit: Integer; const Decr: Integer = 1): Integer; overload;
+function DecLimitClamp(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal = 1): Cardinal; overload;
+function DecLimitClamp(var B: Int64; const Limit: Int64; const Decr: Int64 = 1): Int64; overload;
+[ShortDescr]
+Decrements an ordinal up to limit.
+[Description]
+DecLimitClamp decrements the specified ordinal variable by the specified value. If
+this decrement would decreate the value beyond the specified limit, the variable is
+clamped to the limit. For example, suppose
+that X equals 10, now calling DecLimitClamp(X, 5, 2) will decrement X by 2 leaving it
+with 8 on return. However, calling DecLimitClamp(X, 5, 6) will not decrement X by 6
+because that would decrement X beyond the limit. X is set to 5 (the limit) instead.
+[Parameters]
+Count=3
+1=B:IntegerType=The value to conditionally decrement.
+2=Limit:IntegerType=The decrementation limit, this is inclusive.
+3=Decr:IntegerType=The amount to decrement.
+[Result]
+B contains the decremented value if within limit, otherwise it is set to the limit
+value. This same value is returned as the function result.
+[Notes]
+Count=1
+1=If upon entry the B variable is already smaller than the limit the variable is
+set to Limit.
+[Quick Info]
+BCB=3,4,5
+Unit=JclLogic
+Category=Ordinal Math and Logic
+SubCat=Arithmetic
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=3
+1=IncLimit
+2=DecLimit
+3=IncLimitClamp
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IncLimitClamp(var B: Byte; const Limit: Byte; const Incr: Byte = 1): Byte; overload;
+function IncLimitClamp(var B: Shortint; const Limit: Shortint; const Incr: Shortint = 1): Shortint; overload;
+function IncLimitClamp(var B: Word; const Limit: Word; const Incr: Word = 1): Word; overload;
+function IncLimitClamp(var B: Integer; const Limit: Integer; const Incr: Integer = 1): Integer; overload;
+function IncLimitClamp(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal = 1): Cardinal; overload;
+function IncLimitClamp(var B: Int64; const Limit: Int64; const Incr: Int64 = 1): Int64; overload;
+[ShortDescr]
+Increments an ordinal up to limit.
+[Description]
+IncLimitClamp increments the specified ordinal variable by the specified value. If
+this increment would increase the value beyond the specified limit, the variable is
+clamped to the limit. For example, suppose
+that X equals 5, now calling IncLimitClamp(X, 10, 2) will increment X by 2 leaving it
+with 7 on return. However, calling IncLimitClamp(X, 10, 6) will not increment X by 6
+because that would increment X beyond the limit. X is set to 10 (the limit) instead.
+[Parameters]
+Count=3
+1=B:IntegerType=The value to conditionally increment.
+2=Limit:IntegerType=The incrementation limit.
+3=Incr:IntegerType=The amount to increment.
+[Result]
+B contains the incremented value if within limit, otherwise it is set to the limit
+value. This same value is returned as the function result.
+[Notes]
+Count=1
+1=If upon entry the B variable is already larger than the limit the variable is
+set to Limit.
+[Quick Info]
+BCB=3,4,5
+Unit=JclLogic
+Category=Ordinal Math and Logic
+SubCat=Arithmetic
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=3
+1=DecLimit
+2=IncLimit
+3=DecLimitClamp
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ReverseBits(const Value: Byte): Byte; overload;
 function ReverseBits(const Value: Word): Word; overload;
 function ReverseBits(const Value: Integer): Integer; overload;
 function ReverseBits(const Value: Int64): Int64; overload;
+function ReverseBits(P: Pointer; Count: Integer): Pointer; overload;
 [ShortDescr]
 Reverses the bits of Value.
 [Description]
 ReverseBits reverses the bits in the passed parameter. That is, assuming a byte,
 bit 0 is swapped with bit 7, bit 1 is swapped with bit 6 and so on. This function
-exist in 4 forms, one for each Integer type.
+exist in 4 forms, one for each Integer type. The last overload is a generalisation
+of this which reverse the bits in the past in buffer, <i>for each byte individually<i>.
 [Parameters]
-Count=1
+Count=3
 1=Value:IntegerType=The integer type whose bits to reverse.
+2=P:Pointer=Address of a buffer whose bits to reverse.
+3=Count:Integer=Size of the buffer, in bytes, specified by P.
 [Result]
 Copy of Value with it's bits reversed.
 [Notes]
