@@ -364,13 +364,13 @@ type
 { CRC }
 
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
-function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer; 
+function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 
 function Crc32_P(X: PBytearray ; N: Integer; Crc: Cardinal = 0): Cardinal;
-function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer; 
+function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 
 
 type
@@ -2202,7 +2202,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer; 
+function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 var
   I, J: Integer;
   C: Byte;
