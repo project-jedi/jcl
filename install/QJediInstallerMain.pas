@@ -19,11 +19,11 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform support)                                          }
+{ Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: February 17, 2004                                                                 }
+{ Last modified: March 9, 2004                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -43,7 +43,7 @@ uses
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls, QImgList,
   QProductFrames, QJediInstallIntf,
   
-  DelphiInstall;
+  BorRADToolInstall;
 
 const
   
@@ -61,29 +61,6 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
-    
-    {
-    // Kylix 1
-    D1TabSheet: TTabSheet;
-    D1Product: TProductFrame;
-    // Kylix 2
-    D2TabSheet: TTabSheet;
-    D2Product: TProductFrame;
-    }
-    // Kylix 3 for Delphi
-    D3TabSheet: TTabSheet;
-    D3Product: TProductFrame;
-    
-    //
-    D5TabSheet: TTabSheet;
-    D5Product: TProductFrame;
-    //
-    D6TabSheet: TTabSheet;
-    D6Product: TProductFrame;
-    //
-    D7TabSheet: TTabSheet;
-    D7Product: TProductFrame;
-    //
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -96,12 +73,14 @@ type
     procedure TreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure BplPathEditChange(Sender: TObject);
   private
-    FDelphiInstallations: TJclDelphiInstallations;
+    FBorRADToolInstallations: TJclBorRADToolInstallations;
     FJediInstall: IJediInstall;
     FInstallLog: TFileStream;
     FSystemPaths: TStringList;
+    function CreateView(Installation: TJclBorRADToolInstallation): Boolean;
     procedure ReadSystemPaths;
-    function Product(Version: Integer): TProductFrame;
+    function View(Installation: TJclBorRADToolInstallation): TProductFrame; overload;
+    function View(RADToolKind: TJclBorRADToolKind; Version: Integer): TProductFrame; overload;
     
   protected
     
@@ -111,21 +90,20 @@ type
     function CheckRunningInstances: Boolean;
     procedure CheckUpdatePacks;
     procedure Install;
-    procedure PopulatePaths;
     function PopulateTreeViews: Boolean;
     function SystemPathValid(const Path: string): Boolean;
     procedure UpdateButtons;
     // IJediInstallTool
-    function ActiveVersionNumberPage: Integer;
-    function BPLPath(VersionNumber: Integer): string;
-    function DCPPath(VersionNumber: Integer): string;
-    function FeatureChecked(FeatureID: Cardinal; VersionNumber: Integer): Boolean;
-    function GetDelphiInstallations: TJclDelphiInstallations;
+    function BPLPath(Installation: TJclBorRADToolInstallation): string;
+    function DCPPath(Installation: TJclBorRADToolInstallation): string;
+    function FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
+    function GetBorRADToolInstallations: TJclBorRADToolInstallations;
     function MessageBox(const Text: string; DlgType: TMsgDlgType = mtInformation;
       Buttons: TMsgDlgButtons = [mbOK]; DefaultBtn: TMsgDlgBtn = mbNone): Integer;
-    procedure UpdateInfo(VersionNumber: Integer; const InfoText: String);
+    procedure UpdateInfo(Installation: TJclBorRADToolInstallation; const InfoText: String);
     procedure UpdateStatus(const Text: string);
     procedure WriteInstallLog(const Text: string);
+    property BorRADToolInstallations: TJclBorRADToolInstallations read FBorRADToolInstallations;
   end;
 
 var
@@ -157,30 +135,51 @@ const
   DelphiSupportURL  = 'http://www.borland.com/devsupport/delphi/';
   DelphiJediURL     = 'http://delphi-jedi.org';
   VersionSignature  = 'D%d';
+  BCBTag            = $10000;
+  VersionMask       = $FFFF;
 
 resourcestring
   RsCantFindFiles   = 'Can not find installation files, check your installation.';
-  RsCloseDelphi     = 'Please close all running instances of Delphi IDE before the installation.';
+  RsCloseRADTool    = 'Please close all running instances of %s IDE before the installation.';
   RsConfirmInstall  = 'Are you sure to install all selected features?';
-  RsEnterValidPath  = '(Enter valid path)';
   RsInstallSuccess  = 'Installation finished';
-  RsNoInstall       = 'There is no Delphi installation on this machine. Installer will close.';
-  RsUpdateNeeded    = '. Would you like to open Borland Delphi support web page?';
+  RsNoInstall       = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
+  RsUpdateNeeded    = '. Would you like to open Borland %s support web page?';
 
 { TMainForm }
 
+function TMainForm.CreateView(Installation: TJclBorRADToolInstallation): Boolean;
+var
+  Page: TTabSheet;
+  ProductFrame: TProductFrame;
+begin
+  Result := True;
+  Page := TTabSheet.Create(Self);
+  with Installation do
+  begin
+    Page.Name := Format('%s%dPage', [Prefixes[RADToolKind], VersionNumber]);
+    Page.Caption := Name;
+  end;
+  Page.PageControl := ProductsPageControl;
+  ProductFrame := TProductFrame.Create(Self);
+  ProductFrame.Installation := Installation;
+  ProductFrame.TreeView.Images := ImageList;
+  ProductFrame.Align := alClient;
+  ProductFrame.Parent := Page;
+end;
+
 function TMainForm.CheckRunningInstances: Boolean;
 begin
-  Result := FDelphiInstallations.AnyInstanceRunning;
+  Result := FBorRADToolInstallations.AnyInstanceRunning;
   if Result then
-    MessageBox(RsCloseDelphi, mtWarning);
+    MessageBox(RsCloseRADTool, mtWarning);
 end;
 
 procedure TMainForm.CheckUpdatePacks;
 var
   UpdateText: string;
 begin
-  if FDelphiInstallations.AnyUpdatePackNeeded(UpdateText) then
+  if BorRADToolInstallations.AnyUpdatePackNeeded(UpdateText) then
   begin
     UpdateText := UpdateText + RsUpdateNeeded;
     if MessageBox(UpdateText, mtWarning, [mbYes, mbNo], mbYes) = mrYes then
@@ -206,36 +205,15 @@ begin
   end;
 end;
 
-function TMainForm.Product(Version: Integer): TProductFrame;
+function TMainForm.View(RADToolKind: TJclBorRADToolKind; Version: Integer): TProductFrame;
 begin
-  Result := FindComponent(Format('D%dProduct', [Version])) as TProductFrame;
+  Result := FindComponent(Format('%s%dProduct', [Prefixes[RADToolKind], Version])) as TProductFrame;
 end;
 
-procedure TMainForm.PopulatePaths;
-var
-  I: Integer;
-  Page: TTabSheet;
-  Installation: TJclDelphiInstallation;
-
-  function GetPathForEdit(const Path: string): string;
-  begin
-    if DirectoryExists(Path) then
-      Result := Path
-    else
-      Result := RsEnterValidPath;
-  end;
-
+function TMainForm.View(Installation: TJclBorRADToolInstallation): TProductFrame;
 begin
-  for I := 0 to ProductsPageControl.PageCount - 1 do
-  begin
-    Page := ProductsPageControl.Pages[I];
-    Installation := FDelphiInstallations.InstallationFromVersion[Page.Tag];
-    if Assigned(Installation) then
-    begin
-      Product(Page.Tag).BplPathEdit.Text := GetPathForEdit(Installation.BPLOutputPath);
-      Product(Page.Tag).DcpPathEdit.Text := GetPathForEdit(Installation.DCPOutputPath);
-    end;
-  end;
+  with Installation do
+    Result := View(RADToolKind, VersionNumber);
 end;
 
 function TMainForm.PopulateTreeViews: Boolean;
@@ -243,14 +221,16 @@ var
   I: Integer;
   Page, ActivePage: TTabSheet;
   TreeView: TTreeView;
+  ProductFrame: TProductFrame;
 begin
   Result := False;
   ActivePage := nil;
   for I := 0 to ProductsPageControl.PageCount - 1 do
   begin
     Page := ProductsPageControl.Pages[I];
-    TreeView := Product(Page.Tag).TreeView;
-    if FJediInstall.PopulateTreeView(TreeView.Items, Page.Tag, Page) then
+    ProductFrame := Page.Controls[0] as TProductFrame;
+    TreeView := ProductFrame.TreeView;
+    if FJediInstall.PopulateTreeView(ProductFrame.Installation, TreeView.Items) then
     begin
       Result := True;
       ActivePage := Page;
@@ -291,11 +271,11 @@ procedure TMainForm.UpdateButtons;
 begin
 end;
 
-procedure TMainForm.UpdateInfo(VersionNumber: Integer; const InfoText: String);
+procedure TMainForm.UpdateInfo(Installation: TJclBorRADToolInstallation; const InfoText: String);
 var
   P: TProductFrame;
 begin
-  P := Product(VersionNumber);
+  P := View(Installation);
   if Assigned(P) then
   begin
     P.InfoDisplay.Text := InfoText;
@@ -326,41 +306,33 @@ begin
   FInstallLog.WriteBuffer(Pointer(TextLine)^, Length(TextLine));
 end;
 
-function TMainForm.ActiveVersionNumberPage: Integer;
-var
-  Page: TTabSheet;
-begin
-  Page := ProductsPageControl.ActivePage;
-  if Assigned(Page) then
-    Result := Page.Tag
-  else
-    Result := 0;
-end;
-
-function TMainForm.BPLPath(VersionNumber: Integer): string;
+function TMainForm.BPLPath(Installation: TJclBorRADToolInstallation): string;
 var
   Path: string;
 begin
-  Path := Product(VersionNumber).BplPathEdit.Text;
-  Result := PathRemoveSeparator(FDelphiInstallations.InstallationFromVersion[VersionNumber].SubstitutePath(Path));
+  with Installation do
+    Path := View(Installation).BplPathEdit.Text;
+  Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
-function TMainForm.DCPPath(VersionNumber: Integer): string;
+function TMainForm.DCPPath(Installation: TJclBorRADToolInstallation): string;
 var
   Path: string;
 begin
-  Path := Product(VersionNumber).DcpPathEdit.Text;
-  Result := PathRemoveSeparator(FDelphiInstallations.InstallationFromVersion[VersionNumber].SubstitutePath(Path));
+  with Installation do
+    Path := View(Installation).DcpPathEdit.Text;
+  Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
-function TMainForm.FeatureChecked(FeatureID: Cardinal; VersionNumber: Integer): Boolean;
+function TMainForm.FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
 begin
-  Result := Product(VersionNumber).FeatureChecked(FeatureID, VersionNumber);
+  Result := View(Installation).FeatureChecked(FeatureID);
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  FDelphiInstallations := TJclDelphiInstallations.Create;
+  FBorRADToolInstallations := TJclBorRADToolInstallations.Create;
+  FBorRADToolInstallations.Iterate(CreateView);
   FInstallLog := TFileStream.Create(ChangeFileExt(Application.ExeName, '.log'), fmCreate);
   FSystemPaths := TStringList.Create;
   JediImage.Hint := DelphiJediURL;
@@ -381,13 +353,12 @@ begin
     Application.Terminate;
   end;
   ReadSystemPaths;
-  PopulatePaths;
   
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(FDelphiInstallations);
+  FreeAndNil(FBorRADToolInstallations);
   FreeAndNil(FInstallLog);
   FreeAndNil(FSystemPaths);
 end;
@@ -440,9 +411,9 @@ begin
   AllowCollapse := FJediInstall.SelectedNodeCollapsing(Node);
 end;
 
-function TMainForm.GetDelphiInstallations: TJclDelphiInstallations;
+function TMainForm.GetBorRADToolInstallations: TJclBorRADToolInstallations;
 begin
-  Result := FDelphiInstallations;
+  Result := FBorRADToolInstallations;
 end;
 
 function TMainForm.MessageBox(const Text: string; DlgType: TMsgDlgType = mtInformation;

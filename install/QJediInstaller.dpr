@@ -12,7 +12,7 @@ uses
   QJediInstallerMain in 'QJediInstallerMain.pas' {MainForm},
   QProductFrames in 'QProductFrames.pas' {ProductFrame: TFrame},
   
-  DelphiInstall in 'DelphiInstall.pas';
+  BorRADToolInstall in 'BorRADToolInstall.pas';
 
 {$R *.res}
 

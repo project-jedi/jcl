@@ -15,11 +15,11 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform support)                                          }
+{ Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: February 13, 2004                                                                 }
+{ Last modified: March 9, 2004                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -34,11 +34,12 @@ uses
   {$IFDEF VisualCLX}
   Types, 
   QGraphics, QForms, QControls, QStdCtrls, QComCtrls, QExtCtrls,
-  QJediInstallIntf;
+  QJediInstallIntf,
   {$ELSE}
   Graphics, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
-  JediInstallIntf;
+  JediInstallIntf,
   {$ENDIF}
+  BorRADToolInstall;
 
 type
   TProductFrame = class(TFrame)
@@ -68,22 +69,25 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyPress(Sender: TObject; var Key: Char);
     {$IFDEF VisualCLX}
-    procedure TreeViewCustomDrawItem(Sender: TCustomViewControl; Item: TCustomViewItem; 
-      Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage; 
+    procedure TreeViewCustomDrawItem(Sender: TCustomViewControl; Item: TCustomViewItem;
+      Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState; Stage: TCustomDrawStage;
       var DefaultDraw: Boolean);
     {$ELSE}
-    procedure TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode; 
+    procedure TreeViewCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
     {$ENDIF}
   private
     { Private declarations }
+    FInstallation: TJclBorRADToolInstallation;
     function GetNodeChecked(Node: TTreeNode): Boolean;
+    procedure SetInstallation(Value: TJclBorRADToolInstallation);
     procedure SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     procedure ToggleNodeChecked(Node: TTreeNode);
   public
     { Public declarations }
-    function FeatureChecked(FeatureID: Cardinal; VersionNumber: Integer): Boolean;
+    function FeatureChecked(FeatureID: Cardinal): Boolean;
     property NodeChecked[Node: TTreeNode]: Boolean read GetNodeChecked write SetNodeChecked;
+    property Installation: TJclBorRADToolInstallation read FInstallation write SetInstallation;
   end;
 
 implementation
@@ -98,6 +102,7 @@ uses FileCtrl;
 {$ENDIF}
 resourcestring
   RsSelectPath      = 'Select path';
+  RsEnterValidPath  = '(Enter valid path)';
 
 procedure TProductFrame.DcpPathEditChange(Sender: TObject);
 begin
@@ -108,7 +113,7 @@ begin
       Font.Color := clRed;
 end;
 
-function TProductFrame.FeatureChecked(FeatureID: Cardinal; VersionNumber: Integer): Boolean;
+function TProductFrame.FeatureChecked(FeatureID: Cardinal): Boolean;
 var
   I: Integer;
   F: Cardinal;
@@ -128,6 +133,25 @@ end;
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_Checked <> 0;
+end;
+
+procedure TProductFrame.SetInstallation(Value: TJclBorRADToolInstallation);
+const
+  Prefixes: array[TJclBorRADToolKind] of Char = ('D', 'C');
+
+  function GetPathForEdit(const Path: string): string;
+  begin
+    if DirectoryExists(Path) then
+      Result := Path
+    else
+      Result := RsEnterValidPath;
+  end;
+
+begin
+  FInstallation := Value;
+  Name := Format('%s%dProduct', [Prefixes[Value.RADToolKind], Value.VersionNumber]);
+  BplPathEdit.Text := GetPathForEdit(Installation.BPLOutputPath);
+  DcpPathEdit.Text := GetPathForEdit(Installation.DCPOutputPath);
 end;
 
 procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);

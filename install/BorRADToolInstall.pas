@@ -15,7 +15,7 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform & BCB support)                                          }
+{ Contributor(s): Robert Rossmair (crossplatform & BCB support)                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -23,7 +23,7 @@
 { installation tasks.                                                                              }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 8, 2004                                                                 }
+{ Last modified: March 9, 2004                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -78,6 +78,7 @@ const
 //--------------------------------------------------------------------------------------------------
 
 type
+  TJclBorRADToolKind = (brDelphi, brCBuilder); 
   {$IFDEF KYLIX}
   TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
   {$ELSE}
@@ -176,6 +177,7 @@ type
     procedure AddPathOption(const Option, Path: string);
     function Compile(const CommandLine: string): Boolean;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+    function SupportsLibSuffix: Boolean;
     property DCCLocation: string read FDCCLocation;
     property DCCOutput: string read FDCCOutput;
     property Options: TStrings read FOptions;
@@ -245,7 +247,6 @@ type
     FPalette: TJclBorRADToolPalette;
     FRepository: TJclBorRADToolRepository;
     FVersionNumber: Integer;
-    FIsBCB: Boolean;
     function GetBPLOutputPath: string;
     function GetCompiler: TJclBorRADToolCompiler;
     function GetDCPOutputPath: string;
@@ -266,12 +267,13 @@ type
     procedure SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
     procedure SetDebugDCUPath(const Value: string);
   protected
-    constructor Create(const AConfigDataLocation: string; IsBCBInstallation: Boolean);
+    constructor Create(const AConfigDataLocation: string);
     procedure ReadInformation;
     function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
+    class function RadToolKind: TJclBorRadToolKind;
     function AnyInstanceRunning: Boolean;
     function AddToDebugDCUPath(const Path: string): Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
@@ -293,7 +295,6 @@ type
     property IdeExeBuildNumber: string read GetIdeExeBuildNumber;
     property IdeExeFileName: string read FIdeExeFileName;
     property InstalledUpdatePack: Integer read FInstalledUpdatePack;
-    property IsBCB: Boolean read FIsBCB;
     property LatestUpdatePack: Integer read FLatestUpdatePack;
     property LibrarySearchPath: TJclBorRADToolPath read GetLibrarySearchPath write SetLibrarySearchPath;
     property LibraryBrowsingPath: TJclBorRADToolPath read GetLibraryBrowsingPath write SetLibraryBrowsingPath;
@@ -311,6 +312,14 @@ type
     property VersionNumber: Integer read FVersionNumber;
   end;
 
+  TJclBCBInstallation = class (TJclBorRADToolInstallation)
+  end;
+
+  TJclDelphiInstallation = class (TJclBorRADToolInstallation)
+  end;
+
+  TTraverseMethod = function (Installation: TJclBorRADToolInstallation): Boolean of object;
+  
   TJclBorRADToolInstallations = class (TObject)
   private
     FList: TObjectList;
@@ -327,6 +336,7 @@ type
     destructor Destroy; override;
     function AnyInstanceRunning: Boolean;
     function AnyUpdatePackNeeded(var Text: string): Boolean;
+    function Iterate(TraverseMethod: TTraverseMethod): Boolean;
     property Count: Integer read GetCount;
     property Installations[Index: Integer]: TJclBorRADToolInstallation read GetInstallations; default;
     property BCBInstallationFromVersion[VersionNumber: Integer]: TJclBorRADToolInstallation read GetBCBInstallationFromVersion;
@@ -449,7 +459,7 @@ const
     (Version: 2; LatestUpdatePack: 0),
     (Version: 3; LatestUpdatePack: 0)
   {$ELSE}
-  LatestUpdatePacks: array [Boolean, 1..3] of TUpdatePack = ( // Updated Sep 5, 2002
+  LatestUpdatePacks: array [TJclBorRADToolKind, 1..3] of TUpdatePack = ( // Updated Sep 5, 2002
     ((Version: 5; LatestUpdatePack: 1),
      (Version: 6; LatestUpdatePack: 2),
      (Version: 7; LatestUpdatePack: 0)),
@@ -480,7 +490,7 @@ resourcestring
   RsProfessional    = 'Professional';
 
 const
-  RsToolNames: array[Boolean] of string = (RsDelphiName, RsBCBName);
+  RsToolNames: array[TJclBorRADToolKind] of string = (RsDelphiName, RsBCBName);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -987,6 +997,13 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolCompiler.SupportsLibSuffix: Boolean;
+begin
+  Result := Installation.VersionNumber >= 6;
+end;
+
 //==================================================================================================
 // TJclBorRADToolPalette
 //==================================================================================================
@@ -1313,7 +1330,6 @@ end;
 
 constructor TJclBorRADToolInstallation.Create;
 begin
-  FIsBCB := IsBCBInstallation;
   {$IFDEF KYLIX}
   FConfigData := TMemIniFile.Create(AConfigDataLocation);
   {$ELSE}
@@ -1494,7 +1510,7 @@ begin
         EnvNames.Free;
       end;
     end;
-    if IsBCB then
+    if RADToolKind = brCBuilder then
       FEnvironmentVariables.Values['BCB'] := RootDir
     else
       FEnvironmentVariables.Values['DELPHI'] := RootDir;
@@ -1541,7 +1557,7 @@ end;
 
 function TJclBorRADToolInstallation.GetName: string;
 begin
-  Result := Format(RsToolNames[IsBCB], [VersionNumber]);
+  Result := Format(RsToolNames[RADToolKind], [VersionNumber]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1578,6 +1594,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+class function TJclBorRADToolInstallation.RADToolKind: TJclBorRADToolKind;
+begin
+  if InheritsFrom(TJclBCBInstallation) then
+    Result := brCBuilder
+  else
+    Result := brDelphi;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclBorRADToolInstallation.ReadInformation;
 const
   {$IFDEF KYLIX}
@@ -1588,7 +1614,7 @@ const
   EditionNames: array [TJclBorRADToolEdition] of PChar = ('STD', 'PRO', 'CSS');
   {$ENDIF}
   UpdateKeyName = 'Update #';
-  IdeFileNames: array[Boolean] of string = (DelphiIdeFileName, BCBIdeFileName);
+  IdeFileNames: array[TJclBorRADToolKind] of string = (DelphiIdeFileName, BCBIdeFileName);
 var
   KeyLen, I: Integer;
   Key: string;
@@ -1617,7 +1643,7 @@ begin
   {$ENDIF KYLIX}
 
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
-  FIdeExeFileName := PathAddSeparator(RootDir) + IdeFileNames[IsBCB];
+  FIdeExeFileName := PathAddSeparator(RootDir) + IdeFileNames[RADToolKind];
 
   Key := Globals.Values[VersionValueName];
   for Ed := Low(Ed) to High(Ed) do
@@ -1633,9 +1659,9 @@ begin
   end;
 
   for I := 1 to 3 do
-    if LatestUpdatePacks[IsBCB, I].Version = VersionNumber then
+    if LatestUpdatePacks[brCBuilder, I].Version = VersionNumber then
     begin
-      FLatestUpdatePack := LatestUpdatePacks[IsBCB, I].LatestUpdatePack;
+      FLatestUpdatePack := LatestUpdatePacks[RADToolKind, I].LatestUpdatePack;
       Break;
     end;
 end;
@@ -1796,6 +1822,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclBorRADToolInstallations.Iterate(TraverseMethod: TTraverseMethod): Boolean;
+var
+  I: Integer;
+begin
+  Result := True;
+  for I := 0 to Count - 1 do
+    Result := Result and TraverseMethod(Installations[I]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclBorRADToolInstallations.ReadInstallations;
 {$IFDEF KYLIX}
 
@@ -1815,11 +1852,9 @@ var
   I: Integer;
 begin
   FList.Clear;
-  if FBCBInstallations then
-    CheckForInstallation('bcb69rc', True)
-  else
-    for I := Low(DelphiRcFileNames) to High(DelphiRcFileNames) do
-      CheckForInstallation(DelphiRcFileNames[I], False);
+  for I := Low(DelphiRcFileNames) to High(DelphiRcFileNames) do
+    CheckForInstallation(DelphiRcFileNames[I], False);
+  CheckForInstallation('bcb69rc', True)
 end;
 {$ELSE KYLIX}
 const
@@ -1839,7 +1874,10 @@ var
         VersionKeyName := KeyNames[BCB] + PathSeparator + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
         begin
-          Item := TJclBorRADToolInstallation.Create(VersionKeyName, BCB);
+          if BCB then
+            Item := TJclBCBInstallation.Create(VersionKeyName)
+          else
+            Item := TJclDelphiInstallation.Create(VersionKeyName);
           FList.Add(Item);
         end;
       end;
