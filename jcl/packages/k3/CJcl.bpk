@@ -3,34 +3,37 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="bplCJclK3.so.1.90.0"/>
-    <OBJFILES value="../../lib/k3/obj/Jcl8087.o
-      ../../lib/k3/obj/JclBase.o
-      ../../lib/k3/obj/JclComplex.o
-      ../../lib/k3/obj/JclCounter.o
-      ../../lib/k3/obj/JclDateTime.o
-      ../../lib/k3/obj/JclEDI_ANSIX12.o
-      ../../lib/k3/obj/JclEDI.o
-      ../../lib/k3/obj/JclEDISEF.o
-      ../../lib/k3/obj/JclEDITranslators.o
-      ../../lib/k3/obj/JclEDI_UNEDIFACT.o
-      ../../lib/k3/obj/JclEDIXML.o
-      ../../lib/k3/obj/JclExprEval.o
-      ../../lib/k3/obj/JclFileUtils.o
-      ../../lib/k3/obj/JclIniFiles.o
-      ../../lib/k3/obj/JclLogic.o
-      ../../lib/k3/obj/JclMath.o
-      ../../lib/k3/obj/JclMIDI.o
-      ../../lib/k3/obj/JclMime.o
-      ../../lib/k3/obj/JclResources.o
-      ../../lib/k3/obj/JclRTTI.o
-      ../../lib/k3/obj/JclSchedule.o
-      ../../lib/k3/obj/JclStatistics.o
-      ../../lib/k3/obj/JclStrHashMap.o
-      ../../lib/k3/obj/JclStrings.o
-      ../../lib/k3/obj/JclSysInfo.o
-      ../../lib/k3/obj/JclSysUtils.o
-      ../../lib/k3/obj/JclUnitConv.o"/>
+    <PROJECT value="bplCJclK3.so.1.91.0"/>
+    <OBJFILES value="../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/Jcl8087.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclBase.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclComplex.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclCounter.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclDateTime.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclDITs.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDI_ANSIX12.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDI_ANSIX12_Ext.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDI.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDISEF.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDITranslators.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDI_UNEDIFACT.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDI_UNEDIFACT_Ext.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclEDIXML.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclExprEval.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclFileUtils.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclIniFiles.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclLogic.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclMath.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclMIDI.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclMime.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclResources.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclRTTI.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclSchedule.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclStatistics.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclStrHashMap.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclStrings.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclSysInfo.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclSysUtils.o 
+      ../../../../../../kylix/kylix/jedi/jcl/lib/k3/obj/JclUnitConv.o"/>
     <RESFILES value="CJcl.res"/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -48,8 +51,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
     <MAINSOURCE value="CJcl.bpf"/>
-    <INCLUDEPATH value="../../source/common:$(JCL)/source:$(JCL)/source/common:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
-    <LIBPATH value="../../source/common:$(JCL)/source/common:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin"/>
+    <INCLUDEPATH value="../../source:../../source/unix:../../source/common:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
+    <LIBPATH value="../../source:../../source/unix:../../source/common:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -67,22 +70,25 @@
     <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="rtle_pic.a $(LIBFILES) $(LIBRARIES) libborcrtl.so libborstl.so 
-      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so "/>
+      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so"/>
   </LINKER>
   <FILELIST>
       <FILE FILENAME="CJcl.res" FORMNAME="" UNITNAME="CJcl.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJcl.bpf" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/common/rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclDITs.pas" FORMNAME="" UNITNAME="JclDITs" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI_ANSIX12_Ext.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12_Ext" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDISEF.pas" FORMNAME="" UNITNAME="JclEDISEF" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDITranslators.pas" FORMNAME="" UNITNAME="JclEDITranslators" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI_UNEDIFACT.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI_UNEDIFACT_Ext.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT_Ext" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDIXML.pas" FORMNAME="" UNITNAME="JclEDIXML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclExprEval.pas" FORMNAME="" UNITNAME="JclExprEval" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclFileUtils.pas" FORMNAME="" UNITNAME="JclFileUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
