@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: September 19, 2002                                                                }
+{ Last modified: October 13, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -566,7 +566,7 @@ uses
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
-  JclBase, JclFileUtils, JclRegistry, JclShell, JclStrings, JclWin32;
+  JclBase, JclFileUtils, JclIniFiles, JclRegistry, JclShell, JclStrings, JclWin32;
 
 //==================================================================================================
 // Environment
@@ -1770,8 +1770,13 @@ const
   cShellKey = 'Software\Microsoft\Windows NT\CurrentVersion\WinLogon';
   cShellValue = 'Shell';
   cShellDefault = 'explorer.exe';
+  cShellSystemIniFileName = 'system.ini';
+  cShellBootSection = 'boot';
 begin
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cShellKey, cShellValue, '');
+  if IsWinNT then
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cShellKey, cShellValue, '')
+  else
+    Result := IniReadString(PathAddSeparator(GetWindowsFolder) + cShellSystemIniFileName, cShellBootSection, cShellValue);
   if Result = '' then
     Result := cShellDefault;
 end;
