@@ -604,12 +604,18 @@ end;
 
 function TJclInstallation.BplPath: string;
 begin
-  Result := PathGetShortName(Tool.BPLPath[Target]);
+  Result := Tool.BPLPath[Target];
+  {$IFDEF MSWINDOWS}
+  Result := PathGetShortName(Result);
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclInstallation.DcpPath: string;
 begin
-  Result := PathGetShortName(Tool.DCPPath[Target]);
+  Result := Tool.DCPPath[Target];
+  {$IFDEF MSWINDOWS}
+  Result := PathGetShortName(Result);
+  {$ENDIF MSWINDOWS}
 end;
 
 function TJclInstallation.CheckDirectories: Boolean;
@@ -1179,15 +1185,6 @@ begin
   if Target is TJclBCBInstallation then
     with TJclBCBInstallation(Target) do
     begin
-      // to satisfy JVCL (and eventually other libraries), create a .dcp file;
-      // Note: it is put out to .bpl path to make life easier for JVCL
-      {$IFDEF MSWINDOWS}
-      // Note: We must call make with the makefile below to ensure that the required
-      //       dcc32.cfg file is available.
-      if Target.VersionNumber = 5 then
-        Make.Execute('"-f' + Distribution.Path + 'install\BCB5-dcc32.cfg.mak"');
-      {$ENDIF MSWINDOWS}
-      Result := Target.InstallPackage(ChangeFileExt(PackageFileName, '.dpk'), BplPath, BplPath);
       // now create .bpi & .lib
       Bpr2Mak.Options.Clear;
       Bpr2Mak.Options.Add('-t..' + Bcb2MakTemplate);
@@ -1196,6 +1193,9 @@ begin
       SetEnvironmentVar('BPILIBDIR', DcpPath);
       SetEnvironmentVar('BPLDIR', BplPath);
       {$ELSE}
+      // to satisfy JVCL (and eventually other libraries), create a .dcp file;
+      // Note: it is put out to .bpl path to make life easier for JVCL
+      Result := Target.InstallPackage(ChangeFileExt(PackageFileName, '.dpk'), BplPath, BplPath);
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', DcpPath);
       Make.AddPathOption('DBPLDIR=', BplPath);
@@ -1697,6 +1697,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.62  2005/03/23 04:28:49  rrossmair
+// - removed make -fBCB5-dcc32.cfg.mak (handled by build.exe now)
+//
 // Revision 1.61  2005/03/22 03:23:18  rrossmair
 // - fixed recent changes
 //
