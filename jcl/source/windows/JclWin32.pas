@@ -16,7 +16,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 27, 2000                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit defines various Win32 API declarations which are either missing or }
+{ incorrect in one or more of the supported Delphi versions. This unit is not  }
+{ intended for regular code, only API declarations.                            }
+{                                                                              }
+{ Unit owner:                                                                  }
+{ Last modified: December 13, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -757,7 +764,7 @@ begin
     if Result then
     begin
       @_NetBios := GetProcAddress(NetBiosLib, PChar('Netbios'));
-      Result := Assigned(@_NetBios);
+      Result := @_NetBios <> nil;
       if not Result then
         ExitNetbios;
     end;
