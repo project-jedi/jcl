@@ -5,6 +5,8 @@
 ## in the order in which they are declared, regardless if they are declared
 ## before or after the parent
 --------------------------------------------------------------------------------
+@@$AccountInformation
+<TITLE Account Information>
 @@$BaseServices
 <TITLE Base Services>
 @@$BaseServices.Compatibility
@@ -16,6 +18,12 @@
 @@$BaseServices.Dynamicloading
 <GROUP BaseServices>
 <TITLE Dynamic loading>
+@@$BaseServices.EJclError
+<GROUP BaseServices>
+<TITLE EJclError>
+@@$BaseServices.EJclWin32Error
+<GROUP BaseServices>
+<TITLE EJclWin32Error>
 @@$BaseServices.FPCCompatibility
 <GROUP BaseServices>
 <TITLE FPC Compatibility>
@@ -28,6 +36,9 @@
 @@$BaseServices.Pointermanipulation
 <GROUP BaseServices>
 <TITLE Pointer manipulation>
+@@$BaseServices.TObjectList
+<GROUP BaseServices>
+<TITLE TObjectList>
 @@$ComponentObjectModel
 <TITLE Component Object Model>
 @@$ComponentObjectModel.VersionUtilities
@@ -41,6 +52,9 @@
 @@$DateandTime.TimersandCounters
 <GROUP DateandTime>
 <TITLE Timers and Counters>
+@@$DateandTime.TimersandCounters.TJclCounter
+<GROUP DateandTime.TimersandCounters>
+<TITLE TJclCounter>
 @@$DateandTime.TimersandCounters.TJclMultimediaTimer
 <GROUP DateandTime.TimersandCounters>
 <TITLE TJclMultimediaTimer>
@@ -52,6 +66,12 @@
 @@$Debugging.Exceptframeinforoutines
 <GROUP Debugging>
 <TITLE Except frame info routines>
+@@$Debugging.Exceptframeinforoutines.TJclExceptFrame
+<GROUP Debugging.Exceptframeinforoutines>
+<TITLE TJclExceptFrame>
+@@$Debugging.Exceptframeinforoutines.TJclExceptFrameList
+<GROUP Debugging.Exceptframeinforoutines>
+<TITLE TJclExceptFrameList>
 @@$Debugging.Exceptionhooking
 <GROUP Debugging>
 <TITLE Exception hooking>
@@ -67,12 +87,54 @@
 @@$Debugging.SourceLocations.BinaryDebugData
 <GROUP Debugging.SourceLocations>
 <TITLE Binary Debug Data>
+@@$Debugging.SourceLocations.BinaryDebugData.TJclBinDebugGenerator
+<GROUP Debugging.SourceLocations.BinaryDebugData>
+<TITLE TJclBinDebugGenerator>
+@@$Debugging.SourceLocations.BinaryDebugData.TJclBinDebugScanner
+<GROUP Debugging.SourceLocations.BinaryDebugData>
+<TITLE TJclBinDebugScanner>
 @@$Debugging.SourceLocations.MapParsers
 <GROUP Debugging.SourceLocations>
 <TITLE Map Parsers>
+@@$Debugging.SourceLocations.MapParsers.TJclAbstractMapParser
+<GROUP Debugging.SourceLocations.MapParsers>
+<TITLE TJclAbstractMapParser>
+@@$Debugging.SourceLocations.MapParsers.TJclMapParser
+<GROUP Debugging.SourceLocations.MapParsers>
+<TITLE TJclMapParser>
+@@$Debugging.SourceLocations.MapParsers.TJclMapScanner
+<GROUP Debugging.SourceLocations.MapParsers>
+<TITLE TJclMapScanner>
+@@$Debugging.SourceLocations.TJclDebugInfoBinary
+<GROUP Debugging.SourceLocations>
+<TITLE TJclDebugInfoBinary>
+@@$Debugging.SourceLocations.TJclDebugInfoExports
+<GROUP Debugging.SourceLocations>
+<TITLE TJclDebugInfoExports>
+@@$Debugging.SourceLocations.TJclDebugInfoList
+<GROUP Debugging.SourceLocations>
+<TITLE TJclDebugInfoList>
+@@$Debugging.SourceLocations.TJclDebugInfoMap
+<GROUP Debugging.SourceLocations>
+<TITLE TJclDebugInfoMap>
+@@$Debugging.SourceLocations.TJclDebugInfoSource
+<GROUP Debugging.SourceLocations>
+<TITLE TJclDebugInfoSource>
 @@$Debugging.Stackinforoutines
 <GROUP Debugging>
 <TITLE Stack info routines>
+@@$Debugging.Stackinforoutines.TJclStackInfoItem
+<GROUP Debugging.Stackinforoutines>
+<TITLE TJclStackInfoItem>
+@@$Debugging.Stackinforoutines.TJclStackInfoList
+<GROUP Debugging.Stackinforoutines>
+<TITLE TJclStackInfoList>
+@@$Debugging.Trackingroutines
+<GROUP Debugging>
+<TITLE Tracking routines>
+@@$Debugging.Trackingroutines.TJclStackBaseList
+<GROUP Debugging.Trackingroutines>
+<TITLE TJclStackBaseList>
 @@$FilesandIO
 <TITLE Files and IO>
 @@$FilesandIO.FilesandDirectories
@@ -90,6 +152,24 @@
 @@$FilesandIO.Pathmanipulation
 <GROUP FilesandIO>
 <TITLE Path manipulation>
+@@$FilesandIO.Streams
+<GROUP FilesandIO>
+<TITLE Streams>
+@@$FilesandIO.Streams.TJclCustomFileMapping
+<GROUP FilesandIO.Streams>
+<TITLE TJclCustomFileMapping>
+@@$FilesandIO.Streams.TJclFileMapping
+<GROUP FilesandIO.Streams>
+<TITLE TJclFileMapping>
+@@$FilesandIO.Streams.TJclFileMappingView
+<GROUP FilesandIO.Streams>
+<TITLE TJclFileMappingView>
+@@$FilesandIO.Streams.TJclSwapFileMapping
+<GROUP FilesandIO.Streams>
+<TITLE TJclSwapFileMapping>
+@@$FilesandIO.Streams.TJclTempFileStream
+<GROUP FilesandIO.Streams>
+<TITLE TJclTempFileStream>
 @@$Graphics
 <TITLE Graphics>
 @@$Graphics.Colors
@@ -104,6 +184,15 @@
 @@$Graphics.Rectangles
 <GROUP Graphics>
 <TITLE Rectangles>
+@@$Graphics.TJclDesktopCanvas
+<GROUP Graphics>
+<TITLE TJclDesktopCanvas>
+@@$Graphics.TJclRegion
+<GROUP Graphics>
+<TITLE TJclRegion>
+@@$Graphics.TJclRegionInfo
+<GROUP Graphics>
+<TITLE TJclRegionInfo>
 @@$Graphics.Types
 <GROUP Graphics>
 <TITLE Types>
@@ -121,8 +210,23 @@
 @@$InternetandE-mail
 <TITLE Internet and E-mail>
 @@$InternetandE-mail.MAPI
-<TITLE MAPI>
 <GROUP InternetandE-mail>
+<TITLE MAPI>
+@@$InternetandE-mail.MAPI.EJclMapiError
+<GROUP InternetandE-mail.MAPI>
+<TITLE EJclMapiError>
+@@$InternetandE-mail.MAPI.TJclEmail
+<GROUP InternetandE-mail.MAPI>
+<TITLE TJclEmail>
+@@$InternetandE-mail.MAPI.TJclEmailRecip
+<GROUP InternetandE-mail.MAPI>
+<TITLE TJclEmailRecip>
+@@$InternetandE-mail.MAPI.TJclEmailRecips
+<GROUP InternetandE-mail.MAPI>
+<TITLE TJclEmailRecips>
+@@$InternetandE-mail.MAPI.TJclSimpleMapi
+<GROUP InternetandE-mail.MAPI>
+<TITLE TJclSimpleMapi>
 @@$LANManager
 <TITLE LAN Manager>
 @@$LANManager.Auxilliaryfunctions
@@ -139,18 +243,60 @@
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat
 <GROUP LibrariesProcessesandThreads>
 <TITLE Portable Executable File Format>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<TITLE API Hooking>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking.TJclPeMapImgHookItem
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
+<TITLE TJclPeMapImgHookItem>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking.TJclPeMapImgHooks
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
+<TITLE TJclPeMapImgHooks>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<TITLE Borland Delphi Specific>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPeBorImage
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
+<TITLE TJclPeBorImage>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPePackageInfo
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
+<TITLE TJclPePackageInfo>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<TITLE Debug Section>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection.TJclPeDebugList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection>
+<TITLE TJclPeDebugList>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Export Section>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection.TJclPeExportFuncItem
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
+<TITLE TJclPeExportFuncItem>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection.TJclPeExportFuncList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
+<TITLE TJclPeExportFuncList>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.Imageaccessunderdebugger
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Image access under debugger>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Import Section>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportFuncItem
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
+<TITLE TJclPeImportFuncItem>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportLibItem
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
+<TITLE TJclPeImportLibItem>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
+<TITLE TJclPeImportList>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Mapped Image Routines>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines.TJclPeSectionStream
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
+<TITLE TJclPeSectionStream>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.Miscellaneous
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Miscellaneous>
@@ -160,9 +306,27 @@
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Relocation Section>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection.TJclPeRelocEntry
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
+<TITLE TJclPeRelocEntry>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection.TJclPeRelocList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
+<TITLE TJclPeRelocList>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Resource Section>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceItem
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<TITLE TJclPeResourceItem>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<TITLE TJclPeResourceList>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceRawStream
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<TITLE TJclPeResourceRawStream>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeRootResourceList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<TITLE TJclPeRootResourceList>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.SimplePEHelpers
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Simple PE Helpers>
@@ -172,9 +336,18 @@
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE Threaded Search>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch.TJclPeNameSearch
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
+<TITLE TJclPeNameSearch>
 @@$LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImage
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 <TITLE TJclPeImage>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImageBaseList
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<TITLE TJclPeImageBaseList>
+@@$LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImagesCache
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<TITLE TJclPeImagesCache>
 @@$LibrariesProcessesandThreads.Synchronization
 <GROUP LibrariesProcessesandThreads>
 <TITLE Synchronization>
@@ -184,9 +357,33 @@
 @@$LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation
 <GROUP LibrariesProcessesandThreads.Synchronization>
 <TITLE Locked integer manipulation>
+@@$LibrariesProcessesandThreads.Synchronization.TJclCriticalSection
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclCriticalSection>
+@@$LibrariesProcessesandThreads.Synchronization.TJclCriticalSectionEx
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclCriticalSectionEx>
 @@$LibrariesProcessesandThreads.Synchronization.TJclDispatcherObject
 <GROUP LibrariesProcessesandThreads.Synchronization>
 <TITLE TJclDispatcherObject>
+@@$LibrariesProcessesandThreads.Synchronization.TJclEvent
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclEvent>
+@@$LibrariesProcessesandThreads.Synchronization.TJclMeteredSection
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclMeteredSection>
+@@$LibrariesProcessesandThreads.Synchronization.TJclMultiReadExclusiveWrite
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclMultiReadExclusiveWrite>
+@@$LibrariesProcessesandThreads.Synchronization.TJclMutex
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclMutex>
+@@$LibrariesProcessesandThreads.Synchronization.TJclOptex
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclOptex>
+@@$LibrariesProcessesandThreads.Synchronization.TJclSemaphore
+<GROUP LibrariesProcessesandThreads.Synchronization>
+<TITLE TJclSemaphore>
 @@$LibrariesProcessesandThreads.Synchronization.TJclWaitableTimer
 <GROUP LibrariesProcessesandThreads.Synchronization>
 <TITLE TJclWaitableTimer>
@@ -195,6 +392,12 @@
 <TITLE TJclAppInstances>
 @@$MathRoutines
 <TITLE Math Routines>
+@@$MathRoutines.Complexnumbers
+<GROUP MathRoutines>
+<TITLE Complex numbers>
+@@$MathRoutines.Complexnumbers.TJclComplex
+<GROUP MathRoutines.Complexnumbers>
+<TITLE TJclComplex>
 @@$MathRoutines.Conversion
 <GROUP MathRoutines>
 <TITLE Conversion>
@@ -239,12 +442,27 @@
 @@$MemoryClassesandObjects.ClassManipulation.VMT
 <GROUP MemoryClassesandObjects.ClassManipulation>
 <TITLE VMT>
+@@$MemoryClassesandObjects.Guards
+<GROUP MemoryClassesandObjects>
+<TITLE Guards>
+@@$MemoryClassesandObjects.Guards.IMultiSafeGuard
+<GROUP MemoryClassesandObjects.Guards>
+<TITLE IMultiSafeGuard>
+@@$MemoryClassesandObjects.Guards.ISafeGuard
+<GROUP MemoryClassesandObjects.Guards>
+<TITLE ISafeGuard>
 @@$MemoryClassesandObjects.Miscellanuous
 <GROUP MemoryClassesandObjects>
 <TITLE Miscellanuous>
 @@$MemoryClassesandObjects.Pointermanipulation
 <GROUP MemoryClassesandObjects>
 <TITLE Pointer manipulation>
+@@$MIME
+<TITLE MIME>
+@@$Miscellaneous
+<TITLE Miscellaneous>
+@@$MultiMedia
+<TITLE MultiMedia>
 @@$OrdinalMathandLogic
 <TITLE Ordinal Math and Logic>
 @@$OrdinalMathandLogic.Arithmetic
@@ -278,9 +496,51 @@
 @@$RuntimeTypeInformation.RTTIretrieval
 <GROUP RuntimeTypeInformation>
 <TITLE RTTI retrieval>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclBaseInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclBaseInfo>
 @@$RuntimeTypeInformation.RTTIretrieval.IJclClassTypeInfo
 <GROUP RuntimeTypeInformation.RTTIretrieval>
 <TITLE IJclClassTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclClassTypeInfo.IJclPropInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclClassTypeInfo>
+<TITLE IJclPropInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclDynArrayTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclDynArrayTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclEnumerationTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclEnumerationTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclEventTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo.IJclEventParamInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval.IJclEventTypeInfo>
+<TITLE IJclEventParamInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclFloatTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclFloatTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclInt64TypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclInt64TypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclInterfaceTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclInterfaceTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclOrdinalRangeTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclOrdinalRangeTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclOrdinalTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclOrdinalTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclSetTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclSetTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclStringTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclStringTypeInfo>
+@@$RuntimeTypeInformation.RTTIretrieval.IJclTypeInfo
+<GROUP RuntimeTypeInformation.RTTIretrieval>
+<TITLE IJclTypeInfo>
 @@$Security
 <TITLE Security>
 @@$Security.AccessControl
@@ -390,6 +650,12 @@
 @@$Unicode.TSearchEngine
 <GROUP Unicode>
 <TITLE TSearchEngine>
+@@$Unicode.TURESearch
+<GROUP Unicode>
+<TITLE TURESearch>
+@@$Unicode.TUTBMSearch
+<GROUP Unicode>
+<TITLE TUTBMSearch>
 @@$Unicode.TWideStringList
 <GROUP Unicode>
 <TITLE TWideStringList>
