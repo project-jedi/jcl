@@ -76,6 +76,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure QuitBtnClick(Sender: TObject);
     procedure InstallBtnClick(Sender: TObject);
+    procedure UninstallBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JediImageClick(Sender: TObject);
     procedure TreeViewCollapsing(Sender: TObject; Node: TTreeNode;
@@ -670,6 +671,11 @@ begin
   if Result = nil then
     CreateView(Installation);
   Result := View(Installation).TreeView.Items;
+end;
+
+procedure TMainForm.UninstallBtnClick(Sender: TObject);
+begin
+  FJclInstall.Uninstall;
 end;
 
 end.
