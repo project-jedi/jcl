@@ -145,7 +145,7 @@ begin
   if Aborted then
     StatusBar.Panels[2].Text := 'Prematurely aborted.'
   else
-    StatusBar.Panels[2].Text := Format('...finished (%f seconds).', [(GetTime - FT0) * SecsPerDay]);
+    StatusBar.Panels[2].Text := Format('...finished (%f seconds).', [(Now - FT0) * SecsPerDay]);
   FileList.Sorted := True;
   StartBtn.Enabled := True;
   SaveBtn.Enabled := True;
@@ -188,7 +188,7 @@ begin
     FileList.Items.BeginUpdate;
   FileList.Sorted := False;
 
-  FT0 := GetTime;
+  FT0 := Now;
   FTaskID := FFileEnumerator.ForEach(AddFile);
 end;
 
