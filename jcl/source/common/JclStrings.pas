@@ -126,7 +126,7 @@ const
 
   {$IFDEF WIN32}
   AnsiLineBreak      = AnsiCrLf;
-  {$ENDIF}
+  {$ENDIF WIN32}
 
 // Misc. character sets
 
@@ -315,7 +315,7 @@ function PCharVectorCount(const Source: PCharVector): Integer;
 procedure PCharVectorToStrings(const Dest: TStrings; const Source: PCharVector);
 procedure FreePCharVector(var Dest: PCharVector);
 
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 // MultiSz Routines
@@ -359,10 +359,10 @@ function AnsiSameText(const S1, S2: string): Boolean;
 
 implementation
 
+{$IFDEF WIN32}
 uses
-  {$IFDEF WIN32}
   Windows;
-  {$ENDIF}
+{$ENDIF WIN32}
 
 //==============================================================================
 // Internal
@@ -407,7 +407,7 @@ begin
   end;
 end;
 
-{$ENDIF}
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
@@ -440,7 +440,7 @@ begin
   end;
 end;
 
-{$ENDIF}
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
@@ -2907,7 +2907,7 @@ begin
   end;
 end;
 
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //==============================================================================
 // Character Transformation Routines
