@@ -69,7 +69,7 @@ Description:
   call immediately terminates the application when another instance is already running.
    <P>To receive notifications you must override the WndProc of your main form and
   include the following code (or something along those lines):
-    <PRE Class=Syntax>
+  <CODE>
   procedure TForm1.WndProc(var Msg: TMessage);
   begin
     if Msg.Msg = JclAppInstances.MessageId then
@@ -80,7 +80,7 @@ Description:
       end;
     inherited WndProc(Msg);
   end;
-    </PRE>
+  </CODE>
   Note that in both instance creation and instance destruction the Msg.LParam
   field contains the process ID of the affected instance (which could be the instance
   itself). Also, notifications as well as user messages are sent to both the main
@@ -439,7 +439,9 @@ Description:
   UniqueAppIdGuidStr parameter alllows you to customize the internal name to ensure
   uniqueness.
 Parameters:
-  UniqueAppIdGuidStr - A user defined string used to customize naming of internal objects to ensure system wide uniqueness. It's recommended you use an actual GUID.
+  UniqueAppIdGuidStr - A user defined string used to customize naming of
+                       internal objects to ensure system wide uniqueness.
+                       It's recommended you use an actual GUID.
 Result:
   Returns an instance of the TJclAppInstances class which allows you to further control
   other instances of the application and communicate with them. See the documentation
@@ -452,19 +454,20 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@ReadMessageCheck
+@@JclReadMessageCheck
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Determines the type of message.
 Description:
-  ReadMessageCheck determines whether the specified message is a JclAppInstance
+  JclReadMessageCheck determines whether the specified message is a JclAppInstance
   IPC message and returns it's data kind. Use the IgnoredOriginatorWnd to filter message
   send by the same window as the routine is being called from. Call this routine
   from an overridden WndProc, for example. See the AppInstance demo application for
   an example usage.
 Parameters:
   Message - The message to check (equals the single parameter of the WndProc).
-  IgnoredOriginatorWnd - Specify the handle of the window to filter. If the message was send from that same window, the function returns False.
+  IgnoredOriginatorWnd - Specify the handle of the window to filter. If the
+                         message was send from that same window, the function returns False.
 Result:
   If the message contains was not send from the window specified by the IgnoredOriginatorWnd
   window, the functon returns the data kind value of the message, otherwise it returns False.
@@ -476,17 +479,18 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@ReadMessageData
+@@JclReadMessageData
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Returns the data from a JclAppInstance IPC message.
 Description:
-  ReadMessageData returns the data encapsulated in the message which is assumed to
+  JclReadMessageData returns the data encapsulated in the message which is assumed to
   be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx methods.
-  You can use ReadMessageCheck to determine the kind of data the message contains.
+  You can use JclReadMessageCheck to determine the kind of data the message contains.
 Parameters:
   Message - The message to extract the data from.
-  Data - Returns the data buffer. This buffer is allocated by the function and must be released by the caller.
+  Data - Returns the data buffer. This buffer is allocated by the function and
+         must be released by the caller.
   Size - Returns the size of the data buffer.
 Quick info:
   Unit: JclAppInst
@@ -496,12 +500,12 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@ReadMessageString
+@@JclReadMessageString
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Returns the data string from a JclAppInstance IPC message.
 Description:
-  ReadMessageString returns the data string encapsulated in the message which is assumed
+  JclReadMessageString returns the data string encapsulated in the message which is assumed
   to be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx methods.
 Parameters:
   Message - The message from which to extract the string data.
@@ -514,17 +518,18 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@ReadMessageStrings
+@@JclReadMessageStrings
 <GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   Returns the data string list from a JclAppInstance IPC message.
 Description:
-  ReadMessageString returns the data string list encapsulated in the message which is
+  JclReadMessageString returns the data string list encapsulated in the message which is
   assumed to be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx
   methods.
 Parameters:
   Message - The message from which to extract the string list.
-  Strings - Returns the string list data. The caller must supply a valid instance of a TStrings derived class. Existing items in the list are removed.
+  Strings - Returns the string list data. The caller must supply a valid instance
+            of a TStrings derived class. Existing items in the list are removed.
 Quick info:
   Unit: JclAppInst
   Category: Libraries, Processes and Threads
