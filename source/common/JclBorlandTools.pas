@@ -1254,7 +1254,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 begin
-  FOptions.SaveToFile(ConfFileName);
+  FOptions.SaveToFile(ConfigFileName);
 end;
 {$ENDIF UNIX}
 
@@ -2510,6 +2510,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.40  2005/03/21 04:24:34  rrossmair
+// - identifier mistake fixed (Kylix)
+//
 // Revision 1.39  2005/03/21 04:05:31  rrossmair
 // - workarounds for DCC32 126 character path limit
 //
