@@ -20,13 +20,15 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: November 7, 2001                                                                  }
+{ Last modified: March 08, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
 unit JclMapi;
 
 {$I jcl.inc}
+
+{$WEAKPACKAGEUNIT ON}
 
 interface
 
@@ -150,6 +152,7 @@ type
     function SortingName: string;
   public
     function AddressAndName: string;
+    class function RecipKindToString(const AKind: TJclEmailRecipKind): string;
     property AddressType: string read FAddressType write FAddressType;
     property Address: string read FAddress write FAddress;
     property Kind: TJclEmailRecipKind read FKind write FKind;
@@ -259,8 +262,7 @@ function MapiErrorMessage(const ErrorCode: DWORD): string;
 implementation
 
 uses
-  Registry,
-  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclLogic, JclRegistry, JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 const
   MapiDll = 'mapi32.dll';
@@ -508,7 +510,7 @@ const
   MessageSubsytemKey = 'SOFTWARE\Microsoft\Windows Messaging Subsystem';
   MailClientsKey = 'SOFTWARE\Clients\Mail';
 var
-  DefaultValue: string;
+  DefaultValue, ClientKey: string;
   SL: TStringList;
   I: Integer;
 
@@ -538,52 +540,49 @@ begin
   FProfiles := nil;
   FDefaultProfileName := '';
   SL := TStringList.Create;
-  with TRegistry.Create do
   try
-    RootKey := HKEY_LOCAL_MACHINE;
-    if OpenKeyReadOnly(MessageSubsytemKey) then
+    if RegKeyExists(HKEY_LOCAL_MACHINE, MessageSubsytemKey) then
     begin
-      FMapiInstalled := ReadString('MAPIX') = '1';
-      FSimpleMapiInstalled := ReadString('MAPI') = '1';
-      FMapiVersion := ReadString('MAPIXVER');
-      CloseKey;
+      FMapiInstalled := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPIX', '') = '1';
+      FSimpleMapiInstalled := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPI', '') = '1';
+      FMapiVersion := RegReadStringDef(HKEY_LOCAL_MACHINE, MessageSubsytemKey, 'MAPIXVER', '');
     end;
     FAnyClientInstalled := FMapiInstalled;
-    if OpenKeyReadOnly(MailClientsKey) then
+    if RegKeyExists(HKEY_LOCAL_MACHINE, MailClientsKey) then
     begin
-      DefaultValue := ReadString('');
-      GetKeyNames(SL);
-      CloseKey;
-      SetLength(FClients, SL.Count);
-      for I := 0 to SL.Count - 1 do
+      DefaultValue := RegReadStringDef(HKEY_LOCAL_MACHINE, MailClientsKey, '', '');
+      if RegGetKeyNames(HKEY_LOCAL_MACHINE, MailClientsKey, SL) then
       begin
-        FClients[I].RegKeyName := SL[I];
-        FClients[I].Valid := False;
-        if OpenKeyReadOnly(MailClientsKey + '\' + SL[I]) then
+        SetLength(FClients, SL.Count);
+        for I := 0 to SL.Count - 1 do
         begin
-          FClients[I].ClientName := ReadString('');
-          FClients[I].ClientPath := ReadString('DLLPath');
-          ExpandEnvironmentVar(FClients[I].ClientPath);
-          if CheckValid(FClients[I]) then
-            FAnyClientInstalled := True;
-          CloseKey;
+          FClients[I].RegKeyName := SL[I];
+          FClients[I].Valid := False;
+          ClientKey := MailClientsKey + '\' + SL[I];
+          if RegKeyExists(HKEY_LOCAL_MACHINE, ClientKey) then
+          begin
+            FClients[I].ClientName := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, '', '');
+            FClients[I].ClientPath := RegReadStringDef(HKEY_LOCAL_MACHINE, ClientKey, 'DLLPath', '');
+            ExpandEnvironmentVar(FClients[I].ClientPath);
+            if CheckValid(FClients[I]) then
+              FAnyClientInstalled := True;
+          end;
         end;
+        FDefaultClientIndex := SL.IndexOf(DefaultValue);
+        FSelectedClientIndex := FDefaultClientIndex;
       end;
-      FDefaultClientIndex := SL.IndexOf(DefaultValue);
-      FSelectedClientIndex := FDefaultClientIndex;
     end;
-    RootKey := HKEY_CURRENT_USER;
-    if OpenKeyReadOnly(ProfilesRegKey) then
+    if RegKeyExists(HKEY_CURRENT_USER, ProfilesRegKey) then
     begin
-      FDefaultProfileName := ReadString('DefaultProfile');
-      GetKeyNames(SL);
-      CloseKey;
-      SetLength(FProfiles, SL.Count);
-      for I := 0 to SL.Count - 1 do
-        FProfiles[I] := SL[I];
+      FDefaultProfileName := RegReadStringDef(HKEY_CURRENT_USER, ProfilesRegKey, 'DefaultProfile', '');
+      if RegGetKeyNames(HKEY_CURRENT_USER, ProfilesRegKey, SL) then
+      begin
+        SetLength(FProfiles, SL.Count);
+        for I := 0 to SL.Count - 1 do
+          FProfiles[I] := SL[I];
+      end;
     end;
   finally
-    Free;
     SL.Free;
   end;
 end;
@@ -660,6 +659,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+class function TJclEmailRecip.RecipKindToString(const AKind: TJclEmailRecipKind): string;
+begin
+  case AKind of
+    rkOriginator:
+      Result := RsMapiMailORIG;
+    rkTO:
+      Result := RsMapiMailTO;
+    rkCC:
+      Result := RsMapiMailCC;
+    rkBCC:
+      Result := RsMapiMailBCC;
+  end;    
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclEmailRecip.SortingName: string;
 begin
   if FName = '' then
@@ -672,8 +687,8 @@ end;
 // TJclEmailRecips
 //==================================================================================================
 
-function TJclEmailRecips.Add(const Address, Name: string;
-  const Kind: TJclEmailRecipKind; const AddressType: string): Integer;
+function TJclEmailRecips.Add(const Address, Name: string;const Kind: TJclEmailRecipKind;
+  const AddressType: string): Integer;
 var
   Item: TJclEmailRecip;
 begin
@@ -1062,12 +1077,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer;
-  IncludeAddresses: Boolean): Integer;
+function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer; IncludeAddresses: Boolean): Integer;
 const
   NameDelimiter = ', ';
-  KindNames: array [TJclEmailRecipKind] of string =
-    (RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
 var
   LabelsWidth: Integer;
   NamesList: array [TJclEmailRecipKind] of string;
@@ -1080,7 +1092,7 @@ begin
   for ReportKind := Low(ReportKind) to High(ReportKind) do
   begin
     NamesList[ReportKind] := '';
-    LabelsWidth := Max(LabelsWidth, Length(KindNames[ReportKind]));
+    LabelsWidth := Max(LabelsWidth, Length(TJclEmailRecip.RecipKindToString(ReportKind)));
   end;
   BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
   for I := 0 to FRecipients.Count - 1 do
@@ -1091,11 +1103,11 @@ begin
       else
         S := Name;
       NamesList[Kind] := NamesList[Kind] + S + NameDelimiter;
-    end;  
+    end;
   for ReportKind := Low(ReportKind) to High(ReportKind) do
     if NamesList[ReportKind] <> '' then
     begin
-      S := StrPadRight(KindNames[ReportKind], LabelsWidth, AnsiSpace) + ': ' +
+      S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind), LabelsWidth, AnsiSpace) + ': ' +
         Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
       Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
     end;
@@ -1266,5 +1278,7 @@ begin
     Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
