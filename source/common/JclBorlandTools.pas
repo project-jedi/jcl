@@ -566,9 +566,6 @@ const
   {$ENDIF KYLIX}
   );
 
-const
-  RsToolNames: array [TJclBorRADToolKind] of string = (RsDelphiName, RsBCBName);
-
 resourcestring
   RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
 
@@ -1777,7 +1774,11 @@ end;
 
 function TJclBorRADToolInstallation.GetName: string;
 begin
-  Result := Format(RsToolNames[RadToolKind], [VersionNumber]);
+  {$IFDEF KYLIX}
+  Result := Format(RsKylixVersionName, [VersionNumber, RADToolName]);
+  {$ELSE ~KYLIX}
+  Result := Format('%s %d', [RADToolName, VersionNumber]);
+  {$ENDIF ~KYLIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2333,6 +2334,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2004/11/09 07:51:37  rrossmair
+// - installer refactoring (incomplete)
+//
 // Revision 1.20  2004/10/25 06:58:44  rrossmair
 // - fixed bug #0002065
 // - outsourced JclMiscel.Win32ExecAndRedirectOutput() + JclBorlandTools.ExecAndRedirectOutput() code into JclSysUtils.Execute()

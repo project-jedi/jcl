@@ -3,10 +3,9 @@ program JediInstaller;
 uses
   Forms,
   JclInstall in 'JclInstall.pas',
-  JediInstallIntf in 'JediInstallIntf.pas',
+  JediInstall in 'JediInstall.pas',
   JediInstallerMain in 'JediInstallerMain.pas' {MainForm},
-  ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
-  JclBorlandTools in '..\source\common\JclBorlandTools.pas';
+  ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame};
 
 {$R *.res}
 

@@ -2,8 +2,8 @@ program QJediInstaller;
 
 uses
   QForms,
-  QJclInstall in 'QJclInstall.pas',
-  QJediInstallIntf in 'QJediInstallIntf.pas',
+  JediInstall in 'JediInstall.pas',
+  JclInstall in 'JclInstall.pas',
   QJediInstallerMain in 'QJediInstallerMain.pas' {MainForm},
   QProductFrames in 'QProductFrames.pas' {ProductFrame: TFrame},
   JclBorlandTools;

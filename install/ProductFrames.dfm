@@ -2,84 +2,59 @@ object ProductFrame: TProductFrame
   Left = 0
   Top = 0
   Width = 791
-  Height = 424
+  Height = 421
   HorzScrollBar.Range = 398
   AutoScroll = False
   TabOrder = 0
   object Splitter: TSplitter
-    Left = 360
+    Left = 426
     Top = 0
     Width = 5
-    Height = 424
+    Height = 421
     Cursor = crHSplit
+    Align = alRight
     MinSize = 150
     ResizeStyle = rsUpdate
     OnCanResize = SplitterCanResize
   end
-  object ComponentsTreePanel: TPanel
-    Left = 0
+  object InfoPanel: TPanel
+    Left = 431
     Top = 0
     Width = 360
-    Height = 424
-    Align = alLeft
+    Height = 421
+    Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
-    object Label1: TLabel
-      Left = 8
-      Top = 8
-      Width = 132
-      Height = 13
-      Caption = '&Select components to install'
-    end
-    object TreeView: TTreeView
-      Left = 8
-      Top = 24
-      Width = 348
-      Height = 392
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      Indent = 19
-      ReadOnly = True
-      TabOrder = 0
-      OnCustomDrawItem = TreeViewCustomDrawItem
-      OnKeyPress = TreeViewKeyPress
-      OnMouseDown = TreeViewMouseDown
-    end
-  end
-  object InfoPanel: TPanel
-    Left = 365
-    Top = 0
-    Width = 426
-    Height = 424
-    Align = alClient
-    BevelOuter = bvNone
-    TabOrder = 1
     object Label2: TLabel
-      Left = 5
+      Left = 9
       Top = 8
-      Width = 52
+      Width = 71
       Height = 13
-      Caption = '&Information'
+      Caption = 'Installation &Log'
     end
     object InfoDisplay: TRichEdit
-      Left = 4
+      Left = 8
       Top = 24
-      Width = 412
-      Height = 305
+      Width = 346
+      Height = 298
       Anchors = [akLeft, akTop, akRight, akBottom]
+      Color = clInfoBk
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
+      Font.Color = clInfoText
       Font.Height = -11
       Font.Name = 'Lucida Console'
       Font.Pitch = fpFixed
       Font.Style = []
       ParentFont = False
+      PlainText = True
       ReadOnly = True
+      ScrollBars = ssVertical
       TabOrder = 0
     end
     object OptionsGroupBox: TGroupBox
-      Left = 4
-      Top = 336
-      Width = 412
+      Left = 8
+      Top = 333
+      Width = 346
       Height = 81
       Anchors = [akLeft, akRight, akBottom]
       Caption = '&Advanced Options'
@@ -101,7 +76,7 @@ object ProductFrame: TProductFrame
       object BplPathEdit: TEdit
         Left = 68
         Top = 16
-        Width = 315
+        Width = 249
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
@@ -110,14 +85,14 @@ object ProductFrame: TProductFrame
       object DcpPathEdit: TEdit
         Left = 68
         Top = 48
-        Width = 315
+        Width = 249
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
         OnChange = PathEditChange
       end
       object Button1: TButton
-        Left = 388
+        Left = 322
         Top = 16
         Width = 17
         Height = 22
@@ -128,7 +103,7 @@ object ProductFrame: TProductFrame
         OnClick = PathSelectBtnClick
       end
       object Button2: TButton
-        Left = 388
+        Left = 322
         Top = 48
         Width = 17
         Height = 22
@@ -138,6 +113,39 @@ object ProductFrame: TProductFrame
         TabStop = False
         OnClick = PathSelectBtnClick
       end
+    end
+  end
+  object ComponentsTreePanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 426
+    Height = 421
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 8
+      Top = 8
+      Width = 132
+      Height = 13
+      Caption = '&Select components to install'
+    end
+    object TreeView: TTreeView
+      Left = 8
+      Top = 24
+      Width = 414
+      Height = 390
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      HideSelection = False
+      Indent = 19
+      ParentShowHint = False
+      ReadOnly = True
+      ShowHint = True
+      TabOrder = 0
+      ToolTips = False
+      OnCustomDrawItem = TreeViewCustomDrawItem
+      OnKeyPress = TreeViewKeyPress
+      OnMouseDown = TreeViewMouseDown
     end
   end
 end

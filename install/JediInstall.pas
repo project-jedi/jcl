@@ -17,66 +17,91 @@
 {                                                                                                  }
 { Contributor(s): Robert Rossmair (crossplatform & BCB support)                                    }
 {                                                                                                  }
+{ Last modified: $Date$                                                      }
+{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
-
-{$IFNDEF Develop}unit {$IFDEF VisualCLX}QJediInstallIntf{$ELSE}JediInstallIntf{$ENDIF};{$ENDIF}
+unit JediInstall;
 
 interface
 
 uses
-  {$IFDEF VisualCLX}QComCtrls, QDialogs,{$ELSE}ComCtrls, Dialogs,{$ENDIF}
+  Classes,
   JclBorlandTools;
 
-const
-  // Feature masks
-  FID_Product              = $0F000000;
-  FID_IsProduct            = $00FFFFFF;
-  FID_Category             = $00FF0000;
-  FID_IsCategory           = $0000FFFF;
-  FID_Level2               = $0000FF00;
-  FID_IsLevel2             = $000000FF;
-  FID_Level3               = $000000FF;
-  FID_Expandable           = $20000000;
-  FID_StandaloneParent     = $40000000; // do not auto-uncheck when all child nodes are unchecked
-  FID_Checked              = $80000000;
-  FID_NumberMask           = $0FFFFFFF;
+type
+  TJediInstallOption =
+    (
+      ioTarget,
+      ioJCL,
+      ioJclEnv,
+      ioJclEnvLibPath,
+      ioJclEnvBrowsingPath,
+      ioJclEnvDebugDCUPath,
+      ioJclMake,
+      ioJclMakeRelease,
+      ioJclMakeReleaseVClx,
+      ioJclMakeDebug,
+      ioJclMakeDebugVClx,
+      ioJclCopyHppFiles,
+      ioJclPackages,
+      ioJclExperts,
+      ioJclExpertDebug,
+      ioJclExpertAnalyzer,
+      ioJclExpertFavorite,
+      ioJclExpertsThrNames,
+      ioJclCopyPackagesHppFiles,
+      ioJclExcDialog,
+      ioJclExcDialogVCL,
+      ioJclExcDialogVCLSnd,
+      ioJclExcDialogCLX,
+      ioJclHelp,
+      ioJclHelpHlp,
+      ioJclHelpChm              // = ioJclLast, see below.
+    );
 
-  // Icon indexes
-  IcoProduct               = 0;
-  IcoLevel1                = 1;
-  IcoChecked               = 2;
-  IcoUnchecked             = 3;
+  TInstallOptionData = record
+    Parent: TJediInstallOption;
+    Caption: string;
+  end;
+
+const
+  ioJclLast = ioJclHelpChm;
+  Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
 
 type
+  TDialogType = (dtWarning, dtError, dtInformation, dtConfirmation);
+  TDialogResponse = (drYes, drNo, drOK, drCancel);
+  TDialogResponses = set of TDialogResponse;
+
   TInstallationEvent = procedure (Installation: TJclBorRADToolInstallation) of object;
   TInstallationProgressEvent = procedure (Percent: Cardinal) of object;
 
   IJediInstallTool = interface
-    ['{CB8A2F3A-9E7C-4646-9E1F-60102A8F957D}']
+    ['{85408C67-92B5-42D0-84E0-D30201C0400D}']
+    function Dialog(const Text: string; DialogType: TDialogType = dtInformation;
+      Options: TDialogResponses = [drOK]): TDialogResponse;
     function BPLPath(Installation: TJclBorRADToolInstallation): string;
     function DCPPath(Installation: TJclBorRADToolInstallation): string;
     function FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
     function GetBorRADToolInstallations: TJclBorRADToolInstallations;
-    function MessageBox(const Text: string; DlgType: TMsgDlgType = mtInformation;
-      Buttons: TMsgDlgButtons = [mbOK]{$IFDEF VisualCLX}; DefaultBtn: TMsgDlgBtn = mbNone{$ENDIF}): Integer;
+    function OptionGUI(Installation: TJclBorRADToolInstallation): TObject;
+    function GUIAddOption(GUI, Parent: TObject; Option: TJediInstallOption; const Text: string;
+      StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+    procedure SetReadme(const FileName: string);
     procedure UpdateInfo(Installation: TJclBorRADToolInstallation; const InfoText: string);
     procedure UpdateStatus(const Text: string);
-    procedure WriteInstallLog(const Text: string);
+    procedure WriteInstallLog(Installation: TJclBorRADToolInstallation; const Text: string);
     property BorRADToolInstallations: TJclBorRADToolInstallations read GetBorRADToolInstallations;
+    property Readme: string write SetReadme;
   end;
 
   IJediInstall = interface
-    ['{BE0A7968-9003-40DD-99F0-250CAC8B2D85}']
+    ['{2C4A8C85-18BB-4A67-B37F-806C60632569}']
     function FeatureInfoFileName(FeatureID: Cardinal): string;
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
-    function InstallFor(Installation: TJclBorRADToolInstallation): Boolean;
-    function PopulateTreeView(Installation: TJclBorRADToolInstallation; Nodes: TTreeNodes): Boolean;
     function ReadmeFileName: string;
-    function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
-    procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);
     procedure SetOnProgress(Value: TInstallationProgressEvent);
     function Supports(Installation: TJclBorRADToolInstallation): Boolean;
@@ -84,6 +109,23 @@ type
     procedure SetOnEnding(Value: TInstallationEvent); // OnEnding called on success only
   end;
 
+function OptionToStr(const Option: TJediInstallOption): string;
+
 implementation
+
+uses
+  TypInfo;
+
+function OptionToStr(const Option: TJediInstallOption): string;
+begin
+  Result := GetEnumName(TypeInfo(TJediInstallOption), Ord(Option));
+end;
+
+// History:
+
+// $Log$
+// Revision 1.8  2004/11/09 07:51:37  rrossmair
+// - installer refactoring (incomplete)
+//
 
 end.
