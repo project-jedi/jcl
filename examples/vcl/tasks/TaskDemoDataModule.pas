@@ -12,6 +12,7 @@ type
   TDM = class(TDataModule)
     lstImage: TImageList;
     lstAction: TActionList;
+    actFileExit: TAction;
     actTaskProp: TAction;
     actTaskAdd: TAction;
     actTaskDelete: TAction;
@@ -29,6 +30,7 @@ type
     procedure actTaskStopExecute(Sender: TObject);
     procedure actTaskStopUpdate(Sender: TObject);
     procedure actTaskRunUpdate(Sender: TObject);
+    procedure actFileExitExecute(Sender: TObject);
   private
     FTask: TJclTaskSchedule;
     FOnRefresh: TNotifyEvent;
@@ -46,7 +48,7 @@ var
 
 implementation
 
-uses Dialogs, TaskDemoMain;
+uses Windows, Dialogs, TaskDemoMain;
 
 {$R *.dfm}
 
@@ -144,6 +146,15 @@ procedure TDM.actTaskRunUpdate(Sender: TObject);
 begin
   TAction(Sender).Enabled := Assigned(frmMain.lstTasks.Selected) and
                              (SelectedTask.Status <> tsRunning);
+end;
+
+procedure TDM.actFileExitExecute(Sender: TObject);
+begin
+  if Assigned(Application.MainForm) then
+  begin
+    Application.HelpCommand(HELP_QUIT, 0);
+    Application.MainForm.Close;
+  end;
 end;
 
 end.
