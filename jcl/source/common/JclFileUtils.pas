@@ -1,4 +1,4 @@
- {******************************************************************************}
+{******************************************************************************}
 {                                                                              }
 { Project JEDI Code Library (JCL) http://delphi-jedi.org                       }
 {                                                                              }
@@ -408,7 +408,7 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF WIN32}
-  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32, JclDateTime;
+  JclDateTime, JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
 
 { Some general notes:
 
@@ -1071,7 +1071,8 @@ begin
   Path := ExpandFileName(Path);
   Result := ExtractFileDrive(Path);
   I := Length(Result);
-  if Length(Path) <= I then Exit;   // only drive
+  if Length(Path) <= I then
+    Exit;   // only drive
   if Path[I + 1] = '\' then
   begin
     Result := Result + '\';
@@ -1215,16 +1216,19 @@ end;
 //------------------------------------------------------------------------------
 
 function PathIsUNC(const Path: string): Boolean;
-
 {$IFDEF WIN32}
+
+const
+  cUNCSuffix = '?\UNC';
 
 var
   P: PChar;
 
-  function AbsorbSeperator: Boolean;
+  function AbsorbSeparator: Boolean;
   begin
     Result := (P <> nil) and (P^ = '\');
-    if Result then Inc(P);
+    if Result then
+      Inc(P);
   end;
 
   function AbsorbMachineName: Boolean;
@@ -1276,14 +1280,14 @@ begin
   Result := Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix;
   if Result then
   begin
-    if Copy(Path, 1, Length(PathUncPrefix + '?\UNC')) = PathUncPrefix + '?\UNC' then
-      P := @Path[Length(PathUncPrefix + '?\UNC')]
+    if Copy(Path, 1, Length(PathUncPrefix + cUNCSuffix)) = PathUncPrefix + cUNCSuffix then
+      P := @Path[Length(PathUncPrefix + cUNCSuffix)]
     else
     begin
       P := @Path[Length(PathUncPrefix)];
-      Result := AbsorbSeperator and AbsorbMachineName;
+      Result := AbsorbSeparator and AbsorbMachineName;
     end;
-    Result := Result and AbsorbSeperator;
+    Result := Result and AbsorbSeparator;
     if Result then
     begin
       Result := AbsorbShareName;
@@ -1647,7 +1651,8 @@ function GetDirectorySize(const Path: string): Int64;
         end;
         R := SysUtils.FindNext(F);
       end;
-      if R <> ERROR_NO_MORE_FILES then Abort;
+      if R <> ERROR_NO_MORE_FILES then
+        Abort;
     finally
       SysUtils.FindClose(F);
     end;
@@ -1824,9 +1829,10 @@ end;
 
 function GetSizeOfFile(Handle: THandle): Int64;
 var
-  Size: TULargeInteger absolute Result;
+  Size: TULargeInteger;
 begin
   Size.LowPart := GetFileSize(Handle, @Size.HighPart);
+  Result := Size.QuadPart;
 end;
 
 //------------------------------------------------------------------------------
@@ -2358,20 +2364,22 @@ var
       begin
         GetHeader; // String
         case DataType of
-          0: if ValueLen in [1..4] then
-               Value := Format('$%.*x', [ValueLen * 2, PInteger(Data)^])
-             else
-               Value := '';
-          1: if ValueLen = 0 then
-               Value := ''
-             else
-             if IsUnicode then
-             begin
-               Value := WideCharLenToString(PWideChar(Data), ValueLen);
-               StrResetLength(Value);
-             end
-             else
-               Value := PAnsiChar(Data);
+          0:
+            if ValueLen in [1..4] then
+              Value := Format('$%.*x', [ValueLen * 2, PInteger(Data)^])
+            else
+              Value := '';
+          1:
+            if ValueLen = 0 then
+              Value := ''
+            else
+            if IsUnicode then
+            begin
+              Value := WideCharLenToString(PWideChar(Data), ValueLen);
+              StrResetLength(Value);
+            end
+            else
+              Value := PAnsiChar(Data);
         else
           Error := True;
           Break;
@@ -2636,10 +2644,10 @@ begin
   begin
     NameWild := FWildChars[I] and 1 = 1;
     ExtWild := FWildChars[I] and 2 = 2;
-    if ( (not NameWild and StrSame(FNames[I], NamePart)) or
-      (NameWild and (StrMatches(FNames[I], NamePart, 1))) ) and
-      ( (not ExtWild and StrSame(FExts[I], ExtPart)) or
-      (ExtWild and (StrMatches(FExts[I], ExtPart, 1))) ) then
+    if ((not NameWild and StrSame(FNames[I], NamePart)) or
+      (NameWild and (StrMatches(FNames[I], NamePart, 1)))) and
+      ((not ExtWild and StrSame(FExts[I], ExtPart)) or
+      (ExtWild and (StrMatches(FExts[I], ExtPart, 1)))) then
     begin
       Result := True;
       Break;
@@ -2690,8 +2698,10 @@ begin
       FNames[I] := NS;
       FExts[I] := ES;
       N := 0;
-      if StrContainsChars(NS, WildChars, False) then N := N or 1;
-      if StrContainsChars(ES, WildChars, False) then N := N or 2;
+      if StrContainsChars(NS, WildChars, False) then
+        N := N or 1;
+      if StrContainsChars(ES, WildChars, False) then
+        N := N or 2;
       FWildChars[I] := N;
     end;
   finally
@@ -2796,7 +2806,7 @@ var
     try
       while Rslt = 0 do
       begin
-        if (LocAttr and FindInfo.Attr = FindInfo.Attr) then
+        if (LocAttr and FindInfo.Attr) = FindInfo.Attr then
           if flFullNames in Options then
             Files.Add(CurrentFolder + FindInfo.Name)
           else
@@ -2827,7 +2837,7 @@ begin
 
   for Counter := 0 to Folders.Count - 1 do
   begin
-    if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask, Folders[Counter]))) or
+    if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask, Folders[Counter], 1))) or
       (not (flMaskedSubfolders in Options))) then
       FillFileList(Counter);
   end;
