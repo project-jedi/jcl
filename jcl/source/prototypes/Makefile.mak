@@ -4,7 +4,7 @@
 # Robert Rossmair, 2003-10-30
 #
 
-jpp		= ..\..\Bin\jpp.exe
+jpp		= jpp.exe
 VClxOptions	= -c -dVisualCLX -dCOMPILER6_UP -uDevelop -uBitmap32 -uVCL -x1:..\VisCLX\JclQ
 VclOptions	= -c -dVCL -dVCL -dBitmap32 -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -x1:..\VCL\JCL
 
