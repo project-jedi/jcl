@@ -23,7 +23,7 @@ DCC = "$(ROOT)\bin\dcc32.exe" -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNI
 BRCC = "$(ROOT)\bin\brcc32.exe" $**
 jpp = ..\devtools\jpp.exe
 #---------------------------------------------------------------------------------------------------
-default:	clean install
+default:	install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
