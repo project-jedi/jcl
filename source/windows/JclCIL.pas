@@ -47,7 +47,7 @@ uses
   {$IFDEF RTL130_UP}
   Contnrs,
   {$ENDIF RTL130_UP}
-  JclBase, JclSysUtils, JclClr, JclMetadata;
+  JclBase, JclSysUtils, JclCLR, JclMetadata;
 
 type
   TJclOpCode =
@@ -1006,6 +1006,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/03/14 02:13:13  rrossmair
+// - fixed JclCLR identifier case
+//
 // Revision 1.13  2005/03/08 08:33:22  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
