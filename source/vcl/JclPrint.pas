@@ -15,21 +15,21 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
-{**************************************************************************************************}
+{ The Initial Developer of the function DPSetDefaultPrinter is Microsoft. Portions created by      }
+{ Microsoft are Copyright (C) 2004 Microsoft Corporation. All Rights Reserved.                     }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclPrint;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -52,7 +52,7 @@ type
 
   TJclPrintSet = class (TObject)
   private
-    FDevice: PChar;
+    FDevice: PChar;  { TODO : change to string }
     FDriver: PChar;
     FPort: PChar;
     FHandle: THandle;
@@ -104,8 +104,11 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    function GetBinSourceList: TStringList;
-    function GetPaperList: TStringList;
+    { TODO : Find a solution for deprecated }
+    function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED}deprecated;{$ENDIF}
+    procedure GetBinSourceList(List: TStrings); overload; 
+    function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED}deprecated;{$ENDIF}
+    procedure GetPaperList(List: TStrings); overload; 
     procedure SetDeviceMode(Creating: Boolean);
     procedure UpdateDeviceMode;
     procedure SaveToDefaults;
@@ -151,11 +154,17 @@ function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 //procedure PrintTextRotation(X, Y: Integer; Rotation: Word; Text: string);
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 
+// DPSetDefaultPrinter
+// Parameters:
+//   PrinterName: Valid name of existing printer to make default.
+// Returns: True for success, False for failure.
+function DPSetDefaultPrinter(const PrinterName: String): Boolean;
+
 implementation
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,
-  JclResources;
+  JclWin32, JclResources;
 
 //==================================================================================================
 // Misc. functions
@@ -243,14 +252,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
-var
-  Idx: Integer;
 begin
-  Idx := Length(Text);
-  //  Result := iIdx; //WIMDC
-  while (Idx > 0) and (Printer.Canvas.TextWidth(Copy(Text, 1, Idx)) > Dots) do
-    Dec(Idx);
-  Result := Idx;
+  Result := Length(Text);
+  while (Result > 0) and (Printer.Canvas.TextWidth(Copy(Text, 1, Result)) > Dots) do
+    Dec(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -298,7 +303,7 @@ begin
   inherited Create;
   FBinArray := nil;
   FPaperArray := nil;
-  FPrinter := -99;
+  FPrinter := -99;         { TODO : why -99 }
   GetMem(FDevice, 255);
   GetMem(FDriver, 255);
   GetMem(FPort, 255);
@@ -377,6 +382,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.DefaultPaperName(const PaperID: Word): string;
+{ TODO : complete this list }
+// Since Win32 the strings are stored in the printer driver, no chance to get
+// a list from Windows
 begin
   case PaperID of
     dmpaper_Letter:
@@ -441,6 +449,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.GetBinSourceList: TStringList;
+begin
+  Result := TStringList.Create;
+  try
+    GetBinSourceList(Result);
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
+procedure TJclPrintSet.GetBinSourceList(List: TStrings);
 type
   TBinName = array [0..CCHBinName - 1] of Char;
   TBinArray = array [1..cBinMax] of TBinName;
@@ -452,8 +471,8 @@ var
   BinStr: string;
   Idx: Integer;
 begin
+  List.Clear;
   CheckPrinter;
-  Result := nil;
   BinArray := nil;
   if FNumBins = 0 then
     Exit;
@@ -469,7 +488,7 @@ begin
       BinStr := StrPas(BinArray^[Idx]);
       BinList.Add(BinStr);
     end;
-    Result := BinList;
+    List.Assign(BinList);
   finally
     if BinArray <> nil then
       FreeMem(BinArray, FNumBins * SizeOf(TBinName));
@@ -479,6 +498,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.GetPaperList: TStringList;
+begin
+  Result := TStringList.Create;
+  try
+    GetPaperList(Result);
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
+procedure TJclPrintSet.GetPaperList(List: TStrings);
 type
   TPaperName = array [0..CCHPaperName - 1] of Char;
   TPaperArray = array [1..cPaperNames] of TPaperName;
@@ -490,8 +520,8 @@ var
   PaperStr: string;
   Idx: Integer;
 begin
+  List.Clear;
   CheckPrinter;
-  Result := nil;
   PaperArray := nil;
   if FNumPapers = 0 then
     Exit;
@@ -517,7 +547,7 @@ begin
         PaperList.Add(PaperStr);
       end;
     end;
-    Result := PaperList;
+    List.Assign(PaperList);
   finally
     if PaperArray <> nil then
       FreeMem(PaperArray, FNumPapers * SizeOf(TPaperName));
@@ -572,20 +602,23 @@ var
   DrvHandle: THandle;
   ExtDevCode: Integer;
 begin
-  CheckPrinter;
-  OpenPrinter(FDevice, DrvHandle, nil);
-  FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
-    dm_PaperLength or dm_PaperWidth or
-    dm_Scale or dm_Copies or
-    dm_DefaultSource or dm_PrintQuality or
-    dm_Color or dm_Duplex or
-    dm_YResolution or dm_TTOption;
-  ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
-    FDeviceMode^, FDeviceMode^,
-    DM_IN_BUFFER or DM_OUT_BUFFER);
-  if ExtDevCode <> IDOK then
-    raise EJclPrinterError.CreateResRec(@RsUpdatingPrinter);
-  ClosePrinter(DrvHandle);
+  CheckPrinter;      
+  if OpenPrinter(FDevice, DrvHandle, nil) then
+  try
+    FDeviceMode^.dmFields := dm_Orientation or dm_PaperSize or
+      dm_PaperLength or dm_PaperWidth or
+      dm_Scale or dm_Copies or
+      dm_DefaultSource or dm_PrintQuality or
+      dm_Color or dm_Duplex or
+      dm_YResolution or dm_TTOption;
+    ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
+      FDeviceMode^, FDeviceMode^,
+      DM_IN_BUFFER or DM_OUT_BUFFER);
+    if ExtDevCode <> IDOK then
+      raise EJclPrinterError.CreateResRec(@RsUpdatingPrinter);
+  finally
+    ClosePrinter(DrvHandle);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -603,7 +636,6 @@ begin
   if ExtDevCode <> IDOK then
     raise EJclPrinterError.CreateResRec(@RsUpdatingPrinter)
   else
-    // SendMessage($FFFF, WM_WININICHANGE, 0, 0);
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0);
   ClosePrinter(DrvHandle);
 end;
@@ -611,17 +643,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SavePrinterAsDefault;
-var
-  DeviceStr: string;
 begin
   CheckPrinter;
-  DeviceStr := StrPas(FDevice) + ',' +
-    StrPas(FDriver) + ',' +
-    StrPas(FPort) + #0;
-  WriteProfileString('windows', 'device', @DeviceStr[1]);
-  WriteProfileString(nil, nil, nil);
-  // SendMessage($FFFF, WM_WININICHANGE, 0, 0);
-  SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0);
+  DPSetDefaultPrinter(FDevice);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -715,6 +739,7 @@ var
 begin
   PrIniFile := TIniFile.Create(IniFileName);
   CurrentName := Printer.Printers[Printer.PrinterIndex];
+  { TODO : why resourcestrings? }
   PrIniFile.WriteString(Section, RsPrintIniPrinterName, CurrentName);
   PrIniFile.WriteString(Section, RsPrintIniPrinterPort, PrinterPort);
   PrIniFile.WriteInteger(Section, RsPrintIniOrientation, Orientation);
@@ -750,6 +775,7 @@ begin
     begin
       Result := True;
       Printer.PrinterIndex := NewIndex;
+      { TODO : why resourcestrings? }
       PrinterPort := PrIniFile.ReadString(Section, RsPrintIniPrinterPort, PrinterPort);
       Orientation := PrIniFile.ReadInteger(Section, RsPrintIniOrientation, Orientation);
       PaperSize := PrIniFile.ReadInteger(Section, RsPrintIniPaperSize, PaperSize);
@@ -1080,5 +1106,149 @@ begin
     end;
   end;
 end;
+
+{ TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft, Conversion: Peter J. Haas }
+// DPSetDefaultPrinter
+// Parameters:
+//   PrinterName: Valid name of existing printer to make default.
+// Returns: True for success, False for failure.
+
+// Source of the original code: Microsoft Knowledge Base Article - 246772
+//   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
+function DPSetDefaultPrinter(const PrinterName: String): Boolean;
+
+function SetDefaultPrinter9x(const PrinterName: String): Boolean;
+const
+  WindowsIdent = 'windows';
+var
+  PrinterHandle: THandle;
+  NeededSize: DWord;
+  Info2Ptr: PPrinterInfo2;
+begin
+  Result := False;
+  // Open this printer so you can get information about it.
+  if not OpenPrinter(PChar(PrinterName), PrinterHandle, Nil) then
+    Exit;
+  if PrinterHandle = 0 then
+    Exit;
+  try
+    // The first GetPrinter() tells you how big our buffer must
+    // be to hold ALL of PRINTER_INFO_2. Note that this will
+    // typically return FALSE. This only means that the buffer (the 3rd
+    // parameter) was not filled in. You do not want it filled in here.
+    SetLastError(0);
+    if not GetPrinter(PrinterHandle, 2, Nil, 0, @NeededSize) then
+    begin
+      if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
+        Exit;
+    end;
+    // Allocate enough space for PRINTER_INFO_2.
+    GetMem(Info2Ptr, NeededSize);
+    try
+      // The second GetPrinter() will fill in all the current information
+      // so that all you have to do is modify what you are interested in.
+      if not GetPrinter(PrinterHandle, 2, Info2Ptr, NeededSize, @NeededSize) then
+        Exit;
+      // Set default printer attribute for this printer.
+      Info2Ptr^.Attributes := Info2Ptr^.Attributes or PRINTER_ATTRIBUTE_DEFAULT;
+      if not SetPrinter(PrinterHandle, 2, Info2Ptr, 0) then
+        Exit;
+      // Tell all open programs that this change occurred.
+      // Allow each program 1 second to handle this message.
+      SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
+        LParam(PChar(WindowsIdent)), SMTO_NORMAL, 1000, PDWord(Nil)^);
+    finally
+      FreeMem(Info2Ptr);
+    end;
+  finally
+    ClosePrinter(PrinterHandle);
+  end;
+end;
+
+function SetDefaultPrinterNT(const PrinterName: String): Boolean;
+var
+  PrinterHandle: THandle;
+  NeededSize: DWord;
+  Info2Ptr: PPrinterInfo2;
+  S: String;
+begin
+  Result := False;
+  // Open this printer so you can get information about it.
+  if not OpenPrinter(PChar(PrinterName), PrinterHandle, Nil) then
+    Exit;
+  if PrinterHandle = 0 then
+    Exit;
+  try
+    // The first GetPrinter() tells you how big our buffer must
+    // be to hold ALL of PRINTER_INFO_2. Note that this will
+    // typically return FALSE. This only means that the buffer (the 3rd
+    // parameter) was not filled in. You do not want it filled in here.
+    SetLastError(0);
+    if not GetPrinter(PrinterHandle, 2, Nil, 0, @NeededSize) then
+    begin
+      if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
+        Exit;
+    end;
+    // Allocate enough space for PRINTER_INFO_2.
+    GetMem(Info2Ptr, NeededSize);
+    try
+      // The second GetPrinter() fills in all the current information.
+      if not GetPrinter(PrinterHandle, 2, Info2Ptr, NeededSize, @NeededSize) then
+        Exit;
+      if (Info2Ptr^.pDriverName = Nil) or (Info2Ptr^.pPortName = Nil) then
+        Exit;
+      // Allocate buffer big enough for concatenated string.
+      // String will be in form "printername,drivername,portname".
+      // Build string in form "printername,drivername,portname".
+      S := Format('%s,%s,%s', [PrinterName, Info2Ptr^.pDriverName, Info2Ptr^.pPortName]);
+      // Set the default printer in Win.ini and registry.
+      if not WriteProfileString('windows', 'device', PChar(S)) then
+        Exit;
+    finally
+      FreeMem(Info2Ptr);
+    end;
+  finally
+    ClosePrinter(PrinterHandle);
+  end;
+end;
+
+function SetDefaultPrinter2k(const PrinterName: String): Boolean;
+begin
+  // You are explicitly linking to SetDefaultPrinter because implicitly
+  // linking on Windows 95/98 or NT4 results in a runtime error.
+  Result := RtdlSetDefaultPrinter(PChar(PrinterName));
+end;
+
+begin
+  Result := False;
+  if PrinterName = '' then
+    Exit;
+  // If Windows 95 or 98, use SetPrinter.
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+  begin
+    Result := SetDefaultPrinter9x(PrinterName);
+  end
+  // If Windows NT, use the SetDefaultPrinter API for Windows 2000,
+  // or WriteProfileString for version 4.0 and earlier.
+  else if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    if Win32MajorVersion >= 5 then  // Windows 2000 or later (use explicit call)
+      Result := SetDefaultPrinter2k(PrinterName)
+    else // NT4.0 or earlier
+      Result := SetDefaultPrinterNT(PrinterName);
+    if Result then
+      // Tell all open programs that this change occurred.
+      // Allow each app 1 second to handle this message.
+      SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0, SMTO_NORMAL,
+        1000, PDWord(Nil)^);
+  end;
+end;
+
+// History:
+
+// $Log$
+// Revision 1.3  2004/04/06 04:37:59  peterjhaas
+// DPSetDefaultPrinter
+//
 
 end.
