@@ -30,7 +30,6 @@ unit JclBase;
 
 {$I jcl.inc}
 
-
 interface
 
 uses
@@ -62,6 +61,12 @@ type
 
 function SysErrorMessage(ErrNo: Integer): string;
 
+{$IFDEF MSWINDOWS}
+procedure RaiseLastWin32Error;
+
+procedure QueryPerformanceCounter(var C: Int64);
+function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
+{$ENDIF}
 {$ENDIF FPC}
 
 //------------------------------------------------------------------------------
@@ -112,17 +117,11 @@ type
   Float = Single;
   {$ENDIF MATH_SINGLE_PRECISION}
 
-{$IFNDEF COMPILER4_UP}
-
 {$IFDEF FPC}
-
 type
   LongWord = Cardinal;
   TSysCharSet = set of Char;
-
 {$ENDIF FPC}
-
-{$ENDIF COMPILER4_UP}
 
 type
   PPointer = ^Pointer;
@@ -149,14 +148,11 @@ type
 procedure I64Assign(var I: Int64; const Low, High: Longint);
 procedure I64Copy(var Dest: Int64; const Source: Int64);
 function I64Compare(const I1, I2: Int64): Integer;
-
 {$ENDIF SUPPORTS_INT64}
 
 {$IFDEF SUPPORTS_INT64}
-
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
-
 {$ENDIF SUPPORTS_INT64}
 
 // Redefinition of TLargeInteger to relieve dependency on Windows.pas
@@ -205,76 +201,13 @@ type
   TDynSingleArray   = array of Single;
   TDynFloatArray    = array of Float;
   TDynPointerArray  = array of Pointer;
-
-{$ELSE}
-
-const
-  DynByteArrayHigh     = 2147483646; // 2^31 / SizeOf(Byte)
-  DynShortArrayHigh    = 2147483646; // 2^31 / SizeOf(Short)
-  DynSmallintArrayHigh = 1073741822; // 2^31 / SizeOf(Smallint)
-  DynWordArrayHigh     = 1073741822; // 2^31 / SizeOf(Word)
-  DynIntegerArrayHigh  = 536870908;  // 2^31 / SizeOf(Integer)
-  DynLongintArrayHigh  = 536870908;  // 2^31 / SizeOf(Longint)
-  DynCardinalArrayHigh = 536870908;  // 2^31 / SizeOf(Cardinal)
-  DynInt64ArrayHigh    = 268435448;  // 2^31 / SizeOf(Int64)
-  DynExtendedArrayHigh = 214748363;  // 2^31 / SizeOf(Extended)
-  DynDoubleArrayHigh   = 268435448;  // 2^31 / SizeOf(Double)
-  DynSingleArrayHigh   = 536870908;  // 2^31 / SizeOf(Single)
-  {$IFDEF MATH_EXTENDED_PRECISION}
-  DynFloatArrayHigh    = 214748363;  // 2^31 / SizeOf(Extended)
-  {$ENDIF MATH_EXTENDED_PRECISION}
-  {$IFDEF MATH_DOUBLE_PRECISION}
-  DynFloatArrayHigh    = 536870908;  // 2^31 / SizeOf(Double)
-  {$ENDIF MATH_DOUBLE_PRECISION}
-  {$IFDEF MATH_SINGLE_PRECISION}
-  DynFloatArrayHigh    = 268435448;  // 2^31 / SizeOf(Single)
-  {$ENDIF MATH_SINGLE_PRECISION}
-  DynPointerArrayHigh  = 536870908;  // 2^31 / SizeOf(Pointer)
-
-type
-  PDynByteArray     = array [0..DynByteArrayHigh] of Byte;
-  PDynShortintArray = array [0..DynShortArrayHigh] of Shortint;
-  PDynSmallintArray = array [0..DynSmallintArrayHigh] of Smallint;
-  PDynWordArray     = array [0..DynWordArrayHigh] of Word;
-  PDynIntegerArray  = array [0..DynIntegerArrayHigh] of Integer;
-  PDynLongintArray  = array [0..DynLongintArrayHigh] of Longint;
-  PDynCardinalArray = array [0..DynCardinalArrayHigh] of Cardinal;
-  PDynInt64Array    = array [0..DynInt64ArrayHigh] of Int64;
-  PDynExtendedArray = array [0..DynExtendedArrayHigh] of Extended;
-  PDynDoubleArray   = array [0..DynDoubleArrayHigh] of Double;
-  PDynSingleArray   = array [0..DynSingleArrayHigh] of Single;
-  PDynFloatArray    = array [0..DynFloatArrayHigh] of Float;
-  PDynPointerArray  = array [0..DynPointerArrayHigh] of Pointer;
-
-  TDynByteArray     = ^PDynByteArray;
-  TDynShortintArray = ^PDynShortintArray;
-  TDynSmallintArray = ^PDynSmallintArray;
-  TDynWordArray     = ^PDynWordArray;
-  TDynIntegerArray  = ^PDynIntegerArray;
-  TDynLongintArray  = ^PDynLongintArray;
-  TDynCardinalArray = ^PDynCardinalArray;
-  TDynInt64Array    = ^PDynInt64Array;
-  TDynExtendedArray = ^PDynExtendedArray;
-  TDynDoubleArray   = ^PDynDoubleArray;
-  TDynSingleArray   = ^PDynSingleArray;
-  TDynFloatArray    = ^PDynFloatArray;
-  TDynPointerArray  = ^PDynPointerArray;
-
-function DynArrayAllocSize(const A): Longint;
-function DynArrayLength(const A): Longint;
-function DynArrayElemSize(const A): Longint;
-procedure DynArrayInitialize(var A; ElementSize, InitialLength: Longint);
-procedure DynArrayFinalize(var A);
-procedure DynArraySetLength(var A; NewLength: Integer);
-
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 // TObjectList
 //------------------------------------------------------------------------------
 
 {$IFNDEF DELPHI5_UP}
-
 type
   TObjectList = class (TList)
   private
@@ -282,12 +215,11 @@ type
     function GetItems(Index: Integer): TObject;
     procedure SetItems(Index: Integer; const Value: TObject);
   public
-    procedure Clear; {$IFNDEF FPC} override; {$ENDIF}
-    constructor Create(AOwnsObjects: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    procedure Clear; override;
+    constructor Create(AOwnsObjects: Boolean = False);
     property Items[Index: Integer]: TObject read GetItems write SetItems; default;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
   end;
-
 {$ENDIF DELPHI5_UP}
 
 //------------------------------------------------------------------------------
@@ -295,9 +227,7 @@ type
 //------------------------------------------------------------------------------
 
 {$IFNDEF DELPHI6_UP}
-
 procedure RaiseLastOSError;
-
 {$ENDIF DELPHI6_UP}
 
 //------------------------------------------------------------------------------
@@ -345,18 +275,48 @@ end;
 //==============================================================================
 
 {$IFDEF FPC}
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 function SysErrorMessage(ErrNo: Integer): string;
 var
   Size: Integer;
-  Buffer: array [0..1024] of Char;
+  Buffer: PChar;
+
 begin
-  Size := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
-    nil, ErrNo, 0, Buffer, SizeOf(Buffer), nil);
-  while (Size > 0) and (Buffer[Size - 1] in [#0..#32, '.']) do
-    Dec(Size);
+  GetMem(Buffer, 4000);
+
+  Size := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrNo,
+    0, Buffer, 4000, nil);
+
   SetString(Result, Buffer, Size);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure RaiseLastWin32Error;
+begin
+end;
+
+//------------------------------------------------------------------------------
+
+function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
+var
+  T: TLargeInteger;
+
+begin
+  Windows.QueryPerformanceFrequency(@T);
+  CardinalsToI64(Frequency, T.LowPart, T.HighPart);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure QueryPerformanceCounter(var C: Int64);
+var
+  T: TLargeInteger;
+
+begin
+  Windows.QueryPerformanceCounter(@T);
+  CardinalsToI64(C, T.LowPart, T.HighPart);
 end;
 
 {$ELSE}
