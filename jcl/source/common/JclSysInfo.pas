@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: November 18, 2001                                             }
+{ Last modified: Januari 12, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -51,8 +51,7 @@ function ExpandEnvironmentVar(var Value: string): Boolean;
 function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 function SetEnvironmentVar(const Name, Value: string): Boolean;
-function CreateEnvironmentBlock(const Options: TEnvironmentOptions;
-  const AdditionalVars: TStrings): PChar;
+function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 
 //------------------------------------------------------------------------------
 // Common Folder Locations
@@ -202,7 +201,7 @@ ShortDescr: Returns the installed service pack
 Descr: Returns the major version number of the latest installed Windows Service Pack.
 Result: The major version number of the latest installed Service Pack. In case of failure, or it
         no Service Pack is installed, the function returns 0.
-Author: Jean-Fabien Connault        
+Author: Jean-Fabien Connault
 }
 
 //------------------------------------------------------------------------------
@@ -1765,9 +1764,11 @@ begin
     begin
       if (VersionInfo.wProductType = VER_NT_SERVER) then
       begin
-        if (VersionInfo.wSuiteMask = VER_SUITE_DATACENTER) then
+        { Changes by Scott Price on 11-Jan-2002 }
+        if (VersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
           Result := ptDatacenterServer
-        else if (VersionInfo.wSuiteMask = VER_SUITE_ENTERPRISE) then
+        { Changes by Scott Price on 11-Jan-2002 }
+        else if (VersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
           Result := ptAdvancedServer
         else
           result := ptServer;
@@ -1782,7 +1783,8 @@ begin
     begin
       if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
       begin
-        if VersionInfo.wSuiteMask = VER_SUITE_PERSONAL then
+        { Changes by Scott Price on 10-Jan-2002 }
+        if (VersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
           Result := ptPersonal
         else
           Result := ptProfessional;
@@ -1793,15 +1795,16 @@ begin
   if Result = ptUnknown then
   begin
     // Non Windows 2000/XP system or the above method failed, try registry
+    { Changes by Scott Price on 11-Jan-2002 }
     Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
     if CompareText(Product, 'WINNT') = 0 then
       Result :=  ptWorkStation
     else
     if CompareText(Product, 'SERVERNT') = 0 then
-      Result := ptServer
+      Result := {ptServer} ptAdvancedServer
     else
     if CompareText(Product, 'LANMANNT') = 0 then
-      Result := ptAdvancedServer
+      Result := {ptAdvancedServer} ptServer
     else
       Result := ptUnknown;
   end;
@@ -1809,19 +1812,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-// todo mvb move to jclresources
-
-resourcestring
-  RsOSVersionWin95 = 'Windows 95';
-  RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
-  RsOSVersionWin98 = 'Windows 98';
-  RsOSVersionWin98SE = 'Windows 98 SE';
-  RsOSVersionWinME = 'Windows ME';
-  RsOSVersionWinNT3 = 'Windows NT 3.%u';
-  RsOSVersionWinNT4 = 'Windows NT 4.%u';
-  RsOSVersionWin2000 = 'Windows 2000';
-  RsOSVersionWinXP = 'Windows XP';
 
 function GetWindowsVersionString: string;
 begin
@@ -1841,16 +1831,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-// todo mvb move
-
-resourcestring
-  RsProductTypeWorkStation = 'Workstation';
-  RsProductTypeServer = 'Server';
-  RsProductTypeAdvancedServer = 'Advanced Server';
-  RsProductTypePersonal = 'Home Edition';
-  RsProductTypeProfessional = 'Professional';
-  RsProductTypeDatacenterServer = 'Datacenter Server';
 
 function NtProductTypeString: string;
 begin
