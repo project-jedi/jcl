@@ -76,6 +76,7 @@ uses
 {$HPPEMIT '#include "ImageHlp.h"'}
 {$HPPEMIT '#include "lm.h"'}
 {$HPPEMIT '#include "Nb30.h"'}
+{$HPPEMIT '#include "RasDlg.h"'}
 {$HPPEMIT '#include "Reason.h"'}
 {$HPPEMIT '#include "ShlObj.h"'}
 {$HPPEMIT '#include "ShlWApi.h"'}
@@ -102,6 +103,7 @@ uses
 {$I win32api\LmAccess.int}
 {$I win32api\LmApiBuf.int}
 {$I win32api\Nb30.int}
+{$I win32api\RasDlg.int}
 {$I win32api\Reason.int}
 {$I win32api\ShlObj.int}
 {$I win32api\ShlWApi.int}
@@ -211,6 +213,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2004/10/30 08:20:09  rrossmair
+// fixed BCB-related bugs
+//
 // Revision 1.30  2004/10/21 08:40:11  marquardt
 // style cleaning
 //
