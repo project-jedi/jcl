@@ -15,10 +15,24 @@
 { The Initial Developer of the Original Code is Marcel van Brakel.                                 }
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{  Heri Bender, Bernhard Berger, Marcel van Brakel, Bernhard Berger, Peter J. Haas, Peter Friese,  }
-{  Robert Marquardt, Robert R. Marsh, Python, Alexander Radchenko, Robert Rossmair,                }
-{  Jeroen Speldekamp, Anthony Steele, Rudy Velthuis, Petr Vones                                    }
+{ Contributors:                                                                                    }
+{   Heri Bender                                                                                    }
+{   Bernhard Berger                                                                                }
+{   Marcel van Brakel                                                                              }
+{   Bernhard Berger                                                                                }
+{   Peter Friese                                                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
+{   Andreas Hausladen (ahuser)                                                                     }
+{   Jeff                                                                                           }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert R. Marsh                                                                                }
+{   Python                                                                                         }
+{   Alexander Radchenko,                                                                           }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Jeroen Speldekamp                                                                              }
+{   Anthony Steele                                                                                 }
+{   Rudy Velthuis,                                                                                 }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -2304,6 +2318,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/05/09 11:17:49  rrossmair
+// Contributor list update
+//
 // Revision 1.16  2004/05/09 03:22:15  rrossmair
 // fix: missing {$IFDEF Unix} around "uses dl" added
 //

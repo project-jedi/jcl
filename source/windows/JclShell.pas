@@ -19,6 +19,7 @@
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
 {   Peter J. Haas (peterjhaas)                                                                     }
+{   Jeff                                                                                           }
 {   Aleksej Kudinov                                                                                }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -1445,6 +1446,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/05/09 11:22:39  rrossmair
+// Contributor list update
+//
 // Revision 1.10  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
