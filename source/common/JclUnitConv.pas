@@ -98,8 +98,8 @@ function RadToDeg(const Radians: Float): Float;
 function RadToGrad(const Radians: Float): Float;
 function DmsToDeg(const D, M: Integer; const S: Float): Float;
 function DmsToRad(const D, M: Integer; const S: Float): Float;
-procedure DegToDms(const Deg: Float; out D, M: Integer; out S: Float);
-function DegToDmsStr(const Deg: Float; const SecondPrecision: Cardinal = 3): string;
+procedure DegToDms(const Degrees: Float; out D, M: Integer; out S: Float);
+function DegToDmsStr(const Degrees: Float; const SecondPrecision: Cardinal = 3): string;
 
 { Coordinate conversion }
 
@@ -342,26 +342,26 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure DegToDms(const Deg: Float; out D, M: Integer; out S: Float);
+procedure DegToDms(const Degrees: Float; out D, M: Integer; out S: Float);
 var
   DD, MM: Float;
 begin
-  DD := Abs(Deg);
+  DD := Abs(Degrees);
   MM := Frac(DD) * ArcMinutesPerDeg;
   D := Trunc(DD);
   M := Trunc(MM);
   S := Frac(MM) * ArcSecondsPerArcMinute;
-  if Deg < 0 then D := -D;
+  if Degrees < 0 then D := -D;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function DegToDmsStr(const Deg: Float; const SecondPrecision: Cardinal = 3): string;
+function DegToDmsStr(const Degrees: Float; const SecondPrecision: Cardinal = 3): string;
 var
   D, M: Integer;
   S: Float;
 begin
-  DegToDMS(Deg, D, M, S);
+  DegToDMS(Degrees, D, M, S);
   Result := Format('%d° %d'' %.*f"', [D, M, SecondPrecision, S]);
 end;
 
