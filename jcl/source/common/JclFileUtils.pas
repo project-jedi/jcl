@@ -3361,13 +3361,17 @@ var
     FindInfo: TSearchRec;
     Rslt: Integer;
     CurrentFolder: String;
+    FileAttr: Integer;
+
   begin
     CurrentFolder := Folders[CurrentCounter];
     Rslt := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
     try
       while Rslt = 0 do
       begin
-        if (LocAttr and FindInfo.Attr) = FindInfo.Attr then
+        FileAttr := FindInfo.Attr and not FILE_ATTRIBUTE_NORMAL; // Include all normal files
+
+        if (LocAttr and FileAttr) = FileAttr  then
           if flFullNames in Options then
             Files.Add(CurrentFolder + FindInfo.Name)
           else
@@ -3389,7 +3393,7 @@ begin
     Folders.Add(RootDir);
 
     if Attr = faAnyFile then
-      LocAttr := faReadOnly + faHidden + faSysFile + faArchive + FILE_ATTRIBUTE_NORMAL
+      LocAttr := faReadOnly + faHidden + faSysFile + faArchive
     else
       LocAttr := Attr;
 
