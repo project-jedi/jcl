@@ -1,27 +1,26 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclIniFiles.pas.                                        }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January, 30 2001                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclIniFiles.pas.                                                            }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Unit owner: Eric S. Fisher                                                                       }
+{ Last modified: November 16, 2001                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclIniFiles;
 
@@ -31,9 +30,9 @@ unit JclIniFiles;
 
 interface
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Initialization (ini) Files
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IniReadBool(const FileName, Section, Line: string): Boolean;
 function IniReadInteger(const FileName, Section, Line: string): Integer;
@@ -47,9 +46,9 @@ implementation
 uses
   IniFiles;
 
-//==============================================================================
+//==================================================================================================
 // Initialization Files
-//==============================================================================
+//==================================================================================================
 
 function IniReadBool(const FileName, Section, Line: string): Boolean;
 var
@@ -63,7 +62,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IniReadInteger(const FileName, Section, Line: string): Integer;
 var
@@ -77,7 +76,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IniReadString(const FileName, Section, Line: string): string;
 var
@@ -91,7 +90,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);
 var
@@ -105,7 +104,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);
 var
@@ -119,7 +118,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure IniWriteString(const FileName, Section, Line, Value: string);
 var
