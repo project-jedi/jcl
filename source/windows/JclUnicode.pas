@@ -990,6 +990,7 @@ function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Utility functions
 function CharSetFromLocale(Language: LCID): TFontCharSet;
+function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
 function CodePageFromLocale(Language: LCID): Integer;
 function CodeBlockFromChar(const C: UCS4): TUnicodeBlock;
 function KeyboardCodePage: Word;
@@ -1004,7 +1005,7 @@ function WideStringToUTF8(S: WideString): AnsiString;
 function UTF8ToWideString(S: AnsiString): WideString;
 
 type
-  TCompareFunc = function (W1, W2: WideString; Locale: LCID): Integer;
+  TCompareFunc = function (const W1, W2: WideString; Locale: LCID): Integer;
 
 var
   WideCompareText: TCompareFunc;
@@ -7180,14 +7181,20 @@ end;
 function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
   external 'gdi32.dll' name 'TranslateCharsetInfo';
 
-function CharSetFromLocale(Language: LCID): TFontCharSet;
+function GetCharSetFromLocale(Language: LCID; out FontCharSet: TFontCharSet): Boolean;
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
 begin
   CP:= CodePageFromLocale(Language);
-  TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
-  Result:= CSI.ciCharset;
+  Result := TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
+  if Result then
+    FontCharset := CSI.ciCharset;
+end;
+
+function CharSetFromLocale(Language: LCID): TFontCharSet;
+begin
+  Win32Check(GetCharSetFromLocale(Language, Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -7427,7 +7434,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function CompareTextWin95(W1, W2: WideString; Locale: LCID): Integer;
+function CompareTextWin95(const W1, W2: WideString; Locale: LCID): Integer;
 // special comparation function for Win9x since there's no system defined
 // comparation function, returns -1 if W1 < W2, 0 if W1 = W2 or 1 if W1 > W2
 var
@@ -7448,7 +7455,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function CompareTextWinNT(W1, W2: WideString; Locale: LCID): Integer;
+function CompareTextWinNT(const W1, W2: WideString; Locale: LCID): Integer;
 // Wrapper function for WinNT since there's no system defined comparation function
 // in Win9x and we need a central comparation function for TWideStringList.
 // Returns -1 if W1 < W2, 0 if W1 = W2 or 1 if W1 > W2
@@ -7685,6 +7692,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.18  2005/02/14 03:20:59  rrossmair
+// - fixed issues #0000713 ( make CompareTextWin95/NT functions use const string parameters) and #0001909 (JclUnicode.CharSetFromLocale - result ignored)
+//
 // Revision 1.17  2004/11/22 19:17:18  ahuser
 // Fixed memory leak
 // Style cleaning
