@@ -395,19 +395,23 @@ end;
 
 function TMainForm.BPLPath(Installation: TJclBorRADToolInstallation): string;
 var
+  P: TProductFrame;
   Path: string;
 begin
-  with Installation do
-    Path := View(Installation).BplPathEdit.Text;
+  P := View(Installation);
+  if Assigned(P) then
+    Path := P.BplPathEdit.Text;
   Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
 function TMainForm.DCPPath(Installation: TJclBorRADToolInstallation): string;
 var
+  P: TProductFrame;
   Path: string;
 begin
-  with Installation do
-    Path := View(Installation).DcpPathEdit.Text;
+  P := View(Installation);
+  if Assigned(P) then
+    Path := P.DcpPathEdit.Text;
   Result := PathRemoveSeparator(Installation.SubstitutePath(Path));
 end;
 
@@ -421,8 +425,13 @@ begin
 end;
 
 function TMainForm.FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
+var
+  P: TProductFrame;
 begin
-  Result := View(Installation).FeatureChecked(FeatureID);
+  Result := False;
+  P := View(Installation);
+  if Assigned(P) then
+    Result := P.FeatureChecked(FeatureID);
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -619,6 +628,7 @@ begin
     begin
       HintInfo.HintStr := FJclInstall.GetHint(TJediInstallOption(FeatureID(FFeatureNode) and $FF));
       FHintPos := HintInfo.HintPos;
+      FFeatureChanged := False;
     end                      
     else
       HintInfo.HintPos := FHintPos;

@@ -212,8 +212,8 @@ resourcestring
   RsHintJclEnvLibPath = 'Add JCL precompiled unit directories to browsing path';
   RsHintJclEnvBrowsingPath = 'Add JCL source directories to browsing path';
   RsHintJclEnvDebugDCUPath = 'This is a prerequisite for using the precompiled JCL debug units ' +
-    'by means of the respective Project Options|Compiler switch.'#13#10'See "Make library units/' +
-    'Debug" option below.';
+    'by means of the respective'#13#10'Project Options|Compiler switch. See "Make library ' +
+    'units/Debug" option below.';
   RsHintJclMake = 'Generate .dcu and .dpu (Kylix only) files.'#13#10'Recommended.';
   RsHintJclMakeRelease = 'Make precompiled units for release, i.e. optimized, w/o debug information.';
   RsHintJclMakeReleaseVcl = 'Make precompiled VCL units for release';
@@ -250,7 +250,7 @@ const
     (
       (Parent: ioUndef;                  // ioTarget
        Caption: '';
-       Hint: RsHintJcl),
+       Hint: RsHintTarget),
       (Parent: ioTarget;                 // ioJCL
        Caption: RsJCL;
        Hint: RsHintJcl),
@@ -729,9 +729,10 @@ var
   Option: TJediInstallOption;
 begin
   Result := 0;
-  for Option := ioJCL to ioJclLast do
-    if OptionSelected(Option) then
-      Inc(Result, ProgressWeight(Option));
+  if OptionSelected(ioJCL) then
+    for Option := Succ(ioJCL) to ioJclLast do
+      if OptionSelected(Option) then
+        Inc(Result, ProgressWeight(Option));
 end;
 
 function TJclInstallation.GetTool: IJediInstallTool;
@@ -1428,6 +1429,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.39  2004/11/14 12:08:05  rrossmair
+// - some precautions & minor fixes
+//
 // Revision 1.38  2004/11/14 05:55:55  rrossmair
 // - installer refactoring (continued)
 //

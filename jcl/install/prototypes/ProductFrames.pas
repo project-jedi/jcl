@@ -139,18 +139,20 @@ end;
 
 function TProductFrame.FeatureChecked(FeatureID: Cardinal): Boolean;
 var
-  I: Integer;
   F: Cardinal;
+  Node: TTreeNode;
 begin
   Result := False;
-  for I := 0 to TreeView.Items.Count - 1 do
+  Node := TreeView.Items.GetFirstNode;
+  while Node <> nil do
   begin
-    F := Cardinal(TreeView.Items[I].Data);
+    F := Cardinal(Node.Data);
     if F and FID_NumberMask = FeatureID then
     begin
       Result := F and FID_Checked <> 0;
       Break;
     end;
+    Node := Node.GetNext;
   end;
 end;
 
