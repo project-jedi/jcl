@@ -472,6 +472,9 @@ resourcestring
   RsSynchOpenSemaphore        = 'Failed to open semaphore';
   RsSynchCreateMutex          = 'Failed to create mutex';
   RsSynchOpenMutex            = 'Failed to open mutex';
+  RsMetSectInvalidParameter   = 'An invalid parameter was passed to the constructor.';
+  RsMetSectInitialize         = 'Failed to initialize the metered section.';
+  RsMetSectNameEmpty          = 'Name cannot be empty when using the Open constructor.';
 
 implementation
 
