@@ -1181,7 +1181,14 @@ end;
 
 function TJclInstallation.StoredOption(Option: TJediInstallOption; Default: Boolean = True): Boolean;
 begin
-  Result := Distribution.FIniFile.ReadInteger(Target.Name, OptionToStr(Option), 0) <> Invalid;
+  case Distribution.FIniFile.ReadInteger(Target.Name, OptionToStr(Option), 0) of
+    Invalid:
+      Result := False;
+    0:
+      Result := Default;
+  else
+    Result := True;
+  end;
 end;
 
 function TJclInstallation.TotalUnitCount: Integer;
@@ -1435,6 +1442,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.43  2004/12/08 18:25:07  rrossmair
+// - fixed TJclInstallation.StoredOption so that Default parameter gets evaluated
+//
 // Revision 1.42  2004/12/08 18:14:49  rrossmair
 // - all install options now selected by default
 // - minor fixes
