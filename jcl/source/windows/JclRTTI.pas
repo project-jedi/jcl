@@ -2527,12 +2527,22 @@ begin
   begin
     Conv := FindIntToIdent(TypeInfo);
     if @Conv = nil then
-      Result := IntToStr(Value)
+    begin
+      if GetTypeData(TypeInfo).OrdType < otULong then
+        Result := IntToStr(Value)
+      else
+        Result := IntToStr(Int64(Cardinal(Value)));
+    end
     else
     begin
       Conv(Value, Result);
       if Result = '' then
-        Result := IntToStr(Value);
+      begin
+        if GetTypeData(TypeInfo).OrdType < otULong then
+          Result := IntToStr(Value)
+        else
+          Result := IntToStr(Int64(Cardinal(Value)));
+      end;
     end;
   end
   else
