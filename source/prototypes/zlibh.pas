@@ -23,16 +23,23 @@
 {  Portions created by Peter J. Haas are Copyright (C) 2002-2004               }
 {  Peter J. Haas. All Rights Reserved.                                         }
 {                                                                              }
-{$IFDEF JCL}
 {  Obtained through:                                                           }
 {    Joint Endeavour of Delphi Innovators (Project JEDI)                       }
 {                                                                              }
-{$ENDIF JCL}
 {  You may retrieve the latest version of the original file at the homepage    }
 {  of the Project ZLib, located at http://www.gzip.org/zlib/                   }
 {                                                                              }
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he       }
+{        donated to the JCL. He is not to be held responsible for              }
+{        modifications applied after this date.                                }
+{        Peter J. Haas no longer wants to be associated with Project JEDI.     }
+{                                                                              }
+{------------------------------------------------------------------------------}
 {                                                                              }
 {  Contributor(s):                                                             }
 {    Matthias Thoma (mthoma), ma.thoma@gmx.de                                  }
@@ -111,14 +118,6 @@ unit zlibh;
   {$DEFINE ZLIB_CDECL}
   {$UNDEF ZLIB_STDCALL      // MT: Just to be sure }
 {$ENDIF}
-
-{$IFNDEF JCL}
-{$IFDEF BORLAND}
-  {$IFNDEF COMPILER3_UP}
-    no support
-  {$ENDIF COMPILER3_UP}
-{$ENDIF BORLAND}
-{$ENDIF ~JCL}
 
 {$IFNDEF ZLIB_DYNAMIC}
 {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
@@ -1631,6 +1630,9 @@ end;
 //  History:
 {$IFDEF PROTOTYPE}
 //   $Log$
+//   Revision 1.8  2004/05/31 22:38:51  rrossmair
+//   added PJH disclaimer; resolved $IFDEF JCL
+//
 //   Revision 1.7  2004/05/09 00:03:51  peterjhaas
 //   - old history in reverse order like CVS log
 //   - change interface adler32 and crc32 to avoid FPC compatibility problems
