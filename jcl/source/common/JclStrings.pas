@@ -661,35 +661,32 @@ var
   I: Integer;
   C: Char;
 begin
-  Result := False;
-  if CheckAll then
+  Result := Chars = [];
+  if not Result then
   begin
-    for I := 1 to Length(S) do
+    if CheckAll then
     begin
-      C := S[I];
-      if C in Chars then
+      for I := 1 to Length(S) do
       begin
-        Chars := Chars - [C];
-        if Chars = [] then
+        C := S[I];
+        if C in Chars then
+        begin
+          Chars := Chars - [C];
+          if Chars = [] then
+            Break;
+        end;
+      end;
+      Result := (Chars = []);
+    end
+    else
+    begin
+      for I := 1 to Length(S) do
+        if S[I] in Chars then
+        begin
+          Result := True;
           Break;
-      end;
+        end;
     end;
-    Result := (Chars = []);
-  end
-  else
-  begin
-   {!CheckAll  TODO
-      S = '' Chars = [] => False Should return True
-      S = '' Chars <> [] => False
-      S <> '' Chars = [] => False Should return True
-      S <> '' Chars <> [] => False
-   }
-    for I := 1 to Length(S) do
-      if S[I] in Chars then
-      begin
-        Result := True;
-        Break;
-      end;
   end;
 end;
 
@@ -1631,9 +1628,12 @@ var
   L: Integer;
 begin
   L := Length(S);
-  SetLength(Result, L);
-  Move(S[1], Result[1], L);
-  StrUpperInPlace(Result);
+  if L > 0 then // avoid ERangeError in case {$RANGECHECKS ON}
+  begin
+    SetLength(Result, L);
+    Move(S[1], Result[1], L);
+    StrUpperInPlace(Result);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
