@@ -18,12 +18,11 @@ Count=10
 10=siSparseFile=Sparse file.
 [Quick Info]
 Kind=Type
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 <DECL>--------------------------------------------------------------------------
@@ -68,12 +67,11 @@ See TStreamId for more information.
 5=Size:TLargeInteger=Size, in bytes, of the data part of the stream.
 [Quick Info]
 Kind=Type
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 <DECL>--------------------------------------------------------------------------
@@ -111,12 +109,11 @@ Count=1
 1=The set of functions for the enumeration of streams was adapted from the PSDK
 sample EnumStreams.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 [SeeAlso]
@@ -147,12 +144,11 @@ If the function succeeds in finding another stream it returns True, otherwise it
 returns False. In this latter case you can call GetLastError to retrieve detailed
 information about the cause of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 [SeeAlso]
@@ -183,12 +179,11 @@ because NtfsFindFirstStream performs the necessary cleanup. It is however, harml
 to call this function anyway (though it will fail and GetLastError will return
 ERROR_INVALID_HANDLE).
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 [SeeAlso]
@@ -221,12 +216,11 @@ can call GetLastError to get a more specific failure description. The most commo
 reason for failure is that either the Source doesn't exist or isn't empty or
 that the destination directory doesn't exist.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -251,12 +245,11 @@ Count=1
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -281,12 +274,11 @@ Count=2
 If the function succeeds it returns True, otherwise it returns False. In the latter
 case the contents of Destination are undefined.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -313,12 +305,11 @@ Count=3
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -344,12 +335,11 @@ Count=3
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -372,12 +362,11 @@ Count=1
 If the specified volume supports sparse streams the function returns True, otherwise
 it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
@@ -401,13 +390,12 @@ Count=3
 2=Data:PFileAllocatedRangeBuffer=Buffer that holds the actual data.
 3=MoreData:Boolean=True if there was more data than could be returned in this buffer.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -436,12 +424,11 @@ Count=2
 The function returns the TFileAllocatedRangeBuffer at the specified Index. The
 index is asserted to be within range.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -484,12 +471,11 @@ Count=2
 1=The caller is responsible for freeing the memory associated with the Data member of the <REF>TNtfsAllocRanges</REF> record.
 2=Sparse files are only supported by NTFS version 5.0 and higher.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -518,12 +504,11 @@ returns False.
 Count=1
 1=Sparse files are only supported by NTFS version 5.0 and higher.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -550,12 +535,11 @@ If the function succeeds the return value is True, otherwise it's False.
 Count=1
 1=Sparse files are only supported by NTFS version 5.0 and higher.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -584,8 +568,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -624,8 +607,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -654,8 +636,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -690,8 +671,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -723,8 +703,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -753,8 +732,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -785,8 +763,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -813,8 +790,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -864,8 +840,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -895,8 +870,7 @@ Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-BCB=4,5
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
@@ -929,25 +903,143 @@ Currently this can be one of the following values:
 If the function succeeds in setting the compression state the result it True,
 otherwise it's False.
 [Notes]
-Count=1
+Count=2
 1=The underlying filesystem must support per stream compression. Currently that
 means the specified file or directory must reside on an NTFS formatted partition.
 The FAT filesystem does not support compression.
+2=Directories are not actually compressed by this operation. Rather, the
+operation sets the default state for files created in the directory to be
+compressed. To change the compression state of
+a directory and all of its contents, use <REF>NtfsSetDirectoryCompression</REF>.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 [SeeAlso]
-Count=1
+Count=4
 1=NtfsGetCompression
+2=NtfsSetFileCompression
+3=NtfsSetDirectoryCompression
+4=NtfsSetDirectoryCompressionDefault
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
+procedure NtfsSetFileCompression(const FileName: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
+[ShortDescr]
+Sets the compression state of a file.
+[Description]
+NtfsSetDirectoryCompression sets the compression state of the specified file.
+The underlying filesystem must support per stream compression or this function
+will fail. Currently only LZNT1 is supported as the compression format but this
+may change in future releases of the Windows operating system.
+[Parameters]
+Count=2
+1=FileName:string=The name of the file for which you want to set the compression state.
+2=State:TFileCompressionState=The desired compression state.
+[Notes]
+Count=2
+1=The underlying filesystem must support per stream compression. Currently that
+means the specified file or directory must reside on an NTFS formatted partition.
+The FAT filesystem does not support compression.
+2=NtfsSetFileCompression will raise an EJclInvalidArgument exception if the
+'FileName' parameter denotes a directory. To change the compression state of a
+directory, use <REF>NtfsSetDirectoryCompression</REF>.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=4
+1=TFileCompressionState;Types\TFileCompressionState
+2=NtfsSetDirectoryCompression
+3=NtfsSetDirectoryCompressionDefault
+4=NtfsGetCompression
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure NtfsSetDirectoryCompression(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
+[ShortDescr]
+Sets the compression state of a directory and its contents.
+[Description]
+NtfsSetDirectoryCompression sets the compression state of the specified
+directory, including all of its files and subdirectories.
+The underlying filesystem must support per stream compression or this function
+will fail. Currently only LZNT1 is supported as the compression format but this
+may change in future releases of the Windows operating system.
+[Parameters]
+Count=2
+1=Directory:string=The name of the directory for which you want to set the compression state.
+2=State:TFileCompressionState=The desired compression state.
+[Notes]
+Count=2
+1=The underlying filesystem must support per stream compression. Currently that
+means the specified file or directory must reside on an NTFS formatted partition.
+The FAT filesystem does not support compression.
+2=NtfsSetDirectoryCompression will raise an EJclInvalidArgument exception if the
+'Directory' parameter does not denote a directory.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=4
+1=TFileCompressionState;Types\TFileCompressionState
+2=NtfsSetDirectoryCompressionDefault
+3=NtfsSetFileCompression
+4=NtfsGetCompression
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure NtfsSetDirectoryCompressionDefault(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
+[ShortDescr]
+Sets the default compression state of a directory.
+[Description]
+NtfsSetDirectoryCompression sets the default compression state for files created
+in 'Directory'.
+The underlying filesystem must support per stream compression or this function
+will fail. Currently only LZNT1 is supported as the compression format but this
+may change in future releases of the Windows operating system.
+[Parameters]
+Count=2
+1=Directory:string=The name of the directory for which you want to set the compression state.
+2=State:TFileCompressionState=The desired compression state.
+[Notes]
+Count=3
+1=The underlying filesystem must support per stream compression. Currently that
+means the specified file or directory must reside on an NTFS formatted partition.
+The FAT filesystem does not support compression.
+2=This operation does not alter the compression state of files already existing
+in the directory. To change the compression state of a directory and all of its
+contents, use <REF>NtfsSetDirectoryCompression</REF>.
+3=NtfsSetDirectoryCompressionDefault will raise an EJclInvalidArgument exception
+if the 'Directory' parameter does not denote a directory.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=4
+1=TFileCompressionState;Types\TFileCompressionState
+2=NtfsSetDirectoryCompression
+3=NtfsSetFileCompression
+4=NtfsGetCompression
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtfsGetCompression(const FileName: string; var State: Short): Boolean; overload;
+function NtfsGetCompression(const FileName: string): <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>; overload;
 [ShortDescr]
 Obtains the compression state of a file.
 [Description]
@@ -969,20 +1061,52 @@ Currently this can be one of the following values:
 If the function succeeds in retrieving the compression state the result is True,
 otherwise it's False. In the latter case the content of the State parameter is
 undefined upon return.
+The second variant of NtfsGetCompression returns the compression state of the
+specified file; in case of failure an exception is raised.
 [Notes]
 Count=1
 1=The underlying filesystem must support per stream compression. Currently that
 means the specified file or directory must reside on an NTFS formatted partition.
 The FAT filesystem does not support compression.
 [Quick Info]
-BCB=3,4,5
 Unit=JclNTFS
 Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
 [SeeAlso]
-Count=1
-1=NtfsSetCompression
+Count=2
+1=TFileCompressionState;Types\TFileCompressionState
+2=NtfsSetCompression
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TFileCompressionState = (fcNoCompression, fcDefaultCompression, fcLZNT1Compression);
+[ShortDescr]
+Enumeration which describes possible file compression states.
+[Description]
+Enumeration which describes possible compression states of a file or directory
+on a volume whose file system supports per-file and per-directory compression.
+Note that currently LZNT1 is the only compression algorithm implemented. As a
+result, LZNT1 will be used as the default compression method; which implies that
+ <I>fcDefaultCompression</I> and <I>fcLZNT1Compression</I> are equivalent. This,
+however, might change in the future.
+[Enumeration]
+Count=3
+1=fcNoCompression=no compression.
+2=fcDefaultCompression=default compression.
+3=fcLZNT1Compression=LZNT1 compression.
+[Quick Info]
+Kind=Type
+Unit=JclNtfs
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+[SeeAlso]
+Count=4
+1=NtfsGetCompression;..\NtfsGetCompression
+2=NtfsSetFileCompression;..\NtfsSetFileCompression
+3=NtfsSetDirectoryCompression;..\NtfsSetDirectoryCompression
+4=NtfsSetDirectoryCompressionDefault;..\NtfsSetDirectoryCompressionDefault
