@@ -119,6 +119,7 @@ type
     function ReadFileName(const FormatName: string): string;
   public
     function AddHelpFile(const HelpFileName, IndexName: string): Boolean;
+    function RemoveHelpFile(const HelpFileName, IndexName: string): Boolean;
     property ContentFileName: string read GetContentFileName;
     property GidFileName: string read GetGidFileName;
     property IndexFileName: string read GetIndexFileName;
@@ -472,6 +473,7 @@ type
     property DelphiVersionInstalled[VersionNumber: Integer]: Boolean read GetDelphiVersionInstalled;
   end;
 
+function BPLFileName(const BPLPath, DPKFileName: string): string;
 function IsDelphiPackage(const FileName: string): Boolean;
 
 implementation
@@ -629,8 +631,10 @@ begin
   DPKFile := TStringList.Create;
   try
     DPKFile.LoadFromFile(DPKFileName);
-    Description^ := '';
-    LibSuffix^ := '';
+    if Assigned(Description) then
+      Description^ := '';
+    if Assigned(LibSuffix) then
+      LibSuffix^ := '';
     RunOnly := False;
     for I := 0 to DPKFile.Count - 1 do
     begin
@@ -639,7 +643,7 @@ begin
         Description^ := Copy(S, Length(DescriptionOption), Length(S) - Length(DescriptionOption))
       else
       if Assigned(LibSuffix) and (Pos(LibSuffixOption, S) = 1) then
-        LibSuffix^ := Copy(S, Length(LibSuffixOption), Length(S) - Length(LibSuffixOption))
+        LibSuffix^ := StrTrimQuotes(Copy(S, Length(LibSuffixOption), Length(S) - Length(LibSuffixOption)))
       else
       if Pos(RunOnlyOption, S) = 1 then
         RunOnly := True;
@@ -670,7 +674,7 @@ begin
   var
     F: TextFile;
     FirstLine: string;
-    
+
   if FileExists(FileName) then
   begin
     AssignFile(F, FileName);
@@ -829,6 +833,58 @@ begin
     else
       S := 'bcb';
     Result := Format(FormatName, [RootDir, S, VersionNumber]);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorlandOpenHelp.RemoveHelpFile(const HelpFileName, IndexName: string): Boolean;
+var
+  CntFileName, HelpName, CntName: string;
+  List: TStringList;
+
+  procedure RemoveFromList(const FileName, Text: string);
+  var
+    I, Attr: Integer;
+    Found: Boolean;
+  begin
+    List.LoadFromFile(FileName);
+    Found := False;
+    for I := 0 to List.Count - 1 do
+      if AnsiSameText(Trim(List[I]), Text) then
+      begin
+        Found := True;
+        List.Delete(I);
+        Break;
+      end;
+    if Found then
+    begin
+      Attr := FileGetAttr(FileName);
+      FileSetAttr(FileName, faArchive);
+      List.SaveToFile(FileName);
+      FileSetAttr(FileName, Attr);
+    end;
+  end;
+
+begin
+  CntFileName := ChangeFileExt(HelpFileName, '.cnt');
+  Result := FileExists(HelpFileName) and FileExists(CntFileName);
+  if Result then
+  begin
+    HelpName := ExtractFileName(HelpFileName);
+    CntName := ExtractFileName(CntFileName);
+    //RegDeleteEntry(HKEY_LOCAL_MACHINE, MSHelpSystemKeyName, HelpName);
+    //RegDeleteEntry(HKEY_LOCAL_MACHINE, MSHelpSystemKeyName, CntName);
+    List := TStringList.Create;
+    try
+      RemoveFromList(ContentFileName, Format(':Include %s', [CntName]));
+      RemoveFromList(LinkFileName, Format(':Link %s', [HelpName]));
+      RemoveFromList(IndexFileName, Format(':Index %s=%s', [IndexName, HelpName]));
+      SetFileLastWrite(ProjectFileName, Now);
+      DeleteFile(GidFileName);
+    finally
+      List.Free;
+    end;
   end;
 end;
 
@@ -1503,20 +1559,7 @@ function TJclBorRADToolRepository.GetPages: TStrings;
 begin
   Result := FPages;
 end;
-(*
-//--------------------------------------------------------------------------------------------------
 
-procedure TJclBorRADToolRepository.RemoveObject(const FileName: string);
-var
-  SectionName: string;
-begin
-  GetIniFile;
-  SectionName := AnsiUpperCase(PathRemoveExtension(FileName));
-  FIniFile.EraseSection(FileName);
-  FIniFile.EraseSection(SectionName);
-  CloseIniFile;
-end;
-*)
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclBorRADToolRepository.RemoveObjects(const PartialPath, FileName, ObjectType: string);
@@ -1722,8 +1765,8 @@ begin
         PathItems.Delete(J);
         Result := True;
       end;
-      StringsToStr(PathItems, PathSep, False);
     end;
+    Path := StringsToStr(PathItems, PathSep, False);
   finally
     PathItems.Free;
     RemoveItems.Free;
@@ -2063,8 +2106,18 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.UninstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+var
+  BPLFileName, DCPFileName: string;
+  BaseName, LibSuffix: string;
+  RunOnly: Boolean;
 begin
-  Result := IdePackages.RemovePackage(BPLFileName(BPLPath, PackageName));
+  GetDPKFileInfo(PackageName, RunOnly, @LibSuffix);
+  BaseName := PathExtractFileNameNoExt(PackageName);
+  BPLFileName := PathAddSeparator(BPLPath) + BaseName + LibSuffix + '.bpl';
+  DCPFileName := PathAddSeparator(DCPPath) + BaseName + '.dcp';
+  Result := FileDelete(BPLFileName) and FileDelete(DCPFileName);
+  if not RunOnly then
+    Result := Result and IdePackages.RemovePackage(BPLFileName);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2630,6 +2683,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2005/02/04 04:49:08  rrossmair
+// - fixed GetDPKFileInfo
+// - more uninstall support
+//
 // Revision 1.31  2005/02/03 05:17:54  rrossmair
 // - some uninstall support added
 // - refactoring: TJclDCC.InstallPackage replaced by TJclDCC.MakelPackage, IDE installation part moved to TJclBorRADToolInstallation.InstallPackage
