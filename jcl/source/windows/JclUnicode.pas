@@ -29,6 +29,16 @@ unit JclUnicode;
 {$I jcl.inc}
 
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
+// 29-MAR-2002: MT
+//   - WideNormalize now returns strings with normalization mode nfNone unchanged.
+//   - Bug fix in WideCompose: Raised exception when Result of WideComposeHangul was an
+//     empty string. (#0000044)
+//   - Bug fix in WideAdjustLineBreaks
+//   - Added Asserts were needed.
+//   - TWideStrings.IndexOfName now takes care of NormalizeForm as well.
+//   - TWideStrings.IndexOf now takes care of NormalizeForm as well.
+//   - TWideString.List Find now uses the same NormalizationForm for the search string as it uses
+//     within the list itself.
 //
 // 29-NOV-2001:
 //   - bug fix
@@ -51,7 +61,7 @@ unit JclUnicode;
 //   - bug fixes
 // 26-JAN-2001:
 //   - ExpandANSIString
-//   - TWideStrings.SaveUnicode is by default True now    
+//   - TWideStrings.SaveUnicode is by default True now
 // 20..21-JAN-2001:
 //   - StrUpperW, StrLowerW and StrTitleW removed because they potentially would need
 //     a reallocation to work correctly (use the WideString versions instead)
@@ -183,7 +193,7 @@ type
     // normative categories
     ccLetterUppercase,
     ccLetterLowercase,
-    ccLetterTitlecase,                    
+    ccLetterTitlecase,
     ccMarkNonSpacing,
     ccMarkSpacingCombining,
     ccMarkEnclosing,
@@ -1053,7 +1063,7 @@ var
   First,
   Second: Byte;
   J, K: Integer;
-  
+
 begin
   // Data already loaded?
   if not CategoriesLoaded then
@@ -1071,7 +1081,7 @@ begin
           // b) read the size of the ranges and the ranges themself
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
-          begin                                       
+          begin
             SetLength(Buffer, Size);
             Stream.ReadBuffer(Buffer[0], Size * SizeOf(TRange));
 
@@ -1081,7 +1091,7 @@ begin
               begin
                 if K > $FFFF then
                   Break;
-                  
+
                 First := (K shr 8) and $FF;
                 Second := K and $FF;
                 // add second step array if not yet done
@@ -1103,9 +1113,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; overload;
-
 // determines whether the Code is in the given category
-
 var
   First,
   Second: Byte;
@@ -1706,7 +1714,6 @@ end;
 //----------------- TSearchEngine ------------------------------------------------------------------
 
 constructor TSearchEngine.Create(AOwner: TWideStrings);
-
 begin
   FOwner := AOwner;
   FResults := TList.Create;
@@ -4446,7 +4453,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetLanguage(Value: LCID);
-
 begin
   FLanguage := Value;
 end;
@@ -4454,7 +4460,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.Add(const S: WideString): Integer;
-
 begin
   Result := GetCount;
   Insert(Result, S);
@@ -4463,7 +4468,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.AddObject(const S: WideString; AObject: TObject): Integer;
-
 begin
   Result := Add(S);
   PutObject(Result, AObject);
@@ -4472,7 +4476,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Append(const S: WideString);
-
 begin
   Add(S);
 end;
@@ -4480,7 +4483,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.AddStrings(Strings: TStrings);
-
 var
   I: Integer;
   S: WideString;
@@ -4503,7 +4505,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.AddStrings(Strings: TWideStrings);
-
 var
   I: Integer;
   SourceCP,
@@ -4511,6 +4512,8 @@ var
   S: WideString;
 
 begin
+  Assert(Strings <> nil);
+
   BeginUpdate;
   try
     if Strings.FLanguage <> FLanguage then
@@ -4536,9 +4539,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Assign(Source: TPersistent);
-
 // usual assignment routine, but able to assign wide and small strings
-
 begin
   if Source is TWideStrings then
   begin
@@ -4570,7 +4571,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.AssignTo(Dest: TPersistent);
-
 // need to do also assignment to old style TStrings, but this class doesn't know
 // TWideStrings, so we need to do it from here
 
@@ -4680,11 +4680,12 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.Equals(Strings: TWideStrings): Boolean;
-
 var
   I, Count: Integer;
 
 begin
+  Assert(Strings <> nil);
+
   Result := False;
   Count := GetCount;
   if Count <> Strings.GetCount then
@@ -4739,9 +4740,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetCapacity: Integer;
-
 // Descendants may optionally override/replace this default implementation.
-
 begin
   Result := Count;
 end;
@@ -4754,7 +4753,7 @@ var
   S: WideString;
   P: PWideChar;
   I, Count: Integer;
-  
+
 begin
   Count := GetCount;
   if (Count = 1) and (Get(0) = '') then
@@ -4779,7 +4778,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetName(Index: Integer): WideString;
-
 var
   P: Integer;
 
@@ -4795,7 +4793,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetObject(Index: Integer): TObject;
-
 begin
   Result := nil;
 end;
@@ -4803,9 +4800,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetSeparatedText(Separators: WideString): WideString;
-
 // Same as GetText but with customizable separator characters.
-
 var
   I, L,
   Size,
@@ -4851,7 +4846,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetText: WideString;
-
 begin
   Result := GetSeparatedText(WideLineSeparator);
 end;
@@ -4859,10 +4853,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetValue(const Name: WideString): WideString;
-
 var
   I: Integer;
-  
+
 begin
   I := IndexOfName(Name);
   if I >= 0 then
@@ -4874,10 +4867,14 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.IndexOf(const S: WideString): Integer;
+var
+  NormString: WideString;
 
 begin
+  NormString := WideNormalize(S, FNormalizationForm);
+
   for Result := 0 to GetCount - 1 do
-    if WideCompareText(Get(Result), S, FLanguage) = 0 then
+    if WideCompareText(Get(Result), NormString, FLanguage) = 0 then
       Exit;
   Result := -1;
 end;
@@ -4885,17 +4882,19 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.IndexOfName(const Name: WideString): Integer;
-
 var
   P: Integer;
   S: WideString;
+  NormName: WideString;
 
 begin
+  NormName := WideNormalize(Name, FNormalizationForm);
+
   for Result := 0 to GetCount - 1 do
   begin
     S := Get(Result);
     P := Pos('=', S);
-    if (P > 0) and (WideCompareText(Copy(S, 1, P - 1), Name, FLanguage) = 0) then
+    if (P > 0) and (WideCompareText(Copy(S, 1, P - 1), NormName, FLanguage) = 0) then
       Exit;
   end;
   Result := -1;
@@ -4904,7 +4903,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStrings.IndexOfObject(AObject: TObject): Integer;
-
 begin
   for Result := 0 to GetCount - 1 do
     if GetObject(Result) = AObject then
@@ -4915,7 +4913,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.InsertObject(Index: Integer; const S: WideString; AObject: TObject);
-
 begin
   Insert(Index, S);
   PutObject(Index, AObject);
@@ -4924,10 +4921,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.LoadFromFile(const FileName: string);
-
 var
   Stream: TStream;
-  
+
 begin
   try
     Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
@@ -4944,9 +4940,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.LoadFromStream(Stream: TStream);
-
 // usual loader routine, but enhanced to handle byte order marks in stream
-
 var
   Size,
   BytesRead: Integer;
@@ -4985,7 +4979,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Move(CurIndex, NewIndex: Integer);
-
 var
   TempObject: TObject;
   TempString: WideString;
@@ -5008,7 +5001,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.ReadData(Reader: TReader);
-
 begin
   case Reader.NextValue of
     vaLString, vaString:
@@ -5021,7 +5013,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SaveToFile(const FileName: string);
-
 var
   Stream: TStream;
 
@@ -5037,10 +5028,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SaveToStream(Stream: TStream; WithBOM: Boolean = True);
-
 // Saves the currently loaded text into the given stream. WithBOM determines whether to write a
-// byte order mark or not. Note: when saved as ANSI text there will never be a BOM. 
-
+// byte order mark or not. Note: when saved as ANSI text there will never be a BOM.
 var
   SW, BOM: WideString;
   SA: string;
@@ -5095,7 +5084,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetCapacity(NewCapacity: Integer);
-
 begin
   // do nothing - descendants may optionally implement this method
 end;
@@ -5103,7 +5091,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetCommaText(const Value: WideString);
-
 var
   P, P1: PWideChar;
   S: WideString;
@@ -5145,7 +5132,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetText(const Value: WideString);
-
 var
   Head,
   Tail: PWideChar;
@@ -5180,17 +5166,15 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetUpdateState(Updating: Boolean);
-
 begin
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetNormalizationForm(const Value: TNormalizationForm);
-
 var
   I: Integer;
-  
+
 begin
   if FNormalizationForm <> Value then
   begin
@@ -5207,7 +5191,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetValue(const Name, Value: WideString);
-
 var
   I : Integer;
 
@@ -5229,7 +5212,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.WriteData(Writer: TWriter);
-
 begin
   Writer.WriteWideString(GetText);
 end;
@@ -5247,7 +5229,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.Add(const S: WideString): Integer;
-
 begin
   if not Sorted then
     Result := FCount
@@ -5362,7 +5343,7 @@ begin
   while L <= H do
   begin
     I := (L + H) shr 1;
-    C := WideCompareText(FList[I].FString, S, FLanguage);
+    C := WideCompareText(FList[I].FString, NormString, FLanguage);
     if C < 0 then
       L := I+1
     else
@@ -5382,7 +5363,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.Get(Index: Integer): WideString;
-
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
@@ -5392,7 +5372,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.GetCapacity: Integer;
-
 begin
   Result := Length(FList);
 end;
@@ -5400,7 +5379,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.GetCount: Integer;
-
 begin
   Result := FCount;
 end;
@@ -5408,7 +5386,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.GetObject(Index: Integer): TObject;
-
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
@@ -5418,7 +5395,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Grow;
-
 var
   Delta,
   Len: Integer;
@@ -5440,7 +5416,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.IndexOf(const S: WideString): Integer;
-
 begin
   if not Sorted then
     Result := inherited IndexOf(S)
@@ -5452,7 +5427,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Insert(Index: Integer; const S: WideString);
-
 begin
   if Sorted then
     Error(SSortedListError, 0);
@@ -5464,7 +5438,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.InsertItem(Index: Integer; const S: WideString);
-
 begin
   Changing;
   if FCount = Length(FList) then
@@ -5476,7 +5449,9 @@ begin
     Pointer(FString) := nil; // avoid freeing the string, the address is now used in another element
     FObject := nil;
     if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
-      FString := WideNormalize(S, FNormalizationForm);
+      FString := WideNormalize(S, FNormalizationForm)
+    else
+      FString := S;
   end;
   Inc(FCount);
   Changed;
@@ -5485,7 +5460,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Put(Index: Integer; const S: WideString);
-
 begin
   if Sorted then
     Error(SSortedListError, 0);
@@ -5503,7 +5477,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.PutObject(Index: Integer; AObject: TObject);
-
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
@@ -5515,7 +5488,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.QuickSort(L, R: Integer);
-
 var
   I, J: Integer;
   P: WideString;
@@ -5546,7 +5518,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetCapacity(NewCapacity: Integer);
-
 begin
   SetLength(FList, NewCapacity);
   if NewCapacity < FCount then
@@ -5556,7 +5527,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetSorted(Value: Boolean);
-
 begin
   if FSorted <> Value then
   begin
@@ -5569,7 +5539,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetUpdateState(Updating: Boolean);
-
 begin
   if Updating then
     Changing
@@ -5580,7 +5549,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Sort;
-
 begin
   if not Sorted and (FCount > 1) then
   begin
@@ -5593,7 +5561,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetLanguage(Value: LCID);
-
 begin
   inherited;
 
@@ -5604,9 +5571,7 @@ end;
 //----------------- functions for null terminated strings ------------------------------------------
 
 function StrLenW(Str: PWideChar): Cardinal;
-
 // returns number of characters in a string excluding the null terminator
-
 asm
        MOV     EDX, EDI
        MOV     EDI, EAX
@@ -6011,10 +5976,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-
 // compares strings up to MaxLen code points
 // see also StrCompW
-
 var
   C1, C2: Word;
 
@@ -6320,34 +6283,19 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideAdjustLineBreaks(const S: WideString): WideString;
-
 var
   Source,
   SourceEnd,
   Dest: PWideChar;
-  Extra: Integer;
 
 begin
   Source := Pointer(S);
   SourceEnd := Source + Length(S);
-  Extra := 0;
-  while Source < SourceEnd do
-  begin
-    case Source^ of
-      WideLF:
-        Inc(Extra);
-      WideCR:
-        if Source[1] = WideLineFeed then
-          Inc(Source)
-        else
-          Inc(Extra);
-    end;
-    Inc(Source);
-  end;
 
   Source := Pointer(S);
-  SetString(Result, nil, SourceEnd - Source + Extra);
+  SetString(Result, nil, SourceEnd - Source);
   Dest := Pointer(Result);
+
   while Source < SourceEnd do
   begin
     case Source^ of
@@ -6372,6 +6320,7 @@ begin
     end;
   end;
 end;
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -6671,8 +6620,13 @@ begin
   // Set an arbitrary length for the result. This is automatically done when checking
   // for hangul composition.
   Result := WideComposeHangul(S);
+
+  if Length(Result) < 1 then
+    Exit;
+
   StarterPos := 1;
   CompPos := 2;
+
   StarterChar := Result[StarterPos];
   LastClass := CanonicalCombiningClass(UCS4(StarterChar));
   if LastClass <> 0 then
@@ -6774,9 +6728,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
-
 // returns a string with all characters of S but decomposed, e.g. Ê is returned as E^ etc.
-
 var
   I, J: Integer;
   Decomp: TUCS4Array;
@@ -6854,7 +6806,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideLowerCase(const S: WideString): WideString;
-
 var
   I: Integer;
 
@@ -6867,12 +6818,16 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
-
 var
   Temp: WideString;
   Compatible: Boolean;
 
 begin
+  Result := S;
+
+  if Form = nfNone then
+    Exit; // No normalization needed.
+
   Compatible := Form in [nfKC, nfKD];
   if Form in [nfD, nfKD] then
     Result := WideDecompose(S, Compatible)
@@ -6886,9 +6841,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideSameText(const Str1, Str2: WideString): Boolean;
-
 // Compares both strings case-insensitively and returns True if both are equal, otherwise False is returned.
-
 begin
   Result := Length(Str1) = Length(Str2);
   if Result then
@@ -6898,7 +6851,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideTitleCase(C: WideChar): WideString;
-
 var
   I: Integer;
   Mapping: TUCS4Array;
@@ -6913,7 +6865,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideTitleCase(const S: WideString): WideString;
-
 var
   I: Integer;
 
@@ -6926,7 +6877,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideUpperCase(C: WideChar): WideString;
-
 var
   I: Integer;
   Mapping: TUCS4Array;
@@ -6941,7 +6891,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function WideUpperCase(const S: WideString): WideString;
-
 var
   I: Integer;
 
@@ -6953,30 +6902,21 @@ end;
 
 //----------------- character test routines --------------------------------------------------------
 
-function UnicodeIsAlpha(C: UCS4): Boolean;
-
-// Is the character alphabetic?
-
+function UnicodeIsAlpha(C: UCS4): Boolean; // Is the character alphabetic?
 begin
   Result := CategoryLookup(C, ClassLetter);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function UnicodeIsDigit(C: UCS4): Boolean;
-
-// Is the character a digit?
-
+function UnicodeIsDigit(C: UCS4): Boolean; // Is the character a digit?
 begin
   Result := CategoryLookup(C, [ccNumberDecimalDigit]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function UnicodeIsAlphaNum(C: UCS4): Boolean;
-
-// Is the character alphabetic or a number?
-
+function UnicodeIsAlphaNum(C: UCS4): Boolean; // Is the character alphabetic or a number?
 begin
   Result := CategoryLookup(C, ClassLetter + [ccNumberDecimalDigit]);
 end;
@@ -6984,9 +6924,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function UnicodeIsCased(C: UCS4): Boolean;
-
 // Is the character a "cased" character, i.e. either lower case, title case or upper case
-
 begin
   Result := CategoryLookup(C, [ccLetterLowercase, ccLetterTitleCase, ccLetterUppercase]);
 end;
@@ -8036,9 +7974,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure FreeUnicodeData;
-
 // Frees all data which has been allocated and which is not automatically freed by Delphi.
-
 begin
   LoadInProgress.Free;
 end;
