@@ -5,7 +5,7 @@ TJclAppInstances = class (TObject)
 TJclAppInstances allows you to control the number of application instances the user can run.
 [Description]
 TJclAppInstances is a class which allows you to control the number of instances
-of your application that the user can run simultanously. In addition the class
+of your application that the user can run simultaneously. In addition the class
 has a built in method for simple communication among running instances. The
 application programmer can use this as desired but it's also used to send notifications.
 For example, when an application starts running or terminates, the class automatically
@@ -50,7 +50,7 @@ WParam field for instance creation notifications
 [Description]
 When an application instance is created TJclAppInstances sends a notification message
 to all other running instances. The message value is determined by the MessageId
-property, the WParam field is set to AI_INSTANCECREATED and the LParam field is
+property, the WParam field is set to AI_INSTANCECREATED, and the LParam field is
 set to the Process ID of the instance being created. Note that the message is also
 sent to the application instance under construction.
 [Quick Info]
@@ -74,7 +74,7 @@ WParam field for instance destruction notifications
 [Description]
 When an application instance is destroyed TJclAppInstances sends a notification message
 to all other running instances. The message value is determined by the MessageId
-property, the WParam field is set to AI_INSTANCEDESTROYED and the LParam fiels is
+property, the WParam field is set to AI_INSTANCEDESTROYED, and the LParam field is
 set to the Process ID of the instance being destroyed. Note that the message is also
 sent to the application instance which is exiting.
 [Quick Info]
@@ -228,7 +228,7 @@ It's up to the application programmer to decide what to do if the function fails
 You could, for example, terminate the application yourself by
 calling <REF>KillInstance</REF>.
 [Result]
-If fewer than MaxInstances appplications were running the result is True,
+If fewer than MaxInstances applications are running the result is True,
 otherwise the result is False.
 [Quick Info]
 Kind=Method
@@ -241,9 +241,10 @@ Delphi=4,5,6
 Kylix=1
 FPC=1.x
 [SeeAlso]
-Count=2
+Count=3
 1=CheckSingleInstance
-2=KillInstance
+2=CheckMultipleInstances
+3=KillInstance
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CheckMultipleInstances(const MaxInstances: Word);
@@ -266,9 +267,10 @@ Delphi=4,5,6
 Kylix=1
 FPC=1.x
 [SeeAlso]
-Count=2
+Count=3
 1=CheckSingleInstance
-2=KillInstance
+2=CheckInstance
+3=KillInstance
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CheckSingleInstance;
@@ -378,12 +380,12 @@ FPC=1.x
 Count=3
 1=InstanceCount
 2=AppWnds
-3=IsntanceIndex
+3=InstanceIndex
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AppWnds[Index: Integer]: HWND read GetAppWnds;
 [ShortDescr]
-Returns the HWND of a specific appplication index.
+Returns the HWND of a specific application index.
 [Description]
 Use the AppWnds property to determine the handle of the invisible window created
 by one of the application instances. Index is zero based and determines for
