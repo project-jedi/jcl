@@ -23,7 +23,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: July, 20, 2003                                                                     }
-{ Last modified: October 26, 2003                                                                  }
+{ Last modified: December 1, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -1565,17 +1565,14 @@ end;
 function TEDISEFElement.Clone: TEDISEFElement;
 begin
   Result := TEDISEFElement.Create(nil);
-  with Result do
-  begin
-    Data := FData;
-    UserAttribute := FUserAttribute;
-    ElementId := FId;
-    Ordinal := FOrdinal;
-    ElementType := FElementType;
-    MinimumLength := FMinimumLength;
-    MaximumLength := FMaximumLength;
-    RequirementDesignator := FRequirementDesignator;
-  end;
+  Result.Data := FData;
+  Result.UserAttribute := FUserAttribute;
+  Result.ElementId := FId;
+  Result.Ordinal := FOrdinal;
+  Result.ElementType := FElementType;
+  Result.MinimumLength := FMinimumLength;
+  Result.MaximumLength := FMaximumLength;
+  Result.RequirementDesignator := FRequirementDesignator;
 end;
 
 //--------------------------------------------------------------------------------------------------
