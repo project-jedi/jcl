@@ -48,7 +48,7 @@ To execute for
 2) Kylix 3 for Delphi
 - open a shell window
 - cd into JCL root directory
-- at the command prompt, type "./install.sh", then press "Enter"
+- at the command prompt, type "sh ./install.sh", then press "Enter"
 
 NOTE:
 ======
