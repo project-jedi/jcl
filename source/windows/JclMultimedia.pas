@@ -672,9 +672,12 @@ end;
 procedure TJclMixerLineControl.SetValue(const Value: TDynCardinalArray);
 var
   ControlDetails: TMixerControlDetails;
+  {$IFOPT C+} // assertions on
   ItemCount: Cardinal;
+  {$ENDIF}
 begin
   PrepareControlDetailsStruc(ControlDetails, IsUniform, IsMultiple);
+  {$IFOPT C+} // assertions on
   if IsUniform then
     ItemCount := 1
   else
@@ -682,6 +685,7 @@ begin
   if IsMultiple then
     ItemCount := ItemCount * ControlDetails.cMultipleItems;
   Assert(ItemCount = Cardinal(Length(Value)));
+  {$ENDIF}
   ControlDetails.cbDetails := SizeOf(Cardinal);
   ControlDetails.paDetails := @Value[0];
   MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
