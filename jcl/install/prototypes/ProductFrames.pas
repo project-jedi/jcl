@@ -20,6 +20,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.6  2004/03/15 01:25:07  rrossmair
+// label caption changed for BCB
+//
 // Revision 1.5  2004/03/13 07:46:49  rrossmair
 // Kylix/Delphi installation fixed; C++ incomplete
 //
@@ -59,8 +62,8 @@ type
     InfoDisplay: TMemo;
     {$ENDIF VCL}
     OptionsGroupBox: TGroupBox;
-    Label3: TLabel;
-    Label4: TLabel;
+    BplPathLabel: TLabel;
+    DcpPathLabel: TLabel;
     BplPathEdit: TEdit;
     Button1: TButton;
     Button2: TButton;
@@ -154,6 +157,8 @@ const
 begin
   FInstallation := Value;
   Name := Format('%s%dProduct', [Prefixes[Value.RADToolKind], Value.VersionNumber]);
+  if Value.RadToolKind = brCBuilder then
+    DcpPathLabel.Caption := '.bpi Path';
   BplPathEdit.Text := GetPathForEdit(Installation.BPLOutputPath);
   DcpPathEdit.Text := GetPathForEdit(Installation.DCPOutputPath);
 end;
