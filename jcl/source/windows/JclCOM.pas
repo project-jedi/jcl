@@ -51,14 +51,14 @@ const
 
 type
   { For use with the Internet Explorer Component Categories Routines.  May be Reused. }
-  TArrayCatID = array[0..0] of TGUID;
+  TArrayCatID = array [0..0] of TGUID;
 
 //--------------------------------------------------------------------------------------------------
 // Exception classes
 //--------------------------------------------------------------------------------------------------
 
 type
-  EInvalidParam = class (EJclError);
+  EInvalidParam = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
 // DCOM and MDAC Related Tests and Utility Routines
@@ -73,52 +73,53 @@ function GetMDACVersion: string;
 // Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream"
 //--------------------------------------------------------------------------------------------------
 
-  { These routines will provide the ability to Marshal an Interface for a Seperate
-    Process or even for access by a Seperate Machine.  However, to make things
-    familiar to users of the existing CoMarshal... routine, I have kept the required
-    Parameters the same, apart from the "stm" type now being a Var rather than just
-    an Out - to allow a little flexibility if the developer wants the destination
-    to be a specific stream, otherwise it creates one into the passed variable! }
+{ These routines will provide the ability to marshal an interface for a separate
+  process or even for access by a separate machine.  However, to make things
+  familiar to users of the existing CoMarshal... routine, I have kept the required
+  parameters the same, apart from the "stm" type now being a Var rather than just
+  an Out - to allow a little flexibility if the developer wants the destination
+  to be a specific stream, otherwise it creates one into the passed variable! }
+
 function MarshalInterThreadInterfaceInVarArray(const iid: TIID;
-  unk: IUnknown; var VarArray: OleVariant): HResult;
+  unk: IUnknown; var VarArray: OleVariant): HRESULT;
 function MarshalInterProcessInterfaceInStream(const iid: TIID;
-  unk: IUnknown; var stm: IStream): HResult;
+  unk: IUnknown; var stm: IStream): HRESULT;
 function MarshalInterProcessInterfaceInVarArray(const iid: TIID;
-  unk: IUnknown; var VarArray: OleVariant): HResult;
+  unk: IUnknown; var VarArray: OleVariant): HRESULT;
 function MarshalInterMachineInterfaceInStream(const iid: TIID;
-  unk: IUnknown; var stm: IStream): HResult;
+  unk: IUnknown; var stm: IStream): HRESULT;
 function MarshalInterMachineInterfaceInVarArray(const iid: TIID;
-  unk: IUnknown; var VarArray: OleVariant): HResult;
+  unk: IUnknown; var VarArray: OleVariant): HRESULT;
 
 //--------------------------------------------------------------------------------------------------
 // Internet Explorer Component Categories Routines
 //--------------------------------------------------------------------------------------------------
 
-  { These routines help with the registration of:
-      - Safe-Initialization &
-      - Safe-for-Scripting
-    of ActiveX controls or COM Automation Servers intended to be used in
-    HTML pages displayed in Internet Explorer }
-  { Conversion of an examples found in Microsoft Development Network document:
-    MSDN Home >  MSDN Library >  ActiveX Controls >  Overviews/Tutorials
-    Safe Initialization and Scripting for ActiveX Controls }
+{ These routines help with the registration of:
+    - Safe-Initialization &
+    - Safe-for-Scripting
+  of ActiveX controls or COM Automation Servers intended to be used in
+  HTML pages displayed in Internet Explorer }
+{ Conversion of an example found in Microsoft Development Network document:
+  MSDN Home >  MSDN Library >  ActiveX Controls >  Overviews/Tutorials
+  Safe Initialization and Scripting for ActiveX Controls }
 
-function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HResult;
-function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
-function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
-
+function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HRESULT;
+function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
+function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 
 //--------------------------------------------------------------------------------------------------
 // Stream Related Routines
 //--------------------------------------------------------------------------------------------------
-  { IDE ISSUE:  These need to be at the bottom of the interface definition as otherwise
-                the CTRL+SHIFT+ Up/Down arrows feature no-longer operates }
+{ IDE ISSUE:  These need to be at the bottom of the interface definition as otherwise
+              the CTRL+SHIFT+ Up/Down arrows feature no-longer operates }
 
 function ResetIStreamToStart(Stream: IStream): Boolean;
 function SizeOfIStreamContents(Stream: IStream): Largeint;
 
 { Use VarIsEmpty to determine the result of the following XStreamToVariantArray routines!
   VarIsEmptry will return True if VarClear was called - indicating major problem! }
+
 function StreamToVariantArray(Stream: TStream): OleVariant; overload;
 function StreamToVariantArray(Stream: IStream): OleVariant; overload;
 
@@ -159,7 +160,7 @@ end;
 
 function IsDCOMInstalled: Boolean;
 var
-  OLE32: HModule;
+  OLE32: HMODULE;
 begin
   { DCOM is installed by default on all but Windows 95 }
   Result := not (GetWindowsVersion in [wvUnknown, wvWin95, wvWin95OSR2]);
@@ -194,7 +195,7 @@ begin
   { NOTE:  This does not work on Windows NT/2000! For a list of DCOM versions:
       http://support.microsoft.com/support/kb/articles/Q235/6/38.ASP }
   Result := '';
-  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) AND IsDCOMEnabled then
+  if (Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and IsDCOMEnabled then
     Result := RegReadString(HKEY_CLASSES_ROOT, DCOMVersionKey, '')
   else
     { Possibly from DComExt.dll ‘Product Version’ }
@@ -232,7 +233,7 @@ end;
 //==================================================================================================
 
 function MarshalInterThreadInterfaceInVarArray(const iid: TIID; unk: IUnknown;
-  var VarArray: OleVariant): HResult;
+  var VarArray: OleVariant): HRESULT;
 var
   msData: TMemoryStream;
   itfStream: IStream;
@@ -246,13 +247,13 @@ begin
     itfStream := (TStreamAdapter.Create(msData, soOwned) as IStream);
 
     { Probably would never get here in such a condition, but just in case }
-    if itfStream = Nil then
+    if itfStream = nil then
     begin
       Result := E_OUTOFMEMORY;
       Exit;
     end;
 
-    if itfStream <> Nil then
+    if itfStream <> nil then
     begin
       { Different Machine }
       Result := CoMarshalInterThreadInterfaceInStream(iid, unk, itfStream);
@@ -264,7 +265,8 @@ begin
 
       if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
         Result := E_FAIL;
-    end else
+    end
+    else
       { TODO:  Most likely out of memory, though should not reach here }
       Result := E_POINTER;
   except
@@ -275,7 +277,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function MarshalInterProcessInterfaceInStream(const iid: TIID; unk: IUnknown;
-  var stm: IStream): HResult;
+  var stm: IStream): HRESULT;
 var
   msData: TMemoryStream;
 begin
@@ -283,24 +285,25 @@ begin
     TOTEST:  D4 (CBx ??) }
   try
     { If passed a variable which doesn't contain a valid stream, create and return }
-    if stm = Nil then
+    if stm = nil then
     begin
       msData := TMemoryStream.Create;
 
       stm := (TStreamAdapter.Create(msData, soOwned) as IStream);
 
       { Probably would never get here in such a condition, but just in case }
-      if stm = Nil then
+      if stm = nil then
       begin
         Result := E_OUTOFMEMORY;
         Exit;
       end;
-    end else
+    end
+    else
       ResetIStreamToStart(stm);
 
-    if stm <> Nil then
+    if stm <> nil then
       { Same Machine, Different Process}
-      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_LOCAL, Nil, MSHLFLAGS_NORMAL)
+      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_LOCAL, nil, MSHLFLAGS_NORMAL)
     else
       { TODO:  Most likely out of memory, though should not reach here }
       Result := E_POINTER;
@@ -312,7 +315,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function MarshalInterProcessInterfaceInVarArray(const iid: TIID;
-  unk: IUnknown; var VarArray: OleVariant): HResult;
+  unk: IUnknown; var VarArray: OleVariant): HRESULT;
 var
   itfStream: IStream;
 begin
@@ -334,7 +337,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function MarshalInterMachineInterfaceInStream(const iid: TIID; unk: IUnknown;
-  var stm: IStream): HResult;
+  var stm: IStream): HRESULT;
 var
   msData: TMemoryStream;
 begin
@@ -342,24 +345,25 @@ begin
     TOTEST:  D4 (CBx ??) }
   try
     { If passed a variable which doesn't contain a valid stream, create and return }
-    if stm = Nil then
+    if stm = nil then
     begin
       msData := TMemoryStream.Create;
 
       stm := (TStreamAdapter.Create(msData, soOwned) as IStream);
 
       { Probably would never get here in such a condition, but just in case }
-      if stm = Nil then
+      if stm = nil then
       begin
         Result := E_OUTOFMEMORY;
         Exit;
       end;
-    end else
+    end
+    else
       ResetIStreamToStart(stm);
 
-    if stm <> Nil then
+    if stm <> nil then
       { Different Machine }
-      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_DIFFERENTMACHINE, Nil, MSHLFLAGS_NORMAL)
+      Result := CoMarshalInterface(stm, iid, unk, MSHCTX_DIFFERENTMACHINE, nil, MSHLFLAGS_NORMAL)
     else
       { TODO:  Most likely out of memory, though should not reach here }
       Result := E_POINTER;
@@ -371,7 +375,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function MarshalInterMachineInterfaceInVarArray(const iid: TIID; unk: IUnknown;
-  var VarArray: OleVariant): HResult;
+  var VarArray: OleVariant): HRESULT;
 var
   itfStream: IStream;
 begin
@@ -394,10 +398,10 @@ end;
 // Internet Explorer Component Categories Routines
 //==================================================================================================
 
-function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HResult;
+function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HRESULT;
 var
   CatRegister: ICatRegister;
-  hr: HResult;
+  hr: HRESULT;
   CatInfo: TCATEGORYINFO;
   iLen: Integer;
   sTemp: string;
@@ -405,10 +409,10 @@ var
 begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
-  CatRegister := Nil;
+  CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-          Nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -431,16 +435,16 @@ begin
 
       hr := CatRegister.RegisterCategories(1, @CatInfo);
     finally
-      CatRegister := Nil;
+      CatRegister := nil;
     end;
 
-  { Return the Appropriate Result }
+  { Return the appropriate Result }
   Result := hr;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
+function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -449,9 +453,9 @@ begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
   { Register your component categories information }
-  CatRegister := Nil;
+  CatRegister := nil;
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-          Nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -459,7 +463,7 @@ begin
       arCatID[0] := CatID;
       hr := CatRegister.RegisterClassImplCategories(ClassID, 1, @arCatID);
     finally
-      CatRegister := Nil;
+      CatRegister := nil;
     end;
 
   { Return the Appropriate Result }
@@ -468,7 +472,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
+function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HRESULT;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -476,10 +480,10 @@ var
 begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
-  CatRegister := Nil;
+  CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
-          Nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
+          nil, CLSCTX_INPROC_SERVER, ICatRegister, CatRegister);
 
   if Succeeded(hr) then
     try
@@ -487,10 +491,10 @@ begin
       arCatID[0] := CatID;
       hr := CatRegister.UnRegisterClassImplCategories(ClassID, 1, @arCatID);
     finally
-      CatRegister := Nil;
+      CatRegister := nil;
     end;
 
-  { Return the Appropriate Result }
+  { Return the appropriate Result }
   Result := hr;
 end;
 
@@ -501,7 +505,7 @@ end;
 function ResetIStreamToStart(Stream: IStream): Boolean;
 var
   i64Pos: Largeint;
-  hrSeek: HResult;
+  hrSeek: HRESULT;
 begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
@@ -516,7 +520,8 @@ begin
         - Stream.Seek(0, STREAM_SEEK_SET, NULL); }
 
     Result := (hrSeek = S_OK);
-  end else
+  end
+  else
     Result := False;
 end;
 
@@ -531,7 +536,8 @@ begin
   { If we can't determine the size of the Stream, then return -1 for Unattainable }
   if Succeeded(Stream.Stat(stat, STATFLAG_NONAME)) then
     Result := stat.cbSize
-  else Result := -1;
+  else
+    Result := -1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -546,7 +552,7 @@ begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
-  if NOT Assigned(Stream) then
+  if not Assigned(Stream) then
     raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   if Stream.Size > 0 then
@@ -567,7 +573,8 @@ begin
       { Alternative:  Re-Raise this Exception
       raise; }
     end;
-  end else
+  end
+  else
     { Stream has no data! }
     Result := Null;
 end;
@@ -586,7 +593,7 @@ begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
-  if NOT Assigned(Stream) then
+  if not Assigned(Stream) then
     raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   iSize := SizeOfIStreamContents(Stream);
@@ -613,10 +620,12 @@ begin
         { Alternative:  Re-Raise this Exception
         raise; }
       end;
-    end else
+    end
+    else
       { Unable to Reset the Stream to Start!  Return Null Variant }
       Result := Null;
-  end else
+  end
+  else
     { Stream has no data! }
     Result := Null;
 end;
@@ -676,7 +685,7 @@ begin
   end;
 
   { Check to ensure creation went well, otherwise we might have run out of memory }
-  if Stream <> Nil then
+  if Stream <> nil then
   begin
     iSize := VarArrayHighBound(VarArray, 1) - VarArrayLowBound(VarArray, 1) + 1;
     try
@@ -693,13 +702,11 @@ begin
       end;
     except
       if bCreated then
-        Stream := Nil;
+        Stream := nil;
 
       raise; { Re-Raise this Exception }
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.
