@@ -2319,6 +2319,18 @@ type
     I: Byte;
   end;
 
+//--------------------------------------------------------------------------------------------------
+
+function RGB(R, G, B: Byte): TColor;
+begin
+  TInternalRGB(Result).R := R;
+  TInternalRGB(Result).G := G;
+  TInternalRGB(Result).B := B;
+  TInternalRGB(Result).I := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function RGBtoHLS(RGBColor: TColorRef): THLSVector;
 var
   R, G, B: Integer;              // input RGB values
@@ -2376,6 +2388,8 @@ begin
   Result.Saturation := S;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function HueToRGB(n1,n2,hue: Integer): Integer;
 // utility routine for HLStoRGB
 begin
@@ -2386,16 +2400,18 @@ begin
 
   // return r,g, or b value from this tridrant
   if hue < (HLSMAX div 6) then
-    Result := (n1 + (((n2-n1)*hue+(HLSMAX div 12)) div (HLSMAX div 6)))
+    Result := (n1 + (((n2 - n1) * hue + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
   if hue < (HLSMAX div 2) then
     Result := n2
   else
   if hue < ((HLSMAX*2) div 3) then
-    Result := (n1 + (((n2-n1)*(((HLSMAX*2) div 3)-hue)+(HLSMAX div 12)) div (HLSMAX div 6)))
+    Result := (n1 + (((n2 - n1)*(((HLSMAX * 2) div 3) - hue) + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
     Result := n1;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function HLStoRGB(Hue, Luminance, Saturation: THLSValue): TColorRef;
 var
@@ -2415,17 +2431,19 @@ begin
   begin                          // chromatic case
     // set up magic numbers
     if (Luminance <= (HLSMAX div 2)) then
-      Magic2 := (Luminance*(HLSMAX + Saturation) + (HLSMAX div 2)) div HLSMAX
+      Magic2 := (Luminance * (HLSMAX + Saturation) + (HLSMAX div 2)) div HLSMAX
     else
       Magic2 := Luminance + Saturation - ((Luminance*Saturation) + (HLSMAX div 2)) div HLSMAX;
-    Magic1 := 2*Luminance-Magic2;
+    Magic1 := 2 * Luminance - Magic2;
     // get RGB, change units from HLSMAX to RGBMAX
-    R := (HueToRGB(Magic1,Magic2,Hue+(HLSMAX div 3))*RGBMAX +(HLSMAX div 2)) div HLSMAX;
-    G := (HueToRGB(Magic1,Magic2,Hue)               *RGBMAX +(HLSMAX div 2)) div HLSMAX;
-    B := (HueToRGB(Magic1,Magic2,Hue-(HLSMAX div 3))*RGBMAX +(HLSMAX div 2)) div HLSMAX;
+    R := (HueToRGB(Magic1, Magic2,Hue + (HLSMAX div 3)) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
+    G := (HueToRGB(Magic1, Magic2,Hue) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
+    B := (HueToRGB(Magic1, Magic2,Hue - (HLSMAX div 3))* RGBMAX + (HLSMAX div 2)) div HLSMAX;
   end;
   Result :=  RGB(R, G, B);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function HLS2RGB(const HLS: TColorVector): TColorVector;
 const
@@ -2450,17 +2468,25 @@ begin
   k := (j+1) mod 6;
   x := Frac(HLS.H * 6);
   for i := 0 to 2 do
-    Result.Coord[i] := Hue[j, i] + x*(Hue[k, i]-Hue[j, i]);
-  for i := 0 to 2 do Result.Coord[i] := Result.Coord[i] * HLS.S;
+    Result.Coord[i] := Hue[j, i] + x * (Hue[k, i] - Hue[j, i]);
+  for i := 0 to 2 do
+    Result.Coord[i] := Result.Coord[i] * HLS.S;
   if HLS.L <= 0.5 then
-    for i := 0 to 2 do Result.Coord[i] := HLS.L * (Result.Coord[i]+ 1)
+    for i := 0 to 2 do
+      Result.Coord[i] := HLS.L * (Result.Coord[i] + 1)
   else
-    for i := 0 to 2 do Result.Coord[i] := HLS.L + Result.Coord[i] * (1-HLS.L);
+    for i := 0 to 2 do
+      Result.Coord[i] := HLS.L + Result.Coord[i] * (1 - HLS.L);
 
   for i := 0 to 2 do
-    if Result.Coord[i] < 0 then Result.Coord[i] := 0 else
-    if Result.Coord[i] > 1 then Result.Coord[i] := 1;
+    if Result.Coord[i] < 0 then
+      Result.Coord[i] := 0
+    else
+    if Result.Coord[i] > 1 then
+      Result.Coord[i] := 1;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function RGB2HLS(const RGB: TColorVector): TColorVector;
 const
@@ -2473,7 +2499,7 @@ var
   i, k: Integer;
   x: Double;
   V: TColorVector;
-  W: TColorVector absolute Result;
+  W: TColorVector;
   Hue: Double;
   Sat: Double;
   Lum: Double;
@@ -2481,13 +2507,23 @@ var
   function GetHue: Double;
   begin
     case k of
-      0: if W.G > W.B then Result := 2+(W.B+1)/2
-	 else Result := 4-(W.G+1)/2;
-      1: if W.B > W.R then Result := 4+(W.R+1)/2
-	 else Result := 6-(W.B+1)/2;
-      2: if W.R > W.G then Result := (W.G+1)/2
-	 else Result := 2-(W.R+1)/2;
-      else Result := 0;
+      0:
+        if W.G > W.B then
+          Result := 2 + (W.B + 1)/2
+        else
+          Result := 4 - (W.G + 1)/2;
+      1:
+        if W.B > W.R then
+          Result := 4 + (W.R + 1)/2
+        else
+          Result := 6 - (W.B + 1)/2;
+      2:
+        if W.R > W.G then
+          Result := (W.G + 1)/2
+        else
+          Result := 2 - (W.R + 1)/2;
+      else
+        Result := 0;
     end;
     Result := Result/6;
   end;
@@ -2501,7 +2537,7 @@ begin
   x := 0;
   for i := 0 to 2 do
   begin
-    V.Coord[i] := 2*RGB.Coord[i]-1; // [0, 1] -> [-1, 1]
+    V.Coord[i] := 2 * RGB.Coord[i] - 1; // [0, 1] -> [-1, 1]
     if Abs(V.Coord[i]) > x then
     begin
       x := Abs(V.Coord[i]);
@@ -2520,7 +2556,9 @@ begin
   x := 0;
   if V.Coord[k] <= 0 then
   begin
-    for i := 0 to 2 do if (W.Coord[i]+1) > x then x := W.Coord[i] +1;
+    for i := 0 to 2 do
+      if (W.Coord[i] + 1) > x then
+        x := W.Coord[i]  + 1;
     if x < Epsilon then // R = G = B: location on grey axis
     begin
       Result.H := 0;
@@ -2528,29 +2566,38 @@ begin
       Result.S := 0;
       Exit;
     end
-    else x := 2/x;
-    for i := 0 to 2 do W.Coord[i] := x*(W.Coord[i]+1)-1;
+    else
+      x := 2/x;
+    for i := 0 to 2 do W.Coord[i] := x * (W.Coord[i] + 1) - 1;
     Hue := GetHue;
     // compute saturation
-    if Abs(V.G-V.R) > Epsilon then
-      Sat := (V.G-V.R)/(W.Coord[1]*(V.R+1)-W.Coord[0]*(V.G+1))
-    else if Abs(V.B-V.G) > Epsilon then
-      Sat := (V.B-V.G)/(W.Coord[2]*(V.G+1)-W.Coord[1]*(V.B+1))
-    else if Abs(V.B-V.R) > Epsilon then
-      Sat := (V.B-V.R)/(W.Coord[2]*(V.R+1)-W.Coord[0]*(V.B+1))
-    else Sat := 0;
+    if Abs(V.G - V.R) > Epsilon then
+      Sat := (V.G - V.R)/(W.Coord[1] * (V.R + 1) - W.Coord[0] * (V.G + 1))
+    else
+    if Abs(V.B - V.G) > Epsilon then
+      Sat := (V.B - V.G)/(W.Coord[2] * (V.G + 1) - W.Coord[1] * (V.B + 1))
+    else
+    if Abs(V.B - V.R) > Epsilon then
+      Sat := (V.B - V.R)/(W.Coord[2] * (V.R + 1) - W.Coord[0] * (V.B + 1))
+    else
+      Sat := 0;
     // compute luminance
-    if Abs(W.Coord[1]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[1]*(V.R+1)-W.Coord[0]*(V.G+1))/(W.Coord[1]-W.Coord[0])
-    else if Abs(W.Coord[2]-W.Coord[1]) > Epsilon then
-      Lum := (W.Coord[2]*(V.G+1)-W.Coord[1]*(V.B+1))/(W.Coord[2]-W.Coord[1])
-    else if Abs(W.Coord[2]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[2]*(V.R+1)-W.Coord[0]*(V.B+1))/(W.Coord[2]-W.Coord[0])
-    else Lum := V.R+1;
+    if Abs(W.Coord[1] - W.Coord[0]) > Epsilon then
+      Lum := (W.Coord[1] * (V.R + 1) - W.Coord[0] * (V.G + 1))/(W.Coord[1] - W.Coord[0])
+    else
+    if Abs(W.Coord[2] - W.Coord[1]) > Epsilon then
+      Lum := (W.Coord[2] * (V.G + 1) - W.Coord[1] * (V.B + 1))/(W.Coord[2] - W.Coord[1])
+    else
+    if Abs(W.Coord[2] - W.Coord[0]) > Epsilon then
+      Lum := (W.Coord[2] * (V.R + 1) - W.Coord[0] * (V.B + 1))/(W.Coord[2] - W.Coord[0])
+    else
+      Lum := V.R + 1;
     Lum := Lum * 0.5;
   end else
   begin
-    for i := 0 to 2 do if (1-W.Coord[i]) > x then x := 1-W.Coord[i];
+    for i := 0 to 2 do
+      if (1 - W.Coord[i]) > x then
+        x := 1 - W.Coord[i];
     if x < Epsilon then // R = G = B: location on grey axis
     begin
       Result.H := 0;
@@ -2558,32 +2605,40 @@ begin
       Result.S := 0;
       Exit;
     end
-    else x := 2/x;
-    for i := 0 to 2 do W.Coord[i] := x*(W.Coord[i]-1)+1;
+    else
+      x := 2/x;
+    for i := 0 to 2 do
+      W.Coord[i] := x * (W.Coord[i] - 1) + 1;
     x := 1;
     for i := 0 to 2 do
-    if W.Coord[i] < x then
-    begin
-      x := W.Coord[i];
-      k := i;
-    end;
+     if W.Coord[i] < x then
+     begin
+       x := W.Coord[i];
+       k := i;
+     end;
     Hue := GetHue;
     // compute saturation
-    if Abs(V.G-V.R) > Epsilon then
-      Sat := (V.G-V.R)/(W.Coord[0]*(V.G-1)-W.Coord[1]*(V.R-1))
-    else if Abs(V.B-V.G) > Epsilon then
-      Sat := (V.B-V.G)/(W.Coord[1]*(V.B-1)-W.Coord[2]*(V.G-1))
-    else if Abs(V.B-V.R) > Epsilon then
-      Sat := (V.B-V.R)/(W.Coord[0]*(V.B-1)-W.Coord[2]*(V.R-1))
-    else Sat := 0;
+    if Abs(V.G - V.R) > Epsilon then
+      Sat := (V.G - V.R)/(W.Coord[0] * (V.G - 1) - W.Coord[1] * (V.R - 1))
+    else
+    if Abs(V.B - V.G) > Epsilon then
+      Sat := (V.B - V.G)/(W.Coord[1] * (V.B - 1) - W.Coord[2] * (V.G - 1))
+    else
+    if Abs(V.B - V.R) > Epsilon then
+      Sat := (V.B - V.R)/(W.Coord[0] * (V.B - 1) - W.Coord[2] * (V.R - 1))
+    else
+      Sat := 0;
     // compute luminance
-    if Abs(W.Coord[1]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[1]*(V.R-1)-W.Coord[0]*(V.G-1))/(W.Coord[1]-W.Coord[0])
-    else if Abs(W.Coord[2]-W.Coord[1]) > Epsilon then
-      Lum := (W.Coord[2]*(V.G-1)-W.Coord[1]*(V.B-1))/(W.Coord[2]-W.Coord[1])
-    else if Abs(W.Coord[2]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[2]*(V.R-1)-W.Coord[0]*(V.B-1))/(W.Coord[2]-W.Coord[0])
-    else Lum := V.R-1;
+    if Abs(W.Coord[1] - W.Coord[0]) > Epsilon then
+      Lum := (W.Coord[1] * (V.R - 1) - W.Coord[0] * (V.G - 1))/(W.Coord[1] - W.Coord[0])
+    else
+    if Abs(W.Coord[2] - W.Coord[1]) > Epsilon then
+      Lum := (W.Coord[2] * (V.G - 1) - W.Coord[1] * (V.B - 1))/(W.Coord[2] - W.Coord[1])
+    else
+    if Abs(W.Coord[2] - W.Coord[0]) > Epsilon then
+      Lum := (W.Coord[2] * (V.R - 1) - W.Coord[0] * (V.B - 1))/(W.Coord[2] - W.Coord[0])
+    else
+      Lum := V.R - 1;
     Lum := 1 + Lum * 0.5;
   end;
   W.H := Hue;
@@ -2593,16 +2648,8 @@ begin
   for i := 0 to 2 do
     if W.Coord[i] < 0 then W.Coord[i] := 0 else
     if W.Coord[i] > 1 then W.Coord[i] := 1;
-end;
 
-//--------------------------------------------------------------------------------------------------
-
-function RGB(R, G, B: Byte): TColor;
-begin
-  TInternalRGB(Result).R := R;
-  TInternalRGB(Result).G := G;
-  TInternalRGB(Result).B := B;
-  TInternalRGB(Result).I := 0;
+  Result := W;
 end;
 
 //--------------------------------------------------------------------------------------------------

@@ -2348,6 +2348,18 @@ type
     I: Byte;
   end;
 
+//--------------------------------------------------------------------------------------------------
+
+function RGB(R, G, B: Byte): TColor;
+begin
+  TInternalRGB(Result).R := R;
+  TInternalRGB(Result).G := G;
+  TInternalRGB(Result).B := B;
+  TInternalRGB(Result).I := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function RGBtoHLS(RGBColor: TColorRef): THLSVector;
 var
   R, G, B: Integer;              // input RGB values
@@ -2405,6 +2417,8 @@ begin
   Result.Saturation := S;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function HueToRGB(n1,n2,hue: Integer): Integer;
 // utility routine for HLStoRGB
 begin
@@ -2425,6 +2439,8 @@ begin
   else
     Result := n1;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function HLStoRGB(Hue, Luminance, Saturation: THLSValue): TColorRef;
 var
@@ -2455,6 +2471,8 @@ begin
   end;
   Result :=  RGB(R, G, B);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function HLS2RGB(const HLS: TColorVector): TColorVector;
 const
@@ -2496,6 +2514,8 @@ begin
     if Result.Coord[i] > 1 then
       Result.Coord[i] := 1;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function RGB2HLS(const RGB: TColorVector): TColorVector;
 const
@@ -2659,16 +2679,6 @@ begin
     if W.Coord[i] > 1 then W.Coord[i] := 1;
 
   Result := W;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function RGB(R, G, B: Byte): TColor;
-begin
-  TInternalRGB(Result).R := R;
-  TInternalRGB(Result).G := G;
-  TInternalRGB(Result).B := B;
-  TInternalRGB(Result).I := 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3028,6 +3038,9 @@ finalization
 //  - ShortenString included
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.7  2004/05/01 00:21:10  rrossmair
+// fixed for Kylix
+//
 // Revision 1.6  2004/04/28 04:16:19  rrossmair
 // new functions added: RGBtoHLS, HLStoRGB, RGB2HLS, HLS2RGB, SetBitmapColors (VCL only)
 //
