@@ -62,19 +62,24 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
+    {$IFDEF KYLIX}
+    // Kylix 1
+    D1TabSheet: TTabSheet;
+    D1Product: TProductFrame;
+    // Kylix 2
+    D2TabSheet: TTabSheet;
+    D2Product: TProductFrame;
     // Kylix 3 for Delphi
     D3TabSheet: TTabSheet;
     D3Product: TProductFrame;
-    //
+    {$ELSE}
     D5TabSheet: TTabSheet;
     D5Product: TProductFrame;
-    //
     D6TabSheet: TTabSheet;
     D6Product: TProductFrame;
-    //
     D7TabSheet: TTabSheet;
     D7Product: TProductFrame;
-    //
+    {$ENDIF}
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -435,10 +440,12 @@ end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
 begin
-  { TODO : implement for Unix }
   {$IFDEF MSWINDOWS}
   ShellExecEx(DelphiJediURL);
   {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  { TODO : implement }
+  {$ENDIF UNIX}
 end;
 
 procedure TMainForm.TreeViewCollapsing(Sender: TObject; Node: TTreeNode;

@@ -247,10 +247,15 @@ begin
   if FileExists(FJclReadmeFileName) then
   begin
     ReadmeText := FileToString(FJclReadmeFileName);
+    {$IFDEF KYLIX}
+    Tool.UpdateInfo(1, ReadmeText);
+    Tool.UpdateInfo(2, ReadmeText);
     Tool.UpdateInfo(3, ReadmeText);
+    {$ELSE}
     Tool.UpdateInfo(5, ReadmeText);
     Tool.UpdateInfo(6, ReadmeText);
     Tool.UpdateInfo(7, ReadmeText);
+    {$ENDIF}
   end;
 end;
 
@@ -335,8 +340,7 @@ var
         Success := SetCurrentDir(Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]));
         {$IFDEF WIN32}
         Win32Check(Success);
-        {$ENDIF WIN32}
-        {$IFDEF UNIX}
+        {$ELSE}
         if Success then
         {$ENDIF}
         try
@@ -506,7 +510,7 @@ var
   end;
   {$ENDIF MSWINDOWS}
 
-  procedure K3Install;
+  procedure KylixInstall;
   begin
     DxInstall;
     if Tool.FeatureChecked(FID_JCL_ExcDialogCLX, Installation.VersionNumber) then
@@ -524,7 +528,17 @@ begin
   Result := True;
   Tool.WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
   try
-    {$IFDEF MSWINDOWS}
+    {$IFDEF KYLIX}
+    Installation := Tool.DelphiInstallations.InstallationFromVersion[1];
+    if Assigned(Installation) and Installation.Valid then
+      KylixInstall;
+    Installation := Tool.DelphiInstallations.InstallationFromVersion[2];
+    if Assigned(Installation) and Installation.Valid then
+      KylixInstall;
+    Installation := Tool.DelphiInstallations.InstallationFromVersion[3];
+    if Assigned(Installation) and Installation.Valid then
+      KylixInstall;
+    {$ELSE}
     Installation := Tool.DelphiInstallations.InstallationFromVersion[5];
     if Assigned(Installation) and Installation.Valid then
       D5Install;
@@ -534,12 +548,7 @@ begin
     Installation := Tool.DelphiInstallations.InstallationFromVersion[7];
     if Assigned(Installation) and Installation.Valid then
       D7Install;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Installation := Tool.DelphiInstallations.InstallationFromVersion[3];
-    if Assigned(Installation) and Installation.Valid then
-      K3Install;
-    {$ENDIF UNIX}
+    {$ENDIF}
   finally
     Tool.UpdateStatus('');
   end;

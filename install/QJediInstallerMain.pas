@@ -61,19 +61,24 @@ type
     StatusBevel: TBevel;
     StatusLabel: TLabel;
     Bevel1: TBevel;
+    {$IFDEF KYLIX}
+    // Kylix 1
+    D1TabSheet: TTabSheet;
+    D1Product: TProductFrame;
+    // Kylix 2
+    D2TabSheet: TTabSheet;
+    D2Product: TProductFrame;
     // Kylix 3 for Delphi
     D3TabSheet: TTabSheet;
     D3Product: TProductFrame;
-    //
+    {$ELSE}
     D5TabSheet: TTabSheet;
     D5Product: TProductFrame;
-    //
     D6TabSheet: TTabSheet;
     D6Product: TProductFrame;
-    //
     D7TabSheet: TTabSheet;
     D7Product: TProductFrame;
-    //
+    {$ENDIF}
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -141,6 +146,9 @@ uses
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 const
+  {$IFNDEF COMPILER6_UP}
+  PathSep = ';';
+  {$ENDIF COMPILER6_UP}
   DelphiSupportURL  = 'http://www.borland.com/devsupport/delphi/';
   DelphiJediURL     = 'http://delphi-jedi.org';
   VersionSignature  = 'D%d';
@@ -255,7 +263,7 @@ var
 begin
   if GetEnvironmentVar('PATH', PathVar, False) then
   begin
-    StrToStrings(PathVar, ';', FSystemPaths, False);
+    StrToStrings(PathVar, PathSep, FSystemPaths, False);
     for I := 0 to FSystemPaths.Count - 1 do
     begin
       PathVar := StrTrimQuotes(FSystemPaths[I]);
@@ -271,7 +279,7 @@ end;
 
 function TMainForm.SystemPathValid(const Path: string): Boolean;
 begin
-  Result := FSystemPaths.IndexOf(AnsiUpperCase(Path)) <> -1;
+  Result := FSystemPaths.IndexOf({$IFDEF MSWINDOWS}AnsiUpperCase{$ENDIF}(Path)) <> -1;
 end;
 
 procedure TMainForm.UpdateButtons;
@@ -415,10 +423,12 @@ end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
 begin
-  { TODO : implement for Unix }
   {$IFDEF MSWINDOWS}
   ShellExecEx(DelphiJediURL);
   {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  { TODO : implement }
+  {$ENDIF UNIX}
 end;
 
 procedure TMainForm.TreeViewCollapsing(Sender: TObject; Node: TTreeNode;
