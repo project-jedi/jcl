@@ -73,6 +73,7 @@ object ProductFrame: TProductFrame
       Font.Pitch = fpFixed
       Font.Style = []
       ParentFont = False
+      ReadOnly = True
       TabOrder = 0
     end
     object OptionsGroupBox: TGroupBox
