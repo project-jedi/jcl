@@ -2822,7 +2822,7 @@ end;
 
 function JclAsClass(const AnObj: TObject; const AClass: TClass): TObject;
 begin
-  if AnObj is AClass then
+  if (AnObj = nil) or (AnObj is AClass) then
     Result := AnObj
   else
     raise EInvalidCast.Create(SInvalidCast);
