@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 02, 2000                                             }
+{ Last modified: December 13, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -149,60 +149,85 @@ type
                ffSpecialBuild);
   TFileFlags = set of TFileFlag;
 
+  PLangIdRec = ^TLangIdRec;
+  TLangIdRec = packed record
+    case Integer of
+    0: (
+      LangId: Word;
+      CodePage: Word);
+    1: (
+      Pair: DWORD);
+  end;
+
   TJclFileVersionInfo = class (TObject)
   private
     FBuffer: string;
+    FFixedInfo: PVSFixedFileInfo;
     FFileFlags: TFileFlags;
-    FFileName: string;
-    FFixedBuffer: PVSFixedFileInfo;
+    FItemList: TStrings;
+    FItems: TStrings;
+    FLanguages: array of TLangIdRec;
     FLanguageIndex: Integer;
-    FLanguages: TStrings;
+    FTranslations: array of TLangIdRec;
+    function GetFixedInfo: TVSFixedFileInfo;
     function GetLanguageCount: Integer;
     function GetLanguageIds(Index: Integer): string;
     function GetLanguageNames(Index: Integer): string;
-    procedure ExtractLanguageIds;
-    procedure SetLanguageIndex(Value: Integer);
+    function GetLanguages(Index: Integer): TLangIdRec;
+    function GetTranslationCount: Integer;
+    function GetTranslations(Index: Integer): TLangIdRec;
+    procedure SetLanguageIndex(const Value: Integer);
   protected
+    procedure CreateItemsForLanguage;
+    procedure CheckLanguageIndex(Value: Integer);
+    procedure ExtractData;
+    procedure ExtractFlags;
     function GetBinFileVersion: string;
     function GetBinProductVersion: string;
     function GetFileOS: DWORD;
     function GetFileSubType: DWORD;
     function GetFileType: DWORD;
-    function GetUserKey(const Key: string): string;
-    procedure GetVersionInfo;
     function GetVersionKeyValue(Index: Integer): string;
   public
-    constructor Create(const AFileName: string);
-    constructor Attach(const Buffer: string);
+    constructor Attach(VersionInfoData: Pointer; Size: Integer);
+    constructor Create(const FileName: string); 
     destructor Destroy; override;
+    class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
+    class function VersionLanguageName(const LangId: Word): string;
+    function TranslationMacthesLanguages: Boolean;
+    property BinFileVersion: string read GetBinFileVersion;
+    property BinProductVersion: string read GetBinProductVersion;
     property Comments: string index 1 read GetVersionKeyValue;
     property CompanyName: string index 2 read GetVersionKeyValue;
     property FileDescription: string index 3 read GetVersionKeyValue;
+    property FixedInfo: TVSFixedFileInfo read GetFixedInfo;
     property FileFlags: TFileFlags read FFileFlags;
     property FileOS: DWORD read GetFileOS;
     property FileSubType: DWORD read GetFileSubType;
     property FileType: DWORD read GetFileType;
     property FileVersion: string index 4 read GetVersionKeyValue;
+    property Items: TStrings read FItems;
     property InternalName: string index 5 read GetVersionKeyValue;
     property LanguageCount: Integer read GetLanguageCount;
-    property LanguageIndex: Integer read FLanguageIndex write SetLanguageIndex;
     property LanguageIds[Index: Integer]: string read GetLanguageIds;
+    property LanguageIndex: Integer read FLanguageIndex write SetLanguageIndex;
+    property Languages[Index: Integer]: TLangIdRec read GetLanguages;
     property LanguageNames[Index: Integer]: string read GetLanguageNames;
     property LegalCopyright: string index 6 read GetVersionKeyValue;
     property LegalTradeMarks: string index 7 read GetVersionKeyValue;
     property OriginalFilename: string index 8 read GetVersionKeyValue;
+    property PrivateBuild: string index 12 read GetVersionKeyValue;
     property ProductName: string index 9 read GetVersionKeyValue;
     property ProductVersion: string index 10 read GetVersionKeyValue;
     property SpecialBuild: string index 11 read GetVersionKeyValue;
-    property PrivateBuild: string index 12 read GetVersionKeyValue;
-    property UserKeys[const Key: string]: string read GetUserKey;
-    property BinFileVersion: string read GetBinFileVersion;
-    property BinProductVersion: string read GetBinProductVersion;
+    property TranslationCount: Integer read GetTranslationCount;
+    property Translations[Index: Integer]: TLangIdRec read GetTranslations;
   end;
 
   EJclFileVersionInfoError = class (EJclError);
 
 function OSIdentToString(const OSIdent: DWORD): string;
+function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
 function VersionResourceAvailable(const FileName: string): Boolean;
 
 //------------------------------------------------------------------------------
@@ -1777,14 +1802,10 @@ begin
 end;
 
 //==============================================================================
-// TFileVersionInfo
+// TJclFileVersionInfo
 //==============================================================================
 
 const
-  VerFixedInfo:   PChar = '\';
-  VerTranslation: PChar = '\VarFileInfo\Translation';
-  VerStringInfo:  PChar = '\StringFileInfo\';
-
   VerKeyNames: array [1..12] of string[17] =
    ('Comments',
     'CompanyName',
@@ -1841,6 +1862,69 @@ end;
 
 //------------------------------------------------------------------------------
 
+function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD): string;
+begin
+  case OSFileType of
+    VFT_UNKNOWN:
+      Result := RsVftUnknown;
+    VFT_APP:
+      Result := RsVftApp;
+    VFT_DLL:
+      Result := RsVftDll;
+    VFT_DRV:
+      begin
+        case OSFileSubType of
+          VFT2_DRV_PRINTER:
+            Result := RsVft2DrvPRINTER;
+          VFT2_DRV_KEYBOARD:
+            Result := RsVft2DrvKEYBOARD;
+          VFT2_DRV_LANGUAGE:
+            Result := RsVft2DrvLANGUAGE;
+          VFT2_DRV_DISPLAY:
+            Result := RsVft2DrvDISPLAY;
+          VFT2_DRV_MOUSE:
+            Result := RsVft2DrvMOUSE;
+          VFT2_DRV_NETWORK:
+            Result := RsVft2DrvNETWORK;
+          VFT2_DRV_SYSTEM:
+            Result := RsVft2DrvSYSTEM;
+          VFT2_DRV_INSTALLABLE:
+            Result := RsVft2DrvINSTALLABLE;
+          VFT2_DRV_SOUND:
+            Result := RsVft2DrvSOUND;
+          VFT2_DRV_COMM:
+            Result := RsVft2DrvCOMM;
+        else
+          Result := '';
+        end;
+        Result := Result + ' ' + RsVftDrv;
+      end;
+    VFT_FONT:
+      begin
+        case OSFileSubType of
+          VFT2_FONT_RASTER:
+            Result := RsVft2FontRASTER;
+          VFT2_FONT_VECTOR:
+            Result := RsVft2FontVECTOR;
+          VFT2_FONT_TRUETYPE:
+            Result := RsVft2FontTRUETYPE;
+        else
+          Result := '';
+        end;
+        Result := Result + ' ' + RsVftFont;
+      end;
+    VFT_VXD:
+      Result := RsVftVxd;
+    VFT_STATIC_LIB:
+      Result := RsVftStaticLib;
+  else
+    Result := '';
+  end;
+  Result := TrimLeft(Result);
+end;
+
+//------------------------------------------------------------------------------
+
 function VersionResourceAvailable(const FileName: string): Boolean;
 var
   Size: DWORD;
@@ -1858,140 +1942,226 @@ end;
 
 //------------------------------------------------------------------------------
 
-type
-  PLangIdRec = ^TLangIdRec;
-  TLangIdRec = packed record
-    case Integer of
-    0: (
-      LangId: Word;
-      CodePage: Word);
-    1: (
-      Pair: DWORD);
-  end;
+constructor TJclFileVersionInfo.Attach(VersionInfoData: Pointer; Size: Integer);
+begin
+  SetString(FBuffer, PChar(VersionInfoData), Size);
+  ExtractData;
+end;
 
-procedure TJclFileVersionInfo.ExtractLanguageIds;
-const
-  DefaultLangId = $0409;  // English (US)
-  DefaultCodePage = $04E4;
+//------------------------------------------------------------------------------
+
+procedure TJclFileVersionInfo.CheckLanguageIndex(Value: Integer);
+begin
+  if (Value < 0) or (Value >= LanguageCount) then
+    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclFileVersionInfo.Create(const FileName: string);
 var
-  Translation: PLongint;
+  Handle: THandle;
+  Size: DWORD;
+begin
+  Size := GetFileVersionInfoSize(PChar(FileName), Handle);
+  if Size = 0 then
+    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsNoVersionInfo);
+  SetLength(FBuffer, Size);
+  Win32Check(GetFileVersionInfo(PChar(FileName), Handle, Size, PChar(FBuffer)));
+  ExtractData;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclFileVersionInfo.CreateItemsForLanguage;
+var
   I: Integer;
-  Lang: TLangIdRec;
-  Size: ULONG;
-  NeutralLang: Boolean;
-  LangString: string;
-
-  procedure AddLang;
-  begin
-    with Lang do
-      FLanguages.AddObject(Format('%.4x%.4x', [LangId, CodePage]), TObject(Pair));
-  end;
-
 begin
-  NeutralLang := False;
-  if VerQueryValue(PChar(FBuffer), PChar(VerTranslation), Pointer(Translation), Size) then
-  begin
-    for I := 0 to (Size div 4) - 1 do
-    begin
-      Lang := PLangIdRec(Longint(Translation) + (I * 4))^;
-      if Lang.LangId = LANG_NEUTRAL then
-        NeutralLang := True
-      else
-        AddLang;
-    end;
-  end;
-  if NeutralLang then
-  begin
-    // 'Neutral language' usually doesn't match the value readed before. We have
-    // to try search it using StringFileInfo key.
-    I := Pos('StringFileInfo', FBuffer);
-    if I > 0 then
-    begin
-      LangString := Copy(FBuffer, I + 20, 8);
-      Lang.LangId := StrToIntDef('$' + Copy(LangString, 1, 4), DefaultLangId);
-      Lang.CodePage := StrToIntDef('$' + Copy(LangString, 5, 4), DefaultCodePage);
-      AddLang;
-    end;
-  end;
-  if FLanguages.Count = 0 then
-  begin
-    Lang.LangId := DefaultLangId;
-    Lang.CodePage := DefaultCodePage;
-    AddLang;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-constructor TJclFileVersionInfo.Attach(const Buffer: string);
-var
-  Size, Masked: ULONG;
-begin
-  FFileName := '';
-  FFileFlags := [];
-  FLanguages := TStringList.Create;
-  FBuffer := Buffer;
-  Win32Check(VerQueryValue(PChar(FBuffer), VerFixedInfo, Pointer(FFixedBuffer), Size));
-  if Size < SizeOf(TVSFixedFileInfo) then
-    RaiseLastWin32Error;
-  ExtractLanguageIds;
-  Masked := FFixedBuffer^.dwFileFlags and FFixedBuffer^.dwFileFlagsMask;
-  if (Masked and VS_FF_DEBUG) <> 0 then
-    Include(FFileFlags, ffDebug);
-  if (Masked and VS_FF_INFOINFERRED) <> 0 then
-    Include(FFileFlags, ffInfoInferred);
-  if (Masked and VS_FF_PATCHED) <> 0 then
-    Include(FFileFlags, ffPatched);
-  if (Masked and VS_FF_PRERELEASE) <> 0 then
-    Include(FFileFlags, ffPreRelease);
-  if (Masked and VS_FF_PRIVATEBUILD) <> 0 then
-    Include(FFileFlags, ffPrivateBuild);
-  if (Masked and VS_FF_SPECIALBUILD) <> 0 then
-    Include(FFileFlags, ffSpecialBuild);
-end;
-
-//------------------------------------------------------------------------------
-
-constructor TJclFileVersionInfo.Create(const AFileName: string);
-var
-  Size, Masked: ULONG;
-begin
-  FFileName := AFileName;
-  FFileFlags := [];
-  FLanguages := TStringList.Create;
-  GetVersionInfo;
-  Win32Check(VerQueryValue(PChar(FBuffer), VerFixedInfo, Pointer(FFixedBuffer), Size));
-  if Size < SizeOf(TVSFixedFileInfo) then
-    RaiseLastWin32Error;
-  ExtractLanguageIds;
-  Masked := FFixedBuffer^.dwFileFlags and FFixedBuffer^.dwFileFlagsMask;
-  if (Masked and VS_FF_DEBUG) <> 0 then
-    Include(FFileFlags, ffDebug);
-  if (Masked and VS_FF_INFOINFERRED) <> 0 then
-    Include(FFileFlags, ffInfoInferred);
-  if (Masked and VS_FF_PATCHED) <> 0 then
-    Include(FFileFlags, ffPatched);
-  if (Masked and VS_FF_PRERELEASE) <> 0 then
-    Include(FFileFlags, ffPreRelease);
-  if (Masked and VS_FF_PRIVATEBUILD) <> 0 then
-    Include(FFileFlags, ffPrivateBuild);
-  if (Masked and VS_FF_SPECIALBUILD) <> 0 then
-    Include(FFileFlags, ffSpecialBuild);
+  FItems.Clear;
+  for I := 0 to FItemList.Count - 1 do
+    if Integer(FItemList.Objects[I]) = FLanguageIndex then
+      FItems.AddObject(FItemList[I], Pointer(FLanguages[FLanguageIndex].Pair));
 end;
 
 //------------------------------------------------------------------------------
 
 destructor TJclFileVersionInfo.Destroy;
 begin
-  FreeAndNil(FLanguages);
-  inherited Destroy;
+  FreeAndNil(FItemList);
+  FreeAndNil(FItems);
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclFileVersionInfo.ExtractData;
+var
+  Data, EndOfData: PChar;
+  Len, ValueLen, DataType: Word;
+  HeaderSize: Integer;
+  Key: string;
+  Error, IsUnicode: Boolean;
+
+  procedure Padding(var DataPtr: PChar);
+  begin
+    while DWORD(DataPtr) and 3 <> 0 do
+      Inc(DataPtr);
+  end;
+
+  procedure GetHeader;
+  var
+    P: PChar;
+    TempKey: PWideChar;
+  begin
+    P := Data;
+    Len := PWord(P)^;
+    Inc(P, SizeOf(Word));
+    ValueLen := PWord(P)^;
+    Inc(P, SizeOf(Word));
+    if IsUnicode then
+    begin
+      DataType := PWord(P)^;
+      Inc(P, SizeOf(Word));
+      TempKey := PWideChar(P);
+      Inc(P, (lstrlenW(TempKey) + 1) * SizeOf(WideChar)); // length + #0#0
+      Key := TempKey;
+    end else
+    begin
+      DataType := 1;
+      Key := PAnsiChar(P);
+      Inc(P, lstrlenA(P) + 1);
+    end;
+    Padding(P);
+    HeaderSize := P - Data;
+    Data := P;
+  end;
+
+  procedure ProcessStringInfo(Size: Integer);
+  var
+    EndPtr, EndStringPtr: PChar;
+    LangIndex: Integer;
+    LangIdRec: TLangIdRec;
+    Value: string;
+  begin
+    EndPtr := Data + Size;
+    LangIndex := 0;
+    while Data < EndPtr do
+    begin
+      GetHeader; // StringTable
+      if (ValueLen <> 0) or (Length(Key) <> 8) then
+      begin
+        Error := True;
+        Break;
+      end;
+      Padding(Data);
+      LangIdRec.LangId := StrToIntDef('$' + Copy(Key, 1, 4), 0);
+      LangIdRec.CodePage := StrToIntDef('$' + Copy(Key, 5, 4), 0);
+      SetLength(FLanguages, LangIndex + 1);
+      FLanguages[LangIndex] := LangIdRec;
+      EndStringPtr := Data + Len - HeaderSize;
+      while Data < EndStringPtr do
+      begin
+        GetHeader; // String
+        if DataType <> 1 then
+        begin
+          Error := True;
+          Break;
+        end;
+        if ValueLen > 0 then
+        begin
+          if IsUnicode then
+            Value := PWideChar(Data)
+          else
+            Value := PAnsiChar(Data);
+        end
+        else
+          Value := '';
+        Inc(Data, Len - HeaderSize);
+        Padding(Data); // String.Padding
+        FItemList.AddObject(Format('%s=%s', [Key, Value]), Pointer(LangIndex));
+      end;
+      Inc(LangIndex);
+    end;
+  end;
+
+  procedure ProcessVarInfo(Size: Integer);
+  var
+    TranslationIndex: Integer;
+  begin
+    GetHeader; // Var
+    if Key = 'Translation' then
+    begin
+      SetLength(FTranslations, ValueLen div SizeOf(TLangIdRec));
+      for TranslationIndex := 0 to Length(FTranslations) - 1 do
+      begin
+        FTranslations[TranslationIndex] := PLangIdRec(Data)^;
+        Inc(Data, SizeOf(TLangIdRec));
+      end;
+    end;
+  end;
+
+begin
+  FItemList := TStringList.Create;
+  FItems := TStringList.Create;
+  Data := Pointer(FBuffer);
+  Assert(DWORD(Data) mod 4 = 0);
+  IsUnicode := (PWord(Data + 4)^ in [0, 1]);
+  Error := True;
+  GetHeader;
+  EndOfData := Data + Len - HeaderSize;
+  if (Key = 'VS_VERSION_INFO') and (ValueLen = SizeOf(TVSFixedFileInfo)) then
+  begin
+    FFixedInfo := PVSFixedFileInfo(Data);
+    Error := FFixedInfo.dwSignature <> $FEEF04BD;
+    Inc(Data, ValueLen); // VS_FIXEDFILEINFO
+    Padding(Data);       // VS_VERSIONINFO.Padding2
+    while not Error and (Data < EndOfData) do
+    begin
+      GetHeader;
+      Inc(Data, ValueLen); // some files (VREDIR.VXD 4.00.1111) has non zero value of ValueLen
+      Dec(Len, HeaderSize + ValueLen);
+      if Key = 'StringFileInfo' then
+        ProcessStringInfo(Len)
+      else
+      if Key = 'VarFileInfo' then
+        ProcessVarInfo(Len)
+      else
+        Break;
+    end;
+    ExtractFlags;
+    CreateItemsForLanguage;
+  end;
+  if Error then
+    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsNoVersionInfo);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclFileVersionInfo.ExtractFlags;
+var
+  Masked: DWORD;
+begin
+  FFileFlags := [];
+  Masked := FFixedInfo^.dwFileFlags and FFixedInfo^.dwFileFlagsMask;
+  if (Masked and VS_FF_DEBUG) <> 0 then
+    Include(FFileFlags, ffDebug);
+  if (Masked and VS_FF_INFOINFERRED) <> 0 then
+    Include(FFileFlags, ffInfoInferred);
+  if (Masked and VS_FF_PATCHED) <> 0 then
+    Include(FFileFlags, ffPatched);
+  if (Masked and VS_FF_PRERELEASE) <> 0 then
+    Include(FFileFlags, ffPreRelease);
+  if (Masked and VS_FF_PRIVATEBUILD) <> 0 then
+    Include(FFileFlags, ffPrivateBuild);
+  if (Masked and VS_FF_SPECIALBUILD) <> 0 then
+    Include(FFileFlags, ffSpecialBuild);
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetBinFileVersion: string;
 begin
-  with FFixedBuffer^ do
+  with FFixedInfo^ do
     Result := Format('%u.%u.%u.%u', [HiWord(dwFileVersionMS),
       LoWord(dwFileVersionMS), HiWord(dwFileVersionLS), LoWord(dwFileVersionLS)]);
 end;
@@ -2000,7 +2170,7 @@ end;
 
 function TJclFileVersionInfo.GetBinProductVersion: string;
 begin
-  with FFixedBuffer^ do
+  with FFixedInfo^ do
     Result := Format('%u.%u.%u.%u', [HiWord(dwProductVersionMS),
       LoWord(dwProductVersionMS), HiWord(dwProductVersionLS),
       LoWord(dwProductVersionLS)]);
@@ -2010,98 +2180,127 @@ end;
 
 function TJclFileVersionInfo.GetFileOS: DWORD;
 begin
-  Result := FFixedBuffer^.dwFileOS;
+  Result := FFixedInfo^.dwFileOS;
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetFileSubType: DWORD;
 begin
-  Result := FFixedBuffer^.dwFileSubType;
+  Result := FFixedInfo^.dwFileSubtype;
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetFileType: DWORD;
 begin
-  Result := FFixedBuffer^.dwFileType;
+  Result := FFixedInfo^.dwFileType;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileVersionInfo.GetFixedInfo: TVSFixedFileInfo;
+begin
+  Result := FFixedInfo^;
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguageCount: Integer;
 begin
-  Result := FLanguages.Count;
+  Result := Length(FLanguages);
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguageIds(Index: Integer): string;
 begin
+  CheckLanguageIndex(Index);
+  Result := VersionLanguageId(FLanguages[Index]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileVersionInfo.GetLanguages(Index: Integer): TLangIdRec;
+begin
+  CheckLanguageIndex(Index);
   Result := FLanguages[Index];
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguageNames(Index: Integer): string;
-var
-  R, D: DWORD;
 begin
-  SetLength(Result, MAX_PATH);
-  D := Integer(Flanguages.Objects[Index]);
-  R := VerLanguageName(LoWord(D), PChar(Result), MAX_PATH);
-  SetLength(Result, R);
+  CheckLanguageIndex(Index);
+  Result := VersionLanguageName(FLanguages[Index].LangId);
 end;
 
 //------------------------------------------------------------------------------
 
-function TJclFileVersionInfo.GetUserKey(const Key: string): string;
-var
-  P: PChar;
-  Size: UINT;
+function TJclFileVersionInfo.GetTranslationCount: Integer;
 begin
-  Result := '';
-  if VerQueryValue(PChar(FBuffer), PChar(Format ('%s%s\%s',
-       [VerStringInfo, FLanguages[0], Key])), Pointer(P), Size) then
-    Result := P;
+  Result := Length(FTranslations);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclFileVersionInfo.GetVersionInfo;
-var
-  Size: DWORD;
-  Handle: DWORD;
+function TJclFileVersionInfo.GetTranslations(Index: Integer): TLangIdRec;
 begin
-  Size := GetFileVersionInfoSize(PChar(FFileName), Handle);
-  if Size = 0 then
-    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsNoVersionInfo);
-  SetLength(FBuffer, Size);
-  Win32Check(GetFileVersionInfo(PChar(FFileName), Handle, Size, PChar(FBuffer)));
+  Result := FTranslations[Index];
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetVersionKeyValue(Index: Integer): string;
-var
-  P: PChar;
-  Size: UINT;
 begin
-  Result := '';
-  if VerQueryValue(PChar(FBuffer), PChar(Format('%s%s\%s',
-    [VerStringInfo, FLanguages[0], VerKeyNames[Index]])),
-    Pointer(P), Size) then
-    Result := P;
+  Result := FItems.Values[VerKeyNames[Index]];
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclFileVersionInfo.SetLanguageIndex(Value: Integer);
+procedure TJclFileVersionInfo.SetLanguageIndex(const Value: Integer);
 begin
-  if (Value >= 0) and (Value < FLanguages.Count) then
-    FLanguageIndex := Value
-  else
-    raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
+  CheckLanguageIndex(Value);
+  if FLanguageIndex <> Value then
+  begin
+    FLanguageIndex := Value;
+    CreateItemsForLanguage;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileVersionInfo.TranslationMacthesLanguages: Boolean;
+var
+  I: Integer;
+begin
+  Result := (LanguageCount = TranslationCount);
+  if Result then
+    for I := 0 to LanguageCount - 1 do
+      if FLanguages[I].Pair <> FTranslations[I].Pair then
+      begin
+        Result := False;
+        Break;
+      end;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclFileVersionInfo.VersionLanguageId(const LangIdRec: TLangIdRec): string;
+begin
+  with LangIdRec do
+    Result := Format('%.4x%.4x', [LangId, CodePage]);
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclFileVersionInfo.VersionLanguageName(const LangId: Word): string;
+var
+  R: DWORD;
+begin
+  SetLength(Result, MAX_PATH);
+  R := VerLanguageName(LangId, PChar(Result), MAX_PATH);
+  SetLength(Result, R);
 end;
 
 //==============================================================================
