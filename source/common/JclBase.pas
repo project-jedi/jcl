@@ -21,7 +21,7 @@
 { versions of Delphi as well as FPC.                                                               }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 08, 2002                                                                    }
+{ Last modified: March 13, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -224,6 +224,19 @@ type
 {$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_INTERFACE}
 
+//--------------------------------------------------------------------------------------------------
+// TStringList.CustomSort compatibility
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF DELPHI4}
+
+type
+  TStringListCustomSortCompare = function(List: TStringList; Index1, Index2: Integer): Integer;
+
+procedure StringListCustomSort(StringList: TStringList; SortFunc: TStringListCustomSortCompare);
+
+{$ENDIF DELPHI4}
+
 implementation
 
 uses
@@ -421,5 +434,50 @@ begin
 end;
 
 {$ENDIF DELPHI6_UP}
+
+//==================================================================================================
+// TStringList.CustomSort compatibility
+//==================================================================================================
+
+{$IFDEF DELPHI4}
+
+procedure StringListCustomSort(StringList: TStringList; SortFunc: TStringListCustomSortCompare);
+
+  procedure QuickSort(L, R: Integer);
+  var
+    I, J, P: Integer;
+  begin
+    repeat
+      I := L;
+      J := R;
+      P := (L + R) shr 1;
+      repeat
+        while SortFunc(StringList, I, P) < 0 do
+          Inc(I);
+        while SortFunc(StringList, J, P) > 0 do
+          Dec(J);
+        if I <= J then
+        begin
+          StringList.Exchange(I, J);
+          if P = I then
+            P := J
+          else
+          if P = J then
+            P := I;
+          Inc(I);
+          Dec(J);
+        end;
+      until I > J;
+      if L < J then
+        QuickSort(L, J);
+      L := I;
+    until I >= R;
+  end;
+
+begin
+  QuickSort(0, StringList.Count - 1);
+end;
+
+{$ENDIF DELPHI4}
 
 end.
