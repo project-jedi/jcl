@@ -65,12 +65,8 @@
 {    http://www.onicos.com/staff/iz/formats/gzip.html                          }
 {                                                                              }
 {******************************************************************************}
-{                                                                              }
-{  $Id$                                                                        }
-{                                                                              }
-{  For a history take a look to the end of this file                           }
-{                                                                              }
-{******************************************************************************}
+
+// $Id$
 
 {$I jcl.inc}
 
@@ -841,7 +837,7 @@ constructor TJclGZipStream.Create(const Stream: TStream);
 begin
   inherited Create;
   FStream := Stream;
-  FCRC32 := crc32(0, nil, 0);  // get crc32 initial value
+  FCRC32 := crc32(0, Pointer(Nil)^, 0);  // get crc32 initial value
   FUncompressedSize := 0;
 end;
 
@@ -984,7 +980,7 @@ begin
   // read bytes from stream
   Result := FZLibReader.Read(Buffer, Count);
   // calculate CRC and Size
-  FCRC32 := crc32(FCRC32, @Buffer, Result);
+  FCRC32 := crc32(FCRC32, Buffer, Result);
   FUncompressedSize := FUncompressedSize + LongWord(Result);
   // check end
   FEndOfStream := FZLibReader.EndOfStream;
@@ -1161,7 +1157,7 @@ begin
     p := @Buffer;
   Result := FZLibWriter.Write(p^, Count);
   // calculate CRC and Size
-  FCRC32 := crc32(FCRC32, p, Result);
+  FCRC32 := crc32(FCRC32, p^, Result);
   FUncompressedSize := FUncompressedSize + LongWord(Result);
 end;
 
@@ -1956,36 +1952,5 @@ begin
     List.Free;
   end;
 end;
-
-// ****************************************************************************
-
-//  History:
-//  2002-04-07 Version 0.9
-//   - First public pre release
-//
-//  2003-04-14 Version 1.0
-//   - First public version
-//
-//  2003-04-19 Version 1.0.1
-//   - Interface ZLibCompressMem and ZLibDecompressMem changed
-//   - Bugfix: ZLibDecompressMem
-//
-//  2003-04-22 Version 1.0.1
-//   - Interface GZipCompressFile and GZipDecompressFile changed
-//   - GZipCompressFile, GZipDecompressFile for Linux
-//
-//  2004-03-17 Version 2.0
-//   - JCL version
-//
-//  2004-03-20
-//   - Bugfix: TJclGZipReader.Create: read multi-part number
-//
-//  $Log$
-//  Revision 1.2  2004/04/28 13:36:06  obones
-//  BCB compatibility prevention
-//
-//  Revision 1.1  2004/04/06 04:49:42  peterjhaas
-//  zlib, gzip, tar classes and functions
-//
 
 end.

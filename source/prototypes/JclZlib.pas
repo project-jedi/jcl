@@ -65,12 +65,13 @@
 {    http://www.onicos.com/staff/iz/formats/gzip.html                          }
 {                                                                              }
 {******************************************************************************}
-{                                                                              }
-{  $Id$                                                                        }
-{                                                                              }
-{  For a history take a look to the end of this file                           }
-{                                                                              }
-{******************************************************************************}
+
+// $Id$
+{$IFDEF PROTOTYPE}
+
+// Last modified: $Date$
+// For history see end of file
+{$ENDIF PROTOTYPE}
 
 {$IFDEF JCL}
 {$I jcl.inc}
@@ -2069,6 +2070,7 @@ begin
   end;
 end;
 
+{$IFDEF PROTOTYPE}
 // ****************************************************************************
 
 //  History:                                                                  
@@ -2093,9 +2095,13 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number                  
 // 
 //  $Log$
+//  Revision 1.2  2004/04/29 01:53:55  peterjhaas
+//  - add Prototype directive to avoid log problems
+//
 //  Revision 1.1  2004/04/18 00:40:02  peterjhaas
 //  add prototypes for standalone library / JCL
 //  be careful with any modification to avoid breaks
 //                                                                     
 
+{$ENDIF PROTOTYPE}
 end.
