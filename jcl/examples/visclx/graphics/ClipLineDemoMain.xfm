@@ -11,7 +11,8 @@ object Form1: TForm1
   TextHeight = 13
   TextWidth = 6
   object Timer1: TTimer
-    Enabled = False
+    Interval = 2000
+    OnTimer = Timer1Timer
     Left = 32
     Top = 24
   end
