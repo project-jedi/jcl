@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: July 13, 2001                                                 }
+{ Last modified: October 14, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -41,7 +41,9 @@ uses
 //------------------------------------------------------------------------------
 
 type
-  TEnvironmentOptions = set of (eoLocalMachine, eoCurrentUser, eoAdditional);
+  TEnvironmentOption = (eoLocalMachine, eoCurrentUser, eoAdditional);
+
+  TEnvironmentOptions = set of TEnvironmentOption;
 
 function DelEnvironmentVar(const Name: string): Boolean;
 function ExpandEnvironmentVar(var Value: string): Boolean;
