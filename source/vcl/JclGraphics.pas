@@ -30,9 +30,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
-// For history see end of file
 
+// For history, see end of file
 
 unit  JclGraphics ;
 
@@ -5939,7 +5938,7 @@ begin
     raise EJclGraphicsError.CreateResRec(@RsSourceBitmapEmpty);
   if Dst = nil then
     raise EJclGraphicsError.CreateResRec(@RsDestinationBitmapEmpty);
-  Dst.SetSize(Src.Width, Src.Height);
+  Dst.SetSize(Src.Width, Src.Height); // Should this go? See #0001513. It is currently of no use.
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -6056,7 +6055,7 @@ var
   r, g, b: TColor32;
   C: TColor32;
 begin
-  CheckParams(Src, Dst);
+  CheckParams(Dst, Src);
 
   Dst.Changing;
   Dst.SetSize(Src.Width, Src.Height);
@@ -6120,9 +6119,10 @@ initialization
 
 // History:
 
-// $Log$
-// Revision 1.5  2004/04/06 05:00:10  peterjhaas
-// adapt compiler conditions, add log entry
+// Revision 1.7  2004/04/08 19:44:30  mthoma
+// Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //
+// Revision 1.6  2004/04/06 05:01:54  peterjhaas
+// adapt compiler conditions, add log entry
 
 end.
