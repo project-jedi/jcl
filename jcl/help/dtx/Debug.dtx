@@ -2234,6 +2234,9 @@ Quick info:
   Callers EBP register
 @@TStackFrame.CallerAdr
   Address of caller
+@@PStackFrame
+<GROUP Debugging.Stackinforoutines>
+<COMBINE TStackFrame>
 --------------------------------------------------------------------------------
 @@TStackInfo
 <GROUP Debugging.Stackinforoutines>
@@ -2456,38 +2459,8 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
-@@TJclStackInfoList.ThreadID
-Summary:
-  ID of thread that made the trace.
-Description:
-  ThreadID is ID of the thread that executed the trace.
-Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
-  Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
-@@TJclStackInfoList.TimeStamp
-Summary:
-  Time stamp of list creation
-Description:
-  TimeStamp holds the date and time of creation of the list.
-Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
-  Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
+
+
 @@JclCreateStackList
 <GROUP Debugging.Stackinforoutines>
 Summary:
@@ -2535,7 +2508,7 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
-@@JmpInstruction
+@@TJmpInstruction
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
   Disected jump instruction
@@ -2552,10 +2525,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@JmpInstruction.opCode
-  opCode for the JMP instruction.
-@@JmpInstruction.distance
+@@TJmpInstruction.OpCode
+  OpCode for the JMP instruction.
+@@TJmpInstruction.Distance
   Offset in the JMP instruction.
+@@PJmpInstruction
+<GROUP Debugging.Exceptframeinforoutines>
+<COMBINE TJmpInstruction>
 --------------------------------------------------------------------------------
 @@TExcDescEntry
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2574,10 +2550,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TExcDescEntry.vTable
+@@TExcDescEntry.VTable
   Pointer to the Virtual Method table of an Exception class.
-@@TExcDescEntry.handler
+@@TExcDescEntry.Handler
   Pointer to the handler for the exception class.
+@@PExcDescEntry
+<GROUP Debugging.Exceptframeinforoutines>
+<COMBINE TExcDescEntry>
 --------------------------------------------------------------------------------
 @@TExcDesc
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2588,7 +2567,7 @@ Description:
   a JMP instruction to either HandleFinally, HandleAnyException, HandleOnException or
   HandleAutoException. Incase of an HandleOnException, the JMP is followed by a table
   containing the Exception classes to handle and their handlers. In other cases
-  the JMP is followed by the code to execute.</P><P>For non-Borland modules, the frame
+  the JMP is followed by the code to execute.<P>For non-Borland modules, the frame
   descriptor is undefined (but it always starts with executable code).
 Notes:
   This type is copied from System.pas
@@ -2601,14 +2580,17 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TExcDesc.jmp
+@@TExcDesc.JMP
   Holds the JMP-instruction incase of Borland code
-@@TExcDesc.instructions
+@@TExcDesc.Instructions
   Handler instructions for non "except on..."-blocks
-@@TExcDesc.cnt
+@@TExcDesc.Cnt
   Number of exception classes defined in an "except on..."-block
-@@TExcDesc.excTab
+@@TExcDesc.ExcTab
   Table of on-definitions and there handlers in an "except on..."-block
+@@PExcDesc
+<GROUP Debugging.Exceptframeinforoutines>
+<COMBINE TExcDesc>
 --------------------------------------------------------------------------------
 @@TExcFrame
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2631,16 +2613,19 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TExcFrame.next
+@@TExcFrame.Next
   Link to next except frame or -1(!) if there is no next frame.
-@@TExcFrame.desc
+@@TExcFrame.Desc
   Pointer to handler (non-Borland modules) or frame descriptor (Borland modules)
-@@TExcFrame.hEBP
+@@TExcFrame.HEBP
   Value of the handlers EBP-frame
 @@TExcFrame.ConstructedObject
   Pointer to object being constructed. This is used by the compiler to allow for destruction of the object when an exception occured.
 @@TExcFrame.SelfOfMethod
   Pointer to Self of the method containing the handler.
+@@PExcFrame
+<GROUP Debugging.Exceptframeinforoutines>
+<COMBINE TExcFrame>
 --------------------------------------------------------------------------------
 @@TExceptFrameKind
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2903,38 +2888,8 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
-@@TJclExceptFrameList.ThreadID
-Summary:
-  ID of thread that made the trace.
-Description:
-  ThreadID is ID of the thread that executed the trace.
-Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
-  Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
-@@TJclExceptFrameList.TimeStamp
-Summary:
-  Time stamp of list creation
-Description:
-  TimeStamp holds the date and time of creation of the list.
-Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
-  Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
+
+
 @@JclCreateExceptFrameList
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
