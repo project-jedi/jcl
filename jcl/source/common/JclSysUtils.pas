@@ -15,14 +15,18 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Jeroen Speldekamp                                                                              }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Description: Various pointer and class related routines.                                         }
-{ Unit Owner: Jeroen Speldekamp                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclSysUtils;
 
@@ -43,7 +47,8 @@ uses
 
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
-function PCharOrNil(const S: AnsiString): PAnsiChar;
+function PCharOrNil(const S: String): PChar;
+function PAnsiCharOrNil(const S: AnsiString): PAnsiChar;
 {$IFDEF SUPPORTS_WIDESTRING}
 function PWideCharOrNil(const W: WideString): PWideChar;
 {$ENDIF SUPPORTS_WIDESTRING}
@@ -52,6 +57,17 @@ function SizeOfMem(const APointer: Pointer): Integer;
 
 function WriteProtectedMemory(BaseAddress, Buffer: Pointer; Size: Cardinal;
   out WrittenBytes: Cardinal): Boolean;
+
+//--------------------------------------------------------------------------------------------------
+// Memory manipulation
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : Author: Peter J. Haas }
+procedure FillRemainBytes(var Data; DataSize: Integer; Offset: Integer; Value: Byte);
+{ TODO -cHelp : Author: Peter J. Haas
+                Copy Count bytes from Src to Dst and
+                return a pointer to the end of dst buffer  }
+function CopyMemE(Dst: Pointer; Src: Pointer; Count: Cardinal): Pointer; assembler;
 
 //--------------------------------------------------------------------------------------------------
 // Guards
@@ -161,9 +177,12 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Float): Float;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Boolean; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
-{$IFDEF COMPILER6_UP}
+{$IFDEF SUPPORTS_VARIANT}
+{$IFDEF COMPILER6_UP}  { TODO -cFPC : Check FPC }
+// because Compiler 5 can not differentiate between Variant and Byte, Integer, ... in case of overload
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
 {$ENDIF COMPILER6_UP}
+{$ENDIF SUPPORTS_VARIANT}
 
 //--------------------------------------------------------------------------------------------------
 // Classes information and manipulation
@@ -337,6 +356,13 @@ type
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
 //--------------------------------------------------------------------------------------------------
+// Integer type conversion
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : Author: Peter J. Haas }
+function ExtendToInt64(const Value: Int64; ValidBytes: Integer): Int64;
+
+//--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
 //--------------------------------------------------------------------------------------------------
 
@@ -411,12 +437,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PCharOrNil(const S: AnsiString): PAnsiChar;
+function PCharOrNil(const S: String): PChar;
 begin
-  if Length(S) = 0 then
-    Result := nil
-  else
-    Result := PAnsiChar(S);
+  Result := Pointer(S);
+end;
+
+function PAnsiCharOrNil(const S: AnsiString): PAnsiChar;
+begin
+  Result := Pointer(S);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -425,10 +453,7 @@ end;
 
 function PWideCharOrNil(const W: WideString): PWideChar;
 begin
-  if Length(W) = 0 then
-    Result := nil
-  else
-    Result := PWideChar(W);
+  Result := Pointer(W);
 end;
 
 {$ENDIF SUPPORTS_WIDESTRING}
@@ -476,7 +501,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-// TODOc Author: Andreas Hausladen
+{ TODO -cHelp : Author: Andreas Hausladen }
 { TODO : Works so far, but causes app to hang on termination }
 var
   AlignedAddress: Cardinal;
@@ -509,7 +534,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure FlushInstructionCache;
-// TODOc Author: Andreas Hausladen
+{ TODO -cHelp : Author: Andreas Hausladen }
 // Cannot find any glibc function that can flush the instruction code
 { TODO : Needs commenting }
 asm
@@ -526,6 +551,41 @@ asm
 end;
 
 {$ENDIF LINUX}
+
+//==================================================================================================
+// Memory manipulation
+//==================================================================================================
+
+procedure FillRemainBytes(var Data; DataSize: Integer; Offset: Integer; Value: Byte);
+var
+  P: PByte;
+  Count: Integer;
+begin
+  Count := DataSize - Offset;
+  if Count > 0 then
+  begin
+    P := @Data;
+    Inc(P, Offset);
+    FillChar(P^, Count, Value);
+  end;
+end;
+
+function CopyMemE(Dst: Pointer; Src: Pointer; Count: Cardinal): Pointer; assembler;
+asm
+        PUSH    EDI
+        PUSH    ESI
+        MOV     EDI,EAX
+        MOV     ESI,EDX
+        MOV     EDX,ECX
+        SHR     ECX,2
+        REP     MOVSD
+        MOV     ECX,EDX
+        AND     ECX,3
+        REP     MOVSB
+        MOV     EAX,EDI
+        POP     ESI
+        POP     EDI
+end;
 
 //==================================================================================================
 // Guards
@@ -1223,8 +1283,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF SUPPORTS_VARIANT}
 {$IFDEF COMPILER6_UP}
-function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant;
+function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
 begin
   if Condition then
     Result := TruePart
@@ -1232,6 +1293,7 @@ begin
     Result := FalsePart;
 end;
 {$ENDIF COMPILER6_UP}
+{$ENDIF SUPPORTS_VARIANT}
 
 //==================================================================================================
 // Classes information and manipulation
@@ -1547,9 +1609,8 @@ end;
 
 { TJclNumericFormat }
 
-{ TODOc Author: Robert Rossmair
-
-  Digit:         converts a digit value (number) to a digit (char)
+{ TODO -cHelp : Author: Robert Rossmair }
+{ Digit:         converts a digit value (number) to a digit (char)
   DigitValue:    converts a digit (char) into a number (digit value)
   IntToStr,
   FloatToStr,
@@ -1573,7 +1634,7 @@ const
 constructor TJclNumericFormat.Create;
 begin
   inherited Create;
-  { TODO:  Initialize, when possible, from locale info }
+  { TODO : Initialize, when possible, from locale info }
   FBase := 10;
   FExpDivision := 1;
   SetPrecision(6);
@@ -1901,7 +1962,7 @@ begin
   if Base = 2 then
     FPrecision := BinaryPrecision
   else
-    FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
+  FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
   if Value < FPrecision then
     FPrecision := Value;
 end;
@@ -2012,6 +2073,33 @@ begin
 end;
 
 //==================================================================================================
+// Integer type conversion
+//==================================================================================================
+
+function ExtendToInt64(const Value: Int64; ValidBytes: Integer): Int64;
+const
+  SignMasks: array[1..7] of Int64 = (
+    $0000000000000080, $0000000000008000, $0000000000800000, $0000000080000000,
+    $0000008000000000, $0000800000000000, $0080000000000000);
+  ExtendMasks: array[1..7] of Int64 = (
+    $FFFFFFFFFFFFFF80, $FFFFFFFFFFFF8000, $FFFFFFFFFF800000, $FFFFFFFF80000000,
+    $FFFFFF8000000000, $FFFF800000000000, $FF80000000000000);
+begin
+  Result := Value;
+  case ValidBytes of
+    0:
+      Result := 0;
+    1..7:
+      begin
+        if (Result and SignMasks[ValidBytes]) = 0 then
+          Result := Result and not ExtendMasks[ValidBytes]  // extend positive
+        else
+          Result := Result or ExtendMasks[ValidBytes];      // extend negative
+      end;
+  end;
+end;
+
+//==================================================================================================
 // Loading of modules (DLLs)
 //==================================================================================================
 
@@ -2092,8 +2180,8 @@ end;
 // Conversion Utilities
 //==================================================================================================
 
-{ TODOC
-  Author: Jeff
+{ TODO -cHelp : StrToBoolean, IntToBool, BoolToInt }
+{ Author: Jeff
 
   StrToBoolean: converts a string S to a boolean. S may be 'Yes/No', 'True/False' or '0/1' or 'T/F' or 'Y/N'.
                 raises an EJclConversionError exception on failure.
@@ -2114,6 +2202,8 @@ function StrToBoolean(const S: string): Boolean;
 var
   LowerCasedText: string;
 begin
+  { TODO : Possibilitiy to add localized strings, like in Delphi 7 }
+  { TODO : Lower case constants }
   LowerCasedText := LowerCase(S);
   Result := ((S = '1') or
     (LowerCasedText = LowerCase(DefaultTrueBoolStr)) or (LowerCasedText = LowerCase(DefaultYesBoolStr))) or
@@ -2161,5 +2251,12 @@ begin
 end;
 
 {$ENDIF}
+
+// History:
+
+// $Log$
+// Revision 1.9  2004/04/06 04:30:21  peterjhaas
+// Add FillRemainBytes, CopyMemE
+//
 
 end.
