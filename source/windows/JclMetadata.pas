@@ -2075,7 +2075,7 @@ begin
     Result := 4;
   end
   else
-    raise EJclMetadataError.CreateResFmt(RsInvalidSignatureData,
+    raise EJclMetadataError.CreateResFmt(@RsInvalidSignatureData,
       [pData[0], pData[1], pData[2], pData[3]]);
 end;
 
@@ -4513,8 +4513,8 @@ function TJclClrTablePropertyDefRow.DumpIL: string;
 
   function DumpFlags: string;
   const
-    SpecialName: array [Boolean] of PChar = ('', 'specialname ');
-    RTSpecialName: array [Boolean] of PChar = ('', 'rtspecialname ');
+    SpecialName: array [Boolean] of string = ('', 'specialname ');
+    RTSpecialName: array [Boolean] of string = ('', 'rtspecialname ');
   begin
     Result := SpecialName[pfSpecialName in Flags] +
       RTSpecialName[pfRTSpecialName in Flags];
