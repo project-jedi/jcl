@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: August 9, 2000                                                  }
+{ Last modified: October 05, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -903,7 +903,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
 var
   NCB: TNCB;
   Enum: TLanaEnum;
-  I: Integer;
+  I, L, NameLen: Integer;
   Adapter: ASTAT;
   MachineName: string;
 begin
@@ -912,6 +912,13 @@ begin
   MachineName := UpperCase(Machine);
   if MachineName = '' then
     MachineName := '*';
+  NameLen := Length(MachineName);
+  L := NCBNAMSZ - NameLen;
+  if L > 0 then
+  begin
+    SetLength(MachineName, NCBNAMSZ);
+    FillChar(MachineName[NameLen + 1], L, ' ');
+  end;
   FillChar(NCB, SizeOf(NCB), #0);
   NCB.ncb_command := NCBENUM;
   NCB.ncb_buffer := Pointer(@Enum);
@@ -921,17 +928,15 @@ begin
     Result := Enum.Length;
     for I := 0 to Ord(Enum.Length) - 1 do
     begin
-      FillChar(NCB, SizeOf(TNCB), #0);
+      FillChar(NCB, SizeOf(NCB), #0);
       NCB.ncb_command := NCBRESET;
       NCB.ncb_lana_num := Enum.lana[I];
       if NetBios(@NCB) = NRC_GOODRET then
       begin
-        FillChar(NCB, SizeOf(TNCB), #0);
+        FillChar(NCB, SizeOf(NCB), #0);
         NCB.ncb_command := NCBASTAT;
-        NCB.ncb_lana_num := Enum.lana[i];
-        StrLCopy(NCB.ncb_callname, PChar(MachineName), NCBNAMSZ);
-        StrPCopy(@NCB.ncb_callname[Length(MachineName)],
-          StringOfChar(' ', NCBNAMSZ - Length(MachineName)));
+        NCB.ncb_lana_num := Enum.lana[I];
+        Move(MachineName[1], NCB.ncb_callname, SizeOf(NCB.ncb_callname));
         NCB.ncb_buffer := PChar(@Adapter);
         NCB.ncb_length := SizeOf(Adapter);
         if NetBios(@NCB) = NRC_GOODRET then
