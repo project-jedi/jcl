@@ -2,8 +2,10 @@ unit TestJclEDI_ANSIX12;
 
 interface
 
+{.$DEFINE USING_EDI_NEW_PROTOTYPE}
+
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, Dialogs,
 	JclEDI, JclEDI_ANSIX12,
   TestFrameWork, TestExtensions;
 
@@ -286,7 +288,13 @@ begin
     F1.Disassemble;
     F2.LoadFromFile(FileName2);
     F2.Disassemble;
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    F1.Assemble;
+    F2.Assemble;
+    Check(F1.Data = F2.Data, 'EDI file integrity corrupted!');
+    {$ELSE}
     Check(F1.Assemble = F2.Assemble, 'EDI file integrity corrupted!');
+    {$ENDIF}
   finally
     if FileExists(FileName1) then
       DeleteFile(FileName1);
@@ -394,7 +402,9 @@ var
 begin
   G := TEDIFunctionalGroup.Create(nil, 3);
   try
+    {$IFNDEF USING_EDI_NEW_PROTOTYPE THEN}
     G.Delimiters := TEDIDelimiters.Create;
+    {$ENDIF}
     with G.SegmentGS do
     begin
       SegmentId := 'GS';
@@ -418,7 +428,11 @@ begin
       Elements[0].Data := 'DataI';
       Elements[1].Data := 'DataJ';
     end;
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    Result := G.AssembleResult;
+    {$ELSE}
     Result := G.Assemble;
+    {$ENDIF}
     Check(Result = TestData_FunctionialGroup_001, 'Functional Group assemble failure');
   finally
     G.Free;
@@ -474,7 +488,9 @@ var
 begin
   I := TEDIInterchangeControl.Create(nil);
   try
+    {$IFNDEF USING_EDI_NEW_PROTOTYPE THEN}
     I.Delimiters := TEDIDelimiters.Create;
+    {$ENDIF}
     with I.SegmentISA do
     begin
       SegmentId := 'ISA';
@@ -504,11 +520,15 @@ begin
     begin
       SegmentId := 'IEA';
       AddElements(2);
-      Elements[0].Data := 'DataQ';
+      Elements[0].Data := 'DataQ';                
       Elements[1].Data := 'DataR';
     end;
-    Result := I.Assemble;
-    Check(Result = TestData_InterchangeControl_001, 'Interchange assemble failure');
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    I.Assemble;
+    Check(I.Data = TestData_InterchangeControl_001, 'Interchange assemble failure');
+    {$ELSE}
+    Check(I.Assemble = TestData_InterchangeControl_001, 'Interchange assemble failure');
+    {$ENDIF}
   finally
     I.Free;
   end;
@@ -575,19 +595,24 @@ end;
 procedure TJclEDI_ANSIX12_Tests.TEDISegment_Assemble;
 var
   S: TEDISegment;
-  Result: string;
 begin
   S := TEDISegment.Create(nil, 5);
   try
+    {$IFNDEF USING_EDI_NEW_PROTOTYPE THEN}
     S.Delimiters := TEDIDelimiters.Create;
+    {$ENDIF}
     S.SegmentId := 'S1';
     S[0].Data := 'Data1';
     S[1].Data := 'Data2';
     S[2].Data := 'Data3';
     S[3].Data := 'Data4';
     S[4].Data := 'Data5';
-    Result := S.Assemble;
-    Check(Result = 'S1*Data1*Data2*Data3*Data4*Data5~', 'Assemble failure');
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    S.Assemble;
+    Check(S.Data = 'S1*Data1*Data2*Data3*Data4*Data5~', 'Assemble failure');
+    {$ELSE}
+    Check(S.Assemble = 'S1*Data1*Data2*Data3*Data4*Data5~', 'Assemble failure');
+    {$ENDIF}
   finally
     S.Free;
   end;
@@ -621,7 +646,9 @@ var
 begin
   T := TEDITransactionSet.Create(nil);
   try
+    {$IFNDEF USING_EDI_NEW_PROTOTYPE THEN}
     T.Delimiters := TEDIDelimiters.Create;
+    {$ENDIF}
     with T.SegmentST do
     begin
       SegmentId := 'ST';
@@ -640,7 +667,11 @@ begin
       Elements[0].Data := 'DataC';
       Elements[1].Data := 'DataD';
     end;
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    Result := T.AssembleResult;
+    {$ELSE}
     Result := T.Assemble;
+    {$ENDIF}
     Check(Result = TestData_Transaction_001, 'Transaction Set assemble failure');
   finally
     T.Free;
@@ -707,7 +738,13 @@ begin
     F1.Disassemble;
     F2.LoadFromFile(FileName2);
     F2.Disassemble;
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    F1.Assemble;
+    F2.Assemble;    
+    Check(F1.Data = F2.Data, 'EDI file integrity corrupted!');
+    {$ELSE}
     Check(F1.Assemble = F2.Assemble, 'EDI file integrity corrupted!');
+    {$ENDIF}
   finally
     if FileExists(FileName1) then
       DeleteFile(FileName1);

@@ -2,6 +2,8 @@ unit TestJclEDI;
 
 interface
 
+{.$DEFINE USING_EDI_NEW_PROTOTYPE}
+
 uses
   SysUtils,
   TestFrameWork, TestExtensions;
@@ -133,7 +135,11 @@ begin
     LI3 := OL.Add(TEDIObject.Create, 'Element 4');
     LI4 := OL.Add(TEDIObject.Create, 'Element 5');
     Check(OL.Count = 5, 'TEDIObjectList.Add failed.');
+    {$IFDEF USING_EDI_NEW_PROTOTYPE THEN}
+    LI5 := OL.FindItem(LI2.EDIObject);
+    {$ELSE}
     LI5 := OL.Find(LI2.EDIObject);
+    {$ENDIF}
     Check(LI5 = LI2, 'TEDIObjectList.Find failed.');
     O := OL.Extract(LI2.EDIObject);
     Check(OL.Count = 4, 'TEDIObjectList.Extract failed.');
