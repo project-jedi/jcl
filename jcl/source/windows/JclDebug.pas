@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 6, 2001                                               }
+{ Last modified: January 12, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -68,8 +68,7 @@ type
 
   TJclAbstractMapParser = class (TObject)
   private
-    FMapping: TJclFileMapping;
-    FView: TJclFileMappingView;
+    FStream: TJclFileMappingStream;
   protected
     FLastUnitName, FLastUnitFileName: PJclMapString;
     procedure ClassTableItem(const Address: TJclMapAddress; Length: Integer; SectionName, ClassName: PJclMapString); virtual; abstract;
@@ -83,7 +82,7 @@ type
     destructor Destroy; override;
     procedure Parse;
     class function MapStringToStr(MapString: PJclMapString): string;
-    property View: TJclFileMappingView read FView;
+    property Stream: TJclFileMappingStream read FStream;
   end;
 
 //------------------------------------------------------------------------------
@@ -157,10 +156,10 @@ type
     procedure Scan;
   public
     constructor Create(const MapFileName: TFileName); override;
-    function LineNumberFromAddr(Addr: DWORD): TJclMapLineNumber;
-    function ProcNameFromAddr(Addr: DWORD): TJclMapProcName;
-    function SegmentFromAddr(Addr: DWORD): TJclMapSegment;
-    function SourceNameFromAddr(Addr: DWORD): TJclMapProcName;
+    function LineNumberFromAddr(Addr: DWORD): Integer;
+    function ModuleNameFromAddr(Addr: DWORD): string;
+    function ProcNameFromAddr(Addr: DWORD): string;
+    function SourceNameFromAddr(Addr: DWORD): string;
   end;
 
 //------------------------------------------------------------------------------
@@ -202,8 +201,7 @@ type
   TJclBinDebugScanner = class (TObject)
   private
     FCacheData: Boolean;
-    FData: Pointer;
-    FSize: Integer;
+    FStream: TCustomMemoryStream;
     FValidFormat: Boolean;
     FLineNumbers: array of TJclMapLineNumber;
     FProcNames: array of TJclBinDbgNameCache;
@@ -215,7 +213,7 @@ type
     function MakePtr(A: Integer): Pointer;
     function ReadValue(var P: Pointer; var Value: Integer): Boolean;
   public
-    constructor Create(const Data: Pointer; Size: Integer; CacheData: Boolean);
+    constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
     function LineNumberFromAddr(Addr: Integer): Integer;
     function ProcNameFromAddr(Addr: Integer): string;
     function ModuleNameFromAddr(Addr: Integer): string;
@@ -288,13 +286,6 @@ type
     function InitializeSource: Boolean; override;
   public
     destructor Destroy; override;
-    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
-  end;
-
-  TJclDebugInfoTD32 = class (TJclDebugInfoSource)
-  protected
-    function InitializeSource: Boolean; override;
-  public
     function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
   end;
 
@@ -403,9 +394,9 @@ function JclCreateStackInfo(Raw: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{
 function JclLastStackInfo: TJclStackInfoList;
 
 var
-  ExceptNotify: TJclExceptNotify = nil;
-  StackTrackingEnable: Boolean = False;
-  RawStackTracking: Boolean = False;
+  ExceptNotify: TJclExceptNotify;
+  StackTrackingEnable: Boolean;
+  RawStackTracking: Boolean;
 
 implementation
 
@@ -494,18 +485,14 @@ end;
 constructor TJclAbstractMapParser.Create(const MapFileName: TFileName);
 begin
   if FileExists(MapFileName) then
-  begin
-    FMapping := TJclFileMapping.Create(MapFileName, fmOpenRead or fmShareDenyWrite,
-      '', PAGE_READONLY, 0, nil);
-    FView := TJclFileMappingView.Create(FMapping, FILE_MAP_READ, 0, 0);
-  end;
+    FStream := TJclFileMappingStream.Create(MapFileName);
 end;
 
 //------------------------------------------------------------------------------
 
 destructor TJclAbstractMapParser.Destroy;
 begin
-  FreeAndNil(FMapping);
+  FreeAndNil(FStream);
   inherited;
 end;
 
@@ -688,10 +675,10 @@ var
   end;
 
 begin
-  if FMapping = nil then
+  if FStream = nil then
     Exit;
-  CurrPos := FView.Memory;
-  EndPos := CurrPos + FView.Size;
+  CurrPos := FStream.Memory;
+  EndPos := CurrPos + FStream.Size;
   if SyncToHeader(TableHeader) then
     while IsDecDigit do
     begin
@@ -826,15 +813,15 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): TJclMapLineNumber;
+function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
   I: Integer;
 begin
-  FillChar(Result, SizeOf(Result), #0);
+  Result := 0;
   for I := Length(FLineNumbers) - 1 downto 0 do
     if FLineNumbers[I].Addr <= Addr then
     begin
-      Result := FLineNumbers[I];
+      Result := FLineNumbers[I].LineNumber;
       Break;
     end;
 end;
@@ -870,15 +857,30 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): TJclMapProcName;
+function TJclMapScanner.ModuleNameFromAddr(Addr: DWORD): string;
 var
   I: Integer;
 begin
-  FillChar(Result, SizeOf(Result), #0);
+  Result := '';
+  for I := Length(FSegments) - 1 downto 0 do
+    if (FSegments[I].StartAddr <= Addr) and (FSegments[I].EndAddr >= Addr) then
+    begin
+      Result := MapStringToStr(FSegments[I].UnitName);
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
+var
+  I: Integer;
+begin
+  Result := '';
   for I := Length(FProcNames) - 1 downto 0 do
     if FProcNames[I].Addr <= Addr then
     begin
-      Result := FProcNames[I];
+      Result := MapStringToStr(FProcNames[I].ProcName);
       Break;
     end;
 end;
@@ -916,21 +918,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclMapScanner.SegmentFromAddr(Addr: DWORD): TJclMapSegment;
-var
-  I: Integer;
-begin
-  FillChar(Result, SizeOf(Result), #0);
-  for I := Length(FSegments) - 1 downto 0 do
-    if (FSegments[I].StartAddr <= Addr) and (FSegments[I].EndAddr >= Addr) then
-    begin
-      Result := FSegments[I];
-      Break;
-    end;
-end;
-
-//------------------------------------------------------------------------------
-
 procedure TJclMapScanner.SegmentItem(const Address: TJclMapAddress;
   Length: Integer; ClassName, UnitName: PJclMapString);
 var
@@ -948,15 +935,15 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclMapScanner.SourceNameFromAddr(Addr: DWORD): TJclMapProcName;
+function TJclMapScanner.SourceNameFromAddr(Addr: DWORD): string;
 var
   I: Integer;
 begin
-  FillChar(Result, SizeOf(Result), #0);
+  Result := '';
   for I := Length(FSourceNames) - 1 downto 0 do
     if FSourceNames[I].Addr <= Addr then
     begin
-      Result := FSourceNames[I];
+      Result := MapStringToStr(FSourceNames[I].ProcName);
       Break;
     end;
 end;
@@ -1100,7 +1087,7 @@ constructor TJclBinDebugGenerator.Create(const MapFileName: TFileName);
 begin
   inherited;
   FDataStream := TMemoryStream.Create;
-  if FMapping <> nil then
+  if FStream <> nil then
     CreateData;
 end;
 
@@ -1265,7 +1252,7 @@ begin
     LineNumber := 0;
     CurrAddr := 0;
     C := 0;
-    P := MakePtr(PJclDbgHeader(FData)^.LineNumbers);
+    P := MakePtr(PJclDbgHeader(FStream.Memory)^.LineNumbers);
     while ReadValue(P, Value) do
     begin
       Inc(CurrAddr, Value);
@@ -1292,7 +1279,7 @@ begin
     SecondWord := 0;
     CurrAddr := 0;
     C := 0;
-    P := MakePtr(PJclDbgHeader(FData)^.Symbols);
+    P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
     while ReadValue(P, Value) do
     begin
       Inc(CurrAddr, Value);
@@ -1312,19 +1299,21 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TJclBinDebugScanner.CheckFormat;
+var
+  P: Pointer;
 begin
-  FValidFormat := (FData <> nil) and (FSize > SizeOf(TJclDbgHeader)) and
-    (PJclDbgHeader(FData)^.Signature = JclDbgDataSignature) and
-    (PJclDbgHeader(FData)^.Version = 1);
+  P := FStream.Memory;
+  FValidFormat := (P <> nil) and (FStream.Size > SizeOf(TJclDbgHeader)) and
+    (PJclDbgHeader(P)^.Signature = JclDbgDataSignature) and
+    (PJclDbgHeader(P)^.Version = 1);
 end;
 
 //------------------------------------------------------------------------------
 
-constructor TJclBinDebugScanner.Create(const Data: Pointer; Size: Integer; CacheData: Boolean);
+constructor TJclBinDebugScanner.Create(AStream: TCustomMemoryStream; CacheData: Boolean);
 begin
   FCacheData := CacheData;
-  FData := Data;
-  FSize := Size;
+  FStream := AStream;
   CheckFormat;
 end;
 
@@ -1338,7 +1327,7 @@ begin
     Result := ''
   else
   begin
-    P := PChar(DWORD(A) + DWORD(FData) + DWORD(PJclDbgHeader(FData)^.Words) - 1);
+    P := PChar(DWORD(A) + DWORD(FStream.Memory) + DWORD(PJclDbgHeader(FStream.Memory)^.Words) - 1);
     Result := DecodeNameString(P);
   end;
 end;
@@ -1363,7 +1352,7 @@ begin
   end
   else
   begin
-    P := MakePtr(PJclDbgHeader(FData)^.LineNumbers);
+    P := MakePtr(PJclDbgHeader(FStream.Memory)^.LineNumbers);
     CurrAddr := 0;
     while ReadValue(P, Value) do
     begin
@@ -1384,7 +1373,7 @@ end;
 
 function TJclBinDebugScanner.MakePtr(A: Integer): Pointer;
 begin
-  Result := Pointer(DWORD(FData) + DWORD(A));
+  Result := Pointer(DWORD(FStream.Memory) + DWORD(A));
 end;
 
 //------------------------------------------------------------------------------
@@ -1394,7 +1383,7 @@ var
   Value, Name, StartAddr: Integer;
   P: Pointer;
 begin
-  P := MakePtr(PJclDbgHeader(FData)^.Units);
+  P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
   Name := 0;
   StartAddr := 0;
   while ReadValue(P, Value) do
@@ -1432,7 +1421,7 @@ begin
       end;
   end else
   begin
-    P := MakePtr(PJclDbgHeader(FData)^.Symbols);
+    P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
     CurrAddr := 0;
     while ReadValue(P, Value) do
     begin
@@ -1484,7 +1473,7 @@ var
   Value, Name, StartAddr: Integer;
   P: Pointer;
 begin
-  P := MakePtr(PJclDbgHeader(FData)^.SourceNames);
+  P := MakePtr(PJclDbgHeader(FStream.Memory)^.SourceNames);
   Name := 0;
   StartAddr := 0;
   while ReadValue(P, Value) do
@@ -1541,8 +1530,8 @@ end;
 
 function TJclDebugInfoList.CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
 const
-  DebugInfoSources: array [1..4] of TJclDebugInfoSourceClass =
-    (TJclDebugInfoMap, TJclDebugInfoBinary, TJclDebugInfoTD32, TJclDebugInfoExports);
+  DebugInfoSources: array [1..3] of TJclDebugInfoSourceClass =
+    (TJclDebugInfoMap, TJclDebugInfoBinary, TJclDebugInfoExports);
 var
   I: Integer;
 begin
@@ -1619,21 +1608,19 @@ end;
 
 function TJclDebugInfoMap.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 var
-  Segment: TJclMapSegment;
   VA: DWORD;
 begin
   VA := VAFromAddr(Addr);
   with FScanner do
   begin
-    Segment := SegmentFromAddr(VA);
-    Result := (Segment.UnitName <> nil);
+    Info.ModuleName := ModuleNameFromAddr(VA);
+    Result := (Info.ModuleName <> '');
     if Result then
     begin
       Info.Address := Addr;
-      Info.ModuleName := MapStringToStr(Segment.UnitName);
-      Info.ProcedureName := MapStringToStr(ProcNameFromAddr(VA).ProcName);
-      Info.LineNumber := LineNumberFromAddr(VA).LineNumber;
-      Info.SourceName := MapStringToStr(SourceNameFromAddr(VA).ProcName);
+      Info.ProcedureName := ProcNameFromAddr(VA);
+      Info.LineNumber := LineNumberFromAddr(VA);
+      Info.SourceName := SourceNameFromAddr(VA);
       Info.DebugInfo := Self;
     end;
   end;
@@ -1691,31 +1678,14 @@ begin
   Result := FindResource(FModule, JclDbgDataResName, RT_RCDATA) <> 0;
   if Result then
     FStream := TResourceStream.Create(FModule, JclDbgDataResName, RT_RCDATA)
-  else
+{  else
   begin
     Result := (PeMapImgFindSection(PeMapImgNtHeaders(Pointer(FModule)), JclDbgDataResName) <> nil);
     if Result then
       FStream := TJclPeSectionStream.Create(FModule, JclDbgDataResName);
-  end;
+  end};
   if Result then
-    FScanner := TJclBinDebugScanner.Create(FStream.Memory, FStream.Size, True);
-end;
-
-//==============================================================================
-// TJclDebugInfoTD32
-//==============================================================================
-
-function TJclDebugInfoTD32.GetLocationInfo(const Addr: Pointer;
-  var Info: TJclLocationInfo): Boolean;
-begin
-  Result := False;
-end;
-
-//------------------------------------------------------------------------------
-
-function TJclDebugInfoTD32.InitializeSource: Boolean;
-begin
-  Result := False; // Not yet implemented
+    FScanner := TJclBinDebugScanner.Create(FStream, True);
 end;
 
 //==============================================================================
@@ -1755,13 +1725,20 @@ begin
           Result := True;
         end else
         begin
-          Result := (PeBorUnmangleName(Items[I].Name, Unmangled, Desc, BasePos) <> urError)
-            and not (Desc.Kind in [skRTTI, skVTable]);
-          if Result then
-          begin
-            Info.ModuleName := Copy(Unmangled, 1, BasePos - 2);
-            Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
-          end;  
+          case PeBorUnmangleName(Items[I].Name, Unmangled, Desc, BasePos) of
+            urOk:
+              if not (Desc.Kind in [skRTTI, skVTable]) then
+              begin
+                Info.ModuleName := Copy(Unmangled, 1, BasePos - 2);
+                Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
+                Result := True;
+              end;
+            urNotMangled:
+              begin
+                Info.ProcedureName := Items[I].Name;
+                Result := True;
+              end;
+          end;
         end;
         if Result then
         begin
@@ -1853,8 +1830,8 @@ begin
   NeedDebugInfoList;
   if DebugInfoList.GetLocationInfo(Addr, Info) then
     with Info do
-      Result := Format('[%p] (%5u) %s.%s "%s"', [Addr, LineNumber, ModuleName,
-        ProcedureName, SourceName])
+      Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, ModuleName,
+        ProcedureName, LineNumber, SourceName])
   else
     Result := Format('[%p]', [Addr]);
 end;
