@@ -30,7 +30,7 @@
 {$J-} // Read-only typed constants
 {$T-} // Type checked pointers off
 
-{$I JEDI.inc} // Pull in the JCL/J-VCL shared directives
+{$INCLUDE JEDI.inc} // Pull in the JCL/J-VCL shared directives
 
 // Math precision selection, mutually exclusive
 
