@@ -199,6 +199,7 @@ type
   end;
 
   TEDIXMLDataObjectArray = array of TEDIXMLDataObject;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Element
 //--------------------------------------------------------------------------------------------------
@@ -512,7 +513,7 @@ const
   Value_EDITRANSDOC = 'EDITRANSDOC';  
 
 //==================================================================================================
-// TEDIXMLDelimiters
+// { TEDIXMLDelimiters }
 //==================================================================================================
 
 constructor TEDIXMLDelimiters.Create;
@@ -570,7 +571,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLAttributes
+// { TEDIXMLAttributes }
 //==================================================================================================
 
 constructor TEDIXMLAttributes.Create;
@@ -704,7 +705,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLDataObject
+// { TEDIXMLDataObject }
 //==================================================================================================
 
 constructor TEDIXMLDataObject.Create(Parent: TEDIXMLDataObject);
@@ -755,7 +756,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLElement
+// { TEDIXMLElement }
 //==================================================================================================
 
 constructor TEDIXMLElement.Create(Parent: TEDIXMLDataObject);
@@ -898,7 +899,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLSegment
+// { TEDIXMLSegment }
 //==================================================================================================
 
 constructor TEDIXMLSegment.Create(Parent: TEDIXMLDataObject; ElementCount: Integer);
@@ -914,14 +915,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-destructor TEDIXMLSegment.Destroy;
-begin
-  DeleteElements;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIXMLSegment.Create(Parent: TEDIXMLDataObject);
 begin
   if Assigned(Parent) and (Parent is TEDIXMLDataObjectGroup) then
@@ -930,6 +923,14 @@ begin
     inherited Create(nil);
   FEDIDOT := ediSegment;
   SetLength(FElements, 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIXMLSegment.Destroy;
+begin
+  DeleteElements;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1366,7 +1367,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLTransactionSetSegment
+// { TEDIXMLTransactionSetSegment }
 //==================================================================================================
 
 constructor TEDIXMLTransactionSetSegment.Create(Parent: TEDIXMLDataObject);
@@ -1393,7 +1394,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLFunctionalGroupSegment
+// { TEDIXMLFunctionalGroupSegment }
 //==================================================================================================
 
 constructor TEDIXMLFunctionalGroupSegment.Create(Parent: TEDIXMLDataObject);
@@ -1431,7 +1432,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLInterchangeControlSegment
+// { TEDIXMLInterchangeControlSegment }
 //==================================================================================================
 
 constructor TEDIXMLInterchangeControlSegment.Create(Parent: TEDIXMLDataObject);
@@ -1464,7 +1465,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLDataObjectGroup
+// { TEDIXMLDataObjectGroup }
 //==================================================================================================
 
 constructor TEDIXMLDataObjectGroup.Create(Parent: TEDIXMLDataObject);
@@ -1672,7 +1673,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLTransactionSetLoop
+// { TEDIXMLTransactionSetLoop }
 //==================================================================================================
 
 constructor TEDIXMLTransactionSetLoop.Create(Parent: TEDIXMLDataObject);
@@ -1871,7 +1872,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLTransactionSet
+// { TEDIXMLTransactionSet }
 //==================================================================================================
 
 constructor TEDIXMLTransactionSet.Create(Parent: TEDIXMLDataObject);
@@ -2098,7 +2099,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLFunctionalGroup
+// { TEDIXMLFunctionalGroup }
 //==================================================================================================
 
 constructor TEDIXMLFunctionalGroup.Create(Parent: TEDIXMLDataObject);
@@ -2269,7 +2270,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLInterchangeControl
+// { TEDIXMLInterchangeControl }
 //==================================================================================================
 
 constructor TEDIXMLInterchangeControl.Create(Parent: TEDIXMLDataObject);
@@ -2437,7 +2438,7 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLFile
+// { TEDIXMLFile }
 //==================================================================================================
 
 constructor TEDIXMLFile.Create(Parent: TEDIXMLDataObject);
@@ -2658,7 +2659,7 @@ begin
 end;
 
 //==================================================================================================
-//  TEDIXMLFileHeader
+//  { TEDIXMLFileHeader }
 //==================================================================================================
 
 constructor TEDIXMLFileHeader.Create;
@@ -2724,9 +2725,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDIXMLANSIX12FormatTranslator
+// { TEDIXMLANSIX12FormatTranslator }
 //==================================================================================================
-
 
 constructor TEDIXMLANSIX12FormatTranslator.Create;
 begin

@@ -80,7 +80,7 @@ type
       var DataIndex, SpecIndex: Integer;
       var ErrorOccured: Boolean); virtual;
   public
-    constructor Create(Parent: TEDIDataObject; Message: TEDIMessage;
+    constructor Create(Parent: TEDIDataObject; AEDIMessage: TEDIMessage;
       SEFSet: TEDISEFSet); reintroduce;
     destructor Destroy; override;
     //
@@ -96,19 +96,16 @@ type
 implementation
 
 //==================================================================================================
-// TEDI_UNEDIFACT_Document
+// { TEDI_UNEDIFACT_Document }
 //==================================================================================================
 
-{ TEDI_UNEDIFACT_Document }
-
 constructor TEDI_UNEDIFACT_Document.Create(Parent: TEDIDataObject;
-  Message: TEDIMessage;
-  SEFSet: TEDISEFSet);
+  AEDIMessage: TEDIMessage; SEFSet: TEDISEFSet);
 begin
   inherited Create(Parent);
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
-  FEDIMessage := Message;
+  FEDIMessage := AEDIMessage;
   FEDISEFSet := SEFSet;  
   FEDIMessageSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];

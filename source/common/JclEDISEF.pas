@@ -2533,10 +2533,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFDataObject
+// { TEDISEFDataObject }
 //==================================================================================================
-
-{ TEDISEFDataObject }
 
 constructor TEDISEFDataObject.Create(Parent: TEDISEFDataObject);
 begin
@@ -2559,20 +2557,20 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+destructor TEDISEFDataObject.Destroy;
+begin
+  FOwnerItemRef := nil;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 {$IFNDEF DELPHI6_UP}
 function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
 begin
   Result := nil;
 end;
 {$ENDIF ~DELPHI6_UP}
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDISEFDataObject.Destroy;
-begin
-  FOwnerItemRef := nil;
-  inherited Destroy;
-end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2762,10 +2760,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFDataObjectGroup
+// { TEDISEFDataObjectGroup }
 //==================================================================================================
-
-{ TEDISEFDataObjectGroup }
 
 constructor TEDISEFDataObjectGroup.Create(Parent: TEDISEFDataObject);
 begin
@@ -2796,10 +2792,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFElement
+// { TEDISEFElement }
 //==================================================================================================
-
-{ TEDISEFElement }
 
 constructor TEDISEFElement.Create(Parent: TEDISEFDataObject);
 begin
@@ -2947,10 +2941,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFSubElement
+// { TEDISEFSubElement }
 //==================================================================================================
-
-{ TEDISEFSubElement }
 
 constructor TEDISEFSubElement.Create(Parent: TEDISEFDataObject);
 begin
@@ -2994,10 +2986,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFCompositeElement
+// { TEDISEFCompositeElement }
 //==================================================================================================
-
-{ TEDISEFCompositeElement }
 
 constructor TEDISEFCompositeElement.Create(Parent: TEDISEFDataObject);
 begin
@@ -3288,10 +3278,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFSegment
+// { TEDISEFSegment }
 //==================================================================================================
-
-{ TEDISEFSegment }
 
 constructor TEDISEFSegment.Create(Parent: TEDISEFDataObject);
 begin
@@ -3684,10 +3672,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFLoop
+// { TEDISEFLoop }
 //==================================================================================================
-
-{ TEDISEFLoop }    
 
 constructor TEDISEFLoop.Create(Parent: TEDISEFDataObject);
 begin
@@ -3916,10 +3902,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFTable
+// { TEDISEFTable }
 //==================================================================================================
-
-{ TEDISEFTable }
 
 constructor TEDISEFTable.Create(Parent: TEDISEFDataObject);
 begin
@@ -4073,10 +4057,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFSet
+// { TEDISEFSet }
 //==================================================================================================
-
-{ TEDISEFSet }
 
 constructor TEDISEFSet.Create(Parent: TEDISEFDataObject);
 begin
@@ -4344,10 +4326,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFFile
+// { TEDISEFFile }
 //==================================================================================================
-
-{ TEDISEFFile }
 
 constructor TEDISEFFile.Create(Parent: TEDISEFDataObject);
 begin
@@ -4840,10 +4820,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFRepeatingPattern
+// { TEDISEFRepeatingPattern }
 //==================================================================================================
-
-{ TEDISEFRepeatingPattern }
 
 constructor TEDISEFRepeatingPattern.Create(Parent: TEDISEFDataObject);
 begin
@@ -4995,26 +4973,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFText
+// { TEDISEFText }
 //==================================================================================================
-
-{ TEDISEFText }
-
-function TEDISEFText.Assemble: string;
-var
-  I: Integer;
-begin
-  FWhere := '';
-  for I := 0 to WhereLocation.Count - 1 do
-  begin
-    if (FWhere <> '') and (WhereLocation[I] <> '') then
-      FWhere := FWhere + '~';
-    FWhere := FWhere + WhereLocation[I];
-  end;
-  Result := FWhere + ',' + FWhat + ',' + FText;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TEDISEFText.Create;
 begin
@@ -5033,6 +4993,22 @@ destructor TEDISEFText.Destroy;
 begin
   FWhereLocation.Free;
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISEFText.Assemble: string;
+var
+  I: Integer;
+begin
+  FWhere := '';
+  for I := 0 to WhereLocation.Count - 1 do
+  begin
+    if (FWhere <> '') and (WhereLocation[I] <> '') then
+      FWhere := FWhere + '~';
+    FWhere := FWhere + WhereLocation[I];
+  end;
+  Result := FWhere + ',' + FWhat + ',' + FText;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5131,17 +5107,8 @@ begin
 end;
 
 //==================================================================================================
-// TEDISEFTextSet
+// { TEDISEFTextSet }
 //==================================================================================================
-
-{ TEDISEFTextSet }
-
-function TEDISEFTextSet.Assemble: string;
-begin
-  Result := inherited Assemble;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TEDISEFTextSet.Create;
 begin
@@ -5157,6 +5124,13 @@ end;
 destructor TEDISEFTextSet.Destroy;
 begin
   inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISEFTextSet.Assemble: string;
+begin
+  Result := inherited Assemble;
 end;
 
 //--------------------------------------------------------------------------------------------------
