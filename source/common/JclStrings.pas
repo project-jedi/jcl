@@ -20,7 +20,7 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: March 19, 2002                                                                    }
+{ Last modified: September 30, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1395,22 +1395,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function StrReverse(const S: AnsiString): AnsiString;
-var
-  P1, P2: PChar;
-  C: AnsiChar;
 begin
   Result := S;
-  UniqueString(Result);
-  P1 := PChar(Result);
-  P2 := P1 + SizeOf(AnsiChar) * (Length(Result) - 1);
-  while P1 < P2 do
-  begin
-    C := P1^;
-    P1^ := P2^;
-    P2^ := C;
-    Inc(P1);
-    Dec(P2);
-  end;
+  StrReverseInplace(Result);
 end;
 
 //--------------------------------------------------------------------------------------------------
