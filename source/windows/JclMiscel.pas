@@ -50,12 +50,6 @@ function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: st
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
 
-function RegSaveList(const RootKey: HKEY; const Key: string; const ListName: string;
-  Items:TStringList): Boolean;
-function RegLoadList(const RootKey: HKEY; const Key: string; const ListName: string;
-  SaveTo: TStringList): Boolean;
-function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
-
 //------------------------------------------------------------------------------
 // CreateProcAsUser
 //------------------------------------------------------------------------------
@@ -70,7 +64,7 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
 implementation
 
 uses
-  Dialogs, Registry, SysUtils,
+  Registry, SysUtils,
   JclRegistry, JclResources, JclSecurity, JclSysUtils, JclWin32;
 
 //==============================================================================
@@ -179,91 +173,6 @@ begin
     DevMode.dmPelsWidth := XRes;
     DevMode.dmPelsHeight := YRes;
     Result := ChangeDisplaySettings(DevMode, 0);
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegSaveList(const RootKey: HKEY; const Key: string;
-  const ListName: string; Items: TStringList): Boolean;
-var
-  I: Integer;
-  Reg: TRegistry;
-begin
-  Reg := TRegistry.Create;
-  try
-    try
-      Reg.RootKey := RootKey;
-      Reg.CreateKey(Key + '\' + ListName);
-    finally
-      Reg.Free;
-    end;
-    // Save Number of strings
-    RegWriteString(RootKey, Key + '\' + ListName, 'Items', IntToStr(Items.Count - 1));
-    for I := 0 to Items.Count - 1 do
-      RegWriteString(RootKey, Key + '\' + ListName, IntToStr(I), Items[I]);
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegLoadList(const RootKey: HKEY; const Key: string;
-  const ListName: string; SaveTo: TStringList): Boolean;
-var
-  Reg: TRegistry;
-  I: Integer;
-begin
-  Reg := TRegistry.Create;
-  try
-    try
-      Reg.RootKey := RootKey;
-      if Reg.KeyExists(Key + '\' + ListName) then
-      begin
-        for I := 0 to StrToInt(RegReadString(RootKey, Key + '\' + ListName, 'Items')) do
-          SaveTo.Add(RegReadString(RootKey, Key + '\' + ListName, IntToStr(I)));
-        Result := True;
-      end
-      else
-      begin
-        Result := False;
-        ShowMessage(Format(RsErrNotExist, [ListName]));
-      end;
-    finally
-      Reg.Free;
-    end;
-  except
-    Result := False;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
-var
-  Reg:TRegistry;
-begin
-  Reg := TRegistry.Create;
-  try
-    try
-      Reg.RootKey := RootKey;
-      if Reg.KeyExists(Key + '\' + ListName) then
-      begin
-        Reg.DeleteKey(Key + '\' + ListName);
-        Result := True;
-      end
-      else
-      begin
-        Result := False;
-        ShowMessage(Format(RsErrNotExist, [ListName]));
-      end;
-    finally
-      Reg.Free;
-    end;
-  except
-    Result := False;
   end;
 end;
 
