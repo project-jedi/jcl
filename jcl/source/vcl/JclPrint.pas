@@ -12,15 +12,17 @@
 {                                                                                                  }
 { The Original Code is JclPrint.pas.                                                               }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are unknown.                                         }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{ All rights reserved.                                                                             }
 {                                                                                                  }
 { The Initial Developer of the function DPSetDefaultPrinter is Microsoft. Portions created by      }
 { Microsoft are Copyright (C) 2004 Microsoft Corporation. All Rights Reserved.                     }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Matthias Thoma (mthoma)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1366,6 +1368,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/13 07:32:18  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.5  2004/04/13 13:33:38  peterjhaas
 // add DPSetDefaultPrinter, bugfix GetDefaultPrinterName
 //
