@@ -49,9 +49,13 @@ function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
 function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
 function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
 function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
+function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
+function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
+  var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
 procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
 procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
 procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
+procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
 
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
@@ -314,6 +318,68 @@ end;
 
 //------------------------------------------------------------------------------
 
+function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  RegKind: DWORD;
+  Ret: Longint;
+begin
+  Result := 0;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := 0;
+    Ret := RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size);
+    if Ret = ERROR_SUCCESS then
+      if RegKind = REG_BINARY then
+      begin
+        if Size > ValueSize then
+          Size := ValueSize;
+        RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @Value, @Size);
+        Result := Size;
+      end;
+    RegCloseKey(RegKey);
+    if RegKind <> REG_BINARY then
+      ValueError(Key, Name);
+  end
+  else
+    ReadError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
+  var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  StrVal: string;
+  RegKind: DWORD;
+begin
+  Result := 0;
+  FillChar(Value, ValueSize, #0);
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := 0;
+    if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size) = ERROR_SUCCESS then
+      if RegKind = REG_BINARY then
+      begin
+        if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, PByte(StrVal), @Size) = ERROR_SUCCESS then
+        begin
+          if Size > ValueSize then
+            Size := ValueSize;
+          RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @Value, @Size);
+          Result := Size;
+        end;
+      end;
+    RegCloseKey(RegKey);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
 begin
   RegWriteInteger(RootKey, Key, Name, Ord(Value));
@@ -347,6 +413,24 @@ begin
   if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_SZ, PChar(Value), Length(Value));
+    RegCloseKey(RegKey);
+    if Ret <> ERROR_SUCCESS then
+      WriteError(Key);
+  end
+  else
+    WriteError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
+var
+  RegKey: HKEY;
+  Ret: Longint;
+begin
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  begin
+    Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_BINARY, @Value, ValueSize);
     RegCloseKey(RegKey);
     if Ret <> ERROR_SUCCESS then
       WriteError(Key);
