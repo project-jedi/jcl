@@ -19,12 +19,12 @@
 {******************************************************************************}
 {                                                                              }
 { This unit contains various classes and support routines to read the contents }
-{ of protable executable (PE) files. You can use these classes to, for example }
+{ of portable executable (PE) files. You can use these classes to, for example }
 { examine the contents of the imports section of an executable. In addition    }
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 11, 2001                                             }
+{ Last modified: February 19, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -223,11 +223,12 @@ type
     FOrdinal: Word;
     FResolveCheck: TJclPeResolveCheck;
     function GetAddressOrForwardStr: string;
-    function GetIsForwarded: Boolean;
     function GetForwardedFuncName: string;
     function GetForwardedLibName: string;
     function GetForwardedFuncOrdinal: DWORD;
     function GetForwardedName: string;
+    function GetIsExportedVariable: Boolean;
+    function GetIsForwarded: Boolean;
     function GetName: string;
     function GetSectionName: string;
     function GetMappedAddress: Pointer;
@@ -236,6 +237,7 @@ type
   public
     property Address: DWORD read FAddress;
     property AddressOrForwardStr: string read GetAddressOrForwardStr;
+    property IsExportedVariable: Boolean read GetIsExportedVariable;
     property IsForwarded: Boolean read GetIsForwarded;
     property ForwardedName: string read GetForwardedName;
     property ForwardedLibName: string read GetForwardedLibName;
@@ -768,9 +770,6 @@ function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 // Various simple PE Image functions
 //------------------------------------------------------------------------------
 
-type
-  TJclStringArray = array of string;
-
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
 
@@ -789,19 +788,14 @@ function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: strin
 function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
   FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray;
-  Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
-  FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
 function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
-  const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
 function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
-function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
+function PeExportedNames(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
+function PeExportedVariables(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 
 function PeResourceKindNames(const FileName: TFileName;
   ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
@@ -813,7 +807,7 @@ function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeader
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 
 //------------------------------------------------------------------------------
-// Mapped image related routines
+// Mapped or loaded image related routines
 //------------------------------------------------------------------------------
 
 function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
@@ -824,6 +818,8 @@ function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader
 
 function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
   const SectionName: string): PImageSectionHeader;
+
+function PeMapImgExportedVariables(const Module: HMODULE; const VariablesList: TStrings): Boolean;
 
 type
   TJclPeSectionStream = class (TCustomMemoryStream)
@@ -873,6 +869,7 @@ type
       NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
     class function IsWin9xDebugThunk(P: Pointer): Boolean;
     class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
+    class function SystemBase: Pointer;
     function UnhookByNewAddress(NewAddress: Pointer): Boolean;
     property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
     property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
@@ -933,7 +930,7 @@ end;
 //------------------------------------------------------------------------------
 
 function AddFlagTextRes(var Text: string; const FlagText: PResStringRec;
-  const Value, Mask: DWORD): Boolean;
+  const Value, Mask: Integer): Boolean;
 begin
   Result := (Value and Mask <> 0);
   if Result then
@@ -1770,6 +1767,13 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeExportFuncItem.GetIsExportedVariable: Boolean;
+begin
+  Result := (Address >= FExportList.FImage.OptionalHeader.BaseOfData); 
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeExportFuncItem.GetIsForwarded: Boolean;
 begin
   Result := FForwardedName <> nil;
@@ -2303,8 +2307,11 @@ begin
   if IsName then
   begin
     if FNameCache = '' then
+    begin
       with PImageResourceDirStringU(OffsetToRawData(FEntry^.Name))^ do
         FNameCache := WideCharLenToString(NameString, Length);
+      StrResetLength(FNameCache);
+    end;    
     Result := FNameCache;
   end
   else
@@ -3678,8 +3685,11 @@ begin
   begin
     DescrResData := LoadResource(ALibHandle, DescrResInfo);
     if DescrResData <> 0 then
+    begin
       FDescription := WideCharLenToString(LockResource(DescrResData),
         SizeofResource(ALibHandle, DescrResInfo));
+      StrResetLength(FDescription);
+    end;  
   end;
 end;
 
@@ -3785,28 +3795,9 @@ var
   ResTypeItem: TJclPeResourceItem;
   I: Integer;
 
-  function CheckStreamFormat(Stream: TStream): Boolean;
-  {$IFDEF DELPHI5_UP}
-  begin
-    Result := (TestStreamFormat(Stream) = sofBinary);
-  end;
-  {$ELSE}
+  procedure ProcessListItem(DfmResItem: TJclPeResourceItem);
   const
     FilerSignature: array[1..4] of Char = 'TPF0';
-  var
-    Signature: Integer;
-  begin
-    Result := (Stream.Size >= SizeOf(Signature));
-    if Result then
-    begin
-      Stream.ReadBuffer(Signature, SizeOf(Signature));
-      Stream.Seek(0, soFromBeginning);
-      Result := (Signature = Integer(FilerSignature));
-    end
-  end;
-  {$ENDIF DELPHI5_UP}
-
-  procedure ProcessListItem(DfmResItem: TJclPeResourceItem);
   var
     SourceStream: TJclPeResourceRawStream;
     DfmItem: TJclPeBorForm;
@@ -3814,7 +3805,8 @@ var
   begin
     SourceStream := TJclPeResourceRawStream.Create(DfmResItem);
     try
-      if CheckStreamFormat(SourceStream) then
+      if (SourceStream.Size > SizeOf(FilerSignature)) and
+        (PInteger(SourceStream.Memory)^ = Integer(FilerSignature)) then
       begin
         Reader := TReader.Create(SourceStream, 4096);
         try
@@ -4369,32 +4361,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray; Recursive, FullPathName: Boolean): Boolean;
-var
-  I: Integer;
-  SL: TStringList;
-begin
-  with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-    begin
-      SL := InternalImportedLibraries(FileName, Recursive, FullPathName);
-      try
-        SetLength(LibrariesList, SL.Count);
-        for I := 0 to SL.Count - 1 do
-          LibrariesList[I] := SL[I];
-      finally
-        SL.Free;
-      end;
-    end;
-  finally
-    Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
 function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
   const LibraryName: string; IncludeLibNames: Boolean): Boolean;
 var
@@ -4425,35 +4391,19 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
-  const LibraryName: string; IncludeLibNames: Boolean): Boolean;
+function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
-  I, Cnt: Integer;
+  I: Integer;
 begin
   with CreatePeImage(FileName) do
   try
     Result := StatusOK;
     if Result then
-      with ImportList do
-      begin
-        TryGetNamesForOrdinalImports;
-        SetLength(FunctionsList, AllItemCount);
-        Cnt := 0;
-        for I := 0 to AllItemCount - 1 do
-        begin
-          with AllItems[I] do
-            if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) and
-              (Name <> '') then
-            begin
-              if IncludeLibNames then
-                FunctionsList[I] := ImportLib.Name + '=' + Name
-              else
-                FunctionsList[I] := Name;
-              Inc(Cnt);
-            end;
-        end;
-        SetLength(FunctionsList, Cnt);
-      end;
+      with ExportList do
+        for I := 0 to Count - 1 do
+          with Items[I] do
+            if not IsExportedVariable then
+              FunctionsList.Add(Name);
   finally
     Free;
   end;
@@ -4461,7 +4411,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
+function PeExportedNames(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
   I: Integer;
 begin
@@ -4479,7 +4429,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
+function PeExportedVariables(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
   I: Integer;
 begin
@@ -4488,11 +4438,10 @@ begin
     Result := StatusOK;
     if Result then
       with ExportList do
-      begin
-        SetLength(FunctionsList, Count);
         for I := 0 to Count - 1 do
-          FunctionsList[I] := Items[I].Name;
-      end;
+          with Items[I] do
+            if IsExportedVariable then
+              FunctionsList.AddObject(Name, Pointer(Address));
   finally
     Free;
   end;
@@ -4582,7 +4531,7 @@ begin
 end;
 
 //==============================================================================
-// Mapped image related functions
+// Mapped or loaded image related functions
 //==============================================================================
 
 function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
@@ -4654,6 +4603,27 @@ begin
         end
         else
           Inc(Header);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PeMapImgExportedVariables(const Module: HMODULE; const VariablesList: TStrings): Boolean;
+var
+  I: Integer;
+begin
+  with TJclPeImage.Create(True) do
+  try
+    AttachLoadedModule(Module);
+    Result := StatusOK;
+    if Result then
+      with ExportList do
+        for I := 0 to Count - 1 do
+          with Items[I] do
+            if IsExportedVariable then
+              VariablesList.AddObject(Name, MappedAddress);
+  finally
+    Free;
   end;
 end;
 
@@ -4877,6 +4847,13 @@ begin
     end;
     Inc(ImportDesc);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPeMapImgHooks.SystemBase: Pointer;
+begin
+  Result := Pointer(FindClassHInstance(System.TObject));
 end;
 
 //------------------------------------------------------------------------------
