@@ -1757,8 +1757,7 @@ begin
         Result := ptProfessional;
     end;
   end
-  else
-  if IsWinXP then
+  else if IsWinXP then
   begin
     if JclWin32.GetVersionEx(@VersionInfo) then
     begin
@@ -1772,7 +1771,6 @@ begin
     end;
   end;
 
-  Result := ptUnknown;
   if Result = ptUnknown then
   begin
     // Non Windows 2000/XP system or the above method failed, try registry
