@@ -1,29 +1,28 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclResources.pas.                                       }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2000 of these individuals.                                                   }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Unit which provides a central place for all resource strings used in the JCL }
-{                                                                              }
-{ Unit owner: Marcel van Brakel                                                }
-{ Last modified: Januari 12, 2002                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclResources.pas.                                                           }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Unit which provides a central place for all resource strings used in the JCL                     }
+{                                                                                                  }
+{ Unit owner: Marcel van Brakel                                                                    }
+{ Last modified: January 12, 2002                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclResources;
 
@@ -33,47 +32,47 @@ unit JclResources;
 
 interface
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclBase
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsWin32Prefix        = 'Win32: %s (%u)';
   RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
   RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclClasses
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsVMTMemoryWriteError = 'Error writing VMT memory (%s)';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclComplex
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsComplexInvalidString = 'Failed to create a complex number from the string provided';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclCounter
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsNoCounter = 'No high performance counters supported';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclDateTime
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsMakeUTCTime    = 'Error converting to UTC time. Time zone could not be determined';
   RsDateConversion = 'Error illegal date or time format';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclDebug
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   // Diagnostics
 
@@ -87,9 +86,9 @@ resourcestring
   RsDebugNoProcessInfo    = 'Unable to obtain process information';
   RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclExprEval
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsExprEvalRParenExpected = 'Parse error: '')'' expected';
@@ -104,9 +103,9 @@ resourcestring
   RsExprEvalExprPtrNotFound = 'Expression compiler error: Expression pointer not found';
 
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclStrHashMap
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsStringHashMapMustBeEmpty = 'HashList: must be empty to set size to zero';
@@ -114,9 +113,9 @@ resourcestring
   RsStringHashMapInvalidNode = 'Tried to remove invalid node: %s';
 
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclFileUtils
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
 
@@ -226,9 +225,9 @@ resourcestring
 
   RsDefaultFileTypeName = ' File';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclGraphics, JclGraphUtils
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsAssertUnpairedEndUpdate  = 'Unpaired BeginUpdate EndUpdate';
@@ -250,9 +249,9 @@ resourcestring
   RsBitmapExtension          = '.bmp';
   RsJpegExtension            = '.jpg';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclMapi
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsMapiError         = 'MAPI Error: (%d) "%s"';
@@ -293,9 +292,9 @@ resourcestring
   RsMapiMailSubject     = 'Subject';
   RsMapiMailBody        = 'Body';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclMath
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsMathDomainError    = 'Domain check failure in JclMath';
@@ -311,9 +310,9 @@ resourcestring
   RsNaNTagError        = 'NaN Tag value %d out of range';
   RsNaNSignal          = 'NaN signaling %d';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclMiscel
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   // CreateProcAsUser
@@ -332,9 +331,9 @@ resourcestring
   RsCreateProcCommandNotFound         = 'Command or filename not found: "%s"';
   RsCreateProcFailed                  = 'CreateProcessAsUser failed';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclMultimedia
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
@@ -348,17 +347,17 @@ resourcestring
   RsMmUnknownError     = 'Unknown MCI error No. %d';
   RsMmMciErrorPrefix   = 'MCI-Error: ';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclNTFS
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsInvalidArgument = '%s: Invalid argument <%s>';
   RsNtfsUnableToDeleteSymbolicLink = 'Unable to delete temporary symbolic link';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclPeImage
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   // TJclPeImage
 
@@ -501,9 +500,9 @@ resourcestring
   RsPePkgOrgWeak  = 'OrgWeak';
   RsPePkgImplicit = 'Implicit';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclPrint
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsInvalidPrinter        = 'Invalid printer';
@@ -566,18 +565,18 @@ resourcestring
   RsPrintIniYResolution   = 'YResolution';
   RsPrintIniTTOption      = 'TTOption';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclRegistry
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsUnableToOpenKeyRead  = 'Unable to open key "%s" for read';
   RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
   RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclRTTI
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsRTTIValueOutOfRange =   'Value out of range (%s).';
@@ -631,25 +630,25 @@ resourcestring
   RsRTTIElNeedCleanup =     'Elements need clean up: ';
   RsRTTIVarType =           'Variant type: ';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclSscanf
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsSscanfBadSet       = 'Bad set: ';
   RsSscanfBadFormat    = 'Bad format string';
   RsSscanfInsufficient = 'Insufficient pointers for format specifiers';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclStrings
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsInvalidEmptyStringItem = 'String list passed to StringsToMultiSz cannot contain empty strings.';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclSynch
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsSynchAttachWin32Handle    = 'Invalid handle to TJclWin32HandleObject.Attach';
@@ -668,9 +667,9 @@ resourcestring
   RsMetSectInitialize         = 'Failed to initialize the metered section.';
   RsMetSectNameEmpty          = 'Name cannot be empty when using the Open constructor.';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclSysInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsSystemProcess = 'System Process';
@@ -710,9 +709,9 @@ resourcestring
   RsProductTypeProfessional = 'Professional';
   RsProductTypeDatacenterServer = 'Datacenter Server';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // JclUnicode
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 resourcestring
   RsUREBaseString = 'Error in regular expression: %s' + #13;
