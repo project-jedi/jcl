@@ -39,7 +39,7 @@ uses
   Windows,
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
-  {$ENDIF}
+  {$ENDIF COMPILER5_UP}
   ShlObj;
 
 //------------------------------------------------------------------------------
@@ -118,8 +118,8 @@ type
     function GetInfoFlags(out pdwFlags: DWORD): HRESULT; stdcall;
   end;
 
-{$ENDIF} // SUPPORTS_INTERFACE
-{$ENDIF} // COMPILER4_UP
+{$ENDIF SUPPORTS_INTERFACE}
+{$ENDIF COMPILER4_UP}
 
 //==============================================================================
 // Miscellanuous (missing in delphi 3)
@@ -133,7 +133,7 @@ const
   TIME_ZONE_ID_STANDARD = 1;
   TIME_ZONE_ID_DAYLIGHT = 2;
 
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
 //==============================================================================
 // COM related declarations
@@ -206,14 +206,14 @@ type
     SE_WMIGUID_OBJECT
   );
 
-{$ENDIF} // COMPILER5_UP
+{$ENDIF COMPILER5_UP}
 
 {$IFNDEF COMPILER4_UP}
 const
   SECURITY_DESCRIPTOR_REVISION = 1;
   SECURITY_DESCRIPTOR_REVISION1 = 1;
   SECURITY_DESCRIPTOR_MIN_LENGTH = 20;
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
 // TODO SetNamedSecurityInfo is incorrectly declared, at least for Windows 2000
 // it is. D5 unit tries to import from aclapi.dll but it is located in advapi3.dll
@@ -574,7 +574,7 @@ function NetBios(P: PNCB): Byte;
   {$EXTERNALSYM SID_IQueryInfo}
   {$EXTERNALSYM IQueryInfo}
 
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
 {$IFNDEF COMPILER4_UP}
 
@@ -583,7 +583,7 @@ function NetBios(P: PNCB): Byte;
   {$EXTERNALSYM TIME_ZONE_ID_STANDARD}
   {$EXTERNALSYM TIME_ZONE_ID_DAYLIGHT}
 
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
   {$EXTERNALSYM SECURITY_BUILTIN_DOMAIN_RID}
   {$EXTERNALSYM DOMAIN_ALIAS_RID_ADMINS}
@@ -629,7 +629,7 @@ function NetBios(P: PNCB): Byte;
   {$EXTERNALSYM SE_OBJECT_TYPE}
   {$EXTERNALSYM PPSID}
 
-{$ENDIF} // COMPILER5_UP
+{$ENDIF COMPILER5_UP}
 
 {$IFNDEF COMPILER4_UP}
 
@@ -637,7 +637,7 @@ function NetBios(P: PNCB): Byte;
   {$EXTERNALSYM SECURITY_DESCRIPTOR_REVISION1}
   {$EXTERNALSYM SECURITY_DESCRIPTOR_MIN_LENGTH}
 
-{$ENDIF} // COMPILER4_UP
+{$ENDIF COMPILER4_UP}
 
 {$EXTERNALSYM SetNamedSecurityInfoW}
 {$EXTERNALSYM AdjustTokenPrivileges}
@@ -727,7 +727,7 @@ function NetBios(P: PNCB): Byte;
   {$EXTERNALSYM PNCB}
   {$EXTERNALSYM ASTAT}
 
-{$ENDIF} // SUPPORTS_EXTSYM
+{$ENDIF SUPPORTS_EXTSYM}
 
 implementation
 
