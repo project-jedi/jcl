@@ -39,6 +39,7 @@
 unit JclSvcCtrl;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 
@@ -1453,6 +1454,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2004/07/29 07:58:22  marquardt
+// inc files updated
+//
 // Revision 1.21  2004/07/28 18:00:54  marquardt
 // various style cleanings, some minor fixes
 //

@@ -27,6 +27,7 @@ unit JclOtaUtils;
 interface
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 {$WEAKPACKAGEUNIT ON}
 

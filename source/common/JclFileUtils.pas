@@ -52,6 +52,7 @@
 unit JclFileUtils;
 
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 interface
 
@@ -5721,6 +5722,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2004/07/29 07:58:20  marquardt
+// inc files updated
+//
 // Revision 1.23  2004/07/28 18:00:50  marquardt
 // various style cleanings, some minor fixes
 //

@@ -35,6 +35,7 @@
 unit JclConsole;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 {$HPPEMIT 'namespace JclConsole'}
 (*$HPPEMIT '{'*)
@@ -1724,6 +1725,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
 // Revision 1.9  2004/05/13 04:23:21  rrossmair
 // fixed TJclScreenWindow.InternalSetPosition; FPC-related changes
 //

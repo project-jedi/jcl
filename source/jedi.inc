@@ -331,7 +331,7 @@
 
 {$IFDEF BORLAND}
   {$IFDEF KYLIX}
-    {$INCLUDE kylix.inc} // FPC incompatible stuff
+    {$I kylix.inc} // FPC incompatible stuff
   {$ELSE ~KYLIX}
   
     {$IFDEF VER150}
@@ -912,6 +912,9 @@
 // History:
 
 // $Log$
+// Revision 1.15  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
 // Revision 1.14  2004/06/21 01:10:17  rrossmair
 // - $IFDEFed contents (to prevent from repeated inclusion)
 // - introduced symbols SUPPORTS_DEPRECATED_WARNINGS, SUPPORTS_LIBRARY_WARNINGS, SUPPORTS_PLATFORM_WARNINGS, SUPPORTS_COMPILETIME_MESSAGES

@@ -35,7 +35,7 @@
 {$J-} // Read-only typed constants
 {$T-} // Type checked pointers off
 
-{$INCLUDE jedi.inc} // Pull in the JCL/J-VCL shared directives
+{$I jedi.inc} // Pull in the JCL/J-VCL shared directives
 
 // Math precision selection, mutually exclusive
 
@@ -56,12 +56,6 @@
 
 {.$DEFINE HOOK_DLL_EXCEPTIONS}
 
-{$IFDEF SUPPORTS_PLATFORM}
-  // Platform warnings off
-  {$WARN SYMBOL_PLATFORM OFF}
-  {$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-
 {$IFDEF SUPPORTS_UNSAFE_WARNINGS}
   {$WARN UNSAFE_TYPE OFF}
   {$WARN UNSAFE_CODE OFF}
@@ -72,6 +66,9 @@
 {.$DEFINE DROP_OBSOLETE_CODE}
 
 // $Log$
+// Revision 1.7  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
 // Revision 1.6  2004/06/02 03:17:02  rrossmair
 // added DROP_OBSOLETE_CODE comment
 //

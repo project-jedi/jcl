@@ -22,12 +22,20 @@ Known Issues:
 // Last modified: $Date$
 // For history see end of file
 
-{$I jedi.inc}
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jcl.inc).
+
+// Suppress platform warnings which are irrelevant
+// because the including unit can only be compiled
+// for the Windows platform anyway.
 
 {$IFDEF SUPPORTS_PLATFORM_WARNINGS}
   {$WARN UNIT_PLATFORM OFF}
   {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF SUPPORTS_PLATFORM_WARNINGS}
+
+// Cause a compilation error for any platform except Windows.
 
 {$IFNDEF MSWINDOWS}
   {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
@@ -42,6 +50,9 @@ Known Issues:
 // History:
 
 // $Log$
+// Revision 1.3  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
 // Revision 1.2  2004/06/21 01:17:51  rrossmair
 // - $IFDEFed contents (to prevent from repeated inclusion)
 // - use of feature friendly symbol names
