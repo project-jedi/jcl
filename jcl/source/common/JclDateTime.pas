@@ -1088,8 +1088,8 @@ end;
 // Conversion Unix time <--> TDateTime / FileTime, constants
 //==================================================================================================
 
+{$IFDEF MSWINDOWS}
 const
-  {$IFDEF MSWINDOWS}
   // 1 second in FileTime resolution
   FileTimeSecond = 1000 * 1000 * 10;
   // 1 day in FileTime resolution: 24 * 60 * 60 * 1000 * 1000 * 10;
@@ -1099,7 +1099,7 @@ const
   FileTimeStart = -109205;
   // Time between 1601-01-01 and 1970-01-01 in FileTime resolution
   FileTimeUnixStart = (UnixTimeStart - FileTimeStart) * FileTimeDay;
-  {$ENDIF MSWINDOWS}
+{$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // Conversion Unix time <--> TDateTime
@@ -1138,6 +1138,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/10/15 14:41:00  rrossmair
+// restored Kylix compatibility
+//
 // Revision 1.12  2004/10/15 03:36:46  rrossmair
 // - rearranged pre-CVS history
 //
