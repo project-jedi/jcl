@@ -1630,20 +1630,22 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetLocationInfoStr(const Addr: Pointer): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False): string;
 [ShortDescr]
 Returns location info in a formatted string, given an address.
 [Description]
 GetLocationInfoStr returns location info in a formatted string. The string is
 formatted as: [<I>Address</I>] <I>UnitName</I>.<I>ProcedureName</I> (Line <I>linenumber</I>, "<I>source file name</I>"
+or [<I>Address</I>] {<I>ModuleName</I>} <I>UnitName</I>.<I>ProcedureName</I> (Line <I>linenumber</I>, "<I>source file name</I>", depending
+on the value of IncludeModuleName parameter.
 [Parameters]
-Count=1
+Count=2
 1=Addr:Pointer=Address to obtain information on.
+2=IncludeModuleName:Boolean=Should the module name be included in the string. If
+this parameter is set to True, the module name is inserted right after the address. 
 [Result]
-If location info was found, the function returns the info formatted as:
- <B>[</B><I>Address</I><B>]</B> <I>UnitName</I><B>.</B><I>ProcedureName</I>
-<B>(Line</B> <I>linenumber</I><B>, "</B><I>source file name</I></B>"), otherwise
-it returns a string formatted as <B>[</B><I>Address</I><B>]</B>.
+If location info was found, the function returns the formatted info string,
+otherwise it returns a string formatted as <B>[</B><I>Address</I><B>]</B>.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDebug
@@ -2694,15 +2696,19 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure AddToStrings(const Strings: TStrings);
+procedure AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean = False);
 [ShortDescr]
 Adds all stack info items a list.
 [Description]
 AddToStrings adds all stack info items to a TStrings descendant. For each stack
-info item it stores the result of the call GetLocationInfoStr(CallerAddress).
+info item it stores the result of the call GetLocationInfoStr(CallerAddress,
+IncludeModuleName).
 [Parameters]
-Count=1
+Count=2
 1=String:TStrings=TStrings descendant to retreive the stack trace in.
+2=IncludeModuleName:Boolean=Should the module name be included in each string.
+If this parameter is set to True, the module name is inserted right after the
+address.
 [Quick Info]
 BCB=4,5
 Kind=Method
@@ -3630,6 +3636,99 @@ Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Petr Vones
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
+  MapFileName: TFileName; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
+  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+[ShortDescr]
+Insert binary debug data into an executable.
+[Description]
+InsertDebugDataIntoExecutableFile inserts binary debug data as a resource into
+the executable. With the first overloaded method you can specify a linker map
+file while the second overloaded method allow you to specify a binary debug
+generator. When the insertion succeeded True will be returned, otherwise False
+is returned.
+[Result]
+If the binary debug data was succesfully inserted into the executable the
+function returns True, otherwise it returns False. In addition to the function
+result, it will also return the unit for the linker bug (if any found), the map
+file size and the binary debug data size.
+[Parameters]
+Count=6
+1=ExecutableFileName:TFileName=File name of executable you want the debug data
+to be inserted in.
+2=MapFileName:TFileName=Name of the map file to convert to binary debug data.
+3=BinDebug:TJclBinDebugGenerator=The binary debug data generator.
+4=LinkerBugUnit:string=Variable where the name of the unit where the linker bug
+was first encountered should be stored. If there was no linker bug present, this
+variable will be set to empty.
+5=MapFileSize:Integer=Variable where the size of the linker map file will be
+stored.
+6=JclDebugDataSize:Integer=Variable where the size of the binary debug data will
+be stored.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Helpers
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ExtractClassName(const ProcedureName: string): string;
+[ShortDescr]
+Extracts the class name from a procedure name.
+[Description]
+ExtractClassName extracts the class name from the given procedure name (ie.
+anything before the period). If the procedure name does not contain a class name
+an empty string will be returned.
+[Result]
+If the given procedure name contains a '.', the string before the '.' will be
+returned, otherwise an empty string is returned.
+[Parameters]
+Count=1
+1=ProcedureName:string=Name of a procedure as returned by ProcOfAddr/ProcByLevel
+or the _Proc parameter of MapByLevel/MapOfAddr
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ExtractMethodName(const ProcedureName: string): string;
+[ShortDescr]
+Extracts the method name from a procedure name.
+[Description]
+ExtractMethodName extracts the method name from the given procedure name (ie.
+anything after the period). If the procedure name does not contain a class name
+the entire string is returned.
+[Result]
+If the given procedure name contains a '.', the string after the '.' is returned,
+otherwise the entire string is returned.
+[Parameters]
+Count=1
+1=ProcedureName:string=Name of a procedure as returned by ProcOfAddr/ProcByLevel
+or the _Proc parameter of MapByLevel/MapOfAddr
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
