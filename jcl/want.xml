@@ -22,7 +22,7 @@
 { This unit contains want script for build JCl.                                                    }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: October 8, 2003 (Robert Rossmair)                                                 }
+{ Last modified: December 12, 2003 (Robert Rossmair)                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 -->
@@ -36,11 +36,11 @@
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="90-test1"/>
+  <property name="version.minor"    value="90"/>
   <property name="version"          value="${version.major}.${version.minor}"/>
 
   <!-- why won't the following line work with subst=""? -->
-  <regexp property="ver.dir" pattern="\.0" subst=" " text="D%{delphi.version}" />
+  <regexp property="ver.dir" pattern="\.0" subst=" " text="d%{delphi.version}" />
   <property name="bpl.dir"          value="%{delphi.dir}/Projects/Bpl"/>
   <property name="bin.dir"          value="${basedir}/bin"/>
   <property name="lib.dir"          value="${basedir}/lib/${ver.dir}"/>
@@ -59,12 +59,13 @@
   <property name="prepare.hint"     value="prepare the directories" />
   <property name="clean.hint"       value="clean the binary files" />
   <property name="versioninfo.hint" value="show the version of JCL" />
-  <property name="compile.hint"     value="compile the source and sample files" />
+  <property name="compile.hint"     value="compile library" />
+  <property name="samples.hint"     value="compile the sample files" />
   <property name="dist.hint"        value="build .zip file" />
 
   <patternset id="src.dirs" >
     <include  name="${src.dir}/**" />
-    <exclude  name="${src.dir}/Prototypes" />
+    <exclude  name="${src.dir}/prototypes" />
   </patternset>
 
   <patternset id="unit.dirs" >
@@ -74,6 +75,10 @@
 
   <patternset id="samp.dirs" >
     <include  name="${samp.dir}/**" />
+  </patternset>
+
+  <patternset id="samples" >
+    <include name="$(samp.dirs)/*.dpr" />
   </patternset>
 
   <patternset id="source.dirs" >
@@ -98,9 +103,17 @@
 
   <target name="clean" description="${clean.hint}" >
     <!-- <delete dir="${dist.dir}" -->
-    <delete file="${lib.dir}/*.dcu" />
-    <delete file="${lib.dir}/*.dpu" />
+    <delete file="**/*.~*" />
+    <delete file="**/*.dcp" />
+    <delete file="**/*.dcu" />
+    <delete file="**/*.dpu" />
+    <delete file="**/*.obj" />
+    <delete file="**/*.o" />
+    <delete file="**/*.rst" />
+    <delete file="**/*.lib" />
+    <delete file="**/*.bpi" />
     <delete file="${bin.dir}/*.exe" />
+    <delete file="${bin.dir}/*.bpl" />
     <delete file="${bin.dir}/*.dll" />
     <delete file="${bin.dir}/*.map" />
   </target>
@@ -109,18 +122,18 @@
     <echo message="${app.fullname} (${app.shortname}) ${version}" />
   </target>
 
-  <target name="compile" depends="clean,prepare,versioninfo" description="${compile.hint}" >
+  <target name="compile" depends="prepare,versioninfo" description="${compile.hint}" >
     <echo message="compile the source files..." />
     <brcc file="${src.dir}/windows/JclUnicode.rc" output="${src.dir}/windows/JclUnicode.res" />
-    <dcc basedir="${pack.ver.dir}" source="Jcl*.dpk" >
+    <dcc basedir="${pack.ver.dir}" source="DJcl*.dpk" >
       <dcuoutput path="${lib.dir}" />
       <exeoutput path="${bin.dir}" />
-      <bploutput path="${bpl.dir}" />
+      <bploutput path="${bin.dir}" />
       <dcpoutput path="${lib.dir}" />
       <debug value="true" />
       <build value="true" />
 
-      <unitpath refid="unit.dirs" />        
+      <unitpath refid="unit.dirs" />
       <includepath>
         <include    name="${src.dir}/common" />
       </includepath>
@@ -128,74 +141,142 @@
         <include    name="${src.dir}/common" />
       </resourcepath>
     </dcc>
+  </target>
 
-    <!-- compiling examples gives AV when executing D7 dcc32
+  <target name="examples" depends="compile" description="${samples.hint}" >
     <echo message="" />
     <echo message="compile the sample files..." />
 
-    <dcc basedir="${samp.dir}" source="${samp.dir}/**/*.dpr" >
-      <dcuoutput path="${lib.dir}" />
+    <dcc basedir="${samp.dir}/visclx" source="**/*.pas">
       <exeoutput path="${bin.dir}" />
-      <bploutput path="${bpl.dir}" />
-      <dcpoutput path="${bpl.dir}" />
       <debug value="true" />
       <build value="true" />
-
       <unitpath>
-        <patternset refid="samp.dirs" />        
-        <include    name="${lib.dir}" />
+        <include name="**" />
+        <include name="../../Win32API" />
+        <include name="${lib.dir}" />
       </unitpath>
-      <includepath  refid="samp.dirs" />
-      <resourcepath refid="samp.dirs" />
+      <includepath>
+        <include name="${src.dir}/common" />
+      </includepath>
     </dcc>
-    <!-- -->
+
+    <dcc basedir="${samp.dir}/vcl/delphitools" source="**/*.pas">
+      <!-- usepackage name="designide" / -->
+      <exeoutput path="${bin.dir}" />
+      <debug value="true" />
+      <build value="true" />
+      <unitpath>
+        <include name="../../Win32API" />
+        <include name="${lib.dir}" />
+      </unitpath>
+      <includepath>
+        <include name="${src.dir}/common" />
+      </includepath>
+    </dcc>
+
+    <dcc basedir="${samp.dir}/vcl/debugextension" source="**/*.pas">
+      <exeoutput path="${bin.dir}" />
+      <debug value="true" />
+      <build value="true" />
+      <unitpath>
+        <include name="%{delphi.dir}/Source/ToolsAPI" />
+        <include name="../../Win32API" />
+        <include name="${lib.dir}" />
+      </unitpath>
+      <includepath>
+        <include name="${src.dir}/common" />
+      </includepath>
+    </dcc>
+
+    <dcc basedir="${samp.dir}/vcl/debug" source="**/*.pas">
+      <!-- usepackage name="designide" / -->
+      <exeoutput path="${bin.dir}" />
+      <debug value="true" />
+      <build value="true" />
+      <unitpath>
+        <include name="../../Win32API" />
+        <include name="${lib.dir}" />
+      </unitpath>
+      <includepath>
+        <include name="${src.dir}/common" />
+      </includepath>
+    </dcc>
+
+    <dcc basedir="${samp.dir}" source="**/*.dpk">
+      <exeoutput path="${bin.dir}" />
+      <debug value="true" />
+      <build value="true" />
+      <unitpath>
+        <include name="**" />
+        <include name="${lib.dir}" />
+      </unitpath>
+      <includepath>
+        <include name="${src.dir}/common" />
+      </includepath>
+    </dcc>
+
+    <dcc basedir="${samp.dir}" source="*.dpr">
+      <exeoutput path="${bin.dir}" />
+      <debug value="true" />
+      <build value="true" />
+      <unitpath>
+        <include name="${lib.dir}" />
+      </unitpath>
+      <includepath>
+        <include name="${src.dir}/common" />
+      </includepath>
+    </dcc>
   </target>
 
   <target name="dist" description="${dist.hint}" >
     <mkdir dir="${dist.dir}" />
     <delete file="${zipfile}" />
     <zip zipfile="${zipfile}" >
-      <exclude name="${dist.dir}/**" />
-      <exclude name="${qa.dir}/**" />
-      <exclude name="${help.dir}/dtx/**" />
-      <exclude name="${help.dir}/HIT/**" />
-      <exclude name="${help.dir}/*.txt" />
-      <exclude name="${basedir}/packages/*.dev/**" />
-      <exclude name="${basedir}/packages/JclDevPackages*.bpg" />
-      <exclude name="${src.dir}/prototypes/**" />
-      <exclude name="${src.dir}/unix/ProcessInfo.pas" />
+      <fileset dir="${basedir}\.." >
+          <exclude name="${dist.dir}/**" />
+          <exclude name="${qa.dir}/**" />
+          <exclude name="${help.dir}/dtx/**" />
+          <exclude name="${help.dir}/HIT/**" />
+          <exclude name="${help.dir}/*.txt" />
+          <exclude name="${basedir}/packages/*.dev/**" />
+          <exclude name="${basedir}/packages/JclDevPackages*.bpg" />
+          <exclude name="${src.dir}/prototypes/**" />
+          <exclude name="${src.dir}/unix/ProcessInfo.pas" />
 
-      <include name="${doc.dir}/**" />
-      <include name="**/*.pas" />
-      <include name="**/*.dfm" />
-      <include name="**/*.xfm" />
-      <include name="**/*.dof" />
-      <include name="**/*.kof" />
-      <include name="**/*.inc" />
-      <include name="**/*.cpp" />
+          <include name="${doc.dir}/**" />
+          <include name="${basedir}/**/*.pas" />
+          <include name="${basedir}/**/*.dfm" />
+          <include name="${basedir}/**/*.xfm" />
+          <include name="${basedir}/**/*.dof" />
+          <include name="${basedir}/**/*.kof" />
+          <include name="${basedir}/**/*.inc" />
+          <include name="${basedir}/**/*.cpp" />
 
-      <include name="**/*.dpr" />
-      <include name="**/*.dpk" />
-      <include name="**/*.bpg" />
-      <include name="**/*.bpk" />
-      <include name="**/*.mak" />
+          <include name="${basedir}/**/*.dpr" />
+          <include name="${basedir}/**/*.dpk" />
+          <include name="${basedir}/**/*.bpg" />
+          <include name="${basedir}/**/*.bpk" />
+          <include name="${basedir}/**/*.mak" />
 
-      <include name="**/*.rc" />
-      <include name="**/*.res" />
-      <include name="**/*.ico" />
+          <include name="${basedir}/**/*.rc" />
+          <include name="${basedir}/**/*.res" />
+          <include name="${basedir}/**/*.ico" />
 
-      <include name="${help.dir}/JCLHelp.hlp" />
-      <include name="${help.dir}/JCLHelp.cnt" />
+          <include name="${help.dir}/JCLHelp.hlp" />
+          <include name="${help.dir}/JCLHelp.cnt" />
 
-      <include name="**/*.tlb" />
+          <include name="${basedir}/**/*.tlb" />
 
-      <include name="**/*.txt" />
-      <include name="**/*.htm" />
-      <include name="**/*.html" />
-      <include name="**/*.xml" />
-      <include name="**/*.bat" />
-      <include name="${src.dir}/prototypes/jpp.exe" />
-      <include name="want.exe" />
+          <include name="${basedir}/**/*.txt" />
+          <include name="${basedir}/**/*.htm" />
+          <include name="${basedir}/**/*.html" />
+          <include name="${basedir}/**/*.xml" />
+          <include name="${basedir}/**/*.bat" />
+          <include name="${basedir}/want.exe" />
+          <include name="install.bat" />
+          <include name="readme.txt" />
+      </fileset>
     </zip>
   </target>
 </project>
