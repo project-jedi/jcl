@@ -1011,7 +1011,13 @@ resourcestring
   RsProductTypeDatacenterServer = 'Datacenter Server';
 
   RsOpenGLInfoError = 'Err';
-  
+
+  RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
+  RsOpenGLInfoExcep_SPF = 'GetOpenGLVersion:  SetPixelFormat Failed';
+  RsOpenGLInfoExcep_CC = 'GetOpenGLVersion:  wglCreateContect Failed';
+  RsOpenGLInfoExcep_MC = 'GetOpenGLVersion:  wglMakeCurrent Failed';
+
+
 //--------------------------------------------------------------------------------------------------
 // JclSysUtils
 //--------------------------------------------------------------------------------------------------
@@ -1105,6 +1111,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.18  2004/10/17 23:48:14  mthoma
+// Added OpenGL error messages.
+//
 // Revision 1.17  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
