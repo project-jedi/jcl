@@ -9,13 +9,20 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL60.bpl IdeOpenDlgFavorite60.bpl JclDebugIde60.bpl ProjectAnalyzer60.bpl \
-  ThreadNameExpert60.bpl
+PROJECTS = DJcl60.bpl DJclVcl60.bpl DJclVClx60.bpl IdeOpenDlgFavorite60.bpl JclDebugIde60.bpl \
+  ProjectAnalyzer60.bpl ThreadNameExpert60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-DJCL60.bpl: DJCL60.dpk
+
+DJcl60.bpl: D6\DJcl.dpk
+  $(DCC)
+
+DJclVcl60.bpl: D6\DJclVcl.dpk
+  $(DCC)
+
+DJclVClx60.bpl: D6\DJclVClx.dpk
   $(DCC)
 
 JclDebugIde60.bpl: ..\examples\debugextension\JclDebugIde60.dpk
