@@ -1,32 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclRegistry.pas.                                        }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Contains various utility routines to read and write registry values. Using   }
-{ these routines prevents you from having to instantiate temporary TRegistry   }
-{ objects and since the routines directly call the registry API they do not    }
-{ suffer from the resource overhead as TRegistry does.                         }
-{                                                                              }
-{ Unit owner: Eric S.Fisher                                                    }
-{ Last modified: January 30, 2001                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclRegistry.pas.                                                            }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Contains various utility routines to read and write registry values. Using these routines        }
+{ prevents you from having to instantiate temporary TRegistry objects and since the routines       }
+{ directly call the registry API they do not suffer from the resource overhead as TRegistry does.  }
+{                                                                                                  }
+{ Unit owner: Eric S.Fisher                                                                        }
+{ Last modified: January 30, 2001                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 
 unit JclRegistry;
@@ -41,9 +39,9 @@ uses
   Windows, Classes,
   JclBase;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Registry
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
 function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
@@ -119,30 +117,30 @@ uses
 const
   cItems = 'Items';
 
-//==============================================================================
+//==================================================================================================
 // Internal helper routines
-//==============================================================================
+//==================================================================================================
 
 procedure ReadError(const Key: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [Key]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure WriteError(const Key: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyWrite, [Key]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ValueError(const Key, Name: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToAccessValue, [Key, Name]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; var RegPath: string): Boolean;
 begin
@@ -166,7 +164,7 @@ begin
   Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RelativeKey(const Key: string): PChar;
 begin
@@ -175,16 +173,16 @@ begin
     Inc(Result);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Registry
-//==============================================================================
+//==================================================================================================
 
 function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
 begin
   Result := RegSetValue(RootKey, RelativeKey(Key), REG_SZ, PChar(Value), Length(Value));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
 var
@@ -202,7 +200,7 @@ begin
     WriteError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
 var
@@ -236,21 +234,21 @@ begin
       WriteError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
 begin
   Result := RegReadInteger(RootKey, Key, Name) <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
 begin
   Result := Boolean(RegReadIntegerDef(RootKey, Key, Name, Ord(Def)));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
 var
@@ -281,7 +279,7 @@ begin
     ReadError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
 var
@@ -302,7 +300,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
 var
@@ -334,7 +332,7 @@ begin
     ReadError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
 var
@@ -362,7 +360,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
 var
@@ -393,7 +391,7 @@ begin
     ReadError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
@@ -424,14 +422,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
 begin
   RegWriteInteger(RootKey, Key, Name, Ord(Value));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
 var
@@ -449,7 +447,7 @@ begin
     WriteError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
 var
@@ -467,7 +465,7 @@ begin
     WriteError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
 var
@@ -485,7 +483,7 @@ begin
     WriteError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 var
@@ -497,7 +495,7 @@ begin
     Result := RegDeleteEntry(Key, RegPath, Name);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
 var
@@ -509,7 +507,7 @@ begin
      RegWriteString(Key, RegPath, Name, Cmdline);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 var
@@ -543,7 +541,7 @@ begin
     ReadError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 var
@@ -576,7 +574,7 @@ begin
     ReadError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
 var
@@ -594,7 +592,7 @@ begin
     ReadError(Key);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegKeyExists(const RootKey: HKEY; const Key: string): Boolean;
 var
@@ -604,7 +602,7 @@ begin
   if Result then RegCloseKey(RegKey);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegSaveList(const RootKey: HKEY; const Key: string;
   const ListName: string; const Items: TStrings): Boolean;
@@ -624,7 +622,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegLoadList(const RootKey: HKEY; const Key: string;
   const ListName: string; const SaveTo: TStrings): Boolean;
@@ -640,7 +638,7 @@ begin
   Result := N > 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
 var
