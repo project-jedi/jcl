@@ -136,7 +136,7 @@ function GetProcessNameFromPid(PID: DWORD): string;
 
 type
   TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE,
-                     wvWinNT3, wvWinNT4, wvWin2000);
+                     wvWinME, wvWinNT3, wvWinNT4, wvWin2000);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
 
 function GetWindowsVersion: TWindowsVersion;
@@ -146,6 +146,7 @@ var
   IsWin95OSR2: Boolean = False;
   IsWin98: Boolean = False;
   IsWin98SE: Boolean = False;
+  IsWinME: Boolean = False;
   IsWinNT: Boolean = False;
   IsWinNT3: Boolean = False;
   IsWinNT4: Boolean = False;
@@ -1299,6 +1300,8 @@ begin
             Result := wvWin98SE
           else
             Result := wvWin98;
+        90:
+          Result := wvWinME;
       end;
     VER_PLATFORM_WIN32_NT:
       case Win32MajorVersion of
@@ -2420,9 +2423,7 @@ begin
   AllocGranularity := SystemInfo.dwAllocationGranularity;
   PageSize := SystemInfo.dwPageSize;
 
-  //  added per MVB request                ESF    2000/06/04
   IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
-
   case GetWindowsVersion of
     wvUnknown: ;
     wvWin95:
@@ -2433,6 +2434,8 @@ begin
       IsWin98 := True;
     wvWin98SE:
       IsWin98SE := True;
+    wvWinME:
+      IsWinME := True;
     wvWinNT3:
       IsWinNT3 := True;
     wvWinNT4:
