@@ -49,26 +49,22 @@ object FileSearchForm: TFileSearchForm
     Columns = <
       item
         Caption = 'File'
-        Tag = 0
         Width = 360
       end
       item
         Alignment = taRightJustify
         AutoSize = True
         Caption = 'Size'
-        Tag = 0
         Width = 50
       end
       item
         Alignment = taCenter
         AutoSize = True
         Caption = 'Time'
-        Tag = 0
         Width = 50
       end
       item
         Caption = 'Attr.'
-        Tag = 0
         Width = 60
       end>
     ReadOnly = True
@@ -369,10 +365,10 @@ object FileSearchForm: TFileSearchForm
     end
   end
   object SaveDialog: TSaveDialog
-    FilterIndex = 0
     Height = 0
-    Title = 'Save'
     Width = 0
+    FilterIndex = 0
+    Title = 'Save'
     Left = 740
     Top = 36
   end
