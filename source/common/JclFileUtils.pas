@@ -2276,6 +2276,11 @@ var
   begin
     P := Data;
     Len := PWord(P)^;
+    if Len = 0 then
+    begin
+      Error := True;
+      Exit;
+    end;  
     Inc(P, SizeOf(Word));
     ValueLen := PWord(P)^;
     Inc(P, SizeOf(Word));
@@ -2307,7 +2312,7 @@ var
   begin
     EndPtr := Data + Size;
     LangIndex := 0;
-    while Data < EndPtr do
+    while not Error and (Data < EndPtr) do
     begin
       GetHeader; // StringTable
       if (ValueLen <> 0) or (Length(Key) <> 8) then
@@ -2321,7 +2326,7 @@ var
       SetLength(FLanguages, LangIndex + 1);
       FLanguages[LangIndex] := LangIdRec;
       EndStringPtr := Data + Len - HeaderSize;
-      while Data < EndStringPtr do
+      while not Error and (Data < EndStringPtr) do
       begin
         GetHeader; // String
         case DataType of
