@@ -415,6 +415,7 @@ type
     property Tag: TNaNTag read FTag;
   end;
 
+procedure DomainCheck(Err: Boolean);
 
 { CRC }
 
