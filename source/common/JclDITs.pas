@@ -54,12 +54,9 @@
 {  http://www.gnu.org/copyleft/lesser.html                                     }
 {                                                                              }
 {******************************************************************************}
-{                                                                              }
-{  $Id$                                                                        }
-{                                                                              }
-{  For a history take a look to the end of this file                           }
-{                                                                              }
-{******************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
 
 {$I jcl.inc}
 
@@ -92,7 +89,7 @@ const
   ISODateTimeSeparators: array[TISODateTimeSeparator] of Char =
     (ISODateTimeSeparatorT, ISODateTimeSeparatorSpace);
   // date time format
-  ISOBasicDateTimeFormat = ISOBasicDateFormat + ISODateTimeSeparatorT + ISOBasicTimeFormat;
+  ISOBasicDateTimeFormat = ISOBasicDateFormat + '"' + ISODateTimeSeparatorT + '"' + ISOBasicTimeFormat;
   ISODateTimeFormat = ISODateFormat + ISODateTimeSeparatorT + ISOTimeFormat;
   // float decimal separator
   ISOFloatDecimalSeparatorComma = ',';
@@ -105,53 +102,53 @@ function ISODateTimeToStrCustom(const Value: TDateTime;
   Options: TISODateTimeOptions;
   DateTimeSeparator: TISODateTimeSeparator = dtsT): String;
 
-// Convert TDateTime to date string 'YYYY-MM-DD'
+// Converts TDateTime to date string 'YYYY-MM-DD'
 function ISODateToStr(const Value: TDateTime): String;
 
-// Convert TDateTime to time string 'hh:mm:ss'
+// Converts TDateTime to time string 'hh:mm:ss'
 function ISOTimeToStr(const Value: TDateTime): String;
 
-// Convert TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
+// Converts TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
 function ISODateTimeToStr(const Value: TDateTime): String;
 
-// Convert TDateTime to date string 'YYYYMMDD'
+// Converts TDateTime to date string 'YYYYMMDD'
 function ISOBasicDateToStr(const Value: TDateTime): String;
 
-// Convert TDateTime to time string 'hhmmss'
+// Converts TDateTime to time string 'hhmmss'
 function ISOBasicTimeToStr(const Value: TDateTime): String;
 
-// Convert TDateTime to date time string 'YYYYMMDDThhmmss'
+// Converts TDateTime to date time string 'YYYYMMDDThhmmss'
 function ISOBasicDateTimeToStr(const Value: TDateTime): String;
 
-// Convert a ISO date string to TDateTime and replace the date part of Date
-// Valid strings:
+// Converts an ISO date string to TDateTime and replaces the date part of Date
+// Valid strings are
 //   'YYYY-MM-DD' and 'YYYYMMDD'
 function TryISOStrToDate(const Value: String; var Date: TDateTime): Boolean;
 
-// Convert a ISO time string to TDateTime and replace the time part of Time
-// Valid strings:
+// Converts an ISO time string to TDateTime and replace the time part of Time
+// Valid strings are
 //   'hh:mm:ss,zzz', 'hh:mm:ss.zzz', 'hhmmss,zzz', 'hhmmss.zzz',
 //   'hh:mm:ss', 'hhmmss', 'hh:mm' and 'hhmm'
 function TryISOStrToTime(const Value: String; var Time: TDateTime): Boolean;
 
-// Convert a ISO time stamp to a TDateTime,
+// Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
 function TryISOStrToDateTime(const Value: String; out DateTime: TDateTime): Boolean;
 
-// Convert a ISO date string to TDateTime
+// Converts an ISO date string to TDateTime
 // Valid strings:
 //   'YYYY-MM-DD' and 'YYYYMMDD'
 function ISOStrToDate(const Value: String): TDateTime;
 function ISOStrToDateDef(const Value: String; const Default: TDateTime): TDateTime;
 
-// Convert a ISO time string to TDateTime
+// Converts an ISO time string to TDateTime
 // Valid strings:
 //   'hh:mm:ss,zzz', 'hh:mm:ss.zzz', 'hhmmss,zzz', 'hhmmss.zzz',
 //   'hh:mm:ss', 'hhmmss', 'hh:mm' and 'hhmm'
 function ISOStrToTime(const Value: String): TDateTime;
 function ISOStrToTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 
-// Convert a ISO time stamp to a TDateTime,
+// Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
 function ISOStrToDateTime(const Value: String): TDateTime;
 function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
@@ -159,27 +156,27 @@ function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDa
 
 // ***********  Float Data Interchange (ISO 31-0)  ******************
 
-// Convert a float value to string
-// with DecimalSeparator as decimal separator and without thousand separator
-// Value: the value
+// Converts a float value to a string
+// DecimalSeparator is decimal separator, no thousand separator
+// Value: the value to convert
 // Precision: precision of the result, 1..18, default: 15 digits
 // DecimalSeparator: used separator
-// if Abs(Value) < 10^-4 or >= 10^15 the function return a string in the
+// if Abs(Value) < 10^-4 or >= 10^15 the function returns a string in the
 // 'Scientific' format
 // if Value is NAN, INF or -INF the function return 'NAN', 'INF' or '-INF'
 function ISOFloatToStr(const Value: Extended;
   Precision: Integer = 15 ;
-  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma ): String;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma): String;
 
-// Convert a string to a float value
-// Decimal separator ',' or '.'
+// Converts a string to a float value
+// Decimal separators are ',' or '.'
 // Thousands separator ' '
 // The string can be a number in the 'Scientific' format
 // 'NAN', 'INF', '-INF' are allowed
 function ISOTextToFloat(Value: String; out Float: Extended): Boolean;
 
-// Convert a string to a float value
-// Decimal separator ',' or '.'
+// Converts a string to a float value
+// Decimal separators are ',' or '.'
 // Thousands separator ' ' or ''
 // The string can be a number in the 'Scientific' format
 // 'NAN', 'INF', '-INF' are allowed
@@ -231,25 +228,25 @@ begin
   Result := FormatDateTime(DTFormat, Value);
 end;
 
-// Convert TDateTime to date string 'YYYY-MM-DD'
+// Converts TDateTime to date string 'YYYY-MM-DD'
 function ISODateToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISODateFormat, Value);
 end;
 
-// Convert TDateTime to time string 'hh:mm:ss'
+// Converts TDateTime to time string 'hh:mm:ss'
 function ISOTimeToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISOTimeFormat, Value);
 end;
 
-// Convert TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
+// Converts TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
 function ISODateTimeToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISODateTimeFormat, Value);
 end;
 
-// Convert TDateTime to date string 'YYYYMMDD'
+// Converts TDateTime to date string 'YYYYMMDD'
 function ISOBasicDateToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISOBasicDateFormat, Value);
@@ -261,7 +258,7 @@ begin
   Result := FormatDateTime(ISOBasicTimeFormat, Value);
 end;
 
-// Convert TDateTime to date time string 'YYYYMMDDThhmmss'
+// Converts TDateTime to date time string 'YYYYMMDDThhmmss'
 function ISOBasicDateTimeToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISOBasicDateTimeFormat, Value);
@@ -290,7 +287,7 @@ begin
   Result := True;
 end;
 
-// Convert a ISO date string to TDateTime and replace the date part of Date
+// Converts an ISO date string to TDateTime and replace the date part of Date
 function TryISOStrToDate(const Value: String; var Date: TDateTime): Boolean;
 var
   Offset: Integer;
@@ -314,7 +311,7 @@ begin
   end;
 end;
 
-// Convert a ISO time string to TDateTime and replace the time part of Time
+// Converts an ISO time string to TDateTime and replace the time part of Time
 function TryISOStrToTime(const Value: String; var Time: TDateTime): Boolean;
 var
   s, ms: String;
@@ -390,7 +387,7 @@ begin
   end;
 end;
 
-// Convert a ISO time stamp to a TDateTime,
+// Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
 function TryISOStrToDateTime(const Value: String; out DateTime: TDateTime): Boolean;
 var
@@ -410,7 +407,7 @@ begin
   end;
 end;
 
-// Convert a ISO date string to TDateTime
+// Converts an ISO date string to TDateTime
 // Valid strings:
 //   'CCYY-MM-DD' and 'CCYYMMDD'
 function ISOStrToDate(const Value: String): TDateTime;
@@ -427,7 +424,7 @@ begin
     Result := Default;
 end;
 
-// Convert a ISO time string to TDateTime
+// Converts an ISO time string to TDateTime
 // Valid strings:
 //   'hh:mm:ss,zzz', 'hh:mm:ss.zzz', 'hhmmss,zzz', 'hhmmss.zzz',
 //   'hh:mm:ss', 'hhmmss', 'hh:mm' and 'hhmm'
@@ -445,7 +442,7 @@ begin
     Result := Default;
 end;
 
-// Convert a ISO time stamp to a TDateTime,
+// Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
 function ISOStrToDateTime(const Value: String): TDateTime;
 begin
@@ -462,7 +459,7 @@ end;
 // ***********  Float Data Interchange (ISO 31-0)  ******************
 
 function ISOFloatRecToStr(const Rec: TFloatRec;
-  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma ): String;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma): String;
 var
   DecimalSeparatorPos: Integer;
   I: Integer;
@@ -506,8 +503,8 @@ end;
 // Convert a float value to string
 // with DecimalSeparator as decimal separator and without thousand separator
 function ISOFloatToStr(const Value: Extended;
-  Precision: Integer = 15 ;
-  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma ): String;
+  Precision: Integer = 15;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma): String;
 var
   FloatRec: TFloatRec;
 begin
@@ -582,8 +579,8 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
-//   Revision 1.1  2004/04/06 05:03:20  peterjhaas
-//   functions for Data Interchange per Text (ISO)
+//   Revision 1.2  2004/04/12 22:28:28  peterjhaas
+//   BugFix: Date/Time separator T need to enclose in "
 //
 
 end.
