@@ -48,15 +48,18 @@ uses
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclBorRADToolKind = (brDelphi, brCppBuilder);
+  TJclBorRADToolKind = (brDelphi, brCppBuilder); //, brBorlandDevStudio);
   {$IFDEF KYLIX}
   TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
   {$ELSE}
-  TJclBorRADToolEdition = (deSTD, dePRO, deCSS);
+  TJclBorRADToolEdition = (deSTD, dePRO, deCSS, deARC);
   {$ENDIF KYLIX}
   TJclBorRADToolPath = string;
 
 const
+  SupportedDelphiVersions       = [5, 6, 7, 9];
+  SupportedBCBVersions          = [5, 6];
+  
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
 
@@ -83,10 +86,10 @@ const
   {$IFDEF KYLIX}
   BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
     ('OPEN', 'PRO', 'SVR');
-  {$ELSE}
+  {$ELSE ~KYLIX}
   BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
-    ('STD', 'PRO', 'CSS');
-  {$ENDIF KYLIX}
+    ('STD', 'PRO', 'CSS', 'Architect');
+  {$ENDIF ~KYLIX}
 
 //--------------------------------------------------------------------------------------------------
 // Installed versions information classes
@@ -298,6 +301,8 @@ type
     property Pages: TStrings read GetPages;
   end;
 
+  TJclBorRADToolInstallationClass = class of TJclBorRADToolInstallation;
+
   TJclBorRADToolInstallation = class(TObject)
   private
     FConfigData: TCustomIniFile;
@@ -308,11 +313,9 @@ type
     FMake: IJclCommandLineTool;
     FEdition: TJclBorRADToolEdition;
     FEnvironmentVariables: TStringList;
-    FIdeExeFileName: string;
     FIdePackages: TJclBorRADToolIdePackages;
     FIdeTools: TJclBorRADToolIdeTool;
     FInstalledUpdatePack: Integer;
-    FLatestUpdatePack: Integer;
     {$IFDEF MSWINDOWS}
     FOpenHelp: TJclBorlandOpenHelp;
     {$ENDIF MSWINDOWS}
@@ -323,12 +326,15 @@ type
     function GetDCC: TJclDCC;
     function GetDCPOutputPath: string;
     function GetDebugDCUPath: string;
+    function GetDefaultProjectsDir: string;
     function GetDescription: string;
     function GetEditionAsText: string;
     function GetEnvironmentVariables: TStrings;
+    function GetIdeExeFileName: string;
     function GetGlobals: TStrings;
     function GetIdeExeBuildNumber: string;
     function GetIdePackages: TJclBorRADToolIdePackages;
+    function GetLatestUpdatePack: Integer;
     function GetLibrarySearchPath: TJclBorRADToolPath;
     function GetName: string;
     function GetPalette: TJclBorRADToolPalette;
@@ -340,12 +346,13 @@ type
     procedure SetLibraryBrowsingPath(const Value: TJclBorRADToolPath);
     procedure SetDebugDCUPath(const Value: string);
   protected
-    constructor Create(const AConfigDataLocation: string);
+    constructor Create(const AConfigDataLocation: string); virtual;
     procedure ReadInformation;
     function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclBorRADToolPath; List: TStrings);
+    class function GetLatestUpdatePackForVersion(Version: Integer): Integer; virtual;
     class function PackageSourceFileExtension: string; virtual;
     class function RadToolKind: TJclBorRadToolKind; virtual;
     class function RadToolName: string; virtual;
@@ -358,6 +365,7 @@ type
     {$ENDIF KYLIX}
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
+    function IsBDS: Boolean;
     function SubstitutePath(const Path: string): string;
     function SupportsVisualCLX: Boolean;
     property BinFolderName: string read FBinFolderName;
@@ -365,6 +373,7 @@ type
     property DCC: TJclDCC read GetDCC;
     property DebugDCUPath: string read GetDebugDCUPath write SetDebugDCUPath;
     property DCPOutputPath: string read GetDCPOutputPath;
+    property DefaultProjectsDir: string read GetDefaultProjectsDir;
     property Description: string read GetDescription;
     property Edition: TJclBorRADToolEdition read FEdition;
     property EditionAsText: string read GetEditionAsText;
@@ -372,9 +381,9 @@ type
     property IdePackages: TJclBorRADToolIdePackages read GetIdePackages;
     property IdeTools: TJclBorRADToolIdeTool read FIdeTools;
     property IdeExeBuildNumber: string read GetIdeExeBuildNumber;
-    property IdeExeFileName: string read FIdeExeFileName;
+    property IdeExeFileName: string read GetIdeExeFileName;
     property InstalledUpdatePack: Integer read FInstalledUpdatePack;
-    property LatestUpdatePack: Integer read FLatestUpdatePack;
+    property LatestUpdatePack: Integer read GetLatestUpdatePack;
     property LibrarySearchPath: TJclBorRADToolPath read GetLibrarySearchPath write SetLibrarySearchPath;
     property LibraryBrowsingPath: TJclBorRADToolPath read GetLibraryBrowsingPath write SetLibraryBrowsingPath;
     {$IFDEF MSWINDOWS}
@@ -396,12 +405,13 @@ type
   private
     FBpr2Mak: TJclBpr2Mak;
   protected
-    constructor Create(const AConfigDataLocation: string);
+    constructor Create(const AConfigDataLocation: string); override;
     function GetVclIncludeDir: string;
   public
     destructor Destroy; override;
     class function PackageSourceFileExtension: string; override;
     class function RadToolName: string; override;
+    class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
     {$IFDEF KYLIX}
     function ConfigFileName(const Extension: string): string; override;
     {$ENDIF KYLIX}
@@ -412,6 +422,7 @@ type
 
   TJclDelphiInstallation = class(TJclBorRADToolInstallation)
   public
+    class function GetLatestUpdatePackForVersion(Version: Integer): Integer; override;
     class function PackageSourceFileExtension: string; override;
     class function RadToolName: string; override;
     {$IFDEF KYLIX}
@@ -484,6 +495,7 @@ const
   MSHelpSystemKeyName        = 'SOFTWARE\Microsoft\Windows\Help';
 
   BCBKeyName                 = 'SOFTWARE\Borland\C++Builder';
+  BDSKeyName                 = 'SOFTWARE\Borland\BDS';
   DelphiKeyName              = 'SOFTWARE\Borland\Delphi';
   {$ENDIF MSWINDOWS}
 
@@ -521,8 +533,11 @@ const
   PaletteHiddenTag           = '.Hidden';
 
   {$IFDEF MSWINDOWS}
-  DelphiIdeExeName           = 'delphi32.exe';
+  {
   BCBIdeExeName              = 'bcb.exe';
+  BDSIdeExeName              = 'bds.exe';
+  Delphi32IdeExeName         = 'delphi32.exe';
+  }
   MakeExeName                = 'make.exe';
   Bpr2MakExeName             = 'bpr2mak.exe';
   DCCExeName                 = 'dcc32.exe';
@@ -536,37 +551,21 @@ const
   {$ENDIF MSWINDOWS}
 
   {$IFDEF KYLIX}
-  IDs: array [1..3] of Integer = (60, 65, 69);
+  IDs: array [TKylixVersion] of Integer = (60, 65, 69);
+  LibSuffixes: array [TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
 
-  DelphiIdeExeName           = 'delphi';
+  Delphi32IdeExeName         = 'delphi';
   BCBIdeExeName              = 'bcblin';
   MakeExeName                = 'make';
   Bpr2MakExeName             = 'bpr2mak';
   DelphiOptionsFileExtension = '.kof';
 
-  LibSuffixes: array [TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
-
   DCCExeName                 = 'dcc';
   KylixHelpNamePart          = 'k%d';
   {$ENDIF KYLIX}
 
-  {$IFDEF KYLIX}
-  LatestUpdatePacks: array [1..3] of TUpdatePack = ( // Updated Sep 5, 2002
-    (Version: 1; LatestUpdatePack: 0),
-    (Version: 2; LatestUpdatePack: 0),
-    (Version: 3; LatestUpdatePack: 0)
-  {$ELSE}
-  LatestUpdatePacks: array [TJclBorRADToolKind, 1..3] of TUpdatePack = ( // Updated 2004-03-20
-    ((Version: 5; LatestUpdatePack: 1),
-     (Version: 6; LatestUpdatePack: 2),
-     (Version: 7; LatestUpdatePack: 0)),
-    ((Version: 5; LatestUpdatePack: 0),
-     (Version: 6; LatestUpdatePack: 4),
-     (Version: 0; LatestUpdatePack: 0))
-  {$ENDIF KYLIX}
-  );
-
 resourcestring
+  RsBorlandStudioProjects = 'Borland Studio Projects';
   RsCmdLineToolOutputInvalid = '%s: Output invalid, when OutputCallback assigned.';
 
 //--------------------------------------------------------------------------------------------------
@@ -598,6 +597,8 @@ function RegGetValueNamesAndValues(const RootKey: HKEY; const Key: string; const
 var
   I: Integer;
   TempList: TStringList;
+  Name: string;
+  DataType: DWORD;
 begin
   TempList := TStringList.Create;
   try
@@ -605,7 +606,11 @@ begin
     if Result then
     begin
       for I := 0 to TempList.Count - 1 do
-        TempList[I] := TempList[I] + '=' + RegReadStringDef(RootKey, Key, TempList[I], '');
+      begin
+        Name := TempList[I];
+        if RegGetDataType(RootKey, Key, Name, DataType) and (DataType = REG_SZ) then
+          TempList[I] := Name + '=' + RegReadStringDef(RootKey, Key, Name, '');
+      end;
       List.AddStrings(TempList);
     end;
   finally
@@ -1471,6 +1476,9 @@ begin
   {$ELSE}
   FConfigData := TRegistryIniFile.Create(AConfigDataLocation);
   FMake := TJclBorlandMake.Create(Self);
+  // Set option "-l+", which enables use of long command lines.  Should be
+  // default, but there have been reports indicating that's not always the case.
+  FMake.Options.Add('-l+');
   {$ENDIF KYLIX}
   FGlobals := TStringList.Create;
   ReadInformation;
@@ -1654,6 +1662,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclBorRADToolInstallation.GetDefaultProjectsDir: string;
+begin
+  {$IFDEF KYLIX}
+  Result := GetPersonalFolder;
+  {$ELSE ~KYLIX}
+  Result := Globals.Values['DefaultProjectsDirectory'];
+  if Result = '' then
+    if IsBDS then
+      Result := PathAddSeparator(GetPersonalFolder) + RsBorlandStudioProjects
+    else
+      Result := PathAddSeparator(RootDir) + 'Projects';
+  {$ENDIF ~KYLIX}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclBorRADToolInstallation.GetDescription: string;
 begin
   Result := Format('%s %s', [Name, EditionAsText]);
@@ -1698,6 +1722,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetEnvironmentVariables: TStrings;
+const
+  ToolNames: array[TJclBorRadToolKind] of string = ('DELPHI', 'BCB');
 var
   EnvNames: TStringList;
   EnvVarKeyName: string;
@@ -1720,10 +1746,13 @@ begin
         EnvNames.Free;
       end;
     end;
-    if RADToolKind = brCppBuilder then
-      FEnvironmentVariables.Values['BCB'] := RootDir
+    if IsBDS then
+    begin
+      FEnvironmentVariables.Values['BDS'] := PathRemoveSeparator(RootDir);
+      FEnvironmentVariables.Values['BDSPROJECTSDIR'] := DefaultProjectsDir;
+    end
     else
-      FEnvironmentVariables.Values['DELPHI'] := PathRemoveSeparator(RootDir);
+      FEnvironmentVariables.Values[ToolNames[RADToolKind]] := PathRemoveSeparator(RootDir);
   end;
   Result := FEnvironmentVariables;
 end;
@@ -1733,6 +1762,13 @@ end;
 function TJclBorRADToolInstallation.GetGlobals: TStrings;
 begin
   Result := FGlobals;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.GetIdeExeFileName: string;
+begin
+  Result := Globals.Values['App'];
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1754,6 +1790,21 @@ begin
   if not Assigned(FIdePackages) then
     FIdePackages := TJclBorRADToolIdePackages.Create(Self);
   Result := FIdePackages;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.GetLatestUpdatePack: Integer;
+begin
+  Result := GetLatestUpdatePackForVersion(VersionNumber);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclBorRADToolInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
+begin
+  // dummy; BCB doesn't like abstract class functions
+  Result := 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1825,6 +1876,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclBorRADToolInstallation.IsBDS: Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := Pos('bds.exe', Globals.Values['App']) > 0;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 class function TJclBorRADToolInstallation.PackageSourceFileExtension: string;
 begin
   Result := '';
@@ -1862,7 +1924,6 @@ const
   BinDir = 'Bin\';
   {$ENDIF KYLIX}
   UpdateKeyName = 'Update #';
-  IdeFileNames: array [TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName);
 var
   KeyLen, I: Integer;
   Key: string;
@@ -1871,20 +1932,22 @@ begin
   Key := ConfigData.FileName;
   {$IFDEF KYLIX}
   ConfigData.ReadSectionValues(GlobalsKeyName, Globals);
-  FRootDir := Globals.Values[RootDirValueName];
-  {$ELSE}
+  {$ELSE ~KYLIX}
   RegGetValueNamesAndValues(HKEY_LOCAL_MACHINE, Key, Globals);
-  FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, ConfigData.FileName, RootDirValueName, '');
 
   KeyLen := Length(Key);
   if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
     FVersionNumber := Ord(Key[KeyLen - 2]) - Ord('0')
   else
     FVersionNumber := 0;
-  {$ENDIF KYLIX}
 
+  // BDS 3.0 goes as Delphi 9
+  if IsBDS then
+    Inc(FVersionNumber, 6);
+  {$ENDIF ~KYLIX}
+
+  FRootDir := Globals.Values[RootDirValueName];
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
-  FIdeExeFileName := FBinFolderName + IdeFileNames[RADToolKind];
 
   Key := Globals.Values[VersionValueName];
   for Ed := Low(Ed) to High(Ed) do
@@ -1898,22 +1961,6 @@ begin
     if (Pos(UpdateKeyName, Key) = 1) and (Length(Key) > KeyLen) and StrIsDigit(Key[KeyLen + 1]) then
       FInstalledUpdatePack := Max(FInstalledUpdatePack, Integer(Ord(Key[KeyLen + 1]) - 48));
   end;
-
-  for I := 1 to 3 do
-    {$IFDEF KYLIX}
-    if LatestUpdatePacks[I].Version = VersionNumber then
-    begin
-      FLatestUpdatePack := LatestUpdatePacks[I].LatestUpdatePack;
-      Break;
-    end;
-    {$ENDIF KYLIX}
-    {$IFDEF MSWINDOWS}
-    if LatestUpdatePacks[RADToolKind, I].Version = VersionNumber then
-    begin
-      FLatestUpdatePack := LatestUpdatePacks[RADToolKind, I].LatestUpdatePack;
-      Break;
-    end;
-    {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1963,7 +2010,7 @@ begin
   {$IFDEF KYLIX}
   Result := True;
   {$ELSE}
-  Result := (Edition <> deSTD) and (VersionNumber >= 6);
+  Result := (Edition <> deSTD) and (VersionNumber in [6, 7]);
   {$ENDIF KYLIX}
 end;
 
@@ -1993,6 +2040,18 @@ begin
   Result := Format('%s/.borland/bcb%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
 end;
 {$ENDIF KYLIX}
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclBCBInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
+begin
+  case Version of
+    5: Result := 0;
+    6: Result := 4;
+  else
+    Result := 0;
+  end;
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2042,12 +2101,27 @@ end;
 // TJclDelphiInstallation
 //==================================================================================================
 
+
 {$IFDEF KYLIX}
 function TJclDelphiInstallation.ConfigFileName(const Extension: string): string;
 begin
   Result := Format('%s/.borland/delphi%d%s', [GetPersonalFolder, IDs[VersionNumber], Extension]);
 end;
 {$ENDIF KYLIX}
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclDelphiInstallation.GetLatestUpdatePackForVersion(Version: Integer): Integer;
+begin
+  case Version of
+    5: Result := 1;
+    6: Result := 2;
+    7: Result := 0;
+    9: Result := 0;
+  else
+    Result := 0;
+  end;
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2216,35 +2290,26 @@ var
 
 begin
   FList.Clear;
-  for I := 1 to 3 do
+  for I := Low(TKylixVersion) to High(TKylixVersion) do
     CheckForInstallation(brDelphi, I);
-  CheckForInstallation(brCppBuilder, 3);
+  CheckForInstallation(brCppBuilder, 3); // Kylix 3 only
 end;
 {$ELSE ~KYLIX}
-const
-  KeyNames: array [TJclBorRADToolKind] of string = (DelphiKeyName, BCBKeyName);
 var
   VersionNumbers: TStringList;
 
-  procedure EnumVersions(RADToolKind: TJclBorRADToolKind);
+  procedure EnumVersions(const KeyName: string; CreateClass: TJclBorRADToolInstallationClass);
   var
     I: Integer;
-    Item: TJclBorRADToolInstallation;
     VersionKeyName: string;
   begin
-    if RegKeyExists(HKEY_LOCAL_MACHINE, KeyNames[RADToolKind]) and
-      RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyNames[RADToolKind], VersionNumbers) then
+    if RegKeyExists(HKEY_LOCAL_MACHINE, KeyName) and
+      RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyName, VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
       begin
-        VersionKeyName := KeyNames[RADToolKind] + PathSeparator + VersionNumbers[I];
+        VersionKeyName := KeyName + PathSeparator + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
-        begin
-          if RADToolKind = brCppBuilder then
-            Item := TJclBCBInstallation.Create(VersionKeyName)
-          else
-            Item := TJclDelphiInstallation.Create(VersionKeyName);
-          FList.Add(Item);
-        end;
+          FList.Add(CreateClass.Create(VersionKeyName));
       end;
   end;
 
@@ -2252,8 +2317,9 @@ begin
   FList.Clear;
   VersionNumbers := TStringList.Create;
   try
-    EnumVersions(brDelphi);
-    EnumVersions(brCppBuilder);
+    EnumVersions(DelphiKeyName, TJclDelphiInstallation);
+    EnumVersions(BDSKeyName, TJclDelphiInstallation);
+    EnumVersions(BCBKeyName, TJclBCBInstallation);
   finally
     VersionNumbers.Free;
   end;
@@ -2336,6 +2402,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.25  2004/12/15 21:46:40  rrossmair
+// - D2005 support (incomplete)
+//
 // Revision 1.24  2004/11/18 00:57:14  rrossmair
 // - check-in for release 1.93
 //
@@ -2395,3 +2464,4 @@ end;
 //
 
 end.
+
