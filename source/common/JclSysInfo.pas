@@ -12,12 +12,15 @@
 {                                                                                                  }
 { The Original Code is JclSysInfo.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Eric S. Fisher                                                                                 }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   James Azarja, Azret Botash, Marcel van Brakel, Carl Clark, Wim de Cleen, Jean-Fabien Connault, }
+{   Bryan Coutch, Eric S. Fisher, Peter Friese, Peter J. Haas (PeterJHaas) jediplus@pjh2.de,       }
+{   Tom Hahn, Nick Hodges, Mike Lischke, Robert Marquardt, John C Molyneux, Scott Price,           }
+{   Alexander Radchenko, Robert Rossmair, Olivier Sannier (obones), André Snepvangers,             }
+{   Peter Thörnquist (peter3), Matthias Thoma, Petr Vones                                          }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -29,6 +32,10 @@
 
 // Last modified: $Date$
 // For history see end of file
+
+// Windows NT 4 and earlier do not support GetSystemPowerStatus (while introduced
+// in NT4 - it is a stub there - implemented in Windows 2000 and later.
+
 
 unit JclSysInfo;
 
@@ -3418,8 +3425,10 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := alsUnknown;
-  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
-    support GetSystemPowerStatus }
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then // Windows NT doesn't support GetSystemPowerStatus
+    Exit;                                                                     // so we return alsUnknown
+
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3442,8 +3451,10 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := abfUnknown;
-  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
-    support GetSystemPowerStatus }
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then // Windows NT doesn't support GetSystemPowerStatus
+    Exit;                                                                     // so we return abfUnknown
+
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3473,8 +3484,13 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := [];
-  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
-    support GetSystemPowerStatus }
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then // Windows NT doesn't support GetSystemPowerStatus
+  begin
+    Result := [abfUnknown];
+    Exit;                                                                     // so we return [abfUnknown]
+  end;
+
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3501,8 +3517,10 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
-  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
-    support GetSystemPowerStatus }
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then // Windows NT doesn't support GetSystemPowerStatus
+    Exit;
+
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3516,8 +3534,10 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
-  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
-    support GetSystemPowerStatus }
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then // Windows NT doesn't support GetSystemPowerStatus
+    Exit;
+
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3531,8 +3551,10 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
-  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
-    support GetSystemPowerStatus }
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then // Windows NT doesn't support GetSystemPowerStatus
+    Exit;
+
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3928,6 +3950,11 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.17  2004/05/05 00:15:12  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
+// Windows NT 4 and earlier do not support GetSystemPowerStatus. Modified the APM function accordingly.
+//
 // Revision 1.16  2004/04/19 06:14:43  rrossmair
 // Help TODOs done
 //
