@@ -1,0 +1,86 @@
+var
+  _BackupSeek: Pointer;
+
+function BackupSeek;
+begin
+  GetProcedureAddress(_BackupSeek, kernel32, 'BackupSeek');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_BackupSeek]
+  end;
+end;
+
+var
+  _AdjustTokenPrivileges: Pointer;
+
+function AdjustTokenPrivileges;
+begin
+  GetProcedureAddress(_AdjustTokenPrivileges, advapi32, 'AdjustTokenPrivileges');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_AdjustTokenPrivileges]
+  end;
+end;
+
+function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD; lpName: PChar): THandle; stdcall;
+  external kernel32 name 'CreateMutexA';
+
+function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
+  external kernel32 name 'GetVersionExA';
+function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
+  external kernel32 name 'GetVersionExA';
+
+var
+  _SetWaitableTimer: Pointer;
+
+function SetWaitableTimer;
+begin
+  GetProcedureAddress(_SetWaitableTimer, kernel32, 'SetWaitableTimer');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetWaitableTimer]
+  end;
+end;
+
+var
+  _SetVolumeMountPoint: Pointer;
+
+function SetVolumeMountPoint;
+begin
+  GetProcedureAddress(_SetVolumeMountPoint, kernel32, 'SetVolumeMountPointA');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_SetVolumeMountPoint]
+  end;
+end;
+
+var
+  _DeleteVolumeMountPoint: Pointer;
+
+function DeleteVolumeMountPoint;
+begin
+  GetProcedureAddress(_DeleteVolumeMountPoint, kernel32, 'DeleteVolumeMountPointA');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_DeleteVolumeMountPoint]
+  end;
+end;
+
+var
+  _GetVolumeNameForVolMountPoint: Pointer;
+
+function GetVolumeNameForVolumeMountPoint;
+begin
+  GetProcedureAddress(_GetVolumeNameForVolMountPoint, kernel32, 'GetVolumeNameForVolumeMountPointA');
+  asm
+    mov esp, ebp
+    pop ebp
+    jmp [_GetVolumeNameForVolMountPoint]
+  end;
+end;
+
