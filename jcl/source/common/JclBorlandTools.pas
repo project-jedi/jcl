@@ -32,6 +32,7 @@
 unit JclBorlandTools;
 
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 interface
 
@@ -2307,6 +2308,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/08/09 06:38:08  marquardt
+// add JvWStrUtils.pas as JclWideStrings.pas
+//
 // Revision 1.17  2004/08/01 05:52:10  marquardt
 // move constructors/destructors
 //
