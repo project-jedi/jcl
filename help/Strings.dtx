@@ -1607,7 +1607,9 @@ Description:
   the first occurences of the Start and Stop characters. For example,
   StrBetween('Hello world', 'e', 'r') returns 'llo wo'. Note that if the position
   of Start is greater than Stop, or either of these characters is not found in the
-  source string, the result is an empty string.
+  source string, the result is an empty string. If the Start and Stop symbols are
+  equal StrBetween returns the string between the first and second occurence of
+  that particular symbol. 
 Parameters:
   S - The source string from which to extract the sub-string
   Start - The character which denotes the start of the sub-string to extract.
