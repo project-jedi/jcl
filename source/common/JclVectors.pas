@@ -16,6 +16,11 @@
 { Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
 { All rights reserved.                                                                             }
 {                                                                                                  }
+{ Contributors:                                                                                    }
+{   Daniele Teti (dade2004)                                                                        }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { The Delphi Container Library                                                                     }
@@ -1413,6 +1418,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/03/14 08:46:53  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.10  2005/03/12 06:01:06  rrossmair
 // - fixed collection insert, iterator add methods
 //

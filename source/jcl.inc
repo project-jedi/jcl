@@ -48,9 +48,11 @@ ALERT_jedi_inc_incompatible
 {.$DEFINE MATH_SINGLE_PRECISION}
 
 {$IFDEF MATH_DOUBLE_PRECISION}
+  {$UNDEF MATH_SINGLE_PRECISION}
   {$UNDEF MATH_EXTENDED_PRECISION}
 {$ENDIF}
 {$IFDEF MATH_SINGLE_PRECISION}
+  {$UNDEF MATH_DOUBLE_PRECISION}
   {$UNDEF MATH_EXTENDED_PRECISION}
 {$ENDIF}
 
@@ -74,6 +76,9 @@ ALERT_jedi_inc_incompatible
 {.$DEFINE DROP_OBSOLETE_CODE}
 
 // $Log$
+// Revision 1.12  2005/03/14 08:46:54  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.11  2005/02/26 16:42:08  marquardt
 // deactivated THREADSAFE and fixed bugs stemming from that
 //
@@ -84,6 +89,9 @@ ALERT_jedi_inc_incompatible
 // Added THREADSAFE directive
 //
 // $Log$
+// Revision 1.12  2005/03/14 08:46:54  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.11  2005/02/26 16:42:08  marquardt
 // deactivated THREADSAFE and fixed bugs stemming from that
 //

@@ -60,6 +60,7 @@ type
     function InstallRunTimePackage(const BaseName: string): Boolean;
     function InstallOption(Option: TJediInstallOption): Boolean;
     procedure RemoveDialogFromRepository(const DialogName, DialogFileName: string);
+    function UninstallExpert(const FileName: string): Boolean;
     function UninstallPackage(const Name: string): Boolean;
     function UninstallRunTimePackage(const BaseName: string): Boolean;
     function UninstallOption(Option: TJediInstallOption): Boolean;
@@ -1106,7 +1107,7 @@ begin
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
     ioJclExpertDebug..ioJclExpertUses:
-      Result := UninstallPackage(ExpertPaths[Option]);
+      Result := UninstallExpert(ExpertPaths[Option]);
     // ioJclCopyPackagesHppFiles: 
     // ioJclExcDialog:
     ioJclExcDialogVCL:
@@ -1341,6 +1342,15 @@ begin
     WriteLog(Format(LineBreak + 'Removed package %s.', [PackageFileName]));
 end;
 
+function TJclInstallation.UninstallExpert(const FileName: string): Boolean;
+var
+  BPLFileName: string;
+begin
+  BPLFileName := Format(ExtractFileName(FileName), ['', '.bpl']);
+  Target.IdePackages.RemovePackage(PathAddSeparator(StoredBPLPath) + Format(BPLFileName, [Target.VersionNumber]));
+  Result := UninstallPackage(ExpertFileName(Target, FileName));
+end;
+
 function TJclInstallation.UninstallRunTimePackage(const BaseName: string): Boolean;
 begin
   Result := UninstallPackage(FullPackageFileName(Target, BaseName));
@@ -1573,7 +1583,10 @@ begin
   try
     InitProgress;
     for I := 0 to FTargetInstalls.Count - 1 do
+    begin
+      TJclInstallation(FTargetInstalls[I]).Undo;
       Result := Result and TJclInstallation(FTargetInstalls[I]).Run;
+    end;
   finally
     Tool.UpdateStatus('');
   end;
@@ -1668,6 +1681,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.55  2005/03/14 08:46:47  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.54  2005/03/14 02:21:34  rrossmair
 // - changed Expert naming convention to include Delphi/BCB infix (D|C)
 //

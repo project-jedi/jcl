@@ -38,7 +38,7 @@ $Id$
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="94"/>
+  <property name="version.minor"    value="95"/>
   <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
 
   <!-- why won't the following line work with subst=""? -->

@@ -22,20 +22,22 @@ package DJclVcl;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $48000000}
-{$DESCRIPTION 'JEDI Code Library VCL package for Delphi 9'}
+{$DESCRIPTION 'JEDI Code Library VCL package for Delphi 2005'}
 {$LIBSUFFIX '90'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
   vcl,
+  vcljpg,
   DJcl,
-  vcljpg;
-
+  rtl
+  ;
+  
 contains
-  JclPrint in '..\..\source\vcl\JclPrint.pas',
-  JclGraphUtils in '..\..\source\vcl\JclGraphUtils.pas',
-  JclGraphics in '..\..\source\vcl\JclGraphics.pas';
+  JclPrint in '..\..\source\vcl\JclPrint.pas' ,
+  JclGraphUtils in '..\..\source\vcl\JclGraphUtils.pas' ,
+  JclGraphics in '..\..\source\vcl\JclGraphics.pas' 
+  ;
 
 end.

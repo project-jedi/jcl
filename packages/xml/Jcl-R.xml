@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="Jcl" Design="0">
   <Description>JEDI Code Library RTL package</Description>
+  <GUID/>
   <C5PFlags>-LUvcl50</C5PFlags>
   <C6PFlags/>
   <C5Libs/>
@@ -67,7 +68,6 @@
     <File Name="..\..\source\windows\JclCOM.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclConsole.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclDebug.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclDotNet.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclHookExcept.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLANMan.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclLocales.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
@@ -87,11 +87,9 @@
     <File Name="..\..\source\windows\JclTask.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclTD32.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclUnicode.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\JclWideFormat.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\windows\JclWideFormat.pas" Targets="D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWin32.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\JclWinMIDI.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\mscoree_TLB.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
-    <File Name="..\..\source\windows\mscorlib_TLB.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\MSTask.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\zlibh.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>

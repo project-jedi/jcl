@@ -240,14 +240,16 @@ threadvar
   CurrentLineG: array of Integer;
   CurrentLineB: array of Integer;
 
-// Helper functions
+//=== Helper functions =======================================================
+
 function IntToByte(Value: Integer): Byte;
 begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
 
 
-// Internal low level routines
+//=== Internal low level routines ============================================
+
 procedure FillLongword(var X; Count: Integer; Value: Longword);
 {asm
 // EAX = X
@@ -1042,7 +1044,8 @@ end;
 
 
 
-// Matrices
+//=== Matrices ===============================================================
+
 { TODO -oWIMDC -cReplace : Insert JclMatrix support }
 function _DET(a1, a2, b1, b2: Extended): Extended; overload;
 begin
@@ -1142,7 +1145,8 @@ begin
   Result[2] := M.A[0, 2] * V[0] + M.A[1, 2] * V[1] + M.A[2, 2] * V[2];
 end;
 
-// TJclLinearTransformation
+//=== { TJclLinearTransformation } ===========================================
+
 constructor TJclLinearTransformation.Create;
 begin
   inherited Create;
@@ -1263,7 +1267,8 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-// PolyLines and Polygons
+//=== PolyLines and Polygons =================================================
+
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
@@ -1458,7 +1463,6 @@ begin
   IdentityMatrix.A[2, 2] := 1.0;
 end;
 
-// Initialization and Finalization
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);

@@ -574,7 +574,8 @@ threadvar
   CurrentLineG: array of Integer;
   CurrentLineB: array of Integer;
 
-// Helper functions
+//=== Helper functions =======================================================
+
 function IntToByte(Value: Integer): Byte;
 begin
   Result := Math.Max(0, Math.Min(255, Value));
@@ -599,7 +600,8 @@ begin
   Result := True;
 end;
 
-// Internal low level routines
+//=== Internal low level routines ============================================
+
 procedure FillLongword(var X; Count: Integer; Value: Longword);
 {asm
 // EAX = X
@@ -2104,7 +2106,8 @@ begin
   Result := True;
 end;
 
-// TJclDesktopCanvas
+//=== { TJclDesktopCanvas } ==================================================
+
 constructor TJclDesktopCanvas.Create;
 begin
   inherited Create;
@@ -2119,7 +2122,8 @@ begin
   inherited Destroy;
 end;
 
-// TJclRegionInfo
+//=== { TJclRegionInfo } =====================================================
+
 constructor TJclRegionInfo.Create(Region: TJclRegion);
 begin
   inherited Create;
@@ -2158,7 +2162,8 @@ begin
   Result := RectAssign(RectP^.Left, RectP.Top, RectP^.Right, RectP^.Bottom);
 end;
 
-// TJclRegion
+//=== { TJclRegion } =========================================================
+
 constructor TJclRegion.Create(RegionHandle: HRGN; OwnsHandle: Boolean = True);
 begin
   inherited Create;
@@ -2401,7 +2406,8 @@ begin
   Result := TJclRegionInfo.Create(Self);
 end;
 
-// TJclThreadPersistent
+//=== { TJclThreadPersistent } ===============================================
+
 constructor TJclThreadPersistent.Create;
 begin
   inherited Create;
@@ -2449,7 +2455,8 @@ begin
   InterlockedDecrement(FLockCount);
 end;
 
-// TJclCustomMap
+//=== { TJclCustomMap } ======================================================
+
 procedure TJclCustomMap.Delete;
 begin
   SetSize(0, 0);
@@ -2499,7 +2506,8 @@ begin
   SetSize(NewWidth, Height);
 end;
 
-// TJclBitmap32
+//=== { TJclBitmap32 } =======================================================
+
 constructor TJclBitmap32.Create;
 begin
   inherited Create;
@@ -4276,7 +4284,8 @@ begin
   end;
 end;
 
-// TJclByteMap
+//=== { TJclByteMap } ========================================================
+
 destructor TJclByteMap.Destroy;
 begin
   FBytes := nil;
@@ -4543,7 +4552,8 @@ begin
   end;
 end;
 
-// Matrices
+//=== Matrices ===============================================================
+
 { TODO -oWIMDC -cReplace : Insert JclMatrix support }
 function _DET(a1, a2, b1, b2: Extended): Extended; overload;
 begin
@@ -4643,7 +4653,8 @@ begin
   Result[2] := M.A[0, 2] * V[0] + M.A[1, 2] * V[1] + M.A[2, 2] * V[2];
 end;
 
-// TJclLinearTransformation
+//=== { TJclLinearTransformation } ===========================================
+
 constructor TJclLinearTransformation.Create;
 begin
   inherited Create;
@@ -4764,7 +4775,8 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-// PolyLines and Polygons
+//=== PolyLines and Polygons =================================================
+
 procedure PolylineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
 var
@@ -5378,7 +5390,8 @@ begin
   Bitmap.Changed;
 end;
 
-// Filters
+//=== Filters ================================================================
+
 procedure CheckParams(Dst, Src: TJclBitmap32);
 begin
   if Src = nil then
@@ -5541,7 +5554,6 @@ begin
   IdentityMatrix.A[2, 2] := 1.0;
 end;
 
-// Initialization and Finalization
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);

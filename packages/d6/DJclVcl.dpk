@@ -28,14 +28,14 @@ package DJclVcl;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
   vcl,
   vcljpg,
-  DJcl;
-
+  DJcl,
+  rtl
+  ;
 contains
   JclPrint in '..\..\source\vcl\JclPrint.pas' ,
   JclGraphUtils in '..\..\source\vcl\JclGraphUtils.pas' ,
-  JclGraphics in '..\..\source\vcl\JclGraphics.pas' ;
-
+  JclGraphics in '..\..\source\vcl\JclGraphics.pas' 
+  ;
 end.

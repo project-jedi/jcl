@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclVClx" Design="0">
-  <Description/>
+  <Description>JEDI Code Library VisualCLX package</Description>
+  <GUID/>
   <C5PFlags/>
   <C6PFlags/>
   <C5Libs/>
