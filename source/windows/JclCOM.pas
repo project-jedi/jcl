@@ -19,7 +19,7 @@
 { Various COM (Component Object Model) utility routines.                       }
 {                                                                              }
 { Unit Owner: Marcel van Brakel                                                }
-{ Last modified: October 17, 2000                                              }
+{ Last modified: December 18, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -46,20 +46,20 @@ uses
 
 function IsDCOMEnabled: Boolean;
 var
-  Ole32: HModule;
-  CoCreateInstanceEx: TCoCreateInstanceExProc;
-  OldError: Longint;
+  //Ole32: HModule;
+  //CoCreateInstanceEx: TCoCreateInstanceExProc;
+  RegValue: string;
 begin
-  Result := False;
-  OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-  try
-    Ole32 := GetModuleHandle('ole32.dll');
-    Win32Check(Ole32 > HINSTANCE_ERROR);
-    @CoCreateInstanceEx := GetProcAddress(Ole32, 'CoCreateInstanceEx');
-    Result := @CoCreateInstanceEx <> nil;
-  finally
-    SetErrorMode(OldError);
-  end;
+  //Result := False;
+  //Ole32 := GetModuleHandle('ole32.dll');
+  //Win32Check(Ole32 <> 0);
+  //@CoCreateInstanceEx := GetProcAddress(Ole32, 'CoCreateInstanceEx');
+  //Result := @CoCreateInstanceEx <> nil;
+  //if Result then
+  //begin
+  RegValue := ResgReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE\', 'EnableDCOM');
+  Result := (RegValue = 'y') or (RegValue = 'Y');
+  //end;
 end;
 
 //------------------------------------------------------------------------------
