@@ -16,8 +16,12 @@
 { Portions created Marcel Bestebroer are Copyright (C) Marcel Bestebroer. All rights reserved.     }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Theo Bebekis, Marcel Bestebroer (marcelb), Robert Marquardt, Robert Rossmair,                  }
-{   Matthias Thoma, Petr Vones                                                                     }
+{   Theo Bebekis                                                                                   }
+{   Marcel Bestebroer (marcelb)                                                                    }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -238,7 +242,7 @@ type
 
     property ClassRef: TClass read GetClassRef;
     property Parent: IJclClassTypeInfo read GetParent;
-    property TotalPropertyCount: Integer read GetPropertyCount;
+    property TotalPropertyCount: Integer read GetTotalPropertyCount;
     property PropertyCount: Integer read GetPropertyCount;
     property Properties[const PropIdx: Integer]: IJclPropInfo
       read GetProperties;
@@ -2850,6 +2854,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.17  2004/11/15 05:25:28  mthoma
+// Fixed #1055.
+//
 // Revision 1.16  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
