@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclBase.pas.                                                             }
+{ The Original Code is JclBase.pas.                                                                }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -29,12 +29,14 @@ unit JclBase;
 
 {$I jcl.inc}
 
+{$WEAKPACKAGEUNIT ON}
+
 interface
 
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils;
 
 //--------------------------------------------------------------------------------------------------
@@ -65,7 +67,7 @@ procedure RaiseLastWin32Error;
 
 procedure QueryPerformanceCounter(var C: Int64);
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 var
   Default8087CW: Word;
@@ -102,7 +104,7 @@ type
     property LastErrorMsg: string read FLastErrorMsg;
   end;
 
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Types
@@ -225,15 +227,15 @@ implementation
 uses
   JclResources;
 
-//=================================================================================================
+//==================================================================================================
 // EJclError
-//=================================================================================================
+//==================================================================================================
 
 constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
   {$IFDEF FPC}
   inherited Create(ResStringRec^);
-  {$ELSE}
+  {$ELSE FPC}
   inherited Create(LoadResString(ResStringRec));
   {$ENDIF FPC}
 end;
@@ -242,14 +244,14 @@ constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec; const Args: a
 begin
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^, Args);
-  {$ELSE}
+  {$ELSE FPC}
   inherited CreateFmt(LoadResString(ResStringRec), Args);
   {$ENDIF FPC}
 end;
 
-//=================================================================================================
+//==================================================================================================
 // FreePascal support
-//=================================================================================================
+//==================================================================================================
 
 {$IFDEF FPC}
 {$IFDEF MSWINDOWS}
@@ -258,13 +260,10 @@ function SysErrorMessage(ErrNo: Integer): string;
 var
   Size: Integer;
   Buffer: PChar;
-
 begin
   GetMem(Buffer, 4000);
-
   Size := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrNo,
     0, Buffer, 4000, nil);
-
   SetString(Result, Buffer, Size);
 end;
 
@@ -279,7 +278,6 @@ end;
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 var
   T: TLargeInteger;
-
 begin
   Windows.QueryPerformanceFrequency(@T);
   CardinalsToI64(Frequency, T.LowPart, T.HighPart);
@@ -290,25 +288,24 @@ end;
 procedure QueryPerformanceCounter(var C: Int64);
 var
   T: TLargeInteger;
-
 begin
   Windows.QueryPerformanceCounter(@T);
   CardinalsToI64(C, T.LowPart, T.HighPart);
 end;
 
-{$ELSE}
+{$ELSE MSWINDOWS}
 
 function SysErrorMessage(ErrNo: Integer): string;
 begin
   Result := Format(RsSysErrorMessageFmt, [ErrNo, ErrNo]);
 end;
 
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 {$ENDIF FPC}
 
-//=================================================================================================
+//==================================================================================================
 // EJclWin32Error
-//=================================================================================================
+//==================================================================================================
 
 {$IFDEF MSWINDOWS}
 
@@ -345,16 +342,16 @@ begin
   FLastErrorMsg := SysErrorMessage(FLastError);
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ELSE}
+  {$ELSE FPC}
   inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ENDIF FPC}
 end;
 
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
-//==============================================================================
+//==================================================================================================
 // Int64 support
-//==============================================================================
+//==================================================================================================
 
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 begin
@@ -370,10 +367,9 @@ begin
   TULargeInteger(I).HighPart := HighPart;
 end;
 
-
-//==============================================================================
+//==================================================================================================
 // TObjectList
-//==============================================================================
+//==================================================================================================
 
 {$IFNDEF DELPHI5_UP}
 
@@ -411,9 +407,9 @@ end;
 
 {$ENDIF DELPHI5_UP}
 
-//==============================================================================
+//==================================================================================================
 // Cross=Platform Compatibility
-//==============================================================================
+//==================================================================================================
 
 {$IFNDEF DELPHI6_UP}
 
@@ -423,6 +419,5 @@ begin
 end;
 
 {$ENDIF DELPHI6_UP}
-
 
 end.
