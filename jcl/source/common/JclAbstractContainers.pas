@@ -249,6 +249,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/03/14 08:46:53  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.4  2005/03/03 08:02:56  marquardt
 // various style cleanings, bugfixes and improvements
 //
@@ -256,15 +259,8 @@ end;
 // - replaced $IFDEF UNIX by $IFDEF HAS_UNIT_LIBC, fixed header
 //
 // Revision 1.2  2005/03/02 09:59:30  dade2004
-// Added
-//  -TJclStrCollection in JclContainerIntf
-//        Every common methods for IJclStrCollection are implemented here
-//
-// -Every class that implement IJclStrCollection now derive from  TJclStrCollection instead of TJclAbstractContainer
-// -Every abstract method in TJclStrCollection has been marked as "override" in descendent classes
-//
-// DCLAppendDelimited has been removed from JclAlgorothms, his body has been fixed for a bug and put into
-// relative method in TJclStrCollection
+// - added TJclStrCollection, which now serves as a common ancestor to all classes implementing IJclStrCollection.
+// - replaced and bug-fixed JclAlgorithms.DCLAppendDelimited() by TJclStrCollection.AppendDelimited
 //
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JclVcl" Design="0">
   <Description>JEDI Code Library VCL package</Description>
+  <GUID/>
   <C5PFlags/>
   <C6PFlags/>
   <C5Libs/>
@@ -10,6 +11,7 @@
     <Package Name="vcljpg" Targets="all" Condition=""/>
     <Package Name="DJcl" Targets="D6,D7,D9" Condition=""/>
     <Package Name="CJcl" Targets="C6" Condition=""/>
+    <Package Name="rtl" Targets="C6,D6,D7,K3,D9" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\source\vcl\JclPrint.pas" Targets="C6,D6,D7,D9" Formname="" Condition=""/>

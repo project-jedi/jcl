@@ -45,10 +45,10 @@ unit JclResources;
 
 interface
 
-{$IFDEF COMPILER5}
+{$IFNDEF RTL140_UP}
 const
   sLineBreak = #13#10;
-{$ENDIF COMPILER5}
+{$ENDIF RTL140_UP}
 
 //=== JclBase ================================================================
 resourcestring
@@ -1643,6 +1643,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.34  2005/03/14 08:46:53  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.33  2005/03/12 01:32:50  outchy
 // Update of the CPUID function. New processors detection, constants reworked and specifications upgraded.
 //

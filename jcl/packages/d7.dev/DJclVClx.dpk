@@ -2,39 +2,37 @@ package DJclVClx;
 
 {$R *.res}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
-{$OVERFLOWCHECKS ON}
-{$RANGECHECKS ON}
-{$REFERENCEINFO ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
-{$TYPEDADDRESS ON}
+{$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $400000}
-{$DESCRIPTION 'JEDI Code Library developer VisualCLX package for Delphi 7'}
+{$IMAGEBASE $48000000}
+{$DESCRIPTION 'JEDI Code Library VisualCLX package for Delphi 7'}
 {$LIBSUFFIX '70'}
 {$RUNONLY}
-{$IMPLICITBUILD ON}
-{$DEFINE VisualCLX}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
-  visualclx,
-  DJcl;
-
+  visualclx
+  
 contains
-  JclQGraphUtils in '..\..\Source\Prototypes\JclQGraphUtils.pas',
-  JclQGraphics in '..\..\Source\Prototypes\JclQGraphics.pas';
-
+  JclQGraphUtils in '..\..\source\prototypes\JclQGraphUtils.pas' ,
+  JclQGraphics in '..\..\source\prototypes\JclQGraphics.pas' 
+  
 end.

@@ -616,7 +616,6 @@ begin
 end;
 
 {$IFDEF Bitmap32}
-
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
 begin
   if (Dst = nil) or Dst.Empty then
@@ -635,7 +634,6 @@ begin
     raise EJclGraphicsError.CreateRes(@RsSourceBitmapInvalid);
   Result := True;
 end;
-
 {$ENDIF Bitmap32}
 
 //=== Internal low level routines ============================================
@@ -2161,7 +2159,6 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF VCL}
-
 //=== { TJclDesktopCanvas } ==================================================
 
 constructor TJclDesktopCanvas.Create;
@@ -2464,7 +2461,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF Bitmap32}
-
 //=== { TJclThreadPersistent } ===============================================
 
 constructor TJclThreadPersistent.Create;
@@ -5643,6 +5639,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.22  2005/03/14 08:46:54  rrossmair
+// - check-in in preparation for release 1.95
+//
 // Revision 1.21  2005/03/08 08:33:19  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //

@@ -16,12 +16,12 @@ BEGIN
          BLOCK "040904E4"
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
-              VALUE "FileDescription", "JCL IDE Favorite Dialogs expert\0"
+              VALUE "FileDescription", "JEDI Code Library VCL package for Delphi 9\0"
               VALUE "FileVersion", "1.95.1\0"
-              VALUE "InternalName", "IdeOpenDlgFavoriteC60\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2004 Project JEDI\0"
-              VALUE "OriginalFilename", "IdeOpenDlgFavoriteC60.bpl\0"
-              VALUE "ProductName", "Jedi Code Library Extension\0"
+              VALUE "InternalName", "DJclVcl90\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2005 Project JEDI\0"
+              VALUE "OriginalFilename", "DJclVcl90.bpl\0"
+              VALUE "ProductName", "Jedi Code Library\0"
               VALUE "ProductVersion", "1.95 Build 1839\0"
          END
     END
