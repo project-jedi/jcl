@@ -40,7 +40,11 @@
 {$ELSE ~PROTOTYPE}
 // For history, see end of file
 
-unit {$IFDEF VisualCLX} JclQGraphics {$ELSE} JclGraphics {$ENDIF};
+{$IFDEF VCL}
+unit JclGraphics;
+{$ELSE VisualCLX}
+unit JclQGraphics;
+{$ENDIF VisualCLX}
 {$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
@@ -161,22 +165,23 @@ type
     FHandle: HRGN;
     FBoxRect: TRect;
     FRegionType: Integer;
+    FOwnsHandle: Boolean;
     procedure CheckHandle;
   protected
     function GetHandle: HRGN;
     function GetBox: TRect;
     function GetRegionType: TJclRegionKind;
   public
-    constructor Create(RegionHandle: HRGN);
+    constructor Create(RegionHandle: HRGN; OwnsHandle: Boolean = True);
     constructor CreateElliptic(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
-    constructor CreateElliptic(Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
+    constructor CreateElliptic(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
     constructor CreatePoly(const Points: TDynPointArray; Count: Integer; FillMode: TPolyFillMode);
     constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
     constructor CreateRect(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
-    constructor CreateRect(ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
+    constructor CreateRect(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
-    constructor CreateRoundRect(Top, Left, Bottom, Right: Integer; CornerWidth, CornerHeight: Integer); overload;
+    constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
@@ -203,6 +208,7 @@ type
     property RegionType: TJclRegionKind read GetRegionType;
   end;
   {$ENDIF VCL}
+
   {$IFDEF Bitmap32}
   { TJclThreadPersistent }
   { TJclThreadPersistent is an ancestor for TJclBitmap32 object. In addition to
@@ -426,6 +432,7 @@ type
     property Value[X, Y: Integer]: Byte read GetValue write SetValue; default;
   end;
   {$ENDIF Bitmap32}
+
   TJclTransformation = class(TObject)
   public
     function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
@@ -487,7 +494,7 @@ procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 {$ENDIF VCL}
 {$IFDEF Bitmap32}
-procedure BlockTransfer( Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
+procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 
 procedure StretchTransfer( Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
@@ -2316,12 +2323,12 @@ end;
 // TJclRegion
 //==================================================================================================
 
-constructor TJclRegion.Create(RegionHandle: HRGN);
+constructor TJclRegion.Create(RegionHandle: HRGN; OwnsHandle: Boolean = True);
 begin
   inherited Create;
-  if RegionHandle = 0 then
-    raise EJclGraphicsError.CreateResRec(@RsInvalidHandleForRegion);
   FHandle := RegionHandle;
+  FOwnsHandle := OwnsHandle;
+  CheckHandle;
   GetBox;
 end;
 
@@ -2330,30 +2337,21 @@ end;
 constructor TJclRegion.CreateBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode);
 begin
-  inherited Create;
-  FHandle := CreateRegionFromBitmap(Bitmap, RegionColor, RegionBitmapMode);
-  CheckHandle;
-  GetBox;
+  Create(CreateRegionFromBitmap(Bitmap, RegionColor, RegionBitmapMode), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateElliptic(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
-  inherited Create;
-  FHandle := CreateEllipticRgnIndirect(ARect);
-  CheckHandle;
-  GetBox;
+  Create(CreateEllipticRgnIndirect(ARect), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateElliptic(Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
+constructor TJclRegion.CreateElliptic(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
-  inherited Create;
-  FHandle := CreateEllipticRgn(Top, Left, Bottom, Right);
-  CheckHandle;
-  GetBox;
+  Create(CreateEllipticRgn(Top, Left, Bottom, Right), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2361,15 +2359,12 @@ end;
 constructor TJclRegion.CreatePoly(const Points: TDynPointArray; Count: Integer;
   FillMode: TPolyFillMode);
 begin
-  inherited Create;
   case FillMode of
     fmAlternate:
-      FHandle := CreatePolygonRgn(Points, Count, ALTERNATE);
+      Create(CreatePolygonRgn(Points, Count, ALTERNATE), True);
     fmWinding:
-      FHandle := CreatePolygonRgn(Points, Count, WINDING);
+      Create(CreatePolygonRgn(Points, Count, WINDING), True);
   end;
-  CheckHandle;
-  GetBox;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2377,35 +2372,26 @@ end;
 constructor TJclRegion.CreatePolyPolygon(const Points: TDynPointArray;
   const Vertex: TDynIntegerArray; Count: Integer; FillMode: TPolyFillMode);
 begin
-  inherited Create;
   case FillMode of
     fmAlternate:
-      FHandle := CreatePolyPolygonRgn(Points, Vertex, Count, ALTERNATE);
+      Create(CreatePolyPolygonRgn(Points, Vertex, Count, ALTERNATE), True);
     fmWinding:
-      FHandle := CreatePolyPolygonRgn(Points, Vertex, Count, WINDING);
+      Create(CreatePolyPolygonRgn(Points, Vertex, Count, WINDING), True);
   end;
-  CheckHandle;
-  GetBox;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
-  inherited Create;
-  FHandle := CreateRectRgn(Top, Left, Bottom, Right);
-  CheckHandle;
-  GetBox;
+  Create(CreateRectRgn(Top, Left, Bottom, Right), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
+constructor TJclRegion.CreateRect(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
 begin
-  inherited Create;
-  FHandle := CreateRectRgnIndirect(ARect);
-  CheckHandle;
-  GetBox;
+  Create(CreateRectRgnIndirect(ARect), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2413,51 +2399,39 @@ end;
 constructor TJclRegion.CreateRoundRect(const ARect: TRect; CornerWidth,
   CornerHeight: Integer);
 begin
-  inherited Create;
-  FHandle := CreateRoundRectRgn(ARect.Top, ARect.Left, ARect.Bottom, ARect.Right,
-    CornerWidth, CornerHeight);
-  CheckHandle;
-  GetBox;
+  Create(CreateRoundRectRgn(ARect.Top, ARect.Left, ARect.Bottom, ARect.Right,
+    CornerWidth, CornerHeight), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRoundRect(Top, Left, Bottom, Right, CornerWidth,
+constructor TJclRegion.CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth,
   CornerHeight: Integer);
 begin
-  inherited Create;
-  FHandle := CreateRoundRectRgn(Top, Left, Bottom, Right, CornerWidth, CornerHeight);
-  CheckHandle;
-  GetBox;
+  Create(CreateRoundRectRgn(Top, Left, Bottom, Right, CornerWidth, CornerHeight), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreatePath(Canvas: TCanvas);
 begin
-  inherited Create;
-  FHandle := PathToRegion(Canvas.Handle);
-  CheckHandle;
-  GetBox;
+  Create(PathToRegion(Canvas.Handle), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRegionInfo(RegionInfo: TJclRegionInfo);
 begin
-  inherited Create;
   if RegionInfo = nil then
     raise EJclGraphicsError.CreateResRec(@RsInvalidRegionInfo);
-  FHandle := ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^));
-  CheckHandle;
-  GetBox;
+  Create(ExtCreateRegion(nil,RegionInfo.FDataSize,TRgnData(RegionInfo.FData^)), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TJclRegion.Destroy;
 begin
-  if FHandle <> 0 then
+  if FOwnsHandle and (FHandle <> 0) then
     DeleteObject(FHandle);
   inherited Destroy;
 end;
@@ -2467,7 +2441,12 @@ end;
 procedure TJclRegion.CheckHandle;
 begin
   if FHandle = 0 then
-    raise EJclWin32Error.CreateResRec(@RsRegionCouldNotCreated);
+  begin
+    if FOwnsHandle then
+      raise EJclWin32Error.CreateResRec(@RsRegionCouldNotCreated)
+    else
+      raise EJclGraphicsError.CreateResRec(@RsInvalidHandleForRegion);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -6149,6 +6128,10 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.13  2004/07/15 05:15:41  rrossmair
+// TJclRegion: Handle ownership management added, some refactoring
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.12  2004/07/12 02:54:33  rrossmair
 // TJclRegion.Create fixed
 //
@@ -6164,7 +6147,6 @@ initialization
 // Revision 1.8  2004/04/18 06:32:07  rrossmair
 // replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //

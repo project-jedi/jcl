@@ -39,11 +39,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-
 // For history, see end of file
 
-unit  JclQGraphics ;
-
+unit JclQGraphics;
 
 {$I jcl.inc}
 
@@ -54,9 +52,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  
   Types, QGraphics, JclQGraphUtils,
-  
   JclBase;
 
 type
@@ -129,8 +125,8 @@ var
 //--------------------------------------------------------------------------------------------------
 
 type
-  
-  
+
+
   TJclTransformation = class(TObject)
   public
     function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
@@ -179,14 +175,10 @@ function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
 {$ENDIF MSWINDOWS}
-
-
 {$IFDEF MSWINDOWS}
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 {$ENDIF MSWINDOWS}
-
-
 
 implementation
 
@@ -194,7 +186,6 @@ uses
   Math,
   {$IFDEF MSWINDOWS}
   CommCtrl, ShellApi,
-  
   {$ENDIF MSWINDOWS}
   JclLogic;
 
@@ -258,7 +249,6 @@ function IntToByte(Value: Integer): Byte;
 begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
-
 
 //==================================================================================================
 // Internal low level routines
@@ -986,7 +976,6 @@ begin
     Target.Width := NewWidth;
     Target.Height := NewHeight;
 
-    
       DoStretch(FilterList[Filter], Radius, Temp, Target);
   finally
     Temp.Free;
@@ -1000,7 +989,6 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 begin
   Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
-
 
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
@@ -1017,7 +1005,6 @@ begin
   DeleteObject(MemDC);
 end;
 {$ENDIF MSWINDOWS}
-
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1056,9 +1043,6 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-
-
-
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1111,7 +1095,6 @@ begin
   Result := True;
 end;
 {$ENDIF MSWINDOWS}
-
 
 //==================================================================================================
 // Matrices
@@ -1377,7 +1360,6 @@ end;
 // PolyLines and Polygons
 //==================================================================================================
 
-
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
   I, J, P: Integer;
@@ -1550,7 +1532,6 @@ begin
       AddEdgePoint(X1, Y1);
   end;
 end;
-
 //==================================================================================================
 // Gamma table support for opacities
 //==================================================================================================
@@ -1589,7 +1570,21 @@ initialization
   SetGamma(0.7);
 
 // History:
-
+// Revision 1.12  2004/07/12 02:54:33  rrossmair
+// TJclRegion.Create fixed
+//
+// Revision 1.11  2004/06/14 13:05:19  marquardt
+// style cleaning ENDIF, Tabs
+//
+// Revision 1.10  2004/05/14 15:20:44  rrossmair
+// added Marcin Wieczorek to Contributors list
+//
+// Revision 1.9  2004/05/05 22:16:40  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
+// Revision 1.8  2004/04/18 06:32:07  rrossmair
+// replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
+//
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //
