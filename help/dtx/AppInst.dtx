@@ -3,7 +3,6 @@
 Summary:
   WParam field for instance creation notifications
 Description:
-
   When an application instance is created TJclAppInstances sends a notification message
   to all other running instances. The message value is determined by the MessageId
   property, the WParam field is set to AI_INSTANCECREATED, and the LParam field is
@@ -22,7 +21,6 @@ Quick info:
 Summary:
   WParam field for instance destruction notifications
 Description:
-
   When an application instance is destroyed TJclAppInstances sends a notification message
   to all other running instances. The message value is determined by the MessageId
   property, the WParam field is set to AI_INSTANCEDESTROYED, and the LParam field is
@@ -41,7 +39,6 @@ Quick info:
 Summary:
   WParam field for user-defined notification messages.
 Description:
-
   When an application uses the UserNotify method of TJclAppInstances the class
   sends a message to all running instances with a message value determined by the
   MessageID property, WParam set to AI_USERMSG and LParam set to the parameter
@@ -55,11 +52,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances
-<GROUP LibrariesProcessesandThreads>
+<GROUP LibrariesProcessesandThreads.TJclAppInstances>
 Summary:
   TJclAppInstances allows you to control the number of application instances the user can run.
 Description:
-
   TJclAppInstances is a class which allows you to control the number of instances
   of your application that the user can run simultaneously. In addition the class
   has a built in method for simple communication among running instances. The
@@ -99,11 +95,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.BringAppWindowToFront
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Brings the specified window to the foreground.
 Description:
-
   BringAppWindowToFront puts the thread that created the specified window to the
   foreground and activates the window. Keyboard input is directed
   to the window, and various visual cues are changed for the user. The system
@@ -112,7 +106,6 @@ Description:
 Parameters:
   Wnd - Handle of the window to bring to the foreground.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclAppInst
@@ -124,17 +117,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.GetApplicationWnd
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Returns a handle to the application window of a process.
 Description:
-
   Returns a handle to the invisible window created by the process with the
   specified ProcessID.
 Parameters:
   ProcessID - Process ID of the application for which you want to retrieve a handle to the application window. This specified application must be a Delphi application otherwise the function fails.
 Result:
-
   If the function succeeds it returns the requested handle, otherwise it returns 0.
 Quick info:
   Unit: JclAppInst
@@ -146,11 +136,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.KillInstance
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Terminates the application.
 Description:
-
   KillInstance terminates the application by calling Halt.
 Quick info:
   Unit: JclAppInst
@@ -162,11 +150,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SetForegroundWindow98
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Brings the specified window to the foreground.
 Description:
-
   SetForegroundWindow98 puts the thread that created the specified window to the
   foreground and activates the window. Keyboard input is directed
   to the window, and various visual cues are changed for the user. The system
@@ -175,7 +161,6 @@ Description:
 Parameters:
   Wnd - Handle of the window to bring into the foreground.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclAppInst
@@ -187,11 +172,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.CheckInstance
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Check the number of running instances.
 Description:
-
   CheckInstance determines whether fewer than MaxInstances application instances
   are running. If this is true, the process is registered as a running instance
   and a notification is sent to all other running instances, otherwise the function
@@ -201,7 +184,6 @@ Description:
   You could, for example, terminate the application yourself by
   calling KillInstance.
 Result:
-
   If fewer than MaxInstances applications are running the result is True,
   otherwise the result is False.
 Quick info:
@@ -214,11 +196,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.CheckMultipleInstances
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Check the number of running instances.
 Description:
-
   CheckMultipleInstances determines whether fewer than MaxInstances application
   instances are running. If this is true, the process is registered as a running
   instance and a notification is sent to all other running instances, otherwise the
@@ -234,11 +214,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.CheckSingleInstance
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Checks whether this is the one and only running instance.
 Description:
-
   CheckSingleInstance checks whether the caller is the only instance of this process.
   If it's not, the application is immediately terminated and the existing instance
   of the process is brought into the foreground.
@@ -251,11 +229,10 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@SendData
+@@TJclAppInstances.SendData
 Summary:
   Sends data to all instances.
 Description:
-
   SendData sends some generic data to all instances of this application. The data is
   send using a WM_COPYDATA message directed at the window whose classname equals the
   WindowClassName parameter.
@@ -266,7 +243,6 @@ Parameters:
   Size - The size, in bytes, of the data pointed to by Data.
   OriginatorWnd - Handle of the window from which the message is send.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.[Quick Info]
   Kind=Method
   Visibility=Public
@@ -278,13 +254,18 @@ Result:
   Kylix=1
   FPC=1.x
 Quick info:
+  Unit: JclAppInst
+  Category: Libraries, Processes and Threads
+  Visibility: Public
+  Donator: Petr Vones
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SendString
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Sends a string to all instances.
 Description:
-
   SendString sends a string to all instances of this application. The string is
   send using a WM_COPYDATA message directed at the window whose classname equals the
   WindowClassName parameter.
@@ -294,7 +275,6 @@ Parameters:
   S - The string to send.
   OriginatorWnd - Handle of the window from which the message is send.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclAppInst
@@ -306,11 +286,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SendStrings
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Sends a list of string to all instances.
 Description:
-
   SendStrings sends a list of strings to all instances of this application. The strings are
   send using a WM_COPYDATA message directed at the window whose classname equals the
   WindowClassName parameter.
@@ -320,7 +298,6 @@ Parameters:
   Strings - The string list to send.
   OriginatorWnd - Handle of the window from which the message is send.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclAppInst
@@ -332,16 +309,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.SwitchTo
-<GROUP LibrariesProcessesandThreads>
 Summary:
   SwitchTo brings the application determined by ProcessIDs[Index] to the foreground.
 Description:
-
   SwitchTo brings the application determined by ProcessIDs[Index] to the foreground.
 Parameters:
   Index - Zero based index into the ProcessIDs array property of the instance to switch to.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclAppInst
@@ -353,11 +327,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.UserNotify
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Sends a user defined message to all running instances.
 Description:
-
   UserNotify sends a notification message to all running instances with WParam set
   to AI_USERMSG and LParam set to the specified parameter.
 Quick info:
@@ -370,11 +342,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.AppWnds
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Returns the HWND of a specific application index.
 Description:
-
   Use the AppWnds property to determine the handle of the invisible window created
   by one of the application instances. Index is zero based and determines for
   which application instance a handle is returned. It can be at
@@ -390,11 +360,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.InstanceIndex
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Returns the index into the ProcessIDs array for a process.
 Description:
-
   Read the InstanceIndex property to determine the zero based index into the
   ProcessIDs array property of a specific application instance. The array index is
   the process ID of the application instance for which you want to know the index.
@@ -409,11 +377,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.InstanceCount
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Returns the number of application instances.
 Description:
-
   The InstanceCount property returns the number of application instances that
   registered with the TJclAppInstances. Among others you can use this to determine
   the highest valid index into the ProcessIDs array property.
@@ -427,11 +393,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.MessageID
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Returns the message ID used for sending notification messages.
 Description:
-
   Read MessageId to learn the message ID used by TJclAppInstances to send
   notification messages (ie instance creation and destruction).
 Quick info:
@@ -444,11 +408,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAppInstances.ProcessIDs
-<GROUP LibrariesProcessesandThreads>
 Summary:
   Process IDs of all application instances which are sharing the TJclAppInstances.
 Description:
-
   The ProcessIDs array property contains the process IDs of all application instances
   which are sharing the TJclAppInstances. In effect it contains the process IDs
   of all running instances. The array is zero based and the highest valid index
@@ -471,7 +433,6 @@ Quick info:
 Summary:
   Returns an instance of the TJclAppInstances class, creating one if necessary.
 Description:
-
   The JclAppInstances function returns an instance of the TJclAppInstances class,
   creating one if necessary. The parameterless overload creates a TJclAppInstances
   whose internal name is based on the process name itself while the overload with the
@@ -480,7 +441,6 @@ Description:
 Parameters:
   UniqueAppIdGuidStr - A user defined string used to customize naming of internal objects to ensure system wide uniqueness. It's recommended you use an actual GUID.
 Result:
-
   Returns an instance of the TJclAppInstances class which allows you to further control
   other instances of the application and communicate with them. See the documentation
   of TJclAppInstance for more detail on using the TJclAppInstances class.
@@ -497,7 +457,6 @@ Quick info:
 Summary:
   Determines the type of message.
 Description:
-
   ReadMessageCheck determines whether the specified message is a JclAppInstance
   IPC message and returns it's data kind. Use the IgnoredOriginatorWnd to filter message
   send by the same window as the routine is being called from. Call this routine
@@ -507,7 +466,6 @@ Parameters:
   Message - The message to check (equals the single parameter of the WndProc).
   IgnoredOriginatorWnd - Specify the handle of the window to filter. If the message was send from that same window, the function returns False.
 Result:
-
   If the message contains was not send from the window specified by the IgnoredOriginatorWnd
   window, the functon returns the data kind value of the message, otherwise it returns False.
 Quick info:
@@ -523,7 +481,6 @@ Quick info:
 Summary:
   Returns the data from a JclAppInstance IPC message.
 Description:
-
   ReadMessageData returns the data encapsulated in the message which is assumed to
   be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx methods.
   You can use ReadMessageCheck to determine the kind of data the message contains.
@@ -544,7 +501,6 @@ Quick info:
 Summary:
   Returns the data string from a JclAppInstance IPC message.
 Description:
-
   ReadMessageString returns the data string encapsulated in the message which is assumed
   to be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx methods.
 Parameters:
@@ -563,7 +519,6 @@ Quick info:
 Summary:
   Returns the data string list from a JclAppInstance IPC message.
 Description:
-
   ReadMessageString returns the data string list encapsulated in the message which is
   assumed to be a JclAppInstance IPC message send by one of the TJclAppInstance.SendXxx
   methods.
