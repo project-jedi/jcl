@@ -20,7 +20,7 @@
 { Platform-independent MIDI declarations                                                           }
 {                                                                                                  }
 { Unit owner: Robert Rossmair                                                                      }
-{ Last modified: April 7, 2002                                                                     }
+{ Last modified: April 8, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -269,6 +269,8 @@ uses
 {$ENDIF MSWINDOWS}
   SysUtils;
 
+//--------------------------------------------------------------------------------------------------
+
 function MIDIOut(DeviceID: Cardinal = 0): IJclMIDIOut;
 begin
   Result := nil;
@@ -279,6 +281,8 @@ begin
   { TODO : Linux MIDIOut }
 {$ENDIF LINUX}
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function MIDISingleNoteTuningData(
   Key: TMIDINote;
@@ -293,11 +297,15 @@ begin
   Result.Frequency[2] := F and MIDIDataMask;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure CheckMIDIChannelNum(Channel: TMIDIChannel);
 begin
   if (Channel < Low(TMIDIChannel)) or (Channel > High(TMIDIChannel)) then
     raise EJclMIDIError.CreateFmt('Invalid MIDI channel number (%d)', [Channel]);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 const
   HalftonesPerOctave = 12;
@@ -309,7 +317,9 @@ begin
   Result := Format('%s%d', [OctaveNotes[Note mod HalftonesPerOctave], Note div HalftonesPerOctave -2]);
 end;
 
-{ TJclMIDIOut }
+//==================================================================================================
+// TJclMIDIOut
+//==================================================================================================
 
 destructor TJclMIDIOut.Destroy;
 begin
@@ -317,11 +327,15 @@ begin
   inherited;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclMIDIOut.GetActiveNotes(Channel: TMIDIChannel): TMIDINotes;
 begin
   CheckMIDIChannelNum(Channel);
   Result := FActiveNotes[Channel];
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.AllChannelNotesOff(Channel: TMIDIChannel);
 begin
@@ -329,6 +343,8 @@ begin
   ControlChange(Channel, MIDICCAllNotesOff, 0);
   FActiveNotes[Channel] := [];
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.AllNotesOff;
 var
@@ -339,21 +355,29 @@ begin
       AllChannelNotesOff(Channel);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMIDIOut.ChannelMessage(Msg: TMIDIStatusByte;
   Channel: TMIDIChannel; Data1, Data2: TMIDIDataByte);
 begin
   ShortMessage(Msg or (Channel - Low(Channel)), Data1, Data2);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclMIDIOut.GetRunningStatusEnabled: Boolean;
 begin
   Result := FRunningStatusEnabled;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclMIDIOut.NoteIsOn(Channel: TMIDIChannel; Key: TMIDINote): Boolean;
 begin
   Result := Key in FActiveNotes[Channel];
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.NoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
 begin
@@ -361,11 +385,15 @@ begin
   Exclude(FActiveNotes[Channel], Key);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMIDIOut.NoteOn(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
 begin
   ChannelMessage(MIDIMsgNoteOn, Channel, Key, Velocity);
   Include(FActiveNotes[Channel], Key);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.PolyphonicKeyPressure(Channel: TMIDIChannel;
   Key: TMIDINote; Value: TMIDIDataByte);
@@ -373,15 +401,21 @@ begin
   ChannelMessage(MIDIMsgPolyKeyPressure, Channel, Key, Value);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMIDIOut.ControlChange(Channel: TMIDIChannel; ControllerNum, Value: TMIDIDataByte);
 begin
   ChannelMessage(MIDIMsgControlChange, Channel, ControllerNum, Value);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMIDIOut.ProgramChange(Channel: TMIDIChannel; ProgramNum: TMIDIDataByte);
 begin
   ChannelMessage(MIDIMsgProgramChange, Channel, ProgramNum, 0);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.ChannelKeyPressure(Channel: TMIDIChannel;
   Value: TMIDIDataByte);
@@ -389,10 +423,14 @@ begin
   ChannelMessage(MIDIMsgChannelKeyPressure, Channel, Value, 0);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMIDIOut.PitchWheelChange(Channel: TMIDIChannel; Value: TMIDIPitchBendValue);
 begin
   ChannelMessage(MIDIMsgPitchWheelChange, Channel, Value, Value shr 7);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.PitchBend(Channel: TMIDIChannel; Value: Single);
 var
@@ -405,11 +443,15 @@ begin
   PitchWheelChange(Channel, Temp);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclMIDIOut.SetRunningStatusEnabled(const Value: Boolean);
 begin
   FRunningStatus := MIDIInvalidStatus;
   FRunningStatusEnabled := Value;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMIDIOut.SingleNoteTuningChange(TuningData: array of TSingleNoteTuningData);
 var
