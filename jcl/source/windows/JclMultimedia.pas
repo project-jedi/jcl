@@ -34,8 +34,8 @@ unit JclMultimedia;
 interface
 
 uses
-  Windows, Classes, MmSystem,
-  JclBase, JclSynch;
+  Windows, Messages, Classes, Contnrs, MMSystem,
+  JclBase, JclSynch, JclStrings;
 
 type
 
@@ -83,9 +83,174 @@ type
   EJclMmTimerError = class (EJclError);
 
 //--------------------------------------------------------------------------------------------------
+// Audio Mixer
+//--------------------------------------------------------------------------------------------------
+
+type
+  EJclMixerError = class (EJclError);
+
+  TJclMixerDevice = class;
+  TJclMixerLine = class;
+  TJclMixerDestination = class;
+
+  TJclMixerLineControl = class (TObject)
+  private
+    FControlInfo: TMixerControl;
+    FIsList: Boolean;
+    FIsMultiple: Boolean;
+    FIsUniform: Boolean;
+    FListText: TStrings;
+    FMixerLine: TJclMixerLine;
+    function GetIsDisabled: Boolean;
+    function GetListText: TStrings;
+    function GetName: string;
+    function GetUniformValue: Cardinal;
+    function GetValue: TDynCardinalArray;
+    function GetValueString: string;
+    procedure SetUniformValue(const Value: Cardinal);
+    procedure SetValue(const Value: TDynCardinalArray);
+  protected
+    constructor Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
+    procedure PrepareControlDetailsStruc(var ControlDetails: TMixerControlDetails; AUniform, AMultiple: Boolean);
+  public
+    destructor Destroy; override;
+    function FormatValue(AValue: Cardinal): string;
+    property ControlInfo: TMixerControl read FControlInfo;
+    property IsDisabled: Boolean read GetIsDisabled;
+    property IsList: Boolean read FIsList;
+    property IsMultiple: Boolean read FIsMultiple;
+    property IsUniform: Boolean read FIsUniform;
+    property ListText: TStrings read GetListText;
+    property MixerLine: TJclMixerLine read FMixerLine;
+    property Name: string read GetName;
+    property UniformValue: Cardinal read GetUniformValue write SetUniformValue;
+    property Value: TDynCardinalArray read GetValue write SetValue;
+    property ValueString: string read GetValueString;
+  end;
+
+  TJclMixerLine = class (TObject)
+  private
+    FLineControls: TObjectList;
+    FLineInfo: TMixerLine;
+    FMixerDevice: TJclMixerDevice;
+    function GetComponentString: string;
+    function GetLineControlByType(ControlType: DWORD): TJclMixerLineControl;
+    function GetLineControlCount: Integer;
+    function GetLineControls(Index: Integer): TJclMixerLineControl;
+    function GetHasControlType(ControlType: DWORD): Boolean;
+    function GetID: DWORD;
+    function GetName: string;
+  protected
+    procedure BuildLineControls;
+    constructor Create(AMixerDevice: TJclMixerDevice);
+  public
+    destructor Destroy; override;
+    class function ComponentTypeToString(const ComponentType: DWORD): string;
+    property ComponentString: string read GetComponentString;
+    property HasControlType[ControlType: DWORD]: Boolean read GetHasControlType;
+    property ID: DWORD read GetID;
+    property LineControlByType[ControlType: DWORD]: TJclMixerLineControl read GetLineControlByType;
+    property LineControls[Index: Integer]: TJclMixerLineControl read GetLineControls; default;
+    property LineControlCount: Integer read GetLineControlCount;
+    property LineInfo: TMixerLine read FLineInfo;
+    property Name: string read GetName;
+    property MixerDevice: TJclMixerDevice read FMixerDevice;
+  end;
+
+  TJclMixerSource = class (TJclMixerLine)
+  private
+    FMixerDestination: TJclMixerDestination;
+  protected
+    constructor Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
+  public
+    property MixerDestination: TJclMixerDestination read FMixerDestination;
+  end;
+
+  TJclMixerDestination = class (TJclMixerLine)
+  private
+    FSources: TObjectList;
+    function GetSourceCount: Integer;
+    function GetSources(Index: Integer): TJclMixerSource;
+  protected
+    constructor Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
+    procedure BuildSources;
+  public
+    destructor Destroy; override;
+    property Sources[Index: Integer]: TJclMixerSource read GetSources; default;
+    property SourceCount: Integer read GetSourceCount;
+  end;
+
+  TJclMixerDevice = class (TObject)
+  private
+    FCapabilities: TMixerCaps;
+    FDestinations: TObjectList;
+    FDeviceIndex: Cardinal;
+    FHandle: HMIXER;
+    FLines: TList;
+    function GetProductName: string;
+    function GetDestinationCount: Integer;
+    function GetDestinations(Index: Integer): TJclMixerDestination;
+    function GetLineCount: Integer;
+    function GetLines(Index: Integer): TJclMixerLine;
+    function GetLineByComponentType(ComponentType: DWORD): TJclMixerLine;
+    function GetLineByID(LineID: DWORD): TJclMixerLine;
+    function GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
+    procedure SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
+  protected
+    constructor Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
+    procedure BuildDestinations;
+    procedure BuildLines;
+    procedure Close;
+    procedure Open(ACallBackWnd: HWND);
+  public
+    destructor Destroy; override;
+    function FindLineControl(ComponentType, ControlType: DWORD): TJclMixerLineControl;
+    property Capabilities: TMixerCaps read FCapabilities;
+    property DeviceIndex: Cardinal read FDeviceIndex;
+    property Destinations[Index: Integer]: TJclMixerDestination read GetDestinations; default;
+    property DestinationCount: Integer read GetDestinationCount;
+    property Handle: HMIXER read FHandle;
+    property LineByID[LineID: DWORD]: TJclMixerLine read GetLineByID;
+    property LineByComponentType[ComponentType: DWORD]: TJclMixerLine read GetLineByComponentType;
+    property Lines[Index: Integer]: TJclMixerLine read GetLines;
+    property LineCount: Integer read GetLineCount;
+    property LineUniformValue[ComponentType, ControlType: DWORD]: Cardinal read GetLineUniformValue write SetLineUniformValue;
+    property ProductName: string read GetProductName;
+  end;
+
+  TJclMixer = class (TObject)
+  private
+    FCallbackWnd: HWND;
+    FDeviceList: TObjectList;
+    function GetDeviceCount: Integer;
+    function GetDevices(Index: Integer): TJclMixerDevice;
+    function GetFirstDevice: TJclMixerDevice;
+    function GetLineMute(ComponentType: Integer): Boolean;
+    function GetLineVolume(ComponentType: Integer): Cardinal;
+    procedure SetLineMute(ComponentType: Integer; const Value: Boolean);
+    procedure SetLineVolume(ComponentType: Integer; const Value: Cardinal);
+  protected
+    procedure BuildDevices;
+  public
+    constructor Create(ACallBackWnd: HWND = 0);
+    destructor Destroy; override;
+    property CallbackWnd: HWND read FCallbackWnd;
+    property Devices[Index: Integer]: TJclMixerDevice read GetDevices; default;
+    property DeviceCount: Integer read GetDeviceCount;
+    property FirstDevice: TJclMixerDevice read GetFirstDevice;
+    property LineMute[ComponentType: Integer]: Boolean read GetLineMute write SetLineMute;
+    property LineVolume[ComponentType: Integer]: Cardinal read GetLineVolume write SetLineVolume;
+    property SpeakersMute: Boolean index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineMute write SetLineMute;
+    property SpeakersVolume: Cardinal index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineVolume write SetLineVolume;
+  end;
+
+  function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
+
+//--------------------------------------------------------------------------------------------------
 // MCI Error checking
 //--------------------------------------------------------------------------------------------------
 
+type
   EJclMciError = class (EJclError)
   private
     FMciErrorNo: DWORD;
@@ -137,6 +302,28 @@ implementation
 uses
   SysUtils,
   JclResources, JclSysUtils;
+
+resourcestring
+  RsMmMixerSource        = 'Source';
+  RsMmMixerDestination   = 'Destination';
+  RsMmMixerUndefined     = 'Undefined';
+  RsMmMixerDigital       = 'Digital';
+  RsMmMixerLine          = 'Line';
+  RsMmMixerMonitor       = 'Monitor';
+  RsMmMixerSpeakers      = 'Speakers';
+  RsMmMixerHeadphones    = 'Headphones';
+  RsMmMixerTelephone     = 'Telephone';
+  RsMmMixerWaveIn        = 'Waveform-audio input';
+  RsMmMixerVoiceIn       = 'Voice input';
+  RsMmMixerMicrophone    = 'Microphone';
+  RsMmMixerSynthesizer   = 'Synthesizer';
+  RsMmMixerCompactDisc   = 'Compact disc';
+  RsMmMixerPcSpeaker     = 'PC speaker';
+  RsMmMixerWaveOut       = 'Waveform-audio output';
+  RsMmMixerAuxiliary     = 'Auxiliary audio line';
+  RsMmMixerAnalog        = 'Analog';
+  RsMmMixerNoDevices     = 'No mixer device found';
+  RsMmMixerCtlNotFound   = 'Line control (%s, %.8x) not found';
 
 //==================================================================================================
 // TJclMultimediaTimer
@@ -309,6 +496,698 @@ begin
     Result := wrError
   else
     Result := FEvent.WaitFor(TimeOut);
+end;
+
+//==================================================================================================
+// Audio Mixer
+//==================================================================================================
+
+function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
+begin
+  SetLength(Result, 2);
+  Result[0] := Left;
+  Result[1] := Right;
+end;
+
+//==================================================================================================
+// TJclMixerLineControl
+//==================================================================================================
+
+constructor TJclMixerLineControl.Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
+begin
+  FControlInfo := AControlInfo;
+  FMixerLine := AMixerLine;
+  FIsList := (ControlInfo.dwControlType and MIXERCONTROL_CT_CLASS_MASK) = MIXERCONTROL_CT_CLASS_LIST;
+  FIsMultiple := FControlInfo.fdwControl and MIXERCONTROL_CONTROLF_MULTIPLE <> 0;
+  FIsUniform := FControlInfo.fdwControl and MIXERCONTROL_CONTROLF_UNIFORM <> 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixerLineControl.Destroy;
+begin
+  FreeAndNil(FListText);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.FormatValue(AValue: Cardinal): string;
+begin
+  case FControlInfo.dwControlType and MIXERCONTROL_CT_UNITS_MASK of
+    MIXERCONTROL_CT_UNITS_BOOLEAN:
+      Result := BooleanToStr(Boolean(AValue));
+    MIXERCONTROL_CT_UNITS_SIGNED:
+      Result := Format('%d', [AValue]);
+    MIXERCONTROL_CT_UNITS_UNSIGNED:
+      Result := Format('%u', [AValue]);
+    MIXERCONTROL_CT_UNITS_DECIBELS:
+      Result := Format('%.1fdB', [AValue / 10]);
+    MIXERCONTROL_CT_UNITS_PERCENT:
+      Result := Format('%.1f%%', [AValue / 10]);
+  else
+    Result := '';
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.GetIsDisabled: Boolean;
+begin
+  Result := FControlInfo.fdwControl and MIXERCONTROL_CONTROLF_DISABLED <> 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.GetListText: TStrings;
+var
+  ControlDetails: TMixerControlDetails;
+  ListTexts, P: PMixerControlDetailsListText;
+  I: Cardinal;
+begin
+  if FListText = nil then
+  begin
+    FListText := TStringList.Create;
+    if IsMultiple and IsList then
+    begin
+      PrepareControlDetailsStruc(ControlDetails, True, IsMultiple);
+      ControlDetails.cbDetails := SizeOf(TMixerControlDetailsListText);
+      GetMem(ListTexts, SizeOf(TMixerControlDetailsListText) * ControlDetails.cMultipleItems);
+      try
+        ControlDetails.paDetails := ListTexts;
+        MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_LISTTEXT));
+        P := ListTexts;
+        for I := 1 to ControlDetails.cMultipleItems do
+        begin
+          FListText.AddObject(P^.szName, Pointer(P^.dwParam1));
+          Inc(P);
+        end;
+      finally
+        FreeMem(ListTexts);
+      end;
+    end;
+  end;
+  Result := FListText;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.GetName: string;
+begin
+  Result := FControlInfo.szName;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.GetUniformValue: Cardinal;
+var
+  ControlDetails: TMixerControlDetails;
+begin
+  PrepareControlDetailsStruc(ControlDetails, True, False);
+  ControlDetails.cbDetails := SizeOf(Cardinal);
+  ControlDetails.paDetails := @Result;
+  MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.GetValue: TDynCardinalArray;
+var
+  ControlDetails: TMixerControlDetails;
+  ItemCount: Cardinal;
+begin
+  PrepareControlDetailsStruc(ControlDetails, IsUniform, IsMultiple);
+  if IsUniform then
+    ItemCount := 1
+  else
+    ItemCount := ControlDetails.cChannels;
+  if IsMultiple then
+    ItemCount := ItemCount * ControlDetails.cMultipleItems;
+  SetLength(Result, ItemCount);
+  ControlDetails.cbDetails := SizeOf(Cardinal);
+  ControlDetails.paDetails := @Result[0];
+  MMCheck(mixerGetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLineControl.GetValueString: string;
+var
+  TempValue: TDynCardinalArray;
+  I: Integer;
+begin
+  TempValue := Value;
+  Result := '';
+  for I := Low(TempValue) to High(TempValue) do
+    Result := Result + ',' + FormatValue(TempValue[I]);
+  Delete(Result, 1, 1);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerLineControl.PrepareControlDetailsStruc(var ControlDetails: TMixerControlDetails;
+  AUniform, AMultiple: Boolean);
+begin
+  FillChar(ControlDetails, SizeOf(ControlDetails), 0);
+  ControlDetails.cbStruct := SizeOf(ControlDetails);
+  ControlDetails.dwControlID := FControlInfo.dwControlID;
+  if AUniform then
+    ControlDetails.cChannels := MIXERCONTROL_CONTROLF_UNIFORM
+  else
+    ControlDetails.cChannels := MixerLine.LineInfo.cChannels;
+  if AMultiple then
+    ControlDetails.cMultipleItems := FControlInfo.cMultipleItems;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerLineControl.SetUniformValue(const Value: Cardinal);
+var
+  ControlDetails: TMixerControlDetails;
+begin
+  PrepareControlDetailsStruc(ControlDetails, True, False);
+  ControlDetails.cbDetails := SizeOf(Cardinal);
+  ControlDetails.paDetails := @Value;
+  MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerLineControl.SetValue(const Value: TDynCardinalArray);
+var
+  ControlDetails: TMixerControlDetails;
+  ItemCount: Cardinal;
+begin
+  PrepareControlDetailsStruc(ControlDetails, IsUniform, IsMultiple);
+  if IsUniform then
+    ItemCount := 1
+  else
+    ItemCount := ControlDetails.cChannels;
+  if IsMultiple then
+    ItemCount := ItemCount * ControlDetails.cMultipleItems;
+  Assert(ItemCount = Cardinal(Length(Value)));
+  ControlDetails.cbDetails := SizeOf(Cardinal);
+  ControlDetails.paDetails := @Value[0];
+  MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
+end;
+
+//==================================================================================================
+// TJclMixerLine
+//==================================================================================================
+
+procedure TJclMixerLine.BuildLineControls;
+var
+  MixerControls: TMixerLineControls;
+  Controls, P: PMixerControl;
+  I: Cardinal;
+  Item: TJclMixerLineControl;
+begin
+  GetMem(Controls, SizeOf(TMixerControl) * FLineInfo.cControls);
+  try
+    MixerControls.cbStruct := SizeOf(MixerControls);
+    MixerControls.dwLineID := FLineInfo.dwLineID;
+    MixerControls.cControls := FLineInfo.cControls;
+    MixerControls.cbmxctrl := SizeOf(TMixerControl);
+    MixerControls.pamxctrl := Controls;
+    MMCheck(mixerGetLineControls(FMixerDevice.Handle, @MixerControls, MIXER_GETLINECONTROLSF_ALL));
+    P := Controls;
+    for I := 1 to FLineInfo.cControls do
+    begin
+      Item := TJclMixerLineControl.Create(Self, P^);
+      FLineControls.Add(Item);
+      Inc(P);
+    end;
+  finally
+    FreeMem(Controls);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+class function TJclMixerLine.ComponentTypeToString(const ComponentType: DWORD): string;
+begin
+  case ComponentType of
+    MIXERLINE_COMPONENTTYPE_DST_UNDEFINED:
+      Result := RsMmMixerUndefined;
+    MIXERLINE_COMPONENTTYPE_DST_DIGITAL, MIXERLINE_COMPONENTTYPE_SRC_DIGITAL:
+      Result := RsMmMixerDigital;
+    MIXERLINE_COMPONENTTYPE_DST_LINE, MIXERLINE_COMPONENTTYPE_SRC_LINE:
+      Result := RsMmMixerLine;
+    MIXERLINE_COMPONENTTYPE_DST_MONITOR:
+      Result := RsMmMixerMonitor;
+    MIXERLINE_COMPONENTTYPE_DST_SPEAKERS:
+      Result := RsMmMixerSpeakers;
+    MIXERLINE_COMPONENTTYPE_DST_HEADPHONES:
+      Result := RsMmMixerHeadphones;
+    MIXERLINE_COMPONENTTYPE_DST_TELEPHONE, MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE:
+      Result := RsMmMixerTelephone;
+    MIXERLINE_COMPONENTTYPE_DST_WAVEIN:
+      Result := RsMmMixerWaveIn;
+    MIXERLINE_COMPONENTTYPE_DST_VOICEIN:
+      Result := RsMmMixerVoiceIn;
+    MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE:
+      Result := RsMmMixerMicrophone;
+    MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER:
+      Result := RsMmMixerSynthesizer;
+    MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC:
+      Result := RsMmMixerCompactDisc;
+    MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER:
+      Result := RsMmMixerPcSpeaker;
+    MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT:
+      Result := RsMmMixerWaveOut;
+    MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY:
+      Result := RsMmMixerAuxiliary;
+    MIXERLINE_COMPONENTTYPE_SRC_ANALOG:
+      Result := RsMmMixerAnalog;
+  else
+    Result := '';
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMixerLine.Create(AMixerDevice: TJclMixerDevice);
+begin
+  FMixerDevice := AMixerDevice;
+  FLineControls := TObjectList.Create;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixerLine.Destroy;
+begin
+  FreeAndNil(FLineControls);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetComponentString: string;
+begin
+  Result := ComponentTypeToString(FLineInfo.dwComponentType);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetHasControlType(ControlType: DWORD): Boolean;
+begin
+  Result := LineControlByType[ControlType] <> nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetID: DWORD;
+begin
+  Result := LineInfo.dwLineID;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetLineControlByType(ControlType: DWORD): TJclMixerLineControl;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to LineControlCount - 1 do
+    if LineControls[I].ControlInfo.dwControlType = ControlType then
+    begin
+      Result := LineControls[I];
+      Break;
+    end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetLineControlCount: Integer;
+begin
+  Result := FLineControls.Count;
+  if Result = 0 then
+  begin
+    BuildLineControls;
+    Result := FLineControls.Count;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetLineControls(Index: Integer): TJclMixerLineControl;
+begin
+  Result := TJclMixerLineControl(FLineControls[Index]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerLine.GetName: string;
+begin
+  Result := FLineInfo.szName;
+end;
+
+//==================================================================================================
+// TJclMixerSource
+//==================================================================================================
+
+constructor TJclMixerSource.Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
+begin
+  inherited Create(AMixerDestination.MixerDevice);
+  FMixerDestination := AMixerDestination;
+  FLineInfo.cbStruct := SizeOf(FLineInfo);
+  FLineInfo.dwDestination := FMixerDestination.LineInfo.dwDestination;
+  FLineInfo.dwSource := ASourceIndex;
+  MMCheck(mixerGetLineInfo(FMixerDestination.MixerDevice.Handle, @FLineInfo, MIXER_GETLINEINFOF_SOURCE));
+end;
+
+//==================================================================================================
+// TJclMixerDestination
+//==================================================================================================
+
+procedure TJclMixerDestination.BuildSources;
+var
+  I: Cardinal;
+  Item: TJclMixerSource;
+begin
+  for I := 1 to LineInfo.cConnections do
+  begin
+    Item := TJclMixerSource.Create(Self, I - 1);
+    FSources.Add(Item);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMixerDestination.Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
+begin
+  inherited Create(AMixerDevice);
+  FLineInfo.cbStruct := SizeOf(FLineInfo);
+  FLineInfo.dwDestination := ADestinationIndex;
+  MMCheck(mixerGetLineInfo(AMixerDevice.Handle, @FLineInfo, MIXER_GETLINEINFOF_DESTINATION));
+  FSources := TObjectList.Create;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixerDestination.Destroy;
+begin
+  FreeAndNil(FSources);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDestination.GetSourceCount: Integer;
+begin
+  Result := FSources.Count;
+  if Result = 0 then
+  begin
+    BuildSources;
+    Result := FSources.Count;
+  end;  
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDestination.GetSources(Index: Integer): TJclMixerSource;
+begin
+  Result := TJclMixerSource(FSources[Index]);
+end;
+
+//==================================================================================================
+// TJclMixerDevice
+//==================================================================================================
+
+procedure TJclMixerDevice.BuildDestinations;
+var
+  I: Cardinal;
+  Item: TJclMixerDestination;
+begin
+  for I := 1 to FCapabilities.cDestinations do
+  begin
+    Item := TJclMixerDestination.Create(Self, I - 1);
+    FDestinations.Add(Item);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function MixerLineCompare(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(TJclMixerLine(Item1).ID) - Integer(TJclMixerLine(Item2).ID);
+end;
+
+procedure TJclMixerDevice.BuildLines;
+var
+  D, I: Integer;
+  Dest: TJclMixerDestination;
+begin
+  for D := 0 to DestinationCount - 1 do
+  begin
+    Dest := Destinations[D];
+    FLines.Add(Dest);
+    for I := 0 to Dest.SourceCount - 1 do
+      FLines.Add(Dest.Sources[I]);
+  end;
+  FLines.Sort(MixerLineCompare);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerDevice.Close;
+begin
+  if FHandle <> -1 then
+  begin
+    mixerClose(FHandle);
+    FHandle := -1;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
+begin
+  FDeviceIndex := ADeviceIndex;
+  FHandle := -1;
+  FDestinations := TObjectList.Create;
+  FLines := TList.Create;
+  MMCheck(mixerGetDevCaps(ADeviceIndex, @FCapabilities, SizeOf(FCapabilities)));
+  Open(ACallBackWnd);
+  BuildDestinations;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixerDevice.Destroy;
+begin
+  Close;
+  FreeAndNil(FDestinations);
+  FreeAndNil(FLines);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.FindLineControl(ComponentType, ControlType: DWORD): TJclMixerLineControl;
+var
+  TempLine: TJclMixerLine;
+begin
+  Result := nil;
+  TempLine := LineByComponentType[ComponentType];
+  if TempLine <> nil then
+    Result := TempLine.LineControlByType[ControlType];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetDestinationCount: Integer;
+begin
+  Result := FDestinations.Count;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetDestinations(Index: Integer): TJclMixerDestination;
+begin
+  Result := TJclMixerDestination(FDestinations[Index]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetLineByComponentType(ComponentType: DWORD): TJclMixerLine;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to LineCount - 1 do
+    if Lines[I].LineInfo.dwComponentType = ComponentType then
+    begin
+      Result := Lines[I];
+      Break;
+    end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetLineByID(LineID: DWORD): TJclMixerLine;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to LineCount - 1 do
+    if Lines[I].LineInfo.dwLineID = LineID then
+    begin
+      Result := Lines[I];
+      Break;
+    end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetLineCount: Integer;
+begin
+  Result := FLines.Count;
+  if Result = 0 then
+  begin
+    BuildLines;
+    Result := FLines.Count;
+  end;  
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetLines(Index: Integer): TJclMixerLine;
+begin
+  Result := TJclMixerLine(FLines[Index]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
+var
+  LineControl: TJclMixerLineControl;
+begin
+  LineControl := FindLineControl(ComponentType, ControlType);
+  if LineControl <> nil then
+    Result := LineControl.UniformValue
+  else
+    Result := 0;  
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetProductName: string;
+begin
+  Result := FCapabilities.szPname;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerDevice.Open(ACallBackWnd: HWND);
+var
+  Flags: DWORD;
+begin
+  if FHandle = -1 then
+  begin
+    Flags := MIXER_OBJECTF_HMIXER;
+    if ACallBackWnd <> 0 then
+      Inc(Flags, CALLBACK_WINDOW);
+    MMCheck(mixerOpen(@FHandle, DeviceIndex, ACallBackWnd, 0, Flags));
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixerDevice.SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
+var
+  LineControl: TJclMixerLineControl;
+begin
+  LineControl := FindLineControl(ComponentType, ControlType);
+  if LineControl <> nil then
+    LineControl.UniformValue := Value
+  else
+    raise EJclMixerError.CreateResRecFmt(@RsMmMixerCtlNotFound,
+      [TJclMixerLine.ComponentTypeToString(ComponentType), ControlType]);
+end;
+
+//==================================================================================================
+// TJclMixer
+//==================================================================================================
+
+procedure TJclMixer.BuildDevices;
+var
+  I: Cardinal;
+  Item: TJclMixerDevice;
+begin
+  for I := 1 to mixerGetNumDevs do
+  begin
+    Item := TJclMixerDevice.Create(I - 1, FCallbackWnd);
+    FDeviceList.Add(Item);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMixer.Create(ACallBackWnd: HWND);
+begin
+  FDeviceList := TObjectList.Create;
+  FCallbackWnd := ACallBackWnd;
+  BuildDevices;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMixer.Destroy;
+begin
+  FreeAndNil(FDeviceList);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetDeviceCount: Integer;
+begin
+  Result := FDeviceList.Count;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetDevices(Index: Integer): TJclMixerDevice;
+begin
+  Result := TJclMixerDevice(FDeviceList.Items[Index]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetFirstDevice: TJclMixerDevice;
+begin
+  if DeviceCount = 0 then
+    raise EJclMixerError.CreateResRec(@RsMmMixerNoDevices);
+  Result := Devices[0];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetLineMute(ComponentType: Integer): Boolean;
+begin
+  Result := Boolean(FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_MUTE]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetLineVolume(ComponentType: Integer): Cardinal;
+begin
+  Result := FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_VOLUME];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixer.SetLineMute(ComponentType: Integer; const Value: Boolean);
+begin
+  FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_MUTE] := Cardinal(Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMixer.SetLineVolume(ComponentType: Integer; const Value: Cardinal);
+begin
+  FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_VOLUME] := Value;
 end;
 
 //==================================================================================================
