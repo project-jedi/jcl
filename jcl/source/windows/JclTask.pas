@@ -76,8 +76,7 @@ type
     function GetTask(const Idx: Integer): TJclScheduledTask;
     function GetTaskCount: Integer;
   public
-    constructor Create; overload;
-    constructor Create(const ComputerName: WideString); overload;
+    constructor Create(const ComputerName: WideString = '');
     destructor Destroy; override;
     procedure Refresh;
     function Add(const TaskName: WideString): TJclScheduledTask;
@@ -228,16 +227,13 @@ const
 
 //== { TJclTaskSchedule } ====================================================
 
-constructor TJclTaskSchedule.Create;
+constructor TJclTaskSchedule.Create(const ComputerName: WideString = '');
 begin
+  inherited Create;
   FTaskScheduler := CreateComObject(CLSID_CTaskScheduler) as ITaskScheduler;
   FTasks := TObjectList.Create;
-end;
-
-constructor TJclTaskSchedule.Create(const ComputerName: WideString);
-begin
-  Create;
-  SetTargetComputer(ComputerName);
+  if ComputerName <> '' then
+    SetTargetComputer(ComputerName);
 end;
 
 destructor TJclTaskSchedule.Destroy;
@@ -899,6 +895,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2005/03/04 06:40:26  marquardt
+// changed overloaded constructors to constructor with default parameter (BCB friendly)
+//
 // Revision 1.20  2005/02/24 16:34:53  marquardt
 // remove divider lines, add section lines (unfinished)
 //

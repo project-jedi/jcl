@@ -249,7 +249,7 @@ type
     procedure AcquireLock;
     procedure ReleaseLock;
   public
-    constructor Create(InitialCount, MaxCount: Longint; const Name: string); overload;
+    constructor Create(InitialCount, MaxCount: Longint; const Name: string);
     constructor Open(const Name: string);
     destructor Destroy; override;
     function Enter(TimeOut: Longword): TJclWaitResult;
@@ -1382,6 +1382,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/03/04 06:40:26  marquardt
+// changed overloaded constructors to constructor with default parameter (BCB friendly)
+//
 // Revision 1.15  2005/02/24 16:34:53  marquardt
 // remove divider lines, add section lines (unfinished)
 //
