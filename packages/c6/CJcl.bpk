@@ -3,8 +3,8 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="CJcl.bpl"/>
-    <OBJFILES value="..\..\lib\c6\CJcl.obj ..\..\lib\c6\JclUnitConv.obj 
+    <PROJECT value="CJcl60.bpl"/>
+    <OBJFILES value="..\..\lib\c6\cjcl.obj ..\..\lib\c6\JclUnitConv.obj 
       ..\..\lib\c6\JclBase.obj ..\..\lib\c6\JclComplex.obj 
       ..\..\lib\c6\JclCounter.obj ..\..\lib\c6\JclDateTime.obj 
       ..\..\lib\c6\JclEDI.obj ..\..\lib\c6\JclEDI_ANSIX12.obj 
@@ -37,7 +37,7 @@
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
+    <SPARELIBS value="rtl.lib"/>
     <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\source\common;..\..\source\windows"/>
@@ -74,8 +74,8 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="CJcl.res" FORMNAME="" UNITNAME="CJcl.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.cpp" FORMNAME="" UNITNAME="CJcl" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cjcl.cpp" FORMNAME="" UNITNAME="CJcl" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\d6\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\common\JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

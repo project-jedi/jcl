@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="CJclVcl.bpl"/>
+    <PROJECT value="CJclVcl60.bpl"/>
     <OBJFILES value="..\..\lib\c6\CJclVcl.obj ..\..\lib\c6\JclPrint.obj 
       ..\..\lib\c6\JclGraphUtils.obj ..\..\lib\c6\JclGraphics.obj"/>
     <RESFILES value="CJclVcl.res"/>
@@ -13,10 +13,10 @@
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi vcljpg.bpi CJcl.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="rtl.bpi vcl.bpi vcljpg.bpi CJcl60.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\source\vcl;..\..\source\vcl;..\..\source\vcl"/>
+    <PATHPAS value=".;..\..\source\vcl"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -54,7 +54,7 @@
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJcl60.bpi" FORMNAME="" UNITNAME="CJcl60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\vcl\JclPrint.pas" FORMNAME="" UNITNAME="JclPrint" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\vcl\JclGraphUtils.pas" FORMNAME="" UNITNAME="JclGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\vcl\JclGraphics.pas" FORMNAME="" UNITNAME="JclGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

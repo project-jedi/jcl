@@ -6,17 +6,17 @@
     <PROJECT value="CJclVClx.bpl"/>
     <OBJFILES value="..\..\lib\c6\CJclVClx.obj ..\..\lib\c6\JclQGraphUtils.obj 
       ..\..\lib\c6\JclQGraphics.obj"/>
-    <RESFILES value="CJclVClx.res"/>
+    <RESFILES value="CJclVClx60.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi visualclx.bpi CJcl.bpi"/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value="rtl.bpi visualclx.bpi CJcl60.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\source\visclx;..\..\source\visclx"/>
+    <PATHPAS value=".;..\..\source\visclx"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -52,7 +52,7 @@
       <FILE FILENAME="CJclVClx.cpp" FORMNAME="" UNITNAME="CJclVClx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.bpi" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJcl60.bpi" FORMNAME="" UNITNAME="CJcl60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\visclx\JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\source\visclx\JclQGraphics.pas" FORMNAME="" UNITNAME="JclQGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
