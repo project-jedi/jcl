@@ -47,8 +47,13 @@
 <TITLE Volume Conversion>
 <TOPICORDER 900>
 --------------------------------------------------------------------------------
-@@MakePercentage
+@@$UnitConversions.Miscellaneous
 <GROUP UnitConversions>
+<TITLE Volume Conversion>
+<TOPICORDER 1000>
+--------------------------------------------------------------------------------
+@@MakePercentage
+<GROUP UnitConversions.Miscellaneous>
 Summary:
   Hehe, no way...
 Description:
@@ -66,12 +71,16 @@ Result:
 Notes:
   For a very educational dissection of this function have a look at the article written by Robert Marquardt entitled " Lessons in good programming or how a one liner can bite you" available at the Voyager section on the JEDI website.
 Quick info:
-  Unit: JclUnitConv
+<PRE>
   Category: Unit Conversions
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
+</PRE>
+--------------------------------------------------------------------------------
+@@HowAOneLinerCanBiteYou
+<ALIAS MakePercentage>
 --------------------------------------------------------------------------------
 @@CelsiusToKelvin
 <GROUP UnitConversions.TemperatureConversion>
@@ -84,12 +93,14 @@ Parameters:
 Result:
   The temperature after conversion to degrees Kelvin.
 Quick info:
+<PRE>
   Unit: JclUnitConv
   Category: Unit Conversions
   Donator: Marcel van Brakel
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
+</PRE>
 --------------------------------------------------------------------------------
 @@CelsiusToFahrenheit
 <GROUP UnitConversions.TemperatureConversion>
@@ -1017,6 +1028,25 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@KgToKarat
+<GROUP UnitConversions.MassConversion>
+Summary:
+  Converts a mass from kilograms to karat.
+Description:
+  The KgToKarat routine converts the specified mass, in kilograms, to the corresponding
+  mass in karat.
+Parameters:
+  Kg - The mass, in kilograms, to convert to karat.
+Result:
+  The mass after conversion to karat.
+Quick info:
+  Unit: JclUnitConv
+  Category: Unit Conversions
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
 @@LbToKg
 <GROUP UnitConversions.MassConversion>
 Summary:
@@ -1413,3 +1443,33 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@CelsiusAbsoluteZero
+  This constant is representating the absolute zero point in degree Celsius.
+
+-------------------------------------------------------------------------------
+@@KelvinAbsoluteZero
+  This constant is representating the absolute zero point in degree Kelvin.
+-------------------------------------------------------------------------------
+@@FahrenheitAbsoluteZero
+  This constant is representating the absolute zero point in degree Fahrenheit.
+-------------------------------------------------------------------------------
+@@CelsiusBoilingPoint
+  This constant is representating the boiling point of water in degree Celsius.
+-------------------------------------------------------------------------------
+@@KelvinBoilingPoint
+  This constant is representating the boiling point of water in degree Kelvin.
+-------------------------------------------------------------------------------
+@@FahrenheitBoilingPoint
+  This constant is representating the boiling point of water in degree Fahrenheit.
+-------------------------------------------------------------------------------
+@@CelsiusFreezingPoint
+  This constant is representating the freezing point of water in degree Celsius.
+-------------------------------------------------------------------------------
+@@KelvinFreezingPoint
+  This constant is representating the freezing point of water in degree Kelvin.
+-------------------------------------------------------------------------------
+@@FahrenheitFreezingPoint
+  This constant is representating the freezing point of water in degree Fahrenheit.
+-------------------------------------------------------------------------------
+
+
