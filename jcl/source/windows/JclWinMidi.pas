@@ -28,6 +28,10 @@ unit JclWinMidi;
 
 {$I jcl.inc}
 
+{$IFNDEF MSWINDOWS}
+Error // This Unit contains code specific to the MS Windows platform
+{$ENDIF}
+
 interface
 
 uses
@@ -222,7 +226,7 @@ var
   Hdr: TMidiHdr;
 begin
   FillChar(Hdr, SizeOf(Hdr), 0);
-  Hdr.dwBufferLength := High(Data)-Low(Data)+1;;
+  Hdr.dwBufferLength := High(Data) - Low(Data) + 1;;
   Hdr.dwBytesRecorded := Hdr.dwBufferLength;
   Hdr.lpData := @Data;
   Hdr.dwFlags := 0;
