@@ -713,21 +713,19 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ArcTan(X: Float): Float;
-
-  function FArcTan(X: Float): Float; assembler;
-  asm
-          FLD     X
-          FLD1
-          FPATAN
-          FWAIT
-  end;
-
+function ArcTan(X: Float): Float; assembler;
+{$IFDEF PUREPASCAL}
 begin
-  DomainCheck(X < -Pi);
-  DomainCheck(X > Pi);
-  Result := FArcTan(X);
+  Result := ArcTan2(X, 1);
 end;
+{$ELSE}
+asm
+        FLD     X
+        FLD1
+        FPATAN
+        FWAIT
+end;
+{$ENDIF DEF PUREPASCAL}
 
 //--------------------------------------------------------------------------------------------------
 
