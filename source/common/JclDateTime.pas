@@ -131,6 +131,7 @@
 {******************************************************************************}
 
 unit JclDateTime;
+
 {$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
@@ -1090,8 +1091,8 @@ begin
       begin
         Inc(N);
       end;
-    end; { case }
-  end; {while }
+    end; // case
+  end; // while
   Result := SysUtils.FormatDateTime(Result + Form, DateTime);
 end;
 
