@@ -1,30 +1,29 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclBase.pas.                                            }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2000 of these individuals.                                                   }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains generic JCL base classes and routines to support earlier  }
-{ versions of Delphi as well as FPC.                                           }
-{                                                                              }
-{ Unit owner: Marcel van Brakel                                                }
-{ Last modified: August 25, 2001                                               }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclComplex.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains generic JCL base classes and routines to support earlier                      }
+{ versions of Delphi as well as FPC.                                                               }
+{                                                                                                  }
+{ Unit owner: Marcel van Brakel                                                                    }
+{ Last modified: August 25, 2001                                                                   }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclBase;
 
@@ -33,14 +32,14 @@ unit JclBase;
 interface
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF WIN32}
+  {$ENDIF}
   Classes, SysUtils;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Version
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
@@ -50,9 +49,9 @@ const
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // FreePascal Support
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF FPC}
 
@@ -67,11 +66,14 @@ procedure RaiseLastWin32Error;
 procedure QueryPerformanceCounter(var C: Int64);
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 {$ENDIF}
+
+var
+  Default8087CW: Word;
 {$ENDIF FPC}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // EJclError
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   EJclError = class (Exception)
@@ -80,11 +82,11 @@ type
     constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // EJclWin32Error
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 type
   EJclWin32Error = class (EJclError)
@@ -100,11 +102,11 @@ type
     property LastErrorMsg: string read FLastErrorMsg;
   end;
 
-{$ENDIF WIN32}
+{$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Types
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   {$IFDEF MATH_EXTENDED_PRECISION}
@@ -126,34 +128,12 @@ type
 type
   PPointer = ^Pointer;
 
-{$IFNDEF SUPPORTS_INT64}
-
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Int64 support
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-type
-  PInt64 = ^Int64;
-  Int64 = packed record
-    case Integer of
-    0: (
-      LowPart: DWORD;
-      HighPart: Longint);
-    {$IFNDEF BCB3}
-    1: (
-      QuadPart: LONGLONG);
-    {$ENDIF BCB3}
-  end;
-
-procedure I64Assign(var I: Int64; const Low, High: Longint);
-procedure I64Copy(var Dest: Int64; const Source: Int64);
-function I64Compare(const I1, I2: Int64): Integer;
-{$ENDIF SUPPORTS_INT64}
-
-{$IFDEF SUPPORTS_INT64}
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
-{$ENDIF SUPPORTS_INT64}
 
 // Redefinition of TLargeInteger to relieve dependency on Windows.pas
 
@@ -181,11 +161,9 @@ type
       QuadPart: Int64);
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Dynamic Array support
-//------------------------------------------------------------------------------
-
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
+//--------------------------------------------------------------------------------------------------
 
 type
   TDynByteArray     = array of Byte;
@@ -201,11 +179,10 @@ type
   TDynSingleArray   = array of Single;
   TDynFloatArray    = array of Float;
   TDynPointerArray  = array of Pointer;
-{$ENDIF}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TObjectList
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF DELPHI5_UP}
 type
@@ -222,17 +199,17 @@ type
   end;
 {$ENDIF DELPHI5_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Cross-Platform Compatibility
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF DELPHI6_UP}
 procedure RaiseLastOSError;
 {$ENDIF DELPHI6_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Interface compatibility
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_INTERFACE}
 {$IFNDEF COMPILER6_UP}
@@ -248,9 +225,9 @@ implementation
 uses
   JclResources;
 
-//==============================================================================
+//=================================================================================================
 // EJclError
-//==============================================================================
+//=================================================================================================
 
 constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
@@ -270,9 +247,9 @@ begin
   {$ENDIF FPC}
 end;
 
-//==============================================================================
+//=================================================================================================
 // FreePascal support
-//==============================================================================
+//=================================================================================================
 
 {$IFDEF FPC}
 {$IFDEF MSWINDOWS}
@@ -291,13 +268,13 @@ begin
   SetString(Result, Buffer, Size);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RaiseLastWin32Error;
 begin
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 var
@@ -308,7 +285,7 @@ begin
   CardinalsToI64(Frequency, T.LowPart, T.HighPart);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure QueryPerformanceCounter(var C: Int64);
 var
@@ -329,11 +306,11 @@ end;
 {$ENDIF WIN32}
 {$ENDIF FPC}
 
-//==============================================================================
+//=================================================================================================
 // EJclWin32Error
-//==============================================================================
+//=================================================================================================
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 constructor EJclWin32Error.Create(const Msg: string);
 begin
@@ -342,7 +319,7 @@ begin
   inherited CreateFmt(Msg + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor EJclWin32Error.CreateFmt(const Msg: string; const Args: array of const);
 begin
@@ -351,7 +328,7 @@ begin
   inherited CreateFmt(Msg + #13 + Format(RsWin32Prefix, [FLastErrorMsg, FLastError]), Args);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor EJclWin32Error.CreateRes(Ident: Integer);
 begin
@@ -360,7 +337,7 @@ begin
   inherited CreateFmt(LoadStr(Ident) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor EJclWin32Error.CreateResRec(ResStringRec: PResStringRec);
 begin
@@ -373,154 +350,11 @@ begin
   {$ENDIF FPC}
 end;
 
-{$ENDIF WIN32}
-
-//==============================================================================
-// Dynamic array support
-//==============================================================================
-
-{$IFNDEF SUPPORTS_DYNAMICARRAYS}
-
-type
-  PDynArrayRec = ^TDynArrayRec;
-  TDynArrayRec = packed record
-    AllocSize: Longint;
-    Length: Longint;
-    ElemSize: Longint;
-  end;
-
-const
-  DynArrayRecSize = SizeOf(TDynArrayRec);
-
-//------------------------------------------------------------------------------
-
-function DynArrayAllocSize(const A): Longint;
-var
-  P: Pointer;
-begin
-  P := Pointer(Longint(Pointer(A)) - 12);
-  Result := Longint(P^);
-end;
-
-//------------------------------------------------------------------------------
-
-function DynArrayLength(const A): Longint;
-var
-  P: Pointer;
-begin
-  P := Pointer(Longint(Pointer(A)) - 8);
-  Result := Longint(P^);
-end;
-
-//------------------------------------------------------------------------------
-
-function DynArrayElemSize(const A): Longint;
-var
-  P: Pointer;
-begin
-  P := Pointer(Longint(Pointer(A)) - 4);
-  Result := Longint(P^);
-end;
-
-//------------------------------------------------------------------------------
-
-procedure DynArrayInitialize(var A; ElementSize, InitialLength: Longint);
-var
-  P: Pointer;
-  Size: Longint;
-begin
-  if (ElementSize < 1) or (ElementSize > 8) then
-    raise EJclError.CreateResRec(@RsDynArrayError);
-  if InitialLength < 0 then
-    InitialLength := 0;
-  Size := DynArrayRecSize + (InitialLength * ElementSize);
-  P := AllocMem(Size);
-  with TDynArrayRec(P^) do
-  begin
-    AllocSize := Size;
-    Length := InitialLength;
-    ElemSize := ElementSize;
-  end;
-  Pointer(A) := Pointer(Longint(P) + DynArrayRecSize);
-end;
-
-//------------------------------------------------------------------------------
-
-procedure DynArrayFinalize(var A);
-var
-  P: Pointer;
-begin
-  P := Pointer(Longint(Pointer(A)) - DynArrayRecSize);
-  FreeMem(P);
-  Pointer(A) := nil;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure DynArraySetLength(var A; NewLength: Integer);
-var
-  P: Pointer;
-  Size: Longint;
-  ElemSize: Longint;
-begin
-  P := Pointer(Longint(Pointer(A)) - DynArrayRecSize);
-  ElemSize := DynArrayElemSize(A);
-  Size := DynArrayRecSize + (NewLength * ElemSize);
-  ReallocMem(P, Size);
-  with TDynArrayRec(P^) do
-  begin
-    AllocSize := Size;
-    Length := NewLength;
-  end;
-  Pointer(A) := Pointer(Longint(P) + DynArrayRecSize);
-end;
-
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
+{$ENDIF}
 
 //==============================================================================
 // Int64 support
 //==============================================================================
-
-{$IFNDEF SUPPORTS_INT64}
-
-procedure I64Assign(var I: Int64; const Low, High: Longint);
-begin
-  I.LowPart := Low;
-  I.HighPart := High;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure I64Copy(var Dest: Int64; const Source: Int64);
-begin
-  Dest.LowPart := Source.LowPart;
-  Dest.HighPart := Source.HighPart;
-end;
-
-//------------------------------------------------------------------------------
-
-function I64Compare(const I1, I2: Int64): Integer;
-begin
-  if I1.HighPart < I2.HighPart then
-    Result := -1
-  else
-  if I1.HighPart > I1.HighPart then
-    Result := 1
-  else
-  if I1.LowPart < I2.LowPart then
-    Result := -1
-  else
-  if I1.LowPart > I2.LowPart then
-    Result := 1
-  else
-    Result := 0;
-end;
-
-{$ENDIF SUPPORTS_INT64}
-
-//------------------------------------------------------------------------------
-
-{$IFDEF SUPPORTS_INT64}
 
 procedure I64ToCardinals(I: Int64; var LowPart, HighPart: Cardinal);
 begin
@@ -528,7 +362,7 @@ begin
   HighPart := TULargeInteger(I).HighPart;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 begin
@@ -536,7 +370,6 @@ begin
   TULargeInteger(I).HighPart := HighPart;
 end;
 
-{$ENDIF SUPPORTS_INT64}
 
 //==============================================================================
 // TObjectList
@@ -554,7 +387,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TObjectList.Create(AOwnsObjects: Boolean);
 begin
@@ -562,14 +395,14 @@ begin
   FOwnsObjects := AOwnsObjects;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TObjectList.GetItems(Index: Integer): TObject;
 begin
   Result := TObject(Get(Index));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TObjectList.SetItems(Index: Integer; const Value: TObject);
 begin
