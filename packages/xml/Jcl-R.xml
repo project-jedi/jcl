@@ -93,5 +93,10 @@
     <File Name="..\..\source\windows\MSTask.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\zlibh.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclGraphics.pas" Targets="c5,d5" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclGraphUtils.pas" Targets="c5,d5" Formname="" Condition=""/>
+    <File Name="..\..\source\vcl\JclPrint.pas" Targets="c5,d5,d5.dev" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclGraphics.pas" Targets="d5.dev" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclGraphUtils.pas" Targets="d5.dev" Formname="" Condition=""/>
   </Contains>
 </Package>
