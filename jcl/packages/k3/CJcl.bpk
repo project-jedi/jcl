@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="bplCJclK3.so.1.91.0"/>
+    <PROJECT value="bplCJclK3.so.1.91.1"/>
     <OBJFILES value="../../lib/k3/obj/Jcl8087.o 
       ../../lib/k3/obj/JclBase.o 
       ../../lib/k3/obj/JclComplex.o 
