@@ -3154,7 +3154,7 @@ begin
 end;
 
 // Indicates the format for the COR_ILMETHOD header
-const CorILMethod_FormatShift     = 3;
+const CorILMethod_FormatShift     = 2;
 const CorILMethod_FormatMask      = ((1 shl CorILMethod_FormatShift) - 1);
 
 const CorILMethod_TinyFormat      = $0002;
@@ -3297,7 +3297,7 @@ begin
     AddOptILTable(Pointer(DWORD(FCode) + FSize), SectSize);
 
   if IsBitSet(SectHeader.Small.Kind, CorILMethod_Sect_MoreSects) then
-    ParseMoreSections(Pointer(DWORD(SectHeader) + SizeOf(TImageCorILMethodSectHeader) + SectSize));
+    ParseMoreSections(Pointer(DWORD(SectHeader) + SectSize));
 end;
 
 function TJclClrMethodBody.GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
@@ -3326,7 +3326,10 @@ begin
   FParentToken  := nil;
   FParams       := nil;
 
-  FMethodBody   := TJclClrMethodBody.Create(Self);
+  if FRVA <> 0 then
+    FMethodBody := TJclClrMethodBody.Create(Self)
+  else
+    FMethodBody := nil;
 end;
 
 destructor TJclClrTableMethodDefRow.Destroy;
