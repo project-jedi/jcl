@@ -21,7 +21,7 @@
 { Unit which provides a central place for all resource strings used in the JCL }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: April 17, 2001                                                }
+{ Last modified: April 18, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -91,6 +91,8 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
+
+  RsExprEvalListError               = 'List index out of bounds (%d)';
 
   // Stacks
   RsExprEvalStackEmpty              = 'Stack is empty';
