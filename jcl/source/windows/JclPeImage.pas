@@ -16,13 +16,20 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 10, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains various PE file classes and support routines              }
+{                                                                              }
+{ Unit owner: Petr Vones                                                       }
+{ Last modified: December 13, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
 unit JclPeImage;
 
 {$I JCL.INC}
+
+{$WEAKPACKAGEUNIT ON}
 
 interface
 
@@ -31,7 +38,7 @@ uses
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  JclBase, JclDateTime, JclFileUtils, JclStrings, JclSynch, JclSysInfo;
+  JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo;
 
 //------------------------------------------------------------------------------
 // Missing winnt.h translations
@@ -761,6 +768,7 @@ type
 
   TJclPeImage = class (TObject)
   private
+    FAttachedImage: Boolean;
     FDebugList: TJclPeDebugList;
     FFileName: TFileName;
     FImageSections: TStrings;
@@ -797,12 +805,15 @@ type
     procedure SetFileName(const Value: TFileName);
   protected
     procedure AfterOpen; dynamic;
+    procedure CheckNotAttached;
     procedure Clear; dynamic;
     function ExpandModuleName(const ModuleName: string): TFileName;
+    procedure RaiseStatusException;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
   public
     constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
     destructor Destroy; override;
+    procedure AttachLoadedModule(const Handle: HMODULE);
     function CalculateCheckSum: DWORD;
     function DirectoryEntryToData(Directory: Word): Pointer;
     function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
@@ -823,6 +834,7 @@ type
     {$IFDEF SUPPORTS_INT64}
     class function StampToDateTime(TimeDateStamp: DWORD): TDateTime;
     {$ENDIF SUPPORTS_INT64}
+    property AttachedImage: Boolean read FAttachedImage;
     property DebugList: TJclPeDebugList read GetDebugList;
     property Description: string read GetDescription;
     property Directories[Directory: Word]: TImageDataDirectory read GetDirectories;
@@ -834,7 +846,7 @@ type
     property ImageSectionCount: Integer read GetImageSectionCount;
     property ImageSectionHeaders[Index: Integer]: TImageSectionHeader read GetImageSectionHeaders;
     property ImageSectionNames[Index: Integer]: string read GetImageSectionNames;
-    property ImageSectionNameFromRva[const Rva: DWORD]: string read GetImageSectionNameFromRva; 
+    property ImageSectionNameFromRva[const Rva: DWORD]: string read GetImageSectionNameFromRva;
     property ImportList: TJclPeImportList read GetImportList;
     property LoadConfigValues[Index: TJclLoadConfig]: string read GetLoadConfigValues;
     property LoadedImage: TLoadedImage read FLoadedImage;
@@ -1012,15 +1024,31 @@ function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeader
 
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 
-procedure PeClearGlobalImage;
-
 //------------------------------------------------------------------------------
-// Mapped image and API hooking related functions
+// Mapped image related routines
 //------------------------------------------------------------------------------
 
-function PeMapImgNtHeaders(BaseAddress: Pointer): PImageNtHeaders;
+function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 
-function PeMapImgLibraryName(BaseAddress: Pointer): string;
+function PeMapImgLibraryName(const BaseAddress: Pointer): string;
+
+function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
+
+type
+  TJclPeSectionStream = class (TCustomMemoryStream)
+  private
+    FInstance: HMODULE;
+    FSectionHeader: TImageSectionHeader;
+    procedure Initialize(Instance: HMODULE; const ASectionName: string);
+  public
+    constructor Create(Instance: HMODULE; const ASectionName: string);
+    function Write(const Buffer; Count: Longint): Longint; override;
+    property Instance: HMODULE read FInstance;
+  end;
+
+//------------------------------------------------------------------------------
+// API hooking classes
+//------------------------------------------------------------------------------
 
 type
   TJclPeMapImgHookItem = class (TObject)
@@ -1058,8 +1086,6 @@ type
     property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
     property ItemFromNewAddress[NewAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromNewAddress;
   end;
-
-function PeImportHooks: TJclPeMapImgHooks;
 
 //------------------------------------------------------------------------------
 // Image access under a debbuger
@@ -1161,6 +1187,10 @@ uses
   Consts,
   JclResources, JclSysUtils;
 
+resourcestring
+  RsPeNotAvailableForAttached = 'Feature is not available for attached images';
+  RsPeSectionNotFound = 'Section "%s" not found';
+
 //------------------------------------------------------------------------------
 
 function IMAGE_ORDINAL(Ordinal: DWORD): Word;
@@ -1170,33 +1200,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-var
-  GlobalPeImage: TJclPeImage = nil;
-
-function CreateGlobalPeImage(const FileName: TFileName): Boolean;
-begin
-  if GlobalPeImage = nil then
-    GlobalPeImage := TJclPeImage.Create(True);
-  GlobalPeImage.FileName := FileName;
-  Result := GlobalPeImage.StatusOK;
-end;
-
-//------------------------------------------------------------------------------
-
-var
-  GlobalImportHooks: TJclPeMapImgHooks = nil;
-
-function PeImportHooks: TJclPeMapImgHooks;
-begin
-{ TODO : Not thread-safe yet }
-  if GlobalImportHooks = nil then
-    GlobalImportHooks := TJclPeMapImgHooks.Create;
-  Result := GlobalImportHooks;
-end;  
-
-//------------------------------------------------------------------------------
-
-function ValueComp(Value1, Value2: Integer): Integer;
+function ValueComp(const Value1, Value2: Integer): Integer;
 begin
   if Value1 > Value2 then
     Result := 1
@@ -1205,17 +1209,6 @@ begin
     Result := -1
   else
     Result := 0;
-end;
-
-//------------------------------------------------------------------------------
-
-function WideCharToStr(WStr: PWChar; Len: Integer): string;
-begin
-  if Len = 0 then
-    Len := -1;
-  Len := WideCharToMultiByte(CP_ACP, 0, WStr, Len, nil, 0, nil, nil);
-  SetLength(Result, Len);
-  WideCharToMultiByte(CP_ACP, 0, WStr, Len, PChar(Result), Len, nil, nil);
 end;
 
 //------------------------------------------------------------------------------
@@ -1263,38 +1256,6 @@ begin
     end
     else
       Result := False;
-  end;
-end;
-
-//==============================================================================
-// Extended sorting support
-//==============================================================================
-
-var
-  ListCompareFunc: TListSortCompare = nil;
-  DescendingSort: Boolean = False;
-  GlobalCritSection: TJclCriticalSection = nil;
-
-//------------------------------------------------------------------------------
-
-function InternalListCompareFunc(Item1, Item2: Pointer): Integer;
-begin
-  Result := ListCompareFunc(Item1, Item2);
-  if DescendingSort then
-    Result := -Result;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure ListSortEx(List: TList; Func: TListSortCompare; Descending: Boolean);
-begin
-  GlobalCritSection.Enter;
-  try
-    ListCompareFunc := Func;
-    DescendingSort := Descending;
-    List.Sort(InternalListCompareFunc);
-  finally
-    GlobalCritSection.Leave;
   end;
 end;
 
@@ -1379,11 +1340,21 @@ begin
       TJclPeImportFuncItem(Item2).Ordinal)
 end;
 
+function ImportSortByNameDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ImportSortByName(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
 function ImportSortByHint(Item1, Item2: Pointer): Integer;
 begin
   Result := ValueComp(TJclPeImportFuncItem(Item1).Hint, TJclPeImportFuncItem(Item2).Hint)
+end;
+
+function ImportSortByHintDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ImportSortByHint(Item2, Item1);
 end;
 
 //------------------------------------------------------------------------------
@@ -1396,6 +1367,11 @@ begin
     Result := ImportSortByName(Item1, Item2);
 end;
 
+function ImportSortByDllDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ImportSortByDll(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
 function ImportSortByOrdinal(Item1, Item2: Pointer): Integer;
@@ -1406,14 +1382,23 @@ begin
     Result := ValueComp(TJclPeImportFuncItem(Item1).Ordinal, TJclPeImportFuncItem(Item2).Ordinal)
 end;
 
+function ImportSortByOrdinalDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ImportSortByOrdinal(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
-function GetImportSortFunction(SortType: TJclPeImportSort): TListSortCompare;
+function GetImportSortFunction(SortType: TJclPeImportSort; Descending: Boolean): TListSortCompare;
 const
-  SortFunctions: array [TJclPeImportSort] of TListSortCompare =
-    (ImportSortByName, ImportSortByOrdinal, ImportSortByHint, ImportSortByDll);
+  SortFunctions: array [TJclPeImportSort, Boolean] of TListSortCompare =
+    ((ImportSortByName, ImportSortByNameDESC),
+     (ImportSortByOrdinal, ImportSortByOrdinalDESC),
+     (ImportSortByHint, ImportSortByHintDESC),
+     (ImportSortByDll, ImportSortByDllDESC)
+    );
 begin
-  Result := SortFunctions[SortType];
+  Result := SortFunctions[SortType, Descending];
 end;
 
 //------------------------------------------------------------------------------
@@ -1622,7 +1607,7 @@ begin
   if not FSorted or (SortType <> FLastSortType) or (Descending <> FLastSortDescending) then
   begin
     GetCount; // create list if it wasn't created
-    ListSortEx(Self, GetImportSortFunction(SortType), Descending);
+    Sort(GetImportSortFunction(SortType, Descending));
     FLastSortType := SortType;
     FLastSortDescending := Descending;
     FSorted := True;
@@ -1638,6 +1623,7 @@ var
   I: Integer;
   ExportPeImage: TJclPeImage;
 begin
+  FImage.CheckNotAttached;
   if PeImageCache <> nil then
     ExportPeImage := nil // to make the compiler happy
   else
@@ -1701,7 +1687,10 @@ begin
         LibItem.FImportKind := ikImport;
         if ImportDesc^.Characteristics = 0 then
         begin
-          LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.FirstThunk));
+          if FAttachedImage then
+            LibItem.FThunk := nil // Borland images doesn't have two paralel arrays
+          else
+            LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.FirstThunk));
           FLinkerProducer := lrBorland;
         end
         else
@@ -1844,7 +1833,7 @@ begin
   begin
     FFilterModuleName := Value;
     RefreshAllItems;
-    ListSortEx(FAllItemsList, GetImportSortFunction(FLastAllSortType), FLastAllSortDescending);
+    FAllItemsList.Sort(GetImportSortFunction(FLastAllSortType, FLastAllSortDescending));
   end;
 end;
 
@@ -1875,7 +1864,7 @@ end;
 procedure TJclPeImportList.SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean);
 begin
   GetAllItemCount; // create list if it wasn't created
-  ListSortEx(FAllItemsList, GetImportSortFunction(SortType), Descending);
+  FAllItemsList.Sort(GetImportSortFunction(SortType, Descending));
   FLastAllSortType := SortType;
   FLastAllSortDescending := Descending;
 end;
@@ -1884,7 +1873,7 @@ end;
 
 procedure TJclPeImportList.SortList(SortType: TJclPeImportLibSort);
 begin
-  ListSortEx(Self, GetImportLibSortFunction(SortType), False);
+  Sort(GetImportLibSortFunction(SortType));
 end;
 
 //------------------------------------------------------------------------------
@@ -1903,7 +1892,10 @@ var
     ExportItem: TJclPeExportFuncItem;
     ExportList: TJclPeExportFuncList;
   begin
-    LibPeDump.FileName := FImage.ExpandModuleName(ModuleName);
+    if FImage.FAttachedImage then
+      LibPeDump.AttachLoadedModule(GetModuleHandle(PChar(ModuleName)))
+    else
+      LibPeDump.FileName := FImage.ExpandModuleName(ModuleName);
     if not LibPeDump.StatusOK then
       Exit;
     ExportList := LibPeDump.ExportList;
@@ -2054,6 +2046,11 @@ begin
   Result := StrComp(TJclPeExportFuncItem(Item1).FName, TJclPeExportFuncItem(Item2).FName);
 end;
 
+function ExportSortByNameDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortByName(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
 function ExportSortByOrdinal(Item1, Item2: Pointer): Integer;
@@ -2061,11 +2058,21 @@ begin
   Result := ValueComp(TJclPeExportFuncItem(Item1).Ordinal, TJclPeExportFuncItem(Item2).Ordinal);
 end;
 
+function ExportSortByOrdinalDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortByOrdinal(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
 function ExportSortByHint(Item1, Item2: Pointer): Integer;
 begin
   Result := ValueComp(TJclPeExportFuncItem(Item1).Hint, TJclPeExportFuncItem(Item2).Hint);
+end;
+
+function ExportSortByHintDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortByHint(Item2, Item1);
 end;
 
 //------------------------------------------------------------------------------
@@ -2077,6 +2084,11 @@ begin
     Result := ExportSortByName(Item1, Item2);
 end;
 
+function ExportSortByAddressDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortByAddress(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
 function ExportSortByForwarded(Item1, Item2: Pointer): Integer;
@@ -2086,11 +2098,21 @@ begin
     Result := ExportSortByName(Item1, Item2);
 end;
 
+function ExportSortByForwardedDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortByForwarded(Item2, Item1);
+end;
+
 //------------------------------------------------------------------------------
 
 function ExportSortByAddrOrFwd(Item1, Item2: Pointer): Integer;
 begin
   Result := CompareStr(TJclPeExportFuncItem(Item1).AddressOrForwardStr, TJclPeExportFuncItem(Item2).AddressOrForwardStr);
+end;
+
+function ExportSortByAddrOrFwdDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortByAddrOrFwd(Item2, Item1);
 end;
 
 //------------------------------------------------------------------------------
@@ -2100,6 +2122,11 @@ begin
   Result := CompareStr(TJclPeExportFuncItem(Item1).SectionName, TJclPeExportFuncItem(Item2).SectionName);
   if Result = 0 then
     Result := ExportSortByName(Item1, Item2);
+end;
+
+function ExportSortBySectionDESC(Item1, Item2: Pointer): Integer;
+begin
+  Result := ExportSortBySection(Item2, Item1);
 end;
 
 //==============================================================================
@@ -2212,7 +2239,7 @@ begin
       Functions := DWORD(RvaToVa(DWORD(FExportDir^.AddressOfFunctions)));
       NameOrdinals := RvaToVa(DWORD(FExportDir^.AddressOfNameOrdinals));
       Names := RvaToVa(DWORD(FExportDir^.AddressOfNames));
-      SetCapacity(FExportDir^.NumberOfNames);
+      Count := FExportDir^.NumberOfNames;
       for I := 0 to FExportDir^.NumberOfNames - 1 do
       begin
         ExportItem := TJclPeExportFuncItem.Create;
@@ -2229,7 +2256,7 @@ begin
         end
         else
           ExportItem.FForwardedName := nil;
-        Add(ExportItem);
+        List^[I] := ExportItem; 
         Inc(NameOrdinals);
         Inc(Names);
       end;
@@ -2401,13 +2428,19 @@ end;
 
 procedure TJclPeExportFuncList.SortList(SortType: TJclPeExportSort; Descending: Boolean);
 const
-  SortFunctions: array [TJclPeExportSort] of TListSortCompare =
-    (ExportSortByName, ExportSortByOrdinal, ExportSortByHint, ExportSortByAddress,
-     ExportSortByForwarded, ExportSortByAddrOrFwd, ExportSortBySection);
+  SortFunctions: array [TJclPeExportSort, Boolean] of TListSortCompare =
+    ((ExportSortByName, ExportSortByNameDESC),
+     (ExportSortByOrdinal, ExportSortByOrdinalDESC),
+     (ExportSortByHint, ExportSortByHintDESC),
+     (ExportSortByAddress, ExportSortByAddressDESC),
+     (ExportSortByForwarded, ExportSortByForwardedDESC),
+     (ExportSortByAddrOrFwd, ExportSortByAddrOrFwdDESC),
+     (ExportSortBySection, ExportSortBySectionDESC)
+    );
 begin
   if not FSorted or (SortType <> FLastSortType) or (Descending <> FLastSortDescending) then
   begin
-    ListSortEx(Self, SortFunctions[SortType], Descending);
+    Sort(SortFunctions[SortType, Descending]);
     FLastSortType := SortType;
     FLastSortDescending := Descending;
     FSorted := True;
@@ -2493,7 +2526,7 @@ begin
 // TODO : Put name to local variable to increase the performance
   if IsName then
     with PImageResourceDirStringU(OffsetToRawData(FEntry^.Name))^ do
-      Result := WideCharToStr(NameString, Length)
+      Result := WideCharLenToString(NameString, Length) 
   else
     Result := IntToStr(FEntry^.Name and $FFFF);
 end;
@@ -2807,18 +2840,61 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
+var
+  NtHeaders: PImageNtHeaders;
+begin
+  Clear;
+  if Handle = 0 then
+    Exit;
+  NtHeaders := PeMapImgNtHeaders(Pointer(Handle));
+  if NtHeaders = nil then
+    FStatus := stNotPE
+  else
+  begin
+    FStatus := stOk;
+    FAttachedImage := True;
+    FFileName := GetModulePath(Handle);
+    FLoadedImage.ModuleName := PChar(FFileName);
+    FLoadedImage.hFile := INVALID_HANDLE_VALUE;
+    FLoadedImage.MappedAddress := Pointer(Handle);
+    FLoadedImage.FileHeader := NtHeaders;
+    FLoadedImage.NumberOfSections := NtHeaders^.FileHeader.NumberOfSections;
+    FLoadedImage.Sections := PeMapImgSections(NtHeaders);
+    FLoadedImage.LastRvaSection := FLoadedImage.Sections;
+    FLoadedImage.Characteristics := NtHeaders^.FileHeader.Characteristics;
+    FLoadedImage.fSystemImage := (FLoadedImage.Characteristics and IMAGE_FILE_SYSTEM <> 0);
+    FLoadedImage.fDOSImage := False;
+    FLoadedImage.SizeOfImage := NtHeaders^.OptionalHeader.SizeOfImage;
+    ReadImageSections;
+    AfterOpen;
+  end;
+  RaiseStatusException;
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeImage.CalculateCheckSum: DWORD;
 var
   C: DWORD;
 begin
   if StatusOK then
   begin
+    CheckNotAttached;
     if CheckSumMappedFile(FLoadedImage.MappedAddress, FLoadedImage.SizeOfImage,
       @C, @Result) = nil then
         RaiseLastWin32Error;
   end
   else
     Result := 0;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeImage.CheckNotAttached;
+begin
+  if FAttachedImage then
+    raise EJclPeImageError.CreateResRec(@RsPeNotAvailableForAttached);
 end;
 
 //------------------------------------------------------------------------------
@@ -2832,10 +2908,11 @@ begin
   FreeAndNil(FRelocationList);
   FreeAndNil(FResourceList);
   FreeAndNil(FVersionInfo);
-  if StatusOK then
+  if not FAttachedImage and StatusOK then
     UnMapAndLoad(@FLoadedImage);
   FillChar(FLoadedImage, SizeOf(FLoadedImage), #0);
   FStatus := stNotLoaded;
+  FAttachedImage := False;
 end;
 
 //------------------------------------------------------------------------------
@@ -2850,25 +2927,29 @@ end;
 //------------------------------------------------------------------------------
 
 class function TJclPeImage.DebugTypeNames(DebugType: DWORD): string;
-type
-  TDebugTypes = IMAGE_DEBUG_TYPE_UNKNOWN..IMAGE_DEBUG_TYPE_BORLAND;
-const
-  DebugTypes: array [TDebugTypes] of PResStringRec =
-    (@RsPeDEBUG_UNKNOWN,
-     @RsPeDEBUG_COFF,
-     @RsPeDEBUG_CODEVIEW,
-     @RsPeDEBUG_FPO,
-     @RsPeDEBUG_MISC,
-     @RsPeDEBUG_EXCEPTION,
-     @RsPeDEBUG_FIXUP,
-     @RsPeDEBUG_OMAP_TO_SRC,
-     @RsPeDEBUG_OMAP_FROM_SRC,
-     @RsPeDEBUG_BORLAND);
 begin
-  if DebugType <= High(TDebugTypes) then
-    Result := LoadResString(DebugTypes[DebugType])
+  case DebugType of
+    IMAGE_DEBUG_TYPE_UNKNOWN:
+      Result := RsPeDEBUG_UNKNOWN;
+    IMAGE_DEBUG_TYPE_COFF:
+      Result := RsPeDEBUG_COFF;
+    IMAGE_DEBUG_TYPE_CODEVIEW:
+      Result := RsPeDEBUG_CODEVIEW;
+    IMAGE_DEBUG_TYPE_FPO:
+      Result := RsPeDEBUG_FPO;
+    IMAGE_DEBUG_TYPE_MISC:
+      Result := RsPeDEBUG_MISC;
+    IMAGE_DEBUG_TYPE_EXCEPTION:
+      Result := RsPeDEBUG_EXCEPTION;
+    IMAGE_DEBUG_TYPE_FIXUP:
+      Result := RsPeDEBUG_FIXUP;
+    IMAGE_DEBUG_TYPE_OMAP_TO_SRC:
+      Result := RsPeDEBUG_OMAP_TO_SRC;
+    IMAGE_DEBUG_TYPE_OMAP_FROM_SRC:
+      Result := RsPeDEBUG_OMAP_FROM_SRC;
   else
     Result := '???';
+  end;  
 end;
 
 //------------------------------------------------------------------------------
@@ -2884,9 +2965,17 @@ end;
 
 function TJclPeImage.DirectoryEntryToData(Directory: Word): Pointer;
 var
-  Size: DWORD;
+  VA: DWORD;
 begin
-  Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, False, Directory, Size);
+  if FAttachedImage then
+  begin
+    VA := FLoadedImage.FileHeader.OptionalHeader.DataDirectory[Directory].VirtualAddress;
+    if VA > 0 then
+      Result := Pointer(VA + FLoadedImage.MappedAddress)
+    else
+      Result := nil;
+  end else
+    Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, False, Directory, VA);
 end;
 
 //------------------------------------------------------------------------------
@@ -3291,6 +3380,7 @@ end;
 
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
 begin
+  CheckNotAttached;
   Result.VirtualAddress := GetImageUnusedHeaderBytes(@FLoadedImage, Result.Size);
   if Result.VirtualAddress = 0 then
     RaiseLastWin32Error;
@@ -3306,50 +3396,85 @@ begin
   except
     FreeAndNil(FVersionInfo);
   end;  
-  Result := FVersionInfo;  
+  Result := FVersionInfo;
 end;
 
 //------------------------------------------------------------------------------
 
 class function TJclPeImage.HeaderNames(Index: TJclPeHeader): string;
-const
-  HeaderItemNames: array [TJclPeHeader] of PResStringRec =
-    (@RsPeSignature,
-     @RsPeMachine,
-     @RsPeNumberOfSections,
-     @RsPeTimeDateStamp,
-     @RsPePointerToSymbolTable,
-     @RsPeNumberOfSymbols,
-     @RsPeSizeOfOptionalHeader,
-     @RsPeCharacteristics,
-     @RsPeMagic,
-     @RsPeLinkerVersion,
-     @RsPeSizeOfCode,
-     @RsPeSizeOfInitializedData,
-     @RsPeSizeOfUninitializedData,
-     @RsPeAddressOfEntryPoint,
-     @RsPeBaseOfCode,
-     @RsPeBaseOfData,
-     @RsPeImageBase,
-     @RsPeSectionAlignment,
-     @RsPeFileAlignment,
-     @RsPeOperatingSystemVersion,
-     @RsPeImageVersion,
-     @RsPeSubsystemVersion,
-     @RsPeWin32VersionValue,
-     @RsPeSizeOfImage,
-     @RsPeSizeOfHeaders,
-     @RsPeCheckSum,
-     @RsPeSubsystem,
-     @RsPeDllCharacteristics,
-     @RsPeSizeOfStackReserve,
-     @RsPeSizeOfStackCommit,
-     @RsPeSizeOfHeapReserve,
-     @RsPeSizeOfHeapCommit,
-     @RsPeLoaderFlags,
-     @RsPeNumberOfRvaAndSizes);
 begin
-  Result := LoadResString(HeaderItemNames[Index]);
+  case Index of
+    JclPeHeader_Signature:
+      Result := RsPeSignature;
+    JclPeHeader_Machine:
+      Result := RsPeMachine;
+    JclPeHeader_NumberOfSections:
+      Result := RsPeNumberOfSections;
+    JclPeHeader_TimeDateStamp:
+      Result := RsPeTimeDateStamp;
+    JclPeHeader_PointerToSymbolTable:
+      Result := RsPePointerToSymbolTable;
+    JclPeHeader_NumberOfSymbols:
+      Result := RsPeNumberOfSymbols;
+    JclPeHeader_SizeOfOptionalHeader:
+      Result := RsPeSizeOfOptionalHeader;
+    JclPeHeader_Characteristics:
+      Result := RsPeCharacteristics;
+    JclPeHeader_Magic:
+      Result := RsPeMagic;
+    JclPeHeader_LinkerVersion:
+      Result := RsPeLinkerVersion;
+    JclPeHeader_SizeOfCode:
+      Result := RsPeSizeOfCode;
+    JclPeHeader_SizeOfInitializedData:
+      Result := RsPeSizeOfInitializedData;
+    JclPeHeader_SizeOfUninitializedData:
+      Result := RsPeSizeOfUninitializedData;
+    JclPeHeader_AddressOfEntryPoint:
+      Result := RsPeAddressOfEntryPoint;
+    JclPeHeader_BaseOfCode:
+      Result := RsPeBaseOfCode;
+    JclPeHeader_BaseOfData:
+      Result := RsPeBaseOfData;
+    JclPeHeader_ImageBase:
+      Result := RsPeImageBase;
+    JclPeHeader_SectionAlignment:
+      Result := RsPeSectionAlignment;
+    JclPeHeader_FileAlignment:
+      Result := RsPeFileAlignment;
+    JclPeHeader_OperatingSystemVersion:
+      Result := RsPeOperatingSystemVersion;
+    JclPeHeader_ImageVersion:
+      Result := RsPeImageVersion;
+    JclPeHeader_SubsystemVersion:
+      Result := RsPeSubsystemVersion;
+    JclPeHeader_Win32VersionValue:
+      Result := RsPeWin32VersionValue;
+    JclPeHeader_SizeOfImage:
+      Result := RsPeSizeOfImage;
+    JclPeHeader_SizeOfHeaders:
+      Result := RsPeSizeOfHeaders;
+    JclPeHeader_CheckSum:
+      Result := RsPeCheckSum;
+    JclPeHeader_Subsystem:
+      Result := RsPeSubsystem;
+    JclPeHeader_DllCharacteristics:
+      Result := RsPeDllCharacteristics;
+    JclPeHeader_SizeOfStackReserve:
+      Result := RsPeSizeOfStackReserve;
+    JclPeHeader_SizeOfStackCommit:
+      Result := RsPeSizeOfStackCommit;
+    JclPeHeader_SizeOfHeapReserve:
+      Result := RsPeSizeOfHeapReserve;
+    JclPeHeader_SizeOfHeapCommit:
+      Result := RsPeSizeOfHeapCommit;
+    JclPeHeader_LoaderFlags:
+      Result := RsPeLoaderFlags;
+    JclPeHeader_NumberOfRvaAndSizes:
+      Result := RsPeNumberOfRvaAndSizes;
+  else
+    Result := '';
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -3362,27 +3487,67 @@ end;
 //------------------------------------------------------------------------------
 
 class function TJclPeImage.LoadConfigNames(Index: TJclLoadConfig): string;
-const
-  LoadConfigItemNames: array [TJclLoadConfig] of PResStringRec =
-    (@RsPeCharacteristics,
-     @RsPeTimeDateStamp,
-     @RsPeVersion,
-     @RsPeGlobalFlagsClear,
-     @RsPeGlobalFlagsSet,
-     @RsPeCriticalSectionDefaultTimeout,
-     @RsPeDeCommitFreeBlockThreshold,
-     @RsPeDeCommitTotalFreeThreshold,
-     @RsPeLockPrefixTable,
-     @RsPeMaximumAllocationSize,
-     @RsPeVirtualMemoryThreshold,
-     @RsPeProcessHeapFlags,
-     @RsPeProcessAffinityMask,
-     @RsPeCSDVersion,
-     @RsPeReserved,
-     @RsPeEditList,
-     @RsPeReserved);
 begin
-  Result := LoadResString(LoadConfigItemNames[Index]);
+  case Index of
+    JclLoadConfig_Characteristics:
+      Result := RsPeCharacteristics;
+    JclLoadConfig_TimeDateStamp:
+      Result := RsPeTimeDateStamp;
+    JclLoadConfig_Version:
+      Result := RsPeVersion;
+    JclLoadConfig_GlobalFlagsClear:
+      Result := RsPeGlobalFlagsClear;
+    JclLoadConfig_GlobalFlagsSet:
+      Result := RsPeGlobalFlagsSet;
+    JclLoadConfig_CriticalSectionDefaultTimeout:
+      Result := RsPeCriticalSectionDefaultTimeout;
+    JclLoadConfig_DeCommitFreeBlockThreshold:
+      Result := RsPeDeCommitFreeBlockThreshold;
+    JclLoadConfig_DeCommitTotalFreeThreshold:
+      Result := RsPeDeCommitTotalFreeThreshold;
+    JclLoadConfig_LockPrefixTable:
+      Result := RsPeLockPrefixTable;
+    JclLoadConfig_MaximumAllocationSize:
+      Result := RsPeMaximumAllocationSize;
+    JclLoadConfig_VirtualMemoryThreshold:
+      Result := RsPeVirtualMemoryThreshold;
+    JclLoadConfig_ProcessHeapFlags:
+      Result := RsPeProcessHeapFlags;
+    JclLoadConfig_ProcessAffinityMask:
+      Result := RsPeProcessAffinityMask;
+    JclLoadConfig_CSDVersion:
+      Result := RsPeCSDVersion;
+    JclLoadConfig_Reserved1:
+      Result := RsPeReserved;
+    JclLoadConfig_EditList:
+      Result := RsPeEditList;
+    JclLoadConfig_Reserved:
+      Result := RsPeReserved;
+  else
+    Result := '';
+  end;    
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeImage.RaiseStatusException;
+begin
+  if not FNoExceptions then
+    case FStatus of
+      stNotPE:
+        raise EJclPeImageError.CreateResRec(@RsPeNotPE);
+      stNotFound:
+        raise EJclPeImageError.CreateResRecFmt(@RsPeCantOpen, [FFileName]);
+      stError:
+        RaiseLastWin32Error;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.RawToVa(Raw: DWORD): Pointer;
+begin
+  Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Raw);
 end;
 
 //------------------------------------------------------------------------------
@@ -3404,19 +3569,13 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclPeImage.RawToVa(Raw: DWORD): Pointer;
-begin
-  Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Raw);
-end;
-
-//------------------------------------------------------------------------------
-
 function TJclPeImage.RvaToSection(Rva: DWORD): PImageSectionHeader;
 var
   I: Integer;
   SectionHeader: PImageSectionHeader;
   EndRVA: DWORD;
 begin
+{ TODO -cTEST : Test on NT system whether ImageRvaToSection is allowed without previous MapAndLoad call }
   Result := ImageRvaToSection(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva);
   if Result = nil then 
     for I := 0 to FImageSections.Count - 1 do
@@ -3439,7 +3598,10 @@ end;
 
 function TJclPeImage.RvaToVa(Rva: DWORD): Pointer;
 begin
-  Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
+  if FAttachedImage then
+    Result := FLoadedImage.MappedAddress + Rva
+  else
+    Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
 end;
 
 //------------------------------------------------------------------------------
@@ -3450,11 +3612,14 @@ begin
   begin
     Clear;
     FFileName := Value;
-    FStatus := stNotLoaded;
     if FFileName = '' then
       Exit;
     if MapAndLoad(PChar(FFileName), nil, @FLoadedImage, True, FReadOnlyAccess) then
-      FStatus := stOk
+    begin
+      FStatus := stOk;
+      ReadImageSections;
+      AfterOpen;
+    end
     else
       case GetLastError of
         ERROR_SUCCESS:
@@ -3464,17 +3629,7 @@ begin
       else
         FStatus := stError;
       end;
-    if not FNoExceptions then
-      case FStatus of
-        stNotPE:
-          raise EJclPeImageError.CreateResRec(@RsPeNotPE);
-        stNotFound:
-          raise EJclPeImageError.CreateResRecFmt(@RsPeCantOpen, [FFileName]);
-        stError:
-          RaiseLastWin32Error;
-      end;
-    ReadImageSections;
-    AfterOpen;
+    RaiseStatusException;
   end;
 end;
 
@@ -3552,6 +3707,7 @@ end;
 
 function TJclPeImage.VerifyCheckSum: Boolean;
 begin
+  CheckNotAttached;
   with OptionalHeader do
     Result := StatusOK and ((CheckSum = 0) or (CalculateCheckSum = CheckSum));
 end;
@@ -4067,17 +4223,26 @@ end;
 // Various simple PE Image functions
 //==============================================================================
 
-function InternalImportedLibraries(Recursive, FullPathName: Boolean): TStringList;
+function CreatePeImage(const FileName: TFileName): TJclPeImage;
+begin
+  Result := TJclPeImage.Create(True);
+  Result.FileName := FileName;
+end;
+
+//------------------------------------------------------------------------------
+
+function InternalImportedLibraries(const FileName: TFileName;
+  Recursive, FullPathName: Boolean): TStringList;
 var
   Cache: TJclPeImagesCache;
 
-  procedure ProcessLibraries(const FileName: TFileName);
+  procedure ProcessLibraries(const AFileName: TFileName);
   var
     I: Integer;
     S: string;
     ImportLib: TJclPeImportLibItem;
   begin
-    with Cache[FileName].ImportList do
+    with Cache[AFileName].ImportList do
       for I := 0 to Count - 1 do
       begin
         ImportLib := Items[I];
@@ -4095,14 +4260,13 @@ var
   end;
 
 begin
-  // must be covered by critical section, requires valid GlobalPeImage
   Cache := TJclPeImagesCache.Create;
   try
     Result := TStringList.Create;
     try
       Result.Sorted := True;
       Result.Duplicates := dupIgnore;
-      ProcessLibraries(GlobalPeImage.FileName);
+      ProcessLibraries(FileName);
     except
       FreeAndNil(Result);
     end;
@@ -4116,12 +4280,11 @@ end;
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName) and
-      Assigned(GlobalPeImage.ExportList.SmartFindName(FunctionName, Options));
+    Result := StatusOK and Assigned(ExportList.SmartFindName(FunctionName, Options));
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4132,24 +4295,25 @@ function PeIsExportFunctionForwardedEx(const FileName: TFileName; const Function
 var
   ExportItem: TJclPeExportFuncItem;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
-    if not Result then
-      Exit;
-    ExportItem := GlobalPeImage.ExportList.SmartFindName(FunctionName, Options);
-    if ExportItem <> nil then
+    Result := StatusOK;
+    if Result then
     begin
-      Result := ExportItem.IsForwarded;
-      ForwardedName := ExportItem.ForwardedName;
-    end
-    else
-    begin
-      Result := False;
-      ForwardedName := '';
+      ExportItem := ExportList.SmartFindName(FunctionName, Options);
+      if ExportItem <> nil then
+      begin
+        Result := ExportItem.IsForwarded;
+        ForwardedName := ExportItem.ForwardedName;
+      end
+      else
+      begin
+        Result := False;
+        ForwardedName := '';
+      end;
     end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4168,17 +4332,17 @@ end;
 function PeDoesImportFunction(const FileName: TFileName; const FunctionName: string;
   const LibraryName: string; Options: TJclSmartCompOptions): Boolean;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
-      with GlobalPeImage.ImportList do
+      with ImportList do
       begin
         TryGetNamesForOrdinalImports;
         Result := SmartFindName(FunctionName, LibraryName, Options) <> nil;
       end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4189,12 +4353,12 @@ function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: strin
 var
   SL: TStringList;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
     begin
-      SL := InternalImportedLibraries(Recursive, False);
+      SL := InternalImportedLibraries(FileName, Recursive, False);
       try
         Result := SL.IndexOf(LibraryName) > -1;
       finally
@@ -4202,7 +4366,7 @@ begin
       end;
     end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4212,12 +4376,12 @@ function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings;
 var
   SL: TStringList;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
     begin
-      SL := InternalImportedLibraries(Recursive, FullPathName);
+      SL := InternalImportedLibraries(FileName, Recursive, FullPathName);
       try
         LibrariesList.Assign(SL);
       finally
@@ -4225,7 +4389,7 @@ begin
       end;
     end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4237,12 +4401,12 @@ var
   I: Integer;
   SL: TStringList;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
     begin
-      SL := InternalImportedLibraries(Recursive, FullPathName);
+      SL := InternalImportedLibraries(FileName, Recursive, FullPathName);
       try
         SetLength(LibrariesList, SL.Count);
         for I := 0 to SL.Count - 1 do
@@ -4252,7 +4416,7 @@ begin
       end;
     end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 {$ENDIF SUPPORTS_DYNAMICARRAYS}
@@ -4264,11 +4428,11 @@ function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
 var
   I: Integer;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
-      with GlobalPeImage.ImportList do
+      with ImportList do
       begin
         TryGetNamesForOrdinalImports;
         for I := 0 to AllItemCount - 1 do
@@ -4283,7 +4447,7 @@ begin
             end;
       end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4295,11 +4459,11 @@ function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: 
 var
   I, Cnt: Integer;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
-      with GlobalPeImage.ImportList do
+      with ImportList do
       begin
         TryGetNamesForOrdinalImports;
         SetLength(FunctionsList, AllItemCount);
@@ -4320,7 +4484,7 @@ begin
         SetLength(FunctionsList, Cnt);
       end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 {$ENDIF SUPPORTS_DYNAMICARRAYS}
@@ -4331,17 +4495,15 @@ function PeExportedFunctions(const FileName: TFileName; FunctionsList: TStrings)
 var
   I: Integer;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
-      with GlobalPeImage.ExportList do
-      begin
+      with ExportList do
         for I := 0 to Count - 1 do
           FunctionsList.Add(Items[I].Name);
-      end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
@@ -4352,18 +4514,18 @@ function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: 
 var
   I: Integer;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName);
+    Result := StatusOK;
     if Result then
-      with GlobalPeImage.ExportList do
+      with ExportList do
       begin
         SetLength(FunctionsList, Count);
         for I := 0 to Count - 1 do
           FunctionsList[I] := Items[I].Name;
       end;
   finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 {$ENDIF SUPPORTS_DYNAMICARRAYS}
@@ -4383,7 +4545,7 @@ begin
   if FileHandle = INVALID_HANDLE_VALUE then
     Exit;
   try
-    if GetSizeOfFile(FileHandle) >= SizeOf(TImageDosHeader) then 
+    if GetSizeOfFile(FileHandle) >= SizeOf(TImageDosHeader) then
     begin
       Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
       try
@@ -4407,32 +4569,19 @@ end;
 
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 begin
-  GlobalCritSection.Enter;
+  with CreatePeImage(FileName) do
   try
-    Result := CreateGlobalPeImage(FileName) and GlobalPeImage.VerifyCheckSum;
+    Result := VerifyCheckSum;
   finally
-    GlobalCritSection.Leave;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure PeClearGlobalImage;
-begin
-  GlobalCritSection.Enter;
-  try
-    if GlobalPeImage <> nil then
-      GlobalPeImage.FileName := '';
-  finally
-    GlobalCritSection.Leave;
+    Free;
   end;
 end;
 
 //==============================================================================
-// Mapped image and API hooking related functions
+// Mapped image related functions
 //==============================================================================
 
-function PeMapImgNtHeaders(BaseAddress: Pointer): PImageNtHeaders;
+function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 begin
   Result := nil;
   if IsBadReadPtr(BaseAddress, SizeOf(TImageDosHeader)) then
@@ -4448,7 +4597,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeMapImgLibraryName(BaseAddress: Pointer): string;
+function PeMapImgLibraryName(const BaseAddress: Pointer): string;
 var
   NtHeaders: PImageNtHeaders;
   DataDir: TImageDataDirectory;
@@ -4465,6 +4614,63 @@ begin
   if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
     Exit;
   Result := PChar(DWORD(BaseAddress) + ExportDir^.Name);
+end;
+
+//------------------------------------------------------------------------------
+
+function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
+begin
+  if NtHeaders = nil then
+    Result := nil
+  else
+    Result := PImageSectionHeader(DWORD(@NtHeaders^.OptionalHeader) +
+      NtHeaders^.FileHeader.SizeOfOptionalHeader);
+end;
+
+//==============================================================================
+// TJclPeSectionStream
+//==============================================================================
+
+constructor TJclPeSectionStream.Create(Instance: HMODULE; const ASectionName: string);
+begin
+  inherited Create;
+  Initialize(Instance, ASectionName);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeSectionStream.Initialize(Instance: HMODULE; const ASectionName: string);
+var
+  Header: PImageSectionHeader;
+  I: Integer;
+  Found: Boolean;
+  NtHeaders: PImageNtHeaders;
+begin
+  FInstance := Instance;
+  Found := False;
+  NtHeaders := PeMapImgNtHeaders(Pointer(Instance));
+  if NtHeaders = nil then
+    raise EJclPeImageError.CreateResRec(@RsPeNotPE);
+  Header := PeMapImgSections(NtHeaders);
+  with NtHeaders^ do
+    for I := 1 to FileHeader.NumberOfSections do
+      if StrIComp(PChar(@Header^.Name), PChar(ASectionName)) = 0 then
+      begin
+        FSectionHeader := Header^;
+        Found := True;
+        Break;
+      end else
+        Inc(Header);
+  if not Found then
+    raise EJclPeImageError.CreateResRecFmt(@RsPeSectionNotFound, [ASectionName]);
+  SetPointer(Pointer(FInstance + FSectionHeader.VirtualAddress), FSectionHeader.SizeOfRawData);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeSectionStream.Write(const Buffer; Count: Integer): Longint;
+begin
+  raise EJclPeImageError.CreateResRec(@SCantWriteResourceStreamError);
 end;
 
 //==============================================================================
@@ -4629,10 +4835,7 @@ begin
     CurrName := PChar(Base) + ImportDesc^.Name;
     if StrIComp(CurrName, PChar(ModuleName)) = 0 then
     begin
-      if ImportDesc^.Characteristics = 0 then
-        ImportEntry := PImageThunkData(DWORD(Base) + ImportDesc^.FirstThunk)
-      else
-        ImportEntry := PImageThunkData(DWORD(Base) + ImportDesc^.Characteristics);
+      ImportEntry := PImageThunkData(DWORD(Base) + ImportDesc^.FirstThunk);
       while ImportEntry^.Function_ <> 0 do
       begin
         if IsThunked then
@@ -4955,14 +5158,5 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-
-initialization
-  GlobalCritSection := TJclCriticalSection.Create;
-
-finalization
-  FreeAndNil(GlobalPeImage);
-  FreeAndNil(GlobalCritSection);
-  FreeAndNil(GlobalImportHooks);
 
 end.
