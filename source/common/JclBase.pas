@@ -44,10 +44,10 @@ uses
 //------------------------------------------------------------------------------
 
 const
-  JclVersionMajor   = 1;   // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 3;   // third minor release
-  JclVersionRelease = 1;   // 0=pre-release|beta/1=release
-  JclVersionBuild   = 425; // build number, days since march 1, 2000
+  JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
+  JclVersionMinor   = 10;   // Forth minor release JCL 1.10
+  JclVersionRelease = 1;    // 0=pre-release|beta/1=release
+  JclVersionBuild   = 463 ;  // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
