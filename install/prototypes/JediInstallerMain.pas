@@ -429,6 +429,8 @@ begin
   ReadSystemPaths;
   {$IFDEF VCL}
   TitlePanel.DoubleBuffered := True;
+  {$ELSE}
+  WindowState := wsMaximized; // wouldn't work in Form resource
   {$ENDIF}
 end;
 
@@ -474,7 +476,6 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   {$IFDEF VisualCLX}
-  WindowState := wsMaximized; // wouldn't work in Form resource
   QApplication_postEvent(Handle, QCustomEvent_create(QEventType_UMCheckUpdates, Self));
   {$ELSE}
   PostMessage(Handle, UM_CHECKUPDATES, 0, 0);
