@@ -2163,7 +2163,8 @@ specifying the Attr parameter (declared in SysUtils.pas):
  <LI>faAnyFile Any file
  </UL>
 3=List:TStrings=A TStrings descendant in which the file list that matched the Path
-and Attr parameters is returned. Note that the List is cleared on procedure entry.
+and Attr parameters is returned. Note that this list is not cleared by the routine
+before the found entries are added.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. In case of
 failure the list contains the entries that were retrieved up to the point of
