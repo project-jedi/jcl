@@ -474,6 +474,7 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   {$IFDEF VisualCLX}
+  WindowState := wsMaximized; // wouldn't work in Form resource
   QApplication_postEvent(Handle, QCustomEvent_create(QEventType_UMCheckUpdates, Self));
   {$ELSE}
   PostMessage(Handle, UM_CHECKUPDATES, 0, 0);
@@ -554,18 +555,28 @@ begin
       FileName := InfoFile(Node);
     {$IFDEF VCL}
     if FileExists(FileName) then
+    begin
+      InfoDisplay.Font.Color := clBlack;
       InfoDisplay.Lines.LoadFromFile(FileName)
+    end
     else
     begin
       InfoDisplay.Lines.Clear;
+      InfoDisplay.Font.Color := clRed;
       InfoDisplay.Lines.Add(Format(SFileNotFound, [FileName]));
       InfoDisplay.Modified := False;
     end;
     {$ELSE}
     if FileExists(FileName) then
-      InfoDisplay.Text := FileToString(FileName)
+    begin
+      InfoDisplay.TextColor := clBlack;
+      InfoDisplay.Text := FileToString(FileName);
+    end
     else
+    begin
+      InfoDisplay.TextColor := clRed;
       InfoDisplay.Text := Format(SFileNotFound, [FileName]);
+    end;
     {$ENDIF}
   end;
 end;
