@@ -80,6 +80,7 @@ function GetCommonStartmenuFolder: string;
 function GetCommonProgramsFolder: string;
 function GetCommonStartupFolder: string;
 function GetCommonDesktopdirectoryFolder: string;
+function GetCommonAppdataFolder: string;
 function GetAppdataFolder: string;
 function GetPrinthoodFolder: string;
 function GetCommonFavoritesFolder: string;
@@ -877,6 +878,24 @@ end;
 function GetCommonDesktopdirectoryFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
+end;
+
+//------------------------------------------------------------------------------
+
+// TODOC
+// From: Jean-Fabien Connault
+// Descr: Application data for all users. A typical path is C:\Documents and Settings\All Users\Application Data.
+// Note: requires shell v 5.00 up
+
+const
+  CSIDL_COMMON_APPDATA = $0023; { All Users\Application Data }
+{$IFDEF SUPPORTS_EXTSYM}
+  {$EXTERNALSYM CSIDL_COMMON_APPDATA}
+{$ENDIF SUPPORTS_EXTSYM}
+
+function GetCommonAppdataFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_APPDATA);
 end;
 
 //------------------------------------------------------------------------------
