@@ -27,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclSysInfo;
@@ -272,7 +272,11 @@ Result: The major version number of the latest installed Service Pack. In case o
 Author: Jean-Fabien Connault
 }
 
-function GetOpenGLVersion(const Win: HWND; var Version, Vendor: string): Boolean;
+{ TODO -cHelp : Author: Scott Price; Contributer: Peter J. Haas;
+                return OpenGL version for window rendering }
+function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean; overload;
+{ TODO -cHelp : Author: Peter J. Haas, return OpenGL version for bitmap rendering }
+function GetOpenGLVersion(out Version, Vendor: AnsiString): Boolean; overload;
 {
 ShortDescr: Returns the current OpenGL library version string
 Descr: Takes a WinControl against which to perform the tests, and then Returns
@@ -630,7 +634,7 @@ implementation
 uses
   SysUtils,
   {$IFDEF MSWINDOWS}
-  Messages, Winsock, Snmp,
+  Messages, Winsock, Snmp,           Graphics,
   JclRegistry, JclWin32,
   {$IFNDEF FPC}
   TLHelp32, PsApi,
@@ -2399,124 +2403,131 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function InternalGetOpenGLVersion(out Version, Vendor: AnsiString; DCHandle: HDC;
+  Flags: DWORD): Boolean;
 
-// Imports copied from OpenGL unit. Direct using of OpenGL unit might cause unexpected problems due
-// setting 8087CW in the intialization section
-function glGetString(name: Cardinal): PChar; stdcall; external opengl32; 
-function glGetError: Cardinal; stdcall; external opengl32;
-function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
-
-function GetOpenGLVersion(const Win: HWND; var Version, Vendor: string): Boolean;
-const
-  GL_NO_ERROR = 0;
-  GL_VENDOR   = $1F00;
-  GL_VERSION  = $1F02;
+function GetOpenGlString(Name: Cardinal; out Value: AnsiString): Boolean;
 var
-  pfd: TPixelFormatDescriptor;
-  iFormatIndex: Integer;
-  hGLContext: HGLRC;
-  hGLDC: HDC;
-  pcTemp: PChar;
-  glErr: Cardinal;
-  bError: Boolean;
-  sOpenGLVersion, sOpenGLVendor: string;
-  Save8087CW: Word;
+  Ptr: PAnsiChar;
 begin
-  { To call for the version information string we must first have an active
-    context established for use.  We can, of course, close this after use }
+  Ptr := RtdlglGetString(Name);
+  Result := Assigned(Ptr);
+  if Result then
+    Value := Ptr
+  else
+    { TODO : in case of missing dll empty string }
+    Value := RtdlgluErrorString(RtdlglGetError);
+end;
 
+var
+  Save8087CW: Word;
+  PFDesc: TPixelFormatDescriptor;
+  FormatIndex: Integer;
+  RenderingContextHandle: HGLRC;
+begin
+  Result := False;
+  Version := RsOpenGLInfoError;
+  Vendor := RsOpenGLInfoError;
+  if DCHandle = 0 then
+    Exit;
+
+  // We need to load the libraries
+  OpenGl32Handle;
+  Glu32Handle;
+
+  // To call for the version information string we must first have an active
+  // context established for use.  We can, of course, close this after use
   Save8087CW := Get8087ControlWord;
   try
     Set8087CW($133F);
-    hGLContext := 0;
-    Result := False;
-    bError := False;
 
-    if Win = 0 then
+    FillChar(PFDesc, SizeOf(PFDesc), 0);
+    with PFDesc do
     begin
-      Result := False;
-      Vendor := RsOpenGLInfoError;
-      Version := RsOpenGLInfoError;
-      Exit;
-    end;
-
-    FillChar(pfd, SizeOf(pfd), 0);
-    with pfd do
-    begin
-      nSize := SizeOf(pfd);
-      nVersion := 1;  { The Current Version of the descriptor is 1 }
-      dwFlags := PFD_DRAW_TO_WINDOW OR PFD_SUPPORT_OPENGL;
+      nSize := SizeOf(PFDesc);
+      nVersion := 1;               // The Current Version of the descriptor is 1
+      dwFlags := Flags or PFD_SUPPORT_OPENGL;
       iPixelType := PFD_TYPE_RGBA;
-      cColorBits := 24;  { support 24-bit colour }
-      cDepthBits := 32;  { Depth of the z-buffer }
+      cColorBits := 24;            // support 24-bit colour 
+      cDepthBits := 32;            // Depth of the z-buffer 
       iLayerType := PFD_MAIN_PLANE;
     end;
 
-    hGLDC := GetDC(Win);
+    FormatIndex := ChoosePixelFormat(DCHandle, @PFDesc);
+    if FormatIndex = 0 then
+      RaiseLastOSError;
+    if not SetPixelFormat(DCHandle, FormatIndex, @PFDesc) then
+      RaiseLastOSError;
+
+    RenderingContextHandle := RtdlwglCreateContext(DCHandle);
+    if RenderingContextHandle = 0 then
+      RaiseLastOSError;
     try
-      iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
-      if iFormatIndex = 0 then
-        raise Exception.Create(RsOpenGLInfoExcep_CPF);
-
-      if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
-        raise Exception.Create(RsOpenGLInfoExcep_SPF);
-
-      hGLContext := wglCreateContext(hGLDC);
-      if hGLContext = 0 then
-        raise Exception.Create(RsOpenGLInfoExcep_CC);
-
-      if not wglMakeCurrent(hGLDC, hGLContext) then
-        raise Exception.Create(RsOpenGLInfoExcep_MC);
+      if not RtdlwglMakeCurrent(DCHandle, RenderingContextHandle) then
+        RaiseLastOSError;
 
       { TODO : Review the following.  Not sure I am 100% happy with this code
                in its current structure. }
-      pcTemp := glGetString(GL_VERSION);
-      if pcTemp <> Nil then
-      begin
-        { TODO : Store this information in a Global Variable, and return that?? 
-                 This would save this work being performed again with later calls }
-        sOpenGLVersion := StrPas(pcTemp);
-      end
-      else
-      begin
-        bError := True;
-        glErr := glGetError;
-        if (glErr <> GL_NO_ERROR) then
-        begin
-          sOpenGLVersion := gluErrorString(glErr);
-          sOpenGLVendor := '';
-        end;
-      end;
-
-      pcTemp := glGetString(GL_VENDOR);
-      if pcTemp <> Nil then
-      begin
-        { TODO : Store this information in a Global Variable, and return that??
-                 This would save this work being performed again with later calls }
-        sOpenGLVendor := StrPas(pcTemp);
-      end
-      else
-      begin
-        bError := True;
-        glErr := glGetError;
-        if (glErr <> GL_NO_ERROR) then
-        begin
-          sOpenGLVendor := gluErrorString(glErr);
-          Exit;
-        end;
-      end;
-
-      Result := (not bError);
-      Version := sOpenGLVersion;
-      Vendor := sOpenGLVendor;
+      { TODO : Store this information in a Global Variable, and return that??
+               This would save this work being performed again with later calls }
+      Result := GetOpenGlString(GL_VERSION, Version) and GetOpenGlString(GL_VENDOR, Vendor);
     finally
-      { Close all resources }
-      wglMakeCurrent(hGLDC, 0);
-      if hGLContext <> 0 then
-        wglDeleteContext(hGLContext);
+      // Close all resources 
+      RtdlwglMakeCurrent(DCHandle, 0);
+      if RenderingContextHandle <> 0 then
+        RtdlwglDeleteContext(RenderingContextHandle);
     end;
   finally
     Set8087CW(Save8087CW);
+  end;
+end;
+
+function GetOpenGLVersion(out Version, Vendor: AnsiString): Boolean;
+var
+  BmpInfoHdr: TBitmapInfoHeader;
+  DCHandle: HDC;
+  BmpHandle, OldBitmapHandle: HBitmap;
+  Bits: Pointer;
+begin
+  FillChar(BmpInfoHdr, SizeOf(BmpInfoHdr), 0);
+  BmpInfoHdr.biSize := SizeOf(BmpInfoHdr);
+  BmpInfoHdr.biWidth := 1;
+  BmpInfoHdr.biHeight := 1;
+  BmpInfoHdr.biPlanes := 1;
+  BmpInfoHdr.biBitCount := 24;
+  BmpInfoHdr.biCompression := BI_RGB;
+  BmpInfoHdr.biSizeImage := 0;
+  DCHandle := CreateCompatibleDC(0);
+  try
+    BmpHandle := CreateDIBSection(DCHandle, PBitmapInfo(@BmpInfoHdr)^, DIB_RGB_COLORS, Bits, 0, 0);
+    OldBitmapHandle := SelectObject(DCHandle, BmpHandle);
+    try
+      Result := InternalGetOpenGLVersion(Version, Vendor, DCHandle, PFD_DRAW_TO_BITMAP);
+    finally
+      SelectObject(DCHandle, OldBitmapHandle);
+      CloseHandle(BmpHandle);
+    end;
+  finally
+    ReleaseDC(0, DCHandle);
+  end;
+end;
+
+function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean;
+var
+  DCHandle: HDC;
+begin
+  Result := False;
+  Version := RsOpenGLInfoError;
+  Vendor := RsOpenGLInfoError;
+  if Win = 0 then
+    Exit;
+  DCHandle := GetDC(Win);
+  try
+    Result := InternalGetOpenGLVersion(Version, Vendor, DCHandle, PFD_DRAW_TO_WINDOW);
+  finally
+    ReleaseDC(Win, DCHandle);
+    // Redraw window
+    InvalidateRect(Win, Nil, False);
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -4005,6 +4016,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.13  2004/04/18 00:43:19  peterjhaas
+// modify und bugfix GetOpenGLVersion, add second function for bitmap rendering
+//
 // Revision 1.12  2004/04/09 15:05:09  mthoma
 // Added new function GetAPMBatteryFlags.
 //
