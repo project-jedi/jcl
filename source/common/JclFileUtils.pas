@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: December 14, 2003                                                                    }
+{ Last modified: December 27, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -164,7 +164,9 @@ procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandle
 {$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
+{$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
+{$ENDIF}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 {$ENDIF MSWINDOWS}
@@ -239,7 +241,9 @@ function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): B
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
+{$IFNDEF FPC}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
+{$ENDIF FPC}
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 function Win32RestoreFile(const FileName: string): Boolean;
 {$ENDIF MSWINDOWS}
@@ -881,9 +885,9 @@ uses
   ActiveX, ShellApi,
   {$IFNDEF FPC}
   ShlObj,
-  JclSecurity, JclShell, JclWin32,
+  JclShell,
   {$ENDIF}
-  JclDateTime, JclSysInfo, 
+  JclWin32, JclDateTime, JclSecurity, JclSysInfo,
   {$ENDIF MSWINDOWS}
   JclResources, JclStrings, JclSysUtils;
 
@@ -2487,8 +2491,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}  // needs JclShell
+
 // todoc author Jeff
-{$IFNDEF FPC}
+
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
   if MoveToRecycleBin then
@@ -2496,6 +2502,7 @@ begin
   else
     Result := DelTree(DirectoryName);
 end;
+
 {$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
@@ -3598,6 +3605,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}  // needs JclShell
+
 // todoc Author: Jeff
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -3607,6 +3616,8 @@ begin
   else
     Result := Windows.DeleteFile(PChar(FileName));
 end;
+
+{$ENDIF FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4964,6 +4975,9 @@ type
     constructor Create;
     destructor Destroy; override;
     property ID: TFileSearchTaskID read FID;
+    {$IFDEF FPC} // protected property
+    property Terminated;
+    {$ENDIF}
   end;
 
 //--------------------------------------------------------------------------------------------------

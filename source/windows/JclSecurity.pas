@@ -21,7 +21,7 @@
 { privileges.                                                                                      }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: December 27, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -74,7 +74,9 @@ function GetInteractiveUserName: string;
 implementation
 
 uses
+{$IFNDEF FPC}
   AccCtrl, AclApi,
+{$ENDIF}
   JclStrings, JclSysInfo, JclWin32;
 
 //==================================================================================================
@@ -156,11 +158,19 @@ begin
       Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
         SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
         psidAdmin));
+      {$IFDEF FPC}
+      if GetTokenInformation(Token, TokenGroups, nil, 0, @Count) or
+       (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
+         RaiseLastOSError;
+      TokenInfo := PTokenGroups(AllocMem(Count));
+      Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, @Count));
+      {$ELSE FPC}
       if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then
          RaiseLastOSError;
       TokenInfo := PTokenGroups(AllocMem(Count));
       Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
+      {$ENDIF FPC}
       for I := 0 to TokenInfo^.GroupCount - 1 do
       begin
         {$RANGECHECKS OFF} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
@@ -196,7 +206,11 @@ begin
   if OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, Token) then
   begin
     TokenPriv.PrivilegeCount := 1;
+    {$IFDEF FPC}
+    LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid.QuadPart);
+    {$ELSE}
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
+    {$ENDIF}
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
     JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv),
       nil, nil);
@@ -226,7 +240,11 @@ begin
   if HaveToken then
   begin
     TokenPriv.PrivilegeCount := 1;
+    {$IFDEF FPC}
+    LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid.QuadPart);
+    {$ELSE}
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
+    {$ENDIF}
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
     JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv),
       nil, nil);
@@ -253,7 +271,11 @@ begin
   begin
     TokenPriv.PrivilegeCount := 1;
     TokenPriv.Control := 0;
+    {$IFDEF FPC}
+    LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privilege[0].Luid.QuadPart);
+    {$ELSE}
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privilege[0].Luid);
+    {$ENDIF}
     Result := PrivilegeCheck(Token, TokenPriv, Res) and Res;
     CloseHandle(Token);
   end;
@@ -320,7 +342,7 @@ end;
 procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
 var
   NameSize, DomainSize: DWORD;
-  Use: DWORD;
+  Use: SID_NAME_USE;
 begin
   NameSize := 0;
   DomainSize := 0;
@@ -343,11 +365,19 @@ begin
   Buffer := nil;
   Length := 0;
   LastError := 0;
+  {$IFDEF FPC}
+  B := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
+  {$ELSE}
   B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
+  {$ENDIF}
   while (not B) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) do
   begin
     ReallocMem(Buffer, Length);
+    {$IFDEF FPC}
+    B := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
+    {$ELSE}
     B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
+    {$ENDIF}
     if not B then
       LastError := GetLastError;
   end;
