@@ -23,10 +23,18 @@
 {                                                                                                  }
 { (C)opyright 1997-1999 Anders Melander                                                            }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Alex Denissov, Wim De Cleen, Anders Melander     }
+{ and Mike Lischke. Portions created by these individuals are Copyright (C) of these individuals.  }
+{ All Rights Reserved.                                                                             }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Charlie Calvert                                                                                }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Alexander Radchenko                                                                            }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 

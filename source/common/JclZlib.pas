@@ -1,74 +1,71 @@
-{******************************************************************************}
-{                                                                              }
-{  WARNING: This file is generated automatically by preprocessor.              }
-{                                                                              }
-{  Manual modifications will be lost on next release. Please modify the        }
-{  original source file.                                                       }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
 
-{******************************************************************************}
-{                                                                              }
-{  Project JEDI Code Library (JCL)                                             }
-{                                                                              }
-{  The contents of this file are subject to the Mozilla Public License         }
-{  Version 1.1 (the "License"); you may not use this file except in            }
-{  compliance with the License. You may obtain a copy of the License at        }
-{  http://www.mozilla.org/MPL/                                                 }
-{                                                                              }
-{  Software distributed under the License is distributed on an "AS IS" basis,  }
-{  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License    }
-{  for the specific language governing rights and limitations under the        }
-{  License.                                                                    }
-{                                                                              }
-{  The Original Code is: zlibs.pas, gzips.pas, tar.pas.                        }
-{  The Initial Developer of the Original Code is Peter J. Haas. Portions       }
-{  created by Peter J. Haas are Copyright (C) 2002-2003 Peter J. Haas. All     }
-{  Rights Reserved.                                                            }
-{                                                                              }
-{  The Original Code Version 2.0 is: JclZlib.pas.                              }
-{  The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions  }
-{  created by Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights   }
-{  Reserved.                                                                   }
-{                                                                              }
-{  You may retrieve the latest version of the Original Code at the homepage    }
-{  of JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/            }
-{                                                                              }
-{  You may retrieve the latest version of this file at the homepage of         }
-{  JEDI, located at http://www.delphi-jedi.org/                                }
-{                                                                              }
-{  Contributor(s):                                                             }
-{                                                                              }
-{  Alternatively, the contents of this file may be used under the terms of     }
-{  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
-{  the provisions of the LGPL License are applicable instead of those above.   }
-{  If you wish to allow use of your version of this file only under the terms  }
-{  of the LGPL License and not to allow others to use your version of this     }
-{  file under the MPL, indicate your decision by deleting the provisions       }
-{  above and replace them with the notice and other provisions required by     }
-{  the LGPL License. If you do not delete the provisions above, a recipient    }
-{  may use your version of this file under either the MPL or the LGPL License. }
-{                                                                              }
-{  For more information about the LGPL:                                        }
-{  http://www.gnu.org/copyleft/lesser.html                                     }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{  Additional info:                                                            }
-{    RFC 1952: GZIP file format specification version 4.3, 1996, Peter Deutsch }
-{    ftp://ftp.uu.net/graphics/png/documents/zlib/zdoc-index.html              }
-{                                                                              }
-{    The gzip file format, additional informations, Jean-loup Gailly           }
-{    http://www.gzip.org/format.txt                                            }
-{                                                                              }
-{    gzip format                                                               }
-{    http://www.onicos.com/staff/iz/formats/gzip.html                          }
-{                                                                              }
-{******************************************************************************}
+
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: zlibs.pas, gzips.pas, tar.pas.                                             }
+{ The Initial Developer of the Original Code is Peter J. Haas. Portions created by Peter J. Haas   }
+{ are Copyright (C) 2002-2003 Peter J. Haas. All Rights Reserved.                                  }
+{                                                                                                  }
+{ The Original Code Version 2.0 is: JclZlib.pas.                                                   }
+{ The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions created by            }
+{ Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights Reserved.                         }
+{                                                                                                  }
+{ You may retrieve the latest version of the Original Code at the homepage                         }
+{ of JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/                                 }
+{ You may retrieve the latest version of this file at the homepage of                              }
+{ JEDI, located at http://www.delphi-jedi.org/                                                     }
+{                                                                                                  }
+{  Contributor(s):                                                                                 }
+{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{    Robert Rossmair (rrossmair)                                                                   }
+{                                                                                                  }
+{ Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
+{ Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
+{ applicable instead of those above.                                                               }
+{                                                                                                  }
+{ If you wish to allow use of your version of this file only under the terms of the LGPL License   }
+{ and not to allow others to use your version of this file under the MPL, indicate your decision by}
+{ deleting the provisions above and replace them with the notice and other provisions required by  }
+{ the LGPL License. If you do not delete the provisions above, a recipient may use your version of }
+{ this file under either the MPL or the LGPL License.                                              }
+{                                                                                                  }
+{  For more information about the LGPL:                                                            }
+{  http://www.gnu.org/copyleft/lesser.html                                                         }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{  Additional info:                                                                                }
+{    RFC 1952: GZIP file format specification version 4.3, 1996, Peter Deutsch                     }
+{    ftp://ftp.uu.net/graphics/png/documents/zlib/zdoc-index.html                                  }
+{                                                                                                  }
+{    The gzip file format, additional informations, Jean-loup Gailly                               }
+{    http://www.gzip.org/format.txt                                                                }
+{                                                                                                  }
+{    gzip format                                                                                   }
+{    http://www.onicos.com/staff/iz/formats/gzip.html                                              }
+{                                                                                                  }
+{**************************************************************************************************}
+
 
 // $Id$
 
+
+
 {$I jcl.inc}
+
 
 unit JclZlib;
 
@@ -81,10 +78,16 @@ uses
   Types, Libc,
   {$ENDIF UNIX}
   SysUtils, Classes,
+  
   JclBase, JclDateTime,
+  
   zlibh;
 
-// *****************************************************************************
+
+//--------------------------------------------------------------------------------------------------
+// TJclZLibStream
+//--------------------------------------------------------------------------------------------------
+
 
 const
   JclZLibStreamDefaultBufferSize = 32 * 1024;
@@ -130,8 +133,9 @@ type
     procedure FinishZLibStream;
   public
     constructor Create(const Stream: TStream;
-      const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-      const WindowBits: Integer = DEF_WBITS);
+      const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+      const WindowBits: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = DEF_WBITS{$ENDIF});
+    
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -150,10 +154,11 @@ type
     procedure FlushZLibStream(const Flush: Integer);
   public
     constructor Create(const Stream: TStream;
-      const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-      const Level: Integer = Z_DEFAULT_COMPRESSION;
-      const Strategy: Integer = Z_DEFAULT_STRATEGY;
-      const WindowBits: Integer = DEF_WBITS);
+      const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+      const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF};
+      const Strategy: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_STRATEGY{$ENDIF};
+      const WindowBits: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = DEF_WBITS{$ENDIF});
+    
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -170,7 +175,7 @@ function GetZlibErrorText(const ErrorCode: Integer): PResStringRec;
 
 function ZLibCompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; out DstCapacity: Integer;
-  const Level: Integer = Z_DEFAULT_COMPRESSION): Boolean;
+  const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF}): Boolean;
 
 // Flush:
 //   Z_SYNC_FLUSH:  DstCapacity can be 0
@@ -178,9 +183,13 @@ function ZLibCompressMem(const Src: Pointer; SrcLen: Integer;
 //                  DstCapacity must be >= uncompressed size
 function ZLibDecompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; var DstCapacity: Integer;
-  const Flush: Integer = Z_SYNC_FLUSH): Boolean;
+  const Flush: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_SYNC_FLUSH{$ENDIF}): Boolean;
 
-// *****************************************************************************
+
+//--------------------------------------------------------------------------------------------------
+// TJclGZipStream
+//--------------------------------------------------------------------------------------------------
+
 
 type
   TJclGZipStream = class(TStream)
@@ -210,8 +219,9 @@ type
     FEndOfStream: Boolean;
   public
     constructor Create(const Stream: TStream;
-      const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-      const LineSeparator: String = JclZLibDefaultLineSeparator);
+      const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+      const LineSeparator: String{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibDefaultLineSeparator{$ENDIF});
+    
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -236,15 +246,16 @@ type
     FZLibWriter: TJclZLibWriter;
   public
     constructor Create(const Stream: TStream;
-      const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-      const Level: Integer = Z_DEFAULT_COMPRESSION;
-      const Strategie: Integer = Z_DEFAULT_STRATEGY;
-      const Filename: String = '';
-      const TimeStamp: TJclUnixTime32 = 0;
-      const Comment: String = '';
-      const TextMode: Boolean = False;
-      const ExtraField: Pointer = Nil;
-      const ExtraFieldSize: Integer = 0);
+      const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+      const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF};
+      const Strategie: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_STRATEGY{$ENDIF};
+      const Filename: String{$IFDEF SUPPORTS_DEFAULTPARAMS} = ''{$ENDIF};
+      const TimeStamp: TJclUnixTime32{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0{$ENDIF};
+      const Comment: String{$IFDEF SUPPORTS_DEFAULTPARAMS} = ''{$ENDIF};
+      const TextMode: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = False{$ENDIF};
+      const ExtraField: Pointer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Nil{$ENDIF};
+      const ExtraFieldSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0{$ENDIF});
+    
     destructor Destroy; override;
 
     function Read(var Buffer; Count: Longint): Longint; override;
@@ -259,10 +270,14 @@ const
 
 // if DstFilename = '' -> DstFilename := SrcFilename + JclGZipDefaultFileExtension
 procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
-  const Level: Integer = Z_DEFAULT_COMPRESSION);
+  const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF});
 procedure GZipDecompressFile(const SrcFilename: String; DstFilename: String);
 
-// *****************************************************************************
+
+//--------------------------------------------------------------------------------------------------
+// TJclTarReader
+//--------------------------------------------------------------------------------------------------
+
 
 const
   TarBlockSize = 512;
@@ -374,7 +389,11 @@ const
 
 type
   TJclTarFileType = (tftUnknown, tftEof, tftFile, tftDirectory);
+  {$IFDEF SUPPORTS_INT64}
   TJclTarFileSize = Int64;
+  {$ELSE SUPPORTS_INT64}
+  TJclTarFileSize = LongInt;
+  {$ENDIF SUPPORTS_INT64}
 
   TJclTarReader = class(TObject)
   private
@@ -391,7 +410,7 @@ type
     procedure ScanHeader;
   public
     constructor Create(const TarStream: TStream);
-    procedure CopyToStream(const FileStream: TStream; CanSeek: Boolean = False);
+    procedure CopyToStream(const FileStream: TStream; CanSeek: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = False{$ENDIF});
     procedure CopyToFile(const FilePath: String);
     procedure SkipFile;
     procedure SkipFileSeek;
@@ -430,25 +449,23 @@ procedure UnGZipTarAllFiles(const TgzFilename: String; DstDir: String);
 procedure GetFileList(RootDir: String; List: TStrings);
 
 implementation
+
 uses
   JclResources, JclFileUtils;
 
+
 function GetZlibErrorText(const ErrorCode: Integer): PResStringRec;
-const
-  ErrorTexts: array[-6..2] of PResStringRec =
-    (@RsZlibVersionError,
-     @RsZlibBufError,
-     @RsZlibMemError,
-     @RsZlibDataError,
-     @RsZlibStreamError,
-     @RsZlibErrNo,
-     @RsZlibOK,
-     @RsZlibStreamEnd,
-     @RsZlibNeedDict);
 begin
   case ErrorCode of
-    Low(ErrorTexts)..High(ErrorTexts):
-      Result := ErrorTexts[ErrorCode];
+    -6: Result := @RsZlibVersionError;
+    -5: Result := @RsZlibBufError;
+    -4: Result := @RsZlibMemError;
+    -3: Result := @RsZlibDataError;
+    -2: Result := @RsZlibStreamError;
+    -1: Result := @RsZlibErrNo;
+    +0: Result := @RsZlibOK;
+    +1: Result := @RsZlibStreamEnd;
+    +2: Result := @RsZlibNeedDict;
   else
     Result := @RsZlibUnknownError;
   end;
@@ -463,7 +480,10 @@ begin
 end;
 
 
-// **************************  TZLibStream  *************************
+//==================================================================================================
+// TZLibStream
+//==================================================================================================
+
 
 constructor TJclZLibStream.Create(const Stream: TStream; const BufferSize: Integer);
 begin
@@ -495,11 +515,14 @@ begin
 end;
 
 
-// **************************  TZLibReader  *************************
+//==================================================================================================
+// TZLibReader
+//==================================================================================================
+
 
 constructor TJclZLibReader.Create(const Stream: TStream;
-  const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-  const WindowBits: Integer = DEF_WBITS);
+  const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+  const WindowBits: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = DEF_WBITS{$ENDIF});
 
 begin
   inherited Create(Stream, BufferSize);
@@ -507,6 +530,7 @@ begin
   ReadNextBlock;
   Check(inflateInit2(FZLibStream, WindowBits));
 end;
+
 
 destructor TJclZLibReader.Destroy;
 begin
@@ -603,19 +627,24 @@ begin
 end;
 
 
-// **************************  TZLibWriter  *************************
+
+//==================================================================================================
+// TZLibWriter
+//==================================================================================================
+
 
 constructor TJclZLibWriter.Create(const Stream: TStream;
-  const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-  const Level: Integer = Z_DEFAULT_COMPRESSION;
-  const Strategy: Integer = Z_DEFAULT_STRATEGY;
-  const WindowBits: Integer = DEF_WBITS);
+  const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+  const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF};
+  const Strategy: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_STRATEGY{$ENDIF};
+  const WindowBits: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = DEF_WBITS{$ENDIF});
 begin
   inherited Create(Stream, BufferSize);
   FZLibStream.next_out := FBuffer;
   FZLibStream.avail_out := FBufferSize;
   Check(deflateInit2(FZLibStream, Level, Z_DEFLATED, WindowBits, DEF_MEM_LEVEL, Strategy));
 end;
+
 
 destructor TJclZLibWriter.Destroy;
 begin
@@ -692,7 +721,7 @@ end;
 
 function ZLibCompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; out DstCapacity: Integer;
-  const Level: Integer = Z_DEFAULT_COMPRESSION): Boolean;
+  const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF}): Boolean;
 var
   ZLibStream: TZStreamRec;
   Err: Integer;
@@ -717,7 +746,7 @@ begin
   DstCapacity := 0;
   if (SrcLen = 0) or (not Assigned(Src)) then
     Exit;
-
+    
   CalcDstCapacity(SrcLen);
   GetMem(Dst, DstCapacity);
   try
@@ -762,7 +791,7 @@ end;
 
 function ZLibDecompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; var DstCapacity: Integer;
-  const Flush: Integer = Z_SYNC_FLUSH): Boolean;
+  const Flush: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_SYNC_FLUSH{$ENDIF}): Boolean;
 var
   ZLibStream: TZStreamRec;
   Err: Integer;
@@ -831,15 +860,31 @@ begin
   end;
 end;
 
-// ******************************************************************
+
+//==================================================================================================
+// TJclGZipStream
+//==================================================================================================
+
 
 constructor TJclGZipStream.Create(const Stream: TStream);
+{$IFDEF FPC}
+var
+  P: Pointer;
+begin
+  inherited Create;
+  FStream := Stream;
+  P := nil;
+  FCRC32 := crc32(0, P^, 0);  // get crc32 initial value
+  FUncompressedSize := 0;
+end;
+{$ELSE ~FPC}
 begin
   inherited Create;
   FStream := Stream;
   FCRC32 := crc32(0, Pointer(Nil)^, 0);  // get crc32 initial value
   FUncompressedSize := 0;
 end;
+{$ENDIF ~FPC}
 
 destructor TJclGZipStream.Destroy;
 begin
@@ -868,8 +913,8 @@ const
   gzipFlag_RESERVED     = $C0;  // bits 5..7: reserved
 
 constructor TJclGZipReader.Create(const Stream: TStream;
-  const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-  const LineSeparator: String = JclZLibDefaultLineSeparator);
+  const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+  const LineSeparator: String{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibDefaultLineSeparator{$ENDIF});
 var
   b: Byte;
   c: Char;
@@ -878,7 +923,7 @@ var
   EncryptionHeader: array[0..11] of Byte;  // placeholder
 begin
   inherited Create(Stream);
-
+                                        
   // check ID
   Stream.ReadBuffer(w, SizeOf(w));
   if w <> gzipMagic then
@@ -961,6 +1006,7 @@ begin
   FZLibReader := TJclZLibReader.Create(Stream, BufferSize, -MAX_WBITS);
 end;
 
+
 destructor TJclGZipReader.Destroy;
 begin
   FZLibReader.Free;
@@ -1041,15 +1087,15 @@ begin
 end;
 
 constructor TJclGZipWriter.Create(const Stream: TStream;
-  const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-  const Level: Integer = Z_DEFAULT_COMPRESSION;
-  const Strategie: Integer = Z_DEFAULT_STRATEGY;
-  const Filename: String = '';
-  const TimeStamp: TJclUnixTime32 = 0;
-  const Comment: String = '';
-  const TextMode: Boolean = False;
-  const ExtraField: Pointer = Nil;
-  const ExtraFieldSize: Integer = 0);
+  const BufferSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = JclZLibStreamDefaultBufferSize{$ENDIF};
+  const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF};
+  const Strategie: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_STRATEGY{$ENDIF};
+  const Filename: String{$IFDEF SUPPORTS_DEFAULTPARAMS} = ''{$ENDIF};
+  const TimeStamp: TJclUnixTime32{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0{$ENDIF};
+  const Comment: String{$IFDEF SUPPORTS_DEFAULTPARAMS} = ''{$ENDIF};
+  const TextMode: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = False{$ENDIF};
+  const ExtraField: Pointer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Nil{$ENDIF};
+  const ExtraFieldSize: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0{$ENDIF});
 var
   b: Byte;
   w: Word;
@@ -1128,6 +1174,7 @@ begin
                                        Z_DEFAULT_STRATEGY, -MAX_WBITS);
 end;
 
+
 destructor TJclGZipWriter.Destroy;
 begin
   FZLibWriter.Free;
@@ -1161,14 +1208,18 @@ begin
   FUncompressedSize := FUncompressedSize + LongWord(Result);
 end;
 
-// ****************  gzip file support  *****************************
+
+//==================================================================================================
+// gzip file support
+//==================================================================================================
+
 
 const
   MaxBufferSize = 1024 * 1024;  // 1 MByte
   BufferBlockSize = 32 * 1024;
 
 procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
-  const Level: Integer = Z_DEFAULT_COMPRESSION);
+  const Level: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = Z_DEFAULT_COMPRESSION{$ENDIF});
 var
   Src, Dst: TFileStream;
   DstPath: String;
@@ -1375,7 +1426,11 @@ begin
   I := Low(Value);
   while (I <= High(Value)) and (Value[I] <> #0) do
     Inc(I);
+  {$IFDEF FPC}
+  SetString(V, @Value, I);
+  {$ELSE}
   SetString(V, Value, I);
+  {$ENDIF}
   V := Trim(V);
   // convert
   Result := 0;
@@ -1386,12 +1441,20 @@ begin
       '0'..'7':
         Result := (Result shl 3) or (Ord(C) - Ord('0'));
     else
+      {$IFDEF DELPHI3}
+      raise EConvertError.CreateFmt(RsTarOctalToIntInvalidCharacters, [V]);
+      {$ELSE DELPHI3}
       raise EConvertError.CreateResFmt(@RsTarOctalToIntInvalidCharacters, [V]);
+      {$ENDIF DELPHI3}
     end;
   end;
   // check range
   if Result > MaxValue then
+    {$IFDEF DELPHI3}
+    raise EConvertError.CreateFmt(RsTarOctalToIntOutOfRange, [V]);
+    {$ELSE DELPHI3}
     raise EConvertError.CreateResFmt(@RsTarOctalToIntOutOfRange, [V]);
+    {$ENDIF DELPHI3}
 end;
 
 function CalculateTarChecksum(Header: TTarHeader): Integer;
@@ -1471,11 +1534,11 @@ begin
       begin
         Prefix := FHeader.Prefix;
         if Prefix <> '' then
-          FFilename := Prefix + UnixPathDelimiter + FFilename;
+          FFilename := Prefix + UnixPathDelimiter + FFilename; 
       end;
   end;
   {$IFNDEF UNIX}
-  // correct path delimiter
+  // correct path delimiter 
   for I := 1 to Length(FFilename) do
     if FFilename[I] = UnixPathDelimiter then
       FFilename[I] := PathDelim;
@@ -1489,7 +1552,7 @@ begin
 end;
 
 procedure TJclTarReader.CopyToStream(const FileStream: TStream;
-  CanSeek: Boolean = False);
+  CanSeek: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = False{$ENDIF});
 var
   Buffer: array[0..TarBlockSize - 1] of Byte;
   Blocks, I: Integer;
@@ -1581,7 +1644,7 @@ begin
     DstDir := {$IFDEF XPLATFORM_RTL}ExcludeTrailingPathDelimiter{$ELSE}ExcludeTrailingBackslash{$ENDIF}(DstDir);
   if DstDir = TarFilename then
     DstDir := DstDir + '.dir';
-  DstDir := DstDir + PathDelim;
+  DstDir := DstDir + PathDelim;           
 
   TarFile := TFileStream.Create(TarFilename, fmOpenRead or fmShareDenyWrite);
   try
@@ -1725,7 +1788,7 @@ var
 begin
   DirName := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(DirName);
   {$IFNDEF UNIX}
-  // path delimiter -> UNIX
+  // path delimiter -> UNIX 
   for I := 1 to Length(DirName) do
     if DirName[I] = PathDelim then
       DirName[I] := UnixPathDelimiter;
@@ -1810,8 +1873,8 @@ begin
     repeat
       if (Info.Attr and faDirectory) <> 0 then
       begin
-        if (Info.Name <> '.') and (Info.Name <> '..') then
-          ScanDir(Dir + Info.Name + PathDelim);
+        if (Info.Name <> '.') and (Info.Name <> '..') then    
+          ScanDir(Dir + Info.Name + PathDelim);   
       end
       else
         List.Add(Dir + Info.Name);
@@ -1822,7 +1885,7 @@ begin
 end;
 
 begin
-  RootDir := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(RootDir);
+  RootDir := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(RootDir);  
   ScanDir('');
 end;
 
@@ -1850,7 +1913,7 @@ begin
         Filename := List[I];
         if Filename <> '' then
         begin
-          if Filename[Length(Filename)] = PathDelim then
+          if Filename[Length(Filename)] = PathDelim then 
             TarWriter.AddDirectory(FileRoot, Filename)
           else
             TarWriter.AddFile(FileRoot, Filename);
@@ -1900,8 +1963,13 @@ var
 begin
   TgzFile := TFileStream.Create(TgzFilename, fmCreate);
   try
+    {$IFDEF DELPHI3}
+      GZipWriter := TJclGZipWriter.CreateDef2(TgzFile,
+        JclZLibStreamDefaultBufferSize, Z_BEST_COMPRESSION);
+    {$ELSE DELPHI3}
       GZipWriter := TJclGZipWriter.Create(TgzFile,
         JclZLibStreamDefaultBufferSize, Z_BEST_COMPRESSION);
+    {$ENDIF DELPHI3}
     try
       TarWriter := TJclTarWriter.Create(GZipWriter);
       try
@@ -1952,5 +2020,6 @@ begin
     List.Free;
   end;
 end;
+
 
 end.
