@@ -663,7 +663,7 @@ begin
     Result := Requested.RefCount;
     if Requested.RefCount = 0 then
       {$IFDEF MSWINDOWS}
-      VirtualFree(Requested, 0, MEM_DECOMMIT or MEM_RELEASE);
+      VirtualFree(Requested, 0, MEM_RELEASE);
       {$ENDIF MSWINDOWS}
       {$IFDEF UNIX}
       munmap(Requested, getpagesize);
@@ -774,6 +774,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/10/17 11:01:03  ahuser
+// Fixed memory leak
+//
 // Revision 1.5  2004/09/05 12:46:02  uschuster
 // fixed TUnitVersioning.IndexOf
 // changed the module handle parameter name in (Un)registerUnitVersion to Instance to avoid scope confusion
