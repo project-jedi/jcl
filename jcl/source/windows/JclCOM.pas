@@ -20,56 +20,59 @@
 { This unit contains Various COM (Component Object Model) utility routines.                        }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: February 19, 2002                                                                 }
+{ Last modified: February 27, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
+unit JclCOM;
+
 {$I jcl.inc}
-
-
-unit JclCOM {$IFDEF COMPILER6_UP} platform {$ENDIF};
-
 
 {$WEAKPACKAGEUNIT ON}
 
 interface
 
+uses
+  ActiveX, Classes,
+  JclBase;
 
-uses ActiveX, Classes,
-     JclBase;
-
+//--------------------------------------------------------------------------------------------------
+// Various definitions
+//--------------------------------------------------------------------------------------------------
 
 const
   { Class ID's that may be reused }
   CLSID_StdComponentCategoriesMgr: TGUID = '{0002E005-0000-0000-C000-000000000046}';
 
-  CATID_SafeForInitializing: TGuid = '{7DD95802-9882-11CF-9FA9-00AA006C42C4}';
-  CATID_SafeForScripting: TGuid = '{7DD95801-9882-11CF-9FA9-00AA006C42C4}';
+  CATID_SafeForInitializing: TGUID = '{7DD95802-9882-11CF-9FA9-00AA006C42C4}';
+  CATID_SafeForScripting: TGUID = '{7DD95801-9882-11CF-9FA9-00AA006C42C4}';
 
   icMAX_CATEGORY_DESC_LEN = 128;
-
 
 type
   { For use with the Internet Explorer Component Categories Routines.  May be Reused. }
   TArrayCatID = array[0..0] of TGUID;
 
-  { This provides an easier alternative for types that need to be backward compatible }
-  { TODO:  Should we just use the JclBase defined Int64 type?  Is it compatible with D5+ / CB3+ ?? }
-  TLargeNumeric = {$IFDEF DELPHI5_UP} Int64 {$ELSE} Comp { Delphi 3 & 4 Support ?? } {$ENDIF};
+//--------------------------------------------------------------------------------------------------
+// Exception classes
+//--------------------------------------------------------------------------------------------------
 
+type
+  EInvalidParam = class (EJclError);
 
-  { Exception Types }
-  EInvalidParam = class(EJclError);
-
-
-  { DCOM and MDAC Related Tests and Utility Routines }
+//--------------------------------------------------------------------------------------------------
+// DCOM and MDAC Related Tests and Utility Routines
+//--------------------------------------------------------------------------------------------------
 
 function IsDCOMInstalled: Boolean;
 function IsDCOMEnabled: Boolean;
 function GetDCOMVersion: string;
 function GetMDACVersion: string;
 
-  { Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream" }
+//--------------------------------------------------------------------------------------------------
+// Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream"
+//--------------------------------------------------------------------------------------------------
+
   { These routines will provide the ability to Marshal an Interface for a Seperate
     Process or even for access by a Seperate Machine.  However, to make things
     familiar to users of the existing CoMarshal... routine, I have kept the required
@@ -87,7 +90,10 @@ function MarshalInterMachineInterfaceInStream(const iid: TIID;
 function MarshalInterMachineInterfaceInVarArray(const iid: TIID;
   unk: IUnknown; var VarArray: OleVariant): HResult;
 
-  { Internet Explorer Component Categories Routines }
+//--------------------------------------------------------------------------------------------------
+// Internet Explorer Component Categories Routines
+//--------------------------------------------------------------------------------------------------
+
   { These routines help with the registration of:
       - Safe-Initialization &
       - Safe-for-Scripting
@@ -97,55 +103,48 @@ function MarshalInterMachineInterfaceInVarArray(const iid: TIID;
     MSDN Home >  MSDN Library >  ActiveX Controls >  Overviews/Tutorials
     Safe Initialization and Scripting for ActiveX Controls }
 
-function CreateComponentCategory(CatID: TGuid; sDescription: String): HResult;
-function RegisterCLSIDInCategory(ClassID: TGuid; CatID: TGuid): HResult;
-function UnRegisterCLSIDInCategory(ClassID: TGuid; CatID: TGuid): HResult;
+function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HResult;
+function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
+function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
 
 
-  { Stream Related Routines }
+//--------------------------------------------------------------------------------------------------
+// Stream Related Routines
+//--------------------------------------------------------------------------------------------------
   { IDE ISSUE:  These need to be at the bottom of the interface definition as otherwise
                 the CTRL+SHIFT+ Up/Down arrows feature no-longer operates }
 
 function ResetIStreamToStart(Stream: IStream): Boolean;
-function SizeOfIStreamContents(Stream: IStream): TLargeNumeric;
+function SizeOfIStreamContents(Stream: IStream): Largeint;
 
 { Use VarIsEmpty to determine the result of the following XStreamToVariantArray routines!
   VarIsEmptry will return True if VarClear was called - indicating major problem! }
-function StreamToVariantArray(Stream: TStream): OleVariant; {$IFDEF SUPPORTS_OVERLOAD} overload;
+function StreamToVariantArray(Stream: TStream): OleVariant; overload;
 function StreamToVariantArray(Stream: IStream): OleVariant; overload;
-{$ELSE}
-function IStreamToVariantArray(Stream: IStream): OleVariant;
-{$ENDIF}
 
-procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream);
-{$IFDEF SUPPORTS_OVERLOAD} overload;
+procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream); overload;
 procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream); overload;
-{$ELSE}
-procedure VariantArrayToIStream(VarArray: OleVariant; var Stream: IStream);
-{$ENDIF}
-
 
 implementation
 
-
 uses
-  Windows, SysUtils, {$IFDEF COMPILER6_UP} Variants, {$ENDIF}
-  JclFileUtils, JclRegistry, JclSysInfo, JclSysUtils, JclWin32;
-
+  Windows, SysUtils,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclSysUtils, JclWin32;
 
 { Implementation Constants - may be reused by more than one routine }
-const
-  pcOLE32: PChar = 'OLE32.dll';
-  pcInvalidParam: PChar = 'An invalid parameter was passed to the routine!  If a parameter was ' +
-                          'expected, it might be an unassigned item or nil pointer!';
-  pcFailedStreamRead: PChar = 'Failed to read all of the data from the specified stream!';
-  pcFailedStreamWrite: PChar = 'Failed to write all of the data into the specified stream!';
 
+const
+  pcOLE32 = 'OLE32.dll';
 
   { TODO:  Utility routine here might need to be re-vamped with the
            use of JclUnicode unit in mind. }
 
-function StringToWideString(const Str: String): WideString;
+//--------------------------------------------------------------------------------------------------
+
+function StringToWideString(const Str: string): WideString;
 var
   iLen: Integer;
 begin
@@ -154,9 +153,9 @@ begin
   StringToWideChar(Str, PWideChar(Result), iLen);
 end;
 
-
-  { DCOM and MDAC Related Tests and Utility Routines }
-
+//==================================================================================================
+// DCOM and MDAC Related Tests and Utility Routines
+//==================================================================================================
 
 function IsDCOMInstalled: Boolean;
 var
@@ -167,7 +166,7 @@ begin
   if not Result then
   begin
     OLE32 := LoadLibrary(pcOLE32);
-    if OLE32 > HINSTANCE_ERROR then
+    if OLE32 > 0 then
     try
       Result := GetProcAddress(OLE32, PChar('CoCreateInstanceEx')) <> nil;
     finally
@@ -228,9 +227,9 @@ begin
   end;
 end;
 
-
-  { Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream" }
-
+//==================================================================================================
+// Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream"
+//==================================================================================================
 
 function MarshalInterThreadInterfaceInVarArray(const iid: TIID; unk: IUnknown;
   var VarArray: OleVariant): HResult;
@@ -261,11 +260,7 @@ begin
       if Result <> S_OK then
         Exit;
 
-    {$IFDEF SUPPORTS_OVERLOAD}
       VarArray := StreamToVariantArray(itfStream);
-    {$ELSE}
-      VarArray := IStreamToVariantArray(itfStream);
-    {$ENDIF}
 
       if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
         Result := E_FAIL;
@@ -276,6 +271,8 @@ begin
     Result := E_UNEXPECTED;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function MarshalInterProcessInterfaceInStream(const iid: TIID; unk: IUnknown;
   var stm: IStream): HResult;
@@ -311,6 +308,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function MarshalInterProcessInterfaceInVarArray(const iid: TIID;
   unk: IUnknown; var VarArray: OleVariant): HResult;
 var
@@ -325,15 +324,13 @@ begin
 
   { TODO:  Add compiler support for using a VCL Stream instead of an IStream here }
   { Otherwise convert from IStream into Variant Array }
-{$IFDEF SUPPORTS_OVERLOAD}
   VarArray := StreamToVariantArray(itfStream);
-{$ELSE}
-  VarArray := IStreamToVariantArray(itfStream);
-{$ENDIF}
 
   if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
     Result := E_FAIL;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function MarshalInterMachineInterfaceInStream(const iid: TIID; unk: IUnknown;
   var stm: IStream): HResult;
@@ -369,8 +366,10 @@ begin
   end;
 end;
 
-function MarshalInterMachineInterfaceInVarArray(const iid: TIID;
-  unk: IUnknown; var VarArray: OleVariant): HResult;
+//--------------------------------------------------------------------------------------------------
+
+function MarshalInterMachineInterfaceInVarArray(const iid: TIID; unk: IUnknown;
+  var VarArray: OleVariant): HResult;
 var
   itfStream: IStream;
 begin
@@ -383,27 +382,23 @@ begin
 
   { TODO:  Add compiler support for using a VCL Stream instead of an IStream here }
   { Otherwise convert from IStream into Variant Array }
-{$IFDEF SUPPORTS_OVERLOAD}
   VarArray := StreamToVariantArray(itfStream);
-{$ELSE}
-  VarArray := IStreamToVariantArray(itfStream);
-{$ENDIF}
 
   if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
     Result := E_FAIL;
 end;
 
+//==================================================================================================
+// Internet Explorer Component Categories Routines
+//==================================================================================================
 
-  { Internet Explorer Component Categories Routines }
-
-
-function CreateComponentCategory(CatID: TGuid; sDescription: String): HResult;
+function CreateComponentCategory(const CatID: TGUID; const sDescription: string): HResult;
 var
   CatRegister: ICatRegister;
   hr: HResult;
   CatInfo: TCATEGORYINFO;
   iLen: Integer;
-  sTemp: String;
+  sTemp: string;
   wsTemp: WideString;
 begin
   { TODO:  Test this routine.
@@ -419,7 +414,7 @@ begin
            HKCR\Component Categories\{..catid...}
          key is registered *)
       CatInfo.catid := CatID;
-      CatInfo.lcid := $0409 ; // english
+      CatInfo.lcid := MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US); // english
 
       { Make sure the provided description is not too long.
         Only copy the first 127 characters if it is. }
@@ -428,7 +423,7 @@ begin
          iLen := icMAX_CATEGORY_DESC_LEN;
 
       sTemp := Copy(sDescription, 1, iLen);
-      wsTemp := StringToWideString(sTemp);
+      wsTemp := StringToWideString(sTemp); 
 
       Move(Pointer(wsTemp)^, CatInfo.szDescription, (iLen * SizeOf(WideChar)));
 
@@ -441,7 +436,9 @@ begin
   Result := hr;
 end;
 
-function RegisterCLSIDInCategory(ClassID: TGuid; CatID: TGuid): HResult;
+//--------------------------------------------------------------------------------------------------
+
+function RegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -467,7 +464,9 @@ begin
   Result := hr;
 end;
 
-function UnRegisterCLSIDInCategory(ClassID: TGuid; CatID: TGuid): HResult;
+//--------------------------------------------------------------------------------------------------
+
+function UnRegisterCLSIDInCategory(const ClassID: TGUID; const CatID: TGUID): HResult;
 var
   CatRegister: ICatRegister;
   hr: HRESULT;
@@ -493,13 +492,13 @@ begin
   Result := hr;
 end;
 
-
-  { Stream Related Routines }
-
+//==================================================================================================
+// Stream Related Routines
+//==================================================================================================
 
 function ResetIStreamToStart(Stream: IStream): Boolean;
 var
-  i64Pos: TLargeNumeric;
+  i64Pos: Largeint;
   hrSeek: HResult;
 begin
   { TODO:  Test this routine.
@@ -519,7 +518,9 @@ begin
     Result := False;
 end;
 
-function SizeOfIStreamContents(Stream: IStream): TLargeNumeric;
+//--------------------------------------------------------------------------------------------------
+
+function SizeOfIStreamContents(Stream: IStream): Largeint;
 var
   stat: TStatStg;
 begin
@@ -531,8 +532,9 @@ begin
   else Result := -1;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function StreamToVariantArray(Stream: TStream): OleVariant;
-  {$IFDEF SUPPORTS_OVERLOAD} overload; {$ENDIF}
 var
   pLocked: Pointer;
 begin
@@ -543,7 +545,7 @@ begin
     TOTEST:  D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
   if NOT Assigned(Stream) then
-    raise EInvalidParam.Create(pcInvalidParam);
+    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   if Stream.Size > 0 then
   begin
@@ -568,14 +570,12 @@ begin
     Result := Null;
 end;
 
-{$IFDEF SUPPORTS_OVERLOAD}
-function StreamToVariantArray(Stream: IStream): OleVariant; overload;
-{$ELSE}
-function IStreamToVariantArray(Stream: IStream): OleVariant;
-{$ENDIF}
+//--------------------------------------------------------------------------------------------------
+
+function StreamToVariantArray(Stream: IStream): OleVariant;
 var
   pLocked: Pointer;
-  iSize: TLargeNumeric;
+  iSize: Largeint;
   iReadCount: LongInt;
 begin
   { Use VarIsEmpty to determine the result of this method!
@@ -585,7 +585,7 @@ begin
     TOTEST:  D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
   if NOT Assigned(Stream) then
-    raise EInvalidParam.Create(pcInvalidParam);
+    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   iSize := SizeOfIStreamContents(Stream);
   if iSize > 0 then
@@ -600,7 +600,7 @@ begin
 
           if iReadCount <> iSize then
             { Error!  Didn't read all content! }
-            raise EInOutError.Create(pcFailedStreamRead);
+            raise EInOutError.Create(RsComFailedStreamRead);
         finally
           VarArrayUnlock(Result);
         end;
@@ -619,8 +619,9 @@ begin
     Result := Null;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream);
-  {$IFDEF SUPPORTS_OVERLOAD} overload; {$ENDIF}
 var
   pLocked: Pointer;
 begin
@@ -628,7 +629,7 @@ begin
     TOTEST:  D4 (CBx ??) }
   { Check if the Variant is Empty or Null }
   if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
-    raise EInvalidParam.Create(pcInvalidParam);
+    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   { TODO:  Should we allow them to write to the Stream, not matter what position it is at? }
   if Assigned(Stream) then
@@ -646,22 +647,20 @@ begin
   end;
 end;
 
-{$IFDEF SUPPORTS_OVERLOAD}
-procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream); overload;
-{$ELSE}
-procedure VariantArrayToIStream(VarArray: OleVariant; var Stream: IStream);
-{$ENDIF}
+//--------------------------------------------------------------------------------------------------
+
+procedure VariantArrayToStream(VarArray: OleVariant; var Stream: IStream);
 var
   pLocked: Pointer;
   bCreated: Boolean;
-  iSize: TLargeNumeric;
+  iSize: Largeint;
   iWriteCount: LongInt;
 begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
   { Check if the Variant is Empty or Null }
   if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
-    raise EInvalidParam.Create(pcInvalidParam);
+    raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   bCreated := False;
 
@@ -685,7 +684,7 @@ begin
         Stream.Write(pLocked, iSize, @iWriteCount);
 
         if iWriteCount <> iSize then
-          raise EInOutError.Create(pcFailedStreamWrite);
+          raise EInOutError.Create(RsComFailedStreamWrite);
       finally
         VarArrayUnlock(VarArray);
         ResetIStreamToStart(Stream);
@@ -698,5 +697,7 @@ begin
     end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
