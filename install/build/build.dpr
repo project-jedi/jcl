@@ -16,8 +16,8 @@ All Rights Reserved.
 
 Contributor(s):
 
-You may retrieve the latest version of this file at the Project JEDI's JCL home page,
-located at http://jcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -206,6 +206,12 @@ begin
         Exit;
     Result := True;
   end;
+end;
+{******************************************************************************}
+function GetEnvironmentVariable(const Name: string): string;
+begin
+  SetLength(Result, 8 * 1024);
+  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
 end;
 {******************************************************************************}
 function FileExists(const Filename: string): Boolean;
@@ -583,6 +589,9 @@ var
   end;
 
   function ResolveMacros(const Dir: string): string;
+  var
+    ps, psEnd: Integer;
+    S: string;
   begin
     if StartsText('$(DELPHI)', Dir) then
       Result := FRootDir + Copy(Dir, 10, MaxInt)
@@ -593,7 +602,23 @@ var
     else if StartsText('$(BDSPROJECTSDIR)', Dir) then
       Result := GetBDSProjectsDir + Copy(Dir, 18, MaxInt)
     else
+    begin
       Result := Dir;
+      ps := Pos('$(', Result);
+      if ps > 0 then
+      begin
+        psEnd := Pos(')', Result);
+        if psEnd > 0 then
+        begin
+          S := Copy(Result, ps + 2, psEnd - ps - 2);
+          if S <> '' then
+          begin
+            Delete(Result, ps, 2 + Length(S) + 1);
+            Insert(GetEnvironmentVariable(S), Result, ps);
+          end
+        end;
+      end;
+    end
   end;
 
 begin
@@ -1012,6 +1037,12 @@ begin
     Result := ExtractFileDir(Result);
 end;
 {******************************************************************************}
+function ExtractShortPathName(const Path: string): string;
+begin
+  SetLength(Result, MAX_PATH);
+  SetLength(Result, GetShortPathName(PChar(Path), PChar(Result), Length(Result)));
+end;
+{******************************************************************************}
 
 var
   I: Integer;
@@ -1019,7 +1050,7 @@ var
   Edition: TEdition;
 begin
   LibraryRootDir := GetLibraryRootDir;
-  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+//  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
 
   // set ExtraOptions default values
   for I := 0 to High(ExtraOptions) do
@@ -1088,11 +1119,13 @@ begin
     // setup environment and execute make.exe
     Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
     if UserLibDir <> UserBplDir then
-      Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + UserLibDir + ';' + Path
+      Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + ExtractShortPathName(UserLibDir) + ';' + Path
     else
-      Path := Edition.RootDir + '\bin;' + UserBplDir + ';' + Path;
+      Path := ExtractShortPathName(Edition.RootDir) + '\bin;' + ExtractShortPathName(UserBplDir) + ';' + Path;
     SetEnvironmentVariable('PATH', Pointer(Path));
 
+    SetEnvironmentVariable('MAINBPLDIR', Pointer(Edition.BplDir));
+    SetEnvironmentVariable('MAINDCPDIR', Pointer(Edition.DcpDir));
     SetEnvironmentVariable('BPLDIR', Pointer(UserBplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(UserDcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(UserLibDir));
