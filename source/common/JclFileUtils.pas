@@ -2191,7 +2191,9 @@ end;
 
 procedure ShredFile(const FileName: string; Times: Integer);
 const
-  BUFSIZE = 4096;
+  BUFSIZE   = 4096;
+  ODD_FILL  = $C1;
+  EVEN_FILL = $3E;
 var
   Fs: TFileStream;
   Size: Integer;
@@ -2202,13 +2204,19 @@ begin
   if Size > 0 then
   begin
     if Times < 0 then
-      Times := 1;
+      Times := 2
+    else
+      Times := Times * 2;
     ContentPtr := nil;
     Fs := TFileStream.Create(FileName, fmOpenReadWrite);
     try
-      GetAndFillMem(ContentPtr, BUFSIZE, Ord('*'));
+      GetMem(ContentPtr, BUFSIZE);
       while Times > 0 do
       begin
+        if Times mod 2 = 0 then
+          FillMemory(ContentPtr, BUFSIZE, EVEN_FILL)
+        else
+          FillMemory(ContentPtr, BUFSIZE, ODD_FILL);
         Fs.Seek(0, soFromBeginning);
         N := Size div BUFSIZE;
         while N > 0 do
