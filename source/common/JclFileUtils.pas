@@ -910,6 +910,7 @@ type
 // Deprecated, do not use
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function PathGetLongName2(const Path: string): string;
 {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$IFNDEF FPC}
@@ -922,6 +923,7 @@ function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function Win32RestoreFile(const FileName: string): Boolean;
 {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+{$ENDIF MSWINDOWS}
 
 {$ENDIF ~DROP_OBSOLETE_CODE}
 
@@ -5928,6 +5930,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.31  2004/10/17 17:26:57  rrossmair
+// restored Unix compatibility
+//
 // Revision 1.30  2004/10/17 06:02:51  rrossmair
 // - rewrote PathGetLongName
 // - rewrote PathGetLongName2 (now mere wrapper around PathGetLongName)
