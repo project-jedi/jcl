@@ -24,16 +24,17 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: December 28, 2004                                                                 }
+{ Last modified: February 12, 2005                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
 {
 Todo:
 - style:
-  - sort class members
+  *done*- sort class members
   - insert markers
-- support Aborted and set current dir in ...ExecAndCapture
+*done*- support Aborted and set current dir in ...ExecAndCapture
+        (JclSysUtils.Execute does support it)
 - IFDEF OS specific compiler switches and defines
 *almost done*- get settings from .cfg or .dof
 
@@ -57,7 +58,7 @@ uses
   {$IFNDEF RTL140_UP}
   JclBase,
   {$ENDIF ~RTL140_UP}
-  SysUtils, Classes, IniFiles, Contnrs, JclSysUtils;
+  SysUtils, Classes, IniFiles, Contnrs, JclSysUtils, JclBorlandTools;
 
 type
   TJclDCCMessageKind = (mkUnknown, mkHint, mkWarning, mkError, mkFatal);
@@ -135,9 +136,19 @@ type
     procedure LoadFromFile(AFileName: string);
   end;
 
+  TJclDOFSaveQueryEvent = function(ASender: TObject; const ASection, AIdent: string): Boolean of object;
+
   TJclDOFFile = class(TJclCustomDCCConfig)
+  private
+    FContent: TStringList;
+    function StrippedSaveQuery(ASender: TObject; const ASection, AIdent: string): Boolean;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure LoadFromFile(AFileName: string);
+    procedure SaveToFile(AFileName: string);
+    procedure SaveToFileQuery(AFileName: string; AQueryProc: TJclDOFSaveQueryEvent);
+    procedure SaveToFileStripped(AFileName: string);
   end;
 
   TJclDCCMessage = class(TObject)
@@ -156,10 +167,10 @@ type
   TJclDCCMessages = class(TObject)
   private
     FErrorCount: Integer;
-    FHintCount: Integer;
-    FWarnCount: Integer;
     FFatalCount: Integer;
+    FHintCount: Integer;
     FItems: TObjectList;
+    FWarnCount: Integer;
     function GetCount: Integer;
     function GetItems(AIndex: Integer): TJclDCCMessage;
   public
@@ -168,44 +179,74 @@ type
     procedure Add(AKind: TJclDCCMessageKind; AMessageStr: string);
     procedure Clear;
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TJclDCCMessage read GetItems; default;
     property ErrorCount: Integer read FErrorCount;
-    property HintCount: Integer read FHintCount;
-    property WarnCount: Integer read FWarnCount;
     property FatalCount: Integer read FFatalCount;
+    property HintCount: Integer read FHintCount;
+    property Items[AIndex: Integer]: TJclDCCMessage read GetItems; default;
+    property WarnCount: Integer read FWarnCount;
   end;
 
   TJclDCCEx = class(TObject)
   private
-    FFileToCompile: string;
-    FPlainOutput: TStringList;
-    FExeName: string;
+    FConfig: TJclCustomDCCConfig;
     FCurrentFile: string;
     FCurrentLineNo: Integer;
+    FExeName: string;
+    FFileToCompile: string;
     FMessages: TJclDCCMessages;
-
     FOnCompileProgress: TNotifyEvent;
-    FQuietCompile: Boolean;
     FOnMessage: TNotifyEvent;
-    FConfig: TJclCustomDCCConfig;
+    FPlainOutput: TStringList;
+    FQuietCompile: Boolean;
     procedure CaptureLine(const Line: string);
     procedure ClearValues;
   public
     constructor Create;
     destructor Destroy; override;
-
     function Compile(AbortPtr: PBoolean = nil): Boolean;
-
-    property QuietCompile: Boolean read FQuietCompile write FQuietCompile;
-    property ExeName: string read FExeName write FExeName;
+    property Config: TJclCustomDCCConfig read FConfig;
     property CurrentFile: string read FCurrentFile;
     property CurrentLineNo: Integer read FCurrentLineNo;
-    property Config: TJclCustomDCCConfig read FConfig;
+    property ExeName: string read FExeName write FExeName;
     property FileToCompile: string read FFileToCompile write FFileToCompile;
-    property PlainOutput: TStringList read FPlainOutput;
     property Messages: TJclDCCMessages read FMessages;
     property OnCompileProgress: TNotifyEvent read FOnCompileProgress write FOnCompileProgress;
     property OnMessage: TNotifyEvent read FOnMessage write FOnMessage;
+    property PlainOutput: TStringList read FPlainOutput;
+    property QuietCompile: Boolean read FQuietCompile write FQuietCompile;
+  end;
+
+  TJclBorRADToolIdeExperts = class(TJclBorRADToolInstallationObject)
+  private
+    FExperts: TStringList;
+    function GetCount: Integer;
+    function GetFileNames(Index: Integer): string;
+    function GetNames(Index: Integer): string;
+  protected
+    constructor Create(AInstallation: TJclBorRADToolInstallation);
+    procedure ReadExperts;
+  public
+    destructor Destroy; override;
+    function AddExpert(const AName, AFileName: string): Boolean;
+    function RemoveExpert(const AName: string): Boolean;
+    property Count: Integer read GetCount;
+    property FileNames[Index: Integer]: string read GetFileNames;
+    property Names[Index: Integer]: string read GetNames;
+  end;
+
+  TJclBorRADToolInstallationEx = class(TJclBorRADToolInstallation)
+  private
+    FIdeExperts: TJclBorRADToolIdeExperts;
+    function GetIdeExperts: TJclBorRADToolIdeExperts;
+    function GetVCSManager: string;
+    procedure SetVCSManager(const Value: string);
+  protected
+    constructor Create(const AConfigDataLocation: string); override;
+  public
+    destructor Destroy; override;
+    function SupportsVCSManager: Boolean;
+    property IdeExperts: TJclBorRADToolIdeExperts read GetIdeExperts;
+    property VCSManager: string read GetVCSManager write SetVCSManager;
   end;
 
 implementation
@@ -425,6 +466,44 @@ begin
   end;
 end;
 
+const
+  JclDOFCompilerSection = 'Compiler';
+  JclDOFLinkerSection = 'Linker';
+  JclDOFDirectoriesSection = 'Directories';
+
+  JclDOFUnitAliasesEntry = 'UnitAliases';
+  JclDOFShowHintsEntry = 'ShowHints';
+  JclDOFShowWarningsEntry = 'ShowWarnings';
+
+  JclDOFMapFileEntry = 'MapFile';
+  JclDOFConsoleAppEntry = 'ConsoleApp';
+  JclDOFDebugInfoEntry = 'DebugInfo';
+  JclDOFRemoteSymbolsEntry = 'RemoteSymbols';
+  JclDOFMinStackSizeEntry = 'MinStackSize';
+  JclDOFMaxStackSizeEntry = 'MaxStackSize';
+  JclDOFImageBaseEntry = 'ImageBase';
+
+  JclDOFOutputDirEntry = 'OutputDir';
+  JclDOFUnitOutputDirEntry = 'UnitOutputDir';
+  JclDOFPackageDLLOutputDirEntry = 'PackageDLLOutputDir';
+  JclDOFPackageDCPOutputDirEntry = 'PackageDCPOutputDir';
+  JclDOFSearchPathEntry = 'SearchPath';
+  JclDOFConditionalsEntry = 'Conditionals';
+  JclDOFPackagesEntry = 'Packages';
+  JclDOFUsePackagesEntry = 'UsePackages';
+
+constructor TJclDOFFile.Create;
+begin
+  inherited Create;
+  FContent := TStringList.Create;
+end;
+
+destructor TJclDOFFile.Destroy;
+begin
+  FContent.Free;
+  inherited Destroy;
+end;
+
 procedure TJclDOFFile.LoadFromFile(AFileName: string);
 
   function CheckPathOption(const AOptionPrefix: string; AOption: string; var ADestPath: string): Boolean;
@@ -437,32 +516,29 @@ procedure TJclDOFFile.LoadFromFile(AFileName: string);
     end;
   end;
 
-const
-  CompilerSection = 'Compiler';
-  LinkerSection = 'Linker';
-  DirectoriesSection = 'Directories';
-
 var
-  DOFFile: TIniFile;
+  DOFFile: TMemIniFile;
 begin
   //(usc) do FileExists check ?
-  DOFFile := TIniFile.Create(AFileName);
+  DOFFile := TMemIniFile.Create(AFileName);
   try
+    FContent.Clear;
+    DOFFile.GetStrings(FContent);
     //(usc) read compiler switches
-    case DOFFile.ReadInteger(LinkerSection, 'MapFile', 0) of
+    case DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFMapFileEntry, 0) of
       0: MapFileLevel := mfloff;
       1: MapFileLevel := mflsegments;
       2: MapFileLevel := mflpublics;
       3: MapFileLevel := mfldetailed;
     end;
     // JPNE (linker output)
-    ConsoleApplication := DOFFile.ReadInteger(LinkerSection, 'ConsoleApp', 0) = 1;
-    TD32DebugInfo := DOFFile.ReadInteger(LinkerSection, 'DebugInfo', 0) = 1;
-    RemoteDebugSymbols := DOFFile.ReadInteger(LinkerSection, 'RemoteSymbols', 0) = 1;
+    ConsoleApplication := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFConsoleAppEntry, 0) = 1;
+    TD32DebugInfo := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFDebugInfoEntry, 0) = 1;
+    RemoteDebugSymbols := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFRemoteSymbolsEntry, 0) = 1;
 
-    UnitAliases := DOFFile.ReadString(CompilerSection, 'UnitAliases', '');
-    OutputHints := DOFFile.ReadInteger(CompilerSection, 'ShowHints', 0) = 1;
-    OutputWarnings := DOFFile.ReadInteger(CompilerSection, 'ShowWarnings', 0) = 1;
+    UnitAliases := DOFFile.ReadString(JclDOFCompilerSection, JclDOFUnitAliasesEntry, '');
+    OutputHints := DOFFile.ReadInteger(JclDOFCompilerSection, JclDOFShowHintsEntry, 0) = 1;
+    OutputWarnings := DOFFile.ReadInteger(JclDOFCompilerSection, JclDOFShowWarningsEntry, 0) = 1;
 {
       if Pos('-M', S) = 1 then
         FBuildAllUnits := False
@@ -471,22 +547,134 @@ begin
         FBuildAllUnits := True
       else
 }
-    MinStackSize := DOFFile.ReadInteger(LinkerSection, 'MinStackSize', MinStackSize);
-    MaxStackSize := DOFFile.ReadInteger(LinkerSection, 'MaxStackSize', MaxStackSize);
-    ImageBaseAddr := DOFFile.ReadInteger(LinkerSection, 'ImageBase', ImageBaseAddr);
+    MinStackSize := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFMinStackSizeEntry, MinStackSize);
+    MaxStackSize := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFMaxStackSizeEntry, MaxStackSize);
+    ImageBaseAddr := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFImageBaseEntry, ImageBaseAddr);
 
-    EXEOutputDirectory := DOFFile.ReadString(DirectoriesSection, 'OutputDir', '');
-    DCUOutputDirectory := DOFFile.ReadString(DirectoriesSection, 'UnitOutputDir', '');
-    BPLOutputDirectory := DOFFile.ReadString(DirectoriesSection, 'PackageDLLOutputDir', '');
-    DCPOutputDirectory := DOFFile.ReadString(DirectoriesSection, 'PackageDCPOutputDir', '');
+    EXEOutputDirectory := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFOutputDirEntry, '');
+    DCUOutputDirectory := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFUnitOutputDirEntry, '');
+    BPLOutputDirectory := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackageDLLOutputDirEntry, '');
+    DCPOutputDirectory := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackageDCPOutputDirEntry, '');
 
-    SearchPaths := DOFFile.ReadString(DirectoriesSection, 'SearchPath', '');
+    SearchPaths := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFSearchPathEntry, '');
 
-    ConditionalDefines := DOFFile.ReadString(DirectoriesSection, 'Conditionals', '');
-    Packages := DOFFile.ReadString(DirectoriesSection, 'Packages', '');
-    CompileWithPackages := DOFFile.ReadInteger(LinkerSection, 'UsePackages', 0) = 1;
+    ConditionalDefines := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFConditionalsEntry, '');
+    Packages := DOFFile.ReadString(JclDOFDirectoriesSection, JclDOFPackagesEntry, '');
+    CompileWithPackages := DOFFile.ReadInteger(JclDOFLinkerSection, JclDOFUsePackagesEntry, 0) = 1;
   finally
     DOFFile.Free;
+  end;
+end;
+
+procedure TJclDOFFile.SaveToFile(AFileName: string);
+begin
+  SaveToFileQuery(AFileName, nil);
+end;
+
+procedure TJclDOFFile.SaveToFileQuery(AFileName: string; AQueryProc: TJclDOFSaveQueryEvent);
+
+  function DoQuery(const ASection, AIdent: string): Boolean;
+  begin
+    Result := (not Assigned(AQueryProc)) or AQueryProc(Self, ASection, AIdent);
+  end;
+
+var
+  DOFFile: TMemIniFile;
+  tempInt: Integer;
+  I, J: Integer;
+  Sections, Idents: TStringList;
+begin
+  DOFFile := TMemIniFile.Create(AFileName);
+  try
+    DOFFile.SetStrings(FContent);
+    DOFFile.WriteString(JclDOFCompilerSection, JclDOFUnitAliasesEntry, UnitAliases);
+    DOFFile.WriteBool(JclDOFCompilerSection, JclDOFShowHintsEntry, OutputHints);
+    DOFFile.WriteBool(JclDOFCompilerSection, JclDOFShowWarningsEntry, OutputWarnings);
+    case MapFileLevel of
+      mfloff: tempInt := 0;
+      mflsegments: tempInt := 1;
+      mflpublics: tempInt := 2;
+      mfldetailed: tempInt := 3;
+      else
+        tempInt := 0;
+    end;
+    DOFFile.WriteInteger(JclDOFLinkerSection, JclDOFMapFileEntry, tempInt);
+    DOFFile.WriteBool(JclDOFLinkerSection, JclDOFConsoleAppEntry, ConsoleApplication);
+    DOFFile.WriteBool(JclDOFLinkerSection, JclDOFDebugInfoEntry, TD32DebugInfo);
+    DOFFile.WriteBool(JclDOFLinkerSection, JclDOFRemoteSymbolsEntry, RemoteDebugSymbols);
+    DOFFile.WriteInteger(JclDOFLinkerSection, JclDOFMinStackSizeEntry, MinStackSize);
+    DOFFile.WriteInteger(JclDOFLinkerSection, JclDOFMaxStackSizeEntry, MaxStackSize);
+    DOFFile.WriteInteger(JclDOFLinkerSection, JclDOFImageBaseEntry, ImageBaseAddr);
+
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFOutputDirEntry, EXEOutputDirectory);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFUnitOutputDirEntry, DCUOutputDirectory);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackageDLLOutputDirEntry, BPLOutputDirectory);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackageDCPOutputDirEntry, DCPOutputDirectory);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFSearchPathEntry, SearchPaths);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFConditionalsEntry, ConditionalDefines);
+    DOFFile.WriteString(JclDOFDirectoriesSection, JclDOFPackagesEntry, Packages);
+    DOFFile.WriteBool(JclDOFLinkerSection, JclDOFUsePackagesEntry, CompileWithPackages);
+
+    Sections := TStringList.Create;
+    try
+      DOFFile.ReadSections(Sections);
+      for I := 0 to Sections.Count - 1 do
+        if not DoQuery(Sections[I], '') then
+          DOFFile.EraseSection(Sections[I])
+        else
+        begin
+          Idents := TStringList.Create;
+          try
+            DOFFile.ReadSection(Sections[I], Idents);
+            for J := 0 to Idents.Count - 1 do
+              if not DoQuery(Sections[I], Idents[J]) then
+                DOFFile.DeleteKey(Sections[I], Idents[J]);
+          finally
+            Idents.Free;
+          end;
+        end;
+    finally
+      Sections.Free;
+    end;
+    DOFFile.UpdateFile;
+  finally
+    DOFFile.Free;
+  end;
+end;
+
+procedure TJclDOFFile.SaveToFileStripped(AFileName: string);
+begin
+  SaveToFileQuery(AFileName, StrippedSaveQuery);
+end;
+
+function TJclDOFFile.StrippedSaveQuery(ASender: TObject; const ASection, AIdent: string): Boolean;
+begin
+  Result := False;
+  if ASection = JclDOFDirectoriesSection then
+  begin
+    if AIdent = '' then
+      Result := True
+    else
+    if AIdent = JclDOFOutputDirEntry then
+      Result := EXEOutputDirectory <> ''
+    else
+    if AIdent = JclDOFUnitOutputDirEntry then
+      Result := DCUOutputDirectory <> ''
+    else
+    if AIdent = JclDOFPackageDLLOutputDirEntry then
+      Result := BPLOutputDirectory <> ''
+    else
+    if AIdent = JclDOFPackageDCPOutputDirEntry then
+      Result := DCPOutputDirectory <> ''
+    else
+    if AIdent = JclDOFSearchPathEntry then
+      Result := SearchPaths <> ''
+    else
+    if AIdent = JclDOFConditionalsEntry then
+      Result := ConditionalDefines <> ''
+    else
+    if (AIdent = JclDOFPackagesEntry) and (AIdent = JclDOFUsePackagesEntry) then
+      Result := (Packages <> '') and CompileWithPackages;
   end;
 end;
 
@@ -769,6 +957,134 @@ begin
     DCCExitCode := JclSysUtils.Execute(FExeName + ' ' + Arguments, CaptureLine, True, AbortPtr);
     Result := (DCCExitCode = 0) and (FMessages.ErrorCount = 0) and (FMessages.FatalCount = 0);
   end;
+end;
+
+const
+  ExpertsKeyName = 'Experts';
+  VersionControlKeyName = 'Version Control';
+  VersionControlVCSManager = 'VCSManager';
+
+//==================================================================================================
+// TJclBorRADToolExperts
+//==================================================================================================
+
+constructor TJclBorRADToolIdeExperts.Create(AInstallation: TJclBorRADToolInstallation);
+begin
+  inherited Create(AInstallation);
+  FExperts := TStringList.Create;
+  ReadExperts;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorRADToolIdeExperts.Destroy;
+begin
+  FreeAndNil(FExperts);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdeExperts.AddExpert(const AName, AFileName: string): Boolean;
+begin
+  Result := True;
+  Installation.ConfigData.WriteString(ExpertsKeyName, AName, AFileName);
+  ReadExperts;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdeExperts.GetCount: Integer;
+begin
+  Result := FExperts.Count;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdeExperts.GetFileNames(Index: Integer): string;
+begin
+  Result := FExperts.Values[FExperts.Names[Index]];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdeExperts.GetNames(Index: Integer): string;
+begin
+  Result := FExperts.Names[Index];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclBorRADToolIdeExperts.ReadExperts;
+begin
+  Installation.ConfigData.ReadSectionValues(ExpertsKeyName, FExperts);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolIdeExperts.RemoveExpert(const AName: string): Boolean;
+begin
+  Result := Installation.ConfigData.ValueExists(ExpertsKeyName, AName);
+  if Result then
+  begin
+    Installation.ConfigData.DeleteKey(ExpertsKeyName, AName);
+    ReadExperts;
+  end;
+end;
+
+//==================================================================================================
+// TJclBorRADToolInstallationEx
+//==================================================================================================
+
+constructor TJclBorRADToolInstallationEx.Create(const AConfigDataLocation: string);
+begin
+  inherited Create(AConfigDataLocation);
+  FIdeExperts := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclBorRADToolInstallationEx.Destroy;
+begin
+  FreeAndNil(FIdeExperts);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallationEx.GetIdeExperts: TJclBorRADToolIdeExperts;
+begin
+  if not Assigned(FIdeExperts) then
+    FIdeExperts := TJclBorRADToolIdeExperts.Create(Self);
+  Result := FIdeExperts;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallationEx.GetVCSManager: string;
+begin
+  Result := '';
+  if SupportsVCSManager then
+    Result := ConfigData.ReadString(VersionControlKeyName, VersionControlVCSManager, '');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclBorRADToolInstallationEx.SetVCSManager(const Value: string);
+begin
+  if SupportsVCSManager then
+    ConfigData.WriteString(VersionControlKeyName, VersionControlVCSManager, Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallationEx.SupportsVCSManager: Boolean;
+begin
+  {$IFDEF KYLIX}
+  Result := False;
+  {$ELSE}
+  Result := VersionNumber <= 7;
+  {$ENDIF KYLIX}
 end;
 
 end.
