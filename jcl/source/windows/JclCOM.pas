@@ -16,10 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Various COM (Component Object Model) utility routines.                       }
 {                                                                              }
-{ Unit Owner: Marcel van Brakel                                                }
-{ Last modified: January 09, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains Various COM (Component Object Model) utility routines.    }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 30, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -46,7 +49,7 @@ function IsDCOMEnabled: Boolean;
 var
   RegValue: string;
 begin
-  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE\', 'EnableDCOM');
+  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE', 'EnableDCOM');
   Result := (RegValue = 'y') or (RegValue = 'Y');
 end;
 
