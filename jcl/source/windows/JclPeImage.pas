@@ -21,7 +21,7 @@
 { This unit contains various PE file classes and support routines              }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 27, 2001                                              }
+{ Last modified: January 31, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -96,8 +96,8 @@ type
   TJclPeImportKind = (ikImport, ikDelayImport, ikBoundImport);
   TJclPeResolveCheck = (icNotChecked, icResolved, icUnresolved);
   TJclPeLinkerProducer = (lrBorland, lrMicrosoft);
-  // lrBorland   -> Delphi images
-  // lrMicrosoft -> MSVC and BCB images
+  // lrBorland   -> Delphi PE files
+  // lrMicrosoft -> MSVC and BCB PE files
 
   TJclPeImportLibItem = class;
 
@@ -219,13 +219,13 @@ type
     FName: PChar;
     FOrdinal: Word;
     FResolveCheck: TJclPeResolveCheck;
+    function GetAddressOrForwardStr: string;
     function GetIsForwarded: Boolean;
     function GetForwardedFuncName: string;
     function GetForwardedLibName: string;
     function GetForwardedFuncOrdinal: DWORD;
     function GetForwardedName: string;
     function GetName: string;
-    function GetAddressOrForwardStr: string;
     function GetSectionName: string;
     function GetMappedAddress: Pointer;
   protected
@@ -257,8 +257,8 @@ type
     FLastSortDescending: Boolean;
     FSorted: Boolean;
     FTotalResolveCheck: TJclPeResolveCheck;
-    function GetItems(Index: Integer): TJclPeExportFuncItem;
     function GetForwardedLibsList: TStrings;
+    function GetItems(Index: Integer): TJclPeExportFuncItem;
     function GetItemFromAddress(Address: DWORD): TJclPeExportFuncItem;
     function GetItemFromOrdinal(Ordinal: DWORD): TJclPeExportFuncItem;
     function GetItemFromName(const Name: string): TJclPeExportFuncItem;
@@ -337,22 +337,26 @@ type
     FEntry: PImageResourceDirectoryEntry;
     FImage: TJclPeImage;
     FList: TJclPeResourceList;
+    FLevel: Byte;
     FParentItem: TJclPeResourceItem;
-    function GetName: string;
-    function GetIsDirectory: Boolean;
-    function GetList: TJclPeResourceList;
+    FNameCache: string;
     function GetDataEntry: PImageResourceDataEntry;
+    function GetIsDirectory: Boolean;
     function GetIsName: Boolean;
+    function GetList: TJclPeResourceList;
+    function GetName: string;
     function GetParameterName: string;
     function GetRawEntryData: Pointer;
+    function GetRawEntryDataSize: Integer;
     function GetResourceType: TJclPeResourceKind;
     function GetResourceTypeStr: string;
-    function GetRawEntryDataSize: Integer;
   protected
     function OffsetToRawData(Ofs: DWORD): DWORD;
     function Level1Item: TJclPeResourceItem;
     function SubDirData: PImageResourceDirectory;
   public
+    constructor Create(AImage: TJclPeImage; AParentItem: TJclPeResourceItem;
+      AEntry: PImageResourceDirectoryEntry);
     destructor Destroy; override;
     property DataEntry: PImageResourceDataEntry read GetDataEntry;
     property Entry: PImageResourceDirectoryEntry read FEntry;
@@ -360,6 +364,7 @@ type
     property IsDirectory: Boolean read GetIsDirectory;
     property IsName: Boolean read GetIsName;
     property List: TJclPeResourceList read GetList;
+    property Level: Byte read FLevel;
     property Name: string read GetName;
     property ParameterName: string read GetParameterName;
     property ParentItem: TJclPeResourceItem read FParentItem;
@@ -372,19 +377,20 @@ type
   TJclPeResourceList = class (TJclPeImageBaseList)
   private
     FDirectory: PImageResourceDirectory;
+    FParentItem: TJclPeResourceItem;
     function GetItems(Index: Integer): TJclPeResourceItem;
   protected
     procedure CreateList(AParentItem: TJclPeResourceItem);
   public
-    constructor Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage;
-      AParentItem: TJclPeResourceItem);
+    constructor Create(AImage: TJclPeImage; AParentItem: TJclPeResourceItem;
+      ADirectory: PImageResourceDirectory);
     property Directory: PImageResourceDirectory read FDirectory;
     property Items[Index: Integer]: TJclPeResourceItem read GetItems; default;
+    property ParentItem: TJclPeResourceItem read FParentItem;
   end;
 
   TJclPeRootResourceList = class (TJclPeResourceList)
   public
-    constructor Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage);
     function FindResource(ResourceType: TJclPeResourceKind;
       const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem;
   end;
@@ -527,27 +533,27 @@ type
     FResourceVA: DWORD;
     FStatus: TJclPeImageStatus;
     FVersionInfo: TJclFileVersionInfo;
-    procedure ReadImageSections;
     function GetDebugList: TJclPeDebugList;
     function GetDescription: string;
     function GetDirectories(Directory: Word): TImageDataDirectory;
     function GetDirectoryExists(Directory: Word): Boolean;
     function GetExportList: TJclPeExportFuncList;
-    function GetImportList: TJclPeImportList;
-    function GetHeaderValues(Index: TJclPeHeader): string;
-    function GetMappedAddress: DWORD;
-    function GetOptionalHeader: TImageOptionalHeader;
-    function GetRelocationList: TJclPeRelocList;
-    function GetResourceList: TJclPeRootResourceList;
-    function GetLoadConfigValues(Index: TJclLoadConfig): string;
     function GetFileProperties: TJclPeFileProperties;
-    function GetUnusedHeaderBytes: TImageDataDirectory;
-    function GetVersionInfo: TJclFileVersionInfo;
     function GetImageSectionCount: Integer;
     function GetImageSectionHeaders(Index: Integer): TImageSectionHeader;
     function GetImageSectionNames(Index: Integer): string;
     function GetImageSectionNameFromRva(const Rva: DWORD): string;
+    function GetImportList: TJclPeImportList;
+    function GetHeaderValues(Index: TJclPeHeader): string;
+    function GetLoadConfigValues(Index: TJclLoadConfig): string;
+    function GetMappedAddress: DWORD;
+    function GetOptionalHeader: TImageOptionalHeader;
+    function GetRelocationList: TJclPeRelocList;
+    function GetResourceList: TJclPeRootResourceList;
+    function GetUnusedHeaderBytes: TImageDataDirectory;
+    function GetVersionInfo: TJclFileVersionInfo;
     function GetVersionInfoAvailable: Boolean;
+    procedure ReadImageSections;
     procedure SetFileName(const Value: TFileName);
   protected
     procedure AfterOpen; dynamic;
@@ -555,6 +561,10 @@ type
     procedure Clear; dynamic;
     function ExpandModuleName(const ModuleName: string): TFileName;
     procedure RaiseStatusException;
+    function ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
+      AParentItem: TJclPeResourceItem): TJclPeResourceItem; virtual;
+    function ResourceListCreate(ADirectory: PImageResourceDirectory;
+      AParentItem: TJclPeResourceItem): TJclPeResourceList; virtual;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
   public
     constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
@@ -2176,8 +2186,7 @@ constructor TJclPeResourceRawStream.Create(AResourceItem: TJclPeResourceItem);
 begin
   Assert(not AResourceItem.IsDirectory);
   inherited Create;
-  with AResourceItem do
-    SetPointer(RawEntryData, DataEntry^.Size);
+  SetPointer(AResourceItem.RawEntryData, AResourceItem.RawEntryDataSize);
 end;
 
 //------------------------------------------------------------------------------
@@ -2190,6 +2199,21 @@ end;
 //==============================================================================
 // TJclPeResourceItem
 //==============================================================================
+
+constructor TJclPeResourceItem.Create(AImage: TJclPeImage;
+  AParentItem: TJclPeResourceItem; AEntry: PImageResourceDirectoryEntry);
+begin
+  inherited Create;
+  FImage := AImage;
+  FEntry := AEntry;
+  FParentItem := AParentItem;
+  if AParentItem = nil then
+    FLevel := 1
+  else
+    FLevel := AParentItem.Level + 1;
+end;
+
+//------------------------------------------------------------------------------
 
 destructor TJclPeResourceItem.Destroy;
 begin
@@ -2236,7 +2260,7 @@ begin
       raise EJclPeImageError.CreateResRec(@RsPeNotResDir);
   end;
   if FList = nil then
-    FList := TJclPeResourceList.Create(SubDirData, FImage, Self);
+    FList := FImage.ResourceListCreate(SubDirData, Self);
   Result := FList;
 end;
 
@@ -2244,10 +2268,13 @@ end;
 
 function TJclPeResourceItem.GetName: string;
 begin
-// TODO : Put name to local variable to increase the performance
   if IsName then
-    with PImageResourceDirStringU(OffsetToRawData(FEntry^.Name))^ do
-      Result := WideCharLenToString(NameString, Length)
+  begin
+    if FNameCache = '' then
+      with PImageResourceDirStringU(OffsetToRawData(FEntry^.Name))^ do
+        FNameCache := WideCharLenToString(NameString, Length);
+    Result := FNameCache;
+  end
   else
     Result := IntToStr(FEntry^.Name and $FFFF);
 end;
@@ -2335,11 +2362,12 @@ end;
 // TJclPeResourceList
 //==============================================================================
 
-constructor TJclPeResourceList.Create(ADirectory: PImageResourceDirectory;
-  AImage: TJclPeImage; AParentItem: TJclPeResourceItem);
+constructor TJclPeResourceList.Create(AImage: TJclPeImage;
+  AParentItem: TJclPeResourceItem; ADirectory: PImageResourceDirectory);
 begin
   inherited Create(AImage);
   FDirectory := ADirectory;
+  FParentItem := AParentItem;
   CreateList(AParentItem);
 end;
 
@@ -2356,10 +2384,7 @@ begin
   Entry := Pointer(DWORD(FDirectory) + SizeOf(TImageResourceDirectory));
   for I := 1 to FDirectory^.NumberOfNamedEntries + FDirectory^.NumberOfIdEntries do
   begin
-    DirItem := TJclPeResourceItem.Create;
-    DirItem.FEntry := Entry;
-    DirItem.FImage := FImage;
-    DirItem.FParentItem := AParentItem;
+    DirItem := FImage.ResourceItemCreate(Entry, AParentItem);
     Add(DirItem);
     Inc(Entry);
   end;
@@ -2375,13 +2400,6 @@ end;
 //==============================================================================
 // TJclPeRootResourceList
 //==============================================================================
-
-constructor TJclPeRootResourceList.Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage);
-begin
-  inherited Create(ADirectory, AImage, nil);
-end;
-
-//------------------------------------------------------------------------------
 
 function TJclPeRootResourceList.FindResource(ResourceType: TJclPeResourceKind;
   const ResourceName: string): TJclPeResourceItem;
@@ -3075,7 +3093,7 @@ begin
     FResourceVA := Directories[IMAGE_DIRECTORY_ENTRY_RESOURCE].VirtualAddress;
     if FResourceVA <> 0 then
       FResourceVA := DWORD(RvaToVa(FResourceVA));
-    FResourceList := TJclPeRootResourceList.Create(Pointer(FResourceVA), Self);
+    FResourceList := TJclPeRootResourceList.Create(Self, nil, PImageResourceDirectory(FResourceVA));
   end;
   Result := FResourceList;
 end;
@@ -3319,13 +3337,28 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeImage.ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
+  AParentItem: TJclPeResourceItem): TJclPeResourceItem;
+begin
+  Result := TJclPeResourceItem.Create(Self, AParentItem, AEntry);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.ResourceListCreate(ADirectory: PImageResourceDirectory;
+  AParentItem: TJclPeResourceItem): TJclPeResourceList;
+begin
+  Result := TJclPeResourceList.Create(Self, AParentItem, ADirectory);
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeImage.RvaToSection(Rva: DWORD): PImageSectionHeader;
 var
   I: Integer;
   SectionHeader: PImageSectionHeader;
   EndRVA: DWORD;
 begin
-{ TODO -cTEST : Test on NT system whether ImageRvaToSection is allowed without previous MapAndLoad call }
   Result := ImageRvaToSection(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva);
   if Result = nil then
     for I := 0 to FImageSections.Count - 1 do
@@ -4895,6 +4928,5 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
 
 end.
