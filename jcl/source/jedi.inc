@@ -323,25 +323,7 @@
 
 {$IFDEF BORLAND}
   {$IFDEF KYLIX}
-
-    {$IF not Declared(CompilerVersion)}
-      {$DEFINE KYLIX1}
-      {$DEFINE DELPHICOMPILER6}
-      {$DEFINE RTL140_UP}
-    {$ELSEIF Declared(CompilerVersion) and (CompilerVersion >= 14.1) and (CompilerVersion < 14.5)}
-      {$DEFINE KYLIX2}
-      {$DEFINE DELPHICOMPILER6}
-      {$DEFINE RTL140_UP}
-    {$ELSEIF Declared(CompilerVersion) and (CompilerVersion = 14.5)}
-      {$DEFINE KYLIX3}
-      {$IFNDEF BCB}
-        {$DEFINE DELPHICOMPILER6}
-      {$ENDIF}
-      {$DEFINE RTL140_UP}
-    {$ELSEIF Declared(CompilerVersion) and (CompilerVersion > 14.5)}
-      Add new Kylix version
-    {$IFEND}
-
+    {$INCLUDE kylix.inc} // FPC incompatible stuff
   {$ELSE ~KYLIX}
   
     {$IFDEF VER150}
@@ -761,14 +743,12 @@
     {$DEFINE SUPPORTS_EXTSYM}
     {$DEFINE SUPPORTS_NODEFINE}
 
-    {.$DEFINE SUPPORTS_CUSTOMVARIANTS}  { TODO : FPC support custom variants? }
-    {.$DEFINE SUPPORTS_VARARGS}         { TODO : FPC support varargs? }
-    {.$SUPPORTS_ENUMVALUE}              { TODO : FPC support enum values? }
-    {.$DEFINE SUPPORTS_LOCAL}           { TODO : FPC support local? }
-    {.$DEFINE HAS_UNIT_RTLCONSTS}       { TODO : FPC has the unit RTLConsts? }
-    {.$DEFINE HAS_UNIT_TYPES}           { TODO : FPC has the unit Types? }
-    {.$DEFINE HAS_UNIT_VARIANTS}        { TODO : FPC has the unit Variants? }
-    {.$DEFINE HAS_UNIT_STRUTILS}        { TODO : FPC has the unit StrUtils? }
+    {$DEFINE SUPPORTS_CUSTOMVARIANTS}
+    {$DEFINE SUPPORTS_VARARGS}
+    {$SUPPORTS_ENUMVALUE}
+    {$DEFINE HAS_UNIT_TYPES}
+    {$DEFINE HAS_UNIT_VARIANTS}
+    {$DEFINE HAS_UNIT_STRUTILS}
 
     {$DEFINE XPLATFORM_RTL}
 
@@ -927,6 +907,9 @@
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 
 // $Log$
+// Revision 1.11  2004/05/05 03:20:13  rrossmair
+// jedi.inc: moved FPC-incompatible Kylix-related code to separate include file "kylix.inc", disposed of FPC-related TODOs
+//
 // Revision 1.10  2004/05/01 00:03:59  rrossmair
 // FPC workaround removed; didn't work with Kylix
 //
