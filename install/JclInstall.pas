@@ -718,7 +718,7 @@ begin
   for I := Low(JclSourceDirs) to High(JclSourceDirs) do
   begin
     {$IFDEF MSWINDOWS}
-    if JclSourceDirs[I] = 'visclx' and not Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation) then
+    if (JclSourceDirs[I] = 'visclx') and not Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation) then
       Continue;
     {$ENDIF MSWINDOWS}
     Result := Result and CompileLibraryUnits(Installation, JclSourceDirs[I], Debug);
