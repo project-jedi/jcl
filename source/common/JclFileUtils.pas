@@ -143,7 +143,7 @@ function PathGetDepth(const Path: string): Integer;
 {$IFDEF MSWINDOWS}
 {$IFNDEF FPC}
 function PathGetLongName(const Path: string): string;
-{$ENDIF}
+{$ENDIF FPC}
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF MSWINDOWS}
@@ -192,7 +192,7 @@ function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 {$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
-{$ENDIF}
+{$ENDIF FPC}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 {$ENDIF MSWINDOWS}
@@ -938,7 +938,7 @@ uses
 const
   MinDateTime: TDateTime = -657434.0;      { 0100-01-01T00:00:00.000 }
   MaxDateTime: TDateTime =  2958465.99999; { 9999-12-31T23:59:59.999 }
-{$ENDIF not def RTL140_UP}
+{$ENDIF ~RTL140_UP}
 
 {$IFDEF UNIX}
 const
@@ -1561,7 +1561,7 @@ function TJclMappedTextReader.GetLineCount: Integer;
        MOV     EAX, EDX
        POP     EDI
   end;
-  {$ENDIF}
+  {$ENDIF PUREPASCAL}
 
 begin
   if FLineCount = -1 then
@@ -2106,6 +2106,7 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
 {$IFNDEF FPC}
 function PathGetLongName(const Path: string): string;
 var
@@ -2133,6 +2134,7 @@ begin
   end;
 end;
 {$ENDIF ~FPC}
+
 //--------------------------------------------------------------------------------------------------
 
 function PathGetShortName(const Path: string): string;
@@ -2195,7 +2197,7 @@ begin
       Result := StrEnsureSuffix(PathSeparator, Origin) +
         StrEnsureNoPrefix(PathSeparator, Destination)
     else
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     begin
       // find the first directory that is not the same
       DiffIndex := 0;
@@ -2203,7 +2205,7 @@ begin
       while StrSame(OrigList[DiffIndex], DestList[DiffIndex]) do
       {$ELSE}            // case sensitive
       while OrigList[DiffIndex] = DestList[DiffIndex] do
-      {$ENDIF}
+      {$ENDIF }
         Inc(DiffIndex);
 
       Result := StrRepeat('..' + PathSeparator, OrigList.Count - DiffIndex);
@@ -3420,10 +3422,9 @@ end;
 
 type
   // indicates the file time to set, used by SetFileTimesHelper and SetDirTimesHelper
-  TFileTimes = (ftLastAccess, ftLastWrite{$IFDEF MSWINDOWS}, ftCreation{$ENDIF});
+  TFileTimes = (ftLastAccess, ftLastWrite {$IFDEF MSWINDOWS}, ftCreation {$ENDIF});
 
 {$IFDEF MSWINDOWS}
-
 function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime; Times: TFileTimes): Boolean;
 var
   Handle: THandle;
@@ -3452,11 +3453,9 @@ begin
     CloseHandle(Handle);
   end;
 end;
-
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
-
 function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime; Times: TFileTimes): Boolean;
 var
   FileTime: Integer;
@@ -3478,7 +3477,6 @@ begin
     Result := utime(PChar(FileName), @TimeBuf) = 0;
   end;
 end;
-
 {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
@@ -4772,7 +4770,7 @@ end;
 
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean; const SubDirectoriesMask: string;
-  Abort: PBoolean{$IFDEF UNIX}; ResolveSymLinks: Boolean{$ENDIF});
+  Abort: PBoolean {$IFDEF UNIX}; ResolveSymLinks: Boolean {$ENDIF});
 var
   RootDir: string;
   Attr: Integer;
@@ -5021,7 +5019,7 @@ type
     property ID: TFileSearchTaskID read FID;
     {$IFDEF FPC} // protected property
     property Terminated;
-    {$ENDIF}
+    {$ENDIF FPC}
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5217,7 +5215,7 @@ begin
   FLastChangeBefore := MaxDateTime;
   {$IFDEF UNIX}
   FCaseSensitiveSearch := True;
-  {$ENDIF}
+  {$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5732,6 +5730,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.19  2004/05/31 01:42:27  rrossmair
 // Processed documentation TODOs
 //

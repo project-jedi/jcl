@@ -445,17 +445,17 @@ function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 
 {$IFDEF CRCINIT}
-procedure InitCrc32 (Polynom, Start: Cardinal);
-procedure InitCrc16 (Polynom, Start: Word);
-{$ENDIF}
+procedure InitCrc32(Polynom, Start: Cardinal);
+procedure InitCrc16(Polynom, Start: Word);
+{$ENDIF CRCINIT}
 
 
 implementation
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   Jcl8087, JclResources;
 
 //==================================================================================================
@@ -472,7 +472,7 @@ begin
         MOV Result, EBX
   end;
 end;
-{$ENDIF}
+{$ENDIF PIC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -534,15 +534,15 @@ const
 
 procedure FDegToRad; assembler;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLDPI
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FIDIV   [EAX][_180]
-{$ELSE}
+        {$ELSE}
         FIDIV   [_180]
-{$ENDIF}
+        {$ENDIF PIC}
         FMUL
         FWAIT
 end;
@@ -554,17 +554,17 @@ end;
 
 procedure FRadToDeg; assembler;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD1
         FLDPI
         FDIV
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FLD   [EAX][_180]
-{$ELSE}
+        {$ELSE}
         FLD   [_180]
-{$ENDIF}
+        {$ENDIF PIC}
         FMUL
         FMUL
         FWAIT
@@ -577,15 +577,15 @@ end;
 
 procedure FGradToRad; assembler;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLDPI
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FIDIV   [EAX][_200]
-{$ELSE}
+        {$ELSE}
         FIDIV   [_200]
-{$ENDIF}
+        {$ENDIF PIC}
         FMUL
         FWAIT
 end;
@@ -597,17 +597,17 @@ end;
 
 procedure FRadToGrad; assembler;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD1
         FLDPI
         FDIV
-{$IFDEF PIC}
+        {$IFDEF PIC}
         FLD   [EAX][_200]
-{$ELSE}
+        {$ELSE}
         FLD   [_200]
-{$ENDIF}
+        {$ENDIF PIC}
         FMUL
         FMUL
         FWAIT
@@ -881,8 +881,7 @@ function Sin(X: Float): Float;
 begin
   {$IFNDEF MATH_EXT_SPECIALVALUES}
   DomainCheck(Abs(X) > MaxAngle);
-  {$ENDIF}
-
+  {$ENDIF MATH_EXT_SPECIALVALUES}
   Result := FSin(X);
 end;
 
@@ -1179,7 +1178,7 @@ end;
 
 function Exp(const x: Float): Float;
 begin
-{$IFDEF MATH_EXT_EXTREMEVALUES}
+  {$IFDEF MATH_EXT_EXTREMEVALUES}
   if IsSpecialValue(X) then
   begin
     if IsNaN(X) or (X = Infinity) then
@@ -1188,44 +1187,43 @@ begin
       Result := 0;
     Exit;
   end;
-{$ENDIF}
+  {$ENDIF MATH_EXT_EXTREMEVALUES}
 
   Result := System.Exp(x);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Power(const Base, Exponent: Float) : Float;
+function Power(const Base, Exponent: Float): Float;
 var
   IsAnInteger, IsOdd: Boolean;
-
 begin
   if (Exponent = 0.0) or (Base = 1.0) then
     Result := 1
   else
-    if (Base = 0.0) then
+    if Base = 0.0 then
     begin
-      if (Exponent > 0.0) then
+      if Exponent > 0.0 then
         Result := 0.0
       else
         {$IFDEF MATH_EXT_EXTREMEVALUES}
         Result := Infinity;
         {$ELSE}
         raise EJclMathError.Create('Power function: Result is infinite');
-        {$ENDIF}
+        {$ENDIF MATH_EXT_EXTREMEVALUES}
   end
   else
-  if (Base > 0.0) then
-    Result := Exp(Exponent * ln(Base))
+  if Base > 0.0 then
+    Result := Exp(Exponent * Ln(Base))
   else
   begin
     IsAnInteger := (Frac(Exponent) = 0.0);
     if IsAnInteger then
     begin
-      Result := exp(Exponent * ln(abs(Base)));
+      Result := exp(Exponent * Ln(Abs(Base)));
       IsOdd := abs(round(ModFloat(Exponent, 2))) = 1;
       if IsOdd then
-        Result := -result;
+        Result := -Result;
     end
     else
       raise EJclMathError.Create('Power function: Result is complex');
@@ -2328,21 +2326,21 @@ asm
         RCL     EDX, 1
         BT      EAX, 8  // C0
         RCL     EDX, 1
-{$IFDEF PIC}
+        {$IFDEF PIC}
         MOVZX   EAX, TFloatingPointClass([ECX].FPClasses[EDX])
-{$ELSE}
+        {$ELSE}
         MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
-{$ENDIF}
+        {$ENDIF PIC}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 asm
-{$IFDEF PIC}
+        {$IFDEF PIC}
         CALL    GetGOT
         MOV     ECX, EAX
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FLD     Value
         CALL    _FPClass
 end;
@@ -2535,7 +2533,7 @@ begin
   if Int64(NaN) < 0 then
   {$ELSE}
   if dSignBit in TDoubleBits(NaN) then
-  {$ENDIF}
+  {$ENDIF FPC}
     Result := -Temp
   else
     if Temp = ZeroTag then
@@ -2557,7 +2555,7 @@ begin
   if (TExtendedRec(NaN).Exponent and $8000) <> 0 then
   {$ELSE}
    if xSignBit in TExtendedBits(NaN) then
-  {$ENDIF}
+  {$ENDIF FPC}
     Result := -Temp
   else
     if Temp = ZeroTag then
@@ -2654,13 +2652,12 @@ begin
     Result := EJclNaNSignal.Create(Tag);
 end;
 
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
 {$IFNDEF FPC}
-
 procedure InitExceptObjProc;
 
   function IsInitialized: Boolean;
@@ -2673,10 +2670,9 @@ begin
  if not IsInitialized then
     if Win32Platform = VER_PLATFORM_WIN32_NT then
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
-      end;
-
-{$ENDIF}
-{$ENDIF}
+end;
+{$ENDIF ~FPC}
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2727,7 +2723,7 @@ begin
     QWord(X) := QWord(X) or (1 shl dSignBit);
     {$ELSE}
     Include(TDoubleBits(X), dSignBit);
-    {$ENDIF}
+    {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2751,7 +2747,7 @@ begin
     TExtendedRec(X).Exponent := TExtendedRec(X).Exponent or $8000;
     {$ELSE}
     Include(TExtendedBits(X), xSignBit);
-    {$ENDIF}
+    {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2761,8 +2757,8 @@ begin
   {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
   InitExceptObjProc;
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF ~FPC}
+  {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TSingleBits(X), sNaNQuietFlag);
 end;
@@ -2777,10 +2773,10 @@ begin
   {$ELSE}
   {$IFDEF MSWINDOWS}
   InitExceptObjProc;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TDoubleBits(X), dNaNQuietFlag);
-  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2793,10 +2789,10 @@ begin
   {$ELSE}
   {$IFDEF MSWINDOWS}
   //InitExceptObjProc;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   MakeQuietNaN(X, Tag);
   Exclude(TExtendedBits(X), xNaNQuietFlag);
-  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2809,8 +2805,8 @@ begin
   {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
   InitExceptObjProc;
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF ~FPC}
+  {$ENDIF MSWINDOWS}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
   CheckTag(StopTag);
@@ -2838,8 +2834,8 @@ begin
   {$IFDEF MSWINDOWS}
   {$IFNDEF FPC}
   InitExceptObjProc;
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF ~FPC}
+  {$ENDIF MSWINDOWS}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
   CheckTag(StopTag);
@@ -3275,9 +3271,11 @@ end;
 
 { TODO : check for the correct polynom and init, exit values }
 
+// (rom) to be made var
+
 {$IFDEF CRCINIT}
 {$J+ to have the Polynomial changable}
-{$ENDIF}
+{$ENDIF CRCINIT}
 
 // CRC 16
 
@@ -3501,14 +3499,15 @@ begin
    end;
    Crc16Start := Start;
 end;
-{$ENDIF}
+
+{$ENDIF CRCINIT}
 
 //--------------------------------------------------------------------------------------------------
 
 // CRC 32
 
 const
-//  CRC32Polynom = $04C11DB7;
+  //  CRC32Polynom = $04C11DB7;
 
   Crc32Table: array [0..255] of Cardinal = (
     $00000000, $04C11DB7, $09823B6E, $0D4326D9, $130476DC, $17C56B6B, $1A864DB2, $1E475005,
@@ -3722,7 +3721,8 @@ begin
    end;
    Crc32Start := Start;
 end;
-{$ENDIF}
+
+{$ENDIF CRCINIT}
 
 // History:
 
@@ -3760,6 +3760,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.7  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.6  2004/05/13 07:31:15  rrossmair
 // updated Header (IDK ("I don't know") -> unknown; J. Debord -> Jean Debord
 //

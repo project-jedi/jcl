@@ -73,7 +73,6 @@ type
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
-
 type
   EJclWin32Error = class(EJclError)
   private
@@ -87,7 +86,6 @@ type
     property LastError: DWORD read FLastError;
     property LastErrorMsg: string read FLastErrorMsg;
   end;
-
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -114,20 +112,15 @@ type
 
   PFloat = ^Float;
 
-{$IFDEF FPC}
 type
-  Largeint    = Int64;
-{$ENDIF FPC}
-type
-  {$IFNDEF FPC}
+  {$IFDEF FPC}
+  Largeint = Int64;
+  {$ELSE}
   PPointer = ^Pointer;
-  {$ENDIF ~FPC}
-
-  {$IFNDEF FPC}
   {$IFNDEF RTL140_UP}
   PBoolean = ^Boolean;
   {$ENDIF RTL140_UP}
-  {$ENDIF ~FPC}
+  {$ENDIF FPC}
 
   {$IFNDEF COMPILER7}
   UInt64 = Int64;
@@ -165,11 +158,11 @@ type
 
 type
   TDynByteArray     = array of Byte;
-  TDynShortIntArray = array of ShortInt;
+  TDynShortIntArray = array of Shortint;
   TDynWordArray     = array of Word;
-  TDynSmallIntArray = array of SmallInt;
-  TDynLongWordArray = array of LongWord;
-  TDynLongIntArray  = array of LongInt;
+  TDynSmallIntArray = array of Smallint;
+  TDynLongWordArray = array of Longword;
+  TDynLongIntArray  = array of Longint;
   TDynInt64Array    = array of Int64;
   TDynCardinalArray = array of Cardinal;
   TDynIntegerArray  = array of Integer;
@@ -217,7 +210,7 @@ constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
   {$IFDEF FPC}
   inherited Create(ResStringRec^);
-  {$ELSE FPC}
+  {$ELSE}
   inherited Create(LoadResString(ResStringRec));
   {$ENDIF FPC}
 end;
@@ -226,7 +219,7 @@ constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec; const Args: a
 begin
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^, Args);
-  {$ELSE FPC}
+  {$ELSE}
   inherited CreateFmt(LoadResString(ResStringRec), Args);
   {$ENDIF FPC}
 end;
@@ -270,7 +263,7 @@ begin
   FLastErrorMsg := SysErrorMessage(FLastError);
   {$IFDEF FPC}
   inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-  {$ELSE FPC}
+  {$ELSE}
   inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
   {$ENDIF FPC}
 end;
@@ -300,17 +293,18 @@ end;
 //==================================================================================================
 
 {$IFNDEF XPLATFORM_RTL}
-
 procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
 end;
-
 {$ENDIF XPLATFORM_RTL}
 
 // History:
 
 // $Log$
+// Revision 1.17  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.16  2004/06/06 01:31:09  rrossmair
 // version information updated for build #1558
 //

@@ -181,6 +181,7 @@ uses
   JclDateTime, JclResources;  
 
 {$IFNDEF RTL140_UP}
+
 const
   S_OK    = $00000000;
   E_NOINTERFACE = HRESULT($80004002);
@@ -248,7 +249,7 @@ begin
   if GetInterface(IID, Obj) then Result := S_OK else Result := E_NOINTERFACE;
 end;
 
-{$ENDIF}
+{$ENDIF RTL140_UP}
 
 //==================================================================================================
 // Utility functions
@@ -1787,6 +1788,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/14 06:24:52  marquardt
+// style cleaning IFDEF
+//
 // Revision 1.5  2004/05/05 00:09:59  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
