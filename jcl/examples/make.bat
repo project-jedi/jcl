@@ -8,83 +8,83 @@ REM eventually skip examples which require at least D6/BCB6
 dcc32 | grep -q+ "Version 13"
 if not errorlevel 1 goto compiler5
 
-REM pushd vcl\clr
+REM cd vcl\clr
 REM make
-REM popd
+REM cd ..\..
 
-pushd visclx\filesearch
+cd visclx\filesearch
 make
-popd
-pushd visclx\numformat
+cd ..\..
+cd visclx\numformat
 make
-popd
+cd ..\..
 
 :compiler5
 
-pushd vcl\appinst
+cd vcl\appinst
 make
-popd
-pushd vcl\asuser
+cd ..\..
+cd vcl\asuser
 make
-popd
-pushd vcl\delphitools
+cd ..\..
+cd vcl\delphitools
 make
-popd
-pushd vcl\debugextension\tools
+cd ..\..
+cd vcl\debugextension\tools
 make
-popd
-pushd vcl\debug\framestrack
+cd ..\..\..
+cd vcl\debug\framestrack
 make
-popd
-pushd vcl\debug\sourceloc
+cd ..\..\..
+cd vcl\debug\sourceloc
 make
-popd
-pushd vcl\debug\stacktrack
+cd ..\..\..
+cd vcl\debug\stacktrack
 make
-popd
-pushd vcl\debug\threadexcept
+cd ..\..\..
+cd vcl\debug\threadexcept
 make
-popd
-pushd vcl\fileversion
+cd ..\..\..
+cd vcl\fileversion
 make
-popd
-pushd vcl\graphics
+cd ..\..
+cd vcl\graphics
 make
-popd
-pushd vcl\lanman
+cd ..\..
+cd vcl\lanman
 make
-popd
-pushd vcl\locales
+cd ..\..
+cd vcl\locales
 make
-popd
-pushd vcl\mapi
+cd ..\..
+cd vcl\mapi
 make
-popd
-pushd vcl\multimedia
+cd ..\..
+cd vcl\multimedia
 make
-popd
-pushd vcl\ntservice
+cd ..\..
+cd vcl\ntservice
 make
-popd
-pushd vcl\peimage
+cd ..\..
+cd vcl\peimage
 make
-popd
-pushd vcl\registry
+cd ..\..
+cd vcl\registry
 make
-popd
-pushd vcl\rtti
+cd ..\..
+cd vcl\rtti
 make
-popd
-pushd vcl\sysinfo
+cd ..\..
+cd vcl\sysinfo
 make
-popd
+cd ..\..
 
-REM pushd vcl\tasks
+REM cd vcl\tasks
 REM make
-REM popd
+REM cd ..\..
 
-pushd vcl\textreader
+cd vcl\textreader
 make
-popd
+cd ..\..
 
 :exit
