@@ -34,12 +34,12 @@ function CelsiusToKelvin(const T: Float): Float;
 [ShortDescr]
 Converts a temperature from celsius to kelvin.
 [Description]
-The CelsiusToKelvin routine converts the specified temperature from degrees celsius to degrees kelvin.
+The CelsiusToKelvin routine converts the specified temperature from degrees Celsius to degrees Kelvin.
 [Parameters]
 Count=1
-1=T:Float=The temperature, in celsius, to convert to kelvin.
+1=T:Float=The temperature, in Celsius, to convert to Kelvin.
 [Result]
-The temperature after conversion to degrees kelvin.
+The temperature after conversion to degrees Kelvin.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -51,14 +51,15 @@ BCB=3,4,5
 [Declaration]
 function CelsiusToFahrenheit(const T: Float): Float;
 [ShortDescr]
-Converts a temperature from celsius to fahrenheit.
+Converts a temperature from Celsius to Fahrenheit.
 [Description]
-The CelsiusToFahrenheit routine converts the specified temperature from degrees celsius to degrees fahrenheit.
+The CelsiusToFahrenheit routine converts the specified temperature from degrees Celsius to degrees Fahrenheit.
+Have a look at the source. It has been implemented to be an example of selfdocumenting code.
 [Parameters]
 Count=1
-1=T:Float=The temperature, in celsius, to convert to fahrenheit.
+1=T:Float=The temperature, in Celsius, to convert to Fahrenheit.
 [Result]
-The temperature after conversion to degrees fahrenheit.
+The temperature after conversion to degrees Fahrenheit.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -70,14 +71,14 @@ BCB=3,4,5
 [Declaration]
 function KelvinToCelsius(const T: Float): Float;
 [ShortDescr]
-Converts a temperature from kelvin to celsius.
+Converts a temperature from Kelvin to Celsius.
 [Description]
-The KelvinToCelsius routine converts the specified temperature from degrees kelvin to degrees celsius.
+The KelvinToCelsius routine converts the specified temperature from degrees Kelvin to degrees Celsius.
 [Parameters]
 Count=1
-1=T:Float=The temperature, in kelvin, to convert to celsius.
+1=T:Float=The temperature, in Kelvin, to convert to Celsius.
 [Result]
-The temperature after conversion to degrees celsius.
+The temperature after conversion to degrees Celsius.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -89,14 +90,14 @@ BCB=3,4,5
 [Declaration]
 function KelvinToFahrenheit(const T: Float): Float;
 [ShortDescr]
-Converts a temperature from kelvin to fahrenheit.
+Converts a temperature from Kelvin to Fahrenheit.
 [Description]
-The KelvinToFahrenheit routine converts the specified temperature from degrees kelvin to degrees fahrenheit.
+The KelvinToFahrenheit routine converts the specified temperature from degrees Kelvin to degrees Fahrenheit.
 [Parameters]
 Count=1
-1=T:Float=The temperature, in kelvin, to convert to fahrenheit.
+1=T:Float=The temperature, in Kelvin, to convert to Fahrenheit.
 [Result]
-The temperature after conversion to degrees fahrenheit.
+The temperature after conversion to degrees Fahrenheit.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -108,14 +109,15 @@ BCB=3,4,5
 [Declaration]
 function FahrenheitToCelsius(const T: Float): Float;
 [ShortDescr]
-Converts a temperature from fahrenheit to celsius.
+Converts a temperature from Fahrenheit to Celsius.
 [Description]
-The FahrenheitToCelsius routine converts the specified temperature from degrees fahrenheit to degrees celsius.
+The FahrenheitToCelsius routine converts the specified temperature from degrees Fahrenheit to degrees Celsius.
+Have a look at the source. It has been implemented to be an example of selfdocumenting code.
 [Parameters]
 Count=1
-1=T:Float=The temperature, in fahrenheit, to convert to celsius.
+1=T:Float=The temperature, in Fahrenheit, to convert to Celsius.
 [Result]
-The temperature after conversion to degrees celsius.
+The temperature after conversion to degrees Celsius.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -127,14 +129,14 @@ BCB=3,4,5
 [Declaration]
 function FahrenheitToKelvin(const T: Float): Float;
 [ShortDescr]
-Converts a temperature from fahrenheit to kelvin.
+Converts a temperature from Fahrenheit to Kelvin.
 [Description]
-The FahrenheitToKelvin routine converts the specified temperature from degrees fahrenheit to degrees kelvin.
+The FahrenheitToKelvin routine converts the specified temperature from degrees Fahrenheit to degrees Kelvin.
 [Parameters]
 Count=1
-1=T:Float=The temperature, in fahrenheit, to convert to kelvin.
+1=T:Float=The temperature, in Fahrenheit, to convert to Kelvin.
 [Result]
-The temperature after conversion to degrees kelvin.
+The temperature after conversion to degrees Kelvin.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -447,7 +449,7 @@ procedure CartesianToSpheric(const X, Y, Z: Float; var Rho, Theta, Phi: Float);
 [ShortDescr]
 Converts cartesian to spheric coordinates.
 [Description]
-CartesianToSpehric converts the supplied coordinates from the cartesian coordinate
+CartesianToSpheric converts the supplied coordinates from the cartesian coordinate
 system to the corresponding coordinates in the spheric coordinate system.
 [Parameters]
 Count=6
@@ -590,12 +592,12 @@ BCB=3,4,5
 [Declaration]
 function YardToMeter(const Yard: Float): Float;
 [ShortDescr]
-Converts a length from yard to meters.
+Converts a length from yards to meters.
 [Description]
-The YardToMeter routine converts the specified length, in yard, to the corresponding length in meters.
+The YardToMeter routine converts the specified length, in yards, to the corresponding length in meters.
 [Parameters]
 Count=1
-1=Yard:Float=The length, in yard, to convert to meters.
+1=Yard:Float=The length, in yards, to convert to meters.
 [Result]
 The length after conversion to meters.
 [Quick Info]
@@ -609,14 +611,14 @@ BCB=3,4,5
 [Declaration]
 function MeterToYard(const Meter: Float): Float;
 [ShortDescr]
-Converts a length from meters to yard.
+Converts a length from meters to yards.
 [Description]
-The MeterToYard routine converts the specified length, in meters, to the corresponding length in yard.
+The MeterToYard routine converts the specified length, in meters, to the corresponding length in yards.
 [Parameters]
 Count=1
-1=Meter:Float=The length, in meters, to convert to yard.
+1=Meter:Float=The length, in meters, to convert to yards.
 [Result]
-The length after conversion to yard.
+The length after conversion to yards.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -628,14 +630,14 @@ BCB=3,4,5
 [Declaration]
 function NmToKm(const Nm: Float): Float;
 [ShortDescr]
-Converts a length from nautic miles to kilometer.
+Converts a length from nautic miles to kilometers.
 [Description]
-The NmToKm routine converts the specified length, in nautic miles, to the corresponding length in kilometer.
+The NmToKm routine converts the specified length, in nautic miles, to the corresponding length in kilometers.
 [Parameters]
 Count=1
-1=Nm:Float=The length, in nautic miles, to convert to kilometer.
+1=Nm:Float=The length, in nautic miles, to convert to kilometers.
 [Result]
-The length after conversion to kilometer.
+The length after conversion to kilometers.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -647,12 +649,12 @@ BCB=3,4,5
 [Declaration]
 function KmToNm(const Km: Float): Float;
 [ShortDescr]
-Converts a length from kilometer to nautic miles.
+Converts a length from kilometers to nautic miles.
 [Description]
-The KmToNm routine converts the specified length, in kilometer, to the corresponding length in nautic miles.
+The KmToNm routine converts the specified length, in kilometers, to the corresponding length in nautic miles.
 [Parameters]
 Count=1
-1=Km:Float=The length, in kilometer, to convert to nautic miles.
+1=Km:Float=The length, in kilometers, to convert to nautic miles.
 [Result]
 The length after conversion to nautic miles.
 [Quick Info]
@@ -666,12 +668,12 @@ BCB=3,4,5
 [Declaration]
 function KmToSm(const Km: Float): Float;
 [ShortDescr]
-Converts a length from kilometer to statute miles.
+Converts a length from kilometers to statute miles.
 [Description]
-The KmToSm routine converts the specified length, in kilometer, to the corresponding length in statute miles.
+The KmToSm routine converts the specified length, in kilometers, to the corresponding length in statute miles.
 [Parameters]
 Count=1
-1=Km:Float=The length, in kilometer, to convert to statute miles.
+1=Km:Float=The length, in kilometers, to convert to statute miles.
 [Result]
 The length after conversion to statute miles.
 [Quick Info]
@@ -685,14 +687,14 @@ BCB=3,4,5
 [Declaration]
 function SmToKm(const Sm: Float): Float;
 [ShortDescr]
-Converts a length from statute miles to kilometer.
+Converts a length from statute miles to kilometers.
 [Description]
-The SmToKm routine converts the specified length, in statute miles, to the corresponding length in kilometer.
+The SmToKm routine converts the specified length, in statute miles, to the corresponding length in kilometers.
 [Parameters]
 Count=1
-1=Sm:Float=The length, in statute miles, to convert to kilometer.
+1=Sm:Float=The length, in statute miles, to convert to kilometers.
 [Result]
-The length after conversion to kilometer.
+The length after conversion to kilometers.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -704,12 +706,12 @@ BCB=3,4,5
 [Declaration]
 function PascalToBar(const Pa: Float): Float;
 [ShortDescr]
-Converts a pressure from pascal to bar.
+Converts a pressure from Pascal to bar.
 [Description]
-The PascalToBar routine converts the specified pressure, in pascal, to the corresponding pressure in bar.
+The PascalToBar routine converts the specified pressure, in Pascal, to the corresponding pressure in bar.
 [Parameters]
 Count=1
-1=Pa:Float=The pressure, in pascal, to convert to bar.
+1=Pa:Float=The pressure, in Pascal, to convert to bar.
 [Result]
 The pressure after conversion to bar.
 [Quick Info]
@@ -723,12 +725,12 @@ BCB=3,4,5
 [Declaration]
 function PascalToAt(const Pa: Float): Float;
 [ShortDescr]
-Converts a pressure from pascal to at.
+Converts a pressure from Pascal to at.
 [Description]
-The PascalToAt routine converts the specified pressure, in pascal, to the corresponding pressure in at.
+The PascalToAt routine converts the specified pressure, in Pascal, to the corresponding pressure in at.
 [Parameters]
 Count=1
-1=Pa:Float=The pressure, in pascal, to convert to at.
+1=Pa:Float=The pressure, in Pascal, to convert to at.
 [Result]
 The pressure after conversion to at.
 [Quick Info]
@@ -742,12 +744,12 @@ BCB=3,4,5
 [Declaration]
 function PascalToTorr(const Pa: Float): Float;
 [ShortDescr]
-Converts a pressure from pascal to torr.
+Converts a pressure from Pascal to torr.
 [Description]
-The PascalToTorr routine converts the specified pressure, in pascal, to the corresponding pressure in torr.
+The PascalToTorr routine converts the specified pressure, in Pascal, to the corresponding pressure in torr.
 [Parameters]
 Count=1
-1=Pa:Float=The pressure, in pascal, to convert to torr.
+1=Pa:Float=The pressure, in Pascal, to convert to torr.
 [Result]
 The pressure after conversion to torr.
 [Quick Info]
@@ -761,14 +763,14 @@ BCB=3,4,5
 [Declaration]
 function BarToPascal(const Bar: Float): Float;
 [ShortDescr]
-Converts a pressure from bar to pascal.
+Converts a pressure from bar to Pascal.
 [Description]
-The BarToPascal routine converts the specified pressure, in bar, to the corresponding pressure in pascal.
+The BarToPascal routine converts the specified pressure, in bar, to the corresponding pressure in Pascal.
 [Parameters]
 Count=1
-1=Bar:Float=The pressure, in bar, to convert to pascal.
+1=Bar:Float=The pressure, in bar, to convert to Pascal.
 [Result]
-The pressure after conversion to pascal.
+The pressure after conversion to Pascal.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -780,14 +782,14 @@ BCB=3,4,5
 [Declaration]
 function AtToPascal(const At: Float): Float;
 [ShortDescr]
-Converts a pressure from at to pascal.
+Converts a pressure from at to Pascal.
 [Description]
-The AtToPascal routine converts the specified pressure, in at, to the corresponding pressure in pascal.
+The AtToPascal routine converts the specified pressure, in at, to the corresponding pressure in Pascal.
 [Parameters]
 Count=1
-1=At:Float=The pressure, in at, to convert to pascal.
+1=At:Float=The pressure, in at, to convert to Pascal.
 [Result]
-The pressure after conversion to pascal.
+The pressure after conversion to Pascal.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -799,14 +801,14 @@ BCB=3,4,5
 [Declaration]
 function TorrToPascal(const Torr: Float): Float;
 [ShortDescr]
-Converts a pressure from torr to pascal.
+Converts a pressure from torr to Pascal.
 [Description]
-The TorrToPascal routine converts the specified pressure, in torr, to the corresponding pressure in pascal.
+The TorrToPascal routine converts the specified pressure, in torr, to the corresponding pressure in Pascal.
 [Parameters]
 Count=1
-1=Torr:Float=The pressure, in torr, to convert to pascal.
+1=Torr:Float=The pressure, in torr, to convert to Pascal.
 [Result]
-The pressure after conversion to pascal.
+The pressure after conversion to Pascal.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -818,12 +820,12 @@ BCB=3,4,5
 [Declaration]
 function LiterToGalUs(const Liter: Float): Float;
 [ShortDescr]
-Converts a volume from liter to US Gallons.
+Converts a volume from liters to US Gallons.
 [Description]
-The LiterToGalUs routine converts the specified volume, in liter, to the corresponding volume in US Gallons.
+The LiterToGalUs routine converts the specified volume, in liters, to the corresponding volume in US Gallons.
 [Parameters]
 Count=1
-1=Liter:Float=The volume, in liter, to convert to US Gallons.
+1=Liter:Float=The volume, in liters, to convert to US Gallons.
 [Result]
 The volume after conversion to US Gallons.
 [Quick Info]
@@ -837,14 +839,14 @@ BCB=3,4,5
 [Declaration]
 function GalUsToLiter(const GalUs: Float): Float;
 [ShortDescr]
-Converts a volume from US gallons to Liter.
+Converts a volume from US Gallons to Liters.
 [Description]
-The GalUsToLiter routine converts the specified volume, in US gallons, to the corresponding volume in Liter.
+The GalUsToLiter routine converts the specified volume, in US Gallons, to the corresponding volume in Liters.
 [Parameters]
 Count=1
-1=GalUs:Float=The volume, in US gallons, to convert to Liter.
+1=GalUs:Float=The volume, in US Gallons, to convert to Liters.
 [Result]
-The volume after conversion to Liter.
+The volume after conversion to Liters.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -856,12 +858,12 @@ BCB=3,4,5
 [Declaration]
 function GalUsToGalCan(const GalUs: Float): Float;
 [ShortDescr]
-Converts a volume from US gallons to Canadian Gallons.
+Converts a volume from US Gallons to Canadian Gallons.
 [Description]
-The GalUsToGalCan routine converts the specified volume, in US gallons, to the corresponding volume in Canadian Gallons.
+The GalUsToGalCan routine converts the specified volume, in US Gallons, to the corresponding volume in Canadian Gallons.
 [Parameters]
 Count=1
-1=GalUs:Float=The volume, in US gallons, to convert to Canadian Gallons.
+1=GalUs:Float=The volume, in US Gallons, to convert to Canadian Gallons.
 [Result]
 The volume after conversion to Canadian Gallons.
 [Quick Info]
@@ -932,12 +934,12 @@ BCB=3,4,5
 [Declaration]
 function KgToLb(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to pound.
+Converts a mass from kilograms to pounds.
 [Description]
-The KgToLb routine converts the specified mass, in kilogram, to the corresponding mass in pounds.
+The KgToLb routine converts the specified mass, in kilograms, to the corresponding mass in pounds.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to pounds.
+1=Kg:Float=The mass, in kilograms, to convert to pounds.
 [Result]
 The mass after conversion to pounds.
 [Quick Info]
@@ -951,14 +953,14 @@ BCB=3,4,5
 [Declaration]
 function LbToKg(const nLb: Float): Float;
 [ShortDescr]
-Converts a mass from pound to kilogram.
+Converts a mass from pounds to kilograms.
 [Description]
-The LbToKg routine converts the specified mass, in pounds, to the corresponding mass in kilogram.
+The LbToKg routine converts the specified mass, in pounds, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in pounds, to convert to kilogram.
+1=Kg:Float=The mass, in pounds, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -970,12 +972,12 @@ BCB=3,4,5
 [Declaration]
 function KgToOz(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to ounce.
+Converts a mass from kilograms to ounce.
 [Description]
-The KgToOz routine converts the specified mass, in kilogram, to the corresponding mass in ounces.
+The KgToOz routine converts the specified mass, in kilograms, to the corresponding mass in ounces.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to ounces.
+1=Kg:Float=The mass, in kilograms, to convert to ounces.
 [Result]
 The mass after conversion to ounces.
 [Quick Info]
@@ -989,14 +991,14 @@ BCB=3,4,5
 [Declaration]
 function OzToKg(const nOz: Float): Float;
 [ShortDescr]
-Converts a mass from pound to kilogram.
+Converts a mass from pounds to kilograms.
 [Description]
-The OzToKg routine converts the specified mass, in ounces, to the corresponding mass in kilogram.
+The OzToKg routine converts the specified mass, in ounces, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in ounces, to convert to kilogram.
+1=Kg:Float=The mass, in ounces, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1008,14 +1010,14 @@ BCB=3,4,5
 [Declaration]
 function QrUsToKg(const nQr : Float) : Float;
 [ShortDescr]
-Converts a mass from quarter(US) to kilogram.
+Converts a mass from quarter(US) to kilograms.
 [Description]
-The QrUsToKg routine converts the specified mass, in quarter, to the corresponding mass in kilogram.
+The QrUsToKg routine converts the specified mass, in quarters, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nQr:Float=The mass, in quarter, to convert to kilogram.
+1=nQr:Float=The mass, in quarters, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1027,14 +1029,14 @@ BCB=3,4,5
 [Declaration]
 function QrUkToKg(const nQr : Float) : Float;
 [ShortDescr]
-Converts a mass from quarter(UK) to kilogram.
+Converts a mass from quarter(UK) to kilograms.
 [Description]
-The QrUkToKg routine converts the specified mass, in quarter, to the corresponding mass in kilogram.
+The QrUkToKg routine converts the specified mass, in quarters, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nQr:Float=The mass, in quarter, to convert to kilogram.
+1=nQr:Float=The mass, in quarters, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1046,14 +1048,14 @@ BCB=3,4,5
 [Declaration]
 function KaratToKg(const nKarat : Float) : Float;
 [ShortDescr]
-Converts a mass from karat to kilogram.
+Converts a mass from karat to kilograms.
 [Description]
-The KaratToKg routine converts the specified mass, in karat, to the corresponding mass in kilogram.
+The KaratToKg routine converts the specified mass, in karat, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nQr:Float=The mass, in karat, to convert to kilogram.
+1=nQr:Float=The mass, in karat, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1065,14 +1067,14 @@ BCB=3,4,5
 [Declaration]
 function CwtUsToKg(const nCwt: Float): Float;
 [ShortDescr]
-Converts a mass from centweight to kilogram.
+Converts a mass from centweight to kilograms.
 [Description]
-The CwtUsToKg routine converts the specified mass, in centweight, to the corresponding mass in kilogram.
+The CwtUsToKg routine converts the specified mass, in centweight, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nCwt:Float=The mass, in centweight, to convert to kilogram.
+1=nCwt:Float=The mass, in centweight, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1084,14 +1086,14 @@ BCB=3,4,5
 [Declaration]
 function CwtUkToKg(const nCwt: Float): Float;
 [ShortDescr]
-Converts a mass from centweight to kilogram.
+Converts a mass from centweight to kilograms.
 [Description]
-The CwtUkToKg routine converts the specified mass, in centweight, to the corresponding mass in kilogram.
+The CwtUkToKg routine converts the specified mass, in centweight, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nCwt:Float=The mass, in centweight, to convert to kilogram.
+1=nCwt:Float=The mass, in centweight, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1103,14 +1105,14 @@ BCB=3,4,5
 [Declaration]
 function StonToKg(const nSTon: Float): Float;
 [ShortDescr]
-Converts a mass from short ton to kilogram.
+Converts a mass from short ton to kilograms.
 [Description]
-The StonToKg routine converts the specified mass, in short ton, to the corresponding mass in kilogram.
+The StonToKg routine converts the specified mass, in short ton, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nSTon:Float=The mass, in short ton, to convert to kilogram.
+1=nSTon:Float=The mass, in short ton, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1122,14 +1124,14 @@ BCB=3,4,5
 [Declaration]
 function LtonToKg(const nLTon: Float): Float;
 [ShortDescr]
-Converts a mass from long ton to kilogram.
+Converts a mass from long ton to kilograms.
 [Description]
-The LtonToKg routine converts the specified mass, in long ton, to the corresponding mass in kilogram.
+The LtonToKg routine converts the specified mass, in long ton, to the corresponding mass in kilograms.
 [Parameters]
 Count=1
-1=nLTon:Float=The mass, in long ton, to convert to kilogram.
+1=nLTon:Float=The mass, in long ton, to convert to kilograms.
 [Result]
-The mass after conversion to kilogram.
+The mass after conversion to kilograms.
 [Quick Info]
 Unit=JclUnitConv
 Category=Unit Conversions
@@ -1141,12 +1143,12 @@ BCB=3,4,5
 [Declaration]
 function KgToCwtUs(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to centweight.
+Converts a mass from kilograms to centweight.
 [Description]
-The KgToCwtUs routine converts the specified mass, in kilogram, to the corresponding mass in centweight.
+The KgToCwtUs routine converts the specified mass, in kilograms, to the corresponding mass in centweight.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to centweight.
+1=Kg:Float=The mass, in kilograms, to convert to centweight.
 [Result]
 The mass after conversion to centweight.
 [Quick Info]
@@ -1160,12 +1162,12 @@ BCB=3,4,5
 [Declaration]
 function KgToCwtUk(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to centweight.
+Converts a mass from kilograms to centweight.
 [Description]
-The KgToCwtUk routine converts the specified mass, in kilogram, to the corresponding mass in centweight.
+The KgToCwtUk routine converts the specified mass, in kilograms, to the corresponding mass in centweight.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to centweight.
+1=Kg:Float=The mass, in kilograms, to convert to centweight.
 [Result]
 The mass after conversion to centweight.
 [Quick Info]
@@ -1179,12 +1181,12 @@ BCB=3,4,5
 [Declaration]
 function KgToQrUs(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to quarter.
+Converts a mass from kilograms to quarter.
 [Description]
-The KgToQrUs routine converts the specified mass, in kilogram, to the corresponding mass in quarter.
+The KgToQrUs routine converts the specified mass, in kilograms, to the corresponding mass in quarter.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to quarter.
+1=Kg:Float=The mass, in kilograms, to convert to quarter.
 [Result]
 The mass after conversion to quarter.
 [Quick Info]
@@ -1198,12 +1200,12 @@ BCB=3,4,5
 [Declaration]
 function KgToQrUk(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to quarter.
+Converts a mass from kilograms to quarter.
 [Description]
-The KgToQrUk routine converts the specified mass, in kilogram, to the corresponding mass in quarter.
+The KgToQrUk routine converts the specified mass, in kilograms, to the corresponding mass in quarter.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to quarter.
+1=Kg:Float=The mass, in kilograms, to convert to quarter.
 [Result]
 The mass after conversion to quarter.
 [Quick Info]
@@ -1217,12 +1219,12 @@ BCB=3,4,5
 [Declaration]
 function KgToSton(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to short ton.
+Converts a mass from kilograms to short ton.
 [Description]
-The KgToSton routine converts the specified mass, in kilogram, to the corresponding mass in short ton.
+The KgToSton routine converts the specified mass, in kilograms, to the corresponding mass in short ton.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to short ton.
+1=Kg:Float=The mass, in kilograms, to convert to short ton.
 [Result]
 The mass after conversion to short ton.
 [Quick Info]
@@ -1236,12 +1238,12 @@ BCB=3,4,5
 [Declaration]
 function KgToLton(const nKg: Float): Float;
 [ShortDescr]
-Converts a mass from kilogram to long ton.
+Converts a mass from kilograms to long ton.
 [Description]
-The KgToLton routine converts the specified mass, in kilogram, to the corresponding mass in long ton.
+The KgToLton routine converts the specified mass, in kilograms, to the corresponding mass in long ton.
 [Parameters]
 Count=1
-1=Kg:Float=The mass, in kilogram, to convert to long ton.
+1=Kg:Float=The mass, in kilograms, to convert to long ton.
 [Result]
 The mass after conversion to long ton.
 [Quick Info]
