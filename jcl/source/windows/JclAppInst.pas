@@ -22,7 +22,7 @@
 { simple interprocess communication between these instance including a notifaction mechanism.      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: January 22, 2002                                                                  }
+{ Last modified: March 03, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -183,7 +183,7 @@ begin
     FOptex.Leave;
   end;
   if Result then
-    NotifyInstances(AI_INSTANCECREATED, FCPID);
+    NotifyInstances(AI_INSTANCECREATED, Integer(FCPID));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -411,7 +411,7 @@ begin
   finally
     FOptex.Leave;
   end;
-  NotifyInstances(AI_INSTANCEDESTROYED, FCPID);
+  NotifyInstances(AI_INSTANCEDESTROYED, Integer(FCPID));
 end;
 
 //--------------------------------------------------------------------------------------------------
