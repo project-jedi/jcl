@@ -18,10 +18,11 @@
 { Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
 {**************************************************************************************************}
-{                                                                                                  }
-{ Last modified: March 9, 2004                                                                     }
-{                                                                                                  }
-{**************************************************************************************************}
+
+// $Log$
+// Revision 1.4  2004/03/12 04:59:56  rrossmair
+// BCB/Win32 support basically working now
+//
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QProductFrames{$ELSE}ProductFrames{$ENDIF};{$ENDIF}
 
@@ -32,7 +33,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VisualCLX}
-  Types, 
+  Types,
   QGraphics, QForms, QControls, QStdCtrls, QComCtrls, QExtCtrls,
   QJediInstallIntf,
   {$ELSE}
@@ -238,7 +239,17 @@ var
   I: Integer;
   Button: TButton;
   Edit: TEdit;
-  Directory: {$IFDEF UNIX} WideString; {$ELSE} string; {$ENDIF}
+  {$IFDEF VisualCLX}
+    {$IFDEF COMPILER7_UP}
+      {$DEFINE USE_WIDESTRING}
+    {$ENDIF}
+  {$ENDIF}
+  {$IFDEF USE_WIDESTRING}
+  Directory: WideString;
+  {$UNDEF USE_WIDESTRING}
+  {$ELSE}
+  Directory: string;
+  {$ENDIF}
 begin
   Button := Sender as TButton;
   Edit := nil;

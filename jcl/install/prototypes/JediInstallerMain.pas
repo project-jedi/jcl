@@ -18,10 +18,11 @@
 { Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
 {                                                                                                  }
 {**************************************************************************************************}
-{                                                                                                  }
-{ Last modified: March 9, 2004                                                                     }
-{                                                                                                  }
-{**************************************************************************************************}
+
+// $Log$
+// Revision 1.7  2004/03/12 04:59:56  rrossmair
+// BCB/Win32 support basically working now
+//
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QJediInstallerMain{$ELSE}JediInstallerMain{$ENDIF};{$ENDIF}
 
@@ -145,7 +146,7 @@ const
 
 resourcestring
   RsCantFindFiles   = 'Can not find installation files, check your installation.';
-  RsCloseRADTool    = 'Please close all running instances of %s IDE before the installation.';
+  RsCloseRADTool    = 'Please close all running instances of Delphi/C++Builder IDE before the installation.';
   RsConfirmInstall  = 'Are you sure to install all selected features?';
   RsInstallSuccess  = 'Installation finished';
   RsNoInstall       = 'There is no Delphi/C++Builder installation on this machine. Installer will close.';
