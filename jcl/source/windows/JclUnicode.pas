@@ -1750,7 +1750,9 @@ begin
     Composite := Compositions[L].Composition;
 end;
 
-//----------------- TSearchEngine ------------------------------------------------------------------
+//==================================================================================================
+// { TSearchEngine }
+//==================================================================================================
 
 constructor TSearchEngine.Create(AOwner: TWideStrings);
 begin
@@ -4462,7 +4464,9 @@ begin
   CompileURE(PWideChar(Pattern), Length(Pattern), not (sfCaseSensitive in Options));
 end;
 
-//----------------- TWideStrings -------------------------------------------------------------------
+//==================================================================================================
+// { TWideStrings }
+//==================================================================================================
 
 constructor TWideStrings.Create;
 begin
@@ -5236,7 +5240,9 @@ begin
   Writer.WriteWideString(GetText);
 end;
 
-//----------------- TWideStringList ----------------------------------------------------------------
+//==================================================================================================
+// { TWideStringList }
+//==================================================================================================
 
 destructor TWideStringList.Destroy;
 begin
@@ -8048,6 +8054,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.15  2004/08/01 11:40:24  marquardt
+// move constructors/destructors
+//
 // Revision 1.14  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

@@ -169,6 +169,26 @@ var
 // TJclAppInstances
 //==================================================================================================
 
+constructor TJclAppInstances.Create;
+begin
+  inherited Create;
+  FCPID := GetCurrentProcessId;
+  InitData;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclAppInstances.Destroy;
+begin
+  if (FMapping <> nil) and (FOptex <> nil) then
+    RemoveInstance;
+  FreeAndNil(FMapping);
+  FreeAndNil(FOptex);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 class function TJclAppInstances.BringAppWindowToFront(const Wnd: HWND): Boolean;
 begin
   if IsIconic(Wnd) then
@@ -213,26 +233,6 @@ end;
 procedure TJclAppInstances.CheckSingleInstance;
 begin
   CheckMultipleInstances(1);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclAppInstances.Create;
-begin
-  inherited Create;
-  FCPID := GetCurrentProcessId;
-  InitData;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclAppInstances.Destroy;
-begin
-  if (FMapping <> nil) and (FOptex <> nil) then
-    RemoveInstance;
-  FreeAndNil(FMapping);
-  FreeAndNil(FOptex);
-  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -640,6 +640,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2004/08/01 11:40:23  marquardt
+// move constructors/destructors
+//
 // Revision 1.9  2004/07/28 18:00:52  marquardt
 // various style cleanings, some minor fixes
 //
