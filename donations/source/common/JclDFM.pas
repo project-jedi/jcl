@@ -23,7 +23,7 @@
 {   This is a preview - class and functionnames might be changed                                   }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: October 30, 2003                                                                  }
+{ Last modified: December 7, 2003                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -40,7 +40,7 @@ JCL Style checks/fixes:
   "Result := FList.Count"
 - .GetItem w/o indexcheck - TList will trow the exception
 - .Delete w/o indexcheck - TList will trow the exception
-//- TObject(FList[i]).Free should be okay in TDFMPropertys.Clear
+//- TObject(FList[i]).Free should be okay in TDFMProperties.Clear
 - inherited functions with "inherited function;" and not "inherited;"
 - no assign alignment
     ShortVar := 1;
@@ -55,10 +55,14 @@ JCL Style todo:
   //--------------------------------------------------------------------------------------------------
 - check/fix function order in interface and implementation
 TODO:
-**- use TObjectList in **TDFMPropertys and **TDFMComponents
-** support vaList in AsString
-*- make TDFMProperty.As... writable
-   ? delete/insert ?
+**- use TObjectList in **TDFMProperties and **TDFMComponents
+**- support vaList in AsString
+**- make TDFMProperty.As... writable + Add/Clear/Delete/Insert
+- check .Add and .Insert (if Add or Insert into the ObjectList fails we should have
+    a memoryleak because the property or component is still created) 
+- add support for value replacing (for example .Color clHotLight does exist in D6 but not in D5)
+- categorize the removed properties and replaced values
+  (removing DesignSize doesn't matter but AutoCheck might break the functionality) 
 - improve DFMLevel writing (autoclean, binary write for D2 or lower)
 - tests
 }
@@ -70,30 +74,30 @@ unit JclDFM;
 interface
 
 uses
-  SysUtils, Classes, TypInfo, Contnrs;
+  SysUtils, Classes, TypInfo, Contnrs, Math;
 
 type
-  TDFMStdPropertyProcRec = record
+  PJclDFMStdPropertyProcRec = ^TJclDFMStdPropertyProcRec;
+  TJclDFMStdPropertyProcRec = record
     Name: string;
     ReadProc: TReaderProc;
     WriteProc: TWriterProc;
   end;
-  PDFMStdPropertyProcRec = ^TDFMStdPropertyProcRec;
 
-  TDFMBinaryPropertyProcRec = record
+  PJclDFMBinaryPropertyProcRec = ^TJclDFMBinaryPropertyProcRec;
+  TJclDFMBinaryPropertyProcRec = record
     Name: string;
     ReadProc, WriteProc: TStreamProc;
   end;
-  PDFMBinaryPropertyProcRec = ^TDFMBinaryPropertyProcRec;
 
-  TDFMFiler = class (TFiler)
+  TJclDFMFiler = class(TFiler)
   private
-    FStdPropertyProcList,
+    FStdPropertyProcList: TList;
     FBinaryPropertyProcList: TList;
     function GetStdCount: Integer;
-    function GetStdPropertyProcRec(AIndex: Integer): TDFMStdPropertyProcRec;
+    function GetStdPropertyProcRec(AIndex: Integer): TJclDFMStdPropertyProcRec;
     function GetBinaryCount: Integer;
-    function GetBinaryPropertyProcRec(AIndex: Integer): TDFMBinaryPropertyProcRec;
+    function GetBinaryPropertyProcRec(AIndex: Integer): TJclDFMBinaryPropertyProcRec;
   public
     constructor Create(Stream: TStream; BufSize: Integer);
     destructor Destroy; override;
@@ -111,28 +115,32 @@ type
     function GetBinaryReadProcByName(AName: string): TStreamProc;
 
     property StdCount: Integer read GetStdCount;
-    property StdItems[AIndex: Integer]: TDFMStdPropertyProcRec read
+    property StdItems[AIndex: Integer]: TJclDFMStdPropertyProcRec read
       GetStdPropertyProcRec;
     property BinaryCount: Integer read GetBinaryCount;
-    property BinaryItems[AIndex: Integer]: TDFMBinaryPropertyProcRec read
+    property BinaryItems[AIndex: Integer]: TJclDFMBinaryPropertyProcRec read
       GetBinaryPropertyProcRec;
   end;
 
-  TDFMReader = class (TReader)
+  TJclDFMReader = class(TReader)
   private
     procedure ReadBinary(AStream: TStream);
   end;
 
-  TDFMWriteLevel = (dwlD1, dwlD2, dwlD3, dwlD4, dwlD5, dwlD6, dwlD7);
+  // (rom) these names are too short  use dwlDelphi1 etc
+  // (usc) vcl1, ..., vcl7 and clx1, clx2, clx3 (or clx140, clx141, clx145)
+  //       might fit better
+  TJclDFMWriteLevel = (dwlD1, dwlD2, dwlD3, dwlD4, dwlD5, dwlD6, dwlD7);
 
-  TDFMLevelItemRec = record
-    MinimumWriteLevel: TDFMWriteLevel;
+  TJclDFMLevelItemRec = record
+    MinimumWriteLevel: TJclDFMWriteLevel;
     PropertyName: string;
   end;
 
 const
-  DFMPropertyList: array[0..6] of TDFMLevelItemRec =
-  (
+  // (usc) not in use an will be moved out
+  DFMPropertyList: array [0..6] of TJclDFMLevelItemRec =
+   (
     (MinimumWriteLevel: dwlD6; PropertyName: '*.DesignSize'),
     (MinimumWriteLevel: dwlD6; PropertyName: 'TPageControl.TabIndex'),
     (MinimumWriteLevel: dwlD6; PropertyName: 'TJvPageControl.TabIndex'),
@@ -140,13 +148,13 @@ const
     (MinimumWriteLevel: dwlD6; PropertyName: 'TJvComboBox.AutoDropDown'),
     (MinimumWriteLevel: dwlD6; PropertyName: 'TComboBox.AutoDropDown'),
     (MinimumWriteLevel: dwlD6; PropertyName: 'TComboBox.OnCloseUp')
-  );
+   );
 
 type
-  TDFMWriter = class (TWriter)
+  TJclDFMWriter = class(TWriter)
   private
     FNestingLevel: Integer;
-    FWriteLevel: TDFMWriteLevel;
+    FWriteLevel: TJclDFMWriteLevel;
     procedure WriteIndent;
     procedure WriteStr(const S: string);
     procedure NewLine;
@@ -159,20 +167,20 @@ type
     function DecNestingLevel: Integer;
 
     property NestingLevel: Integer read FNestingLevel write FNestingLevel;
-    property WriteLevel: TDFMWriteLevel read FWriteLevel write FWriteLevel;
+    property WriteLevel: TJclDFMWriteLevel read FWriteLevel write FWriteLevel;
     property SkipUnicode: Boolean read GetSkipUnicode;
   end;
 
-  TDFMCollectionProperty = class;
+  TJclDFMCollectionProperty = class;
 
-  TDFMPropertys = class;
+  TJclDFMProperties = class;
 
-  TDFMProperty = class (TObject)
+  TJclDFMProperty = class(TObject)
   private
     FName: string;
     FTyp: TValueType;
     FData: Pointer;
-    procedure ReadValue(AReader: TDFMReader);
+    procedure ReadValue(AReader: TJclDFMReader);
     procedure SetTyp(AValue: TValueType);
     procedure FreeData;
     function GetAsInteger: Integer;
@@ -180,7 +188,7 @@ type
     function GetAsString: string;
     procedure SetAsString(AValue: string);
 
-    procedure WriteValue(AWriter: TDFMWriter);
+    procedure WriteValue(AWriter: TJclDFMWriter);
     function GetAsExtended: Extended;
     procedure SetAsExtended(AValue: Extended);
     function GetAsWideString: WideString;
@@ -188,15 +196,16 @@ type
     function GetAsInt64: Int64;
     procedure SetAsInt64(AValue: Int64);
     function GetAsStream: TMemoryStream;
-    function GetAsCollectionProperty: TDFMCollectionProperty;
+    // (rom) maybe GetAsDFMCollection?
+    function GetAsCollectionProperty: TJclDFMCollectionProperty;
     function GetAsStrings: TStrings;
-    function GetAsDFMPropertys: TDFMPropertys;
+    function GetAsDFMProperties: TJclDFMProperties;
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure ReadProperty(AReader: TDFMReader);
-    procedure WriteProperty(AWriter: TDFMWriter);
+    procedure ReadProperty(AReader: TJclDFMReader);
+    procedure WriteProperty(AWriter: TJclDFMWriter);
 
     property Name: string read FName write FName;
     property Typ: TValueType read FTyp write SetTyp;
@@ -207,104 +216,106 @@ type
     property AsExtended: Extended read GetAsExtended write SetAsExtended;
     property AsInt64: Int64 read GetAsInt64 write SetAsInt64;
     property AsStream: TMemoryStream read GetAsStream;
-    property AsCollectionProperty: TDFMCollectionProperty read
+    property AsCollectionProperty: TJclDFMCollectionProperty read
       GetAsCollectionProperty;
     property AsStrings: TStrings read GetAsStrings;
-    property AsDFMPropertys: TDFMPropertys read GetAsDFMPropertys;
+    property AsDFMProperties: TJclDFMProperties read GetAsDFMProperties;
   end;
 
-  TDFMPropertys = class (TObject)
+  TJclDFMProperties = class(TObject)
   private
     FPropertyList: TObjectList;
     function GetCount: Integer;
-    function GetItem(AIndex: Integer): TDFMProperty;
+    function GetItem(AIndex: Integer): TJclDFMProperty;
   public
     constructor Create;
     destructor Destroy; override;
-
-    function Add: TDFMProperty;
-    function AddPropertys: TDFMPropertys;
+    // (rom) cut down on empty lines
+    function Add: TJclDFMProperty;
+    function AddProperties: TJclDFMProperties;
     procedure Clear;
     procedure Delete(AIndex: Integer);
+    function Insert(AIndex: Integer): TJclDFMProperty;
+    function InsertProperties(AIndex: Integer): TJclDFMProperties;
 
-    procedure ReadPropertys(AReader: TDFMReader);
-    procedure WritePropertys(AWriter: TDFMWriter);
+    procedure ReadProperties(AReader: TJclDFMReader);
+    procedure WriteProperties(AWriter: TJclDFMWriter);
 
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TDFMProperty read GetItem; default;
+    property Items[AIndex: Integer]: TJclDFMProperty read GetItem; default;
   end;
 
-  TDFMCollectionPropertyData = class (TObject)
+  TJclDFMCollectionPropertyData = class(TObject)
   private
     FHasIndex: Boolean;
     FIndex: Integer;
-    FPropertys: TDFMPropertys;
+    FProperties: TJclDFMProperties;
   public
     constructor Create;
     destructor Destroy; override;
 
     property HasIndex: Boolean read FHasIndex write FHasIndex;
-    property Idx: Integer read FIndex write FIndex;
-
-    property Propertys: TDFMPropertys read FPropertys;
+    property Index: Integer read FIndex write FIndex; //??? erlaubt
+    property Properties: TJclDFMProperties read FProperties;
   end;
 
-  TDFMCollectionProperty = class (TObject)
+  TJclDFMCollectionProperty = class(TObject)
   private
     FCollectionPropertyDataList: TObjectList;
     function GetCount: Integer;
-    function GetItem(AIndex: Integer): TDFMCollectionPropertyData;
+    function GetItem(AIndex: Integer): TJclDFMCollectionPropertyData;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function Add: TDFMCollectionPropertyData;
-
+    function Add: TJclDFMCollectionPropertyData;
     procedure Clear;
+    procedure Delete(AIndex: Integer);
+    function Insert(AIndex: Integer): TJclDFMCollectionPropertyData;
 
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TDFMCollectionPropertyData read GetItem; default;
+    property Items[AIndex: Integer]: TJclDFMCollectionPropertyData read GetItem; default;
   end;
 
-  TDFMComponents = class;
+  TJclDFMComponents = class;
 
-  TDFMComponent = class (TObject)
+  TJclDFMComponent = class(TObject)
   private
-    FComponentClassName,
+    FComponentClassName: string;
     FComponentName: string;
     FFilerFlags: TFilerFlags;
     FFilerPosition: Integer;
-    FPropertys: TDFMPropertys;
-    FSubComponents: TDFMComponents;
+    FProperties: TJclDFMProperties;
+    FSubComponents: TJclDFMComponents;
 
     procedure ReadHeader(AReader: TReader);
-    procedure WriteHeader(AWriter: TDFMWriter);
-    function InternalFindComponent(ADFMComponent: TDFMComponent; AComponentName: string): TDFMComponent;
-    procedure InternalFindComponentsByClass(ADFMComponent: TDFMComponent;
+    procedure WriteHeader(AWriter: TJclDFMWriter);
+    function InternalFindComponent(ADFMComponent: TJclDFMComponent; AComponentName: string): TJclDFMComponent;
+    procedure InternalFindComponentsByClass(ADFMComponent: TJclDFMComponent;
       AComponentClassName: string; AResultList: TList);
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure ReadComponent(AReader: TDFMReader);
-    procedure WriteComponent(AWriter: TDFMWriter; AWithChilds: Boolean = True);
+    procedure ReadComponent(AReader: TJclDFMReader);
+    procedure WriteComponent(AWriter: TJclDFMWriter; AWithChilds: Boolean = True);
 
-    function FindComponent(AComponentName: string): TDFMComponent;
+    function FindComponent(AComponentName: string): TJclDFMComponent;
     function FindComponentsByClass(AComponentClassName: string;
       AResultList: TList): Integer;
     procedure GetObjectText(AStream: TStream; AWithChilds: Boolean = True);
     procedure GetObjectBinary(AStream: TStream; AWithChilds: Boolean = True);
 
-    property ComponentClassName: string read FComponentClassName;
-    property ComponentName: string read FComponentName;
-    property FilerFlags: TFilerFlags read FFilerFlags;
-    property FilerPosition: Integer read FFilerPosition;
+    property ComponentClassName: string read FComponentClassName write FComponentClassName;
+    property ComponentName: string read FComponentName write FComponentName;
+    property FilerFlags: TFilerFlags read FFilerFlags write FFilerFlags;
+    property FilerPosition: Integer read FFilerPosition write FFilerPosition;
 
-    property Propertys: TDFMPropertys read FPropertys;
-    property SubComponents: TDFMComponents read FSubComponents;
+    property Properties: TJclDFMProperties read FProperties;
+    property SubComponents: TJclDFMComponents read FSubComponents;
   end;
 
-  TDFMRootComponent = class (TDFMComponent)
+  TJclDFMRootComponent = class(TJclDFMComponent)
   public
     procedure LoadFromFile(AFileName: string);
     procedure LoadFromStream(AInput: TStream);
@@ -312,56 +323,62 @@ type
     procedure SaveToStream(AOutput: TStream);
   end;
 
-  TDFMComponents = class (TObject)
+  TJclDFMComponents = class(TObject)
   private
     FComponentList: TObjectList;
     function GetCount: Integer;
-    function GetItem(AIndex: Integer): TDFMComponent;
+    function GetItem(AIndex: Integer): TJclDFMComponent;
   public
     constructor Create;
     destructor Destroy; override;
 
+    function Add: TJclDFMComponent;
     procedure Clear;
     procedure Delete(AIndex: Integer);
+    function Insert(AIndex: Integer): TJclDFMComponent;
 
-    procedure ReadComponents(AReader: TDFMReader);
-    procedure WriteComponents(AWriter: TDFMWriter);
+    procedure ReadComponents(AReader: TJclDFMReader);
+    procedure WriteComponents(AWriter: TJclDFMWriter);
 
     property Count: Integer read GetCount;
-    property Items[AIndex: Integer]: TDFMComponent read GetItem; default;
+    property Items[AIndex: Integer]: TJclDFMComponent read GetItem; default;
   end;
 
-function ValueType2String(const AValueType: TValueType): string;
-procedure DFMRemoveUnwantedComponentsAndProps(ADFMComponent: TDFMComponent;
+function ValueTypeToString(const AValueType: TValueType): string;
+procedure DFMRemoveUnwantedComponentsAndProps(ADFMComponent: TJclDFMComponent;
   AComponentSkipList, APropertySkipList: TStrings);
-procedure DFMGetAllComponentTypes(ADFMComponent: TDFMComponent;
+procedure DFMGetAllComponentTypes(ADFMComponent: TJclDFMComponent;
   AComponentList: TStrings); overload;
 procedure DFMGetAllComponentTypes(AFileName: string; AComponentList: TStrings);  overload;
 
 implementation
 
-function IsBinDFM(Stream: TStream): boolean;
+function IsBinDFM(Stream: TStream): Boolean;
 var
-  ASignature: byte;
+  ASignature: Byte;
 begin
-  Stream.Read(ASignature, sizeof(ASignature));
+  Stream.Read(ASignature, SizeOf(ASignature));
   Result := ASignature = $FF;
   Stream.Seek(-sizeof(ASignature), soFromCurrent);
 end;
 
-{$IFNDEF DELPHI6_UP}
 const
+{$IFNDEF DELPHI6_UP}
   sLineBreak = #13#10;
 {$ENDIF}
+  SingleQuote = '''';
+  FilerBufferSize = 4096;
+  BytesPerLine = 32;
 
-function ValueType2String(const AValueType: TValueType): string;
+function ValueTypeToString(const AValueType: TValueType): string;
 begin
   Result := GetEnumName(TypeInfo(TValueType), Integer(AValueType));
 end;
 
-{ TDFMComponent }
+// (rom) no such marker comments
+{ TJclDFMComponent }
 
-constructor TDFMComponent.Create;
+constructor TJclDFMComponent.Create;
 begin
   inherited Create;
 
@@ -370,19 +387,19 @@ begin
   FFilerFlags := [];
   FFilerPosition := 0;
 
-  FPropertys := TDFMPropertys.Create;
-  FSubComponents := TDFMComponents.Create;
+  FProperties := TJclDFMProperties.Create;
+  FSubComponents := TJclDFMComponents.Create;
 end;
 
-destructor TDFMComponent.Destroy;
+destructor TJclDFMComponent.Destroy;
 begin
-  FPropertys.Free;
+  FProperties.Free;
   FSubComponents.Free;
 
   inherited Destroy;
 end;
 
-procedure TDFMComponent.ReadHeader(AReader: TReader);
+procedure TJclDFMComponent.ReadHeader(AReader: TReader);
 begin
   AReader.ReadPrefix(FFilerFlags, FFilerPosition);
   FComponentClassName := AReader.ReadStr;
@@ -393,21 +410,22 @@ begin
     FComponentName := FComponentClassName;
 end;
 
-procedure TDFMComponent.ReadComponent(AReader: TDFMReader);
+procedure TJclDFMComponent.ReadComponent(AReader: TJclDFMReader);
 begin
   ReadHeader(AReader);
-  FPropertys.ReadPropertys(AReader);
+  FProperties.ReadProperties(AReader);
   AReader.ReadListEnd;
   SubComponents.ReadComponents(AReader);
   AReader.ReadListEnd;
 end;
 
-procedure TDFMComponent.WriteHeader(AWriter: TDFMWriter);
+procedure TJclDFMComponent.WriteHeader(AWriter: TJclDFMWriter);
 begin
   AWriter.WriteIndent;
   if ffInherited in FFilerFlags then
     AWriter.WriteStr('inherited ')
-  else if ffInline in FFilerFlags then
+  else
+  if ffInline in FFilerFlags then
     AWriter.WriteStr('inline ')
   else
     AWriter.WriteStr('object ');
@@ -426,13 +444,13 @@ begin
   AWriter.WriteStr(sLineBreak);
 end;
 
-procedure TDFMComponent.WriteComponent(AWriter: TDFMWriter;
+procedure TJclDFMComponent.WriteComponent(AWriter: TJclDFMWriter;
   AWithChilds: Boolean = True);
 begin
   WriteHeader(AWriter);
   AWriter.IncNestingLevel;
 
-  Propertys.WritePropertys(AWriter);
+  Properties.WriteProperties(AWriter);
   if AWithChilds then
     SubComponents.WriteComponents(AWriter);
 
@@ -442,50 +460,50 @@ begin
   AWriter.WriteStr('end' + sLineBreak);
 end;
 
-function TDFMComponent.InternalFindComponent(ADFMComponent: TDFMComponent;
-  AComponentName: string): TDFMComponent;
+function TJclDFMComponent.InternalFindComponent(ADFMComponent: TJclDFMComponent;
+  AComponentName: string): TJclDFMComponent;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
   if Assigned(ADFMComponent) then
   begin
+    // (rom) are you sure to handle ComponentName case INsensitive?
     if SameText(ADFMComponent.ComponentName, AComponentName) then
       Result := ADFMComponent;
-    if (not Assigned(Result)) and (ADFMComponent.SubComponents.Count > 0) then
-      for i := 0 to ADFMComponent.SubComponents.Count - 1 do
+    if not Assigned(Result) then
+      for I := 0 to ADFMComponent.SubComponents.Count - 1 do
       begin
-        Result := InternalFindComponent(ADFMComponent.SubComponents[i], AComponentName);
+        Result := InternalFindComponent(ADFMComponent.SubComponents[I], AComponentName);
         if Assigned(Result) then
           Break;
       end;
   end;
 end;
 
-function TDFMComponent.FindComponent(AComponentName: string): TDFMComponent;
+function TJclDFMComponent.FindComponent(AComponentName: string): TJclDFMComponent;
 begin
   Result := nil;
   if AComponentName <> '' then
     Result := InternalFindComponent(Self, AComponentName);
 end;
 
-procedure TDFMComponent.InternalFindComponentsByClass(ADFMComponent: TDFMComponent;
+procedure TJclDFMComponent.InternalFindComponentsByClass(ADFMComponent: TJclDFMComponent;
   AComponentClassName: string; AResultList: TList);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Assigned(ADFMComponent) then
   begin
     if SameText(ADFMComponent.ComponentClassName, AComponentClassName) then
       AResultList.Add(ADFMComponent);
-    if ADFMComponent.SubComponents.Count > 0 then
-      for i := 0 to ADFMComponent.SubComponents.Count - 1 do
-        InternalFindComponentsByClass(ADFMComponent.SubComponents[i],
-          AComponentClassName, AResultList);
+    for I := 0 to ADFMComponent.SubComponents.Count - 1 do
+      InternalFindComponentsByClass(ADFMComponent.SubComponents[I],
+        AComponentClassName, AResultList);
   end;
 end;
 
-function TDFMComponent.FindComponentsByClass(AComponentClassName: string;
+function TJclDFMComponent.FindComponentsByClass(AComponentClassName: string;
   AResultList: TList): Integer;
 begin
   Result := 0;
@@ -497,15 +515,15 @@ begin
   end;
 end;
 
-procedure TDFMComponent.GetObjectText(AStream: TStream; AWithChilds: Boolean = True);
+procedure TJclDFMComponent.GetObjectText(AStream: TStream; AWithChilds: Boolean = True);
 var
   SaveSeparator: Char;
-  Writer: TDFMWriter;
+  Writer: TJclDFMWriter;
 begin
   SaveSeparator := DecimalSeparator;
   DecimalSeparator := '.';
   try
-    Writer := TDFMWriter.Create(AStream, 4096);
+    Writer := TJclDFMWriter.Create(AStream, FilerBufferSize);
     try
       WriteComponent(Writer, AWithChilds);
     finally
@@ -516,13 +534,12 @@ begin
   end;
 end;
 
-procedure TDFMComponent.GetObjectBinary(AStream: TStream; AWithChilds: Boolean = True);
+procedure TJclDFMComponent.GetObjectBinary(AStream: TStream; AWithChilds: Boolean = True);
 var
   TextStream: TMemoryStream;
 begin
-  TextStream := nil;
+  TextStream := TMemoryStream.Create;
   try
-    TextStream := TMemoryStream.Create;
     GetObjectText(TextStream, AWithChilds);
     TextStream.Position := 0;
     ObjectTextToBinary(TextStream, AStream);
@@ -531,38 +548,50 @@ begin
   end;
 end;
 
-{ TDFMPropertys }
+{ TJclDFMProperties }
 
-function TDFMPropertys.Add: TDFMProperty;
+function TJclDFMProperties.Add: TJclDFMProperty;
 begin
-  Result := TDFMProperty.Create;
+  Result := TJclDFMProperty.Create;
   FPropertyList.Add(Result);
 end;
 
-function TDFMPropertys.AddPropertys: TDFMPropertys;
+function TJclDFMProperties.AddProperties: TJclDFMProperties;
 begin
-  Result := TDFMPropertys.Create;
+  Result := TJclDFMProperties.Create;
   FPropertyList.Add(Result);
 end;
 
-procedure TDFMPropertys.Clear;
+procedure TJclDFMProperties.Clear;
 begin
   FPropertyList.Clear;
 end;
 
-constructor TDFMPropertys.Create;
+constructor TJclDFMProperties.Create;
 begin
   inherited Create;
 
   FPropertyList := TObjectList.Create;
 end;
 
-procedure TDFMPropertys.Delete(AIndex: Integer);
+procedure TJclDFMProperties.Delete(AIndex: Integer);
 begin
   FPropertyList.Delete(AIndex);
 end;
 
-destructor TDFMPropertys.Destroy;
+function TJclDFMProperties.Insert(AIndex: Integer): TJclDFMProperty;
+begin
+  Result := TJclDFMProperty.Create;
+  FPropertyList.Insert(AIndex, Result);
+end;
+
+function TJclDFMProperties.InsertProperties(AIndex: Integer): TJclDFMProperties;
+begin
+  Result := TJclDFMProperties.Create;
+  FPropertyList.Insert(AIndex, Result);
+end;
+
+destructor TJclDFMProperties.Destroy;
 begin
   Clear;
   FPropertyList.Free;
@@ -570,40 +599,41 @@ begin
   inherited Destroy;
 end;
 
-function TDFMPropertys.GetCount: Integer;
+function TJclDFMProperties.GetCount: Integer;
 begin
   Result := FPropertyList.Count;
 end;
 
-function TDFMPropertys.GetItem(AIndex: Integer): TDFMProperty;
+function TJclDFMProperties.GetItem(AIndex: Integer): TJclDFMProperty;
 begin
-  Result := TDFMProperty(FPropertyList[AIndex]);
+  Result := TJclDFMProperty(FPropertyList[AIndex]);
 end;
 
-procedure TDFMPropertys.ReadPropertys(AReader: TDFMReader);
+procedure TJclDFMProperties.ReadProperties(AReader: TJclDFMReader);
 var
-  DFMProperty: TDFMProperty;
+  DFMProperty: TJclDFMProperty;
 begin
   Clear;
   while not AReader.EndOfList do
   begin
-    DFMProperty := TDFMProperty.Create;
+    //todo - could be reduced to Add.ReadProperty(AReader);
+    DFMProperty := TJclDFMProperty.Create;
     DFMProperty.ReadProperty(AReader);
     FPropertyList.Add(DFMProperty);
   end;
 end;
 
-procedure TDFMPropertys.WritePropertys(AWriter: TDFMWriter);
+procedure TJclDFMProperties.WriteProperties(AWriter: TJclDFMWriter);
 var
-  i: Integer;
+  I: Integer;
 begin //todo - perhaps use internal vars
-  for i := 0 to Count - 1 do
-    Items[i].WriteProperty(AWriter);
+  for I := 0 to Count - 1 do
+    Items[I].WriteProperty(AWriter);
 end;
 
-{ TDFMProperty }
+{ TJclDFMProperty }
 
-constructor TDFMProperty.Create;
+constructor TJclDFMProperty.Create;
 begin
   inherited Create;
 
@@ -612,94 +642,97 @@ begin
   FData := nil;
 end;
 
-destructor TDFMProperty.Destroy;
+destructor TJclDFMProperty.Destroy;
 begin
   FreeData;
 
   inherited Destroy;
 end;
 
-procedure TDFMProperty.SetTyp(AValue: TValueType);
+procedure TJclDFMProperty.SetTyp(AValue: TValueType);
 var
-  pE: PExtended;
-  pWStr: PWideString;
-  pStr: PString;
-  pI64: PInt64;
+  ExtendedPtr: PExtended;
+  WideStringPtr: PWideString;
+  StringPtr: PString;
+  Int64Ptr: PInt64;
 begin
   if FTyp <> AValue then
   begin
     FreeData;
     FTyp := AValue;
     if FTyp = vaList then
-      FData := TDFMPropertys.Create
-    else if FTyp in [vaExtended, vaSingle, vaCurrency, vaDate] then
+      FData := TJclDFMProperties.Create
+    else
+    if FTyp in [vaExtended, vaSingle, vaCurrency, vaDate] then
     begin
-      New(pE);
-      pE^ := 0;
-      FData := pE;
+      GetMem(ExtendedPtr, SizeOf(Extended));
+      ExtendedPtr^ := 0;
+      FData := ExtendedPtr;
     end
-    else if FTyp in [vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}] then
+    else
+    if FTyp in [vaWString {$IFDEF DELPHI6_UP}, vaUTF8String {$ENDIF}] then
     begin
-      New(pWStr);
-      pWStr^ := '';
-      FData := pWStr;
+      New(WideStringPtr);
+      WideStringPtr^ := '';
+      FData := WideStringPtr;
     end
-    else if FTyp in [vaString, vaLString, vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
+    else
+    if FTyp in [vaString, vaLString, vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
     begin
-      New(pStr);
-      pStr^ := '';
-      FData := pStr;
+      New(StringPtr);
+      StringPtr^ := '';
+      FData := StringPtr;
     end
-    else if FTyp = vaBinary then
+    else
+    if FTyp = vaBinary then
       FData := TMemoryStream.Create
-    else if FTyp = vaSet then
+    else
+    if FTyp = vaSet then
       FData := TStringList.Create
-    else if FTyp = vaCollection then
-      FData := TDFMCollectionProperty.Create
-    else if FTyp = vaInt64 then
+    else
+    if FTyp = vaCollection then
+      FData := TJclDFMCollectionProperty.Create
+    else
+    if FTyp = vaInt64 then
     begin
-      New(pI64);
-      pI64^ := 0;
-      FData := pI64;
+      GetMem(Int64Ptr, SizeOf(Int64));
+      Int64Ptr^ := 0;
+      FData := Int64Ptr;
     end
   end;
 end;
 
-procedure TDFMProperty.FreeData;
+procedure TJclDFMProperty.FreeData;
 begin
-  if Assigned(FData) and (not (FTyp in [vaInt8, vaInt16, vaInt32]))
-  then
+  if Assigned(FData) and (not (FTyp in [vaInt8, vaInt16, vaInt32])) then
   begin
-    if (FTyp in [vaString, vaLString])
-      or
-      (FTyp in [vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}])
-      or
-      (FTyp in [vaIdent, vaFalse, vaTrue, vaNil, vaNull])
-    then
+    if (FTyp in [vaString, vaLString]) or
+      (FTyp in [vaWString {$IFDEF DELPHI6_UP}, vaUTF8String {$ENDIF}]) or
+      (FTyp in [vaIdent, vaFalse, vaTrue, vaNil, vaNull]) then
       Dispose(FData)
-    else if (FTyp = vaList) or (FTyp = vaBinary) or (FTyp = vaSet) or
-      (FTyp = vaCollection)
-    then
+    else
+    if (FTyp = vaList) or (FTyp = vaBinary) or (FTyp = vaSet) or
+      (FTyp = vaCollection) then
       TObject(FData).Free
     else
-      FreeMem(FData);
+      FreeMem(FData); //vaExtended, vaSingle, vaCurrency, vaDate, vaInt64
   end;
 end;
 
-function TDFMProperty.GetAsExtended: Extended;
+function TJclDFMProperty.GetAsExtended: Extended;
 begin
   Result := 0;
   if FTyp in [vaExtended, vaSingle, vaCurrency, vaDate] then   //todo - single, currency, data
     Result := PExtended(FData)^;
 end;
 
-procedure TDFMProperty.SetAsExtended(AValue: Extended);
+procedure TJclDFMProperty.SetAsExtended(AValue: Extended);
 begin
   if FTyp in [vaExtended, vaSingle, vaCurrency, vaDate] then   //todo - single, currency, data
     PExtended(FData)^ := AValue;
 end;
 
-function TDFMProperty.GetAsInt64: Int64;
+function TJclDFMProperty.GetAsInt64: Int64;
 begin
   if FTyp = vaInt64 then
     Result := PInt64(FData)^
@@ -707,154 +740,163 @@ begin
     Result := GetAsInteger;
 end;
 
-procedure TDFMProperty.SetAsInt64(AValue: Int64);
+procedure TJclDFMProperty.SetAsInt64(AValue: Int64);
 begin
   if FTyp = vaInt64 then
     PInt64(FData)^ := AValue;
 end;
 
-function TDFMProperty.GetAsInteger: Integer;
+function TJclDFMProperty.GetAsInteger: Integer;
 begin
   Result := 0;
   if FTyp in [vaInt8, vaInt16, vaInt32] then
     Result := Integer(FData);
 end;
 
-procedure TDFMProperty.SetAsInteger(AValue: Integer);
+procedure TJclDFMProperty.SetAsInteger(AValue: Integer);
 begin
   if FTyp in [vaInt8, vaInt16, vaInt32] then
     Integer(FData) := AValue;
 end;
 
-function TDFMProperty.GetAsStream: TMemoryStream;
+function TJclDFMProperty.GetAsStream: TMemoryStream;
 begin
   Result := nil;
   if FTyp = vaBinary then
     Result := FData;
 end;
 
-function TDFMProperty.GetAsString: string;
+function TJclDFMProperty.GetAsString: string;
 var
-  i: Integer;
-  s: string;
-  ListPropertys: TDFMPropertys;
+  I: Integer;
+  S: string;
+  ListProperties: TJclDFMProperties;
 begin
   Result := '';
   if FTyp = vaList then
   begin
-    ListPropertys := FData;
-    if Assigned(ListPropertys) and (ListPropertys.Count > 0) then
-      for i := 0 to ListPropertys.Count - 1 do
+    ListProperties := FData;
+    if Assigned(ListProperties) then
+      for I := 0 to ListProperties.Count - 1 do
       begin
         if Result <> '' then
           Result := Result + sLineBreak;
-        Result := Result + ListPropertys[i].AsString;
+        Result := Result + ListProperties[I].AsString;
       end;
   end
-  else if FTyp in [vaInt8, vaInt16, vaInt32] then
+  else
+  if FTyp in [vaInt8, vaInt16, vaInt32] then
     Result := IntToStr(GetAsInteger)
-  else if FTyp = vaExtended then
+  else
+  if FTyp = vaExtended then
     Result := FloatToStr(GetAsExtended)
-  else if FTyp = vaSingle then
+  else
+  if FTyp = vaSingle then
     Result := FloatToStr(GetAsExtended)
-  else if FTyp = vaCurrency then
+  else
+  if FTyp = vaCurrency then
     Result := FloatToStr(GetAsExtended)
-  else if FTyp = vaDate then
+  else
+  if FTyp = vaDate then
     Result := FloatToStr(GetAsExtended)
-  else if FTyp in [vaString, vaLString] then
+  else
+  if FTyp in [vaString, vaLString] then
     Result := PString(FData)^
-  else if FTyp in [vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
+  else
+  if FTyp in [vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
     Result := PString(FData)^
-  else if FTyp = vaSet then
+  else
+  if FTyp = vaSet then
   begin
     Result := '[';
     with AsStrings do
-      for i := 0 to Count - 1 do
+      for I := 0 to Count - 1 do
       begin
-        s := Strings[i];
-        if s = '' then
+        S := Strings[I];
+        if S = '' then
           Break;
-        if i > 0 then
+        if I > 0 then
           Result := Result + ', ';
-        Result := Result + s;
+        Result := Result + S;
       end;
     Result := Result + ']';
   end
-  else if FTyp = vaInt64 then
+  else
+  if FTyp = vaInt64 then
     Result := IntToStr(GetAsInt64);
   //todo - support widestring
 end;
 
-procedure TDFMProperty.SetAsString(AValue: string);
+procedure TJclDFMProperty.SetAsString(AValue: string);
 begin
   if FTyp in [vaString, vaLString, vaIdent, vaFalse, vaTrue, vaNil, vaNull] then
     PString(FData)^ := AValue;
-  //todo - support widestring    
+  //todo - support widestring
 end;
 
-function TDFMProperty.GetAsWideString: WideString;
+function TJclDFMProperty.GetAsWideString: WideString;
 begin
   Result := '';
-  if FTyp in [vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}] then
+  if FTyp in [vaWString {$IFDEF DELPHI6_UP}, vaUTF8String {$ENDIF}] then
     Result := PWideString(FData)^
   else
     Result := GetAsString;
 end;
 
-procedure TDFMProperty.SetAsWideString(AValue: WideString);
+procedure TJclDFMProperty.SetAsWideString(AValue: WideString);
 begin
-  if FTyp in [vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}] then
+  if FTyp in [vaWString {$IFDEF DELPHI6_UP}, vaUTF8String {$ENDIF}] then
     PWideString(FData)^ := AValue
   else
     AsString := AValue; //todo - check
 end;
 
-function TDFMProperty.GetAsCollectionProperty: TDFMCollectionProperty;
+function TJclDFMProperty.GetAsCollectionProperty: TJclDFMCollectionProperty;
 begin
   Result := nil;
   if FTyp = vaCollection then
     Result := FData;
 end;
 
-function TDFMProperty.GetAsStrings: TStrings;
+function TJclDFMProperty.GetAsStrings: TStrings;
 begin
   Result := nil;
   if FTyp = vaSet then
     Result := FData;
 end;
 
-function TDFMProperty.GetAsDFMPropertys: TDFMPropertys;
+function TJclDFMProperty.GetAsDFMProperties: TJclDFMProperties;
 begin
   Result := nil;
   if FTyp = vaList then
     Result := FData;
 end;
 
-procedure TDFMProperty.ReadProperty(AReader: TDFMReader);
+procedure TJclDFMProperty.ReadProperty(AReader: TJclDFMReader);
 begin
   FName := AReader.ReadStr;
   ReadValue(AReader);
 end;
 
-procedure TDFMProperty.ReadValue(AReader: TDFMReader);
+procedure TJclDFMProperty.ReadValue(AReader: TJclDFMReader);
 var
   APos: Integer;
-  s: string;
+  S: string;
 
-  CollectionData: TDFMCollectionPropertyData;
-  TempDFMProperty: TDFMProperty;
+  CollectionData: TJclDFMCollectionPropertyData;
+  TempDFMProperty: TJclDFMProperty;
 begin
   APos := AReader.Position;
   SetTyp(AReader.ReadValue); //todo - extern Typ := AReader.ReadValue ?
   AReader.Position := APos;
   case FTyp of
     vaList:
-    begin
-      AReader.ReadValue;
-      while not AReader.EndOfList do
-        AsDFMPropertys.Add.ReadValue(AReader);
-      AReader.ReadListEnd;
-    end;
+      begin
+        AReader.ReadValue;
+        while not AReader.EndOfList do
+          AsDFMProperties.Add.ReadValue(AReader);
+        AReader.ReadListEnd;
+      end;
     vaInt8, vaInt16, vaInt32:
       AsInteger := AReader.ReadInteger;
     vaExtended:
@@ -865,7 +907,7 @@ begin
       AsExtended := AReader.ReadCurrency * 10000; //todo - check if saving in extended is okay
     vaDate:
       AsExtended := AReader.ReadDate; //todo - check if saving in extended is okay
-    vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}:
+    vaWString {$IFDEF DELPHI6_UP}, vaUTF8String {$ENDIF}:
       AsWideString := AReader.ReadWideString;
     vaString, vaLString:
       AsString := AReader.ReadString;
@@ -874,45 +916,45 @@ begin
     vaBinary:
       AReader.ReadBinary(AsStream);
     vaSet:
-    begin
-      AReader.ReadValue;
-      while True do
       begin
-        s := AReader.ReadStr;
-        if s = '' then
-          Break
-        else
-          AsStrings.Add(s);
-      end;
-    end;
-    vaCollection:
-    begin
-      AReader.ReadValue;
-      while not AReader.EndOfList do
-      begin
-        CollectionData := AsCollectionProperty.Add;
-
-        if AReader.NextValue in [vaInt8, vaInt16, vaInt32] then
+        AReader.ReadValue;
+        while True do
         begin
-          CollectionData.HasIndex := True;
-          TempDFMProperty := TDFMProperty.Create;
-          try
-            TempDFMProperty.ReadValue(AReader);
-            CollectionData.Idx := TempDFMProperty.AsInteger;
-          finally
-            TempDFMProperty.Free;
-          end;
-        end
-        else
-          CollectionData.HasIndex := False;
-
-        AReader.CheckValue(vaList);
+          S := AReader.ReadStr;
+          if S = '' then
+            Break
+          else
+            AsStrings.Add(S);
+        end;
+      end;
+    vaCollection:
+      begin
+        AReader.ReadValue;
         while not AReader.EndOfList do
-          CollectionData.Propertys.Add.ReadProperty(AReader);
+        begin
+          CollectionData := AsCollectionProperty.Add;
+
+          if AReader.NextValue in [vaInt8, vaInt16, vaInt32] then
+          begin
+            CollectionData.HasIndex := True;
+            TempDFMProperty := TJclDFMProperty.Create;
+            try
+              TempDFMProperty.ReadValue(AReader);
+              CollectionData.Index := TempDFMProperty.AsInteger;
+            finally
+              TempDFMProperty.Free;
+            end;
+          end
+          else
+            CollectionData.HasIndex := False;
+
+          AReader.CheckValue(vaList);
+          while not AReader.EndOfList do
+            CollectionData.Properties.Add.ReadProperty(AReader);
+          AReader.ReadListEnd;
+        end;
         AReader.ReadListEnd;
       end;
-      AReader.ReadListEnd;
-    end;
     vaInt64:
       AsInt64 := AReader.ReadInt64;
     else
@@ -920,7 +962,7 @@ begin
   end;
 end;
 
-procedure TDFMProperty.WriteProperty(AWriter: TDFMWriter);
+procedure TJclDFMProperty.WriteProperty(AWriter: TJclDFMWriter);
 begin
   AWriter.WriteIndent;
   AWriter.WriteStr(FName);
@@ -929,7 +971,7 @@ begin
   AWriter.WriteStr(sLineBreak);
 end;
 
-procedure TDFMProperty.WriteValue(AWriter: TDFMWriter);
+procedure TJclDFMProperty.WriteValue(AWriter: TJclDFMWriter);
 const
   LineLength = 64;
 var
@@ -938,20 +980,20 @@ var
   W: WideString;
   LineBreak: Boolean;
 
-  ListPropertys: TDFMPropertys;
-  Collection: TDFMCollectionProperty;
-  CollectionData: TDFMCollectionPropertyData;
+  ListProperties: TJclDFMProperties;
+  Collection: TJclDFMCollectionProperty;
+  CollectionData: TJclDFMCollectionPropertyData;
 begin
   case FTyp of
     vaList:
       begin
-        ListPropertys := AsDFMPropertys;
+        ListProperties := AsDFMProperties;
         AWriter.WriteStr('(');
         AWriter.IncNestingLevel;
-        for i := 0 to ListPropertys.Count - 1 do
+        for I := 0 to ListProperties.Count - 1 do
         begin
           AWriter.NewLine;
-          ListPropertys[i].WriteValue(AWriter);
+          ListProperties[I].WriteValue(AWriter);
         end;
         AWriter.DecNestingLevel;
         AWriter.WriteStr(')');
@@ -966,12 +1008,12 @@ begin
       AWriter.WriteStr(GetAsString + 'c'); //todo - writecurrency
     vaDate:
       AWriter.WriteStr(GetAsString + 'd'); //todo - writedate
-    vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}:
+    vaWString {$IFDEF DELPHI6_UP}, vaUTF8String {$ENDIF}:
       begin
         W := GetAsWideString;
         L := Length(W);
         if L = 0 then
-          AWriter.WriteStr('''''')
+          AWriter.WriteStr(SingleQuote + SingleQuote)
         else
         begin
           I := 1;
@@ -982,22 +1024,22 @@ begin
             K := I;
             repeat
               LineBreak := False;
-              if (W[I] >= ' ') and (W[I] <> '''') and (Ord(W[i]) <= 127) then
+              if (W[I] >= ' ') and (W[I] <> SingleQuote) and (Ord(W[i]) <= 127) then
               begin
                 J := I;
                 repeat
                   Inc(I)
-                until (I > L) or (W[I] < ' ') or (W[I] = '''') or
+                until (I > L) or (W[I] < ' ') or (W[I] = SingleQuote) or
                   ((I - K) >= LineLength) or (Ord(W[i]) > 127);
                 if ((I - K) >= LineLength) then
                   LineBreak := True;
-                AWriter.WriteStr('''');
+                AWriter.WriteStr(SingleQuote);
                 while J < I do
                 begin
                   AWriter.WriteStr(Char(W[J]));
                   Inc(J);
                 end;
-                AWriter.WriteStr('''');
+                AWriter.WriteStr(SingleQuote);
               end
               else
               begin
@@ -1027,7 +1069,7 @@ begin
         S := GetAsString;
         L := Length(S);
         if L = 0 then
-          AWriter.WriteStr('''''')
+          AWriter.WriteStr(SingleQuote + SingleQuote)
         else
         begin
           I := 1;
@@ -1038,12 +1080,12 @@ begin
             K := I;
             repeat
               LineBreak := False;
-              if (S[I] >= ' ') and (S[I] <> '''') then
+              if (S[I] >= ' ') and (S[I] <> SingleQuote) then
               begin
                 J := I;
                 repeat
                   Inc(I)
-                until (I > L) or (S[I] < ' ') or (S[I] = '''') or
+                until (I > L) or (S[I] < ' ') or (S[I] = SingleQuote) or
                   ((I - K) >= LineLength);
                 if ((I - K) >= LineLength) then
                 begin
@@ -1051,9 +1093,9 @@ begin
                   if ByteType(S, I) = mbTrailByte then
                     Dec(I);
                 end;
-                AWriter.WriteStr('''');
+                AWriter.WriteStr(SingleQuote);
                 AWriter.Write(S[J], I - J);
-                AWriter.WriteStr('''');
+                AWriter.WriteStr(SingleQuote);
               end
               else
               begin
@@ -1096,14 +1138,14 @@ begin
           if CollectionData.HasIndex then
           begin
             AWriter.WriteStr(' [');
-            AWriter.WriteStr(IntToStr(CollectionData.Idx));
+            AWriter.WriteStr(IntToStr(CollectionData.Index));
             AWriter.WriteStr(']');
           end;
 
           AWriter.WriteStr(sLineBreak);
           AWriter.IncNestingLevel;
 
-          CollectionData.Propertys.WritePropertys(AWriter);
+          CollectionData.Properties.WriteProperties(AWriter);
           AWriter.DecNestingLevel;
           AWriter.WriteIndent;
           AWriter.WriteStr('end');
@@ -1116,26 +1158,38 @@ begin
   end;
 end;
 
-{ TDFMComponents }
+{ TJclDFMComponents }
 
-procedure TDFMComponents.Clear;
+procedure TJclDFMComponents.Clear;
 begin
   FComponentList.Clear;
 end;
 
-constructor TDFMComponents.Create;
+constructor TJclDFMComponents.Create;
 begin
   inherited Create;
 
   FComponentList := TObjectList.Create;
 end;
 
-procedure TDFMComponents.Delete(AIndex: Integer);
+function TJclDFMComponents.Add: TJclDFMComponent;
+begin
+  Result := TJclDFMComponent.Create;
+  FComponentList.Add(Result);
+end;
+
+procedure TJclDFMComponents.Delete(AIndex: Integer);
 begin
   FComponentList.Delete(AIndex);
 end;
 
-destructor TDFMComponents.Destroy;
+function TJclDFMComponents.Insert(AIndex: Integer): TJclDFMComponent;
+begin
+  Result := TJclDFMComponent.Create;
+  FComponentList.Insert(AIndex, Result);
+end;
+
+destructor TJclDFMComponents.Destroy;
 begin
   Clear;
   FComponentList.Free;
@@ -1143,59 +1197,59 @@ begin
   inherited Destroy;
 end;
 
-function TDFMComponents.GetCount: Integer;
+function TJclDFMComponents.GetCount: Integer;
 begin
   Result := FComponentList.Count;
 end;
 
-function TDFMComponents.GetItem(AIndex: Integer): TDFMComponent;
+function TJclDFMComponents.GetItem(AIndex: Integer): TJclDFMComponent;
 begin
-  Result := TDFMComponent(FComponentList[AIndex]);
+  Result := TJclDFMComponent(FComponentList[AIndex]);
 end;
 
-procedure TDFMComponents.ReadComponents(AReader: TDFMReader);
+procedure TJclDFMComponents.ReadComponents(AReader: TJclDFMReader);
 var
-  DFMComponent: TDFMComponent;
+  DFMComponent: TJclDFMComponent;
 begin
   Clear;
   while not AReader.EndOfList do
   begin
-    DFMComponent := TDFMComponent.Create;
+    //todo - could be reduced to Add.ReadComponent(AReader);
+    DFMComponent := TJclDFMComponent.Create;
     DFMComponent.ReadComponent(AReader);
     FComponentList.Add(DFMComponent);
   end;
 end;
 
-procedure TDFMComponents.WriteComponents(AWriter: TDFMWriter);
+procedure TJclDFMComponents.WriteComponents(AWriter: TJclDFMWriter);
 var
-  i: Integer;
+  I: Integer;
 begin //todo - perhaps use internal vars
-  for i := 0 to Count - 1 do
-    Items[i].WriteComponent(AWriter);
+  for I := 0 to Count - 1 do
+    Items[I].WriteComponent(AWriter);
 end;
 
-{ TDFMRootComponent }
+{ TJclDFMRootComponent }
 
-procedure TDFMRootComponent.LoadFromFile(AFileName: string);
+procedure TJclDFMRootComponent.LoadFromFile(AFileName: string);
 var
   fs: TFileStream;
 begin
-  fs := nil;
+  fs := TFileStream.Create(AFileName, fmOpenRead); //todo -> sharemode
   try
-    fs := TFileStream.Create(AFileName, fmOpenRead); //todo -> sharemode
     LoadFromStream(fs);
   finally
     fs.Free;
   end;
 end;
 
-procedure TDFMRootComponent.LoadFromStream(AInput: TStream);
+procedure TJclDFMRootComponent.LoadFromStream(AInput: TStream);
 var
   SaveSeparator: Char;
-  Reader: TDFMReader;
+  Reader: TJclDFMReader;
   tmpStream: TMemoryStream;
 begin
-  FPropertys.Clear;
+  FProperties.Clear;
   FSubComponents.Clear;
   tmpStream := TMemoryStream.Create;
   try
@@ -1207,7 +1261,7 @@ begin
     end;
 
     AInput.ReadResHeader;
-    Reader := TDFMReader.Create(AInput, 4096);
+    Reader := TJclDFMReader.Create(AInput, FilerBufferSize);
     SaveSeparator := DecimalSeparator;
     DecimalSeparator := '.';
     try
@@ -1222,97 +1276,94 @@ begin
   end;
 end;
 
-procedure TDFMRootComponent.SaveToFile(AFileName: string);
+procedure TJclDFMRootComponent.SaveToFile(AFileName: string);
 var
   fs: TFileStream;
 begin
-  fs := nil;
+  fs := TFileStream.Create(AFileName, fmCreate);
   try
-    fs := TFileStream.Create(AFileName, fmCreate);
     SaveToStream(fs);
   finally
     fs.Free;
   end;
 end;
 
-procedure TDFMRootComponent.SaveToStream(AOutput: TStream);
+procedure TJclDFMRootComponent.SaveToStream(AOutput: TStream);
 begin
   GetObjectText(AOutput);
 end;
 
-{ TDFMWriter }
+{ TJclDFMWriter }
 
-constructor TDFMWriter.Create(Stream: TStream; BufSize: Integer);
+constructor TJclDFMWriter.Create(Stream: TStream; BufSize: Integer);
 begin
   inherited Create(Stream, BufSize);
   FNestingLevel := 0;
 //it doesn't compile with D3 or lower because of overload, int64 and widestrings
 //but it's not dangerous to list it here
-{$IFDEF DELPHI1_UP}
+  {$IFDEF DELPHI1_UP}
   FWriteLevel := dwlD1;
-{$ENDIF}
-{$IFDEF DELPHI2_UP}
+  {$ENDIF}
+  {$IFDEF DELPHI2_UP}
   FWriteLevel := dwlD2;
-{$ENDIF}
-{$IFDEF DELPHI3_UP}
+  {$ENDIF}
+  {$IFDEF DELPHI3_UP}
   FWriteLevel := dwlD3;
-{$ENDIF}
-{$IFDEF DELPHI4_UP}
+  {$ENDIF}
+  {$IFDEF DELPHI4_UP}
   FWriteLevel := dwlD4;
-{$ENDIF}
-{$IFDEF DELPHI5_UP}
+  {$ENDIF}
+  {$IFDEF DELPHI5_UP}
   FWriteLevel := dwlD5;
-{$ENDIF}
-{$IFDEF DELPHI6_UP}
+  {$ENDIF}
+  {$IFDEF DELPHI6_UP}
   FWriteLevel := dwlD6;
-{$ENDIF}
-{$IFDEF DELPHI7_UP}
+  {$ENDIF}
+  {$IFDEF DELPHI7_UP}
   FWriteLevel := dwlD7;
-{$ENDIF}
+  {$ENDIF}
 end;
 
-function TDFMWriter.IncNestingLevel: Integer;
+function TJclDFMWriter.IncNestingLevel: Integer;
 begin
   Inc(FNestingLevel);
   Result := FNestingLevel;
 end;
 
-function TDFMWriter.DecNestingLevel: Integer;
+function TJclDFMWriter.DecNestingLevel: Integer;
 begin
   Dec(FNestingLevel);
   Result := FNestingLevel;  
 end;
 
-procedure TDFMWriter.WriteIndent;
+procedure TJclDFMWriter.WriteIndent;
 const
-  Blanks: array[0..1] of Char = '  ';
+  Blanks: array [0..1] of Char = '  ';
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 1 to FNestingLevel do
+  for I := 1 to FNestingLevel do
     Write(Blanks, SizeOf(Blanks));
 end;
 
-procedure TDFMWriter.WriteStr(const S: string);
+procedure TJclDFMWriter.WriteStr(const S: string);
 begin
   Write(S[1], Length(S));
 end;
 
-procedure TDFMWriter.NewLine;
+procedure TJclDFMWriter.NewLine;
 begin
   WriteStr(sLineBreak);
   WriteIndent;
 end;
 
-procedure TDFMWriter.WriteBinary(AStream: TStream);
-const
-  BytesPerLine = 32;
+procedure TJclDFMWriter.WriteBinary(AStream: TStream);
 var
   MultiLine: Boolean;
-  i: Integer;
+  I: Integer;
   Count: Longint;
-  Buffer: array[0..BytesPerLine - 1] of Char;
-  Text: array[0..BytesPerLine * 2 - 1] of Char;
+  Buffer: array [0..BytesPerLine-1] of Char;
+  Text: array [0..BytesPerLine*2-1] of Char;
 begin
   Count := AStream.Size;
   AStream.Position := 0;
@@ -1324,54 +1375,51 @@ begin
   begin
     if MultiLine then
       NewLine;
-    if Count >= 32 then
-      i := 32
-    else
-      i := Count;
-    AStream.read(Buffer, i);
-    BinToHex(Buffer, Text, i);
-    Write(Text, i * 2);
-    Dec(Count, i);
+    I := Min(Count, BytesPerLine);
+    AStream.Read(Buffer, I);
+    BinToHex(Buffer, Text, I);
+    Write(Text, I * 2);
+    Dec(Count, I);
   end;
   Dec(FNestingLevel);
   WriteStr('}');
 end;
 
-function TDFMWriter.GetSkipUnicode: Boolean;
+function TJclDFMWriter.GetSkipUnicode: Boolean;
 begin
   Result := FWriteLevel < dwlD6;
 end;
 
-{ TDFMFiler }
+{ TJclDFMFiler }
 
-function TDFMFiler.GetStdCount: Integer;
+function TJclDFMFiler.GetStdCount: Integer;
 begin
   Result := FStdPropertyProcList.Count;
 end;
 
-function TDFMFiler.GetStdPropertyProcRec(AIndex: Integer): TDFMStdPropertyProcRec;
+function TJclDFMFiler.GetStdPropertyProcRec(AIndex: Integer): TJclDFMStdPropertyProcRec;
 begin
-  Result := PDFMStdPropertyProcRec(FStdPropertyProcList[AIndex])^;
+  Result := PJclDFMStdPropertyProcRec(FStdPropertyProcList[AIndex])^;
 end;
 
-function TDFMFiler.GetBinaryCount: Integer;
+function TJclDFMFiler.GetBinaryCount: Integer;
 begin
   Result := FBinaryPropertyProcList.Count;
 end;
 
-function TDFMFiler.GetBinaryPropertyProcRec(AIndex: Integer): TDFMBinaryPropertyProcRec;
+function TJclDFMFiler.GetBinaryPropertyProcRec(AIndex: Integer): TJclDFMBinaryPropertyProcRec;
 begin
-  Result := PDFMBinaryPropertyProcRec(FBinaryPropertyProcList[AIndex])^;
+  Result := PJclDFMBinaryPropertyProcRec(FBinaryPropertyProcList[AIndex])^;
 end;
 
-constructor TDFMFiler.Create(Stream: TStream; BufSize: Integer);
+constructor TJclDFMFiler.Create(Stream: TStream; BufSize: Integer);
 begin
   inherited Create(Stream, BufSize);
-  FStdPropertyProcList    := TList.Create;
+  FStdPropertyProcList := TList.Create;
   FBinaryPropertyProcList := TList.Create;
 end;
 
-destructor TDFMFiler.Destroy;
+destructor TJclDFMFiler.Destroy;
 begin
   ClearPropertyLists;
   FStdPropertyProcList.Free;
@@ -1379,29 +1427,29 @@ begin
   inherited Destroy;
 end;
 
-procedure TDFMFiler.ClearPropertyLists;
+procedure TJclDFMFiler.ClearPropertyLists;
 var
-  i: Integer;
+  I: Integer;
 begin
   if FStdPropertyProcList.Count > 0 then
   begin
-    for i := 0 to FStdPropertyProcList.Count - 1 do
-      Dispose(FStdPropertyProcList[i]);
+    for I := 0 to FStdPropertyProcList.Count - 1 do
+      Dispose(FStdPropertyProcList[I]);
     FStdPropertyProcList.Clear;
   end;
   if FBinaryPropertyProcList.Count > 0 then
   begin
-    for i := 0 to FBinaryPropertyProcList.Count - 1 do
-      Dispose(FBinaryPropertyProcList[i]);
+    for I := 0 to FBinaryPropertyProcList.Count - 1 do
+      Dispose(FBinaryPropertyProcList[I]);
     FBinaryPropertyProcList.Clear;
   end;
 end;
 
-procedure TDFMFiler.DefineProperty(const Name: string;
+procedure TJclDFMFiler.DefineProperty(const Name: string;
   ReadData: TReaderProc; WriteData: TWriterProc;
   HasData: Boolean);
 var
-  PStdPropertyRec: PDFMStdPropertyProcRec;
+  PStdPropertyRec: PJclDFMStdPropertyProcRec;
 begin
   New(PStdPropertyRec);
   PStdPropertyRec^.Name := Name;
@@ -1410,11 +1458,11 @@ begin
   FStdPropertyProcList.Add(PStdPropertyRec);
 end;
 
-procedure TDFMFiler.DefineBinaryProperty(const Name: string;
+procedure TJclDFMFiler.DefineBinaryProperty(const Name: string;
   ReadData, WriteData: TStreamProc;
   HasData: Boolean);
 var
-  PBinaryPropertyRec: PDFMBinaryPropertyProcRec;
+  PBinaryPropertyRec: PJclDFMBinaryPropertyProcRec;
 begin
   New(PBinaryPropertyRec);
   PBinaryPropertyRec^.Name := Name;
@@ -1423,89 +1471,94 @@ begin
   FBinaryPropertyProcList.Add(PBinaryPropertyRec);
 end;
 
-procedure TDFMFiler.FlushBuffer;
+procedure TJclDFMFiler.FlushBuffer;
 begin
 //do nothing
 end;
 
-function TDFMFiler.GetBinaryReadProcByName(AName: string): TStreamProc;
+function TJclDFMFiler.GetBinaryReadProcByName(AName: string): TStreamProc;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  if FBinaryPropertyProcList.Count > 0 then
-    for i := 0 to FBinaryPropertyProcList.Count - 1 do
-      with PDFMBinaryPropertyProcRec(FBinaryPropertyProcList[i])^ do
-        if Name = AName then
-        begin
-          Result := ReadProc;
-          Break;
-        end;
+  for I := 0 to FBinaryPropertyProcList.Count - 1 do
+    with PJclDFMBinaryPropertyProcRec(FBinaryPropertyProcList[I])^ do
+      if Name = AName then
+      begin
+        Result := ReadProc;
+        Break;
+      end;
 end;
 
-{ TDFMReader }
+{ TJclDFMReader }
 
-procedure TDFMReader.ReadBinary(AStream: TStream);
-const
-  BytesPerLine = 32;
+procedure TJclDFMReader.ReadBinary(AStream: TStream);
 var
-  i: Integer;
+  I: Integer;
   Count: Longint;
-  Buffer: array[0..BytesPerLine - 1] of Char;
+  Buffer: array [0..BytesPerLine-1] of Char;
 begin
   ReadValue;
   Read(Count, SizeOf(Count));
 
   while Count > 0 do
   begin
-    if Count >= 32 then
-      i := 32
-    else
-      i := Count;
-    Read(Buffer, i);
-    AStream.Write(Buffer, i);
-    Dec(Count, i);
+    I := Min(Count, BytesPerLine);
+    Read(Buffer, I);
+    AStream.Write(Buffer, I);
+    Dec(Count, I);
   end;
 end;
 
-{ TDFMCollectionPropertyData }
+{ TJclDFMCollectionPropertyData }
 
-constructor TDFMCollectionPropertyData.Create;
+constructor TJclDFMCollectionPropertyData.Create;
 begin
   inherited Create;
 
   FHasIndex := False;
   FIndex := 0;
-  FPropertys := TDFMPropertys.Create;
+  FProperties := TJclDFMProperties.Create;
 end;
 
-destructor TDFMCollectionPropertyData.Destroy;
+destructor TJclDFMCollectionPropertyData.Destroy;
 begin
-  FPropertys.Free;
+  FProperties.Free;
 
   inherited Destroy;
 end;
 
-{ TDFMCollectionProperty }
+{ TJclDFMCollectionProperty }
 
-function TDFMCollectionProperty.Add: TDFMCollectionPropertyData;
+function TJclDFMCollectionProperty.Add: TJclDFMCollectionPropertyData;
 begin
-  Result := TDFMCollectionPropertyData.Create;
+  Result := TJclDFMCollectionPropertyData.Create;
   FCollectionPropertyDataList.Add(Result);
 end;
 
-procedure TDFMCollectionProperty.Clear;
+procedure TJclDFMCollectionProperty.Clear;
 begin
   FCollectionPropertyDataList.Clear;
 end;
 
-constructor TDFMCollectionProperty.Create;
+procedure TJclDFMCollectionProperty.Delete(AIndex: Integer);
+begin
+  FCollectionPropertyDataList.Delete(AIndex);
+end;
+
+function TJclDFMCollectionProperty.Insert(AIndex: Integer): TJclDFMCollectionPropertyData;
+begin
+  Result := TJclDFMCollectionPropertyData.Create;
+  FCollectionPropertyDataList.Insert(AIndex, Result);
+end;
+
+constructor TJclDFMCollectionProperty.Create;
 begin
   inherited Create;
   FCollectionPropertyDataList := TObjectList.Create;
 end;
 
-destructor TDFMCollectionProperty.Destroy;
+destructor TJclDFMCollectionProperty.Destroy;
 begin
   Clear;
   FCollectionPropertyDataList.Free;
@@ -1513,26 +1566,26 @@ begin
   inherited Destroy;
 end;
 
-function TDFMCollectionProperty.GetCount: Integer;
+function TJclDFMCollectionProperty.GetCount: Integer;
 begin
   Result := FCollectionPropertyDataList.Count;
 end;
 
-function TDFMCollectionProperty.GetItem(
-  AIndex: Integer): TDFMCollectionPropertyData;
+function TJclDFMCollectionProperty.GetItem(
+  AIndex: Integer): TJclDFMCollectionPropertyData;
 begin
-  Result := TDFMCollectionPropertyData(FCollectionPropertyDataList[AIndex]);
+  Result := TJclDFMCollectionPropertyData(FCollectionPropertyDataList[AIndex]);
 end;
 
 function IsUnwantedComponent(const AClassName: string;
   AComponentSkipList: TStrings): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
-  if Assigned(AComponentSkipList) and (AComponentSkipList.Count > 0) then
-    for i := 0 to AComponentSkipList.Count - 1 do
-      if SameText(AClassName, AComponentSkipList[i]) then
+  if Assigned(AComponentSkipList) then
+    for I := 0 to AComponentSkipList.Count - 1 do
+      if SameText(AClassName, AComponentSkipList[I]) then
       begin
         Result := True;
         Break;
@@ -1542,69 +1595,64 @@ end;
 function IsUnwantedProperty(const AClassName, APropName: string;
   APropertySkipList: TStrings): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
-  if Assigned(APropertySkipList) and (APropertySkipList.Count > 0) then
-    for i := 0 to APropertySkipList.Count - 1 do
-    begin
-      if SameText(AClassName+'.' + APropName, APropertySkipList[i]) or
-        SameText('*.' + APropName, APropertySkipList[i]) then
+  if Assigned(APropertySkipList) then
+    for I := 0 to APropertySkipList.Count - 1 do
+      if SameText(AClassName+'.' + APropName, APropertySkipList[I]) or
+        SameText('*.' + APropName, APropertySkipList[I]) then
       begin
         Result := True;
         Break;
       end;
-    end;
 end;
 
-procedure DFMRemoveUnwantedComponentsAndProps(ADFMComponent: TDFMComponent;
+procedure DFMRemoveUnwantedComponentsAndProps(ADFMComponent: TJclDFMComponent;
   AComponentSkipList, APropertySkipList: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
   with ADFMComponent do
   begin
     if Assigned(APropertySkipList) and (APropertySkipList.Count > 0) then
-      for i := Propertys.Count - 1 downto 0 do
-        if IsUnwantedProperty(ComponentClassName, Propertys[i].Name,
-          APropertySkipList)
-        then
-          Propertys.Delete(i);
+      for I := Properties.Count - 1 downto 0 do
+        if IsUnwantedProperty(ComponentClassName, Properties[I].Name,
+          APropertySkipList) then
+          Properties.Delete(I);
     if (Assigned(APropertySkipList) and (APropertySkipList.Count > 0)) or
-      (Assigned(AComponentSkipList) and (AComponentSkipList.Count > 0))
-    then
-      for i := SubComponents.Count - 1 downto 0 do
+      (Assigned(AComponentSkipList) and (AComponentSkipList.Count > 0)) then
+      for I := SubComponents.Count - 1 downto 0 do
         if IsUnwantedComponent(ComponentClassName, AComponentSkipList) then
-          SubComponents.Delete(i)
+          SubComponents.Delete(I)
         else
-          DFMRemoveUnwantedComponentsAndProps(SubComponents[i], AComponentSkipList,
+          DFMRemoveUnwantedComponentsAndProps(SubComponents[I], AComponentSkipList,
             APropertySkipList);
   end;
 end;
 
-procedure DFMGetAllComponentTypes(ADFMComponent: TDFMComponent;
+procedure DFMGetAllComponentTypes(ADFMComponent: TJclDFMComponent;
   AComponentList: TStrings);
 var
-  i: Integer;
+  I: Integer;
 begin
   if AComponentList.IndexOf(ADFMComponent.ComponentClassName) = -1 then
     AComponentList.Add(ADFMComponent.ComponentClassName);
-  for i := 0 to ADFMComponent.SubComponents.Count - 1 do
-    DFMGetAllComponentTypes(ADFMComponent.SubComponents[i], AComponentList);
+  for I := 0 to ADFMComponent.SubComponents.Count - 1 do
+    DFMGetAllComponentTypes(ADFMComponent.SubComponents[I], AComponentList);
 end;
 
 procedure DFMGetAllComponentTypes(AFileName: string; AComponentList: TStrings);
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
 begin
-  AComponentList.Clear;
-  RCOMP := nil;
+  RComp := TJclDFMRootComponent.Create;
   try
-    RCOMP := TDFMRootComponent.Create;
-    RCOMP.LoadFromFile(AFileName);
-    DFMGetAllComponentTypes(RCOMP, AComponentList);
+    RComp.LoadFromFile(AFileName);
+    AComponentList.Clear;
+    DFMGetAllComponentTypes(RComp, AComponentList);
   finally
-    RCOMP.Free;
+    RComp.Free;
   end;
 end;
 
