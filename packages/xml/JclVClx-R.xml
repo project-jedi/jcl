@@ -13,9 +13,9 @@
     <Package Name="CJcl" Targets="C6" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="c6,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\visclx\JclQGraphics.pas" Targets="c6,d6,d7,k3" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclQGraphUtils.pas" Targets="d6.dev,d7.dev,k3.dev" Formname="" Condition=""/>
-    <File Name="..\..\source\prototypes\JclQGraphics.pas" Targets="d6.dev,d7.dev,k3.dev" Formname="" Condition=""/>
+    <File Name="..\..\source\visclx\JclQGraphUtils.pas" Targets="c6,d6,d7" Formname="" Condition=""/>
+    <File Name="..\..\source\visclx\JclQGraphics.pas" Targets="c6,d6,d7" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclQGraphUtils.pas" Targets="d6.dev,d7.dev" Formname="" Condition=""/>
+    <File Name="..\..\source\prototypes\JclQGraphics.pas" Targets="d6.dev,d7.dev" Formname="" Condition=""/>
   </Contains>
 </Package>
