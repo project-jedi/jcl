@@ -66,6 +66,34 @@ procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
+{
+TODOC
+From: Jean-Fabien Connault [mailto:cycocrew@worldnet.fr]
+Descr: Test whether a registry key exists as a subkey of RootKey
+Used test cases:
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  RegKey: HKEY;
+begin
+  if RegOpenKeyEx(HKEY_CURRENT_USER, 'Software', 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    Assert(not RegKeyExists(RegKey, 'Microsoft\_Windows'));
+    RegCloseKey(RegKey);
+  end;
+  if RegOpenKeyEx(HKEY_CURRENT_USER, 'Software', 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    Assert(RegKeyExists(RegKey, 'Microsoft\Windows'));;
+    RegCloseKey(RegKey);
+  end;
+  Assert(RegKeyExists(HKEY_CURRENT_USER, ''));
+  Assert(RegKeyExists(HKEY_CURRENT_USER, 'Software'));
+  Assert(RegKeyExists(HKEY_CURRENT_USER, 'Software\Microsoft'));
+  Assert(RegKeyExists(HKEY_CURRENT_USER, 'Software\Microsoft\Windows'));
+  Assert(RegKeyExists(HKEY_CURRENT_USER, '\Software\Microsoft\Windows'));
+  Assert(not RegKeyExists(HKEY_CURRENT_USER, '\Software\Microsoft2\Windows'));
+end;
+}
+function RegKeyExists(const RootKey: HKEY; const Key: string): Boolean;
 
 type
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
@@ -564,6 +592,16 @@ begin
   end
   else
     ReadError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+function RegKeyExists(const RootKey: HKEY; const Key: string): Boolean;
+var
+  RegKey: HKEY;
+begin
+  Result := (RegOpenKeyEx(RootKey, RelativeKey(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  if Result then RegCloseKey(RegKey);
 end;
 
 //------------------------------------------------------------------------------
