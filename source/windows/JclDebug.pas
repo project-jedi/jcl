@@ -190,9 +190,12 @@ type
     FProcNames: array of TJclMapProcName;
     FSegments: array of TJclMapSegment;
     FSourceNames: array of TJclMapProcName;
+    FLastValidAddr: TJclMapAddress;
     FLineNumbersCnt: Integer;
-    FProcNamesCnt: Integer;
+    FLineNumberErrors: Integer;
     FNewUnitFileName: PJclMapString;
+    FProcNamesCnt: Integer;
+    FTopValidAddr: Integer;
   protected
     procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
     procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
@@ -210,6 +213,7 @@ type
     function ProcNameFromAddr(Addr: DWORD): string; overload;
     function ProcNameFromAddr(Addr: DWORD; var Offset: Integer): string; overload;
     function SourceNameFromAddr(Addr: DWORD): string;
+    property LineNumberErrors: Integer read FLineNumberErrors;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -289,14 +293,23 @@ type
     property ValidFormat: Boolean read FValidFormat;
   end;
 
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; overload;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
+  var LineNumberErrors: Integer): Boolean; overload;
 
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
   MapFileName: TFileName; var LinkerBugUnit: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
+  MapFileName: TFileName; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean; overload;
+
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
   BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
+  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Source Locations
@@ -689,7 +702,7 @@ uses
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}
-  JclHookExcept, JclStrings, JclSysInfo, JclSysUtils;
+  JclHookExcept, JclLogic, JclStrings, JclSysInfo, JclSysUtils;
 
 //==================================================================================================
 // Helper assembler routines
@@ -1259,8 +1272,8 @@ end;
 // TJclMapScanner
 //==================================================================================================
 
-procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress;
-  Len: Integer; SectionName, GroupName: PJclMapString);
+procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress; Len: Integer;
+  SectionName, GroupName: PJclMapString);
 begin
 end;
 
@@ -1309,19 +1322,27 @@ procedure TJclMapScanner.LineNumbersItem(LineNumber: Integer; const Address: TJc
 var
   C: Integer;
 begin
-  if FLineNumbersCnt mod 256 = 0 then
-    SetLength(FLineNumbers, FLineNumbersCnt + 256);
-  FLineNumbers[FLineNumbersCnt].Addr := Address.Offset;
-  FLineNumbers[FLineNumbersCnt].LineNumber := LineNumber;
-  Inc(FLineNumbersCnt);
-  if FNewUnitFileName <> nil then
+  // Try to eliminate invalid line numbers caused by bug in the linker
+  if (FLastValidAddr.Offset = 0) or ((Address.Offset > 0) and (Address.Offset <= FTopValidAddr) and
+    (FLastValidAddr.Segment = Address.Segment) and (FLastValidAddr.Offset < Address.Offset)) then
   begin
-    C := Length(FSourceNames);
-    SetLength(FSourceNames, C + 1);
-    FSourceNames[C].Addr := Address.Offset;
-    FSourceNames[C].ProcName := FNewUnitFileName;
-    FNewUnitFileName := nil;
-  end;
+    FLastValidAddr := Address;
+    if FLineNumbersCnt mod 256 = 0 then
+      SetLength(FLineNumbers, FLineNumbersCnt + 256);
+    FLineNumbers[FLineNumbersCnt].Addr := Address.Offset;
+    FLineNumbers[FLineNumbersCnt].LineNumber := LineNumber;
+    Inc(FLineNumbersCnt);
+    if FNewUnitFileName <> nil then
+    begin
+      C := Length(FSourceNames);
+      SetLength(FSourceNames, C + 1);
+      FSourceNames[C].Addr := Address.Offset;
+      FSourceNames[C].ProcName := FNewUnitFileName;
+      FNewUnitFileName := nil;
+    end;
+  end
+  else
+    Inc(FLineNumberErrors);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1414,32 +1435,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function MapLineNumberCompare(Item1, Item2: Pointer): Integer;
-begin
-  Result := Integer(PJclMapLineNumber(Item1)^.Addr) - Integer(PJclMapLineNumber(Item2)^.Addr);
-end;
-
-function MapProcNameCompare(Item1, Item2: Pointer): Integer;
-begin
-  Result := Integer(PJclMapProcName(Item1)^.Addr) - Integer(PJclMapProcName(Item2)^.Addr);
-end;
-
 procedure TJclMapScanner.Scan;
 begin
+  FLastValidAddr.Segment := 0;
+  FLastValidAddr.Offset := 0;
+  FTopValidAddr := 0;
+  FLineNumberErrors := 0;
   Parse;
   SetLength(FLineNumbers, FLineNumbersCnt);
   SetLength(FProcNames, FProcNamesCnt);
-  if LinkerBug then
-  begin
-    SortDynArray(FLineNumbers, SizeOf(FLineNumbers[0]), MapLineNumberCompare);
-    SortDynArray(FSourceNames, SizeOf(FSourceNames[0]), MapProcNameCompare);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclMapScanner.SegmentItem(const Address: TJclMapAddress;
-  Len: Integer; GroupName, UnitName: PJclMapString);
+procedure TJclMapScanner.SegmentItem(const Address: TJclMapAddress; Len: Integer;
+  GroupName, UnitName: PJclMapString);
 var
   C: Integer;
 begin
@@ -1450,6 +1460,7 @@ begin
     FSegments[C].StartAddr := Address.Offset;
     FSegments[C].EndAddr := Address.Offset + Len;
     FSegments[C].UnitName := UnitName;
+    FTopValidAddr := Max(FTopValidAddr, Address.Offset + Len);
   end;
 end;
 
@@ -1648,7 +1659,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean; 
+var
+  Dummy1: string;
+  Dummy2: Integer;
+begin
+  Result := ConvertMapFileToJdbgFile(MapFileName, Dummy1, Dummy2);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName; var LinkerBugUnit: string;
+  var LineNumberErrors: Integer): Boolean;
 var
   JDbgFileName: TFileName;
   Generator: TJclBinDebugGenerator;
@@ -1659,6 +1681,8 @@ begin
     Result := (Generator.DataStream.Size > 0) and Generator.CalculateCheckSum;
     if Result then
       Generator.DataStream.SaveToFile(JDbgFileName);
+    LinkerBugUnit := Generator.LinkerBugUnitName;
+    LineNumberErrors := Generator.LineNumberErrors;  
   finally
     Generator.Free;
   end;
@@ -1669,12 +1693,23 @@ end;
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
   var LinkerBugUnit: string; var MapFileSize, JclDebugDataSize: Integer): Boolean;
 var
+  Dummy: Integer;
+begin
+  Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, MapFileName, LinkerBugUnit,
+    MapFileSize, JclDebugDataSize, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
+  var LinkerBugUnit: string; var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
+var
   BinDebug: TJclBinDebugGenerator;
 begin
   BinDebug := TJclBinDebugGenerator.Create(MapFileName);
   try
     Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, BinDebug,
-      LinkerBugUnit, MapFileSize, JclDebugDataSize);
+      LinkerBugUnit, MapFileSize, JclDebugDataSize, LineNumberErrors);
   finally
     BinDebug.Free;
   end;
@@ -1685,6 +1720,18 @@ end;
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
   BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
   var MapFileSize, JclDebugDataSize: Integer): Boolean;
+var
+  Dummy: Integer;
+begin
+  Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, BinDebug, LinkerBugUnit,
+    MapFileSize, JclDebugDataSize, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
+  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize, LineNumberErrors: Integer): Boolean;
 var
   ImageStream: TMemoryStream;
   NtHeaders: PImageNtHeaders;
@@ -1701,12 +1748,16 @@ var
 begin
   MapFileSize := 0;
   JclDebugDataSize := 0;
+  LineNumberErrors := 0;
   LinkerBugUnit := '';
   if BinDebug.Stream <> nil then
   begin
     Result := True;
     if BinDebug.LinkerBug then
+    begin
       LinkerBugUnit := BinDebug.LinkerBugUnitName;
+      LineNumberErrors := BinDebug.LineNumberErrors;
+    end;
   end
   else
     Result := False;
@@ -2772,7 +2823,12 @@ begin
       else
         StartProcOffsetStr := '';
       if IncludeAddressOffset then
-        OffsetStr := Format(' + $%x', [OffsetFromLineNumber]);
+      begin
+        if OffsetFromLineNumber >= 0 then
+          OffsetStr := Format(' + $%x', [OffsetFromLineNumber])
+        else
+          OffsetStr := Format(' - $%x', [-OffsetFromLineNumber])
+      end;
       Result := Format('[%p] %s.%s (Line %u, "%s"%s)%s', [Addr, UnitName, ProcedureName, LineNumber,
         SourceName, StartProcOffsetStr, OffsetStr]);
     end
