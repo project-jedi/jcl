@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 6, 2000                                               }
+{ Last modified: December 12, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -40,7 +40,7 @@ uses
 
 function RegCreateKey(const Key, Value: string): Longint;
 function RegDeleteEntry(RootKey: HKEY; const Key, Name: string): Boolean;
-function RegDeleteKey(RootKey:HKEY; const Key: string):Boolean;
+function RegDeleteKey(RootKey: HKEY; const Key: string):Boolean;
 
 function RegReadBool(RootKey: HKEY; const Key, Name: string): Boolean;
 function RegReadBoolDef(RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
@@ -115,8 +115,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function RegDeleteKey(RootKey:HKEY;const Key: string):Boolean;
-
+function RegDeleteKey(RootKey: HKEY;const Key: string):Boolean;
 var
   WinReg: TRegistry;
 begin
@@ -124,11 +123,11 @@ begin
   WinReg := TRegistry.Create;
   try
     WinReg.RootKey := RootKey;
-    if winreg.keyExists(key) then
-        begin
-    winreg.CloseKey;
-    Result := WinReg.Deletekey(key);
-        end;
+    if WinReg.KeyExists(Key) then
+    begin
+      WinReg.CloseKey;
+      Result := WinReg.Deletekey(Key);
+    end;
   finally
     WinReg.Free;
   end;
@@ -283,7 +282,7 @@ end;
 procedure GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; var RegPath: string);
 begin
   Key := HKEY_CURRENT_USER;
-  if ExecKind in [ekMachineRun, ekMachineRunOnce,ekServiceRun,ekServiceRunOnce] then
+  if ExecKind in [ekMachineRun, ekMachineRunOnce, ekServiceRun, ekServiceRunOnce] then
     Key := HKEY_LOCAL_MACHINE;
   RegPath := 'Software\Microsoft\Windows\CurrentVersion\';
   case ExecKind of
@@ -309,14 +308,14 @@ begin
   Result := False;
   if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
     Exit;
-  GetKeyAndPath(ExecKind,Key,RegPath);
-  WinReg:=TRegistry.Create;
+  GetKeyAndPath(ExecKind, Key, RegPath);
+  WinReg := TRegistry.Create;
   WinReg.RootKey := Key;
-  OpenKey(WinReg,Key,RegPath, False);
-      if WinReg.ValueExists(ExtractFileName(Path)) then
-        Result := Winreg.DeleteValue(ExtractFileName(Path))
-      else
-        Result := True;
+  OpenKey(WinReg, Key, RegPath, False);
+  if WinReg.ValueExists(ExtractFileName(Path)) then
+    Result := Winreg.DeleteValue(ExtractFileName(Path))
+  else
+    Result := True;
 end;
 
 //------------------------------------------------------------------------------
@@ -329,9 +328,9 @@ begin
   Result := False;
   if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
     Exit;
-  GetKeyAndPath(ExecKind,Key,RegPath);
+  GetKeyAndPath(ExecKind, Key, RegPath);
   RegWriteString(Key, RegPath, ExtractFileName(Path), Path);
-  Result:=True;
+  Result := True;
 end;
 
 //------------------------------------------------------------------------------
@@ -340,19 +339,15 @@ function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TS
 var
   WinReg: TRegistry;
 begin
-    List.Clear;
-    WinReg := TRegistry.Create;
-    try
-      OpenKey(WinReg, RootKey, Key, True);
-      WinReg.GetValueNames(List);
-      if list.count>0 then
-      result:=true else
-      result:=False;
-    finally
-      WinReg.Free;
-    end;
-
-
+  List.Clear;
+  WinReg := TRegistry.Create;
+  try
+    OpenKey(WinReg, RootKey, Key, True);
+    WinReg.GetValueNames(List);
+    Result := List.Count > 0;
+  finally
+    WinReg.Free;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -361,16 +356,14 @@ function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStr
 var
   WinReg: TRegistry;
 begin
-      WinReg := TRegistry.Create;
-    try
-      OpenKey(WinReg, RootKey, Key, True);
-      WinReg.GetKeyNames(List);
-      if list.count>0 then
-      result:=true else
-      result:=False;
-    finally
-      WinReg.Free;
-    end;
+  WinReg := TRegistry.Create;
+  try
+    OpenKey(WinReg, RootKey, Key, True);
+    WinReg.GetKeyNames(List);
+    Result := List.Count > 0;
+  finally
+    WinReg.Free;
+  end;
 end;
 
 //------------------------------------------------------------------------------
