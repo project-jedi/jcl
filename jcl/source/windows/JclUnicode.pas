@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: January 21, 2001                                             }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -25,6 +25,9 @@ unit JclUnicode;
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
+// 29-JAN-2001:
+//   - PrepareUnicodeData
+//   - LoadInProgress critical section is now created at init time to avoid critical thread races
 // 26-JAN-2001:
 //   - ExpandANSIString
 //   - TWideStrings.SaveUnicode is by default True now    
@@ -1026,8 +1029,6 @@ begin
   if not CategoriesLoaded then
   begin
     // make sure no other code is currently modifying the global data area
-    if LoadInProgress = nil then
-      LoadInProgress := TCriticalSection.Create;
     LoadInProgress.Enter;
     try
       CategoriesLoaded := True;
@@ -1121,8 +1122,6 @@ begin
   if not CaseDataLoaded then
   begin
     // make sure no other code is currently modifying the global data area
-    if LoadInProgress = nil then
-      LoadInProgress := TCriticalSection.Create;
     LoadInProgress.Enter;
 
     try
@@ -1291,8 +1290,6 @@ begin
   if not DecompositionsLoaded then
   begin
     // make sure no other code is currently modifying the global data area
-    if LoadInProgress = nil then
-      LoadInProgress := TCriticalSection.Create;
     LoadInProgress.Enter;
 
     try
@@ -1440,8 +1437,6 @@ var
 
 begin
   // make sure no other code is currently modifying the global data area
-  if LoadInProgress = nil then
-    LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
   try
@@ -1532,8 +1527,6 @@ var
 
 begin
   // make sure no other code is currently modifying the global data area
-  if LoadInProgress = nil then
-    LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
   try
@@ -1623,8 +1616,6 @@ var
 
 begin
   // make sure no other code is currently modifying the global data area
-  if LoadInProgress = nil then
-    LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
   try
@@ -7988,6 +7979,21 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure PrepareUnicodeData;
+
+// Prepares structures which are globally needed.
+
+begin
+  LoadInProgress := TCriticalSection.Create;
+
+  if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
+    @WideCompareText := @CompareTextWinNT
+  else
+    @WideCompareText := @CompareTextWin95;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure FreeUnicodeData;
 
 // Frees all data which has been allocated and which is not automatically freed by Delphi.
@@ -7999,11 +8005,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 initialization
-  if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
-    @WideCompareText := @CompareTextWinNT
-  else
-    @WideCompareText := @CompareTextWin95;
-
+  PrepareUnicodeData;
 finalization
   FreeUnicodeData;
 end.
