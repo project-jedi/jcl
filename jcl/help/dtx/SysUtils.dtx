@@ -12,6 +12,8 @@ Parameters:
 Result:
   If the specified string is empty the funtion returns nil, otherwise it returns
   a pointer to the first character of the string.
+See also:
+  PCharOrNil
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -34,6 +36,8 @@ Parameters:
 Result:
   If the specified string is empty the funtion returns nil, otherwise it returns
   a pointer to the first character of the string.
+See also:
+  PWideCharOrNil
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -128,6 +132,8 @@ Description:
   the FreeMemAndNil procedure.
 Parameters:
   Obj - Reference to an instance of a TObject descendant to free. Upon return the Obj variable has been reset to nil so future references ensure a relatively easy to understand access violation.
+See also:
+  FreeMemAndNil
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -147,6 +153,8 @@ Description:
   descendants. For TObject (descendants) you can use the FreeAndNil procedure.
 Parameters:
   P - Reference to the memory block to release. Upon return the P variable has been reset to nil so future references ensure a relatively easy to understand access violation.
+See also:
+  FreeAndNil
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -187,6 +195,9 @@ Parameters:
   AClass - The class for which to get the number of virtual methods.
 Result:
   The number of virtual methods of the given class.
+See also:
+  GetVirtualMethod
+  SetVirtualMethod
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -209,6 +220,9 @@ Parameters:
 Result:
   The result is a pointer to the virtual method. If the method is an abstract
   method the value returned is a pointer to System._AbstractError.
+See also:
+  GetVirtualMethodCount
+  SetVirtualMethod
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -235,6 +249,9 @@ Parameters:
   AClass - The class for which to set a virtual method.
   Index - The index of the virtual method to be set.
   Method - The new address of the virtual method.
+See also:
+  GetVirtualMethodCount
+  GetVirtualMethod
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -279,6 +296,8 @@ Parameters:
   AClass - The class for which to get dynamic method index list.
 Result:
   Pointer to an array containing the indices. Do not modify this array!
+See also:
+  TDynamicIndexList
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -317,6 +336,8 @@ Parameters:
   AClass - The class for which to get dynamic method address list.
 Result:
   Pointer to an array containing the addresses. Do not modify this array!
+See also:
+  TDynamicAddressList
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -416,6 +437,8 @@ Parameters:
   AClass - The class for which to retrieve the field table.
 Result:
   Pointer to the field table. Do not modify this structure!
+See also:
+  TFieldTable
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -450,6 +473,8 @@ Summary:
   List of classes used by the fields entries.
 Description:
   List of classes used by the fields entries.
+See also:
+  TFieldEntry
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -494,6 +519,8 @@ Parameters:
   AClass - The class for which to retrieve the method table.
 Result:
   Pointer to the method table. Do not modify this structure!
+See also:
+  TMethodTable
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -510,6 +537,10 @@ Description:
   Method Table Structure. Gives a description of method, with Count the number
   of methods, followed by count numbers of a variable length structure for each
   entry.
+See also:
+  GetMethodTable
+  GetMethodEntry
+  TMethodEntry
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -535,6 +566,9 @@ Parameters:
 Result:
   Pointer to the method table entry from the method table with
   the given index. Do not modify this structure!
+See also:
+  TMethodEntry
+  GetMethodTable
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -577,6 +611,8 @@ Description:
 Parameters:
   AClass - The class whose parent to change.
   NewClassParent - The new parent for AClass.
+See also:
+  GetClassParent
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -597,6 +633,8 @@ Parameters:
 Result:
   The parent class (type of the immediate ancestor) of the specified class or nil
   of the specified class is TObject.
+See also:
+  SetClassParent
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -616,6 +654,8 @@ Parameters:
   Address - The address to test. Note that this should be the equivalent of Obj.ClassType where Obj is an instance of TObject or descendant class.
 Result:
   The result is True if the Address is a class otherwise it is False.
+See also:
+  IsObject
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -635,6 +675,8 @@ Parameters:
   Address - The address to test. Note that this should be a TObject or TObject descendant.
 Result:
   The result is True if the Address is an object otherwise it is False.
+See also:
+  IsClass
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -671,6 +713,10 @@ Description:
   destroyed. Usually you will simply store the returned safeguard interface pointer
   in a variable at the appropriate scope and forget about it. However, the ISafeGuard
   interface does provide some additional functionality which may be useful at times.
+See also:
+  <LINK Guard,..\Guard>
+  <LINK GuardGetMem,..\GuardGetMem>
+  <LINK GuardAllocMem,..\GuardAllocMem>
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -778,6 +824,9 @@ Description:
   interface does provide some additional functionality which may be useful at times.
 Notes:
   You can use IMultiSafeGuard to guard multiple memory allocations or multiple objects. However, a single IMultiSafeGuard interface can only store one or the other, you can not mix memory and objects in a single IMultiSafeGuard.
+See also:
+  <LINK Guard,..\Guard>
+  <LINK ISafeGuard,..\ISafeGuard>
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -905,6 +954,10 @@ Parameters:
 Result:
   Copy of the Mem (or Obj) parameter. This is merely a convenience which allows
   you to create the resource embedded inside the function call as demonstrated above.
+See also:
+  GuardGetMem
+  GuardAllocMem
+  ISafeGuard\ISafeGuard
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -928,6 +981,10 @@ Parameters:
   SafeGuard - Receives a pointer to the ISafeGuard interface which is associated with the allocated memory.
 Result:
   Pointer to the block of allocated memory.
+See also:
+  Guard
+  GuardAllocMem
+  ISafeGuard\ISafeQuard
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -953,6 +1010,10 @@ Parameters:
   SafeGuard - Receives a pointer to the ISafeGuard interface which is associated with the allocated memory.
 Result:
   Pointer to the block of allocated memory.
+See also:
+  Guard
+  GuardGetMem
+  ISafeGuard\ISafeGuard
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -972,6 +1033,8 @@ Description:
   the result is unpredictable (likely an access violation will occur).
 Parameters:
   List - The list to clear.
+See also:
+  FreeObjectList
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -992,6 +1055,8 @@ Description:
   will occur).
 Parameters:
   List - The list to free.
+See also:
+  ClearObjectList
 Quick info:
   Unit: JclSysUtils
   Category: Memory, Classes and Objects
@@ -1043,6 +1108,9 @@ Parameters:
   FileName - File name of the module to load.
 Result:
   The function returns True if the module could be loaded False otherwise.
+See also:
+  LoadModuleEx
+  UnloadModule
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -1066,6 +1134,9 @@ Parameters:
   Module - Receives the handle of the loaded module.
   FileName - File name of the module to load.
   Flags - Additional loading flags.
+See also:
+  LoadModule
+  UnloadModule
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -1082,6 +1153,9 @@ Description:
   Unloads a dynamic module (DLL) loaded with LoadModule or
 Parameters:
   Module - Contains the handle of the module to unload.
+See also:
+  LoadModule
+  LoadModuleEx
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -1104,6 +1178,8 @@ Result:
   The pointer to the exported symbol. Normally this is a "pointer to function"
   as C calls it. In Pascal its a function type. nil is returned for symbols
   not contained in the module.
+See also:
+  GetModuleSymbolEx
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -1130,6 +1206,8 @@ Result:
   The pointer to the exported symbol. Normally this is a "pointer to function"
   as C calls it. In Pascal its a function type. nil is returned for symbols
   not contained in the module and Accu will contain False.
+See also:
+  GetModuleSymbol
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -1155,6 +1233,8 @@ Parameters:
   SymbolName - Name of the exported variable to access.
    - The untyped destination of the copy.
   Size - Amount of bytes to copy.
+See also:
+  WriteModuleData
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
@@ -1182,6 +1262,8 @@ Parameters:
   SymbolName - Name of the exported variable to access.
    - The untyped source of the copy.
   Size - Amount of bytes to copy.
+See also:
+  ReadModuleData
 Quick info:
   Unit: JclSysUtils
   Category: Base Services
