@@ -431,6 +431,9 @@ type
     property Rows[const Idx: Integer]: TJclClrTableEventMapRow read GetRow; default;
   end;
 
+  TJclClrTableEventFlag = (efSpecialName, efRTSpecialName);
+  TJclClrTableEventFlags = set of TJclClrTableEventFlag;
+
   TJclClrTableEventDefRow = class(TJclClrTableRow)
   private
     FNameOffset: DWORD;
@@ -1959,6 +1962,74 @@ const
   ClrTablePropertyFlagMapping: array[TJclClrTablePropertyFlag] of Word =
   (prSpecialName, prRTSpecialName, prHasDefault);
 
+//////////////////////////////////////////
+// Event attr bits, used by DefineEvent.
+//
+const
+  evSpecialName           =   $0200;     // event is special.  Name describes how.
+
+  // Reserved flags for Runtime use only.
+  evReservedMask          =   $0400;
+  evRTSpecialName         =   $0400;     // Runtime(metadata internal APIs) should check name encoding.
+
+  ClrTableEventFlagMapping: array[TJclClrTableEventFlag] of Word =
+  (evSpecialName, evRTSpecialName);
+
+////////////////////////////////////////////////////////
+// DeclSecurity attr bits, used by DefinePermissionSet
+//
+  dclActionMask       =   $000f;     // Mask allows growth of enum.
+  dclActionNil        =   $0000;
+  dclRequest          =   $0001;    
+  dclDemand           =   $0002;
+  dclAssert           =   $0003;
+  dclDeny             =   $0004;    
+  dclPermitOnly       =   $0005;    
+  dclLinktimeCheck    =   $0006;    
+  dclInheritanceCheck =   $0007;    
+  dclRequestMinimum   =   $0008;    
+  dclRequestOptional  =   $0009;    
+  dclRequestRefuse    =   $000a;
+  dclPrejitGrant      =   $000b;     // Persisted grant set at prejit time
+  dclPrejitDenied     =   $000c;     // Persisted denied set at prejit time
+  dclNonCasDemand     =   $000d;     //
+  dclNonCasLinkDemand =   $000e;
+  dclNonCasInheritance=   $000f;
+  dclMaximumValue     =   $000f;     // Maximum legal value
+
+///////////////////////////////////////////////////
+// PinvokeMap attr bits, used by DefinePinvokeMap
+//
+  pmNoMangle          = $0001;   // Pinvoke is to use the member name as specified.
+
+  // Use this mask to retrieve the CharSet information.
+  pmCharSetMask       = $0006;
+  pmCharSetNotSpec    = $0000;
+  pmCharSetAnsi       = $0002;
+  pmCharSetUnicode    = $0004;
+  pmCharSetAuto       = $0006;
+
+
+  pmBestFitUseAssem   = $0000;
+  pmBestFitEnabled    = $0010;
+  pmBestFitDisabled   = $0020;
+  pmBestFitMask       = $0030;
+
+  pmThrowOnUnmappableCharUseAssem   = $0000;
+  pmThrowOnUnmappableCharEnabled    = $1000;
+  pmThrowOnUnmappableCharDisabled   = $2000;
+  pmThrowOnUnmappableCharMask       = $3000;
+
+  pmSupportsLastError = $0040;   // Information about target function. Not relevant for fields.
+
+  // None of the calling convention flags is relevant for fields.
+  pmCallConvMask      = $0700;
+  pmCallConvWinapi    = $0100;   // Pinvoke will use native callconv appropriate to target windows platform.
+  pmCallConvCdecl     = $0200;
+  pmCallConvStdcall   = $0300;
+  pmCallConvThiscall  = $0400;   // In M9, pinvoke will raise exception.
+  pmCallConvFastcall  = $0500;
+
 function IsBitSet(const Value, Flag: DWORD): Boolean;
 begin
   Result := (Value and Flag) = Flag;
@@ -2687,8 +2758,7 @@ end;
 
 { TJclClrTableCustomAttributeRow }
 
-constructor TJclClrTableCustomAttributeRow.Create(
-  const ATable: TJclClrTable);
+constructor TJclClrTableCustomAttributeRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
@@ -4134,8 +4204,7 @@ end;
 
 { TJclClrTablePropertyMapRow }
 
-constructor TJclClrTablePropertyMapRow.Create(
-  const ATable: TJclClrTable);
+constructor TJclClrTablePropertyMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
@@ -4203,8 +4272,7 @@ end;
 
 { TJclClrTableStandAloneSigRow }
 
-constructor TJclClrTableStandAloneSigRow.Create(
-  const ATable: TJclClrTable);
+constructor TJclClrTableStandAloneSigRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
