@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.10"/>
-    <PROJECT value="bplCJclVClxK3.so.1.90.0"/>
+    <PROJECT value="bplCJclVClxK3.so.1.91.0"/>
     <OBJFILES value="../../lib/k3/obj/JclQGraphics.o ../../lib/k3/obj/JclQGraphUtils.o"/>
     <RESFILES value="CJclVClx.res"/>
     <DEFFILE value=""/>
@@ -40,7 +40,7 @@
     <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="rtle_pic.a $(LIBFILES) $(LIBRARIES) libborcrtl.so libborstl.so 
-      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so "/>
+      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so"/>
   </LINKER>
   <FILELIST>
       <FILE FILENAME="CJclVClx.res" FORMNAME="" UNITNAME="CJclVClx.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>

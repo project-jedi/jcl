@@ -24,22 +24,26 @@ package DJcl;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI Code Library RTL package'}
 {$LIBSUFFIX 'K3'}
-{$LIBVERSION '1.90.0'}
+{$LIBVERSION '1.91.0'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  vcl;
 
 contains
-  JclUnitConv in '../../source/common/JclUnitConv.pas',
+  Jcl8087 in '../../source/common/Jcl8087.pas',
   JclBase in '../../source/common/JclBase.pas',
   JclComplex in '../../source/common/JclComplex.pas',
   JclCounter in '../../source/common/JclCounter.pas',
   JclDateTime in '../../source/common/JclDateTime.pas',
+  JclDITs in '../../source/common/JclDITs.pas',
   JclEDI in '../../source/common/JclEDI.pas',
   JclEDI_ANSIX12 in '../../source/common/JclEDI_ANSIX12.pas',
+  JclEDI_ANSIX12_Ext in '../../source/common/JclEDI_ANSIX12_Ext.pas',
   JclEDI_UNEDIFACT in '../../source/common/JclEDI_UNEDIFACT.pas',
+  JclEDI_UNEDIFACT_Ext in '../../source/common/JclEDI_UNEDIFACT_Ext.pas',
   JclEDISEF in '../../source/common/JclEDISEF.pas',
   JclEDITranslators in '../../source/common/JclEDITranslators.pas',
   JclEDIXML in '../../source/common/JclEDIXML.pas',
@@ -58,6 +62,6 @@ contains
   JclStrings in '../../source/common/JclStrings.pas',
   JclSysInfo in '../../source/common/JclSysInfo.pas',
   JclSysUtils in '../../source/common/JclSysUtils.pas',
-  Jcl8087 in '../../source/common/Jcl8087.pas';
+  JclUnitConv in '../../source/common/JclUnitConv.pas';
 
 end.
