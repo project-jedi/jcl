@@ -16,11 +16,19 @@
 {                                                                                                  }
 { The Original Code is JclGraphUtils.pas.                                                          }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Pelle F. S. Liljendal and Marcel van Brakel.     }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{ All Rights Reserved.                                                                             }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Jack N.A. Bakker
 {   Mike Lischke                                                                                   }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Alexander Radchenko                                                                            }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -77,9 +85,9 @@ type
 
   TColorVector = record
     case Integer of
-      0: (Coord: array[0..2] of Double);
-      1: (R, G, B: Double);
-      2: (H, L, S: Double);
+      0: (Coord: array[0..2] of Single);
+      1: (R, G, B: Single);
+      2: (H, L, S: Single);
   end;
 
   THLSValue = 0..240;
@@ -245,13 +253,24 @@ function Intensity(const Color32: TColor32): Integer; overload;
 
 function SetAlpha(const Color32: TColor32; NewAlpha: Integer): TColor32;
 
-procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single); overload;
-function HSLToRGB(const H, S, L: Single): TColor32; overload;
-procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
-procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
+procedure HLSToRGB(const H, L, S: Single; out R, G, B: Single); overload;
+function HLStoRGB(const HLS: TColorVector): TColorVector; overload;
+function HLStoRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef; overload;
+procedure RGBToHLS(const R, G, B: Single; out H, L, S: Single); overload;
+function RGBToHLS(const RGB: TColorVector): TColorVector; overload;
+function RGBtoHLS(const RGBColor: TColorRef): THLSVector; overload;
 
-function HLStoRGB(Hue, Luminance, Saturation: THLSValue): TColorRef;
-function RGBtoHLS(RGBColor: TColorRef): THLSVector;
+// obsolete; use corresponding HLS aliases instead
+{$IFNDEF DROP_OBSOLETE_CODE}
+procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single); overload;
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+{$ENDIF DROP_OBSOLETE_CODE}
+
+// keep HSL identifier to avoid ambiguidy with HLS overload
+function HSLToRGB(const H, S, L: Single): TColor32; overload;
+procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
 
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
@@ -2195,8 +2214,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO : Check if HSLtoRGB is inverse function to RGBtoHSL - suspected that it's not }
-procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
+procedure HLSToRGB(const H, L, S: Single; out R, G, B: Single);
 var
   M1, M2: Single;
 
@@ -2230,10 +2248,17 @@ begin
     else
       M2 := L + S - L * S;
     M1 := 2 * L - M2;
-    R := HueToColorValue(H - 1 / 3);
+    R := HueToColorValue(H + 1 / 3);
     G := HueToColorValue(H);
-    B := HueToColorValue(H + 1 / 3)
+    B := HueToColorValue(H - 1 / 3)
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
+begin
+  HLSToRGB(H, L, S, R, G, B);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2242,13 +2267,20 @@ function HSLToRGB(const H, S, L: Single): TColor32;
 var
   R, G, B: Single;
 begin
-  HSLToRGB(H, S, L, R, G, B);
+  HLSToRGB(H, L, S, R, G, B);
   Result := Color32(Round(R * 255), Round(G * 255), Round(B * 255), 255);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single);
+function HLStoRGB(const HLS: TColorVector): TColorVector;
+begin
+  HLStoRGB(HLS.H, HLS.L, HLS.S, Result.R, Result.G, Result.B);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RGBToHLS(const R, G, B: Single; out H, L, S: Single);
 var
   D, Cmax, Cmin: Single;
 begin
@@ -2283,16 +2315,28 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
+procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); 
 begin
-  RGBToHSL(RedComponent(RGB) / 255, GreenComponent(RGB) / 255, BlueComponent(RGB) / 255, H, S, L);
+  RGBToHLS(R, G, B, H, L, S);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-(***************************************************************************************************
+procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
+begin
+  RGBToHLS(RedComponent(RGB) / 255, GreenComponent(RGB) / 255, BlueComponent(RGB) / 255, H, L, S);
+end;
 
-Translated C-code from Microsoft Knowledge Base
+//--------------------------------------------------------------------------------------------------
+
+function RGBtoHLS(const RGB: TColorVector): TColorVector;
+begin
+  RGBtoHLS(RGB.R, RGB.G, RGB.B, Result.H, Result.L, Result.S);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ Translated C-code from Microsoft Knowledge Base
 -------------------------------------------
 Converting Colors Between RGB and HLS (HBS)
 Article ID: Q29240
@@ -2316,26 +2360,21 @@ MORE INFORMATION
 
 /* Color Conversion Routines --
 
-RGBtoHLS() takes a DWORD RGB value, translates it to HLS, and stores the results in the global vars H, L, and S. HLStoRGB takes the current values of H, L, and S and returns the equivalent value in an RGB DWORD. The vars H, L, and S are only written to by:
+RGBtoHLS() takes a DWORD RGB value, translates it to HLS, and stores the results in the global vars H, L, and S. HLStoRGB takes the current values of H, L, and S and returns the equivalent value in an RGB DWORD.
 
-
-   1. RGBtoHLS (initialization)
-   2. The scroll bar handlers
 A point of reference for the algorithms is Foley and Van Dam, "Fundamentals of Interactive Computer Graphics," Pages 618-19. Their algorithm is in floating point. CHART implements a less general (hardwired ranges) integral algorithm.
-There are potential round-off errors throughout this sample. ((0.5 + x)/y) without floating point is phrased ((x + (y/2))/y), yielding a very small round-off error. This makes many of the following divisions look strange. */
-
-***************************************************************************************************)
+There are potential round-off errors throughout this sample. ((0.5 + x)/y) without floating point is phrased ((x + (y/2))/y), yielding a very small round-off error. This makes many of the following divisions look strange. */ }
 
 const
   HLSMAX = High(THLSValue);	// H,L, and S vary over 0-HLSMAX
   RGBMAX = 255;			// R,G, and B vary over 0-RGBMAX
 				// HLSMAX BEST IF DIVISIBLE BY 6
 				// RGBMAX, HLSMAX must each fit in a byte.
-                                
+
 // Hue is undefined if Saturation is 0 (grey-scale).
 // This value determines where the Hue value is initially set for achromatic colors.
-  UNDEFINED = HLSMAX*2 div 3;
-  
+  UNDEFINED = HLSMAX * 2 div 3;
+
 type
   TInternalRGB = packed record
     R: Byte;
@@ -2344,7 +2383,19 @@ type
     I: Byte;
   end;
 
-function RGBtoHLS(RGBColor: TColorRef): THLSVector;
+//--------------------------------------------------------------------------------------------------
+
+function RGB(R, G, B: Byte): TColor;
+begin
+  TInternalRGB(Result).R := R;
+  TInternalRGB(Result).G := G;
+  TInternalRGB(Result).B := B;
+  TInternalRGB(Result).I := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RGBtoHLS(const RGBColor: TColorRef): THLSVector;
 var
   R, G, B: Integer;              // input RGB values
   H, L, S: Integer;
@@ -2401,28 +2452,32 @@ begin
   Result.Saturation := S;
 end;
 
-function HueToRGB(n1,n2,hue: Integer): Integer;
+//--------------------------------------------------------------------------------------------------
+
+function HueToRGB(M1, M2, Hue: Integer): Integer;
 // utility routine for HLStoRGB
 begin
   Hue := Hue mod HLSMAX;
   // range check: note values passed add div subtract thirds of range
-  if hue < 0 then
-    Inc(hue, HLSMAX);
+  if Hue < 0 then
+    Inc(Hue, HLSMAX);
 
   // return r,g, or b value from this tridrant
-  if hue < (HLSMAX div 6) then
-    Result := (n1 + (((n2-n1)*hue+(HLSMAX div 12)) div (HLSMAX div 6)))
+  if Hue < (HLSMAX div 6) then
+    Result := (M1 + (((M2 - M1) * Hue + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
-  if hue < (HLSMAX div 2) then
-    Result := n2
+  if Hue < (HLSMAX div 2) then
+    Result := M2
   else
-  if hue < ((HLSMAX*2) div 3) then
-    Result := (n1 + (((n2-n1)*(((HLSMAX*2) div 3)-hue)+(HLSMAX div 12)) div (HLSMAX div 6)))
+  if Hue < ((HLSMAX*2) div 3) then
+    Result := (M1 + (((M2 - M1)*(((HLSMAX * 2) div 3) - Hue) + (HLSMAX div 12)) div (HLSMAX div 6)))
   else
-    Result := n1;
+    Result := M1;
 end;
 
-function HLStoRGB(Hue, Luminance, Saturation: THLSValue): TColorRef;
+//--------------------------------------------------------------------------------------------------
+
+function HLStoRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef;
 var
   R, G, B: Integer;              // RGB component values
   Magic1, Magic2: Integer;       // calculated magic numbers (really!)
@@ -2440,198 +2495,19 @@ begin
   begin                          // chromatic case
     // set up magic numbers
     if (Luminance <= (HLSMAX div 2)) then
-      Magic2 := (Luminance*(HLSMAX + Saturation) + (HLSMAX div 2)) div HLSMAX
+      Magic2 := (Luminance * (HLSMAX + Saturation) + (HLSMAX div 2)) div HLSMAX
     else
       Magic2 := Luminance + Saturation - ((Luminance*Saturation) + (HLSMAX div 2)) div HLSMAX;
-    Magic1 := 2*Luminance-Magic2;
+    Magic1 := 2 * Luminance - Magic2;
     // get RGB, change units from HLSMAX to RGBMAX
-    R := (HueToRGB(Magic1,Magic2,Hue+(HLSMAX div 3))*RGBMAX +(HLSMAX div 2)) div HLSMAX;
-    G := (HueToRGB(Magic1,Magic2,Hue)               *RGBMAX +(HLSMAX div 2)) div HLSMAX;
-    B := (HueToRGB(Magic1,Magic2,Hue-(HLSMAX div 3))*RGBMAX +(HLSMAX div 2)) div HLSMAX;
+    R := (HueToRGB(Magic1, Magic2, Hue + (HLSMAX div 3)) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
+    G := (HueToRGB(Magic1, Magic2, Hue) * RGBMAX + (HLSMAX div 2)) div HLSMAX;
+    B := (HueToRGB(Magic1, Magic2, Hue - (HLSMAX div 3))* RGBMAX + (HLSMAX div 2)) div HLSMAX;
   end;
   Result :=  RGB(R, G, B);
 end;
 
-function HLS2RGB(const HLS: TColorVector): TColorVector;
-const
-  Hue: array[0..5, 0..2] of Integer = (
-    (+1, -1, -1),  // red
-    (+1, +1, -1),  // yellow
-    (-1, +1, -1),  // green
-    (-1, +1, +1),  // cyan
-    (-1, -1, +1),  // blue
-    (+1, -1, +1)); // magenta
-  Components: array[0..2] of string = ('Hue', 'Luminance', 'Saturation');
-var
-  i, j, k: Integer;
-  x: Double;
-begin
-  for i := Low(HLS.Coord) to High(HLS.Coord) do
-    if (HLS.Coord[i] < 0) or (HLS.Coord[i] > 1) then
-      { TODO : Add error message string constant to JclResources }
-      raise EColorConversionError.CreateFmt('HLS2RGB: 0 <= %s value <= 1 required', [Components[i]]);
-
-  j := Trunc(HLS.H * 6) mod 6;
-  k := (j+1) mod 6;
-  x := Frac(HLS.H * 6);
-  for i := 0 to 2 do
-    Result.Coord[i] := Hue[j, i] + x*(Hue[k, i]-Hue[j, i]);
-  for i := 0 to 2 do Result.Coord[i] := Result.Coord[i] * HLS.S;
-  if HLS.L <= 0.5 then
-    for i := 0 to 2 do Result.Coord[i] := HLS.L * (Result.Coord[i]+ 1)
-  else
-    for i := 0 to 2 do Result.Coord[i] := HLS.L + Result.Coord[i] * (1-HLS.L);
-
-  for i := 0 to 2 do
-    if Result.Coord[i] < 0 then Result.Coord[i] := 0 else
-    if Result.Coord[i] > 1 then Result.Coord[i] := 1;
-end;
-
-function RGB2HLS(const RGB: TColorVector): TColorVector;
-const
-  Epsilon = 1E-8;
-  Components: array[0..2] of string = (
-    'Red',
-    'Green',
-    'Blue');
-var
-  i, k: Integer;
-  x: Double;
-  V: TColorVector;
-  W: TColorVector absolute Result;
-  Hue: Double;
-  Sat: Double;
-  Lum: Double;
-
-  function GetHue: Double;
-  begin
-    case k of
-      0: if W.G > W.B then Result := 2+(W.B+1)/2
-	 else Result := 4-(W.G+1)/2;
-      1: if W.B > W.R then Result := 4+(W.R+1)/2
-	 else Result := 6-(W.B+1)/2;
-      2: if W.R > W.G then Result := (W.G+1)/2
-	 else Result := 2-(W.R+1)/2;
-      else Result := 0;
-    end;
-    Result := Result/6;
-  end;
-
-begin
-  for i := Low(RGB.Coord) to High(RGB.Coord) do
-    if (RGB.Coord[i] < 0) or (RGB.Coord[i] > 1) then
-      { TODO : Add error message string constant to JclResources }
-      raise EColorConversionError.CreateFmt('RGB2HLS: 0 <= %s value <= 1 required', [Components[i]]);
-
-  x := 0;
-  for i := 0 to 2 do
-  begin
-    V.Coord[i] := 2*RGB.Coord[i]-1; // [0, 1] -> [-1, 1]
-    if Abs(V.Coord[i]) > x then
-    begin
-      x := Abs(V.Coord[i]);
-      k := i;	// index of RGB coordinate most different from 0.5
-    end;
-  end;
-  if x < Epsilon then	// middle grey
-  begin
-    Result.H := 0;
-    Result.L := 0.5; // could be RGB.G or RGB.B as well
-    Result.S := 0;
-    Exit;
-  end
-  else x := 1/x;
-  for i := 0 to 2 do W.Coord[i] := V.Coord[i] * x;
-  x := 0;
-  if V.Coord[k] <= 0 then
-  begin
-    for i := 0 to 2 do if (W.Coord[i]+1) > x then x := W.Coord[i] +1;
-    if x < Epsilon then // R = G = B: location on grey axis
-    begin
-      Result.H := 0;
-      Result.L := RGB.R; // could be RGB.G or RGB.B as well
-      Result.S := 0;
-      Exit;
-    end
-    else x := 2/x;
-    for i := 0 to 2 do W.Coord[i] := x*(W.Coord[i]+1)-1;
-    Hue := GetHue;
-    // compute saturation
-    if Abs(V.G-V.R) > Epsilon then
-      Sat := (V.G-V.R)/(W.Coord[1]*(V.R+1)-W.Coord[0]*(V.G+1))
-    else if Abs(V.B-V.G) > Epsilon then
-      Sat := (V.B-V.G)/(W.Coord[2]*(V.G+1)-W.Coord[1]*(V.B+1))
-    else if Abs(V.B-V.R) > Epsilon then
-      Sat := (V.B-V.R)/(W.Coord[2]*(V.R+1)-W.Coord[0]*(V.B+1))
-    else Sat := 0;
-    // compute luminance
-    if Abs(W.Coord[1]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[1]*(V.R+1)-W.Coord[0]*(V.G+1))/(W.Coord[1]-W.Coord[0])
-    else if Abs(W.Coord[2]-W.Coord[1]) > Epsilon then
-      Lum := (W.Coord[2]*(V.G+1)-W.Coord[1]*(V.B+1))/(W.Coord[2]-W.Coord[1])
-    else if Abs(W.Coord[2]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[2]*(V.R+1)-W.Coord[0]*(V.B+1))/(W.Coord[2]-W.Coord[0])
-    else Lum := V.R+1;
-    Lum := Lum * 0.5;
-  end else
-  begin
-    for i := 0 to 2 do if (1-W.Coord[i]) > x then x := 1-W.Coord[i];
-    if x < Epsilon then // R = G = B: location on grey axis
-    begin
-      Result.H := 0;
-      Result.L := RGB.R; // could be RGB.G or RGB.B as well
-      Result.S := 0;
-      Exit;
-    end
-    else x := 2/x;
-    for i := 0 to 2 do W.Coord[i] := x*(W.Coord[i]-1)+1;
-    x := 1;
-    for i := 0 to 2 do
-    if W.Coord[i] < x then
-    begin
-      x := W.Coord[i];
-      k := i;
-    end;
-    Hue := GetHue;
-    // compute saturation
-    if Abs(V.G-V.R) > Epsilon then
-      Sat := (V.G-V.R)/(W.Coord[0]*(V.G-1)-W.Coord[1]*(V.R-1))
-    else if Abs(V.B-V.G) > Epsilon then
-      Sat := (V.B-V.G)/(W.Coord[1]*(V.B-1)-W.Coord[2]*(V.G-1))
-    else if Abs(V.B-V.R) > Epsilon then
-      Sat := (V.B-V.R)/(W.Coord[0]*(V.B-1)-W.Coord[2]*(V.R-1))
-    else Sat := 0;
-    // compute luminance
-    if Abs(W.Coord[1]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[1]*(V.R-1)-W.Coord[0]*(V.G-1))/(W.Coord[1]-W.Coord[0])
-    else if Abs(W.Coord[2]-W.Coord[1]) > Epsilon then
-      Lum := (W.Coord[2]*(V.G-1)-W.Coord[1]*(V.B-1))/(W.Coord[2]-W.Coord[1])
-    else if Abs(W.Coord[2]-W.Coord[0]) > Epsilon then
-      Lum := (W.Coord[2]*(V.R-1)-W.Coord[0]*(V.B-1))/(W.Coord[2]-W.Coord[0])
-    else Lum := V.R-1;
-    Lum := 1 + Lum * 0.5;
-  end;
-  W.H := Hue;
-  W.L := Lum;
-  W.S := Sat;
-
-  for i := 0 to 2 do
-    if W.Coord[i] < 0 then W.Coord[i] := 0 else
-    if W.Coord[i] > 1 then W.Coord[i] := 1;
-end;
-
 //--------------------------------------------------------------------------------------------------
-
-function RGB(R, G, B: Byte): TColor;
-begin
-  TInternalRGB(Result).R := R;
-  TInternalRGB(Result).G := G;
-  TInternalRGB(Result).B := B;
-  TInternalRGB(Result).I := 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 
 
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
@@ -2661,7 +2537,6 @@ begin
     FreeMem(ColorTable);
   end;
 end;
-
 
 
 //==================================================================================================
@@ -2986,6 +2861,15 @@ finalization
 // 2001-03-28, Mike Lischke:
 //  - ShortenString included
 
+// Revision 1.7  2004/05/01 00:21:10  rrossmair
+// fixed for Kylix
+//
+// Revision 1.6  2004/04/28 04:16:19  rrossmair
+// new functions added: RGBtoHLS, HLStoRGB, RGB2HLS, HLS2RGB, SetBitmapColors (VCL only)
+//
+// Revision 1.5  2004/04/18 06:32:07  rrossmair
+// replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
+//
 // Revision 1.4  2004/04/06 05:01:54  peterjhaas
 // adapt compiler conditions, add log entry
 //
