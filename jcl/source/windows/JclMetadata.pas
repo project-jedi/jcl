@@ -767,6 +767,7 @@ type
     function GetName: WideString;
     function GetSignature: TJclClrBlobRecord;
     function GetParentClass: TJclClrTableRow;
+    function GetFullName: WideString;
   protected
     constructor Create(const ATable: TJclClrTable); override;
   public
@@ -775,6 +776,7 @@ type
     property SignatureOffset: DWORD read FSignatureOffset;
 
     property Name: WideString read GetName;
+    property FullName: WideString read GetFullName;
     property Signature: TJclClrBlobRecord read GetSignature;
     property ParentClass: TJclClrTableRow read GetParentClass;
   end;
@@ -1021,6 +1023,7 @@ type
     function GetParamCount: Integer;
     function GetHasParam: Boolean;
     procedure UpdateParams;
+    function GetFullName: WideString;
   protected
     constructor Create(const ATable: TJclClrTable); override;
 
@@ -1040,6 +1043,7 @@ type
     property ParamListIdx: DWORD read FParamListIdx;
 
     property Name: WideString read GetName;
+    property FullName: WideString read GetFullName;
     property Signature: TJclClrBlobRecord read GetSignature;
     property ParentToken: TJclClrTableTypeDefRow read FParentToken;
     property HasParam: Boolean read GetHasParam;
@@ -1371,6 +1375,7 @@ type
     function GetNamespace: WideString;
     function GetResolutionScope: TJclClrTableRow;
     function GetResolutionScopeName: string;
+    function GetFullName: WideString;
   protected
     constructor Create(const ATable: TJclClrTable); override;
   public
@@ -1384,6 +1389,7 @@ type
     property ResolutionScopeName: string read GetResolutionScopeName;
     property Name: WideString read GetName;
     property Namespace: WideString read GetNamespace;
+    property FullName: WideString read GetFullName;
   end;
 
   TJclClrTableTypeRef = class(TJclClrTable)
@@ -3059,6 +3065,26 @@ begin
     Rows[Table.GetCodedIndexValue(FClassIdx, 3, WideIndex)-1];
 end;
 
+function TJclClrTableMemberRefRow.GetFullName: WideString;
+var
+  Row: TJclClrTableRow;
+begin
+  Row := GetParentClass;
+
+  if Row is TJclClrTableTypeRefRow then
+    Result := TJclClrTableTypeRefRow(Row).FullName
+  else if Row is TJclClrTableModuleRow then
+    Result := TJclClrTableModuleRow(Row).Name
+  else if Row is TJclClrTableMethodDefRow then
+    Result := TJclClrTableMethodDefRow(Row).FullName
+  else if Row is TJclClrTableTypeSpecRow then
+    Result := ''
+  else if Row is TJclClrTableTypeDefRow then
+    Result := TJclClrTableTypeDefRow(Row).FullName;
+
+  Result := Result + '.' + Name;
+end;
+
 { TJclClrTableMemberRef }
 
 function TJclClrTableMemberRef.GetRow(const Idx: Integer): TJclClrTableMemberRefRow;
@@ -3444,6 +3470,11 @@ begin
     end;
     Result := Result + '}';
   end;
+end;
+
+function TJclClrTableMethodDefRow.GetFullName: WideString;
+begin
+  Result := ParentToken.FullName + '.' + Name;
 end;
 
 { TJclClrTableMethodDef }
@@ -4070,6 +4101,11 @@ begin
   Result := Format('[%s/* %.8x */]%s.%s/* %.8x */',
                    [ResolutionScopeName, ResolutionScope.Token,
                     Namespace, Name, Token]);
+end;
+
+function TJclClrTableTypeRefRow.GetFullName: WideString;
+begin
+  Result := Namespace + '.' + Name;
 end;
 
 function TJclClrTableTypeRefRow.GetName: WideString;
