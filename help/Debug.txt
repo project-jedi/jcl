@@ -1,0 +1,596 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
+procedure AssertKindOf(const ClassType: TClass; const Obj: TObject); overload;
+[ShortDescr]
+Asserts that an object is of a specified class.
+[Description]
+AssertKindOf asserts that the specified object is of the specified type or inherits
+from that type. If this is not the case the function triggers an assertion failure.
+The overloaded procedure allows you to directly specify a class type instead of
+a class name.
+[Parameters]
+Count=2
+1=ClassName:string=Name of the class to test Obj for.
+2=Obj:TObject=The object to test.
+[Result]
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Diagnostics
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
+[ShortDescr]
+Enables manually crashing Windows.
+[Description]
+EnableCrashOnCtrlScroll enables crashing Windows 2000 using the keyboard. After
+this has been enabled you can bugcheck Windows 2000 by holding down the right
+control key and pressing the scroll key twice. On the second press Windows will
+bugcheck with code 0x000000E2. Note that this function simply modifies a registry
+entry, to actually enable this 'feature' you must reboot first.
+[Parameters]
+Count=1
+1=Enable:Boolean=If set to True the crash on ctrl scroll 'feature' is enabled, if
+set to False it is disabled.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Crash
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 2000 or later.
+Windows 95/98=Unsupported.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Trace(const Msg: string);
+[ShortDescr]
+Sends a message to the debugger.
+[Description]
+Trace sends the specified message to the debugger.
+[Parameters]
+Count=1
+1=Msg:string=The message to send to the debugger.
+[Notes]
+Count=1
+1=If you are running your application under the control of the debugger you can view
+these messages using the event log dialog, 'View | Debug Windows | Event Log'.
+If the application is not running under the debugger the message is sent to the
+system debugger. If there is no system debugger active the function does nothing.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Diagnostics
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=TraceFmt
+2=TraceLoc
+3=TraceLocFmt
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TraceFmt(const Fmt: string; const Args: array of const);
+[ShortDescr]
+Sends a formatted message to the debugger.
+[Description]
+TraceFmt sends a message, formatted from the supplied format string and
+arguments array, to the debugger. The function uses the VCL Format() function
+to format the string and therefore you can use this function exactly like you
+would use Format(). See the Delphi help file for more information.
+[Parameters]
+Count=2
+1=Fmt:string=Controls the formatting of the message.
+2=Args:array of const=Arguments formatted under control of the Fmt string.
+[Notes]
+Count=1
+1=If you are running your application under the control of the debugger you can view
+these messages using the event log dialog, 'View | Debug Windows | Event Log'.
+If the application is not running under the debugger the message is sent to the
+system debugger. If there is no system debugger active the function does nothing.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Diagnostics
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=Trace
+2=TraceLoc
+3=TraceLocFmt
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TraceLoc(const Msg: string);
+[ShortDescr]
+Sends a message to the debugger including location information.
+[Description]
+TraceLoc sends the specified message to the debugger but first prepends it with
+the source file location from which TraceLoc is called. For example, when calling
+TraceLoc from a method called TForm1.Button1Click located in unit1.pas like
+this: TraceLoc('Trace me.') the resulting string send to the debugger will be:<BR>
+  unit.pas:123 (TForm1.ButtonClick) "Trace me." <BR>
+assuming the TraceLoc statement is on line 123 in the source. Note that this
+function requires a detailed map file!
+[Parameters]
+Count=1
+1=Msg:string=The message to send to the debugger.
+[Notes]
+Count=1
+1=If you are running your application under the control of the debugger you can view
+these messages using the event log dialog, 'View | Debug Windows | Event Log'.
+If the application is not running under the debugger the message is sent to the
+system debugger. If there is no system debugger active the function does nothing.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Diagnostics
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=3
+1=Trace
+2=TraceFmt
+3=TraceLocFmt
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TraceLocFmt(const Fmt: string; const Args: array of const);
+[ShortDescr]
+Sends a formatted message to the debugger prepending it with location information.
+[Description]
+TraceFmt sends a message, formatted from the supplied format string and
+arguments array, to the debugger, but first prepends it with the source file location
+information. The function uses the VCL Format() function to format the string and
+therefore you can use this function exactly like you would use Format().
+See the Delphi help file for more information. See <REF>TraceLoc</REF> for an
+example output.
+[Parameters]
+Count=2
+1=Fmt:string=Controls the formatting of the message.
+2=Args:array of const=Arguments formatted under control of the Fmt string.
+[Notes]
+Count=1
+1=If you are running your application under the control of the debugger you can view
+these messages using the event log dialog, 'View | Debug Windows | Event Log'.
+If the application is not running under the debugger the message is sent to the
+system debugger. If there is no system debugger active the function does nothing.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Diagnostics
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=3
+1=Trace
+2=TraceFmt
+3=TraceLoc
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StackFrame(Level: Integer): PChar;
+[ShortDescr]
+Returns the stackframe address at a specified level.
+[Description]
+StackFrame returns the address of the stackframe for the specified level.
+Specifying level 0 results in the stackframe for the currently executing routine,
+level 1 results in the caller of the currently executing routine, level 2 results
+in the caller of the caller of the, well, you get the picture.
+[Parameters]
+Count=1
+1=Level:Integer=The level of the caller for which you want the stackframe address.
+Level 0 is the currently executing routine, 1 is the caller, 2 is the caller of
+the caller and so forth.
+[Result]
+The address of the stackframe at the specified level.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=2
+1=Caller
+2=ExceptionAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Caller(Level: Integer): PChar;
+[ShortDescr]
+Returns the address of a calling routine.
+[Description]
+Caller returns the address of the calling routine at the specified level. Specifying
+level 0 results in the currently executing routine, level 1 results in the caller
+of the currently executing routine, level 2 results in the caller of the caller of
+the, well, you get the picture. The returned address is the address of the instruction
+at which execution continues when the function(s) return.
+[Parameters]
+Count=1
+1=Level:Integer=The level of the caller for which you want the address. Level 0
+is the currently executing routine, 1 is the caller, 2 is the caller of the caller
+and so forth.
+[Result]
+The address of the instruction of the routine specified by Level at which execution
+resumes when the function(s) return.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=2
+1=StackFrame
+2=ExceptionAddr
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ExceptionAddr: Pointer;
+[ShortDescr]
+Returns the address at which an exception was raised.
+[Description]
+ExceptionAddr returns the address of the instruction at which an exception was
+raised, if any. This function uses the ExceptAddr global variable defined in
+SysUtils.pas and adjusts it before returning (the ExceptAddr variable always
+points to the next instruction).
+[Result]
+The address of the instruction at which an exception was raised or nil if there
+is no current exception.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=2
+1=Caller
+2=StackFrame
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __FILE__(const Level: Integer = 0): string;
+[ShortDescr]
+Returns the name of the file.
+[Description]
+__FILE__ returns the name of the source file in which the routine specified by
+Level exists. Level 0 denotes the currently executing routine, 1 denotes the
+caller of the routine, 2 the caller of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the source file in which
+it resides. 0 is the currently executing routine, 1 is the caller, 2 is the caller
+of the caller, etc.
+[Result]
+Filename of the source file in which the routine specified by Level exists.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__MODULE__
+2=__PROC__
+3=__LINE__
+4=__FILE_OF_ADDR__
+5=__MODULE_OF_ADDR__
+6=__PROC_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __MODULE__(const Level: Integer = 0): string;
+[ShortDescr]
+Returns the name of the module in which a routine resides.
+[Description]
+__MODULE__ returns the name of the module in which the routine specified by
+Level exists. Level 0 denotes the currently executing routine, 1 denotes the
+caller of the routine, 2 the caller of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the module name in which
+it resides. 0 is the currently executing routine, 1 is the caller, 2 is the caller
+of the caller, etc.
+[Result]
+Module name in which the routine specified by Level exists.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__PROC__
+3=__LINE__
+4=__FILE_OF_ADDR__
+5=__MODULE_OF_ADDR__
+6=__PROC_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __PROC__(const Level: Integer = 0): string;
+[ShortDescr]
+Returns the name of the routine at a specified level.
+[Description]
+__PROC__ returns the name of the procedure at the specified Level. Level 0 denotes
+the currently executing routine, 1 denotes the caller of the routine, 2 the caller
+of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the name. 0 is the
+currently executing routine, 1 is the caller, 2 is the caller of the caller, etc.
+[Result]
+Name of the routine at the specified level.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__MODULE__
+3=__LINE__
+4=__FILE_OF_ADDR__
+5=__MODULE_OF_ADDR__
+6=__PROC_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __LINE__(const Level: Integer = 0): Integer;
+[ShortDescr]
+Returns the line number in the source code file at which a routine is executing.
+[Description]
+__LINE__ returns the line number within the source code file at which the routine
+specified by Level is currently executing. Level 0 denotes the currently executing
+routine, 1 denotes the caller of the routine, 2 the caller of the caller, etc.
+[Parameters]
+Count=1
+1=Level:Integer=Caller level for which you want to know the line number. 0 is the
+currently executing routine, 1 is the caller, 2 is the caller of the caller, etc.
+[Result]
+Line number of the routine specified by Level.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__MODULE__
+3=__PROC__
+4=__FILE_OF_ADDR__
+5=__MODULE_OF_ADDR__
+6=__PROC_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __FILE_OF_ADDR__(const Addr: Pointer): string;
+[ShortDescr]
+Returns the filename for an address.
+[Description]
+__FILE_OF_ADDR__ returns the name of the source code file given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=The address for which you want to know the source code file.
+[Result]
+Name of the source code file in which the specified address is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__MODULE__
+3=__PROC__
+4=__LINE__
+5=__MODULE_OF_ADDR__
+6=__PROC_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __MODULE_OF_ADDR__(const Addr: Pointer): string;
+[ShortDescr]
+Returns the module name for an address.
+[Description]
+__MODULE_OF_ADDR__ returns the name of the module given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=The address for which you want to know the module name.
+[Result]
+Name of module in which the specified address is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__MODULE__
+3=__PROC__
+4=__LINE__
+5=__FILE_OF_ADDR__
+6=__PROC_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __PROC_OF_ADDR__(const Addr: Pointer): string;
+[ShortDescr]
+Returns the procedure name for an address.
+[Description]
+__PROC_OF_ADDR__ returns the name of the procedure given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=Address for which you want to know the procedure.
+[Result]
+Name of the procedure in which Addr is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__MODULE__
+3=__PROC__
+4=__LINE__
+5=__FILE_OF_ADDR__
+6=__MODULE_OF_ADDR__
+7=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
+[ShortDescr]
+Returns the line number given an address.
+[Description]
+__LINE_OF_ADDR__ returns the line number in a source code file given an address.
+[Parameters]
+Count=1
+1=Addr:Pointer=The address for which you want to know the line number.
+[Result]
+Line number at which the address is defined.
+[Notes]
+Count=1
+1=Usage of this function requires building the module with a detailed map file.
+Use the Linker tab in the Project Options dialog to enable creation of a map file.
+This function internally uses a TJclMapFiles object. Creation of this object triggers
+loading of all map files available for all modules. This consumes both time and
+memory!
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations
+Author=Lasse Vågsæther Karlsen;lasse@cintra.no
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=A detailed map file.
+[SeeAlso]
+Count=7
+1=__FILE__
+2=__MODULE__
+3=__PROC__
+4=__LINE__
+5=__FILE_OF_ADDR__
+6=__MODULE_OF_ADDR__
+7=__PROC_OF_ADDR__
