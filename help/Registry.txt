@@ -545,3 +545,100 @@ Windows 95/98=Requires Windows 95 or later.
 Count=2
 1=RegGetKeyNames
 2=RegGetValueNames
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegSaveList(const RootKey: HKEY; const Key: string; const ListName: string; const Items: TStrings): Boolean;
+[ShortDescr]
+Saves a stringlist to the registry.
+[Description]
+The list of strings is saved in the registry as under the key 
+"RootKey\Key\ListName" with each string stored as registry value named 
+"1", "2", etc. The number of items in the list is stored as DWORD value 
+'Items'.
+[Parameters]
+Count=4
+1=RootKey:HKEY=The rootkey to write the list to, one of the HKEY_XXX constants.
+2=Key:string=The key (path) to write the list to, relative to RootKey.
+3=ListName:string=Name of the subkey relative to Key to write the list to.
+4=Items:TStrings=List of the items to store in the registry.
+[Result]
+The function returns True if the key "RootKey\Key\ListName" could be
+created False otherwise.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=RegLoadList
+2=RegDelList
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegLoadList(const RootKey: HKEY; const Key: string; const ListName: string; const SaveTo: TStrings): Boolean;
+[ShortDescr]
+Reads a stringlist from the registry.
+[Description]
+RegLoadList reads a list of strings from the registry which was stored 
+with <REF>RegSaveList</REF>. The function expects to find a DWORD value
+named 'Items' under the key "RootKey\Key\ListName" and reads in the amount 
+of entries stored therein.
+[Parameters]
+Count=4
+1=RootKey:HKEY=The rootkey to read the list from, one of the HKEY_XXX constants.
+2=Key:string=The key (path) to read the list from, relative to RootKey.
+3=ListName:string=Name of the subkey relative to Key to read the list from.
+4=SaveTo:TStrings=List of the items to load from the registry.
+[Result]
+The function returns True if a list with at least one element is read in.
+If 'Items' does not exist the function throws an exception.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=2
+1=RegSaveList
+2=RegDelList
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+[ShortDescr]
+Deletes a stringlist from the registry.
+[Description]
+RegDelList deletes a list of strings from the registry which was stored 
+with <REF>RegSaveList</REF>. The function expects to find a DWORD value
+named 'Items' under the key "RootKey\Key\ListName" and deletes the values 
+named "1", "2", etc.
+If 'Items' is negative then nothing is deleted.
+[Parameters]
+Count=3
+1=RootKey:HKEY=The rootkey to delete the list from, one of the HKEY_XXX constants.
+2=Key:string=The key (path) to delete the list from, relative to RootKey.
+3=ListName:string=Name of the subkey relative to Key to delete the list from.
+[Result]
+The function returns True if it finds a value named 'Items' and all the 
+values of the list False otherwise. If the number of items is 0 then
+'Items' is deleted, but the function returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=2
+1=RegSaveList
+2=RegLoadList
