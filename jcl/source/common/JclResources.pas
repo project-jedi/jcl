@@ -277,6 +277,9 @@ resourcestring
   RsInvalidRational    = 'Invalid rational number';
   RsDivByZero          = 'Division by zero';
   RsRationalDivByZero  = 'Rational division by zero';
+  RsNoNaN	       = 'NaN expected';
+  RsNaNTagError	       = 'NaN Tag value %d out of range';
+  RsNaNSignal	       = 'NaN signaling %d';
 
 //------------------------------------------------------------------------------
 // JclMime
