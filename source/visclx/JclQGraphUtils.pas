@@ -344,7 +344,8 @@ var
   MMX_ACTIVE: Boolean;
 
 
-// Internal LowLevel
+//=== Internal LowLevel ======================================================
+
 function ColorSwap(WinColor: TColor): TColor32;
 // this function swaps R and B bytes in ABGR and writes $FF into A component
 {asm
@@ -369,7 +370,8 @@ begin
     TColor32((WinColor and $FF0000) shr 16);    // B component
 end;
 
-// Blending routines
+//=== Blending routines ======================================================
+
 function _CombineReg(X, Y, W: TColor32): TColor32;
 {asm
   // combine RGBA channels of colors X and Y with the weight of X given in W
@@ -963,7 +965,8 @@ begin
   end;
 end;
 
-// Dialog functions
+//=== Dialog functions =======================================================
+
 {$IFDEF MSWINDOWS}
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 begin
@@ -986,7 +989,8 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-// Points
+//=== Points =================================================================
+
 function NullPoint: TPoint;
 begin
   Result.X := 0;
@@ -1021,7 +1025,8 @@ begin
   P.Y := P.Y + DeltaY;
 end;
 
-// Rectangles
+//=== Rectangles =============================================================
+
 function NullRect: TRect;
 begin
   with Result do
@@ -1274,7 +1279,8 @@ begin
   Result := Abs(R.Right - R.Left);
 end;
 
-// Color
+//=== Color ==================================================================
+
 const
   MaxBytePercent = High(Byte) * 0.01;
 
@@ -2004,10 +2010,12 @@ begin
   end;
 end;
 
+{$IFNDEF DROP_OBSOLETE_CODE}
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
 begin
   HLSToRGB(H, L, S, R, G, B);
 end;
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 function HSLToRGB(const H, S, L: Single): TColor32;
 var
@@ -2055,10 +2063,12 @@ begin
   end;
 end;
 
-procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); 
+{$IFNDEF DROP_OBSOLETE_CODE}
+procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single);
 begin
   RGBToHLS(R, G, B, H, L, S);
 end;
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
 begin
@@ -2239,7 +2249,8 @@ begin
 end;
 
 
-// Misc
+//=== Misc ===================================================================
+
 function ColorToHTML(const Color: TColor): string;
 var
   Temp: TColorRec;
@@ -2308,7 +2319,8 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-// Clipping
+//=== Clipping ===============================================================
+
 function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes;
 begin
   Result := [];
@@ -2496,6 +2508,15 @@ finalization
 
 // History:
 
+// Revision 1.18  2005/02/24 16:34:41  marquardt
+// remove divider lines, add section lines (unfinished)
+//
+// Revision 1.17  2004/11/25 21:56:12  rrossmair
+// - TColor32Array declaration changed to avoid range check errors in JclGraphics
+//
+// Revision 1.16  2004/11/14 06:05:05  rrossmair
+// - some source formatting
+//
 // Revision 1.15  2004/10/18 16:22:14  marquardt
 // corrected typo
 //
