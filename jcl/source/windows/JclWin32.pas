@@ -91,6 +91,9 @@ type
 
 function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
 
+function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD;
+  lpName: PChar): THandle; stdcall; external kernel32 name 'CreateMutexA';
+
 //------------------------------------------------------------------------------
 // Shell related declarations (missing/incorrect in different delphi versions)
 //------------------------------------------------------------------------------
@@ -821,6 +824,8 @@ type
 
 {$EXTERNALSYM InterlockedExchangePointer}
 {$EXTERNALSYM SignalObjectAndWait}
+{$EXTERNALSYM GetVersionEx}
+{$EXTERNALSYM CreateMutex}
 
 {$IFNDEF COMPILER4_UP}
 
