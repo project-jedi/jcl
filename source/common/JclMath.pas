@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 10, 2000                                             }
+{ Last modified: January 21, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -29,6 +29,9 @@ unit JclMath;
 interface
 
 uses
+{$IFDEF WIN32}
+  Windows,
+{$ENDIF}
   Classes, SysUtils,
   JclBase;
 
@@ -197,17 +200,75 @@ function IsPrime(const N: Integer): Boolean;
 function IsPrimeFactor(const F, N: Integer): Boolean;
 function PrimeFactors(const N: Integer): TDynIntegerArray;
 
+{ Floating point value classification }
+
+type
+  TFPClass = (
+  	fpZero,		// zero
+        fpNormal,	// normal finite <> 0
+        fpDenormal,	// denormalized finite
+        fpInfinite,	// infinite
+        fpNaN,		// not a number
+        fpInvalid);	// unsupported floating point format
+
+function FPClass(const Value: Single): TFPClass; overload;
+function FPClass(const Value: Double): TFPClass; overload;
+function FPClass(const Value: Extended): TFPClass; overload;
 
 { NaN and INF support }
+
+type
+  TNaNTag = -$3FFFFF..$3FFFFE;
 
 const
   Infinity     = 1/0;       // tricky
   NaN          = 0/0;       // tricky
   NegInfinity  = -Infinity; // tricky
 
-function IsNaN(const d: Double): Boolean;
-function IsInfinite(const d: Double): Boolean;
+function IsInfinite(const Value: Single): Boolean; overload;
+function IsInfinite(const Value: Double): Boolean; overload;
+function IsInfinite(const Value: Extended): Boolean; overload;
 
+function IsNaN(const Value: Single): Boolean; overload;
+function IsNaN(const Value: Double): Boolean; overload;
+function IsNaN(const Value: Extended): Boolean; overload;
+
+procedure MakeQuietNaN(var X: Single; Tag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeQuietNaN(var X: Double; Tag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+
+procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+
+{ Mine*Buffer fills "Buffer" with consecutive tagged signaling NaNs.
+
+  This allows for real number arrays which enforce initialization: any attempt
+  to load an uninitialized array element into the FPU will raise an exception
+  either of class EInvalidOp (Windows 9x/ME) or EJclNaNSignal (Windows NT).
+
+  Under Windows NT it is thus possible to derive the violating array index from
+  the EJclNaNSignal object's Tag property.
+}
+procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+procedure MineDoubleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
+	{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+
+{$IFDEF SUPPORTS_DYNAMICARRAYS}
+function MinedSingleArray(Length: Integer): TDynSingleArray;
+function MinedDoubleArray(Length: Integer): TDynDoubleArray;
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
+
+function GetNaNTag(const NaN: Single): TNaNTag; overload;
+function GetNaNTag(const NaN: Double): TNaNTag; overload;
+function GetNaNTag(const NaN: Extended): TNaNTag; overload;
 
 { Set support }
 
@@ -376,10 +437,18 @@ function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 type
   EJclMathError = class (EJclError);
 
+  EJclNaNSignal = class (EJclMathError)
+  private
+    FTag: TNaNTag;
+  public
+    constructor Create(ATag: TNaNTag);
+    property Tag: TNaNTag read FTag;
+  end;
+
 implementation
 
 uses
-  JclResources;
+  JclResources, Jcl8087;
 
 //==============================================================================
 // Internal helper routines
@@ -2359,47 +2428,533 @@ end;
 
 
 //==============================================================================
-// NAN and Infinity support
+// Floating point value classification
 //==============================================================================
 
 const
-  NANQuietBits: Int64 = $7FFFFFFFFFFFFFFF;
-  PositiveInfinityBits: Int64 = $7FF0000000000000;
-  NegativeInfinityBits: Int64 = $FFF0000000000000;
+  fpEmpty = TFPClass(Ord(High(TFPClass))+1);
 
-var
-  dNANQuiet: Double absolute NANQuietBits;
-  dPositiveInfinity: Double = 1/0;
-  dNegativeInfinity: Double absolute NegativeInfinityBits;
+  FPClasses: array[0..6] of TFPClass = (
+  	fpInvalid,
+        fpNaN,
+        fpNormal,
+        fpInfinite,
+        fpZero,
+        fpEmpty,	// should not happen
+        fpDenormal);
 
-
-
-function IsNAN(const d: Double): Boolean;
-var
-  Overlay: Int64 absolute d;
-begin
-  Result := ((Overlay and $7FF0000000000000) = $7FF0000000000000) and
-    ((Overlay and $000FFFFFFFFFFFFF) <> $0000000000000000)
+function _FPClass: TFPClass;
+// In:	ST(0)	Value to examine
+asm
+   	FXAM
+        XOR	EDX, EDX
+        FNSTSW	AX
+        FFREE	ST(0)
+        FINCSTP
+	BT	EAX, 14	// C3
+        RCL	EDX, 1
+	BT	EAX, 10	// C2
+        RCL	EDX, 1
+        BT	EAX, 8	// C0
+        RCL	EDX, 1
+	MOVZX	EAX, TFPClass(FPClasses[EDX])
 end;
 
 //------------------------------------------------------------------------------
 
-function IsInfinite(const d: Double): Boolean;
-var
-  Overlay: Int64 absolute d;
-begin
-  Result := (Overlay and $7FF0000000000000) = $7FF0000000000000;
+function FPClass(const Value: Single): TFPClass; overload;
+asm
+	FLD	Value
+        CALL	_FPClass
 end;
 
 //------------------------------------------------------------------------------
 
-function IsIndeterminate(const d: Double): Boolean;
-var
-  Overlay: Int64 absolute d;
-begin
-  Result := (Overlay and $FFF8000000000000) = $FFF8000000000000;
+function FPClass(const Value: Double): TFPClass; overload;
+asm
+	FLD	Value
+        CALL	_FPClass
 end;
 
+//------------------------------------------------------------------------------
+
+function FPClass(const Value: Extended): TFPClass; overload;
+asm
+	FLD	Value
+        CALL	_FPClass
+end;
+
+//==============================================================================
+// NaN and Infinity support
+//==============================================================================
+
+function IsInfinite(const Value: Single): Boolean; overload;
+begin
+  Result := FPClass(Value) = fpInfinite;
+end;
+
+//------------------------------------------------------------------------------
+
+function IsInfinite(const Value: Double): Boolean; overload;
+begin
+  Result := FPClass(Value) = fpInfinite;
+end;
+
+//------------------------------------------------------------------------------
+
+function IsInfinite(const Value: Extended): Boolean; overload;
+begin
+  Result := FPClass(Value) = fpInfinite;
+end;
+
+//------------------------------------------------------------------------------
+
+const
+  sSignBit = 31;
+  dSignBit = 63;
+  xSignBit = 79;
+
+type
+  TSingleBits = set of 0..sSignBit;
+  TDoubleBits = set of 0..dSignBit;
+  TExtendedBits = set of 0..xSignBit;
+
+  sFractionBits = 0..22; // Single type fraction bits
+  dFractionBits = 0..51; // Double type fraction bits
+  xFractionBits = 0..62; // Extended type fraction bits
+
+  sExponentBits = 23..sSignBit-1;
+  dExponentBits = 52..dSignBit-1;
+  xExponentBits = 64..xSignBit-1;
+
+  QWord = Int64;
+
+  PExtendedRec = ^TExtendedRec;
+  TExtendedRec = packed record
+    Significand: QWord;
+    Exponent: Word;
+  end;
+
+const
+  ZeroTag = $3FFFFF;
+  InvalidTag = TNaNTag($80000000);
+  NaNTagMask = $3FFFFF;
+
+  sNaNQuietFlag = High(sFractionBits);
+  dNaNQuietFlag = High(dFractionBits);
+  xNaNQuietFlag = High(xFractionBits);
+
+  dNaNTagShift = High(dFractionBits) - High(sFractionBits);
+  xNaNTagShift = High(xFractionBits) - High(sFractionBits);
+
+  sNaNBits = $7F800000;
+  dNaNBits = $7FF0000000000000;
+
+  sQuietNaNBits = sNaNBits or (1 shl sNaNQuietFlag);
+  dQuietNaNBits = dNaNBits or (Int64(1) shl dNaNQuietFlag);
+
+//------------------------------------------------------------------------------
+
+function IsNaN(const Value: Single): Boolean; overload;
+begin
+  Result := FPClass(Value) = fpNaN;
+end;
+
+//------------------------------------------------------------------------------
+
+function IsNaN(const Value: Double): Boolean; overload;
+begin
+  Result := FPClass(Value) = fpNaN;
+end;
+
+//------------------------------------------------------------------------------
+
+function IsNaN(const Value: Extended): Boolean; overload;
+begin
+  Result := FPClass(Value) = fpNaN;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CheckNaN(const Value: Single); overload;
+var
+  SaveExMask: T8087Exceptions;
+begin
+  SaveExMask := Mask8087Exceptions([emInvalidOp]);
+  try
+    if FPClass(Value) <> fpNaN then
+      raise EJclMathError.CreateRes(@RsNoNaN);
+  finally
+    SetMasked8087Exceptions(SaveExMask);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CheckNaN(const Value: Double); overload;
+var
+  SaveExMask: T8087Exceptions;
+begin
+  SaveExMask := Mask8087Exceptions([emInvalidOp]);
+  try
+    if FPClass(Value) <> fpNaN then
+      raise EJclMathError.CreateRes(@RsNoNaN);
+  finally
+    SetMasked8087Exceptions(SaveExMask);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CheckNaN(const Value: Extended); overload;
+var
+  SaveExMask: T8087Exceptions;
+begin
+  SaveExMask := Mask8087Exceptions([emInvalidOp]);
+  try
+    if FPClass(Value) <> fpNaN then
+      raise EJclMathError.CreateRes(@RsNoNaN);
+  finally
+    SetMasked8087Exceptions(SaveExMask);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetNaNTag(const NaN: Single): TNaNTag;
+var
+  Temp: Integer;
+begin
+  CheckNaN(NaN);
+  Temp := PLongint(@NaN)^ and NaNTagMask;
+  if sSignBit in TSingleBits(NaN) then
+    Result := -Temp
+  else
+    if Temp = ZeroTag then
+      Result := 0
+    else
+      Result := Temp;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetNaNTag(const NaN: Double): TNaNTag;
+var
+  Temp: Integer;
+begin
+  CheckNaN(NaN);
+  Temp := (PInt64(@NaN)^ shr dNaNTagShift) and NaNTagMask;
+  if dSignBit in TDoubleBits(NaN) then
+    Result := -Temp
+  else
+    if Temp = ZeroTag then
+      Result := 0
+    else
+      Result := Temp;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetNaNTag(const NaN: Extended): TNaNTag;
+var
+  Temp: Integer;
+begin
+  CheckNaN(NaN);
+  Temp := (PExtendedRec(@NaN)^.Significand shr xNaNTagShift) and NaNTagMask;
+  if xSignBit in TExtendedBits(NaN) then
+    Result := -Temp
+  else
+    if Temp = ZeroTag then
+      Result := 0
+    else
+      Result := Temp;
+end;
+
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+type
+  TRealType = (rtUndef, rtSingle, rtDouble, rtExtended);
+
+  { ExceptionInformation record for FPU exceptions under WinNT,
+    where documented? }
+  PFPUExceptionInfo = ^TFPUExceptionInfo;
+  TFPUExceptionInfo = packed record
+    	Unknown: array[0..7] of Longint;
+    ControlWord: Word;
+    	Dummy1: Word;
+    StatusWord: Word;
+    	Dummy2: Word;
+    TagWord: Word;
+        Dummy3: Word;
+    InstructionPtr: Pointer;
+    	UnknownW: Word;
+    OpCode: Word;  { Note: 5 most significant bits of first opcode byte
+    			   (always 11011b) not stored in FPU opcode register }
+    OperandPtr: Pointer;
+    	UnknownL: Longint;
+  end;
+
+  TExceptObjProc = function(P: PExceptionRecord): Exception;
+
+var
+  PrevExceptObjProc: TExceptObjProc;
+  ExceptObjProcInitialized: Boolean = False;
+
+function GetExceptionObject(P: PExceptionRecord): Exception;
+var
+  Tag: TNaNTag;
+  FPUExceptInfo: PFPUExceptionInfo;
+  OPtr: Pointer;
+  OType: TRealType;
+
+  function GetOperandType(OpCode: Word): TRealType;
+  var
+    nnn: 0..7;
+  begin
+    Result := rtUndef;
+    nnn := (Lo(OpCode) shr 3) and 7; // nnn field of ModR/M byte
+    if Lo(OpCode) <= $BF then
+    case Hi(OpCode) of // 3 least significant bits of first opcode byte
+      0: Result := rtSingle;
+      1: if nnn < 4 then Result := rtSingle;
+      // Extended signaling NaNs don't cause exceptions on FLD/FST(P) ?!
+      3: if nnn = 5 then Result := rtExtended;
+      4: Result := rtDouble;
+      5: if nnn = 0 then Result := rtDouble;
+    end;
+  end;
+
+begin
+  Tag := InvalidTag; // shut up compiler warning
+  OType := rtUndef;
+  if P^.ExceptionCode = STATUS_FLOAT_INVALID_OPERATION then
+  begin
+    FPUExceptInfo := @P^.ExceptionInformation;
+    OPtr := FPUExceptInfo^.OperandPtr;
+    OType := GetOperandType(FPUExceptInfo^.OpCode);
+    case OType of
+      rtSingle:   Tag := GetNaNTag(PSingle(OPtr)^);
+      rtDouble:   Tag := GetNaNTag(PDouble(OPtr)^);
+      rtExtended: Tag := GetNaNTag(PExtended(OPtr)^);
+    end;
+  end;
+
+  if OType = rtUndef then
+    Result := PrevExceptObjProc(P)
+  else
+    Result := EJclNaNSignal.Create(Tag);
+end;
+{$ENDIF WIN32}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+procedure InitExceptObjProc;
+
+  procedure HookExceptObjProc;
+  asm
+    	MOV	EAX, OFFSET GetExceptionObject
+        MOV	EDX, EAX
+        // threadsafe (given ExceptObjProc is DWORD-aligned)
+        XCHG	EAX, ExceptObjProc
+        // ExceptObjProc <> @GetExceptionObject?
+        CMP	EAX, EDX
+        JE	@Exit
+        MOV	PrevExceptObjProc, EAX
+  @Exit:
+  end;
+
+begin
+  if not ExceptObjProcInitialized then
+  begin
+    if Win32Platform = VER_PLATFORM_WIN32_NT then
+      HookExceptObjProc;
+    ExceptObjProcInitialized := True;
+  end;
+end;
+{$ENDIF WIN32}
+
+//------------------------------------------------------------------------------
+
+constructor EJclNaNSignal.Create(ATag: TNaNTag);
+begin
+  FTag := ATag;
+  CreateResFmt(@RsNaNSignal, [ATag]);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CheckTag(Tag: TNaNTag);
+begin
+  if (Tag < Low(TNaNTag))
+  or (Tag > High(TNaNTag)) then
+    raise EJclMathError.CreateResFmt(@RsNaNTagError, [Tag]);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MakeQuietNaN(var X: Single; Tag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+var
+  Bits: DWord;
+begin
+  CheckTag(Tag);
+  if Tag = 0 then
+    Bits := ZeroTag or sQuietNaNBits
+  else
+    Bits := Abs(Tag) or sQuietNaNBits;
+  if Tag < 0 then Include(TSingleBits(Bits), sSignBit);
+  PDWord(@X)^ := Bits;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MakeQuietNaN(var X: Double; Tag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+const
+  SignBit = $8000000000000000;
+var
+  Bits: Int64;
+begin
+  CheckTag(Tag);
+  if Tag = 0 then
+    Bits := ZeroTag
+  else
+    Bits := Abs(Tag);
+  PInt64(@X)^ := (Bits shl dNaNTagShift) or dQuietNaNBits;
+  if Tag < 0 then Include(TDoubleBits(X), dSignBit);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MakeQuietNaN(var X: Extended; Tag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+const
+  QuietNaNSignificand = $C000000000000000;
+  QuietNaNExponent = $7FFF;
+var
+  Bits: Int64;
+begin
+  CheckTag(Tag);
+  if Tag = 0 then
+    Bits := ZeroTag
+  else
+    Bits := Abs(Tag);
+  TExtendedRec(X).Significand := (Bits shl xNaNTagShift) or QuietNaNSignificand;
+  TExtendedRec(X).Exponent := QuietNaNExponent;
+  if Tag < 0 then Include(TExtendedBits(X), xSignBit);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+begin
+{$IFDEF WIN32}
+  InitExceptObjProc;
+{$ENDIF}
+  MakeQuietNaN(X, Tag);
+  Exclude(TSingleBits(X), sNaNQuietFlag);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+begin
+{$IFDEF WIN32}
+  InitExceptObjProc;
+{$ENDIF}
+  MakeQuietNaN(X, Tag);
+  Exclude(TDoubleBits(X), dNaNQuietFlag);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+begin
+{$IFDEF WIN32}
+  //InitExceptObjProc;
+{$ENDIF}
+  MakeQuietNaN(X, Tag);
+  Exclude(TExtendedBits(X), xNaNQuietFlag);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MineSingleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+var
+  Tag, StopTag: TNaNTag;
+  P: PLongint;
+begin
+{$IFDEF WIN32}
+  InitExceptObjProc;
+{$ENDIF}
+  StopTag := StartTag + Count - 1;
+  CheckTag(StartTag);
+  CheckTag(StopTag);
+  P := @Buffer;
+  for Tag := StartTag to StopTag do
+  begin
+    if Tag > 0 then
+      P^ := sNaNBits or Tag
+    else if Tag < 0 then
+      P^ := sNaNBits or Longint($80000000) or -Tag
+    else
+      P^ := sNaNBits or ZeroTag;
+    Inc(P);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure MineDoubleBuffer(var Buffer; Count: Integer; StartTag: TNaNTag
+  {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
+var
+  Tag, StopTag: TNaNTag;
+  P: PInt64;
+begin
+{$IFDEF WIN32}
+  InitExceptObjProc;
+{$ENDIF}
+  StopTag := StartTag + Count - 1;
+  CheckTag(StartTag);
+  CheckTag(StopTag);
+  P := @Buffer;
+  for Tag := StartTag to StopTag do
+  begin
+    if Tag > 0 then
+      P^ := dNaNBits or (Int64(Tag) shl dNaNTagShift)
+    else if Tag < 0 then
+      P^ := dNaNBits or $8000000000000000 or (Int64(-Tag) shl dNaNTagShift)
+    else
+      P^ := dNaNBits or (Int64(ZeroTag) shl dNaNTagShift);
+    Inc(P);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_DYNAMICARRAYS}
+function MinedSingleArray(Length: Integer): TDynSingleArray;
+begin
+  SetLength(Result, Length);
+  MineSingleBuffer(Result[0], Length, 0);
+end;
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_DYNAMICARRAYS}
+function MinedDoubleArray(Length: Integer): TDynDoubleArray;
+begin
+  SetLength(Result, Length);
+  MineDoubleBuffer(Result[0], Length, 0);
+end;
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 
 //==============================================================================
