@@ -171,6 +171,8 @@ function StrCenter(const S: AnsiString; L: Integer; C: AnsiChar  = ' '): AnsiStr
 function StrCharPosLower(const S: AnsiString; CharPos: Integer): AnsiString;
 function StrCharPosUpper(const S: AnsiString; CharPos: Integer): AnsiString;
 function StrDoubleQuote(const S: AnsiString): AnsiString;
+function StrEnsureNoPrefix(const Prefix, Text: AnsiString): AnsiString;
+function StrEnsureNoSuffix(const Prefix, Text: AnsiString): AnsiString;
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 function StrEnsureSuffix(const Suffix, Text: AnsiString): AnsiString;
 function StrEscapedToString(const S: AnsiString): AnsiString;
@@ -845,6 +847,38 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+function StrEnsureNoPrefix(const Prefix, Text: AnsiString): AnsiString;
+var
+  PrefixLen : Integer;
+begin
+  PrefixLen := Length(Prefix);
+  if Copy(Text, 1, PrefixLen) = Prefix then
+    Result := Copy(Text, PrefixLen + 1, Length(Text))
+  else
+    Result := Text;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODOc Author: Olivier Sannier}
+
+function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
+var
+  SuffixLen : Integer;
+  StrLength : Integer;
+begin
+  SuffixLen := Length(Suffix);
+  StrLength := Length(Text);
+  if Copy(Text, StrLength - SuffixLen + 1, SuffixLen) = Suffix then
+    Result := Copy(Text, 1, StrLength - SuffixLen)
+  else
+    Result := Text;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODOc Author: Olivier Sannier}
 
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 var
