@@ -2431,16 +2431,21 @@ TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
 [ShortDescr]
 Exception frame kind.
 [Description]
-TExceptFrameKind determines the exception frame type.
+TExceptFrameKind determines the exception frame type. Note that the compiler
+often inserts implicit frames around a method, function or procedure. For these
+frames source code location routines can be of by 1 line.
 [Enumeration]
 Count=5
 1=efkUnknown=Unknown exception frame (most likely an exception frame inside a
 non-Borland library.
-2=efkFinally=A try...finally frame
-3=efkAnyException=A try...except frame
-4=efkOnException=A try...except on.... frame
-5=efkAutoException=A try..except frame around an automated call (these are implicit
-frames inserted by the compiler).
+2=efkFinally=A try...finally frame. Note that the compiler inserts implicit
+try...finally blocks for any method, function or procedure with parameters
+and/or variables that need clean up (eg. long strings, dynamic arrays, interface
+references).
+3=efkAnyException=A try...except frame.
+4=efkOnException=A try...except on.... frame.
+5=efkAutoException=A try..except frame for an automated method declared with
+the safecall directive (these are implicit frames inserted by the compiler).
 [Quick Info]
 BCB=4,5
 Kind=Type
