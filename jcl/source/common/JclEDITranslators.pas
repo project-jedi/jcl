@@ -23,7 +23,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Last created: October 2, 2003                                                                    }
-{ Last modified: October 22, 2003                                                                  }
+{ Last modified: March 22, 2004                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -35,10 +35,12 @@ unit JclEDITranslators;
 
 {$I jcl.inc}
 
+{$WEAKPACKAGEUNIT ON}
+
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, 
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
@@ -51,12 +53,16 @@ type
       Parent: TEDISEFFile): TEDISEFElement; overload;
     function TranslateToSEFElement(ElementSpec: TEDIElementSpec;
       Parent: TEDISEFSegment): TEDISEFElement; overload;
+    procedure TranslateToSEFElementTEXTSETS(ElementSpec: TEDIElementSpec;
+      SEFElement: TEDISEFElement);
     function TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
       Parent: TEDISEFFile): TEDISEFSegment; overload;
     function TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
       Parent: TEDISEFTable): TEDISEFSegment; overload;
     function TranslateToSEFSegment(SegmentSpec: TEDISegmentSpec;
       Parent: TEDISEFLoop): TEDISEFSegment; overload;
+    procedure TranslateToSEFSegmentTEXTSETS(SegmentSpec: TEDISegmentSpec;
+      SEFSegment: TEDISEFSegment);
     function TranslateToSEFSet(TransactionSetSpec: TEDITransactionSetSpec;
       Parent: TEDISEFFile): TEDISEFSet;
     procedure TranslateLoopToSEFSet(StackRecord: TEDILoopStackRecord;
@@ -75,6 +81,8 @@ implementation
 //==================================================================================================
 // TEDISpecToSEFTranslator
 //==================================================================================================
+
+{ TEDISpecToSEFTranslator }
 
 constructor TEDISpecToSEFTranslator.Create;
 begin
@@ -128,6 +136,7 @@ function TEDISpecToSEFTranslator.TranslateToSEFSegment(SegmentSpec: TEDISegmentS
 var
   E: Integer;
   ElementSpec: TEDIElementSpec;
+  SEFElement: TEDISEFElement;
 begin
   Result := TEDISEFSegment.Create(Parent);
   Result.Id := SegmentSpec.Id;
@@ -136,7 +145,8 @@ begin
   for E := 0 to SegmentSpec.ElementCount - 1 do
   begin
     ElementSpec := TEDIElementSpec(SegmentSpec[E]);
-    Result.Elements.AddByNameOrId(TranslateToSEFElement(ElementSpec, Result));
+    SEFElement := TranslateToSEFElement(ElementSpec, Result);
+    Result.Elements.AddByNameOrId(SEFElement);
   end;
 end;
 
@@ -185,14 +195,13 @@ procedure TEDISpecToSEFTranslator.TranslateLoopToSEFSet(StackRecord: TEDILoopSta
 var
   SEFLoop: TEDISEFLoop;
 begin
-  SEFLoop := nil;
   if StackRecord.EDIObject is TEDISEFDataObjectGroup then
   begin
     SEFLoop := TEDISEFLoop.Create(TEDISEFDataObject(StackRecord.EDIObject));
     SEFLoop.Id := SegmentId;
     TEDISEFDataObjectGroup(StackRecord.EDIObject).EDISEFDataObjects.AddByNameOrId(SEFLoop);
+    EDIObject := SEFLoop;
   end;
-  EDIObject := SEFLoop;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -202,6 +211,8 @@ function TEDISpecToSEFTranslator.TranslateToSEFSet(TransactionSetSpec: TEDITrans
 var
   S: Integer;
   SegmentSpec: TEDISegmentSpec;
+  PrevSegmentSpec: TEDISegmentSpec;
+  SEFSegment: TEDISEFSegment;
   SEFTable: TEDISEFTable;
   SEFLoop: TEDISEFLoop;
   LS: TEDILoopStack;
@@ -209,40 +220,68 @@ var
 begin
   Result := TEDISEFSet.Create(Parent);
   Result.Id := TransactionSetSpec.Id;
-  SEFTable := TEDISEFTable.Create(Result);
-  Result.EDISEFDataObjects.AddByNameOrId(SEFTable);
 
   LS := TEDILoopStack.Create;
-  LS.OnAddLoop := TranslateLoopToSEFSet;
-  //
-  for S := 0 to TransactionSetSpec.SegmentCount - 1 do
-  begin
-    SegmentSpec := TEDISegmentSpec(TransactionSetSpec[S]);
-    if S = 0 then
-      // Initialize the stack
-      LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, NA_LoopId, NA_LoopId, 0, SEFTable)
-    else
-      LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, SegmentSpec.OwnerLoopId,
-        SegmentSpec.ParentLoopId, 0, LSR.EDIObject);
-
-// Debug - Keep the following line here in case someone wants to debug what happens to the stack.
-//    ShowMessage('Current Spec Segment: [' + IntToStr(S) + '] ' + SegmentSpec.SegmentID + #13#10 +
-//                LS.Debug);
-
-    if LSR.EDIObject is TEDISEFTable then
+  try
+    LS.OnAddLoop := TranslateLoopToSEFSet;
+    //
+    for S := 0 to TransactionSetSpec.SegmentCount - 1 do
     begin
-      SEFTable := TEDISEFTable(LSR.EDIObject);
-      SEFTable.EDISEFDataObjects.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, SEFTable));
-    end
-    else
-    if LSR.EDIObject is TEDISEFLoop then
-    begin
-      SEFLoop := TEDISEFLoop(LSR.EDIObject);
-      SEFLoop.EDISEFDataObjects.AddByNameOrId(TranslateToSEFSegment(SegmentSpec, SEFLoop))
+      SegmentSpec := TEDISegmentSpec(TransactionSetSpec[S]);
+      if S = 0 then
+      begin
+        // Initialize the stack
+        SEFTable := TEDISEFTable.Create(Result);
+        Result.EDISEFDataObjects.AddByNameOrId(SEFTable);
+        LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, NA_LoopId, NA_LoopId, 0, SEFTable);
+      end
+      else
+      begin
+        // Check to see if the sections have changed
+        PrevSegmentSpec := TEDISegmentSpec(TransactionSetSpec[S-1]);
+        if SegmentSpec.Section <> PrevSegmentSpec.Section then
+        begin
+          // Create new table for new section
+          SEFTable := TEDISEFTable.Create(Result);
+          Result.EDISEFDataObjects.AddByNameOrId(SEFTable);
+          // Re-initialize the stack
+          LS.Pop(1);
+          LS.UpdateStackObject(SEFTable);
+          LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, SegmentSpec.OwnerLoopId,
+            SegmentSpec.ParentLoopId, 0, LSR.EDIObject);
+        end
+        else
+        begin
+          LSR := LS.ValidateLoopStack(SegmentSpec.SegmentID, SegmentSpec.OwnerLoopId,
+            SegmentSpec.ParentLoopId, 0, LSR.EDIObject);
+        end;
+      end;
+
+  // Debug - Keep the following line here in case someone wants to debug what happens to the stack.
+  //    ShowMessage('Current Spec Segment: [' + IntToStr(S) + '] ' + SegmentSpec.SegmentID + #13#10 +
+  //                LS.Debug);
+
+      // Add objects to proper owners
+      if LSR.EDIObject is TEDISEFTable then
+      begin
+        SEFTable := TEDISEFTable(LSR.EDIObject);
+        SEFSegment := TranslateToSEFSegment(SegmentSpec, SEFTable);
+        SEFTable.EDISEFDataObjects.AddByNameOrId(SEFSegment);
+        SEFSegment.ParentSet.AssignSegmentOrdinals;
+        TranslateToSEFSegmentTEXTSETS(SegmentSpec, SEFSegment);
+      end
+      else if LSR.EDIObject is TEDISEFLoop then
+      begin
+        SEFLoop := TEDISEFLoop(LSR.EDIObject);
+        SEFSegment := TranslateToSEFSegment(SegmentSpec, SEFLoop);
+        SEFLoop.EDISEFDataObjects.AddByNameOrId(SEFSegment);
+        SEFSegment.ParentSet.AssignSegmentOrdinals;
+        TranslateToSEFSegmentTEXTSETS(SegmentSpec, SEFSegment);
+      end;
     end;
+  finally
+    LS.Free;
   end;
-
-  LS.Free;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -305,12 +344,52 @@ begin
   finally
     ElementList.Free;
   end;
+end;
 
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDISpecToSEFTranslator.TranslateToSEFElementTEXTSETS(ElementSpec: TEDIElementSpec;
+  SEFElement: TEDISEFElement);
+var
+  Location: string;
+begin
+  Location := SEFElement.GetTextSetsLocation;
+  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm0,
+    ElementSpec.Notes);
+  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm2,
+    ElementSpec.Description);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDISpecToSEFTranslator.TranslateToSEFSegmentTEXTSETS(SegmentSpec: TEDISegmentSpec;
+  SEFSegment: TEDISEFSegment);
+var
+  Location: string;
+  E: Integer;
+  ElementSpec: TEDIElementSpec;
+  SEFElement: TEDISEFElement;
+begin
+  Location := SEFSegment.GetTextSetsLocation;
+  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg3,
+    SegmentSpec.Description);
+  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg4,
+    SegmentSpec.Notes);
+
+  SEFSegment.AssignElementOrdinals;
+  for E := 0 to SegmentSpec.ElementCount - 1 do
+  begin
+    ElementSpec := TEDIElementSpec(SegmentSpec[E]);
+    SEFElement := TEDISEFElement(SEFSegment[E]);
+    TranslateToSEFElementTEXTSETS(ElementSpec, SEFElement);
+  end;
 end;
 
 //==================================================================================================
 // TEDISEFToSpecTranslator
 //==================================================================================================
+
+{ TEDISEFToSpecTranslator }
 
 constructor TEDISEFToSpecTranslator.Create;
 begin
