@@ -2871,7 +2871,7 @@ Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
-Windows NT/2000=Requires Windows NT 2000 or later
+Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
 Count=3
@@ -2946,7 +2946,7 @@ Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
-Windows NT/2000=Requires Windows NT 2000 or later
+Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
 Count=3
@@ -2969,11 +2969,11 @@ Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
-Windows NT/2000=Requires Windows NT 2000 or later
+Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetAPMBatteryLifeTime: Integer;
+function GetAPMBatteryLifeTime: DWORD;
 [ShortDescr]
 Returns the number of seconds of battery life reamining, or -1 if this time is
 unknown.
@@ -2981,18 +2981,18 @@ unknown.
 Returns the number of seconds of battery life reamining, or -1 if this time is
 unknown.
 [Result]
-The remaining battery life time in minutes.
+The remaining battery life time in seconds.
 [Quick Info]
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
-Windows NT/2000=Requires Windows NT 2000 or later
+Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetAPMBatteryFullLifeTime: Integer;
+function GetAPMBatteryFullLifeTime: DWORD;
 [ShortDescr]
 Returns the number of seconds of battery life minutes when at full charge, or -1
 if full batery lifetime is unknown.
@@ -3000,14 +3000,14 @@ if full batery lifetime is unknown.
 Returns the number of seconds of battery life minutes when at full charge, or -1
 if full batery lifetime is unknown.
 [Result]
-The number of seconds of battery life minutes when at full charge.
+The number of seconds of battery life time when at full charge.
 [Quick Info]
 Unit=JclSysInfo
 Category=System Information Routines
 SubCat=Power Management
 Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
-Windows NT/2000=Requires Windows NT 2000 or later
+Windows NT/2000=Requires Windows 2000 or later
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
