@@ -59,7 +59,7 @@ function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer
   CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
 function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
   CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
-procedure PathExtractElements(const P: string; var Drive, Path, FileName, Ext: string);
+procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathGetLongName(const Path: string): string;
 function PathGetShortName(const Path: string): string;
@@ -89,8 +89,8 @@ function FileGetTempName(const Prefix: string): string;
 function FileGetTypeName(const FileName: string): string;
 function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
-procedure GetFileAttributeList(const Items: TStrings; const A: Integer);
-procedure GetFileAttributeListEx(const Items: TStrings; const A: Integer);
+procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
+procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 function GetFileInformation(const FileName: string): TSearchRec;
 function GetFileLastWrite(const FileName: string): TFileTime;
 function GetFileLastAccess(const FileName: string): TFileTime;
@@ -209,7 +209,7 @@ type
       Size: Cardinal; ViewOffset: Int64; Address: Pointer);
     destructor Destroy; override;
     function Flush(const Count: Cardinal): Boolean;
-    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromStream(const Stream: TStream);
     procedure LoadFromFile(const FileName: string);
     function Write(const Buffer; Count: Longint): Longint; override;
     property Index: Integer read GetIndex;
@@ -310,8 +310,9 @@ end;
 
 destructor TJclTempFileStream.Destroy;
 begin
-  if Handle > 0 then
+  if THandle(Handle) <> INVALID_HANDLE_VALUE then
     CloseHandle(Handle);
+  inherited Destroy;
 end;
 
 //==============================================================================
@@ -328,23 +329,27 @@ begin
   if FileMap = nil then
     raise EJclFileMappingViewError.CreateResRec(@RsViewNeedsMapping);
   FFileMapping := FileMap;
+  // Offset must be a multiple of system memory allocation granularity
   RoundToAllocGranularity64(ViewOffset, FFileMapping.RoundViewOffset = rvUp);
-  {$IFNDEF SUPPORTS_INT64}
-  OffsetLow := ViewOffset.LowPart;
-  OffsetHigh := ViewOffset.HighPart;
-  {$ELSE}
   I64ToCardinals(ViewOffset, OffsetLow, OffsetHigh);
-  {$ENDIF}
   FOffsetHigh := OffsetHigh;
   FOffsetLow := OffsetLow;
   BaseAddress := MapViewOfFile(FFileMapping.Handle, Access, FOffsetHigh, FOffsetLow, Size);
   if BaseAddress = nil then
     raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
+  // If we are mapping a file and size = 0 then MapViewOfFile has mapped the
+  // entire file. We must figure out the size ourselves before we can call
+  // SetPointer. Since in case of failure to retrieve the size we raise an
+  // exception, we also have to explicitly unmap the view which otherwise would
+  // have been done by the destructor.
   if (Size = 0) and (FileMap is TJclFileMapping) then
   begin
     Size := GetFileSize(TJclFileMapping(FileMap).FFileHandle, nil);
     if Size = DWORD(-1) then
+    begin
+      UnMapViewOfFile(BaseAddress);
       raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
+    end;
   end;
   SetPointer(BaseAddress, Size);
   FFileMapping.FViews.Add(Self);
@@ -362,20 +367,30 @@ begin
   if FileMap = nil then
     raise EJclFileMappingViewError.CreateResRec(@RsViewNeedsMapping);
   FFileMapping := FileMap;
+  // Offset must be a multiple of system memory allocation granularity
   RoundToAllocGranularity64(ViewOffset, FFileMapping.RoundViewOffset = rvUp);
   RoundToAllocGranularityPtr(Address, FFileMapping.RoundViewOffset = rvUp);
-  {$IFNDEF SUPPORTS_INT64}
-  OffsetLow := ViewOffset.LowPart;
-  OffsetHigh := ViewOffset.HighPart;
-  {$ELSE}
   I64ToCardinals(ViewOffset, OffsetLow, OffsetHigh);
-  {$ENDIF}
   FOffsetHigh := OffsetHigh;
   FOffsetLow := OffsetLow;
   BaseAddress := MapViewOfFileEx(FFileMapping.Handle, Access, FOffsetHigh,
     FOffsetLow, Size, Address);
   if BaseAddress = nil then
     raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
+  // If we are mapping a file and size = 0 then MapViewOfFile has mapped the
+  // entire file. We must figure out the size ourselves before we can call
+  // SetPointer. Since in case of failure to retrieve the size we raise an
+  // exception, we also have to explicitly unmap the view which otherwise would
+  // have been done by the destructor.
+  if (Size = 0) and (FileMap is TJclFileMapping) then
+  begin
+    Size := GetFileSize(TJclFileMapping(FileMap).FFileHandle, nil);
+    if Size = DWORD(-1) then
+    begin
+      UnMapViewOfFile(BaseAddress);
+      raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
+    end;
+  end;
   SetPointer(BaseAddress, Size);
   FFileMapping.FViews.Add(Self);
 end;
@@ -383,11 +398,20 @@ end;
 //------------------------------------------------------------------------------
 
 destructor TJclFileMappingView.Destroy;
+var
+  IndexOfSelf: Integer;
 begin
   if Memory <> nil then
+  begin
     UnMapViewOfFile(Memory);
-  if (FFileMapping <> nil) and (FFileMapping.IndexOf(Self) <> -1) then
-    FFileMapping.FViews.Delete(FFileMapping.IndexOf(Self));
+    SetPointer(nil, 0);
+  end;
+  if FFileMapping <> nil then
+  begin
+    IndexOfSelf := FFileMapping.IndexOf(Self);
+    if IndexOfSelf <> -1 then
+      FFileMapping.FViews.Delete(IndexOfSelf);
+  end;
   inherited Destroy;
 end;
 
@@ -409,11 +433,7 @@ end;
 
 function TJclFileMappingView.GetOffset: Int64;
 begin
-  {$IFNDEF SUPPORTS_INT64}
-  I64Assign(Result, FOffsetLow, FOffsetHigh);
-  {$ELSE}
   CardinalsToI64(Result, FOffsetLow, FOffsetHigh);
-  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
@@ -426,13 +446,13 @@ begin
   try
     LoadFromStream(Stream);
   finally
-    Stream.Free;
+    FreeAndNil(Stream);
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclFileMappingView.LoadFromStream(Stream: TStream);
+procedure TJclFileMappingView.LoadFromStream(const Stream: TStream);
 begin
   if Stream.Size > Size then
     raise EJclFileMappingViewError.CreateResRec(@RsLoadFromStreamSize);
@@ -510,6 +530,7 @@ end;
 
 procedure TJclCustomFileMapping.Delete(const Index: Integer);
 begin
+  // Note that the view destructor removes itself from FViews
   TJclFileMappingView(FViews[Index]).Free;
 end;
 
@@ -520,7 +541,7 @@ begin
   ClearViews;
   if FHandle <> 0 then
     CloseHandle(FHandle);
-  FViews.Free;
+  FreeAndNil(FViews);
   inherited Destroy;
 end;
 
@@ -554,12 +575,7 @@ var
   MaximumSizeLow, MaximumSizeHigh: Cardinal;
 begin
   FName := Name;
-  {$IFNDEF SUPPORTS_INT64}
-  MaximumSizeLow  := MaximumSize.LowPart;
-  MaximumSizeHigh := MaximumSize.HighPart;
-  {$ELSE}
   I64ToCardinals(MaximumSize, MaximumSizeLow, MaximumSizeHigh);
-  {$ENDIF}
   FHandle := CreateFileMapping(FileHandle, SecAttr, Protect, MaximumSizeHigh,
     MaximumSizeLow, PChar(Name));
   if FHandle = 0 then
@@ -586,17 +602,13 @@ end;
 constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
   const Name: string; Protect: Cardinal; const MaximumSize: Int64;
   const SecAttr: PSecurityAttributes);
-var
-  Handle: THandle;
 begin
+  FFileHandle := INVALID_HANDLE_VALUE;
   inherited Create;
-  Handle := FileOpen(FileName, FileMode);
-  if Handle = INVALID_HANDLE_VALUE then
+  FFileHandle := FileOpen(FileName, FileMode);
+  if FFileHandle = INVALID_HANDLE_VALUE then
     raise EJclFileMappingError.CreateResRec(@RsFileMappingOpenFile);
-  InternalCreate(Handle, Name, Protect, MaximumSize, SecAttr);
-  DuplicateHandle(GetCurrentProcess, FileHandle, GetCurrentProcess,
-    @FFileHandle, 0, False, DUPLICATE_SAME_ACCESS);
-  CloseHandle(Handle);
+  InternalCreate(FFileHandle, Name, Protect, MaximumSize, SecAttr);
 end;
 
 //------------------------------------------------------------------------------
@@ -604,6 +616,7 @@ end;
 constructor TJclFileMapping.Create(const FileHandle: THandle; const Name: string;
   Protect: Cardinal; const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
 begin
+  FFileHandle := INVALID_HANDLE_VALUE;
   inherited Create;
   if FileHandle = INVALID_HANDLE_VALUE then
     raise EJclFileMappingError.CreateResRec(@RsFileMappingInvalidHandle);
@@ -616,7 +629,7 @@ end;
 
 destructor TJclFileMapping.Destroy;
 begin
-  if FFileHandle > 0 then
+  if FFileHandle <> INVALID_HANDLE_VALUE then
     CloseHandle(FFileHandle);
   inherited Destroy;
 end;
@@ -653,6 +666,9 @@ begin
   Result := Path;
   if (Path <> '') and (ExtractFileExt(Path) = '') and (Extension <> '') then
   begin
+    // Note that if we get here Path is quarenteed not to end in a '.' otherwise
+    // ExtractFileExt would have returned '.' therefore there's no need to check
+    // it explicitly in the code below
     if Extension[1] = '.' then
       Result := Result + Extension
     else
@@ -676,6 +692,9 @@ begin
       Result := Append
     else
     begin
+      // The following code may look a bit complex but al it does is add Append
+      // to Path ensuring that there is one and only one path separator character
+      // separating them
       B1 := Path[PathLength] = PathSeparator;
       B2 := Append[1] = PathSeparator;
       if B1 and B2 then
@@ -699,6 +718,7 @@ begin
   Result := PathSeparator;
   {$ENDIF}
   {$IFDEF WIN32}
+  // Remember, Win32 only allows 'a' to 'z' as drive letters (mapped to 0..25)
   if Drive < 26 then
     Result := Char(Drive + 65) + ':\'
   else
@@ -716,6 +736,8 @@ begin
   Result := 0;
   if (Path1 <> '') and (Path2 <> '') then
   begin
+    // Initialize P1 to the shortest of the two paths so that the actual comparison
+    // loop below can use the terminating #0 of that string to terminate the loop.
     if Length(Path1) <= Length(Path2) then
     begin
       P1 := @Path1[1];
@@ -752,17 +774,22 @@ var
   Fmt: Cardinal;
 begin
   Result := '';
-  if (DC = 0) or (Path = '') or (Width <= 0) then
-    Exit;
-  P := StrAlloc(Length(Path) + 5);
-  try
-    StrPCopy(P, Path);
-    TextRect := Rect(0, 0, Width, 255);
-    Fmt := DT_MODIFYSTRING + DT_CALCRECT + Compacts[CmpFmt];
-    if DrawTextEx(DC, P, -1, TextRect, Fmt, nil) <> 0 then
-      Result := P;
-  finally
-    StrDispose(P);
+  if (DC <> 0) and (Path <> '') and (Width > 0) then
+  begin
+  { Here's a note from the Platform SDK to explain the + 5 in the call below:
+    "If dwDTFormat includes DT_MODIFYSTRING, the function could add up to four
+    additional characters to this string. The buffer containing the string
+    should be large enough to accommodate these extra characters." }
+    P := StrAlloc(Length(Path) + 5);
+    try
+      StrPCopy(P, Path);
+      TextRect := Rect(0, 0, Width, 255);
+      Fmt := DT_MODIFYSTRING + DT_CALCRECT + Compacts[CmpFmt];
+      if DrawTextEx(DC, P, -1, TextRect, Fmt, nil) <> 0 then
+        Result := P;
+    finally
+      StrDispose(P);
+    end;
   end;
 end;
 
@@ -776,18 +803,21 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure PathExtractElements(const P: string; var Drive, Path, FileName, Ext: string);
+procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 begin
-  Drive := ExtractFileDrive(P);
-  Path := ExtractFilePath(P);
+  Drive := ExtractFileDrive(Source);
+  Path := ExtractFilePath(Source);
+  // Path includes drive so remove that
   if Drive <> '' then
     Delete(Path, 1, Length(Drive));
+  // add/remove separators
   Drive := PathAddSeparator(Drive);
   Path := PathRemoveSeparator(Path);
   if (Path <> '') and (Path[1] = PathSeparator) then
     Delete(Path, 1, 1);
-  FileName := PathExtractFileNameNoExt(P);
-  Ext := ExtractFileExt(P);
+  // and extract the remaining elements
+  FileName := PathExtractFileNameNoExt(Source);
+  Ext := ExtractFileExt(Source);
 end;
 
 //------------------------------------------------------------------------------
@@ -805,19 +835,22 @@ var
   Desktop: IShellFolder;
   AnsiName: AnsiString;
   WideName: array [0..MAX_PATH] of WideChar;
+  Eaten, Attr: ULONG; // both unused but API requires them (incorrect translation)
 begin
   Result := Path;
-  if Succeeded(SHGetDesktopFolder(Desktop)) then
+  if Path <> '' then
   begin
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WideName, MAX_PATH);
-    if Succeeded(Desktop.ParseDisplayName(0, nil, WideName,
-      ULONG(nil^), PIDL, ULONG(nil^))) then
-    try
-      SetLength(AnsiName, MAX_PATH);
-      if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
-        Result := PChar(AnsiName);
-    finally
-      CoTaskMemFree(PIDL);
+    if Succeeded(SHGetDesktopFolder(Desktop)) then
+    begin
+      MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WideName, MAX_PATH);
+      if Succeeded(Desktop.ParseDisplayName(0, nil, WideName, Eaten, PIDL, Attr)) then
+      try
+        SetLength(AnsiName, MAX_PATH);
+        if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
+          Result := PChar(AnsiName);
+      finally
+        CoTaskMemFree(PIDL);
+      end;
     end;
   end;
 end;
@@ -828,6 +861,7 @@ function PathGetShortName(const Path: string): string;
 var
   Required: Integer;
 begin
+  // TODO empty result string on failure is inconsistent with PathGetLongName
   Result := '';
   Required := GetShortPathName(PChar(Path), nil, 0);
   if Required <> 0 then
@@ -885,8 +919,15 @@ begin
   Result := False;
   {$ENDIF}
   {$IFDEF WIN32}
-  Result := ((Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix) and
-    (Copy(Path, Length(PathUncPrefix) + 1, 2) <> '.\'));
+  // Format of a valid UNC path is: "\\machine\sharename[\filename]"
+  Result := Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix;
+  { TODO further verification tests:
+     \\.\whatever is not valid
+     \\?\whatever is not valid unless \\?\UNC\sharename[\filename]
+     \\[sharename\][filename] is not valid
+     \\<x>:[whatever] is not valid
+     \\machine\<x>:[<\pathname>|<\drivename>] is not valid
+     \\machine\<x>$[<\pathname>|<\drivename>] is not valid _is_ valid }
   {$ENDIF}
 end;
 
@@ -925,7 +966,7 @@ var
   SearchRec: TSearchRec;
   R: Integer;
 begin
-  List.Clear;
+  Assert(List <> nil);
   R := FindFirst(Path, Attr, SearchRec);
   Result := Cardinal(R) <> INVALID_HANDLE_VALUE;
   if Result then
@@ -965,9 +1006,11 @@ var
   PartialResult: Boolean;
   Attr: DWORD;
 begin
+
   Result := True;
   Files := TStringList.Create;
   try
+    // TODO Path parameter used as local variable: bad practise   
     Path := PathRemoveSeparator(Path);
     BuildFileList(Path + '\*.*', faAnyFile, Files);
     for I := 0 to Files.Count - 1 do
@@ -1024,6 +1067,10 @@ begin
     Dec(Drive, $20);
   if Drive in ['A'..'Z'] then
   begin
+    // try to access the drive, it doesn't really matter how we access the drive
+    // and as such calling DiskSize is more or less a random choice. The call to
+    // SetErrorMode supresses the system provided error dialog if there is no
+    // disk in the drive and causes the to DiskSize to fail.
     ErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
     try
       Result := DiskSize(Ord(Drive) - $40) <> -1;
@@ -1045,6 +1092,8 @@ begin
   begin
     Result := CreateFile(PChar(TempName), GENERIC_READ or GENERIC_WRITE, 0, nil,
       OPEN_EXISTING, FILE_ATTRIBUTE_TEMPORARY or FILE_FLAG_DELETE_ON_CLOSE, 0);
+    // In certain situations it's possible that CreateFile fails yet the file is
+    // actually created, therefore explicitly delete it upon failure.
     if Result = INVALID_HANDLE_VALUE then
       DeleteFile(TempName);
     Prefix := TempName;
@@ -1055,6 +1104,8 @@ end;
 
 function FileExists(const FileName: string): Boolean;
 begin
+  // Attempt to access the file, doesn't matter how, using FileGetSize is as
+  // good as anything else.
   Result := FileGetSize(FileName) <> -1;
 end;
 
@@ -1129,9 +1180,10 @@ begin
     Result := FileInfo.szTypeName;
   if (RetVal = 0) or (Trim(Result) = '') then
   begin
+    // Lookup failed so mimic explorer behaviour by returning "XYZ File"
     Result := ExtractFileExt(FileName);
     Delete(Result, 1, 1);
-    Result := TrimLeft(UpperCase(Result) + ' File');
+    Result := TrimLeft(UpperCase(Result) + ' File'); // TODO Localize
   end;
 end;
 
@@ -1182,53 +1234,53 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure GetFileAttributeList(const Items: TStrings; const A: Integer);
+procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 begin
-  Items.Clear;
-  if A and faDirectory = faDirectory then
+  Assert(Items <> nil);
+  if Attr and faDirectory = faDirectory then
     Items.Add(RsAttrDirectory);
-  if A and faReadOnly = faReadOnly then
+  if Attr and faReadOnly = faReadOnly then
     Items.Add(RsAttrReadOnly);
-  if A and faSysFile = faSysFile then
+  if Attr and faSysFile = faSysFile then
     Items.Add(RsAttrSystemFile);
-  if A and faVolumeID = faVolumeID then
+  if Attr and faVolumeID = faVolumeID then
     Items.Add(RsAttrVolumeID);
-  if A and faArchive = faArchive then
+  if Attr and faArchive = faArchive then
     Items.Add(RsAttrArchive);
-  if A and faAnyFile = faAnyFile then
+  if Attr and faAnyFile = faAnyFile then
     Items.Add(RsAttrAnyFile);
-  if A and faHidden = faHidden then
+  if Attr and faHidden = faHidden then
     Items.Add(RsAttrHidden);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure GetFileAttributeListEx(const Items: TStrings; const A: Integer);
+procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 begin
-  Items.Clear;
-  if A and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
+  Assert(Items <> nil);
+  if Attr and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
     Items.Add(RsAttrReadOnly);
-  if A and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
+  if Attr and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
     Items.Add(RsAttrHidden);
-  if A and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
+  if Attr and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
     Items.Add(RsAttrSystemFile);
-  if A and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY then
+  if Attr and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY then
     Items.Add(RsAttrDirectory);
-  if A and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
+  if Attr and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
     Items.Add(RsAttrArchive);
-  if A and FILE_ATTRIBUTE_NORMAL = FILE_ATTRIBUTE_NORMAL then
+  if Attr and FILE_ATTRIBUTE_NORMAL = FILE_ATTRIBUTE_NORMAL then
     Items.Add(RsAttrNormal);
-  if A and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
+  if Attr and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
     Items.Add(RsAttrTemporary);
-  if A and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
+  if Attr and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
     Items.Add(RsAttrCompressed);
-  if A and FILE_ATTRIBUTE_OFFLINE = FILE_ATTRIBUTE_OFFLINE then
+  if Attr and FILE_ATTRIBUTE_OFFLINE = FILE_ATTRIBUTE_OFFLINE then
     Items.Add(RsAttrOffline);
-  if A and FILE_ATTRIBUTE_ENCRYPTED = FILE_ATTRIBUTE_ENCRYPTED then
+  if Attr and FILE_ATTRIBUTE_ENCRYPTED = FILE_ATTRIBUTE_ENCRYPTED then
     Items.Add(RsAttrEncrypted);
-  if A and FILE_ATTRIBUTE_REPARSE_POINT = FILE_ATTRIBUTE_REPARSE_POINT then
+  if Attr and FILE_ATTRIBUTE_REPARSE_POINT = FILE_ATTRIBUTE_REPARSE_POINT then
     Items.Add(RsAttrReparsePoint);
-  if A and FILE_ATTRIBUTE_SPARSE_FILE = FILE_ATTRIBUTE_SPARSE_FILE then
+  if Attr and FILE_ATTRIBUTE_SPARSE_FILE = FILE_ATTRIBUTE_SPARSE_FILE then
     Items.Add(RsAttrSparseFile);
 end;
 
@@ -1328,7 +1380,7 @@ begin
       BytesReturned, nil);
     if not Result then
     begin
-      FileClose(Handle);
+      CloseHandle(Handle);
       Handle := INVALID_HANDLE_VALUE;
     end;
   end;
@@ -1519,7 +1571,7 @@ begin
       BytesReturned, nil);
     if Result then
     begin
-      FileClose(Handle);
+      CloseHandle(Handle);
       Handle := INVALID_HANDLE_VALUE;
     end;
   end;
