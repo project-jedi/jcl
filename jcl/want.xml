@@ -104,11 +104,13 @@
   <target name="clean" description="${clean.hint}" >
     <!-- <delete dir="${dist.dir}" -->
     <delete file="**/*.~*" />
+    <delete file="**/*.a" />
     <delete file="**/*.dcp" />
     <delete file="**/*.dcu" />
     <delete file="**/*.dpu" />
     <delete file="**/*.obj" />
     <delete file="**/*.o" />
+    <delete file="**/*.ppu" />
     <delete file="**/*.rst" />
     <delete file="**/*.lib" />
     <delete file="**/*.bpi" />
