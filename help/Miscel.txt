@@ -44,8 +44,9 @@ Internally the ChangeDisplaySettings function is used to obtain the result. The 
 Unit=JclMiscel
 Category=Miscellaneous
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string; const Environment: PChar);
@@ -76,7 +77,9 @@ function.
 Unit=JclMiscel
 Category=Miscellaneous
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CreateProcAsUser
@@ -106,7 +109,9 @@ to be executed.
 Unit=JclMiscel
 Category=Miscellaneous
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=CreateProcAsUserEx
@@ -123,4 +128,6 @@ Kind=Type
 Category=Base Services
 Category=Miscellaneous
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
