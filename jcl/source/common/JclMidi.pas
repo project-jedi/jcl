@@ -20,7 +20,7 @@
 { Platform-independent MIDI declarations                                                           }
 {                                                                                                  }
 { Unit owner: Robert Rossmair                                                                      }
-{ Last modified: July 9, 2002                                                                     }
+{ Last modified: October 9, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -204,6 +204,8 @@ type
     function GetMIDIStatus: TMIDIStatusByte;
     function GetRunningStatusEnabled: Boolean;
     procedure SetRunningStatusEnabled(const Value: Boolean);
+    // General message send method
+    procedure SendMessage(const Data: array of Byte);
     // Channel Voice Messages
     procedure SendNoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte = $40);
     procedure SendNoteOn(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
