@@ -16,6 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
+{******************************************************************************}
+{                                                                              }
+{ Contains routines to perform conversion between various units such as length }
+{ coordinate, temperature, angle, mass and pressure conversions.               }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
 { Last modified: December 17, 2000                                             }
 {                                                                              }
 {******************************************************************************}
@@ -343,8 +349,8 @@ end;
 
 procedure CartesianToSpheric(const X, Y, Z: Float; var Rho, Theta, Phi: Float);
 begin
-  Rho   := Sqrt(X*X+Y*Y+Z*Z);
-  Phi   := ArcTan(Y/X);
+  Rho := Sqrt(X*X+Y*Y+Z*Z);
+  Phi := ArcTan(Y/X);
   Theta := ArcCos(Z/Rho);
 end;
 
