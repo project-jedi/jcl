@@ -20,7 +20,7 @@
 { Various Unicode related routines                                                                 }
 {                                                                                                  }
 { Unit owner: Mike Lischke                                                                         }
-{ Last modified: July 25, 2002                                                                     }
+{ Last modified: September 19, 2003                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -29,6 +29,14 @@ unit JclUnicode;
 {$I jcl.inc}
 
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
+//
+
+// 19-SEP-2003: (changes by Andreas Hausladen)
+//   - added OWN_WIDESTRING_MEMMGR for faster memory managment in TWideStringList
+//     under Windows
+//   - fixed: TWideStringList.Destroy does not set OnChange and OnChanging to nil before calling Clear
+//
+//
 // 29-MAR-2002: MT
 //   - WideNormalize now returns strings with normalization mode nfNone unchanged.
 //   - Bug fix in WideCompose: Raised exception when Result of WideComposeHangul was an
@@ -137,6 +145,14 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes;
+
+{$IFNDEF FPC}
+ {$IFDEF MSWINDOWS}
+  {$DEFINE OWN_WIDESTRING_MEMMGR}
+ {$ENDIF MSWINDOWS}
+{$ENDIF FPC}
+
+
 
 {$IFDEF SUPPORTS_WIDESTRING}
 
@@ -721,7 +737,6 @@ type
     procedure SetLanguage(Value: LCID); virtual;
   public
     constructor Create;
-    destructor Destroy; override;
 
     function Add(const S: WideString): Integer; virtual;
     function AddObject(const S: WideString; AObject: TObject): Integer; virtual;
@@ -766,8 +781,13 @@ type
   end;
 
   //----- TWideStringList class
+  TDynWideCharArray = array of WideChar;
   TWideStringItem = record
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+    FString: PWideChar; // "array of WideChar";
+{$ELSE}
     FString: WideString;
+{$ENDIF OWN_WIDESTRING_MEMMGR}
     FObject: TObject;
   end;
 
@@ -786,6 +806,9 @@ type
     procedure QuickSort(L, R: Integer);
     procedure InsertItem(Index: Integer; const S: WideString);
     procedure SetSorted(Value: Boolean);
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+    procedure SetListString(Index: Integer; const S: WideString);
+{$ENDIF OWN_WIDESTRING_MEMMGR}
   protected
     procedure Changed; virtual;
     procedure Changing; virtual;
@@ -995,11 +1018,11 @@ implementation
 {$R JclUnicode.res}
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
+  {.$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {$ELSE}
+  {.$ELSE}
   Consts,
-  {$ENDIF}
+  {.$ENDIF}
   SysUtils,
   JclBase, JclResources, JclSynch;
 
@@ -4444,14 +4467,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-destructor TWideStrings.Destroy;
-
-begin
-  inherited;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TWideStrings.SetLanguage(Value: LCID);
 begin
   FLanguage := Value;
@@ -4487,7 +4502,7 @@ var
   I: Integer;
   S: WideString;
   CP: Integer;
-  
+
 begin
   BeginUpdate;
   try
@@ -4510,7 +4525,6 @@ var
   SourceCP,
   TargetCP: Integer;
   S: WideString;
-
 begin
   Assert(Strings <> nil);
 
@@ -4815,7 +4829,7 @@ begin
   Size := 0;
   for I := 0 to Count - 1 do
     Inc(Size, Length(Get(I)) + SepSize);
-    
+
   // set one separator less, the last line does not need a trailing separator
   SetLength(Result, Size - SepSize);
   if Size > 0 then
@@ -4835,9 +4849,9 @@ begin
       Inc(I);
       if I = Count then
         Break;
-        
+
       // add separators
-      System.Move(Pointer(Separators)^, P^, 2 * SepSize);
+      System.Move(Pointer(Separators)^, P^, SizeOf(WideChar) * SepSize);
       Inc(P, SepSize);
     end;
   end;
@@ -5221,6 +5235,8 @@ end;
 destructor TWideStringList.Destroy;
 
 begin
+  FOnChange := nil;
+  FOnChanging := nil;
   Clear;
 
   inherited;
@@ -5286,11 +5302,15 @@ end;
 procedure TWideStringList.Delete(Index: Integer);
 
 begin
-  if (Index < 0) or (Index >= FCount) then
+  if Cardinal(Index) >= Cardinal(FCount) then
     Error(SListIndexError, Index);
   Changing;
 
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+  SetListString(Index, '');
+{$ELSE}
   FList[Index].FString := '';
+{$ENDIF OWN_WIDESTRING_MEMMGR}
   Dec(FCount);
   if Index < FCount then
   begin
@@ -5305,9 +5325,9 @@ end;
 procedure TWideStringList.Exchange(Index1, Index2: Integer);
 
 begin
-  if (Index1 < 0) or (Index1 >= FCount) then
+  if Cardinal(Index1) >= Cardinal(FCount) then
     Error(SListIndexError, Index1);
-  if (Index2 < 0) or (Index2 >= FCount) then
+  if Cardinal(Index2) >= Cardinal(FCount) then
     Error(SListIndexError, Index2);
   Changing;
   ExchangeItems(Index1, Index2);
@@ -5320,7 +5340,6 @@ procedure TWideStringList.ExchangeItems(Index1, Index2: Integer);
 
 var
   Temp: TWideStringItem;
-
 begin
   Temp := FList[Index1];
   FList[Index1] := FList[Index2];
@@ -5363,10 +5382,29 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TWideStringList.Get(Index: Integer): WideString;
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+var
+  Len: Integer;
+{$ENDIF OWN_WIDESTRING_MEMMGR}
 begin
-  if (Index < 0) or (Index >= FCount) then
+  if Cardinal(Index) >= Cardinal(FCount) then
     Error(SListIndexError, Index);
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+  with FList[Index] do
+  begin
+    Len := Length(TDynWideCharArray(FString));
+    if Len > 0 then
+    begin
+      SetLength(Result, Len - 1); // exclude #0
+      if Result <> '' then
+        System.Move(FString^, Result[1], Len * SizeOf(WideChar));
+    end
+    else
+      Result := '';
+  end;
+{$ELSE}
   Result := FList[Index].FString;
+{$ENDIF OWN_WIDESTRING_MEMMGR}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5387,7 +5425,7 @@ end;
 
 function TWideStringList.GetObject(Index: Integer): TObject;
 begin
-  if (Index < 0) or (Index >= FCount) then
+  if Cardinal(Index) >= Cardinal(FCount) then
     Error(SListIndexError, Index);
   Result := FList[Index].FObject;
 end;
@@ -5430,10 +5468,38 @@ procedure TWideStringList.Insert(Index: Integer; const S: WideString);
 begin
   if Sorted then
     Error(SSortedListError, 0);
-  if (Index < 0) or (Index > FCount) then
+  if Cardinal(Index) > Cardinal(FCount) then
     Error(SListIndexError, Index);
   InsertItem(Index, S);
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+procedure TWideStringList.SetListString(Index: Integer; const S: WideString);
+var
+  Len: Integer;
+  A: TDynWideCharArray;
+begin
+  with FList[Index] do
+  begin
+    A := TDynWideCharArray(FString);
+    if A <> nil then
+      A := nil; // free memory
+      
+    Len := Length(S);
+    if Len > 0 then
+    begin
+      SetLength(A, Len + 1); // include #0
+      System.Move(S[1], A[0], Len * SizeOf(WideChar));
+      A[Len] := #0;
+    end;
+
+    FString := PWideChar(A);
+    Pointer(A) := nil; // do not release the array on procedure exit
+  end;
+end;
+{$ENDIF OWN_WIDESTRING_MEMMGR}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -5449,9 +5515,15 @@ begin
     Pointer(FString) := nil; // avoid freeing the string, the address is now used in another element
     FObject := nil;
     if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+      SetListString(Index, WideNormalize(S, FNormalizationForm))
+    else
+      SetListString(Index, S);
+{$ELSE}
       FString := WideNormalize(S, FNormalizationForm)
     else
       FString := S;
+{$ENDIF OWN_WIDESTRING_MEMMGR}
   end;
   Inc(FCount);
   Changed;
@@ -5463,14 +5535,20 @@ procedure TWideStringList.Put(Index: Integer; const S: WideString);
 begin
   if Sorted then
     Error(SSortedListError, 0);
-  if (Index < 0) or (Index >= FCount) then
+  if Cardinal(Index) >= Cardinal(FCount) then
     Error(SListIndexError, Index);
   Changing;
 
   if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
+{$IFDEF OWN_WIDESTRING_MEMMGR}
+    SetListString(Index, WideNormalize(S, FNormalizationForm))
+  else
+    SetListString(Index, S);
+{$ELSE}
     FList[Index].FString := WideNormalize(S, FNormalizationForm)
   else
     FList[Index].FString := S;
+{$ENDIF OWN_WIDESTRING_MEMMGR}
   Changed;
 end;
 
@@ -5478,7 +5556,7 @@ end;
 
 procedure TWideStringList.PutObject(Index: Integer; AObject: TObject);
 begin
-  if (Index < 0) or (Index >= FCount) then
+  if Cardinal(Index) >= Cardinal(FCount) then
     Error(SListIndexError, Index);
   Changing;
   FList[Index].FObject := AObject;
@@ -5518,6 +5596,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetCapacity(NewCapacity: Integer);
+
 begin
   SetLength(FList, NewCapacity);
   if NewCapacity < FCount then
