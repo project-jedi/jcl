@@ -20,7 +20,7 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JclFileUtils;
+unit JclFileUtils2;
 
 {$I JCL.INC}
 
@@ -32,7 +32,7 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  Classes,
+  Classes, Graphics, SysUtils,
   JclBase, JclSysInfo;
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,9 @@ function PathAppend(const Path, Append: string): string;
 function PathBuildRoot(const Drive: Byte): string;
 function PathCommonPrefix(const Path1, Path2: string): Integer;
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
-  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string;
+  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
+function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
+  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
 procedure PathExtractElements(const P: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathGetLongName(const Path: string): string;
@@ -89,6 +91,7 @@ function GetDriveTypeStr(const Drive: Char): string;
 function GetFileAgeCoherence(const FileName: string): Boolean;
 procedure GetFileAttributeList(const Items: TStrings; const A: Integer);
 procedure GetFileAttributeListEx(const Items: TStrings; const A: Integer);
+function GetFileInformation(const FileName: string): TSearchRec;
 function GetFileLastWrite(const FileName: string): TFileTime;
 function GetFileLastAccess(const FileName: string): TFileTime;
 function GetFileCreation(const FileName: string): TFileTime;
@@ -275,6 +278,7 @@ type
 
 { Exceptions }
 
+  EJclPathError = class (EJclError);
   EJclTempFileStreamError = class (EJclWin32Error);
   EJclFileMappingError = class (EJclWin32Error);
   EJclFileMappingViewError = class (EJclWin32Error);
@@ -285,7 +289,6 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF}
-  SysUtils,
   JclResources, JclSecurity, JclSysUtils, JclWin32;
 
 //==============================================================================
@@ -639,7 +642,7 @@ var
 begin
   Result := Path;
   L := Length(Path);
-  if (L > 0) and (Path[L] <> PathSeparator) then
+  if (L = 0) or (Path[L] <> PathSeparator) then
     Result := Path + PathSeparator;
 end;
 
@@ -699,7 +702,7 @@ begin
   if Drive < 26 then
     Result := Char(Drive + 65) + ':\'
   else
-    Result := '';
+    raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
   {$ENDIF}
 end;
 
@@ -761,6 +764,14 @@ begin
   finally
     StrDispose(P);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
+  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
+begin
+  Result := PathCompactPath(Canvas.Handle, Path, Width, CmpFmt);
 end;
 
 //------------------------------------------------------------------------------
@@ -871,7 +882,7 @@ end;
 function PathIsUNC(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
-  NotImplemented('PathIsUNC'); // TODO
+  Result := Path;
   {$ENDIF}
   {$IFDEF WIN32}
   Result := ((Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix) and
@@ -926,7 +937,7 @@ begin
       R := FindNext(SearchRec);
     end;
     Result := R = ERROR_NO_MORE_FILES;
-    FindClose(SearchRec);
+    SysUtils.FindClose(SearchRec);
   end;
 end;
 
@@ -1053,7 +1064,7 @@ var
 begin
   FillChar(FileInfo, SizeOf(FileInfo), #0);
   if SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> 0 then
-    Result := StrPas(FileInfo.szDisplayName)
+    Result := FileInfo.szDisplayName
   else
     Result := FileName;
 end;
@@ -1071,7 +1082,7 @@ begin
     if FindFirst(FileName, faAnyFile, SearchRec) = 0 then
     begin
       Result := SearchRec.Size;
-      FindClose(SearchRec);
+      SysUtils.FindClose(SearchRec);
     end;
   finally
     SetErrorMode(OldMode);
@@ -1113,7 +1124,7 @@ begin
   RetVal := SHGetFileInfo(PChar(FileNAme), 0, FileInfo, SizeOf(FileInfo),
     SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
   if RetVal <> 0 then
-    Result := StrPas(FileInfo.szTypeName);
+    Result := FileInfo.szTypeName;
   if (RetVal = 0) or (Trim(Result) = '') then
   begin
     Result := ExtractFileExt(FileName);
@@ -1129,11 +1140,13 @@ var
   DriveType: Integer;
   DriveStr: string;
 begin
+  if not (Drive in ['a'..'z', 'A'..'Z']) then
+    raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [Drive]);
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
   case DriveType of
-    0, 1:
-      Result := RsUnknownDrive;
+    //0, 1: { handled by else }
+    //  Result := RsUnknownDrive;
     DRIVE_REMOVABLE:
       Result := RsRemovableDrive;
     DRIVE_FIXED:
@@ -1144,6 +1157,8 @@ begin
       Result := RsCDRomDrive;
     DRIVE_RAMDISK:
       Result := RsRamDisk;
+    else
+      Result := RsUnknownDrive;
   end;
 end;
 
@@ -1217,56 +1232,33 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetFileLastWrite(const FileName: string): TFileTime;
-var
-  Handle: THandle;
-  FindData: TWin32FindData;
+function GetFileInformation(const FileName: string): TSearchRec;
 begin
-  Double(Result) := 0.0;
-  Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Windows.FindClose(Handle);
-    Result := FindData.ftLastWriteTime;
-  end
+  if FindFirst(FileName, faAnyFile, Result) = 0 then
+    SysUtils.FindClose(Result)
   else
     RaiseLastWin32Error;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetFileLastWrite(const FileName: string): TFileTime;
+begin
+  Result := GetFileInformation(FileName).FindData.ftLastWriteTime;
 end;
 
 //------------------------------------------------------------------------------
 
 function GetFileLastAccess(const FileName: string): TFileTime;
-var
-  Handle: THandle;
-  FindData: TWin32FindData;
 begin
-  Double(Result) := 0.0;
-  Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Windows.FindClose(Handle);
-    Result := FindData.ftLastAccessTime;
-  end
-  else
-    RaiseLastWin32Error;
+  Result := GetFileInformation(FileName).FindData.ftLastAccessTime;
 end;
 
 //------------------------------------------------------------------------------
 
 function GetFileCreation(const FileName: string): TFileTime;
-var
-  Handle: THandle;
-  FindData: TWin32FindData;
 begin
-  Double(Result) := 0.0;
-  Handle := FindFirstFile(PChar(FileName), FindData);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Windows.FindClose(Handle);
-    Result := FindData.ftCreationTime;
-  end
-  else
-    RaiseLastWin32Error;
+  Result := GetFileInformation(FileName).FindData.ftCreationTime;
 end;
 
 //------------------------------------------------------------------------------
@@ -1354,7 +1346,12 @@ end;
 
 //------------------------------------------------------------------------------
 
-function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
+type
+  // indicates the file time to set, used by SetFileTimesHelper and SetDirTimesHelper
+  TFileTimes = (ftLastAccess, ftLastWrite, ftCreation);
+
+function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime;
+  Times: TFileTimes): Boolean;
 var
   Handle: THandle;
   FileTime: TFileTime;
@@ -1367,54 +1364,42 @@ begin
   begin
     DateTimeToSystemTime(DateTime, SystemTime);
     SystemTimeToFileTime(SystemTime, FileTime);
-    Result := SetFileTime(Handle, nil, @FileTime, nil);
+    case Times of
+      ftLastAccess:
+        Result := SetFileTime(Handle, nil, @FileTime, nil);
+      ftLastWrite:
+        Result := SetFileTime(Handle, nil, nil, @FileTime);
+      ftCreation:
+        Result := SetFileTime(Handle, @FileTime, nil, nil);
+    end;
     CloseHandle(Handle);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
+begin
+  Result := SetFileTimesHelper(FileName, DateTime, ftLastAccess);
 end;
 
 //------------------------------------------------------------------------------
 
 function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
-var
-  Handle: THandle;
-  FileTime: TFileTime;
-  SystemTime: TSystemTime;
 begin
-  Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, 0, 0);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    DateTimeToSystemTime(DateTime, SystemTime);
-    SystemTimeToFileTime(SystemTime, FileTime);
-    Result := SetFileTime(Handle, nil, nil, @FileTime);
-    CloseHandle(Handle);
-  end;
+  Result := SetFileTimesHelper(FileName, DateTime, ftLastWrite);
 end;
 
 //------------------------------------------------------------------------------
 
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
-var
-  Handle: THandle;
-  FileTime: TFileTime;
-  SystemTime: TSystemTime;
 begin
-  Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, 0, 0);
-  if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    DateTimeToSystemTime(DateTime, SystemTime);
-    SystemTimeToFileTime(SystemTime, FileTime);
-    Result := SetFileTime(Handle, @FileTime, nil, nil);
-    CloseHandle(Handle);
-  end;
+  Result := SetFileTimesHelper(FileName, DateTime, ftCreation);
 end;
 
 //------------------------------------------------------------------------------
 
-// utility function for SetDir...
+// utility function for SetDirTimesHelper
 
 function BackupPrivilegesEnabled: Boolean;
 begin
@@ -1423,7 +1408,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirTimesHelper(const DirName: string; const DateTime: TDateTime;
+  Times: TFileTimes): Boolean;
 var
   Handle: THandle;
   FileTime: TFileTime;
@@ -1438,56 +1424,38 @@ begin
     begin
       DateTimeToSystemTime(DateTime, SystemTime);
       SystemTimeToFileTime(SystemTime, FileTime);
-      Result := SetFileTime(Handle, nil, nil, @FileTime);
+      case Times of
+        ftLastAccess:
+          Result := SetFileTime(Handle, nil, @FileTime, nil);
+        ftLastWrite:
+          Result := SetFileTime(Handle, nil, nil, @FileTime);
+        ftCreation:
+          Result := SetFileTime(Handle, @FileTime, nil, nil);
+      end;
       CloseHandle(Handle);
     end;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
+begin
+  Result := SetDirTimesHelper(DirName, DateTime, ftLastWrite);
 end;
 
 //------------------------------------------------------------------------------
 
 function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
-var
-  Handle: THandle;
-  FileTime: TFileTime;
-  SystemTime: TSystemTime;
 begin
-  Result := False;
-  if IsDirectory(DirName) and BackupPrivilegesEnabled then
-  begin
-    Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
-    if Handle <> INVALID_HANDLE_VALUE then
-    begin
-      DateTimeToSystemTime(DateTime, SystemTime);
-      SystemTimeToFileTime(SystemTime, FileTime);
-      Result := SetFileTime(Handle, nil, @FileTime, nil);
-      CloseHandle(Handle);
-    end;
-  end;
+  Result := SetDirTimesHelper(DirName, DateTime, ftLastAccess);
 end;
 
 //------------------------------------------------------------------------------
 
 function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
-var
-  Handle: THandle;
-  FileTime: TFileTime;
-  SystemTime: TSystemTime;
 begin
-  Result := False;
-  if IsDirectory(DirName) and BackupPrivilegesEnabled then
-  begin
-    Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
-    if Handle <> INVALID_HANDLE_VALUE then
-    begin
-      DateTimeToSystemTime(DateTime, SystemTime);
-      SystemTimeToFileTime(SystemTime, FileTime);
-      Result := SetFileTime(Handle, @FileTime, nil, nil);
-      CloseHandle(Handle);
-    end;
-  end;
+  Result := SetDirTimesHelper(DirName, DateTime, ftCreation);
 end;
 
 //------------------------------------------------------------------------------
