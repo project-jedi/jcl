@@ -662,7 +662,11 @@ end;
 procedure TJclMIDIOut.SendMessage(const Data: array of Byte);
 begin
   if IsRunningStatus(Data[0]) then
+    {$IFDEF FPC}
+    DoSendMessage(PByteArray(@Data[1])^)
+    {$ELSE}
     DoSendMessage(Slice(Data, 1))
+    {$ENDIF FPC}
   else
     DoSendMessage(Data);
 end;
