@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 6, 2000                                              }
+{ Last modified: December 10, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -477,6 +477,7 @@ type
     function GetName: string;
     function GetAddressOrForwardStr: string;
     function GetSectionName: string;
+    function GetMappedAddress: Pointer;
   protected
     procedure FindForwardedDotPos;
   public
@@ -488,6 +489,7 @@ type
     property ForwardedFuncOrdinal: DWORD read GetForwardedFuncOrdinal;
     property ForwardedFuncName: string read GetForwardedFuncName;
     property Hint: Word read FHint;
+    property MappedAddress: Pointer read GetMappedAddress;
     property Name: string read GetName;
     property Ordinal: DWORD read FOrdinal;
     property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
@@ -1074,7 +1076,7 @@ function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
 //------------------------------------------------------------------------------
 
 type
-  TJclBorUmSymbolKind = (skData, skConstructor, skDestructor, skRTTI, skVTable);
+  TJclBorUmSymbolKind = (skData, skFunction, skConstructor, skDestructor, skRTTI, skVTable);
   TJclBorUmSymbolModifier = (smQualified, smLinkProc);
   TJclBorUmSymbolModifiers = set of TJclBorUmSymbolModifier;
   TJclBorUmDescription = record
@@ -2016,6 +2018,13 @@ end;
 function TJclPeExportFuncItem.GetIsForwarded: Boolean;
 begin
   Result := FForwardedName <> nil;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeExportFuncItem.GetMappedAddress: Pointer;
+begin
+  Result := FExportList.FImage.RvaToVa(FAddress);
 end;
 
 //------------------------------------------------------------------------------
@@ -3727,7 +3736,7 @@ begin
       HasDVCLAL := (FindResource(rtRCData, 'DVCLAL') <> nil);
       HasPACKAGEINFO := (FindResource(rtRCData, 'PACKAGEINFO') <> nil);
       HasPACKAGEOPTIONS := (FindResource(rtRCData, 'PACKAGEOPTIONS') <> nil);
-      FIsPackage := HasPACKAGEINFO or HasPACKAGEOPTIONS;
+      FIsPackage := HasPACKAGEINFO and HasPACKAGEOPTIONS;
       FIsBorlandImage := HasDVCLAL or FIsPackage;
       if FIsPackage then
       begin
@@ -4805,21 +4814,30 @@ var
                 Break;
               end;
             '$':
-              if (NameP + 2)^ = 'b' then
               begin
-                case (NameP + 3)^ of
-                  'c':
-                    Description.Kind := skConstructor;
-                  'd':
-                    Description.Kind := skDestructor;
-                end;
-                Inc(NameP, 6);
+                if (NameP + 2)^ = 'b' then
+                begin
+                  case (NameP + 3)^ of
+                    'c':
+                      Description.Kind := skConstructor;
+                    'd':
+                      Description.Kind := skDestructor;
+                  end;
+                  Inc(NameP, 6);
+                end else
+                  Description.Kind := skFunction;
+                Break; // no parameters unmangling yet
               end;
           else
             MarkQualifier;
             NameU^ := '.';
             Inc(NameU);
             Inc(NameP);
+          end;
+        '$':
+          begin
+            Description.Kind := skFunction;
+            Break; // no parameters unmangling yet
           end;
       else
         Break;
