@@ -789,6 +789,166 @@ Count=1
 1=ShellExec
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function ShellOpenAs(const FileName: string): Boolean;
+[ShortDescr]
+Invokes the shell's "Open With..." dialog for the specified file.
+[Description]
+The ShellOpenAs function invokes the shell's "Open With..." dialog with the
+specified filename selected. This allows the user to select an application to
+open the file with, or dismiss opening all together. If the user selects an
+application and clicks the OK button the shell executes the selected application
+and instructs it to open the specified file.
+[Parameters]
+Count=1
+1=FileName:string=The fully qualified name of the file for which to invoke
+the "Open With..." dialog. The caller is responsible for ensuring that the
+specified file actually exists, this function nor the shell does so. If the file
+does not exist the eventually invoke application, if any, is the one to determine
+that fact (and will likely display an error message).
+[Result]
+If the function succeeds it returns True, otherwise it returns False. Note that
+the invocation of the dialog is asynchronously so at the time the function returns
+the dialog likely is not on screen yet. The result therefore doesn't indicate
+whether or not the user selected an application but only whether or not the
+dialog can be shown in the first place.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ShellRasDial(const EntryName: string): Boolean;
+[ShortDescr]
+Invokes the RAS Connect dialog.
+[Description]
+The ShellRasDial function invoked the RAS Connect dialog (the one you get when
+you double click a RAS connection) for the specified connection.
+[Parameters]
+Count=1
+1=EntryName:string=The name of the dial up connection to invoke. This name must
+be the exact name of an existing dial up connection.
+[Result]
+If the function succeeds it returns True, otherwise it fails. Reasons for possible
+failure are an incorrect (non-existing) entry name, the user pressing the Cancel
+button in the dialog or failure to connect.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=Shell32 Version 4.00 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer = 0): Boolean;
+[ShortDescr]
+Executes a control panel application.
+[Description]
+ShellRunControlPanel executes a control panel application.
+[Parameters]
+Count=2
+1=NameOrFileName:string=Filename of the control panel application to execute (a .cpl)
+2=AppletNumber:Integer=Zero based index of the applet to execute. Most control
+panel applications only implement a single applet so this parameter is most
+often 0. However, for those control panel applications that implement multiple
+applets you can use this index to choose the applet to execute. For example, on
+Windows 2000 main.cpl implements two applets, Mouse Properties (index 0) and
+Keyboard Properties (index 1).
+[Result]
+If the control panel application can be executed the function returns True,
+otherwise it returns False. Note that the application is executed asynchronously
+so the application may not be running yet when the function returns. Note that
+passing an invalid index causes the function to return True (it only checks
+validity of the filename) but the applet will not be shown (obviously).
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclFileExeType = (etError, etMsDos, etWin16, etWin32Gui, etWin32Con);
+[ShortDescr]
+Enumeration use by GetFileExeType representing a type of executable file.
+[Enumeration]
+Count=5
+1=etError=Error, executable file type couldn't be determined.
+2=etMsDos=MS DOS executable (.exe, .com or .bat)
+3=etWin16=16 bit Windows executable.
+4=etWin32Gui=32 bit Windows GUI executable.
+5=etWin32Con=32 bit Windows console executable.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=Shell32 Version 4.00 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFileExeType(const FileName: TFileName): TJclFileExeType;
+[ShortDescr]
+Returns the type of executable file.
+[Description]
+GetFileExeType returns the type of executable file of the specified file.
+[Parameters]
+Count=1
+1=FileName:TFileName=Fully qualified name of the file to test.
+[Result]
+If the function succeeds it returns the type of executable file represented by
+the <REF>TJclFileExeType</REF> type. If the function fails it returns etError.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ShellFindExecutable(const FileName, DefaultDir: string): string;
+[ShortDescr]
+Returns the executable associated with a file.
+[Description]
+ShellFindExecutable returns the name of the application that is associated with
+the specified file. That is, the application that would be executed when you
+double click the document (file).
+[Parameters]
+Count=2
+1=FileName:TFileName=Fully qualified name of the file for which to determine the associated application.
+2=DefaultDir:string=TODO
+[Result]
+If the function succeeds it returns the name of the application associated with
+the specified file. If the function fails it returns an empty string.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Miscellaneous
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
 [ShortDescr]
 Reallocates (changes the size) a block of memory in the shell's memory space. The
@@ -924,7 +1084,7 @@ Count=2
 2=SHGetMem
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TShortCut = record
+TShellLink = record
   Arguments: string;
   ShowCmd: Integer;
   WorkingDirectory: string;
@@ -935,12 +1095,12 @@ TShortCut = record
   IconIndex: Integer;
   HotKey: Word;
 end;
-PShortCut = ^TShortCut;
+PShellLink = ^TShellLink;
 [ShortDescr]
-The TShortCut record is used when creating or resolving shortcuts with
-the <REF Target"..\ShortCutCreate">ShortCutCreate</REF>
-, <REF Target"..\ShortCutCreateSystem">ShortCutCreateSystem</REF>
-and <REF Target"..\ShortCutResolve">ShortCutResolve</REF> functions.
+The TShellLink record is used when creating or resolving shortcuts with
+the <REF Target"..\ShellLinkCreate">ShellLinkCreate</REF>
+, <REF Target"..\ShellLinkCreateSystem">ShellLinkCreateSystem</REF>
+and <REF Target"..\ShellLinkResolve">ShellLinkResolve</REF> functions.
 [RecordFields]
 Count=9
 1=Arguments:string=Command line arguments associated with the shell link
@@ -955,7 +1115,7 @@ Count=9
 [Notes]
 Count=2
 1=To avoid problems you should set the IdList field to nil before using this record.
-2=You must call ShortCutFree when you no longer need the TShortCut record.
+2=You must call ShellLinkFree when you no longer need the ShellLink record.
 [Quick Info]
 BCB=3,4,5
 Kind=Type
@@ -969,23 +1129,23 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
 [SeeAlso]
 Count=3
-1=ShortCutCreate;..\ShortCutCreate
-2=ShortCutCreateSystem;..\ShortCutCreateSystem
-3=ShortCutResolve;..\ShortCutResolve
-4=ShortCutFree;..\ShortCutFree
+1=ShellLinkCreate;..\ShellLinkCreate
+2=ShellLinkCreateSystem;..\ShellLinkCreateSystem
+3=ShellLinkResolve;..\ShellLinkResolve
+4=ShellLinkFree;..\ShellLinkFree
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure ShortCutFree(var ShortCut: TShortCut);
+procedure ShortCutFree(var ShellLink: ShellLink);
 [ShortDescr]
-Releases resources held by the ShortCut record.
+Releases resources held by the ShellLink record.
 [Description]
-ShortCutFree releases the resources held by the <REF Target"Types\TShortCut">ShortCut</REF>
-parameter. You must call this function when you no longer need the record, 
+ShellLinkFree releases the resources held by the <REF Target"Types\TShellLink">TShellLink</REF>
+parameter. You must call this function when you no longer need the record,
 otherwise your application leaks memory.
 [Parameters]
 Count=1
-1=ShortCut:TShortCut=The <REF Target"Types\TShortCut">TShortCut</REF> record used earlier
-in <REF>ShortCutCreate</REF>, <REF>ShortCutCreateSystem</REF> or <REF>ShortCutResolve</REF>.
+1=ShellLink:TShellLink=The <REF Target"Types\TShellLink">TShellLink</REF> record used earlier
+in <REF>ShellLinkCreate</REF>, <REF>ShellLinkCreateSystem</REF> or <REF>ShellLinkResolve</REF>.
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -998,28 +1158,28 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
 [SeeAlso]
 Count=4
-1=ShortCutResolve
-2=ShortCutCreate
-3=ShortCutCreateSystem
-4=TShortCut;Types\TShortCut
+1=ShellLinkResolve
+2=ShellLinkCreate
+3=ShellLinkCreateSystem
+4=TShellLink;Types\TShellLink
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function ShortCutResolve(const FileName: string; var ShortCut: TShortCut): HRESULT;
+function ShellLinkResolve(const FileName: string; var ShellLink: TShellLink): HRESULT;
 [ShortDescr]
 Resolves a shortcut.
 [Description]
-ShortCutResolve resolves the shortcut specified by FileName parameter and returns
-information about it in the <REF Target"Types\TShortCut">ShortCut</REF> parameter.
+ShellLinkResolve resolves the ShellLink specified by FileName parameter and returns
+information about it in the <REF Target"Types\TShellLink">ShellLink</REF> parameter.
 On success the return value is S_OK, on failure an OLE error code.
 [Parameters]
 Count=2
 1=FileName:string=Fully qualified name of the shortcut file to resolve.
-2=ShortCut:TShortCut=<REF Target"Types\TShortCut">TShortCut</REF> record which retrieves the details about the specified shortcut.
+2=ShellLink:TShellLink=<REF Target"Types\TShellLink">TShellLink</REF> record which retrieves the details about the specified shortcut.
 [Result]
 If the function succeeds it returns S_OK. If it fails it returns an OLE error code.
 [Notes]
 Count=1
-1=You must free the TShortCut record by calling <REF>ShortCutFree</REF>
+1=You must free the TShellLink record by calling <REF>ShellLinkFree</REF>
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -1032,30 +1192,30 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
 [SeeAlso]
 Count=4
-1=ShortCutCreate
-2=ShortCutCreateSystem
-3=ShortCutFree
-4=TShortCut;Types\TShortCut
+1=ShellLinkCreate
+2=ShellLinkCreateSystem
+3=ShellLinkFree
+4=TShellLink;Types\TShellLink
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function ShortCutCreate(const ShortCut: TShortCut; const FileName: string): HRESULT;
+function ShellLinkCreate(const ShellLink: TShellLink; const FileName: string): HRESULT;
 [ShortDescr]
 Creates a new shortcut.
 [Description]
-ShortCutCreate creates a new shortcut specified by filename. If the function
+ShellLinkCreate creates a new shortcut specified by filename. If the function
 succeeds it returns S_OK otherwise it returns an OLE error code.
-See <REF Target"Types\TShortCut">TShortCut</REF> for information about the ShortCut
+See <REF Target"Types\TShellLink">TShellLink</REF> for information about the ShellLink
 parameter.
 [Parameters]
 Count=2
-1=ShortCut:TShortCut=<REF Target"Types\TShortCut">TShortCut</REF> record with the details about the shortcut to create.
+1=ShellLink:TShellLink=<REF Target"Types\TShellLink">TShellLink</REF> record with the details about the shortcut to create.
 2=FileName:string=Fully qualified Filename for the new shortcut.
 [Result]
 If the function succeeds the shortcut is created and the return value is S_OK. If
 the function fails the return value is an OLE error code.
 [Notes]
 Count=1
-1=You must free the TShortCut record by calling <REF>ShortCutFree</REF>
+1=You must free the TShellLink record by calling <REF>ShellLinkFree</REF>
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -1068,23 +1228,23 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
 [SeeAlso]
 Count=4
-1=ShortCutCreateSystem
-2=ShortCutResolve
-3=ShortCutFree
-4=TShortCut;Types\TShortCut
+1=ShellLinkCreateSystem
+2=ShellLinkResolve
+3=ShellLinkFree
+4=TShellLink;Types\TShellLink
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function ShortCutCreateSystem(const ShortCut: TShortCut; const Folder: Integer; const FileName: string): HRESULT;
+function ShellLinkCreateSystem(const ShellLink: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
 [ShortDescr]
 Creates a new shortcut in the specified system folder.
 [Description]
-ShortCutCreateSystem creates a new shortcut specified by FileName in the system
+ShellLinkCreateSystem creates a new shortcut specified by FileName in the system
 folder specified by the Folder parameter (CSIDL_XXX constants). FileName can
-contain a path but not a drive specification. See <REF Target"Types\TShortCut">TShortCut</REF> for information about the ShortCut parameter. If the function succeeds it returns
+contain a path but not a drive specification. See <REF Target"Types\TShellLink">TShellLink</REF> for information about the ShortCut parameter. If the function succeeds it returns
 S_OK otherwise it returns an OLE error code.
 [Parameters]
 Count=3
-1=ShortCut:TShortCut=<REF Target"Types\TShortCut">TShortCut</REF> record with the details about the shortcut to create.
+1=ShellLink:TShellLink=<REF Target"Types\TShellLink">TShellLink</REF> record with the details about the shortcut to create.
 2=Folder:Integer=The folder in which to create the shortcut. This must be set to one of the CSIDL_x constants.
 3=FileName:string=Filename for the new shortcut. This can include a folder but no drive indication.
 [Result]
@@ -1092,7 +1252,7 @@ If the function succeeds the shortcut is created and the return value is S_OK. I
 the function fails the return value is an OLE error code.
 [Notes]
 Count=1
-1=You must free the TShortCut record by calling <REF>ShortCutFree</REF>
+1=You must free the TShellLink record by calling <REF>ShellLinkFree</REF>
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -1105,10 +1265,36 @@ Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
 [SeeAlso]
 Count=4
-1=ShortCutCreate
-2=ShortCutResolve
-3=ShortCutFree
-4=TShortCut;Types\TShortCut
+1=ShellLinkCreate
+2=ShellLinkResolve
+3=ShellLinkFree
+4=TShellLink;Types\TShellLink
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
+[ShortDescr]
+Returns the icon associate with a shell link.
+[Description]
+ShellLinkGetIcon obtains the icon for the specified link. Due to the fact that
+Windows does not document how the shell itself determines the icon to display,
+the returned icon may be different than the one the shell actually dispays.
+[Parameters]
+Count=2
+1=Link:TShellLink=ShellLink record specifying the shell link for which to obtain
+the icon. This is, for example, the recor as initialized by ShellLinkResolve.
+2=Icon:TIcon=TIcon instance which receives the icon associated with the shell link.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclShell
+Category=Shell
+SubCat=Shortcuts
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=Shell32 Version 4.00 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
