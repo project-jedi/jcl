@@ -621,7 +621,7 @@ implementation
 
 uses
   Math,
-  JclResources;
+  JclResources, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
 
