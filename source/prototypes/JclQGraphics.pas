@@ -1,4 +1,4 @@
 unit JclQGraphics;
-{$DEFINE Develop}
+{$DEFINE PROTOTYPE}
 {$DEFINE VisualCLX}
 {$INCLUDE _Graphics.pas}
