@@ -54,7 +54,6 @@
       ..\..\lib\c5\obj\JclUnicode.obj
       ..\..\lib\c5\obj\JclWin32.obj
       ..\..\lib\c5\obj\JclWinMIDI.obj
-      ..\..\lib\c5\obj\LM.obj
       ..\..\lib\c5\obj\JclAppInst.obj
       ..\..\lib\c5\obj\JclPrint.obj
       ..\..\lib\c5\obj\JclGraphUtils.obj
