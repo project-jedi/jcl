@@ -22,7 +22,7 @@
 { highly accurate timing.                                                      }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 29, 2000                                              }
+{ Last modified: February 06, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -43,17 +43,18 @@ uses
 type
   TJclCounter = class (TObject)
   private
+    FCounting: Boolean;
+    FElapsedTime: Float;
     FFrequency: Int64;
     FStart: Int64;
     FStop: Int64;
-    FCounting: Boolean;
-    FElapsedTime: Float;
+    FOverhead: Int64;
   public
-    constructor Create;
+    constructor Create(Compensate: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
     procedure Start;
     function Stop: Float;
-    property ElapsedTime: Float read FElapsedTime;
     property Counting: Boolean read FCounting;
+    property ElapsedTime: Float read FElapsedTime;
   end;
 
 procedure StartCount(var Counter: TJclCounter);
@@ -69,13 +70,22 @@ uses
   JclResources, JclSysUtils;
 
 //------------------------------------------------------------------------------
-
-constructor TJclCounter.Create;
+constructor TJclCounter.Create(Compensate: Boolean);
 begin
   inherited Create;
   if not QueryPerformanceFrequency(FFrequency) then
     raise EJclCounterError.CreateResRec(@RsNoCounter);
   FCounting := False;
+  FOverhead := 0;
+  if Compensate then
+  begin
+    // Determine overhead associated with calling of the Start and Stop methods.
+    // This allows the Stop method to compensate for it and return a more
+    // accurate result. Thanks to John O'Harrow (john@elmcrest.demon.co.uk)
+    Start;
+    Stop;
+    FOverhead := FStop - FStart;
+  end;
   FElapsedTime := 0;
 end;
 
@@ -94,7 +104,7 @@ function TJclCounter.Stop: Float;
 begin
   QueryPerformanceCounter(FStop);
   FCounting := False;
-  FElapsedTime := (FStop - FStart) / FFrequency;
+  FElapsedTime := (FStop - FStart - FOverhead) / FFrequency;
   Result := FElapsedTime;
 end;
 
@@ -110,12 +120,13 @@ end;
 
 function StopCount(var Counter: TJclCounter): Float;
 begin
-  Result := 0.0;
   if Counter <> nil then
   begin
     Result := Counter.Stop;
     FreeAndNil(Counter);
-  end;
+  end
+  else
+    Result := 0.0;
 end;
 
 end.
