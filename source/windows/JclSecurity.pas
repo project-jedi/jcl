@@ -101,9 +101,9 @@ function CreateNullDacl(var Sa: TSecurityAttributes;
 var
   Sd: PSecurityDescriptor;
 begin
-  Sd := AllocMem(SizeOf(Sd));
-  InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION);
-  SetSecurityDescriptorDacl(Sd, True, nil, False);
+  Sd := AllocMem(SizeOf(TSecurityDescriptor));
+  Win32Check(InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION));
+  Win32Check(SetSecurityDescriptorDacl(Sd, True, nil, False));
   Sa.nLength := SizeOf(Sa);
   Sa.lpSecurityDescriptor := Sd;
   Sa.bInheritHandle := Inheritable;
@@ -142,12 +142,12 @@ begin
   end;
   if HaveToken then
   begin
-    AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
+    Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
       SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-      psidAdmin);
-    GetTokenInformation(Token, TokenGroups, nil, 0, Count);
+      psidAdmin));
+    Win32Check(GetTokenInformation(Token, TokenGroups, nil, 0, Count));
     TokenInfo := PTokenGroups(AllocMem(Count));
-    GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count);
+    Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
     for I := 0 to TokenInfo^.GroupCount - 1 do
     begin
       {$R-} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
