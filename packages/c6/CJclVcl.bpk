@@ -26,7 +26,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="CJclVcl.cpp"/>
     <INCLUDEPATH value="..\..\source;..\..\source\windows;..\..\source\vcl;..\..\source\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\source\vcl;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
+    <LIBPATH value="..\..\source\common;..\..\source\vcl;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
