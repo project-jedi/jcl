@@ -42,7 +42,7 @@ interface
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+  {$ENDIF WIN32}
   Classes, Graphics, SysUtils,
   JclBase, JclSysInfo;
 
@@ -57,13 +57,13 @@ uses
 const
   {$IFDEF LINUX}
   PathSeparator    = '/';
-  {$ENDIF}
+  {$ENDIF LINUX}
   {$IFDEF WIN32}
   DriveLetters     = ['a'..'z', 'A'..'Z'];
   PathDevicePrefix = '\\.\';
   PathSeparator    = '\';
   PathUncPrefix    = '\\';
-  {$ENDIF}
+  {$ENDIF WIN32}
 
 type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
@@ -402,7 +402,7 @@ implementation
 uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
-  {$ENDIF}
+  {$ENDIF WIN32}
   JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
 
 { Some general notes:
@@ -939,14 +939,14 @@ function PathBuildRoot(const Drive: Byte): string;
 begin
   {$IFDEF LINUX}
   Result := PathSeparator;
-  {$ENDIF}
+  {$ENDIF LINUX}
   {$IFDEF WIN32}
   // Remember, Win32 only allows 'a' to 'z' as drive letters (mapped to 0..25)
   if Drive < 26 then
     Result := Char(Drive + 65) + ':\'
   else
     raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
-  {$ENDIF}
+  {$ENDIF WIN32}
 end;
 
 //------------------------------------------------------------------------------
@@ -1169,23 +1169,24 @@ function PathIsAbsolute(const Path: string): Boolean;
 {$IFDEF WIN32}
 var
   I: Integer;
-{$ENDIF}
+{$ENDIF WIN32}
 begin
   Result := False;
   if Path <> '' then
   begin
     {$IFDEF LINUX}
     Result := (Path[1] = PathSeparator);
-    {$ENDIF}
+    {$ENDIF LINUX}
     {$IFDEF WIN32}
     I := 0;
     if PathIsUnc(Path) then
       I := Length(PathUncPrefix)
-    else if PathIsDiskDevice(Path) then
+    else
+    if PathIsDiskDevice(Path) then
       I := Length(PathDevicePrefix);
     Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
       (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
-    {$ENDIF}
+    {$ENDIF WIN32}
   end;
 end;
 
@@ -1204,7 +1205,7 @@ begin
   Result := AnsiSameText(StrLeft(Path, L), Base);
   {$ELSE}
   Result := AnsiSameStr(StrLeft(Path, L), Base);
-  {$ENDIF}
+  {$ENDIF WIN32}
 end;
 
 //------------------------------------------------------------------------------
@@ -1213,10 +1214,10 @@ function PathIsDiskDevice(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
   NotImplemented('PathIsDiskDevice');
-  {$ENDIF}
+  {$ENDIF LINUX}
   {$IFDEF WIN32}
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
-  {$ENDIF}
+  {$ENDIF WIN32}
 end;
 
 //------------------------------------------------------------------------------
@@ -1225,7 +1226,7 @@ function PathIsUNC(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
   Result := False;
-  {$ENDIF}
+  {$ENDIF LINUX}
   {$IFDEF WIN32}
   // Format of a valid UNC path is: "\\machine\sharename[\filename]"
   Result := Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix;
@@ -1236,7 +1237,7 @@ begin
      \\<x>:[whatever]         is not valid
      \\machine\<x>:[<\pathname>|<\drivename>] is not valid
      \\machine\<x>$[<\pathname>|<\drivename>] _is_ valid }
-  {$ENDIF}
+  {$ENDIF WIN32}
 end;
 
 //------------------------------------------------------------------------------
