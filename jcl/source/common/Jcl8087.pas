@@ -168,14 +168,14 @@ end;
 function Set8087ControlWord(const Control: Word): Word; assembler;
 asm
         FNCLEX
-{$IFDEF PIC}
+        {$IFDEF PIC}
         PUSH    EAX
         CALL    GetGOT
         LEA     EDX, [EAX].Default8087CW
         POP     EAX
-{$ELSE}
+        {$ELSE}
         LEA     EDX, Default8087CW
-{$ENDIF}
+        {$ENDIF PIC}
         FSTCW   [EDX]
         XCHG    [EDX], AX
         FLDCW   [EDX]
@@ -221,19 +221,19 @@ asm
         JZ      @1
         FNCLEX                     // clear pending exceptions
 @1:
-{$IFDEF PIC}
+        {$IFDEF PIC}
         PUSH    EAX
         CALL    GetGOT
         LEA     ECX, [EAX].Default8087CW
         POP     EAX
-{$ELSE}
+        {$ELSE}
         LEA     ECX, Default8087CW
-{$ENDIF PIC}
+        {$ENDIF PIC}
         FSTCW   [ECX]
         FWAIT
         AND     AX, X87ExceptBits  // mask exception mask bits 0..5
         MOV     DX, [ECX]
-        AND     [ECX], NOT X87ExceptBits
+        AND     WORD PTR [ECX], NOT X87ExceptBits
         OR      [ECX], AX
         FLDCW   [ECX]
         MOV     AX, DX
