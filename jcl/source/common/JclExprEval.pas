@@ -4446,6 +4446,7 @@ end;
 destructor TExpressionCompiler.Destroy;
 begin
   FExprHash.Iterate(nil, Iterate_FreeObjects);
+  FExprHash.Free;
   inherited Destroy;
 end;
 
@@ -4580,6 +4581,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/02 04:43:01  rrossmair
+// - issue #2522 fixed
+//
 // Revision 1.10  2004/10/12 17:20:50  rrossmair
 // cleanup
 //
