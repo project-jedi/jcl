@@ -7,7 +7,7 @@
 #
 # $Id$
 
-JPP=../../source/prototypes/jpp
+JPP=../../devtools/jpp
 CLXOPTIONS="-c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x../Q"
 VCLOPTIONS="-c -dVCL -dMSWINDOWS -uDevelop -uVisualCLX -uHAS_UNIT_LIBC -uUnix -uLinux -uKYLIX -x../"
 FILES="ProductFrames.pas JediInstallerMain.pas"
