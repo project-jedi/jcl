@@ -32,9 +32,9 @@ interface
 {$I jcl.inc}
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   {$IFDEF DELPHI5_UP}
   Contnrs,
@@ -600,20 +600,20 @@ function JclDebugThreadList: TJclDebugThreadList;
 // Miscellanuous
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
 function IsDebuggerAttached: Boolean;
 function IsHandleValid(Handle: THandle): Boolean;
 
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 
 implementation
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   JclRegistry,
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
   JclHookExcept, JclStrings, JclSysInfo, JclSysUtils;
 
 //==================================================================================================
@@ -3636,7 +3636,7 @@ end;
 // Miscellanuous
 //==================================================================================================
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
 const
@@ -3700,7 +3700,7 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
