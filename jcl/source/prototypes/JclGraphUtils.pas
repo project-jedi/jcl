@@ -343,14 +343,21 @@ var
 //==============================================================================
 
 function ColorSwap(WinColor: TColor): TColor32;
+// this function swaps R and B bytes in ABGR and writes $FF into A component
 {asm
 // EAX = WinColor
-        MOV     ECX, EAX        // this function swaps R and B bytes in ABGR
-        SHR     EAX, 16
-        XCHG    AL, CL
-        MOV     AH, $FF         // and writes $FF into A component
-        SHL     EAX, 16
-        MOV     AX,  CX
+        MOV     ECX,EAX     // ECX = WinColor
+        MOV     EDX,EAX     // EDX = WinColor
+
+        AND     ECX,$FF0000 // B component
+        AND     EAX,$0000FF // R component
+        AND     EDX,$00FF00 // G component
+
+        OR      EAX,$00FF00 // write $FF into A component
+        SHR     ECX,16      // shift B
+        SHL     EAX,16      // shift AR
+        OR      ECX,EDX     // ECX = GB
+        OR      EAX,ECX     // set GB
 end;}
 begin
   Result := $FF000000 or                        // A component
