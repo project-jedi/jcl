@@ -654,7 +654,7 @@ Count=1
 1=ISOWeekToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function ISOWeekToDateTime(Year, Week, Day: Integer): TDateTime;
+function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
 [ShortDescr]
 Returns the date denoted by year, week and weekday. 
 [Description]
@@ -686,8 +686,8 @@ Count=1
 1=ISOWeekNumber
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DayOfTheYear(DateTime: TDateTime; var Year: Integer): Integer;
-function DayOfTheYear(DateTime: TDateTime): Integer;
+function DayOfTheYear(const DateTime: TDateTime; var Year: Integer): Integer;
+function DayOfTheYear(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Returns the day of the year (1... 366) and optionally the year. 
 [Description]
@@ -711,7 +711,7 @@ Count=1
 1=DayOfTheYearToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DayOfTheYearToDateTime(Year, Day: Integer): TDateTime;
+function DayOfTheYearToDateTime(const Year, Day: Integer): TDateTime;
 [ShortDescr]
 Encodes the DateTime denoted by a year and the number of a day in that year. 
 [Description]
@@ -735,7 +735,7 @@ Count=1
 1=DayOfTheYear
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function EasterSunday(Year: Integer): TDateTime;
+function EasterSunday(const Year: Integer): TDateTime;
 [ShortDescr]
 Returns the date of Easter Sunday for a given year.
 [Description]
@@ -754,7 +754,7 @@ Author=Marc Convents;marc.convents@progen.be
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CenturyOfDate(DateTime: TDateTime): Integer;
+function CenturyOfDate(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the century from a DateTime.
 [Description]
@@ -783,7 +783,7 @@ Count=4
 4=YearOfDate
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function CenturyBaseYear(DateTime: TDateTime): Integer;
+function CenturyBaseYear(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Gives the year "00" of the century specified by DateTime.
 [Description]
@@ -812,7 +812,7 @@ Count=4
 4=YearOfDate
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function YearOfDate(DateTime: TDateTime): Integer;
+function YearOfDate(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the year from a DateTime.
 [Description]
@@ -841,7 +841,7 @@ Count=4
 4=MonthOfDate
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MonthOfDate(DateTime: TDateTime): Integer;
+function MonthOfDate(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the month from a DateTime.
 [Description]
@@ -870,7 +870,7 @@ Count=4
 4=YearOfDate
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DayOfDate(DateTime: TDateTime): Integer;
+function DayOfDate(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the day from a DateTime.
 [Description]
@@ -899,7 +899,7 @@ Count=4
 4=YearOfDate
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function HourOfTime(DateTime: TDateTime): Integer;
+function HourOfTime(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the hour from a DateTime.
 [Description]
@@ -923,7 +923,7 @@ Author=Nick Hodges;nick@xapware.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MinuteOfTime(DateTime: TDateTime): Integer;
+function MinuteOfTime(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the minutes from a DateTime.
 [Description]
@@ -946,7 +946,7 @@ Author=Nick Hodges;nick@xapware.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function SecondOfTime(DateTime: TDateTime): Integer;
+function SecondOfTime(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Extracts the seconds from a DateTime.
 [Description]
@@ -969,8 +969,8 @@ Author=Nick Hodges;nick@xapware.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function IsLeapYear(DateTime: TDateTime): Boolean; 
-function IsLeapYear(Year: Integer): Boolean; 
+function IsLeapYear(const DateTime: TDateTime): Boolean; 
+function IsLeapYear(const Year: Integer): Boolean; 
 [ShortDescr]
 Tests whether DateTime represents a leap year.
 [Description]
@@ -992,7 +992,7 @@ Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DaysInMonth(DateTime: TDateTime): Integer;
+function DaysInMonth(const DateTime: TDateTime): Integer;
 [ShortDescr]
 Returns the number of days in the month represent by a DateTime.
 [Description]
@@ -1069,7 +1069,7 @@ Count=1
 1=Make4DigitYear
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function EncodeDate(Year: Integer; Month, Day: Word): TDateTime; 
+function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; 
 [ShortDescr]
 Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
 [Description]
