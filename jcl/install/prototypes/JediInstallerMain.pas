@@ -171,6 +171,11 @@ resourcestring
   RsUpdateNeeded    = 'You should install latest Update Pack #%d for %s.'#13#10 +
                       'Would you like to open Borland support web page?';
 
+function Collapsable(Node: TTreeNode): Boolean;
+begin
+  Result := (Cardinal(Node.Data) and FID_Expandable) <> 0;
+end;
+
 function FeatureID(Node: TTreeNode): Cardinal;
 begin
   Result := Cardinal(Node.Data) and FID_NumberMask;
@@ -508,7 +513,7 @@ end;
 procedure TMainForm.TreeViewCollapsing(Sender: TObject; Node: TTreeNode;
   var AllowCollapse: Boolean);
 begin
-  AllowCollapse := FJediInstall.SelectedNodeCollapsing(Node);
+  AllowCollapse := Collapsable(Node);
 end;
 
 function TMainForm.GetBorRADToolInstallations: TJclBorRADToolInstallations;
