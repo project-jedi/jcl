@@ -14,6 +14,7 @@ object MainForm: TMainForm
   Font.Name = 'arial'
   Font.Pitch = fpVariable
   Font.Style = []
+  Font.Weight = 40
   ParentFont = False
   Position = poScreenCenter
   Scaled = False
@@ -21,7 +22,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 80
+  PixelsPerInch = 96
   object StatusBevel: TBevel
     Left = 8
     Top = 525
@@ -55,6 +56,7 @@ object MainForm: TMainForm
     BevelWidth = 2
     BorderStyle = bsSingle
     Color = clBase
+    ParentColor = False
     TabOrder = 2
     object JediImage: TImage
       Left = 702
@@ -217,8 +219,8 @@ object MainForm: TMainForm
     object Title: TLabel
       Left = 8
       Top = 13
-      Width = 306
-      Height = 27
+      Width = 365
+      Height = 18
       Caption = 'Project JEDI X-Platform Delphi Installer'
       Font.Color = clText
       Font.Height = 16
@@ -274,6 +276,7 @@ object MainForm: TMainForm
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
           inherited Label1: TLabel
+            Width = 155
             Height = 15
           end
           inherited TreeView: TTreeView
@@ -284,13 +287,16 @@ object MainForm: TMainForm
         end
         inherited InfoPanel: TPanel
           inherited Label2: TLabel
+            Width = 62
             Height = 15
           end
           inherited OptionsGroupBox: TGroupBox
             inherited Label3: TLabel
+              Width = 50
               Height = 15
             end
             inherited Label4: TLabel
+              Width = 53
               Height = 15
             end
             inherited BplPathEdit: TEdit
@@ -320,6 +326,7 @@ object MainForm: TMainForm
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
           inherited Label1: TLabel
+            Width = 155
             Height = 15
           end
           inherited TreeView: TTreeView
@@ -330,13 +337,16 @@ object MainForm: TMainForm
         end
         inherited InfoPanel: TPanel
           inherited Label2: TLabel
+            Width = 62
             Height = 15
           end
           inherited OptionsGroupBox: TGroupBox
             inherited Label3: TLabel
+              Width = 50
               Height = 15
             end
             inherited Label4: TLabel
+              Width = 53
               Height = 15
             end
             inherited BplPathEdit: TEdit
@@ -366,6 +376,7 @@ object MainForm: TMainForm
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
           inherited Label1: TLabel
+            Width = 155
             Height = 15
           end
           inherited TreeView: TTreeView
@@ -376,105 +387,16 @@ object MainForm: TMainForm
         end
         inherited InfoPanel: TPanel
           inherited Label2: TLabel
+            Width = 62
             Height = 15
           end
           inherited OptionsGroupBox: TGroupBox
             inherited Label3: TLabel
+              Width = 50
               Height = 15
             end
             inherited Label4: TLabel
-              Height = 15
-            end
-            inherited BplPathEdit: TEdit
-              Height = 23
-              OnChange = BplPathEditChange
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 23
-            end
-          end
-        end
-      end
-    end
-    object D1TabSheet: TTabSheet
-      Tag = 1
-      Caption = 'Kylix 1'
-      ImageIndex = 3
-      inline D1Product: TProductFrame
-        Left = 0
-        Top = 0
-        Width = 807
-        Height = 410
-        HorzScrollBar.Range = 398
-        Align = alClient
-        Color = clBackground
-        ParentColor = False
-        TabOrder = 0
-        inherited ComponentsTreePanel: TPanel
-          inherited Label1: TLabel
-            Height = 15
-          end
-          inherited TreeView: TTreeView
-            Images = ImageList
-            OnChange = TreeViewChange
-            OnCollapsing = TreeViewCollapsing
-          end
-        end
-        inherited InfoPanel: TPanel
-          inherited Label2: TLabel
-            Height = 15
-          end
-          inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Height = 15
-            end
-            inherited Label4: TLabel
-              Height = 15
-            end
-            inherited BplPathEdit: TEdit
-              Height = 23
-              OnChange = BplPathEditChange
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 23
-            end
-          end
-        end
-      end
-    end
-    object D2TabSheet: TTabSheet
-      Tag = 2
-      Caption = 'Kylix 2'
-      ImageIndex = 3
-      inline D2Product: TProductFrame
-        Left = 0
-        Top = 0
-        Width = 807
-        Height = 410
-        HorzScrollBar.Range = 398
-        Align = alClient
-        Color = clBackground
-        ParentColor = False
-        TabOrder = 0
-        inherited ComponentsTreePanel: TPanel
-          inherited Label1: TLabel
-            Height = 15
-          end
-          inherited TreeView: TTreeView
-            Images = ImageList
-            OnChange = TreeViewChange
-            OnCollapsing = TreeViewCollapsing
-          end
-        end
-        inherited InfoPanel: TPanel
-          inherited Label2: TLabel
-            Height = 15
-          end
-          inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Height = 15
-            end
-            inherited Label4: TLabel
+              Width = 53
               Height = 15
             end
             inherited BplPathEdit: TEdit
@@ -504,6 +426,7 @@ object MainForm: TMainForm
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
           inherited Label1: TLabel
+            Width = 155
             Height = 15
           end
           inherited TreeView: TTreeView
@@ -514,13 +437,16 @@ object MainForm: TMainForm
         end
         inherited InfoPanel: TPanel
           inherited Label2: TLabel
+            Width = 62
             Height = 15
           end
           inherited OptionsGroupBox: TGroupBox
             inherited Label3: TLabel
+              Width = 50
               Height = 15
             end
             inherited Label4: TLabel
+              Width = 53
               Height = 15
             end
             inherited BplPathEdit: TEdit
@@ -639,10 +565,10 @@ object MainForm: TMainForm
       FFFFFFFFFFFFFFFFFF000000000000000000000000000000FFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF424DBE000000000000003E0000002800000020000000
       20000000010001000000000080000000120B0000120B00000200000002000000
-      FFFFFF0000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000}
+      FFFFFF00000000000000000000000000000000001FFC1FFC1004100411041004
+      1384100417C4100416E41004147410041034100410141004100410041FFC1FFC
+      00000000000000000000000007C007C01FF01FF03FF83FF87ABC7ABC77DC77DC
+      EFEEEFEEFFFEFFFEAFEEAFEEBBFEBBFEACEEACEE77DC77DC5ABC5ABC2FF82FF8
+      18F018F007C007C0}
   end
 end
