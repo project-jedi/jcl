@@ -1639,7 +1639,7 @@ begin
         LibItem.FImportDescriptor := ImportDesc;
         LibItem.FName := RvaToVa(ImportDesc^.Name);
         LibItem.FImportKind := ikImport;
-        if ImportDesc^.Characteristics = 0 then
+        if ImportDesc^.Union.Characteristics = 0 then
         begin
           if FAttachedImage then  // Borland images doesn't have two paralel arrays
             LibItem.FThunk := nil // see MakeBorlandImportTableForMappedImage method
@@ -1649,7 +1649,7 @@ begin
         end
         else
         begin
-          LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.Characteristics));
+          LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.Union.Characteristics));
           FLinkerProducer := lrMicrosoft;
         end;
         LibItem.FThunkData := LibItem.FThunk;
@@ -3122,7 +3122,7 @@ begin
   begin
     CheckNotAttached;
     if CheckSumMappedFile(FLoadedImage.MappedAddress, FLoadedImage.SizeOfImage,
-      @C, @Result) = nil then
+      C, Result) = nil then
         RaiseLastOSError;
   end
   else
@@ -3151,7 +3151,7 @@ begin
   FreeAndNil(FResourceList);
   FreeAndNil(FVersionInfo);
   if not FAttachedImage and StatusOK then
-    UnMapAndLoad(@FLoadedImage);
+    UnMapAndLoad(FLoadedImage);
   FillChar(FLoadedImage, SizeOf(FLoadedImage), #0);
   FStatus := stNotLoaded;
   FAttachedImage := False;
@@ -3635,7 +3635,7 @@ end;
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
 begin
   CheckNotAttached;
-  Result.VirtualAddress := GetImageUnusedHeaderBytes(@FLoadedImage, Result.Size);
+  Result.VirtualAddress := GetImageUnusedHeaderBytes(FLoadedImage, Result.Size);
   if Result.VirtualAddress = 0 then
     RaiseLastOSError;
 end;
@@ -3906,7 +3906,7 @@ begin
   if FAttachedImage then
     Result := FLoadedImage.MappedAddress + Rva
   else
-    Result := RtdlImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
+    Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3928,7 +3928,7 @@ begin
     FFileName := Value;
     if FFileName = '' then
       Exit;
-    if MapAndLoad(PChar(FFileName), nil, @FLoadedImage, True, FReadOnlyAccess) then
+    if MapAndLoad(PChar(FFileName), nil, FLoadedImage, True, FReadOnlyAccess) then
     begin
       FStatus := stOk;
       ReadImageSections;
@@ -4820,9 +4820,9 @@ function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 var
   LI: TLoadedImage;
 begin
-  Result := MapAndLoad(PChar(FileName), nil, @LI, True, False);
+  Result := MapAndLoad(PChar(FileName), nil, LI, True, False);
   if Result then
-    Result := UnMapAndLoad(@LI);
+    Result := UnMapAndLoad(LI);
 end;
 
 //==================================================================================================
@@ -5917,6 +5917,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/10/19 21:26:47  rrossmair
+// restore JclWin32 compatibility
+//
 // Revision 1.16  2004/10/17 21:00:15  mthoma
 // cleaning
 //
