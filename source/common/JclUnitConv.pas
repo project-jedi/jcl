@@ -533,98 +533,98 @@ end;
 
 //------------------------------------------------------------------------------
 
-function QrUsToKg(const Qr : Float) : Float;
+function QrUsToKg(const Qr: Float) : Float;
 begin
   Result := Qr * 11.34;
 end;
 
 //------------------------------------------------------------------------------
 
-function QrUkToKg(const Qr : Float) : Float;
+function QrUkToKg(const Qr: Float) : Float;
 begin
   Result := Qr * 12.7;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToQrUs(const Kg : Float) : Float;
+function KgToQrUs(const Kg: Float) : Float;
 begin
   Result := Kg / 11.34;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToQrUk(const Kg : Float) : Float;
+function KgToQrUk(const Kg: Float) : Float;
 begin
   Result := Kg / 12.7;
 end;
 
 //------------------------------------------------------------------------------
 
-function CwtUsToKg(const Cwt : Float) : Float;
+function CwtUsToKg(const Cwt: Float) : Float;
 begin
   Result := Cwt * 45.35924;
 end;
 
 //------------------------------------------------------------------------------
 
-function CwtUkToKg(const Cwt : Float) : Float;
+function CwtUkToKg(const Cwt: Float) : Float;
 begin
   Result := Cwt * 50.80235;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToCwtUs(const Kg : Float) : Float;
+function KgToCwtUs(const Kg: Float) : Float;
 begin
   Result := Kg / 45.35924;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToCwtUk(const Kg : Float) : Float;
+function KgToCwtUk(const Kg: Float) : Float;
 begin
   Result := Kg / 50.80235;
 end;
 
 //------------------------------------------------------------------------------
 
-function LtonToKg(const Lton : Float) : Float;
+function LtonToKg(const Lton: Float) : Float;
 begin
   Result := Lton * 1016.047;
 end;
 
 //------------------------------------------------------------------------------
 
-function StonToKg(const Ston : Float) : Float;
+function StonToKg(const Ston: Float) : Float;
 begin
   Result := Ston * 907.1847;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToLton(const Kg : Float) : Float;
+function KgToLton(const Kg: Float) : Float;
 begin
   Result := Kg / 1016.047;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToSton(const Kg : Float) : Float;
+function KgToSton(const Kg: Float) : Float;
 begin
   Result := Kg / 907.1847;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToKarat(const Kg : Float) : Float;
+function KgToKarat(const Kg: Float) : Float;
 begin
   Result := Kg / 0.0002;
 end;
 
 //------------------------------------------------------------------------------
 
-function KaratToKg(const Karat : Float) : Float;
+function KaratToKg(const Karat: Float) : Float;
 begin
   Result := Karat * 0.0002;
 end;
@@ -701,7 +701,7 @@ end;
 
 function MsToKnot(const ms: Float): Float;
 begin
-  Result := ms * 1.94384449244;
+  Result := ms / 0.514444444444;
 end;
 
 //------------------------------------------------------------------------------
