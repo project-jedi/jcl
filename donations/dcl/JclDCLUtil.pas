@@ -56,25 +56,32 @@ resourcestring
   RsEValueNotFound = 'Value %s not found';
   RsENoCollection = 'Collection = nil';
 
-procedure DCLAppendDelimited(Obj: IStrCollection; AString, Separator: string);
+procedure DCLAppendDelimited(Obj: IStrCollection; const AString, Separator: string);
 
 implementation
 
-procedure DCLAppendDelimited(Obj: IStrCollection; AString, Separator: string);
+procedure DCLAppendDelimited(Obj: IStrCollection; const AString, Separator: string);
 var
   Item: string;
   SepLen: Integer;
+  PString, PSep, PPos: PChar;
 begin
-  if Pos(Separator, AString) > 0 then
+  PString := PChar(AString);
+  PSep := PChar(Separator);
+  PPos := StrPos(PString, PSep);
+  if PPos <> nil then
   begin
-    SepLen := Length(Separator);
+    SepLen := StrLen(PSep);
     repeat
-      Item := StrBefore(Separator, AString);
+      SetLength(Item, PPos - PString + 1);
+      Move(PString^, Item[1], PPos - PString);
+      Item[PPos - PString + 1] := #0;
       Obj.Add(Item);
-      Delete(AString, 1, Length(Item) + SepLen);
-    until Pos(Separator, AString) = 0;
-    if Length(AString) > 0 then //ex. hello#world
-      Obj.Add(AString);
+      PString := PPos + SepLen;
+      PPos := StrPos(PString, PSep);
+    until PPos = nil;
+    if StrLen(PString) > 0 then //ex. hello#world
+      Obj.Add(PString);
   end
   else //There isnt a Separator in AString
     Obj.Add(AString);

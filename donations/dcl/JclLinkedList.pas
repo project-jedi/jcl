@@ -139,10 +139,10 @@ type
 
   TJclLinkedList = class(TJclAbstractContainer, ICollection, IList, ICloneable)
   private
-    FEnd: PJclLinkedListItem;
-    FOwnsObjects: Boolean;
-    FSize: Integer;
     FStart: PJclLinkedListItem;
+    FEnd: PJclLinkedListItem;
+    FSize: Integer;
+    FOwnsObjects: Boolean;
   protected
     procedure AddFirst(AObject: TObject);
     procedure FreeObject(var AObject: TObject);

@@ -105,8 +105,7 @@ type
   // Hash Function
   TJclHashFunction = function(Key: Cardinal): Cardinal of object;
 
-  TJclIntfIntfHashMap = class(TJclAbstractContainer, IIntfIntfMap,
-      IIntfCloneable)
+  TJclIntfIntfHashMap = class(TJclAbstractContainer, IIntfIntfMap, IIntfCloneable)
   private
     FCapacity: Integer;
     FCount: Integer;
@@ -270,8 +269,7 @@ type
     constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects:
       Boolean = True);
     destructor Destroy; override;
-    property HashFunction: TJclHashFunction read FHashFunction write
-      FHashFunction;
+    property HashFunction: TJclHashFunction read FHashFunction write FHashFunction;
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
