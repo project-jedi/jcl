@@ -324,7 +324,6 @@
 {$IFDEF BORLAND}
   {$IFDEF KYLIX}
 
-    {$IFDEF FPC} (* {$ENDIF}  // FPC workaround
     {$IF not Declared(CompilerVersion)}
       {$DEFINE KYLIX1}
       {$DEFINE DELPHICOMPILER6}
@@ -342,7 +341,6 @@
     {$ELSEIF Declared(CompilerVersion) and (CompilerVersion > 14.5)}
       Add new Kylix version
     {$IFEND}
-    {$IFDEF FPC} *) {$ENDIF}  // FPC workaround
 
   {$ELSE ~KYLIX}
   
@@ -929,6 +927,9 @@
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 
 // $Log$
+// Revision 1.10  2004/05/01 00:03:59  rrossmair
+// FPC workaround removed; didn't work with Kylix
+//
 // Revision 1.9  2004/04/30 18:25:15  rrossmair
 // added symbols BORLAND, CPPBUILDER, BCBCOMPILER
 // removed symbol NONBORLAND
