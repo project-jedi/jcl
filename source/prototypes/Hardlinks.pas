@@ -41,7 +41,7 @@
  ***  This implementation should be fully compatible with the Windows 2000  ***
  ***  implementation (including last error and so on).                      ***
  ***                                                                        ***
- ***  Version [1.12a]                               {Last mod 2004-10-21}   ***
+ ***  Version [1.12b]                               {Last mod 2004-10-26}   ***
  ***                                                                        ***
  ******************************************************************************
  ******************************************************************************
@@ -200,7 +200,7 @@ var
 {$IFDEF RTDL}
 var
   hNtDll: THandle = 0; // For runtime dynamic linking
-  bRtdlFunctionsLoaded: Boolean = False; // To show whether the RTDL functions had been loaded
+  bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
 {$ENDIF RTDL}
 
 implementation
@@ -238,34 +238,28 @@ type
 // Constants
 // =================================================================
 const
-  FileDirectoryInformation = 1;
-  FileLinkInformation      = 11;
+  FileLinkInformation          = 11;
   FILE_SYNCHRONOUS_IO_NONALERT = $00000020;
   FILE_OPEN_FOR_BACKUP_INTENT  = $00004000;
   FILE_OPEN_REPARSE_POINT      = $00200000;
-  FILE_LIST_DIRECTORY = 1;
-  FILE_DIRECTORY_FILE = $00000001;
-  STATUS_SUCCESS       = NTSTATUS(0);
-  STATUS_NO_MORE_FILES = NTSTATUS($80000006);
-  OBJ_CASE_INSENSITIVE = $00000040;
+  DELETE                       = $00010000;
+  SYNCHRONIZE                  = $00100000;
+  STATUS_SUCCESS               = NTSTATUS(0);
+  OBJ_CASE_INSENSITIVE         = $00000040;
+  SYMBOLIC_LINK_QUERY          = $00000001;
 
   // Should be defined, but isn't
-  HEAP_ZERO_MEMORY = $00000008;
+  HEAP_ZERO_MEMORY             = $00000008;
 
   // Related constant(s) for RtlDetermineDosPathNameType_U()
-  INVALID_PATH        = 0;
-  UNC_PATH            = 1;
-  ABSOLUTE_DRIVE_PATH = 2;
-  RELATIVE_DRIVE_PATH = 3;
-  ABSOLUTE_PATH       = 4;
-  RELATIVE_PATH       = 5;
-  DEVICE_PATH         = 6;
-  UNC_DOT_PATH        = 7;
-
-  MAXIMUM_REPARSE_DATA_BUFFER_SIZE = 16 * 1024;
-  IO_REPARSE_TAG_MOUNT_POINT = $A0000003;
-  FSCTL_SET_REPARSE_POINT = $900A4;
-  REPARSE_DATA_BUFFER_HEADER_SIZE = 2 * SizeOf(DWORD);
+  INVALID_PATH                 = 0;
+  UNC_PATH                     = 1;
+  ABSOLUTE_DRIVE_PATH          = 2;
+  RELATIVE_DRIVE_PATH          = 3;
+  ABSOLUTE_PATH                = 4;
+  RELATIVE_PATH                = 5;
+  DEVICE_PATH                  = 6;
+  UNC_DOT_PATH                 = 7;
 
 // =================================================================
 // Type definitions
@@ -287,23 +281,6 @@ type
     Buffer: PAnsiChar;
   end;
   PANSI_STRING = ^ANSI_STRING;
-
-
-  REPARSE_DATA_BUFFER = record
-    ReparseTag: DWORD;
-    ReparseDataLength: WORD;
-    Reserved: WORD;
-    case Integer of
-      0:
-       (SubstituteNameOffset: WORD;
-        SubstituteNameLength: WORD;
-        PrintNameOffset: WORD;
-        PrintNameLength: WORD;
-        PathBuffer: array [0..0] of WideChar;);
-      1:
-        (DataBuffer: array [0..0] of Byte;);
-  end;
-  PREPARSE_DATA_BUFFER = ^REPARSE_DATA_BUFFER;
 
   OBJECT_ATTRIBUTES = record
     Length: ULONG;
@@ -335,21 +312,6 @@ type
   PFILE_LINK_INFORMATION = ^FILE_LINK_INFORMATION;
   FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
   PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
-
-  FILE_DIRECTORY_INFORMATION = record // File Information Class 1
-    NextEntryOffset: ULONG;
-    Unknown: ULONG;
-    CreationTime: LARGE_INTEGER;
-    LastAccessTime: LARGE_INTEGER;
-    LastWriteTime: LARGE_INTEGER;
-    ChangeTime: LARGE_INTEGER;
-    EndOfFile: LARGE_INTEGER;
-    AllocationSize: LARGE_INTEGER;
-    FileAttributes: ULONG;
-    FileNameLength: ULONG;
-    FileName: array [0..0] of WideChar;
-  end;
-  PFILE_DIRECTORY_INFORMATION = ^FILE_DIRECTORY_INFORMATION;
 
 // =================================================================
 // PROCESS ENVIRONMENT BLOCK (PEB)
@@ -782,7 +744,9 @@ const
   wcsC_NtName: PWideChar = '\??\C:';
   wcsLanMan: PWideChar = '\Device\LanmanRedirector\';
   cbC_NtName = $10;
-  dwUnknownAccess = $110000;
+  dwDesiredAccessHL = DELETE or SYNCHRONIZE;
+  dwOpenOptionsHL = FILE_SYNCHRONOUS_IO_NONALERT or FILE_OPEN_FOR_BACKUP_INTENT or FILE_OPEN_REPARSE_POINT;
+  dwShareAccessHL = FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE;
 var
   usNtName_LinkName, usNtName_LinkTarget, usNtFilePath: UNICODE_STRING;
   usCheckDrive, usSymLinkDrive, usLanMan: UNICODE_STRING;
@@ -844,7 +808,7 @@ begin
                     oaMisc.SecurityDescriptor := nil;
                     oaMisc.SecurityQualityOfService := nil;
                     // Open symbolic link object
-                    if ZwOpenSymbolicLinkObject(hDrive, 1, oaMisc) = STATUS_SUCCESS then
+                    if ZwOpenSymbolicLinkObject(hDrive, SYMBOLIC_LINK_QUERY, oaMisc) = STATUS_SUCCESS then
                     try
                       usSymLinkDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, MAX_PATH * SizeOf(WideChar));
                       if usSymLinkDrive.Buffer <> nil then
@@ -868,9 +832,7 @@ begin
                             oaMisc.SecurityDescriptor := nil;
                           oaMisc.SecurityQualityOfService := nil;
                           // Try open the target file
-                          Status := ZwOpenFile(hLinkTarget, dwUnknownAccess, oaMisc, IOStats,
-                            FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE,
-                            FILE_SYNCHRONOUS_IO_NONALERT or FILE_OPEN_FOR_BACKUP_INTENT or FILE_OPEN_REPARSE_POINT);
+                          Status := ZwOpenFile(hLinkTarget, dwDesiredAccessHL, oaMisc, IOStats, dwShareAccessHL, dwOpenOptionsHL);
                           if Status = STATUS_SUCCESS then
                           try
                             // Wow ... target opened ... let's try to
@@ -1086,6 +1048,12 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.6  2004/10/26 00:05:45  assarbad
+// - Removed some superfluous records/structs and constants
+// - Replaced literals by symbolic names (constants) to make the source more meaningful
+// - Checked with Delphi 4 after preprocessing by JPP - works
+// - Will not yet check in the preprocessed version - still discussing in the egroup about it
+//
 // Revision 1.5  2004/10/25 15:05:12  marquardt
 // remove strange round braces in Hardlinks.pas, bugfix JclRegistry.pas
 //
@@ -1109,6 +1077,10 @@ initialization
 {$ENDIF PROTOTYPE}
 
 {
+   Version 1.12b - 2004-10-26
+   + Added some constants and replaced literals by them
+   + Removed some superfluous constants and records
+
    Version 1.12a - 2004-10-21
    + "Original" file renamed according to the change in the JCL prototype
      Hardlink.pas -> Hardlinks.pas
