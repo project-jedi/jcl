@@ -24,7 +24,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclStatistics;
@@ -50,6 +50,7 @@ function IsPositiveFloatArray(const X: TDynFloatArray): Boolean;
 function MaxFloatArray(const B: TDynFloatArray): Float;
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Median(const X: TDynFloatArray): Float;
+function MedianUnsorted(const X: TDynFloatArray): Float;
 function MinFloatArray(const B: TDynFloatArray): Float;
 function MinFloatArrayIndex(const B: TDynFloatArray): Integer;
 function Permutation(N, R: Cardinal): Float;
@@ -65,7 +66,7 @@ function SumPairProductFloatArray(const X, Y: TDynFloatArray): Float;
 implementation
 
 uses
-  JclLogic, JclMath, JclResources;
+  JclLogic, JclMath, JclResources, JclSysUtils;
 
 //==================================================================================================
 // Local helpers
@@ -224,6 +225,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+// The FloatArray X must be presorted so Median can calculate the correct value.
+//            Y_{(n+1)/2}                     if N is odd
+// Median = { 1/2 * (Y_{n/2} + Y_{1+(n/2) }   if N is even
+
 function Median(const X: TDynFloatArray): Float;
 var
   N: Integer;
@@ -236,6 +241,22 @@ begin
     Result := X[N div 2]
   else
     Result := (X[N div 2 - 1] + X[N div 2]) / 2;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function MedianUnsorted(const X: TDynFloatArray): Float;
+var
+  N: Integer;
+  SortedList: TDynFloatArray;
+
+begin
+  // We need to sort the values first
+  SortedList := Copy(X);
+  SortDynArray(SortedList, sizeof(Float),DynArrayCompareFloat);
+
+  // and call the median function afterwards
+  Result := Median(SortedList);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -459,6 +480,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2004/04/08 16:57:21  mthoma
+// Fixed #1268. Introduced new function MedianUnsorted
+//
 // Revision 1.3  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
