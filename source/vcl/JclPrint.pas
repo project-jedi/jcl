@@ -25,7 +25,7 @@
 
 unit JclPrint;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
