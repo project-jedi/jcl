@@ -1757,7 +1757,7 @@ end;
 
 function BackupPrivilegesEnabled: Boolean;
 begin
-  Result := PrivilegeEnabled(SE_BACKUP_NAME) and PrivilegeEnabled(SE_RESTORE_NAME);
+  Result := IsPrivilegeEnabled(SE_BACKUP_NAME) and IsPrivilegeEnabled(SE_RESTORE_NAME);
 end;
 
 //------------------------------------------------------------------------------
