@@ -373,7 +373,9 @@ type
     FStringStream: TJclClrStringsStream;
     FGuidStream: TJclClrGuidStream;
     FBlobStream: TJclClrBlobStream;
+    FUserStringStream: TJclClrUserStringStream;
     FTableStream: TJclClrTableStream;
+
     function GetStream(const Idx: Integer): TJclClrStream;
     function GetStreamCount: Integer;
     function GetString(const Idx: Integer): WideString;
@@ -1277,10 +1279,11 @@ begin
   FStreams := TObjectList.Create;
   UpdateStreams;
 
-  FStringStream := nil;
-  FGuidStream   := nil;
-  FBlobStream   := nil;
-  FTableStream  := nil;
+  FindStream(TJclClrStringsStream,    TJclClrStream(FStringStream));
+  FindStream(TJclClrGuidStream,       TJclClrStream(FGuidStream));
+  FindStream(TJclClrBlobStream,       TJclClrStream(FBlobStream));
+  FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream));
+  FindStream(TJclClrTableStream,      TJclClrStream(FTableStream));
 end;
 
 destructor TJclPeMetadata.Destroy;
@@ -1485,14 +1488,17 @@ end;
 
 function TJclPeMetadata.DumpIL: string;
 begin
-  FTableStream.Update;
-
   with TStringList.Create do
   try
-    Add(Format('.imagebase 0x%.8x', [Image.OptionalHeader.ImageBase]));
-    Add(Format('.subsystem 0x%.8x', [Image.OptionalHeader.SubSystem]));
+    Add(Format('.imagebase 0x%.8x',  [Image.OptionalHeader.ImageBase]));
+    Add(Format('.subsystem 0x%.8x',  [Image.OptionalHeader.SubSystem]));
     Add(Format('.file alignment %d', [Image.OptionalHeader.FileAlignment]));
-    Result := Text + CRLF + FTableStream.DumpIL;
+    if Assigned(FTableStream) then
+    begin
+      FTableStream.Update;
+
+      Result := Text + CRLF + FTableStream.DumpIL;
+    end;
   finally
     Free;
   end;
