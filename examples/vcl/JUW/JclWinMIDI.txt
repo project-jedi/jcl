@@ -1,0 +1,6 @@
+TStereoChannel
+TJclWinMidiOut
+GetMidiOutputs
+MidiInCheck
+MidiOutCheck
+MidiOut

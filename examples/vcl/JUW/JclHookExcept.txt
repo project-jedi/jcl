@@ -1,0 +1,14 @@
+TJclExceptNotifyProc
+TJclExceptNotifyMethod
+TJclExceptNotifyPriority
+npNormal
+npFirstChain
+JclAddExceptNotifier
+JclAddExceptNotifier
+JclRemoveExceptNotifier
+JclRemoveExceptNotifier
+JclReplaceExceptObj
+JclHookExceptions
+JclUnhookExceptions
+JclExceptionsHooked
+JclBelongsHookedCode

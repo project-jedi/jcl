@@ -1,0 +1,6 @@
+IniReadBool
+IniReadInteger
+IniReadString
+IniWriteBool
+IniWriteInteger
+IniWriteString

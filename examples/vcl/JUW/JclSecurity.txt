@@ -1,0 +1,13 @@
+AllowRegKeyForEveryone
+CreateNullDacl
+CreateInheritable
+IsAdministrator
+EnableProcessPrivilege
+EnableThreadPrivilege
+IsPrivilegeEnabled
+GetPrivilegeDisplayName
+SetUserObjectFullAccess
+GetUserObjectName
+LookupAccountBySid
+QueryTokenInformation
+GetInteractiveUserName

@@ -1,0 +1,13 @@
+CCHBinName
+CCHPaperName
+CBinMax
+CPaperNames
+PWordArray
+TWordArray
+EJclPrinterError
+TJclPrintSet
+DirectPrint
+SetPrinterPixelsPerInch
+GetPrinterResolution
+CharFitsWithinDots
+PrintMemo

@@ -1,0 +1,13 @@
+HKCR
+HKCU
+HKLM
+HKUS
+HKCC
+HKPD
+SetDisplayResolution
+CreateDOSProcessRedirected
+WinExec32
+WinExec32AndWait
+EJclCreateProcessError
+CreateProcAsUser
+CreateProcAsUserEx
