@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: February 21, 2002                                                                 }
+{ Last modified: March 07, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -362,6 +362,52 @@ type
     constructor Create(const FileName: string; FileMode: Word = fmOpenRead or fmShareDenyWrite);
     destructor Destroy; override;
     function Write(const Buffer; Count: Longint): Longint; override;
+  end;
+
+//--------------------------------------------------------------------------------------------------
+// TJclMappedTextReader
+//--------------------------------------------------------------------------------------------------
+
+  TJclMappedTextReader = class (TPersistent)
+  private
+    FContent: PChar;
+    FEnd: PChar;
+    FFreeStream: Boolean;
+    FLastLineNumber: Integer;
+    FLastPosition: PChar;
+    FLineCount: Integer;
+    FMemoryStream: TCustomMemoryStream;
+    FPosition: PChar;
+    FSize: Integer;
+    function GetAsString: string;
+    function GetEof: Boolean;
+    function GetChars(Index: Integer): Char;
+    function GetLineCount: Integer;
+    function GetLines(LineNumber: Integer): string;
+    function GetPosition: Integer;
+    function GetPositionFromLine(LineNumber: Integer): Integer;
+    procedure SetPosition(const Value: Integer);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure Init;
+    function PtrFromLine(LineNumber: Integer): PChar;
+    function StringFromPosition(var StartPos: PChar): string;
+  public
+    constructor Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean = True); overload;
+    constructor Create(const FileName: string); overload;
+    destructor Destroy; override;
+    procedure GoBegin;
+    function Read: Char;
+    function ReadLn: string;
+    property AsString: string read GetAsString;
+    property Chars[Index: Integer]: Char read GetChars;
+    property Content: PChar read FContent;
+    property Eof: Boolean read GetEof;
+    property Lines[LineNumber: Integer]: string read GetLines;
+    property LineCount: Integer read GetLineCount;
+    property PositionFromLine[LineNumber: Integer]: Integer read GetPositionFromLine;
+    property Position: Integer read GetPosition write SetPosition;
+    property Size: Integer read FSize;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -869,6 +915,274 @@ begin
     System.Move(Buffer, Pointer(Longint(Memory) + Position)^, Count);
     Position := Position + Count;
     Result := Count;
+  end;
+end;
+
+//==================================================================================================
+// TJclMappedTextReader
+//==================================================================================================
+
+procedure TJclMappedTextReader.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TStrings then
+  begin
+    GoBegin;
+    while not Eof do
+      TStrings(Dest).Add(ReadLn);
+  end
+  else
+    inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean);
+begin
+  FMemoryStream := MemoryStream;
+  FFreeStream := FreeStream;
+  Init;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclMappedTextReader.Create(const FileName: string);
+begin
+  FMemoryStream := TJclFileMappingStream.Create(FileName);
+  FFreeStream := True;
+  Init;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclMappedTextReader.Destroy;
+begin
+  if FFreeStream then
+    FMemoryStream.Free;
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetEof: Boolean;
+begin
+  Result := FPosition >= FEnd;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetAsString: string;
+begin
+  SetString(Result, Content, Size);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetChars(Index: Integer): Char;
+begin
+  if (Index < 0) or (Index >= Size) then
+    raise EJclError.CreateResRec(@RsFileIndexOutOfRange);
+  Result := Char(PByte(FContent + Index)^);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetLineCount: Integer;
+{var
+  P: PChar;
+  L: Integer;
+  C: Cardinal;
+begin
+  if FLineCount = -1 then
+  begin
+    P := FContent;
+    L := 0;
+    while P < FEnd do
+    begin
+      if P^ = AnsiLineFeed then
+        Inc(L);
+      Inc(P);
+    end;
+    Dec(P);
+    if (P >= FContent) and (P^ <> AnsiLineFeed) then
+      Inc(L);
+    FLineCount := L;
+  end;
+  Result := FLineCount;
+end;}
+
+  function CountLines(StartPtr: PChar; Len: Integer): Integer; assembler;
+  asm
+       PUSH    EDI
+       MOV     EDI, EAX
+       MOV     ECX, EDX
+       MOV     EAX, AnsiLineFeed
+       XOR     EDX, EDX
+  @@1: REPNZ   SCASB
+       INC     EDX
+       OR      ECX, ECX
+       JNZ     @@1
+       MOV     EAX, EDX
+       POP     EDI
+  end;
+
+begin
+  if FLineCount = -1 then
+    FLineCount := CountLines(FContent, FSize);
+  Result := FLineCount;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetLines(LineNumber: Integer): string;
+var
+  P: PChar;
+begin
+  P := PtrFromLine(LineNumber);
+  Result := StringFromPosition(P);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetPosition: Integer;
+begin
+  Result := FPosition - FContent;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMappedTextReader.GoBegin;
+begin
+  Position := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMappedTextReader.Init;
+begin
+  FContent := FMemoryStream.Memory;
+  FSize := FMemoryStream.Size;
+  FEnd := FContent + FSize;
+  FPosition := FContent;
+  FLineCount := -1;
+  FLastLineNumber := 0;
+  FLastPosition := FContent;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.GetPositionFromLine(LineNumber: Integer): Integer;
+var
+  P: PChar;
+begin
+  P := PtrFromLine(LineNumber);
+  if P = nil then
+    Result := -1
+  else
+    Result := P - FContent;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.PtrFromLine(LineNumber: Integer): PChar;
+var
+  LineOffset: Integer;
+begin
+  Result := nil;
+  LineOffset := LineNumber - FLastLineNumber;
+  if (FLineCount <> -1) and (LineNumber > 0) then
+  begin
+    if -LineOffset > LineNumber then
+    begin
+      FLastLineNumber := 0;
+      FLastPosition := FContent;
+      LineOffset := LineNumber;
+    end
+    else
+    if LineOffset > FLineCount - LineNumber then
+    begin
+      FLastLineNumber := FLineCount;
+      FLastPosition := FEnd;
+      LineOffset := LineNumber - FLineCount;
+    end;
+  end;
+  if LineNumber <= 0 then
+    Result := FContent
+  else
+  if LineOffset = 0 then
+    Result := FLastPosition
+  else
+  if LineOffset > 0 then
+  begin
+    Result := FLastPosition;
+    while (Result < FEnd) and (LineOffset > 0) do
+    begin
+      if Result^ = AnsiLineFeed then
+        Dec(LineOffset);
+      Inc(Result);
+    end;
+  end
+  else
+  if LineOffset < 0 then
+  begin
+    Result := FLastPosition;
+    while (Result >= FContent) and (LineOffset < 1) do
+    begin
+      if Result^ = AnsiLineFeed then
+        Inc(LineOffset);
+      Dec(Result);
+    end;
+    Inc(Result, 2);
+  end;
+  FLastLineNumber := LineNumber;
+  FLastPosition := Result;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.Read: Char;
+begin
+  if FPosition >= FEnd then
+    Result := #0
+  else
+  begin
+    Result := FPosition^;
+    Inc(FPosition);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.ReadLn: string;
+begin
+  Result := StringFromPosition(FPosition);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMappedTextReader.SetPosition(const Value: Integer);
+begin
+  FPosition := FContent + Value;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMappedTextReader.StringFromPosition(var StartPos: PChar): string;
+var
+  P, StringEnd: PChar;
+begin
+  if (StartPos = nil) or (StartPos >= FEnd) then
+    Result := ''
+  else
+  begin
+    P := StartPos;
+    while (P < FEnd) and (P^ <> AnsiLineFeed) do
+      Inc(P);
+    if (P > FContent) and ((P - 1)^ = AnsiCarriageReturn) then
+      StringEnd := P - 1
+    else
+      StringEnd := P;
+    SetString(Result, StartPos, StringEnd - StartPos);
+    StartPos := P + 1;
   end;
 end;
 
