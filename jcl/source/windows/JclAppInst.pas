@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 26, 2001                                              }
+{ Last modified: January 27, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -27,13 +27,21 @@ unit JclAppInst;
 interface
 
 uses
-  Windows, Messages,
+  Windows, Messages, Classes,
   JclBase, JclFileUtils, JclSynch;
+
+//------------------------------------------------------------------------------
+// Message constants
+//------------------------------------------------------------------------------
 
 const
   AI_INSTANCECREATED   = $0001;
   AI_INSTANCEDESTROYED = $0002;
   AI_USERMSG           = $0003;
+
+//------------------------------------------------------------------------------
+// Application instances manager class
+//------------------------------------------------------------------------------
 
 type
   TJclAppInstances = class (TObject)
@@ -61,6 +69,12 @@ type
     function CheckInstance(const MaxInstances: Word): Boolean;
     procedure CheckMultipleInstances(const MaxInstances: Word);
     procedure CheckSingleInstance;
+    function SendData(const WindowClassName: string; const DataKind: DWORD;
+      const Data: Pointer; const Size: Integer; const OriginatorWnd: HWND): Boolean;
+    function SendString(const WindowClassName: string; const DataKind: DWORD;
+      const S: string; const OriginatorWnd: HWND): Boolean;
+    function SendStrings(const WindowClassName: string; const DataKind: DWORD;
+      const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
     function SwitchTo(const Index: Integer): Boolean;
     procedure UserNotify(const Param: Longint);
     property AppWnds[Index: Integer]: HWND read GetAppWnds;
@@ -71,6 +85,15 @@ type
   end;
 
 function JclAppInstances: TJclAppInstances;
+
+//------------------------------------------------------------------------------
+// Interprocess communication routines
+//------------------------------------------------------------------------------
+
+function JclReadMessageCheck(var Message: TMessage; const DataKind: DWORD;
+  const IgnoredOriginatorWnd: HWND): Boolean;
+procedure JclReadMessageString(const Message: TMessage; var S: string);
+procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
 implementation
 
@@ -355,6 +378,83 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclAppInstances.SendData(const WindowClassName: string;
+  const DataKind: DWORD; const Data: Pointer; const Size: Integer;
+  const OriginatorWnd: HWND): Boolean;
+type
+  PEnumWinRec = ^TEnumWinRec;
+  TEnumWinRec = record
+    WindowClassName: PChar;
+    OriginatorWnd: HWND;
+    CopyData: TCopyDataStruct;
+    Self: TJclAppInstances;
+  end;
+var
+  EnumWinRec: TEnumWinRec;
+
+  function EnumWinProc(Wnd: HWND; Data: PEnumWinRec): BOOL; stdcall;
+  var
+    ClassName: array[0..200] of Char;
+    I: Integer;
+    PID: DWORD;
+  begin
+    if (GetClassName(Wnd, ClassName, SizeOf(ClassName)) > 0) and
+      (StrComp(ClassName, Data.WindowClassName) = 0) then
+    begin
+      GetWindowThreadProcessId(Wnd, @PID);
+      with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
+        for I := 0 to Count - 1 do
+          if ProcessIDs[I] = PID then
+          begin
+            SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
+            Break;
+          end;
+    end;
+    Result := True;
+  end;
+
+begin
+  FOptex.Enter;
+  try
+    EnumWinRec.WindowClassName := PChar(WindowClassName);
+    EnumWinRec.OriginatorWnd := OriginatorWnd;
+    EnumWinRec.CopyData.dwData := DataKind;
+    EnumWinRec.CopyData.cbData := Size;
+    EnumWinRec.CopyData.lpData := Data;
+    EnumWinRec.Self := Self;
+    Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
+  finally
+    FOptex.Leave;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclAppInstances.SendString(const WindowClassName: string;
+  const DataKind: DWORD; const S: string; const OriginatorWnd: HWND): Boolean;
+begin
+  Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
+    OriginatorWnd);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclAppInstances.SendStrings(const WindowClassName: string;
+  const DataKind: DWORD; const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
+var
+  MultiStr: PChar;
+begin
+  StringsToMultiSz(MultiStr, Strings);
+  try
+    Result := SendData(WindowClassName, DataKind, MultiStr, SizeOfMem(MultiStr),
+      OriginatorWnd);
+  finally
+    FreeMultiSz(MultiStr);
+  end;      
+end;
+
+//------------------------------------------------------------------------------
+
 class function TJclAppInstances.SetForegroundWindow98(const Wnd: HWND): Boolean;
 var
   ForeThreadID, NewThreadID: DWORD;
@@ -399,6 +499,39 @@ begin
   if AppInstances = nil then
     AppInstances := TJclAppInstances.Create;
   Result := AppInstances;
+end;
+
+//==============================================================================
+// Interprocess communication routines
+//==============================================================================
+
+function JclReadMessageCheck(var Message: TMessage; const DataKind: DWORD;
+  const IgnoredOriginatorWnd: HWND): Boolean;
+begin
+  if Message.Msg = WM_COPYDATA then
+    Result := (TWMCopyData(Message).From <> IgnoredOriginatorWnd) and
+      (TWMCopyData(Message).CopyDataStruct^.dwData = DataKind)
+  else
+    Result := False;
+  Message.Result := Integer(Result);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure JclReadMessageString(const Message: TMessage; var S: string);
+begin
+  with TWMCopyData(Message) do
+    if Msg = WM_COPYDATA then
+      SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings);
+begin
+  with TWMCopyData(Message) do
+    if Msg = WM_COPYDATA then
+      MultiSzToStrings(Strings, CopyDataStruct^.lpData);
 end;
 
 //------------------------------------------------------------------------------
