@@ -82,7 +82,14 @@
 {                                                                              }
 { 000828:                                                                      }
 { added function MakeYear4Digit                                                }
-
+{                                                                              }
+{ 000907:                                                                      }
+{ added ISOWeekNumber with 1 and 3 parameters                                  }
+{                                                                              }
+{ 000912:                                                                      }
+{ more elegant code for ISOWeekNumber                                          }
+{ added ISOWeekToDateTime                                                      }
+{ added overload for ISOWeekNumber with three integer parameters               }
 
 
 { TODO:                                                                        }
@@ -117,9 +124,10 @@ uses
   Windows, SysUtils,
   JclBase,JclResources;
 
-function EncodeDate(Year: Integer; Month, Day: Word): TDateTime; 
+function EncodeDate(Year: Integer; Month, Day: Word): TDateTime;
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); overload;
 procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word); overload;
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: integer); overload;
 
 function CenturyOfDate(DateTime: TDateTime): Integer;
 function CenturyBaseYear(DateTime: TDateTime): Integer;
@@ -131,7 +139,10 @@ function HourOfTime(DateTime: TDateTime): Integer;
 function MinuteOfTime(DateTime: TDateTime): Integer;
 function SecondOfTime(DateTime: TDateTime): Integer;
 
-function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
+function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer; overload;
+function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer; overload;
+function ISOWeekNumber(DateTime: TDateTime): Integer; overload;
+function ISOWeekToDateTime(Year, Week, Day: Integer): TDateTime;
 function IsLeapYear(Year: Integer): Boolean;  overload;
 function IsLeapYear(DateTime: TDateTime): Boolean;  overload;
 function DaysInMonth(DateTime: TDateTime): Integer;
@@ -207,7 +218,17 @@ const
   FileTimeBase = -109205.0;
   FileTimeStep: Extended = 24.0 * 60.0 * 60.0 * 1000.0 * 1000.0 * 10.0; // 100 nSek per Day
 
-{$I RESOURCES.INC}
+  // Weekday to start the week
+  //   1 : Sonday
+  //   2 : Monday (according to  ISO 8601)
+  ISOFirstWeekDay  = 2;
+
+  // minmimum number of days of the year in the first week of the year week
+  //   1 : week one starts at 1/1
+  //   4 : first week has at least four days (according to ISO 8601)
+  //   7 : first full week
+  ISOFirstWeekMinDays  = 4;
+
 
 //------------------------------------------------------------------------------
 
@@ -235,6 +256,16 @@ end;
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); overload;
 begin
   SysUtils.DecodeDate(Date, Year, Month, Day);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: integer); overload;
+var WMonth, WDay: Word;
+begin
+   DecodeDate(Date, Year, WMonth, WDay);
+   Month := Wmonth;
+   Day := WDay;
 end;
 
 //------------------------------------------------------------------------------
@@ -399,45 +430,45 @@ end;
 
 // DayOfWeek function returns integer 1..7 equivalent to Sunday..Saturday.
 // ISO 8601 weeks start with Monday and the first week of a year is the one which
-// includes the first Thursday - Fiddle takes care of all this}
-
-function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
-const
-  Fiddle: array [1..7] of Byte = (6, 7, 8, 9, 10, 4, 5);
+// includes the first Thursday
+function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer;
 var
-  Present, StartOfYear: TDateTime;
-  FirstDayOfYear, WeekNumber, NumberOfDays: Integer;
-  Year, Month, Day: Word;
+  Month,Day : Word;
+
 begin
-  Present := Trunc(DateTime); // truncate to remove hours, mins and secs
-  DecodeDate(Present, Year, Month, Day); // decode to find year
-  StartOfYear := EncodeDate(Year, 1, 1);  // encode 1st Jan of the year
-  // find what day of week 1st Jan is, then add days according to rule
-  FirstDayOfYear := Fiddle[DayOfWeek(StartOfYear)];
-  // calc number of days since beginning of year + additional according to rule
-  NumberOfDays := Trunc(Present - StartOfYear) + FirstDayOfYear;
-  // calc number of weeks
-  WeekNumber := NumberOfDays div 7;
-  if WeekNumber = 0 then
-    // see if previous year end was week 52 or 53
-    Result := ISOWeekNumber(EncodeDate(Year - 1, 12, 31), YearOfWeekNumber)
-  else
-  begin
-    YearOfWeekNumber := Year;
-    Result := WeekNumber;
-    if WeekNumber = 53 then
-    begin
-      // if 31st December less than Thursday then must be week 01 of next year
-      if DayOfWeek(EncodeDate(Year, 12, 31)) < 5 then
-      begin
-        YearOfWeekNumber := Year + 1;
-        Result := 1;
-      end;
-    end;
-  end;
+  WeekDay:=((DayOfWeek(DateTime) - ISOFirstWeekDay + 7) mod 7)+1;
+  DateTime:=DateTime - WeekDay + 8 - ISOFirstWeekMinDays;
+  DecodeDate(DateTime, YearOfWeekNumber, Month, Day);
+  result:=(Trunc(DateTime - EncodeDate(YearOfWeekNumber, 1, 1)) div 7)+1;
 end;
 
 //------------------------------------------------------------------------------
+
+function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
+var dummy : Integer;
+begin
+  Result := ISOWeekNumber (DateTime, YearOfWeekNumber, dummy);
+end;
+
+//------------------------------------------------------------------------------
+
+function ISOWeekNumber(DateTime: TDateTime): Integer;
+var dummy1, dummy2 : Integer;
+begin
+  Result := ISOWeekNumber (DateTime, dummy1, dummy2);
+end;
+
+//------------------------------------------------------------------------------
+
+
+function ISOWeekToDateTime(Year, Week, Day:Integer):TDateTime;
+begin
+  Result:=EncodeDate(Year, 1, ISOFirstWeekMinDays);
+  Result:=Result + (Week - 1) * 7 - ((DayOfWeek(Result) + (7 - ISOFirstWeekDay)) mod 7) + Day - 1;
+end;
+
+//------------------------------------------------------------------------------
+
 
 function IsLeapYear(Year: Integer): Boolean;
 begin
