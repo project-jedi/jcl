@@ -7,11 +7,12 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF COMPLIB_CLX}
+  {$IFDEF VisualCLX}
   QControls, QForms, QMenus, QTypes, QStdCtrls, QComCtrls, QButtons,
-{$ELSE}
+  {$ENDIF VisualCLX}
+  {$IFDEF VCL}
   Controls, Forms, Menus, StdCtrls, ComCtrls, Buttons, Spin,
-{$ENDIF COMPLIB_CLX}
+  {$ENDIF VCL}
   JclMIDI;
 
 type

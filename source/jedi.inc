@@ -486,11 +486,3 @@
 {$IFNDEF VisualCLX}
   {$DEFINE VCL}
 {$ENDIF}
-
-{$IFDEF VisualCLX}
-  {$DEFINE COMPLIB_CLX} // kept for backward compatibility, use VisualCLX instead
-{$ENDIF}
-
-{$IFDEF VCL}
-  {$DEFINE COMPLIB_VCL} // kept for backward compatibility, use VCL instead
-{$ENDIF}
