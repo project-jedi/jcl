@@ -1,0 +1,911 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclRegion = class(TObject);
+[ShortDescr]
+Class to be used as a wrapper for windows regions.
+[Description]
+This class is a wrapper for windows regions. It has a lot of overloaded constructors
+to make it easy to create different kind of regions. It even has a constructor to create
+a region from a bitmap.<p>Regions are a powerfull part of the windows GDI, they are not as known
+as the other objects on the canvas but they can create real beauty. Or maybe you ever dreamed
+of making custom forms, then this is your change.<p>Note for Delphi 3 users, this class is
+not compatible with Delphi 3.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(RegionHandle: HRgn);
+[ShortDescr]
+Creates a wrapper for the region.
+[Description]
+This function can be used to create a handy wrapper for a Regionhandle aquired by
+a windows function.
+[Parameters]
+Count=1
+1=RegionHandle:HRgn=The windows regionhandle.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateElliptic(const ARect: TRect); overload;
+constructor CreateElliptic(Top, Left, Bottom, Right: integer); overload;
+[ShortDescr]
+Create an elliptic region
+[Description]
+Creates an elliptic region defined by a rectangle.
+[Parameters]
+Count=5
+1=ARect:TRect=The rectangle surronding the elliptic region.
+2=Top:integer=X-coordinate of the upper left point.
+3=Left:integer=Y-coordinate of the upper left point.
+4=Bottom:integer=X-coordinate of the bottom right point.
+5=Right:integer=Y-coordinate of the bottom right point.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreatePoly(const Points: TArrayOfPoint; Count: integer; FillMode: TPolyFillMode);
+[ShortDescr]
+Create an poly region
+[Description]
+Creates an poly region defined by an array of points.
+[Parameters]
+Count=3
+1=Points:TArrayOfPoint=An array containing the TPoint structures which define the vertices of the
+polygon, in device units. The polygon should be closed.
+2=Count:integer=The number of points in the Points array.
+3=FillMode:TPolyFillMode=Specifies the fillmode of polygon, which pixels will be included in the
+region.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TPolyFillMode;..\..\Types\TPolyFillMode
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateRect(Top, Left, Bottom, Right: integer); overload;
+constructor CreateRect(const ARect: TRect); overload;
+[ShortDescr]
+Create a rectangle region
+[Description]
+Creates a rectangele region defined by a rectangle or Top, Left, Bottom, Right.
+[Parameters]
+Count=5
+1=ARect:TRect=The rectangle describing the region.
+2=Top:integer=X-coordinate of the upper left point.
+3=Left:integer=Y-coordinate of the upper left point.
+4=Bottom:integer=X-coordinate of the bottom right point.
+5=Right:integer=Y-coordinate of the bottom right point.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: integer); overload;
+constructor CreateRoundRect(Top, Left, Bottom, Right: integer; CornerWidth, CornerHeight: integer); overload;
+[ShortDescr]
+Create a rounded rectangle region
+[Description]
+Creates a rounded rectangele region defined by a rectangle or Top, Left, Bottom, Right.
+[Parameters]
+Count=5
+1=ARect:TRect=The rectangle describing the region.
+2=Top:integer=X-coordinate of the upper left point.
+3=Left:integer=Y-coordinate of the upper left point.
+4=Bottom:integer=X-coordinate of the bottom right point.
+5=Right:integer=Y-coordinate of the bottom right point.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreatePolyPolygon(const Points: TArrayOfPoint; const Vertex: TArrayOfInteger;
+  Count: integer; FillMode: TPolyFillMode);
+[ShortDescr]
+Create a rounded rectangle region
+[Description]
+Creates a rounded rectangele region defined by a rectangle or Top, Left, Bottom, Right.
+[Parameters]
+Count=4
+1=Points:TArrayOfPoint=An array containing the TPoint structures which define the vertices of the
+polygon, in device units. The polygon should be closed.
+2=Vertex:TArrayOfinteger=An array containing the number of vertices of each polygon. There is one
+entry for every polygon in the Points array.
+3=Count:integer=The number of polygons.
+4=FillMode:TPolyFillMode=Specifies the fillmode of polygon, which pixels will be included in the
+region.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TPolyFillMode;..\..\Types\TPolyFillMode
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
+[ShortDescr]
+Creates a region from a bitmap.
+[Description]
+Creates a region from a bitmap by using a color as mask.
+[Parameters]
+Count=3
+1=Bitmap:TBitmap=A bitmap used as input to create a region.
+2=RegionColor:TColor=The color for the mask.
+3=RegionBitmapMode:TJclRegionBitmapMode=This flag specifies if the RegionColor is included or excluded.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegionBitmapMode;..\..\Types\TJclRegionBitmapMode
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreatePath(Canvas: TCanvas);
+[ShortDescr]
+Creates a region from a Path.
+[Description]
+Creates a region from a path currenly selected in a canvas.
+[Parameters]
+Count=1
+1=Canvas:TCanvas=A canvas that contains a path.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
+[ShortDescr]
+Creates a region from a RegionInfo class.
+[Description]
+Creates a region from a RegionInfo class, this function is included so you can make regions
+persistent.
+[Parameters]
+Count=1
+1=RegionInfo:TJclRegionInfo=A regioninfo class.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegionInfo;..\..\TJclRegionInfo\TJclRegionInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+destructor Destroy; override;
+[ShortDescr]
+Destroys the region class.
+[Description]
+Destroys the region class, this will also delete the regionhandle.
+[Parameters]
+Count=1
+1=RegionInfo:TJclRegionInfo=A regioninfo class.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Clip(Canvas: TCanvas);
+[ShortDescr]
+Selects the region as the current clipping region on a canvas.
+[Description]
+Selects the region as the current clipping region on a canvas.
+[Parameters]
+Count=1
+1=Canvas:TCanvas=A canvas where the region should be used as a clipping area.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Combine(DestRegion, SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
+procedure Combine(SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator); overload;
+[ShortDescr]
+Combines two regions.
+[Description]
+Combines two regions using or, and, xor or difference operator. If the destination region
+is not specified then the regionclass is the result.
+[Parameters]
+Count=3
+1=DestRegion:TJclRegion=The destination region class, this should be a valid region class.
+2=SrcRegion:TJclRegion=The region class with which this region will be combined.
+3=CombineOp:TJclRegionCombineOperator=The operator for the combination instruction.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegionCombineOperator;..\..\Types\TJclRegionCombineOperator
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Copy: TJclRegion;
+[ShortDescr]
+Copies the current region into another regionclass.
+[Description]
+Copies the current region into another regionclass, the class is created for you and you should
+destroy it if you don't need it anymore.
+[Result]
+The copy of the region.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Equals(CompareRegion: TJclRegion): boolean;
+[ShortDescr]
+Checks if two regions are completely equal.
+[Description]
+Checks if the current regions is completely equal with the compareregion.
+[Parameters]
+Count=1
+1=CompareRegion:TJclRegion=The region which will be compared.
+[Result]
+Are the regions equal.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Fill(Canvas: TCanvas);
+[ShortDescr]
+Fills the area defined by a region with the current brush.
+[Description]
+Fills the area defined by a region with the current brush.
+[Parameters]
+Count=1
+1=Canvas:TCanvas=The canvas on which the region will be filled.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure FillGradient(Canvas: TCanvas; ColorCount: Integer;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection);
+[ShortDescr]
+Fills the area defined by a region with a gradient pattern.
+[Description]
+Fills the area defined by a region with a gradient pattern.
+[Parameters]
+Count=5
+1=Canvas:TCanvas=The canvas on which the region will be filled.
+2=ColorCount:integer=The number of gradiations between the startcolor and the endcolor,
+this should be a least 1. The higher the number, the smoother the gradiant fill.
+3=StartColor:TColor=The starting color.
+4=EndColor:TColor=The ending color.
+5=ADirection:TGradientDirection=The direction of the gradient, horizontial or vertical.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TGradientDirection;..\..\Types\TGradientDirection
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Frame(Canvas: TCanvas; FrameWidth, FrameHeight: integer);
+[ShortDescr]
+Draws a frame around the region.
+[Description]
+Draws a frame around the region with the current brush.
+[Parameters]
+Count=3
+1=Canvas:TCanvas=The canvas on which the border will be drawn.
+2=FrameWidth:integer=The width of horizontial brush strokes.
+3=FrameHeight:integer=The height of vertical brush strokes.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Invert(Canvas: TCanvas);
+[ShortDescr]
+Inverts the area defined by the region on the canvas.
+[Description]
+Inverts the area defined by the region on the canvas.
+[Parameters]
+Count=1
+1=Canvas:TCanvas=The canvas on which the region will be inverted.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Offset(X, Y: integer);
+[ShortDescr]
+Offsets the region.
+[Description]
+Moves the region a certain number of logical units.
+[Parameters]
+Count=2
+1=X:integer=Specifies the number of logical units to move left or right, this value can
+be negative to move left.
+2=Y:integer=Specifies the number of logical units to move up or down, this value can be
+negative to move up.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Paint(Canvas: TCanvas);
+[ShortDescr]
+Paints the region on the canvas.
+[Description]
+Paints the region on the canvas using the current brush.
+[Parameters]
+Count=1
+1=Canvas:TCanvas=The canvas where the region will be painted.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PointIn(X, Y: integer): boolean; overload;
+function PointIn(const Point: TPoint): boolean; overload;
+[ShortDescr]
+Check if a point is in the region.
+[Description]
+Check if a point is in the region.
+[Parameters]
+Count=3
+1=X:integer=X-coordinate of the point.
+2=Y:integer=Y-coordinate of the point.
+3=Point:TPoint=The point to check.
+[Result]
+Is the point in the region.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RectIn(const ARect: TRect): boolean; overload;
+function RectIn(Top, Left, Bottom, Right: integer): boolean; overload;
+[ShortDescr]
+Check if a rectangle is in the region.
+[Description]
+Check if a rectangle is in the region. The rectangle needs to be completely in
+the region.
+[Parameters]
+Count=5
+1=ARect:TRect=The rectangle describing the region.
+2=Top:integer=X-coordinate of the upper left point.
+3=Left:integer=Y-coordinate of the upper left point.
+4=Bottom:integer=X-coordinate of the bottom right point.
+5=Right:integer=Y-coordinate of the bottom right point.
+[Result]
+Is the rectangle in the region.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SetWindow(Window: HWND; Redraw: boolean);
+[ShortDescr]
+Specifies the region of a window that will be drawn.
+[Description]
+Specifies the region of a window that will be drawn. Outside this region the window
+doesn't get any events. This function can be used to create custom windows in
+combination with the TJclRegion.CreateBitmap constructor.
+[Parameters]
+Count=2
+1=Window:HWND=The handle of the window.
+2=Redraw:boolean=Should there be a repaint of the window.
+[Result]
+Is the rectangle in the region.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CreateBitmap
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetRegionInfo: TJclRegionInfo;
+[ShortDescr]
+Returns a TJclRegionInfo class that describes the region.
+[Description]
+Returns a TJclRegionInfo class that describes the region. When no longer needed
+the class should be destroyed. The TJclRegionInfo is a snapshot of the region, when
+the region changes after this function the changes are not reflected in the
+TJclRegionInfo class.
+[Result]
+The TJclRegionInfo class.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegionInfo;..\..\TJclRegionInfo\TJclRegionInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Box: TRect;
+[ShortDescr]
+Returns the current bounding rectangle of the region.
+[Description]
+Returns the current bounding rectangle of the region.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Handle: HRgn;
+[ShortDescr]
+Returns the windows handle of the region.
+[Description]
+Returns the windows handle of the region. Keep in mind that when you destroy the
+TJClRegion class this handle gets out of scope.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RegionType: TJclRegionType read GetRegionType;
+[ShortDescr]
+Returns the complexity of the region.
+[Description]
+Returns the complexity of the region.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegion
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegionType;..\..\Types\TJclRegionType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclRegionInfo = class(TObject)
+[ShortDescr]
+Class that contains a description of a region.
+[Description]
+Class that contains a description of a region, the class exposes the info of the
+region by a collection of rectangles. The class is mostly created by a TJclRegion.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegionInfo
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegion;..\TJclRegion\TJclRegion
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Box: TRect;
+[ShortDescr]
+Returns the current bounding rectangle of the region.
+[Description]
+Returns the current bounding rectangle of the region.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegionInfo
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Rectangles[index: integer]: TRect read GetRect;
+[ShortDescr]
+Returns the rectangle at the current index.
+[Description]
+Returns the rectangle at the current index. The index starts at 0 and ends at
+count - 1.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegionInfo
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=Count
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: integer read GetCount;
+[ShortDescr]
+Returns the number of rectangles that describe the region.
+[Description]
+Returns the number of rectangles that describe the region.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegionInfo
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=Rectangles
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(Region: TJclRegion);
+[ShortDescr]
+Creates a TJclRegionInfo class for a specified TJclRegion.
+[Description]
+Creates a TJclRegionInfo class for a specified TJclRegion. This is a snapshot of the
+region. The class can be created through the GetRegionInfo method of TJclRegion.
+[Parameters]
+Count=1
+1=Region:TJclRegion=The region from which you want the info.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegionInfo
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegion;..\..\TJclRegion\TJclRegion
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+destructor Destroy;
+[ShortDescr]
+Destroys the class.
+[Description]
+Destroys the class.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclGraphics
+Category=Graphics
+SubCat=TJclRegionInfo
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
+  StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
+[ShortDescr]
+Fills a rectangle with a gradient pattern.
+[Description]
+Fills a rectangle with a gradient pattern. You can specify the smoothness of the gradient
+the direction.
+[Parameters]
+Count=5
+1=DC:HDC=The handle of the device context where the rectangle will be drawn.
+2=ARect:Rect=The rectangle that defines the area that will be filled.
+2=ColorCount:integer=The number of gradiations between the startcolor and the endcolor,
+this should be a least 1. The higher the number, the smoother the gradiant fill.
+3=StartColor:TColor=The starting color.
+4=EndColor:TColor=The ending color.
+5=ADirection:TGradientDirection=The direction of the gradient, horizontial or vertical.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegion;.\Types\TGradientDirection
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
+  RegionBitmapMode: TJclRegionBitmapMode): HRgn;
+[ShortDescr]
+Creates a region from the specified bitmap.
+[Description]
+This function creates a region from a bitmap by specifing a color. You can use
+this function to make custom forms of bitmaps, or hotspots on your bitmap, like
+a map of europe for instance with every country in a different color. Create the
+regions for every color. The RegionBitmapMode can be rmInclude or rmExclude, with
+rmInclude all pixels of regioncolor will be in the region, with rmExclude all
+pixels of not regioncolor will be in the region.
+[Parameters]
+Count=3
+1=Bitmap:TBitmap=A bitmap used as input to create a region.
+2=RegionColor:TColor=The color for the mask.
+3=RegionBitmapMode:TJclRegionBitmapMode=This flag specifies if the RegionColor is included or excluded.
+[Result]
+The region handle.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=TJclRegionBitmapMode;.\Types\TJclRegionBitmapMode
+2=TJclRegion.CreateBitmap;.\TJclRegion\Methods\CreateBitmap
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TGradientDirection = (gdVertical, gdHorizontal);
+[ShortDescr]
+Specifies the direction of the gradient.
+[Description]
+Specifies the direction of the gradient. This can be gdVertical and gdHorizontial.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=Types
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=FillGradient;..\FillGradient
+2=TJclRegion.FillGradient;..\TJclRegion\Methods\FillGradient
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclRegionBitmapMode = (rmInclude, rmExclude);
+[ShortDescr]
+Specifies the operation on the color.
+[Description]
+Specifies the operation on the color when creating a region from a bitmap.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=Types
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=CreateRegionFromBitmap;..\CreateRegionFromBitmap
+2=TJclRegion.CreateBitmap;..\TJclRegion\Methods\CreateBitmap
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TPolyFillMode = (fmAlternate, fmWinding);
+[ShortDescr]
+Specifies the fillmode of a poly region.
+[Description]
+Specifies the fillmode of a poly region. If this parameter is set to fmAlternate then
+the region is filled between odd-numbered and even-numbered sides of the polygon. Specifing
+fmWinding will fill any part of the polyregion with a non-zero winding value.
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=Types
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=TJclRegion.CreatePoly;..\TJclRegion\Methods\CreatePoly
+2=TJclRegion.CreatePolyPolygon;..\TJclRegion\Methods\CreatePolyPolygon
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclRegionCombineOperator = (coAnd, coDiff, coOr, coXor);
+[ShortDescr]
+Specifies the combination operator.
+[Description]
+Specifies the operator when combining two regions.
+The following values can be specified:
+  <TABLE>
+    <TR VALIGN="top">
+    <TH align=left width=25%>Value</TH><TH align=left width=75%>Description</TH></TR>
+    <TR VALIGN="top"><TD width=25%>coAnd</TD>
+    <TD width=75%>The resulting region is the intersection of the two regions</TD>
+    </TR>
+    <TR VALIGN="top"><TD width=25%>coDiff</TD>
+    <TD width=75%>The resulting region is any area of region one that is not in region two</TD>
+    </TR>
+    <TR VALIGN="top"><TD width=25%>coOr</TD>
+    <TD width=75%>The resulting region is the union of the regions</TD>
+    </TR>
+    <TR VALIGN="top"><TD width=25%>coXor</TD>
+    <TD width=75%>The resulting region is the union of the regions except any overlapping areas</TD>
+    </TR>
+  </TABLE>
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=Types
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegion.Combine;..\TJclRegion\Methods\Combine
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclRegionType = (rtNull, rtSimple, rtComplex, rtError);
+[ShortDescr]
+Specifies the complexity of the region.
+[Description]
+Specifies the complexity of the region.
+The following values can be specified:
+  <TABLE>
+    <TR VALIGN="top">
+    <TH align=left width=25%>Value</TH><TH align=left width=75%>Description</TH></TR>
+    <TR VALIGN="top"><TD width=25%>rtNull</TD>
+    <TD width=75%>The region is empty</TD>
+    </TR>
+    <TR VALIGN="top"><TD width=25%>rtSimple</TD>
+    <TD width=75%>The region is a rectangle region</TD>
+    </TR>
+    <TR VALIGN="top"><TD width=25%>rtComplex</TD>
+    <TD width=75%>The region consists of more than one rectangle</TD>
+    </TR>
+    <TR VALIGN="top"><TD width=25%>rtError</TD>
+    <TD width=75%>The region is in error state, the last function that was executed failed.</TD>
+    </TR>
+  </TABLE>
+[Quick Info]
+Unit=JclGraphics
+Category=Graphics
+SubCat=Types
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=TJclRegion;..\TJclRegion\TJclRegion
