@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: October 26, 2003                                                                  }
+{ Last modified: March 22, 2004                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -37,9 +37,6 @@
 {   Release notes have been moved to ReleaseNotes.rtf                                              }
 {                                                                                                  }
 {**************************************************************************************************}
-{ Testing CVS Access (this line is a test)                                                                                                 }
-{**************************************************************************************************}
-
 
 unit JclEDI;
 
@@ -141,7 +138,7 @@ type
     FParent: TEDIDataObject;
     FDelimiters: TEDIDelimiters;
     FErrorLog: TStrings;
-    FSpecPointer: Pointer;
+    FSpecPointer: TEDIObject;
     FCustomData1: Pointer;
     FCustomData2: Pointer;
     function GetData: string;
@@ -151,7 +148,7 @@ type
     destructor Destroy; override;
     function Assemble: string; virtual; abstract;
     procedure Disassemble; virtual; abstract;
-    property SpecPointer: Pointer read FSpecPointer write FSpecPointer;
+    property SpecPointer: TEDIObject read FSpecPointer write FSpecPointer;
     property CustomData1: Pointer read FCustomData1 write FCustomData1;
     property CustomData2: Pointer read FCustomData2 write FCustomData2;
   published
@@ -230,6 +227,7 @@ type
     FNextItem: TEDIObjectListItem;
     FEDIObject: TEDIObject;
     FItemIndex: Integer;
+    FName: string;
   public
     constructor Create(Parent: TEDIObjectList; PriorItem: TEDIObjectListItem;
       EDIObject: TEDIObject = nil);
@@ -241,6 +239,7 @@ type
     property PriorItem: TEDIObjectListItem read FPriorItem write FPriorItem;
     property NextItem: TEDIObjectListItem read FNextItem write FNextItem;
     property EDIObject: TEDIObject read FEDIObject write FEDIObject;
+    property Name: string read FName write FName;    
   end;
 
   TEDIDataObjectListOptions = set of (loAutoUpdateIndexes);
@@ -256,13 +255,13 @@ type
     FLastItem: TEDIObjectListItem;
     FCurrentItem: TEDIObjectListItem;
     function GetEDIObject(Index: Integer): TEDIObject;
-    procedure SetEDIObject(Index: Integer; const Value: TEDIObject);    
+    procedure SetEDIObject(Index: Integer; const Value: TEDIObject);
     function CreateListItem(PriorItem: TEDIObjectListItem;
       EDIObject: TEDIObject = nil): TEDIObjectListItem; virtual;
   public
     constructor Create(OwnsObjects: Boolean = True);
     destructor Destroy; override;
-    procedure Add(EDIObject: TEDIObject);
+    procedure Add(EDIObject: TEDIObject; Name: string = '');
     function Extract(EDIObject: TEDIObject): TEDIObject; virtual;
     procedure Remove(EDIObject: TEDIObject);
     function IndexOf(EDIObject: TEDIObject): Integer;
@@ -272,9 +271,14 @@ type
     function Prior: TEDIObjectListItem; virtual;
     function Last: TEDIObjectListItem; virtual;
     procedure UpdateCount;
+    // ...ByName procedures and functions
+    function FindItemByName(Name: string;
+      StartItem: TEDIObjectListItem = nil): TEDIObjectListItem; virtual;
+    function ReturnListItemsByName(Name: string): TEDIObjectList; virtual;
     // Dynamic Array Emulation
     procedure Insert(InsertIndex: Integer; EDIObject: TEDIObject);
-    procedure Delete(Index: Integer);
+    procedure Delete(Index: Integer); overload;
+    procedure Delete(EDIObject: TEDIObject); overload;
     procedure UpdateIndexes(StartItem: TEDIObjectListItem = nil);
     //
     property Item[Index: Integer]: TEDIObjectListItem read GetItem;
@@ -316,6 +320,7 @@ type
     OwnerLoopId: string;
     ParentLoopId: string;
     EDIObject: TEDIObject;
+    EDISpecObject: TEDIObject;    
   end;
 
   TEDILoopStackArray = array of TEDILoopStackRecord;
@@ -361,7 +366,7 @@ type
   published
     property Size: Integer read GetSize;
     property Flags: TEDILoopStackFlagSet read FFlags write FFlags;
-    property OnAddLoop: TEDILoopStackOnAddLoopEvent read FOnAddLoop write FOnAddLoop;    
+    property OnAddLoop: TEDILoopStackOnAddLoopEvent read FOnAddLoop write FOnAddLoop;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -520,6 +525,8 @@ end;
 // TEDIDelimiters
 //==================================================================================================
 
+{ TEDIDelimiters }
+
 constructor TEDIDelimiters.Create;
 begin
   Create('~', '*', '>');
@@ -562,6 +569,8 @@ end;
 //==================================================================================================
 // TEDIDataObject
 //==================================================================================================
+
+{ TEDIDataObject }
 
 constructor TEDIDataObject.Create(Parent: TEDIDataObject);
 begin
@@ -623,6 +632,8 @@ end;
 //==================================================================================================
 // TEDIDataObjectGroup
 //==================================================================================================
+
+{ TEDIDataObjectGroup }
 
 function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
 var
@@ -740,7 +751,10 @@ var
 {$ENDIF}
 begin
   {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
-  FEDIDataObjects.Remove(EDIDataObject);
+  if loAutoUpdateIndexes in FEDIDataObjects.Options then
+    FEDIDataObjects.Delete(EDIDataObject)
+  else
+    FEDIDataObjects.Remove(EDIDataObject);
   {$ELSE}
   for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
     if FEDIDataObjects[I] = EDIDataObject then
@@ -804,8 +818,13 @@ begin
   if IndexIsValid(Index) then
   begin
     {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
-    for I := 1 to Count do
-      DeleteEDIDataObject(Index);
+    FEDIDataObjects.Options := FEDIDataObjects.Options - [loAutoUpdateIndexes];
+    try
+      for I := 1 to Count do
+        DeleteEDIDataObject(Index);
+    finally
+      FEDIDataObjects.Options := FEDIDataObjects.Options + [loAutoUpdateIndexes];
+    end;
     {$ELSE}
     // Delete
     for I := Index to (Index + Count) - 1 do
@@ -1105,10 +1124,13 @@ end;
 // TEDIObjectListItem
 //==================================================================================================
 
+{ TEDIObjectListItem }
+
 constructor TEDIObjectListItem.Create(Parent: TEDIObjectList;
   PriorItem: TEDIObjectListItem; EDIObject: TEDIObject = nil);
 begin
   inherited Create;
+  FName := '';
   FParent := Parent;
   FItemIndex := 0;
   FEDIObject := EDIObject;
@@ -1170,6 +1192,8 @@ end;
 //==================================================================================================
 // TEDIObjectList
 //==================================================================================================
+
+{ TEDIObjectList }
 
 constructor TEDIObjectList.Create(OwnsObjects: Boolean = True);
 begin
@@ -1253,11 +1277,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIObjectList.Add(EDIObject: TEDIObject);
+procedure TEDIObjectList.Add(EDIObject: TEDIObject; Name: string);
 var
   ListItem: TEDIObjectListItem;
 begin
   ListItem := CreateListItem(FLastItem, EDIObject);
+  ListItem.Name := Name;
   if FLastItem <> nil then
     FLastItem.NextItem := ListItem;
   if FFirstItem = nil then
@@ -1269,6 +1294,29 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TEDIObjectList.FindItemByName(Name: string;
+  StartItem: TEDIObjectListItem): TEDIObjectListItem;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  if StartItem <> nil then
+    ListItem := StartItem
+  else
+    ListItem := First;
+  while ListItem <> nil do
+  begin
+    if ListItem.Name = Name then
+    begin
+      Result := ListItem;
+      Break;
+    end;
+    ListItem := Next;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDIObjectList.Insert(InsertIndex: Integer; EDIObject: TEDIObject);
 var
   ListItem: TEDIObjectListItem;
@@ -1276,19 +1324,22 @@ begin
   FCurrentItem := GetItem(InsertIndex);
   if FCurrentItem <> nil then
   begin
+    //Link new item
     ListItem := CreateListItem(FCurrentItem.PriorItem);
     ListItem.NextItem := FCurrentItem;
     ListItem.EDIObject := EDIObject;
-    if ListItem.PriorItem <> nil then
-      ListItem.ItemIndex := ListItem.PriorItem.ItemIndex + 1;
-    FCurrentItem.PriorItem := ListItem;
-    if FCurrentItem.PriorItem = nil then
+    //Relink current item
+    if FCurrentItem.PriorItem <> nil then
+      FCurrentItem.PriorItem.NextItem := ListItem
+    else
       FFirstItem := ListItem;
+    FCurrentItem.PriorItem := ListItem;
+    //
     FCurrentItem := ListItem;
     Inc(FCount);
     // Update the indexes starting at the current item.
     if loAutoUpdateIndexes in FOptions then
-      UpdateIndexes(FCurrentItem);
+      UpdateIndexes(FCurrentItem); //Pass nil to force update of all items
   end
   else
     Add(EDIObject);
@@ -1382,8 +1433,18 @@ begin
     FreeAndNil(ListItem);
     // Update the indexes starting at the current item.
     if loAutoUpdateIndexes in FOptions then
-      UpdateIndexes(FCurrentItem.PriorItem);
+      UpdateIndexes(FCurrentItem.PriorItem); //Pass nil to force update of all items
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Delete(EDIObject: TEDIObject);
+begin
+  Remove(EDIObject);
+  // Update the indexes starting at the current item.
+  if loAutoUpdateIndexes in FOptions then
+    UpdateIndexes(nil); //Pass nil to force update of all items
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1534,9 +1595,27 @@ begin
     ListItem.EDIObject := Value;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.ReturnListItemsByName(Name: string): TEDIObjectList;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := TEDIObjectList.Create(False);
+  ListItem := First;
+  while ListItem <> nil do
+  begin
+    if ListItem.Name = Name then
+      Result.Add(ListItem.EDIObject, ListItem.Name);
+    ListItem := Next;
+  end; //while
+end;
+
 //==================================================================================================
 // TEDIDataObjectListItem
 //==================================================================================================
+
+{ TEDIDataObjectListItem }
 
 function TEDIDataObjectListItem.GetEDIDataObject: TEDIDataObject;
 begin
@@ -1553,6 +1632,8 @@ end;
 //==================================================================================================
 // TEDIDataObjectList
 //==================================================================================================
+
+{ TEDIDataObjectList }
 
 function TEDIDataObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
   EDIObject: TEDIObject): TEDIObjectListItem;
@@ -1585,6 +1666,8 @@ end;
 //==================================================================================================
 // TEDILoopStack
 //==================================================================================================
+
+{ TEDILoopStack }
 
 constructor TEDILoopStack.Create;
 begin
