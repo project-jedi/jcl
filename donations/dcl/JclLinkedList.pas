@@ -117,7 +117,7 @@ type
     procedure SaveToStrings(Strings: TStrings);
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
-    function GetAsStrings: TStringList;
+    function GetAsStrings: TStrings;
     function GetAsDelimited(Separator: string = AnsiLineBreak): string;
     procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
@@ -2266,7 +2266,7 @@ begin
   end;
 end;
 
-function TJclStrLinkedList.GetAsStrings: TStringList;
+function TJclStrLinkedList.GetAsStrings: TStrings;
 begin
   Result := TStringList.Create;
   try
