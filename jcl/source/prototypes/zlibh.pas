@@ -52,12 +52,8 @@
 {                                                                              }
 {******************************************************************************}
 
-// $Id$
-{$IFDEF PROTOTYPE}
-
-// Last modified: $Date$
+// Last modified: $Id$
 // For history see end of file
-{$ENDIF PROTOTYPE}
 
 {$ALIGN ON}{$BOOLEVAL OFF}{$LONGSTRINGS ON}{$IOCHECKS ON}{$WRITEABLECONST OFF}
 {$OVERFLOWCHECKS OFF}{$RANGECHECKS OFF}{$TYPEDADDRESS ON}{$MINENUMSIZE 1}
@@ -1389,7 +1385,7 @@ procedure gzclearerr(_file: TGZFile); {$IFDEF ZLIB_CDECL}cdecl;{$ENDIF}{$IFDEF Z
 //   }
 //   if (adler != original_adler) error();
 {$EXTERNALSYM adler32}
-function adler32(adler: ULong; const buf; len: UInt): ULong; {$IFDEF ZLIB_CDECL}cdecl;{$ENDIF}{$IFDEF ZLIB_STDCALL}stdcall;{$ENDIF}
+function adler32(adler: ULong; buf: Pointer; len: UInt): ULong; {$IFDEF ZLIB_CDECL}cdecl;{$ENDIF}{$IFDEF ZLIB_STDCALL}stdcall;{$ENDIF}
 
 
 { crc32
@@ -1406,7 +1402,7 @@ function adler32(adler: ULong; const buf; len: UInt): ULong; {$IFDEF ZLIB_CDECL}
 //   }
 //   if (crc != original_crc) error();
 {$EXTERNALSYM crc32}
-function crc32(crc: ULong; var buf; len: UInt): ULong; {$IFDEF ZLIB_CDECL}cdecl;{$ENDIF}{$IFDEF ZLIB_STDCALL}stdcall;{$ENDIF}
+function crc32(crc: ULong; buf: Pointer; len: UInt): ULong; {$IFDEF ZLIB_CDECL}cdecl;{$ENDIF}{$IFDEF ZLIB_STDCALL}stdcall;{$ENDIF}
 
 
 //                         various hacks, don't look :)
@@ -1630,36 +1626,16 @@ begin
   Result := inflateBackInit_(strm, windowBits, window, ZLIB_VERSION, SizeOf(strm));
 end;
 
-{$IFDEF PROTOTYPE}
 // ****************************************************************************
 
 //  History:
-//   2002-04-04, Peter J. Haas
-//    - first internal version 1.1.4
-//
-//   2002-04-04, Matthias Thoma (mthoma)
-//    - Global change: define Kylix had to be change to Linux
-//
-//   2002-04-07, Peter J. Haas
-//    - First public pre release
-//
-//   2003-04-14, Peter J. Haas
-//    - First public version
-//
-//   2003-11-14, Peter J. Haas
-//    - add demo
-//
-//   2004-01-23, Peter J. Haas
-//    - add new functions from version 1.2.1
-//    - generate different units for Delphi 3, Delphi 4 ... and Kylix
-//
-//   2004-03-15, Peter J. Haas
-//    - move directive comments to directives
-//
-//   2004-03-19, Peter J. Haas
-//    - compiler symbol to hide platform specific comments
-//
+{$IFDEF PROTOTYPE}
 //   $Log$
+//   Revision 1.7  2004/05/09 00:03:51  peterjhaas
+//   - old history in reverse order like CVS log
+//   - change interface adler32 and crc32 to avoid FPC compatibility problems
+//
+{$ENDIF PROTOTYPE}
 //   Revision 1.6  2004/05/08 08:44:18  rrossmair
 //   introduced & applied symbol HAS_UNIT_LIBC
 //
@@ -1680,6 +1656,30 @@ end;
 //   Revision 1.1  2004/04/08 00:29:22  peterjhaas
 //   Zlib header conversion prototype
 //
+//   2004-03-19, Peter J. Haas
+//    - compiler symbol to hide platform specific comments
+//
+//   2004-03-15, Peter J. Haas
+//    - move directive comments to directives
+//
+//   2004-01-23, Peter J. Haas
+//    - add new functions from version 1.2.1
+//    - generate different units for Delphi 3, Delphi 4 ... and Kylix
+//
+//   2003-11-14, Peter J. Haas
+//    - add demo
+//
+//   2003-04-14, Peter J. Haas
+//    - First public version
+//
+//   2002-04-07, Peter J. Haas
+//    - First public pre release
+//
+//   2002-04-04, Matthias Thoma (mthoma)
+//    - Global change: define Kylix had to be change to Linux
+//
+//   2002-04-04, Peter J. Haas
+//    - first internal version 1.1.4
+//
 
-{$ENDIF PROTOTYPE}
 end.
