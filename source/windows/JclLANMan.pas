@@ -22,13 +22,15 @@
 { tasks. As the name implies, it uses the LAN Manager API.                     }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: June 07, 2001                                                  }
+{ Last modified: July 16, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
 unit JclLANMan;
 
 {$I JCL.INC}
+
+{$WEAKPACKAGEUNIT ON}
 
 interface
 
