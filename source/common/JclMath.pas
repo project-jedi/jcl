@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclMath.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are Clayton Collie, ESB Consultancy, Jean Debord,    }
-{ Marcel van Brakel and Michael Schnell.                                                           }
+{ The Initial Developers of the Original Code are Clayton Collie, David Butler, ESB Consultancy,   }
+{ Jean Debord, Marcel van Brakel and Michael Schnell.                                              }
 { Portions created by these individuals are Copyright (C) of these individuals.                    }
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
@@ -3732,6 +3732,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.15  2004/09/16 22:45:56  rrossmair
+// - David Butler added to list of original authors
+//
 // Revision 1.14  2004/09/16 19:47:32  rrossmair
 // check-in in preparation for release 1.92
 //
