@@ -2,77 +2,73 @@
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
-    <VERSION value="BCB.06.00"/>
-    <PROJECT value="CJclK3.bpl"/>
-    <OBJFILES value="../../lib/k3/CJcl.obj ../../lib/k3/Jcl8087.obj ../../lib/k3/JclBase.obj 
-      ../../lib/k3/JclComplex.obj ../../lib/k3/JclCounter.obj 
-      ../../lib/k3/JclDateTime.obj ../../lib/k3/JclEDI.obj 
-      ../../lib/k3/JclEDIXML.obj ../../lib/k3/JclEDI_ANSIX12.obj 
-      ../../lib/k3/JclEDI_UNEDIFACT.obj ../../lib/k3/JclEDISEF.obj 
-      ../../lib/k3/JclEDITranslators.obj ../../lib/k3/JclExprEval.obj 
-      ../../lib/k3/JclFileUtils.obj ../../lib/k3/JclIniFiles.obj 
-      ../../lib/k3/JclLogic.obj ../../lib/k3/JclMath.obj 
-      ../../lib/k3/JclMIDI.obj ../../lib/k3/JclMime.obj 
-      ../../lib/k3/JclResources.obj ../../lib/k3/JclSchedule.obj 
-      ../../lib/k3/JclStatistics.obj ../../lib/k3/JclStrHashMap.obj 
-      ../../lib/k3/JclStrings.obj ../../lib/k3/JclSysInfo.obj 
-      ../../lib/k3/JclSysUtils.obj ../../lib/k3/JclUnitConv.obj"/>
-    <RESFILES value="CJCL.res"/>
-    <IDLFILES value=""/>
-    <IDLGENFILES value=""/>
+    <VERSION value="BCB.06.10"/>
+    <PROJECT value="$(HOME)/bin/bplCJclK3.so.1.90"/>
+    <OBJFILES value="../../lib/k3/obj/Jcl8087.o ../../lib/k3/obj/JclBase.o 
+      ../../lib/k3/obj/JclComplex.o ../../lib/k3/obj/JclCounter.o 
+      ../../lib/k3/obj/JclDateTime.o ../../lib/k3/obj/JclEDI_ANSIX12.o 
+      ../../lib/k3/obj/JclEDI.o ../../lib/k3/obj/JclEDISEF.o 
+      ../../lib/k3/obj/JclEDITranslators.o ../../lib/k3/obj/JclEDI_UNEDIFACT.o 
+      ../../lib/k3/obj/JclEDIXML.o ../../lib/k3/obj/JclExprEval.o 
+      ../../lib/k3/obj/JclFileUtils.o ../../lib/k3/obj/JclIniFiles.o 
+      ../../lib/k3/obj/JclLogic.o ../../lib/k3/obj/JclMath.o 
+      ../../lib/k3/obj/JclMIDI.o ../../lib/k3/obj/JclMime.o 
+      ../../lib/k3/obj/JclResources.o ../../lib/k3/obj/JclRTTI.o 
+      ../../lib/k3/obj/JclSchedule.o ../../lib/k3/obj/JclStatistics.o 
+      ../../lib/k3/obj/JclStrHashMap.o ../../lib/k3/obj/JclStrings.o 
+      ../../lib/k3/obj/JclSysInfo.o ../../lib/k3/obj/JclSysUtils.o 
+      ../../lib/k3/obj/JclUnitConv.o"/>
+    <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi bcbie.bpi"/>
+    <SPARELIBS value="rtl.a"/>
+    <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;../../source/common;"/>
+    <PATHPAS value=".;../../source/common"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)/lib/debug"/>
     <RELEASELIBPATH value="$(BCB)/lib/release"/>
-    <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="CJcl.cpp"/>
-    <INCLUDEPATH value="../../source/common;../../source/unix;$(BCB)/include;$(BCB)/include/vcl"/>
-    <LIBPATH value="../../source/common;../../source/unix;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
+    <LINKER value="ilink"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
+    <MAINSOURCE value="CJcl.bpf"/>
+    <INCLUDEPATH value="../../source:../../source/common:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
+    <LIBPATH value="../../source/common:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I../../source/common -I../../source/unix -I$(BCB)/include 
-      -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-N2../../lib/k3 -N0../../lib/k3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi 
+      -c"/>
+    <PFLAGS value="-N2../../lib/k3/obj -N0../../lib/k3/obj -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I../../lib/k3 -GB&quot;CJcl&quot; -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
-    <OTHERFILES value=""/>
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJcl&quot; -N&quot;&quot; 
+      -D&quot;JEDI Code Library RTL package for Kylix/Delphi&quot; -aa -Tpp -Gpr -x -Gn 
+      -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
-    <OTHERFILES value=""/>
+    <ALLLIB value="rtle_pic.a $(LIBFILES) $(LIBRARIES) libborcrtl.so libborstl.so 
+      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so "/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="CJCL.res" FORMNAME="" UNITNAME="CJCL.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJcl.cpp" FORMNAME="" UNITNAME="CJCL" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJcl.bpf" FORMNAME="" UNITNAME="CJcl" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/common/JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/common/JclEDIXML.pas" FORMNAME="" UNITNAME="JclEDIXML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/common/JclEDI_UNEDIFACT.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDISEF.pas" FORMNAME="" UNITNAME="JclEDISEF" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDITranslators.pas" FORMNAME="" UNITNAME="JclEDITranslators" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI_UNEDIFACT.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDIXML.pas" FORMNAME="" UNITNAME="JclEDIXML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclExprEval.pas" FORMNAME="" UNITNAME="JclExprEval" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclFileUtils.pas" FORMNAME="" UNITNAME="JclFileUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclIniFiles.pas" FORMNAME="" UNITNAME="JclIniFiles" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -81,6 +77,7 @@
       <FILE FILENAME="../../source/common/JclMIDI.pas" FORMNAME="" UNITNAME="JclMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclMime.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclResources.pas" FORMNAME="" UNITNAME="JclResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclRTTI.pas" FORMNAME="" UNITNAME="JclRTTI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStatistics.pas" FORMNAME="" UNITNAME="JclStatistics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclStrHashMap.pas" FORMNAME="" UNITNAME="JclStrHashMap" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -88,71 +85,52 @@
       <FILE FILENAME="../../source/common/JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclSysUtils.pas" FORMNAME="" UNITNAME="JclSysUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
 
   <IDEOPTIONS>
-[Version Info]
-IncludeVerInfo=1
-AutoIncBuild=0
-MajorVer=1
-MinorVer=0
-Release=0
-Build=0
-Debug=0
-PreRelease=0
-Special=0
-Private=0
-DLL=0
-Locale=1036
-CodePage=1252
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=../../source:../../source/common:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.90.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.90.0.0
-Comments=
+[HistoryLists\hlLibraryPath]
+Count=2
+Item0=../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin
+Item1=../../source/common:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=../../lib/k3/obj
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=$(HOME)/bin/
+
+[HistoryLists\hIBPIOutputDir]
+Count=2
+Item0=../../lib/k3
+Item1=../../lib/k3/obj
 
 [Debugging]
 DebugSourceDirs=
 
 [Parameters]
 RunParams=
-Launcher=
+Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
 UseLauncher=0
 DebugCWD=
 HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
 
 [Compiler]
 ShowInfoMsgs=0
 LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 
 [Linker]
 LibPrefix=
+LibPrefixDefined=0
 LibSuffix=K3
-LibVersion=
+LibVersion=1.90
   </IDEOPTIONS>
 </PROJECT>

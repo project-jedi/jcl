@@ -2,123 +2,99 @@
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
-    <VERSION value="BCB.06.00"/>
-    <PROJECT value="CJclVClxK3.so"/>
-    <OBJFILES value="../../lib/k3/CJclVClx.obj ../../lib/k3/JclQGraphics.obj 
-      ../../lib/k3/JclQGraphUtils.obj"/>
+    <VERSION value="BCB.06.10"/>
+    <PROJECT value="$(HOME)/bin/bplCJclVClxK3.so.1.90"/>
+    <OBJFILES value="../../lib/k3/obj/JclQGraphics.o ../../lib/k3/obj/JclQGraphUtils.o"/>
     <RESFILES value="CJclVClx.res"/>
-    <IDLFILES value=""/>
-    <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value=""/>
-    <SPARELIBS value=""/>
+    <LIBRARIES value="CJcl.a"/>
+    <SPARELIBS value="rtl.a visualclx.a CJcl.a"/>
     <PACKAGES value="rtl.bpi visualclx.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;../../source/visclx"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
-    <DEBUGLIBPATH value="$(BCB)/lib/debug"/>
-    <RELEASELIBPATH value="$(BCB)/lib/release"/>
-    <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="CJclVClx.cpp"/>
-    <INCLUDEPATH value="../../source/common;../../source/unix;../../source/visclx;$(BCB)/include;$(BCB)/include/vcl"/>
-    <LIBPATH value="../../source/common;../../source/unix;../../source/visclx;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
+    <DEBUGLIBPATH value="$(BCB)/lib/debug:../../lib/k3/debug"/>
+    <RELEASELIBPATH value="$(BCB)/lib/release:../../lib/k3"/>
+    <LINKER value="ilink"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="USEPACKAGES:_RTLDLL"/>
+    <MAINSOURCE value="CJclVClx.bpf"/>
+    <INCLUDEPATH value="../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include"/>
+    <LIBPATH value="../../source/visclx:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I../../source/common -I../../source/unix -I../../source/visclx 
-      -I$(BCB)/include -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-N2../../lib/k3 -N0../../lib/k3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-tP -VP -O2 -H=$(HOME)/.borland/clx69.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi 
+      -c"/>
+    <PFLAGS value="-N2../../lib/k3/obj -N0../../lib/k3/obj -P -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I../../lib/k3 -GB&quot;CJclVClx&quot; -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
-    <OTHERFILES value=""/>
+    <LFLAGS value="-l../../lib/k3 -I../../lib/k3/obj -GB&quot;CJclVClx&quot; -N&quot;&quot; 
+      -D&quot;JEDI Code Library Visual CLX package for Kylix/C++&quot; -aa -Tpp -Gpr -x 
+      -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="borinitpkg.o $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
-    <OTHERFILES value=""/>
+    <ALLLIB value="rtle_pic.a $(LIBFILES) $(LIBRARIES) libborcrtl.so libborstl.so 
+      libborunwind.so libpthread.so libX11.so libc.so libm.so libdl.so "/>
   </LINKER>
   <FILELIST>
       <FILE FILENAME="CJclVClx.res" FORMNAME="" UNITNAME="CJclVClx.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJclVClx.cpp" FORMNAME="" UNITNAME="CJclVClx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJclVClx.bpf" FORMNAME="" UNITNAME="CJclVClx" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/visclx/JclQGraphics.pas" FORMNAME="" UNITNAME="JclQGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/visclx/JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
 
   <IDEOPTIONS>
-[Version Info]
-IncludeVerInfo=1
-AutoIncBuild=0
-MajorVer=1
-MinorVer=0
-Release=0
-Build=0
-Debug=0
-PreRelease=0
-Special=0
-Private=0
-DLL=0
-Locale=1036
-CodePage=1252
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=../../source:../../source/visclx:$(BCB)/include/stlport:$(BCB)/include:$(BCB)/include/vcl:/usr/include
 
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.90.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.90.0.0
-Comments=
+[HistoryLists\hlLibraryPath]
+Count=2
+Item0=../../source/visclx:../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin
+Item1=../../lib/k3:../../lib/k3/obj:$(BCB)/lib/obj:$(BCB)/lib:/usr/lib:/lib:/usr/X11R6/lib:$(BCB)/bin:$(HOME)/bin
+
+[HistoryLists\hlIntOutputDir]
+Count=2
+Item0=../../lib/k3/obj
+Item1=../../lib/k3
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=$(HOME)/bin/
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=../../lib/k3
 
 [Debugging]
-DebugSourceDirs=$(BCB)/source/vcl
+DebugSourceDirs=
 
 [Parameters]
 RunParams=
-Launcher=
+Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
 UseLauncher=0
 DebugCWD=
 HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
 
 [Compiler]
 ShowInfoMsgs=0
 LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
 
 [Linker]
 LibPrefix=
+LibPrefixDefined=0
 LibSuffix=K3
-LibVersion=
+LibVersion=1.90
   </IDEOPTIONS>
 </PROJECT>
