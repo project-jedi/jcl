@@ -126,6 +126,21 @@ type
   {$ENDIF ~COMPILER7}
 
 //--------------------------------------------------------------------------------------------------
+// Interface compatibility
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF SUPPORTS_INTERFACE}
+{$IFNDEF FPC}
+{$IFNDEF RTL140_UP}
+
+type
+  IInterface = IUnknown;
+
+{$ENDIF ~RTL140_UP}
+{$ENDIF ~FPC}
+{$ENDIF SUPPORTS_INTERFACE}
+
+//--------------------------------------------------------------------------------------------------
 // Int64 support
 //--------------------------------------------------------------------------------------------------
 
@@ -180,21 +195,6 @@ type
 {$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
 {$ENDIF ~XPLATFORM_RTL}
-
-//--------------------------------------------------------------------------------------------------
-// Interface compatibility
-//--------------------------------------------------------------------------------------------------
-
-{$IFDEF SUPPORTS_INTERFACE}
-{$IFNDEF FPC}
-{$IFNDEF RTL140_UP}
-
-type
-  IInterface = IUnknown;
-
-{$ENDIF ~RTL140_UP}
-{$ENDIF ~FPC}
-{$ENDIF SUPPORTS_INTERFACE}
 
 implementation
 
@@ -301,6 +301,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.25  2004/12/18 03:58:05  rrossmair
+// - fixed to compile in Delphi 5 again
+//
 // Revision 1.24  2004/12/17 05:33:02  marquardt
 // updates for DCL
 //
