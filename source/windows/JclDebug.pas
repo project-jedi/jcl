@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 19, 2002                                                                 }
+{ Last modified: February 21, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -2392,15 +2392,15 @@ var
   VA: DWORD;
 begin
   VA := VAFromAddr(Addr);
-  Info.UnitName := FImage.ModuleNameFromAddr(VA);
+  Info.UnitName := FImage.TD32Scanner.ModuleNameFromAddr(VA);
   Result := (Info.UnitName) <> '';
   if Result then
     with Info do
     begin
       Address := Addr;
-      ProcedureName := FImage.ProcNameFromAddr(VA);
-      LineNumber := FImage.LineNumberFromAddr(VA);
-      SourceName := FImage.SourceNameFromAddr(VA);
+      ProcedureName := FImage.TD32Scanner.ProcNameFromAddr(VA);
+      LineNumber := FImage.TD32Scanner.LineNumberFromAddr(VA);
+      SourceName := FImage.TD32Scanner.SourceNameFromAddr(VA);
       DebugInfo := Self;
     end;
 end;
@@ -2412,7 +2412,7 @@ begin
   FImage := TJclPeBorTD32Image.Create(True);
   try
     FImage.AttachLoadedModule(Module);
-    Result := TJclTD32InfoParser.Parse(FImage, True);
+    Result := FImage.IsTD32DebugPresent;
   except
     Result := False;
   end;
