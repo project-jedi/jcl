@@ -14,13 +14,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: May 19 2000                                                   }
+{ Last modified: November 14 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
 {$B-} // Boolean shortcut evaluation
 {$H+} // Long strings
 {$J-} // Read-only typed constants
+{$T-} // Type checked pointers off
 
 {$INCLUDE JEDI.INC} // Pull in the JCL/J-VCL shared directives
 
