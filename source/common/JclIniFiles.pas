@@ -15,37 +15,34 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ Unit owner: Eric S. Fisher                                                                       }
+{ Contributor(s):                                                                                  }
+{   John C Molyneux                                                                                }
+{   Eric S. Fisher                                                                                 }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclIniFiles;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
 interface
-
 uses
   Classes, IniFiles, SysUtils;
-
+  
 //--------------------------------------------------------------------------------------------------
 // Initialization (ini) Files
 //--------------------------------------------------------------------------------------------------
 
-function IniReadBool(const FileName, Section, Line: string): Boolean;
-function IniReadInteger(const FileName, Section, Line: string): Integer;
-function IniReadString(const FileName, Section, Line: string): string;
-procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);
-procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);
-procedure IniWriteString(const FileName, Section, Line, Value: string);
+function IniReadBool(const FileName, Section, Line: string): Boolean;              // John C Molyneux
+function IniReadInteger(const FileName, Section, Line: string): Integer;           // John C Molyneux
+function IniReadString(const FileName, Section, Line: string): string;             // John C Molyneux
+procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);     // John C Molyneux
+procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);  // John C Molyneux
+procedure IniWriteString(const FileName, Section, Line, Value: string);            // John C Molyneux
 
 //--------------------------------------------------------------------------------------------------
 // Initialization (ini) Files helper routines
@@ -54,7 +51,38 @@ procedure IniWriteString(const FileName, Section, Line, Value: string);
 procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 
+//--------------------------------------------------------------------------------------------------
+// IniFile interface without localized texts
+//--------------------------------------------------------------------------------------------------
+
+type
+  TJclISOMemIniFile = class(TMemIniFile)
+  public
+    function ReadDate(const Section, Name: string; Default: TDateTime): TDateTime; override;
+    function ReadDateTime(const Section, Name: string; Default: TDateTime): TDateTime; override;
+    function ReadFloat(const Section, Name: string; Default: Double): Double; override;
+    function ReadTime(const Section, Name: string; Default: TDateTime): TDateTime; override;
+    procedure WriteDate(const Section, Name: string; Value: TDateTime); override;
+    procedure WriteDateTime(const Section, Name: string; Value: TDateTime); override;
+    procedure WriteFloat(const Section, Name: string; Value: Double); override;
+    procedure WriteTime(const Section, Name: string; Value: TDateTime); override;
+  end;
+
+  TJclISOIniFile = class(TIniFile)
+  public
+    function ReadDate(const Section, Name: string; Default: TDateTime): TDateTime; override;
+    function ReadDateTime(const Section, Name: string; Default: TDateTime): TDateTime; override;
+    function ReadFloat(const Section, Name: string; Default: Double): Double; override;
+    function ReadTime(const Section, Name: string; Default: TDateTime): TDateTime; override;
+    procedure WriteDate(const Section, Name: string; Value: TDateTime); override;
+    procedure WriteDateTime(const Section, Name: string; Value: TDateTime); override;
+    procedure WriteFloat(const Section, Name: string; Value: Double); override;
+    procedure WriteTime(const Section, Name: string; Value: TDateTime); override;
+  end;
+
 implementation
+uses
+  JclDITs;
 
 //==================================================================================================
 // Initialization Files
@@ -178,5 +206,99 @@ begin
       WriteString(Section, IntToStr(I), Strings[I]);
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclISOMemIniFile.ReadDate(const Section, Name: string; Default: TDateTime): TDateTime;
+begin
+  Result := ISOStrToDateDef(ReadString(Section, Name, ''), Default);
+end;
+
+function TJclISOMemIniFile.ReadDateTime(const Section, Name: string; Default: TDateTime): TDateTime;
+begin
+  Result := ISOStrToDateTimeDef(ReadString(Section, Name, ''), Default);
+end;
+
+function TJclISOMemIniFile.ReadFloat(const Section, Name: string; Default: Double): Double;
+begin
+  Result := ISOStrToFloatDef(ReadString(Section, Name, ''), Default);
+end;
+
+function TJclISOMemIniFile.ReadTime(const Section, Name: string; Default: TDateTime): TDateTime;
+begin
+  Result := ISOStrToTimeDef(ReadString(Section, Name, ''), Default);
+end;
+
+procedure TJclISOMemIniFile.WriteDate(const Section, Name: string; Value: TDateTime);
+begin
+  WriteString(Section, Name, ISODateToStr(Value));
+end;
+
+procedure TJclISOMemIniFile.WriteDateTime(const Section, Name: string; Value: TDateTime);
+begin
+  WriteString(Section, Name, ISODateTimeToStr(Value));
+end;
+
+procedure TJclISOMemIniFile.WriteFloat(const Section, Name: string; Value: Double);
+begin
+  WriteString(Section, Name, ISOFloatToStr(Value));
+end;
+
+procedure TJclISOMemIniFile.WriteTime(const Section, Name: string; Value: TDateTime);
+begin
+  WriteString(Section, Name, ISOTimeToStr(Value));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclISOIniFile.ReadDate(const Section, Name: string; Default: TDateTime): TDateTime;
+begin
+  Result := ISOStrToDateDef(ReadString(Section, Name, ''), Default);
+end;
+
+function TJclISOIniFile.ReadDateTime(const Section, Name: string; Default: TDateTime): TDateTime;
+begin
+  Result := ISOStrToDateTimeDef(ReadString(Section, Name, ''), Default);
+end;
+
+function TJclISOIniFile.ReadFloat(const Section, Name: string; Default: Double): Double;
+begin
+  Result := ISOStrToFloatDef(ReadString(Section, Name, ''), Default);
+end;
+
+function TJclISOIniFile.ReadTime(const Section, Name: string; Default: TDateTime): TDateTime;
+begin
+  Result := ISOStrToTimeDef(ReadString(Section, Name, ''), Default);
+end;
+
+procedure TJclISOIniFile.WriteDate(const Section, Name: string; Value: TDateTime);
+begin
+  WriteString(Section, Name, ISODateToStr(Value));
+end;
+
+procedure TJclISOIniFile.WriteDateTime(const Section, Name: string; Value: TDateTime);
+begin
+  WriteString(Section, Name, ISODateTimeToStr(Value));
+end;
+
+procedure TJclISOIniFile.WriteFloat(const Section, Name: string; Value: Double);
+begin
+  WriteString(Section, Name, ISOFloatToStr(Value));
+end;
+
+procedure TJclISOIniFile.WriteTime(const Section, Name: string; Value: TDateTime);
+begin
+  WriteString(Section, Name, ISOTimeToStr(Value));
+end;
+
+// History:
+
+// 2004-03-23, Peter J. Haas
+//  - add TJclISOMemIniFile, TJclISOIniFile
+
+// $Log$
+// Revision 1.3  2004/04/06 04:32:43  peterjhaas
+// Add TJclISOIniFile, TJclISOMemIniFile
+//
 
 end.
