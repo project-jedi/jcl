@@ -74,18 +74,18 @@ type
 
   EJclMciError = class (EJclError)
   private
-    FMciErrorNr: DWORD;
+    FMciErrorNo: DWORD;
     FMciErrorMsg: string;
   public
-    constructor Create(const Msg: string; MciErrNr: MCIERROR);
-    constructor CreateFmt(const Msg: string; const Args: array of const; MciErrNr: MCIERROR);
-    constructor CreateRes(Ident: Integer; MciErrNr: MCIERROR);
-    property MciErrorNr: DWORD read FMciErrorNr;
+    constructor Create(MciErrNo: MCIERROR; const Msg: string);
+    constructor CreateFmt(MciErrNo: MCIERROR; const Msg: string; const Args: array of const);
+    constructor CreateRes(MciErrNo: MCIERROR; Ident: Integer);
+    property MciErrorNo: DWORD read FMciErrorNo;
     property MciErrorMsg: string read FMciErrorMsg;
   end;
 
 procedure OpenCloseCdDrive(const OpenMode: Boolean);
-function GetMciErrorMessage(const ErrorCode: MCIERROR): string;
+function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
 
 implementation
 
@@ -152,13 +152,15 @@ end;
 
 constructor TJclMultimediaTimer.Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
 begin
+  FKind := Kind;
+  FNotification := Notification;
+  FPeriod := 0;
+  FTimerID := 0;
+  FEvent := nil;
   FillChar(FTimeCaps, SizeOf(FTimeCaps), #0);
   if timeGetDevCaps(@FTimeCaps, SizeOf(FTimeCaps)) = TIMERR_STRUCT then
     raise EJclMmTimerError.CreateResRec(@RsMmTimerGetCaps);
-  FKind := Kind;
-  FNotification := Notification;
   FPeriod := FTimeCaps.wPeriodMin;
-  FTimerID := 0;
   if Notification <> nkCallback then
     FEvent := TJclEvent.Create(nil, Notification = nkSetEvent, False, '');
 end;
@@ -168,8 +170,7 @@ end;
 destructor TJclMultimediaTimer.Destroy;
 begin
   EndTimer;
-  if FEvent <> nil then
-    FreeAndNil(FEvent);
+  FreeAndNil(FEvent);
   FOnTimer := nil;
   inherited Destroy;
 end;
@@ -273,60 +274,58 @@ var
   mci: TMCI_Open_Parms;
   mciResult: MCIERROR;
 begin
-  FillChar(mci, SizeOf(mci), #0);     // Clear MCI-Open-Structure
+  FillChar(mci, SizeOf(mci), #0);
   mci.lpstrDeviceType := 'cdaudio';
 
-  // Open Audio-CD device...
   mciResult := mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE, Cardinal(@mci));
   if mciResult <> 0 then
-    raise EJclMciError.Create(RsMmNoCdAudio, mciResult);
+    raise EJclMciError.Create(mciResult, RsMmNoCdAudio);
 
-  // Open/Close the disc drive...
   if OpenMode then
     mciSendCommand(mci.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, 0)
   else
     mciSendCommand(mci.wDeviceID, MCI_SET, MCI_SET_DOOR_CLOSED, 0);
 
-  mciSendCommand(mci.wDeviceID, MCI_CLOSE, 0, 0);  // Close device
+  mciSendCommand(mci.wDeviceID, MCI_CLOSE, 0, 0);
 end;
 
 //------------------------------------------------------------------------------
 
-function GetMciErrorMessage(const ErrorCode: MCIERROR): string;
+function GetMciErrorMessage(const MciErrNo: MCIERROR): string;
 var
   Buffer: array [0..MMSystem.MAXERRORLENGTH - 1] of Char;
 begin
-  if mciGetErrorString(ErrorCode, Buffer, SizeOf(Buffer)) then
+  if mciGetErrorString(MciErrNo, Buffer, SizeOf(Buffer)) then
     Result := Buffer
   else
-    Result := Format(RsMmUnknownError, [ErrorCode]);
+    Result := Format(RsMmUnknownError, [MciErrNo]);
 end;
 
 //------------------------------------------------------------------------------
 
-constructor EJclMciError.Create(const Msg: string; MciErrNr: MCIERROR);
+constructor EJclMciError.Create(MciErrNo: MCIERROR; const Msg: string);
 begin
-  FMciErrorNr := MciErrNr;
-  FMciErrorMsg := GetMciErrorMessage(MciErrNr);
+  FMciErrorNo := MciErrNo;
+  FMciErrorMsg := GetMciErrorMessage(MciErrNo);
   inherited Create(Msg + #13 + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
 //------------------------------------------------------------------------------
 
-constructor EJclMciError.CreateFmt(const Msg: string;
-  const Args: array of const; MciErrNr: MCIERROR);
+constructor EJclMciError.CreateFmt(MciErrNo: MCIERROR; const Msg: string;
+  const Args: array of const);
 begin
-  FMciErrorNr := MciErrNr;
-  FMciErrorMsg := GetMciErrorMessage(MciErrNr);
+  FMciErrorNo := MciErrNo;
+  FMciErrorMsg := GetMciErrorMessage(MciErrNo);
   inherited CreateFmt(Msg + #13 + RsMmMciErrorPrefix + FMciErrorMsg, Args);
 end;
 
 //------------------------------------------------------------------------------
 
-constructor EJclMciError.CreateRes(Ident: Integer; MciErrNr: MCIERROR);
+constructor EJclMciError.CreateRes(MciErrNo: MCIERROR; Ident: Integer);
 begin
-  FMciErrorNr := MciErrNr;
-  FMciErrorMsg := GetMciErrorMessage(MciErrNr);
+  FMciErrorNo := MciErrNo;
+  FMciErrorMsg := GetMciErrorMessage(MciErrNo);
   inherited Create(LoadStr(Ident)+ #13 + RsMmMciErrorPrefix + FMciErrorMsg);
 end;
 
