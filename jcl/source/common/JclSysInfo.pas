@@ -17,7 +17,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Alexander Radchenko                                                                            }
-{   André Snepvangers                                                                              }
+{   André Snepvangers (asnepvangers)                                                               }
 {   Azret Botash                                                                                   }
 {   Bryan Coutch                                                                                   }
 {   Carl Clark                                                                                     }
@@ -34,10 +34,11 @@
 {   Peter J. Haas (peterjhaas)                                                                     }
 {   Peter Thörnquist (peter3)                                                                      }
 {   Petr Vones (pvones)                                                                            }
+{   Rik Barker                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Scott Price                                                                                    }
-{   Tom Hahn                                                                                       }
+{   Tom Hahn (tomhahn)                                                                             }
 {   Wim de Cleen                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -1596,7 +1597,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         end
         else
         begin
-          if IsWin2k or IsWinXP then
+          if IsWin2k or IsWinXP or IsWin2003 then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
             if FileName = '' then
@@ -3960,6 +3961,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.24  2004/07/16 04:11:46  rrossmair
+// fixed RunningProcessesList for Win2003
+//
 // Revision 1.23  2004/06/16 07:30:28  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
