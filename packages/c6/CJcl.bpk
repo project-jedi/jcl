@@ -32,7 +32,7 @@
       ..\..\lib\c6\obj\JclWideStrings.obj ..\..\lib\c6\obj\JclWin32.obj
       ..\..\lib\c6\obj\JclWinMIDI.obj ..\..\lib\c6\obj\JclAppInst.obj
       ..\..\lib\c6\obj\JclZLib.obj ..\..\lib\c6\obj\zlibh.obj
-      ..\..\lib\c6\obj\JclDITs.obj ..\..\lib\c6\obj\JclUnitVersioning.obj"/>
+      ..\..\lib\c6\obj\JclUnitVersioning.obj"/>
     <RESFILES value="CJcl.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
