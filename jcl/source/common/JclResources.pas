@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: September 30, 2003                                                                    }
+{ Last modified: October 3, 2003                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -588,9 +588,11 @@ resourcestring
 // JclPeImage
 //--------------------------------------------------------------------------------------------------
 
+resourcestring
+  RsPeReadOnlyStream          = 'Stream is read-only';
+
   // TJclPeImage
 
-resourcestring
   RsPeCantOpen                = 'Cannot open file "%s"';
   RsPeNotPE                   = 'This is not a PE format';
   RsPeNotResDir               = 'Not a resource directory';
