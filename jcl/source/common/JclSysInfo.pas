@@ -31,7 +31,6 @@
 {   Nick Hodges                                                                                    }
 {   Olivier Sannier (obones)                                                                       }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Peter Thörnquist (peter3)                                                                      }
 {   Petr Vones (pvones)                                                                            }
 {   Rik Barker                                                                                     }
@@ -254,8 +253,7 @@ function GetWindowsVersionString: string;
 function NtProductTypeString: string;
 function GetWindowsServicePackVersion: Integer;
 function GetWindowsServicePackVersionString: string;
-function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean;
-function GetOpenGLVersionBitmapRendering(out Version, Vendor: AnsiString): Boolean;
+function GetOpenGLVersion(const Win: HWND; out Version, Vendor: AnsiString): Boolean;
 {$ENDIF MSWINDOWS}
 
 function GetOSVersionString: string;
@@ -1371,42 +1369,30 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO : Several functions that use the SECURITY_DESCRIPTOR structure require
-  that this structure be on a valid pointer boundary in memory. These boundaries
-  vary depending on the type of processor used. Memory allocation functions,
-  such as malloc and LocalAlloc, return properly aligned pointers. }
+{ TODO: Check supported platforms, maybe complete rewrite }
 
-// At least under Win98 SE LookupAccountName return always 0 and
-// GetLastError = ERROR_CALL_NOT_IMPLEMENTED
-{ TODO : Move to JclSecurity? }
-{ TODO : Maybe a other, Win9x compatible solution }
 function GetUserDomainName(const CurUser: string): string;
 var
   Count1, Count2: DWORD;
   Sd: PSID; // PSecurityDescriptor; // FPC requires PSID
   Snu: SID_Name_Use;
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
-    Count1 := 0;
-    Count2 := 0;
-    Sd := nil;
-    Snu := SIDTypeUser;
-    LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
-    // set buffer size to Count2 + 2 characters for safety
-    SetLength(Result, Count2 + 1);
-    Sd := AllocMem(Count1);
-    try
-      if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
-        StrResetLength(Result)
-      else
-        Result := EmptyStr;
-    finally
-      FreeMem(Sd);
-    end;
-  end
-  else
-    Result := '';  // Win9x/ME
+  Count1 := 0;
+  Count2 := 0;
+  Sd := nil;
+  Snu := SIDTypeUser;
+  LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
+  // set buffer size to Count2 + 2 characters for safety
+  SetLength(Result, Count2 + 1);
+  Sd := AllocMem(Count1);
+  try
+    if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
+      StrResetLength(Result)
+    else
+      Result := EmptyStr;
+  finally
+    FreeMem(Sd);
+  end;
 end;
 
 {$ENDIF MSWINDOWS}
@@ -1610,7 +1596,7 @@ end;
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
-  // under Win9x this function always return ''
+  // This function always returns an empty string on Win9x
   function ProcessFileName(PID: DWORD): string;
   var
     Handle: THandle;
@@ -1625,21 +1611,21 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
           StrResetLength(Result)
         else
-          Result := '';  // always valid for Win9x
+          Result := '';
       end
       else
       begin
         if GetModuleBaseNameA(Handle, 0, PChar(Result), MAX_PATH) > 0 then
           StrResetLength(Result)
         else
-          Result := '';  // always valid for Win9x
+          Result := '';  
       end;
     finally
       CloseHandle(Handle);
     end;
   end;
 
-  // under WinNT this function always return False
+  { TODO: Check return value of CreateToolhelp32Snapshot on Windows NT (0?) }
   function BuildListTH: Boolean;
   var
     SnapProcHandle: THandle;
@@ -1648,9 +1634,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
     FileName: string;
   begin
     SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    // INVALID_HANDLE_VALUE, if the function failed,
-    // 0 for WinNT (bad design in TLHelp32.pas)
-    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE) and (SnapProcHandle <> 0);
+    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
     if Result then
     try
       ProcEntry.dwSize := SizeOf(ProcEntry);
@@ -1686,7 +1670,6 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
     end;
   end;
 
-  // under Win9x this function always return False
   function BuildListPS: Boolean;
   var
     PIDs: array [0..1024] of DWORD;
@@ -1742,11 +1725,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cTest : Extremely likely this function don't work under Win9x }
-{ TODO -cHelp : Extremely likely this function don't work under Win9x }
+{ TODO Windows 9x ? }
+
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean): Boolean;
 
-  // this function don't work under Win9x
   procedure AddToList(ProcessHandle: THandle; Module: HMODULE);
   var
     FileName: array [0..MAX_PATH] of Char;
@@ -1766,7 +1748,6 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     end;
   end;
 
-  // this function don't work under Win9x, because it call AddToList
   function EnumModulesVQ(ProcessHandle: THandle): Boolean;
   var
     MemInfo: TMemoryBasicInformation;
@@ -1796,7 +1777,6 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     end;
   end;
 
-  // this function don't work under Win9x, because it call AddToList
   function EnumModulesPS: Boolean;
   var
     ProcessHandle: THandle;
@@ -1824,7 +1804,8 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     end;
   end;
 
-  // under WinNT this function always return False
+ { TODO: Check return value of CreateToolhelp32Snapshot on Windows NT (0?) }
+
   function EnumModulesTH: Boolean;
   var
     SnapProcHandle: THandle;
@@ -1832,9 +1813,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     Next: Boolean;
   begin
     SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessID);
-    // INVALID_HANDLE_VALUE, if the function failed,
-    // 0 for WinNT (bad design in TLHelp32.pas)
-    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE) and (SnapProcHandle <> 0);
+    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
     if Result then
     try
       FillChar(Module, SizeOf(Module), #0);
@@ -2350,37 +2329,34 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GetWindowsVersionString: string;
-const
-  OSVersionStrings: array [Succ(Low(TWindowsVersion))..High(TWindowsVersion)] of string = (
-    RsOSVersionWin95, RsOSVersionWin95OSR2, RsOSVersionWin98, RsOSVersionWin98SE,
-    RsOSVersionWinME, RsOSVersionWinNT3, RsOSVersionWinNT3, RsOSVersionWinNT3,
-    RsOSVersionWinNT4, RsOSVersionWin2000, RsOSVersionWinXP, RsOSVersionWin2003);
-var
-  WindowsVersion: TWindowsVersion;
 begin
-  WindowsVersion := GetWindowsVersion;
-  case WindowsVersion of
-    Low(OSVersionStrings)..High(OSVersionStrings):
-      Result := Format(OSVersionStrings[WindowsVersion], [Win32MinorVersion]);
+  case GetWindowsVersion of
+     wvWin95: Result := RsOSVersionWin95;
+     wvWin95OSR2: Result := RsOSVersionWin95OSR2;
+     wvWin98: Result := RsOSVersionWin98;
+     wvWin98SE: Result := RsOSVersionWin98SE;
+     wvWinME: Result := RsOSVersionWinME;
+     wvWinNT31, wvWinNT35, wvWinNT351: Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
+     wvWinNT4: Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
+     wvWin2000: Result := RsOSVersionWin2000;
+     wvWinXP: Result := RsOSVersionWinXP;
+     wvWin2003: Result := RsOSVersionWin2003;
   else
     Result := '';
-  end;
+  end;  
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function NtProductTypeString: string;
-const
-  NtProductTypeStrings: array [Succ(Low(TNtProductType))..High(TNtProductType)] of string = (
-    RsProductTypeWorkStation, RsProductTypeServer, RsProductTypeAdvancedServer,
-    RsProductTypePersonal, RsProductTypeProfessional, RsProductTypeDatacenterServer);
-var
-  ProductType: TNtProductType;
 begin
-  ProductType := NtProductType;
-  case ProductType of
-    Low(NtProductTypeStrings)..High(NtProductTypeStrings):
-      Result := NtProductTypeStrings[ProductType];
+  case NtProductType of
+   ptWorkStation: Result := RsProductTypeWorkStation;
+   ptServer: Result := RsProductTypeServer;
+   ptAdvancedServer: Result := RsProductTypeAdvancedServer;
+   ptPersonal: Result := RsProductTypePersonal;
+   ptProfessional: Result := RsProductTypeProfessional;
+   ptDatacenterServer: Result := RsProductTypeDatacenterServer;
   else
     Result := '';
   end;
@@ -2401,7 +2377,7 @@ begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
     if GetVersionEx(VersionInfo) then Result := VersionInfo.wServicePackMajor;
-  end
+    end
   else
   begin
     SP := RegReadIntegerDef(HKEY_LOCAL_MACHINE, RegWindowsControl, 'CSDVersion', 0);
@@ -2417,135 +2393,130 @@ var
 begin
   SP := GetWindowsServicePackVersion;
   if SP > 0 then
-    Result := 'SP' + IntToStr(SP)      { TODO : localize, that mean ResourceString? }
+    Result := 'SP' + IntToStr(SP)
   else
     Result := '';
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InternalGetOpenGLVersion(out Version, Vendor: AnsiString; DCHandle: HDC;
-  Flags: DWORD): Boolean;
+// Imports copied from OpenGL unit. Direct using of OpenGL unit might cause unexpected problems due
+// setting 8087CW in the intialization section
+function glGetString(name: Cardinal): PChar; stdcall; external opengl32; 
+function glGetError: Cardinal; stdcall; external opengl32;
+function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
 
-function GetOpenGlString(Name: Cardinal; out Value: AnsiString): Boolean;
+function GetOpenGLVersion(const Win: HWND; out Version, Vendor: AnsiString): Boolean;
+const
+  GL_NO_ERROR = 0;
+  GL_VENDOR   = $1F00;
+  GL_VERSION  = $1F02;
 var
-  Ptr: PAnsiChar;
-begin
-  Ptr := RtdlglGetString(Name);
-  Result := Assigned(Ptr);
-  if Result then
-    Value := Ptr
-  else
-    { TODO : in case of missing dll empty string }
-    Value := RtdlgluErrorString(RtdlglGetError);
-end;
-
-var
+  pfd: TPixelFormatDescriptor;
+  iFormatIndex: Integer;
+  hGLContext: HGLRC;
+  hGLDC: HDC;
+  pcTemp: PChar;
+  glErr: Cardinal;
+  bError: Boolean;
+  sOpenGLVersion, sOpenGLVendor: string;
   Save8087CW: Word;
-  PFDesc: TPixelFormatDescriptor;
-  FormatIndex: Integer;
-  RenderingContextHandle: HGLRC;
 begin
-  Result := False;
-  Version := RsOpenGLInfoError;
-  Vendor := RsOpenGLInfoError;
-  if DCHandle = 0 then
-    Exit;
+  { To call for the version information string we must first have an active
+    context established for use.  We can, of course, close this after use }
 
-  // To call for the version information string we must first have an active
-  // context established for use.  We can, of course, close this after use
-  Save8087CW := Set8087ControlWord($133F);
+  Save8087CW := Get8087ControlWord;
   try
-    // We need to load the OpenGl32 library before calling ChoosePixelFormat
-    OpenGl32Handle;
+    Set8087CW($133F);
+    hGLContext := 0;
+    Result := False;
+    bError := False;
 
-    FillChar(PFDesc, SizeOf(PFDesc), 0);
-    with PFDesc do
+    if Win = 0 then
     begin
-      nSize := SizeOf(PFDesc);
-      nVersion := 1;               // The Current Version of the descriptor is 1
-      dwFlags := Flags or PFD_SUPPORT_OPENGL;
+      Result := False;
+      Vendor := RsOpenGLInfoError;
+      Version := RsOpenGLInfoError;
+      Exit;
+    end;
+
+    FillChar(pfd, SizeOf(pfd), 0);
+    with pfd do
+    begin
+      nSize := SizeOf(pfd);
+      nVersion := 1;  { The Current Version of the descriptor is 1 }
+      dwFlags := PFD_DRAW_TO_WINDOW OR PFD_SUPPORT_OPENGL;
       iPixelType := PFD_TYPE_RGBA;
-      cColorBits := 24;            // support 24-bit colour
-      cDepthBits := 32;            // Depth of the z-buffer
+      cColorBits := 24;  { support 24-bit colour }
+      cDepthBits := 32;  { Depth of the z-buffer }
       iLayerType := PFD_MAIN_PLANE;
     end;
 
-    FormatIndex := ChoosePixelFormat(DCHandle, @PFDesc);
-    if FormatIndex = 0 then
-      RaiseLastOSError;
-    if not SetPixelFormat(DCHandle, FormatIndex, @PFDesc) then
-      RaiseLastOSError;
-
-    RenderingContextHandle := RtdlwglCreateContext(DCHandle);
-    if RenderingContextHandle = 0 then
-      RaiseLastOSError;
+    hGLDC := GetDC(Win);
     try
-      if not RtdlwglMakeCurrent(DCHandle, RenderingContextHandle) then
-        RaiseLastOSError;
+      iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
+      if iFormatIndex = 0 then
+        raise Exception.Create(RsOpenGLInfoExcep_CPF);
+
+      if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
+        raise Exception.Create(RsOpenGLInfoExcep_SPF);
+
+      hGLContext := wglCreateContext(hGLDC);
+      if hGLContext = 0 then
+        raise Exception.Create(RsOpenGLInfoExcep_CC);
+
+      if not wglMakeCurrent(hGLDC, hGLContext) then
+        raise Exception.Create(RsOpenGLInfoExcep_MC);
 
       { TODO : Review the following.  Not sure I am 100% happy with this code
                in its current structure. }
-      { TODO : Store this information in a Global Variable, and return that??
-               This would save this work being performed again with later calls }
-      Result := GetOpenGlString(GL_VERSION, Version) and GetOpenGlString(GL_VENDOR, Vendor);
+      pcTemp := glGetString(GL_VERSION);
+      if pcTemp <> Nil then
+      begin
+        { TODO : Store this information in a Global Variable, and return that??
+                 This would save this work being performed again with later calls }
+        sOpenGLVersion := StrPas(pcTemp);
+      end
+      else
+      begin
+        bError := True;
+        glErr := glGetError;
+        if (glErr <> GL_NO_ERROR) then
+        begin
+          sOpenGLVersion := gluErrorString(glErr);
+          sOpenGLVendor := '';
+        end;
+      end;
+
+      pcTemp := glGetString(GL_VENDOR);
+      if pcTemp <> Nil then
+      begin
+        { TODO : Store this information in a Global Variable, and return that??
+                 This would save this work being performed again with later calls }
+        sOpenGLVendor := StrPas(pcTemp);
+      end
+      else
+      begin
+        bError := True;
+        glErr := glGetError;
+        if (glErr <> GL_NO_ERROR) then
+        begin
+          sOpenGLVendor := gluErrorString(glErr);
+          Exit;
+        end;
+      end;
+
+      Result := (not bError);
+      Version := sOpenGLVersion;
+      Vendor := sOpenGLVendor;
     finally
-      // Close all resources
-      RtdlwglMakeCurrent(DCHandle, 0);
-      if RenderingContextHandle <> 0 then
-        RtdlwglDeleteContext(RenderingContextHandle);
+      { Close all resources }
+      wglMakeCurrent(hGLDC, 0);
+      if hGLContext <> 0 then
+        wglDeleteContext(hGLContext);
     end;
   finally
-    Set8087ControlWord(Save8087CW);
-  end;
-end;
-
-function GetOpenGLVersionBitmapRendering(out Version, Vendor: AnsiString): Boolean;
-var
-  BmpInfoHdr: TBitmapInfoHeader;
-  DCHandle: HDC;
-  BmpHandle, OldBitmapHandle: HBitmap;
-  Bits: Pointer;
-begin
-  FillChar(BmpInfoHdr, SizeOf(BmpInfoHdr), 0);
-  BmpInfoHdr.biSize := SizeOf(BmpInfoHdr);
-  BmpInfoHdr.biWidth := 1;
-  BmpInfoHdr.biHeight := 1;
-  BmpInfoHdr.biPlanes := 1;
-  BmpInfoHdr.biBitCount := 24;
-  BmpInfoHdr.biCompression := BI_RGB;
-  BmpInfoHdr.biSizeImage := 0;
-  DCHandle := CreateCompatibleDC(0);
-  try
-    BmpHandle := CreateDIBSection(DCHandle, PBitmapInfo(@BmpInfoHdr)^, DIB_RGB_COLORS, Bits, 0, 0);
-    OldBitmapHandle := SelectObject(DCHandle, BmpHandle);
-    try
-      Result := InternalGetOpenGLVersion(Version, Vendor, DCHandle, PFD_DRAW_TO_BITMAP);
-    finally
-      SelectObject(DCHandle, OldBitmapHandle);
-      DeleteObject(BmpHandle);
-    end;
-  finally
-    ReleaseDC(0, DCHandle);
-  end;
-end;
-
-function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean;
-var
-  DCHandle: HDC;
-begin
-  Result := False;
-  Version := RsOpenGLInfoError;
-  Vendor := RsOpenGLInfoError;
-  if Win = 0 then
-    Exit;
-  DCHandle := GetDC(Win);
-  try
-    Result := InternalGetOpenGLVersion(Version, Vendor, DCHandle, PFD_DRAW_TO_WINDOW);
-  finally
-    ReleaseDC(Win, DCHandle);
-    // Redraw window
-    InvalidateRect(Win, nil, False);
+    Set8087CW(Save8087CW);
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -2582,8 +2553,49 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO: RTLD version of NetBios }
 {$IFDEF MSWINDOWS}
+type
+  TNetBios = function(P: PNCB): Byte; stdcall;
+
+var
+  NetBiosLib: HINST = 0;
+  _NetBios: TNetBios;
+
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
+  procedure ExitNetbios;
+    begin
+    if NetBiosLib <> 0 then
+    begin
+      FreeLibrary(NetBiosLib);
+      NetBiosLib := 0;
+    end;
+  end;
+
+  function InitNetbios: Boolean;
+  begin
+    Result := True;
+    if NetBiosLib = 0 then
+    begin
+      NetBiosLib := LoadLibrary(PChar('netapi32.dll'));
+      Result := NetBiosLib <> 0;
+      if Result then
+      begin
+        @_NetBios := GetProcAddress(NetBiosLib, PChar('Netbios'));
+        Result := @_NetBios <> nil;
+        if not Result then
+          ExitNetbios;
+      end;
+    end;
+  end;
+
+  function NetBios(P: PNCB): Byte;
+  begin
+    if InitNetbios then
+      Result := _NetBios(P)
+    else
+      Result := 1; // anything other than NRC_GOODRET will do
+  end;
 
   procedure GetMacAddressesNetBios;
   // Platform SDK
@@ -2593,7 +2605,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
   // HOWTO: Get the MAC Address for an Ethernet Adapter
   // http://support.microsoft.com/default.aspx?scid=kb;en-us;118623
   type
-    TAStat = packed record
+    AStat = packed record
       adapt: TAdapterStatus;
       NameBuff: array [0..29] of TNameBuffer;
     end;
@@ -2601,7 +2613,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     NCB: TNCB;
     Enum: TLanaEnum;
     I, L, NameLen: Integer;
-    Adapter: TAStat;
+    Adapter: AStat;
     MachineName: string;
   begin
     MachineName := UpperCase(Machine);
@@ -2618,7 +2630,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     NCB.ncb_command := NCBENUM;
     NCB.ncb_buffer := Pointer(@Enum);
     NCB.ncb_length := SizeOf(Enum);
-    if RtdlNetBios(@NCB) = NRC_GOODRET then
+    if NetBios(@NCB) = NRC_GOODRET then
     begin
       Result := Enum.Length;
       for I := 0 to Ord(Enum.Length) - 1 do
@@ -2626,7 +2638,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
         FillChar(NCB, SizeOf(NCB), #0);
         NCB.ncb_command := NCBRESET;
         NCB.ncb_lana_num := Enum.lana[I];
-        if RtdlNetBios(@NCB) = NRC_GOODRET then
+        if NetBios(@NCB) = NRC_GOODRET then
         begin
           FillChar(NCB, SizeOf(NCB), #0);
           NCB.ncb_command := NCBASTAT;
@@ -2634,7 +2646,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
           Move(MachineName[1], NCB.ncb_callname, SizeOf(NCB.ncb_callname));
           NCB.ncb_buffer := PChar(@Adapter);
           NCB.ncb_length := SizeOf(Adapter);
-          if RtdlNetBios(@NCB) = NRC_GOODRET then
+          if NetBios(@NCB) = NRC_GOODRET then
             Addresses.Add(AdapterToString(@Adapter.adapt));
         end;
       end;
@@ -4046,6 +4058,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.32  2004/10/17 23:48:22  mthoma
+// Removed contributions... Reintroduced orignal GetOpenGLVersion.
+//
 // Revision 1.31  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
@@ -4096,7 +4111,7 @@ finalization
 // Revision 1.16  2004/04/19 06:14:43  rrossmair
 // Help TODOs done
 //
-// Revision 1.15  2004/04/18 19:57:29  peterjhaas
+// Revision 1.15  2004/04/18 19:57:29
 // - rename one of the GetOpenGLVersion to GetOpenGLVersionBitmapRendering
 // - delete pre-loading of Glu32Handle
 // - move the OpenGl32Handle call to directly before ChoosePixelFormat
