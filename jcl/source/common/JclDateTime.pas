@@ -25,6 +25,104 @@
 { Last modified: June 18, 2000                                                 }
 {                                                                              }
 {******************************************************************************}
+{******************************************************************************}
+
+{******************************************************************************}
+{                                                                              }
+{ Modifications by MSchnell:                                                   }
+{ 000622:                                                                      }
+{                                                                              }
+{ Name changed GetCenturyOfDate -> CenturyOfDate                               }
+{                                                                              }
+{ Name changed GetCenturyBaseYear -> CenturyBaseYear                           }
+{                                                                              }
+{ function GetWeekNumber(Today: TDateTime): string;  ->                        }
+{ function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekDay: Integer): Integer;}
+{                                                                              }
+{ Added overload function IsLeapYear(Year: Integer): Boolean;                  }
+{ to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear       }
+{ IsLeapYear is now using SysUtils.IsLeapYear                                  }
+{                                                                              }
+{ Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->        }
+{ function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;              }
+{ now not calling DecodeTime any more                                          }
+{                                                                              }
+{ Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer           }
+{                                                                              }
+{ 000624:                                                                      }
+{ DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate}
+{  so let's have Delphi do the work here                                       }
+{ DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime}
+{  so let's have Delphi do the work here                                       }
+{                                                                              }
+{ DosDateTimeToStr does not use FileTime any more                              }
+{                                                                              }
+{ Added function DateTimeToFileTime                                            }
+{ Added function LocalDateTimeToFileTime                                       }
+{ Changed function  FileTimeToDateTime                                         }
+{           not using TSystemDate and avoid systemcalls                        }
+{ Changed function  FileTimeToLocalDateTime                                    }
+{           not using TSystemDate and avoid systemcalls                        }
+{                                                                              }
+{ 000625:                                                                      }
+{ Added function SystemTimeToFileTime                                          }
+{ Added function FieTimeToSystemTime                                           }
+{ Added function Datetimetosystemtime                                          }
+{ Added function DosDateTimeToFileTime                                         }
+{ Added function FileTimeToDosDateTime                                         }
+{ Added function SystemTimeToStr                                               }
+{                                                                              }
+{ 000706:                                                                      }
+{ Formatted according to style rules                                           }
+{                                                                              }
+{ 000708:                                                                      }
+{ Swapped function names CenturyOfDate and CenturyBaseYear                     }
+{ those were obviously called wrong before                                     }
+{ Attention: must be done in the Help, too                                     }
+{                                                                              }
+{ 000716:                                                                      }
+{ Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate}
+{                                                                              }
+{ 000809:                                                                      }
+{ added functions                                                              }
+{ CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile }
+{                                                                              }
+{ 000828:                                                                      }
+{ added function MakeYear4Digit                                                }
+{                                                                              }
+{ 000907:                                                                      }
+{ added ISOWeekNumber with 1 and 3 parameters                                  }
+{                                                                              }
+{ 000912:                                                                      }
+{ more elegant code for ISOWeekNumber                                          }
+{ added ISOWeekToDateTime                                                      }
+{ added overload for ISOWeekNumber with three integer parameters               }
+{                                                                              }
+{ 000914                                                                       }
+{ added functions DayOfTheYear and DayOfTheYearToDateTime                      }
+{                                                                              }
+{ 000918                                                                       }
+{ added function FormatDateTime                                                }
+{                                                                              }
+{ 001015                                                                       }
+{ avoiding "absolute" (in locations where stated)                              }
+{ extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate}
+{ added function FATDatesEqual                                                 }
+{                                                                              }
+{ 001019                                                                       }
+{ changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)  }
+
+{ TODO:                                                                        }
+{ Help for FATDatesEqual                                                       }
+
+
+{ in Help:                                                                     }
+{  We do all conversions (but thoses provided by Delphi anyway)  between       }
+{  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus             }
+{  TDatetime, TDosDateTime, TFileTime, TSystemTime to string                   }
+{                                                                              }
+{                                                                              }
+{******************************************************************************}
 
 unit JclDateTime;
 
