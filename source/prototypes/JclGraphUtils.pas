@@ -19,6 +19,9 @@
 { Last modified: May 28, 2000                                                  }
 {                                                                              }
 {******************************************************************************}
+//
+// 28-MAR-2001 ml:
+//   - ShortenString included
 
 unit JclGraphUtils;
 
@@ -190,11 +193,11 @@ procedure RGBToHSL(RGB: TColor32; out H, S, L: Single);
 // Misc
 //------------------------------------------------------------------------------
 
-
 {$IFDEF WIN32}
-//Petr Vones
+// Petr Vones
 function DottedLineTo(Canvas: TCanvas; X, Y: Integer): Boolean;
 {$ENDIF WIN32}
+function ShortenString(DC: HDC; const S: WideString; Width: Integer; TriplePointWidth: Integer = 0): WideString;
 
 var
  { Blending Function Variables }
@@ -2380,6 +2383,62 @@ end;
 {$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
+
+function ShortenString(DC: HDC; const S: WideString; Width: Integer; TriplePointWidth: Integer = 0): WideString;
+
+// Adjusts the given string S so that it fits into the given width. TriplePointWidth gives the width of
+// the three points to be added to the shorted string. I this value is 0 then it will be determined implicitely.
+// For higher speed (and multiple entries to be shorted) specify this value explicitely.
+// Note: It is assumed that the string really needs shortage. Check this in advance.
+
+var
+  Size: TSize;
+  Len: Integer;
+  L, H, N, W: Integer;
+
+begin
+  Len := Length(S);
+  if (Len = 0) or (Width <= 0) then
+    Result := ''
+  else
+  begin
+    // Determine width of triple point using the current DC settings (if not already done).
+    if TriplePointWidth = 0 then
+    begin
+      GetTextExtentPoint32W(DC, '...', 3, Size);
+      TriplePointWidth := Size.cx;
+    end;
+
+    if Width <= TriplePointWidth then
+      Result := ''
+    else
+    begin
+      // Do a binary search for the optimal string length which fits into the given width.
+      L := 0;
+      H := Len;
+      N := 0;
+      while L <= H do
+      begin
+        N := (L + H) shr 1;
+        GetTextExtentPoint32W(DC, PWideChar(S), N, Size);
+        W := Size.cx + TriplePointWidth;
+        if W < Width then
+          L := N + 1
+        else
+        begin
+          H := N - 1;
+          if W = Width then
+            L := N;
+        end;
+      end;
+      // Right-to-left directionality is automatically handled by DrawTextW, inclusive the three points
+      // if ETO_RTLREADING is set for the canvas.
+      Result := Copy(S, 1, N - 1) + '...';
+    end;
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 initialization
   SetupFunctions;
