@@ -12,7 +12,7 @@ type
   private
     FJclPath: string;
     FJclLibraryPath: string;
-    FJclDebugDCUsPath: string;
+    FJclDebugDCUPath: string;
     FJclSourcePath: string;
     FClxDialogFileName: string;
     FVclDialogFileName: string;
@@ -74,7 +74,7 @@ const
   FID_JCL_Env              = FID_JCL + $00010000;
   FID_JCL_EnvLibPath       = FID_JCL + $00010100;
   FID_JCL_EnvBrowsingPath  = FID_JCL + $00010200;
-  FID_JCL_EnvDebugDCUsPath = FID_JCL + $00010300;
+  FID_JCL_EnvDebugDCUPath  = FID_JCL + $00010300;
   FID_JCL_Make             = FID_JCL + $00020000;
   FID_JCL_MakeRelease      = FID_JCL + $00020100;
   FID_JCL_MakeDebug        = FID_JCL + $00020200;
@@ -98,31 +98,31 @@ const
   RsJCL             = 'JEDI Code Library';
 
   // Common features
-  RsEnvironment      = 'Environment';
-  RsEnvLibPath       = 'Add JCL to IDE Library Path';
-  RsEnvBrowsingPath  = 'Add JCL to IDE Browsing Path';
-  RsEnvDebugDCUsPath = 'Add JCL to Debug DCUs Path';
-  RsMake             = 'Make library units';
-  RsMakeRelease      = 'Release';
-  RsMakeDebug        = 'Debug';
-  RsMakeWindows      = 'Windows';
-  RsMakeVcl          = 'VCL';
-  RsMakeVClx         = 'Visual CLX';
+  RsEnvironment     = 'Environment';
+  RsEnvLibPath      = 'Add JCL to IDE Library Path';
+  RsEnvBrowsingPath = 'Add JCL to IDE Browsing Path';
+  RsEnvDebugDCUPath = 'Add JCL to Debug DCU Path';
+  RsMake            = 'Make library units';
+  RsMakeRelease     = 'Release';
+  RsMakeDebug       = 'Debug';
+  RsMakeWindows     = 'Windows';
+  RsMakeVcl         = 'VCL';
+  RsMakeVClx        = 'Visual CLX';
 
-  RsHelpFiles        = 'Help files';
-  RsIdeExperts       = 'IDE experts';
-  RsIdeHelpHlp       = 'Add help file to Delphi IDE help system';
-  RsIdeHelpChm       = 'Add HTML help to the Tools menu';
+  RsHelpFiles       = 'Help files';
+  RsIdeExperts      = 'IDE experts';
+  RsIdeHelpHlp      = 'Add help file to Delphi IDE help system';
+  RsIdeHelpChm      = 'Add HTML help to the Tools menu';
 
   // Product specific features
-  RsJCLExceptDlg     = 'Sample Exception Dialogs in the Object Reporitory';
-  RsJCLDialogVCL     = 'VCL Exception Dialog';
-  RsJCLDialogVCLSnd  = 'VCL Exception Dialog with Send button';
-  RsJCLDialogCLX     = 'CLX Exception Dialog';
-  RsJCLIdeDebug      = 'Debug Extension';
-  RsJCLIdeAnalyzer   = 'Project Analyzer';
-  RsJCLIdeFavorite   = 'Favorite combobox in Open/Save dialogs';
-  RsJCLIdeThrNames   = 'Displaying thread names in Thread Status window';
+  RsJCLExceptDlg    = 'Sample Exception Dialogs in the Object Reporitory';
+  RsJCLDialogVCL    = 'VCL Exception Dialog';
+  RsJCLDialogVCLSnd = 'VCL Exception Dialog with Send button';
+  RsJCLDialogCLX    = 'CLX Exception Dialog';
+  RsJCLIdeDebug     = 'Debug Extension';
+  RsJCLIdeAnalyzer  = 'Project Analyzer';
+  RsJCLIdeFavorite  = 'Favorite combobox in Open/Save dialogs';
+  RsJCLIdeThrNames  = 'Displaying thread names in Thread Status window';
 
 resourcestring
   RsSourceLibHint   = 'Adds "%s" to the Library Path';
@@ -142,7 +142,7 @@ var
 begin
   FJclPath := PathAddSeparator(PathCanonicalize(PathExtractFileDirFixed(ApplicationFileName) + '..'));
   FJclLibraryPath := Format('%slib\d%%d;%0:ssource', [FJclPath]);
-  FJclDebugDCUsPath := Format('%slib\d%%d\debug', [FJclPath]);
+  FJclDebugDCUPath := Format('%slib\d%%d\debug', [FJclPath]);
   FJclSourcePath := Format('%0:scommon;%0:swindows;%0:svcl;%0:svisclx', [FJclPath + 'source\']);
   FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
   FVclDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDialogFileName);
@@ -318,8 +318,8 @@ var
     CleanupRepository;
     if Tool.FeatureChecked(FID_JCL_EnvLibPath, Installation.VersionNumber) then
       Installation.AddToLibrarySearchPath(Format(FJclLibraryPath, [Installation.VersionNumber]));
-    if Tool.FeatureChecked(FID_JCL_EnvDebugDCUsPath, Installation.VersionNumber) then
-      Installation.AddToDebugDCUsPath(Format(FJclDebugDCUsPath, [Installation.VersionNumber]));
+    if Tool.FeatureChecked(FID_JCL_EnvDebugDCUPath, Installation.VersionNumber) then
+      Installation.AddToDebugDCUPath(Format(FJclDebugDCUPath, [Installation.VersionNumber]));
     if Tool.FeatureChecked(FID_JCL_EnvBrowsingPath, Installation.VersionNumber) then
       Installation.AddToLibraryBrowsingPath(FJclSourcePath);
     if Tool.FeatureChecked(FID_JCL_Make, Installation.VersionNumber) then
@@ -446,7 +446,7 @@ begin
       TempNode := AddNode(ProductNode, RsEnvironment, FID_JCL_Env);
       AddNode(TempNode, RsEnvLibPath, FID_JCL_EnvLibPath);
       AddNode(TempNode, RsEnvBrowsingPath, FID_JCL_EnvBrowsingPath);
-      AddNode(TempNode, RsEnvDebugDCUsPath, FID_JCL_EnvDebugDCUsPath);
+      AddNode(TempNode, RsEnvDebugDCUPath, FID_JCL_EnvDebugDCUPath);
       MakeNode := AddNode(ProductNode, RsMake, FID_JCL_Make);
       TempNode := AddNode(MakeNode, RsMakeRelease, FID_JCL_MakeRelease);
       if Installation.VersionNumber >= 6 then
