@@ -19,6 +19,7 @@
 {   Alexei Koudinov                                                                                }
 {   Barry Kelly                                                                                    }
 {   Flier Lu (flier)                                                                               }
+{   Florent Ouchet (outchy)                                                                        }
 {   Marcel Bestebroer                                                                              }
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
@@ -980,6 +981,7 @@ resourcestring
   RsSystemProcess     = 'System Process';
   RsSystemIdleProcess = 'System Idle Process';
 
+  RsIntelUnknownCache = 'Unknown cache ID (%.2x)';
   RsIntelCacheDescr01 = 'Instruction TLB, 4Kb pages, 4-way set associative, 32 entries';
   RsIntelCacheDescr02 = 'Instruction TLB, 4Mb pages, fully associative, 2 entries';
   RsIntelCacheDescr03 = 'Data TLB, 4Kb pages, 4-way set associative, 64 entries';
@@ -988,12 +990,47 @@ resourcestring
   RsIntelCacheDescr08 = '16KB instruction cache, 4-way set associative, 32 byte line size';
   RsIntelCacheDescr0A = '8KB data cache 2-way set associative, 32 byte line size';
   RsIntelCacheDescr0C = '16KB data cache, 4-way set associative, 32 byte line size';
+  RsIntelCacheDescr22 = '3° Level cache, 512 KBytes, 4-way set associative, 2 lines per sector, 64 Bytes sector size';
+  RsIntelCacheDescr23 = '3° Level cache, 1 MBytes, 8-way set associative, 2 lines per sector, 64 Bytes sector size';
+  RsIntelCacheDescr25 = '3° Level cache, 2 MBytes, 8-way set associative, 2 lines per sector, 64 byte line size';
+  RsIntelCacheDescr29 = '3° Level cache, 4M Bytes, 8-way set associative, 2 lines per sector, 64 byte line size';
+  RsIntelCacheDescr2C = '1° Level data cache: 32K Bytes, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescr30 = '1° Level instruction cache: 32K Bytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr40 = 'No L2 cache';
   RsIntelCacheDescr41 = 'Unified cache, 32 byte cache line, 4-way set associative, 128Kb';
   RsIntelCacheDescr42 = 'Unified cache, 32 byte cache line, 4-way set associative, 256Kb';
   RsIntelCacheDescr43 = 'Unified cache, 32 byte cache line, 4-way set associative, 512Kb';
   RsIntelCacheDescr44 = 'Unified cache, 32 byte cache line, 4-way set associative, 1Mb';
   RsIntelCacheDescr45 = 'Unified cache, 32 byte cache line, 4-way set associative, 2Mb';
+  RsIntelCacheDescr50  = 'Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 64 Entries';
+  RsIntelCacheDescr51  = 'Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 128 Entries';
+  RsIntelCacheDescr52  = 'Instruction TLB, 4 KBytes and 2 MBytes or 4 MBytes pages, 256 Entries';
+  RsIntelCacheDescr5B  = 'Data TLB, 4 KBytes and 4 MBytes pages, 64 Entries';
+  RsIntelCacheDescr5C  = 'Data TLB, 4 KBytes and 4 MBytes pages, 128 Entries';
+  RsIntelCacheDescr5D  = 'Data TLB, 4 KBytes and 4 MBytes pages, 256 Entries';
+  RsIntelCacheDescr60  = '1° Level data cache: 16 KByte, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescr66  = '1° Level Data cache, 8 KBytes, 4-way set associative, 64 Bytes line size';
+  RsIntelCacheDescr67  = '1° Level Data cache, 16 KBytes, 4-way set associative, 64 Bytes line size';
+  RsIntelCacheDescr68  = '1° Level Data cache, 32 KBytes, 4-way set associative, 64 Bytes line size';
+  RsIntelCacheDescr70  = 'Trace cache, 12 KµOps, 8-way set associative';
+  RsIntelCacheDescr71  = 'Trace cache, 16 KµOps, 8-way set associative';
+  RsIntelCacheDescr72  = 'Trace cache, 32 KµOps, 8-way set associative';
+  RsIntelCacheDescr79  = '2° Level cache, 128 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
+  RsIntelCacheDescr7A  = '2° Level cache, 256 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
+  RsIntelCacheDescr7B  = '2° Level cache, 512 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
+  RsIntelCacheDescr7C  = '2° Level cache, 1 MBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
+  RsIntelCacheDescr7D  = '2° Level cache, 2 MByte, 8-way set associative, 64byte line size';
+  RsIntelCacheDescr7F  = '2° Level cache, 512 KByte, 2-way set associative, 64-byte line size';
+  RsIntelCacheDescr82  = '2° Level cache, 256 KBytes, 8-way associative, 32 Bytes line size';
+  RsIntelCacheDescr83  = '2° Level cache, 512 KBytes, 8-way associative, 32 Bytes line size';
+  RsIntelCacheDescr84  = '2° Level cache, 1 MBytes, 8-way associative, 32 Bytes line size';
+  RsIntelCacheDescr85  = '2° Level cache, 2 MBytes, 8-way associative, 32 Bytes line size';
+  RsIntelCacheDescr86  = '2° Level cache, 512 KByte, 4-way set associative, 64 byte line size';
+  RsIntelCacheDescr87  = '2° Level cache, 1 MByte, 8-way set associative, 64 byte line size';
+  RsIntelCacheDescrB0  = 'Instruction TLB, 4 KByte Pages, 4-way set associative, 128 entries';
+  RsIntelCacheDescrB3  = 'Data TLB, 4 KByte Pages, 4-way set associative, 128 entries';
+  RsIntelCacheDescrF0  = '64-Byte Prefetching';
+  RsIntelCacheDescrF1  = '128-Byte Prefetching';
 
   RsOSVersionWin95     = 'Windows 95';
   RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
@@ -1107,6 +1144,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.25  2004/12/19 20:16:31  rrossmair
+// - added TCpuInfo improvements by Florent Ouchet
+//
 // Revision 1.24  2004/12/05 04:58:46  rrossmair
 // added ReadKey donation by Wayne Sherman
 //

@@ -22,6 +22,7 @@
 {   Bryan Coutch                                                                                   }
 {   Carl Clark                                                                                     }
 {   Eric S. Fisher                                                                                 }
+{   Florent Ouchet (outchy)                                                                        }
 {   James Azarja                                                                                   }
 {   Jean-Fabien Connault                                                                           }
 {   John C Molyneux                                                                                }
@@ -294,7 +295,8 @@ type
   TIntelSpecific = record
     L2Cache: Cardinal;
     CacheDescriptors: array [0..15] of Byte;
-    BrandID : Byte;
+    BrandID: Byte;
+    ExFeatures: Cardinal;
   end;
 
   TCyrixSpecific = record
@@ -324,6 +326,7 @@ type
   TCpuInfo = record
     HasInstruction: Boolean;
     MMX: Boolean;
+    SSE: Byte;        // SSE version 0 = no SSE, 1 = SSE, 2 = SSE2, 3 = SSE3
     IsFDIVOK: Boolean;
     HasCacheInfo: Boolean;
     HasExtendedInfo: Boolean;
@@ -359,108 +362,145 @@ const
 
 { Standard (Intel) Feature Flags }
 
-  FPU_FLAG   = $00000001; // Floating-Point unit on chip
-  VME_FLAG   = $00000002; // Virtual Mode Extention
-  DE_FLAG    = $00000004; // Debugging Extention
-  PSE_FLAG   = $00000008; // Page Size Extention
-  TSC_FLAG   = $00000010; // Time Stamp Counter
-  MSR_FLAG   = $00000020; // Model Specific Registers
-  PAE_FLAG   = $00000040; // Physical Address Extention
-  MCE_FLAG   = $00000080; // Machine Check Exception
-  CX8_FLAG   = $00000100; // CMPXCHG8 Instruction
-  APIC_FLAG  = $00000200; // Software-accessible local APIC on Chip
-  BIT_10     = $00000400; // Reserved, do not count on value
-  SEP_FLAG   = $00000800; // Fast System Call
-  MTRR_FLAG  = $00001000; // Memory Type Range Registers
-  PGE_FLAG   = $00002000; // Page Global Enable
-  MCA_FLAG   = $00004000; // Machine Check Architecture
-  CMOV_FLAG  = $00008000; // Conditional Move Instruction
-  PAT_FLAG   = $00010000; // Page Attribute Table
-  PSE36_FLAG = $00020000; // 36-bit Page Size Extention
-  BIT_18     = $00040000; // Reserved, do not count on value
-  BIT_19     = $00080000; // Reserved, do not count on value
-  BIT_20     = $00100000; // Reserved, do not count on value
-  BIT_21     = $00200000; // Reserved, do not count on value
-  BIT_22     = $00400000; // Reserved, do not count on value
-  MMX_FLAG   = $00800000; // MMX technology
-  FXSR_FLAG  = $01000000; // Fast Floating Point Save and Restore
-  BIT_25     = $02000000; // Reserved, do not count on value
-  BIT_26     = $04000000; // Reserved, do not count on value
-  BIT_27     = $08000000; // Reserved, do not count on value
-  BIT_28     = $10000000; // Reserved, do not count on value
-  BIT_29     = $20000000; // Reserved, do not count on value
-  BIT_30     = $40000000; // Reserved, do not count on value
-  BIT_31     = DWORD($80000000); // Reserved, do not count on value
+  FPU_FLAG    = $00000001; // Floating-Point unit on chip
+  VME_FLAG    = $00000002; // Virtual Mode Extention
+  DE_FLAG     = $00000004; // Debugging Extention
+  PSE_FLAG    = $00000008; // Page Size Extention
+  TSC_FLAG    = $00000010; // Time Stamp Counter
+  MSR_FLAG    = $00000020; // Model Specific Registers
+  PAE_FLAG    = $00000040; // Physical Address Extention
+  MCE_FLAG    = $00000080; // Machine Check Exception
+  CX8_FLAG    = $00000100; // CMPXCHG8 Instruction
+  APIC_FLAG   = $00000200; // Software-accessible local APIC on Chip
+  BIT_10      = $00000400; // Reserved, do not count on value
+  SEP_FLAG    = $00000800; // Fast System Call
+  MTRR_FLAG   = $00001000; // Memory Type Range Registers
+  PGE_FLAG    = $00002000; // Page Global Enable
+  MCA_FLAG    = $00004000; // Machine Check Architecture
+  CMOV_FLAG   = $00008000; // Conditional Move Instruction
+  PAT_FLAG    = $00010000; // Page Attribute Table
+  PSE36_FLAG  = $00020000; // 36-bit Page Size Extention
+  BIT_18      = $00040000; // Reserved, do not count on value
+  CLFLSH_FLAG = $00080000; // CLFLUSH intruction
+  BIT_20      = $00100000; // Reserved, do not count on value
+  DS_FLAG     = $00200000; // Debug store
+  ACPI_FLAG   = $00400000; // Thermal monitor and clock control
+  MMX_FLAG    = $00800000; // MMX technology
+  FXSR_FLAG   = $01000000; // Fast Floating Point Save and Restore
+  SSE_FLAG    = $02000000; // Streaming SIMD Extensions
+  SSE2_FLAG   = $04000000; // Streaming SIMD Extensions 2
+  SS_FLAG     = $08000000; // Self snoop
+  HTT_FLAG    = $10000000; // Hyper-threading technology
+  TM_FLAG     = $20000000; // Thermal monitor
+  BIT_30      = $40000000; // Reserved, do not count on value
+  PBE_FLAG    = DWORD($80000000); // Pending Break Enable
+
+{ Extended (Intel) Feature Flags }
+
+  SSE3_EFLAG    = $00000001; // Streaming SIMD Extensions 3
+  EBIT_1        = $00000002; // Reserved, do not count on value
+  EBIT_2        = $00000004; // Reserved, do not count on value
+  MONITOR_EFLAG = $00000008; // Monitor/MWAIT
+  DSCPL_EFLAG   = $00000010; // CPL Qualified debug Store
+  EBIT_5        = $00000020; // Reserved, do not count on value
+  EBIT_6        = $00000040; // Reserved, do not count on value
+  EST_EFLAG     = $00000080; // Enhanced Intel Speedstep technology
+  TM2_EFLAG     = $00000100; // Thermal monitor 2
+  EBIT_9        = $00000200; // Reserved, do not count on value
+  CNXTID_EFLAG  = $00000400; // L1 Context ID
+  EBIT_11       = $00000800; // Reserved, do not count on value
+  EBIT_12       = $00001000; // Reserved, do not count on value
+  EBIT_13       = $00002000; // Reserved, do not count on value
+  EBIT_14       = $00004000; // Reserved, do not count on value
+  EBIT_15       = $00008000; // Reserved, do not count on value
+  EBIT_16       = $00010000; // Reserved, do not count on value
+  EBIT_17       = $00020000; // Reserved, do not count on value
+  EBIT_18       = $00040000; // Reserved, do not count on value
+  EBIT_19       = $00080000; // Reserved, do not count on value
+  EBIT_20       = $00100000; // Reserved, do not count on value
+  EBIT_21       = $00200000; // Reserved, do not count on value
+  EBIT_22       = $00400000; // Reserved, do not count on value
+  EBIT_23       = $00800000; // Reserved, do not count on value
+  EBIT_24       = $01000000; // Reserved, do not count on value
+  EBIT_25       = $02000000; // Reserved, do not count on value
+  EBIT_26       = $04000000; // Reserved, do not count on value
+  EBIT_27       = $08000000; // Reserved, do not count on value
+  EBIT_28       = $10000000; // Reserved, do not count on value
+  EBIT_29       = $20000000; // Reserved, do not count on value
+  EBIT_30       = $40000000; // Reserved, do not count on value
+  EBIT_31       = DWORD($80000000); // Reserved, do not count on value
 
 { AMD Standard Feature Flags }
 
-  AMD_FPU_FLAG   = $00000001; // Floating-Point unit on chip
-  AMD_VME_FLAG   = $00000002; // Virtual Mode Extention
-  AMD_DE_FLAG    = $00000004; // Debugging Extention
-  AMD_PSE_FLAG   = $00000008; // Page Size Extention
-  AMD_TSC_FLAG   = $00000010; // Time Stamp Counter
-  AMD_MSR_FLAG   = $00000020; // Model Specific Registers
-  AMD_BIT_6      = $00000040; // Reserved, do not count on value
-  AMD_MCE_FLAG   = $00000080; // Machine Check Exception
-  AMD_CX8_FLAG   = $00000100; // CMPXCHG8 Instruction
-  AMD_APIC_FLAG  = $00000200; // Software-accessible local APIC on Chip
-  AMD_BIT_10     = $00000400; // Reserved, do not count on value
-  AMD_BIT_11     = $00000800; // Reserved, do not count on value
-  AMD_MTRR_FLAG  = $00001000; // Memory Type Range Registers
-  AMD_PGE_FLAG   = $00002000; // Page Global Enable
-  AMD_BIT_14     = $00004000; // Reserved, do not count on value
-  AMD_CMOV_FLAG  = $00008000; // Conditional Move Instruction
-  AMD_BIT_16     = $00010000; // Reserved, do not count on value
-  AMD_BIT_17     = $00020000; // Reserved, do not count on value
-  AMD_BIT_18     = $00040000; // Reserved, do not count on value
-  AMD_BIT_19     = $00080000; // Reserved, do not count on value
-  AMD_BIT_20     = $00100000; // Reserved, do not count on value
-  AMD_BIT_21     = $00200000; // Reserved, do not count on value
-  AMD_BIT_22     = $00400000; // Reserved, do not count on value
-  AMD_MMX_FLAG   = $00800000; // MMX technology
-  AMD_BIT_24     = $01000000; // Reserved, do not count on value
-  AMD_BIT_25     = $02000000; // Reserved, do not count on value
-  AMD_BIT_26     = $04000000; // Reserved, do not count on value
-  AMD_BIT_27     = $08000000; // Reserved, do not count on value
-  AMD_BIT_28     = $10000000; // Reserved, do not count on value
-  AMD_BIT_29     = $20000000; // Reserved, do not count on value
-  AMD_BIT_30     = $40000000; // Reserved, do not count on value
-  AMD_BIT_31     = DWORD($80000000); // Reserved, do not count on value
+  AMD_FPU_FLAG    = $00000001; // Floating-Point unit on chip
+  AMD_VME_FLAG    = $00000002; // Virtual Mode Extention
+  AMD_DE_FLAG     = $00000004; // Debugging Extention
+  AMD_PSE_FLAG    = $00000008; // Page Size Extention
+  AMD_TSC_FLAG    = $00000010; // Time Stamp Counter
+  AMD_MSR_FLAG    = $00000020; // Model Specific Registers
+  AMD_PAE_FLAG    = $00000040; // Physical address Extensions
+  AMD_MCE_FLAG    = $00000080; // Machine Check Exception
+  AMD_CX8_FLAG    = $00000100; // CMPXCHG8 Instruction
+  AMD_APIC_FLAG   = $00000200; // Software-accessible local APIC on Chip
+  AMD_BIT_10      = $00000400; // Reserved, do not count on value
+  AMD_SEP_BIT     = $00000800; // SYSENTER and SYSEXIT instructions
+  AMD_MTRR_FLAG   = $00001000; // Memory Type Range Registers
+  AMD_PGE_FLAG    = $00002000; // Page Global Enable
+  AMD_MCA_FLAG    = $00004000; // Machine Check Architecture
+  AMD_CMOV_FLAG   = $00008000; // Conditional Move Instruction
+  AMD_PAT_FLAG    = $00010000; // Page Attribute Table
+  AMD_PSE2_FLAG   = $00020000; // Page Size Extensions
+  AMD_BIT_18      = $00040000; // Reserved, do not count on value
+  AMD_CLFLSH_FLAG = $00080000; // CLFLUSH instruction
+  AMD_BIT_20      = $00100000; // Reserved, do not count on value
+  AMD_BIT_21      = $00200000; // Reserved, do not count on value
+  AMD_BIT_22      = $00400000; // Reserved, do not count on value
+  AMD_MMX_FLAG    = $00800000; // MMX technology
+  AMD_FX_FLAG     = $01000000; // FXSAVE and FXSTORE instructions
+  AMD_SSE_FLAG    = $02000000; // SSE Extensions
+  AMD_SSE2_FLAG   = $04000000; // SSE2 Extensions
+  AMD_BIT_27      = $08000000; // Reserved, do not count on value
+  AMD_BIT_28      = $10000000; // Reserved, do not count on value
+  AMD_BIT_29      = $20000000; // Reserved, do not count on value
+  AMD_BIT_30      = $40000000; // Reserved, do not count on value
+  AMD_BIT_31      = DWORD($80000000); // Reserved, do not count on value
 
 { AMD Enhanced Feature Flags }
 
-  EAMD_FPU_FLAG   = $00000001; // Floating-Point unit on chip
-  EAMD_VME_FLAG   = $00000002; // Virtual Mode Extention
-  EAMD_DE_FLAG    = $00000004; // Debugging Extention
-  EAMD_PSE_FLAG   = $00000008; // Page Size Extention
-  EAMD_TSC_FLAG   = $00000010; // Time Stamp Counter
-  EAMD_MSR_FLAG   = $00000020; // Model Specific Registers
-  EAMD_BIT_6      = $00000040; // Reserved, do not count on value
-  EAMD_MCE_FLAG   = $00000080; // Machine Check Exception
-  EAMD_CX8_FLAG   = $00000100; // CMPXCHG8 Instruction
-  EAMD_BIT_9      = $00000200; // Reserved, do not count on value
-  EAMD_BIT_10     = $00000400; // Reserved, do not count on value
-  EAMD_SEP_FLAG   = $00000800; // Fast System Call
-  EAMD_BIT_12     = $00001000; // Reserved, do not count on value
-  EAMD_PGE_FLAG   = $00002000; // Page Global Enable
-  EAMD_BIT_14     = $00004000; // Reserved, do not count on value
-  EAMD_ICMOV_FLAG = $00008000; // Integer Conditional Move Instruction
-  EAMD_FCMOV_FLAG = $00010000; // Floating Point Conditional Move Instruction
-  EAMD_BIT_17     = $00020000; // Reserved, do not count on value
-  EAMD_BIT_18     = $00040000; // Reserved, do not count on value
-  EAMD_BIT_19     = $00080000; // Reserved, do not count on value
-  EAMD_BIT_20     = $00100000; // Reserved, do not count on value
-  EAMD_BIT_21     = $00200000; // Reserved, do not count on value
-  EAMD_BIT_22     = $00400000; // Reserved, do not count on value
-  EAMD_MMX_FLAG   = $00800000; // MMX technology
-  EAMD_BIT_24     = $01000000; // Reserved, do not count on value
-  EAMD_BIT_25     = $02000000; // Reserved, do not count on value
-  EAMD_BIT_26     = $04000000; // Reserved, do not count on value
-  EAMD_BIT_27     = $08000000; // Reserved, do not count on value
-  EAMD_BIT_28     = $10000000; // Reserved, do not count on value
-  EAMD_BIT_29     = $20000000; // Reserved, do not count on value
-  EAMD_BIT_30     = $40000000; // Reserved, do not count on value
-  EAMD_3DNOW_FLAG = DWORD($80000000); // AMD 3DNOW! Technology
+  EAMD_FPU_FLAG     = $00000001; // Floating-Point unit on chip
+  EAMD_VME_FLAG     = $00000002; // Virtual Mode Extention
+  EAMD_DE_FLAG      = $00000004; // Debugging Extention
+  EAMD_PSE_FLAG     = $00000008; // Page Size Extention
+  EAMD_TSC_FLAG     = $00000010; // Time Stamp Counter
+  EAMD_MSR_FLAG     = $00000020; // Model Specific Registers
+  EAMD_PAE_EFLAG    = $00000040; // Physical-address extensions
+  EAMD_MCE_FLAG     = $00000080; // Machine Check Exception
+  EAMD_CX8_FLAG     = $00000100; // CMPXCHG8 Instruction
+  EAMD_APIC_FLAG    = $00000200; // Advanced Programmable Interrupt Controler
+  EAMD_BIT_10       = $00000400; // Reserved, do not count on value
+  EAMD_SEP_FLAG     = $00000800; // Fast System Call
+  EAMD_MTRR_FLAG    = $00001000; // Memory-Type Range Registers
+  EAMD_PGE_FLAG     = $00002000; // Page Global Enable
+  EAMD_MCA_FLAG     = $00004000; // Machine Check Architecture
+  //EAMD_ICMOV_FLAG = $00008000; // Integer Conditional Move Instruction
+  //EAMD_FCMOV_FLAG = $00010000; // Floating Point Conditional Move Instruction
+  EAMD_CMOV_FLAG    = $00008000; // Conditional Move Intructions
+  EAMD_PAT_FLAG     = $00010000; // Page Attributes Table
+  EAMD_PSE2_FLAG    = $00020000; // Page Size Extensions
+  EAMD_BIT_18       = $00040000; // Reserved, do not count on value
+  EAMD_BIT_19       = $00080000; // Reserved, do not count on value
+  EAMD_NEPP_FLAG    = $00100000; // No-Execute Page Protection
+  EAMD_BIT_21       = $00200000; // Reserved, do not count on value
+  EAMD_EXMMX_FLAG   = $00400000; // AMD Extensions to MMX technology
+  EAMD_MMX_FLAG     = $00800000; // MMX technology
+  EAMD_FX_FLAG      = $01000000; // FXSAVE and FXSTORE instructions
+  EAMD_FFX_FLAG     = $02000000; // Fast FXSAVE and FXSTORE instructions
+  EAMD_BIT_26       = $04000000; // Reserved, do not count on value
+  EAMD_BIT_27       = $08000000; // Reserved, do not count on value
+  EAMD_BIT_28       = $10000000; // Reserved, do not count on value
+  EAMD_LONG_FLAG    = $20000000; // Long Mode (64-bit Core)
+  EAMD_EX3DNOW_FLAG = $40000000; // AMD Extensions to 3DNow! intructions
+  EAMD_3DNOW_FLAG   = DWORD($80000000); // AMD 3DNOW! Technology
 
 { Cyrix Standard Feature Flags }
 
@@ -533,7 +573,7 @@ const
   ECYRIX_BIT_31     = DWORD($80000000); // Reserved, do not count on value
 
 const
-  IntelCacheDescription: array [0..13] of TCacheInfo = (
+  IntelCacheDescription: array [0..48] of TCacheInfo = (
     (D: $01; I: RsIntelCacheDescr01),
     (D: $02; I: RsIntelCacheDescr02),
     (D: $03; I: RsIntelCacheDescr03),
@@ -542,12 +582,47 @@ const
     (D: $08; I: RsIntelCacheDescr08),
     (D: $0A; I: RsIntelCacheDescr0A),
     (D: $0C; I: RsIntelCacheDescr0C),
+    (D: $22; I: RsIntelCacheDescr22),
+    (D: $23; I: RsIntelCacheDescr23),
+    (D: $25; I: RsIntelCacheDescr25),
+    (D: $29; I: RsIntelCacheDescr29),
+    (D: $2C; I: RsIntelCacheDescr2C),
+    (D: $30; I: RsIntelCacheDescr30),
     (D: $40; I: RsIntelCacheDescr40),
     (D: $41; I: RsIntelCacheDescr41),
     (D: $42; I: RsIntelCacheDescr42),
     (D: $43; I: RsIntelCacheDescr43),
     (D: $44; I: RsIntelCacheDescr44),
-    (D: $45; I: RsIntelCacheDescr45));
+    (D: $45; I: RsIntelCacheDescr45),
+    (D: $50; I: RsIntelCacheDescr50),
+    (D: $51; I: RsIntelCacheDescr51),
+    (D: $52; I: RsIntelCacheDescr52),
+    (D: $5B; I: RsIntelCacheDescr5B),
+    (D: $5C; I: RsIntelCacheDescr5C),
+    (D: $5D; I: RsIntelCacheDescr5D),
+    (D: $60; I: RsIntelCacheDescr60),
+    (D: $66; I: RsIntelCacheDescr66),
+    (D: $67; I: RsIntelCacheDescr67),
+    (D: $68; I: RsIntelCacheDescr68),
+    (D: $70; I: RsIntelCacheDescr70),
+    (D: $71; I: RsIntelCacheDescr71),
+    (D: $72; I: RsIntelCacheDescr72),
+    (D: $79; I: RsIntelCacheDescr79),
+    (D: $7A; I: RsIntelCacheDescr7A),
+    (D: $7B; I: RsIntelCacheDescr7B),
+    (D: $7C; I: RsIntelCacheDescr7C),
+    (D: $7D; I: RsIntelCacheDescr7D),
+    (D: $7F; I: RsIntelCacheDescr7F),
+    (D: $82; I: RsIntelCacheDescr82),
+    (D: $83; I: RsIntelCacheDescr83),
+    (D: $84; I: RsIntelCacheDescr84),
+    (D: $85; I: RsIntelCacheDescr85),
+    (D: $86; I: RsIntelCacheDescr86),
+    (D: $87; I: RsIntelCacheDescr87),
+    (D: $B0; I: RsIntelCacheDescrB0),
+    (D: $B3; I: RsIntelCacheDescrB3),
+    (D: $F0; I: RsIntelCacheDescrF0),
+    (D: $F1; I: RsIntelCacheDescrF1) );
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
@@ -2826,6 +2901,9 @@ begin
         Result := IntelCacheDescription[I].I;
         Break;
       end;
+  // (outchy) added a return value for unknow D value
+  if Result = '' then
+    Result := Format(RsIntelUnknownCache,[D]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2841,6 +2919,17 @@ begin
       GetCpuSpeed(CpuInfo.FrequencyInfo);
     {$ENDIF MSWINDOWS}
     CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
+    if (CpuInfo.Features and SSE_FLAG) = SSE_FLAG then
+      if (CpuInfo.Features and SSE2_FLAG) = SSE2_FLAG then
+        if    (CpuInfo.CpuType = CPU_TYPE_INTEL)
+          and ((CpuInfo.IntelSpecific.ExFeatures and SSE3_EFLAG) = SSE3_EFLAG) then
+          CpuInfo.SSE := 3
+        else
+          CpuInfo.SSE := 2
+      else
+        CpuInfo.SSE := 1
+    else
+      CpuInfo.SSE := 0;
   end;
 end;
 
@@ -3313,6 +3402,7 @@ begin
         DB      0FH
         DB      0A2H
         MOV     [CPUInfo.Features], EDX
+        MOV     [CPUInfo.IntelSpecific.ExFeatures], ECX  // (outchy) added extended features for intel processors
         MOV     [CPUInfo.IntelSpecific.BrandID], BL 
         MOV     ECX, EAX
         AND     EAX, 3000H
@@ -4122,6 +4212,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.35  2004/12/19 20:16:31  rrossmair
+// - added TCpuInfo improvements by Florent Ouchet
+//
 // Revision 1.34  2004/12/07 02:40:07  rrossmair
 // - added GetVolumeFileSystemFlags function
 //
