@@ -2626,7 +2626,9 @@ begin
   begin
     NewExt[1] := '~';
     NewExt := '.' + NewExt
-  end;
+  end
+  else
+    NewExt := '.~';
   Result := ChangeFileExt(FileName, NewExt);
 end;
 
@@ -5430,6 +5432,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.40  2005/03/01 20:16:17  rrossmair
+// - fixed issue #0002696: GetBackupFileName() fails when used with extensionless filename
+//
 // Revision 1.39  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
