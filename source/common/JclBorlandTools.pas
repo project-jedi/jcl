@@ -1045,14 +1045,19 @@ begin
 end;
 
 function TJclBorRADToolIdePackages.RemovePackage(const FileName: string): Boolean;
+var
+  I: Integer;
 begin
-  Result := Installation.ConfigData.ValueExists(KnownPackagesKeyName, FileName);
-  if Result then
-  begin
-    RemoveDisabled(FileName);
-    Installation.ConfigData.DeleteKey(KnownPackagesKeyName, FileName);
-    ReadPackages;
-  end;
+  Result := False;
+  for I := 0 to FKnownPackages.Count - 1 do
+    if AnsiSameText(FileName, PackageEntryToFileName(FKnownPackages.Names[I])) then
+    begin
+      RemoveDisabled(FileName);
+      Installation.ConfigData.DeleteKey(KnownPackagesKeyName, FKnownPackages.Names[I]);
+      ReadPackages;
+      Result := True;
+      Break;
+    end;
 end;
 
 //=== { TJclBorlandCommandLineTool } =========================================
@@ -2405,6 +2410,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.38  2005/03/14 04:03:21  rrossmair
+// - fixed TJclBorRADToolIdePackages.RemovePackage
+//
 // Revision 1.37  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
