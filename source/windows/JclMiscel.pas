@@ -73,6 +73,10 @@ procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: st
 procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
   const Environment: PChar);
 
+{$IFDEF SUPPORTS_EXTSYM}
+  {$EXTERNALSYM ExitWindows}
+{$ENDIF}
+
 implementation
 
 uses
