@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: January 21, 2002                                              }
+{ Last modified: January 22, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -692,7 +692,8 @@ function NetBios(P: PNCB): Byte;
 const
   IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   = 13; // Delay load import descriptors
   IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR = 14; // COM run-time descriptor
-  RT_HTML = MakeIntResource(23);
+  RT_HTML     = MakeIntResource(23);
+  RT_MANIFEST = MakeIntResource(24);
 
 type
 
@@ -1218,6 +1219,7 @@ type
   {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT}
   {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR}
   {$EXTERNALSYM RT_HTML}
+  {$EXTERNALSYM RT_MANIFEST}
 {$IFNDEF DELPHI5_UP}
   {$EXTERNALSYM _IMAGE_EXPORT_DIRECTORY}
   {$EXTERNALSYM IMAGE_EXPORT_DIRECTORY}
