@@ -98,46 +98,46 @@ procedure SphericToCartesian(const Rho, Theta, Phi: Float; var X, Y, Z: Float);
 
 { Length conversion }
 
-function CmToInch(const nCm: Float): Float;
-function InchToCm(const nInch: Float): Float;
-function FeetToMeter(const nFeet: Float): Float;
-function MeterToFeet(const nMeter: Float): Float;
-function YardToMeter(const nYard: Float): Float;
-function MeterToYard(const nMeter: Float): Float;
-function NmToKm(const nNm: Float): Float;
-function KmToNm(const nKm: Float): Float;
-function KmToSm(const nKm: Float): Float;
-function SmToKm(const nSm: Float): Float;
+function CmToInch(const Cm: Float): Float;
+function InchToCm(const Inch: Float): Float;
+function FeetToMeter(const Feet: Float): Float;
+function MeterToFeet(const Meter: Float): Float;
+function YardToMeter(const Yard: Float): Float;
+function MeterToYard(const Meter: Float): Float;
+function NmToKm(const Nm: Float): Float;
+function KmToNm(const Km: Float): Float;
+function KmToSm(const Km: Float): Float;
+function SmToKm(const Sm: Float): Float;
 
 { Volume conversion }
 
-function LiterToGalUs(const nLiter: Float): Float;
-function GalUsToLiter(const nGalUs: Float): Float;
-function GalUsToGalCan(const nGalUs: Float): Float;
-function GalCanToGalUs(const nGalCan: Float): Float;
-function GalUsToGalUk(const nGalUs: Float): Float;
-function GalUkToGalUs(const nGalUk: Float): Float;
+function LiterToGalUs(const Liter: Float): Float;
+function GalUsToLiter(const GalUs: Float): Float;
+function GalUsToGalCan(const GalUs: Float): Float;
+function GalCanToGalUs(const GalCan: Float): Float;
+function GalUsToGalUk(const GalUs: Float): Float;
+function GalUkToGalUs(const GalUk: Float): Float;
 
 { Mass conversion }
 
-function KgToLb(const nKg: Float): Float;
-function LbToKg(const nLb: Float): Float;
-function KgToOz(const nKg: Float): Float;
-function OzToKg(const nOz: Float): Float;
-function CwtUsToKg(const nCwt: Float): Float;
-function CwtUkToKg(const nCwt: Float): Float;
-function KaratToKg(const nKarat: Float): Float;
-function KgToCwtUs(const nKg: Float): Float;
-function KgToCwtUk(const nKg: Float): Float;
-function KgToKarat(const nKg: Float): Float;
-function KgToSton(const nKg: Float): Float;
-function KgToLton(const nKg: Float): Float;
-function StonToKg(const nSTon: Float): Float;
-function LtonToKg(const nLton: Float): Float;
-function QrUsToKg(const nQr: Float): Float;
-function QrUkToKg(const nQr: Float): Float;
-function KgToQrUs(const nKg: Float): Float;
-function KgToQrUk(const nKg: Float): Float;
+function KgToLb(const Kg: Float): Float;
+function LbToKg(const Lb: Float): Float;
+function KgToOz(const Kg: Float): Float;
+function OzToKg(const Oz: Float): Float;
+function CwtUsToKg(const Cwt: Float): Float;
+function CwtUkToKg(const Cwt: Float): Float;
+function KaratToKg(const Karat: Float): Float;
+function KgToCwtUs(const Kg: Float): Float;
+function KgToCwtUk(const Kg: Float): Float;
+function KgToKarat(const Kg: Float): Float;
+function KgToSton(const Kg: Float): Float;
+function KgToLton(const Kg: Float): Float;
+function StonToKg(const STon: Float): Float;
+function LtonToKg(const Lton: Float): Float;
+function QrUsToKg(const Qr: Float): Float;
+function QrUkToKg(const Qr: Float): Float;
+function KgToQrUs(const Kg: Float): Float;
+function KgToQrUk(const Kg: Float): Float;
 
 { Pressure conversion }
 
@@ -380,244 +380,244 @@ end;
 // Length conversion
 //==============================================================================
 
-function CmToInch(const nCm: Float): Float;
+function CmToInch(const Cm: Float): Float;
 begin
-  Result := nCM / 2.54;
+  Result := Cm / 2.54;
 end;
 
 //------------------------------------------------------------------------------
 
-function InchToCm(const nInch: Float): Float;
+function InchToCm(const Inch: Float): Float;
 begin
-  Result := nInch * 2.54;
+  Result := Inch * 2.54;
 end;
 
 //------------------------------------------------------------------------------
 
-function FeetToMeter(const nFeet: Float): Float;
+function FeetToMeter(const Feet: Float): Float;
 begin
-  Result := nFeet * 0.3048;
+  Result := Feet * 0.3048;
 end;
 
 //------------------------------------------------------------------------------
 
-function MeterToFeet(const nMeter: Float): Float;
+function MeterToFeet(const Meter: Float): Float;
 begin
-  Result := nMeter / 0.3048;
+  Result := Meter / 0.3048;
 end;
 
 //------------------------------------------------------------------------------
 
-function YardToMeter(const nYard: Float): Float;
+function YardToMeter(const Yard: Float): Float;
 begin
-  Result := nYard * 0.9144;
+  Result := Yard * 0.9144;
 end;
 
 //------------------------------------------------------------------------------
 
-function MeterToYard(const nMeter: Float): Float;
+function MeterToYard(const Meter: Float): Float;
 begin
-  Result := nMeter / 0.9144;
+  Result := Meter / 0.9144;
 end;
 
 //------------------------------------------------------------------------------
 
-function NmToKm(const nNm: Float): Float;
+function NmToKm(const Nm: Float): Float;
 begin
-  Result := nNm * 1.852;
+  Result := Nm * 1.852;
 end;
 
 //------------------------------------------------------------------------------
 
-function KmToNm(const nKm: Float): Float;
+function KmToNm(const Km: Float): Float;
 begin
-  Result := nKm / 1.852;
+  Result := Km / 1.852;
 end;
 
 //------------------------------------------------------------------------------
 
-function KmToSm(const nKm: Float): Float;
+function KmToSm(const Km: Float): Float;
 begin
-  Result := nKm / 1.609344;
+  Result := Km / 1.609344;
 end;
 
 //------------------------------------------------------------------------------
 
-function SmToKm(const nSm: Float): Float;
+function SmToKm(const Sm: Float): Float;
 begin
-  Result := nSm * 1.609344;
+  Result := Sm * 1.609344;
 end;
 
 //==============================================================================
 // Volume conversion
 //==============================================================================
 
-function LiterToGalUs(const nLiter: Float): Float;
+function LiterToGalUs(const Liter: Float): Float;
 begin
-  Result := nLiter / 3.785411784;
+  Result := Liter / 3.785411784;
 end;
 
 //------------------------------------------------------------------------------
 
-function GalUsToLiter(const nGalUs: Float): Float;
+function GalUsToLiter(const GalUs: Float): Float;
 begin
-  Result := nGalUs * 3.785411784;
+  Result := GalUs * 3.785411784;
 end;
 
 //------------------------------------------------------------------------------
 
-function GalUsToGalCan(const nGalUs: Float): Float;
+function GalUsToGalCan(const GalUs: Float): Float;
 begin
-  Result := nGalUs / 1.2009499255;
+  Result := GalUs / 1.2009499255;
 end;
 
 //------------------------------------------------------------------------------
 
-function GalCanToGalUs(const nGalCan: Float): Float;
+function GalCanToGalUs(const GalCan: Float): Float;
 begin
-  Result := nGalCan * 1.2009499255;
+  Result := GalCan * 1.2009499255;
 end;
 
 //------------------------------------------------------------------------------
 
-function GalUsToGalUk(const nGalUs: Float): Float;
+function GalUsToGalUk(const GalUs: Float): Float;
 begin
-  Result := nGalUs / 1.20095045385;
+  Result := GalUs / 1.20095045385;
 end;
 
 //------------------------------------------------------------------------------
 
-function GalUkToGalUs(const nGalUk: Float): Float;
+function GalUkToGalUs(const GalUk: Float): Float;
 begin
-  Result := nGalUk * 1.20095045385;
+  Result := GalUk * 1.20095045385;
 end;
 
 //==============================================================================
 // Mass conversion
 //==============================================================================
 
-function KgToLb(const nKg: Float): Float;
+function KgToLb(const Kg: Float): Float;
 begin
-  Result := nKg * 0.45359237;
+  Result := Kg * 0.45359237;
 end;
 
 //------------------------------------------------------------------------------
 
-function LbToKg(const nLb: Float): Float;
+function LbToKg(const Lb: Float): Float;
 begin
-  Result := nLb / 0.45359237;
+  Result := Lb / 0.45359237;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToOz(const nKg: Float): Float;
+function KgToOz(const Kg: Float): Float;
 begin
-  Result := nKg * 35.2739619496;
+  Result := Kg * 35.2739619496;
 end;
 
 //------------------------------------------------------------------------------
 
-function OzToKg(const nOz: Float): Float;
+function OzToKg(const Oz: Float): Float;
 begin
-  Result := nOz / 35.2739619496;
+  Result := Oz / 35.2739619496;
 end;
 
 //------------------------------------------------------------------------------
 
-function QrUsToKg(const nQr : Float) : Float;
+function QrUsToKg(const Qr : Float) : Float;
 begin
-  Result := nQr * 11.34;
+  Result := Qr * 11.34;
 end;
 
 //------------------------------------------------------------------------------
 
-function QrUkToKg(const nQr : Float) : Float;
+function QrUkToKg(const Qr : Float) : Float;
 begin
-  Result := nQr * 12.7;
+  Result := Qr * 12.7;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToQrUs(const nKg : Float) : Float;
+function KgToQrUs(const Kg : Float) : Float;
 begin
-  Result := nKg / 11.34;
+  Result := Kg / 11.34;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToQrUk(const nKg : Float) : Float;
+function KgToQrUk(const Kg : Float) : Float;
 begin
-  Result := nKg / 12.7;
+  Result := Kg / 12.7;
 end;
 
 //------------------------------------------------------------------------------
 
-function CwtUsToKg(const nCwt : Float) : Float;
+function CwtUsToKg(const Cwt : Float) : Float;
 begin
-  Result := nCwt * 45.359;
+  Result := Cwt * 45.359;
 end;
 
 //------------------------------------------------------------------------------
 
-function CwtUkToKg(const nCwt : Float) : Float;
+function CwtUkToKg(const Cwt : Float) : Float;
 begin
-  Result := nCwt * 50.802;
+  Result := Cwt * 50.802;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToCwtUs(const nKg : Float) : Float;
+function KgToCwtUs(const Kg : Float) : Float;
 begin
-  Result := nKg / 45.359;
+  Result := Kg / 45.359;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToCwtUk(const nKg : Float) : Float;
+function KgToCwtUk(const Kg : Float) : Float;
 begin
-  Result := nKg / 50.802;
+  Result := Kg / 50.802;
 end;
 
 //------------------------------------------------------------------------------
 
-function LtonToKg(const nLton : Float) : Float;
+function LtonToKg(const Lton : Float) : Float;
 begin
-  Result := nLton * 1016.05;
+  Result := Lton * 1016.05;
 end;
 
 //------------------------------------------------------------------------------
 
-function StonToKg(const nSton : Float) : Float;
+function StonToKg(const Ston : Float) : Float;
 begin
-  Result := nSton * 907.185;
+  Result := Ston * 907.185;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToLton(const nKg : Float) : Float;
+function KgToLton(const Kg : Float) : Float;
 begin
-  Result := nKg / 1016.05;
+  Result := Kg / 1016.05;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToSton(const nKg : Float) : Float;
+function KgToSton(const Kg : Float) : Float;
 begin
-  Result := nKg / 907.185;
+  Result := Kg / 907.185;
 end;
 
 //------------------------------------------------------------------------------
 
-function KgToKarat(const nKg : Float) : Float;
+function KgToKarat(const Kg : Float) : Float;
 begin
-  Result := nKg / 0.0002;
+  Result := Kg / 0.0002;
 end;
 
 //------------------------------------------------------------------------------
 
-function KaratToKg(const nKarat : Float) : Float;
+function KaratToKg(const Karat : Float) : Float;
 begin
-  Result := nKarat * 0.0002;
+  Result := Karat * 0.0002;
 end;
 
 
