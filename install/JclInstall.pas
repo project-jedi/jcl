@@ -529,12 +529,6 @@ begin
   Tool.WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
   try
     {$IFDEF KYLIX}
-    Installation := Tool.DelphiInstallations.InstallationFromVersion[1];
-    if Assigned(Installation) and Installation.Valid then
-      KylixInstall;
-    Installation := Tool.DelphiInstallations.InstallationFromVersion[2];
-    if Assigned(Installation) and Installation.Valid then
-      KylixInstall;
     Installation := Tool.DelphiInstallations.InstallationFromVersion[3];
     if Assigned(Installation) and Installation.Valid then
       KylixInstall;
