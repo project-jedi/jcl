@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: September 22, 2003                                                                    }
+{ Last modified: September 27, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -107,7 +107,7 @@ function PathCanonicalize(const Path: string): string;
 function PathCommonPrefix(const Path1, Path2: string): Integer;
 {$IFDEF MSWINDOWS}
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
-  CmpFmt: TCompactPath): string; overload;
+  CmpFmt: TCompactPath): string;
 {$ENDIF MSWINDOWS}
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
@@ -953,50 +953,6 @@ end;
 //==================================================================================================
 // TJclFileMappingView
 //==================================================================================================
-
-{$IFNDEF MSWINDOWS} // Helper functions, if JclSysInfo not available
-
-//--------------------------------------------------------------------------------------------------
-
-var
-  AllocGranularity: Cardinal = 0;
-
-procedure InitAllocGranularity;
-var
-  SystemInfo: TSystemInfo;
-begin
-  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
-  GetSystemInfo(SystemInfo);
-  AllocGranularity := SystemInfo.dwAllocationGranularity;
-end;
-
-procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
-begin
-  if AllocGranularity = 0 then
-    InitAllocGranularity;
-  if (Value mod AllocGranularity) <> 0 then
-    if Up then
-      Value := ((Value div AllocGranularity) + 1) * AllocGranularity
-    else
-      Value := (Value div AllocGranularity) * AllocGranularity;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
-begin
-  if AllocGranularity = 0 then
-    InitAllocGranularity;
-  if (Cardinal(Value) mod AllocGranularity) <> 0 then
-    if Up then
-      Value := Pointer(((Cardinal(Value) div AllocGranularity) + 1) * AllocGranularity)
-    else
-      Value := Pointer((Cardinal(Value) div AllocGranularity) * AllocGranularity);
-end;
-
-{$ENDIF not def MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMappingView.Create(const FileMap: TJclCustomFileMapping;
   Access, Size: Cardinal; ViewOffset: Int64);
