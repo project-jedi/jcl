@@ -1,31 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclRTTI.pas.                                            }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Various RunTime Type Information routines. Includes retrieving RTTI          }
-{ information for different types, declaring/generating new types, data        }
-{ conversion to user displayable values and 'is'/'as' operator hooking.        }
-{                                                                              }
-{ Unit owner: Marcel Bestebroer                                                }
-{ Last modified: July 21, 2001                                                 }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclRTTI.pas.                                                                }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Various RunTime Type Information routines. Includes retrieving RTTI information for different    }
+{ types, declaring/generating new types, data conversion to user displayable values and 'is'/'as'  }
+{ operator hooking.                                                                                }
+{                                                                                                  }
+{ Unit owner: Marcel Bestebroer                                                                    }
+{ Last modified: July 21, 2001                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclRTTI;
 
@@ -40,9 +39,9 @@ uses
 type
   EJclRTTI = class (EJclError);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TypeInfo writing
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   IJclInfoWriter = interface
@@ -50,7 +49,7 @@ type
     function GetWrap: Integer;
     procedure SetWrap(const Value: Integer);
     procedure Write(const S: string);
-    procedure Writeln(const S: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
+    procedure Writeln(const S: string = '');
     procedure Indent;
     procedure Outdent;
     property Wrap: Integer read GetWrap write SetWrap;
@@ -71,12 +70,12 @@ type
     property CurLine: string read FCurLine write FCurLine;
     property IndentLevel: Integer read FIndentLevel write FIndentLevel;
   public
-    constructor Create(const AWrap: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 80 {$ENDIF});
+    constructor Create(const AWrap: Integer = 80);
     destructor Destroy; override;
     procedure Indent;
     procedure Outdent;
     procedure Write(const S: string);
-    procedure Writeln(const S: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
+    procedure Writeln(const S: string = '');
 
     property Wrap: Integer read GetWrap write SetWrap;
   end;
@@ -87,15 +86,14 @@ type
   protected
     procedure PrimWrite(const S: string); override;
   public
-    constructor Create(const AStrings: TStrings;
-      const AWrap: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 80 {$ENDIF});
+    constructor Create(const AStrings: TStrings; const AWrap: Integer = 80);
 
     property Strings: TStrings read FStrings;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TypeInfo retreival
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   IJclBaseInfo = interface
@@ -316,9 +314,9 @@ type
 
 function JclTypeInfo(const ATypeInfo: PTypeInfo): IJclTypeInfo;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Enumeration types
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   PREFIX_CUT_LOWERCASE = 255;
@@ -334,49 +332,44 @@ function JclGenerateEnumTypeBasedOn(const TypeName: ShortString;
 function JclGenerateSubRange(const BaseType: PTypeInfo; const TypeName: string;
   const MinValue, MaxValue: Integer): PTypeInfo;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Integer types
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER5_UP}
 function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
 function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
 {$ENDIF COMPILER5_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Sets
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-function JclSetToList(const TypeInfo: PTypeInfo; const Value;
-  const WantBrackets: Boolean; const WantRanges: Boolean;
-  const Strings: TStrings): string;
+function JclSetToList(const TypeInfo: PTypeInfo; const Value; const WantBrackets: Boolean;
+  const WantRanges: Boolean; const Strings: TStrings): string;
 function JclSetToStr(const TypeInfo: PTypeInfo; const Value;
-  const WantBrackets: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
-  const WantRanges: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): string;
-procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar;
-  const Value: string);
-procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar;
-  const Value: Integer);
+  const WantBrackets: Boolean = False; const WantRanges: Boolean = False): string;
+procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar; const Value: string);
+procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar; const Value: Integer);
 function JclSetToInt(const TypeInfo: PTypeInfo; const SetVar): Integer;
-function JclGenerateSetType(const BaseType: PTypeInfo;
-  const TypeName: ShortString): PTypeInfo;
+function JclGenerateSetType(const BaseType: PTypeInfo; const TypeName: ShortString): PTypeInfo;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // GUID
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclGUIDToString(const GUID: TGUID): string;
 function JclStringToGUID(const S: string): TGUID;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // User generated type info managment
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RemoveTypeInfo(const TypeInfo: PTypeInfo);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Is/As hooking
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclIsFunc = function(const AnObj: TObject; const AClass: TClass): Boolean;
@@ -399,23 +392,23 @@ function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: DWORD;
   var flOldProtect: DWORD): BOOL; stdcall; external 'kernel32.dll' name 'VirtualProtect';
 {$ENDIF COMPILER5_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclInfoWriter
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclInfoWriter.GetWrap: Integer;
 begin
   Result := FWrap;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.SetWrap(const Value: Integer);
 begin
   FWrap := Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.DoWrap;
 var
@@ -460,7 +453,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.DoWriteCompleteLines;
 var
@@ -474,7 +467,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclInfoWriter.Create(const AWrap: Integer);
 begin
@@ -482,7 +475,7 @@ begin
   Wrap := AWrap;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclInfoWriter.Destroy;
 begin
@@ -491,21 +484,21 @@ begin
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.Indent;
 begin
   IndentLevel := IndentLevel + 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.Outdent;
 begin
   IndentLevel := IndentLevel - 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.Write(const S: string);
 begin
@@ -514,23 +507,23 @@ begin
   DoWriteCompleteLines;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoWriter.Writeln(const S: string);
 begin
   Write(S + AnsiCrLf);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclInfoStringsWriter
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInfoStringsWriter.PrimWrite(const S: string);
 begin
   Strings.Add(S);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclInfoStringsWriter.Create(const AStrings: TStrings;
   const AWrap: Integer);
@@ -539,9 +532,9 @@ begin
   FStrings := AStrings;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclTypeInfo = class(TInterfacedObject, IJclTypeInfo)
@@ -564,35 +557,35 @@ type
     property TypeKind: TTypeKind read GetTypeKind;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclTypeInfo.GetName: string;
 begin
   Result := TypeInfo.Name;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclTypeInfo.GetTypeData: PTypeData;
 begin
   Result := FTypeData;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclTypeInfo.GetTypeInfo: PTypeInfo;
 begin
   Result := FTypeInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclTypeInfo.GetTypeKind: TTypeKind;
 begin
   Result := TypeInfo.Kind
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -602,14 +595,14 @@ begin
   Dest.Writeln(Format(RsRTTITypeInfoAt, [TypeInfo]));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
   Dest.Write('// Declaration for ''' + Name + ''' not supported.');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclTypeInfo.Create(const ATypeInfo: PTypeInfo);
 begin
@@ -618,9 +611,9 @@ begin
   FTypeData := TypInfo.GetTypeData(ATypeInfo);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclOrdinalTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclOrdinalTypeInfo = class(TJclTypeInfo, IJclOrdinalTypeInfo)
@@ -632,14 +625,14 @@ type
     property OrdinalType: TOrdType read GetOrdinalType;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclOrdinalTypeInfo.GetOrdinalType: TOrdType;
 begin
   Result := TypeData.OrdType;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclOrdinalTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -648,9 +641,9 @@ begin
     System.TypeInfo(TOrdType), TypeData.OrdType));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclOrdinalRangeTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclOrdinalRangeTypeInfo = class(TJclOrdinalTypeInfo,
@@ -666,7 +659,7 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclOrdinalRangeTypeInfo.GetMinValue: Int64;
 begin
@@ -678,7 +671,7 @@ begin
     Result := TypeData.MinValue;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclOrdinalRangeTypeInfo.GetMaxValue: Int64;
 begin
@@ -690,7 +683,7 @@ begin
     Result := TypeData.MaxValue;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclOrdinalRangeTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -699,7 +692,7 @@ begin
   Dest.Writeln(RsRTTIMaxValue + IntToStr(MaxValue));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclOrdinalRangeTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
@@ -721,9 +714,9 @@ begin
   Dest.Writeln('');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclEnumerationTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclEnumerationTypeInfo = class(TJclOrdinalRangeTypeInfo,
@@ -746,7 +739,7 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEnumerationTypeInfo.GetBaseType: IJclEnumerationTypeInfo;
 begin
@@ -756,7 +749,7 @@ begin
     Result := TJclEnumerationTypeInfo.Create(TypeData.BaseType^);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEnumerationTypeInfo.GetNames(const I: Integer): string;
 var
@@ -775,7 +768,7 @@ begin
   Result := P^;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER6_UP}
 
@@ -801,7 +794,7 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEnumerationTypeInfo.IndexOfName(const Name: string): Integer;
 begin
@@ -812,7 +805,7 @@ begin
     Result := -1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEnumerationTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 var
@@ -833,7 +826,7 @@ begin
   Dest.Writeln(')');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEnumerationTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
@@ -863,9 +856,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclSetTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclSetTypeInfo = class(TJclOrdinalTypeInfo, IJclSetTypeInfo)
@@ -880,14 +873,14 @@ type
     property BaseType: IJclOrdinalTypeInfo read GetBaseType;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSetTypeInfo.GetBaseType: IJclOrdinalTypeInfo;
 begin
   Result := JclTypeInfo(TypeData.CompType^) as IJclOrdinalTypeInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSetTypeInfo.GetAsList(const Value; const WantRanges: Boolean;
   const Strings: TStrings);
@@ -955,7 +948,7 @@ begin
     AddRange;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSetTypeInfo.SetAsList(out Value; const Strings: TStrings);
 var
@@ -1020,7 +1013,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSetTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -1034,7 +1027,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSetTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
@@ -1062,9 +1055,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclFloatTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclFloatTypeInfo = class(TJclTypeInfo, IJclFloatTypeInfo)
@@ -1076,14 +1069,14 @@ type
     property FloatType: TFloatType read GetFloatType;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFloatTypeInfo.GetFloatType: TFloatType;
 begin
   Result := TypeData.FloatType;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFloatTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -1092,7 +1085,7 @@ begin
     System.TypeInfo(TFloatType), TypeData.FloatType));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFloatTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
@@ -1104,9 +1097,9 @@ begin
   Dest.Writeln(Name + ' = type ' + S + ';');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclStringTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclStringTypeInfo = class(TJclTypeInfo, IJclStringTypeInfo)
@@ -1118,14 +1111,14 @@ type
     property MaxLength: Integer read GetMaxLength;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclStringTypeInfo.GetMaxLength: Integer;
 begin
   Result := TypeData.MaxLength;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclStringTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -1133,7 +1126,7 @@ begin
   Dest.Writeln(RsRTTIMaxLen + IntToStr(MaxLength));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclStringTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
@@ -1144,9 +1137,9 @@ begin
     Dest.Writeln(';');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclPropInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclPropInfo = class(TInterfacedObject, IJclPropInfo)
@@ -1193,70 +1186,70 @@ type
     property Name: string read GetName;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetPropInfo: PPropInfo;
 begin
   Result := FPropInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetPropType: IJclTypeInfo;
 begin
   Result := JclTypeInfo(PropInfo.PropType^);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetReader: Pointer;
 begin
   Result := PropInfo.GetProc;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetWriter: Pointer;
 begin
   Result := PropInfo.SetProc;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetStoredProc: Pointer;
 begin
   Result := PropInfo.StoredProc;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetIndex: Integer;
 begin
   Result := PropInfo.Index;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetDefault: Longint;
 begin
   Result := PropInfo.Default;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetNameIndex: Smallint;
 begin
   Result := PropInfo.NameIndex;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetName: string;
 begin
   Result := PropInfo.Name;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetSpecKind(const Value: Integer): TJclPropSpecKind;
 var
@@ -1279,7 +1272,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetSpecValue(const Value: Integer): Integer;
 begin
@@ -1295,49 +1288,49 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetReaderType: TJclPropSpecKind;
 begin
   Result := GetSpecKind(Integer(Reader));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetWriterType: TJclPropSpecKind;
 begin
   Result := GetSpecKind(Integer(Writer));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetStoredType: TJclPropSpecKind;
 begin
   Result := GetSpecKind(Integer(StoredProc));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetReaderValue: Integer;
 begin
   Result := GetSpecValue(Integer(Reader));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetWriterValue: Integer;
 begin
   Result := GetSpecValue(Integer(Writer));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.GetStoredValue: Integer;
 begin
   Result := GetSpecValue(Integer(StoredProc));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPropInfo.Create(const APropInfo: PPropInfo);
 begin
@@ -1345,30 +1338,30 @@ begin
   FPropInfo := APropInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.IsStored(const AInstance: TObject): Boolean;
 begin
   Result := IsStoredProp(AInstance, FPropInfo);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.HasDefault: Boolean;
 begin
   Result := Longword(Default) <> $80000000;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPropInfo.HasIndex: Boolean;
 begin
   Result := Longword(Index) <> $80000000;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclClassTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclClassTypeInfo = class(TJclTypeInfo, IJclClassTypeInfo)
@@ -1392,14 +1385,14 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclClassTypeInfo.GetClassRef: TClass;
 begin
   Result := TypeData.ClassType;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclClassTypeInfo.GetParent: IJclClassTypeInfo;
 begin
@@ -1409,14 +1402,14 @@ begin
     Result := nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclClassTypeInfo.GetTotalPropertyCount: Integer;
 begin
   Result := TypeData.PropCount;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclClassTypeInfo.GetPropertyCount: Integer;
 var
@@ -1427,7 +1420,7 @@ begin
   Result := PropData.PropCount;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclClassTypeInfo.GetProperties(const PropIdx: Integer): IJclPropInfo;
 var
@@ -1459,14 +1452,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclClassTypeInfo.GetUnitName: string;
 begin
   Result := TypeData^.UnitName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClassTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 var
@@ -1549,7 +1542,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclClassTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
@@ -1631,9 +1624,9 @@ begin
   Dest.Writeln('end;');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclEventParamInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclEventParamInfo = class(TInterfacedObject, IJclEventParamInfo)
@@ -1655,14 +1648,14 @@ type
     property Param: Pointer read GetParam;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventParamInfo.GetFlags: TParamFlags;
 begin
   Result := TParamFlags(PByte(Param)^);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventParamInfo.GetName: string;
 var
@@ -1673,14 +1666,14 @@ begin
   Result := PName^;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventParamInfo.GetRecSize: Integer;
 begin
   Result := 3 + Length(Name) + Length(TypeName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventParamInfo.GetTypeName: string;
 var
@@ -1692,14 +1685,14 @@ begin
   Result := PName^;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventParamInfo.GetParam: Pointer;
 begin
   Result := FParam;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclEventParamInfo.Create(const AParam: Pointer);
 begin
@@ -1707,9 +1700,9 @@ begin
   FParam := AParam;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclEventTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclEventTypeInfo = class(TJclTypeInfo, IJclEventTypeInfo)
@@ -1728,21 +1721,21 @@ type
     property ResultTypeName: string read GetResultTypeName;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventTypeInfo.GetMethodKind: TMethodKind;
 begin
   Result := TypeData.MethodKind;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventTypeInfo.GetParameterCount: Integer;
 begin
   Result := TypeData.ParamCount;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventTypeInfo.GetParameters(
   const ParamIdx: Integer): IJclEventParamInfo;
@@ -1761,7 +1754,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEventTypeInfo.GetResultTypeName: string;
 var
@@ -1783,7 +1776,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEventTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 var
@@ -1815,7 +1808,7 @@ begin
     Dest.Writeln(RsRTTIReturnType + ResultTypeName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEventTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 var
@@ -1861,9 +1854,9 @@ begin
   Dest.Writeln(' of object;');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclInterfaceTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclInterfaceTypeInfo = class(TJclTypeInfo, IJclInterfaceTypeInfo)
@@ -1887,7 +1880,7 @@ type
     property UnitName: string read GetUnitName;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclInterfaceTypeInfo.GetParent: IJclInterfaceTypeInfo;
 begin
@@ -1897,14 +1890,14 @@ begin
     Result := nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclInterfaceTypeInfo.GetFlags: TIntfFlagsBase;
 begin
   Result := TypeData.IntfFlags;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   NullGUID: TGUID = '{00000000-0000-0000-0000-000000000000}';
@@ -1917,7 +1910,7 @@ begin
     Result := NullGUID;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER6_UP}
 function TJclInterfaceTypeInfo.GetPropertyCount: Integer;
@@ -1930,14 +1923,14 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclInterfaceTypeInfo.GetUnitName: string;
 begin
   Result := TypeData.IntfUnit;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInterfaceTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 var
@@ -1957,7 +1950,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInterfaceTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
@@ -1980,9 +1973,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclInt64TypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclInt64TypeInfo = class(TJclTypeInfo, IJclInt64TypeInfo)
@@ -1996,21 +1989,21 @@ type
     property MaxValue: Int64 read GetMaxValue;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclInt64TypeInfo.GetMinValue: Int64;
 begin
   Result := TypeData.MinInt64Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclInt64TypeInfo.GetMaxValue: Int64;
 begin
   Result := TypeData.MaxInt64Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInt64TypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -2019,7 +2012,7 @@ begin
   Dest.Writeln(RsRTTIMaxValue + IntToStr(MaxValue));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclInt64TypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
@@ -2028,9 +2021,9 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclDynArrayTypeInfo
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclDynArrayTypeInfo = class(TJclTypeInfo, IJclDynArrayTypeInfo)
@@ -2056,7 +2049,7 @@ begin
   Result := TypeData.elSize;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDynArrayTypeInfo.GetElementType: IJclTypeInfo;
 begin
@@ -2071,28 +2064,28 @@ begin
     Result := JclTypeInfo(TypeData.elType^);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDynArrayTypeInfo.GetElementsNeedCleanup: Boolean;
 begin
   Result := TypeData.elType <> nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDynArrayTypeInfo.GetVarType: Integer;
 begin
   Result := TypeData.varType;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclDynArrayTypeInfo.GetUnitName: string;
 begin
   Result := TypeData.DynUnitName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDynArrayTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
@@ -2122,7 +2115,7 @@ begin
   Dest.Writeln(RsRTTIUnitName + UnitName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDynArrayTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
@@ -2142,9 +2135,9 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Typeinfo retreival
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclTypeInfo(const ATypeInfo: PTypeInfo): IJclTypeInfo;
 begin
@@ -2176,9 +2169,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // User generated type info managment
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 var
   TypeList: TThreadList;
@@ -2190,7 +2183,7 @@ type
     RefCount: Integer;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure FreeTypeData(const TypeInfo: PTypeInfo);
 var
@@ -2206,7 +2199,7 @@ begin
   FreeMem(TypeInfo);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure AddType(const TypeInfo: PTypeInfo);
 var
@@ -2223,7 +2216,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DeleteType(const TypeItem: PTypeItem);
 begin
@@ -2232,7 +2225,7 @@ begin
   Dispose(TypeItem);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DoRefType(const TypeInfo: PTypeInfo; Add: Integer);
 var
@@ -2251,21 +2244,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ReferenceType(const TypeInfo: PTypeInfo);
 begin
   DoRefType(TypeInfo, 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DeReferenceType(const TypeInfo: PTypeInfo);
 begin
   DoRefType(TypeInfo, -1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ClearInfoList;
 var
@@ -2280,14 +2273,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure NewInfoItem(const TypeInfo: PTypeInfo);
 begin
   TypeList.Add(TypeInfo);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RemoveTypeInfo(const TypeInfo: PTypeInfo);
 var
@@ -2314,9 +2307,9 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Enumerations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclEnumValueToIdent(const TypeInfo: PTypeInfo; const Value): string;
 var
@@ -2354,7 +2347,7 @@ begin
     Result := GetEnumName(TypeInfo, EnumVal);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclGenerateEnumType(const TypeName: ShortString;
   const Literals: array of string): PTypeInfo;
@@ -2415,7 +2408,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclGenerateEnumTypeBasedOn(const TypeName: ShortString;
   const BaseType: PTypeInfo; const PrefixCut: Byte): PTypeInfo;
@@ -2468,7 +2461,7 @@ begin
   Result := JclGenerateEnumType(TypeName, Literals);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclGenerateSubRange(const BaseType: PTypeInfo; const TypeName: string;
   const MinValue, MaxValue: Integer): PTypeInfo;
@@ -2501,9 +2494,9 @@ begin
   ReferenceType(BaseType);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Integers
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER5_UP}
 function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
@@ -2537,7 +2530,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
 var
@@ -2559,9 +2552,9 @@ begin
 end;
 {$ENDIF COMPILER_5_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Sets
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclSetToList(const TypeInfo: PTypeInfo; const Value;
   const WantBrackets: Boolean; const WantRanges: Boolean;
@@ -2585,7 +2578,7 @@ begin
     Result := '[' + Result + ']';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclSetToStr(const TypeInfo: PTypeInfo; const Value;
   const WantBrackets: Boolean; const WantRanges: Boolean): string;
@@ -2601,7 +2594,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar;
   const Value: string);
@@ -2628,7 +2621,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar;
   const Value: Integer);
@@ -2649,7 +2642,7 @@ begin
   Move(TmpInt64, SetVar, ResBytes);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclSetToInt(const TypeInfo: PTypeInfo; const SetVar): Integer;
 var
@@ -2675,7 +2668,7 @@ begin
   Move(TmpInt64, Result, ResBytes);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclGenerateSetType(const BaseType: PTypeInfo;
   const TypeName: ShortString): PTypeInfo;
@@ -2727,9 +2720,9 @@ begin
   ReferenceType(BaseType);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // GUID
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclGUIDToString(const GUID: TGUID): string;
 begin
@@ -2738,7 +2731,7 @@ begin
      GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclStringToGUID(const S: string): TGUID;
 begin
@@ -2758,9 +2751,9 @@ begin
   Result.D4[7] := StrToInt('$' + Copy(S, 36, 2));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Is/As hooking
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   PReadLoc = ^TReadLoc;
@@ -2791,7 +2784,7 @@ var
   SavedIs: array [0..4] of Byte;
   SavedAs: array [0..4] of Byte;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Copied from System.pas (_IsClass function)
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
@@ -2814,7 +2807,7 @@ asm
 @@exit:
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 var
@@ -2848,7 +2841,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclAsClass(const AnObj: TObject; const AClass: TClass): TObject;
 begin
@@ -2858,7 +2851,7 @@ begin
     raise EInvalidCast.Create(SInvalidCast);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclHookIs(const IsProc: TJclIsFunc): Boolean;
 var
@@ -2889,14 +2882,14 @@ begin
     Result := False;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclIsHooked: Boolean;
 begin
   Result := IsHooked;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclUnhookIs: Boolean;
 var
@@ -2923,7 +2916,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LocateIsClassHelper(const AnObj: TObject;
   const AClass: TClass): Boolean; register;
@@ -2931,7 +2924,7 @@ begin
   Result := AnObj is AClass;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LocateAsClassHelper(const AnObj: TObject;
   const AClass: TClass): TObject; register;
@@ -2939,7 +2932,7 @@ begin
   Result := AnObj as AClass;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure LocateIsClass;
 var
@@ -2957,7 +2950,7 @@ begin
   Move(PChar(OrgIsClass), SavedIs, SizeOf(SavedIs));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure LocateAsClass;
 var
@@ -2975,7 +2968,7 @@ begin
   Move(PChar(OrgAsClass), SavedAs, SizeOf(SavedAs));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 initialization
   TypeList := TThreadList.Create;
