@@ -30,6 +30,13 @@ unit JclConsole;
 
 {$WEAKPACKAGEUNIT ON}
 
+{$HPPEMIT 'namespace JclConsole'}
+(*$HPPEMIT '{'*)
+{$HPPEMIT '__interface IJclScreenTextAttribute;'}
+(*$HPPEMIT '}'*)
+{$HPPEMIT 'using namespace JclConsole;'}
+{$HPPEMIT ''}
+
 interface
 
 uses
