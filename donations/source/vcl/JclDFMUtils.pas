@@ -23,7 +23,7 @@
 {   This is a preview - class and functionnames might be changed                                   }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: December 7, 2003                                                                  }
+{ Last modified: December 13, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -39,7 +39,7 @@ uses
 
 procedure ReadImageListFromDFMComponent(AImageList: TCustomImageList;
   ADFMComponent: TJclDFMComponent);
-procedure ExtractImageList2BitmapsFromDFMComponent(ABitmapList: TList;
+procedure ExtractImageListToBitmapsFromDFMComponent(ABitmapList: TList;
   ADFMComponent: TJclDFMComponent);
 procedure LoadLayout(AControl: TControl; ADFMComponent: TJclDFMComponent); overload;
 procedure LoadLayout(AControl: TControl; AStream: TStream); overload;
@@ -96,7 +96,7 @@ begin
   end;
 end;
 
-procedure ExtractImageList2BitmapsFromDFMComponent(ABitmapList: TList;
+procedure ExtractImageListToBitmapsFromDFMComponent(ABitmapList: TList;
   ADFMComponent: TJclDFMComponent);
 var
   ImageList: TImageList;
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-procedure Controls2List(AList: TList; AControl: TControl);
+procedure ControlsToList(AList: TList; AControl: TControl);
 var
   I: Integer;
 begin
@@ -130,10 +130,10 @@ begin
   begin
     if AList.IndexOf(AControl) = -1 then
       AList.Add(AControl);
-    if (AControl is TWinControl) and
-      (csAcceptsControls in AControl.ControlStyle) then
+    if (AControl is TWinControl) {and
+      (csAcceptsControls in AControl.ControlStyle)} then
       for I := 0 to TWinControl(AControl).ControlCount - 1 do
-        Controls2List(AList, TWinControl(AControl).Controls[I]);
+        ControlsToList(AList, TWinControl(AControl).Controls[I]);
   end;
 end;
 
@@ -190,7 +190,7 @@ begin
     begin
       ControlList := TList.Create;
       try
-        Controls2List(ControlList, AControl);
+        ControlsToList(ControlList, AControl);
         for I := 0 to ControlList.Count - 1 do
           if ControlList[I] <> AControl then
             with TControl(ControlList[I]) do
