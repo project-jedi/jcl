@@ -163,10 +163,12 @@ uses
 // Helper consts, helper types, helper routines
 
 const
-  CompressionFormat: array[TFileCompressionState] of Short = (
+  CompressionFormat: array[TFileCompressionState] of Short =
+  (
     COMPRESSION_FORMAT_NONE,
     COMPRESSION_FORMAT_DEFAULT,
-    COMPRESSION_FORMAT_LZNT1);
+    COMPRESSION_FORMAT_LZNT1
+  );
 
   // use IsDirectory(FileName) as array index
   FileFlag: array[Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
@@ -189,9 +191,7 @@ end;
 
 {$STACKFRAMES ON}
 
-procedure ValidateArgument(
-  Condition: Boolean;
-  const Routine: string;
+procedure ValidateArgument(Condition: Boolean; const Routine: string;
   const Argument: string);
 begin
   if not Condition then
@@ -220,10 +220,7 @@ begin
   end
 end;
 
-function SetPathCompression(
-  Dir: string;
-  const Mask: string;
-  const State: Short;
+function SetPathCompression(Dir: string; const Mask: string; const State: Short;
   const SetDefault, Recursive: Boolean): Boolean;
 var
   FileName: string;
@@ -286,8 +283,10 @@ begin
   if not NtfsGetCompression(FileName, State) then
     RaiseLastOSError;
   case State of
-    COMPRESSION_FORMAT_NONE:    Result := fcNoCompression;
-    COMPRESSION_FORMAT_LZNT1:   Result := fcLZNT1Compression;
+    COMPRESSION_FORMAT_NONE:
+      Result := fcNoCompression;
+    COMPRESSION_FORMAT_LZNT1:
+      Result := fcLZNT1Compression;
   else
     Assert(False, 'TFileCompressionState requires expansion');
     Result := TFileCompressionState(State);
@@ -334,10 +333,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure NtfsSetPathCompression(
-  const Path: string;
-  const State: TFileCompressionState;
-  Recursive: Boolean);
+procedure NtfsSetPathCompression(const Path: string;
+  const State: TFileCompressionState; Recursive: Boolean);
 var
   Dir, Mask: string;
   SetDefault: Boolean;
