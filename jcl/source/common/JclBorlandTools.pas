@@ -1716,7 +1716,10 @@ begin
       try
         ConfigData.ReadSection(EnvVariablesKeyName, EnvNames);
         for I := 0 to EnvNames.Count - 1 do
-          FEnvironmentVariables.Values[EnvNames[I]] := ConfigData.ReadString(EnvVarKeyName, EnvNames[I], '');
+        begin
+          EnvVarKeyName := EnvNames[I];
+          FEnvironmentVariables.Values[EnvVarKeyName] := ConfigData.ReadString(EnvVariablesKeyName, EnvVarKeyName, '');
+        end;
       finally
         EnvNames.Free;
       end;
@@ -2310,6 +2313,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/07/14 03:36:20  rrossmair
+// fixed bug #1897 ( TJclBorRADToolInstallation.GetEnvironmentVariables failure)
+//
 // Revision 1.13  2004/06/16 07:30:26  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
