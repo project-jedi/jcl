@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 06, 2000                                            }
+{ Last modified: October 09, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -1412,7 +1412,7 @@ begin
       Result := S;
   end
   else
-    Result := '';
+    Result := S;
 end;
 
 //------------------------------------------------------------------------------
