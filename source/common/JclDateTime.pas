@@ -138,7 +138,13 @@ unit JclDateTime;
 interface
 
 uses
-  Windows, SysUtils,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Types,
+  {$ENDIF LINUX}
+  SysUtils,
   JclBase, JclResources;
 
 { Encode / Decode functions }
@@ -193,6 +199,7 @@ function SecondsToMSecs(Seconds: Integer): Integer;
 function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
 function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
 
+{$IFDEF MSWINDOWS}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
@@ -201,21 +208,27 @@ procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); 
 
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
+{$ENDIF MSWINDOWS}
 
 function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
+{$IFDEF MSWINDOWS}
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
 procedure DosDateTimeToFileTime(DTH, DTL: Word; FT: TFileTime); overload;
 function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
+{$ENDIF MSWINDOWS}
 function DosDateTimeToStr(DateTime: Integer): string;
 
 function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
+{$IFDEF MSWINDOWS}
 function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
 procedure FileTimeToDosDateTime(const FileTime: TFileTime; var Date, Time: Word); overload;
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
 procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload
+{$ENDIF MSWINDOWS}
 function FileTimeToStr(const FileTime: TFileTime): string;
 
+{$IFDEF MSWINDOWS}
 function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
 function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overload;
 procedure SystemTimeToFileTime(const SystemTime: TSystemTime; FTime : TFileTime); overload;
@@ -228,6 +241,7 @@ function SystemTimeToStr(const SystemTime: TSystemTime): string;
 function CreationDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastAccessDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
+{$ENDIF MSWINDOWS}
 
 type
   EJclDateTimeError = class (EJclError);
@@ -245,7 +259,7 @@ const
   DaysPerMonth      = DaysPerYear / 12;
   DateTimeBaseDay   = -693593;              //  1/1/0001
   EncodeDateMaxYear = 9999;
-  SolarDifference   = 1.7882454;            //  Difference of Juliab Calendar to Solar Calendar at 1/1/10000
+  SolarDifference   = 1.7882454;            //  Difference of Julian Calendar to Solar Calendar at 1/1/10000
   DateTimeMaxDay    = 2958466;              //  12/31/EncodeDateMaxYear + 1;
   FileTimeBase      = -109205.0;
   FileTimeStep: Extended = 24.0 * 60.0 * 60.0 * 1000.0 * 1000.0 * 10.0; // 100 nSek per Day
@@ -643,6 +657,8 @@ end;
 // Conversion
 //==============================================================================
 
+{$IFDEF MSWINDOWS}
+
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
 var
   TimeZoneInfo: TTimeZoneInformation;
@@ -674,6 +690,8 @@ begin
     raise EJclDateTimeError.Create(RsMakeUTCTime);
   end;
 end;                    
+
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -716,6 +734,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
+
 function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
 var
   LocalFileTime: TFileTime;
@@ -734,6 +754,8 @@ begin
   ResultCheck(LocalFileTimeToFileTime(LocalFileTime, Result));
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
@@ -747,6 +769,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
 var
@@ -765,6 +789,8 @@ begin
   FileTime := SystemTimeToFileTime(SystemTime);
   Result := FileTimeToDosDateTime(FileTime);
 end;
+
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -803,6 +829,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
 begin
@@ -875,6 +903,8 @@ begin
   Windows.FileTimeToDosDateTime(FileTime, Date, Time);
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function FileTimeToStr(const FileTime: TFileTime): string;
@@ -893,6 +923,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 // we can't do this better without copying Borland-owned code from the Delphi VCL,
 // as the straight forward conversion doing exactly this task is hidden
@@ -925,6 +957,8 @@ function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 begin
   Result := FileTimeToDateTime(Sr.FindData.ftLastWriteTime);
 end;
+
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
