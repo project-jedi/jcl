@@ -174,6 +174,9 @@ Parameters:
 Result:
   If the function succeeds it returns the name of the process that owns the windows,
   if it fails the result is an empty string.
+See also:
+  GetPidFromProcessName
+  GetProcessNameFromPid
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -194,6 +197,9 @@ Parameters:
 Result:
   If the function succeeds it returns the name of the process, if it fails it
   returns an empty string.
+See also:
+  GetProcessNameFromWnd
+  GetPidFromProcessName
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -212,6 +218,8 @@ Description:
   as a default.
 Result:
   The name of the shell process executable.
+See also:
+  GetShellProcessHandle
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -230,6 +238,8 @@ Description:
 Result:
   If the function succeeds it returns a handle to the shell process. Upon failure the
   function raises an exception (EOSError).
+See also:
+  GetShellProcessName
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -253,6 +263,9 @@ Result:
   process. If the function fails it returns INVALID_HANDLE_VALUE. Most common
   reason of failure is that the specified process doesn't exist (isn't running) or
   you didn't specify the full name of the process.
+See also:
+  GetProcessNameFromWnd
+  GetProcessNameFromPid
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -345,6 +358,11 @@ Parameters:
   Name - Name of the environment variable to delete.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  ExpandEnvironmentVar
+  GetEnvironmentVar
+  GetEnvironmentVars
+  SetEnvironmentVar
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -369,6 +387,11 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the content of Value is undefined.
+See also:
+  DelEnvironmentVar
+  GetEnvironmentVar
+  GetEnvironmentVars
+  SetEnvironmentVar
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -395,6 +418,11 @@ Parameters:
   Expand - If True the returned value has the embedded environment strings expanded. If False these string are left unexpanded.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  DelEnvironmentVar
+  ExpandEnvironmentVar
+  GetEnvironmentVars
+  SetEnvironmentVar
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -424,6 +452,11 @@ Result:
   If the function succeeds in retrieving the environment strings it returns True,
   on failure it returns False. Note that a result of True does not necessarily mean
   that environment string expansion was successful for all variables.
+See also:
+  DelEnvironmentVar
+  ExpandEnvironmentVar
+  GetEnvironmentVar
+  SetEnvironmentVar
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -446,6 +479,11 @@ Parameters:
   Value - New value for the specified environment variable.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
+See also:
+  DelEnvironmentVar
+  ExpandEnvironmentVar
+  GetEnvironmentVar
+  GetEnvironmentVars
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -462,6 +500,8 @@ Summary:
   Enumeration of Windows versions. Used as function result by GetWindowsVersion
 Description:
   Enumeration of Windows versions. Used as function result by GetWindowsVersion
+See also:
+  GetWindowsVersion
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -494,6 +534,14 @@ Description:
   GetWindowsVersion returns the Windows version as an enumerated type.
 Result:
   The Windows version, see TWindowsVersion for the possible values.
+See also:
+  IsWin95
+  IsWin98
+  IsWinNT
+  IsWinNT3
+  IsWinNT4
+  IsWin2K
+  NtProductType
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -513,6 +561,11 @@ Description:
 Result:
   If the FDIV instruction is OK the function returns True, if it is flawed the
   function returns False.
+See also:
+  GetCpuInfo
+  TCpuInfo
+  TestFDIVInstruction
+  GetCpuSpeed
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -532,6 +585,11 @@ Description:
   and MMX fields of the returned TCpuInfo record contain undefined data.
 Result:
   CPUID returns information about the processor through a TCpuInfo record.
+See also:
+  GetCpuInfo
+  TCpuInfo
+  TestFDIVInstruction
+  GetCpuSpeed
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -555,6 +613,9 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the content of the CpuSpeed parameter is undefined.
+See also:
+  GetCpuInfo
+  TFreqInfo
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -925,6 +986,8 @@ Parameters:
 Result:
   The descriptive string for the specified descriptor. If a description isn't
   available the function returns an empty string.
+See also:
+  TIntelSpecific
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -947,6 +1010,8 @@ Result:
   The Windows Common Files folder. If the function fails it returns an empty string.
 Notes:
   You can use the SHGetFolderPath API function to get many more common directories.
+See also:
+  GetProgramFilesFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -970,6 +1035,8 @@ Result:
   The local computer name or an empty string on failure.
 Notes:
   If you're running Windows 2000 you can use the GetComputerNameEx function for more detailed control over exactly which name you want.
+See also:
+  GetLocalUserName
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -992,6 +1059,8 @@ Result:
   The local user name or an empty string on failure.
 Notes:
   If you're running Windows 2000 you can use the GetUserNameEx function to control the format of the returned name.
+See also:
+  GetLocalComputerName
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1014,6 +1083,8 @@ Result:
   The Windows Program Files folder. If the function fails it returns an empty string.
 Notes:
   You can use the SHGetFolderPath API function to get many more common directories.
+See also:
+  GetCommonFilesFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1033,6 +1104,8 @@ Description:
   registry.
 Result:
   The registered company string or an empty string on failure.
+See also:
+  GetRegisteredOwner
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1051,6 +1124,8 @@ Description:
   Returns the registered owner string for the local computer as read from the registry.
 Result:
   The registered owner string or an empty string on failure.
+See also:
+  GetRegisteredCompany
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1070,6 +1145,10 @@ Description:
 Result:
   The BIOS release date, if successful. The system base date (12/30/1899), if
   there has been a problem.
+See also:
+  GetBIOSName
+  GetBIOSCopyright
+  GetBIOSExtendedInfo
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1088,6 +1167,10 @@ Description:
   Returns the name of the BIOS.
 Result:
   The BIOS name, if successful. An empty string otherwise.
+See also:
+  GetBIOSDate
+  GetBIOSCopyright
+  GetBIOSExtendedInfo
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1105,6 +1188,10 @@ Description:
   Returns the BIOS copyright string.
 Result:
   The BIOS copyright, if successful. An  empty string otherwise.
+See also:
+  GetBIOSDate
+  GetBIOSName
+  GetBIOSExtendedInfo
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1122,6 +1209,10 @@ Description:
   Returns extended information on the BIOS.
 Result:
   The BIOS extended information, if successful. An  empty string otherwise.
+See also:
+  GetBIOSDate
+  GetBIOSName
+  GetBIOSCopyright
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1141,6 +1232,8 @@ Description:
   files, and help files. On a default installation of Windows 2000 this is c:\winnt.
 Result:
   The Windows directory or an empty string on failure.
+See also:
+  GetWindowsSystemFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1161,6 +1254,8 @@ Description:
   files. On a default installation of Windows 2000 this is c:\winnt\system32.
 Result:
   The Windows system directory or an empty string on failure.
+See also:
+  GetWindowsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1201,6 +1296,10 @@ Description:
   IsWin95 returns whether or not the system is running Windows 95.
 Result:
   If the system is running Windows 95 the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin98
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1219,6 +1318,10 @@ Description:
   IsWin95OSR2 returns whether or not the system is running Windows 95 OSR 2.
 Result:
   If the system is running Windows 95 OSR 2 the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin98
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1237,6 +1340,10 @@ Description:
   IsWin98 returns whether or not the system is running Windows 98.
 Result:
   If the system is running Windows 98 the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin95
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1255,6 +1362,10 @@ Description:
   IsWin98SE returns whether or not the system is running Windows 98 Second Edition.
 Result:
   If the system is running Windows 98 SE the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin95
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1273,6 +1384,10 @@ Description:
   IsWin98SE returns whether or not the system is running Windows Millenium.
 Result:
   If the system is running Windows Millenium the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin95
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1293,6 +1408,13 @@ Result:
   If the system is running Windows NT the result is True otherwise the result is False.
   You can use the IsWinNT3, IsWinNT4 and IsWin2K
   to further distinguish between the different NT versions.
+See also:
+  IsWin2K
+  IsWin95
+  IsWin98
+  NtProductType
+  IsWinNT3
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1311,6 +1433,12 @@ Description:
   IsWinNT3 returns whether or not the system is running Windows NT 3.
 Result:
   If the system is running Windows NT 3 the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin95
+  IsWin98
+  NtProductType
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1329,6 +1457,12 @@ Description:
   IsWinNT4 returns whether or not the system is running Windows NT 4.
 Result:
   If the system is running Windows NT 4 the result is True otherwise the result is False.
+See also:
+  IsWin2K
+  IsWin95
+  IsWin98
+  IsWinNT3
+  NtProductType
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1347,6 +1481,12 @@ Description:
   IsWin2K returns whether or not the system is running Windows 2000.
 Result:
   If the system is running Windows 2000 the result is True otherwise the result is False.
+See also:
+  IsWinNT3
+  IsWin95
+  IsWin98
+  NtProductType
+  IsWinNT4
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1375,6 +1515,9 @@ Result:
    
 Notes:
   On platforms other then Windows NT/2000 this function always returns ptUnknown.
+See also:
+  IsWinNT
+  IsWin2K
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1404,6 +1547,10 @@ Result:
   PChar can directly be used with functions like CreateProcAsUserEx.
 Notes:
   The caller is responsible to release the returned PChar when it is no longer needed.
+See also:
+  CreateProcAsUserEx
+  CreateProcAsUser
+  TEnvironmentOptions
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1420,6 +1567,8 @@ Summary:
   This set of options for CreateEnvironmentBlock will determine which environment variables will be copied to the new environemt block.
 Description:
   This set of options for CreateEnvironmentBlock will determine which environment variables will be copied to the new environemt block.
+See also:
+  CreateEnvironmentBlock
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1447,6 +1596,9 @@ Result:
   or an empty string if the function fails.
 Notes:
   The function tries to find the user account on the local system first. Next, the primary domain is checked. If the name is not found there, trusted domains are checked.
+See also:
+  GetDomainName
+  GetLocalUserName
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1471,6 +1623,9 @@ Result:
   the function fails.
 Notes:
   The function determines the name of the domain by checking which domain the currently logged in user is belonging to.
+See also:
+  GetUserDomainName
+  GetLocalUserName
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1491,6 +1646,34 @@ Description:
   to "C:\WINNT\Profiles\%Username%\Desktop".
 Result:
   A string containing the local path to the desktop directory.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1514,6 +1697,34 @@ Result:
   A string containing the local path to the programs directory.
 Notes:
   Applications that need to add program groups and program shortcuts should place them into the directory returned by this function.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1534,6 +1745,34 @@ Description:
   this is equivalent to "C:\WINNT\Profiles\%Username%freter\Personal Files".
 Result:
   A string containing the local path to the current user's personal files folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1554,6 +1793,34 @@ Description:
   this is equivalent to "C:\WINNT\Profiles\%Username%\Favorites".
 Result:
   A string containing the local path to the current user's favorite files folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1575,6 +1842,34 @@ Description:
   this directory is equivalent to "C:\WINNT\Profiles\%Username%\Start Menu\Program Files\Startup".
 Result:
   A string containing the local path to the current user's startup files folder.
+See also:
+  <LINK GetCommonFilesFolder1,GetCommonFilesFolder>
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1595,6 +1890,34 @@ Description:
   this directory is equivalent to "C:\WINNT\Profiles\%Username%\Recent".
 Result:
   A string containing the local path to the current user's recently used files folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1615,6 +1938,34 @@ Description:
   equivalent to "C:\WINNT\Profiles\%Username%\SendTo".
 Result:
   A string containing the local path to the current user's Send To files folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1635,6 +1986,34 @@ Description:
   to "C:\WINNT\Profiles\%Username%\SendTo".
 Result:
   A string containing the local path to the current user's Start menu folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1656,6 +2035,34 @@ Description:
   equivalent to "C:\WINNT\Profiles\%Username%\Desktop".
 Result:
   A string containing the local path to the current user's desktop folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1676,6 +2083,34 @@ Description:
   this directory is equivalent to "C:\WINNT\Profiles\%Username%\Nethood".
 Result:
   A string containing the local path to the current user's nethood folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1696,6 +2131,34 @@ Description:
   to "C:\WINNT\Fonts".
 Result:
   A string containing the local path to the system's fonts folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1717,6 +2180,34 @@ Description:
   to "C:\WINNT\Profiles\All Users\Start Menu".
 Result:
   A string containing the local path to the system's Start menu folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1738,6 +2229,34 @@ Description:
   to "C:\WINNT\Profiles\All Users\Start Menu\Program Files".
 Result:
   A string containing the local path to the system's programs folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1759,6 +2278,34 @@ Description:
   "C:\WINNT\Profiles\All Users\Start Menu\Program File\Startup".
 Result:
   A string containing the local path to the system's Startup folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1780,6 +2327,34 @@ Description:
   "C:\WINNT\Profiles\All Users\Desktop".
 Result:
   A string containing the local path to the system's desktop folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1800,6 +2375,34 @@ Description:
   installation, this directory is equivalent to "C:\WINNT\Profiles\%Username%\Application Data".
 Result:
   A string containing the local path to the current user's application data folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1820,6 +2423,34 @@ Description:
   equivalent to "C:\WINNT\Profiles\%Username%\Printhood".
 Result:
   A string containing the local path to the current user's printhood folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1839,6 +2470,34 @@ Description:
   as a common repository for all users' favorite items.
 Result:
   A string containing the local path to the systems's favorites files folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1858,6 +2517,34 @@ Description:
   a common repository for document templates.
 Result:
   A string containing the local path to the current user's templates folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1877,6 +2564,34 @@ Description:
   as a common repository for temporary Internet files.
 Result:
   A string containing the local path to the current user's internet cache folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetCookiesFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1896,6 +2611,34 @@ Description:
   common repository for Internet cookies.
 Result:
   A string containing the local path to the current user's internet cookies folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetHistoryFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1915,6 +2658,34 @@ Description:
   common repository for Internet history items.
 Result:
   A string containing the local path to the current user's internet history folder.
+See also:
+  GetCommonFilesFolder
+  GetCurrentFolder
+  GetProgramFilesFolder
+  GetWindowsFolder
+  GetWindowsSystemFolder
+  GetWindowsTempFolder
+  GetDesktopFolder
+  GetPersonalFolder
+  GetFavoritesFolder
+  GetStartupFolder
+  GetRecentFolder
+  GetSendToFolder
+  GetStartmenuFolder
+  GetDesktopDirectoryFolder
+  GetNethoodFolder
+  GetFontsFolder
+  GetCommonStartmenuFolder
+  GetCommonProgramsFolder
+  GetCommonStartupFolder
+  GetCommonDesktopdirectoryFolder
+  GetAppdataFolder
+  GetPrinthoodFolder
+  GetCommonFavoritesFolder
+  GetTemplatesFolder
+  GetInternetCacheFolder
+  GetCookiesFolder
+  GetProgramsFolder
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1934,6 +2705,10 @@ Description:
   to a power plug, it is considered "online", otherwise "offline".
 Result:
   The status of the APM system, see TAPMLineStatus for possible values.
+See also:
+  TAPMLineStatus
+  GetAPMBatteryFlag
+  TAPMBatteryFlag
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1950,6 +2725,10 @@ Summary:
   Enumeration of APM line stati. Used as function result by
 Description:
   Enumeration of APM line stati. Used as function result by
+See also:
+  GetAPMLineStatus
+  GetAPMBatteryFlag
+  TAPMBatteryFlag
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1970,6 +2749,10 @@ Summary:
   Enumeration of APM battery flags. Used as function result by
 Description:
   Enumeration of APM battery flags. Used as function result by
+See also:
+  GetAPMLineStatus
+  GetAPMBatteryFlag
+  TAPMLineStatus
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -1998,6 +2781,10 @@ Description:
   This function returns the charge status of the system battery.
 Result:
   The status of the system battery, see TAPMBatteryFlag for possible values.
+See also:
+  TAPMBatteryFlag
+  GetAPMLineStatus
+  TAPMLineStatus
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2076,6 +2863,8 @@ Description:
 Result:
   The highest memory address available to applications and DLLs, casted into an
   integer.
+See also:
+  GetMinAppAddress
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2097,6 +2886,8 @@ Description:
 Result:
   The lowest memory address available to applications and DLLs, casted into an
   integer.
+See also:
+  GetMaxAppAddress
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2116,6 +2907,8 @@ Description:
   between 0 and 100.
 Result:
   The current system memory load.
+See also:
+  GetSwapFileUsage
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2134,6 +2927,8 @@ Description:
   Returns the current system pagefile size in bytes.
 Result:
   The current system pagefile size in bytes.
+See also:
+  GetSwapFileUsage
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2153,6 +2948,9 @@ Description:
   and 100.
 Result:
   The percentage of swap file space occupied.
+See also:
+  GetMemoryLoad
+  GetSwapFileSize
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2171,6 +2969,8 @@ Description:
   Returns the total size of physical memory in bytes.
 Result:
   The total size of physical memory.
+See also:
+  GetFreePhysicalMemory
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2189,6 +2989,8 @@ Description:
   Returns the size of free physical memory in bytes.
 Result:
   The size of free physical memory.
+See also:
+  GetTotalPhysicalMemory
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2207,6 +3009,8 @@ Description:
   Returns the total size of pagefile memory available to the system.
 Result:
   The total size of pagefile memory.
+See also:
+  GetFreePageFileMemory
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2225,6 +3029,8 @@ Description:
   Returns the amount of free pagefile memory.
 Result:
   The amount of free pagefile memory.
+See also:
+  GetTotalPageFileMemory
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2243,6 +3049,8 @@ Description:
   Returns the total size of virtual memory available to the system.
 Result:
   The total size of virtual memory.
+See also:
+  GetFreeVirtualMemory
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2261,6 +3069,8 @@ Description:
   Returns the amount of free virtual memory.
 Result:
   The amount of free virtual memory.
+See also:
+  GetTotalVirtualMemory
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2282,6 +3092,10 @@ Parameters:
   VirtualKey - Any virtual key code, for example VK_NUMLOCK. See Windows.pas for more constants.
 Result:
   True, if the key is pressed or toggled. False otherwise.
+See also:
+  GetNumLockKeyState
+  GetScrollLockKeyState
+  GetCapsLockKeyState
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2301,6 +3115,10 @@ Description:
   false otherwise.
 Result:
   True, if the NumLock toggled. False otherwise.
+See also:
+  GetKeyState
+  GetScrollLockKeyState
+  GetCapsLockKeyState
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2320,6 +3138,10 @@ Description:
   returned and false otherwise.
 Result:
   True, if the ScrollLock toggled. False otherwise.
+See also:
+  GetKeyState
+  GetNumLockKeyState
+  GetCapsLockKeyState
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
@@ -2339,6 +3161,10 @@ Description:
   returned and false otherwise.
 Result:
   True, if the CapsLock toggled. False otherwise.
+See also:
+  GetKeyState
+  GetNumLockKeyState
+  GetScrollLockKeyState
 Quick info:
   Unit: JclSysInfo
   Category: System Information Routines
