@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner:                                                                  }
-{ Last modified: January 15, 2001                                              }
+{ Last modified: January 24, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -36,7 +36,7 @@ unit JclWin32;
 interface
 
 uses
-  Windows,
+  Windows, ActiveX, ImageHlp,
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
   {$ENDIF COMPILER5_UP}
@@ -558,6 +558,269 @@ procedure ExitNetbios;
 function InitNetbios: Boolean;
 function NetBios(P: PNCB): Byte;
 
+//==============================================================================
+// JclPeImage
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// Missing winnt.h translations
+//------------------------------------------------------------------------------
+
+const
+  IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   = 13; // Delay load import descriptors
+  IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR = 14; // COM run-time descriptor
+  RT_HTML = MakeIntResource(23);
+
+type
+
+{$IFNDEF DELPHI5_UP}
+  PImageExportDirectory = ^TImageExportDirectory;
+  _IMAGE_EXPORT_DIRECTORY = packed record
+    Characteristics: DWORD;
+    TimeDateStamp: DWORD;
+    MajorVersion: Word;
+    MinorVersion: Word;
+    Name: DWORD;
+    Base: DWORD;
+    NumberOfFunctions: DWORD;
+    NumberOfNames: DWORD;
+    AddressOfFunctions: DWORD;    // RVA from base of image
+    AddressOfNames: DWORD;        // RVA from base of image
+    AddressOfNameOrdinals: DWORD; // RVA from base of image
+  end;
+  TImageExportDirectory = _IMAGE_EXPORT_DIRECTORY;
+  IMAGE_EXPORT_DIRECTORY = _IMAGE_EXPORT_DIRECTORY;
+{$ENDIF DELPHI5_UP}
+
+{ Non-COFF Object file header }
+
+  PANonObjectHeader = ^TANonObjectHeader;
+  ANON_OBJECT_HEADER = record
+    Sig1: Word;            // Must be IMAGE_FILE_MACHINE_UNKNOWN
+    Sig2: Word;            // Must be 0xffff
+    Version: Word;         // >= 1 (implies the CLSID field is present)
+    Machine: Word;
+    TimeDateStamp: DWORD;
+    ClassID: TCLSID;       // Used to invoke CoCreateInstance
+    SizeOfData: DWORD;     // Size of data that follows the header
+  end;
+  TANonObjectHeader = ANON_OBJECT_HEADER;
+
+{ Import format }
+
+  PImageImportByName = ^TImageImportByName;
+  _IMAGE_IMPORT_BY_NAME = packed record
+    Hint: Word;
+    Name: array [0..0] of Char;
+  end;
+  TImageImportByName = _IMAGE_IMPORT_BY_NAME;
+  IMAGE_IMPORT_BY_NAME = _IMAGE_IMPORT_BY_NAME;
+
+  PImageThunkData = ^TImageThunkData;
+  _IMAGE_THUNK_DATA = packed record
+    case Integer of
+      0: (ForwarderString: DWORD;);      // PBYTE
+      1: (Function_: DWORD;);            // PDWORD
+      2: (Ordinal: DWORD;);
+      3: (AddressOfData: DWORD;);        // PIMAGE_IMPORT_BY_NAME
+  end;
+  TImageThunkData = _IMAGE_THUNK_DATA;
+  IMAGE_THUNK_DATA = _IMAGE_THUNK_DATA;
+
+const
+  IMAGE_ORDINAL_FLAG = $80000000;
+
+function IMAGE_ORDINAL(Ordinal: DWORD): Word;
+
+type
+  PImageTlsDirectory = ^TImageTlsDirectory;
+  _IMAGE_TLS_DIRECTORY = packed record
+    StartAddressOfRawData: DWORD;
+    EndAddressOfRawData: DWORD;
+    AddressOfIndex: DWORD;                // PDWORD
+    AddressOfCallBacks: DWORD;            // PIMAGE_TLS_CALLBACK *
+    SizeOfZeroFill: DWORD;
+    Characteristics: DWORD;
+  end;
+  TImageTlsDirectory = _IMAGE_TLS_DIRECTORY;
+  IMAGE_TLS_DIRECTORY = _IMAGE_TLS_DIRECTORY;
+
+  PImageImportDescriptor = ^TImageImportDescriptor;
+  _IMAGE_IMPORT_DESCRIPTOR = record
+    Characteristics: DWORD;  // 0 for terminating null import descriptor
+                             // RVA to original unbound IAT (PIMAGE_THUNK_DATA)
+    TimeDateStamp: DWORD;    // 0 if not bound,
+                             // -1 if bound, and real date\time stamp
+                             //     in IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT (new BIND)
+                             // O.W. date/time stamp of DLL bound to (Old BIND)
+    ForwarderChain: DWORD;   // -1 if no forwarders
+    Name: DWORD;
+    FirstThunk: DWORD;       // RVA to IAT (if bound this IAT has actual addresses)
+  end;
+  TImageImportDescriptor = _IMAGE_IMPORT_DESCRIPTOR;
+  IMAGE_IMPORT_DESCRIPTOR = _IMAGE_IMPORT_DESCRIPTOR;
+
+{ New format import descriptors pointed to by DataDirectory[ IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT ] }
+
+  PImageBoundImportDescriptor = ^TImageBoundImportDescriptor;
+  _IMAGE_BOUND_IMPORT_DESCRIPTOR = record
+    TimeDateStamp: DWORD;
+    OffsetModuleName: Word;
+    NumberOfModuleForwarderRefs: Word;
+    // Array of zero or more IMAGE_BOUND_FORWARDER_REF follows
+  end;
+  TImageBoundImportDescriptor = _IMAGE_BOUND_IMPORT_DESCRIPTOR;
+  IMAGE_BOUND_IMPORT_DESCRIPTOR = _IMAGE_BOUND_IMPORT_DESCRIPTOR;
+
+  PImageBoundForwarderRef = ^TImageBoundForwarderRef;
+  _IMAGE_BOUND_FORWARDER_REF = record
+    TimeDateStamp: DWORD;
+    OffsetModuleName: Word;
+    Reserved: Word;
+  end;
+  TImageBoundForwarderRef = _IMAGE_BOUND_FORWARDER_REF;
+  IMAGE_BOUND_FORWARDER_REF = _IMAGE_BOUND_FORWARDER_REF;
+
+{ Resource Format }
+
+const
+  IMAGE_RESOURCE_NAME_IS_STRING    = $80000000;
+  IMAGE_RESOURCE_DATA_IS_DIRECTORY = $80000000;
+
+type
+  PImageResourceDirectory = ^TImageResourceDirectory;
+  _IMAGE_RESOURCE_DIRECTORY = packed record
+    Characteristics: DWORD;
+    TimeDateStamp: DWORD;
+    MajorVersion: Word;
+    MinorVersion: Word;
+    NumberOfNamedEntries: Word;
+    NumberOfIdEntries: Word;
+  end;
+  TImageResourceDirectory = _IMAGE_RESOURCE_DIRECTORY;
+  IMAGE_RESOURCE_DIRECTORY = _IMAGE_RESOURCE_DIRECTORY;
+
+  PImageResourceDirectoryEntry = ^TImageResourceDirectoryEntry;
+  _IMAGE_RESOURCE_DIRECTORY_ENTRY = packed record
+    Name: DWORD;        // Or ID: Word (Union)
+    OffsetToData: DWORD;
+  end;
+  TImageResourceDirectoryEntry = _IMAGE_RESOURCE_DIRECTORY_ENTRY;
+  IMAGE_RESOURCE_DIRECTORY_ENTRY = _IMAGE_RESOURCE_DIRECTORY_ENTRY;
+
+  PImageResourceDataEntry = ^TImageResourceDataEntry;
+  _IMAGE_RESOURCE_DATA_ENTRY = packed record
+    OffsetToData: DWORD;
+    Size: DWORD;
+    CodePage: DWORD;
+    Reserved: DWORD;
+  end;
+  TImageResourceDataEntry = _IMAGE_RESOURCE_DATA_ENTRY;
+  IMAGE_RESOURCE_DATA_ENTRY = _IMAGE_RESOURCE_DATA_ENTRY;
+
+  PImageResourceDirStringU = ^TImageResourceDirStringU;
+  _IMAGE_RESOURCE_DIR_STRING_U = packed record
+    Length: Word;
+    NameString: array [0..0] of WCHAR;
+  end;
+  TImageResourceDirStringU = _IMAGE_RESOURCE_DIR_STRING_U;
+  IMAGE_RESOURCE_DIR_STRING_U = _IMAGE_RESOURCE_DIR_STRING_U;
+
+{ Load Configuration Directory Entry }
+
+  PImageLoadConfigDirectory = ^TImageLoadConfigDirectory;
+  IMAGE_LOAD_CONFIG_DIRECTORY = packed record
+    Characteristics: DWORD;
+    TimeDateStamp: DWORD;
+    MajorVersion: Word;
+    MinorVersion: Word;
+    GlobalFlagsClear: DWORD;
+    GlobalFlagsSet: DWORD;
+    CriticalSectionDefaultTimeout: DWORD;
+    DeCommitFreeBlockThreshold: DWORD;
+    DeCommitTotalFreeThreshold: DWORD;
+    LockPrefixTable: DWORD; // VA
+    MaximumAllocationSize: DWORD;
+    VirtualMemoryThreshold: DWORD;
+    ProcessHeapFlags: DWORD;
+    ProcessAffinityMask: DWORD;
+    CSDVersion: Word;
+    Reserved1: Word;
+    EditList: DWORD; // VA
+    Reserved: array [0..0] of  DWORD;
+  end;
+  TImageLoadConfigDirectory = IMAGE_LOAD_CONFIG_DIRECTORY;
+
+  PImgDelayDescr = ^TImgDelayDescr;
+  ImgDelayDescr = packed record
+    grAttrs: DWORD;                 // attributes
+    szName: DWORD;                  // pointer to dll name
+    phmod: PDWORD;                  // address of module handle
+    pIAT: TImageThunkData;          // address of the IAT
+    pINT: TImageThunkData;          // address of the INT
+    pBoundIAT: TImageThunkData;     // address of the optional bound IAT
+    pUnloadIAT: TImageThunkData;    // address of optional copy of original IAT
+    dwTimeStamp: DWORD;             // 0 if not bound,
+                                    // O.W. date/time stamp of DLL bound to (Old BIND)
+  end;
+  TImgDelayDescr = ImgDelayDescr;
+
+{ Relocation }
+
+  PImageBaseRelocation = ^TImageBaseRelocation;
+  _IMAGE_BASE_RELOCATION = packed record
+    VirtualAddress: DWORD;
+    SizeOfBlock: DWORD;
+  end;
+  TImageBaseRelocation = _IMAGE_BASE_RELOCATION;
+  IMAGE_BASE_RELOCATION =_IMAGE_BASE_RELOCATION;
+
+const
+  IMAGE_SIZEOF_BASE_RELOCATION   = 8;
+
+  IMAGE_REL_BASED_ABSOLUTE       = 0;
+  IMAGE_REL_BASED_HIGH           = 1;
+  IMAGE_REL_BASED_LOW            = 2;
+  IMAGE_REL_BASED_HIGHLOW        = 3;
+  IMAGE_REL_BASED_HIGHADJ        = 4;
+  IMAGE_REL_BASED_MIPS_JMPADDR   = 5;
+  IMAGE_REL_BASED_SECTION        = 6;
+  IMAGE_REL_BASED_REL32          = 7;
+
+  IMAGE_REL_BASED_MIPS_JMPADDR16 = 9;
+  IMAGE_REL_BASED_IA64_IMM64     = 9;
+  IMAGE_REL_BASED_DIR64          = 10;
+  IMAGE_REL_BASED_HIGH3ADJ       = 11;
+
+{ Debug format }
+
+  IMAGE_DEBUG_TYPE_BORLAND = 9;
+
+//------------------------------------------------------------------------------
+// Incorrect translations
+//------------------------------------------------------------------------------
+
+type
+  // possibly Borland's header translation bug
+  TLoadedImage = LoadedImage;
+
+  PPImageSectionHeader = ^PImageSectionHeader;
+
+  // wrong translation - LastRvaSection parameter is not var
+  function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer;
+    Rva: ULONG; LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
+    external 'imagehlp.dll' name 'ImageRvaToVa';
+
+  // wrong translation - last parameter is incorrect
+  function BindImageEx(Flags: DWORD; ImageName, DllPath, SymbolPath: LPSTR;
+    StatusRoutine: TImagehlpStatusRoutine): Bool; stdcall;
+    external 'imagehlp.dll' name 'BindImageEx';
+
+  // wrong translation - last parameter is incorrect
+  function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
+    CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
+    external 'imagehlp.dll' name 'ImageEnumerateCertificates';
+
 //------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_EXTSYM}
@@ -726,6 +989,60 @@ function NetBios(P: PNCB): Byte;
 
   {$EXTERNALSYM PNCB}
   {$EXTERNALSYM ASTAT}
+
+  {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT}
+  {$EXTERNALSYM IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR}
+  {$EXTERNALSYM RT_HTML}
+{$IFNDEF DELPHI5_UP}
+  {$EXTERNALSYM _IMAGE_EXPORT_DIRECTORY}
+  {$EXTERNALSYM IMAGE_EXPORT_DIRECTORY}
+{$ENDIF DELPHI5_UP}
+  {$EXTERNALSYM ANON_OBJECT_HEADER}
+  {$EXTERNALSYM _IMAGE_IMPORT_BY_NAME}
+  {$EXTERNALSYM IMAGE_IMPORT_BY_NAME}
+  {$EXTERNALSYM _IMAGE_THUNK_DATA}
+  {$EXTERNALSYM IMAGE_THUNK_DATA}
+  {$EXTERNALSYM IMAGE_ORDINAL_FLAG}
+  {$EXTERNALSYM IMAGE_ORDINAL}
+  {$EXTERNALSYM _IMAGE_TLS_DIRECTORY}
+  {$EXTERNALSYM IMAGE_TLS_DIRECTORY}
+  {$EXTERNALSYM _IMAGE_IMPORT_DESCRIPTOR}
+  {$EXTERNALSYM IMAGE_IMPORT_DESCRIPTOR}
+  {$EXTERNALSYM _IMAGE_BOUND_IMPORT_DESCRIPTOR}
+  {$EXTERNALSYM IMAGE_BOUND_IMPORT_DESCRIPTOR}
+  {$EXTERNALSYM _IMAGE_BOUND_FORWARDER_REF}
+  {$EXTERNALSYM IMAGE_BOUND_FORWARDER_REF}
+  {$EXTERNALSYM IMAGE_RESOURCE_NAME_IS_STRING}
+  {$EXTERNALSYM IMAGE_RESOURCE_DATA_IS_DIRECTORY}
+  {$EXTERNALSYM _IMAGE_RESOURCE_DIRECTORY}
+  {$EXTERNALSYM IMAGE_RESOURCE_DIRECTORY}
+  {$EXTERNALSYM _IMAGE_RESOURCE_DIRECTORY_ENTRY}
+  {$EXTERNALSYM IMAGE_RESOURCE_DIRECTORY_ENTRY}
+  {$EXTERNALSYM _IMAGE_RESOURCE_DATA_ENTRY}
+  {$EXTERNALSYM IMAGE_RESOURCE_DATA_ENTRY}
+  {$EXTERNALSYM _IMAGE_RESOURCE_DIR_STRING_U}
+  {$EXTERNALSYM IMAGE_RESOURCE_DIR_STRING_U}
+  {$EXTERNALSYM IMAGE_LOAD_CONFIG_DIRECTORY}
+  {$EXTERNALSYM ImgDelayDescr}
+  {$EXTERNALSYM _IMAGE_BASE_RELOCATION}
+  {$EXTERNALSYM IMAGE_BASE_RELOCATION}
+  {$EXTERNALSYM IMAGE_SIZEOF_BASE_RELOCATION}
+  {$EXTERNALSYM IMAGE_REL_BASED_ABSOLUTE}
+  {$EXTERNALSYM IMAGE_REL_BASED_HIGH}
+  {$EXTERNALSYM IMAGE_REL_BASED_LOW}
+  {$EXTERNALSYM IMAGE_REL_BASED_HIGHLOW}
+  {$EXTERNALSYM IMAGE_REL_BASED_HIGHADJ}
+  {$EXTERNALSYM IMAGE_REL_BASED_MIPS_JMPADDR}
+  {$EXTERNALSYM IMAGE_REL_BASED_SECTION}
+  {$EXTERNALSYM IMAGE_REL_BASED_REL32}
+  {$EXTERNALSYM IMAGE_REL_BASED_MIPS_JMPADDR16}
+  {$EXTERNALSYM IMAGE_REL_BASED_IA64_IMM64}
+  {$EXTERNALSYM IMAGE_REL_BASED_DIR64}
+  {$EXTERNALSYM IMAGE_REL_BASED_HIGH3ADJ}
+  {$EXTERNALSYM IMAGE_DEBUG_TYPE_BORLAND}
+  {$EXTERNALSYM ImageRvaToVa}
+  {$EXTERNALSYM BindImageEx}
+  {$EXTERNALSYM ImageEnumerateCertificates}
 
 {$ENDIF SUPPORTS_EXTSYM}
 
@@ -1020,5 +1337,15 @@ begin
   else
     Result := False;
 end;
+
+//==============================================================================
+// JclPeImage
+//==============================================================================
+
+function IMAGE_ORDINAL(Ordinal: DWORD): Word;
+begin
+  Result := Ordinal and $FFFF;
+end;
+
 
 end.
