@@ -16,19 +16,15 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: June 29, 2000                                                 }
+{******************************************************************************}
+{                                                                              }
+{ Lightening fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf  }
+{ Junker (ralfjunker@gmx.de).                                                  }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: November 09, 2000                                             }
 {                                                                              }
 {******************************************************************************}
-
-//------------------------------------------------------------------------------
-// Author:         Ralf Junker <ralfjunker@gmx.de>
-//
-// Description:    Ligtening fast Mime (Base64) Encoding and Decoding routines.
-//                 More detailed descriptions follow the declarations of the
-//                 functions and procedures below.
-//------------------------------------------------------------------------------
-
-// he requires to be mentioned in the help with name and email address
 
 unit JclMime;
 
@@ -45,12 +41,12 @@ uses
 // MimeEncodeString takes a string, encodes it, and returns the result as a string.
 // To decode the result string, use MimeDecodeString.
 
-function MimeEncodeString(const s: AnsiString): AnsiString;
+function MimeEncodeString(const S: AnsiString): AnsiString;
 
 // MimeDecodeString takes a a string, decodes it, and returns the result as a string.
 // Use MimeDecodeString to decode a string previously encoded with MimeEncodeString.
 
-function MimeDecodeString(const s: AnsiString): AnsiString;
+function MimeDecodeString(const S: AnsiString): AnsiString;
 
 // MimeEncodeStream encodes InputStream starting at the current position
 // up to the end and writes the result to OutputStream, again starting at
@@ -76,13 +72,13 @@ procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStre
 
 // Calculates the output size of i MimeEncoded bytes. Use for MimeEncode only.
 
-function MimeEncodedSize(const i: Integer): Integer;
+function MimeEncodedSize(const I: Integer): Integer;
 
 // Calculates the maximum output size of i MimeDecoded bytes.
 // You may use it for MimeDecode to calculate the maximum amount of memory
 // required for decoding in one single pass.
 
-function MimeDecodedSize(const i: Integer): Integer;
+function MimeDecodedSize(const I: Integer): Integer;
 
 // The primary Mime encoding routine.
 //
@@ -96,7 +92,8 @@ function MimeDecodedSize(const i: Integer): Integer;
 // but you must be very careful about the size of the InputBuffer.
 // See comments on BUFFER_SIZE below for details.
 
-procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer; const OutputBuffer: Pointer);
+procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer;
+  const OutputBuffer: Pointer);
 
 // The primary Mime decoding routines.
 //
@@ -109,14 +106,18 @@ procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer; 
 // MimeDecode, simply cut the allocated memory down to OutputBytesCount,
 // i.e. SetLength(OutString, OutputBytesCount).
 
-function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer; const OutputBuffer: Pointer): Integer;
+function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer;
+  const OutputBuffer: Pointer): Integer;
 
 // The MimeDecodePartial_ functions are mostly for internal use.
 // They serve the purpose of decoding very large data in multiple parts of
 // smaller chunks, as used in MimeDecodeStream.
 
-function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer; const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
-function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal; const ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer;
+  const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
+  
+function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal;
+  const ByteBufferSpace: Cardinal): Integer;
 
 type
   EJclMimeError = class (EJclError);
@@ -185,32 +186,32 @@ const
 type
   PByte4 = ^TByte4;
   TByte4 = packed record
-    b1: Byte;
-    b2: Byte;
-    b3: Byte;
-    b4: Byte;
+    B1: Byte;
+    B2: Byte;
+    B3: Byte;
+    B4: Byte;
   end;
 
   PByte3 = ^TByte3;
   TByte3 = packed record
-    b1: Byte;
-    b2: Byte;
-    b3: Byte;
+    B1: Byte;
+    B2: Byte;
+    B3: Byte;
   end;
 
 //------------------------------------------------------------------------------
 // Wrapper functions & procedures
 //------------------------------------------------------------------------------
 
-function MimeEncodeString(const s: AnsiString): AnsiString;
+function MimeEncodeString(const S: AnsiString): AnsiString;
 var
-  l: Integer;
+  L: Integer;
 begin
-  l := Length(s);
-  if l > 0 then
+  L := Length(S);
+  if L > 0 then
   begin
-    SetLength(Result, MimeEncodedSize(l));
-    MimeEncode(Pointer(s), l, Pointer(Result));
+    SetLength(Result, (L + 2) div 3 * 4 {MimeEncodedSize});
+    MimeEncode(Pointer(S), L, Pointer(Result));
   end
   else
     Result := '';
@@ -218,21 +219,20 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecodeString(const s: AnsiString): AnsiString;
+function MimeDecodeString(const S: AnsiString): AnsiString;
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
-  l: Integer;
+  L: Integer;
 begin
-  l := Length(s);
-  if l > 0 then
+  L := Length(S);
+  if L > 0 then
   begin
-    SetLength(Result, MimeDecodedSize(l));
-
+    SetLength(Result, (L + 3 div 4 * 3 {MimeDecodedSize});
     ByteBuffer := 0;
     ByteBufferSpace := 4;
-
-    l := MimeDecodePartial(Pointer(s), l, Pointer(Result), ByteBuffer, ByteBufferSpace);
-    MimeDecodePartialEnd(Pointer(Integer(Result) + l), ByteBuffer, ByteBufferSpace);
+    L := MimeDecodePartial(Pointer(S), L, Pointer(Result), ByteBuffer, ByteBufferSpace);
+    Inc(L MimeDecodePartialEnd(Pointer(Integer(Result) + L), ByteBuffer, ByteBufferSpace));
+    SetLength(Result, L);
   end;
 end;
 
@@ -254,7 +254,7 @@ begin
   if BytesRead > 0 then
   begin
     MimeEncode(@InputBuffer, BytesRead, @OutputBuffer);
-    OutputStream.Write(OutputBuffer, MimeEncodedSize(BytesRead));
+    OutputStream.Write(OutputBuffer, (BytesRead + 2) div 3 * 4 {MimeEncodedSize(BytesRead)});
   end;
 end;
 
@@ -282,14 +282,14 @@ end;
 // Helper functions
 //------------------------------------------------------------------------------
 
-function MimeEncodedSize(const i: Integer): Integer;
+function MimeEncodedSize(const I: Integer): Integer;
 begin
-  Result := (i + 2) div 3 * 4;
+  Result := (I+ 2) div 3 * 4;
 end;
 
-function MimeDecodedSize(const i: Integer): Integer;
+function MimeDecodedSize(const I: Integer): Integer;
 begin
-  Result := (i + 3) div 4 * 3;
+  Result := (I + 3) div 4 * 3;
 end;
 
 //------------------------------------------------------------------------------
@@ -298,84 +298,74 @@ end;
 
 procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer; const OutputBuffer: Pointer);
 var
-  b: Cardinal;
+  B: Cardinal;
   InMax3: Integer;
-  pIn, PInLimit: ^Byte;
-  POut: PByte4;
+  InPtr, InLimitPtr: ^Byte;
+  OutPtr: PByte4;
 begin
-  if InputBuffer = nil then
-    raise EJclMimeError.CreateResRec(@RsInputBufferNil);
-  if OutputBuffer = nil then
-    raise EJclMimeError.CreateResRec(@RsOutputBufferNil);
+  Assert(InputBuffer <> nil, RsInputBufferNil);
+  Assert(OutputBuffer <> nil, RsOutputBufferNil);
   if InputByteCount <= 0 then
     Exit;
 
-  pIn := InputBuffer;
+  InPtr := InputBuffer;
   InMax3 := InputByteCount div 3 * 3;
-  POut := OutputBuffer;
+  OutPTr := OutputBuffer;
+  Integer(InLimitPtr) := Integer(InPtr) + InMax3;
 
-  Integer(PInLimit) := Integer(pIn) + InMax3;
-
-  while pIn <> PInLimit do
+  while InPtr <> InLimitPtr do
   begin
-    b := pIn^;
-    b := b shl 8;
-    Inc(pIn);
-    b := b or pIn^;
-    b := b shl 8;
-    Inc(pIn);
-    b := b or pIn^;
-    Inc(pIn);
-
+    B := pIn^;
+    B := B shl 8;
+    Inc(InPtr);
+    B := B or InPtr^;
+    B := B shl 8;
+    Inc(InPtr);
+    B := B or InPtr^;
+    Inc(InPtr);
     // Write 4 bytes to OutputBuffer (in reverse order).
-    POut.b4 := MIME_ENCODE_TABLE[b and $3F];
-    b := b shr 6;
-    POut.b3 := MIME_ENCODE_TABLE[b and $3F];
-    b := b shr 6;
-    POut.b2 := MIME_ENCODE_TABLE[b and $3F];
-    b := b shr 6;
-    POut.b1 := MIME_ENCODE_TABLE[b];
-
-    Inc(POut);
+    OutPtr.B4 := MIME_ENCODE_TABLE[B and $3F];
+    B := B shr 6;
+    OutPtr.B3 := MIME_ENCODE_TABLE[B and $3F];
+    B := B shr 6;
+    OutPtr.B2 := MIME_ENCODE_TABLE[B and $3F];
+    B := B shr 6;
+    OutPtr.B1 := MIME_ENCODE_TABLE[B];
+    Inc(OutPtr);
   end;
 
   case InputByteCount - InMax3 of
     1:
       begin
-        b := pIn^;
-
-        b := b shl 4;
-
-        POut.b2 := MIME_ENCODE_TABLE[b and $3F];
-        b := b shr 6;
-        POut.b1 := MIME_ENCODE_TABLE[b];
-
-        POut.b3 := EqualSign; // Fill remaining 2 bytes.
-        POut.b4 := EqualSign;
+        B := InPtr^;
+        B := B shl 4;
+        OutPtr.B2 := MIME_ENCODE_TABLE[B and $3F];
+        B := B shr 6;
+        OutPtr.B1 := MIME_ENCODE_TABLE[B];
+        OutPtr.B3 := EqualSign; // Fill remaining 2 bytes.
+        OutPtr.B4 := EqualSign;
       end;
     2:
       begin
-        b := pIn^;
-        Inc(pIn);
-        b := b shl 8;
-        b := b or pIn^;
-
-        b := b shl 2;
-
-        POut.b3 := MIME_ENCODE_TABLE[b and $3F];
-        b := b shr 6;
-        POut.b2 := MIME_ENCODE_TABLE[b and $3F];
-        b := b shr 6;
-        POut.b1 := MIME_ENCODE_TABLE[b];
-
-        POut.b4 := EqualSign; // Fill remaining byte.
+        B := InPtr^;
+        Inc(InPtr);
+        B := B shl 8;
+        B := B or InPtr^;
+        B := B shl 2;
+        OutPtr.B3 := MIME_ENCODE_TABLE[B and $3F];
+        B := B shr 6;
+        OutPTr.b2 := MIME_ENCODE_TABLE[B and $3F];
+        B := B shr 6;
+        OutPtr.B1 := MIME_ENCODE_TABLE[B];
+        OutPtr.B4 := EqualSign; // Fill remaining byte.
       end;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer; const OutputBuffer: Pointer): Integer;
+function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer;
+  const OutputBuffer: Pointer): Integer;
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
 begin
@@ -387,56 +377,46 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer; const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer;
+  const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
 var
-  lByteBuffer, lByteBufferSpace, c: Cardinal;
-  pIn, PInLimit: ^Byte;
-  POut: PByte3;
+  lByteBuffer, lByteBufferSpace, C: Cardinal;
+  InPtr, InLimitPtr: ^Byte;
+  OutPtr: PByte3;
 begin
-  if InputBuffer = nil then
-    raise EJclMimeError.CreateResRec(@RsInputBufferNil);
-  if OutputBuffer = nil then
-    raise EJclMimeError.CreateResRec(@RsOutputBufferNil);
-
+  Assert(InputBuffer <> nil, RsInputBufferNil);
+  Assert(OutputBuffer <> nil, RsOutputBufferNil);
   if InputBytesCount > 0 then
   begin
-    pIn := InputBuffer;
-    Integer(PInLimit) := Integer(pIn) + InputBytesCount;
-
-    POut := OutputBuffer;
-
+    InPtr := InputBuffer;
+    Integer(InLimitPtr) := Integer(InPtr) + InputBytesCount;
+    OutPtr := OutputBuffer;
     lByteBuffer := ByteBuffer;
     lByteBufferSpace := ByteBufferSpace;
-
-    while pIn <> PInLimit do
+    while InPtr <> InLimitPtr do
     begin
-      c := MIME_DECODE_TABLE[pIn^]; // Read from InputBuffer.
-      Inc(pIn);
-
-      if c = $FF then
+      C := MIME_DECODE_TABLE[InPtr^]; // Read from InputBuffer.
+      Inc(InPtr);
+      if C = $FF then
         Continue;
 
       lByteBuffer := lByteBuffer shl 6;
-      lByteBuffer := lByteBuffer or c;
+      lByteBuffer := lByteBuffer or C;
       Dec(lByteBufferSpace);
-
       if lByteBufferSpace <> 0 then
         Continue; // Read 4 bytes from InputBuffer?
 
-      POut.b3 := Byte(lByteBuffer); // Write 3 bytes to OutputBuffer (in reverse order).
+      OutPtr.B3 := Byte(lByteBuffer); // Write 3 bytes to OutputBuffer (in reverse order).
       lByteBuffer := lByteBuffer shr 8;
-      POut.b2 := Byte(lByteBuffer);
+      OutPtr.B2 := Byte(lByteBuffer);
       lByteBuffer := lByteBuffer shr 8;
-      POut.b1 := Byte(lByteBuffer);
+      OutPtr.B1 := Byte(lByteBuffer);
       lByteBuffer := 0;
-      Inc(POut);
-
+      Inc(OutPtr);
       lByteBufferSpace := 4;
     end;
-
     ByteBuffer := lByteBuffer;
     ByteBufferSpace := lByteBufferSpace;
-
     Result := Cardinal(POut) - Cardinal(OutputBuffer);
   end
   else
@@ -445,26 +425,25 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal; const ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal;
+  const ByteBufferSpace: Cardinal): Integer;
 var
   lByteBuffer: Cardinal;
 begin
-  if OutputBuffer = nil then
-    raise EJclMimeError.CreateResRec(@RsOutputBufferNil);
-
+  Assert(OutputBuffer <> nil, RsOutputBufferNil);
   case ByteBufferSpace of
     1:
       begin
         lByteBuffer := ByteBuffer shr 2;
-        PByte3(OutputBuffer).b2 := Byte(lByteBuffer);
+        PByte3(OutputBuffer).B2 := Byte(lByteBuffer);
         lByteBuffer := lByteBuffer shr 8;
-        PByte3(OutputBuffer).b1 := Byte(lByteBuffer);
+        PByte3(OutputBuffer).B1 := Byte(lByteBuffer);
         Result := 2;
       end;
     2:
       begin
         lByteBuffer := ByteBuffer shr 4;
-        PByte3(OutputBuffer).b1 := Byte(lByteBuffer);
+        PByte3(OutputBuffer).B1 := Byte(lByteBuffer);
         Result := 1;
       end;
   else
