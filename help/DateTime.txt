@@ -538,7 +538,7 @@ Returns the number of milliseconds in a DateTime.
 [Description]
 Returns the number of milliseconds in a DateTime. Basically it extracts the hour, minutes
 and seconds from the date time and returns the result of the formula
-(3600000 * Hours) + (60000 * Minutes) + (1000 * Seconds) + MSek, but is much faster than doing it this way.
+((3600 * Hours) + (60 * Minutes) + Seconds) * 1000, but is much faster than doing it this way.
 [Parameters]
 Count=1
 1=DateTime:TDateTime=The DateTime for which you want to know the number of milliseconds.
@@ -600,7 +600,7 @@ function SecondsToMSecs(Seconds: Integer): Integer;
 [ShortDescr]
 Converts seconds to milliseconds.
 [Description]
-SecondsToMSecs converts Minutes to milliseconds. The maximum value for Seconds is
+SecondsToMSecs converts Seconds to milliseconds. The maximum value for Seconds is
 asserted to Seconds smaller than MaxInt / 1000
 [Parameters]
 Count=1
@@ -654,7 +654,7 @@ Count=1
 1=ISOWeekToDateTime
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function ISOWeekToDateTime(Year, Week, Day:Integer): TDateTime;
+function ISOWeekToDateTime(Year, Week, Day: Integer): TDateTime;
 [ShortDescr]
 Returns the date denoted by year, week and weekday. 
 [Description]
