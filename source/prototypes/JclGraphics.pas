@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: September 10, 2003                                                                    }
+{ Last modified: September 10, 2003                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -156,13 +156,13 @@ type
     function GetRegionType: TJclRegionKind;
   public
     constructor Create(RegionHandle: HRGN);
-    constructor CreateElliptic(const ARect: TRect); overload;
-    constructor CreateElliptic(Top, Left, Bottom, Right: Integer); overload;
+    constructor CreateElliptic(const ARect: TRect{$IFDEF BCB}; dummyForBCB: Byte = 0{$ENDIF}); overload;
+    constructor CreateElliptic(Top, Left, Bottom, Right: Integer{$IFDEF BCB}; dummyForBCB: Byte = 0{$ENDIF}); overload;
     constructor CreatePoly(const Points: TDynPointArray; Count: Integer; FillMode: TPolyFillMode);
     constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
-    constructor CreateRect(const Top, Left, Bottom, Right: Integer); overload;
-    constructor CreateRect(ARect: TRect); overload;
+    constructor CreateRect(const Top, Left, Bottom, Right: Integer{$IFDEF BCB}; dummyForBCB: Byte = 0{$ENDIF}); overload;
+    constructor CreateRect(ARect: TRect{$IFDEF BCB}; dummyForBCB: Byte = 0{$ENDIF}); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
     constructor CreateRoundRect(Top, Left, Bottom, Right: Integer; CornerWidth, CornerHeight: Integer); overload;
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
