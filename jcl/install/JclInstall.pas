@@ -57,10 +57,13 @@ type
     procedure InstallationStarted;
     procedure InstallationFinished;
     procedure InstallFailedOn(const InstallObj: string);
-    function InstallPackage(const Name: string): Boolean;
+    function InstallPackageSourceFile(const Name: string): Boolean;
     function InstallRunTimePackage(const BaseName: string): Boolean;
     function InstallOption(Option: TJediInstallOption): Boolean;
-    //function UninstallOption(Option: TJediInstallOption): Boolean;
+    procedure RemoveDialogFromRepository(const DialogFileName: string);
+    function UninstallPackage(const Name: string): Boolean;
+    function UninstallRunTimePackage(const BaseName: string): Boolean;
+    function UninstallOption(Option: TJediInstallOption): Boolean;
     function LogFileName: string;
     function MakeUnits(Debug: Boolean): Boolean;
     function MakePath(const FormatStr: string): string;
@@ -77,11 +80,14 @@ type
     {$IFDEF MSWINDOWS}
     procedure AddHelpToIdeTools;
     procedure AddHelpToOpenHelp;
+    procedure RemoveHelpFromIdeTools;
+    procedure RemoveHelpFromOpenHelp;
     {$ENDIF MSWINDOWS}
     function BplPath: string;
     function DcpPath: string;
     procedure CleanupRepository;
     function InstallSelectedOptions: Boolean;
+    function UninstallSelectedOptions: Boolean;
     function OptionSelected(Option: TJediInstallOption): Boolean;
     function ProgressWeight(Option: TJediInstallOption): Integer;
     function Run: Boolean;
@@ -391,7 +397,8 @@ const
 resourcestring
   RsStatusMessage   = 'Installing %s...';
   RsStatusDetailMessage = 'Installing %s for %s...';
-  RsInstallFailed   = 'Installation of %s failed, see %s-install.log for details.';
+  RsUninstallMessage = 'Removing %s...';
+  RsInstallFailed   = 'Installation of %s failed, see %s for details.';
   RsLibDescriptor   = '%s library %sunits for %s';
   {$IFDEF VisualCLX}
   RsReadmeFileName  = 'Readme.html';
@@ -540,12 +547,12 @@ end;
 
 function TJclInstallation.BplPath: string;
 begin
-  Result := Tool.BPLPath(Target);
+  Result := Tool.BPLPath[Target];
 end;
 
 function TJclInstallation.DcpPath: string;
 begin
-  Result := Tool.DCPPath(Target);
+  Result := Tool.DCPPath[Target];
 end;
 
 procedure TJclInstallation.CleanupRepository;
@@ -883,6 +890,8 @@ Leave these options unchecked for Win9x/WinME until that has been examined. }
       AddNode(TempNode, ioJclExpertsThrNames, False, IsWinNT);
   end;
   {$ENDIF MSWINDOWS}
+  Tool.BPLPath[Target] := StoredBplPath;
+  Tool.DCPPath[Target] := StoredDcpPath;
 end;
 
 function TJclInstallation.InstallSelectedOptions: Boolean;
@@ -934,7 +943,7 @@ begin
     ioJclMakeDebug:
       Result := MakeUnits(True);
     // ioJclMakeDebugVClx: handled with ioJclMakeDebug
-    // ioJclCopyHppFiles: handled by InstallPackage
+    // ioJclCopyHppFiles: handled by InstallPackageSourceFile
     ioJclPackages:
       begin
         Result := InstallRunTimePackage('Jcl');
@@ -946,8 +955,8 @@ begin
     {$IFDEF MSWINDOWS}
     // ioJclExperts:
     ioJclExpertDebug..ioJclExpertsThrNames:
-      Result := InstallPackage(ExpertPaths[Option]);
-    // ioJclCopyPackagesHppFiles: handled by InstallPackage
+      Result := InstallPackageSourceFile(ExpertPaths[Option]);
+    // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
     // ioJclExcDialog:
     ioJclExcDialogVCL:
       with Distribution do
@@ -974,13 +983,68 @@ begin
     Progress(ProgressWeight(Option));
 end;
 
-(*
 function TJclInstallation.UninstallOption(Option: TJediInstallOption): Boolean;
+{$IFDEF MSWINDOWS}
+const
+  ExpertPaths: array[ioJclExpertDebug..ioJclExpertsThrNames] of string =
+    (
+      JclIdeDebugDpk,
+      JclIdeAnalyzerDpk,
+      JclIdeFavoriteDpk,
+      JclIdeThrNamesDpk
+    );
+{$ENDIF MSWINDOWS}
 begin
-  { TODO : implement }
-  Result := False;
+  Result := True;
+  case Option of
+    ioJclEnvLibPath:
+      begin
+        Target.RemoveFromLibrarySearchPath(LibDir);
+        Target.RemoveFromLibrarySearchPath(Distribution.SourceDir);
+      end;
+    ioJclEnvBrowsingPath:
+      Target.RemoveFromLibraryBrowsingPath(Distribution.SourcePath);
+    ioJclEnvDebugDCUPath:
+      Target.RemoveFromDebugDCUPath(DebugDcuDir);
+    // ioJclMake:
+    ioJclMakeRelease: { TODO :  };
+    ioJclMakeDebug: { TODO :  };
+    ioJclCopyHppFiles: { TODO :  };
+    ioJclPackages:
+      begin
+        Result := UninstallRunTimePackage('Jcl');
+        if Target.SupportsVisualCLX then
+          Result := Result and UninstallRunTimePackage('JclVClx');
+        if Target.VersionNumber >= 6 then
+          Result := Result and UninstallRunTimePackage('JclVcl');
+      end;
+    {$IFDEF MSWINDOWS}
+    // ioJclExperts:
+    ioJclExpertDebug..ioJclExpertsThrNames:
+      Result := UninstallPackage(ExpertPaths[Option]);
+    // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
+    // ioJclExcDialog:
+    ioJclExcDialogVCL:
+      with Distribution do
+        RemoveDialogFromRepository(VclDialogFileName);
+    ioJclExcDialogVCLSnd:
+      with Distribution do
+        RemoveDialogFromRepository(VclDlgSndFileName);
+    {$ENDIF MSWINDOWS}
+    ioJclExcDialogCLX:
+      with Distribution do
+        RemoveDialogFromRepository(ClxDialogFileName);
+    {$IFDEF MSWINDOWS}
+    // ioJclHelp:
+    ioJclHelpHlp:
+      RemoveHelpFromOpenHelp;
+    ioJclHelpChm:
+      RemoveHelpFromIdeTools;
+    {$ENDIF MSWINDOWS}
+  end;
+  //if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
+    //Progress(ProgressWeight(Option));
 end;
-*)
 
 procedure TJclInstallation.InstallationStarted;
 begin
@@ -1001,7 +1065,7 @@ begin
   Tool.Dialog(Format(RsInstallFailed, [InstallObj, LogFileName]), dtError);
 end;
 
-function TJclInstallation.InstallPackage(const Name: string): Boolean;
+function TJclInstallation.InstallPackageSourceFile(const Name: string): Boolean;
 const
   {$IFDEF MSWINDOWS}
   Bcb2MakTemplate = '\BCB.bmk';
@@ -1048,7 +1112,7 @@ end;
 
 function TJclInstallation.InstallRunTimePackage(const BaseName: string): Boolean;
 begin
-  Result := InstallPackage(FullPackageFileName(Target, BaseName));
+  Result := InstallPackageSourceFile(FullPackageFileName(Target, BaseName));
 end;
 
 function TJclInstallation.LogFileName: string;
@@ -1133,6 +1197,21 @@ begin
   end;
 end;
 
+procedure TJclInstallation.RemoveDialogFromRepository(const DialogFileName: string);
+begin
+  Target.Repository.RemoveObjects(DialogsPath, DialogFileName, BorRADToolRepositoryFormTemplate);
+end;
+
+procedure TJclInstallation.RemoveHelpFromIdeTools;
+begin
+  { TODO : Implement }
+end;
+
+procedure TJclInstallation.RemoveHelpFromOpenHelp;
+begin
+  { TODO : Implement }
+end;
+
 function TJclInstallation.Run: Boolean;
 begin
   Result := True;
@@ -1150,8 +1229,38 @@ end;
 
 function TJclInstallation.Undo: Boolean;
 begin
-  { TODO : implement }
+  Result := True;
+  if OptionSelected(ioJCL) then
+    Result := UninstallSelectedOptions;
+  SaveOptions;
+end;
+
+function TJclInstallation.UninstallPackage(const Name: string): Boolean;
+begin
+  { TODO : evtl. remove .HPP Files }
   Result := False;
+end;
+
+function TJclInstallation.UninstallRunTimePackage(const BaseName: string): Boolean;
+begin
+  Result := UninstallPackage(FullPackageFileName(Target, BaseName));
+end;
+
+function TJclInstallation.UninstallSelectedOptions: Boolean;
+
+  function BorRADToolVersionStr: string;
+  begin
+    Result := Format('%s Build %s ', [Target.Name, Target.IdeExeBuildNumber]);
+  end;
+
+var
+  Option: TJediInstallOption;
+begin
+  Result := True;
+  Tool.UpdateStatus(Format(RsUninstallMessage, [Target.Name]));
+  for Option := ioJCL to ioJclLast do
+    if OptionSelected(Option) then
+      Result := Result and UninstallOption(Option);
 end;
 
 procedure TJclInstallation.SaveOption(Option: TJediInstallOption);
@@ -1448,6 +1557,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.47  2005/02/03 05:22:17  rrossmair
+// - more uninstall support (still unfinished)
+//
 // Revision 1.46  2004/12/23 05:32:28  rrossmair
 // - fixed for Kylix
 //

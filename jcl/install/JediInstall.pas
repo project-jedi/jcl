@@ -84,18 +84,22 @@ type
     ['{85408C67-92B5-42D0-84E0-D30201C0400D}']
     function Dialog(const Text: string; DialogType: TDialogType = dtInformation;
       Options: TDialogResponses = [drOK]): TDialogResponse;
-    function BPLPath(Installation: TJclBorRADToolInstallation): string;
-    function DCPPath(Installation: TJclBorRADToolInstallation): string;
+    function GetBPLPath(Installation: TJclBorRADToolInstallation): string;
+    function GetDCPPath(Installation: TJclBorRADToolInstallation): string;
     function FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
     function GetBorRADToolInstallations: TJclBorRADToolInstallations;
     function OptionGUI(Installation: TJclBorRADToolInstallation): TObject;
     function GUIAddOption(GUI, Parent: TObject; Option: TJediInstallOption; const Text: string;
       StandAlone: Boolean = False; Checked: Boolean = True): TObject;
+    procedure SetBPLPath(Installation: TJclBorRADToolInstallation; const Value: string);
+    procedure SetDCPPath(Installation: TJclBorRADToolInstallation; const Value: string);
     procedure SetReadme(const FileName: string);
     procedure UpdateInfo(Installation: TJclBorRADToolInstallation; const InfoText: string);
     procedure UpdateStatus(const Text: string);
     procedure WriteInstallLog(Installation: TJclBorRADToolInstallation; const Text: string);
     property BorRADToolInstallations: TJclBorRADToolInstallations read GetBorRADToolInstallations;
+    property BPLPath[Installation: TJclBorRADToolInstallation]: string read GetBPLPath write SetBPLPath;
+    property DCPPath[Installation: TJclBorRADToolInstallation]: string read GetDCPPath write SetDCPPath;
     property Readme: string write SetReadme;
   end;
 
@@ -141,6 +145,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/02/03 05:22:17  rrossmair
+// - more uninstall support (still unfinished)
+//
 // Revision 1.9  2004/11/14 05:55:55  rrossmair
 // - installer refactoring (continued)
 //
