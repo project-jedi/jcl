@@ -1,0 +1,3395 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeStripFunctionAW(const FunctionName: string): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=FunctionName:string=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Smart Name Comparison
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=PeSmartFunctionNameSame
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeSmartFunctionNameSame(const ComparedName, FunctionName: string;
+  Options: TJclSmartCompOptions = []): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=3
+1=ComparedName:string=TODO
+2=FunctionName:string=TODO
+3=Options:<REF Target"Types\TJclSmartCompOptions>TJclSmartCompOptions</REF>=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Smart Name Comparison
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=PeStripFunctionAW
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclSmartCompOptions = set of TJclSmartCompOption;
+TJclSmartCompOption = (scSimpleCompare, scIgnoreCase);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=2
+1=scSimpleComare=TODO
+2=scIgnoreCase=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Smart Name Comparison
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=PeSmartFunctionNameSame;..\PeSmartFunctionNameSame
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+EJclPeImageError = class (EJclError);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImageBaseList = class (TObjectList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImageBaseList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AImage: <REF>TJclPeImage</REF>);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=AImage:<REF>TJclPeImage</REF>=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImageBaseList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=TJclPeImage
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Image: <REF>TJclPeImage</REF> read FImage;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImageBaseList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImagesCache = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImagesCache
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Clear;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImagesCache
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Images[const FileName: TFileName]: TJclPeImage read GetImages; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImagesCache
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: Integer read GetCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImagesCache
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImportSort = (isName, isOrdinal, isHint, isLibImport);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=4
+1=isName=TODO
+2=isOrdinal=TODO
+3=isHint=TODO
+4=isLibImport=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImportLibSort = (ilName, ilIndex);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=2
+1=ilName=TODO
+2=ilIndex=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImportKind = (ikImport, ikDelayImport, ikBoundImport);
+[ShortDescr]
+Specifies how a function was imported. 
+This does not include whether or not the function was imported by name or ordinal.
+[Enumeration]
+Count=3
+1=ikImport=Standard implicit import.
+2=ikDelayImport=Delay load import.
+3=ikBoundImport=Bound import.
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeResolveCheck = (icNotChecked, icResolved, icUnresolved);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=3
+1=icNotChecked=TODO
+2=icResolved=TODO
+3=icUnresolved=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeLinkerProducer = (lrBorland, lrMicrosoft);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=2
+1=lrBorland=TODO
+2=lrMicrosoft=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImportFuncItem = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Ordinal: Word read FOrdinal;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Hint: Word read FHint;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImportLib: TJclPeImportLibItem read FImportLib;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IndirectImportName: Boolean read FIndirectImportName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsByOrdinal: Boolean read GetIsByOrdinal;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read GetName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImportLibItem = class (TJclPeImageBaseList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AImage: TJclPeImage);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=AImage:TJclPeImage=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=SortType:TJclPeImportSort=TODO
+2=Descending:Boolean=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: Integer read GetCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FileName: TFileName read GetFileName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImportDescriptor: Pointer read FImportDescriptor;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImportDirectoryIndex: Integer read FImportDirectoryIndex;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImportKind: TJclPeImportKind read FImportKind;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclPeImportFuncItem read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read GetName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OriginalName: string read GetOriginalName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ThunkData: PImageThunkData read FThunkData;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property TotalResolveCheck: TJclPeResolveCheck read FTotalResolveCheck;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportLibItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImportList = class (TJclPeImageBaseList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AImage: TJclPeImage);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CheckImports(PeImageCache: TJclPeImagesCache {$IFDEF SUPPORTS_DEFAULTPARAMS} = nil {$ENDIF});
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SmartFindName(const CompareName, LibName: string;
+  Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): TJclPeImportFuncItem;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortList(SortType: TJclPeImportLibSort);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TryGetNamesForOrdinalImports;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AllItems[Index: Integer]: TJclPeImportFuncItem read GetAllItems;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AllItemCount: Integer read GetAllItemCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FilterModuleName: string read FFilterModuleName write SetFilterModuleName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclPeImportLibItem read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LinkerProducer: TJclPeLinkerProducer read FLinkerProducer;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UniqueLibItemCount: Integer read GetUniqueLibItemCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UniqueLibItemFromName[const Name: string]: TJclPeImportLibItem read GetUniqueLibItemFromName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UniqueLibItems[Index: Integer]: TJclPeImportLibItem read GetUniqueLibItems;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UniqueLibNames[Index: Integer]: string read GetUniqueLibNames;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Import Section\TJclPeImportList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded, esAddrOrFwd);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=6
+1=esName=TODO
+2=esOrdinal=TODO
+3=esHint=TODO
+4=esAddress=TODO
+5=esForwarded=TODO
+6=esAddrOrFwd=TODO
+[Quick Info]
+Kind=Type
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeExportFuncItem = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Address: DWORD read FAddress;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AddressOrForwardStr: string read GetAddressOrForwardStr;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsForwarded: Boolean read GetIsForwarded;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ForwardedName: string read GetForwardedName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ForwardedLibName: string read GetForwardedLibName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ForwardedFuncOrdinal: DWORD read GetForwardedFuncOrdinal;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ForwardedFuncName: string read GetForwardedFuncName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Hint: Word read FHint;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read GetName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Ordinal: DWORD read FOrdinal;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeExportFuncList = class (TJclPeImageBaseList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AImage: TJclPeImage);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=AImage:TJclPeImage=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CheckForwards(PeImageCache: TJclPeImagesCache = nil);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=PeImageCache:TJclPeImagesCache=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function ItemName(Item: TJclPeExportFuncItem): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Item:TJclPeExportFuncItem=TODO
+[Result]
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function OrdinalValid(Ordinal: DWORD): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Ordinal:DWORD=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure PrepareForFastNameSearch;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SmartFindName(const CompareName: string; Options: TJclSmartCompOptions = [] {$ENDIF}): TJclPeExportFuncItem;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=CompareName:string=TODO
+2=Options:TJclSmartCompOptions=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortList(SortType: TJclPeExportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=SortType:TJclPeExportSort=TODO
+2=Descending:Boolean=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AnyForwards: Boolean read FAnyForwards;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Base: DWORD read FBase;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ExportDir: PImageExportDirectory read FExportDir;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ForwardedLibsList: TStrings read GetForwardedLibsList;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FunctionCount: DWORD read FFunctionCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclPeExportFuncItem read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromAddress[Address: DWORD]: TJclPeExportFuncItem read GetItemFromAddress;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromName[const Name: string]: TJclPeExportFuncItem read GetItemFromName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ItemFromOrdinal[Ordinal: DWORD]: TJclPeExportFuncItem read GetItemFromOrdinal;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read GetName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property TotalResolveCheck: TJclPeResolveCheck read FTotalResolveCheck;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Export Section\TJclPeExportFuncList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclResourceType = (rtUnknown0..rtUserDefined);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=25
+1=rtUnknown0=TODO
+2=rtCursorEntry=TODO
+3=rtBitmap=TODO
+4=rtIconEntry=TODO
+5=rtMenu=TODO
+6=rtDialog=TODO
+7=rtString=TODO
+8=rtFontDir=TODO
+9=rtFont=TODO
+10=rtAccelerators=TODO
+11=rtRCData=TODO
+12=rtMessageTable=TODO
+13=rtCursor=TODO
+14=rtUnknown13=TODO
+15=rtIcon=TODO
+16=rtUnknown15=TODO
+17=rtVersion=TODO
+18=rtDlgInclude=TODO
+19=rtUnknown18=TODO
+20=rtPlugPlay=TODO
+21=rtVxd=TODO
+22=rtAniCursor=TODO
+23=rtAniIcon=TODO
+24=rtHmtl=TODO
+25=rtUserDefined=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeResourceRawStream = class (TCustomMemoryStream)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceRawStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AResourceItem: TJclPeResourceItem);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=AResourceItem:TJclPeResourceItem=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceRawStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Write(const Buffer; Count: Longint): Longint; override;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=Buffer:Untyped=TODO
+2=Count:Longint=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceRawStream
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeResourceItem = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DataEntry: PImageResourceDataEntry read GetDataEntry;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Entry: PImageResourceDirectoryEntry read FEntry;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Image: TJclPeImage read FImage;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsDirectory: Boolean read GetIsDirectory;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IsName: Boolean read GetIsName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property List: TJclPeResourceList read GetList;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read GetName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ParameterName: string read GetParameterName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ParentItem: TJclPeResourceItem read FParentItem;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RawEntryData: Pointer read GetRawEntryData;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ResourceType: TJclResourceType read GetResourceType;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ResourceTypeStr: string read GetResourceTypeStr;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceItem
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeResourceList = class (TJclPeImageBaseList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage; AParentItem: TJclPeResourceItem);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=3
+1=ADirectory:PImageResourceDirectory=TODO
+2=AImage:TJclPeImage=TODO
+3=AParentItem:TJclPeResourceItem=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Directory: PImageResourceDirectory read FDirectory;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclPeResourceItem read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeRootResourceList = class (TJclPeResourceList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeRootResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=ADirectory:PImageResourceDirectory=TODO
+2=AImage:TJclPeImage=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeRootResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindResource(ResourceType: TJclResourceType; const ResourceName: string = ''): TJclPeResourceItem;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=ResourceType:TJclResourceType=TODO
+2=ResourceName:string=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Resource Section\TJclPeRootResourceList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeRelocation = record
+  Address: Word;
+  RelocType: Byte;
+  VirtualAddress: DWORD;
+end;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[RecordFields]
+Count=3
+1=Address:Word=TODO
+2=RelocType:Byte=TODO
+3=VirtualAddress:DWORD=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeRelocEntry = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocEntry
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: Integer read FCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocEntry
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Relocations[Index: Integer]: TJclPeRelocation read GetRelocations; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocEntry
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Size: DWORD read GetSize;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocEntry
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property VirtualAddress: DWORD read GetVirtualAddress;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocEntry
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeRelocList = class (TJclPeImageBaseList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AImage: TJclPeImage);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=AImage:TJclPeImage=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AllItems[Index: Integer]: TJclPeRelocation read GetAllItems;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AllItemCount: Integer read FAllItemCount;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclPeRelocEntry read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Relocation Section\TJclPeRelocList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeDebugList = class (TJclPeImageBaseList)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Debug Section\TJclPeDebugList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AImage: TJclPeImage);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=AImage:TJclPeImage=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Debug Section\TJclPeDebugList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TImageDebugDirectory read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Debug Section\TJclPeDebugList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeHeader = (JclPeHeader_Signature...JclPeHeader_NumberOfRvaAndSizes);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=34
+1=JclPeHeader_Signature=TODO
+2=JclPeHeader_Machine=TODO
+3=JclPeHeader_NumberOfSections=TODO
+4=JclPeHeader_TimeDateStamp=TODO
+5=JclPeHeader_PointerToSymbolTable=TODO
+6=JclPeHeader_NumberOfSymbols=TODO
+7=JclPeHeader_SizeOfOptionalHeader=TODO
+8=JclPeHeader_Characteristics=TODO
+9=JclPeHeader_Magic=TODO
+10=JclPeHeader_LinkerVersion=TODO
+11=JclPeHeader_SizeOfCode=TODO
+12=JclPeHeader_SizeOfInitializedData=TODO
+13=JclPeHeader_SizeOfUninitializedData=TODO
+14=JclPeHeader_AddressOfEntryPoint=TODO
+15=JclPeHeader_BaseOfCode=TODO
+16=JclPeHeader_BaseOfData=TODO
+17=JclPeHeader_ImageBase=TODO
+18=JclPeHeader_SectionAlignment=TODO
+19=JclPeHeader_FileAlignment=TODO
+20=JclPeHeader_OperatingSystemVersion=TODO
+21=JclPeHeader_ImageVersion=TODO
+22=JclPeHeader_SubsystemVersion=TODO
+23=JclPeHeader_Win32VersionValue=TODO
+24=JclPeHeader_SizeOfImage=TODO
+25=JclPeHeader_SizeOfHeaders=TODO
+26=JclPeHeader_CheckSum=TODO
+27=JclPeHeader_Subsystem=TODO
+28=JclPeHeader_DllCharacteristics=TODO
+29=JclPeHeader_SizeOfStackReserve=TODO
+30=JclPeHeader_SizeOfStackCommit=TODO
+31=JclPeHeader_SizeOfHeapReserve=TODO
+32=JclPeHeader_SizeOfHeapCommit=TODO
+33=JclPeHeader_LoaderFlags=TODO
+34=JclPeHeader_NumberOfRvaAndSize=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclLoadConfig = (JclLoadConfig_Characteristics...JclLoadConfig_Reserved);
+[ShortDescr]
+TODO
+[Enumeration]
+Count=17
+1=JclLoadConfig_Characteristics=TODO
+2=JclLoadConfig_TimeDateStamp=TODO
+3=JclLoadConfig_Version=TODO
+4=JclLoadConfig_GlobalFlagsClear=TODO
+5=JclLoadConfig_GlobalFlagsSet=TODO
+6=JclLoadConfig_CriticalSectionDefaultTimeout=TODO
+7=JclLoadConfig_DeCommitFreeBlockThreshold=TODO
+8=JclLoadConfig_DeCommitTotalFreeThreshold=TODO
+9=JclLoadConfig_LockPrefixTable=TODO
+10=JclLoadConfig_MaximumAllocationSize=TODO
+11=JclLoadConfig_VirtualMemoryThreshold=TODO
+12=JclLoadConfig_ProcessHeapFlags=TODO
+13=JclLoadConfig_ProcessAffinityMask=TODO
+14=JclLoadConfig_CSDVersion=TODO
+15=JclLoadConfig_Reserved1=TODO
+16=JclLoadConfig_EditList=TODO
+17=JclLoadConfig_Reserved=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeFileProperties = record
+  Size: DWORD;
+  CreationTime: TDateTime;
+  LastAccessTime: TDateTime;
+  LastWriteTime: TDateTime;
+  Attributes: Integer;
+end;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[RecordFields]
+Count=5
+1=Size:DWORD=TODO
+2=CreationTime:TDateTime=TODO
+3=LastAccessTime:TDateTime=TODO
+4=LastWriteTime:TDateTime=TODO
+5=Attributes:Integer=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImageStatus = (stNotLoaded, stOk, stNotPE, stNotFound, stError);
+[ShortDescr]
+TJclPeImageStatus defines the various states a TJclPeImage instance can be in.
+[Description]
+TJclPeImageStatus defines the various states a TJclPeImage instance can be in.
+[Enumeration]
+Count=5
+1=stNotLoaded=No image file is loaded. This is the status after creation and after clearing the instance.
+2=stOk=An image file was succesfully loaded.
+3=stNotPE=The most recently loaded file was not a valid PE image file.
+4=stNotFound=The file coudln't be found.
+5=stError=An unexpected error occured while loading a PE image file.
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeImage = class (TObject)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(ANoExceptions: Boolean = False);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=ANoExceptions:Boolean=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CalculateCheckSum: DWORD;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DirectoryEntryToData(Directory: Word): Pointer;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Directory:Word=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=SectionName:string=TODO
+2=Header:PImageSectionHeader=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsSystemImage: Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RvaToVa(Rva: DWORD): Pointer;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Rva:DWORD=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StatusOK: Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure TryGetNamesForOrdinalImports;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function VerifyCheckSum: Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function DebugTypeNames(DebugType: DWORD): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=DebugType:DWORD=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function DirectoryNames(Directory: Word): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Directory:Word=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function ExpandBySearchPath(const ModuleName, BasePath: string): TFileName;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=ModuleName:string=TODO
+2=BasePath:string=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function HeaderNames(Index: TJclPeHeader): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Index:TJclPeHeader=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function LoadConfigNames(Index: TJclLoadConfig): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Index:TJclLoadConfig=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function ShortSectionInfo(Characteristics: DWORD): string;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=Characteristics:DWORD=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+class function StampToDateTime(TimeDateStamp: DWORD): TDateTime;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=TimeDateStamp:DWORD=TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DebugList: TJclPeDebugList read GetDebugList;
+[ShortDescr]
+Allows access to the debug section of the file.
+[Description]
+The DebugList property returns a TJclPeDebugList instance which allows access
+to the debug section (.debug) of the loaded PE image file.
+See <REF Target"Types\TJclPeDebugList">TJclPeDebugList</REF> for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Description: string read GetDescription;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Directories[Directory: Word]: TImageDataDirectory read GetDirectories;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DirectoryExists[Directory: Word]: Boolean read GetDirectoryExists;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ExportList: TJclPeExportFuncList read GetExportList;
+[ShortDescr]
+Allows access to the export section of the image file.
+[Description]
+The ExportList property returns a TJclPeExportFuncList instance which allows
+access to the export section (.edata) of the loaded PE image file.
+See <REF Target"Types\TJclPeExportFuncList">TJclPeExportFuncList</REF> for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=TJclPeExportFuncList;Types\TJclPeExportFuncList
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FileName: TFileName read FFileName write SetFileName;
+[ShortDescr]
+Name of the loaded PE image file.
+[Description]
+Read the FileName property to determine which PE image file is currently loaded.
+Set FileName to load different image file. Note that depending on how the TJclPeImage
+instance was constructed, loading an invalid image file may either raise an
+exception or not. In any case the <REF>Status</REF> is updated to reflect success
+or failure.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=Status
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FileProperties: TJclPeFileProperties read GetFileProperties;
+[ShortDescr]
+Returns standard information about the file.
+[Description]
+The FileProperties property returns a TJclPeFileProperties record containing
+standard (non PE specific) information about the loaded image file. This includes
+it's size, creation time and attributes.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property HeaderValues[Index: TJclPeHeader]: string read GetHeaderValues;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImageSectionCount: Integer read GetImageSectionCount;
+[ShortDescr]
+Returns the number of sections in the PE image.
+[Description]
+The ImageSectionCount property returns the number of sections in the loaded
+PE image file. The returned Count minus one, is the highest valid index into
+the <REF>ImageSectionHeader</REF> and <REF>ImageSectionNames</REF> properties.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=ImageSectionNames
+2=ImageSectionHeaders
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImageSectionHeaders[Index: Integer]: TImageSectionHeader read GetImageSectionHeaders;
+[ShortDescr]
+Returns the image section header of a specific section.
+[Description]
+The ImageSectionHeaders array property returns the section header of the section
+indicated by the specified index. Valid indices are from 0 to <REF>ImageSectionCount</REF> - 1.
+To retrieve the name of a section use the <REF>ImageSectionNames</REF> property.
+For the interpretation of the fields in the returned header see the Platform SDK
+and "Portable Executable and Common Object File Format Specification"
+Revision 6.0 February 1999 in the MSDN library.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=ImageSectionCount
+2=ImageSectionNames
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImageSectionNames[Index: Integer]: string read GetImageSectionNames;
+[ShortDescr]
+Returns the name of a specific section.
+[Description]
+The ImageSectionNames array property returns the name of the section indicated
+by the index. Valid indices are from 0 to <REF>ImageSectionCount</REF> - 1. Returned names
+are always 8 characters or shorter. Common names are ".reloc", ".text" and ".data".
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=ImageSectionCount
+2=ImageSectionHeaders
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImportList: TJclPeImportList read GetImportList;
+[ShortDescr]
+Allows access to the import section.
+[Description]
+The ImportList property returns a TJclPeImportList instance which allows access
+to the import section (.idata) of the loaded PE image file.
+See <REF Target"..\Import Section\TJclPeImportList">TJclPeImportList</REF> for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LoadConfigValues[Index: TJclLoadConfig]: string read GetLoadConfigValues;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LoadedImage: TLoadedImage read FLoadedImage;
+[ShortDescr]
+Returns information about the loaded image.
+[Description]
+Returns a TLoadedImage record which contains information about the loaded PE image
+file. See the LOADED_IMAGE topic in the Platform SDK for a description of this
+record.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MappedAddress: DWORD read GetMappedAddress;
+[ShortDescr]
+Returns the base address at which the file was loaded.
+[Description]
+The MappedAddress property returns the (virtual) base address at which the PE
+file was loaded. The returned value is identical to <REF>LoadedImage</REF>.MappedAddress
+and is only provided for convenience (it's often used field).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=LoadedImage
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OptionalHeader: TImageOptionalHeader read GetOptionalHeader;
+[ShortDescr]
+Allows access to the image optional header.
+[Description]
+Read OptionalHeader to gain access to the optional header of the loaded PE file.
+The optional header contains fields standard to all COFF implementations, Windows
+specific fields such as the target subsytem and allows access to all data
+directories. Generally speaking, it provides all information for the Windows
+loader to successfully load the image. Note that not all valid PE image files
+have an optional header. Specifically an object file (.obj) doesn't necessarily
+have one (that's why it's called optional). See "Portable Executable and Common
+Object File Format Specification" Revision 6.0 February 1999 in the MSDN library
+for a description of the fields in the returned record.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RelocationList: TJclPeRelocList read GetRelocationList;
+[ShortDescr]
+Allows access to the relocations section of the PE file.
+[Description]
+The RelocationList property returns a TJclPeRelocList instance which allows
+access to the relocations section (.reloc) of the loaded PE file. This is also
+known as the fix up table.
+See REF Target"..\Relocations section\TJclPeRelocList">TJclPeRelocList</REF> for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ResourceList: TJclPeRootResourceList read GetResourceList;
+[ShortDescr]
+Allows access to the resource section of the PE file.
+[Description]
+Returns a TJclPeRootResourceList instance which allows access to the resource
+section (.rsrc) of the loaded PE file.
+See <REF Target"..\Resource Section\TJclPeRootResourceList">TJclPeRootResourceList</REF> for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Status: TJclPeImageStatus read FStatus;
+[ShortDescr]
+Returns the status of the TJclPeImage instance.
+[Description]
+Read status to determine the state of the TJclPeImage instance. Valid states include
+not loaded, ok, not a valid PE file and so forth. Depending on the NoExceptions
+parameter of the constructor, methods of the TJclPeImage may or may not raise
+exceptions. Therefor unless you check this property it is unknown whether or not
+the TJclPeImage contains valid data.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UnusedHeaderBytes: TImageDataDirectory read GetUnusedHeaderBytes;
+[ShortDescr]
+Returns the offset and size of the part of the PE header which is currently unused.
+[Description]
+Returns the offset and size of the part of the PE header which is currently unused.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property VersionInfo: TJclFileVersionInfo read GetVersionInfo;
+[ShortDescr]
+Returns file version information.
+[Description]
+VersionInfo returns a TJclFileVersionInfo instance which allows you to read the
+version information, if any, of the image file. If the file doesn't have a file
+version resource reading this property returns nil.
+See <REF Target"..\..\..\Files and IO\Files and Directories\TJclFileVersionInfo">TJclFileVersionInfo</REF> for more information.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\TJclPeImage
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeNameSearchOptions = set of TJclPeNameSearchOption;
+TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Enumeration]
+Count=4
+1=seImports=TODO
+2=seDelayImports=TODO
+3=seBoundImports=TODO
+4=seExports=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeNameSearchNotifyEvent = procedure (Sender: TObject; PeImage: TJclPeImage) of object;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=2
+1=Sender:TObject=TODO
+2=PeImage:TJclPeImage=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeNameSearchFoundEvent = procedure (Sender: TObject; const FileName: TFileName;
+  const FunctionName: string; Option: TJclPeNameSearchOption) of object;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=4
+1=Sender:TObject=TODO
+2=FileName:TFileName=TODO
+3=FunctionName:string=TODO
+4=Option:TJclPeNameSearchOption=TODO
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclPeNameSearch = class (TThread)
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search\TJclPeNameSearch
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(const FunctionName, Path: string; Options: TJclPeNameSearchOptions = [seImports, seExports]);
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=3
+1=FunctionName:string=TODO
+2=Path:string=TODO
+3=Options:TJclPeNameSearchOptions=TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search\TJclPeNameSearch
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Start;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search\TJclPeNameSearch
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OnFound: TJclPeNameSearchFoundEvent read FOnFound write FOnFound;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search\TJclPeNameSearch
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OnProcessFile: TJclPeNameSearchNotifyEvent read FOnProcessFile write FOnProcessFile;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format\Threaded Search\TJclPeNameSearch
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclRebaseImageInfo = record
+  OldImageSize: DWORD;
+  OldImageBase: DWORD;
+  NewImageSize: DWORD;
+  NewImageBase: DWORD;
+end;
+[ShortDescr]
+Record used by the <REF Target"..\PeRebaseImage">PeRebaseImage</REF> function to
+return information about a rebase operation.
+[Description]
+Record used by the <REF>PeRebaseImage</REF> function to return information about
+a rebase operation.
+[RecordFields]
+Count=4
+1=OldImageSize:DWORD=Size of the image before the rebase.
+2=OldImageBase:DWORD=Base address of the image before the rebase.
+3=NewImageSize:DWORD=Size of the image after the rebase.
+4=NewImageBase:DWORD=Base address of the image after the rebase.
+[Quick Info]
+Kind=Type
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=PeRebaseImage;..\PeRebaseImage
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsPeExe(const FileName: TFileName): Boolean;
+[ShortDescr]
+Determines whether a file is a valid portable executable file.
+[Description]
+IsPeExe determines whether the specified file is a valid portable executable file.
+Examples of valid PE files are Win32 .exe, .dll and .obj files as generated by
+Delphi or any other Win32 compiler.
+[Parameters]
+Count=1
+1=FileName:TFileName=Name of the executable image file to test. The normal search
+path is used to locate this file (application path, current directory, windows folder
+etc.). If the filename does not include an extension, '.dll' is assumed.
+[Result]
+If the specified file is a valid portable executable file the function returns
+True, otherwise it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeCreateNameHintTable(const FileName: TFileName): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Parameters]
+Count=1
+1=FileName:TFileName=TODO
+[Result]
+TODO
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp: DWORD = 0; MaxNewSize: DWORD = 0): <REF Target"Types\TJclRebaseImageInfo">TJclRebaseImageInfo</REF>;
+[ShortDescr]
+Rebases an image.
+[Description]
+PeRebaseImage modifies the load address of the specified image. Rebasing all the
+images an application uses in such a manner that they can all be loaded at their
+preferred base address (load address) can dramatically reduce the load time of
+your application. This function rebases only a single image but it can easily be
+extended to allow rebasing of an entire application. Note that this function can
+take a long time to complete. Also, this function is not thread-safe.
+[Parameters]
+Count=4
+1=ImageName:TFileName=Filename of the image file to rebase.
+2=NewBase:DWORD=New base address for the executable module. If 0 is specified (the
+default) the base address is calculated according to the suggestion in the Platform SDK
+documentation for the RebaseImage API (address is selected based on the first
+character of the module name). Note that in this case if you rebase multiple
+images with the same initial character they will all be rebased to the same address.
+3=TimeStamp:DWORD=Specifies the new time stamp for the image. The value must be
+represented in the number of seconds elapsed since midnight (00:00:00),
+January 1, 1970, Universal Coordinated Time, according to the system clock.
+4=MaxNewSize:DWORD=Maximum allowed size of the rebased image. If 0 is
+specified (the default) the maximum size is unlimited.
+[Result]
+The function returns a <REF Target"Types\TJclRebaseImageInfo">TJclRebaseImageInfo</REF>
+record which contains information about the rebase such as the new base address
+and image size. If the function fails it raises an EWin32Error exception.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=TJclRebaseImageInfo;Types\TJclRebaseImageInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure PeUpdateCheckSum(const AFileName: TFileName);
+[ShortDescr]
+Updates the image checksum.
+[Description]
+PeUpdateCheckSum updates the specified image's checksum value. If the routine
+succeeds it writes the calculated checksum back to the image file. If it fails
+it raises an exception.
+[Parameters]
+Count=1
+1=AFileName:TFileName=The name of the image file for which to update the checksum.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string; Options: TJclSmartCompOptions = []): Boolean;
+[ShortDescr]
+Tests whether an image exports a specific fuction.
+[Description]
+PeDoesExportFunction determines whether the specified image file exports a function
+by the specified name. The Options parameter allows you to fine tune the search.
+[Parameters]
+Count=3
+1=FileName:TFileName=Filename of the image file to test.
+2=FunctionName:string=Name of the function to search for.
+3=Options:TJclSmartCompOptions=Optional parameters which determine various aspects
+of the search such as case sensitivity.
+See <REF Target"Smart Name Comparison\Types\TJclSmartCompOptions">TJclSmartCompOptions</REF>
+for more detailed information.
+[Result]
+If the image exports the specified function the function returns True, otherwise
+it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=TJclSmartCompOptions;Smart Name Comparison\Types\TJclSmartCompOptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
+  var ForwardedName: string; Options: TJclSmartCompOptions = []): Boolean;
+[ShortDescr]
+Tests whether a function is forwarded.
+[Description]
+PeIsExportFunctionForwardedEx detemines whether the specified function is forwarded
+to another module/function or not. If it is forwarded the ForwardedName parameter
+receives the location to which the function is forwarded.
+[Parameters]
+Count=4
+1=FileName:TFileName=Filename of the image file to test.
+2=FunctionName:string=Name of the function to test.
+3=ForwardedName:string=If the specified function is forwarded this parameters
+receives a string of the format DLL.FunctionName which is where the function is
+forwarded to.
+4=Options:TJclSmartCompOptions=Optional parameters which determine various aspects
+of the functionname matching such as case sensitivity.
+See <REF Target"Smart Name Comparison\Types\TJclSmartCompOptions">TJclSmartCompOptions</REF>
+for more detailed information.
+[Result]
+If the specified function is forwarded to another module the function returns True,
+otherwise it returns False. In the latter case the contents of the ForwardedName
+parameter is undefined.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
+  Options: TJclSmartCompOptions = []): Boolean;
+[ShortDescr]
+Tests whether a function is forwarded.
+[Description]
+PeIsExportFunctionForwardedEx detemines whether the specified function is forwarded
+to another module/function or not.
+[Parameters]
+Count=3
+1=FileName:TFileName=Filename of the image file to test.
+2=FunctionName:string=Name of the function to test.
+3=Options:TJclSmartCompOptions=Optional parameters which determine various aspects
+of the functionname matching such as case sensitivity.
+See <REF Target"Smart Name Comparison\Types\TJclSmartCompOptions">TJclSmartCompOptions</REF>
+for more detailed information.
+[Result]
+If the specified function is forwarded to another module the function returns True,
+otherwise it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeDoesImportFunction(const FileName: TFileName; const FunctionName: string;
+  const LibraryName: string = ''; Options: TJclSmartCompOptions = []): Boolean;
+[ShortDescr]
+Tests whether an image imports a specific function.
+[Description]
+PeDoesImportFunction determines whether the specified image imports the specified
+function from a specific library. If LibraryName is left empty the function test
+if the image imports the function from any library.
+[Parameters]
+Count=4
+1=FileName:TFileName=Filename of the image to test.
+2=FunctionName:string=Name of the function to test.
+3=LibraryName:string=Filename of the library from FunctionName is supposedly imported.
+If this parameter is left empty the function simply tests if the function is imported
+at all from any library. If however this parameter is specified the function only
+returns True if the function is actually imported from the specified library.
+4=Options:TJclSmartCompOptions=Optional parameters which determine various aspects
+of the functionname matching such as case sensitivity.
+See <REF Target"Smart Name Comparison\Types\TJclSmartCompOptions">TJclSmartCompOptions</REF>
+for more detailed information.
+[Result]
+If the function is imported (optionally from the specified library) the function
+returns True, otherwise ut returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string): Boolean;
+[ShortDescr]
+Tests whether an image is implicitly linked against a library.
+[Description]
+PeDoesImportLibrary determines whether the specified image implicitly links
+against the specified library. Thus it tests whether the image imports anything
+from the library. Note that this function only tests direct imports. If for example
+Lib2 links against Lib3 and Lib1 links against Lib2, then testing Lib1 for
+linking against Lib3 will return False.
+[Parameters]
+Count=2
+1=FileName:TFileName=Filename of the image to test.
+2=LibraryName:string=Name of the library to test against.
+[Result]
+If the image directly imports the library the function returns True, otherwise it
+returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings): Boolean;
+[ShortDescr]
+Returns a list of all libraries an image imports.
+[Description]
+PeImportedLibraries returns a list of all libraries which the specified image
+imports (implicitly links against). Note that the list only includes direct imports.
+If Lib1 imports Lib2 and Lib2 imports Lib3 then Lib3 will not be included in the
+listing for Lib1.
+[Parameters]
+Count=2
+1=FileName:TFileName=Filename of the image for which to retrieve an import list.
+2=LibrariesList:TStrings=Receives the list of imported libraries.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the
+latter case the contents of the list is undefined.
+[Notes]
+Count=1
+1=This function preserves the contents of the libraries list.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray): Boolean;
+[ShortDescr]
+Returns a list of all libraries an image imports.
+[Description]
+PeImportedLibrariesArray returns a list of all libraries which the specified image
+imports (implicitly links against). Note that the list only includes direct imports.
+If Lib1 imports Lib2 and Lib2 imports Lib3 then Lib3 will not be included in the
+listing for Lib1.
+[Parameters]
+Count=2
+1=FileName:TFileName=Filename of the image for which to retrieve an import list.
+2=LibrariesList:TJclStringArray=Receives the list of imported libraries.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the
+latter case the contents of the list is undefined.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
+  const LibraryName: string = ''; IncludeLibNames: Boolean = False: Boolean;
+[ShortDescr]
+Returns a list of all directly imported functions for an image.
+[Description]
+PeImportedFunctions returns a list of all directly imported functions by the
+specified image.
+[Parameters]
+Count=4
+1=FileName:TFileName=Filename of the image for which to list the imports.
+2=FunctionsList:TStrings=Receives the list of imported functions. Note that the
+contents of the list on entry are preserved.
+3=LibraryName:string=Name of the from which to list imports. If this parameters
+is empty (the default) all imports from all libraries are included. If on the
+other hand a library is specified only imports from that library are included.
+Note that the library name must include the extension.
+4=IncludeLibNames:Boolean=If True the imported functions are prefixed by the name
+of the library from which they are imported. The library and function name are
+separated by a dot ('.').
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the
+latter case the contents of the list are undefined. Note that even in the case
+of success, the list may not contain any entries (the image may not import anything).
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
+  const LibraryName: string = ''; IncludeLibNames: Boolean= False): Boolean;
+[ShortDescr]
+Returns a list of all directly imported functions for an image.
+[Description]
+PeImportedFunctions returns a list of all directly imported functions by the
+specified image.
+[Parameters]
+Count=4
+1=FileName:TFileName=Filename of the image for which to list the imports.
+2=FunctionsList:TJclStringArrqay=Receives the list of imported functions.
+3=LibraryName:string=Name of the from which to list imports. If this parameters
+is empty (the default) all imports from all libraries are included. If on the
+other hand a library is specified only imports from that library are included.
+Note that the library name must include the extension.
+4=IncludeLibNames:Boolean=If True the imported functions are prefixed by the name
+of the library from which they are imported. The library and function name are
+separated by a dot ('.').
+[Result]
+If the function succeeds it returns True, otherwise it returns False. Note that in
+the case of success, the list may not contain any entries (the image may not import
+anything).
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeExportedFunctions(const FileName: TFileName; FunctionsList: TStrings): Boolean;
+[ShortDescr]
+Returns a list of exported function from an image.
+[Description]
+PeExportedFunctions returns a list of functions exported from the specified image.
+[Parameters]
+Count=2
+1=FileName:TFileName=FileName of the image for which to receive a list of exports.
+2=FunctionsList:TStrings=Receives the list of exported functions. Note that the
+contents of the list upon entry are preserved.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
+[ShortDescr]
+Returns a list of exported function from an image.
+[Description]
+PeExportedFunctions returns a list of functions exported from the specified image.
+[Parameters]
+Count=2
+1=FileName:TFileName=FileName of the image for which to receive a list of exports.
+2=FunctionsList:TJclStringArray=Receives the list of exported functions.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+[ShortDescr]
+Returns a TImageNtHeaders record for an image.
+[Description]
+PeGetNtHeaders returns a TImageNtHeaders record for the specified image. A TImageNtHeaders
+record contains a lot of standard information about the image included in all
+valid portable executable files. For information about the interpretation of this
+record see "Portable Executable and Common Object File Format Specification",
+Revision 6.0 February 1999 in the MSDN library.
+[Parameters]
+Count=2
+1=FileName:TFileName=Filename of the image for which to retrieve the TImageNtHeader.
+2=NtHeaders:TImageNtHeaders=Receives the TImageNtHeaders record.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PeVerifyCheckSum(const FileName: TFileName): Boolean;
+[ShortDescr]
+Verifies the checksum of a portable executable file.
+[Description]
+PeVerifyCheckSum verifies the correctness of the checksum of the specified image.
+The image must be a valid portable executable file. Note that 0 is considered a
+valid checksum.
+[Parameters]
+Count=1
+1=FileName:TFileName=Filename of the image whose checksum to verify.
+[Result]
+If the image's checksum is correct the function returns True, otherwise it
+returns False.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure PeClearGlobalImage;
+[ShortDescr]
+Clears the global TJclPeImage object.
+[Description]
+The various routines in the JclPeImage unit all use a single global TJclPeImage
+instance to perform their work. This instance is created during unit initialization.
+All PE functions check whether the global instance is initialized for the correct
+image file and initalize it if not. This is to increase performance when multiple
+queries are performed on the same PE file. Whenever you
+no longer need to use the PE functions you should clear the contents of the
+global TJclPeImage instance to release all resources held by it. Note that this
+does not destroy the instance, this is done automatically upon application exit.
+[Quick Info]
+Unit=JclPeImage
+Category=Libraries, Processes and Threads
+SubCat=Portable Executable File Format
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
