@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: February 05, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -25,6 +25,10 @@ unit JclUnicode;
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
+// 10-FEB-2001:
+//   - bug fix in StringToWideStringEx and WideStringToStringEx
+// 05-FEB-2001:
+//   - TWideStrings.GetSeparatedText changed (no separator anymore after the last line)
 // 29-JAN-2001:
 //   - PrepareUnicodeData
 //   - LoadInProgress critical section is now created at init time to avoid critical thread races
@@ -977,7 +981,7 @@ const
   ClassEuropeanNumber = [ccEuropeanNumber, ccEuropeanNumberSeparator, ccEuropeanNumberTerminator];
 
   // used to negate a set of categories
-  ClassAll = [ccLetterUppercase..ccAssigned];
+  ClassAll = [Low(TCharacterCategory)..High(TCharacterCategory)];
 
 var
   // As the global data can be accessed by several threads it should be guarded
@@ -4791,21 +4795,31 @@ begin
   Size := 0;
   for I := 0 to Count - 1 do
     Inc(Size, Length(Get(I)) + SepSize);
-  SetLength(Result, Size);
-  P := Pointer(Result);
-  for I := 0 to Count - 1 do
+    
+  // set one separator less, the last line does not need a trailing separator
+  SetLength(Result, Size - SepSize);
+  if Size > 0 then
   begin
-    S := Get(I);
-    L := Length(S);
-    if L <> 0 then
+    P := Pointer(Result);
+    I := 0;
+    while True do
     begin
-      // add current string
-      System.Move(Pointer(S)^, P^, 2 * L);
-      Inc(P, L);
+      S := Get(I);
+      L := Length(S);
+      if L <> 0 then
+      begin
+        // add current string
+        System.Move(Pointer(S)^, P^, 2 * L);
+        Inc(P, L);
+      end;
+      Inc(I);
+      if I = Count then
+        Break;
+        
+      // add separators
+      System.Move(Pointer(Separators)^, P^, 2 * SepSize);
+      Inc(P, SepSize);
     end;
-    // add separators
-    System.Move(Pointer(Separators)^, P^, 2 * SepSize);
-    Inc(P, SepSize);
   end;
 end;
 
@@ -7771,8 +7785,8 @@ var
 begin
   InputLength := Length(S);
   OutputLength := MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, nil, 0);
-  SetLength(Result, OutputLength - 1);
-  MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, PWideChar(Result), OutputLength - 1);
+  SetLength(Result, OutputLength);
+  MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, PWideChar(Result), OutputLength);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7786,8 +7800,8 @@ var
 begin
   InputLength := Length(WS);
   OutputLength := WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, nil, 0, nil, nil);
-  SetLength(Result, OutputLength - 1);
-  WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PChar(Result), OutputLength - 1, nil, nil);
+  SetLength(Result, OutputLength);
+  WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PChar(Result), OutputLength, nil, nil);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
