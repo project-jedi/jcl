@@ -136,17 +136,19 @@ const
   C1_XDIGIT = $0080; // Hexadecimal digits
   C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
 
-{$IFDEF SUPPORTS_EXTSYM}
-  {$EXTERNALSYM C1_UPPER}
-  {$EXTERNALSYM C1_LOWER}
-  {$EXTERNALSYM C1_DIGIT}
-  {$EXTERNALSYM C1_SPACE}
-  {$EXTERNALSYM C1_PUNCT}
-  {$EXTERNALSYM C1_CNTRL}
-  {$EXTERNALSYM C1_BLANK}
-  {$EXTERNALSYM C1_XDIGIT}
-  {$EXTERNALSYM C1_ALPHA}
-{$ENDIF}
+{$IFDEF MSWINDOWS}
+  {$IFDEF SUPPORTS_EXTSYM}
+    {$EXTERNALSYM C1_UPPER}
+    {$EXTERNALSYM C1_LOWER}
+    {$EXTERNALSYM C1_DIGIT}
+    {$EXTERNALSYM C1_SPACE}
+    {$EXTERNALSYM C1_PUNCT}
+    {$EXTERNALSYM C1_CNTRL}
+    {$EXTERNALSYM C1_BLANK}
+    {$EXTERNALSYM C1_XDIGIT}
+    {$EXTERNALSYM C1_ALPHA}
+  {$ENDIF}
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // String Test Routines
@@ -364,9 +366,9 @@ type
 implementation
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
@@ -477,7 +479,7 @@ end;
 // Uppercases or Lowercases a give AnsiString depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCase{(var Str: AnsiString; const Offset: Integer)}; assembler;
+procedure StrCase(var Str: AnsiString; const Offset: Integer); register; assembler;
 asm
         // make sure that the string is not null
 
@@ -509,7 +511,11 @@ asm
 
         // load case map and prepare variables }
 
-        LEA     EBX,[AnsiCaseMap + EDX]
+{$IFDEF PIC}
+        LEA     EBX, [EBX][AnsiCaseMap + EDX]
+{$ELSE}
+        LEA     EBX, [AnsiCaseMap + EDX]
+{$ENDIF}
         MOV     ESI, EAX
         XOR     EDX, EDX
         XOR     EAX, EAX
@@ -573,7 +579,7 @@ end;
 // Uppercases or Lowercases a give null terminated string depending on the
 // passed offset. (UpOffset or LoOffset)
 
-procedure StrCaseBuff{(S: PAnsiChar; const Offset: Integer)}; assembler;
+procedure StrCaseBuff(S: PAnsiChar; const Offset: Integer); register; assembler;
 asm
         // make sure the string is not null
 
@@ -587,7 +593,11 @@ asm
 
         // load case map and prepare variables
 
+{$IFDEF PIC}
+        LEA     EBX, [EBX][AnsiCaseMap + EDX]
+{$ELSE}
         LEA     EBX, [AnsiCaseMap + EDX]
+{$ENDIF}
         MOV     ESI, EAX
         XOR     EDX, EDX
         XOR     EAX, EAX
@@ -995,21 +1005,33 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure StrLowerInPlace(var S: AnsiString); assembler;
+{$IFDEF PIC}
+begin
+  StrCase(S, AnsiLoOffset);
+end;
+{$ELSE}
 asm
-        // StrCase(Str, LoOffset)
+        // StrCase(S, AnsiLoOffset)
 
         XOR     EDX, EDX         // MOV     EDX, LoOffset
         JMP     StrCase
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
 procedure StrLowerBuff(S: PAnsiChar); assembler;
+{$IFDEF PIC}
+begin
+  StrCaseBuff(S, AnsiLoOffset);
+end;
+{$ELSE}
 asm
         // StrCaseBuff(S, LoOffset)
         XOR     EDX, EDX                // MOV     EDX, LoOffset
         JMP     StrCaseBuff
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1247,8 +1269,9 @@ begin
       { did we find a complete match? }
       if SearchMatchPtr^ = #0 then
       begin
-        { append replace to result and move past the search string in source }
-        Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+        if ReplaceLength > 0 then
+          { append replace to result and move past the search string in source }
+          Move((@Replace[1])^, ResultPtr^, ReplaceLength);
         Inc(SourcePtr, SearchLength);
         Inc(ResultPtr, ReplaceLength);
         { replace all instances or just one? }
@@ -1334,8 +1357,9 @@ begin
       { did we find a complete match? }
       if SearchMatchPtr^ = #0 then
       begin
-        { append replace to result and move past the search string in source }
-        Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+        if ReplaceLength > 0 then
+          { append replace to result and move past the search string in source }
+          Move((@Replace[1])^, ResultPtr^, ReplaceLength);
         Inc(SourcePtr, SearchLength);
         Inc(ResultPtr, ReplaceLength);
         { replace all instances or just one? }
@@ -1656,20 +1680,32 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure StrUpperInPlace(var S: AnsiString); assembler;
+{$IFDEF PIC}
+begin
+  StrCase(S, AnsiUpOffset);
+end;
+{$ELSE}
 asm
-        // StrCase(Str, UpOffset)
+        // StrCase(Str, AnsiUpOffset)
         MOV     EDX, AnsiUpOffset
         JMP     StrCase
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
 procedure StrUpperBuff(S: PAnsiChar); assembler;
+{$IFDEF PIC}
+begin
+  StrCaseBuff(S, AnsiUpOffset);
+end;
+{$ELSE}
 asm
         // StrCaseBuff(S, UpOffset)
         MOV     EDX, AnsiUpOffset
         JMP     StrCaseBuff
 end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1867,7 +1903,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF PIC}
+function _StrCompare(const S1, S2: AnsiString): Integer; forward;
+
+function StrCompare(const S1, S2: AnsiString): Integer;
+begin
+  Result := _StrCompare(S1, S2);
+end;
+
+function _StrCompare(const S1, S2: AnsiString): Integer; assembler;
+{$ELSE}
 function StrCompare(const S1, S2: AnsiString): Integer; assembler;
+{$ENDIF PIC}
 asm
         // check if pointers are equal
 
@@ -1879,7 +1926,7 @@ asm
         TEST    EAX, EAX
         JZ      @@Str1Null
 
-        // if S2 is nill return  Length(S1)
+        // if S2 is nil return  Length(S1)
 
         TEST    EDX, EDX
         JZ      @@Str2Null
@@ -3463,7 +3510,7 @@ begin
 end;
 
 //==================================================================================================
-// Miscelanuous
+// Miscellaneous
 //==================================================================================================
 
 function BooleanToStr(B: Boolean): AnsiString;
@@ -3472,7 +3519,6 @@ const
 begin
   Result := Bools[B];
 end;
-
 
 //--------------------------------------------------------------------------------------------------
 
