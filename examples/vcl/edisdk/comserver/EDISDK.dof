@@ -1,0 +1,13 @@
+[Directories]
+OutputDir=..\..\..\bin
+[Version Info Keys]
+CompanyName=Ray's Jedi Projects
+FileDescription=EDI SDK COM Object Library
+FileVersion=1.0.0.24
+InternalName=
+LegalCopyright=Raymond Alexander
+LegalTrademarks=
+OriginalFilename=EDISDK.dll
+ProductName=EDI SDK COM Object Library
+ProductVersion=1.0.0.0
+Comments=Beta version for testing only!
