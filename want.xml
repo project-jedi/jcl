@@ -147,8 +147,10 @@ $Id$
           <exclude name="${basedir}/docs/about jcl/**" />
           <exclude name="${basedir}/docs/contributors.txt" />
           <exclude name="${doc.dir}/*.info" />
+          <exclude name="${doc.dir}/internal/**" />
           <exclude name="${install.dir}/prototypes/**" />
           <exclude name="${install.dir}/prototypes.mak" />
+          <exclude name="${install.dir}/BCB5-dcc32.cfg.mak" />
           <exclude name="${help.dir}/dtx/**" />
           <exclude name="${help.dir}/HIT/**" />
           <exclude name="${help.dir}/*.txt" />
@@ -170,7 +172,6 @@ $Id$
           <exclude name="${basedir}/devtools/**" />
 
           <include name="${basedir}/include/**" />
-          <include name="${bin.dir}/JCL-install.ini" />
           <include name="${bin.dir}/JediInstaller.exe" />
           <include name="${install.dir}/**/*.cfg" />
           <include name="${install.dir}/**/*.conf" />
