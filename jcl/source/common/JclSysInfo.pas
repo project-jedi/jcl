@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: May 26, 2002                                                                      }
+{ Last modified: July 25, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1169,13 +1169,14 @@ end;
 
 function GetBIOSName: string;
 const
-  ADR_BIOSNAME = $FE061;
+  Win9xBIOSInfoKey = 'Enum\Root\*PNP0C01\0000';
+// Reference: How to Obtain BIOS Information from the Registry
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;q195268
 begin
-  try
-    Result := string(PChar(Ptr(ADR_BIOSNAME)));
-  except
-    Result := '';
-  end;
+  if IsWinNT then
+    Result := ''
+  else
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE, Win9xBIOSInfoKey, 'BIOSName', '');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1184,8 +1185,10 @@ function GetBIOSCopyright: string;
 const
   ADR_BIOSCOPYRIGHT = $FE091;
 begin
+  Result := '';
+  if not IsWinNT and not IsBadReadPtr(Pointer(ADR_BIOSCOPYRIGHT), 2) then
   try
-    Result := string(PChar(Ptr(ADR_BIOSCOPYRIGHT)));
+    Result := PChar(ADR_BIOSCOPYRIGHT);
   except
     Result := '';
   end;
@@ -1197,8 +1200,10 @@ function GetBIOSExtendedInfo: string;
 const
   ADR_BIOSEXTENDEDINFO = $FEC71;
 begin
+  Result := '';
+  if not IsWinNT and not IsBadReadPtr(Pointer(ADR_BIOSEXTENDEDINFO), 2) then
   try
-    Result := string(PChar(Ptr(ADR_BIOSEXTENDEDINFO)));
+    Result := PChar(ADR_BIOSEXTENDEDINFO);
   except
     Result := '';
   end;
@@ -1206,7 +1211,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetBIOSDate : TDateTime;
+function GetBIOSDate: TDateTime;
 const
   REGSTR_PATH_SYSTEM = '\HARDWARE\DESCRIPTION\System';
   REGSTR_SYSTEMBIOSDATE = 'SystemBiosDate';
