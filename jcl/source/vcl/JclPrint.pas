@@ -24,7 +24,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclPrint;
@@ -155,6 +155,12 @@ function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 
 function GetDefaultPrinterName: AnsiString;
+
+// DPGetDefaultPrinter
+// Parameters:
+//   PrinterName: Return the printer name.
+// Returns: True for success, False for failure.
+function DPGetDefaultPrinter(out PrinterName: String): Boolean;
 
 // DPSetDefaultPrinter
 // Parameters:
@@ -1112,56 +1118,113 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GetDefaultPrinterName: AnsiString;
-const
-  BufferSize: Integer = 500;
+begin
+  if not DPGetDefaultPrinter(Result) then
+    Result := '';
+end;
 
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : DPGetDefaultPrinter, Author: Microsoft, Conversion: Peter J. Haas }
+// DPGetDefaultPrinter
+// Parameters:
+//   PrinterName: Return the printer name.
+// Returns: True for success, False for failure.
+
+// Source of the original code: Microsoft Knowledge Base Article - 246772
+//   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
+function DPGetDefaultPrinter(out PrinterName: String): Boolean;
+
+function GetDefaultPrinter9x(var PrinterName: String): Boolean;
 var
-  S: AnsiString;
-  Res: Integer;
-  Needed, Returned: Cardinal;
-  PrinterLV5Info: _PRINTER_INFO_5A;
+  NeededSize, ReturnedCount: DWord;
+  Info2Ptr: PPrinterInfo2;
+begin
+  Result := False;
+  // The first EnumPrinters() tells you how big our buffer must
+  // be to hold ALL of PRINTER_INFO_2. Note that this will
+  // typically return FALSE. This only means that the buffer (the 4th
+  // parameter) was not filled in. You do not want it filled in here.
+  NeededSize := 0;
+  ReturnedCount := 0;
+  SetLastError(0);
+  EnumPrinters(PRINTER_ENUM_DEFAULT, Nil, 2, Nil, 0, NeededSize, ReturnedCount);
+  if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
+    Exit;
+  // Allocate enough space for PRINTER_INFO_2.
+  GetMem(Info2Ptr, NeededSize);
+  try
+    // The second EnumPrinters() will fill in all the current information.
+    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, Nil, 2, Info2Ptr, NeededSize,
+      NeededSize, ReturnedCount);
+    if Result then
+      // Copy printer name into passed-in buffer.
+      PrinterName := Info2Ptr^.pPrinterName;
+  finally
+    // Clean up.
+    FreeMem(Info2Ptr);
+  end;
+end;
 
+function GetDefaultPrinter2k(var PrinterName: String): Boolean;
+var
+  Len: DWord;
+  PrinterNameBuffer: array[0..249] of Char;
+begin
+  Len := Length(PrinterNameBuffer);
+  Result := RtdlGetDefaultPrinter(PrinterNameBuffer, @Len);
+  if Result then
+    SetString(PrinterName, PrinterNameBuffer, Len - 1)
+  else if (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
+  begin
+    SetLength(PrinterName, Len - 1);
+    Result := RtdlGetDefaultPrinter(Pointer(PrinterName), @Len);
+  end;
+end;
+
+function GetDefaultPrinterNT(var PrinterName: String): Boolean;
+var
+  Len, I: Integer;
+  PrinterNameBuffer: array[0..249] of Char;
+begin
+  // Retrieve the default string from Win.ini (the registry).
+  // String will be in form "printername,drivername,portname".
+  Len := GetProfileString('windows', 'device', ',', PrinterNameBuffer,
+    Length(PrinterNameBuffer));
+  // Printer name precedes first "," character.
+  { TODO : a missing ',' mean, that the buffer was too small }
+  for I := Low(PrinterNameBuffer) to High(PrinterNameBuffer) do
+  begin
+    if PrinterNameBuffer[I] = ',' then
+    begin
+      Len := I;
+      Break;
+    end;
+  end;
+  SetString(PrinterName, PrinterNameBuffer, Len);
+  Result := Len <> 0;
+end;
 
 begin
-  // We have to differerntiate between
-  //
-  // * Win9x/ME series
-  // * Windows 2000 and higher
-  // * Windows NT4 and older
-
-  Result := '';
-
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then // Win2000 and higher
+  Result := False;
+  PrinterName := '';
+  // If Windows 95 or 98, use EnumPrinters.
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
   begin
-     // The easiest part. Simply use GetDefaultPrinter
-     Res := BufferSize;
-     SetLength(S,Res);
-     if not(RtdlGetDefaultPrinter(PAnsiChar(S), @Res)) then
-       Exit;
-
-     SetLength(S,Res);
-     Result := S;
-  end;
-
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion <= 4) then // WINNT4
-  begin
-    SetLength(S,BufferSize);
-    Res := GetProfileString('windows', 'device', '', PChar(S), BufferSize);
-    SetLength(S, BufferSize);
-    S := Copy(S,1,Pos(',',S)-1);
-    Result := S;
+    Result := GetDefaultPrinter9x(PrinterName);
   end
-  else
+  // If Windows NT, use the GetDefaultPrinter API for Windows 2000,
+  // or GetProfileString for version 4.0 and earlier.
+  else if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
-   // Windows 98/98/ME untested! Please report the results back to
-   // ma.thoma@gmx.de, our issuetracker (homepages.borland.com/jedi/issuetracker
-   // or to jedi.jcl at news.talkto.net. Thank you very much!
-   EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 5, nil, 0, Needed, Returned);
-   if Needed = 0 then exit;
-   if EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 5, @PrinterLV5Info, Needed, Needed, Returned) then
-      Result := PrinterLV5Info.pPrinterName;
- end;
+    if Win32MajorVersion >= 5 then  // Windows 2000 or later (use explicit call)
+      Result := GetDefaultPrinter2k(PrinterName)
+    else // NT4.0 or earlier
+      Result := GetDefaultPrinterNT(PrinterName);
+  end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft, Conversion: Peter J. Haas }
 // DPSetDefaultPrinter
@@ -1303,6 +1366,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/04/13 13:33:38  peterjhaas
+// add DPSetDefaultPrinter, bugfix GetDefaultPrinterName
+//
 // Revision 1.4  2004/04/11 22:12:16  mthoma
 // Added a new function: GetDefaultPrinterName.
 //
