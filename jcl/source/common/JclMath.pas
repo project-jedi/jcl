@@ -42,7 +42,9 @@
 // - Added new function:
 // - Added new function:
 // - Added new function:
-
+// - Fixed a bug: LCD throws a divby zero when result should be 0.
+// - Fixed a bug: Rational.Add(TRational) was buggy and delivered wrong results.
+// - Fixed a bug: Rational.Subtract(TRational) was buggy and delivered wrong results.
 
 
 unit JclMath;
@@ -53,7 +55,7 @@ unit JclMath;
 interface
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF}
   Classes, SysUtils,
@@ -291,8 +293,8 @@ function GetNaNTag(const NaN: Extended): TNaNTag; overload;
 { Set support }
 
 type
-  ASet = class (TObject)
-  private
+  TJclASet = class (TObject)
+  protected
     function GetBit(const Idx: Integer): Boolean; virtual; abstract;
     procedure SetBit(const Idx: Integer; const Value: Boolean); virtual; abstract;
     procedure Clear; virtual; abstract;
@@ -302,7 +304,7 @@ type
   end;
 
 type
-  TJclFlatSet = class (ASet)
+  TJclFlatSet = class (TJclASet)
   private
     FBits: TBits;
   public
@@ -317,35 +319,6 @@ type
   end;
 
 type
-  TJclRangeSet = class (ASet)
-  private
-    FRanges: TList;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear; override;
-    procedure Invert; override;
-    procedure SetRange(const Low, High: Integer; const Value: Boolean); override;
-    function GetBit(const Idx: Integer): Boolean; override;
-    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean; override;
-    procedure SetBit(const Idx: Integer; const Value: Boolean); override;
-  end;
-
-type
-  TJclRange = class (TObject)
-  protected
-    FLow: Integer;
-    FHigh: Integer;
-  public
-    constructor Create(const Low, High: Integer);
-    function HasElement(const I: Integer): Boolean;
-    function Overlap(const Low, High: Integer): Boolean;
-    function Touch(const Low, High: Integer): Boolean;
-    function Inside(const Low, High: Integer): Boolean;
-    procedure Merge(const Low, High: Integer);
-  end;
-
-type
   TPointerArray = array [0..MaxLongint div 256] of Pointer;
   PPointerArray = ^TPointerArray;
   TDelphiSet = set of Byte; // 256 elements
@@ -356,7 +329,7 @@ const
   CompleteDelphiSet: TDelphiSet = [0..255];
 
 type
-  TJclSparseFlatSet = class (ASet)
+  TJclSparseFlatSet = class (TJclASet)
   private
     FSetList: PPointerArray;
     FSetListEntries: Integer;
@@ -367,6 +340,7 @@ type
     function GetBit(const Idx: Integer): Boolean; override;
     procedure SetBit(const Idx: Integer; const Value: Boolean); override;
     procedure SetRange(const Low, High: Integer; const Value: Boolean); override;
+    function GetRange(const Low, High: Integer; const Value: Boolean): Boolean; override;
   end;
 
 { Rational numbers }
@@ -686,7 +660,7 @@ end;
 function ArcCot(X: Float): Float;
 begin
   DomainCheck(X = 0);
-  Result := arctan(1 / X);
+  Result := ArcTan(1 / X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -709,7 +683,6 @@ function ArcSec(X: Float): Float;
   end;
 
 begin
-  DomainCheck(X <= 0);
   Result := FArcTan(sqrt(x*x - 1));
 end;
 
@@ -749,7 +722,6 @@ function ArcTan(X: Float): Float;
 begin
   DomainCheck(X < -Pi);
   DomainCheck(X > Pi);
-
   Result := FArcTan(X);
 end;
 
@@ -1567,6 +1539,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GCD(const X, Y: Cardinal): Cardinal; assembler;
+{ Euclid's algorithm }
 asm
         JMP     @01      // We start with EAX <- X, EDX <- Y, and check to see if Y=0
 @00:
@@ -1603,8 +1576,15 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function LCM(const X, Y: Cardinal): Cardinal;
+var
+  e: Integer;
+
 begin
-  Result := (X div GCD(Abs(X), Abs(Y))) * Y;
+  e := GCD(X, Y);
+  if e > 0 then
+    Result := (X div e) * Y
+  else
+    Result := 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1733,233 +1713,6 @@ end;
 //===================================================================================================
 // Set support
 //===================================================================================================
-
-constructor TJclRange.Create(const Low, High: Integer);
-begin
-  inherited Create;
-  FLow := Low;
-  FHigh := High;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-{  5..10                                     }
-{  R       F     RL<L   RH>H   RH>=L   RL<=H }
-{ 0..4     0      1      0      0       1    }
-{ 11..12   0      0      1      1       0    }
-{ 6..11    1      0      1      1       1    }
-{ 10..11   1      0      1      1       1    }
-{ 0..5     1      1      0      1       1    }
-{ 0..11    1      1      1      1       1    }
-{ 5..10    1      0      0      1       1    }
-{ 6..7     1      0      0      1       1    }
-
-function TJclRange.Overlap(const Low, High: Integer): Boolean;
-begin
-  Result := (High >= FLow) xor (Low <= FHigh);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclRange.Touch(const Low, High: Integer): Boolean;
-begin
-  Result := (High >= FLow - 1) xor (Low <= FHigh + 1);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclRange.Inside(const Low, High: Integer): Boolean;
-begin
-  Result := (FLow >= Low) and (FHigh <= High);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclRange.HasElement(const I: Integer): Boolean;
-begin
-  Result := (I >= FLow) and (I <= FHigh);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclRange.Merge(const Low, High: Integer);
-begin
-  if (High >= FLow - 1) xor (Low <= FHigh + 1) then
-  begin
-    if Low < FLow then
-      FLow := Low;
-
-    if High > FHigh then
-      FHigh := High;
-  end
-  else
-    raise EJclMathError.CreateResRec(@RsRangeError);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclRangeSet.Create;
-begin
-  inherited Create;
-  FRanges := TList.Create;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclRangeSet.Destroy;
-begin
-  Clear;
-  FRanges.Free;
-  FRanges := nil;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclRangeSet.Clear;
-var
-  I: Integer;
-begin
-  for I := 0 to FRanges.Count - 1 do
-    TJclRange(FRanges[I]).Free;
-  FRanges.Clear;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclRangeSet.Invert;
-var
-  I: Integer;
-  R, Pre: TJclRange;
-begin
-  if (FRanges.Count > 0) and (TJclRange(FRanges[0]).FLow > 0) then
-    Pre := TJclRange.Create(0, TJclRange(FRanges[0]).FLow - 1)
-  else
-    Pre := nil;
-  for I := 0 to FRanges.Count - 2 do
-  begin
-    R := TJclRange(FRanges[I]);
-    R.FLow := R.FHigh + 1;
-    R.FHigh := TJclRange(FRanges[I + 1]).FLow - 1;
-  end;
-  if FRanges.Count > 0 then
-    if TJclRange(FRanges[FRanges.Count - 1]).FHigh = MaxInt then
-    begin
-      TJclRange(FRanges[FRanges.Count - 1]).Free;
-      FRanges.Delete(FRanges.Count - 1);
-    end
-    else
-    begin
-      TJclRange(FRanges[FRanges.Count - 1]).FLow := TJclRange(FRanges[FRanges.Count - 1]).FHigh + 1;
-      TJclRange(FRanges[FRanges.Count - 1]).FHigh := MaxInt;
-    end;
-  if Pre <> nil then
-    FRanges.Insert(0, Pre);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclRangeSet.SetRange(const Low, High: Integer; const Value: Boolean);
-var
-  I, J, K: Integer;
-  R: TJclRange;
-begin
-  I := 0;
-  K := FRanges.Count;
-  while (I <= K - 1) and (Low > TJclRange(FRanges[I]).FHigh) do
-    Inc(I);
-  if (I = K) or // append
-    ((Low < TJclRange(FRanges[I]).FLow) and (High < TJclRange(FRanges[I]).FLow)) then // insert
-  begin
-    if Value then
-      FRanges.Insert(I, TJclRange.Create(Low, High));
-    Exit;
-  end;
-  // I = first block that overlaps
-
-  J := I;
-  while (J < K - 1) and (TJclRange(FRanges[J + 1]).FLow <= High) do
-    Inc(J);
-  // J = last block that overlaps
-
-  if not Value then // clear range (NOT IMPL)
-  begin
-    if I = J then
-    begin
-      R := FRanges[I];
-      if R.Inside(Low, High) then
-      begin
-        R.Free;
-        FRanges.Delete(I);
-        Exit;
-      end;
-    end
-    else
-    begin
-      for K := I + 1 to J - 1 do
-      begin
-        TJclRange(FRanges[I + 1]).Free;
-        FRanges.Delete(I + 1);
-      end;
-    end;
-  end
-  else // set range
-  begin
-    R := FRanges[I];
-    if I = J then
-    begin
-      if Low < R.FLow then
-        R.FLow := Low;
-      if High > R.FHigh then
-        R.FHigh := High;
-    end
-    else
-    begin
-      R.FLow := Low;
-      R.FHigh := High;
-      for K := I + 1 to J do
-      begin
-        TJclRange(FRanges[I + 1]).Free;
-        FRanges.Delete(I + 1);
-      end;
-    end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclRangeSet.GetBit(const Idx: Integer): Boolean;
-var
-  I, J: Integer;
-begin
-  I := 0;
-  J := FRanges.Count - 1;
-  while (I <= J) and (Idx > TJclRange(FRanges[I]).FHigh) do
-    Inc(I);
-  Result := (I <= J) and (Idx >= TJclRange(FRanges[I]).FLow);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclRangeSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
-var
-  I, J: Integer;
-begin
-  I := 0;
-  J := FRanges.Count - 1;
-  while (I <= J) and (Low > TJclRange(FRanges[I]).FHigh) do
-    Inc(I);
-  Result := (I <= J) and (Low >= TJclRange(FRanges[I]).FLow) and (High <= TJclRange(FRanges[I]).FHigh);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclRangeSet.SetBit(const Idx: Integer; const Value: Boolean);
-begin
-  SetRange(Idx, Idx, Value);
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TJclFlatSet.Create;
 begin
@@ -2161,6 +1914,26 @@ begin
     for I := LowSet + 1 to HighSet - 1 do
       SetValue(CompleteDelphiSet, I);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclSparseFlatSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
+var
+  I: Integer;
+begin
+  if not Value and (High >= FSetListEntries) then
+  begin
+    Result := False;
+    Exit;
+  end;
+  for I := Low to Min(High, FSetListEntries) do
+    if GetBit(I) <> Value then
+    begin
+      Result := False;
+      Exit;
+    end;
+  Result := True;
 end;
 
 //===================================================================================================
@@ -2657,7 +2430,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 type
   TRealType = (rtUndef, rtSingle, rtDouble, rtExtended);
@@ -2743,11 +2516,11 @@ begin
     Result := EJclNaNSignal.Create(Tag);
 end;
 
-{$ENDIF WIN32}
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 procedure InitExceptObjProc;
 
@@ -2763,7 +2536,7 @@ begin
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
       end;
 
-{$ENDIF WIN32}
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2837,9 +2610,9 @@ end;
 
 procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag);
 begin
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   InitExceptObjProc;
-  {$ENDIF WIN32}
+  {$ENDIF}
   MakeQuietNaN(X, Tag);
   Exclude(TSingleBits(X), sNaNQuietFlag);
 end;
@@ -2848,9 +2621,9 @@ end;
 
 procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag);
 begin
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   InitExceptObjProc;
-  {$ENDIF WIN32}
+  {$ENDIF}
   MakeQuietNaN(X, Tag);
   Exclude(TDoubleBits(X), dNaNQuietFlag);
 end;
@@ -2859,9 +2632,9 @@ end;
 
 procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag);
 begin
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   //InitExceptObjProc;
-  {$ENDIF WIN32}
+  {$ENDIF}
   MakeQuietNaN(X, Tag);
   Exclude(TExtendedBits(X), xNaNQuietFlag);
 end;
@@ -2873,9 +2646,9 @@ var
   Tag, StopTag: TNaNTag;
   P: PLongint;
 begin
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   InitExceptObjProc;
-  {$ENDIF WIN32}
+  {$ENDIF}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
   CheckTag(StopTag);
@@ -2900,9 +2673,9 @@ var
   Tag, StopTag: TNaNTag;
   P: PInt64;
 begin
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   InitExceptObjProc;
-  {$ENDIF WIN32}
+  {$ENDIF}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
   CheckTag(StopTag);
@@ -3154,7 +2927,7 @@ end;
 
 procedure TJclRational.Add(const R: TJclRational);
 begin
-  FT := FT * R.FN + R.FT;
+  FT := FT * R.FN + R.FT * FN;
   FN := FN * R.FN;
   Simplify;
 end;
@@ -3184,7 +2957,7 @@ end;
 
 procedure TJclRational.Subtract(const R: TJclRational);
 begin
-  FT := FT * R.FN - R.FT;
+  FT := FT * R.FN - R.FT * FN;
   FN := FN * R.FN;
   Simplify;
 end;
