@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: August 13, 2000                                               }
+{ Last modified: September 20, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -585,9 +585,12 @@ end;
 // TJclCriticalSectionEx
 //==============================================================================
 
+const
+  DefaultCritSectSpinCount = 4000;
+
 constructor TJclCriticalSectionEx.Create;
 begin
-  CreateEx(4000, False);
+  CreateEx(DefaultCritSectSpinCount, False);
 end;
 
 //------------------------------------------------------------------------------
@@ -597,7 +600,7 @@ constructor TJclCriticalSectionEx.CreateEx(SpinCount: Cardinal;
 begin
   FSpinCount := SpinCount;
   if NoFailEnter then
-    SpinCount := SpinCount or ($80000000);
+    SpinCount := SpinCount or Cardinal($80000000);
   if not InitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
     raise EJclCriticalSectionError.CreateResRec(@RsSynchInitCriticalSection);
 end;
@@ -606,6 +609,9 @@ end;
 
 function TJclCriticalSectionEx.GetSpinCount: Cardinal;
 begin
+  // Spinning only makes sense on multiprocessor systems. On a single processor
+  // system the thread would simply waste cycles while the owning thread is
+  // suspended and thus cannot release the critical section.
   if ProcessorCount = 1 then
     Result := 0
   else
@@ -840,12 +846,16 @@ begin
   FName := Name;
   if Name = '' then
   begin
+    // None shared optex, don't need filemapping, sharedinfo is local
     FFileMapping := 0;
     FEvent := TJclEvent.Create(nil, False, False, '');
     FSharedInfo := AllocMem(SizeOf(TOptexSharedInfo));
   end
   else
   begin
+    // Shared optex, event protects access to sharedinfo. Creation of filemapping
+    // doesn't need protection as it will automatically "open" instead of "create"
+    // if another process already created it.
     FEvent := TJclEvent.Create(nil, False, False, 'Optex_Event_' + Name);
     FExisted := FEvent.Existed;
     FFileMapping := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
@@ -933,7 +943,8 @@ end;
 procedure TJclOptex.SetSpinCount(Value: Integer);
 begin
   if Value < 0 then
-    Value := 4000;
+    Value := DefaultCritSectSpinCount;
+  // Spinning only makes sense on multiprocessor systems
   if ProcessorCount > 1 then
     InterlockedExchange(Integer(FSharedInfo^.SpinCount), Value);
 end;
@@ -980,6 +991,7 @@ procedure TJclMultiReadExclusiveWrite.AddToThreadList(ThreadId: Integer;
 var
   L: Integer;
 begin
+  // Caller must own lock
   L := Length(FThreads);
   SetLength(FThreads, L + 1);
   FThreads[L].ThreadId := ThreadId;
@@ -998,30 +1010,40 @@ begin
   MustWait := False;
   ThreadId := GetCurrentThreadId;
   FLock.Enter;
-  Index := FindThread(ThreadId);
-  if Index >= 0 then
-    Inc(FThreads[Index].RecursionCount)
-  else
-  begin
-    // request to read (first time)
-    AddToThreadList(ThreadId, True);
-    if FState >= 0 then
+  try
+    Index := FindThread(ThreadId);
+    if Index >= 0 then
     begin
-      if (FPreferred = mpReaders) or (FWaitingWriters = 0) then
-        Inc(FState)
-      else
-      begin
-        Inc(FWaitingReaders);
-        MustWait := True;
-      end;
+      // Thread is on threadslist so it is already reading
+      Inc(FThreads[Index].RecursionCount);
     end
     else
     begin
-      Inc(FWaitingReaders);
-      MustWait := True;
+      // Request to read (first time)
+      AddToThreadList(ThreadId, True);
+      if FState >= 0 then
+      begin
+        // MREW is unowned or only readers. If there are no waiting writers or
+        // readers are preferred then allow thread to continue, otherwise it must
+        // wait it's turn
+        if (FPreferred = mpReaders) or (FWaitingWriters = 0) then
+          Inc(FState)
+        else
+        begin
+          Inc(FWaitingReaders);
+          MustWait := True;
+        end;
+      end
+      else
+      begin
+        // MREW is owner by a writer, must wait
+        Inc(FWaitingReaders);
+        MustWait := True;
+      end;
     end;
+  finally
+    FLock.Leave;
   end;
-  FLock.Leave;
   if MustWait then
     FSemReaders.WaitForever;
 end;
@@ -1036,41 +1058,52 @@ var
 begin
   MustWait := False;
   FLock.Enter;
-  ThreadId := GetCurrentThreadId;
-  Index := FindThread(ThreadId);
-  if Index < 0 then
-  begin
-    // request to write (first time)
-    AddToThreadList(ThreadId, False);
-    if FState = 0 then
-      FState := -1
-    else
+  try
+    ThreadId := GetCurrentThreadId;
+    Index := FindThread(ThreadId);
+    if Index < 0 then
     begin
-      Inc(FWaitingWriters);
-      MustWait := True;
-    end;
-  end
-  else
-  begin
-    if FThreads[Index].Reader then
-    begin
-      // request to write while reading
-      Inc(FThreads[Index].RecursionCount);
-      FThreads[Index].Reader := False;
-      Dec(FState);
+      // Request to write (first time)
+      AddToThreadList(ThreadId, False);
       if FState = 0 then
-        FState := -1
+      begin
+        // MREW is unowned so start writing
+        FState := -1;
+      end
       else
       begin
-        MustWait := True;
+        // MREW is owner, must wait
         Inc(FWaitingWriters);
+        MustWait := True;
       end;
     end
     else
-      // requesting to write while already writing
-      Inc(FThreads[Index].RecursionCount);
+    begin
+      if FThreads[Index].Reader then
+      begin
+        // Request to write while reading
+        Inc(FThreads[Index].RecursionCount);
+        FThreads[Index].Reader := False;
+        Dec(FState);
+        if FState = 0 then
+        begin
+          // MREW is unowned so start writing
+          FState := -1;
+        end
+        else
+        begin
+          // MREW is owned, must wait
+          MustWait := True;
+          Inc(FWaitingWriters);
+        end;
+      end
+      else
+        // Requesting to write while already writing
+        Inc(FThreads[Index].RecursionCount);
+    end;
+  finally
+    FLock.Leave;
   end;
-  FLock.Leave;
   if MustWait then
     FSemWriters.WaitFor(INFINITE);
 end;
@@ -1120,6 +1153,7 @@ function TJclMultiReadExclusiveWrite.FindThread(ThreadId: Integer): Integer;
 var
   I: Integer;
 begin
+  // Caller must lock
   Result := -1;
   for I := 0 to Length(FThreads) - 1 do
     if FThreads[I].ThreadId = ThreadId then
@@ -1139,23 +1173,26 @@ var
 begin
   ThreadId := GetCurrentThreadId;
   FLock.Enter;
-  Index := FindThread(ThreadId);
-  if Index >= 0 then
-  begin
-    Dec(FThreads[Index].RecursionCount);
-    if FThreads[Index].RecursionCount = 0 then
+  try
+    Index := FindThread(ThreadId);
+    if Index >= 0 then
     begin
-      WasReading := FThreads[Index].Reader;
-      if WasReading then
-        Dec(FState)
-      else
-        FState := 0;
-      RemoveFromThreadList(Index);
-      if FState = 0 then
-        ReleaseWaiters(WasReading);
+      Dec(FThreads[Index].RecursionCount);
+      if FThreads[Index].RecursionCount = 0 then
+      begin
+        WasReading := FThreads[Index].Reader;
+        if WasReading then
+          Dec(FState)
+        else
+          FState := 0;
+        RemoveFromThreadList(Index);
+        if FState = 0 then
+          ReleaseWaiters(WasReading);
+      end;
     end;
+  finally
+    FLock.Leave;
   end;
-  Flock.Leave;
 end;
 
 //------------------------------------------------------------------------------
@@ -1164,6 +1201,7 @@ procedure TJclMultiReadExclusiveWrite.ReleaseWaiters(WasReading: Boolean);
 var
   ToRelease: TMrewPreferred;
 begin
+  // Caller must Lock
   ToRelease := mpEqual;
   case FPreferred of
     mpReaders:
@@ -1220,6 +1258,7 @@ procedure TJclMultiReadExclusiveWrite.RemoveFromThreadList(Index: Integer);
 var
   L: Integer;
 begin
+  // Caller must Lock
   L := Length(FThreads);
   Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) * (L - Index - 1));
   SetLength(FThreads, L - 1);
