@@ -34,6 +34,7 @@ contains
   JclUnitConv in '..\..\source\common\JclUnitConv.pas',
   JclBase in '..\..\source\common\JclBase.pas',
   JclComplex in '..\..\source\common\JclComplex.pas',
+  JclCompression in '..\..\source\common\JclCompression.pas',
   JclCounter in '..\..\source\common\JclCounter.pas',
   JclDateTime in '..\..\source\common\JclDateTime.pas',
   JclEDI in '..\..\source\common\JclEDI.pas',
@@ -84,7 +85,6 @@ contains
   JclAppInst in '..\..\source\windows\JclAppInst.pas',
   JclDITs in '..\..\source\common\JclDITs.pas',
   zlibh in '..\..\source\windows\zlibh.pas',
-  JclZlib in '..\..\source\common\JclZlib.pas',
   JclCLR in '..\..\source\windows\JclCLR.pas';
 
 end.

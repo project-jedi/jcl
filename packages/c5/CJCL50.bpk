@@ -41,7 +41,7 @@
       ..\..\lib\c5\obj\JclSysInfo.obj
       ..\..\lib\c5\obj\JclSysUtils.obj
       ..\..\lib\c5\obj\Jcl8087.obj
-      ..\..\lib\c5\obj\JclZlib.obj
+      ..\..\lib\c5\obj\JclCompression.obj
       ..\..\lib\c5\obj\Snmp.obj
       ..\..\lib\c5\obj\JclCOM.obj
       ..\..\lib\c5\obj\JclConsole.obj

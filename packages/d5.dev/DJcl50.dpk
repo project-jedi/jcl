@@ -34,6 +34,7 @@ contains
   Jcl8087 in '..\..\source\common\Jcl8087.pas',
   JclBase in '..\..\source\common\JclBase.pas',
   JclComplex in '..\..\source\common\JclComplex.pas',
+  JclCompression in '..\..\source\common\JclCompression.pas',
   JclCounter in '..\..\source\common\JclCounter.pas',
   JclDateTime in '..\..\source\common\JclDateTime.pas',
   JclEDIXML in '..\..\source\common\JclEDIXML.pas',
@@ -59,7 +60,7 @@ contains
   JclSysUtils in '..\..\source\common\JclSysUtils.pas',
   JclUnitConv in '..\..\source\common\JclUnitConv.pas',
   JclWideStrings in '..\..\source\common\JclWideStrings.pas',
-  JclZlib in '..\..\source\common\JclZlib.pas',
+  JclCompression in '..\..\source\common\JclCompression.pas',
   JclAppInst in '..\..\source\windows\JclAppInst.pas',
   JclCOM in '..\..\source\windows\JclCOM.pas',
   JclConsole in '..\..\source\windows\JclConsole.pas',
@@ -85,6 +86,7 @@ contains
   zlibh in '..\..\source\windows\zlibh.pas',
   JclGraphUtils in '..\..\source\vcl\JclGraphUtils.pas',
   JclGraphics in '..\..\source\vcl\JclGraphics.pas',
-  JclPrint in '..\..\source\vcl\JclPrint.pas';
+  JclPrint in '..\..\source\vcl\JclPrint.pas',
+  Hardlinks in '..\..\source\windows\Hardlinks.pas';
 
 end.
