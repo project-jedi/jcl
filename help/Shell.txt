@@ -15,15 +15,16 @@ qualified path or a relative one, which will be relative to the current director
 If the function succeeds the result is True, otherwise it is False. You can call
 GetLastError to get more detailed information about the reason of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=OpenSpecialFolder
@@ -43,15 +44,16 @@ be specified here (see ShlObj.pas for the full list).
 [Result]
 If the function succeeds the result is True, otherwise it is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=OpenFolder
@@ -75,15 +77,16 @@ See <REF Target"Types\TSHDeleteOptions">TSHDeleteOptions</REF> for more informat
 [Result]
 If the function succeeds the result is True, otherwise it is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TSHDeleteOptions;Types\TSHDeleteOptions
@@ -113,15 +116,16 @@ See <REF Target"Types\TSHDeleteOptions">TSHDeleteOptions</REF> for more informat
 [Result]
 If the function succeeds the result is True, otherwise it is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TSHDeleteOptions;Types\TSHDeleteOptions
@@ -148,15 +152,16 @@ If the function succeeds the result is True, otherwise it is False.
 Count=1
 1=Use this function only to rename a single file.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TSHDeleteOptions;Types\TSHDeleteOptions
@@ -173,16 +178,17 @@ Count=2
 exists) then automatically rename the destination file. This will usually result
 in a name like 'Copy of ...'. If not specified the renaming fails in case of a conflict.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=SHRenameFile;..\SHRenameFile
@@ -200,16 +206,17 @@ Count=3
 2=doAllowUndo=If possible, allow the operation to be undone through the recycle bin.
 3=doFilesOnly=If a wildcard expression is specified, only delete files, not folders.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SHDeleteFiles;..\SHDeleteFiles
@@ -253,16 +260,17 @@ You can also use the Folder member to get additional info about the found item:<
   S := GetItemInfoTip(F.Folder, F.Item);
   </P>
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TEnumFolderFlags = set of TEnumFolderFlag;
@@ -276,16 +284,17 @@ Count=3
 2=efNonFolders=include non folder items in the enumeration
 3=efIncludeHidden=include hidden items in the enumeration
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=SHEnumFolderFirst;..\SHEnumFolderFirst
@@ -328,15 +337,16 @@ Count=2
 1=If SHEnumFolderFirst returns False there is no need to call SHEnumFolderClose.
 2=Passing an empty string as the Folder parameter will enumerate 'My Computer'.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=SHEnumFolderNext
@@ -355,15 +365,16 @@ that it is only necessary to call this function if SHEnumFolderFirst returned Tr
 Count=1
 1=F:TEnumFolderRec=The <REF Target"Types\TEnumFolderRec">TEnumFolderRec</REF> used during the enumeration.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SHEnumFolderFirst
@@ -388,15 +399,16 @@ Count=1
 If the function finds a next item it returns True. If there is no next item or
 an error occurred it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SHEnumFolderFirst
@@ -420,15 +432,16 @@ Count=3
 If the function succeeds it returns True, otherwise it returns False. You can call
 GetLastError to get more detailed information about the reason of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DisplayContextMenu(const Handle: HWND; const Folder: IShellFolder; Item: PItemIdList; Pos: TPoint): Boolean; overload;
@@ -450,15 +463,16 @@ of the top, left corner of the context menu.
 [Result]
 If the function succeeds the result is True, if it fails the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=DisplayContextMenuPidl
@@ -481,15 +495,16 @@ of the top, left corner of the context menu.
 [Result]
 If the function succeeds the result is True, if it fails the result is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Files and Folders
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=DisplayContextMenu
@@ -517,14 +532,15 @@ Count=1
 1=The dimensions of large and small are determined by using the GetSystemMetrics
 function with SM_CXICON, SM_CXSMICON respectively.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.51 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=OverlayIconShortcut
@@ -547,14 +563,15 @@ will be the handle of that same icon, overlayed with the shortcut icon.
 [Result]
 If the function succeeds it returns True, if it fails it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.51 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=OverlayIcon
@@ -577,15 +594,16 @@ will be the handle of that same icon, overlayed with the shared folder icon.
 [Result]
 If the function succeeds it returns True, if it fails it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=OverlayIcon
@@ -621,15 +639,16 @@ have to explicitly destroy the icon any longer. TIcon does that for you.
 2=This function requires COM to be initialized. Delphi normally does that for
 you but you may have to call CoInitialize yourself depending on the circumstances.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TDllVersionInfo = _DllVersionInfo;
@@ -652,16 +671,17 @@ Count=5
 5=dwPlatformId:DWORD=Identifies the platform for which this DLL was built.
 Can be DLLVER_PLATFORM_WINDOWS or DLLVER_PLATFORM_NT which indicate generic Windows and Windows NT respectively.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=SHDllGetVersion;..\SHDllGetVersion
@@ -690,15 +710,16 @@ If the function succeeds the return value is True and the Version record is fill
 with the version information. If the function fails the return value is False and
 the Version record contains whatever it contained on entry.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or Windows NT 4 with IE4.
 Windows 95/98=Requires Windows 98 or later.
 Requirements=Shell32 Version 4.71 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TDllVersionInfo;Types\TDllVersionInfo
@@ -731,15 +752,16 @@ Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOW
 If the function succeeds it returns True, otherwise it returns False. You can call
 GetLastError to get more detailed information about the reason of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ShellExecAndWait
@@ -775,15 +797,16 @@ Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOW
 If the function succeeds it returns True, otherwise it returns False. You can call
 GetLastError to get more detailed information about the reason of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ShellExec
@@ -812,14 +835,15 @@ the dialog likely is not on screen yet. The result therefore doesn't indicate
 whether or not the user selected an application but only whether or not the
 dialog can be shown in the first place.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ShellRasDial(const EntryName: string): Boolean;
@@ -837,15 +861,16 @@ If the function succeeds it returns True, otherwise it fails. Reasons for possib
 failure are an incorrect (non-existing) entry name, the user pressing the Cancel
 button in the dialog or failure to connect.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer = 0): Boolean;
@@ -869,14 +894,15 @@ so the application may not be running yet when the function returns. Note that
 passing an invalid index causes the function to return True (it only checks
 validity of the filename) but the applet will not be shown (obviously).
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclFileExeType = (etError, etMsDos, etWin16, etWin32Gui, etWin32Con);
@@ -890,16 +916,17 @@ Count=5
 4=etWin32Gui=32 bit Windows GUI executable.
 5=etWin32Con=32 bit Windows console executable.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetFileExeType(const FileName: TFileName): TJclFileExeType;
@@ -914,14 +941,15 @@ Count=1
 If the function succeeds it returns the type of executable file represented by
 the <REF>TJclFileExeType</REF> type. If the function fails it returns etError.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ShellFindExecutable(const FileName, DefaultDir: string): string;
@@ -939,14 +967,15 @@ Count=2
 If the function succeeds it returns the name of the application associated with
 the specified file. If the function fails it returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Petr Vones;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
@@ -972,15 +1001,16 @@ pointed to be P (if not nil) is freed.
 If the function succeeds it returns True and P contains the address of the reallocated
 memory block. If the function fails it returns False, and P will retain its value.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Memory Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=SHAllocMem
@@ -1005,15 +1035,16 @@ Count=2
 If the function succeeds it returns True and P contains the address of the allocated
 memory block. If the function fails then it returns False and P will be set to nil.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Memory Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SHAllocMem
@@ -1036,15 +1067,16 @@ Count=2
 If the function succeeds it returns True and P contains the address of the allocated
 memory block. If the function fails it returns False and P will be set to nil.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Memory Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SHGetMem
@@ -1069,15 +1101,16 @@ case means that either the shell's memory allocator couldn't be retrieved or tha
 the memory block wasn't allocated by the shell. Either case, the memory is not
 freed and the P parameter retains its value.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Memory Management
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SHAllocMem
@@ -1117,16 +1150,17 @@ Count=2
 1=To avoid problems you should set the IdList field to nil before using this record.
 2=You must call ShellLinkFree when you no longer need the ShellLink record.
 [Quick Info]
-BCB=3,4,5
 Kind=Type
 Unit=JclShell
 Category=Shell
 SubCat=Shortcuts
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=ShellLinkCreate;..\ShellLinkCreate
@@ -1147,15 +1181,16 @@ Count=1
 1=ShellLink:TShellLink=The <REF Target"Types\TShellLink">TShellLink</REF> record used earlier
 in <REF>ShellLinkCreate</REF>, <REF>ShellLinkCreateSystem</REF> or <REF>ShellLinkResolve</REF>.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Shortcuts
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ShellLinkResolve
@@ -1181,15 +1216,16 @@ If the function succeeds it returns S_OK. If it fails it returns an OLE error co
 Count=1
 1=You must free the TShellLink record by calling <REF>ShellLinkFree</REF>
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Shortcuts
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ShellLinkCreate
@@ -1217,15 +1253,16 @@ the function fails the return value is an OLE error code.
 Count=1
 1=You must free the TShellLink record by calling <REF>ShellLinkFree</REF>
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Shortcuts
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ShellLinkCreateSystem
@@ -1254,15 +1291,16 @@ the function fails the return value is an OLE error code.
 Count=1
 1=You must free the TShellLink record by calling <REF>ShellLinkFree</REF>
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Shortcuts
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ShellLinkCreate
@@ -1286,15 +1324,16 @@ the icon. This is, for example, the recor as initialized by ShellLinkResolve.
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Shortcuts
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SHGetItemInfoTip(const Folder: IShellFolder; Item: PItemIdList): string;
@@ -1315,15 +1354,16 @@ The item's infotip or an empty string if the function fails.
 Count=1
 1=The returned string may contain multiple carriage return linefeed (#13#10) combinations
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Miscellaneous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrRetFreeMem(StrRet: TStrRet): Boolean;
@@ -1340,15 +1380,16 @@ Count=1
 If the function releases the memory it returns True. If it fails to free the
 memory or the StrRet record is not of STRRET_WSTR type then the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrRetToString
@@ -1377,15 +1418,16 @@ If it fails the return value is an empty string.
 Count=1
 1=Windows 2000 introduced StrRetToStr and StrRetToBuf which can be used instead.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrRetFreeMem
@@ -1405,15 +1447,16 @@ Count=1
 If the function succeeds it returns the path of the specified pidl. If it fails
 it returns an empty string.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=PathToPidl
@@ -1439,15 +1482,16 @@ specified path, relative to the specified Folder. If the function fails the
 return value is nil. Note that the caller is responsible for eventually releasing
 the memory associated with the returned pidl by calling <REF>PidlFree</REF>
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=PidlToPath
@@ -1475,15 +1519,16 @@ the memory associated with the returned pidl by calling <REF>PidlFree</REF>.
 Count=1
 1=This function will correctly handle drives but you should use <REF>DriveToPidlBind</REF>
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=PathToPidl
@@ -1510,15 +1555,16 @@ specified drive, relative to the returned Folder. On failure the return value
 is nil. Note that the caller is responsible for eventually releasing the returned
 pidl by calling <REF>PidlFree</REF>.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PathToPidlBind
@@ -1541,15 +1587,16 @@ Count=3
 If the function succeeds the return value is True, otherwise the return value is
 False. In this latter case the Folder and Last parameter will contain nil on return.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PathToPidlBind
@@ -1574,15 +1621,16 @@ Count=2
 If the two pidl's are equal the function returns True, if they are not equal it
 returns False.
 [Quick Info]
-BCB=3,4,5
 Author=Marcel van Brakel;brakelm@bart.nl
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.0 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PidlCopy(const Source: PItemIdList; out Dest: PItemIdList): Boolean;
@@ -1602,15 +1650,16 @@ you must eventually free this item identifier by calling <REF>PidlFree</REF>
 [Result]
 If the function succeeds then the return value is True, otherwise it is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.0 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PidlFree(var IdList: PItemIdList): Boolean;
@@ -1630,15 +1679,16 @@ If the function succeeds the return value is True and IdList is set to nil. If
 the function fails the return value is False and the IdList parameter will retain
 its value.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.0 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PidlGetDepth(const Pidl: PItemIdList): Integer;
@@ -1655,15 +1705,16 @@ The depth of the item identifier list. If the supplied pidl is either unassigned
 or empty the function returns 0. If the pidl is invalid (depth is greater than
 MAX_PATH) the function returns -1.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PidlGetLength
@@ -1685,15 +1736,16 @@ The length, in bytes, of the item identifier list. If the supplied pidl is eithe
 unassigned or empty the result value is 0. If the pidl is invalid (depth greater
 than MAX_PATH) the function returns -1.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=PidlGetDepth
@@ -1713,15 +1765,16 @@ Count=1
 [Result]
 The next element in the supplied item identifier list, or nil if there is no next element.
 [Quick Info]
-BCB=3,4,5
 Unit=JclShell
 Category=Shell
 SubCat=Paths and PIDLs
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=Shell32 Version 4.00 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=PidlGetDepth
