@@ -1326,7 +1326,7 @@ begin
   begin
     TempList := TStringList.Create;
     try
-      Installation.ConfigData.ReadSectionValues(Key, TempList);
+      Installation.ConfigData.ReadSection(Key, TempList);
       for I := 0 to TempList.Count - 1 do
       begin
         S := TempList[I];
