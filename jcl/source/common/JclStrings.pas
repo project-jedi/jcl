@@ -33,7 +33,6 @@
 {   Nick Hodges                                                                                    }
 {   Olivier Sannier                                                                                }
 {   Pelle F. S. Liljendal                                                                          }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones                                                                                     }
 {   Robert Lee                                                                                     }
 {   Robert Marquardt                                                                               }
@@ -4064,6 +4063,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.31  2004/10/18 04:54:42  marquardt
+// remove PH contributor
+//
 // Revision 1.30  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
