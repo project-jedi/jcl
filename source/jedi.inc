@@ -497,6 +497,7 @@
 
 {$IFDEF LINUX}
   {$DEFINE UNIX}
+  {$DEFINE KYLIX}
   {$DEFINE VisualCLX}
 {$ENDIF}
 
