@@ -923,3 +923,78 @@ Notes:
   Use DateTimeToFileTime if one argument is a TDatetime.
 Quick info:
   Donator: Michael Schnell
+@@FileTimeToLocalDateTime
+--------------------------------------------------------------------------------
+@@UnixTimeToDateTime
+<GROUP DateandTime.Conversion>
+Summary:
+  Converts a Unix based date/time value (TJclUnixTime32) to a TDateTime value.
+Description:
+  UnixTimeToDateTime converts the supplied, Unix based TJclUnixTime32 to a
+  TDateTime value. Unix based TJclUnixTime32 values are encoded as the number
+  of seconds since midnight at the start of January 1st, 1970.
+Parameters:
+  UnixTime - The Unix based TJclUnixTime32 to convert.
+Result:
+  The TJclUnixTime32 converted to TDateTime. On failure the function raises an exception.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
+Quick info:
+  Donator: Peter Haas
+--------------------------------------------------------------------------------
+@@UnixTimeToFileTime
+<GROUP DateandTime.Conversion>
+Summary:
+  Converts a Unix based date/time (TJclUnixTime32) to a UTC based TFileTime.
+Description:
+  UnixTimeToFileTime converts the supplied, Unix based TJclUnixTime32 to a
+  TFileTime value. Unix based TJclUnixTime32 values are encoded as the number
+  of seconds since midnight at the start of January 1st, 1970.
+Parameters:
+  UnixTime - The Unix based TJclUnixTime32 to convert.
+Result:
+  The TJclUnixTime32 converted to TFileTime. On failure the function raises an exception.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
+  UnixTimeToDateTime
+Quick info:
+  Donator: Peter Haas
+--------------------------------------------------------------------------------
+@@FileTimeToUnixTime
+<GROUP DateandTime.Conversion>
+Summary:
+  Converts a UTC based TFileTime to a Unix based date/time (TJclUnixTime32).
+Description:
+  FileTimeToUnixTime converts the supplied TFileTime to a Unix based
+  TJclUnixTime32. Unix based TJclUnixTime32 values are encoded as the number
+  of seconds since midnight at the start of January 1st, 1970.
+Parameters:
+  FileTime - The TFileTime to convert
+Result:
+  The TFileTime converted to TJclUnixTime32. On failure the function raises an exception.
+See also:
+  DosDateTimeToSystemTime
+  SystemTimeToDosDateTime
+  DosDateTimeToDateTime
+  DateTimeToDosDateTime
+  FileTimeToDateTime
+  UnixTimeToFileTime
+  UnixTimeToDateTime
+Quick info:
+  Donator: Peter Haas
+--------------------------------------------------------------------------------
+@@TJclUnixTime32
+<GROUP DateandTime.Conversion>
+Summary:
+  Unix style date/time values are encoded as the number of seconds since midnight
+  at the start of January 1st, 1970.
+--------------------------------------------------------------------------------
+

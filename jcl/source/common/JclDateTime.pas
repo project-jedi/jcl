@@ -26,10 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
-
-{ TODO -cHelp : Help for FATDatesEqual }                                                                                                  
 
 // in Help:
 //  We do all conversions (but thoses provided by Delphi anyway)  between
@@ -149,17 +147,13 @@ function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 {$ENDIF MSWINDOWS}
 
 type
-  { TODO -cHelp : add the following types and constants }
   TJclUnixTime32 = LongWord;
 
-{ TODO -cHelp : Author: Peter J. Haas }
-function UnixTimeToDateTime(const Value: TJclUnixTime32): TDateTime;
+function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 
 {$IFDEF MSWINDOWS}
-{ TODO -cHelp : Author: Peter J. Haas }
-function FileTimeToUnixTime(const Value: TFileTime): TJclUnixTime32;
-{ TODO -cHelp : Author: Peter J. Haas }
-function UnixTimeToFileTime(const Value: TJclUnixTime32): TFileTime;
+function FileTimeToUnixTime(const FileTime: TFileTime): TJclUnixTime32;
+function UnixTimeToFileTime(const UnixTime: TJclUnixTime32): TFileTime;
 {$ENDIF MSWINDOWS}
 
 type
@@ -586,7 +580,7 @@ begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
     TIME_ZONE_ID_STANDARD, TIME_ZONE_ID_UNKNOWN:
-      Result := DateTime + (TimeZoneInfo.Bias / MinutesPerDay);
+      Result := DateTime - ((TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay);
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime - ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
   else
@@ -603,7 +597,7 @@ begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
     TIME_ZONE_ID_STANDARD, TIME_ZONE_ID_UNKNOWN:
-      Result := DateTime + (TimeZoneInfo.Bias / MinutesPerDay);
+      Result := DateTime + ((TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay);
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime + ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
   else
@@ -1101,9 +1095,9 @@ const
 // Conversion Unix time <--> TDateTime
 //==================================================================================================
 
-function UnixTimeToDateTime(const Value: TJclUnixTime32): TDateTime;
+function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 begin
-  Result := Value / SecsPerDay + UnixTimeStart;
+  Result := UnixTime / SecsPerDay + UnixTimeStart;
 end;
 
 //==================================================================================================
@@ -1111,16 +1105,16 @@ end;
 //==================================================================================================
 
 {$IFDEF MSWINDOWS}
-function FileTimeToUnixTime(const Value: TFileTime): TJclUnixTime32;
+function FileTimeToUnixTime(const FileTime: TFileTime): TJclUnixTime32;
 begin
-  Result := (Int64(Value) - FileTimeUnixStart) div FileTimeSecond;
+  Result := (Int64(FileTime) - FileTimeUnixStart) div FileTimeSecond;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function UnixTimeToFileTime(const Value: TJclUnixTime32): TFileTime;
+function UnixTimeToFileTime(const UnixTime: TJclUnixTime32): TFileTime;
 begin
-  Int64(Result) := Int64(Value) * FileTimeSecond + FileTimeUnixStart;
+  Int64(Result) := Int64(UnixTime) * FileTimeSecond + FileTimeUnixStart;
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1214,6 +1208,9 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.5  2004/04/08 18:14:00  mthoma
+// Fixed 402, 403, 1045, 236 (all DateTimeToLocalDateTime and vice versa problems), changed $data$ to $date$, removed the todoc statements, changed function prototypes from Value to a more JclDateTime like naming.
+//
 // Revision 1.4  2004/04/06 04:33:37  peterjhaas
 // Add UNIX time <--> TDateTime / TFiletime conversion
 //
