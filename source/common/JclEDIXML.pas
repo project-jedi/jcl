@@ -21,7 +21,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: March 6, 2003                                                                      }
-{ Last modified: October 26, 2003                                                                  }
+{ Last modified: March 22, 2004                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -1633,7 +1633,8 @@ begin
     SearchResult := StrSearch(FDelimiters.ETD, FData, SegmentTagStartPos);
     if SearchResult > 0 then
     begin
-      SegmentTag := Copy(FData, SegmentTagStartPos, ((SearchResult - SegmentTagStartPos) + FDelimiters.ETDLength));
+      SegmentTag := Copy(FData, SegmentTagStartPos, ((SearchResult - SegmentTagStartPos) +
+        FDelimiters.ETDLength));
       EDIXMLAttributes.ParseAttributes(SegmentTag);
       Result := EDIXMLAttributes.CheckAttribute(XMLAttribute_Id, Id);
       if Result >= 0 then
@@ -2737,7 +2738,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-function TEDIXMLANSIX12FormatTranslator.ConvertToEDISegment(XMLSegment: TEDIXMLSegment): TEDISegment;
+function TEDIXMLANSIX12FormatTranslator.ConvertToEDISegment(
+  XMLSegment: TEDIXMLSegment): TEDISegment;
 var
   ediE, xmlE: Integer;
 begin
@@ -2805,7 +2807,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TEDIXMLANSIX12FormatTranslator.ConvertToXMLSegment(EDISegment: TEDISegment): TEDIXMLSegment;
+function TEDIXMLANSIX12FormatTranslator.ConvertToXMLSegment(
+  EDISegment: TEDISegment): TEDIXMLSegment;
 var
   ediE, xmlE: Integer;
 begin
@@ -2909,8 +2912,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIXMLANSIX12FormatTranslator.ConvertTransactionSetLoopToXML(EDILoop: TEDITransactionSetLoop;
-  XMLLoop: TEDIXMLTransactionSetLoop);
+procedure TEDIXMLANSIX12FormatTranslator.ConvertTransactionSetLoopToXML(
+  EDILoop: TEDITransactionSetLoop; XMLLoop: TEDIXMLTransactionSetLoop);
 var
   I, xmlL: Integer;
   EDISegment: TEDISegment;
