@@ -32,13 +32,13 @@ unit JclAbstractContainers;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
+{$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
   Libc,
-  {$ENDIF UNIX}
-  JclBase, JclContainerIntf;
+{$ENDIF UNIX}
+  SysUtils, Classes, JclBase, JclContainerIntf;
 
 type
   TJclIntfCriticalSection = class(TObject, IInterface)
@@ -54,7 +54,7 @@ type
   end;
 
   TJclAbstractContainer = class(TInterfacedObject)
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   private
     FCriticalSection: TJclIntfCriticalSection;
   protected
@@ -62,7 +62,33 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
+  end;
+
+  TJclStrCollection = class(TJclAbstractContainer, IJclStrCollection)
+  protected
+    { IJclStrCollection }
+    function Add(const AString: string): Boolean; virtual; abstract;
+    function AddAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    procedure Clear; virtual; abstract;
+    function Contains(const AString: string): Boolean; virtual; abstract;
+    function ContainsAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function Equals(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function First: IJclStrIterator; virtual; abstract;
+    function IsEmpty: Boolean; virtual; abstract;
+    function Last: IJclStrIterator; virtual; abstract;
+    function Remove(const AString: string): Boolean; overload; virtual; abstract;
+    function RemoveAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function RetainAll(ACollection: IJclStrCollection): Boolean; virtual; abstract;
+    function Size: Integer; virtual; abstract;
+    procedure LoadFromStrings(Strings: TStrings);
+    procedure SaveToStrings(Strings: TStrings);
+    procedure AppendToStrings(Strings: TStrings);
+    procedure AppendFromStrings(Strings: TStrings);
+    function GetAsStrings: TStrings;
+    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
   end;
 
 implementation
@@ -123,9 +149,107 @@ end;
 
 {$ENDIF THREADSAFE}
 
+{ TJclStrCollection }
+
+procedure TJclStrCollection.AppendDelimited(AString, Separator: string);
+var
+  Item: string;
+  SepLen: Integer;
+  PString, PSep, PPos: PChar;
+begin
+  PString := PChar(AString);
+  PSep := PChar(Separator);
+  PPos := StrPos(PString, PSep);
+  if PPos <> nil then
+  begin
+    SepLen := StrLen(PSep);
+    repeat
+      //SetLength(Item, PPos - PString + 1);
+      SetLength(Item, PPos - PString);
+      Move(PString^, Item[1], PPos - PString);
+      //Item[PPos - PString + 1] := #0;
+      Add(Item);
+      PString := PPos + SepLen;
+      PPos := StrPos(PString, PSep);
+    until PPos = nil;
+    if StrLen(PString) > 0 then //ex. hello#world
+      Add(PString);
+  end
+  else //There isnt a Separator in AString
+    Add(AString);
+
+end;
+
+procedure TJclStrCollection.AppendFromStrings(Strings: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
+end;
+
+procedure TJclStrCollection.AppendToStrings(Strings: TStrings);
+var
+  It: IJclStrIterator;
+begin
+  It := First;
+  Strings.BeginUpdate;
+  try
+    while It.HasNext do
+      Strings.Add(It.Next);
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+
+function TJclStrCollection.GetAsDelimited(Separator: string): string;
+var
+  It: IJclStrIterator;
+begin
+  It := First;
+  Result := '';
+  if It.HasNext then
+    Result := It.Next;
+  while It.HasNext do
+    Result := Result + Separator + It.Next;
+end;
+
+function TJclStrCollection.GetAsStrings: TStrings;
+begin
+  Result := TStringList.Create;
+  try
+    AppendToStrings(Result);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TJclStrCollection.LoadDelimited(AString, Separator: string);
+begin
+  Clear;
+  AppendDelimited(AString, Separator);
+end;
+
+procedure TJclStrCollection.LoadFromStrings(Strings: TStrings);
+begin
+  Clear;
+  AppendFromStrings(Strings);
+end;
+
+procedure TJclStrCollection.SaveToStrings(Strings: TStrings);
+begin
+  Strings.Clear;
+  AppendToStrings(Strings);
+end;
+
 // History:
 
 // $Log$
+// Revision 1.2  2005/03/02 09:59:30  dade2004
+// - added TJclStrCollection, which now serves as a common ancestor to all classes implementing IJclStrCollection.
+// - replaced and bug-fixed JclAlgorithms.DCLAppendDelimited() by TJclStrCollection.AppendDelimited
+//
 // Revision 1.1  2005/02/24 03:57:10  rrossmair
 // - donated DCL code, initial check-in
 //
