@@ -122,9 +122,9 @@
         <alias name="Kylix" value="k2,k3,k3p"/>
         <alias name="Windows" value="c5,c6,d5,d6,d7,d9"/>
         <alias name="Linux" value="k2,k3,k3p"/>
-        <alias name="WinDev" value="c5,c6,d5,d6,d7,d9,d5.dev,d6.dev,d7.dev,d9.dev"/>
-        <alias name="JclDev" value="c5,c6,d5,d6,d7,d9,k3,d5.dev,d6.dev,d7.dev,k3.dev"/>
-        <alias name="DelphiDev" value="d5,d6,d7,d9,d5.dev,d6.dev,d7.dev,d9.dev"/>
+        <alias name="WinDev" value="c5,c6,d5,d6,d7,d9,d5.dev"/>
+        <alias name="JclDev" value="c5,c6,d5,d6,d7,d9,k3,d5.dev"/>
+        <alias name="DelphiDev" value="d5,d6,d7,d9,d5.dev"/>
       </aliases>
     </Model>
   </models>
