@@ -1018,6 +1018,9 @@
 // History:
 
 // $Log$
+// Revision 1.19  2004/11/06 02:11:20  mthoma
+// history cleaning.
+//
 // Revision 1.18  2004/08/10 02:52:02  rrossmair
 // - moved {$ENDIF ~JEDI_INC} to EOF.
 //
@@ -1059,29 +1062,29 @@
 // Local is Delphi 6 - removed todo comment
 // Replaced CLX with VisualCLX to be consistent with Borlands current definition of what "CLX" is.
 //
-// Revision 1.7  2004/04/06 05:06:12  peterjhaas
+// Revision 1.7  2004/04/06 05:06:12
 // add support for Kylix, FPC, RTL, versions, some speaking directives
 //
-// 2004-03-22, Peter J. Haas
+// 2004-03-22,
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 //
-// 2004-03-20, Peter J. Haas
+// 2004-03-20,
 //  - add SUPPORTS_LOCAL
 //
-// 2004-03-18, Peter J. Haas
+// 2004-03-18,
 //  - add SUPPORTS_LONGWORD
 //
-// 2004-03-16, Peter J. Haas
+// 2004-03-16,
 //  - add HAS_UNIT_STRUTILS
 //  - add XPLATFORM_RTL
 //
-// 2003-12-03, Peter J. Haas
+// 2003-12-03,
 //  - add SUPPORTS_ENUMVALUE
 //
-// 2003-11-14, Peter J. Haas
+// 2003-11-14,
 //  - add SUPPORTS_VARARGS
 //
-// 2003-10-30, Peter J. Haas
+// 2003-10-30,
 //  - correct and complete comments
 //  - add Kylix definitions
 //  - add RTL definitions
