@@ -28,7 +28,8 @@ package DJcl;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  vcl;
 
 contains
   JclUnitConv in '..\..\source\common\JclUnitConv.pas',
@@ -83,8 +84,9 @@ contains
   JclWin32 in '..\..\source\windows\JclWin32.pas',
   JclWinMIDI in '..\..\source\windows\JclWinMIDI.pas',
   JclAppInst in '..\..\source\windows\JclAppInst.pas',
-  JclDITs in '..\..\source\common\JclDITs.pas',
   zlibh in '..\..\source\windows\zlibh.pas',
-  JclCLR in '..\..\source\windows\JclCLR.pas';
+  JclCLR in '..\..\source\windows\JclCLR.pas',
+  JclWideStrings in '..\..\source\common\JclWideStrings.pas',
+  Hardlinks in '..\..\source\windows\Hardlinks.pas';
 
 end.
