@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 25, 2002                                                                    }
+{ Last modified: June 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -3342,8 +3342,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
-  const AttributeMatch: TJclAttributeMatch = amSubsetOf; const Options: TFileListOptions = [];
-  const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
+  const AttributeMatch: TJclAttributeMatch; const Options: TFileListOptions;
+  const SubfoldersMask: string; const FileMatchFunc: TFileMatchFunc): Boolean;
 
 var
   FileMask: string;
