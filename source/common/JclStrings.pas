@@ -3363,7 +3363,7 @@ begin
       List.Add(Left);
     System.Delete(S, 1, I + L - 1);
     System.Delete(LowerCaseStr, 1, I + L - 1);
-    I := Pos(Sep, S);
+    I := Pos(Sep, LowerCaseStr);
   end;
   if S <> '' then
     List.Add(S);  // Ignore empty strings at the end.
