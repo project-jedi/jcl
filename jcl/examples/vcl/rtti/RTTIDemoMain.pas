@@ -5,8 +5,7 @@ interface
 {$I jcl.inc}
 
 uses
-  SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls;
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls;
 
 type
   TForm1 = class(TForm)
