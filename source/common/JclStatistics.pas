@@ -134,7 +134,7 @@ function HeronianMean(const a, b: Float): Float;
 begin
   Assert(a >= 0);
   Assert(b >= 0);
-  Result := (a + sqrt(ab) + b) / 3;
+  Result := (a + sqrt(a*b) + b) / 3;
 end;
 
 //==================================================================================================
