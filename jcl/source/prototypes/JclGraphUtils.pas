@@ -342,8 +342,8 @@ var
 // Internal LowLevel
 //==============================================================================
 
-function ColorSwap(WinColor: TColor): TColor32; assembler;
-asm
+function ColorSwap(WinColor: TColor): TColor32;
+{asm
 // EAX = WinColor
         MOV     ECX, EAX        // this function swaps R and B bytes in ABGR
         SHR     EAX, 16
@@ -351,6 +351,12 @@ asm
         MOV     AH, $FF         // and writes $FF into A component
         SHL     EAX, 16
         MOV     AX,  CX
+end;}
+begin
+  Result := $FF000000 or            // A component
+    ((WinColor and $FF) shl  16) or // R component
+    (WinColor and $FF00) or         // G component
+    (WinColor and $FF0000) shr 16;  // B component
 end;
 
 //==============================================================================
