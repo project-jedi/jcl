@@ -2301,7 +2301,7 @@ function TJclDebugInfoExports.InitializeSource: Boolean;
 begin
   FBorImage := TJclPeBorImage.Create(True);
   FBorImage.AttachLoadedModule(FModule);
-  Result := FBorImage.StatusOK;
+  Result := FBorImage.StatusOK and (FBorImage.ExportList.Count > 0);
 end;
 
 //==============================================================================
