@@ -21,7 +21,7 @@
 { Various character and string routines (searching, testing and transforming)  }
 {                                                                              }
 { Unit owner: Azret Botash                                                     }
-{ Last modified: Februari 12, 2001                                             }
+{ Last modified: July 2, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -345,7 +345,6 @@ type
 implementation
 
 uses
-  Mask,
   {$IFDEF WIN32}
   Windows,
   {$ENDIF WIN32}
