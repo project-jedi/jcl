@@ -32,9 +32,6 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  {$IFDEF LINUX}
-  Types,
-  {$ENDIF}
   Classes, SysUtils;
 
 //------------------------------------------------------------------------------
@@ -293,7 +290,7 @@ type
     function GetItems(Index: Integer): TObject;
     procedure SetItems(Index: Integer; const Value: TObject);
   public
-    procedure Clear; {$IFNDEF FPC}  override; {$ENDIF}
+    procedure Clear; {$IFNDEF FPC} override; {$ENDIF}
     constructor Create(AOwnsObjects: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
     property Items[Index: Integer]: TObject read GetItems write SetItems; default;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
@@ -312,21 +309,21 @@ uses
 
 constructor EJclError.CreateResRec(ResStringRec: PResStringRec);
 begin
-{$IFNDEF FPC}
+  {$IFNDEF FPC}
   inherited Create(LoadResString(ResStringRec));
-{$ELSE}
+  {$ELSE}
   inherited Create(ResStringRec^);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 constructor EJclError.CreateResRecFmt(ResStringRec: PResStringRec;
   const Args: array of const);
 begin
-{$IFNDEF FPC}
+  {$IFNDEF FPC}
   inherited CreateFmt(LoadResString(ResStringRec), Args);
-{$ELSE}
+  {$ELSE}
   inherited CreateFmt(ResStringRec^, Args);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 
@@ -334,7 +331,7 @@ end;
 // FreePascal support
 //==============================================================================
 
-function SysErrorMessage(ErrNo : Integer) : string;  // TODO: Better Implemtation
+function SysErrorMessage(ErrNo : Integer) : string;  // TODO: Better Implementation
 begin
   Result := 'Win32 Error'; 
 end;
@@ -377,11 +374,11 @@ constructor EJclWin32Error.CreateResRec(ResStringRec: PResStringRec);
 begin
   FLastError := GetLastError;
   FLastErrorMsg := SysErrorMessage(FLastError);
-{$IFNDEF FPC}
+  {$IFNDEF FPC}
   inherited CreateFmt(LoadResString(ResStringRec) + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-{$ELSE}
+  {$ELSE}
   inherited CreateFmt(ResStringRec^ + #13 + RsWin32Prefix, [FLastErrorMsg, FLastError]);
-{$ENDIF}
+  {$ENDIF}
 
 end;
 
