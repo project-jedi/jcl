@@ -4110,7 +4110,7 @@ end;
 
 procedure TJclDebugThreadList.DoSyncThreadRegistered;
 begin
-  if Assigned(FOnThreadUnregistered) then
+  if Assigned(FOnThreadRegistered) then
     FOnThreadRegistered(FRegSyncThreadID);
 end;
 
