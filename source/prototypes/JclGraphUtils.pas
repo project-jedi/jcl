@@ -460,65 +460,19 @@ end;
 
 //------------------------------------------------------------------------------
 
-function _BlendReg(F, B: TColor32): TColor32; assembler;
-asm
+function _BlendReg(F, B: TColor32): TColor32; 
+{asm
   // blend foreground color (F) to a background color (B),
   // using alpha channel value of F
   // Result Z = Fa * Frgb + (1 - Fa) * Brgb
   // EAX <- F
   // EDX <- B
-
-  // Test Fa = 255 ?
-        CMP     EAX, $FF000000  // Fa = 255 ? => Result = EAX
-        JNC     @2
-
-  // Test Fa = 0 ?
-        TEST    EAX, $FF000000  // Fa = 0 ?   => Result = EDX
-        JZ      @1
-
-  // Get weight W = Fa * M
         MOV     ECX, EAX        // ECX  <-  Fa Fr Fg Fb
         SHR     ECX, 24         // ECX  <-  00 00 00 Fa
-
-        PUSH    EBX
-
-  // P = W * F
-        MOV     EBX, EAX        // EBX  <-  Fa Fr Fg Fb
-        AND     EAX, $00FF00FF  // EAX  <-  00 Fr 00 Fb
-        AND     EBX, $FF00FF00  // EBX  <-  Fa 00 Fg 00
-        IMUL    EAX, ECX        // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8          // EBX  <-  00 Fa 00 Fg
-        IMUL    EBX, ECX        // EBX  <-  Pa ** Pg **
-        ADD     EAX, bias
-        AND     EAX, $FF00FF00  // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8          // EAX  <-  00 Pr ** Pb
-        ADD     EBX, bias
-        AND     EBX, $FF00FF00  // EBX  <-  Pa 00 Pg 00
-        OR      EAX, EBX        // EAX  <-  Pa Pr Pg Pb
-
-  // W = 1 - W; Q = W * B
-        XOR     ECX, $000000FF  // ECX  <-  1 - ECX
-        MOV     EBX, EDX        // EBX  <-  Ba Br Bg Bb
-        AND     EDX, $00FF00FF  // EDX  <-  00 Br 00 Bb
-        AND     EBX, $FF00FF00  // EBX  <-  Ba 00 Bg 00
-        IMUL    EDX, ECX        // EDX  <-  Qr ** Qb **
-        SHR     EBX, 8          // EBX  <-  00 Ba 00 Bg
-        IMUL    EBX, ECX        // EBX  <-  Qa ** Qg **
-        ADD     EDX, bias
-        AND     EDX, $FF00FF00  // EDX  <-  Qr 00 Qb 00
-        SHR     EDX, 8          // EDX  <-  00 Qr ** Qb
-        ADD     EBX, bias
-        AND     EBX, $FF00FF00  // EBX  <-  Qa 00 Qg 00
-        OR      EBX, EDX        // EBX  <-  Qa Qr Qg Qb
-
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX        // EAX  <-  Za Zr Zg Zb
-
-        POP     EBX
-        RET
-
-@1:     MOV     EAX, EDX
-@2:     RET
+        JMP    _CombineReg
+end;}
+begin
+  Result := _CombineReg(F, B, F shr 24);
 end;
 
 //------------------------------------------------------------------------------
@@ -528,13 +482,15 @@ procedure _BlendMem(F: TColor32; var B: TColor32);
   // EAX <- F
   // [EDX] <- B
         PUSH    EDX
+        MOV     ECX, EAX        // ECX  <-  Fa Fr Fg Fb
+        SHR     ECX, 24         // ECX  <-  00 00 00 Fa
         MOV     EDX, [EDX]
-        CALL    _BlendReg
+        CALL    _CombineReg
         POP     EDX
         MOV     [EDX], EAX
 end;}
 begin
-  B := _BlendReg(F, B);
+  B := _CombineReg(F, B, F shr 24);
 end;
 
 //------------------------------------------------------------------------------
