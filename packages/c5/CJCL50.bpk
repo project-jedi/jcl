@@ -4,21 +4,21 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="CJCL50.bpl"/>
-    <OBJFILES value="..\dcu\JclStrHashMap.obj ..\dcu\JclStrings.obj ..\dcu\JclSysInfo.obj 
-      ..\dcu\JclUnicode.obj ..\dcu\JclAppInst.obj ..\dcu\JclDebug.obj 
-      ..\dcu\JclGraphics.obj ..\dcu\JclGraphUtils.obj ..\dcu\JclHookExcept.obj 
-      ..\dcu\JclRTTI.obj ..\dcu\JclResources.obj ..\dcu\JclBase.obj 
-      ..\dcu\JclLogic.obj ..\dcu\JclWin32.obj ..\dcu\JclShell.obj 
-      ..\dcu\JclRegistry.obj ..\dcu\JclFileUtils.obj ..\dcu\JclSynch.obj 
-      ..\dcu\JclSysUtils.obj ..\dcu\JclTD32.obj ..\dcu\JclPeImage.obj 
-      ..\dcu\JclSecurity.obj ..\dcu\JclDateTime.obj ..\dcu\JclCOM.obj 
-      ..\dcu\JclComplex.obj ..\dcu\JclCounter.obj ..\dcu\JclIniFiles.obj 
-      ..\dcu\JclLocales.obj ..\dcu\JclMiscel.obj ..\dcu\JclMath.obj 
-      ..\dcu\JclMime.obj ..\dcu\JclMultimedia.obj ..\dcu\JclNTFS.obj 
-      ..\dcu\JclMapi.obj ..\dcu\JclPrint.obj ..\dcu\JclStatistics.obj 
-      ..\dcu\JclExprEval.obj ..\dcu\Jcl8087.obj ..\dcu\JclUnitConv.obj 
-      ..\dcu\JclSvcCtrl.obj ..\dcu\Snmp.obj ..\dcu\CJCL50.obj"/>
-    <RESFILES value="CJCL50.res ..\dcu\JclUnicode.res"/>
+    <OBJFILES value="..\..\lib\C5\JclStrHashMap.obj ..\..\lib\C5\JclStrings.obj ..\..\lib\C5\JclSysInfo.obj 
+      ..\..\lib\C5\JclUnicode.obj ..\..\lib\C5\JclAppInst.obj ..\..\lib\C5\JclDebug.obj 
+      ..\..\lib\C5\JclGraphics.obj ..\..\lib\C5\JclGraphUtils.obj ..\..\lib\C5\JclHookExcept.obj 
+      ..\..\lib\C5\JclRTTI.obj ..\..\lib\C5\JclResources.obj ..\..\lib\C5\JclBase.obj 
+      ..\..\lib\C5\JclLogic.obj ..\..\lib\C5\JclWin32.obj ..\..\lib\C5\JclShell.obj 
+      ..\..\lib\C5\JclRegistry.obj ..\..\lib\C5\JclFileUtils.obj ..\..\lib\C5\JclSynch.obj 
+      ..\..\lib\C5\JclSysUtils.obj ..\..\lib\C5\JclTD32.obj ..\..\lib\C5\JclPeImage.obj 
+      ..\..\lib\C5\JclSecurity.obj ..\..\lib\C5\JclDateTime.obj ..\..\lib\C5\JclCOM.obj 
+      ..\..\lib\C5\JclComplex.obj ..\..\lib\C5\JclCounter.obj ..\..\lib\C5\JclIniFiles.obj 
+      ..\..\lib\C5\JclLocales.obj ..\..\lib\C5\JclMiscel.obj ..\..\lib\C5\JclMath.obj 
+      ..\..\lib\C5\JclMime.obj ..\..\lib\C5\JclMultimedia.obj ..\..\lib\C5\JclNTFS.obj 
+      ..\..\lib\C5\JclMapi.obj ..\..\lib\C5\JclPrint.obj ..\..\lib\C5\JclStatistics.obj 
+      ..\..\lib\C5\JclExprEval.obj ..\..\lib\C5\Jcl8087.obj ..\..\lib\C5\JclUnitConv.obj 
+      ..\..\lib\C5\JclSvcCtrl.obj ..\..\lib\C5\Snmp.obj ..\..\lib\C5\CJCL50.obj"/>
+    <RESFILES value="CJCL50.res ..\..\lib\C5\JclUnicode.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -28,8 +28,8 @@
     <SPARELIBS value="Vcl50.lib vcljpg50.lib JvInspector50_AJLBCB.lib"/>
     <PACKAGES value="vcl50.bpi vcljpg50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\source"/>
-    <PATHRC value=".;..\source"/>
+    <PATHPAS value=".;..\..\source\Common;..\..\source\Windows;..\..\source\VCL"/>
+    <PATHRC value=".;..\..\source\Common;..\..\source\Windows;..\..\source\VCL"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
@@ -37,17 +37,17 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="CJCL50.cpp"/>
-    <INCLUDEPATH value="..\source;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\..\source\Common;..\..\source\Windows;..\..\source\VCL;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\projects\lib;..\..\source\Common;..\..\source\Windows;..\..\source\VCL;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\source -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
+    <IDLCFLAGS value="-I..\..\source\Common;..\..\source\Windows;..\..\source\VCL; -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
-    <PFLAGS value="-N2..\dcu -N0..\dcu -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
+    <PFLAGS value="-N2..\..\lib\C5 -N0..\..\lib\C5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\dcu -D&quot;JEDI Code Library package for C++Builder 5&quot; -aa -Tpp -Gpr -x 
+    <LFLAGS value="-I..\..\lib\C5 -D&quot;JEDI Code Library package for C++Builder 5&quot; -aa -Tpp -Gpr -x 
       -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
@@ -83,24 +83,6 @@ ProductName=Jedi Code Library
 ProductVersion=1.20.1.779 Release 1.20
 Comments=
 SpecialBuild=for C++Builder 5
-
-[HistoryLists\hlIncludePath]
-Count=1
-Item0=..\source;$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=3
-Item0=$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib
-Item1=..\source;$(BCB)\lib\obj;$(BCB)\lib
-Item2=c:\program files\borland\cbuilder5\projects\lib\;..\source;$(BCB)\lib\obj;$(BCB)\lib
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\dcu
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
