@@ -2886,7 +2886,7 @@ var
   nEDILoop: TEDITransactionSetLoop;
   nXMLLoop: TEDIXMLTransactionSetLoop;
 begin
-  for I := 0 to EDILoop.EDIDataObjects.Count - 1 do
+  for I := 0 to EDILoop.EDIDataObjectCount - 1 do
   begin
     if EDILoop[I] is TEDISegment then
     begin
