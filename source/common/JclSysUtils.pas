@@ -26,7 +26,7 @@
 { floating point operations and retrieving the coprocessor's status word.      }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: May 03, 2001                                                  }
+{ Last modified: July 29, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -76,8 +76,21 @@ type
     property Item: Pointer read GetItem;
   end;
 
+  IMultiSafeGuard = interface (IInterface)
+    function AddItem(Item: Pointer): Pointer;
+    procedure FreeItem(Index: Integer);
+    function GetCount: Integer;
+    function GetItem(Index: Integer): Pointer;
+    function ReleaseItem(Index: Integer): Pointer;
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: Pointer read GetItem;
+  end;
+
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
 function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
+
+function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
+function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
@@ -353,6 +366,26 @@ type
     procedure FreeItem; override;
   end;
 
+  TMultiSafeGuard = class (TInterfacedObject, IMultiSafeGuard)
+  private
+    FItems: TList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function AddItem(Mem: Pointer): Pointer;
+    procedure FreeItem(Index: Integer); virtual;
+    function GetCount: Integer;
+    function GetItem(Index: Integer): Pointer;
+    function ReleaseItem(Index: Integer): Pointer;
+  end;
+
+  TObjMultiSafeGuard = class (TMultiSafeGuard, IMultiSafeGuard)
+  public
+    procedure FreeItem(Index: Integer); override;
+  end;
+
+//------------------------------------------------------------------------------
+// TSafeGuard
 //------------------------------------------------------------------------------
 
 constructor TSafeGuard.Create(Mem: Pointer);
@@ -387,11 +420,12 @@ end;
 
 procedure TSafeGuard.FreeItem;
 begin
-  if FItem <> nil then
-    FreeMem(FItem);
+  if FItem <> nil then FreeMem(FItem);
   FItem := nil;
 end;
 
+//------------------------------------------------------------------------------
+// TObjSafeGuard
 //------------------------------------------------------------------------------
 
 constructor TObjSafeGuard.Create(Obj: TObject);
@@ -408,6 +442,91 @@ begin
     TObject(FItem).Free;
     FItem := nil;
   end;
+end;
+
+//------------------------------------------------------------------------------
+// TMultiSafeGuard
+//------------------------------------------------------------------------------
+
+function TMultiSafeGuard.AddItem(Mem: Pointer): Pointer;
+begin
+  Result := Mem;
+  FItems.Add(Mem);
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TMultiSafeGuard.Create;
+begin
+  inherited Create;
+  FItems := TList.Create;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TMultiSafeGuard.Destroy;
+var
+  I: Integer;
+begin
+  for I := FItems.Count - 1 downto 0 do FreeItem(I);
+  FItems.Free;
+  inherited Destroy;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TMultiSafeGuard.FreeItem(Index: Integer);
+begin
+  FreeMem(FItems[Index]);
+  FItems.Delete(Index);
+end;
+
+//------------------------------------------------------------------------------
+
+function TMultiSafeGuard.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+//------------------------------------------------------------------------------
+
+function TMultiSafeGuard.GetItem(Index: Integer): Pointer;
+begin
+  Result := FItems[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+function TMultiSafeGuard.ReleaseItem(Index: Integer): Pointer;
+begin
+  Result := FItems[Index];
+  FItems.Delete(Index);
+end;
+
+//------------------------------------------------------------------------------
+
+function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
+begin
+  if SafeGuard = nil then SafeGuard := TMultiSafeGuard.Create;
+  Result := SafeGuard.AddItem(Mem);
+end;
+
+//------------------------------------------------------------------------------
+// TObjMultiSafeGuard
+//------------------------------------------------------------------------------
+
+procedure TObjMultiSafeGuard.FreeItem(Index: Integer);
+begin
+  TObject(FItems[Index]).Free;
+  FItems.Delete(Index);
+end;
+
+//------------------------------------------------------------------------------
+
+function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
+begin
+  if SafeGuard = nil then SafeGuard := TObjMultiSafeGuard.Create;
+  Result := SafeGuard.AddItem(Obj);
 end;
 
 //------------------------------------------------------------------------------
