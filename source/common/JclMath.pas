@@ -23,7 +23,7 @@
 { routines, NAN and INF support and more.                                                          }
 {                                                                                                  }
 { Unit owner: Matthias Thoma                                                                       }
-{ Last modified: April 21, 2003                                                                    }
+{ Last modified: November 27, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 // - Added functions: Versine, Coversine, Haversine, exsecand
@@ -53,8 +53,9 @@
 // - Added Bernstein constant
 // - Added Catalan constant
 // -
-// -
-// -
+// rr, November 2003:
+// - Changes to make it compile with free pascal compiler v1.9
+// - Removed "uses JclUnitConv"
 // -
 // -
 // -
@@ -476,7 +477,7 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF MSWINDOWS}
-  Jcl8087, JclResources, JclUnitConv;
+  Jcl8087, JclResources;
 
 //==================================================================================================
 // Internal helper routines
@@ -2551,7 +2552,11 @@ var
 begin
   CheckNaN(NaN);
   Temp := (PInt64(@NaN)^ shr dNaNTagShift) and NaNTagMask;
+  {$IFDEF FPC}
+  if Int64(NaN) < 0 then
+  {$ELSE}
   if dSignBit in TDoubleBits(NaN) then
+  {$ENDIF}
     Result := -Temp
   else
     if Temp = ZeroTag then
@@ -2569,7 +2574,11 @@ begin
   CheckNaN(NaN);
   Temp := (PExtendedRec(@NaN)^.Significand shr xNaNTagShift) and NaNTagMask;
 
+  {$IFDEF FPC}
+  if (TExtendedRec(NaN).Exponent and $8000) <> 0 then
+  {$ELSE}
    if xSignBit in TExtendedBits(NaN) then
+  {$ENDIF}
     Result := -Temp
   else
     if Temp = ZeroTag then
@@ -2671,6 +2680,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF FPC}
 
 procedure InitExceptObjProc;
 
@@ -2686,6 +2696,7 @@ begin
       PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
       end;
 
+{$ENDIF}
 {$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
@@ -2733,7 +2744,11 @@ begin
     Bits := Abs(Tag);
   PInt64(@X)^ := (Bits shl dNaNTagShift) or dQuietNaNBits;
   if Tag < 0 then
+    {$IFDEF FPC}
+    QWord(X) := QWord(X) or (1 shl dSignBit);
+    {$ELSE}
     Include(TDoubleBits(X), dSignBit);
+    {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2753,7 +2768,11 @@ begin
   TExtendedRec(X).Significand := (Bits shl xNaNTagShift) or QuietNaNSignificand;
   TExtendedRec(X).Exponent := QuietNaNExponent;
   if Tag < 0 then
+    {$IFDEF FPC}
+    TExtendedRec(X).Exponent := TExtendedRec(X).Exponent or $8000;
+    {$ELSE}
     Include(TExtendedBits(X), xSignBit);
+    {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2761,7 +2780,9 @@ end;
 procedure MakeSignalingNaN(var X: Single; Tag: TNaNTag);
 begin
   {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
   InitExceptObjProc;
+  {$ENDIF}
   {$ENDIF}
   MakeQuietNaN(X, Tag);
   Exclude(TSingleBits(X), sNaNQuietFlag);
@@ -2771,22 +2792,32 @@ end;
 
 procedure MakeSignalingNaN(var X: Double; Tag: TNaNTag);
 begin
+  {$IFDEF FPC}
+  MakeQuietNaN(X, Tag);
+  QWord(X) := QWord(X) and not (1 shl dNaNQuietFlag);
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   InitExceptObjProc;
   {$ENDIF}
   MakeQuietNaN(X, Tag);
   Exclude(TDoubleBits(X), dNaNQuietFlag);
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure MakeSignalingNaN(var X: Extended; Tag: TNaNTag);
 begin
+  {$IFDEF FPC}
+  MakeQuietNaN(X, Tag);
+  TExtendedRec(X).Significand := TExtendedRec(X).Significand and not (1 shl xNaNQuietFlag);
+  {$ELSE}
   {$IFDEF MSWINDOWS}
   //InitExceptObjProc;
   {$ENDIF}
   MakeQuietNaN(X, Tag);
   Exclude(TExtendedBits(X), xNaNQuietFlag);
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2797,7 +2828,9 @@ var
   P: PLongint;
 begin
   {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
   InitExceptObjProc;
+  {$ENDIF}
   {$ENDIF}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
@@ -2824,7 +2857,9 @@ var
   P: PInt64;
 begin
   {$IFDEF MSWINDOWS}
+  {$IFNDEF FPC}
   InitExceptObjProc;
+  {$ENDIF}
   {$ENDIF}
   StopTag := StartTag + Count - 1;
   CheckTag(StartTag);
