@@ -120,6 +120,9 @@ type
   TJclScreenBufferBeforeResizeEvent = procedure (Sender: TObject; const NewSize: TCoord; var CanResize: Boolean) of object;
   TJclScreenBufferAfterResizeEvent = procedure (Sender: TObject) of object;
 
+  TJclScreenBufferTextHorizontalAlign = (thaCurrent, thaLeft, thaCenter, thaRight);
+  TJclScreenBufferTextVerticalAlign   = (tvaCurrent, tvaTop, tvaCenter, tvaBottom);
+
   TJclScreenBuffer = class
   private
     FHandle: THandle;
@@ -157,11 +160,29 @@ type
   public
     destructor Destroy; override;
 
-    function Write(const Text: string): DWORD; overload;
-    function Write(const Text: string; X: Smallint = -1; Y: Smallint = -1;
+    function Write(const Text: string;
       const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
-    function Write(const Text: string; X: Smallint = -1; Y: Smallint = -1;
-      const pAttrs: PWORD = nil): DWORD; overload;
+    function WriteLn(const Text: string;
+      const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
+
+    function Write(const Text: string; const X: Smallint; const Y: Smallint;
+      const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
+    function Write(const Text: string; const X: Smallint; const Y: Smallint;
+      const pAttrs: PWORD): DWORD; overload;
+
+    function Write(const Text: string;
+      const HorizontalAlign: TJclScreenBufferTextHorizontalAlign;
+      const VerticalAlign: TJclScreenBufferTextVerticalAlign = tvaCurrent;
+      const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
+
+    function Read(const Count: Integer): string; overload;
+    function Read(X: Smallint; Y: Smallint; const Count: Integer): string; overload;
+
+    function ReadLn: string; overload;
+    function ReadLn(X: Smallint; Y: Smallint): string; overload;
+
+    procedure Fill(const ch: Char; const ATextAttribute: IJclScreenTextAttribute = nil);
+    procedure Clear;
 
     property Handle: THandle read FHandle;
 
@@ -263,7 +284,7 @@ type
   public
     constructor Create(const Attribute: Word); overload;
     constructor Create(const AColor: TJclScreenFontColor = fclWhite;
-                       const ABgColor: TJclScreenBackColor = bclWhite;
+                       const ABgColor: TJclScreenBackColor = bclBlack;
                        const AHighLight: Boolean = False;
                        const ABgHighLight: Boolean = False;
                        const AStyle: TJclScreenFontStyles = []); overload;
@@ -369,8 +390,7 @@ type
 
   TJclInputCtrlEvent = ( ceCtrlC, ceCtrlBreak, ceCtrlClose, ceCtrlLogOff, ceCtrlShutdown );
 
-  PJclInputRecordArray = ^TJclInputRecordArray;
-  TJclInputRecordArray = array[0..0] of TInputRecord;
+  TJclInputRecordArray = array of TInputRecord;
 
   TJclInputBuffer = class
   private
@@ -390,9 +410,12 @@ type
 
     function WaitEvent(const TimeOut: DWORD = INFINITE): Boolean;
 
-    function GetEvents(const Events: PJclInputRecordArray; const Count: Integer): DWORD;
-    function PeekEvents(const Events: PJclInputRecordArray; const Count: Integer): DWORD;
-    function PutEvents(const Events: PJclInputRecordArray; const Count: Integer): DWORD;
+    function GetEvents(var Events: TJclInputRecordArray): DWORD; overload;
+    function PeekEvents(var Events: TJclInputRecordArray): DWORD; overload;
+    function PutEvents(const Events: TJclInputRecordArray): DWORD; overload;
+
+    function GetEvents(const Count: Integer): TJclInputRecordArray; overload;
+    function PeekEvents(const Count: Integer): TJclInputRecordArray; overload;
 
     function GetEvent: TInputRecord;
     function PeekEvent: TInputRecord;
@@ -409,7 +432,7 @@ type
 implementation
 
 uses
-  JclFileUtils;
+  Math, JclFileUtils;
 
 const
   COMMON_LVB_LEADING_BYTE    = $0100; // Leading Byte of DBCS
@@ -814,12 +837,23 @@ begin
   Win32Check(SetConsoleMode(FHandle, OutputMode));
 end;
 
-function TJclScreenBuffer.Write(const Text: string): DWORD;
+function TJclScreenBuffer.Write(const Text: string;
+  const ATextAttribute: IJclScreenTextAttribute): DWORD;
 begin
+  if Assigned(ATextAttribute) then
+    Font.TextAttribute := ATextAttribute.TextAttribute;
+
   Win32Check(WriteConsole(Handle, PChar(Text), Length(Text), Result, nil));
 end;
 
-function TJclScreenBuffer.Write(const Text: string; X, Y: Smallint;
+function TJclScreenBuffer.WriteLn(const Text: string;
+  const ATextAttribute: IJclScreenTextAttribute): DWORD;
+begin
+  Result := Write(Text, ATextAttribute);
+  Cursor.MoveTo(Window.Left, Cursor.Position.Y + 1);
+end;
+
+function TJclScreenBuffer.Write(const Text: string; const X, Y: Smallint;
   const ATextAttribute: IJclScreenTextAttribute): DWORD;
 var
   I: Integer;
@@ -846,7 +880,7 @@ begin
   Win32Check(WriteConsoleOutputCharacter(Handle, PChar(Text), Length(Text), Pos, Result));
 end;
 
-function TJclScreenBuffer.Write(const Text: string; X, Y: Smallint;
+function TJclScreenBuffer.Write(const Text: string; const X, Y: Smallint;  
   const pAttrs: PWORD): DWORD;
 var
   Pos: TCoord;
@@ -865,6 +899,80 @@ begin
     Win32Check(WriteConsoleOutputAttribute(Handle, pAttrs, Length(Text), Pos, Result));
 
   Win32Check(WriteConsoleOutputCharacter(Handle, PChar(Text), Length(Text), Pos, Result));
+end;
+
+function TJclScreenBuffer.Write(const Text: string;
+  const HorizontalAlign: TJclScreenBufferTextHorizontalAlign;
+  const VerticalAlign: TJclScreenBufferTextVerticalAlign;
+  const ATextAttribute: IJclScreenTextAttribute): DWORD;
+var
+  X, Y: Smallint;
+begin
+  case HorizontalAlign of
+    //thaCurrent: X := Cursor.Position.X;
+    thaLeft:    X := Window.Left;
+    thaCenter:  X := Window.Left + (Window.Width - Length(Text)) div 2;
+    thaRight:   X := Window.Right - Length(Text) + 1;
+  else
+    X := Cursor.Position.X;
+  end;
+  case VerticalAlign of
+    //tvaCurrent: Y := Cursor.Position.Y;
+    tvaTop:     Y := Window.Top;
+    tvaCenter:  Y := Window.Top + Window.Height div 2;
+    tvaBottom:  Y := Window.Bottom;
+  else
+    Y := Cursor.Position.Y;
+  end;
+  Result := Write(Text, X, Y, ATextAttribute);
+end;
+
+function TJclScreenBuffer.Read(const Count: Integer): string;
+var
+  ReadCount: DWORD;
+begin
+  SetLength(Result, Count);
+  Win32Check(ReadConsole(Handle, PChar(Result), Count, ReadCount, nil));
+  SetLength(Result, Min(ReadCount, StrLen(PChar(Result))));
+end;
+
+function TJclScreenBuffer.ReadLn: string;
+begin
+  Result := Read(Window.Right - Cursor.Position.X + 1);
+end;
+
+function TJclScreenBuffer.Read(X, Y: Smallint; const Count: Integer): string;
+var
+  ReadPos: TCoord;
+  ReadCount: DWORD;
+begin
+  ReadPos.X := X;
+  ReadPos.Y := Y;
+  SetLength(Result, Count);
+  Win32Check(ReadConsoleOutputCharacter(Handle, PChar(Result), Count, ReadPos, ReadCount));
+  SetLength(Result, Min(ReadCount, StrLen(PChar(Result))));
+end;
+
+function TJclScreenBuffer.ReadLn(X, Y: Smallint): string;
+begin
+  Result := Read(X, Y, Window.Right - X + 1);
+end;
+
+procedure TJclScreenBuffer.Fill(const ch: Char; const ATextAttribute: IJclScreenTextAttribute);
+var
+  WriteCount: DWORD;
+begin
+  Cursor.MoveTo(0, 0);
+  Win32Check(FillConsoleOutputCharacter(Handle, ch, Width * Height, Cursor.Position, WriteCount));
+  if Assigned(ATextAttribute) then
+    Win32Check(FillConsoleOutputAttribute(Handle, ATextAttribute.TextAttribute, Width * Height, Cursor.Position, WriteCount))
+  else
+    Win32Check(FillConsoleOutputAttribute(Handle, Font.TextAttribute, Width * Height, Cursor.Position, WriteCount));
+end;
+
+procedure TJclScreenBuffer.Clear;
+begin
+  Fill(' ', TJclScreenTextAttribute.Create);
 end;
 
 { TJclScreenCustomTextAttribute }
@@ -1351,40 +1459,53 @@ begin
   Result := WaitForSingleObject(Handle, TimeOut) = WAIT_OBJECT_0;
 end;
 
-function TJclInputBuffer.GetEvents(const Events: PJclInputRecordArray;
-  const Count: Integer): DWORD;
+function TJclInputBuffer.GetEvents(var Events: TJclInputRecordArray): DWORD;
 begin
-  Win32Check(ReadConsoleInput(Handle, Events[0], Count, Result));
+  Win32Check(ReadConsoleInput(Handle, Events[0], Length(Events), Result));
 end;
 
-function TJclInputBuffer.PeekEvents(const Events: PJclInputRecordArray;
-  const Count: Integer): DWORD;
+function TJclInputBuffer.PeekEvents(var Events: TJclInputRecordArray): DWORD;
 begin
   if EventCount = 0 then
     Result := 0
   else
-    Win32Check(PeekConsoleInput(Handle, Events[0], Count, Result));
+    Win32Check(PeekConsoleInput(Handle, Events[0], Length(Events), Result));
+end;
+
+function TJclInputBuffer.PutEvents(const Events: TJclInputRecordArray): DWORD;
+begin
+  Win32Check(WriteConsoleInput(Handle, Events[0], Length(Events), Result));
+end;
+
+function TJclInputBuffer.GetEvents(const Count: Integer): TJclInputRecordArray;
+begin
+  SetLength(Result, Count);
+  SetLength(Result, GetEvents(Result));
+end;
+
+function TJclInputBuffer.PeekEvents(const Count: Integer): TJclInputRecordArray;
+begin
+  SetLength(Result, Count);
+  SetLength(Result, PeekEvents(Result));
 end;
 
 function TJclInputBuffer.GetEvent: TInputRecord;
 begin
-  Win32Check(GetEvents(PJclInputRecordArray(@Result), 1) = 1);
+  Result := GetEvents(1)[0];
 end;
 
 function TJclInputBuffer.PeekEvent: TInputRecord;
 begin
-  PeekEvents(PJclInputRecordArray(@Result), 1);
-end;
-
-function TJclInputBuffer.PutEvents(const Events: PJclInputRecordArray;
-  const Count: Integer): DWORD;
-begin
-  Win32Check(WriteConsoleInput(Handle, Events[0], Count, Result));
+  Result := PeekEvents(1)[0];
 end;
 
 function TJclInputBuffer.PutEvent(const Event: TInputRecord): Boolean;
+var
+  Evts: TJclInputRecordArray;
 begin
-  Result := PutEvents(PJclInputRecordArray(@Event), 1) = 1; 
+  SetLength(Evts, 1);
+  Evts[0] := Event;
+  Result := PutEvents(Evts) = 1;
 end;
 
 end.
