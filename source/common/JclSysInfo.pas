@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: February 14, 2002                                                                 }
+{ Last modified: February 21, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -2913,6 +2913,7 @@ procedure InitSysInfo;
 var
   SystemInfo: TSystemInfo;
   Kernel32FileName: string;
+  VerFixedFileInfo: TVSFixedFileInfo;
 begin
 
   { processor information related initialization }
@@ -2925,17 +2926,11 @@ begin
 
   { Windows version information }
 
-  KernelVersionHi := 0;
   Kernel32FileName := GetModulePath(GetModuleHandle(kernel32));
-  if (not IsWinNT) and VersionResourceAvailable(Kernel32FileName) then
-  begin
-    with TJclFileVersionInfo.Create(Kernel32FileName) do
-    try
-      KernelVersionHi := FixedInfo.dwProductVersionMS;
-    finally
-      Free;
-    end
-  end;
+  if (not IsWinNT) and VersionFixedFileInfo(Kernel32FileName, VerFixedFileInfo) then
+    KernelVersionHi := VerFixedFileInfo.dwProductVersionMS
+  else
+    KernelVersionHi := 0;
 
   IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
   case GetWindowsVersion of
