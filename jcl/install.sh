@@ -2,12 +2,11 @@
 #
 # shell script to build and execute QJediInstaller
 #
-# Robert Rossmair, 2004-06-11
+# Robert Rossmair, 2004-06-12
 #
 
-DCC="dcc -I../source -R"$DelphiRoot/lib" -U../source/common"
-
 eval `grep 'DelphiRoot=' ~/.borland/delphi69rc`
+DCC=$DelphiRoot/bin/dcc\ -I../source\ -R$DelphiRoot/lib\ -U../source/common
 source "$DelphiRoot/bin/kylixpath"
 cd install
 $DCC QJediInstaller.dpr         # build...
