@@ -169,7 +169,9 @@ procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandle
 {$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
+{$IFNDEF VisualCLX}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
+{$ENDIF not def VisualCLX}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
@@ -223,8 +225,10 @@ function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 {$IFDEF MSWINDOWS}
 function GetSizeOfFile(Handle: THandle): Int64; overload;
-function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 {$ENDIF MSWINDOWS}
+{$IFNDEF VisualCLX}
+function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
+{$ENDIF not def VisualCLX}
 function IsDirectory(const FileName: string): Boolean;
 function IsRootDirectory(const FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
@@ -240,7 +244,9 @@ function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): B
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
+{$IFNDEF VisualCLX}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
+{$ENDIF not def VisualCLX}
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 function Win32RestoreFile(const FileName: string): Boolean;
 {$ENDIF MSWINDOWS}
@@ -879,8 +885,11 @@ implementation
 uses
   {$IFDEF MSWINDOWS}
   ActiveX, ShellApi, ShlObj,
-  JclWin32, JclSecurity, JclShell, JclDateTime, JclSysInfo,
+  JclSecurity, JclWin32, JclDateTime,
   {$ENDIF MSWINDOWS}
+  {$IFNDEF VisualCLX}
+  JclSysInfo, JclShell,
+  {$ENDIF not def VisualCLX}
   JclResources, JclStrings, JclSysUtils;
 
 { Some general notes:
@@ -963,6 +972,50 @@ end;
 //==================================================================================================
 // TJclFileMappingView
 //==================================================================================================
+
+{$IFDEF VisualCLX} // Helper functions, if JclSysInfo not available
+
+//--------------------------------------------------------------------------------------------------
+
+var
+  AllocGranularity: Cardinal = 0;
+
+procedure InitAllocGranularity;
+var
+  SystemInfo: TSystemInfo;
+begin
+  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
+  GetSystemInfo(SystemInfo);
+  AllocGranularity := SystemInfo.dwAllocationGranularity;
+end;
+
+procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
+begin
+  if AllocGranularity = 0 then
+    InitAllocGranularity;
+  if (Value mod AllocGranularity) <> 0 then
+    if Up then
+      Value := ((Value div AllocGranularity) + 1) * AllocGranularity
+    else
+      Value := (Value div AllocGranularity) * AllocGranularity;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
+begin
+  if AllocGranularity = 0 then
+    InitAllocGranularity;
+  if (Cardinal(Value) mod AllocGranularity) <> 0 then
+    if Up then
+      Value := Pointer(((Cardinal(Value) div AllocGranularity) + 1) * AllocGranularity)
+    else
+      Value := Pointer((Cardinal(Value) div AllocGranularity) * AllocGranularity);
+end;
+
+{$ENDIF VisualCLX}
+
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMappingView.Create(const FileMap: TJclCustomFileMapping;
   Access, Size: Cardinal; ViewOffset: Int64);
@@ -2355,6 +2408,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF VisualCLX}
+
 // todoc author Jeff
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -2364,6 +2419,8 @@ begin
   else
     Result := DelTree(DirectoryName);
 end;
+
+{$ENDIF not def VisualCLX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3071,8 +3128,8 @@ end;
 var
   Buf: TStatBuf64;
 begin
-  // Note that SysUtils.FindFirst/Next do not "see" files >= 2 GB under Linux, thus the following
-  // code is rather pointless at the moment of this writing.
+  // Note that SysUtils.FindFirst/Next ignore files >= 2 GB under Linux, thus the following code is
+  // rather pointless at the moment of this writing.
   // We apparently need to write our own set of Findxxx functions to overcome this limitation.
   if GetFileStatus(FileInfo.PathOnly + FileInfo.Name, Buf, True) <> 0 then
     Result := -1
@@ -3083,7 +3140,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
+{$IFNDEF VisualCLX}
 
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
@@ -3117,7 +3174,7 @@ begin
   end;
 end;
 
-{$ENDIF MSWINDOWS}
+{$ENDIF not def VisualCLX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3414,6 +3471,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF VisualCLX}
+
 // todoc Author: Jeff
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -3423,6 +3482,8 @@ begin
   else
     Result := Windows.DeleteFile(PChar(FileName));
 end;
+
+{$ENDIF not def VisualCLX}
 
 //--------------------------------------------------------------------------------------------------
 
