@@ -272,7 +272,7 @@ uses
   JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 const
-  mapidll = 'mapi32.dll';
+  MapiDll = 'mapi32.dll';
   MapiExportNames: array [0..11] of PChar =
     ('MAPIAddress',
      'MAPIDeleteMail',
@@ -434,7 +434,7 @@ end;
 function TJclSimpleMapi.GetClientLibName: string;
 begin
   if UseMapi then
-    Result := mapidll
+    Result := MapiDll
   else
     Result := FClients[FSelectedClientIndex].ClientPath;
 end;
