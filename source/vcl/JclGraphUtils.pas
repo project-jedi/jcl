@@ -53,7 +53,7 @@ type
   PColor32 = ^TColor32;
   TColor32 = type Longword;
   PColor32Array = ^TColor32Array;
-  TColor32Array = array [0..0] of TColor32;
+  TColor32Array = array [0..MaxInt div SizeOf(TColor32) - 1] of TColor32;
   PPalette32 = ^TPalette32;
   TPalette32 = array [Byte] of TColor32;
   TArrayOfColor32 = array of TColor32;

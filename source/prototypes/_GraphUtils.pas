@@ -64,7 +64,7 @@ type
   PColor32 = ^TColor32;
   TColor32 = type Longword;
   PColor32Array = ^TColor32Array;
-  TColor32Array = array [0..0] of TColor32;
+  TColor32Array = array [0..MaxInt div SizeOf(TColor32) - 1] of TColor32;
   PPalette32 = ^TPalette32;
   TPalette32 = array [Byte] of TColor32;
   TArrayOfColor32 = array of TColor32;
@@ -2878,6 +2878,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.17  2004/11/25 21:56:12  rrossmair
+// - TColor32Array declaration changed to avoid range check errors in JclGraphics
+//
 // Revision 1.16  2004/11/14 06:05:05  rrossmair
 // - some source formatting
 //
