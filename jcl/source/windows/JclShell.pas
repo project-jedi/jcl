@@ -1264,7 +1264,7 @@ begin
   FillChar(Sei, SizeOf(Sei), #0);
   Sei.cbSize := SizeOf(Sei);
   Sei.fMask := SEE_MASK_DOENVSUBST      or SEE_MASK_FLAG_NO_UI  or
-               SEE_MASK_NOCLOSEPROCESS;//  or SEE_MASK_FLAG_DDEWAIT;
+               SEE_MASK_NOCLOSEPROCESS  or SEE_MASK_FLAG_DDEWAIT;
   Sei.lpFile := PChar(FileName);
   Sei.lpParameters := PCharOrNil(Parameters);
   Sei.lpVerb := PCharOrNil(Verb);
