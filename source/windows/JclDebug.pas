@@ -2018,9 +2018,9 @@ var
   VerifyFileName: Boolean;
 begin
   VerifyFileName := False;
-  Result := FindResource(FModule, JclDbgDataResName, RT_RCDATA) <> 0;
+  Result := (PeMapImgFindSection(PeMapImgNtHeaders(Pointer(Module)), JclDbgDataResName) <> nil);
   if Result then
-    FStream := TResourceStream.Create(FModule, JclDbgDataResName, RT_RCDATA)
+    FStream := TJclPeSectionStream.Create(Module, JclDbgDataResName)
   else
   begin
     JdbgFileName := ChangeFileExt(FileName, JclDbgFileExtension);
