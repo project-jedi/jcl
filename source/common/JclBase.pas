@@ -48,8 +48,8 @@ uses
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 95;   // Fifth minor release since JCL 1.90
-  JclVersionRelease = 2;    // 0: pre-release|beta/>=1: release
-  JclVersionBuild   = 1840; // build number, days since march 1, 2000
+  JclVersionRelease = 3;    // 0: pre-release|beta/>=1: release
+  JclVersionBuild   = 1848; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -258,6 +258,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.37  2005/03/23 13:19:06  rrossmair
+// - check-in in preparation of release 1.95.3 (Build 1848)
+//
 // Revision 1.36  2005/03/15 20:12:27  rrossmair
 // - version info updated, now 1.95.2, Build 1840
 //

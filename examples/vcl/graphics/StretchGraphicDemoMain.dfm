@@ -1,8 +1,8 @@
 object StretchDemoForm: TStretchDemoForm
   Left = 255
   Top = 208
-  Width = 658
-  Height = 572
+  Width = 788
+  Height = 609
   VertScrollBar.Range = 19
   ActiveControl = PageControl
   AutoScroll = False
@@ -26,10 +26,11 @@ object StretchDemoForm: TStretchDemoForm
   object PageControl: TPageControl
     Left = 0
     Top = 0
-    Width = 650
-    Height = 507
+    Width = 780
+    Height = 544
     ActivePage = OriginalPage
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     OnChanging = PageControlChanging
     object OriginalPage: TTabSheet
@@ -37,8 +38,8 @@ object StretchDemoForm: TStretchDemoForm
       object ScrollBox: TScrollBox
         Left = 0
         Top = 0
-        Width = 642
-        Height = 479
+        Width = 772
+        Height = 516
         HorzScrollBar.Tracking = True
         VertScrollBar.Tracking = True
         Align = alClient
@@ -59,18 +60,21 @@ object StretchDemoForm: TStretchDemoForm
       ImageIndex = 1
       OnResize = StretchedPageResize
       OnShow = StretchedPageShow
+      DesignSize = (
+        772
+        516)
       object Bevel1: TBevel
         Left = 0
         Top = 0
-        Width = 642
-        Height = 479
+        Width = 772
+        Height = 516
         Align = alClient
       end
       object StretchedImage: TImage
         Left = 1
         Top = 1
-        Width = 640
-        Height = 476
+        Width = 770
+        Height = 513
         Anchors = [akLeft, akTop, akRight, akBottom]
       end
     end
@@ -80,14 +84,14 @@ object StretchDemoForm: TStretchDemoForm
       object FileListView: TListView
         Left = 0
         Top = 0
-        Width = 642
-        Height = 479
+        Width = 772
+        Height = 516
         Align = alClient
         Columns = <
           item
             AutoSize = True
             Caption = 'File'
-            MaxWidth = 400
+            MaxWidth = 800
             MinWidth = 300
           end
           item
@@ -102,8 +106,8 @@ object StretchDemoForm: TStretchDemoForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 507
-    Width = 650
+    Top = 544
+    Width = 780
     Height = 19
     Panels = <
       item

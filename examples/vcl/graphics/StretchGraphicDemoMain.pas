@@ -258,7 +258,7 @@ procedure TStretchDemoForm.FileSearchTerminated(const ID: TFileSearchTaskID; con
 begin
   with FileListView do
   begin
-    Selected := FindCaption(0, OpenDialog.FileName, False, True, False);
+    Selected := FindCaption(0, FFileName, False, True, False);
     ItemFocused := Selected;
   end;
   UpdateNavButtons;
