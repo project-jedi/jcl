@@ -79,28 +79,7 @@
 
 unit zlibh;
 
-{$IFDEF PLATFORM_SPECIFIC_COMMENT}
-// On Windows platform, you can choose between static linking and
-// load time dynamic linking
 
-// static linking: deactivate the symbol ZLIB_WIN32DLL
-
-// dynamic linking: activate the symbol ZLIB_WIN32DLL
-// You may retrieve a current Win32-DLL from the zlib homepage
-// located at http://www.gzip.org/zlib/
-{.$DEFINE ZLIB_WIN32DLL}
-
-
-// ZLIB_STDCALL is currently unused, because the new dll use cdecl
-
-
-// There is no simple possibility to support gzip over gzio with static
-// linking. If you wish to include gzio, you must find a way to include
-// any stdio functions used in gzio.
-
-// However, gzio don't use any Delphi-like file access methods.
-// See gzips.pas for a Delphi-like gzip support with TStream descendants.
-{$ENDIF PLATFORM_SPECIFIC_COMMENT}
 
 
 
@@ -1564,6 +1543,13 @@ end;
 
 //  History:
 
+//   Revision 1.8  2004/05/31 22:38:51  rrossmair
+//   added PJH disclaimer; resolved $IFDEF JCL
+//
+//   Revision 1.7  2004/05/09 00:03:51  peterjhaas
+//   - old history in reverse order like CVS log
+//   - change interface adler32 and crc32 to avoid FPC compatibility problems
+//
 //   Revision 1.6  2004/05/08 08:44:18  rrossmair
 //   introduced & applied symbol HAS_UNIT_LIBC
 //
