@@ -22,6 +22,7 @@
 {   Martin Kimmings                                                                                }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Chris Morris                                                                                   }
+{   Andreas Schmidt shmia at bizerba.de                                                            }
 {   Michael Schnell                                                                                }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones (pvones)                                                                            }
@@ -89,7 +90,7 @@ function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure ClearBitBuffer(var Value; const Bit: TBitRange); { TODO -cHelp : document }
+procedure ClearBitBuffer(var Value; const Bit: TBitRange);
 
 function CountBitsSet(X: Byte): Integer; overload;
 function CountBitsSet(X: Word): Integer; overload;
@@ -98,6 +99,7 @@ function CountBitsSet(X: ShortInt): Integer; overload;
 function CountBitsSet(X: Integer): Integer; overload;
 function CountBitsSet(X: Cardinal): Integer; overload;
 function CountBitsSet(X: Int64): Integer; overload;
+function CountBitsSet(P: Pointer; Count: Cardinal): Cardinal; overload;
 
 function CountBitsCleared(X: Byte): Integer; overload;
 function CountBitsCleared(X: Shortint): Integer; overload;
@@ -110,7 +112,6 @@ function CountBitsCleared(X: Int64): Integer; overload;
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function LRot(const Value: Word; const Count: TBitRange): Word; overload;
 function LRot(const Value: Integer; const Count: TBitRange): Integer; overload;
-
 function ReverseBits(Value: Byte): Byte; overload;
 function ReverseBits(Value: Shortint): Shortint; overload;
 function ReverseBits(Value: Smallint): Smallint; overload;
@@ -135,7 +136,7 @@ function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure SetBitBuffer(var Value; const Bit: TBitRange); { TODO -cHelp : document }
+procedure SetBitBuffer(var Value; const Bit: TBitRange);
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean; overload;
@@ -144,7 +145,7 @@ function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
-function TestBitBuffer(const Value; const Bit: TBitRange): Boolean; { TODO -cHelp : document }
+function TestBitBuffer(const Value; const Bit: TBitRange): Boolean;
 
 function TestBits(const Value, Mask: Byte): Boolean; overload;
 function TestBits(const Value, Mask: Shortint): Boolean; overload;
@@ -161,7 +162,7 @@ function ToggleBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-procedure ToggleBitBuffer(var Value; const Bit: TBitRange); { TODO -cHelp : document }
+procedure ToggleBitBuffer(var Value; const Bit: TBitRange);
 
 procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray); overload;
 procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
@@ -248,7 +249,6 @@ function Min(const B1, B2: Cardinal): Cardinal; overload;
 function Min(const B1, B2: Int64): Int64; overload;
 
 implementation
-
 uses
   JclBase;
 
@@ -670,6 +670,28 @@ end;
 function CountBitsSet(X: Integer): Integer;
 begin
   Result := CountBitsSet(Cardinal(X));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function CountBitsSet(P: Pointer; Count: Cardinal): Cardinal;
+const
+  lu : packed array[0..15] of Byte = (0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4);
+var
+  b: Byte;
+begin
+  Result := 0;
+  while Count > 0 do
+  begin
+    b := PByte(P)^;
+    // lower Nibble
+    Inc(Result, lu[b and $0F]);
+    // upper Nibble
+    Inc(Result, lu[b shr 4]);
+
+    Dec(Count);
+    Inc(PByte(P));
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1922,6 +1944,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/11/06 01:57:15  mthoma
+//  Added CountBitsSet (Pointer...) by Andreas Schmidt. Some minor changes.
+//
 // Revision 1.12  2004/10/24 01:04:42  mthoma
 // Removed all contributions by you know who.
 //
