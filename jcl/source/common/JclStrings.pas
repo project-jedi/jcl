@@ -21,7 +21,7 @@
 { Various character and string routines (searching, testing and transforming)  }
 {                                                                              }
 { Unit owner: Azret Botash                                                     }
-{ Last modified: Februari 10, 2001                                             }
+{ Last modified: Februari 12, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -32,7 +32,8 @@ unit JclStrings;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils,
+  JclBase;
 
 //------------------------------------------------------------------------------
 // Character constants and sets
@@ -296,12 +297,20 @@ function AnsiSameText(const S1, S2: string): Boolean;
 
 {$ENDIF DELPHI5_UP}
 
+//------------------------------------------------------------------------------
+// Exceptions
+//------------------------------------------------------------------------------
+
+type
+  EJclStringError = EJclError;
+
 implementation
 
-{$IFDEF WIN32}
 uses
-  Windows;
-{$ENDIF WIN32}
+  {$IFDEF WIN32}
+  Windows,
+  {$ENDIF WIN32}
+  JclResources;
 
 //==============================================================================
 // Internal
@@ -3117,6 +3126,12 @@ begin
   P := Dest;
   for I := 0 to Source.Count - 1 do
   begin
+    if Source[I] = '' then
+    begin
+      FreeMem(Dest);
+      Dest := nil;
+      raise EJclStringError.CreateRes(@RsInvalidEmptyStringItem);
+    end;
     P := StrECopy(P, PChar(Source[I]));
     Inc(P);
   end;
