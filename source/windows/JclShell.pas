@@ -1165,10 +1165,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function ShellExec(const FileName: string;
-  const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
+function ShellExec(const FileName: string; const Parameters: string;
+  const Verb: string; CmdShow: Integer): Boolean;
 var
   Sei: TShellExecuteInfo;
 begin
@@ -1184,10 +1182,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function ShellExecAndWait(const FileName: string;
-  const Parameters: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
+function ShellExecAndWait(const FileName: string; const Parameters: string;
+  const Verb: string; CmdShow: Integer): Boolean;
 var
   Sei: TShellExecuteInfo;
 begin
@@ -1211,7 +1207,7 @@ end;
 
 function ShellOpenAs(const FileName: string): Boolean;
 begin
-  Result := ShellExec('rundll32', Format('shell32.dll, OpenAs_RunDLL "%s"', [FileName]),'',SW_SHOWNORMAL);
+  Result := ShellExec('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]),'',SW_SHOWNORMAL);
 end;
 
 //------------------------------------------------------------------------------
@@ -1221,7 +1217,7 @@ end;
 
 function ShellRasDial(const EntryName: string): Boolean;
 begin
-  Result := ShellExec('rundll32', Format('rnaui.dll, RnaDial "%s"',
+  Result := ShellExec('rundll32', Format('rnaui.dll,RnaDial "%s"',
     [EntryName]),'',SW_SHOWNORMAL);
 end;
 
@@ -1230,8 +1226,7 @@ end;
 // You can pass simple name of standard system control panel (e.g. 'timedate')
 // or full qualified file name
 
-function ShellRunControlPanel(const NameOrFileName: string;
-  AppletNumber: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer): Boolean;
 var
   FileName: TFileName;
 begin
