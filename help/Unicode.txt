@@ -3490,6 +3490,27 @@ Delphi=4,5
 BCB=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
+[ShortDescr]
+Expands an ANSI string to a Widestring.
+[Description]
+Expands an ANSI string to a Widestring.
+[Parameters]
+Count=3
+1=Source:PChar=Points to the ANSI string to be expanded
+2=Target:PWideChar=Points to a WideString to receive the expanded string. Make 
+sure that Target is large enough to hold the expanded ANSI string (ie. must be able
+to hold at least 2*Count bytes).
+3=Count:Cardinal=Number of characters to expand. 
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function UnicodeComposePair(First, Second: <REF TARGET"..\Types\PUCS4">UCS4; var Composite: <REF TARGET"..\Types\PUCS4">UCS4): Boolean;
 [ShortDescr]
 Map two sequences into a composed codepoint.
