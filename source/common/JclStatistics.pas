@@ -254,7 +254,8 @@ var
 begin
   // We need to sort the values first
   SortedList := Copy(X);
-  SortDynArray(SortedList, sizeof(Float),DynArrayCompareFloat);
+  // type cast to Pointer for the sake of FPC
+  SortDynArray(Pointer(SortedList), sizeof(Float),DynArrayCompareFloat);
 
   // and call the median function afterwards
   Result := Median(SortedList);
@@ -481,6 +482,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/05/05 07:18:31  rrossmair
+// MedianUnsorted: type cast for FPC compatibility
+//
 // Revision 1.6  2004/05/05 00:09:59  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
