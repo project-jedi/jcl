@@ -16,7 +16,10 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: September 23, 2000                                            }
+{ Description: Contains routines to perform tasks available only with NTFS.    }
+{ Unit Owner: Marcel van Brakel                                                }
+{                                                                              }
+{ Last modified: October 18, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -104,6 +107,34 @@ function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 function NtfsDeleteJunctionPoint(const Source: string): Boolean;
 function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
 
+//------------------------------------------------------------------------------
+// Streams
+//------------------------------------------------------------------------------
+
+type
+  TStreamId = (siInvalid, siStandard, siExtendedAttribute, siSecurity, siAlternate,
+    siHardLink, siProperty, siObjectIdentifier, siReparsePoints, siSparseFile);
+  TStreamIds = set of TStreamId;
+
+  TInternalFindStreamData = record
+    FileHandle: THandle;
+    Context: Pointer;
+    StreamIds: TStreamIds;
+  end;
+
+  TFindStreamData = record
+    Internal: TInternalFindStreamData;
+    Attributes: DWORD;
+    StreamID: TStreamId;
+    Name: WideString;
+    Size: TLargeInteger;
+  end;
+
+function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds;
+  var Data: TFindStreamData): Boolean;
+function NtfsFindNextStream(var Data: TFindStreamData): Boolean;
+function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
+
 type
   EJclNtfsError = class (EJclWin32Error);
 
@@ -183,6 +214,7 @@ begin
   Result := False;
   if Handle <> INVALID_HANDLE_VALUE then
   begin
+    // Continue only if the file is a sparse file
     GetFileInformationByHandle(Handle, Info);
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     if Result then
@@ -320,10 +352,12 @@ begin
   Result := NtfsFileHasReparsePoint(Path);
   if Result then
   begin
-    Result := Cardinal(FindFirst(Path, faAnyFile, SearchRec)) <> INVALID_HANDLE_VALUE;
+    Result := DWORD(FindFirst(Path, faAnyFile, SearchRec)) <> INVALID_HANDLE_VALUE;
     if Result then
     begin
+      // Check if file has a reparse point
       Result := ((SearchRec.Attr and FILE_ATTRIBUTE_REPARSE_POINT) <> 0);
+      // If so the dwReserved0 field contains the reparse tag
       if Result then
         Tag := SearchRec.FindData.dwReserved0;
       FindClose(SearchRec);
@@ -350,7 +384,7 @@ var
 begin
   Result := False;
   Attr := GetFileAttributes(PChar(Path));
-  if Attr <> $FFFFFFFF then
+  if Attr <> DWORD(-1) then
     Result := (Attr and FILE_ATTRIBUTE_REPARSE_POINT) <> 0;
 end;
 
@@ -363,8 +397,8 @@ var
   ReparseData: TReparseGuidDataBuffer;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING,
-    FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil,
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   try
     FillChar(ReparseData, SizeOf(ReparseData), #0);
@@ -638,6 +672,151 @@ begin
     finally
       CloseHandle(Handle);
     end
+  end;
+end;
+
+//==============================================================================
+// Streams
+//==============================================================================
+
+// Delphi's declaration of BackupSeek is wrong (last parameter is missing var).
+
+function BackupSeek(hFile: HANDLE; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+  var lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: LPVOID): BOOL; stdcall;
+  external 'kernel32.dll' name 'BackupSeek';
+
+function FindStream(var Data: TFindStreamData): Boolean;
+var
+  Header: TWin32StreamId;
+  BytesToRead, BytesRead: DWORD;
+  BytesToSeek: TLargeInteger;
+  Hi, Lo: DWORD;
+  FoundStream: Boolean;
+  StreamName: PWideChar;
+begin
+  Result := False;
+  FoundStream := False;
+  // We loop until we either found a stream or an error occurs.
+  while not FoundStream do
+  begin
+    // Read stream header
+    BytesToRead := DWORD(@Header.cStreamName[0]) - DWORD(@Header.dwStreamId);
+    if not BackupRead(Data.Internal.FileHandle, (@Header), BytesToRead, BytesRead,
+      False, True, Data.Internal.Context) then
+    begin
+      SetLastError(ERROR_READ_FAULT);
+      Exit;
+    end;
+    if BytesRead = 0 then
+    begin
+      SetLastError(ERROR_NO_MORE_FILES);
+      Exit;
+    end;
+    // If stream has a name then read it
+    if Header.dwStreamNameSize > 0 then
+    begin
+      StreamName := HeapAlloc(GetProcessHeap, 0, Header.dwStreamNameSize + SizeOf(WCHAR));
+      if StreamName = nil then
+      begin
+        SetLastError(ERROR_OUTOFMEMORY);
+        Exit;
+      end;
+      if not BackupRead(Data.Internal.FileHandle, Pointer(StreamName),
+        Header.dwStreamNameSize, BytesRead, False, True, Data.Internal.Context) then
+      begin
+        HeapFree(GetProcessHeap, 0, StreamName);
+        SetLastError(ERROR_READ_FAULT);
+        Exit;
+      end;
+      StreamName[Header.dwStreamNameSize div SizeOf(WCHAR)] := WideChar(#0);
+    end
+    else StreamName := nil;
+    // Did we find any of the specified stream ([] means any stream)?
+    if (Data.Internal.StreamIds = []) or
+      (TStreamId(Header.dwStreamId) in Data.Internal.StreamIds) then
+    begin
+      FoundStream := True;
+      Data.Size := Header.Size;
+      Data.Name := StreamName;
+      Data.Attributes := Header.dwStreamAttributes;
+      Data.StreamId := TStreamId(Header.dwStreamId);
+    end;
+    // Release stream name memory if necessary
+    if Header.dwStreamNameSize > 0 then
+      HeapFree(GetProcessHeap, 0, StreamName);
+    // Move past data part to beginngin of next stream (or EOF)
+    BytesToSeek := Header.Size;
+    if not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
+      BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context) then
+    begin
+      SetLastError(ERROR_READ_FAULT);
+      Exit;
+    end;
+  end;
+  // Due to the usage of Exit, we only get here if everything succeeded
+  Result := True;
+end;
+
+//------------------------------------------------------------------------------
+
+function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds;
+  var Data: TFindStreamData): Boolean;
+begin
+  Result := False;
+  // Open file for reading, note that the FILE_FLAG_BACKUP_SEMANTICS requires
+  // the SE_BACKUP_NAME and SE_RESTORE_NAME privileges.
+  Data.Internal.FileHandle := CreateFile(PChar(FileName), GENERIC_READ,
+    FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS, 0);
+  if Data.Internal.FileHandle <> INVALID_HANDLE_VALUE then
+  begin
+    // Initialize private context
+    Data.Internal.StreamIds := StreamIds;
+    Data.Internal.Context := nil;
+    // Call upon the Borg worker to find the next (first) stream
+    Result := FindStream(Data);
+    if not Result then
+    begin
+      // Failure, cleanup relieving the caller of having to call FindStreamClose
+      CloseHandle(Data.Internal.FileHandle);
+      Data.Internal.FileHandle := INVALID_HANDLE_VALUE;
+      Data.Internal.Context := nil;
+      if GetLastError = ERROR_NO_MORE_FILES then
+        SetLastError(ERROR_FILE_NOT_FOUND);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function NtfsFindNextStream(var Data: TFindStreamData): Boolean;
+begin
+  Result := False;
+  if Data.Internal.FileHandle <> INVALID_HANDLE_VALUE then
+    Result := FindStream(Data)
+  else
+    SetLastError(ERROR_INVALID_HANDLE);
+end;
+
+//------------------------------------------------------------------------------
+
+function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
+var
+  BytesRead: DWORD;
+begin
+  if Data.Internal.FileHandle <> INVALID_HANDLE_VALUE then
+  begin
+    // Call BackupRead one last time to signal that we're done with it
+    BackupRead(0, nil, 0, BytesRead, True, False, Data.Internal.Context);
+    CloseHandle(Data.Internal.FileHandle);
+    Data.Internal.FileHandle := INVALID_HANDLE_VALUE;
+    Data.Internal.Context := nil;
+    Result := True;
+  end
+  else
+  begin
+    SetLastError(ERROR_INVALID_HANDLE);
+    Result := False;
   end;
 end;
 
