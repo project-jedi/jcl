@@ -1,4 +1,9 @@
 REM CommandInterpreter: $(COMSPEC)
+
+echo %JCL%
+IF NOT %JCL%!==! SET JCL=
+echo %JCL%
+
 pushd vcl\appinst
 make
 popd
