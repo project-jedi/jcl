@@ -146,6 +146,10 @@ resourcestring
   RsAttrReparsePoint = 'Reparse Point';
   RsAttrSparseFile   = 'Sparse';
 
+  // TJclFileMapping.Create
+
+  RsFileMappingOpenFile = 'Unable to open the file';
+
 //------------------------------------------------------------------------------
 // JclGraphics, JclGraphUtils
 //------------------------------------------------------------------------------
