@@ -431,7 +431,7 @@ type
     property Rows[const Idx: Integer]: TJclClrTableEventMapRow read GetRow; default;
   end;
 
-  TJclClrTableEventRow = class(TJclClrTableRow)
+  TJclClrTableEventDefRow = class(TJclClrTableRow)
   private
     FNameOffset: DWORD;
     FEventTypeIdx: DWORD;
@@ -447,13 +447,13 @@ type
     property Name: WideString read GetName;
   end;
 
-  TJclClrTableEvent = class(TJclClrTable)
+  TJclClrTableEventDef = class(TJclClrTable)
   private
-    function GetRow(const Idx: Integer): TJclClrTableEventRow;
+    function GetRow(const Idx: Integer): TJclClrTableEventDefRow;
   protected
     class function TableRowClass: TJclClrTableRowClass; override;
   public
-    property Rows[const Idx: Integer]: TJclClrTableEventRow read GetRow; default;
+    property Rows[const Idx: Integer]: TJclClrTableEventDefRow read GetRow; default;
   end;
 
   TJclClrTableExportedTypeRow = class(TJclClrTableRow)
@@ -478,6 +478,28 @@ type
     property TypeNamespace: WideString read GetTypeNamespace;
   end;
 
+  TJclClrTableEventPtrRow = class(TJclClrTableRow)
+  private
+    FEventIdx: DWORD;
+
+    function GetEvent: TJclClrTableEventDefRow;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+  public
+    property EventIdx: DWORD read FEventIdx;
+
+    property Event: TJclClrTableEventDefRow read GetEvent;
+  end;
+
+  TJclClrTableEventPtr = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableEventPtrRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableEventPtrRow read GetRow; default;
+  end;
+
   TJclClrTableExportedType = class(TJclClrTable)
   private
     function GetRow(const Idx: Integer): TJclClrTableExportedTypeRow;
@@ -489,15 +511,15 @@ type
 
   TJclClrTableTypeDefRow = class;
 
-  TJclClrTableFieldVisibility = (fvPrivateScope, fvPrivate, fvFamANDAssem,
+  TJclClrTableFieldDefVisibility = (fvPrivateScope, fvPrivate, fvFamANDAssem,
                                  fvAssembly, fvFamily, fvFamORAssem, fvPublic);
 
-  TJclClrTableFieldFlag = (ffStatic, ffInitOnly, ffLiteral, ffNotSerialized,
+  TJclClrTableFieldDefFlag = (ffStatic, ffInitOnly, ffLiteral, ffNotSerialized,
                            ffSpecialName, ffPinvokeImpl, ffRTSpecialName,
                            ffHasFieldMarshal, ffHasDefault, ffHasFieldRVA);
-  TJclClrTableFieldFlags = set of TJclClrTableFieldFlag;
+  TJclClrTableFieldDefFlags = set of TJclClrTableFieldDefFlag;
 
-  TJclClrTableFieldRow = class(TJclClrTableRow)
+  TJclClrTableFieldDefRow = class(TJclClrTableRow)
   private
     FFlags: Word;
     FNameOffset: DWORD;
@@ -505,8 +527,8 @@ type
     FParentToken: TJclClrTableTypeDefRow;
     function GetName: WideString;
     function GetSignature: TJclClrBlobRecord;
-    function GetFlag: TJclClrTableFieldFlags;
-    function GetVisibility: TJclClrTableFieldVisibility;
+    function GetFlag: TJclClrTableFieldDefFlags;
+    function GetVisibility: TJclClrTableFieldDefVisibility;
   protected
     constructor Create(const ATable: TJclClrTable); override;
 
@@ -522,17 +544,39 @@ type
     property Signature: TJclClrBlobRecord read GetSignature;
 
     property ParentToken: TJclClrTableTypeDefRow read FParentToken;
-    property Visibility: TJclClrTableFieldVisibility read GetVisibility;
-    property Flags: TJclClrTableFieldFlags read GetFlag;
+    property Visibility: TJclClrTableFieldDefVisibility read GetVisibility;
+    property Flags: TJclClrTableFieldDefFlags read GetFlag;
   end;
 
-  TJclClrTableField = class(TJclClrTable)
+  TJclClrTableFieldDef = class(TJclClrTable)
   private
-    function GetRow(const Idx: Integer): TJclClrTableFieldRow;
+    function GetRow(const Idx: Integer): TJclClrTableFieldDefRow;
   protected
     class function TableRowClass: TJclClrTableRowClass; override;
   public
-    property Rows[const Idx: Integer]: TJclClrTableFieldRow read GetRow; default;
+    property Rows[const Idx: Integer]: TJclClrTableFieldDefRow read GetRow; default;
+  end;
+
+  TJclClrTableFieldPtrRow = class(TJclClrTableRow)
+  private
+    FFieldIdx: DWORD;
+
+    function GetField: TJclClrTableFieldDefRow;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+  public
+    property FieldIdx: DWORD read FFieldIdx;
+
+    property Field: TJclClrTableFieldDefRow read GetField;
+  end;
+
+  TJclClrTableFieldPtr = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableFieldPtrRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableFieldPtrRow read GetRow; default;
   end;
 
   TJclClrTableFieldLayoutRow = class(TJclClrTableRow)
@@ -785,6 +829,28 @@ type
     property Rows[const Idx: Integer]: TJclClrTableParamDefRow read GetRow; default;
   end;
 
+  TJclClrTableParamPtrRow = class(TJclClrTableRow)
+  private
+    FParamIdx: DWORD;
+
+    function GetParam: TJclClrTableParamDefRow;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+  public
+    property ParamIdx: DWORD read FParamIdx;
+
+    property Param: TJclClrTableParamDefRow read GetParam;
+  end;
+
+  TJclClrTableParamPtr = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableParamPtrRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableParamPtrRow read GetRow; default;
+  end;
+
   TJclClrTableMethodDefRow = class(TJclClrTableRow)
   private
     FRVA: DWORD;
@@ -834,6 +900,27 @@ type
     class function TableRowClass: TJclClrTableRowClass; override;
   public
     property Rows[const Idx: Integer]: TJclClrTableMethodDefRow read GetRow; default;
+  end;
+
+  TJclClrTableMethodPtrRow = class(TJclClrTableRow)
+  private
+    FMethodIdx: DWORD;
+    function GetMethod: TJclClrTableMethodDefRow;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+  public
+    property MethodIdx: DWORD read FMethodIdx;
+
+    property Method: TJclClrTableMethodDefRow read GetMethod;
+  end;
+
+  TJclClrTableMethodPtr = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableMethodPtrRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableMethodPtrRow read GetRow; default;
   end;
 
   TJclClrTableMethodImplRow = class(TJclClrTableRow)
@@ -903,7 +990,7 @@ type
   TJclClrTablePropertyFlag = (pfSpecialName, pfRTSpecialName, pfHasDefault);
   TJclClrTablePropertyFlags = set of TJclClrTablePropertyFlag;
 
-  TJclClrTablePropertyRow = class(TJclClrTableRow)
+  TJclClrTablePropertyDefRow = class(TJclClrTableRow)
   private
     FKindIdx: DWORD;
     FNameOffset: DWORD;
@@ -923,13 +1010,35 @@ type
     property Flags: TJclClrTablePropertyFlags read GetFlags;
   end;
 
-  TJclClrTableProperty = class(TJclClrTable)
+  TJclClrTablePropertyDef = class(TJclClrTable)
   private
-    function GetRow(const Idx: Integer): TJclClrTablePropertyRow;
+    function GetRow(const Idx: Integer): TJclClrTablePropertyDefRow;
   protected
     class function TableRowClass: TJclClrTableRowClass; override;
   public
-    property Rows[const Idx: Integer]: TJclClrTablePropertyRow read GetRow; default;
+    property Rows[const Idx: Integer]: TJclClrTablePropertyDefRow read GetRow; default;
+  end;
+
+  TJclClrTablePropertyPtrRow = class(TJclClrTableRow)
+  private
+    FPropertyIdx: DWORD;
+
+    function GetProperty: TJclClrTablePropertyDefRow;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+  public
+    property PropertyIdx: DWORD read FPropertyIdx;
+
+    property _Property: TJclClrTablePropertyDefRow read GetProperty;
+  end;
+
+  TJclClrTablePropertyPtr = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTablePropertyPtrRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTablePropertyPtrRow read GetRow; default;
   end;
 
   TJclClrTablePropertyMapRow = class(TJclClrTableRow)
@@ -939,12 +1048,12 @@ type
     FProperties: TList;
 
     function GetParent: TJclClrTableTypeDefRow;
-    function GetProperty(const Idx: Integer): TJclClrTablePropertyRow;
+    function GetProperty(const Idx: Integer): TJclClrTablePropertyDefRow;
     function GetPropertyCount: Integer;
   protected
     constructor Create(const ATable: TJclClrTable); override;
 
-    function Add(const ARow: TJclClrTablePropertyRow): Integer;
+    function Add(const ARow: TJclClrTablePropertyDefRow): Integer;
   public
     destructor Destroy; override;
 
@@ -953,7 +1062,7 @@ type
 
     property Parent: TJclClrTableTypeDefRow read GetParent;
 
-    property Properties[const Idx: Integer]: TJclClrTablePropertyRow read GetProperty;
+    property Properties[const Idx: Integer]: TJclClrTablePropertyDefRow read GetProperty;
     property PropertyCount: Integer read GetPropertyCount;
   end;
 
@@ -1013,7 +1122,7 @@ type
     FMethods: TList;
     function GetName: WideString;
     function GetNamespace: WideString;
-    function GetField(const Idx: Integer): TJclClrTableFieldRow;
+    function GetField(const Idx: Integer): TJclClrTableFieldDefRow;
     function GetFieldCount: Integer;
     function GetMethod(const Idx: Integer): TJclClrTableMethodDefRow;
     function GetMethodCount: Integer;
@@ -1057,7 +1166,7 @@ type
     property ClassSemantics: TJclClrClassSemantics read GetClassSemantics;
     property StringFormatting: TJclClrStringFormatting read GetStringFormatting;
 
-    property Fields[const Idx: Integer]: TJclClrTableFieldRow read GetField;
+    property Fields[const Idx: Integer]: TJclClrTableFieldDefRow read GetField;
     property FieldCount: Integer read GetFieldCount;
     property Methods[const Idx: Integer]: TJclClrTableMethodDefRow read GetMethod;
     property MethodCount: Integer read GetMethodCount;
@@ -2054,7 +2163,7 @@ const
   (ttFieldDef, ttParamDef, ttPropertyDef);
 begin
   Assert(FParentIdx and 3 <> 3);
-  Result := Table.Stream.Tables[HasConstantMapping[FParentIdx and 3]].Rows[FParentIdx shr 2];
+  Result := Table.Stream.Tables[HasConstantMapping[FParentIdx and 3]].Rows[FParentIdx shr 2 - 1];
 end;
 
 function TJclClrTableConstantRow.GetValue: TJclClrBlobRecord;
@@ -2197,9 +2306,9 @@ begin
   Result := TJclClrTableEventMapRow;
 end;
 
-{ TJclClrTableEventRow }
+{ TJclClrTableEventDefRow }
 
-constructor TJclClrTableEventRow.Create(const ATable: TJclClrTable);
+constructor TJclClrTableEventDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
@@ -2208,21 +2317,47 @@ begin
   FEventTypeIdx := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
 end;
 
-function TJclClrTableEventRow.GetName: WideString;
+function TJclClrTableEventDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-{ TJclClrTableEvent }
+{ TJclClrTableEventDef }
 
-function TJclClrTableEvent.GetRow(const Idx: Integer): TJclClrTableEventRow;
+function TJclClrTableEventDef.GetRow(const Idx: Integer): TJclClrTableEventDefRow;
 begin
-  Result := TJclClrTableEventRow(inherited GetRow(Idx));
+  Result := TJclClrTableEventDefRow(inherited GetRow(Idx));
 end;
 
-class function TJclClrTableEvent.TableRowClass: TJclClrTableRowClass;
+class function TJclClrTableEventDef.TableRowClass: TJclClrTableRowClass;
 begin
-  Result := TJclClrTableEventRow;
+  Result := TJclClrTableEventDefRow;
+end;
+
+{ TJclClrTableEventPtrRow }
+
+constructor TJclClrTableEventPtrRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FEventIdx := Table.ReadIndex([ttEventDef]);
+end;
+
+function TJclClrTableEventPtrRow.GetEvent: TJclClrTableEventDefRow;
+begin
+  Result := TJclClrTableEventDef(Table.Stream.Tables[ttEventDef]).Rows[FEventIdx-1];
+end;
+
+{ TJclClrTableEventPtr }
+
+function TJclClrTableEventPtr.GetRow(const Idx: Integer): TJclClrTableEventPtrRow;
+begin
+  Result := TJclClrTableEventPtrRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableEventPtr.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableEventPtrRow;
 end;
 
 { TJclClrTableExportedTypeRow }
@@ -2260,25 +2395,25 @@ begin
   Result := TJclClrTableExportedTypeRow;
 end;
 
-{ TJclClrTableFieldRow }
+{ TJclClrTableFieldDefRow }
 
-constructor TJclClrTableFieldRow.Create(const ATable: TJclClrTable);
+constructor TJclClrTableFieldDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
-  FFlags        := Table.ReadWord;
-  FNameOffset   := Table.ReadIndex(hkString);
+  FFlags           := Table.ReadWord;
+  FNameOffset      := Table.ReadIndex(hkString);
   FSignatureOffset := Table.ReadIndex(hkBlob);
-  FParentToken  := nil;
+  FParentToken     := nil;
 end;
 
-function TJclClrTableFieldRow.DumpIL: String;
+function TJclClrTableFieldDefRow.DumpIL: String;
   function DumpFlags: string;
   const
     FlagName: array[ffInitOnly..ffRTSpecialName] of string =
-    ('initonly', 'literal', 'notserialized', 'specialname', '', '');
+    ('initonly', 'literal', 'notserialized', 'specialname', '', 'rtspecialname');
   var
-    AFlag: TJclClrTableFieldFlag;
+    AFlag: TJclClrTableFieldDefFlag;
   begin
     for AFlag:=Low(FlagName) to High(FlagName) do
       if AFlag in Flags then
@@ -2295,7 +2430,7 @@ function TJclClrTableFieldRow.DumpIL: String;
   end;
 const
   StaticName: array[Boolean] of string = ('', 'static ');
-  VisibilityName: array[TJclClrTableFieldVisibility] of string =
+  VisibilityName: array[TJclClrTableFieldDefVisibility] of string =
   ('', 'private', 'famandassem', 'assembly', 'family', 'famandassem', 'public');
 var
   I: Integer;
@@ -2319,52 +2454,78 @@ begin
   end;
 end;
 
-function TJclClrTableFieldRow.GetName: WideString;
+function TJclClrTableFieldDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-function TJclClrTableFieldRow.GetSignature: TJclClrBlobRecord;
+function TJclClrTableFieldDefRow.GetSignature: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
 
-function TJclClrTableFieldRow.GetVisibility: TJclClrTableFieldVisibility;
+function TJclClrTableFieldDefRow.GetVisibility: TJclClrTableFieldDefVisibility;
 const
-  FieldVisibilityMapping: array[fdPrivateScope..fdPublic] of TJclClrTableFieldVisibility =
+  FieldVisibilityMapping: array[fdPrivateScope..fdPublic] of TJclClrTableFieldDefVisibility =
   (fvPrivateScope, fvPrivate, fvFamANDAssem, fvAssembly, fvFamily, fvFamORAssem, fvPublic);
 begin
   Result := FieldVisibilityMapping[FFlags and fdFieldAccessMask];
 end;
 
-function TJclClrTableFieldRow.GetFlag: TJclClrTableFieldFlags;
+function TJclClrTableFieldDefRow.GetFlag: TJclClrTableFieldDefFlags;
 const
-  FieldFlagMapping: array[TJclClrTableFieldFlag] of Word =
+  FieldFlagMapping: array[TJclClrTableFieldDefFlag] of Word =
   (fdStatic, fdInitOnly, fdLiteral, fdNotSerialized, fdSpecialName,
    fdPinvokeImpl, fdRTSpecialName, fdHasFieldMarshal, fdHasDefault, fdHasFieldRVA);
 var
-  AFlag: TJclClrTableFieldFlag;
+  AFlag: TJclClrTableFieldDefFlag;
 begin
-  for AFlag:=Low(TJclClrTableFieldFlag) to High(TJclClrTableFieldFlag) do
+  for AFlag:=Low(TJclClrTableFieldDefFlag) to High(TJclClrTableFieldDefFlag) do
     if FFlags and FieldFlagMapping[AFlag] <> 0 then
       Include(Result, AFlag);
 end;
 
-procedure TJclClrTableFieldRow.SetParentToken(const ARow: TJclClrTableTypeDefRow);
+procedure TJclClrTableFieldDefRow.SetParentToken(const ARow: TJclClrTableTypeDefRow);
 begin
   FParentToken := ARow;
 end;
 
-{ TJclClrTableField }
+{ TJclClrTableFieldDef }
 
-function TJclClrTableField.GetRow(const Idx: Integer): TJclClrTableFieldRow;
+function TJclClrTableFieldDef.GetRow(const Idx: Integer): TJclClrTableFieldDefRow;
 begin
-  Result := TJclClrTableFieldRow(inherited GetRow(Idx));
+  Result := TJclClrTableFieldDefRow(inherited GetRow(Idx));
 end;
 
-class function TJclClrTableField.TableRowClass: TJclClrTableRowClass;
+class function TJclClrTableFieldDef.TableRowClass: TJclClrTableRowClass;
 begin
-  Result := TJclClrTableFieldRow;
+  Result := TJclClrTableFieldDefRow;
+end;
+
+{ TJclClrTableFieldPtrRow }
+
+constructor TJclClrTableFieldPtrRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FFieldIdx := Table.ReadIndex([ttFieldDef]);
+end;
+
+function TJclClrTableFieldPtrRow.GetField: TJclClrTableFieldDefRow;
+begin
+  Result := TJclClrTableFieldDef(Table.Stream.Tables[ttFieldDef]).Rows[FFieldIdx-1];
+end;
+
+{ TJclClrTableFieldPtr }
+
+function TJclClrTableFieldPtr.GetRow(const Idx: Integer): TJclClrTableFieldPtrRow;
+begin
+  Result := TJclClrTableFieldPtrRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableFieldPtr.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableFieldPtrRow;
 end;
 
 { TJclClrTableFieldLayoutRow }
@@ -2747,6 +2908,32 @@ begin
   Result := TJclClrTableParamDefRow;
 end;
 
+{ TJclClrTableParamPtrRow }
+
+constructor TJclClrTableParamPtrRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FParamIdx := Table.ReadIndex([ttParamDef]);
+end;
+
+function TJclClrTableParamPtrRow.GetParam: TJclClrTableParamDefRow;
+begin
+  Result := TJclClrTableParamDef(Table.Stream.Tables[ttParamDef]).Rows[FParamIdx-1];
+end;
+
+{ TJclClrTableParamPtr }
+
+function TJclClrTableParamPtr.GetRow(const Idx: Integer): TJclClrTableParamPtrRow;
+begin
+  Result := TJclClrTableParamPtrRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableParamPtr.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableParamPtrRow;
+end;
+
 { TJclClrTableMethodDefRow }
 
 constructor TJclClrTableMethodDefRow.Create(const ATable: TJclClrTable);
@@ -2857,6 +3044,32 @@ begin
   Result := TJclClrTableMethodDefRow;
 end;
 
+{ TJclClrTableMethodPtrRow }
+
+constructor TJclClrTableMethodPtrRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FMethodIdx := Table.ReadIndex([ttMethodDef]);
+end;
+
+function TJclClrTableMethodPtrRow.GetMethod: TJclClrTableMethodDefRow;
+begin
+  Result := TJclClrTableMethodDef(Table.Stream.Tables[ttMethodDef]).Rows[FMethodIdx-1];
+end;
+
+{ TJclClrTableMethodPtr }
+
+function TJclClrTableMethodPtr.GetRow(const Idx: Integer): TJclClrTableMethodPtrRow;
+begin
+  Result := TJclClrTableMethodPtrRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableMethodPtr.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableMethodPtrRow;
+end;
+
 { TJclClrTableMethodImplRow }
 
 constructor TJclClrTableMethodImplRow.Create(
@@ -2929,9 +3142,9 @@ begin
   Result := TJclClrTableNestedClassRow;
 end;
 
-{ TJclClrTablePropertyRow }
+{ TJclClrTablePropertyDefRow }
 
-constructor TJclClrTablePropertyRow.Create(const ATable: TJclClrTable);
+constructor TJclClrTablePropertyDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited;
 
@@ -2940,7 +3153,7 @@ begin
   FKindIdx    := Table.ReadIndex(hkBlob);
 end;
 
-function TJclClrTablePropertyRow.DumpIL: String;
+function TJclClrTablePropertyDefRow.DumpIL: String;
   function DumpFlags: string;
   const
     SpecialName: array[Boolean] of string = ('', 'specialname ');
@@ -2953,7 +3166,7 @@ begin
   Result := Format('.property /*%.8x*/ %s%s ()', [Token, DumpFlags, Name]);
 end;
 
-function TJclClrTablePropertyRow.GetFlags: TJclClrTablePropertyFlags;
+function TJclClrTablePropertyDefRow.GetFlags: TJclClrTablePropertyFlags;
 var
   AFlag: TJclClrTablePropertyFlag;
 begin
@@ -2962,21 +3175,47 @@ begin
       Include(Result, AFlag);
 end;
 
-function TJclClrTablePropertyRow.GetName: WideString;
+function TJclClrTablePropertyDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-{ TJclClrTableProperty }
+{ TJclClrTablePropertyDef }
 
-function TJclClrTableProperty.GetRow(const Idx: Integer): TJclClrTablePropertyRow;
+function TJclClrTablePropertyDef.GetRow(const Idx: Integer): TJclClrTablePropertyDefRow;
 begin
-  Result := TJclClrTablePropertyRow(inherited GetRow(Idx));
+  Result := TJclClrTablePropertyDefRow(inherited GetRow(Idx));
 end;
 
-class function TJclClrTableProperty.TableRowClass: TJclClrTableRowClass;
+class function TJclClrTablePropertyDef.TableRowClass: TJclClrTableRowClass;
 begin
-  Result := TJclClrTablePropertyRow;
+  Result := TJclClrTablePropertyDefRow;
+end;
+
+{ TJclClrTablePropertyPtrRow }
+
+constructor TJclClrTablePropertyPtrRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FPropertyIdx := Table.ReadIndex([ttPropertyDef]);
+end;
+
+function TJclClrTablePropertyPtrRow.GetProperty: TJclClrTablePropertyDefRow;
+begin
+  Result := TJclClrTablePropertyDef(Table.Stream.Tables[ttPropertyDef]).Rows[FPropertyIdx-1];
+end;
+
+{ TJclClrTablePropertyPtr }
+
+function TJclClrTablePropertyPtr.GetRow(const Idx: Integer): TJclClrTablePropertyPtrRow;
+begin
+  Result := TJclClrTablePropertyPtrRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTablePropertyPtr.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTablePropertyPtrRow;
 end;
 
 { TJclClrTablePropertyMapRow }
@@ -3004,14 +3243,14 @@ begin
   Result := TJclClrTableTypeDef(Table.Stream.Tables[ttTypeDef]).Rows[FParentIdx-1];
 end;
 
-function TJclClrTablePropertyMapRow.Add(const ARow: TJclClrTablePropertyRow): Integer;
+function TJclClrTablePropertyMapRow.Add(const ARow: TJclClrTablePropertyDefRow): Integer;
 begin
   Result := FProperties.Add(ARow);
 end;
 
-function TJclClrTablePropertyMapRow.GetProperty(const Idx: Integer): TJclClrTablePropertyRow;
+function TJclClrTablePropertyMapRow.GetProperty(const Idx: Integer): TJclClrTablePropertyDefRow;
 begin
-  Result := TJclClrTablePropertyRow(FProperties.Items[Idx]);
+  Result := TJclClrTablePropertyDefRow(FProperties.Items[Idx]);
 end;
 
 function TJclClrTablePropertyMapRow.GetPropertyCount: Integer;
@@ -3037,7 +3276,7 @@ var
   I, J: Integer;
 begin
   J := 0;
-  with TJclClrTableProperty(Stream.Tables[ttPropertyDef]) do
+  with TJclClrTablePropertyDef(Stream.Tables[ttPropertyDef]) do
   for I:=0 to RowCount-1 do
   begin
     if I >= Integer(Self.Rows[J].PropertyListIdx) then
@@ -3111,9 +3350,9 @@ begin
   Result := Table.Stream.Metadata.StringAt(FNamespaceOffset);
 end;
 
-function TJclClrTableTypeDefRow.GetField(const Idx: Integer): TJclClrTableFieldRow;
+function TJclClrTableTypeDefRow.GetField(const Idx: Integer): TJclClrTableFieldDefRow;
 begin
-  Result := TJclClrTableFieldRow(FFields.Items[Idx])
+  Result := TJclClrTableFieldDefRow(FFields.Items[Idx])
 end;
 
 function TJclClrTableTypeDefRow.GetFieldCount: Integer;
@@ -3143,7 +3382,7 @@ end;
 
 procedure TJclClrTableTypeDefRow.UpdateFields;
 var
-  FieldTable: TJclClrTableField;
+  FieldTable: TJclClrTableFieldDef;
   Idx, MaxFieldListIdx: DWORD;
 begin
   with Table as TJclClrTableTypeDef do
@@ -3320,10 +3559,11 @@ begin
 
     lstIntfs := TList.Create;
     try
-      with Table.Stream.Tables[ttInterfaceImpl] do
+      if Assigned(Table.Stream.Tables[ttInterfaceImpl]) then
+      with TJclClrTableInterfaceImpl(Table.Stream.Tables[ttInterfaceImpl]) do
       for I:=0 to RowCount-1 do
-        if TJclClrTableInterfaceImplRow(Rows[I]).ClassIdx = DWORD(Index + 1) then
-          lstIntfs.Add(TJclClrTableInterfaceImplRow(Rows[I]));
+        if Rows[I].ClassIdx = DWORD(Index + 1) then
+          lstIntfs.Add(Rows[I]);
 
       if lstIntfs.Count > 0 then
       for I:=0 to lstIntfs.Count-1 do
@@ -3342,6 +3582,7 @@ begin
     for I:=0 to MethodCount-1 do
       Add(Indent + Methods[I].DumpIL);
 
+    if Assigned(Table.Stream.Tables[ttPropertyMap]) then
     with TJclClrTablePropertyMap(Table.Stream.Tables[ttPropertyMap]) do
     for I:=0 to RowCount-1 do
       if Rows[I].Parent = Self then
