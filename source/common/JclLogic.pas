@@ -36,9 +36,8 @@ function OrdToBinary(const Value: Byte): string; overload;
 function OrdToBinary(const Value: Word): string; overload;
 function OrdToBinary(const Value: Integer): string; overload;
 function OrdToBinary(const Value: Cardinal): string; overload;
-{$IFDEF SUPPORTS_INT64}
 function OrdToBinary(const Value: Int64): string; overload;
-{$ENDIF}
+
 
 //------------------------------------------------------------------------------
 // Bit manipulation
@@ -52,39 +51,34 @@ function BitsHighest(X: Byte): Integer; overload;
 function BitsHighest(X: Word): Integer; overload;
 function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Cardinal): Integer; assembler; overload;
-{$IFDEF SUPPORTS_INT64}
 function BitsHighest(X: Int64): Integer; overload;
-{$ENDIF}
+
 
 function BitsLowest(X: Byte): Integer; overload;
 function BitsLowest(X: Word): Integer; overload;
 function BitsLowest(X: Integer): Integer; overload;
 function BitsLowest(X: Cardinal): Integer; assembler; overload;
-{$IFDEF SUPPORTS_INT64}
 function BitsLowest(X: Int64): Integer; overload;
-{$ENDIF}
+
 
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
 function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
-{$IFDEF SUPPORTS_INT64}
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-{$ENDIF}
+
 
 function CountBitsSet(X: Byte): Integer; overload;
 function CountBitsSet(X: Word): Integer; overload;
 function CountBitsSet(X: Integer): Integer; overload;
 function CountBitsSet(X: Cardinal): Integer; assembler; overload;
-{$IFDEF SUPPORTS_INT64}
 function CountBitsSet(X: Int64): Integer; overload;
-{$ENDIF}
+
 
 function CountBitsCleared(X: Byte): Integer; overload;
 function CountBitsCleared(X: Word): Integer; overload;
 function CountBitsCleared(X: Integer): Integer; overload;
-{$IFDEF SUPPORTS_INT64}
 function CountBitsCleared(X: Int64): Integer; overload;
-{$ENDIF}
+
 
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function LRot(const Value: Word; const Count: TBitRange): Word; overload;
@@ -93,9 +87,8 @@ function LRot(const Value: Integer; const Count: TBitRange): Integer; overload;
 function ReverseBits(const Value: Byte): Byte; overload;
 function ReverseBits(const Value: Word): Word; overload;
 function ReverseBits(const Value: Integer): Integer; overload;
-{$IFDEF SUPPORTS_INT64}
 function ReverseBits(const Value: Int64): Int64; overload;
-{$ENDIF}
+
 
 function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function RRot(const Value: Word; const Count: TBitRange): Word; overload;
@@ -108,51 +101,37 @@ function Sar(const Value: Integer; const Count: TBitRange): Integer; overload;
 function SetBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
 function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
-{$IFDEF SUPPORTS_INT64}
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-{$ENDIF}
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
-{$IFDEF SUPPORTS_INT64}
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
-{$ENDIF}
 
 function TestBits(const Value, Mask: Byte): Boolean; overload;
 function TestBits(const Value, Mask: Word): Boolean; overload;
 function TestBits(const Value, Mask: Integer): Boolean; overload;
-{$IFDEF SUPPORTS_INT64}
 function TestBits(const Value, Mask: Int64): Boolean; overload;
-{$ENDIF}
 
 function ToggleBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
 function ToggleBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
-{$IFDEF SUPPORTS_INT64}
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-{$ENDIF}
 
 procedure BooleansToBits(var Dest: Byte; const B: array of Boolean); overload;
 procedure BooleansToBits(var Dest: Word; const B: array of Boolean); overload;
 procedure BooleansToBits(var Dest: Integer; const B: array of Boolean); overload;
-{$IFDEF SUPPORTS_INT64}
 procedure BooleansToBits(var Dest: Int64; const B: array of Boolean); overload;
-{$ENDIF}
 
 procedure BitsToBooleans(const Bits: Byte; B: TBooleanArray); overload;
 procedure BitsToBooleans(const Bits: Word; B: TBooleanArray); overload;
 procedure BitsToBooleans(const Bits: Integer; B: TBooleanArray); overload;
-{$IFDEF SUPPORTS_INT64}
 procedure BitsToBooleans(const Bits: Int64; B: TBooleanArray); overload;
-{$ENDIF}
 
 function BitsNeeded(const X: Byte): Integer; overload;
 function BitsNeeded(const X: Word): Integer; overload;
 function BitsNeeded(const X: Integer): Integer; overload;
-{$IFDEF SUPPORTS_INT64}
 function BitsNeeded(const X: Int64): Integer; overload;
-{$ENDIF}
 
 function Digits(const X: Cardinal): Integer;
 
@@ -166,45 +145,35 @@ procedure SwapOrd(var I, J: Smallint); overload;
 procedure SwapOrd(var I, J: Word); overload;
 procedure SwapOrd(var I, J: Integer); overload;
 procedure SwapOrd(var I, J: Cardinal); overload;
-{$IFDEF SUPPORTS_INT64}
 procedure SwapOrd(var I, J: Int64); overload;
-{$ENDIF}
 
 procedure IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure IncLimit(var B: Word; const Limit: Word; const Incr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-{$IFDEF SUPPORTS_INT64}
 procedure IncLimit(var B: Int64; const Limit: Int64; const Incr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-{$ENDIF}
 
 procedure DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure DecLimit(var B: Shortint; const Limit: Shortint; const Decr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure DecLimit(var B: Word; const Limit: Word; const Decr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
 procedure DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-{$IFDEF SUPPORTS_INT64}
 procedure DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-{$ENDIF}
 
 function Max(const B1, B2: Byte): Byte; overload;
 function Max(const B1, B2: Shortint): Shortint; overload;
 function Max(const B1, B2: Word): Word; overload;
 function Max(const B1, B2: Integer): Integer; overload;
 function Max(const B1, B2: Cardinal): Cardinal; overload;
-{$IFDEF SUPPORTS_INT64}
 function Max(const B1, B2: Int64): Int64; overload;
-{$ENDIF}
 
 function Min(const B1, B2: Byte): Byte; overload;
 function Min(const B1, B2: Shortint): Shortint; overload;
 function Min(const B1, B2: Word): Word; overload;
 function Min(const B1, B2: Integer): Integer; overload;
 function Min(const B1, B2: Cardinal): Cardinal; overload;
-{$IFDEF SUPPORTS_INT64}
 function Min(const B1, B2: Int64): Int64; overload;
-{$ENDIF}
 
 implementation
 
@@ -290,8 +259,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function OrdToBinary(const Value: Int64): string;
 var
   I: Integer;
@@ -309,7 +276,6 @@ begin
   end;
 end;
 
-{$ENDIF}
 
 //==============================================================================
 // Bit manipulation
@@ -345,8 +311,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function BitsHighest(X: Int64): Integer; overload;
 begin
   if TLargeInteger(X).HighPart = 0 then
@@ -359,8 +323,6 @@ begin
   else
     Result := BitsHighest(TLargeInteger(X).HighPart) + 32;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -394,8 +356,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function BitsLowest(X: Int64): Integer; overload;
 begin
   if TLargeInteger(X).LowPart = 0 then
@@ -408,8 +368,6 @@ begin
   else
     Result := BitsLowest(TLargeInteger(X).LowPart);
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -434,14 +392,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64;
 begin
   Result := Value and not (Int64(1) shl (Bit mod 64));
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -479,14 +433,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function CountBitsSet(X: Int64): Integer; overload;
 begin
   Result := CountBitsSet(TLargeInteger(X).LowPart) + CountBitsSet(TLargeInteger(X).HighPart);
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -595,7 +545,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
 
 function ReverseBits(const Value: Int64): Int64;
 var
@@ -610,8 +559,6 @@ begin
     I64 := I64 shr Int64(1);
   end;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -690,14 +637,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64;
 begin
   Result := Value or (Int64(1) shl (Bit mod 64));
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -722,14 +665,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean;
 begin
   Result := (Value and (Int64(1) shl (Bit mod 64))) <> 0;
 end;
 
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -754,14 +694,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function TestBits(const Value, Mask: Int64): Boolean;
 begin
   Result := (Value and Mask) = Mask;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -786,14 +722,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64;
 begin
   Result := Value xor (Int64(1) shl (Bit mod 64));
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -833,8 +765,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 procedure BooleansToBits(var Dest: Int64; const B: array of Boolean);
 var
   I: Integer;
@@ -844,8 +774,6 @@ begin
     if B[I] then
       SetBit(Dest, I);
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -882,8 +810,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 procedure BitsToBooleans(const Bits: Int64; B: TBooleanArray);
 var
   I: Integer;
@@ -892,8 +818,6 @@ begin
   for I := 0 to High(B) do
     B[I] := TestBit(Bits, I);
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -938,8 +862,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function BitsNeeded(const X: Int64): Integer;
 begin
   Result := BitsHighest(X) + 1;
@@ -947,7 +869,6 @@ begin
     Result := 1;
 end;
 
-{$ENDIF}
 
 //==============================================================================
 // Arithmetic
@@ -986,8 +907,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 procedure SwapOrd(var I, J: Int64);
 var
   T: Int64;
@@ -996,8 +915,6 @@ begin
   I := J;
   J := T;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -1074,15 +991,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 procedure IncLimit(var B: Int64; const Limit, Incr: Int64);
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -1126,15 +1039,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 procedure DecLimit(var B: Int64; const Limit, Decr: Int64);
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -1188,8 +1097,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function Max(const B1, B2: Int64): Int64;
 begin
   if B1 > B2 then
@@ -1197,8 +1104,6 @@ begin
   else
     Result := B2;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -1252,8 +1157,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_INT64}
-
 function Min(const B1, B2: Int64): Int64;
 begin
   if B1 < B2 then
@@ -1261,7 +1164,5 @@ begin
   else
     Result := B2;
 end;
-
-{$ENDIF}
 
 end.
