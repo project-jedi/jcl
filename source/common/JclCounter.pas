@@ -38,9 +38,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   JclBase;
 
 type
@@ -222,6 +222,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/08 08:44:17  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.5  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

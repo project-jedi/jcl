@@ -142,9 +142,12 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  Types, Libc,
-  {$ENDIF UNIX}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes,
   {$IFDEF JCL}
   JclBase, JclDateTime,
@@ -1661,7 +1664,9 @@ end;
 
 procedure TJclTarReader.ScanHeader;
 var
+  {$IFNDEF UNIX}
   I: Integer;
+  {$ENDIF ~UNIX}
   Prefix: String;
 begin
   if FFileType = tftEof then
@@ -1938,7 +1943,9 @@ end;
 
 procedure TJclTarWriter.AddDirectory(FileRoot, DirName: String);
 var
+  {$IFNDEF UNIX}
   I: Integer;
+  {$ENDIF UNIX}
   Header: TTarHeader;
 begin
   DirName := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(DirName);
@@ -2201,6 +2208,9 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number                  
 // 
 //  $Log$
+//  Revision 1.7  2004/05/08 08:44:18  rrossmair
+//  introduced & applied symbol HAS_UNIT_LIBC
+//
 //  Revision 1.6  2004/05/05 05:50:40  rrossmair
 //  fixed typo: '}' instead of ')'
 //

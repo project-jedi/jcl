@@ -42,9 +42,12 @@ unit JclFileUtils;
 interface
 
 uses
-  {$IFDEF UNIX}
-  Types, Libc,
-  {$ENDIF UNIX}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -1812,8 +1815,8 @@ end;
   Result: the canonicalized path
   Author: Jeff
 
-  Unix: Libc.canonicalize_file_name() is different in that it converts relative paths
-        to absolute ones - and thus needs to evaluate the program's environment.
+  Linux: Libc.canonicalize_file_name() is different in that it converts relative paths
+         to absolute ones - and thus needs to evaluate the program's environment.
 
 }
 
@@ -5727,6 +5730,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/05/08 08:44:17  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.13  2004/05/06 05:09:55  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //

@@ -372,9 +372,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_LIBC}
   JclSysUtils, JclLogic, JclResources;
 
 //==================================================================================================
@@ -4180,6 +4180,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.20  2004/05/08 08:44:17  rrossmair
+// introduced & applied symbol HAS_UNIT_LIBC
+//
 // Revision 1.19  2004/05/06 16:22:27  rrossmair
 // fixed LoadCaseMap for Kylix
 //
