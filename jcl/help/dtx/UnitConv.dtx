@@ -411,6 +411,113 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@DmsToDeg
+<GROUP UnitConversions.AngleConversion>
+Summary:
+  Converts an angle given in DMS representation to degrees.
+Description:
+  The DmsToDeg function converts an angle given in DMS (degrees, minutes, seconds) representation
+  to degrees. This is the inverse function to DegToDms.
+
+  The M and S arguments are required to be not less than zero and not greater than 60, otherwise
+  the function will yield an domain error exception.
+Parameters:
+  D - Arc degrees.
+  M - Arc minutes.
+  S - Arc seconds.
+Result:
+  The angle in degrees.
+See also:
+  DegToDms, DmsToRad
+QuickInfo
+  Unit: JclUnitConv
+  Category: Unit Conversions
+  Donator: Robert Rossmair
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1, 2
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@DmsToRad
+<GROUP $UnitConversions.AngleConversion>
+Summary:
+  Converts an angle given in DMS representation to radians.
+Description:
+  The DmsToRad function converts an angle given in DMS (degrees, minutes, seconds) representation
+  to radians.
+  
+  The M and S arguments are required to be not less than zero and not greater than 60, otherwise
+  the function will yield an domain error exception.
+Parameters:
+  D - Arc degrees.
+  M - Arc minutes.
+  S - Arc seconds.
+
+Returns
+The angle in radians.
+
+QuickInfo
+ Unit: JclUnitConv
+  Category: Unit Conversions
+  Donator: Robert Rossmair
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1, 2
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@DegToDms@Float@Integer@Integer@Float
+<GROUP $UnitConversions.AngleConversion>
+
+Description
+The DegToDms routine converts an angle given in arc degrees
+to DMS (degrees, minutes, seconds) representation.
+
+\Note that the output of this routine is not intended to be
+fed to calculations (since the sign of the minute and second
+fractions is not preserved), but for display only.
+
+Summary
+Converts an angle given in degrees to DMS representation.
+
+Parameters
+D :         Receives the degrees.
+Degrees :   The angle (in degrees) to split into integral degrees,
+            minutes and seconds.
+M :         Receives the minutes.
+S :         Receives the seconds.
+
+QuickInfo
+ Unit: JclUnitConv
+  Category: Unit Conversions
+  Donator: Robert Rossmair
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1, 2
+  Free Pascal Compiler Versions: 1.x
+
+See Also
+DmsToDeg, DegToDmsStr
+--------------------------------------------------------------------------------
+@@DegToDmsStr
+<GROUP $UnitConversions.AngleConversion>
+Summary:
+  Returns a string representation of a given angle in degrees.
+Description:
+  The DegToDmsStr routine returns a string representation of
+  the input angle as used e.g. in cartography.
+Parameters:
+  Degrees - The angle in degrees.
+  SecondPrecision - Specifies the number of digits after the decimal point for the arc seconds
+  component; default is 3 decimal digits.
+Result:
+  A string representation composed as follows: <I><arc degrees></I>°
+  <I><arc minutes></I>' <I><arc seconds></I>"
+
+QuickInfo
+ Unit: JclUnitConv
+  Category: Unit Conversions
+  Donator: Robert Rossmair
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1, 2
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
 @@CartesianToPolar
 <GROUP UnitConversions.CoordinateConversion>
 Summary:
