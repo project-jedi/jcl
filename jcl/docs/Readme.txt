@@ -3,27 +3,28 @@
 
   Jedi Code Library
 
-Release 1.93
-Build 1722
-18-November-2004
+Pre-Release 1.94 RC 1
+Build 1758
+23-December-2004
 
 ------------------------------------------------------------------------
 
-Note: JCL release 1.93 is an interim release; its main objective is to
-settle a long-lasting conflict with a former JEDI member by
-removing/replacing his contributions. Although we tried to maintain
-backward compatibility, this goal has been met only partially. *You
-might need to tweak your code.*
+The main objective of JCL release 1.94 RC1 is to provide basic support
+for Delphi 2005/Win32. For Delphi 2005, integrated Online Help and
+installer access to the Object Repository are not yet available. Note
+also issue #2397
+<http://homepages.borland.com/jedi/issuetracker/view.php?id=2397>, which
+has not been addressed yet.
 
-Lack of time prevented us from listing the changes and bug fixes in JCL
-since release 1.91. For detailed change logs, use the facilities of our
-CVS repository at SourceForge.net
+Again, shortage of man power did not allow us to list the changes and
+bug fixes in JCL since last release. For detailed change logs, use the
+facilities of our CVS repository at SourceForge.net
 <http://sourceforge.net/projects/jcl/>, see below.
 
 
       Supported Tools
 
-    * Delphi version 5, 6, 7
+    * Delphi version 5, 6, 7, 2005/Win32
     * C++Builder version 5 & 6
     * Kylix 3
 
