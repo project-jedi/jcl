@@ -131,6 +131,9 @@
 {******************************************************************************}
 
 unit JclDateTime;
+{$I JCL.INC}
+
+{$WEAKPACKAGEUNIT ON}
 
 interface
 
