@@ -4170,6 +4170,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.18  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.17  2004/10/12 17:23:50  rrossmair
 // - added complex number support (procedural)
 //
@@ -4209,7 +4212,7 @@ end;
 // Revision 1.5  2004/05/09 11:15:42  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// Revision 1.4  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 

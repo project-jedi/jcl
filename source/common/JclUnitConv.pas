@@ -16,8 +16,14 @@
 { Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel, ESB Consultancy, Manlio Laschena, Allan Lyons, Robert Marquardt,            }
-{   Robert Rossmair, Matthias Thoma, Petr Vones                                                    }
+{   Marcel van Brakel                                                                              }
+{   ESB Consultancy                                                                                }
+{   Manlio Laschena                                                                                }
+{   Allan Lyons                                                                                    }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {   Scott Price (scottprice)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -1138,13 +1144,18 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.6  2004/08/23 10:14:50  scottprice
-// Modified temperature routines, and added support for Rankine and Reaumur.  Added some string constants to this unit related to that change.
+// Modified temperature routines, and added support for Rankine and Reaumur.
+// Added some string constants to this unit related to that change.
 //
 // Revision 1.5  2004/05/05 00:11:24  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+// Updated headers: Added donors as contributors, adjusted the initial authors,
+// added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
-// Revision 1.4  2004/04/06 04:53:19  peterjhaas
+// Revision 1.4  2004/04/06 04:53:19  
 // adapt compiler conditions, add log entry
 //
 

@@ -2246,8 +2246,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.23  2004/09/30 07:50:29  marquardt
-// remove PH contributions
+// remove FillRemainBytes, CopyMemE contributions
 //
 // Revision 1.22  2004/08/01 05:52:12  marquardt
 // move constructors/destructors
@@ -2288,7 +2291,7 @@ end;
 // Revision 1.10  2004/04/19 06:16:38  rrossmair
 // fixed for FPC, which doesn't like the assembler key word showing up in the interface section
 //
-// Revision 1.9  2004/04/06 04:30:21  peterjhaas
+// Revision 1.9  2004/04/06 04:30:21  
 // Add FillRemainBytes, CopyMemE
 //
 

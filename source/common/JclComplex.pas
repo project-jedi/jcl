@@ -16,8 +16,12 @@
 { Alexei Koudinov are Copyright (C) of Alexei Koudinov. All Rights Reserved.                       }                         
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel, Alexei Koudinov, Robert Marquardt, Robert Rossmair, Matthias Thoma,         }
-{   Petr Vones                                                                                     }
+{   Marcel van Brakel                                                                              }
+{   Alexei Koudinov                                                                                }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma  (mthoma)                                                                       }
+{   Petr Vones (pvones)                                                                            }        
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1770,6 +1774,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.9  2004/10/12 17:21:54  rrossmair
 // restore JclMath compatibility
 //
@@ -1783,9 +1790,10 @@ end;
 // various style cleanings, some minor fixes
 //
 // Revision 1.5  2004/05/05 00:04:10  mthoma
-// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names
+// when they were not obvious. Changed $data to $date where necessary,
 //
-// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// Revision 1.4  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 // Revision 1.3  2004/03/23 08:54 rrossmair

@@ -4046,6 +4046,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.31  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.30  2004/10/10 12:52:12  marquardt
 // DestroyEnvironmentBlock introduced
 //
@@ -4101,7 +4104,7 @@ finalization
 // Revision 1.14  2004/04/18 05:14:11  rrossmair
 // fixed GetOpenGLVersion (draw to bitmap overload); removed VCL dependency ("uses Graphics")
 //
-// Revision 1.13  2004/04/18 00:43:19  peterjhaas
+// Revision 1.13  2004/04/18 00:43:19
 // modify und bugfix GetOpenGLVersion, add second function for bitmap rendering
 //
 // Revision 1.12  2004/04/09 15:05:09  mthoma
@@ -4113,7 +4116,7 @@ finalization
 // Revision 1.10  2004/04/07 07:33:39  marquardt
 // fixes for GetVersionEx
 //
-// Revision 1.9  2004/04/06 04:53:18  peterjhaas
+// Revision 1.9  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 

@@ -539,6 +539,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/10/17 20:25:21  mthoma
+// style cleaning, adjusting contributors
+//
 // Revision 1.11  2004/09/16 19:47:32  rrossmair
 // check-in in preparation for release 1.92
 //
@@ -564,7 +567,7 @@ end;
 // Revision 1.4  2004/04/08 16:57:21  mthoma
 // Fixed #1268. Introduced new function MedianUnsorted
 //
-// Revision 1.3  2004/04/06 04:53:18  peterjhaas
+// Revision 1.3  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 
