@@ -1,4 +1,4 @@
-@@TJclSmartCompOptions
+@@TJclSmartCompOption
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SmartNameComparison>
 Summary:
   TJclSmartCompOptions is a set of flags which determine how comparison of function names within the TJclPeImage module is performed. Using these options you can specify, for example, whether such a comparison should be case sensitive or not.
@@ -13,10 +13,13 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@TJclSmartCompOptions.scSimpleCompare
+@@TJclSmartCompOption.scSimpleCompare
   Many Win32 dynamic link libraries export functions in two forms, one for ansi and one for unicode, and distinquish between these functions using a single letter suffix, A and W respectively. The name without this suffix is refered to as the base name. Ommiting the scSimpleCompare flag specifies that name comparison should perform the comparison based on the base name only. As such it ignores the suffix and considers, for example, CharUpper, CharUpperA and CharUpperW as the same function. If the flag is included each of these functions are considered different.
-@@TJclSmartCompOptions.scIgnoreCase
+@@TJclSmartCompOption.scIgnoreCase
   Specifies that the comparison should be case insensitive. By default all comparisons are case sensitive.
+@@TJclSmartCompOption
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SmartNameComparison>
+<COMBINE TJclSmartCompOptions>
 --------------------------------------------------------------------------------
 @@PeStripFunctionAW
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.SmartNameComparison>
@@ -1430,7 +1433,7 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@TJclResourceType
+@@TJclPeResourceKind
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
@@ -1443,55 +1446,55 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@TJclResourceType.rtUnknown0
+@@TJclPeResourceKind.rtUnknown0
   TODO
-@@TJclResourceType.rtCursorEntry
+@@TJclPeResourceKind.rtCursorEntry
   TODO
-@@TJclResourceType.rtBitmap
+@@TJclPeResourceKind.rtBitmap
   TODO
-@@TJclResourceType.rtIconEntry
+@@TJclPeResourceKind.rtIconEntry
   TODO
-@@TJclResourceType.rtMenu
+@@TJclPeResourceKind.rtMenu
   TODO
-@@TJclResourceType.rtDialog
+@@TJclPeResourceKind.rtDialog
   TODO
-@@TJclResourceType.rtString
+@@TJclPeResourceKind.rtString
   TODO
-@@TJclResourceType.rtFontDir
+@@TJclPeResourceKind.rtFontDir
   TODO
-@@TJclResourceType.rtFont
+@@TJclPeResourceKind.rtFont
   TODO
-@@TJclResourceType.rtAccelerators
+@@TJclPeResourceKind.rtAccelerators
   TODO
-@@TJclResourceType.rtRCData
+@@TJclPeResourceKind.rtRCData
   TODO
-@@TJclResourceType.rtMessageTable
+@@TJclPeResourceKind.rtMessageTable
   TODO
-@@TJclResourceType.rtCursor
+@@TJclPeResourceKind.rtCursor
   TODO
-@@TJclResourceType.rtUnknown13
+@@TJclPeResourceKind.rtUnknown13
   TODO
-@@TJclResourceType.rtIcon
+@@TJclPeResourceKind.rtIcon
   TODO
-@@TJclResourceType.rtUnknown15
+@@TJclPeResourceKind.rtUnknown15
   TODO
-@@TJclResourceType.rtVersion
+@@TJclPeResourceKind.rtVersion
   TODO
-@@TJclResourceType.rtDlgInclude
+@@TJclPeResourceKind.rtDlgInclude
   TODO
-@@TJclResourceType.rtUnknown18
+@@TJclPeResourceKind.rtUnknown18
   TODO
-@@TJclResourceType.rtPlugPlay
+@@TJclPeResourceKind.rtPlugPlay
   TODO
-@@TJclResourceType.rtVxd
+@@TJclPeResourceKind.rtVxd
   TODO
-@@TJclResourceType.rtAniCursor
+@@TJclPeResourceKind.rtAniCursor
   TODO
-@@TJclResourceType.rtAniIcon
+@@TJclPeResourceKind.rtAniIcon
   TODO
-@@TJclResourceType.rtHmtl
+@@TJclPeResourceKind.rtHmtl
   TODO
-@@TJclResourceType.rtUserDefined
+@@TJclPeResourceKind.rtUserDefined
   TODO
 --------------------------------------------------------------------------------
 @@TJclPeResourceRawStream
@@ -2156,7 +2159,7 @@ Quick info:
   TODO
 @@TJclPeHeader.JclPeHeader_LoaderFlags
   TODO
-@@TJclPeHeader.JclPeHeader_NumberOfRvaAndSize
+@@TJclPeHeader.JclPeHeader_NumberOfRvaAndSizes
   TODO
 --------------------------------------------------------------------------------
 @@TJclLoadConfig
@@ -3381,7 +3384,7 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@TJclPeNameSearchOptions
+@@TJclPeNameSearchOption
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
 Summary:
   Flags that determine which parts of an image is searched.
@@ -3396,14 +3399,17 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@TJclPeNameSearchOptions.seImports
+@@TJclPeNameSearchOption.seImports
   Searches the import section of the image.
-@@TJclPeNameSearchOptions.seDelayImports
+@@TJclPeNameSearchOption.seDelayImports
   Searches the delay loaded imports.
-@@TJclPeNameSearchOptions.seBoundImports
+@@TJclPeNameSearchOption.seBoundImports
   Searches the bound imports.
-@@TJclPeNameSearchOptions.seExports
+@@TJclPeNameSearchOption.seExports
   Searches the export section of the image.
+@@TJclPeNameSearchOptions
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
+<COMBINE TJclPeNameSearchOption>
 --------------------------------------------------------------------------------
 @@TJclPeNameSearchNotifyEvent
 <GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
