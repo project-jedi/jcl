@@ -1449,6 +1449,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.28  2004/10/24 01:36:26  mthoma
+// history cleaned.
+//
 // Revision 1.27  2004/10/21 08:40:11  marquardt
 // style cleaning
 //
@@ -1516,7 +1519,7 @@ end;
 // Revision 1.7  2004/04/08 02:44:52  rrossmair
 // Log clean-up, typo in $Date$ corrected
 //
-// Revision 1.6  2004/04/07 18:43:02  peterjhaas
+// Revision 1.6  2004/04/07 18:43:02
 //
 // Revision 1.5  2004/04/07 14:01:15  obones
 //
