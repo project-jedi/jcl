@@ -180,6 +180,7 @@ type
     FStrings: TStrings;
 
     function GetString(const Idx: Integer): WideString;
+    function GetOffset(const Idx: Integer): DWORD;
     function GetStringCount: Integer;
   protected
     constructor Create(const AMetadata: TJclPeMetadata;
@@ -190,6 +191,7 @@ type
     function At(const Offset: DWORD): WideString;
 
     property Strings[const Idx: Integer]: WideString read GetString; default;
+    property Offsets[const Idx: Integer]: DWord read GetOffset;
     property StringCount: Integer read GetStringCount;
   end;
 
@@ -238,12 +240,15 @@ type
 
   TJclClrUserStringStream = class(TJclClrBlobStream)
   private
+    function BlobToString(const ABlob: TJclClrBlobRecord): WideString;
     function GetString(const Idx: Integer): WideString;
+    function GetOffset(const Idx: Integer): DWORD;
     function GetStringCount: Integer;
   public
     function At(const Offset: DWORD): WideString;
 
     property Strings[const Idx: Integer]: WideString read GetString; default;
+    property Offsets[const Idx: Integer]: DWord read GetOffset;
     property StringCount: Integer read GetStringCount;
   end;
 
@@ -390,6 +395,8 @@ type
     function GetVersion: string;
     function GetVersionString: WideString;
     function GetFlags: Word;
+    function UserGetString(const Idx: Integer): WideString;
+    function UserGetStringCount: Integer;
   protected
     constructor Create(const AImage: TJclPeImage);
   public
@@ -401,6 +408,7 @@ type
     function FindStream(const AClass: TJclClrStreamClass; var Stream: TJclClrStream): Boolean; overload;
 
     function StringAt(const Offset: DWORD): WideString;
+    function UserStringAt(const Offset: DWORD): WideString;
     function BlobAt(const Offset: DWORD): TJclClrBlobRecord;
 
     function TokenExists(const Token: TJclClrToken): Boolean;
@@ -422,6 +430,8 @@ type
 
     property Strings[const Idx: Integer]: WideString read GetString;
     property StringCount: Integer read GetStringCount;
+    property UserStrings[const Idx: Integer]: WideString read UserGetString;
+    property UserStringCount: Integer read UserGetStringCount;
     property Guids[const Idx: Integer]: TGUID read GetGuid;
     property GuidCount: Integer read GetGuidCount;
     property Blobs[const Idx: Integer]: TJclClrBlobRecord read GetBlob;
@@ -664,6 +674,11 @@ begin
   Result := UTF8ToWideString(FStrings.Strings[Idx]);
 end;
 
+function TJclClrStringsStream.GetOffset(const Idx: Integer): DWORD;
+begin
+  Result := DWord(FStrings.Objects[Idx]);
+end;
+
 function TJclClrStringsStream.GetStringCount: Integer;
 begin
   Result := FStrings.Count;
@@ -848,13 +863,25 @@ end;
 
 { TJclClrUserStringStream }
 
-function TJclClrUserStringStream.GetString(const Idx: Integer): WideString;
-var
-  ABlob: TJclClrBlobRecord;
+function TJclClrUserStringStream.BlobToString(const ABlob: TJclClrBlobRecord): WideString;
 begin
-  ABlob := Blobs[Idx];
-  SetLength(Result, ABlob.Size div 2 + 1);
-  StrLCopyW(PWideChar(Result), PWideChar(ABlob.Memory), ABlob.Size div 2);
+  if Assigned(ABlob) then
+  begin
+    SetLength(Result, ABlob.Size div 2);
+    Move(PWideChar(ABlob.Memory)^, PWideChar(Result)^, ABlob.Size and not 1);
+  end
+  else
+    Result := '';
+end;
+
+function TJclClrUserStringStream.GetString(const Idx: Integer): WideString;
+begin
+  Result := BlobToString(Blobs[Idx]);
+end;
+
+function TJclClrUserStringStream.GetOffset(const Idx: Integer): DWORD;
+begin
+  Result := Blobs[Idx].Offset;
 end;
 
 function TJclClrUserStringStream.GetStringCount: Integer;
@@ -863,17 +890,8 @@ begin
 end;
 
 function TJclClrUserStringStream.At(const Offset: DWORD): WideString;
-var
-  ABlob: TJclClrBlobRecord;
 begin
-  ABlob := inherited At(Offset);
-  if Assigned(ABlob) then
-  begin
-    SetLength(Result, ABlob.Size div 2 + 1);
-    StrLCopyW(PWideChar(Result), PWideChar(ABlob.Memory), ABlob.Size div 2);
-  end
-  else
-    Result := '';
+  Result := BlobToString(inherited At(Offset));
 end;
 
 { TJclClrTableRow }
@@ -1376,7 +1394,9 @@ function TJclPeMetadata.GetString(const Idx: Integer): WideString;
 begin
   if Assigned(FStringStream) or
      FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
-    Result := FStringStream.Strings[Idx];
+    Result := FStringStream.Strings[Idx]
+  else
+    Result := '';
 end;
 
 function TJclPeMetadata.GetStringCount: Integer;
@@ -1388,11 +1408,38 @@ begin
     Result := 0;
 end;
 
+function TJclPeMetadata.UserGetString(const Idx: Integer): WideString;
+begin
+  if Assigned(FUserStringStream) or
+     FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
+    Result := FUserStringStream.Strings[Idx-1]
+  else
+    Result := '';
+end;
+
+function TJclPeMetadata.UserGetStringCount: Integer;
+begin
+  if Assigned(FUserStringStream) or
+     FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
+    Result := FUserStringStream.StringCount
+  else
+    Result := 0;
+end;
+
 function TJclPeMetadata.StringAt(const Offset: DWORD): WideString;
 begin
   if Assigned(FStringStream) or
      FindStream(TJclClrStringsStream, TJclClrStream(FStringStream)) then
-    Result := TJclClrStringsStream(FStringStream).At(Offset)
+    Result := FStringStream.At(Offset)
+  else
+    Result := '';
+end;
+
+function TJclPeMetadata.UserStringAt(const Offset: DWORD): WideString;
+begin
+  if Assigned(FUserStringStream) or
+     FindStream(TJclClrUserStringStream, TJclClrStream(FUserStringStream)) then
+    Result := TJclClrUserStringStream(FUserStringStream).At(Offset)
   else
     Result := '';
 end;
