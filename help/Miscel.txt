@@ -47,3 +47,81 @@ Category=Miscellaneous
 Author=John C Molyneux;jaymol@hotmail.com
 Delphi=3,4,5
 BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string; const Environment: PChar);
+[ShortDescr]
+Spawns a new process in the context of the specified user account.
+[Description]
+CreateProcessAsUserEx launches a new process in the context of the specified user.
+This user does not neccessairly have to be the same user as the currently logged in
+user. You can use this function to run a child process in an adminstrative context,
+although the calling process is running in a normal (i.e.:restricted) user context.
+[Parameters]
+Count=5
+1=UserDomain:string=Name of the domain the user account is contained in. If this
+parameter is '.', then the procedure will search only the local account database
+to look up the user account. If the parameter is nil, then the procedure will
+first search the local account database and then the trusted domain account
+databases until the specified account is found.
+2=UserName:string=The name of the user account the new process is to be run in.
+3=Password:string=The password for the specified user account.
+4=CommandLine:string=This string specifies the command line for the application
+to be executed.
+5=Environment:PCHar=Points to an environment block for the new process. If this
+parameter is nil, the new process uses the environment of the calling process.
+You can create a new environment block using
+the <REF Target"..\System Information Routines\Environment\CreateEnvironmentBlock">CreateEnvironmentBlock</REF>
+function.
+[Quick Info]
+Unit=JclMiscel
+Category=Miscellaneous
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=CreateProcAsUser
+2=CreateEnvironmentBlock;..\System Information Routines\Environment\CreateEnvironmentBlock
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CreateProcAsUser(const UserDomain, UserName, Password, CommandLine: string);
+[ShortDescr]
+Spawns a new process in the context of the specified user account.
+[Description]
+CreateProcessAsUserEx launches a new process in the context of the specified user.
+This user does not neccessarily have to be the same user as the currently logged in
+user. You can use this function to run a child process in an adminstrative context,
+although the calling process is running in a normal (i.e.:restricted) user context.
+[Parameters]
+Count=4
+1=UserDomain:string=Name of the domain the user account is contained in. If this
+parameter is '.', then the procedure will search only the local account database
+to look up the user account. If the parameter is nil, then the procedure will
+first search the local account database and then the trusted domain account
+databases until the specified account is found.
+2=UserName:string=The name of the user account the new process is to be run in.
+3=Password:string=The password for the specified user account.
+4=CommandLine:string=This string specifies the command line for the application
+to be executed.
+[Quick Info]
+Unit=JclMiscel
+Category=Miscellaneous
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=CreateProcAsUserEx
+2=CreateEnvironmentBlock;..\System Information Routines\Environment\CreateEnvironmentBlock
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+EJclCreateProcessError = class (<REF Target"..\..\Base Services\EJclWin32Error\EJclWin32Error">EJclWin32Error</REF>);
+[ShortDescr]
+Class for exceptions raised due to errors in
+the <REF Target"..\CreateProcAsUser">CreateProcAsUser</REF> / <REF Target"..\CreateProcAsUserEx">CreateProcAsUserEx</REF> procedure pair.
+[Quick Info]
+Unit=JclMiscel
+Kind=Type
+Category=Base Services
+Category=Miscellaneous
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
