@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: July 20, 2000                                                 }
+{ Last modified: August 11, 2000                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -60,6 +60,7 @@ type
     AddressOfNameOrdinals: DWORD; // RVA from base of image
   end;
   TImageExportDirectory = _IMAGE_EXPORT_DIRECTORY;
+  IMAGE_EXPORT_DIRECTORY = _IMAGE_EXPORT_DIRECTORY;
 {$ENDIF}
 
 { Non-COFF Object file header }
@@ -876,7 +877,7 @@ type
     NewImageBase: DWORD;
   end;
 
-function IsPeExe(const FileName: TFileName): Boolean;
+function IsValidPeFile(const FileName: TFileName): Boolean;
 
 function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 
@@ -885,7 +886,7 @@ function PeRebaseImage(const ImageName: TFileName;
   TimeStamp: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF};
   MaxNewSize: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): TJclRebaseImageInfo;
 
-procedure PeUpdateCheckSum(const AFileName: TFileName);
+function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 
 //------------------------------------------------------------------------------
 // Various simple PE Image functions
@@ -908,11 +909,16 @@ function PeDoesImportFunction(const FileName: TFileName; const FunctionName: str
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
 
-function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string): Boolean;
+function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
+  Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
-function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings): Boolean;
+function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings;
+  Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
+  FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 {$IFDEF SUPPORTS_DYNAMICARRAYS}
-function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray): Boolean;
+function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray;
+  Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
+  FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 {$ENDIF}
 
 function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
@@ -934,6 +940,63 @@ function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeader
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 
 procedure PeClearGlobalImage;
+
+//------------------------------------------------------------------------------
+// Mapped image and API hooking related functions
+//------------------------------------------------------------------------------
+
+function PeMapImgNtHeaders(BaseAddress: Pointer): PImageNtHeaders;
+
+function PeMapImgLibraryName(BaseAddress: Pointer): string;
+
+type
+  TJclPeMapImgHookItem = class (TObject)
+  private
+    FBaseAddress: Pointer;
+    FFunctionName: string;
+    FModuleName: string;
+    FNewAddress: Pointer;
+    FOriginalAddress: Pointer;
+    FList: TObjectList;
+  protected
+    function InternalUnhook: Boolean;
+  public
+    destructor Destroy; override;
+    function Unhook: Boolean;
+    property BaseAddress: Pointer read FBaseAddress;
+    property FunctionName: string read FFunctionName;
+    property ModuleName: string read FModuleName;
+    property NewAddress: Pointer read FNewAddress;
+    property OriginalAddress: Pointer read FOriginalAddress;
+  end;
+
+  TJclPeMapImgHooks = class (TObjectList)
+  private
+    function GetItems(Index: Integer): TJclPeMapImgHookItem;
+    function GetItemFromOriginalAddress(OriginalAddress: Pointer): TJclPeMapImgHookItem;
+    function GetItemFromNewAddress(NewAddress: Pointer): TJclPeMapImgHookItem;
+  public
+    function HookImport(const ModuleName, FunctionName: string;
+      NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
+    class function IsWin9xDebugThunk(P: Pointer): Boolean;
+    class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
+    function UnhookByNewAddress(NewAddress: Pointer): Boolean;
+    property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
+    property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
+    property ItemFromNewAddress[NewAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromNewAddress;
+  end;
+
+function PeImportHooks: TJclPeMapImgHooks;
+
+//------------------------------------------------------------------------------
+// Image access under a debbuger
+//------------------------------------------------------------------------------
+
+function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
+  var NtHeaders: TImageNtHeaders): Boolean;
+
+function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
+  var Name: string): Boolean;
 
 //------------------------------------------------------------------------------
 
@@ -1018,6 +1081,19 @@ begin
   GlobalPeImage.FileName := FileName;
   Result := GlobalPeImage.StatusOK;
 end;
+
+//------------------------------------------------------------------------------
+
+var
+  GlobalImportHooks: TJclPeMapImgHooks = nil;
+
+function PeImportHooks: TJclPeMapImgHooks;
+begin
+{ TODO : Not thread-safe yet }
+  if GlobalImportHooks = nil then
+    GlobalImportHooks := TJclPeMapImgHooks.Create;
+  Result := GlobalImportHooks;
+end;  
 
 //------------------------------------------------------------------------------
 
@@ -3192,7 +3268,7 @@ begin
         stNotFound:
           raise EJclPeImageError.CreateResRecFmt(@RsPeCantOpen, [FFileName]);
         stError:
-          raise EJclPeImageError.CreateResRec(@RsPeUnexpected);
+          RaiseLastWin32Error;
       end;
     ReadImageSections;
   end;
@@ -3403,7 +3479,7 @@ begin
   try
     PathList.Sorted := True;
     PathList.Duplicates := dupIgnore;
-    StrToStrings(FPath, ';', PathList);
+    StrToStrings(FPath, ';', TStrings(PathList));
     for I := 0 to PathList.Count - 1 do
       ProcessDirectorySearch(PathAddSeparator(Trim(PathList[I])) + '*.*');
   finally
@@ -3423,13 +3499,28 @@ end;
 // PE Image miscellaneous functions
 //==============================================================================
 
-function IsPeExe(const FileName: TFileName): Boolean;
+function IsValidPeFile(const FileName: TFileName): Boolean;
 var
-  LI: TLoadedImage;
+  FileHandle: THandle;
+  Mapping: TJclFileMapping;
+  View: TJclFileMappingView;
+  NtHeaders: PImageNtHeaders;
 begin
-  Result := MapAndLoad(PChar(FileName), nil, @LI, True, True);
-  if Result then
-    UnMapAndLoad(@LI);
+  Result := False;
+  FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
+  if FileHandle = 0 then Exit;
+  try
+    Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
+    try
+      View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
+      NtHeaders := PeMapImgNtHeaders(View.Memory);
+      Result := NtHeaders <> nil;
+    finally
+      Mapping.Free;
+    end;
+  finally
+    FileClose(FileHandle);
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -3517,21 +3608,64 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure PeUpdateCheckSum(const AFileName: TFileName);
+function PeUpdateCheckSum(const FileName: TFileName): Boolean;
+var
+  LI: TLoadedImage;
 begin
-  with TJclPeImage.Create(False) do
-  try
-    ReadOnlyAccess := False;
-    FileName := AFileName;
-    LoadedImage.FileHeader.OptionalHeader.CheckSum := CalculateCheckSum;
-  finally
-    Free;
-  end;
+  Result := MapAndLoad(PChar(FileName), nil, @LI, True, False);
+  if Result then
+    Result := UnMapAndLoad(@LI);
 end;
 
 //==============================================================================
 // Various simple PE Image functions
 //==============================================================================
+
+function InternalImportedLibraries(Recursive, FullPathName: Boolean): TStringList;
+var
+  Cache: TJclPeImagesCache;
+
+  procedure ProcessLibraries(const FileName: TFileName);
+  var
+    I: Integer;
+    S: string;
+    ImportLib: TJclPeImportLibItem;
+  begin
+    with Cache[FileName].ImportList do
+      for I := 0 to Count - 1 do
+      begin
+        ImportLib := Items[I];
+        if FullPathName then
+          S := ImportLib.FileName
+        else
+          S := ImportLib.Name;
+        if Result.IndexOf(S) = -1 then
+        begin
+          Result.Add(S);
+          if Recursive then
+            ProcessLibraries(ImportLib.FileName);
+        end;
+      end;
+  end;
+
+begin
+  // must be covered by critical section, requires valid GlobalPeImage
+  Cache := TJclPeImagesCache.Create;
+  try
+    Result := TStringList.Create;
+    try
+      Result.Sorted := True;
+      Result.Duplicates := dupIgnore;
+      ProcessLibraries(GlobalPeImage.FileName);
+    except
+      FreeAndNil(Result);
+    end;
+  finally
+    Cache.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
@@ -3590,8 +3724,13 @@ function PeDoesImportFunction(const FileName: TFileName; const FunctionName: str
 begin
   GlobalCritSection.Enter;
   try
-    Result := CreateGlobalPeImage(FileName) and
-      Assigned(GlobalPeImage.ImportList.SmartFindName(FunctionName, LibraryName, Options));
+    Result := CreateGlobalPeImage(FileName);
+    if Result then
+      with GlobalPeImage.ImportList do
+      begin
+        TryGetNamesForOrdinalImports;
+        Result := SmartFindName(FunctionName, LibraryName, Options) <> nil;
+      end;
   finally
     GlobalCritSection.Leave;
   end;
@@ -3599,32 +3738,46 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string): Boolean;
-begin
-  GlobalCritSection.Enter;
-  try
-    Result := CreateGlobalPeImage(FileName) and
-      (GlobalPeImage.ImportList.UniqueLibItemFromName[AnsiLowerCase(LibraryName)] <> nil);
-  finally
-    GlobalCritSection.Leave;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings): Boolean;
+function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
+  Recursive: Boolean): Boolean;
 var
-  I: Integer;
+  SL: TStringList;
 begin
   GlobalCritSection.Enter;
   try
     Result := CreateGlobalPeImage(FileName);
     if Result then
-      with GlobalPeImage.ImportList do
-      begin
-        for I := 0 to UniqueLibItemCount - 1 do
-          LibrariesList.Add(UniqueLibNames[I]);
+    begin
+      SL := InternalImportedLibraries(Recursive, False);
+      try
+        Result := SL.IndexOf(LibraryName) > -1;
+      finally
+        SL.Free;
       end;
+    end;
+  finally
+    GlobalCritSection.Leave;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings; Recursive, FullPathName: Boolean): Boolean;
+var
+  SL: TStringList;
+begin
+  GlobalCritSection.Enter;
+  try
+    Result := CreateGlobalPeImage(FileName);
+    if Result then
+    begin
+      SL := InternalImportedLibraries(Recursive, FullPathName);
+      try
+        LibrariesList.Assign(SL);
+      finally
+        SL.Free;
+      end;
+    end;
   finally
     GlobalCritSection.Leave;
   end;
@@ -3633,20 +3786,25 @@ end;
 //------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_DYNAMICARRAYS}
-function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray): Boolean;
+function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray; Recursive, FullPathName: Boolean): Boolean;
 var
   I: Integer;
+  SL: TStringList;
 begin
   GlobalCritSection.Enter;
   try
     Result := CreateGlobalPeImage(FileName);
     if Result then
-      with GlobalPeImage.ImportList do
-      begin
-        SetLength(LibrariesList, Count);
-        for I := 0 to UniqueLibItemCount - 1 do
-          LibrariesList[I] := UniqueLibNames[I];
+    begin
+      SL := InternalImportedLibraries(Recursive, FullPathName);
+      try
+        SetLength(LibrariesList, SL.Count);
+        for I := 0 to SL.Count - 1 do
+          LibrariesList[I] := SL[I];
+      finally
+        SL.Free;
       end;
+    end;
   finally
     GlobalCritSection.Leave;
   end;
@@ -3666,17 +3824,17 @@ begin
     if Result then
       with GlobalPeImage.ImportList do
       begin
+        TryGetNamesForOrdinalImports;
         for I := 0 to AllItemCount - 1 do
-        begin
           with AllItems[I] do
-            if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) then
+            if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) and
+              (Name <> '') then
             begin
               if IncludeLibNames then
                 FunctionsList.Add(ImportLib.Name + '=' + Name)
               else
                 FunctionsList.Add(Name);
             end;
-        end;
       end;
   finally
     GlobalCritSection.Leave;
@@ -3689,7 +3847,7 @@ end;
 function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
   const LibraryName: string; IncludeLibNames: Boolean): Boolean;
 var
-  I: Integer;
+  I, Cnt: Integer;
 begin
   GlobalCritSection.Enter;
   try
@@ -3697,18 +3855,23 @@ begin
     if Result then
       with GlobalPeImage.ImportList do
       begin
+        TryGetNamesForOrdinalImports;
         SetLength(FunctionsList, AllItemCount);
+        Cnt := 0;
         for I := 0 to AllItemCount - 1 do
         begin
           with AllItems[I] do
-            if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) then
+            if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) and
+              (Name <> '') then
             begin
               if IncludeLibNames then
                 FunctionsList[I] := ImportLib.Name + '=' + Name
               else
                 FunctionsList[I] := Name;
+              Inc(Cnt);
             end;
         end;
+        SetLength(FunctionsList, Cnt);
       end;
   finally
     GlobalCritSection.Leave;
@@ -3800,7 +3963,287 @@ begin
   end;
 end;
 
+//==============================================================================
+// Mapped image and API hooking related functions
+//==============================================================================
+
+function PeMapImgNtHeaders(BaseAddress: Pointer): PImageNtHeaders;
+begin
+  Result := nil;
+  if IsBadReadPtr(BaseAddress, SizeOf(TImageDosHeader)) then Exit;
+  if (PImageDosHeader(BaseAddress)^.e_magic <> IMAGE_DOS_SIGNATURE) or
+    (PImageDosHeader(BaseAddress)^._lfanew = 0) then Exit;
+  Result := PImageNtHeaders(DWORD(BaseAddress) + DWORD(PImageDosHeader(BaseAddress)^._lfanew));
+  if IsBadReadPtr(Result, SizeOf(TImageNtHeaders)) or
+    (Result^.Signature <> IMAGE_NT_SIGNATURE) then
+      Result := nil
+end;
+
 //------------------------------------------------------------------------------
+
+function PeMapImgLibraryName(BaseAddress: Pointer): string;
+var
+  NtHeaders: PImageNtHeaders;
+  DataDir: TImageDataDirectory;
+  ExportDir: PImageExportDirectory;
+begin
+  Result := '';
+  NtHeaders := PeMapImgNtHeaders(BaseAddress);
+  if NtHeaders = nil then Exit;
+  DataDir := NtHeaders^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+  if DataDir.Size = 0 then Exit;
+  ExportDir := PImageExportDirectory(DWORD(BaseAddress) + DataDir.VirtualAddress);
+  if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then Exit;
+  Result := PChar(DWORD(BaseAddress) + ExportDir^.Name);
+end;
+
+//==============================================================================
+// TJclPeMapImgHookItem
+//==============================================================================
+
+destructor TJclPeMapImgHookItem.Destroy;
+begin
+  if FBaseAddress <> nil then
+    InternalUnhook;
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHookItem.InternalUnhook: Boolean;
+begin
+  Result := TJclPeMapImgHooks.ReplaceImport(FBaseAddress, ModuleName, NewAddress, OriginalAddress);
+  if Result then
+    FBaseAddress := nil;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHookItem.Unhook: Boolean;
+begin
+  Result := InternalUnhook;
+  if Result then
+    FList.Remove(Self);
+end;
+
+//==============================================================================
+// TJclPeMapImgHooks
+//==============================================================================
+
+type
+  PWin9xDebugThunk = ^TWin9xDebugThunk;
+  TWin9xDebugThunk = packed record
+    PUSH: Byte;    // PUSH instruction opcode ($68)
+    Addr: Pointer; // The actual address of the DLL routine
+    JMP: Byte;     // JMP instruction opcode ($E9)
+    Rel: Integer;  // Relative displacement (a Kernel32 address)
+  end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHooks.GetItemFromNewAddress(NewAddress: Pointer): TJclPeMapImgHookItem;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+    if Items[I].NewAddress = NewAddress then
+    begin
+      Result := Items[I];
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHooks.GetItemFromOriginalAddress(OriginalAddress: Pointer): TJclPeMapImgHookItem;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+    if Items[I].OriginalAddress = OriginalAddress then
+    begin
+      Result := Items[I];
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHooks.GetItems(Index: Integer): TJclPeMapImgHookItem;
+begin
+  Result := TJclPeMapImgHookItem(inherited Items[Index]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHooks.HookImport(const ModuleName, FunctionName: string;
+  NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
+var
+  Item: TJclPeMapImgHookItem;
+  ModuleHandle: THandle;
+begin
+  ModuleHandle := GetModuleHandle(PChar(ModuleName));
+  Result := (ModuleHandle <> 0);
+  if not Result then
+  begin
+    SetLastError(ERROR_MOD_NOT_FOUND);
+    Exit;
+  end;
+  OriginalAddress := GetProcAddress(ModuleHandle, PChar(FunctionName));
+  Result := (OriginalAddress <> nil);
+  if not Result then
+  begin
+    SetLastError(ERROR_PROC_NOT_FOUND);
+    Exit;
+  end;
+  Result := (ItemFromOriginalAddress[OriginalAddress] = nil) and (NewAddress <> nil) and
+    (OriginalAddress <> NewAddress);
+  if not Result then
+  begin
+    SetLastError(ERROR_ALREADY_EXISTS);
+    Exit;
+  end;
+  if Result then
+    Result := ReplaceImport(Pointer(HInstance), ModuleName, OriginalAddress, NewAddress);
+  if Result then
+  begin
+    Item := TJclPeMapImgHookItem.Create;
+    Item.FBaseAddress := Pointer(HInstance);
+    Item.FFunctionName := FunctionName;
+    Item.FModuleName := ModuleName;
+    Item.FOriginalAddress := OriginalAddress;
+    Item.FNewAddress := NewAddress;
+    Item.FList := Self;
+    Add(Item);
+  end else
+    SetLastError(ERROR_INVALID_PARAMETER);
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPeMapImgHooks.IsWin9xDebugThunk(P: Pointer): Boolean;
+begin
+  with PWin9xDebugThunk(P)^ do
+    Result := (PUSH = $68) and (JMP = $E9);
+end;
+
+//------------------------------------------------------------------------------
+
+class function TJclPeMapImgHooks.ReplaceImport(Base: Pointer; ModuleName: string;
+  FromProc, ToProc: Pointer): Boolean;
+var
+  FromProcDebugThunk, ImportThunk: PWin9xDebugThunk;
+  IsThunked: Boolean;
+  NtHeader: PImageNtHeaders;
+  ImportDir: TImageDataDirectory;
+  ImportDesc: PImageImportDescriptor;
+  CurrName: PChar;
+  ImportEntry: PImageThunkData;
+  FoundProc: Boolean;
+begin
+  Result := False;
+  FromProcDebugThunk := PWin9xDebugThunk(FromProc);
+  IsThunked := not IsWinNT and IsWin9xDebugThunk(FromProcDebugThunk);
+  NtHeader := PeMapImgNtHeaders(Base);
+  if NtHeader = nil then Exit;
+  ImportDir := NtHeader.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+  if ImportDir.VirtualAddress = 0 then Exit;
+  ImportDesc := PImageImportDescriptor(DWORD(Base) + ImportDir.VirtualAddress);
+  while ImportDesc^.Name <> 0 do
+  begin
+    CurrName := PChar(Base) + ImportDesc^.Name;
+    if StrIComp(CurrName, PChar(ModuleName)) = 0 then
+    begin
+      if ImportDesc^.Characteristics = 0 then
+        ImportEntry := PImageThunkData(DWORD(Base) + ImportDesc^.FirstThunk)
+      else
+        ImportEntry := PImageThunkData(DWORD(Base) + ImportDesc^.Characteristics);
+      while ImportEntry^.Function_ <> 0 do
+      begin
+        if IsThunked then
+        begin
+          ImportThunk := PWin9xDebugThunk(ImportEntry^.Function_);
+          FoundProc := IsWin9xDebugThunk(ImportThunk) and (ImportThunk^.Addr = FromProcDebugThunk^.Addr);
+        end else
+          FoundProc := Pointer(ImportEntry^.Function_) = FromProc;
+        if FoundProc and not IsBadStringPtr(Pointer(ImportEntry^.Function_), 4) then
+        begin
+          Pointer(ImportEntry^.Function_) := ToProc;
+          Result := True;
+        end;
+        Inc(ImportEntry);
+      end;
+    end;
+    Inc(ImportDesc);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeMapImgHooks.UnhookByNewAddress(NewAddress: Pointer): Boolean;
+var
+  Item: TJclPeMapImgHookItem;
+begin
+  Item := ItemFromNewAddress[NewAddress];
+  Result := (Item <> nil) and Item.Unhook;
+end;
+
+//==============================================================================
+// Image access under a debbuger
+//==============================================================================
+
+function InternalReadProcMem(ProcessHandle: THandle; Address: DWORD;
+  Buffer: Pointer; Size: Integer): Boolean;
+var
+  BR: DWORD;
+begin
+  Result := ReadProcessMemory(ProcessHandle, Pointer(Address), Buffer, Size, BR);
+end;
+
+//------------------------------------------------------------------------------
+
+function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
+  var NtHeaders: TImageNtHeaders): Boolean;
+var
+  DosHeader: TImageDosHeader;
+begin
+  Result := False;
+  FillChar(NtHeaders, SizeOf(NtHeaders), 0);
+  FillChar(DosHeader, SizeOf(DosHeader), 0);
+  if not InternalReadProcMem(ProcessHandle, DWORD(BaseAddress), @DosHeader, SizeOf(DosHeader)) then Exit;
+  if DosHeader.e_magic <> IMAGE_DOS_SIGNATURE then Exit;
+  Result := InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + DWORD(DosHeader._lfanew),
+    @NtHeaders, SizeOf(TImageNtHeaders));
+end;
+
+//------------------------------------------------------------------------------
+
+function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
+  var Name: string): Boolean;
+var
+  NtHeaders: TImageNtHeaders;
+  DataDir: TImageDataDirectory;
+  ExportDir: TImageExportDirectory;
+begin
+  Name := '';
+  Result := PeDbgImgNtHeaders(ProcessHandle, BaseAddress, NtHeaders);
+  if not Result then Exit;
+  DataDir := NtHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+  if DataDir.Size = 0 then Exit;
+  if not InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + DataDir.VirtualAddress,
+    @ExportDir, SizeOf(ExportDir)) then Exit;
+  if ExportDir.Name = 0 then Exit;
+  SetLength(Name, MAX_PATH);
+  if InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + ExportDir.Name, PChar(Name), MAX_PATH) then
+    StrResetLength(Name)
+  else
+    Name := '';    
+end;
+
+//------------------------------------------------------------------------------
+
 
 initialization
   GlobalCritSection := TJclCriticalSection.Create;
@@ -3808,5 +4251,6 @@ initialization
 finalization
   FreeAndNil(GlobalPeImage);
   FreeAndNil(GlobalCritSection);
-
+  FreeAndNil(GlobalImportHooks);
+  
 end.
