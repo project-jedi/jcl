@@ -481,7 +481,7 @@ const
   PathSep = ';';
   {$ENDIF ~RTL140_UP}
 
-  MSHelpSystemKeyName        = 'Software\Microsoft\Windows\Help';
+  MSHelpSystemKeyName        = 'SOFTWARE\Microsoft\Windows\Help';
 
   BCBKeyName                 = 'SOFTWARE\Borland\C++Builder';
   DelphiKeyName              = 'SOFTWARE\Borland\Delphi';
@@ -2336,6 +2336,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2004/11/16 06:17:27  marquardt
+// style cleaning
+//
 // Revision 1.22  2004/11/15 20:42:35  rrossmair
 // - TJclBorRADToolInstallation.SubstitutePath: remove duplicate path delimiters
 //

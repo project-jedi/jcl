@@ -87,14 +87,12 @@ type
      procedure Progress(Sender: TObject); dynamic;
      property OnProgress: TNotifyEvent read FOnProgress write FOnProgress;
   public
+     constructor Create(Stream: TStream);
+     destructor Destroy; override;
      function Read(var Buffer; Count: Longint): Longint; override;
      function Write(const Buffer; Count: Longint): Longint; override;
      function Seek(Offset: Longint; Origin: Word): Longint; override;
-
      procedure Reset; virtual;
-
-     constructor Create(Stream: TStream);
-     destructor Destroy; override;
   end;
 
 { TJclCompressStream }
@@ -123,56 +121,47 @@ type
 type
   TJclZLibCompressStream = class(TJclCompressStream)
   private
-    FwindowBits: Integer;
-    FmemLevel: Integer;
+    FWindowBits: Integer;
+    FMemLevel: Integer;
     FMethod: Integer;
     FStrategy: Integer;
     FDeflateInitialized: Boolean;
     FCompressionLevel: Integer;
-
   protected
     ZLibRecord: TZStreamRec;
-
     procedure SetCompressionLevel(Value: Integer);
     procedure SetStrategy(Value: Integer);
     procedure SetMemLevel(Value: Integer);
     procedure SetMethod(Value: Integer);
     procedure SetWindowBits(Value: Integer);
-
   public
+    constructor Create(Destination: TStream; CompressionLevel: TJclCompressionLevel = -1);
+    destructor Destroy; override;
+    function Flush: Integer; override;
+    procedure Reset; override;
+    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
     property WindowBits: Integer read FWindowBits write SetWindowBits;
     property MemLevel: Integer read FMemLevel write SetMemLevel;
     property Method: Integer read FMethod write SetMethod;
     property Strategy: Integer read FStrategy write SetStrategy;
     property CompressionLevel: Integer read FCompressionLevel write SetCompressionLevel;
-
-    function Flush: Integer; override;
-    procedure Reset; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
-    function Write(const Buffer; Count: Longint): Longint; override;
-
-    constructor Create(Destination: TStream; CompressionLevel: TJclCompressionLevel = -1);
-    destructor Destroy; override;
   end;
 
   TJclZLibDecompressStream = class(TJclDecompressStream)
   private
-    FwindowBits: Integer;
+    FWindowBits: Integer;
     FInflateInitialized: Boolean;
-
   protected
     ZLibRecord: TZStreamRec;
     procedure SetWindowBits(Value: Integer);
-
   public
-    function Read(var Buffer; Count: Longint): Longint; override;
-    function Seek(Offset: Longint; Origin: Word): Longint; override;
-
-    property WindowBits: Integer read FWindowBits write SetWindowBits;
-
     constructor Create(Source: TStream); overload;
     constructor Create(Source: TStream; WindowBits: Integer); overload;
     destructor Destroy; override;
+    function Read(var Buffer; Count: Longint): Longint; override;
+    function Seek(Offset: Longint; Origin: Word): Longint; override;
+    property WindowBits: Integer read FWindowBits write SetWindowBits;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -180,33 +169,28 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclGZIPCompressionStream = class(TJclCompressionStream)
-  end;
+  TJclGZIPCompressionStream = class(TJclCompressionStream);
 
-  TJclGZIPDecompressionStream = class(TJclDecompressStream)
-  end;
+  TJclGZIPDecompressionStream = class(TJclDecompressStream);
 
 //--------------------------------------------------------------------------------------------------
 // RAR Support
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclRARCompressionStream = class(TJclCompressionStream)
-  end;
+  TJclRARCompressionStream = class(TJclCompressionStream);
 
-  TJclRARDecompressionStream = class(TJclDecompressStream)
-  end;
+  TJclRARDecompressionStream = class(TJclDecompressStream);
 
 //--------------------------------------------------------------------------------------------------
 // TAR Support
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclTARCompressionStream = class(TJclCompressionStream)
-  end;
+  TJclTARCompressionStream = class(TJclCompressionStream);
 
-  TJclTARDecompressionStream = class(TJclDecompressStream)
-  end;
+  TJclTARDecompressionStream = class(TJclDecompressStream);
+
 (*
 //--------------------------------------------------------------------------------------------------
 // BZIP2 Support
@@ -249,11 +233,12 @@ type
 
 
 implementation
+
 uses
   JclResources;
 
 const
-  JclDefaultBufferSize: Integer = 131072; // 128k
+  JclDefaultBufferSize = 128*1024; // 128k
 
 //--------------------------------------------------------------------------------------------------
 // CompressionStream
@@ -261,10 +246,9 @@ const
 
 constructor TJclCompressionStream.Create(Stream: TStream);
 begin
+  inherited Create;
   FBuffer := nil;
   SetBufferSize(JclDefaultBufferSize);
-
-  inherited Create;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -272,7 +256,6 @@ end;
 destructor TJclCompressionStream.Destroy;
 begin
   SetBufferSize(0);
-
   inherited Destroy;
 end;
 
@@ -308,7 +291,7 @@ end;
 
 function TJclCompressionStream.SetBufferSize(Size: Cardinal): Cardinal;
 begin
-  if (FBuffer <> nil) then
+  if FBuffer <> nil then
     FreeMem(FBuffer, FBufferSize);
 
   FBufferSize := Size;
@@ -325,7 +308,7 @@ end;
 
 procedure TJclCompressionStream.Progress(Sender: TObject);
 begin
-  if assigned(FOnProgress) then
+  if Assigned(FOnProgress) then
     FOnProgress(Sender);
 end;
 
@@ -336,7 +319,6 @@ end;
 constructor TJclCompressStream.Create(Destination: TStream);
 begin
   inherited Create(Destination);
-
   FStream := Destination;
 end;
 
@@ -347,7 +329,6 @@ end;
 constructor TJclDecompressStream.Create(Source: TStream);
 begin
   inherited Create(Source);
-
   FStream := Source;
 end;
 
@@ -365,12 +346,18 @@ begin
   if ErrCode < 0 then
   begin
     case ErrCode of
-      Z_ERRNO:         EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
-      Z_STREAM_ERROR:  EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
-      Z_DATA_ERROR:    EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
-      Z_MEM_ERROR:     EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
-      Z_BUF_ERROR:     EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
-      Z_VERSION_ERROR: EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
+      Z_ERRNO:
+        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
+      Z_STREAM_ERROR:
+        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
+      Z_DATA_ERROR:
+        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
+      Z_MEM_ERROR:
+        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
+      Z_BUF_ERROR:
+        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
+      Z_VERSION_ERROR:
+        raise EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
     else
       raise EJclCompressionError.CreateResRec(@RsCompressionZLibError);
     end;
@@ -387,16 +374,16 @@ begin
   // Initialize ZLib StreamRecord
   with ZLibRecord do
   begin
-    zalloc    := Z_NULL; // Use build-in memory allocation functionality
-    zfree     := Z_NULL;
+    zalloc    := nil; // Use build-in memory allocation functionality
+    zfree     := nil;
     next_in   := nil;
     avail_in  := 0;
     next_out  := FBuffer;
     avail_out := FBufferSize;
   end;
 
-  FwindowBits := DEF_WBITS;
-  FmemLevel   := DEF_MEM_LEVEL;
+  FWindowBits := DEF_WBITS;
+  FMemLevel   := DEF_MEM_LEVEL;
   FMethod     := Z_DEFLATED;
   FStrategy   := Z_DEFAULT_STRATEGY;
   FCompressionLevel := CompressionLevel;
@@ -434,7 +421,7 @@ begin
     if ZLibRecord.avail_out = 0 then   // Output buffer empty. Write to stream and go on...
     begin
       FStream.WriteBuffer(FBuffer^, FBufferSize);
-      Progress(self);
+      Progress(Self);
       ZLibRecord.next_out := FBuffer;
       ZLibRecord.avail_out := FBufferSize;
     end;
@@ -454,10 +441,11 @@ begin
       ZLibRecord.next_in := nil;
       ZLibRecord.avail_in := 0;
 
-      while (ZLibCheck(deflate(ZLibRecord, Z_FULL_FLUSH)) <> Z_STREAM_END) and (ZLibRecord.avail_out = 0) do
+      while (ZLibCheck(deflate(ZLibRecord, Z_FULL_FLUSH)) <> Z_STREAM_END) and
+        (ZLibRecord.avail_out = 0) do
       begin
         FStream.WriteBuffer(FBuffer^, FBufferSize);
-        Progress(self);
+        Progress(Self);
         
         ZLibRecord.next_out := FBuffer;
         ZLibRecord.avail_out := FBufferSize;
@@ -467,7 +455,7 @@ begin
       if ZLibRecord.avail_out < FBufferSize then
       begin
         FStream.WriteBuffer(FBuffer^, FBufferSize-ZLibRecord.avail_out);
-        Progress(self);
+        Progress(Self);
         Result := Result + FBufferSize-ZLibRecord.avail_out;
         ZLibRecord.next_out := FBuffer;
         ZLibRecord.avail_out := FBufferSize;
@@ -552,16 +540,16 @@ begin
   // Initialize ZLib StreamRecord
   with ZLibRecord do
   begin
-    zalloc    := Z_NULL; // Use build-in memory allocation functionality
-    zfree     := Z_NULL;
+    zalloc    := nil; // Use build-in memory allocation functionality
+    zfree     := nil;
     next_in   := nil;
     avail_in  := 0;
     next_out  := FBuffer;
     avail_out := FBufferSize;
   end;
 
-  FInflateInitialized := false;
-  FwindowBits := DEF_WBITS;
+  FInflateInitialized := False;
+  FWindowBits := DEF_WBITS;
 end;
 
 //-------------------------------------------------------------------------------------------------
@@ -573,16 +561,16 @@ begin
   // Initialize ZLib StreamRecord
   with ZLibRecord do
   begin
-    zalloc    := Z_NULL; // Use build-in memory allocation functionality
-    zfree     := Z_NULL;
+    zalloc    := nil; // Use build-in memory allocation functionality
+    zfree     := nil;
     next_in   := nil;
     avail_in  := 0;
     next_out  := FBuffer;
     avail_out := FBufferSize;
   end;
 
-  FInflateInitialized := false;
-  FwindowBits := WindowBits;
+  FInflateInitialized := False;
+  FWindowBits := WindowBits;
 end;
 
 //-------------------------------------------------------------------------------------------------
@@ -605,7 +593,7 @@ begin
   if not FInflateInitialized then
   begin
     ZLibCheck(InflateInit2(ZLibRecord, FWindowBits));
-    FInflateInitialized := true;
+    FInflateInitialized := True;
   end;
 
   ZLibRecord.next_out := @Buffer;
@@ -627,7 +615,7 @@ begin
       Exit;
     end;
 
-    Progress(self);
+    Progress(Self);
   end;
 
   Result := Count;
@@ -727,7 +715,7 @@ begin
     if BZLibRecord.avail_out = 0 then   // Output buffer empty. Write to stream and go on...
     begin
       FStream.WriteBuffer(FBuffer^, FBufferSize);
-      Progress(self);
+      Progress(Self);
       BZLibRecord.next_out := FBuffer;
       BZLibRecord.avail_out := FBufferSize;
     end;
@@ -750,7 +738,7 @@ begin
       while (BZIP2LibCheck(BZ2_bzCompress(@BZLibRecord, BZ_FLUSH)) <> Z_STREAM_END) and (BZLibRecord.avail_out = 0) do
       begin
         FStream.WriteBuffer(FBuffer^, FBufferSize);
-        Progress(self);
+        Progress(Self);
         
         BZLibRecord.next_out := FBuffer;
         BZLibRecord.avail_out := FBufferSize;
@@ -760,7 +748,7 @@ begin
       if BZLibRecord.avail_out < FBufferSize then
       begin
         FStream.WriteBuffer(FBuffer^, FBufferSize-BZLibRecord.avail_out);
-        Progress(self);
+        Progress(Self);
         Result := Result + FBufferSize-BZLibRecord.avail_out;
         BZLibRecord.next_out := FBuffer;
         BZLibRecord.avail_out := FBufferSize;
@@ -801,7 +789,7 @@ begin
     avail_out := FBufferSize;
   end;
 
-  FInflateInitialized := false;
+  FInflateInitialized := False;
 end;
 
 //-------------------------------------------------------------------------------------------------
@@ -824,7 +812,7 @@ begin
   if not FInflateInitialized then
   begin
     BZIP2LibCheck(BZ2_bzDecompress(@BZLibRecord));
-    FInflateInitialized := true;
+    FInflateInitialized := True;
   end;
 
   BZLibRecord.next_out := @Buffer;
@@ -846,7 +834,7 @@ begin
       Exit;
     end;
 
-    Progress(self);
+    Progress(Self);
   end;
 
   Result := Count;
@@ -863,5 +851,6 @@ begin
 end;
 
 *)
+
 end.
 
