@@ -36,7 +36,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils, Contnrs,
+  Classes, SysUtils,
+  {$IFDEF COMPILER5_UP}
+  Contnrs,
+  {$ENDIF COMPILER5_UP}
   JclBase;
 
 //--------------------------------------------------------------------------------------------------
@@ -454,7 +457,7 @@ implementation
 
 uses
   Math, TypInfo,
-  JclFileUtils, JclResources;
+  JclFileUtils, JclResources, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
 
