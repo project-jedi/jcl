@@ -30,7 +30,10 @@ interface
 {$I jcl.inc}
 
 uses
-  SysUtils, Types,
+  SysUtils,
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
