@@ -468,9 +468,15 @@ procedure JPegToBitmap(const FileName: string);
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
+procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap; WriteLength: Boolean);
+  overload;
+procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean); overload;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF VCL}
+procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap; HotSpotX: Integer = 0;
+  HotSpotY: Integer = 0);
+
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 {$ENDIF VCL}
 
@@ -536,7 +542,7 @@ implementation
 uses
   TypInfo, Math,
   {$IFDEF MSWINDOWS}
-  ClipBrd, CommCtrl, ShellApi, ImgList, JPeg,
+  ClipBrd, CommCtrl, ShellApi, JPeg,
   {$ENDIF MSWINDOWS}
   JclLogic, JclResources, JclSysUtils;
 
@@ -1749,6 +1755,25 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF VCL}
+
+procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap; HotSpotX: Integer = 0;
+  HotSpotY: Integer = 0);
+var
+  IconInfo: TIconInfo;
+begin
+  IconInfo.fIcon := True;
+  IconInfo.xHotSpot := HotSpotX;
+  IconInfo.yHotSpot := HotSpotY;
+  IconInfo.hbmMask := Bitmap.MaskHandle;
+  IconInfo.hbmColor := Bitmap.Handle;
+  Icon.Handle := CreateIconIndirect(IconInfo);
+end;
+
+{$ENDIF VCL}
+
+//--------------------------------------------------------------------------------------------------
+
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 var
   ImgList: HIMAGELIST;
@@ -1775,6 +1800,105 @@ begin
     DeleteObject(IconInfo.hbmMask);
     Result := IconInfo.hbmColor;
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+const
+  rc3_Icon = 1;
+
+type
+  PCursorOrIcon = ^TCursorOrIcon;
+  TCursorOrIcon = packed record
+    Reserved: Word;
+    wType: Word;
+    Count: Word;
+  end;
+
+  PIconRec = ^TIconRec;
+  TIconRec = packed record
+    Width: Byte;
+    Height: Byte;
+    Colors: Word;
+    Reserved1: Word;
+    Reserved2: Word;
+    DIBSize: Longint;
+    DIBOffset: Longint;
+  end;
+
+procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap; WriteLength: Boolean);
+var
+  MonoInfoSize, ColorInfoSize: DWORD;
+  MonoBitsSize, ColorBitsSize: DWORD;
+  MonoInfo, MonoBits, ColorInfo, ColorBits: Pointer;
+  CI: TCursorOrIcon;
+  List: TIconRec;
+  Length: Longint;
+begin
+  FillChar(CI, SizeOf(CI), 0);
+  FillChar(List, SizeOf(List), 0);
+  GetDIBSizes(MaskBitmap, MonoInfoSize, MonoBitsSize);
+  GetDIBSizes(ColorBitmap, ColorInfoSize, ColorBitsSize);
+  MonoInfo := nil;
+  MonoBits := nil;
+  ColorInfo := nil;
+  ColorBits := nil;
+  try
+    MonoInfo := AllocMem(MonoInfoSize);
+    MonoBits := AllocMem(MonoBitsSize);
+    ColorInfo := AllocMem(ColorInfoSize);
+    ColorBits := AllocMem(ColorBitsSize);
+    GetDIB(MaskBitmap, 0, MonoInfo^, MonoBits^);
+    GetDIB(ColorBitmap, 0, ColorInfo^, ColorBits^);
+    if WriteLength then
+    begin
+      Length := SizeOf(CI) + SizeOf(List) + ColorInfoSize +
+        ColorBitsSize + MonoBitsSize;
+      Stream.Write(Length, SizeOf(Length));
+    end;
+    with CI do
+    begin
+      CI.wType := RC3_ICON;
+      CI.Count := 1;
+    end;
+    Stream.Write(CI, SizeOf(CI));
+    with List, PBitmapInfoHeader(ColorInfo)^ do
+    begin
+      Width := biWidth;
+      Height := biHeight;
+      Colors := biPlanes * biBitCount;
+      DIBSize := ColorInfoSize + ColorBitsSize + MonoBitsSize;
+      DIBOffset := SizeOf(CI) + SizeOf(List);
+    end;
+    Stream.Write(List, SizeOf(List));
+    with PBitmapInfoHeader(ColorInfo)^ do
+      Inc(biHeight, biHeight); { color height includes mono bits }
+    Stream.Write(ColorInfo^, ColorInfoSize);
+    Stream.Write(ColorBits^, ColorBitsSize);
+    Stream.Write(MonoBits^, MonoBitsSize);
+  finally
+    FreeMem(ColorInfo, ColorInfoSize);
+    FreeMem(ColorBits, ColorBitsSize);
+    FreeMem(MonoInfo, MonoInfoSize);
+    FreeMem(MonoBits, MonoBitsSize);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean);
+var
+  IconInfo: TIconInfo;
+begin
+  if GetIconInfo(Icon, IconInfo) then
+  try
+    WriteIcon(Stream, IconInfo.hbmColor, IconInfo.hbmMask, WriteLength);
+  finally
+    DeleteObject(IconInfo.hbmColor);
+    DeleteObject(IconInfo.hbmMask);
+  end
+  else
+    RaiseLastOSError;
 end;
 
 {$ENDIF MSWINDOWS}
