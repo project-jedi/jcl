@@ -644,6 +644,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2004/10/17 21:00:14  mthoma
+// cleaning
+//
 // Revision 1.11  2004/09/22 20:38:49  obones
 // Removed "const" specifiers that were triggering the well known HPP generation bug in C++ Builder
 //
@@ -662,7 +665,7 @@ finalization
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// Revision 1.5  2004/04/06 04:55:17  
 // adapt compiler conditions, add log entry
 //
 

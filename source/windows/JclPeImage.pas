@@ -5917,6 +5917,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/17 21:00:15  mthoma
+// cleaning
+//
 // Revision 1.15  2004/09/30 13:11:27  marquardt
 // remove PH contributions
 //
@@ -5944,7 +5947,7 @@ end;
 // Revision 1.7  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.6  2004/04/06 04:41:07  peterjhaas
+// Revision 1.6  2004/04/06 04:41:07
 // Remove the BCB5 conditions
 //
 

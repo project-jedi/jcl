@@ -1385,6 +1385,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2004/10/17 21:00:15  mthoma
+// cleaning
+//
 // Revision 1.21  2004/10/11 08:13:04  marquardt
 // PH cleaning of JclStrings
 //
@@ -1425,8 +1428,8 @@ end;
 // Revision 1.7  2004/04/06 05:56:10  rrossmair
 // fixed RegReadUInt64 & RegReadUInt64Def
 //
-// Revision 1.6  2004/04/06 04:45:57  peterjhaas
-// Unite the single read functions and the single write functions, add Cardinal, Int64, UInt64 and Multistring support
-//
+// Revision 1.6  2004/04/06 04:45:57  
+// Unite the single read functions and the single write functions, add Cardinal,
+// Int64, UInt64 and Multistring support
 
 end.

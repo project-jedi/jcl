@@ -899,6 +899,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.7  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
@@ -908,7 +911,7 @@ finalization
 // Revision 1.5  2004/05/05 05:32:38  rrossmair
 // CVS key word typo corrected: $Data$ -> $Date$
 //
-// Revision 1.4  2004/04/06 04:59:07  peterjhaas
+// Revision 1.4  2004/04/06 04:59:07  
 // adapt compiler conditions, add log entry
 //
 

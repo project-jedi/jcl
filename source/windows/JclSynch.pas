@@ -1615,6 +1615,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.11  2004/08/01 11:40:23  marquardt
 // move constructors/destructors
 //
@@ -1636,7 +1639,7 @@ end;
 // Revision 1.5  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.4  2004/04/06 04:55:18  peterjhaas
+// Revision 1.4  2004/04/06 04:55:18  
 // adapt compiler conditions, add log entry
 //
 

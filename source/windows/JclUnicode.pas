@@ -8054,6 +8054,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.15  2004/08/01 11:40:24  marquardt
 // move constructors/destructors
 //
@@ -8075,7 +8078,7 @@ finalization
 // Revision 1.9  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.8  2004/04/06 04:55:18  peterjhaas
+// Revision 1.8  2004/04/06 04:55:18  
 // adapt compiler conditions, add log entry
 //
 
