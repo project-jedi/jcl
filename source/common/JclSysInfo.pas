@@ -1614,7 +1614,7 @@ var
 begin
   Pid := GetProcessPid(GetShellProcessName);
   Result := OpenProcess(PROCESS_ALL_ACCESS, False, Pid);
-  if Result = 0 then RaiseLastWin32Error;
+  if Result = 0 then RaiseLastOSError;
 end;
 
 //==============================================================================
