@@ -79,3 +79,73 @@ Summary:
   Class for exceptions raised due to errors in the CreateProcAsUser / CreateProcAsUserEx procedure pair.
 Quick info:
   Donator: Peter Friese
+--------------------------------------------------------------------------------
+@@LogOffOS
+<GROUP Miscellaneous>
+Summary:
+  Shuts down all running processes and logs the user off.
+Description:
+  This function shuts down all running processes and afterwards logs the user off. On
+  Windows this function utilizes the ExitWindowsEx function call.
+Result:
+  False if the function was not able to log off the user.
+See also:
+  ExitWindows, PowerOffOS, ShutDownOS, RebootOS
+Quick info:
+  Donator: Team JCL
+--------------------------------------------------------------------------------
+@@ExitWindows
+<GROUP Miscellaneous>
+Summary:
+  Exits windows
+Description:
+  This function exits windows in a way defined by the ExitCode parameter.
+Parameters:
+  ExitCode: Either EWX_LOGOFF, EWX_POWEROFF, EWX_REBOOT or EWX_SHUTDOWN.
+Result:
+  False if the function was not able to shutn down the system and turn the power off.
+See also:
+   LogOffOS, PowerOffOS, ShutDownOS, RebootOS
+Quick info:
+  Donator: Team JCL
+--------------------------------------------------------------------------------
+@@ShutDownOS
+<GROUP Miscellaneous>
+Summary:
+  Shuts down the operating system.
+Description:
+  This function shuts down the operating system.
+Result:
+  False if the function was not able to shutn down the system and turn the power off.
+See also:
+  ExitWindows, LogOffOS, PowerOffOS, ShutDownOS, RebootOS
+Quick info:
+  Donator: Team JCL
+--------------------------------------------------------------------------------
+@@PowerOffOS
+<GROUP Miscellaneous>
+Summary:
+  Shuts down the system and turns off the power.
+Description:
+  This function shuts down the system and turns the power off (the hardware and the
+  operating system must support the power off feature).
+Result:
+  False if the function was not able to shutn down the system and turn the power off.
+See also:
+  ExitWindows, LogOffOS, PowerOffOS, ShutDownOS, RebootOS
+Quick info:
+  Donator: Team JCL
+--------------------------------------------------------------------------------
+@@RebootOS
+<GROUP Miscellaneous>
+Summary:
+  Shuts down the system and reboots.
+Description:
+  This function shuts down the system and initiates a system reboot.
+Result:
+  False if the function was not able to shutn down the system and turn the power off.
+See also:
+  ExitWindows, LogOffOS, PowerOffOS, ShutDownOS, RebootOS
+Quick info:
+  Donator: Team JCL
+
