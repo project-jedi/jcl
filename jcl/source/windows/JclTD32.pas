@@ -136,16 +136,16 @@ const
   Borland32BitSymbolFileSignatureForDelphi = $39304246; // 'FB09'
   Borland32BitSymbolFileSignatureForBCB    = $41304246; // 'FB0A'
 
-{ Signature structure }
 type
+  { Signature structure }
   PJclTD32FileSignature = ^TJclTD32FileSignature;
   TJclTD32FileSignature = packed record
     Signature: DWORD;
     Offset: DWORD;
   end;
 
-{ Subsection Types }
 const
+  { Subsection Types }
   SUBSECTION_TYPE_MODULE         = $120;
   SUBSECTION_TYPE_TYPES          = $121;
   SUBSECTION_TYPE_SYMBOLS        = $124;
@@ -155,8 +155,8 @@ const
   SUBSECTION_TYPE_GLOBAL_TYPES   = $12B;
   SUBSECTION_TYPE_NAMES          = $130;
 
-{ Subsection directory header structure }
 type
+  { Subsection directory header structure }
   { The directory header structure is followed by the directory entries
     which specify the subsection type, module index, file offset, and size.
     The subsection directory gives the location (LFO) and size of each subsection,
@@ -371,8 +371,8 @@ type
     Offsets: array [0..0] of DWORD;
   end;
 
-{ Symbol type defines }
 const
+  { Symbol type defines }
   SYMBOL_TYPE_COMPILE        = $0001; // Compile flags symbol
   SYMBOL_TYPE_REGISTER       = $0002; // Register variable
   SYMBOL_TYPE_CONST          = $0003; // Constant symbol
@@ -449,15 +449,15 @@ type
     NameIndex: DWORD;   // Name index of procedure
   end;
 
-{ Symbol Information Records }
 type
+  { Symbol Information Records }
   PSymbolInfo = ^TSymbolInfo;
   TSymbolInfo = packed record
     Size: Word;
     SymbolType: Word;
     case Word of
-      SYMBOL_TYPE_LPROC32,
-      SYMBOL_TYPE_GPROC32:   ( Proc: TSymbolProcInfo; );
+      SYMBOL_TYPE_LPROC32, SYMBOL_TYPE_GPROC32:
+        (Proc: TSymbolProcInfo;);
   end;
 
   PSymbolInfos = ^TSymbolInfos;
@@ -565,7 +565,7 @@ type
     property NameIndex: DWORD read FNameIndex;
     property LineCount: Integer read GetLineCount;
     property Line[const Idx: Integer]: TJclLineInfo read GetLine; default;
-    property SegmentCount: Integer read FSegmentCount;//GetSegmentCount;
+    property SegmentCount: Integer read FSegmentCount; //GetSegmentCount;
     property Segment[const Idx: Integer]: TOffsetPair read GetSegment;
   end;
 
@@ -794,19 +794,19 @@ begin
       if AAddr = Offset then
       begin
         Result := True;
-        ALine  := Line[I];
+        ALine := Line[I];
         Exit;
       end
       else
       if (I > 1) and (Line[I - 1].Offset < AAddr) and (AAddr < Offset) then
       begin
         Result := True;
-        ALine  := Line[I-1];
+        ALine := Line[I-1];
         Exit;
       end;
     end;
   Result := False;
-  ALine  := nil;
+  ALine := nil;
 end;
 
 //==================================================================================================
@@ -832,7 +832,7 @@ begin
   begin
     FNameIndex := Proc.NameIndex;
     FOffset := Proc.Offset;
-    FSize  := Proc.Size;
+    FSize := Proc.Size;
   end;
 end;
 
