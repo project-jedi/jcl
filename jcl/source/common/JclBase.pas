@@ -22,7 +22,7 @@
 { versions of Delphi as well as FPC.                                           }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: Februari 13, 2001                                             }
+{ Last modified: April 29, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -46,9 +46,9 @@ uses
 
 const
   JclVersionMajor   = 1;   // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 0;   // third minor release
+  JclVersionMinor   = 3;   // third minor release
   JclVersionRelease = 1;   // 0=pre-release|beta/1=release
-  JclVersionBuild   = 351; // days since march 1, 2000
+  JclVersionBuild   = 425; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
