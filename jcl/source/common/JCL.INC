@@ -48,3 +48,8 @@
   {$ASMMODE Intel}
   {$UNDEF UseRegAsm}
 {$ENDIF}
+
+{$IFDEF DELPHI6_UP}
+  {$WARN SYMBOL_PLATFORM OFF}  // Platform warnings off
+{$ENDIF}
+
