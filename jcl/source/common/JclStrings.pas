@@ -202,7 +202,7 @@ procedure StrProperBuff(S: PAnsiChar);
 function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrRemoveChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString;
-  Flags: TReplaceFlags{$IFDEF SUPPORTS_DEFAULTPARAMS} = []{$ENDIF}); // TODOC Robert Lee
+  Flags: TReplaceFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}); // TODOC Robert Lee
 function StrRepeat(const S: AnsiString; Count: Integer): AnsiString;
 function StrReverse(const S: AnsiString): AnsiString;
 procedure StrReverseInPlace(var S: AnsiString);
