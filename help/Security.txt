@@ -28,11 +28,9 @@ function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean)
 [ShortDescr]
 Initializes a security attributes structure for NULL access and optional inheritability.
 [Description]
-CreateInheritable initializes a TSecurityAttributes structure for the creation of
-an optionally inheritable object with a NULL dacl. Meaning the bInheritHandle
-member is set to True allowing processes spawned by the current process to inherit
-the handle to the object that was created with this TSecurityAttributes structure.
-Also the TSecurityAttributes lpSecurityDescriptor member is initialized with a NULL
+CreateNullDacl initializes a TSecurityAttributes structure for the creation of
+an optionally inheritable object with a NULL dacl. 
+The TSecurityAttributes lpSecurityDescriptor member is initialized with a NULL
 dacl. This will result in the created object allowing full access to everyone.
 Make sure you read the Notes section for memory issues.
 [Parameters]
@@ -41,7 +39,7 @@ Count=2
 2=Inheritable:Boolean=Specifies inheritability. The bInheritHandle member of Sa
 is set to the same value as the Inheritable parameter.
 [Result]
-A pointer to the passed in TSecurityAttributes structure. This allow you to write
+A pointer to the passed in TSecurityAttributes structure. This allows you to write
 code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
 [Notes]
 Count=1
@@ -73,7 +71,7 @@ Count=1
 1=Sa:TSecurityAttributes=The TSecurityAttributes structure whose fInheritHandle
 member to set to True resulting in an inheritable object.
 [Result]
-A pointer to the passed in TSecurityAttributes structure. This allow you to write
+A pointer to the passed in TSecurityAttributes structure. This allows you to write
 code such as CreateFile(..., CreateInheritable(Sa), ...).
 [Quick Info]
 BCB=3,4,5
