@@ -22,7 +22,7 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="IdeOpenDlgFavoriteC60.cpp"/>
     <INCLUDEPATH value="..\debugextension;..\..\..\source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Source\Toolsapi"/>
@@ -31,12 +31,11 @@
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
-      -tWM"/>
-    <PFLAGS value="-$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-D&quot;&quot; -aa -Tpp -x -Gn -Gl -Gi -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -88,6 +87,8 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
+
+[Excluded Packages]
 
 [HistoryLists\hlIncludePath]
 Count=1
