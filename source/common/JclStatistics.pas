@@ -247,7 +247,6 @@ end;
 
 function MedianUnsorted(const X: TDynFloatArray): Float;
 var
-  N: Integer;
   SortedList: TDynFloatArray;
 
 begin
@@ -480,6 +479,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/04/08 17:14:46  mthoma
+// no message
+//
 // Revision 1.4  2004/04/08 16:57:21  mthoma
 // Fixed #1268. Introduced new function MedianUnsorted
 //
