@@ -24,9 +24,12 @@ Known Issues:
 // Last modified: $Date$
 // For history see end of file
 
+{$IFNDEF JEDI_INC}
+ALERT_jedi_inc_missing
 // This inc file depends on jedi.inc which has to
 // be included first (usually indirectly through
 // the inclusion of jcl.inc).
+{$ENDIF ~JEDI_INC}
 
 // Suppress platform warnings which are irrelevant
 // because the including unit can only be compiled
@@ -50,6 +53,9 @@ Known Issues:
 // History:
 
 // $Log$
+// Revision 1.4  2004/08/10 00:52:06  rrossmair
+// don't allow missing jedi.inc/wrong inclusion order to happen unnoticed.
+//
 // Revision 1.3  2004/07/30 07:16:47  marquardt
 // added a tilde
 //
