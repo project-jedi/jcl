@@ -195,7 +195,7 @@ function PrimeFactors(const N: Integer): TDynIntegerArray;
 { Floating point value classification }
 
 type
-  TFPClass =
+  TFloatingPointClass =
    (
     fpZero,     // zero
     fpNormal,   // normal finite <> 0
@@ -205,9 +205,9 @@ type
     fpInvalid   // unsupported floating point format
    );
 
-function FPClass(const Value: Single): TFPClass; overload;
-function FPClass(const Value: Double): TFPClass; overload;
-function FPClass(const Value: Extended): TFPClass; overload;
+function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
+function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
+function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 
 { NaN and INF support }
 
@@ -2411,9 +2411,9 @@ end;
 //==============================================================================
 
 const
-  fpEmpty = TFPClass(Ord(High(TFPClass))+1);
+  fpEmpty = TFloatingPointClass(Ord(High(TFloatingPointClass))+1);
 
-  FPClasses: array [0..6] of TFPClass =
+  FPClasses: array [0..6] of TFloatingPointClass =
    (
     fpInvalid,
     fpNaN,
@@ -2424,7 +2424,7 @@ const
     fpDenormal
    );
 
-function _FPClass: TFPClass;
+function _FPClass: TFloatingPointClass;
 // In: ST(0) Value to examine
 asm
         FXAM
@@ -2432,18 +2432,18 @@ asm
         FNSTSW  AX
         FFREE   ST(0)
         FINCSTP
-        BT      EAX, 14  // C3
+        BT      EAX, 14 // C3
         RCL     EDX, 1
         BT      EAX, 10 // C2
         RCL     EDX, 1
         BT      EAX, 8  // C0
         RCL     EDX, 1
-        MOVZX   EAX, TFPClass(FPClasses[EDX])
+        MOVZX   EAX, TFloatingPointClass(FPClasses[EDX])
 end;
 
 //------------------------------------------------------------------------------
 
-function FPClass(const Value: Single): TFPClass; overload;
+function FloatingPointClass(const Value: Single): TFloatingPointClass; overload;
 asm
         FLD     Value
         CALL    _FPClass
@@ -2451,7 +2451,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function FPClass(const Value: Double): TFPClass; overload;
+function FloatingPointClass(const Value: Double): TFloatingPointClass; overload;
 asm
         FLD     Value
         CALL    _FPClass
@@ -2459,7 +2459,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function FPClass(const Value: Extended): TFPClass; overload;
+function FloatingPointClass(const Value: Extended): TFloatingPointClass; overload;
 asm
         FLD     Value
         CALL    _FPClass
@@ -2471,21 +2471,21 @@ end;
 
 function IsInfinite(const Value: Single): Boolean; overload;
 begin
-  Result := FPClass(Value) = fpInfinite;
+  Result := FloatingPointClass(Value) = fpInfinite;
 end;
 
 //------------------------------------------------------------------------------
 
 function IsInfinite(const Value: Double): Boolean; overload;
 begin
-  Result := FPClass(Value) = fpInfinite;
+  Result := FloatingPointClass(Value) = fpInfinite;
 end;
 
 //------------------------------------------------------------------------------
 
 function IsInfinite(const Value: Extended): Boolean; overload;
 begin
-  Result := FPClass(Value) = fpInfinite;
+  Result := FloatingPointClass(Value) = fpInfinite;
 end;
 
 //------------------------------------------------------------------------------
@@ -2516,8 +2516,6 @@ type
     Exponent: Word;
   end;
 
-  PLongint = ^Longint;
-
 const
   ZeroTag = $3FFFFF;
   InvalidTag = TNaNTag($80000000);
@@ -2540,21 +2538,21 @@ const
 
 function IsNaN(const Value: Single): Boolean; overload;
 begin
-  Result := FPClass(Value) = fpNaN;
+  Result := FloatingPointClass(Value) = fpNaN;
 end;
 
 //------------------------------------------------------------------------------
 
 function IsNaN(const Value: Double): Boolean; overload;
 begin
-  Result := FPClass(Value) = fpNaN;
+  Result := FloatingPointClass(Value) = fpNaN;
 end;
 
 //------------------------------------------------------------------------------
 
 function IsNaN(const Value: Extended): Boolean; overload;
 begin
-  Result := FPClass(Value) = fpNaN;
+  Result := FloatingPointClass(Value) = fpNaN;
 end;
 
 //------------------------------------------------------------------------------
@@ -2565,7 +2563,7 @@ var
 begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
-    if FPClass(Value) <> fpNaN then
+    if FloatingPointClass(Value) <> fpNaN then
       raise EJclMathError.CreateResRec(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
@@ -2580,7 +2578,7 @@ var
 begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
-    if FPClass(Value) <> fpNaN then
+    if FloatingPointClass(Value) <> fpNaN then
       raise EJclMathError.CreateResRec(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
@@ -2595,7 +2593,7 @@ var
 begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
-    if FPClass(Value) <> fpNaN then
+    if FloatingPointClass(Value) <> fpNaN then
       raise EJclMathError.CreateResRec(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
