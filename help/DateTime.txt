@@ -414,8 +414,8 @@ Count=1
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
-SubCat=Conversion
 Category=Date and Time
+SubCat=Conversion
 Author=Nick Hodges;nick@xapware.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -438,8 +438,8 @@ Count=1
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
-SubCat=Conversion
 Category=Date and Time
+SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -482,7 +482,6 @@ The string representation of FileTime.
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
-SubCat=Conversion
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
@@ -617,29 +616,65 @@ Author=Charlie Calvert;ccalvert@inprise.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function ISOWeekNumber(DateTime: TDateTime): Integer;
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
+function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer;
 [ShortDescr]
-Returns the year and week number of a given date.
+Returns the week number of a given date. Optionally the reference-year for this week and the weekday can be requested
 [Description]
-ISOWeekNumber returns the year and week number of the specified date according to
-the ISO 8601 specification. In ISO 8601 weeks start with Monday and the first
+ISOWeekNumber returns week number of the specified date according to
+the ISO 8601 specification. Optionally the reference-year for this week and the 
+weekday can be requested. In ISO 8601 weeks start with Monday and the first
 week of a year is the one which includes the first Thursday. The function returns
 the weeknumber as the function result and the year through the var parameter.
 [Parameters]
-Count=2
+Count=3
 1=DateTime:TDateTime=The datetime for which to retrieve the year and week number.
-2=YearOfWeekNumber:Integer=The year the returned week belong to.
+2=YearOfWeekNumber:Integer=(Optionally) The year the returned week belong to.
+3=WeekDay:Integer=(Optionally) The day in this week.
 [Result]
 The function returns the weeknumber of the specified datetime. The year this
-week belongs to is returned through the var parameter.
+week belongs to and the Day in this week are returned through the var parameters.
 [Notes]
-Count=1
+Count=3
 1=The specified datetime is assumed to be after 1/1/0001 and before 1/1/10000).
+2=According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
+3=The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility.
+Other values might be useful in some instances and can be set in the sourcecode.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
-Author=Aubrey Dean;aubs@completeg.freeserve.co.uk
+Author=Peter J. Haas;PeterJHaas@t-online.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ISOWeekToDateTime(Year, Week, Day:Integer):TDateTime;
+[ShortDescr]
+Returns the date denoted by year, week and weekday. 
+[Description]
+ISOWeekToDateTime returns the date denoted by year, week and weekday. 
+according to the ISO 8601 specification. 
+[Parameters]
+Count=3
+1=Year:Integer=base-year of the ISO-week.
+2=Week:Integer=ISO week of the year.
+3=Day:Integer=Day in the week (1=Monday, ... 7=Sunday).
+[Result]
+The function returns the TDateTime value of the specified day
+[Notes]
+Count=3
+1=The specified date is assumed to be after 1/1/0001 and before 1/1/10000).
+2=According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
+3=The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility, 
+Other values might be useful in some instances and can be set in the sourcecode.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Peter J. Haas;PeterJHaas@t-online.de
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
@@ -1000,7 +1035,6 @@ we just use the solar year and a month = 1/12 of a solar year in such years.
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
-SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
@@ -1010,6 +1044,7 @@ Count=1
 [Declaration]
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word);
 procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word);
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer);
 [ShortDescr]
 Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
 [Description]
@@ -1029,7 +1064,6 @@ we just use the solar year and a month = 1/12 of a solar year in such years.
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
-SubCat=Conversion
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
 Delphi=3,4,5
 [SeeAlso]
