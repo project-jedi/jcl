@@ -1,47 +1,45 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclStrHashMap.pas.                                      }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2001 of these individuals.                                                   }
-{                                                                              }
-{ Description: String-pointer associative map.                                 }
-{ Unit Owner: Barry Kelly.                                                     }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains a string-pointer associative map. It works by hashing     }
-{ the added strings using a passed-in traits object.                           }
-{                                                                              }
-{ Unit owner: Barry Kelly                                                      }
-{ Last modified: June 6, 2001                                                  }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclStrHashMap.pas.                                                          }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains a string-pointer associative map. It works by hashing the added strings using }
+{ a passed-in traits object.                                                                       }
+{                                                                                                  }
+{ Unit owner: Barry Kelly                                                                          }
+{ Last modified: June 6, 2001                                                                      }
+{                                                                                                  }
+{**************************************************************************************************}
 
-{ This unit contains the implementation of a string / pointer associative
-  map. }
 unit JclStrHashMap;
 
-{$INCLUDE JCL.INC}
+{$I jcl.inc}
+
+{$WEAKPACKAGEUNIT ON}
 
 interface
 
-uses SysUtils, JclBase, JclResources;
+uses
+  SysUtils,
+  JclBase, JclResources;
 
 type
   { Brief: The error exception class used by TStringhashMap. }
-  EJclStringHashMapError = class(EJclError);
+  EJclStringHashMapError = class (EJclError);
   { Brief: The type of the return value for hashing functions. }
   THashValue = Cardinal;
 
@@ -56,7 +54,7 @@ type
       functions.
 
       See also: TCaseSensitiveTraits, TCaseInsensitiveTraits }
-  TStringHashMapTraits = class
+  TStringHashMapTraits = class (TObject)
   public
     { Brief: Returns the hash value of the string s. }
     function Hash(const s: string): Cardinal; virtual; abstract;
@@ -83,8 +81,7 @@ type
         The value of the pointer part of the current key.
     Should return True to continue iterating, or False to
     stop iterating and return to whatever called the Iterate method. }
-  TIterateFunc = function(AUserData: Pointer; const AStr: string;
-    var APtr: Pointer): Boolean;
+  TIterateFunc = function(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean;
 
   { Brief: The type of the parameter to TStringHashMap.IterateMethod.
     Description:
@@ -98,8 +95,7 @@ type
 
       <p>Return value: Should return True to continue iterating, or False to
         stop iterating and return to whatever called the IterateMethod method. }
-  TIterateMethod = function(AUserData: Pointer; const AStr: string;
-    var APtr: Pointer): Boolean of object;
+  TIterateMethod = function(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean of object;
 
   { Brief: Pointer to a pointer to a THashNode record. }
   PPHashNode = ^PHashNode;
@@ -135,7 +131,7 @@ type
           Iterate or IterateMethod methods won't go through all the items
           in any order that has meaning, i.e. the ordering is essentially
           random. }
-  TStringHashMap = class
+  TStringHashMap = class (TObject)
   private
     FHashSize: Cardinal;
     FCount: Cardinal;
@@ -143,12 +139,9 @@ type
     FLeftDelete: Boolean;
     FTraits: TStringHashMapTraits;
 
-    function IterateNode(ANode: PHashNode; AUserData: Pointer;
-      AIterateFunc: TIterateFunc): Boolean;
-    function IterateMethodNode(ANode: PHashNode; AUserData: Pointer;
-      AIterateMethod: TIterateMethod): Boolean;
-    procedure NodeIterate(ANode: PPHashNode; AUserData: Pointer;
-      AIterateFunc: TNodeIterateFunc);
+    function IterateNode(ANode: PHashNode; AUserData: Pointer; AIterateFunc: TIterateFunc): Boolean;
+    function IterateMethodNode(ANode: PHashNode; AUserData: Pointer; AIterateMethod: TIterateMethod): Boolean;
+    procedure NodeIterate(ANode: PPHashNode; AUserData: Pointer; AIterateFunc: TNodeIterateFunc);
     procedure SetHashSize(AHashSize: Cardinal);
     procedure DeleteNodes(var q: PHashNode);
     procedure DeleteNode(var q: PHashNode);
@@ -371,18 +364,15 @@ function DataHash(var AValue; ASize: Cardinal): THashValue;
       myMap.Iterate(nil, Iterate_FreeObjects);
       myMap.Clear;
     </code> }
-function Iterate_FreeObjects(AUserData: Pointer; const AStr: string;
-  var AData: Pointer): Boolean;
+function Iterate_FreeObjects(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 { Brief: A utility iterating function that calls Dispose for all data
   items in a map.
   See Also: Iterate_FreeObjects }
-function Iterate_Dispose(AUserData: Pointer; const AStr: string;
-  var AData: Pointer): Boolean;
+function Iterate_Dispose(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 { Brief: A utility iterating function that calls FreeMem for all data
   items in a map.
   See Also: Iterate_FreeMem }
-function Iterate_FreeMem(AUserData: Pointer; const AStr: string;
-  var AData: Pointer): Boolean;
+function Iterate_FreeMem(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 
 type
   { Brief: A useful concrete descendant of TStringHashMapTraits which
@@ -406,31 +396,37 @@ type
 
 implementation
 
-{
-  ======================================================================
-  Case Sensitive & Insensitive Traits
-  ======================================================================
-}
+//==================================================================================================
+// Case Sensitive & Insensitive Traits
+//==================================================================================================
 
 function TCaseSensitiveTraits.Compare(const l, r: string): Integer;
 begin
   Result := CompareStr(l, r);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TCaseSensitiveTraits.Hash(const s: string): Cardinal;
 begin
   Result := StrHash(s);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TCaseInsensitiveTraits.Compare(const l, r: string): Integer;
 begin
   Result := CompareText(l, r);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TCaseInsensitiveTraits.Hash(const s: string): Cardinal;
 begin
   Result := TextHash(s);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 var
   _CaseSensitiveTraits: TCaseSensitiveTraits;
@@ -442,6 +438,8 @@ begin
   Result := _CaseSensitiveTraits;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 var
   _CaseInsensitiveTraits: TCaseInsensitiveTraits;
 
@@ -452,29 +450,34 @@ begin
   Result := _CaseInsensitiveTraits;
 end;
 
-function Iterate_FreeObjects(AUserData: Pointer; const AStr: string;
-  var AData: Pointer): Boolean;
+//--------------------------------------------------------------------------------------------------
+
+function Iterate_FreeObjects(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 begin
   TObject(AData).Free;
   AData := nil;
   Result := True;
 end;
 
-function Iterate_Dispose(AUserData: Pointer; const AStr: string;
-  var AData: Pointer): Boolean;
+//--------------------------------------------------------------------------------------------------
+
+function Iterate_Dispose(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 begin
   Dispose(AData);
   AData := nil;
   Result := True;
 end;
 
-function Iterate_FreeMem(AUserData: Pointer; const AStr: string;
-  var AData: Pointer): Boolean;
+//--------------------------------------------------------------------------------------------------
+
+function Iterate_FreeMem(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 begin
   FreeMem(AData);
   AData := nil;
   Result := True;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function StrHash(const s: string): Cardinal;
 var
@@ -504,6 +507,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TextHash(const s: string): Cardinal;
 var
   i: Integer;
@@ -532,6 +537,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function DataHash(var AValue; ASize: Cardinal): THashValue;
 var
   p: PChar;
@@ -558,17 +565,18 @@ begin
   end;
 end;
 
-{
-  ======================================================================
-  TStringHashMap
-  ======================================================================
-}
+//==================================================================================================
+// TStringHashMap
+//==================================================================================================
+
 constructor TStringHashMap.Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
 begin
   Assert(ATraits <> nil, 'HashList must have traits');
   SetHashSize(AHashSize);
   FTraits := ATraits;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 destructor TStringHashMap.Destroy;
 begin
@@ -577,9 +585,8 @@ begin
   inherited Destroy;
 end;
 
-{
-  protected methods
-}
+//--------------------------------------------------------------------------------------------------
+
 type
   PPCollectNodeNode = ^PCollectNodeNode;
   PCollectNodeNode = ^TCollectNodeNode;
@@ -602,6 +609,8 @@ begin
   pcnn^.str := ANode^^.Str;
   pcnn^.ptr := ANode^^.Ptr;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.SetHashSize(AHashSize: Cardinal);
 var
@@ -669,6 +678,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.FindNode(const s: string): PPHashNode;
 var
   i: Cardinal;
@@ -701,6 +712,8 @@ begin
   Result := ppn;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.IterateNode(ANode: PHashNode; AUserData: Pointer;
   AIterateFunc: TIterateFunc): Boolean;
 begin
@@ -720,6 +733,8 @@ begin
   end else
     Result := True;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TStringHashMap.IterateMethodNode(ANode: PHashNode; AUserData: Pointer;
   AIterateMethod: TIterateMethod): Boolean;
@@ -741,6 +756,8 @@ begin
     Result := True;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.NodeIterate(ANode: PPHashNode; AUserData: Pointer;
   AIterateFunc: TNodeIterateFunc);
 begin
@@ -751,6 +768,8 @@ begin
     NodeIterate(@ANode^.Right, AUserData, AIterateFunc);
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.DeleteNode(var q: PHashNode);
 var
@@ -828,6 +847,8 @@ begin
   FreeNode(t);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.DeleteNodes(var q: PHashNode);
 begin
   if q^.Left <> nil then
@@ -838,6 +859,8 @@ begin
   q := nil;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.AllocNode: PHashNode;
 begin
   New(Result);
@@ -845,14 +868,15 @@ begin
   Result^.Right := nil;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.FreeNode(ANode: PHashNode);
 begin
   Dispose(ANode);
 end;
 
-{
-  property access
-}
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.GetData(const s: string): Pointer;
 var
   ppn: PPHashNode;
@@ -864,6 +888,8 @@ begin
   else
     Result := nil;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.SetData(const s: string; p: Pointer);
 var
@@ -884,7 +910,7 @@ begin
   end;
 end;
 
-{ public methods }
+//--------------------------------------------------------------------------------------------------
 
 procedure TStringHashMap.Add(const s: string; const p{: Pointer});
 var
@@ -904,6 +930,8 @@ begin
   end else
     raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapDuplicate, [s]);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 type
   PListNode = ^TListNode;
@@ -933,6 +961,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.RemoveData(const p{: Pointer});
 var
   dp: TDataParam;
@@ -955,6 +985,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.Remove(const s: string): Pointer;
 var
   ppn: PPHashNode;
@@ -970,6 +1002,8 @@ begin
     raise EJclStringHashMapError.CreateResRecFmt(@RsStringHashMapInvalidNode, [s]);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.IterateMethod(AUserData: Pointer;
   AIterateMethod: TIterateMethod);
 var
@@ -980,6 +1014,8 @@ begin
       Break;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
 var
   i: Integer;
@@ -989,6 +1025,8 @@ begin
       Break;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.Has(const s: string): Boolean;
 var
   ppn: PPHashNode;
@@ -996,6 +1034,8 @@ begin
   ppn := FindNode(s);
   Result := ppn^ <> nil;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TStringHashMap.Find(const s: string; var p{: Pointer}): Boolean;
 var
@@ -1006,6 +1046,8 @@ begin
   if Result then
     Pointer(p) := ppn^^.Ptr;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 type
   PFindDataResult = ^TFindDataResult;
@@ -1027,6 +1069,8 @@ begin
     pfdr^.Key := AStr;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TStringHashMap.FindData(const p{: Pointer}; var s: string): Boolean;
 var
   pfdr: PFindDataResult;
@@ -1044,6 +1088,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TStringHashMap.Clear;
 var
   i: Integer;
@@ -1057,6 +1103,8 @@ begin
   end;
   FCount := 0;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
 
