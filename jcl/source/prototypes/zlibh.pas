@@ -116,29 +116,37 @@ unit zlibh;
 {$ENDIF}
 
 {$IFNDEF JCL}
-{$IFNDEF NONBORLAND}
+{$IFDEF BORLAND}
   {$IFNDEF COMPILER3_UP}
     no support
   {$ENDIF COMPILER3_UP}
-{$ENDIF ~NONBORLAND}
+{$ENDIF BORLAND}
 {$ENDIF ~JCL}
 
 {$IFNDEF ZLIB_DYNAMIC}
-  {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-    {$WEAKPACKAGEUNIT ON}
-  {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 {$ENDIF ZLIB_DYNAMIC}
 
 interface
 uses
   {$IFDEF MSWINDOWS}
   Windows;
-  {$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}                        
   {$IFDEF UNIX}
   Libc;
   {$ENDIF UNIX}
 
-{$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }  
+{$IFDEF MSWINDOWS}
+{$HPPEMIT '#define ZEXPORT __fastcall'}
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+{$HPPEMIT '#define ZEXPORT __cdecl'}
+{$ENDIF UNIX}
+{$HPPEMIT '#define ZEXPORTVA __cdecl'}
+{$HPPEMIT ''}
+{$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
 { zlib.h -- interface of the 'zlib' general purpose compression library
   version 1.2.1, November 17th, 2003
@@ -1644,6 +1652,10 @@ end;
 //    - compiler symbol to hide platform specific comments
 //
 //   $Log$
+//   Revision 1.4  2004/04/30 17:59:43  peterjhaas
+//   - add calling convention for .hpp file
+//   - change NONBORLAND to BORLAND
+//
 //   Revision 1.3  2004/04/28 15:48:45  peterjhaas
 //   - add include of zutil.h for C compilers
 //
