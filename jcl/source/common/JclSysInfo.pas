@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: November 17, 2001                                              }
+{ Last modified: November 18, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -149,7 +149,17 @@ function GetShellProcessHandle: THandle;
 type
   TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE,
                      wvWinME, wvWinNT3, wvWinNT4, wvWin2000, wvWinXP);
-  TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
+  TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
+                    ptPersonal, ptProfessional, ptDatacenterServer);
+
+{ TODOC
+
+  Added to TNtProductType (by Jean-Fabien Connault):
+
+  ptPersonal          Windows XP Personal
+  ptProfessional      Windows 2000/XP Proffesional
+  ptDatacenterServer  Windows 2000 DataCenter server
+}
 
 var
   { in case of additions, don't forget to update initialization section! }
@@ -167,6 +177,32 @@ var
 
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
+
+// TODOC
+
+function GetWindowsVersionString: string;
+{
+ShortDescr: Returns the windows version as a string.
+Descr: GetWindowsVersion returns the operating system as a string. For example, 'Windows 2000'.
+Result: The windows version as a string or an empty string if the OS is not recognized.
+Author: Jean-Fabien Connault
+}
+
+function NtProductTypeString: string;
+{
+ShortDescr: Returns the Windows NT product type as a string.
+Descr: NtProductTypeString returns the NT product type as a string. For example 'Workstation'.
+Result: The NT product type as a string or an empty string if the product type is not recognized.
+Author: Jean-Fabien Connault
+}
+function GetWindowsServicePackVersion: Integer;
+{
+ShortDescr: Returns the installed service pack
+Descr: Returns the major version number of the latest installed Windows Service Pack.
+Result: The major version number of the latest installed Service Pack. In case of failure, or it
+        no Service Pack is installed, the function returns 0.
+Author: Jean-Fabien Connault        
+}
 
 //------------------------------------------------------------------------------
 // Hardware
@@ -1690,36 +1726,146 @@ var
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := ptUnknown;
-  if IsWin2K then
+  FillChar(VersionInfo, SizeOf(VersionInfo), 0);
+  VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
+
+  // Favor documented API over registry
+  if IsWinNT4 and (GetWindowsServicePackVersion >= 6) then
   begin
-    // favor documented API over registry
-    FillChar(VersionInfo, SizeOf(VersionInfo), 0);
-    VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
     if JclWin32.GetVersionEx(@VersionInfo) then
-      case VersionInfo.wProductType of
-        VER_NT_WORKSTATION:
-          Result := ptWorkStation;
-        VER_NT_DOMAIN_CONTROLLER:
-          Result := ptAdvancedServer;
-        VER_NT_SERVER:
-          Result := ptServer;
+    begin
+      if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
+        Result := ptWorkstation
+      else
+        Result := ptServer;
+    end;
+  end
+  else if IsWin2K then
+  begin
+    if JclWin32.GetVersionEx(@VersionInfo) then
+    begin
+      if (VersionInfo.wProductType = VER_NT_SERVER) then
+      begin
+        if (VersionInfo.wSuiteMask = VER_SUITE_DATACENTER) then
+          Result := ptDatacenterServer
+        else if (VersionInfo.wSuiteMask = VER_SUITE_ENTERPRISE) then
+          Result := ptAdvancedServer
+        else
+          result := ptServer;
+      end
+      else if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
+        Result := ptProfessional;
+    end;
+  end
+  else
+  if IsWinXP then
+  begin
+    if JclWin32.GetVersionEx(@VersionInfo) then
+    begin
+      if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
+      begin
+        if VersionInfo.wSuiteMask = VER_SUITE_PERSONAL then
+          Result := ptPersonal
+        else
+          Result := ptProfessional;
       end;
+    end;
   end;
+
+  Result := ptUnknown;
   if Result = ptUnknown then
   begin
-    // non Windows 2000 system or the above method failed, try registry
+    // Non Windows 2000/XP system or the above method failed, try registry
     Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
-    if CompareText(Product, 'WinNT') = 0 then
+    if CompareText(Product, 'WINNT') = 0 then
       Result :=  ptWorkStation
     else
-    if CompareText(Product, 'ServerNT') = 0 then
+    if CompareText(Product, 'SERVERNT') = 0 then
       Result := ptServer
     else
-    if CompareText(Product, 'LanmanNT') = 0 then
+    if CompareText(Product, 'LANMANNT') = 0 then
       Result := ptAdvancedServer
     else
       Result := ptUnknown;
   end;
+
+end;
+
+//------------------------------------------------------------------------------
+
+// todo mvb move to jclresources
+
+resourcestring
+  RsOSVersionWin95 = 'Windows 95';
+  RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
+  RsOSVersionWin98 = 'Windows 98';
+  RsOSVersionWin98SE = 'Windows 98 SE';
+  RsOSVersionWinME = 'Windows ME';
+  RsOSVersionWinNT3 = 'Windows NT 3.%u';
+  RsOSVersionWinNT4 = 'Windows NT 4.%u';
+  RsOSVersionWin2000 = 'Windows 2000';
+  RsOSVersionWinXP = 'Windows XP';
+
+function GetWindowsVersionString: string;
+begin
+  case GetWindowsVersion of
+    wvWin95: Result := RsOSVersionWin95;
+    wvWin95OSR2: Result := RsOSVersionWin95OSR2;
+    wvWin98: Result := RsOSVersionWin98;
+    wvWin98SE: Result := RsOSVersionWin98SE;
+    wvWinME: Result := RsOSVersionWinME;
+    wvWinNT3: Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
+    wvWinNT4: Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
+    wvWin2000: Result := RsOSVersionWin2000;
+    wvWinXP: Result := RsOSVersionWinXP;
+  else
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+// todo mvb move
+
+resourcestring
+  RsProductTypeWorkStation = 'Workstation';
+  RsProductTypeServer = 'Server';
+  RsProductTypeAdvancedServer = 'Advanced Server';
+  RsProductTypePersonal = 'Home Edition';
+  RsProductTypeProfessional = 'Professional';
+  RsProductTypeDatacenterServer = 'Datacenter Server';
+
+function NtProductTypeString: string;
+begin
+  case NtProductType of
+    ptWorkStation: Result := RsProductTypeWorkStation;
+    ptServer: Result := RsProductTypeServer;
+    ptAdvancedServer: Result := RsProductTypeAdvancedServer;
+    ptPersonal: Result := RsProductTypePersonal;
+    ptProfessional: Result := RsProductTypeProfessional;
+    ptDatacenterServer: Result := RsProductTypeDatacenterServer;
+  else
+    Result := '';
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetWindowsServicePackVersion: Integer;
+var
+  VersionInfo: TOSVersionInfoEx;
+begin
+  Result := 0;
+  if IsWin2K or IsWinXP then
+  begin
+    FillChar(VersionInfo, SizeOf(VersionInfo), 0);
+    VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
+    if JclWin32.GetVersionEx(@VersionInfo) then
+      Result := VersionInfo.wServicePackMajor;
+  end
+  else
+    Result := StrToInt(IntToHex(RegReadIntegerDef(HKEY_LOCAL_MACHINE,
+      '\SYSTEM\CurrentControlSet\Control\Windows\', 'CSDVersion', 0), 4)) div 100;
 end;
 
 //==============================================================================
