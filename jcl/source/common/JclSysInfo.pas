@@ -2681,7 +2681,7 @@ end;
 var
   T0, T1: Int64;
   CountFreq: Int64;
-  Freq, Freq2, Freq3, Total: Integer;
+  Freq, Freq2, Freq3, Total: Int64;
   TotalCycles, Cycles: Int64;
   Stamp0, Stamp1: Int64;
   TotalTicks, Ticks: Double;
@@ -2735,20 +2735,44 @@ begin
       Cycles := Stamp1 - Stamp0;
       Ticks := T1 - T0;
       Ticks := Ticks * 100000;
-      Ticks := Ticks / (CountFreq / 10);
+
+      // avoid division by zero
+      if CountFreq = 0 then
+        Ticks := High(Int64)
+      else
+        Ticks := Ticks / (CountFreq / 10);
+
       TotalTicks := TotalTicks + Ticks;
       TotalCycles := TotalCycles + Cycles;
-      Freq := Round(Cycles / Ticks);
+
+      // avoid division by zero
+      if Ticks = 0 then
+        Freq := High(Freq)
+      else
+        Freq := Round(Cycles / Ticks);
+
       Total := Freq + Freq2 + Freq3;
     end;
-    Freq3 := Round((TotalCycles *  10) / TotalTicks); // freq. in multiples of 10^5 Hz
-    Freq2 := Round((TotalCycles * 100) / TotalTicks); // freq. in multiples of 10^4 Hz
+
+    // avoid division by zero
+    if TotalTicks = 0 then
+    begin
+      Freq3 := High(Freq3);
+      Freq2 := High(Freq2);
+      CpuSpeed.RawFreq := High(CpuSpeed.RawFreq);
+    end
+    else
+    begin
+      Freq3 := Round((TotalCycles *  10) / TotalTicks); // freq. in multiples of 10^5 Hz
+      Freq2 := Round((TotalCycles * 100) / TotalTicks); // freq. in multiples of 10^4 Hz
+      CpuSpeed.RawFreq := Round(TotalCycles / TotalTicks);
+    end;
+
+    CpuSpeed.NormFreq := CpuSpeed.RawFreq;
 
     if Freq2 - (Freq3 * 10) >= 6 then
       Inc(Freq3);
 
-    CpuSpeed.RawFreq := Round(TotalCycles / TotalTicks);
-    CpuSpeed.NormFreq := CpuSpeed.RawFreq;
 
     Freq := CpuSpeed.RawFreq * 10;
     if (Freq3 - Freq) >= 6 then
