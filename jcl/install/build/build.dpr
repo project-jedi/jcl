@@ -991,50 +991,6 @@ begin
     SetEnvironmentVariable('HPPDIR', '$(ROOT)\Include\Vcl');
 end;
 {******************************************************************************}
-procedure ClearEnvironment;
-{ ClearEnvironment deletes almost all environment variables }
-var
-  EnvP, P, StartP: PChar;
-  S: string;
-begin
-  EnvP := GetEnvironmentStrings;
-  if EnvP <> nil then
-  begin
-    try
-      P := EnvP;
-      StartP := P;
-      repeat
-        while P^ <> #0 do
-          Inc(P);
-        if P^ = #0 then
-        begin
-          SetString(S, StartP, P - StartP);
-          S := Copy(S, 1, Pos('=', S) - 1);
-          if S <> '' then
-          begin
-            { Delete the environment variable }
-            if not (
-              SameText(S, 'TEMP') or  SameText(S, 'ComSpec') or SameText(S ,'OS') or
-              SameText(S, 'PATHEXT') or SameText(S, 'windir') or SameText(S, 'SystemRoot') or
-              SameText(S, 'SystemDrive') or
-              SameText(S, 'INSTALLOPTIONS') or SameText(S, 'LANG')
-              ) then
-             SetEnvironmentVariable(PChar(S), nil);
-          end;
-
-          Inc(P);
-          if P^ = #0 then
-            Break; // finished
-
-          StartP := P;
-        end;
-      until False;
-    finally
-      FreeEnvironmentStrings(EnvP);
-    end;
-  end;
-end;
-{******************************************************************************}
 function GetLibraryRootDir: string;
 var
   I: Integer;
@@ -1050,6 +1006,69 @@ begin
   SetLength(Result, GetShortPathName(PChar(Path), PChar(Result), Length(Result)));
 end;
 {******************************************************************************}
+procedure FixDcc32Cfg(Edition: TEdition);
+var
+  f: TextFile;
+  S: string;
+  Found: Boolean;
+begin
+  AssignFile(f, Edition.RootDir + '\bin\dcc32.cfg');
+  if not FileExists(Edition.RootDir + '\bin\dcc32.cfg') then
+  begin
+    {$I-}
+    Rewrite(f);
+    {$I+}
+    if IOResult = 0 then
+    begin
+      WriteLn(f, '-aWinTypes=Windows;WinProcs=Windows;DbiProcs=BDE;DbiTypes=BDE;DbiErrs=BDE');
+      if Edition.Typ <> Delphi then
+        WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
+      else
+        WriteLn(f, '-u"', Edition.RootDir, '\lib"');
+      CloseFile(f);
+    end
+    else
+    begin
+      WriteLn('Cannot create default ', Edition.RootDir, '\bin\dcc32.cfg'); 
+      Halt(0);
+    end;
+  end
+  else
+  begin
+    Found := False;
+    Reset(f);
+    while not EOF(f) and not Found do
+    begin
+      ReadLn(f, S);
+      Found := SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
+               SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
+               SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj') or
+               SameText(S, '-u"' + Edition.RootDir + '\lib"') or
+               SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
+               SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib');
+    end;
+    CloseFile(f);
+    if not Found then
+    begin
+      {$I-}
+      Append(f);
+      {$I+}
+      if IOResult = 0 then
+      begin
+        if Edition.Typ = BCB then
+          WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
+        else
+          WriteLn(f, '-u"', Edition.RootDir, '\lib"');
+        CloseFile(f);
+      end;
+      begin
+        WriteLn('You do not have the required permission to alter the defect ', Edition.RootDir, '\bin\dcc32.cfg');
+        Halt(0);
+      end;
+    end;
+  end;
+end;
+
 
 var
   I: Integer;
@@ -1057,8 +1076,7 @@ var
   Edition: TEdition;
 begin
   LibraryRootDir := GetLibraryRootDir;
-  // ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
-  // ahuser (2005-01-22): make.exe fails only if a path with spaces is in the PATH envvar
+  // ahuser (2005-01-22): make.exe fails if a path with spaces is in the PATH envvar
 
   // set ExtraOptions default values
   for I := 0 to High(ExtraOptions) do
@@ -1114,6 +1132,9 @@ begin
       end;
     end;
 
+    // correct dcc32.cfg file if necessary
+    FixDcc32Cfg(Edition);
+
     UnitOutDir := LibraryRootDir + '\lib\' + Edition.MainName;
     if UserDcpDir = '' then
       UserDcpDir := Edition.DcpDir;
@@ -1134,6 +1155,38 @@ begin
       path to prevent collisions between packages in TargetConfig.BplDir and
       Target.BplDir. }
     Path := Path + ';' + ExtractShortPathName(Edition.BplDir);
+
+(*    dcc32cfg := CreateDcc32Cfg([
+      '-Q',
+      '-U"' + Edition.RootDir + '\Lib"',
+      '-U"' + Edition.RootDir + '\Lib\Obj"',
+      '-R"' + Edition.RootDir + '\Lib"',
+      '-I"' + Edition.RootDir + '\Include"',
+      '-I"' + Edition.RootDir + '\Include\Vcl"',
+      '-U"' + UserDcpDir + '"',
+      '-U"' + UserLibDir + '"'
+    ]);
+
+      '-I"$(JCLINCLUDEDIRS)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS1)">>"$(CFG)"
+	@echo -U"$(JCLSOURCEDIRS2)">>"$(CFG)"
+	#
+	@echo -I"$(JVCLINCLUDEDIRS)">>"$(CFG)"
+	@echo -U"$(UNITOUTDIR)">>"$(CFG)"
+	@echo -U"$(LIBDIR)">>"$(CFG)"
+	@echo -U"$(JVCLSOURCEDIRS1)">>"$(CFG)"
+	@echo -U"$(JVCLSOURCEDIRS2)">>"$(CFG)"
+	@echo -R"$(JVCLRESDIRS)">>"$(CFG)"
+	#
+	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
+	@echo -I"$(EXTRAINCLUDEDIRS)">>"$(CFG)"
+	@echo -R"$(EXTRARESDIRS)">>"$(CFG)"
+	#
+	@echo -U"$(UNITDIRS)">>"$(CFG)"
+	@echo -R"$(UNITDIRS)">>"$(CFG)"
+*)
+
+    //SetEnvironemntVariable('CFGFILE', PChar('..\$(PKGDIR)\dcc32.cfg');
 
     SetEnvironmentVariable('PATH', Pointer(Path));
 
