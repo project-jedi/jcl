@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclEDI.pas.                                                                 }
+{ The Original Code is JclEDI_ANSIX12.pas.                                                                 }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -1037,8 +1037,7 @@ begin
         end;
         // Get the delimiters from the interchange control header
         if Assigned(Parent.Parent.Parent) and (Parent.Parent.Parent is TEDIInterchangeControl) then
-          if Assigned(Parent.Parent.Parent.Delimiters) then
-            Result := Parent.Parent.Parent.Delimiters;
+          Result := Parent.Parent.Parent.Delimiters;
       end;
     end;
 end;
@@ -1124,8 +1123,7 @@ begin
       end;
       // Get the delimiters from the interchange control
       if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
-        if Assigned(Parent.Parent.Delimiters) then
-          Result := Parent.Parent.Delimiters;
+        Result := Parent.Parent.Delimiters;
     end;
 end;
 
@@ -1158,8 +1156,7 @@ begin
   if not Assigned(FDelimiters) then
     // Get the delimiters from the interchange control
     if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-      if Assigned(Parent.Delimiters) then
-        Result := Parent.Delimiters;
+      Result := Parent.Delimiters;
 end;
 
 //==================================================================================================
@@ -1424,8 +1421,7 @@ begin
         Exit;
       end;
       if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
-        if Assigned(Parent.Parent.Delimiters) then
-          Result := Parent.Parent.Delimiters;
+        Result := Parent.Parent.Delimiters;
     end;
 end;
 
@@ -1772,8 +1768,7 @@ begin
   // Attempt to assign the delimiters
   if not Assigned(FDelimiters) then
     if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-      if Assigned(Parent.Delimiters) then
-        Result := Parent.Delimiters;
+      Result := Parent.Delimiters;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2889,8 +2884,7 @@ begin
       end;
       // Get the delimiters from the interchange control
       if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
-        if Assigned(Parent.Parent.Delimiters) then
-          Result := Parent.Parent.Delimiters;
+        Result := Parent.Parent.Delimiters;
     end;
 end;
 
@@ -2978,8 +2972,7 @@ begin
   if not Assigned(FDelimiters) then
     // Get the delimiters from the interchange control
     if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-      if Assigned(Parent.Delimiters) then
-        Result := Parent.Delimiters;
+      Result := Parent.Delimiters;
 end;
 
 //==================================================================================================
