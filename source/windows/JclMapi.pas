@@ -634,7 +634,7 @@ end;
 procedure TJclEmail.BeforeUnloadClientLib;
 begin
   if UserLogged then
-    LogOff;
+    LogOff(0);
   inherited;
 end;
 
@@ -660,7 +660,7 @@ begin
   FAttachments := TStringList.Create;
   FLogonOptions := [loLogonUI, loNewSession];
   FReadMailOptions := [roFifo, roPeek];
-  FRecipients := TJclEmailRecips.Create;
+  FRecipients := TJclEmailRecips.Create(False);
   FRecipients.AddressesType := 'SMTP';
 end;
 
@@ -704,7 +704,7 @@ begin
   begin
     FSeedMessageID := '';
     if Res <> MAPI_E_NO_MESSAGES then
-      MapiCheck(Res);
+      MapiCheck(Res, True);
   end;
 end;
 
@@ -748,7 +748,7 @@ procedure TJclEmail.LogOff(ParentWND: HWND);
 begin
   if UserLogged then
   begin
-    MapiCheck(MapiLogOff(FSessionHandle, GetParentWindow(ParentWND), 0, 0));
+    MapiCheck(MapiLogOff(FSessionHandle, GetParentWindow(ParentWND), 0, 0), True);
     FSessionHandle := 0;
   end;
 end;
@@ -761,7 +761,7 @@ begin
   begin
     LoadClientLib;
     MapiCheck(MapiLogOn(GetParentWindow(ParentWND), PChar(ProfileName),
-      PChar(Password), LogonOptionsToFlags, 0, @FSessionHandle));
+      PChar(Password), LogonOptionsToFlags, 0, @FSessionHandle), True);
   end; 
 end;
 
@@ -803,7 +803,7 @@ begin
   for ReportKind := Low(ReportKind) to High(ReportKind) do
     if NamesList[ReportKind] <> '' then
     begin
-      S := StrPadRight(KindNames[ReportKind], LabelsWidth) + ': ' +
+      S := StrPadRight(KindNames[ReportKind], LabelsWidth, AnsiSpace) + ': ' +
         Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
       Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
     end;
@@ -847,7 +847,7 @@ var
       if ulRecipClass in [MAPI_ORIG..MAPI_BCC] then
         Kind := TJclEmailRecipKind(ulRecipClass)
       else
-        MapiCheck(MAPI_E_INVALID_MESSAGE);
+        MapiCheck(MAPI_E_INVALID_MESSAGE, True);
       Recipients.Add(Copy(S, 1, N - 1), lpszName, Kind, Copy(S, N + 1, Length(S)));
     end;
   end;
@@ -877,7 +877,7 @@ begin
     Inc(Flags, MAPI_PEEK);
   if not (roAttachments in FReadMailOptions) then
     Inc(Flags, MAPI_SUPPRESS_ATTACH);
-  MapiCheck(MapiReadMail(SessionHandle, 0, PChar(FSeedMessageID), Flags, 0, Msg));
+  MapiCheck(MapiReadMail(SessionHandle, 0, PChar(FSeedMessageID), Flags, 0, Msg), True);
   try
     AddRecip(Msg^.lpOriginator);
     Recips := Msg^.lpRecips;
@@ -1007,7 +1007,7 @@ function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
 begin
   with TJclEmail.Create do
   try
-    Recipients.Add(ARecipient, AName, rkTO);
+    Recipients.Add(ARecipient, AName, rkTO, '');
     Subject := ASubject;
     Body := ABody;
     if AAttachment <> '' then
