@@ -3130,7 +3130,7 @@ begin
     begin
       FreeMem(Dest);
       Dest := nil;
-      raise EJclStringError.CreateRes(@RsInvalidEmptyStringItem);
+      raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem);
     end;
     P := StrECopy(P, PChar(Source[I]));
     Inc(P);
