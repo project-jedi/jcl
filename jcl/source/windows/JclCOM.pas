@@ -130,9 +130,9 @@ implementation
 
 uses
   Windows, SysUtils,
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   JclFileUtils, JclRegistry, JclResources, JclSysInfo, JclSysUtils, JclWin32;
 
 { Implementation Constants - may be reused by more than one routine }
