@@ -1,19 +1,21 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure RegDeleteKey(const Key: string);
+function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
 [ShortDescr]
-Deletes a registry key.
+Deletes a registry key including all subkeys.
 [Description]
-RegDeleteKey deletes the specified key under HKEY_CLASSES_ROOT. Note that under
-Windows 95 this also deletes all subkeys. On Windows NT however, the specified key
-must be empty or the function will fail.
+RegDeleteKeyTree deletes the specified key under RootKey. This function deletes
+all subkeys first thus working also on Windows NT.
 [Parameters]
-Count=1
-1=Key:string=Subkey of HKEY_CLASSES_ROOT to delete.
+Count=2
+1=RootKey:HKEY=The rootkey from which to delete, one of the HKEY_XXX constants.
+2=Key:string=Subkey of rootkey to delete.
 [Result]
-If the function succeeds it returns ERROR_SUCCESS as defined in Windows.pas. If
-it fails it returns a non-zero error code. You can use the Windows FormatMessage
-API call to get a description for the error code.
+If the function succeeds it returns True else False.
+The failure may happen somewhere in the recursive deletion leaving you with
+only some remaining keys.
+Think twice before using this function. It will happily delete vital parts
+of the registry without complaining.
 [Quick Info]
 BCB=3,4,5
 Unit=JclRegistry
@@ -50,7 +52,7 @@ Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegReadBoolDef(RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
+function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
 [ShortDescr]
 Reads a boolean key from the registry.
 [Description]
@@ -79,7 +81,7 @@ Count=2
 2=RegReadStringDef
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegReadIntegerDef(RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
+function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
 [ShortDescr]
 Reads an integer key from the registry.
 [Description]
@@ -108,7 +110,7 @@ Count=2
 2=RegReadStringDef
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegReadStringDef(RootKey: HKEY; const Key, Name, Def: string): string;
+function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
 [ShortDescr]
 Reads a string key from the registry.
 [Description]
@@ -138,7 +140,7 @@ Count=2
 3=RegWriteBoolDef
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure RegDeleteEntry(RootKey: HKEY; const Key, Name: string);
+function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
 [ShortDescr]
 Deletes an entry from the registry.
 [Description]
@@ -148,6 +150,10 @@ Count=3
 1=RootKey:HKEY=The rootkey which to write to, one of the HKEY_XXX constants.
 2=Key:string=The key (path) where the desired value is located, relative to RootKey.
 3=Name:string=Name of the value to delete.
+[Result]
+The function return True if it succeeds else False. The most probable
+failure reasons are a nonexistent key or name or insufficient permissions
+on Windows NT.
 [Quick Info]
 BCB=3,4,5
 Unit=JclRegistry
@@ -159,12 +165,13 @@ Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure RegWriteBool(RootKey: HKEY; const Key, Name: string; Value: Boolean);
+procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
 [ShortDescr]
 Writes a boolean key to the registry.
 [Description]
 RegWriteBool writes a single boolean value to the registry. If the function fails
-it raises an ERegistryException exception. The specified Key must already exist.
+it raises an EJclRegistryError exception. The specified Key must already exist.
+The value is written as REG_DWORD of either 0 or 1.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey which to write to, one of the HKEY_XXX constants.
@@ -189,12 +196,12 @@ Count=5
 5=RegWriteString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure RegWriteInteger(RootKey; HKEY; const Name: string; Value: Integer);
+procedure RegWriteInteger(const RootKey; HKEY; const Name: string; Value: Integer);
 [ShortDescr]
 Writes an integer key to the registry.
 [Description]
 RegWriteInteger writes a single integer value to the registry. If the function fails
-it raises an ERegistryException exception. The specified Key must already exist.
+it raises an EJclRegistryError exception. The specified Key must already exist.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey which to write to, one of the HKEY_XXX constants.
@@ -219,12 +226,12 @@ Count=5
 5=RegWriteString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure RegWriteString(RootKey: HKEY; const Key, Name, Value: string);
+procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
 [ShortDescr]
 Writes a string key to the registry.
 [Description]
 RegWriteString writes a single string value to the registry. If the function fails
-it raises an ERegistryException exception. The specified Key must already exist.
+it raises an EJclRegistryError exception. The specified Key must already exist.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey which to write to, one of the HKEY_XXX constants.
@@ -249,12 +256,12 @@ Count=5
 5=RegWriteInteger
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegReadBool(RootKey: HKEY; const Key, Name: string): Boolean;
+function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
 [ShortDescr]
 Reads a boolean key from the registry.
 [Description]
 RegReadBool reads a single boolean value from the registry. If the function fails
-it raises an ERegistryException exception.
+it raises an EJclRegistryError exception.
 [Parameters]
 Count=3
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -280,12 +287,12 @@ Count=5
 5=RegWriteString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegReadInteger(RootKey: HKEY; const Key, Name: string): Integer;
+function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
 [ShortDescr]
 Reads an integer key from the registry.
 [Description]
 RegReadInteger reads a single integer value from the registry. If the function fails
-it raises an ERegistryException exception.
+it raises an EJclRegistryError exception.
 [Parameters]
 Count=3
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -311,12 +318,12 @@ Count=5
 5=RegWriteString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegReadString(RootKey: HKEY; const Key, Name: string): string;
+function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
 [ShortDescr]
 Reads a string key from the registry.
 [Description]
 RegReadString reads a single string value from the registry. If the function fails
-it raises an ERegistryException exception.
+it raises an EJclRegistryError exception.
 [Parameters]
 Count=3
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -342,25 +349,23 @@ Count=5
 5=RegWriteString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function UnregisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
+function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 [ShortDescr]
 Unregisters the specified application for execution at logon.
 [Description]
-UnregisterAutoExec unregisters an application that was previously registered
-for autoexecution with <REF>RegisterAutoExec</REF>. You can use this function
-to remove an application that was registered as run always, or 'run once' if
-you change your mind (before reboot). If a file is registered as 'run once' and
-the system was rebooted there is no need to unregister because the system automatically
-removes the entry from the registry.
+UnregisterAutoExec unregisters an application that is registered for autoexecution.
+You can use this function to remove an application that was registered as run always,
+or 'run once' if you change your mind (before reboot). If a file is registered
+as 'run once' and the system was rebooted there is no need to unregister because the
+system automatically removes the entry from the registry.
 [Parameters]
 Count=2
 1=ExecKind:TExecKind=Specifies how the file was registered. See <REF>TExecKind</REF> for more information.
-2=Path:string=Fully qualified name of the executable file to unregister.
+2=Name:string=Name of registry value to delete.
 [Result]
-If the function succeeds it returns True, otherwise it returns False. Note that
-if the specified file does not exist in the registry the function returns True and
+The return value is that of a <REF>RegDeleteEntry</REF> except for
 calling UnregisterAutoExec with ekServiceRun or ekServiceRunOnce on Windows NT/2000
-always causes the function to return False (the file was not registered).
+which causes the function to return False and do nothing.
 [Quick Info]
 BCB=3,4,5
 Unit=JclRegistry
@@ -376,7 +381,7 @@ Count=2
 2=TExecKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RegisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
+function RegisterAutoExec(ExecKind: TExecKind; const Name, Path: string): Boolean;
 [ShortDescr]
 Registers the specified application for execution at logon.
 [Description]
@@ -388,13 +393,14 @@ ekUserRunOnce) or at each logon (ekMachineRun, ekUserRun). The Machine and User
 specify for 'all users' or the 'current user only' respectively. Note that except
 for ekMachineRun and ekMachineRunOnce, all registered executables execute
 asynchronously. The ekServiceRun and ekServiceRunOnce exist to simulate NT services
-on Windows 9x and are probably of not much use. You can use the <REF>UnRegisterAutoExec</REF>
+on Windows 9x and are probably of not much use. You can use the <REF>UnregisterAutoExec</REF>
 function to remove the entry for the registry when autoexecution is no longer
 desired.
 [Parameters]
-Count=2
+Count=3
 1=ExecKind:TExecKind=Specifies how to register the executable. See <REF>TExecKind</REF> for more information.
-2=Path:string=Fully qualified name of an executable file to register for auto execution.
+2=Name:string=Name of the registry value to add.
+3=Path:string=The command line of an executable file including command line parameters to register for auto execution.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. Note that
 calling RegisterAutoExec with ekServiceRun or ekServiceRunOnce on Windows NT/2000
@@ -444,8 +450,8 @@ function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TS
 [ShortDescr]
 Reads a list of value names from the registry.
 [Description]
-Use RegGetValueNames to obtain a list of values contained in the specified registry key. 
-If the function fails it raises an ERegistryException exception.
+Use RegGetValueNames to obtain a list of values contained in the specified registry key.
+The string list is cleared before the values are added.
 [Parameters]
 Count=3
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -453,15 +459,15 @@ Count=3
 3=List:TStrings=This string list will contain the names of the values.
 [Result]
 If the function succeeds it returns True. If it fails it returns False.
+Failure is normally caused by either a nonexistent key or insufficient
+permissions on Windows NT.
+No values gives success not failure.
 [Example]
 ValueNames := TStringList.Create;
-try
-  RegGetValueNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0\Compiling', ValueNames);
-  for I := 0 to SubKeys.Count - 1 do 
-    ShowMessage(ValueNames[I]);
-finally
-  ValueNames.Free;
-end;
+RegGetValueNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0\Compiling', ValueNames);
+for I := 0 to SubKeys.Count - 1 do 
+  ShowMessage(ValueNames[I]);
+ValueNames.Free;
 [Quick Info]
 BCB=3,4,5
 Unit=JclRegistry
@@ -481,6 +487,7 @@ function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStr
 Reads a list of key names from the registry.
 [Description]
 RegGetKeyNames returns a list of the specified key's subkeys.
+The string list is cleared before the values are added.
 [Parameters]
 Count=3
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -489,15 +496,14 @@ Count=3
 is responsible for creating and destroying this list.
 [Result]
 If the function succeeds it returns True. If it fails it returns False.
+Failure is normally caused by either a nonexistent key or insufficient
+permissions on Windows NT.
+No subkeys gives success not failure.
 [Example]
 SubKeys := TStringList.Create;
-try
-  RegGetKeyNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0', SubKeys);
-  for I := 0 to SubKeys.Count - 1 do 
-    ShowMessage(SubKeys[I]);
-finally
-  SubKeys.Free;
-end;
+RegGetKeyNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0', SubKeys);
+for I := 0 to SubKeys.Count - 1 do 
+  ShowMessage(SubKeys[I]);
 [Quick Info]
 BCB=3,4,5
 Unit=JclRegistry
@@ -524,8 +530,8 @@ Count=2
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
 2=Key:string=The key (path) that is to be checked, relative to RootKey.
 [Result]
-If there are any children of the specified key, the function will return True. If 
-there are no children, it will return False.
+If there are any children of the specified key, the function will return True. 
+If there are no children, it will return False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclRegistry
@@ -536,5 +542,6 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=1
-1=RegGetKeyNamesNames
+Count=2
+1=RegGetKeyNames
+2=RegGetValueNames
