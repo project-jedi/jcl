@@ -68,7 +68,7 @@ unit JclUnicode;
 //   - low level Unicode UCS4 data import and functions
 //   - helper functions
 //
-//  Version 2.8
+//  Version 2.9
 //----------------------------------------------------------------------------------------------------------------------
 // This unit contains routines and classes to manage and work with Unicode/WideString strings.
 // You need Delphi 4 or higher to compile this code.
@@ -963,7 +963,7 @@ implementation
 {$R JclUnicode.res}
 
 uses                                          
-  Consts, SyncObjs, SysUtils, JclResources;
+  Consts, JclSynch, SysUtils, JclResources;
 
 const
   // some predefined sets to shorten parameter lists below and ease repeative usage
@@ -982,7 +982,7 @@ const
 var
   // As the global data can be accessed by several threads it should be guarded
   // while the data is loaded.
-  LoadInProgress: TCriticalSection;
+  LoadInProgress: TJclCriticalSection;
 
 //----------------- support for character categories -------------------------------------------------------------------
 
@@ -7989,7 +7989,7 @@ procedure PrepareUnicodeData;
 // Prepares structures which are globally needed.
 
 begin
-  LoadInProgress := TCriticalSection.Create;
+  LoadInProgress := TJclCriticalSection.Create;
 
   if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
     @WideCompareText := @CompareTextWinNT
