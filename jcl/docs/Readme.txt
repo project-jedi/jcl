@@ -3,43 +3,35 @@
 
   Jedi Code Library
 
-Release 1.92
-Build 1661
-16-September-2004
+Release 1.93
+Build 1722
+18-November-2004
 
 ------------------------------------------------------------------------
 
-*Note: JCL release 1.92 is an interim release to support JVCL 3 Beta 2.
-Due to lack of time, the text below has not been updated and does not
-reflect the changes in JCL since release 1.91.*
+Note: JCL release 1.93 is an interim release; its main objective is to
+settle a long-lasting conflict with a former JEDI member by
+removing/replacing his contributions. Although we tried to maintain
+backward compatibility, this goal has been met only partially. *You
+might need to tweak your code.*
 
-It has been a long time since we released the last publicly promoted
-version 1.22 of the Jedi Code Library (JCL). Now, about eight weeks
-after release 1.90, we are proud to present Version 1.91. A lot of stuff
-changed since release 1.22 - nonetheless we tried to keep backwards
-compatability as far as possible. One of the most noticeable changes is
-that we are now crossplatform <cps.html>! JCL 1.91 supports writing
-platform independent VisualCLX applications for Windows and x86-Linux.
-
-Regarding the leap in version numbers since 1.22: Consider 1.9x as
-pre-*2.0*.
+Lack of time prevented us from listing the changes and bug fixes in JCL
+since release 1.91. For detailed change logs, use the facilities of our
+CVS repository at SourceForge.net
+<http://sourceforge.net/projects/jcl/>, see below.
 
 
       Supported Tools
 
     * Delphi version 5, 6, 7
     * C++Builder version 5 & 6
-    * Kylix 3 (Delphi & C++)
+    * Kylix 3
 
 Notes:
 
     * Not every unit supports all tools. Look out for *.exc files in the
       tool-specific lib/ subdirectories for a list of units excluded
       from compilation.
-    * LM.pas is not longer distributed with the JCL. Renamed to
-      JwaLM.pas, it is available as part of Marcel van Brakel's
-      distribution of Win32 API translations
-      <http://members.chello.nl/m.vanbrakel2/win32api._zip>.
     * We didn't manage to persuade Kylix 3/C++ to build the CJclVClx
       package; this issue remains unresolved for the time being and will
       cause the installer to fail at the respective point of execution.
@@ -48,261 +40,6 @@ Notes:
       development (1.9.x - we will not support FP versions 1.0.x).
       Expect a JCL release providing FP support soon after this branch
       has got stable.
-
-
-      What's new since version 1.22
-
-_New Units:_
-
-    JclBorlandTools
-    JclCIL
-    JclCLR
-    JclDITs
-    JclDotNet
-    JclEDI
-    JclEDI_ANSIX12
-    JclEDI_ANSIX12_Ext
-    JclEDI_UNEDIFACT
-    JclEDI_UNEDIFACT_Ext
-    JclEDISEF
-    JclEDITranslators
-    JclEDIXML
-    JclMetadata
-    JclMsdosSys
-    JclTask
-    JclZLib 
-
-_Changes to existing units:_
-
-    JclDateTime
-
-        function UnixTimeToDateTime(const UnixTime: TJclUnixTime32):
-        TDateTime;
-        function FileTimeToUnixTime(const FileTime: TFileTime):
-        TJclUnixTime32;
-        function UnixTimeToFileTime(const UnixTime: TJclUnixTime32):
-        TFileTime;
-
-    JclFileUtils
-
-        function PathGetRelativePath(Origin, Destination: string): string;
-        TFileHandler = procedure (const FileName: string) of object;
-        TFileHandlerEx = procedure (const Directory: string; const
-        FileInfo: TSearchRec) of object;
-        function VerifyFileAttributeMask(var RejectedAttributes,
-        RequiredAttributes: Integer): Boolean;
-        function IsFileAttributeMatch(FileAttributes,
-        RejectedAttributes, RequiredAttributes: Integer): Boolean;
-        function FileAttributesStr(const FileInfo: TSearchRec): string;
-        function IsFileNameMatch(FileName: string; const Mask: string;
-        const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE}
-        True {$ENDIF}): Boolean;
-        function IsRootDirectory(const CanonicFileName: string): Boolean;
-        function GetFileStatus(const FileName: string; out StatBuf:
-        TStatBuf64; const ResolveSymLinks: Boolean): Integer;
-        function Win32MoveFileReplaceExisting(const SrcFilename,
-        DstFilename: string): Boolean;
-        function CreateSymbolicLink(const Name, Target: string): Boolean;
-        function SymbolicLinkTarget(const Name: string): string;
-        function FormatVersionString(const FixedInfo: TVSFixedFileInfo;
-        VersionFormat: TFileVersionFormat = vfFull): string; overload;
-        procedure VersionExtractFileInfo(const FixedInfo:
-        TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
-        procedure VersionExtractProductInfo(const FixedInfo:
-        TVSFixedFileInfo; var Major, Minor, Build, Revision: Word);
-        function VersionFixedFileInfo(const FileName: string; var
-        FixedInfo: TVSFixedFileInfo): Boolean;
-        function VersionFixedFileInfoString(const FileName: string;
-        VersionFormat: TFileVersionFormat = vfFull;
-        const NotAvailableText: string = ''): string;
-        procedure EnumFiles(const Path: string; HandleFile:
-        TFileHandlerEx; RejectedAttributes: Integer =
-        faRejectedByDefault; RequiredAttributes: Integer = 0; Abort:
-        PBoolean = nil);
-        procedure EnumDirectories(const Root: string; const
-        HandleDirectory: TFileHandler;
-        const IncludeHiddenDirectories: Boolean = False; const
-        SubDirectoriesMask: string = '';
-        Abort: PBoolean = nil {$IFDEF UNIX}; ResolveSymLinks: Boolean =
-        True {$ENDIF});
-        function FileSearch: IJclFileEnumerator;
-
-        Classes:
-
-            TJclFileAttributeMask
-            TJclFileEnumerator
-
-        Interfaces:
-
-            IJclFileEnumerator
-
-    JclIniFiles
-
-        TJclISOMemIniFile
-        TJclISOIniFile
-
-    JclMath
-
-        function CommercialRound(const X: Float): Int64;
-
-    JclMapi
-
-        function JclSimpleSendFax(const ARecipient, AName, ASubject,
-        ABody: string; const AAttachment: TFileName = ''; ShowDialog:
-        Boolean = True; AParentWND: HWND = 0): Boolean;
-        function JclSimpleBringUpSendMailDialog(const ASubject, ABody:
-        string; const AAttachment: TFileName = ''; AParentWND: HWND =
-        0): Boolean;
-
-    JclMiscel
-
-        function WinExec32AndRedirectOutput(const Cmd: string; var
-        Output: string; RawOutput: Boolean = False): Cardinal; 
-
-    JclPeImage
-
-        function PeUpdateLinkerTimeStamp(const FileName: string; const
-        Time: TDateTime): Boolean;
-        function PeReadLinkerTimeStamp(const FileName: string): TDateTime;
-
-    JclRegistry
-
-        function RegGetDataSize(const RootKey: DelphiHKEY; const Key,
-        Name: string; out DataSize: Cardinal): Boolean;
-        function RegGetDataType(const RootKey: DelphiHKEY; const Key,
-        Name: string; out DataType: Cardinal): Boolean;
-        function RegReadCardinal(const RootKey: DelphiHKEY; const Key,
-        Name: string): Cardinal;
-        function RegReadCardinalDef(const RootKey: DelphiHKEY; const
-        Key, Name: string; Def: Cardinal): Cardinal;
-        function RegReadInt64(const RootKey: DelphiHKEY; const Key,
-        Name: string): Int64;
-        function RegReadInt64Def(const RootKey: DelphiHKEY; const Key,
-        Name: string; Def: Int64): Int64;
-        function RegReadUInt64(const RootKey: DelphiHKEY; const Key,
-        Name: string): UInt64;
-        function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key,
-        Name: string; Def: UInt64): UInt64;
-        function RegReadAnsiString(const RootKey: DelphiHKEY; const Key,
-        Name: AnsiString): AnsiString;
-        function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const
-        Key, Name, Def: AnsiString): AnsiString;
-        function RegReadWideString(const RootKey: DelphiHKEY; const Key,
-        Name: WideString): WideString;
-        function RegReadWideStringDef(const RootKey: DelphiHKEY; const
-        Key, Name, Def: WideString): WideString;
-        function RegReadMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string): string; overload;
-        procedure RegReadMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string; out Value: TDynStringArray); overload;
-        procedure RegReadMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string; Value: TStrings); overload;
-        function RegReadMultiStringDef(const RootKey: DelphiHKEY; const
-        Key, Name: string; const Def: string): string; overload;
-        procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const
-        Key, Name: string; out Value: TDynStringArray; const Def:
-        TDynStringArray); overload;
-        procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const
-        Key, Name: string; Value, Def: TStrings); overload;
-        function RegReadMultiAnsiString(const RootKey: DelphiHKEY; const
-        Key, Name: AnsiString): AnsiString;
-        function RegReadMultiAnsiStringDef(const RootKey: DelphiHKEY;
-        const Key, Name: AnsiString; const Def: AnsiString): AnsiString;
-        function RegReadMultiWideString(const RootKey: DelphiHKEY; const
-        Key, Name: WideString): WideString;
-        function RegReadMultiWideStringDef(const RootKey: DelphiHKEY;
-        const Key, Name: WideString; const Def: WideString): WideString;
-        procedure RegReadBinary(const RootKey: DelphiHKEY; const Key,
-        Name: string; out Value: TDynByteArray); overload;
-        function RegReadBinaryAsAnsiString(const RootKey: DelphiHKEY;
-        const Key, Name: AnsiString): AnsiString;
-        function RegReadBinaryAsAnsiStringDef(const RootKey: DelphiHKEY;
-        const Key, Name: string; const Def: AnsiString): AnsiString;
-        function RegReadBinaryAsWideString(const RootKey: DelphiHKEY;
-        const Key, Name: WideString): WideString;
-        function RegReadBinaryAsWideStringDef(const RootKey: DelphiHKEY;
-        const Key, Name: string; const Def: WideString): WideString;
-        procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key,
-        Name: string; Value: Cardinal);
-        procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key,
-        Name: string; Value: Int64);
-        procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key,
-        Name: string; Value: UInt64);
-        procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const
-        Key, Name, Value: AnsiString);
-        procedure RegWriteWideString(const RootKey: DelphiHKEY; const
-        Key, Name, Value: WideString);
-        procedure RegWriteMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string; const Value: string); overload;
-        procedure RegWriteMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string; const Value: array of String); overload;
-        procedure RegWriteMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string; const Value: TDynStringArray); overload;
-        procedure RegWriteMultiString(const RootKey: DelphiHKEY; const
-        Key, Name: string; const Value: TStrings); overload;
-
-    JclRTTI
-
-        dropped: function JclHookIs(const IsProc: TJclIsFunc): Boolean;
-        dropped: function JclIsHooked: Boolean;
-        dropped: function JclUnhookIs: Boolean;
-
-    JclShell
-
-        dropped: function ShellLinkGetIcon(const Link: TShellLink; const
-        Icon: TIcon): Boolean;
-        function ShellLinkIcon(const Link: TShellLink): HICON; overload;
-        function ShellLinkIcon(const FileName: string): HICON; overload;
-
-    JclStatistics
-
-        function MedianUnsorted(const X: TDynFloatArray): Float; 
-
-    JclStrings
-
-        dropped: function StrIsNumber(const S: AnsiString): Boolean;
-        function StrConsistsOfNumberChars(const S: AnsiString): Boolean;
-        /(was: StrIsNumber)/
-        function StrEnsureNoPrefix(const Prefix, Text: AnsiString):
-        AnsiString;
-        function StrEnsureNoSuffix(const Suffix, Text: AnsiString):
-        AnsiString;
-        function CharLastPos(const S: AnsiString; const C: AnsiChar;
-        const Index: Integer = 1): Integer;
-        function StringsToMultiString(const Value: array of AnsiString):
-        AnsiString; overload;
-        function StringsToMultiString(const Value: TDynStringArray):
-        AnsiString; overload;
-        function StringsToMultiString(const Value: TStrings):
-        AnsiString; overload;
-        procedure MultiStringToStrings(out Dest: TDynStringArray; const
-        Value: AnsiString); overload;
-        procedure MultiStringToStrings(Dest: TStrings; const Value:
-        AnsiString); overload;
-        function StringsToMultiWideString(const Value: array of
-        AnsiString): WideString; overload;
-        function StringsToMultiWideString(const Value: TDynStringArray):
-        WideString; overload;
-        function StringsToMultiWideString(const Value: TStrings):
-        WideString; overload;
-        procedure MultiWideStringToStrings(out Dest: TDynStringArray;
-        const Value: WideString); overload;
-        procedure MultiWideStringToStrings(Dest: TStrings; const Value:
-        WideString); overload;
-
-    JclSvcCtrl
-
-        function Install(const ServiceName, DisplayName, ImageName:
-        string; const Description: string = ''; ServiceTypes:
-        TJclServiceTypes = [stWin32OwnProcess]; StartType:
-        TJclServiceStartType = sstDemand; ErrorControlType:
-        TJclServiceErrorControlType = ectNormal; DesiredAccess: DWORD =
-        DefaultSvcDesiredAccess; const LoadOrderGroup: TJclServiceGroup
-        = nil; const Dependencies: PChar = nil; const Account: PChar =
-        nil; const Password: PChar = nil): TJclNtService;
-        function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
-        function GetServiceStatusWaitingIfPending(ServiceHandle:
-        SC_HANDLE): DWord;
 
 
       JCL Distribution content
@@ -519,131 +256,4 @@ report. One of the JCL developers will pick up the report/fix and update
 the CVS repository if the fix is satisfactory. If you report and fix a
 lot of bugs, you might even get developer access to CVS so you can
 update the JCL files directly.
-
-
-      Fixed bugs
-
-The following bugs have been fixed since the JCL 1.90 release
-
-Mantis entry # 	Category 	Description
-#0000028	JclMath	Feature Request: Checksums xor
-#0000033	JclRegistry	New Functions for Read/Write Widestrings to the
-Registry
-#0000080	JclHookExcept	Exception hooking may cause crash during
-finalization of the app
-#0000177	JclStrings	Feature Request: CharFirstPos and CharLastPos
-#0000186	JclSysInfo	Exception in GetBiosName and GetBiosExtendedInfo
-#0000203	Documentation	StrMatches function is case-sensitive
-#0000236	JclDateTime	jclDateTime with Indiana time zone
-#0000278	Documentation	TDllVersion: wrong unit
-#0000297	Miscellanous	installation error in xp
-#0000302	Examples	BLS not found
-#0000322	Installation	JediInstaller.exe inoperable when using large fonts
-#0000402	JclDateTime	DateTimeToLocalDateTime incorrectly converts during
-non-DST
-#0000403	JclDateTime	DateTimeToLocalDateTime and LocalDateTimeToDateTime
-don't include Standard Time Bias
-#0000406	JclMime	Potential Access Violation in MimeDecode
-#0000413	Miscellanous	Installation of JCL/JVCL using JEDI Installer
-failing with Delphi 6 Personal
-#0000417	JclPrint	Get the default windows printer
-#0000521	JclSvcCtrl	TJclSCManager raises exception when free'd
-#0000547	JclSysInfo	GetAPMBatteryFlag should return a SET of TAPMBatteryFlag
-#0000848	JclSvcCtrl	class/method TJclSCManager.Refresh causes range
-check error
-#0000898	JclLanMan	GetLocalGroups and GetGlobalGroups crashes
-#0000923	JclShell	ShellRunControlPanel dies not work under Win98
-#0000924	Documentation	'IsWinXP' missing in Help
-#0000947	JclStrings	StrBetween not working as expected
-#0001045	JclDateTime	DateTimeToLocalDateTime function conversion bug
-#0001060	JclStrings	Problem with extraction string between two same chars.
-#0001115	JclMultimedia	TJclMultimedia Timer Elapsed function bug
-#0001119	JclStrings	StrIsNumber, CharIsNumber any good?
-#0001239	Examples	Error in RTTIDemoMain
-#0001240	Examples	Error in RTTIDemoMain
-#0001241	Examples	Error in RTTIDemoMain
-#0001268	JclStatistics	function Median is wrong
-#0001317	Installation	JclSysInfo.pas(2083): Undefinierter Bezeichner:
-'TAsnObjectIdentifier'
-#0001487	JclMime	MimeDecodeString (undefined result of the function)
-#0001513	JclGraphics	ApplyLUT reverses params to CheckParams
-#0001603	Installation	Access violation in installer
-#0001606	Installation	EAccessViolation during installation of JCL 1.90
-#0001668	Installation	Error installing JCL1.90-Build1497 on D5
-#0001711	Installation	QJediInstaller gets Access Violation
-
-The following bugs have been fixed (among others) since the JCL 1.22 release
-
-Mantis entry # 	Category 	Description
-#0000041	JclStrings	Todo Item not yet done: StrContainsChars
-#0000046		TJclPeMapImgHooks.ReplaceImport does not work for host process
-#0000056		JCLDebug is not catching exceptions that are raised from DLLs
-#0000196	JclDebug	Display Call stack on exception box
-#0000197	Miscellanous	all files are readonly
-#0000248	JclSysUtils	JclSysUtils.StrToBoolean does not accept 'Y', 'N',
-'T', 'F'
-#0000253		StrStripNonNumbersChars
-#0000271		GetSizeOfFile(const FileName: string) does not work for size > 4GB
-#0000278		TDllVersion: wrong unit
-#0000303		RunningProcessesList: FullPath option does not work any more
-#0000321		Use TStrings instead of TStringList in procedure
-StringListCustomSort
-#0000342		Memory leak
-#0000349		ModFloat(-2, 2) gives 2, which is wrong
-#0000365	JclSysInfo	GetShellProcessName does not work on Win9x systems
-#0000401	JclSysInfo	ERangeError in GetCPUSpeed
-#0000444	Documentation	ASCIIZ and Unicode
-#0000445	Documentation	ASCIIZ and Unicode
-#0000512	JclSysInfo	RunningProcessesList does not return full path on XP
-#0000533		RunningProcessesList does not return full path on XP
-#0000605	JclMAPI	AddressType reported as the addressname
-#0000632	JclPEImage	TJclPeImage.StampToDateTime simplification
-#0000632	JclPEImage	TJclPeImage.StampToDateTime simplification
-#0000640	JclStrings	JclStrings.pas - Compilation under Linux.
-#0000670	JclSysInfo	JCLSYSINFO - GetMacAddresses does not fall back on
-GetMacAddressesSnmp
-#0000683	JclSysInfo	GetBIOSDate does not work on Win9x/Me systems
-#0000718	JclSecurity	Missing JclBase in uses gives error in D5
-#0000744	JclRTTI	JclRTTI causes access violation locating IsClass
-#0000785	JclDateTime	SystemTimeToFileTime and DosDateTimeToFileTime do
-nothing.
-#0000789	JclSynch	ThreadID defined as Integer - fails on win95/98/ME
-#0000801	JclSysInfo	JclSysInfo.GetCPUSpeed - division by zero
-#0000845	JclSysInfo	GetWindowsVersion - Errors!!!
-#0000856	JclSysUtils	SetVirtualMethod causes Access Violation
-#0000868	JclStrings	ERangeError raised in StrReplaceCS
-#0000872	JclStrings	Passing empty string to strReplace causes exception
-#0000920	JclMAPI	Add addrress type for telex, at the moment only types
-for smtp and fax
-#0000921		Add addrress type for telex, at the moment only types for smtp
-and fax
-#0000929	JclSysInfo	User home directory in Win 2000/XP
-#0000938	JclIniFiles	Changes o IniFiles not written
-#0000961	Examples	StackTrace, Exception Handler
-#0000967	JclDebug	CreateStrackList function
-#0000977	JclFileUtils	AdvBuildFileList does not return files
-#0000981	JclSysInfo	Division by zero in JclSysInfo
-#0001004	JclFileUtils	AdvBuildFileList fails to match
-#0001006	JclSysInfo	Division by 0 and runtime error 216
-#0001007		GetCPUSpeed() crashes on Hyperthreading CPUs
-#0001013	JclDateTime	JclDateTime & TIME_ZONE_ID_UNKNOWN
-#0001024	JclSysInfo	TerminateApp calls CloseHandle even if OpenProcess fails
-#0001074	JclSysInfo	Dr. Watson when GetCPUInfo is called
-#0001109	JclFileUtils	TJclFileVersionInfo: add property ItemByName or
-function GetItemByName
-#0001112	JclGraphUtils	Linking JclGraphUtils GPFs under XP Home Edition
-#0001118		type incompatible pointer assignment
-#0001123	JclStrings	StrReplaceCI and StrSmartCase ignore national chars
-#0001133	JclFileUtils	DelTree('') deletes c:*:* !!!
-#0001137	JclStrings	StrMatches with a search of '*' won't match empty string
-#0001147	JclStrings	Call of CharPos with Index=1 returns 2 if first char
-of string do match
-#0001156	JclStrings	Error in conversion
-#0001167	JclSysInfo	EZeroDivide is raised in GetCPUSpeed
-#0001185	Miscellanous	BCB is not defined for VER110
-#0001226	JclFileUtils	Files without any attributes aren't returned by
-AdvBuildFileList
-#0001282	JclSysInfo	JCLSysInfo GetWindowsVersion fails on Windows 2003
-#0001294		SetVirtualMethod sets method to wrong location
-#0001295	JclSysInfo	DevideByZero Error
 
