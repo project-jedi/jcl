@@ -60,7 +60,7 @@ type
     function InstallPackage(const Name: string): Boolean;
     function InstallRunTimePackage(const BaseName: string): Boolean;
     function InstallOption(Option: TJediInstallOption): Boolean;
-    function UninstallOption(Option: TJediInstallOption): Boolean;
+    //function UninstallOption(Option: TJediInstallOption): Boolean;
     function LogFileName: string;
     function MakeUnits(Debug: Boolean): Boolean;
     function MakePath(const FormatStr: string): string;
@@ -968,11 +968,13 @@ begin
     Progress(ProgressWeight(Option));
 end;
 
+(*
 function TJclInstallation.UninstallOption(Option: TJediInstallOption): Boolean;
 begin
   { TODO : implement }
   Result := False;
 end;
+*)
 
 procedure TJclInstallation.InstallationStarted;
 begin
@@ -1429,6 +1431,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.40  2004/11/17 06:34:01  marquardt
+// suppress warning about unused UninstallOption
+//
 // Revision 1.39  2004/11/14 12:08:05  rrossmair
 // - some precautions & minor fixes
 //
