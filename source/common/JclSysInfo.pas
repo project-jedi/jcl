@@ -187,8 +187,11 @@ function GetVolumeName(const Drive: string): string;
 function GetVolumeSerialNumber(const Drive: string): string;
 function GetVolumeFileSystem(const Drive: string): string;
 function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
-function GetIPAddress(const HostName: string): string;
 {$ENDIF MSWINDOWS}
+function GetIPAddress(const HostName: string): string;
+{$IFDEF UNIX}
+procedure GetIpAddresses(Results: TStrings);
+{$ENDIF UNIX}
 function GetLocalComputerName: string;
 function GetLocalUserName: string;
 {$IFDEF MSWINDOWS}
@@ -1383,20 +1386,28 @@ begin
       Include(Result, Flag);
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
+
+{ TODO -cDoc: Contributor: twm }
 
 function GetIPAddress(const HostName: string): string;
 var
+{$IFDEF MSWINDOWS}
   R: Integer;
   WSAData: TWSAData;
+{$ENDIF MSWINDOWS}
   HostEnt: PHostEnt;
   Host: string;
   SockAddr: TSockAddrIn;
 begin
   Result := '';
+{$IFDEF MSWINDOWS}
   R := WSAStartup(MakeWord(1, 1), WSAData);
   if R = 0 then
   try
+{$ENDIF MSWINDOWS}
     Host := HostName;
     if Host = '' then
     begin
@@ -1409,12 +1420,77 @@ begin
       SockAddr.sin_addr.S_addr := Longint(PLongint(HostEnt^.h_addr_list^)^);
       Result := inet_ntoa(SockAddr.sin_addr);
     end;
+{$IFDEF MSWINDOWS}
   finally
     WSACleanup;
   end;
+{$ENDIF MSWINDOWS}
 end;
 
-{$ENDIF MSWINDOWS}
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF UNIX}
+
+{ TODO -cDoc: Donator: twm, Contributor rrossmair }
+
+// Returns all IP addresses of the local machine in the form
+// <interface>=<IP-Address> (which allows for access to the interface names
+// by means of Results.Names and the addresses through Results.Values)
+//
+// Example:
+//
+// lo=127.0.0.1
+// eth0=10.10.10.1
+// ppp0=217.82.187.130
+//
+// note that this will append to Results!
+//
+procedure GetIpAddresses(Results: TStrings);
+var
+  Sock: Integer;
+  IfReq: TIfReq;
+  SockAddrPtr: PSockAddrIn;
+  ListSave, IfList: PIfNameIndex;
+begin
+  //need a socket for ioctl()
+  Sock := socket(AF_INET, SOCK_STREAM, 0);
+  if Sock < 0 then
+    RaiseLastOSError;
+
+  try
+    //returns pointer to dynamically allocated list of structs
+    ListSave := if_nameindex();
+    try
+      IfList := ListSave;
+
+      //walk thru the array returned and query for each
+      //interface's address
+      while IfList^.if_index <> 0 do
+      begin
+        //copy in the interface name to look up address of
+        strncpy(IfReq.ifrn_name, IfList^.if_name, IFNAMSIZ);
+
+        //get the address for this interface
+        if ioctl(Sock, SIOCGIFADDR, @IfReq) <> 0 then
+          RaiseLastOSError;
+
+        //print out the address
+        SockAddrPtr := PSockAddrIn(@IfReq.ifru_addr);
+
+        Results.Add(Format('%s=%s', [IfReq.ifrn_name, inet_ntoa(SockAddrPtr^.sin_addr)]));
+        Inc(IfList);
+      end;
+    finally
+      //free the dynamic memory kernel allocated for us
+      if_freenameindex(ListSave);
+    end;
+  finally
+    Libc.__close(Sock)
+  end;
+end;
+
+{$ENDIF UNIX}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetLocalComputerName: string;
@@ -4212,6 +4288,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.36  2005/02/20 04:37:09  rrossmair
+// - added GetIPAddress() and GetIPAddresses() for Unix
+//
 // Revision 1.35  2004/12/19 20:16:31  rrossmair
 // - added TCpuInfo improvements by Florent Ouchet
 //
