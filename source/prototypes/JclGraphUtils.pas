@@ -353,10 +353,10 @@ function ColorSwap(WinColor: TColor): TColor32;
         MOV     AX,  CX
 end;}
 begin
-  Result := $FF000000 or            // A component
-    ((WinColor and $FF) shl  16) or // R component
-    (WinColor and $FF00) or         // G component
-    (WinColor and $FF0000) shr 16;  // B component
+  Result := $FF000000 or                        // A component
+    TColor32((WinColor and $0000FF) shl  16) or // R component
+    TColor32( WinColor and $00FF00) or          // G component
+    TColor32((WinColor and $FF0000) shr 16);    // B component
 end;
 
 //==============================================================================
@@ -979,8 +979,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure M_BlendMem(F: TColor32; var B: TColor32); assembler;
-asm
+procedure M_BlendMem(F: TColor32; var B: TColor32);
+{asm
   // EAX - Color X
   // [EDX] - Color Y
   // Result := W * (X - Y) + Y
@@ -1010,6 +1010,9 @@ asm
 @1:     RET
 
 @2:     MOV       [EDX], EAX
+end;}
+begin
+  B := M_BlendReg(F, B);
 end;
 
 //------------------------------------------------------------------------------
