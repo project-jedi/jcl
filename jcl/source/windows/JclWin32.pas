@@ -424,7 +424,6 @@ const
   DOMAIN_ALIAS_RID_RAS_SERVERS      = ($00000229);
   DOMAIN_ALIAS_RID_PREW2KCOMPACCESS = ($0000022A);
 
-
   SE_CREATE_TOKEN_NAME        = 'SeCreateTokenPrivilege';
   SE_ASSIGNPRIMARYTOKEN_NAME  = 'SeAssignPrimaryTokenPrivilege';
   SE_LOCK_MEMORY_NAME         = 'SeLockMemoryPrivilege';
@@ -1044,20 +1043,20 @@ type
 
   PPImageSectionHeader = ^PImageSectionHeader;
 
-  // wrong translation - LastRvaSection parameter is not var
-  function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer;
-    Rva: ULONG; LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
-    external 'imagehlp.dll' name 'ImageRvaToVa';
+// wrong translation - LastRvaSection parameter is not var
+function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer;
+  Rva: ULONG; LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
+  external 'imagehlp.dll' name 'ImageRvaToVa';
 
-  // wrong translation - last parameter is incorrect
-  function BindImageEx(Flags: DWORD; ImageName, DllPath, SymbolPath: LPSTR;
-    StatusRoutine: TImagehlpStatusRoutine): Bool; stdcall;
-    external 'imagehlp.dll' name 'BindImageEx';
+// wrong translation - last parameter is incorrect
+function BindImageEx(Flags: DWORD; ImageName, DllPath, SymbolPath: LPSTR;
+  StatusRoutine: TImagehlpStatusRoutine): Bool; stdcall;
+  external 'imagehlp.dll' name 'BindImageEx';
 
-  // wrong translation - last parameter is incorrect
-  function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
-    CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
-    external 'imagehlp.dll' name 'ImageEnumerateCertificates';
+// wrong translation - last parameter is incorrect
+function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
+  CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
+  external 'imagehlp.dll' name 'ImageEnumerateCertificates';
 
 //==================================================================================================
 // JclShell
@@ -1091,33 +1090,33 @@ type
     reserved2: Longword;
   end;
 
-  TRasDialDlgA = function (lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
+  TRasDialDlgA = function(lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
 
 //==================================================================================================
 // JclSysInfo
 //==================================================================================================
 
 const
-  CSIDL_COMMON_APPDATA            = $0023; { All Users\Application Data }
-  CSIDL_WINDOWS                   = $0024; { GetWindowsDirectory() }
-  CSIDL_SYSTEM                    = $0025; { GetSystemDirectory() }
-  CSIDL_PROGRAM_FILES             = $0026; { C:\Program Files }
-  CSIDL_MYPICTURES                = $0027; { C:\Program Files\My Pictures }
-  CSIDL_PROFILE                   = $0028; { USERPROFILE }
-  CSIDL_PROGRAM_FILES_COMMON      = $002B; { C:\Program Files\Common }
-  CSIDL_COMMON_TEMPLATES          = $002D; { All Users\Templates }
-  CSIDL_COMMON_DOCUMENTS          = $002E; { All Users\Documents }
-  CSIDL_COMMON_ADMINTOOLS         = $002F; { All Users\Start Menu\Programs\Administrative Tools }
-  CSIDL_ADMINTOOLS                = $0030; { <user name>\Start Menu\Programs\Administrative Tools }
-  CSIDL_CONNECTIONS               = $0031; { Network and Dial-up Connections }
-  CSIDL_COMMON_MUSIC              = $0035; { All Users\My Music }
-  CSIDL_COMMON_PICTURES           = $0036; { All Users\My Pictures }
-  CSIDL_COMMON_VIDEO              = $0037; { All Users\My Video }
-  CSIDL_RESOURCES                 = $0038; { Resource Direcotry }
-  CSIDL_RESOURCES_LOCALIZED       = $0039; { Localized Resource Direcotry }
-  CSIDL_COMMON_OEM_LINKS          = $003A; { Links to All Users OEM specific apps }
-  CSIDL_CDBURN_AREA               = $003B; { USERPROFILE\Local Settings\Application Data\Microsoft\CD Burning }
-  CSIDL_COMPUTERSNEARME           = $003D; { Computers Near Me (computered from Workgroup membership) }
+  CSIDL_COMMON_APPDATA       = $0023; { All Users\Application Data }
+  CSIDL_WINDOWS              = $0024; { GetWindowsDirectory() }
+  CSIDL_SYSTEM               = $0025; { GetSystemDirectory() }
+  CSIDL_PROGRAM_FILES        = $0026; { C:\Program Files }
+  CSIDL_MYPICTURES           = $0027; { C:\Program Files\My Pictures }
+  CSIDL_PROFILE              = $0028; { USERPROFILE }
+  CSIDL_PROGRAM_FILES_COMMON = $002B; { C:\Program Files\Common }
+  CSIDL_COMMON_TEMPLATES     = $002D; { All Users\Templates }
+  CSIDL_COMMON_DOCUMENTS     = $002E; { All Users\Documents }
+  CSIDL_COMMON_ADMINTOOLS    = $002F; { All Users\Start Menu\Programs\Administrative Tools }
+  CSIDL_ADMINTOOLS           = $0030; { <user name>\Start Menu\Programs\Administrative Tools }
+  CSIDL_CONNECTIONS          = $0031; { Network and Dial-up Connections }
+  CSIDL_COMMON_MUSIC         = $0035; { All Users\My Music }
+  CSIDL_COMMON_PICTURES      = $0036; { All Users\My Pictures }
+  CSIDL_COMMON_VIDEO         = $0037; { All Users\My Video }
+  CSIDL_RESOURCES            = $0038; { Resource Direcotry }
+  CSIDL_RESOURCES_LOCALIZED  = $0039; { Localized Resource Direcotry }
+  CSIDL_COMMON_OEM_LINKS     = $003A; { Links to All Users OEM specific apps }
+  CSIDL_CDBURN_AREA          = $003B; { USERPROFILE\Local Settings\Application Data\Microsoft\CD Burning }
+  CSIDL_COMPUTERSNEARME      = $003D; { Computers Near Me (computered from Workgroup membership) }
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1631,13 +1630,13 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 var
-  _GetCalendarInfoA: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar;
+  _GetCalendarInfoA: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar;
     cchData: Integer; lpValue: PDWORD): Integer; stdcall;
-  _GetCalendarInfoW: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar;
+  _GetCalendarInfoW: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar;
     cchData: Integer; lpValue: PDWORD): Integer; stdcall;
-  _SetCalendarInfoA: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar): Integer; stdcall;
-  _SetCalendarInfoW: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar): Integer; stdcall;
-  _EnumCalendarInfoEx: function (lpCalInfoEnumProc: TEnumCalendarInfoProcEx; Locale: LCID;
+  _SetCalendarInfoA: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PAnsiChar): Integer; stdcall;
+  _SetCalendarInfoW: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE; lpCalData: PWideChar): Integer; stdcall;
+  _EnumCalendarInfoEx: function(lpCalInfoEnumProc: TEnumCalendarInfoProcEx; Locale: LCID;
     Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 
 //--------------------------------------------------------------------------------------------------
@@ -1723,9 +1722,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 var
-  _GetVolumeNameForVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
-  _SetVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL; stdcall;
-  _DeleteVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
+  _GetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
+  _SetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL; stdcall;
+  _DeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL; stdcall;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1788,7 +1787,7 @@ function GetVersionEx; external kernel32 name 'GetVersionExA';
 //==================================================================================================
 
 type
-  TNetBios = function (P: PNCB): Byte; stdcall;
+  TNetBios = function(P: PNCB): Byte; stdcall;
 
 var
   NetBiosLib: HINST = 0;
