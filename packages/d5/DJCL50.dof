@@ -58,12 +58,12 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=0
-MinorVer=4
-Release=0
-Build=214
+MajorVer=1
+MinorVer=0
+Release=1
+Build=337
 Debug=0
-PreRelease=1
+PreRelease=0
 Special=0
 Private=0
 DLL=0
@@ -72,13 +72,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Project JEDI
 FileDescription=D5 design time package for JCL
-FileVersion=0.4.0.214
+FileVersion=1.0.1.337
 InternalName=DJCL50
-LegalCopyright=Copyright (C) 1999, 2000 Project JEDI
+LegalCopyright=Copyright (C) 1999, 2001 Project JEDI
 LegalTrademarks=
 OriginalFilename=DJCL50.dpk
 ProductName=JEDI Code Library
-ProductVersion=0.4.0.214 Beta 2
+ProductVersion=1.0.1.337 Release 1.0
 Comments=
 [HistoryLists\hlUnitAliases]
 Count=1
