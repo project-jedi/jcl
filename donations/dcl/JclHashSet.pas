@@ -631,13 +631,16 @@ end;
 
 procedure TJclStrHashSet.AppendToStrings(Strings: TStrings);
 var
-  it: IStrIterator;
+  It: IStrIterator;
 begin
-  it := First;
+  It := First;
   Strings.BeginUpdate;
-  while it.HasNext do
-    Strings.Add(it.Next);
-  Strings.EndUpdate;
+  try
+    while It.HasNext do
+      Strings.Add(It.Next);
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 procedure TJclStrHashSet.SaveToStrings(Strings: TStrings);
@@ -648,23 +651,23 @@ end;
 
 procedure TJclStrHashSet.AppendFromStrings(Strings: TStrings);
 var
-  i: Cardinal;
+  I: Cardinal;
 begin
   if Strings.Count > 0 then
-    for i := 0 to Pred(Strings.Count) do
-      Add(Strings[i]);
+    for I := 0 to Strings.Count - 1 do
+      Add(Strings[I]);
 end;
 
 function TJclStrHashSet.GetAsDelimited(Separator: string): string;
 var
-  it: IStrIterator;
+  It: IStrIterator;
 begin
-  it := First;
+  It := First;
   Result := '';
-  while it.HasNext do
-    Result := Result + Separator + it.Next;
-  if Length(Result) > Length(Separator) then
-    Delete(Result, 1, Length(Separator));
+  if It.HasNext then
+    Result := It.Next;
+  while It.HasNext do
+    Result := Result + Separator + It.Next;
 end;
 
 procedure TJclStrHashSet.LoadDelimited(AString, Separator: string);
@@ -675,14 +678,14 @@ end;
 
 procedure TJclStrHashSet.AppendDelimited(AString, Separator: string);
 var
-  item: string;
-  SepLen: Cardinal;
+  Item: string;
+  SepLen: Integer;
 begin
   if Pos(Separator, AString) > 0 then
   begin
     SepLen := Length(Separator);
     repeat
-      item := StrBefore(Separator, AString);
+      Item := StrBefore(Separator, AString);
       Add(Item);
       Delete(AString, 1, Length(Item) + SepLen);
     until Pos(Separator, AString) = 0;

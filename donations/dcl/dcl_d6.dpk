@@ -26,7 +26,9 @@ package DCL_D6;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  vcl,
+  DJcl;
 
 contains
   JclVector in 'JclVector.pas',
@@ -40,7 +42,6 @@ contains
   JclHashSet in 'JclHashSet.pas',
   JclLinkedList in 'JclLinkedList.pas',
   JclQueue in 'JclQueue.pas',
-  JclStack in 'JclStack.pas',
-  JclBinaryTree in 'JclBinaryTree.pas';
+  JclStack in 'JclStack.pas';
 
 end.

@@ -96,7 +96,7 @@ end;
 function TJclIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 begin
   if GetInterface(IID, Obj) then
-    Result := 0
+    Result := S_OK
   else
     Result := E_NOINTERFACE;
 end;

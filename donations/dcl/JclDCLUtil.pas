@@ -58,6 +58,7 @@ resourcestring
   //RsEIllegalArgument = 'Illegal argument';
   RsEOperationNotSupported = 'Operation not supported';
   RsEValueNotFound = 'Value %s not found';
+  RsENoCollection = 'Collection = nil';
 
 implementation
 

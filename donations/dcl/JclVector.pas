@@ -32,11 +32,12 @@ unit JclVector;
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer, Classes;
+  Classes,
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer;
 
 type
   TJclIntfVector = class(TJclAbstractContainer, IIntfCollection, IIntfList,
-      IIntfArray, IIntfCloneable)
+    IIntfArray, IIntfCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -62,8 +63,7 @@ type
     function Size: Integer;
     { IIntfList }
     procedure Add(Index: Integer; AObject: IInterface); overload;
-    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
-      overload;
+    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AObject: IInterface): Integer;
     function LastIndexOf(AObject: IInterface): Integer;
@@ -79,7 +79,7 @@ type
   end;
 
   TJclStrVector = class(TJclAbstractContainer, IStrCollection, IStrList,
-      IStrArray, ICloneable)
+    IStrArray, ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -114,8 +114,7 @@ type
     procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
     { IStrList }
     procedure Add(Index: Integer; const AString: string); overload;
-    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
-      overload;
+    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -130,8 +129,7 @@ type
     procedure BeforeDestruction; override;
   end;
 
-  TJclVector = class(TJclAbstractContainer, ICollection, IList, IArray,
-      ICloneable)
+  TJclVector = class(TJclAbstractContainer, ICollection, IList, IArray, ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -157,8 +155,7 @@ type
     function Size: Integer;
     { IList }
     procedure Add(Index: Integer; AObject: TObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean;
-      overload;
+    function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -168,12 +165,12 @@ type
     { ICloneable }
     function Clone: TObject;
 
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects:
-      Boolean = True);
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
 implementation
@@ -251,7 +248,7 @@ type
     destructor Destroy; override;
   end;
 
-  //=== { TIntfItr } ===========================================================
+//=== { TIntfItr } ===========================================================
 
 constructor TIntfItr.Create(OwnList: TJclIntfVector);
 begin
@@ -427,9 +424,9 @@ end;
 procedure TStrItr.SetString(const AString: string);
 begin
   {
-    if FLastRet = -1 then
-      raise EDCLIllegalState.Create(SIllegalState);
-    }
+  if FLastRet = -1 then
+    raise EDCLIllegalState.Create(SIllegalState);
+  }
   FOwnList.Items[FCursor] := AString;
 end;
 
@@ -520,8 +517,8 @@ end;
 procedure TItr.SetObject(AObject: TObject);
 begin
   {
-    if FLastRet = -1 then
-      raise EDCLIllegalState.Create(SIllegalState);
+  if FLastRet = -1 then
+    raise EDCLIllegalState.Create(SIllegalState);
   }
   FOwnList.Items[FCursor] := AObject;
 end;
@@ -560,8 +557,7 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection):
-  Boolean;
+function TJclIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   Size: Integer;
@@ -572,8 +568,7 @@ begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
-  System.Move(Items[Index], Items[Index + Size],
-    Size * SizeOf(IInterface));
+  System.Move(Items[Index], Items[Index + Size], Size * SizeOf(IInterface));
   It := ACollection.First;
   while It.HasNext do
   begin
@@ -638,11 +633,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TJclIntfVector.Equals(ACollection: IIntfCollection): Boolean;
@@ -750,8 +745,7 @@ begin
     if Items[I] = AObject then // Removes all AObject
     begin
       Items[I] := nil; // Force Release
-      System.Move(Items[I + 1], Items[I],
-        (FCount - I) * SizeOf(IInterface));
+      System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(IInterface));
       Dec(FCount);
       Result := True;
     end;
@@ -833,8 +827,7 @@ end;
 
 procedure TJclStrVector.Add(Index: Integer; const AString: string);
 begin
-  System.Move(Items[Index], Items[Index - 1],
-    (FCount - Index) * SizeOf(string));
+  System.Move(Items[Index], Items[Index - 1], (FCount - Index) * SizeOf(string));
   FCapacity := Length(Items);
   Items[Index] := AString;
   Inc(FCount);
@@ -862,8 +855,7 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.AddAll(Index: Integer; ACollection: IStrCollection):
-  Boolean;
+function TJclStrVector.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   Size: Integer;
@@ -874,8 +866,7 @@ begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
-  System.Move(Items[Index], Items[Index + Size],
-    Size * SizeOf(string));
+  System.Move(Items[Index], Items[Index + Size], Size * SizeOf(string));
   It := ACollection.First;
   while It.HasNext do
   begin
@@ -935,11 +926,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TJclStrVector.Equals(ACollection: IStrCollection): Boolean;
@@ -1036,8 +1027,7 @@ begin
     if Items[I] = AString then // Removes all AObject
     begin
       Items[I] := ''; // Force Release
-      System.Move(Items[I + 1], Items[I],
-        (FCount - I) * SizeOf(string));
+      System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(string));
       Dec(FCount);
       Result := True;
     end;
@@ -1150,8 +1140,7 @@ begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
-  System.Move(Items[Index], Items[Index + Size],
-    Size * SizeOf(IInterface));
+  System.Move(Items[Index], Items[Index + Size], Size * SizeOf(IInterface));
   It := ACollection.First;
   while It.HasNext do
   begin
@@ -1187,8 +1176,7 @@ function TJclVector.Clone: TObject;
 var
   NewList: TJclVector;
 begin
-  NewList := TJclVector.Create(FCapacity, False);
-  // Only one can have FOwnsObject = True
+  NewList := TJclVector.Create(FCapacity, False); // Only one can have FOwnsObject = True
   NewList.AddAll(Self);
   Result := NewList;
 end;
@@ -1217,11 +1205,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TJclVector.Equals(ACollection: ICollection): Boolean;
@@ -1327,8 +1315,7 @@ begin
     if Items[I] = AObject then // Removes all AObject
     begin
       FreeObject(Items[I]);
-      System.Move(Items[I + 1], Items[I],
-        (FCount - I) * SizeOf(TObject));
+      System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(TObject));
       Dec(FCount);
       Result := True;
     end;
@@ -1340,8 +1327,7 @@ begin
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   FreeObject(Items[Index]);
-  System.Move(Items[Index + 1], Items[Index],
-    (FCount - Index) * SizeOf(TObject));
+  System.Move(Items[Index + 1], Items[Index], (FCount - Index) * SizeOf(TObject));
   Dec(FCount);
 end;
 
@@ -1421,13 +1407,16 @@ end;
 
 procedure TJclStrVector.AppendToStrings(Strings: TStrings);
 var
-  it: IStrIterator;
+  It: IStrIterator;
 begin
-  it := First;
+  It := First;
   Strings.BeginUpdate;
-  while it.HasNext do
-    Strings.Add(it.Next);
-  Strings.EndUpdate;
+  try
+    while It.HasNext do
+      Strings.Add(it.Next);
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 procedure TJclStrVector.SaveToStrings(Strings: TStrings);
@@ -1438,23 +1427,23 @@ end;
 
 procedure TJclStrVector.AppendFromStrings(Strings: TStrings);
 var
-  i: Cardinal;
+  I: Cardinal;
 begin
   if Strings.Count > 0 then
-    for i := 0 to Pred(Strings.Count) do
-      Add(Strings[i]);
+    for I := 0 to Strings.Count - 1 do
+      Add(Strings[I]);
 end;
 
 function TJclStrVector.GetAsDelimited(Separator: string): string;
 var
-  it: IStrIterator;
+  It: IStrIterator;
 begin
-  it := First;
+  It := First;
   Result := '';
-  while it.HasNext do
-    Result := Result + Separator + it.Next;
-  if Length(Result) > Length(Separator) then
-    Delete(Result, 1, Length(Separator));
+  if It.HasNext then
+    Result := It.Next;
+  while It.HasNext do
+    Result := Result + Separator + It.Next;
 end;
 
 procedure TJclStrVector.LoadDelimited(AString, Separator: string);
@@ -1465,14 +1454,14 @@ end;
 
 procedure TJclStrVector.AppendDelimited(AString, Separator: string);
 var
-  item: string;
-  SepLen: Cardinal;
+  Item: string;
+  SepLen: Integer;
 begin
   if Pos(Separator, AString) > 0 then
   begin
     SepLen := Length(Separator);
     repeat
-      item := StrBefore(Separator, AString);
+      Item := StrBefore(Separator, AString);
       Add(Item);
       Delete(AString, 1, Length(Item) + SepLen);
     until Pos(Separator, AString) = 0;

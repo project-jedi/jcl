@@ -142,7 +142,7 @@ procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
       First.SetObject(F(First.GetObject));
@@ -156,7 +156,7 @@ procedure Apply(First: IStrIterator; Count: Integer; F: TStrApplyFunction);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
       First.SetString(F(First.GetString));
@@ -170,7 +170,7 @@ procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
       First.SetObject(F(First.GetObject));
@@ -184,63 +184,60 @@ function Find(First: IIntfIterator; Count: Integer; AObject: IInterface;
   AComparator: TIntfCompare): IIntfIterator;
 var
   I: Integer;
-  Obj: IInterface;
 begin
   Result := nil;
-  for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
-      Break;
-    Obj := First.GetObject;
-    if AComparator(Obj, AObject) = 0 then
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
     begin
-      Result := First;
+      if AComparator(First.GetObject, AObject) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+      First.Next;
+    end
+    else
       Break;
-    end;
-    First.Next;
-  end;
 end;
 
 function Find(First: IStrIterator; Count: Integer; const AObject: string;
   AComparator: TStrCompare): IStrIterator;
 var
   I: Integer;
-  Obj: string;
 begin
   Result := nil;
-  for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
-      Break;
-    Obj := First.GetString;
-    if AComparator(Obj, AObject) = 0 then
+  for I := Count - 1 downto 0 do
+    if First.HasNext then
     begin
-      Result := First;
+      if AComparator(First.GetString, AObject) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+      First.Next;
+    end
+    else
       Break;
-    end;
-    First.Next;
-  end;
 end;
 
 function Find(First: IIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): IIterator;
 var
   I: Integer;
-  Obj: TObject;
 begin
   Result := nil;
-  for I := 0 to Count - 1 do
-  begin
+  for I := Count - 1 downto 0 do
     if not First.HasNext then
-      Break;
-    Obj := First.GetObject;
-    if AComparator(Obj, AObject) = 0 then
     begin
-      Result := First;
+      if AComparator(First.GetObject, AObject) = 0 then
+      begin
+        Result := First;
+        Break;
+      end;
+      First.Next;
+    end
+    else
       Break;
-    end;
-    First.Next;
-  end;
 end;
 
 function CountObject(First: IIntfIterator; Count: Integer; AObject: IInterface;
@@ -249,7 +246,7 @@ var
   I: Integer;
 begin
   Result := 0;
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
     else
@@ -262,7 +259,7 @@ var
   I: Integer;
 begin
   Result := 0;
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
     else
@@ -275,7 +272,7 @@ var
   I: Integer;
 begin
   Result := 0;
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
       Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
     else
@@ -286,7 +283,7 @@ procedure Copy(First: IIntfIterator; Count: Integer; Output: IIntfIterator);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if Output.HasNext and First.HasNext then
     begin
       Output.SetObject(First.GetObject);
@@ -301,7 +298,7 @@ procedure Copy(First: IStrIterator; Count: Integer; Output: IStrIterator);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if Output.HasNext and First.HasNext then
     begin
       Output.SetString(First.GetString);
@@ -316,7 +313,7 @@ procedure Copy(First: IIterator; Count: Integer; Output: IIterator);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if Output.HasNext and First.HasNext then
     begin
       Output.SetObject(First.GetObject);
@@ -341,7 +338,7 @@ var
   I: Integer;
 begin
   List.Clear;
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     List.Add(AObject);
 end;
 
@@ -350,7 +347,7 @@ var
   I: Integer;
 begin
   List.Clear;
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     List.Add(AObject);
 end;
 
@@ -358,7 +355,7 @@ procedure Fill(First: IIntfIterator; Count: Integer; AObject: IInterface);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
       First.SetObject(AObject);
@@ -372,7 +369,7 @@ procedure Fill(First: IStrIterator; Count: Integer; const AObject: string);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
       First.SetString(AObject);
@@ -386,7 +383,7 @@ procedure Fill(First: IIterator; Count: Integer; AObject: TObject);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
+  for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
       First.SetObject(AObject);
