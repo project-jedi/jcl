@@ -29,9 +29,6 @@ unit JclMath;
 interface
 
 uses
-{$IFDEF WIN32}
-  Windows,
-{$ENDIF}
   Classes, SysUtils,
   JclBase;
 
@@ -204,12 +201,12 @@ function PrimeFactors(const N: Integer): TDynIntegerArray;
 
 type
   TFPClass = (
-  	fpZero,		// zero
-        fpNormal,	// normal finite <> 0
-        fpDenormal,	// denormalized finite
-        fpInfinite,	// infinite
-        fpNaN,		// not a number
-        fpInvalid);	// unsupported floating point format
+    fpZero,	// zero
+    fpNormal,	// normal finite <> 0
+    fpDenormal,	// denormalized finite
+    fpInfinite,	// infinite
+    fpNaN,	// not a number
+    fpInvalid);	// unsupported floating point format
 
 function FPClass(const Value: Single): TFPClass; overload;
 function FPClass(const Value: Double): TFPClass; overload;
@@ -448,6 +445,9 @@ type
 implementation
 
 uses
+{$IFDEF WIN32}
+  Windows,
+{$ENDIF}
   JclResources, Jcl8087;
 
 //==============================================================================
@@ -2435,13 +2435,13 @@ const
   fpEmpty = TFPClass(Ord(High(TFPClass))+1);
 
   FPClasses: array[0..6] of TFPClass = (
-  	fpInvalid,
-        fpNaN,
-        fpNormal,
-        fpInfinite,
-        fpZero,
-        fpEmpty,	// should not happen
-        fpDenormal);
+    fpInvalid,
+    fpNaN,
+    fpNormal,
+    fpInfinite,
+    fpZero,
+    fpEmpty,	// should not happen
+    fpDenormal);
 
 function _FPClass: TFPClass;
 // In:	ST(0)	Value to examine
@@ -2535,6 +2535,8 @@ type
     Exponent: Word;
   end;
 
+  PLongint = ^Longint;
+
 const
   ZeroTag = $3FFFFF;
   InvalidTag = TNaNTag($80000000);
@@ -2583,7 +2585,7 @@ begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
     if FPClass(Value) <> fpNaN then
-      raise EJclMathError.CreateRes(@RsNoNaN);
+      raise EJclMathError.CreateResRec(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
   end;
@@ -2598,7 +2600,7 @@ begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
     if FPClass(Value) <> fpNaN then
-      raise EJclMathError.CreateRes(@RsNoNaN);
+      raise EJclMathError.CreateResRec(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
   end;
@@ -2613,7 +2615,7 @@ begin
   SaveExMask := Mask8087Exceptions([emInvalidOp]);
   try
     if FPClass(Value) <> fpNaN then
-      raise EJclMathError.CreateRes(@RsNoNaN);
+      raise EJclMathError.CreateResRec(@RsNoNaN);
   finally
     SetMasked8087Exceptions(SaveExMask);
   end;
@@ -2752,13 +2754,12 @@ end;
 {$IFDEF WIN32}
 procedure InitExceptObjProc;
 
+  // threadsafe (given ExceptObjProc is DWORD-aligned)
   procedure HookExceptObjProc;
   asm
     	MOV	EAX, OFFSET GetExceptionObject
         MOV	EDX, EAX
-        // threadsafe (given ExceptObjProc is DWORD-aligned)
         XCHG	EAX, ExceptObjProc
-        // ExceptObjProc <> @GetExceptionObject?
         CMP	EAX, EDX
         JE	@Exit
         MOV	PrevExceptObjProc, EAX
@@ -2780,7 +2781,7 @@ end;
 constructor EJclNaNSignal.Create(ATag: TNaNTag);
 begin
   FTag := ATag;
-  CreateResFmt(@RsNaNSignal, [ATag]);
+  CreateResRecFmt(@RsNaNSignal, [ATag]);
 end;
 
 //------------------------------------------------------------------------------
@@ -2789,7 +2790,7 @@ procedure CheckTag(Tag: TNaNTag);
 begin
   if (Tag < Low(TNaNTag))
   or (Tag > High(TNaNTag)) then
-    raise EJclMathError.CreateResFmt(@RsNaNTagError, [Tag]);
+    raise EJclMathError.CreateResRecFmt(@RsNaNTagError, [Tag]);
 end;
 
 //------------------------------------------------------------------------------
