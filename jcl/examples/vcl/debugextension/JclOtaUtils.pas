@@ -99,9 +99,9 @@ procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 implementation
 
 uses
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   SysUtils, ImageHlp,
   JclFileUtils, JclRegistry, JclStrings;
 
