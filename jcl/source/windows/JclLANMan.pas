@@ -77,7 +77,7 @@ implementation
 
 uses
   SysUtils,
-  LM, JclStrings, JclWin32;
+  LM, JclBase, JclStrings, JclWin32;
 
 //------------------------------------------------------------------------------
 // User Management
