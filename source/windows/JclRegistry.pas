@@ -16,12 +16,18 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 27, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ Contains various utility routines to read and write registry values. Using   }
+{ these routines prevents you from having to instantiate temporary TRegistry   }
+{ objects and since the routines directly call the registry API they do not    }
+{ suffer from the resource overhead as TRegistry does.                         }
+{                                                                              }
+{ Unit owner: Eric S.Fisher                                                    }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
-//  JclRegistry created from JclRegIni by ESF  2000/06/05
-//  complete reimplementation without TRegistry (rom) 2001/01/23
 
 unit JclRegistry;
 
@@ -63,7 +69,7 @@ function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
 
 type
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
-               ekServiceRun, ekServiceRunOnce);
+    ekServiceRun, ekServiceRunOnce);
 
   EJclRegistryError = class (EJclError);
 
@@ -82,8 +88,9 @@ uses
   SysUtils,
   JclResources, JclSysInfo;
 
-//------------------------------------------------------------------------------
-// (rom) local helpers
+//==============================================================================
+// Internal helper routines
+//==============================================================================
 
 procedure ReadError(const Key: string);
 begin
@@ -131,7 +138,6 @@ end;
 //==============================================================================
 // Registry
 //==============================================================================
-
 
 function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
 begin
@@ -273,7 +279,7 @@ begin
     Size := 0;
     Ret := RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size);
     if Ret = ERROR_SUCCESS then
-      if RegKind = REG_SZ then
+      if RegKind in [REG_SZ, REG_EXPAND_SZ] then
       begin
         SetLength(StrVal, Size);
         RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, PByte(StrVal), @Size);
@@ -281,7 +287,7 @@ begin
         Result := StrVal;
       end;
     RegCloseKey(RegKey);
-    if RegKind <> REG_SZ then
+    if not (RegKind in [REG_SZ, REG_EXPAND_SZ]) then
       ValueError(Key, Name);
   end
   else
@@ -303,7 +309,7 @@ begin
     RegKind := 0;
     Size := 0;
     if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size) = ERROR_SUCCESS then
-      if RegKind = REG_SZ then
+      if RegKind in [REG_SZ, REG_EXPAND_SZ] then
       begin
         SetLength(StrVal, Size);
         if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, PByte(StrVal), @Size) = ERROR_SUCCESS then
@@ -358,7 +364,7 @@ var
   RegKind: DWORD;
 begin
   Result := 0;
-  FillChar(Value, ValueSize, #0);
+  FillChar(Value, ValueSize, Def);
   if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegKind := 0;
@@ -481,11 +487,11 @@ begin
   begin
     if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
     begin
-      SetLength(ValueName, MaxSubValueLen+1);
+      SetLength(ValueName, MaxSubValueLen + 1);
       if NumSubValues <> 0 then
-        for I := 0 to NumSubValues-1 do
+        for I := 0 to NumSubValues - 1 do
         begin
-          Size := MaxSubValueLen+1;
+          Size := MaxSubValueLen + 1;
           RegEnumValue(RegKey, I, PChar(ValueName), Size, nil, nil, nil, nil);
           List.Add(PChar(ValueName));
         end;
@@ -594,14 +600,13 @@ begin
   Result := False;
   Subkey := Key + '\' + ListName;
   N := RegReadIntegerDef(RootKey, Subkey, 'Items', -1);
-  if N > 0 then
-    if RegDeleteEntry(RootKey, Subkey, 'Items') then
-      for I := 1 to N do
-      begin
-        Result := RegDeleteEntry(RootKey, Subkey, IntToStr(I));
-        if not Result then
-          Break;
-      end;
+  if (N > 0) and RegDeleteEntry(RootKey, Subkey, 'Items') then
+    for I := 1 to N do
+    begin
+      Result := RegDeleteEntry(RootKey, Subkey, IntToStr(I));
+      if not Result then
+        Break;
+    end;
 end;
 
 end.
