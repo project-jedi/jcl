@@ -12,7 +12,8 @@
       <Projects Name="DJcl90.bpl">d9\DJcl.bdsproj</Projects>
       <Projects Name="DJclVcl90.bpl">d9\DJclVcl.bdsproj</Projects>
       <Projects Name="IdeOpenDlgFavorite90.bpl">..\examples\vcl\idefavopendialogs\IdeOpenDlgFavorite90.bdsproj</Projects>
-      <Projects Name="Targets">DJcl90.bpl DJclVcl90.bpl IdeOpenDlgFavorite90.bpl</Projects>
+      <Projects Name="JvCoreD9D.bpl">..\..\JVCL\packages\d9\JvCoreD9D.bdsproj</Projects>
+      <Projects Name="Targets">DJcl90.bpl DJclVcl90.bpl IdeOpenDlgFavorite90.bpl JvCoreD9D.bpl</Projects>
     </Projects>
     <Dependencies>
       <Dependency GUID="{56BD28A4-80E6-467C-BD0E-CAC01DE0CE04}">

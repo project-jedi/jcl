@@ -21,9 +21,6 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// TODO/Issues:
-// - Uninstall functionality lacking
-
 unit JclInstall;
 
 interface
@@ -85,6 +82,7 @@ type
     {$ENDIF MSWINDOWS}
     function BplPath: string;
     function DcpPath: string;
+    function CheckDirectories: Boolean;
     procedure CleanupRepository;
     function InstallSelectedOptions: Boolean;
     function UninstallSelectedOptions: Boolean;
@@ -250,6 +248,7 @@ resourcestring
 
 const
   Invalid = -1;
+  LineBreak = AnsiLineBreak;
   ioUndef = TJediInstallOption(Invalid);
 
   InitData: array[TJediInstallOption] of TInstallOptionData =
@@ -399,6 +398,8 @@ resourcestring
   RsStatusDetailMessage = 'Installing %s for %s...';
   RsUninstallMessage = 'Removing %s...';
   RsInstallFailed   = 'Installation of %s failed, see %s for details.';
+  RsInvalidBplPath  = LineBreak + 'Invalid BPL path "%s"';
+  RsInvalidDcpPath  = LineBreak + 'Invalid DCP path "%s"';
   RsLibDescriptor   = '%s library %sunits for %s';
   {$IFDEF VisualCLX}
   RsReadmeFileName  = 'Readme.html';
@@ -504,8 +505,7 @@ procedure TJclInstallation.AddDialogToRepository(const DialogName: string;
   const DialogFileName: string; const DialogIconFileName: string; const Designer: string;
   const Ancestor: string = '');
 begin
-  WriteLog(Format(AnsiLineBreak + 'Installing %s...',
-    [DialogName]));
+  WriteLog(Format(LineBreak + 'Installing %s...', [DialogName]));
   with Target.Repository do
     AddObject(
       DialogFileName,
@@ -516,7 +516,7 @@ begin
       DialogDescription,
       DialogAuthor,
       BorRADToolRepositoryDesignerDfm);
-  WriteLog(Format('-> %s' + AnsiLineBreak + '-> %s' + AnsiLineBreak +
+  WriteLog(Format('-> %s' + LineBreak + '-> %s' + LineBreak +
     '...done.', [DialogFileName, DialogIconFileName]));
 end;
 
@@ -541,7 +541,8 @@ end;
 
 procedure TJclInstallation.AddHelpToOpenHelp;
 begin
-  Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName);
+  if Target.OpenHelp.AddHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
+    WriteLog(Format(LineBreak + 'Added %s to Delphi Online Help', [Distribution.FJclHlpHelpFileName]));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -553,6 +554,25 @@ end;
 function TJclInstallation.DcpPath: string;
 begin
   Result := Tool.DCPPath[Target];
+end;
+
+function TJclInstallation.CheckDirectories: Boolean;
+begin
+  Result := not OptionSelected(ioJclPackages);
+  if not Result then
+  begin
+    Result := True;
+    if not DirectoryExists(BplPath) then
+    begin
+      WriteLog(Format(RsInvalidBplPath, [BplPath]));
+      Result := False;
+    end;
+    if not DirectoryExists(DcpPath) then
+    begin
+      WriteLog(Format(RsInvalidDcpPath, [DcpPath]));
+      Result := False;
+    end;
+  end;
 end;
 
 procedure TJclInstallation.CleanupRepository;
@@ -612,7 +632,7 @@ begin
   if Debug then
     UnitType := 'debug ';
   LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Target.Name]);
-  WriteLog(Format(AnsiLineBreak + 'Making %s', [LibDescriptor]));
+  WriteLog(Format(LineBreak + 'Making %s', [LibDescriptor]));
   Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
   Path := Format('%s' + PathSeparator + '%s', [Distribution.SourceDir, SubDir]);
   UnitList := Units[SubDir];
@@ -904,13 +924,17 @@ function TJclInstallation.InstallSelectedOptions: Boolean;
 var
   Option: TJediInstallOption;
 begin
-  Result := True;
   Tool.UpdateStatus(Format(RsStatusMessage, [Target.Name]));
-  WriteLog(StrPadRight(BorRADToolVersionStr, 64, '='));
-  CleanupRepository;
-  for Option := ioJCL to ioJclLast do
-    if OptionSelected(Option) then
-      Result := Result and InstallOption(Option);
+  WriteLog(StrPadRight(BorRADToolVersionStr, 44, '='));
+  Result := CheckDirectories;
+  if Result then
+  begin
+    CleanupRepository;
+    for Option := ioJCL to ioJclLast do
+      if OptionSelected(Option) then
+        Result := Result and InstallOption(Option);
+  end;
+  WriteLog('');
 end;
 
 function TJclInstallation.InstallOption(Option: TJediInstallOption): Boolean;
@@ -928,14 +952,14 @@ begin
   Result := True;
   case Option of
     ioJclEnvLibPath:
-      begin
-        Target.AddToLibrarySearchPath(LibDir);
-        Target.AddToLibrarySearchPath(Distribution.SourceDir);
-      end;
+      if Target.AddToLibrarySearchPath(LibDir) and Target.AddToLibrarySearchPath(Distribution.SourceDir) then
+        WriteLog(Format(LineBreak + 'Added "%s;%s" to library path.', [LibDir, Distribution.SourceDir]));
     ioJclEnvBrowsingPath:
-      Target.AddToLibraryBrowsingPath(Distribution.SourcePath);
+      if Target.AddToLibraryBrowsingPath(Distribution.SourcePath) then
+        WriteLog(Format(LineBreak + 'Added "%s" to library browsing path.', [Distribution.SourcePath]));
     ioJclEnvDebugDCUPath:
-      Target.AddToDebugDCUPath(DebugDcuDir);
+      if Target.AddToDebugDCUPath(DebugDcuDir) then
+        WriteLog(Format(LineBreak + 'Added "%s" to Debug DCU Path.', [DebugDcuDir]));
     // ioJclMake:
     ioJclMakeRelease:
       Result := MakeUnits(False);
@@ -998,14 +1022,14 @@ begin
   Result := True;
   case Option of
     ioJclEnvLibPath:
-      begin
-        Target.RemoveFromLibrarySearchPath(LibDir);
-        Target.RemoveFromLibrarySearchPath(Distribution.SourceDir);
-      end;
+      if Target.RemoveFromLibrarySearchPath(LibDir) and Target.RemoveFromLibrarySearchPath(Distribution.SourceDir) then
+        WriteLog(Format(LineBreak + 'Removed "%s;%s" from library path.', [LibDir, Distribution.SourceDir]));
     ioJclEnvBrowsingPath:
-      Target.RemoveFromLibraryBrowsingPath(Distribution.SourcePath);
+      if Target.RemoveFromLibraryBrowsingPath(Distribution.SourcePath) then
+        WriteLog(Format(LineBreak + 'Removed "%s" from library browsing path.', [Distribution.SourcePath]));
     ioJclEnvDebugDCUPath:
-      Target.RemoveFromDebugDCUPath(DebugDcuDir);
+      if Target.RemoveFromDebugDCUPath(DebugDcuDir) then
+        WriteLog(Format(LineBreak + 'Removed "%s" from Debug DCU Path.', [DebugDcuDir]));
     // ioJclMake:
     ioJclMakeRelease: { TODO :  Delete generated files };
     ioJclMakeDebug: { TODO : Delete generated files  };
@@ -1042,8 +1066,8 @@ begin
       RemoveHelpFromIdeTools;
     {$ENDIF MSWINDOWS}
   end;
-  //if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
-    //Progress(ProgressWeight(Option));
+  if not (Option in [ioJclMakeRelease, ioJclMakeDebug]) then
+    Progress(ProgressWeight(Option));
 end;
 
 procedure TJclInstallation.InstallationStarted;
@@ -1078,7 +1102,7 @@ var
 begin
   Result := True;
   PackageFileName := Distribution.Path + Format(Name, [Target.VersionNumber]);
-  WriteLog(Format(AnsiLineBreak + 'Installing package %s...', [PackageFileName]));
+  WriteLog(Format(LineBreak + 'Installing package %s...', [PackageFileName]));
   Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Target.Name]));
   if IsDelphiPackage(Name) then
   begin
@@ -1200,7 +1224,7 @@ end;
 procedure TJclInstallation.RemoveDialogFromRepository(const DialogName, DialogFileName: string);
 begin
   Target.Repository.RemoveObjects(DialogsPath, DialogFileName, BorRADToolRepositoryFormTemplate);
-  WriteLog(Format(AnsiLineBreak + 'Removed %s.', [DialogName]));
+  WriteLog(Format(LineBreak + 'Removed %s.', [DialogName]));
 end;
 
 {$IFDEF MSWINDOWS}
@@ -1211,7 +1235,8 @@ end;
 
 procedure TJclInstallation.RemoveHelpFromOpenHelp;
 begin
-  Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName);
+  if Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName) then
+    WriteLog(Format(LineBreak + 'Removed %s from Delphi Online Help', [Distribution.FJclHlpHelpFileName]));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1246,7 +1271,7 @@ begin
   Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
   { TODO : evtl. remove .HPP Files }
   if Result then
-    WriteLog(Format(AnsiLineBreak + 'Removed package %s.', [PackageFileName]));
+    WriteLog(Format(LineBreak + 'Removed package %s.', [PackageFileName]));
 end;
 
 function TJclInstallation.UninstallRunTimePackage(const BaseName: string): Boolean;
@@ -1267,13 +1292,15 @@ var
 begin
   Result := True;
   Tool.UpdateStatus(Format(RsUninstallMessage, [Target.Name]));
+  WriteLog(StrPadRight('Starting Uninstall process', 44, '.'));
   for Option := ioJCL to ioJclLast do
     if OptionSelected(Option) then
     begin
       // Don't stop uninstall process when one step fails
       Success := UninstallOption(Option);
       Result := Result and Success;
-    end
+    end;
+  WriteLog('');
 end;
 
 procedure TJclInstallation.SaveOption(Option: TJediInstallOption);
@@ -1488,12 +1515,16 @@ end;
 function TJclDistribution.Uninstall: Boolean;
 var
   I: Integer;
+  Success: Boolean;
 begin
   Result := True;
   try
     InitProgress;
     for I := 0 to FTargetInstalls.Count - 1 do
-      Result := Result and TJclInstallation(FTargetInstalls[I]).Undo;
+    begin
+      Success := TJclInstallation(FTargetInstalls[I]).Undo;
+      Result := Result and Success;
+    end;
   finally
     Tool.UpdateStatus('');
   end;
@@ -1570,6 +1601,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.50  2005/02/05 05:16:18  rrossmair
+// - check-in for release 1.94.1.1802
+//
 // Revision 1.49  2005/02/04 05:19:41  rrossmair
 // - some uninstall support finally functional
 //

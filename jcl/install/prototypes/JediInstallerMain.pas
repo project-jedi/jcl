@@ -23,7 +23,13 @@
 
 // $Id$
 
-{$IFNDEF Develop}unit {$IFDEF VisualCLX}QJediInstallerMain{$ELSE}JediInstallerMain{$ENDIF};{$ENDIF}
+{$IFNDEF PROTOTYPE}
+{$IFDEF VCL}
+unit JediInstallerMain;
+{$ELSE VisualCLX}
+unit QJediInstallerMain;
+{$ENDIF VisualCLX}
+{$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
 {$I crossplatform.inc}
@@ -126,6 +132,7 @@ type
       var CanShow: Boolean; var HintInfo: THintInfo);
     function CheckRunningInstances: Boolean;
     procedure Install;
+    procedure Uninstall;
     function SystemPathValid(const Path: string): Boolean;
     // IJediInstallTool
     function FeatureChecked(FeatureID: Cardinal; Installation: TJclBorRADToolInstallation): Boolean;
@@ -319,6 +326,20 @@ begin
       Dialog(RsInstallSuccess)
     else
       Dialog(RsInstallFailure);
+  finally
+    ProgressBar.Visible := False;
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TMainForm.Uninstall;
+begin
+  ProgressBar.Position := 0;
+  ProgressBar.Visible := True;
+  Screen.Cursor := crHourGlass;
+  try
+    FJclInstall.Uninstall;
+    Screen.Cursor := crDefault;
   finally
     ProgressBar.Visible := False;
     Screen.Cursor := crDefault;
@@ -523,6 +544,15 @@ begin
   end;
 end;
 
+procedure TMainForm.UninstallBtnClick(Sender: TObject);
+begin
+  if ({$IFDEF MSWINDOWS} IsDebuggerAttached or {$ENDIF} not CheckRunningInstances) then
+  begin
+    Uninstall;
+    QuitBtn.SetFocus;
+  end;
+end;
+
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   {$IFDEF VisualCLX}
@@ -671,11 +701,6 @@ begin
   if Result = nil then
     CreateView(Installation);
   Result := View(Installation).TreeView.Items;
-end;
-
-procedure TMainForm.UninstallBtnClick(Sender: TObject);
-begin
-  FJclInstall.Uninstall;
 end;
 
 end.

@@ -23,7 +23,13 @@
 
 // $Id$
 
-{$IFNDEF Develop}unit {$IFDEF VisualCLX}QProductFrames{$ELSE}ProductFrames{$ENDIF};{$ENDIF}
+{$IFNDEF PROTOTYPE}
+{$IFDEF VCL}
+unit ProductFrames;
+{$ELSE VisualCLX}
+unit QProductFrames;
+{$ENDIF VisualCLX}
+{$ENDIF ~PROTOTYPE}
 
 interface
 

@@ -3,21 +3,18 @@
 
   Jedi Code Library
 
-Pre-Release 1.94 RC 1
-Build 1758
-23-December-2004
+Release 1.94
+Build 1802
+05-February-2005
 
 ------------------------------------------------------------------------
 
-The main objective of JCL release 1.94 RC1 is to provide basic support
-for Delphi 2005/Win32. For Delphi 2005, integrated Online Help and
-installer access to the Object Repository are not yet available. Note
-also issue #2397
-<http://homepages.borland.com/jedi/issuetracker/view.php?id=2397>, which
-has not been addressed yet.
+The main objective of JCL release 1.94 is to provide basic support for
+Delphi 2005/Win32. For Delphi 2005, integrated Online Help and installer
+access to the Object Repository are not yet available.
 
-Again, shortage of man power did not allow us to list the changes and
-bug fixes in JCL since last release. For detailed change logs, use the
+Other changes since last release include uninstall support for the JEDI
+Installer as well as bug fixes. For detailed change logs, use the
 facilities of our CVS repository at SourceForge.net
 <http://sourceforge.net/projects/jcl/>, see below.
 
@@ -195,7 +192,8 @@ Repository.
 
       Makefiles
 
-In order to compile examples and tools by one command we provide makefiles.
+In order to compile selected examples and tools by one command we
+provide makefiles.
 
 To use them, cd into the jcl/examples sub directory and at the command
 prompt, type
