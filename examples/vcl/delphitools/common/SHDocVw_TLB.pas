@@ -31,15 +31,15 @@ unit SHDocVw_TLB;
 //   Hint: Parameter 'Type' of IShellUIHelper.AddDesktopComponent changed to 'Type_'
 //   Hint: Parameter 'var' of IShellNameSpace.Expand changed to 'var_'
 // ************************************************************************ //
+{$I jcl.inc}
+{$I windowsonly.inc}
+
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
 {$WRITEABLECONST ON}
 
 interface
 
-{$I jedi.inc}
-
 {$IFDEF DELPHI6_UP}
-  {$WARN SYMBOL_PLATFORM OFF}
   {$VARPROPSETTER ON}
 {$ENDIF}
 

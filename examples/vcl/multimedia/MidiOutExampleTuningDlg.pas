@@ -3,12 +3,14 @@
 //
 unit MidiOutExampleTuningDlg;
 
+{$I jcl.inc}
+
 interface
 
-{$INCLUDE JEDI.inc}
-
-uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ExtCtrls, JclMath, JclMidi, Spin;
+uses
+  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ExtCtrls, Spin,
+  JclMath, JclMidi;
 
 type
   TTuningDialog = class(TForm)
@@ -46,7 +48,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 const
   HalftonesPerOctave = 12;
@@ -88,7 +90,7 @@ begin
     if TryStrToFloat(MidiFreq.Text, F) then
     {$ELSE}
     if TextToFloat(PChar(MidiFreq.Text), F, fvExtended) then
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
       MidiFrequency := F;
   finally
     FInMIDIFreqChange := False;
@@ -107,7 +109,7 @@ begin
     if TryStrToFloat(FreqHertz.Text, F) then
     {$ELSE}
     if TextToFloat(PChar(FreqHertz.Text), F, fvExtended) then
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
       Frequency := F;
   finally
     FInFreqHertzChange := False;

@@ -1,6 +1,6 @@
 unit ClipLineDemoMain;
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 interface
 

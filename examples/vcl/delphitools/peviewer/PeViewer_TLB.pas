@@ -21,15 +21,18 @@ unit PeViewer_TLB;
 // DepndLst: 
 //   (1) v2.0 stdole, (C:\WINDOWS\SYSTEM\StdOle2.Tlb)
 // ************************************************************************ //
+
+{$I jcl.inc}
+
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
+
 interface
 
-{$I jedi.inc}
-
-uses Windows, ActiveX, Classes, Graphics,
+uses
+  Windows, ActiveX, Classes, Graphics,
   {$IFDEF DELPHI5_UP}
   OleServer,
-  {$ENDIF}
+  {$ENDIF DELPHI5_UP}
   OleCtrls, StdVCL;
 
 // *********************************************************************//
