@@ -462,15 +462,15 @@ end;
 
 function BitsHighest(X: Int64): Integer;
 begin
-  if TLargeInteger(X).HighPart = 0 then
+  if TULargeInteger(X).HighPart = 0 then
   begin
-    if TLargeInteger(X).LowPart = 0 then
+    if TULargeInteger(X).LowPart = 0 then
       Result := -1
     else
-      Result := BitsHighest(TLargeInteger(X).LowPart);
+      Result := BitsHighest(TULargeInteger(X).LowPart);
   end
   else
-    Result := BitsHighest(TLargeInteger(X).HighPart) + 32;
+    Result := BitsHighest(TULargeInteger(X).HighPart) + 32;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -521,15 +521,15 @@ end;
 
 function BitsLowest(X: Int64): Integer;
 begin
-  if TLargeInteger(X).LowPart = 0 then
+  if TULargeInteger(X).LowPart = 0 then
   begin
-    if TLargeInteger(X).HighPart = 0 then
+    if TULargeInteger(X).HighPart = 0 then
       Result := -1
     else
-      Result := BitsLowest(TLargeInteger(X).HighPart) + 32;
+      Result := BitsLowest(TULargeInteger(X).HighPart) + 32;
   end
   else
-    Result := BitsLowest(TLargeInteger(X).LowPart);
+    Result := BitsLowest(TULargeInteger(X).LowPart);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -664,7 +664,7 @@ end;
 
 function CountBitsSet(X: Int64): Integer;
 begin
-  Result := CountBitsSet(TLargeInteger(X).LowPart) + CountBitsSet(TLargeInteger(X).HighPart);
+  Result := CountBitsSet(TULargeInteger(X).LowPart) + CountBitsSet(TULargeInteger(X).HighPart);
 end;
 
 //--------------------------------------------------------------------------------------------------
