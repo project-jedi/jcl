@@ -24,7 +24,7 @@
 { and so forth. Note that some functions require NTFS 5 or higher!             }
 {                                                                              }
 { Unit Owner: Marcel van Brakel                                                }
-{ Last modified: July 05, 2001                                                 }
+{ Last modified: July 21, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -44,9 +44,15 @@ uses
 // NTFS - Compression
 //------------------------------------------------------------------------------
 
-function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
+type
+  TFileCompressionState = (fcNoCompression, fcDefaultCompression, fcLZNT1Compression);
+
+function NtfsGetCompression(const FileName: string; var State: Short): Boolean; overload;
+function NtfsGetCompression(const FileName: string): TFileCompressionState; overload;
 function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
-function NtfsSetCompressionRecursively(const Directory: string; const State: Short): Boolean;
+procedure NtfsSetFileCompression(const FileName: string; const State: TFileCompressionState);
+procedure NtfsSetDirectoryCompression(const Directory: string; const State: TFileCompressionState);
+procedure NtfsSetDirectoryCompressionDefault(const Directory: string; const State: TFileCompressionState);
 
 //------------------------------------------------------------------------------
 // NTFS - Sparse Files
@@ -145,12 +151,60 @@ type
 implementation
 
 uses
+  SysConst,
   SysUtils,
   JclFileUtils, JclResources;
 
 //==============================================================================
 // NTFS - Compression
 //==============================================================================
+
+// Helper types, helper consts, helper routines
+
+{$UNDEF StackFramesWereOff}
+
+type
+  TStackLabel = record end;
+
+  PStackFrame = ^TStackFrame;
+  TStackFrame = packed record
+    EBP: Cardinal;
+    ReturnAddress: Pointer;
+  end;
+
+  EJclInvalidArgument = class (EJclError);
+
+procedure ValidateArgument(
+  Condition: Boolean;
+  const Routine: string;
+  const Argument: string;
+  const Context);
+begin
+  if not Condition then
+    raise EJclInvalidArgument.CreateResRecFmt(@RsInvalidArgument, [Routine, Argument])
+      at PStackFrame(@Context)^.ReturnAddress;
+end;
+
+function SetCompression(const FileName: string; const State: Short; FileFlag: DWORD): Boolean;
+var
+  Handle: THandle;
+  BytesReturned: DWORD;
+  Buffer: Short;
+begin
+  Result := False;
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
+    FILE_SHARE_READ, nil, OPEN_EXISTING, FileFlag, 0);
+  if Handle <> INVALID_HANDLE_VALUE then
+  try
+    Buffer := State;
+    Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
+      SizeOf(Short), nil, 0, BytesReturned, nil);
+  finally
+    CloseHandle(Handle);
+  end
+end;
+
+//------------------------------------------------------------------------------
 
 function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
 var
@@ -168,61 +222,101 @@ begin
   end;
 end;
 
+function NtfsGetCompression(const FileName: string): TFileCompressionState;
+var
+  State: Short;
+begin
+  if not NtfsGetCompression(FileName, State) then
+    RaiseLastOSError;
+  Result := TFileCompressionState(State);
+end;
+
 //------------------------------------------------------------------------------
 
 function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
 const
   FileFlag: array[Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
-var
-  Handle: THandle;
-  BytesReturned: DWORD;
-  Buffer: Short;
 begin
-  Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
-    FILE_SHARE_READ, nil, OPEN_EXISTING, FileFlag[IsDirectory(FileName)], 0);
-  if Handle <> INVALID_HANDLE_VALUE then
-  try
-    Buffer := State;
-    Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
-      SizeOf(Short), nil, 0, BytesReturned, nil);
-  finally
-    CloseHandle(Handle);
-  end
+  Result := SetCompression(FileName, State, FileFlag[IsDirectory(FileName)]);
 end;
 
 //------------------------------------------------------------------------------
 
-function NtfsSetCompressionRecursively(const Directory: string; const State: Short): Boolean;
+{$IFOPT W-} {$DEFINE StackFramesWereOff} {$STACKFRAMES ON} {$ENDIF}
+
+procedure NtfsSetFileCompression(const FileName: string; const State: TFileCompressionState);
 var
-  SearchRec: TSearchRec;
-  R: Integer;
-  FileName, Dir: string;
+  Context: TStackLabel;
 begin
-  Result := NtfsSetCompression(Directory, State);
-  if not Result then
-    Exit;
-  Dir := IncludeTrailingBackslash(Directory);
-  if FindFirst(Dir + '*.*', faAnyFile, SearchRec) = 0 then
-  try
-    repeat
-      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-      begin
-        FileName := Dir + SearchRec.Name;
-        Result := NtfsSetCompression(FileName, State);
-        if Result then
-          if (SearchRec.Attr and faDirectory) <> 0 then
-            Result := NtfsSetCompressionRecursively(FileName, State);
-        if not Result then
-          Exit;
-      end;
-      R := FindNext(SearchRec);
-    until R <> 0;
-    Result := R = ERROR_NO_MORE_FILES;
-  finally
-    SysUtils.FindClose(SearchRec);
-  end;
+  ValidateArgument(not IsDirectory(FileName), 'NtfsSetFileCompression', 'FileName', Context);
+  if not SetCompression(FileName, Ord(State), 0) then
+    RaiseLastOSError;
 end;
+
+{$IFDEF StackFramesWereOff} {$STACKFRAMES OFF} {$UNDEF StackFramesWereOff} {$ENDIF}
+
+//------------------------------------------------------------------------------
+
+{$IFOPT W-} {$DEFINE StackFramesWereOff} {$STACKFRAMES ON} {$ENDIF}
+
+procedure NtfsSetDirectoryCompressionDefault(const Directory: string; const State: TFileCompressionState);
+var
+  Context: TStackLabel;
+begin
+  ValidateArgument(IsDirectory(Directory), 'NtfsSetDirectoryCompressionDefault', 'Directory', Context);
+  if not SetCompression(Directory, Ord(State), FILE_FLAG_BACKUP_SEMANTICS) then
+    RaiseLastOSError;
+end;
+
+{$IFDEF StackFramesWereOff} {$STACKFRAMES OFF} {$UNDEF StackFramesWereOff} {$ENDIF}
+
+//------------------------------------------------------------------------------
+
+{$IFOPT W-} {$DEFINE StackFramesWereOff} {$STACKFRAMES ON} {$ENDIF}
+
+procedure NtfsSetDirectoryCompression(const Directory: string; const State: TFileCompressionState);
+
+  function SetDirectoryCompression(Directory: string; const State: Short): Boolean;
+  var
+    FileName: string;
+    SearchRec: TSearchRec;
+    R: Integer;
+  begin
+    Result := SetCompression(Directory, State, FILE_FLAG_BACKUP_SEMANTICS);
+    if Result then
+    begin
+      Directory := PathAddSeparator(Directory);
+      if FindFirst(Directory + '*.*', faAnyFile, SearchRec) = 0 then
+      try
+        repeat
+          if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+          begin
+            FileName := Directory + SearchRec.Name;
+            if (SearchRec.Attr and faDirectory) = 0 then
+              Result := SetCompression(FileName, State, 0)
+            else
+              Result := SetDirectoryCompression(FileName, State);
+            if Result = False then
+              Exit;
+          end;
+          R := FindNext(SearchRec);
+        until R <> 0;
+        Result := R = ERROR_NO_MORE_FILES;
+      finally
+        SysUtils.FindClose(SearchRec);
+      end;
+    end;
+  end;
+
+var
+  Context: TStackLabel;
+begin
+  ValidateArgument(IsDirectory(Directory), 'NtfsSetDirectoryCompression', 'Directory', Context);
+  if not SetDirectoryCompression(Directory, Ord(State)) then
+    RaiseLastOSError;
+end;
+
+{$IFDEF StackFramesWereOff} {$STACKFRAMES OFF} {$UNDEF StackFramesWereOff} {$ENDIF}
 
 //==============================================================================
 // NTFS - Sparse Files
