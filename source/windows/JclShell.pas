@@ -422,7 +422,8 @@ begin
   begin
     Result := PidlToPath(FolderPidl);
     PidlFree(FolderPidl);
-  end else
+  end
+  else
     Result := '';
 end;
 
