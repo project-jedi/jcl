@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 22, 2000                                              }
+{ Last modified: October 18, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -38,7 +38,7 @@ unit JclSysInfo;
 interface
 
 uses
-  Windows, Classes, ShlObj, ActiveX;
+  Windows, ActiveX, Classes, ShlObj;
 
 //------------------------------------------------------------------------------
 // Environment
@@ -1736,7 +1736,7 @@ begin
       IsWin2K := True;
   end;
 
-  SHGetMalloc(SHMalloc);
+  SHGetMalloc(SHMalloc);  
 end;
 
 //------------------------------------------------------------------------------
@@ -1835,7 +1835,7 @@ begin
   stlTemp.Free;
 end;
 
-function GetSpecialFolderLocation(const Folder: integer): string;
+function GetSpecialFolderLocation(const Folder: Integer): string;
 var
   shBuff: PChar;
   idRoot: PItemIDList;
@@ -1858,7 +1858,6 @@ begin
       CoUninitialize;
     end;
   end;
-
 end;
 
 function GetDesktopFolder: string;
@@ -1984,5 +1983,4 @@ end;
 
 initialization
   InitSysInfo;
-
 end.
