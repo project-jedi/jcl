@@ -28,3 +28,979 @@ Category=Unit Conversions
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CelsiusToKelvin(const T: Float): Float;
+[ShortDescr]
+Converts a temperature from celsius to kelvin.
+[Description]
+The CelsiusToKelvin routine converts the specified temperature from degrees celsius to degrees kelvin.
+[Parameters]
+Count=1
+1=T:Float=The temperature, in celsius, to convert to kelvin.
+[Result]
+The temperature after conversion to degrees kelvin.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Temperature Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CelsiusToFahrenheit(const T: Float): Float;
+[ShortDescr]
+Converts a temperature from celsius to fahrenheit.
+[Description]
+The CelsiusToFahrenheit routine converts the specified temperature from degrees celsius to degrees fahrenheit.
+[Parameters]
+Count=1
+1=T:Float=The temperature, in celsius, to convert to fahrenheit.
+[Result]
+The temperature after conversion to degrees fahrenheit.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Temperature Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KelvinToCelsius(const T: Float): Float;
+[ShortDescr]
+Converts a temperature from kelvin to celsius.
+[Description]
+The KelvinToCelsius routine converts the specified temperature from degrees kelvin to degrees celsius.
+[Parameters]
+Count=1
+1=T:Float=The temperature, in kelvin, to convert to celsius.
+[Result]
+The temperature after conversion to degrees celsius.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Temperature Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KelvinToFahrenheit(const T: Float): Float;
+[ShortDescr]
+Converts a temperature from kelvin to fahrenheit.
+[Description]
+The KelvinToFahrenheit routine converts the specified temperature from degrees kelvin to degrees fahrenheit.
+[Parameters]
+Count=1
+1=T:Float=The temperature, in kelvin, to convert to fahrenheit.
+[Result]
+The temperature after conversion to degrees fahrenheit.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Temperature Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FahrenheitToCelsius(const T: Float): Float;
+[ShortDescr]
+Converts a temperature from fahrenheit to celsius.
+[Description]
+The FahrenheitToCelsius routine converts the specified temperature from degrees fahrenheit to degrees celsius.
+[Parameters]
+Count=1
+1=T:Float=The temperature, in fahrenheit, to convert to celsius.
+[Result]
+The temperature after conversion to degrees celsius.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Temperature Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FahrenheitToKelvin(const T: Float): Float;
+[ShortDescr]
+Converts a temperature from fahrenheit to kelvin.
+[Description]
+The FahrenheitToKelvin routine converts the specified temperature from degrees fahrenheit to degrees kelvin.
+[Parameters]
+Count=1
+1=T:Float=The temperature, in fahrenheit, to convert to kelvin.
+[Result]
+The temperature after conversion to degrees kelvin.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Temperature Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CycleToDeg(const Cycles: Float): Float;
+[ShortDescr]
+Converts an angle from cycles to degrees.
+[Description]
+The CycleToDeg routine converts the specified angle, in cycles, to the corresponding angle in degrees.
+[Parameters]
+Count=1
+1=Cycles:Float=The angle, in cycles, to convert to degrees.
+[Result]
+The angle after conversion to degrees.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CycleToGrad(const Cycles: Float): Float;
+[ShortDescr]
+Converts an angle from cycles to gradians.
+[Description]
+The CycleToGrad routine converts the specified angle, in cycles, to the corresponding angle in gradians.
+[Parameters]
+Count=1
+1=Cycles:Float=The angle, in cycles, to convert to gradians.
+[Result]
+The angle after conversion to gradians.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CycleToRad(const Cycles: Float): Float;
+[ShortDescr]
+Converts an angle from cycles to radians.
+[Description]
+The CycleToRad routine converts the specified angle, in cycles, to the corresponding angle in radians.
+[Parameters]
+Count=1
+1=Cycles:Float=The angle, in cycles, to convert to radians.
+[Result]
+The angle after conversion to radians.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DegToCycle(const Degrees: Float): Float;
+[ShortDescr]
+Converts an angle from degrees to cycles.
+[Description]
+The DegToCycle routine converts the specified angle, in degrees, to the corresponding angle in cycles.
+[Parameters]
+Count=1
+1=Degrees:Float=The angle, in degrees, to convert to cycles.
+[Result]
+The angle after conversion to cycles.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DegToGrad(const Degrees: Float): Float;
+[ShortDescr]
+Converts an angle from degrees to gradians.
+[Description]
+The DegToGrad routine converts the specified angle, in degrees, to the corresponding angle in gradians.
+[Parameters]
+Count=1
+1=Degrees:Float=The angle, in degrees, to convert to gradians.
+[Result]
+The angle after conversion to gradians.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DegToRad(const Degrees: Float): Float;
+[ShortDescr]
+Converts an angle from degrees to radians.
+[Description]
+The DegToRad routine converts the specified angle, in degrees, to the corresponding angle in radians.
+[Parameters]
+Count=1
+1=Degrees:Float=The angle, in degrees, to convert to radians.
+[Result]
+The angle after conversion to radians.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GradToCycle(const Grads: Float): Float;
+[ShortDescr]
+Converts an angle from gradians to cycles.
+[Description]
+The GradToCycle routine converts the specified angle, in gradians, to the corresponding angle in cycles.
+[Parameters]
+Count=1
+1=Grads:Float=The angle, in gradians, to convert to cycles.
+[Result]
+The angle after conversion to cycles.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GradToDeg(const Grads: Float): Float;
+[ShortDescr]
+Converts an angle from gradians to degrees.
+[Description]
+The GradToDeg routine converts the specified angle, in gradians, to the corresponding angle in degrees.
+[Parameters]
+Count=1
+1=Grads:Float=The angle, in gradians, to convert to degrees.
+[Result]
+The angle after conversion to degrees.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GradToRad(const Grads: Float): Float;
+[ShortDescr]
+Converts an angle from gradians to radians.
+[Description]
+The GradToRad routine converts the specified angle, in gradians, to the corresponding angle in radians.
+[Parameters]
+Count=1
+1=Grads:Float=The angle, in gradians, to convert to radians.
+[Result]
+The angle after conversion to radians.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RadToCycle(const Radians: Float): Float;
+[ShortDescr]
+Converts an angle from radians to cycles.
+[Description]
+The RadToCycle routine converts the specified angle, in radians, to the corresponding angle in cycles.
+[Parameters]
+Count=1
+1=Radians:Float=The angle, in radians, to convert to cycles.
+[Result]
+The angle after conversion to cycles.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RadToDeg(const Radians: Float): Float;
+[ShortDescr]
+Converts an angle from radians to degrees.
+[Description]
+The RadToDeg routine converts the specified angle, in radians, to the corresponding angle in degrees.
+[Parameters]
+Count=1
+1=Radians:Float=The angle, in radians, to convert to degrees.
+[Result]
+The angle after conversion to degrees.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RadToGrad(const Radians: Float): Float;
+[ShortDescr]
+Converts an angle from radians to gradians.
+[Description]
+The RadToGrad routine converts the specified angle, in radians, to the corresponding angle in gradians.
+[Parameters]
+Count=1
+1=Radians:Float=The angle, in radians, to convert to gradians.
+[Result]
+The angle after conversion to gradians.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Angle Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CartesianToPolar(const X, Y: Float; var Rho, Theta: Float);
+[ShortDescr]
+Converts cartesian to polar coordinates.
+[Description]
+CartesianToPolar converts the supplied coordinates from the cartesian (or
+rectangular) system to the corresponding coordinates in the polar coordinate system.
+[Parameters]
+Count=4
+1=X:Float=X element of the coordinate in the cartesian system to convert
+2=Y:Float=Y element of the coordinate in the cartesian system to convert
+3=Rho:Float=Receives the Rho part of the converted coordinate
+4=Theta:Float=Receives the Theta part of the converted coordinate
+[Quick Info]
+BCB=3,4,5
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Coordinate Conversion
+Author=ESB Consultancy;glenn@esbconsult.com.au
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=PolarToCartesian
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure PolarToCartesian(const Rho, Theta: Float; var X, Y: Float);
+[ShortDescr]
+Converts polar to cartesian coordinates
+[Description]
+PolarToCartesion converts the supplied coordinates from the polar coordinate
+system to the corresponding coordinates in the cartesian (or rectangular) system.
+[Parameters]
+Count=4
+1=Rho:Float=Rho part of the coordinate in the polar system to convert
+2=Theta:Float=Theta part of the coordinate in the polar system to convert
+3=X:Float=Receives the X element of the converted coordinate
+4=Y:Float=Receives the Y element of the converted coordinate
+[Quick Info]
+BCB=3,4,5
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Coordinate Conversion
+Author=ESB Consultancy;glenn@esbconsult.com.au
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=CartesianToPolar
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CartesianToCylinder(const X, Y, Z: Float; var R, Phi, Zeta: Float);
+[ShortDescr]
+Converts cartesian to cylinder coordinates.
+[Description]
+CartesianToCylinder converts the supplied coordinates from the cartesian coordinate
+system to the corresponding coordinates in the cylinder coordinate system.
+[Parameters]
+Count=6
+1=X:Float=TODO
+2=Y:Float=TODO
+3=Z:Float=TODO
+4=R:Float=TODO
+5=Phi:Float=TODO
+6=Zeta:Float=TODO
+[Quick Info]
+BCB=3,4,5
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Coordinate Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CartesianToSpheric(const X, Y, Z: Float; var Rho, Theta, Phi: Float);
+[ShortDescr]
+Converts cartesian to spheric coordinates.
+[Description]
+CartesianToSpehric converts the supplied coordinates from the cartesian coordinate
+system to the corresponding coordinates in the spheric coordinate system.
+[Parameters]
+Count=6
+1=X:Float=TODO
+2=Y:Float=TODO
+3=Z:Float=TODO
+4=Rho:Float=TODO
+5=Theta:Float=TODO
+6=Phi:Float=TODO
+[Quick Info]
+BCB=3,4,5
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Coordinate Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure CylinderToCartesian(const R, Phi, Zeta: Float; var X, Y, Z: Float);
+[ShortDescr]
+Converts cylinder to cartesian coordinates.
+[Description]
+CylinderToCartesian converts the supplied coordinates from the cylinder coordinate
+system to the corresponding coordinates in the cartesian coordinate system.
+[Parameters]
+Count=6
+1=R:Float=TODO
+2=Phi:Float=TODO
+3=Zeta:Float=TODO
+4=X:Float=TODO
+5=Y:Float=TODO
+6=Z:Float=TODO
+[Quick Info]
+BCB=3,4,5
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Coordinate Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SphericToCartesian(const Rho, Theta, Phi: Float; var X, Y, Z: Float);
+[ShortDescr]
+Converts spheric to cartesian coordinates.
+[Description]
+SphericToCartesian converts the supplied coordinates from the spheric coordinate
+system to the corresponding coordinates in the cartesian coordinate system.
+[Parameters]
+Count=6
+1=Rho:Float=TODO
+2=Theta:Float=TODO
+3=Phi:Float=TODO
+4=X:Float=TODO
+5=Y:Float=TODO
+6=Z:Float=TODO
+[Quick Info]
+BCB=3,4,5
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Coordinate Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CmToInch(const Cm: Float): Float;
+[ShortDescr]
+Converts a length from centimeters to inches.
+[Description]
+The CmToInch routine converts the specified length, in centimeters, to the corresponding length in inches.
+[Parameters]
+Count=1
+1=Cm:Float=The length, in centimeters, to convert to inches.
+[Result]
+The length after conversion to inches.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function InchToCm(const Inch: Float): Float;
+[ShortDescr]
+Converts a length from inches to centimeters.
+[Description]
+The InchToCm routine converts the specified length, in inches, to the corresponding length in centimeters.
+[Parameters]
+Count=1
+1=Inch:Float=The length, in inches, to convert to centimeters.
+[Result]
+The length after conversion to centimeters.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FeetToMeter(const Feet: Float): Float;
+[ShortDescr]
+Converts a length from feet to meters.
+[Description]
+The FeetToMeter routine converts the specified length, in feet, to the corresponding length in meters.
+[Parameters]
+Count=1
+1=Feet:Float=The length, in feet, to convert to meters.
+[Result]
+The length after conversion to meters.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MeterToFeet(const Meter: Float): Float;
+[ShortDescr]
+Converts a length from meters to feet.
+[Description]
+The MeterToFeet routine converts the specified length, in meters, to the corresponding length in feet.
+[Parameters]
+Count=1
+1=Meter:Float=The length, in meters, to convert to feet.
+[Result]
+The length after conversion to feet.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function YardToMeter(const Yard: Float): Float;
+[ShortDescr]
+Converts a length from yard to meters.
+[Description]
+The YardToMeter routine converts the specified length, in yard, to the corresponding length in meters.
+[Parameters]
+Count=1
+1=Yard:Float=The length, in yard, to convert to meters.
+[Result]
+The length after conversion to meters.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MeterToYard(const Meter: Float): Float;
+[ShortDescr]
+Converts a length from meters to yard.
+[Description]
+The MeterToYard routine converts the specified length, in meters, to the corresponding length in yard.
+[Parameters]
+Count=1
+1=Meter:Float=The length, in meters, to convert to yard.
+[Result]
+The length after conversion to yard.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NmToKm(const Nm: Float): Float;
+[ShortDescr]
+Converts a length from nautic miles to kilometer.
+[Description]
+The NmToKm routine converts the specified length, in nautic miles, to the corresponding length in kilometer.
+[Parameters]
+Count=1
+1=Nm:Float=The length, in nautic miles, to convert to kilometer.
+[Result]
+The length after conversion to kilometer.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KmToNm(const Km: Float): Float;
+[ShortDescr]
+Converts a length from kilometer to nautic miles.
+[Description]
+The KmToNm routine converts the specified length, in kilometer, to the corresponding length in nautic miles.
+[Parameters]
+Count=1
+1=Km:Float=The length, in kilometer, to convert to nautic miles.
+[Result]
+The length after conversion to nautic miles.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KmToSm(const Km: Float): Float;
+[ShortDescr]
+Converts a length from kilometer to statute miles.
+[Description]
+The KmToSm routine converts the specified length, in kilometer, to the corresponding length in statute miles.
+[Parameters]
+Count=1
+1=Km:Float=The length, in kilometer, to convert to statute miles.
+[Result]
+The length after conversion to statute miles.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SmToKm(const Sm: Float): Float;
+[ShortDescr]
+Converts a length from statute miles to kilometer.
+[Description]
+The SmToKm routine converts the specified length, in statute miles, to the corresponding length in kilometer.
+[Parameters]
+Count=1
+1=Sm:Float=The length, in statute miles, to convert to kilometer.
+[Result]
+The length after conversion to kilometer.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Length Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PascalToBar(const Pa: Float): Float;
+[ShortDescr]
+Converts a pressure from pascal to bar.
+[Description]
+The PascalToBar routine converts the specified pressure, in pascal, to the corresponding pressure in bar.
+[Parameters]
+Count=1
+1=Pa:Float=The pressure, in pascal, to convert to bar.
+[Result]
+The pressure after conversion to bar.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Pressure Conversion
+Author=Matthias Thoma;ma.thoma@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PascalToAt(const Pa: Float): Float;
+[ShortDescr]
+Converts a pressure from pascal to at.
+[Description]
+The PascalToAt routine converts the specified pressure, in pascal, to the corresponding pressure in at.
+[Parameters]
+Count=1
+1=Pa:Float=The pressure, in pascal, to convert to at.
+[Result]
+The pressure after conversion to at.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Pressure Conversion
+Author=Matthias Thoma;ma.thoma@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PascalToTorr(const Pa: Float): Float;
+[ShortDescr]
+Converts a pressure from pascal to torr.
+[Description]
+The PascalToTorr routine converts the specified pressure, in pascal, to the corresponding pressure in torr.
+[Parameters]
+Count=1
+1=Pa:Float=The pressure, in pascal, to convert to torr.
+[Result]
+The pressure after conversion to torr.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Pressure Conversion
+Author=Matthias Thoma;ma.thoma@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function BarToPascal(const Bar: Float): Float;
+[ShortDescr]
+Converts a pressure from bar to pascal.
+[Description]
+The BarToPascal routine converts the specified pressure, in bar, to the corresponding pressure in pascal.
+[Parameters]
+Count=1
+1=Bar:Float=The pressure, in bar, to convert to pascal.
+[Result]
+The pressure after conversion to pascal.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Pressure Conversion
+Author=Matthias Thoma;ma.thoma@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function AtToPascal(const At: Float): Float;
+[ShortDescr]
+Converts a pressure from at to pascal.
+[Description]
+The AtToPascal routine converts the specified pressure, in at, to the corresponding pressure in pascal.
+[Parameters]
+Count=1
+1=At:Float=The pressure, in at, to convert to pascal.
+[Result]
+The pressure after conversion to pascal.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Pressure Conversion
+Author=Matthias Thoma;ma.thoma@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TorrToPascal(const Torr: Float): Float;
+[ShortDescr]
+Converts a pressure from torr to pascal.
+[Description]
+The TorrToPascal routine converts the specified pressure, in torr, to the corresponding pressure in pascal.
+[Parameters]
+Count=1
+1=Torr:Float=The pressure, in torr, to convert to pascal.
+[Result]
+The pressure after conversion to pascal.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Pressure Conversion
+Author=Matthias Thoma;ma.thoma@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LiterToGalUs(const Liter: Float): Float;
+[ShortDescr]
+Converts a volume from liter to US Gallons.
+[Description]
+The LiterToGalUs routine converts the specified volume, in liter, to the corresponding volume in US Gallons.
+[Parameters]
+Count=1
+1=Liter:Float=The volume, in liter, to convert to US Gallons.
+[Result]
+The volume after conversion to US Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalUsToLiter(const GalUs: Float): Float;
+[ShortDescr]
+Converts a volume from US gallons to Liter.
+[Description]
+The GalUsToLiter routine converts the specified volume, in US gallons, to the corresponding volume in Liter.
+[Parameters]
+Count=1
+1=GalUs:Float=The volume, in US gallons, to convert to Liter.
+[Result]
+The volume after conversion to Liter.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalUsToGalCan(const GalUs: Float): Float;
+[ShortDescr]
+Converts a volume from US gallons to Canadian Gallons.
+[Description]
+The GalUsToGalCan routine converts the specified volume, in US gallons, to the corresponding volume in Canadian Gallons.
+[Parameters]
+Count=1
+1=GalUs:Float=The volume, in US gallons, to convert to Canadian Gallons.
+[Result]
+The volume after conversion to Canadian Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalCanToGalUs(const GalCan: Float): Float;
+[ShortDescr]
+Converts a volume from Canadian Gallons to US Gallons.
+[Description]
+The GalCanToGalUs routine converts the specified volume, in Canadian Gallons, to the corresponding volume in US Gallons.
+[Parameters]
+Count=1
+1=GalCan:Float=The volume, in Canadian Gallons, to convert to US Gallons.
+[Result]
+The volume after conversion to US Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalUsToGalUk(const GalUs: Float): Float;
+[ShortDescr]
+Converts a volume from US Gallons to UK Gallons.
+[Description]
+The GalUsToGalUk routine converts the specified volume, in US Gallons, to the corresponding volume in UK Gallons.
+[Parameters]
+Count=1
+1=GalUs:Float=The volume, in US Gallons, to convert to UK Gallons.
+[Result]
+The volume after conversion to UK Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GalUkToGalUs(const GalUk: Float): Float;
+[ShortDescr]
+Converts a volume from UK Gallons to US Gallons.
+[Description]
+The GalUkToGalUs routine converts the specified volume, in UK Gallons, to the corresponding volume in US Gallons.
+[Parameters]
+Count=1
+1=GalUk:Float=The volume, in UK Gallons, to convert to US Gallons.
+[Result]
+The volume after conversion to US Gallons.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Volume Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToLb(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to pound.
+[Description]
+The KgToLb routine converts the specified mass, in kilogram, to the corresponding mass in pounds.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to pounds.
+[Result]
+The mass after conversion to pounds.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LbToKg(const nLb: Float): Float;
+[ShortDescr]
+Converts a mass from pound to kilogram.
+[Description]
+The LbToKg routine converts the specified mass, in pounds, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in pounds, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToOz(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to ounce.
+[Description]
+The KgToOz routine converts the specified mass, in kilogram, to the corresponding mass in ounces.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to ounces.
+[Result]
+The mass after conversion to ounces.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function OzToKg(const nOz: Float): Float;
+[ShortDescr]
+Converts a mass from pound to kilogram.
+[Description]
+The OzToKg routine converts the specified mass, in ounces, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in ounces, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
