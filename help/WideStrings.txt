@@ -17,8 +17,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TWideStrings = class (TPersistent)
@@ -41,8 +42,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create;
@@ -59,8 +61,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -77,8 +80,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Add(const S: WideString): Integer; virtual;
@@ -98,8 +102,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=Insert
@@ -128,8 +133,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=Insert
@@ -156,8 +162,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=Insert
@@ -186,8 +193,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Assign
@@ -215,8 +223,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure AssignTo(Dest: TPersistent); override;
@@ -238,8 +247,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure BeginUpdate;
@@ -262,8 +272,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=EndUpdate
@@ -284,8 +295,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Delete(Index: Integer); virtual; abstract;
@@ -305,8 +317,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure EndUpdate;
@@ -330,8 +343,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=BeginUpdate
@@ -361,8 +375,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Exchange(Index1, Index2: Integer); virtual;
@@ -382,8 +397,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetSeparatedText(Separators: WideString): WideString; virtual;
@@ -404,8 +420,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetText: PWideChar; virtual;
@@ -425,8 +442,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IndexOf(const S: WideString): Integer; virtual;
@@ -448,8 +466,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=IndexOfName
@@ -478,8 +497,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=IndexOf
@@ -506,8 +526,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Insert(Index: Integer; const S: WideString); virtual; abstract;
@@ -529,8 +550,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=InsertObject
@@ -560,8 +582,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure LoadFromFile(const FileName: String); virtual;
@@ -588,8 +611,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=LoadFromStream
@@ -621,8 +645,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=LoadFromFile
@@ -648,8 +673,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SaveToFile(const FileName: String); virtual;
@@ -679,8 +705,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SaveToStream
@@ -716,8 +743,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=SaveToFile
@@ -741,8 +769,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Capacity: Integer read GetCapacity write SetCapacity;
@@ -760,8 +789,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CommaText: WideString read GetCommaText write SetCommaText;
@@ -803,8 +833,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Count: Integer read GetCount;
@@ -822,8 +853,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Objects[Index: Integer]: TObject read GetObject write PutObject;
@@ -845,8 +877,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Values[const Name: WideString]: WideString read GetValue write SetValue;
@@ -866,8 +899,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Names
@@ -889,8 +923,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Values
@@ -909,8 +944,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Saved: Boolean read FSaved;
@@ -927,8 +963,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode default True;
@@ -947,8 +984,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Strings[Index: Integer]: WideString read Get write Put; default;
@@ -972,8 +1010,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Text: WideString read GetText write SetText;
@@ -995,8 +1034,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CommaText
@@ -1026,8 +1066,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CommaText
@@ -1053,8 +1094,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Error(const Msg: string; Data: Integer);
@@ -1078,8 +1120,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Get(Index: Integer): WideString; virtual; abstract;
@@ -1102,8 +1145,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetCapacity: Integer; virtual;
@@ -1125,8 +1169,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetCount: Integer; virtual; abstract;
@@ -1145,8 +1190,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetObject(Index: Integer): TObject; virtual;
@@ -1169,8 +1215,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetText: WideString; virtual;
@@ -1193,8 +1240,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Put(Index: Integer; const S: WideString); virtual; abstract;
@@ -1215,8 +1263,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure PutObject(Index: Integer; AObject: TObject); virtual; abstract
@@ -1237,8 +1286,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetCapacity(NewCapacity: Integer); virtual;
@@ -1261,8 +1311,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetUpdateState(Updating: Boolean); virtual;
@@ -1285,8 +1336,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetLanguage(Value: LCID); virtual;
@@ -1305,8 +1357,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStrings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TWideStringList = class(TWideStrings)
@@ -1326,8 +1379,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Add(const S: WideString): Integer; override;
@@ -1351,8 +1405,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Clear; override;
@@ -1368,8 +1423,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Delete(Index: Integer); override;
@@ -1389,8 +1445,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Exchange(Index1, Index2: Integer); override;
@@ -1415,8 +1472,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Find(const S: WideString; var Index: Integer): Boolean; virtual;
@@ -1444,8 +1502,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IndexOf(const S: WideString): Integer; override;
@@ -1467,8 +1526,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Insert(Index: Integer; const S: WideString); override;
@@ -1491,8 +1551,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Sort; virtual;
@@ -1508,8 +1569,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Changed; virtual;
@@ -1525,8 +1587,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Changing
@@ -1547,8 +1610,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Changed
@@ -1575,8 +1639,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetCapacity: Integer; override;
@@ -1595,8 +1660,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetCount: Integer; override;
@@ -1614,8 +1680,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetObject(Index: Integer): TObject; override;
@@ -1640,8 +1707,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Put(Index: Integer; const S: WideString); override;
@@ -1663,8 +1731,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure PutObject(Index: Integer; AObject: TObject); override;
@@ -1686,8 +1755,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetCapacity(NewCapacity: Integer); override;
@@ -1709,8 +1779,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetUpdateState(Updating: Boolean); override;
@@ -1732,8 +1803,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetLanguage(Value: LCID); override;
@@ -1752,8 +1824,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Duplicates: TDuplicates read FDuplicates write FDuplicates;
@@ -1779,8 +1852,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Sorted: Boolean read FSorted write SetSorted;
@@ -1804,8 +1878,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1827,8 +1902,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=OnChanging
@@ -1853,8 +1929,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TWideStringList
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=OnChange
