@@ -946,6 +946,9 @@ type
     Offset, Length: DWORD;
   end;
 
+  TJclClrExceptionClauseFlag = (cfException, cfFilter, cfFinally, cfFault);
+  TJclClrExceptionClauseFlags = set of TJclClrExceptionClauseFlag;
+
   TJclClrExceptionHandler = class
   private
     FFlags: DWORD;
@@ -953,11 +956,13 @@ type
     FTryBlock: TJclClrCodeBlock;
     FHandlerBlock: TJclClrCodeBlock;
     FClassToken: TJclClrToken;
+    function GetFlags: TJclClrExceptionClauseFlags;
   public
     constructor Create(const EHClause: TImageCorILMethodSectEHClauseSmall); overload;
     constructor Create(const EHClause: TImageCorILMethodSectEHClauseFat); overload;
 
-    property Flags: DWORD read FFlags;
+    property EHFlags: DWORD read FFlags;
+    property Flags: TJclClrExceptionClauseFlags read GetFlags;
 
     property TryBlock: TJclClrCodeBlock read FTryBlock;
     property HandlerBlock: TJclClrCodeBlock read FHandlerBlock;
@@ -1451,7 +1456,7 @@ type
 implementation
 
 uses
-  JclStrings;
+  JclStrings, JclCIL;
 
 { TODO : Move resourcestring to JclResources }
 resourcestring
@@ -3181,6 +3186,10 @@ const COR_ILEXCEPTION_CLAUSE_FILTER     = $0001; // If this bit is on, then this
 const COR_ILEXCEPTION_CLAUSE_FINALLY    = $0002; // This clause is a finally clause
 const COR_ILEXCEPTION_CLAUSE_FAULT      = $0004; // Fault clause (finally that is called on exception only)
 
+const ExceptionClauseFlags: array[TJclClrExceptionClauseFlag] of DWORD =
+(COR_ILEXCEPTION_CLAUSE_NONE, COR_ILEXCEPTION_CLAUSE_FILTER,
+ COR_ILEXCEPTION_CLAUSE_FINALLY, COR_ILEXCEPTION_CLAUSE_FAULT);
+
 { TJclClrExceptionHandler }
 
 constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseSmall);
@@ -3219,6 +3228,16 @@ begin
     FClassToken   := EHClause.ClassToken;
     FFilterOffset := 0;
   end;
+end;
+
+function TJclClrExceptionHandler.GetFlags: TJclClrExceptionClauseFlags;
+var
+  AFlag: TJclClrExceptionClauseFlag;
+begin
+  Result := [];
+  for AFlag:= Low(TJclClrExceptionClauseFlag) to High(TJclClrExceptionClauseFlag) do
+    if (FFlags and ExceptionClauseFlags[AFlag]) = ExceptionClauseFlags[AFlag] then
+      Include(Result, AFlag);
 end;
 
 { TJclClrMethodBody }
@@ -3412,6 +3431,19 @@ begin
       Result := Result + ', ';
   end;
   Result := Result + ')';
+
+  if Assigned(MethodBody) then
+  begin
+    Result := Result + CRLF + '{' + CRLF +
+              '.maxstack ' + IntToStr(MethodBody.MaxStack) + CRLF;
+    with TJclClrILGenerator.Create(MethodBody) do
+    try
+      Result := Result + CRLF + DumpIL(InstructionDumpILAllOption);
+    finally
+      Free;
+    end;
+    Result := Result + '}';
+  end;
 end;
 
 { TJclClrTableMethodDef }
