@@ -53,7 +53,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, {$IFNDEF FPC} ShlObj, {$ENDIF}
   {$ENDIF}
-  Classes, JclResources;   
+  Classes, JclResources;
 
 //--------------------------------------------------------------------------------------------------
 // Environment Variables
@@ -163,26 +163,16 @@ function GetBIOSDate: TDateTime;
 type
   TJclTerminateAppResult = (taError, taClean, taKill);
 
-{$IFDEF FPC}
-  {$IFDEF MSWINDOWS}
-    {$DEFINE WinFpc}
-  {$ENDIF}
-{$ENDIF}
-
-{$IFNDEF WinFpc}
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
-{$ENDIF}
 
 {$IFDEF MSWINDOWS}
-{$IFNDEF FPC}
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
-{$ENDIF}
 function GetTasksList(const List: TStrings): Boolean;
 
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 {$IFNDEF FPC}
 function IsSystemModule(const Module: HMODULE): Boolean;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 function IsMainAppWindow(Wnd: HWND): Boolean;
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
@@ -192,17 +182,17 @@ function GetWindowCaption(Wnd: HWND): string;
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 
-{$IFNDEF FPC}
+{ $IFNDEF FPC}
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
 function GetMainAppWndFromPid(PID: DWORD): HWND;
-{$ENDIF}
+{ $ENDIF}
 
 function GetShellProcessName: string;
-{$IFNDEF FPC}
+{ $IFNDEF FPC}
 function GetShellProcessHandle: THandle;
-{$ENDIF}
+{ $ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 // Version Information
@@ -591,7 +581,10 @@ uses
   {$IFDEF MSWINDOWS}
   Messages, Winsock, Snmp,
   JclRegistry, JclWin32,
-  {$IFNDEF FPC}
+  {$IFDEF FPC}
+  ActiveX,
+  JwaTlHelp32, JwaPsApi,
+  {$ELSE}
   TLHelp32, PsApi,
   JclShell, 
   {$ENDIF FPC}
@@ -1523,7 +1516,6 @@ end;
 {$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
-{$IFNDEF FPC}
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
@@ -1664,7 +1656,11 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     FileName: array [0..MAX_PATH] of Char;
     ModuleInfo: TModuleInfo;
   begin
+    {$IFDEF FPC}
+    if GetModuleInformation(ProcessHandle, Module, ModuleInfo, SizeOf(ModuleInfo)) then
+    {$ELSE}
     if GetModuleInformation(ProcessHandle, Module, @ModuleInfo, SizeOf(ModuleInfo)) then
+    {$ENDIF}
     begin
       if HandlesOnly then
         List.AddObject('', Pointer(ModuleInfo.lpBaseOfDll))
@@ -1691,7 +1687,11 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     begin
       if MemInfo.AllocationBase <> LastAllocBase then
       begin
+        {$IFDEF FPC}
+        if MemInfo._Type = MEM_IMAGE then
+        {$ELSE}
         if MemInfo.Type_9 = MEM_IMAGE then
+        {$ENDIF}
           AddToList(ProcessHandle, HMODULE(MemInfo.AllocationBase));
         LastAllocBase := MemInfo.AllocationBase;
       end;
@@ -1764,8 +1764,6 @@ begin
     Result := EnumModulesTH;
 end;
 
-{$ENDIF not FPC}
-
 //--------------------------------------------------------------------------------------------------
 
 function GetTasksList(const List: TStrings): Boolean;
@@ -1799,7 +1797,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}
-
 function IsSystemModule(const Module: HMODULE): Boolean;
 var
   CurModule: PLibModule;
@@ -1819,8 +1816,7 @@ begin
     end;
   end;
 end;
-
-{$ENDIF not FPC}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1959,8 +1955,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF FPC}
-
 function GetProcessNameFromWnd(Wnd: HWND): string;
 var
   List: TStringList;
@@ -2033,8 +2027,6 @@ begin
   end;
 end;
 
-{$ENDIF not FPC}
-
 //--------------------------------------------------------------------------------------------------
 
 function GetMainAppWndFromPid(PID: DWORD): HWND;
@@ -2089,8 +2081,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF FPC}
-
 function GetShellProcessHandle: THandle;
 var
   Pid: Longword;
@@ -2100,8 +2090,6 @@ begin
   if Result = 0 then
     RaiseLastOSError;
 end;
-
-{$ENDIF not FPC}
 
 //==================================================================================================
 // Version Information
@@ -3950,6 +3938,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.18  2004/05/05 07:12:03  rrossmair
+// changes for FPC compatibility
+//
 // Revision 1.17  2004/05/05 00:15:12  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
