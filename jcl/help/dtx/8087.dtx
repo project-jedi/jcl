@@ -210,28 +210,37 @@ Quick info:
   Allows positive and negative infinity.
 --------------------------------------------------------------------------------
 @@Set8087Infinity
-<GROUP MathRoutines.Hardware>
-Summary:
-  Sets the infinity control of the FPU.
-Description:
-  Set8087Infinity adjusts the infinity control setting of the mathematical
-  coprocessor.
-Parameters:
-  Infinity - New value for the infinity control of the FPU. See T8087Infinity for the possible values and their meaning.
-Result:
-  The previous infinity setting of the FPU.
-See also:
-  Set8087Precision
-  Set8087Rounding
-  Get8087Infinity
-  Get8087Precision
-  Get8087Rounding
-  Get8087ControlWord
-  Set8087ControlWord
-Quick info:
-  Donator: Marcel van Brakel
-  
---------------------------------------------------------------------------------
+<GROUP $MathRoutines.Hardware>
+
+Description
+Set8087Infinity adjusts the infinity control setting of the
+mathematical coprocessor.
+
+Summary
+Sets the infinity control of the FPU.
+
+Note
+This setting doesn't actually affect the way the FPU works. <COLOR Red>The
+infinity control flag is provided for compatibility with the
+Intel 287 Math Coprocessor; it is not meaningful for later
+\version x87 FPU coprocessors or 32 bit Intel architecture
+processors.</COLOR>
+
+Parameters
+Infinity :   New value for the infinity control of the FPU. See
+             T8087Infinity for the possible values and their
+             meaning.
+
+Returns
+The previous infinity setting of the FPU.
+
+QuickInfo
+Donator: Marcel van Brakel
+
+See Also
+Set8087Precision, Set8087Rounding, Get8087Infinity, Get8087Precision,
+Get8087Rounding, Get8087ControlWord, Set8087ControlWord
+
 @@Set8087Precision
 <GROUP MathRoutines.Hardware>
 Summary:
