@@ -316,23 +316,20 @@ end;
 
 function TJclInstall.CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
 var
-  I, J: Integer;
-  Units, ExcludeList: TStringList;
+  Units: TStringList;
   UnitType: string;
   LibDescriptor: string;
   SaveDir, UnitOutputDir: string;
-  Path, ExcludeListFileName: string;
-begin
-  if Debug then
-    UnitType := 'debug ';
-  LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Installation.Name]);
-  WriteInstallLog(Format('Making %s', [LibDescriptor]));
-  Units := TStringList.Create;
-  try
-    Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
-    Path := Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]);
-    BuildFileList(Path + (PathSeparator + '*.pas'), faAnyFile, Units);
+  Path: string;
 
+  procedure GetUnits(const Path: string; Units: TStrings);
+  var
+    I, J: Integer;
+    ExcludeList: TStringList;
+    ExcludeListFileName: string;
+    Editions, UnitName: string;
+  begin
+    BuildFileList(Path + (PathSeparator + '*.pas'), faAnyFile, Units);
     // check for units not to compile
     ExcludeListFileName := MakePath(Installation, Format('%s' + PathSeparator + '%s.exc', [FLibDirMask, SubDir]));
     if FileExists(ExcludeListFileName) then
@@ -342,17 +339,37 @@ begin
         ExcludeList.LoadFromFile(ExcludeListFileName);
         for I := 0 to ExcludeList.Count - 1 do
         begin
-          J := Units.IndexOf(ExcludeList[I]);
+          UnitName := ExcludeList[I];
+          J := Pos('=', UnitName);
+          if J > 0 then
+            SetLength(UnitName, J - 1);
+          J := Units.IndexOf(UnitName);
           if J <> -1 then
-            Units.Delete(J);
+          begin
+            Editions := ExcludeList.Values[UnitName];
+            if (Editions = '') or (StrIPos(BorRADToolEditionIDs[Installation.Edition], Editions) > 0) then
+              Units.Delete(J);
+          end;
         end;
       finally
         ExcludeList.Free;
       end;
     end;
-
+    // remove extension '.pas'
     for I := 0 to Units.Count -1 do
       Units[I] := Copy(Units[I], 1, Length(Units[I]) - 4);
+  end;
+
+begin
+  if Debug then
+    UnitType := 'debug ';
+  LibDescriptor := Format(RsLibDescriptor, [SubDir, UnitType, Installation.Name]);
+  WriteInstallLog(Format('Making %s', [LibDescriptor]));
+  Units := TStringList.Create;
+  try
+    Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
+    Path := Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]);
+    GetUnits(Path, Units);
     with Installation.DCC do
     begin
       Options.Clear;
@@ -425,9 +442,8 @@ begin
         WriteInstallLog('Compiling .dcu files...');
         WriteInstallLog(Installation.DCC.Output);
         {$IFDEF KYLIX}
-        J := Options.Add('-P');   // generate position independent code (PIC)
+        Options.Add('-P');   // generate position independent code (PIC)
         Result := Execute(StringsToStr(Units, ' ', False));
-        Options.Delete(J);        // remove PIC option
         WriteInstallLog('');
         WriteInstallLog('Compiling dpu files...');
         WriteInstallLog(Installation.DCC.Output);
