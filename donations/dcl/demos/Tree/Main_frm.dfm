@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 328
   Top = 237
   Width = 470
-  Height = 242
+  Height = 295
   Caption = 'Binary Tree'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -27,7 +27,7 @@ object Form1: TForm1
     Left = 230
     Top = 0
     Width = 232
-    Height = 208
+    Height = 268
     Align = alRight
     ScrollBars = ssVertical
     TabOrder = 2

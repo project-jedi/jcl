@@ -48,6 +48,7 @@ uses
 
 constructor TIntfInteger.Create(AValue: Integer);
 begin
+  inherited Create;
   FValue := AValue;
 end;
 
@@ -66,11 +67,6 @@ begin
   Result := (AIntf1 as IIntfInteger).Value - (AIntf2 as IIntfInteger).Value;
 end;
 
-function IntegerComparator(AObj1, AObj2: TObject): Integer;
-begin
-  Result := Integer(AObj1) - Integer(AObj2);
-end;
-
 procedure TForm1.btnIntfArrayTreeClick(Sender: TObject);
 var
   Tree: IIntfTree;
@@ -78,6 +74,7 @@ var
   Obj: IIntfInteger;
   It: IIntfIterator;
 begin
+  memoResult.Lines.Clear;
   Tree := TJclIntfBinaryTree.Create(IntfIntegerComparator);
   for I := 0 to 17 do
   begin
@@ -95,6 +92,7 @@ begin
     Obj := It.Previous as IIntfInteger;
     memoResult.Lines.Add(IntToStr(Obj.Value));
   end;
+
   It := Tree.First;
   while It.HasNext do
     It.Remove;
@@ -106,7 +104,8 @@ var
   I: Integer;
   It: IIterator;
 begin
-  Tree := TJclBinaryTree.Create(IntegerComparator);
+  memoResult.Lines.Clear;
+  Tree := TJclBinaryTree.Create(JclAlgorithms.IntegerCompare);
   for I := 0 to 17 do
     Tree.Add(TObject(I));
 
@@ -125,6 +124,7 @@ var
   I: Integer;
   It: IStrIterator;
 begin
+  memoResult.Lines.Clear;
   Tree := TJclStrBinaryTree.Create(JclAlgorithms.StrSimpleCompare);
   for I := 0 to 17 do
     Tree.Add(Format('%.2d', [I]));

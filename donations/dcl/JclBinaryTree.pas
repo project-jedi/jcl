@@ -180,6 +180,9 @@ type
 
 implementation
 
+uses
+  SysUtils;
+
 //=== { TIntfItr } ===========================================================
 
 type
@@ -1168,9 +1171,7 @@ begin
   Result := False;
   if AObject = nil then
     Exit;
-  New(NewNode);
-  // (rom) already done by New
-  // FillChar(NewNode^, SizeOf(NewNode^), 0); // Init to nil
+  NewNode := AllocMem(SizeOf(TJclIntfBinaryNode));
   NewNode.Obj := AObject;
   // Insert into right place
   Save := nil;
@@ -1274,14 +1275,14 @@ var
 {$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
-  procedure DisposeChild(Node: PJclIntfBinaryNode);
+  procedure FreeChild(Node: PJclIntfBinaryNode);
   begin
     if Node.Left <> nil then
-      DisposeChild(Node.Left);
+      FreeChild(Node.Left);
     if Node.Right <> nil then
-      DisposeChild(Node.Right);
+      FreeChild(Node.Right);
     Node.Obj := nil; // Force Release
-    Dispose(Node);
+    FreeMem(Node);
   end;
 {$ELSE}
 var
@@ -1297,7 +1298,7 @@ begin
   // recursive version
   if FRoot <> nil then
   begin
-    DisposeChild(FRoot);
+    FreeChild(FRoot);
     FRoot := nil;
   end;
   {$ELSE}
@@ -1315,7 +1316,7 @@ begin
       Current.Obj := nil; // Force Release
       if Current.Parent = nil then // Root
       begin
-        Dispose(Current);
+        FreeMem(Current);
         Current := nil;
         FRoot := nil;
       end
@@ -1325,12 +1326,12 @@ begin
         Current := Current.Parent;
         if Save = Current.Right then // True = from Right
         begin
-          Dispose(Save);
+          FreeMem(Save);
           Current.Right := nil;
         end
         else
         begin
-          Dispose(Save);
+          FreeMem(Save);
           Current.Left := nil;
         end
       end;
@@ -1348,7 +1349,7 @@ var
   begin
     if Node <> nil then
     begin
-      New(Result);
+      GetMem(Result, SizeOf(TJclIntfBinaryNode));
       Result.Obj := Node.Obj;
       Result.Color := Node.Color;
       Result.Parent := Parent;
@@ -1370,6 +1371,7 @@ function TJclIntfBinaryTree.Contains(AObject: IInterface): Boolean;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
+  Comp: Integer;
 {$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
@@ -1378,17 +1380,14 @@ var
     Result := False;
     if Node = nil then
       Exit;
-    if FComparator(Node.Obj, AObject) = 0 then
-    begin
-      Result := True;
-      Exit;
-    end
+    Comp := FComparator(Node.Obj, AObject);
+    if Comp = 0 then
+      Result := True
     else
-    if FComparator(Node.Obj, AObject) > 0 then
+    if Comp > 0 then
       Result := ContainsChild(Node.Left)
     else
-    if FComparator(Node.Obj, AObject) < 0 then
-      Result := ContainsChild(Node.Right)
+      Result := ContainsChild(Node.Right);
   end;
 {$ELSE}
 var
@@ -1410,16 +1409,16 @@ begin
   Current := FRoot;
   while Current <> nil do
   begin
-    if FComparator(Current.Obj, AObject) = 0 then
+    Comp := FComparator(Current.Obj, AObject);
+    if Comp = 0 then
     begin
       Result := True;
-      Exit;
+      Break;
     end
     else
-    if FComparator(Current.Obj, AObject) > 0 then
+    if Comp > 0 then
       Current := Current.Left
     else
-    if FComparator(Current.Obj, AObject) < 0 then
       Current := Current.Right;
   end;
   {$ENDIF RECURSIVE}
@@ -1568,6 +1567,7 @@ var
   Current: PJclIntfBinaryNode;
   Node: PJclIntfBinaryNode;
   Save: PJclIntfBinaryNode;
+  Comp: Integer;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1668,9 +1668,11 @@ begin
   Current := FRoot;
   while Current <> nil do
   begin
-    if FComparator(AObject, Current.Obj) = 0 then
-      Break;
-    if FComparator(AObject, Current.Obj) < 0 then
+    Comp := FComparator(AObject, Current.Obj);
+    if Comp = 0 then
+      Break
+    else
+    if Comp < 0 then
       Current := Current.Left
     else
       Current := Current.Right;
@@ -1729,7 +1731,7 @@ begin
       if Save = Save.Parent.Right then
         Save.Parent.Right := nil
   end;
-  Dispose(Save);
+  FreeMem(Save);
   Dec(FCount);
 end;
 
@@ -1814,9 +1816,7 @@ begin
   Result := False;
   if AString = '' then
     Exit;
-  New(NewNode);
-  // (rom) already done by New
-  // FillChar(NewNode^, SizeOf(NewNode^), 0); // Init to nil
+  NewNode := AllocMem(SizeOf(TJclStrBinaryNode));
   NewNode.Str := AString;
   // Insert into right place
   Save := nil;
@@ -1988,14 +1988,14 @@ var
 {$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
-  procedure DisposeChild(Node: PJclIntfBinaryNode);
+  procedure FreeChild(Node: PJclIntfBinaryNode);
   begin
     if Node.Left <> nil then
-      DisposeChild(Node.Left);
+      FreeChild(Node.Left);
     if Node.Right <> nil then
-      DisposeChild(Node.Right);
+      FreeChild(Node.Right);
     Node.Obj := nil; // Force Release
-    Dispose(Node);
+    FreeMem(Node);
   end;
 {$ELSE}
 var
@@ -2011,7 +2011,7 @@ begin
   // recursive version
   if FRoot <> nil then
   begin
-    DisposeChild(FRoot);
+    FreeChild(FRoot);
     FRoot := nil;
   end;
   {$ELSE}
@@ -2029,7 +2029,7 @@ begin
       Current.Str := ''; // Force Release
       if Current.Parent = nil then // Root
       begin
-        Dispose(Current);
+        FreeMem(Current);
         Current := nil;
         FRoot := nil;
       end
@@ -2039,12 +2039,12 @@ begin
         Current := Current.Parent;
         if Save = Current.Right then // True = from Right
         begin
-          Dispose(Save);
+          FreeMem(Save);
           Current.Right := nil;
         end
         else
         begin
-          Dispose(Save);
+          FreeMem(Save);
           Current.Left := nil;
         end
       end;
@@ -2062,7 +2062,7 @@ var
   begin
     if Node <> nil then
     begin
-      New(Result);
+      GetMem(Result, SizeOf(TJclStrBinaryNode));
       Result.Str := Node.Str;
       Result.Color := Node.Color;
       Result.Parent := Parent;
@@ -2084,6 +2084,7 @@ function TJclStrBinaryTree.Contains(const AString: string): Boolean;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
+  Comp: Integer;
 {$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
@@ -2092,16 +2093,13 @@ var
     Result := False;
     if Node = nil then
       Exit;
-    if FComparator(Node.Obj, AObject) = 0 then
-    begin
-      Result := True;
-      Exit;
-    end
+    Comp := FComparator(Node.Obj, AObject);
+    if Comp = 0 then
+      Result := True
     else
-    if FComparator(Node.Obj, AObject) > 0 then
+    if Comp > 0 then
       Result := ContainsChild(Node.Left)
     else
-    if FComparator(Node.Obj, AObject) < 0 then
       Result := ContainsChild(Node.Right)
   end;
 {$ELSE}
@@ -2124,16 +2122,16 @@ begin
   Current := FRoot;
   while Current <> nil do
   begin
-    if FComparator(Current.Str, AString) = 0 then
+    Comp := FComparator(Current.Str, AString);
+    if Comp = 0 then
     begin
       Result := True;
-      Exit;
+      Break;
     end
     else
-    if FComparator(Current.Str, AString) > 0 then
+    if Comp > 0 then
       Current := Current.Left
     else
-    if FComparator(Current.Str, AString) < 0 then
       Current := Current.Right;
   end;
   {$ENDIF RECURSIVE}
@@ -2236,6 +2234,7 @@ var
   Current: PJclStrBinaryNode;
   Node: PJclStrBinaryNode;
   Save: PJclStrBinaryNode;
+  Comp: Integer;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2336,9 +2335,11 @@ begin
   Current := FRoot;
   while Current <> nil do
   begin
-    if FComparator(AString, Current.Str) = 0 then
-      Break;
-    if FComparator(AString, Current.Str) < 0 then
+    Comp := FComparator(AString, Current.Str);
+    if Comp = 0 then
+      Break
+    else
+    if Comp < 0 then
       Current := Current.Left
     else
       Current := Current.Right;
@@ -2397,7 +2398,7 @@ begin
       if Save = Save.Parent.Right then
         Save.Parent.Right := nil
   end;
-  Dispose(Save);
+  FreeMem(Save);
   Dec(FCount);
 end;
 
@@ -2528,9 +2529,7 @@ begin
   Result := False;
   if AObject = nil then
     Exit;
-  New(NewNode);
-  // (rom) already done by New
-  // FillChar(NewNode^, SizeOf(NewNode^), 0); // Init to nil
+  NewNode := AllocMem(SizeOf(TJclBinaryNode));
   NewNode.Obj := AObject;
   // Insert into right place
   Save := nil;
@@ -2634,14 +2633,14 @@ var
 {$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
-  procedure DisposeChild(Node: PJclIntfBinaryNode);
+  procedure FreeChild(Node: PJclIntfBinaryNode);
   begin
     if Node.Left <> nil then
-      DisposeChild(Node.Left);
+      FreeChild(Node.Left);
     if Node.Right <> nil then
-      DisposeChild(Node.Right);
+      FreeChild(Node.Right);
     Node.Obj := nil; // Force Release
-    Dispose(Node);
+    FreeMem(Node);
   end;
 {$ELSE}
 var
@@ -2657,7 +2656,7 @@ begin
   // recursive version
   if FRoot <> nil then
   begin
-    DisposeChild(FRoot);
+    FreeChild(FRoot);
     FRoot := nil;
   end;
   {$ELSE}
@@ -2675,7 +2674,7 @@ begin
       Current.Obj := nil; // Force Release
       if Current.Parent = nil then // Root
       begin
-        Dispose(Current);
+        FreeMem(Current);
         Current := nil;
         FRoot := nil;
       end
@@ -2685,12 +2684,12 @@ begin
         Current := Current.Parent;
         if Save = Current.Right then // True = from Right
         begin
-          Dispose(Save);
+          FreeMem(Save);
           Current.Right := nil;
         end
         else
         begin
-          Dispose(Save);
+          FreeMem(Save);
           Current.Left := nil;
         end
       end;
@@ -2708,7 +2707,7 @@ var
   begin
     if Node <> nil then
     begin
-      New(Result);
+      GetMem(Result, SizeOf(TJclBinaryNode));
       Result.Obj := Node.Obj;
       Result.Color := Node.Color;
       Result.Parent := Parent;
@@ -2730,6 +2729,7 @@ function TJclBinaryTree.Contains(AObject: TObject): Boolean;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
+  Comp: Integer;
 {$ENDIF THREADSAFE}
 
 {$IFDEF RECURSIVE}
@@ -2738,17 +2738,14 @@ var
     Result := False;
     if Node = nil then
       Exit;
-    if FComparator(Node.Obj, AObject) = 0 then
-    begin
-      Result := True;
-      Exit;
-    end
+    Comp := FComparator(Node.Obj, AObject);
+    if Comp = 0 then
+      Result := True
     else
-    if FComparator(Node.Obj, AObject) > 0 then
+    if Comp > 0 then
       Result := ContainsChild(Node.Left)
     else
-    if FComparator(Node.Obj, AObject) < 0 then
-      Result := ContainsChild(Node.Right)
+      Result := ContainsChild(Node.Right);
   end;
 {$ELSE}
 var
@@ -2770,16 +2767,16 @@ begin
   Current := FRoot;
   while Current <> nil do
   begin
-    if FComparator(Current.Obj, AObject) = 0 then
+    Comp := FComparator(Current.Obj, AObject);
+    if Comp = 0 then
     begin
       Result := True;
-      Exit;
+      Break;
     end
     else
-    if FComparator(Current.Obj, AObject) > 0 then
+    if Comp > 0 then
       Current := Current.Left
     else
-    if FComparator(Current.Obj, AObject) < 0 then
       Current := Current.Right;
   end;
   {$ENDIF RECURSIVE}
@@ -2882,6 +2879,7 @@ var
   Current: PJclBinaryNode;
   Node: PJclBinaryNode;
   Save: PJclBinaryNode;
+  Comp: Integer;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2982,9 +2980,11 @@ begin
   Current := FRoot;
   while Current <> nil do
   begin
-    if FComparator(AObject, Current.Obj) = 0 then
-      Break;
-    if FComparator(AObject, Current.Obj) < 0 then
+    Comp := FComparator(AObject, Current.Obj);
+    if Comp = 0 then
+      Break
+    else
+    if Comp < 0 then
       Current := Current.Left
     else
       Current := Current.Right;
@@ -3043,7 +3043,7 @@ begin
       if Save = Save.Parent.Right then
         Save.Parent.Right := nil
   end;
-  Dispose(Save);
+  FreeMem(Save);
   Dec(FCount);
 end;
 
