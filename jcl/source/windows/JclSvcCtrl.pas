@@ -16,12 +16,12 @@
 { Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
 { Contributors:                                                                                    }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
 {   Flier Lu (flier)                                                                               }
-{   Robert Rossmair (rrossmair)                                                                    }
-{   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
+{   Olivier Sannier (obones)                                                                       }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones (pvones)                                                                            }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -355,9 +355,7 @@ type
   end;
 
 // helper functions
-{ TODO -cHelp : Author Peter J. Haas }
 function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
-{ TODO -cHelp : Author Peter J. Haas }
 function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWord;
 
 implementation
@@ -1091,7 +1089,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   end;}
 
   { TODO -cTest : Test, if OK delete function above }
-  { TODO -cHelp : Contributer Peter J. Haas }
+  { TODO -cHelp : Contributor Peter J. Haas }
   procedure EnumServiceGroups;
   const
     cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
@@ -1448,6 +1446,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/06/02 03:23:47  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.16  2004/05/13 07:46:06  rrossmair
 // changes for FPC 1.9.3+ compatibility
 //

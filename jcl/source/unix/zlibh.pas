@@ -1,11 +1,6 @@
-{******************************************************************************}
-{                                                                              }
-{  WARNING: This file is generated automatically by preprocessor.              }
-{                                                                              }
-{  Manual modifications will be lost on next release. Please modify the        }
-{  original source file.                                                       }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
 
 {******************************************************************************}
 {                                                                              }
@@ -41,6 +36,15 @@
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
 {                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he       }
+{        donated to the JCL. He is not to be held responsible for              }
+{        modifications applied after this date.                                }
+{        Peter J. Haas no longer wants to be associated with Project JEDI.     }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
 {  Contributor(s):                                                             }
 {    Matthias Thoma (mthoma), ma.thoma@gmx.de                                  }
 {                                                                              }
@@ -75,15 +79,52 @@
 
 unit zlibh;
 
+{$IFDEF PLATFORM_SPECIFIC_COMMENT}
+// On Windows platform, you can choose between static linking and
+// load time dynamic linking
+
+// static linking: deactivate the symbol ZLIB_WIN32DLL
+
+// dynamic linking: activate the symbol ZLIB_WIN32DLL
+// You may retrieve a current Win32-DLL from the zlib homepage
+// located at http://www.gzip.org/zlib/
+{.$DEFINE ZLIB_WIN32DLL}
+
+
+// ZLIB_STDCALL is currently unused, because the new dll use cdecl
+
+
+// There is no simple possibility to support gzip over gzio with static
+// linking. If you wish to include gzio, you must find a way to include
+// any stdio functions used in gzio.
+
+// However, gzio don't use any Delphi-like file access methods.
+// See gzips.pas for a Delphi-like gzip support with TStream descendants.
+{$ENDIF PLATFORM_SPECIFIC_COMMENT}
+
+
+
+
+  
+  
+  
+  
+
+
+
 
 interface
 uses
+                          
   {$IFDEF HAS_UNIT_LIBC}
   Libc;
   {$ENDIF HAS_UNIT_LIBC}
 
+
+
 {$HPPEMIT '#define ZEXPORT __cdecl'}
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
+
 {$HPPEMIT ''}
 {$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
@@ -1087,6 +1128,7 @@ function uncompress(out dest; var destLen: ULong;
                     const source; sourceLen: ULong): Integer; cdecl;
 
 
+
 type
   {$EXTERNALSYM gzFile}
   gzFile = Pointer;
@@ -1296,6 +1338,8 @@ function gzerror(_file: TGZFile; var errnum: Integer): PChar; cdecl;
 procedure gzclearerr(_file: TGZFile); cdecl;
 
 
+
+
 //                         checksum functions
 
 { These functions are not related to compression but are exported
@@ -1395,14 +1439,19 @@ function get_crc_table: PCRCTable; cdecl;
 implementation
 
 
+
+
 const
   ZLibModuleName = 'libz.so';
+
 
 
 // **************************  zutil.c  *****************************
 function zlibVersion;      external ZLibModuleName name 'zlibVersion';
 function zError;           external ZLibModuleName name 'zError';
 function zlibCompileFlags; external ZLibModuleName name 'zlibCompileFlags';
+
+
 
 
 // **************************  deflate.c  ***************************
@@ -1446,6 +1495,7 @@ function compressBound; external ZLibModuleName name 'compressBound';
 function uncompress; external ZLibModuleName name 'uncompress';
 
 
+
 // **************************  gzio.c  ******************************
 function gzopen;      external ZLibModuleName name 'gzopen';
 function gzdopen;     external ZLibModuleName name 'gzdopen';
@@ -1468,6 +1518,7 @@ function gzclose;     external ZLibModuleName name 'gzclose';
 function gzerror;     external ZLibModuleName name 'gzerror';
 function gzungetc;    external ZLibModuleName name 'gzungetc';
 procedure gzclearerr; external ZLibModuleName name 'gzclearerr';
+
 
 
 // **************************  adler32.c  ***************************
@@ -1512,10 +1563,7 @@ end;
 // ****************************************************************************
 
 //  History:
-//   Revision 1.7  2004/05/09 00:03:51  peterjhaas
-//   - old history in reverse order like CVS log
-//   - change interface adler32 and crc32 to avoid FPC compatibility problems
-//
+
 //   Revision 1.6  2004/05/08 08:44:18  rrossmair
 //   introduced & applied symbol HAS_UNIT_LIBC
 //

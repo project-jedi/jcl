@@ -18,7 +18,7 @@
 { Contributors:                                                                                    }
 {   Eric S. Fisher                                                                                 }
 {   John C Molyneux                                                                                }
-{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de                                                    }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones (pvones)                                                                            }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -300,6 +300,9 @@ end;
 //  - add TJclISOMemIniFile, TJclISOIniFile
 
 // $Log$
+// Revision 1.6  2004/06/02 03:23:46  rrossmair
+// cosmetic changes in several units (code formatting, help TODOs processed etc.)
+//
 // Revision 1.5  2004/05/14 15:24:46  rrossmair
 // fixed header
 //
