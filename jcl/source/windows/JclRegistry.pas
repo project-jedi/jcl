@@ -548,7 +548,12 @@ var
   Ret: Int64;
 begin
   Ret := 0;
-  InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD], SizeOf(Ret), DataType, @Ret, DataSize);
+  RegGetDataType(RootKey, Key, Name, DataType);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    Ret := StrToInt64(RegReadString(RootKey, Key, Name))
+  else
+    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+      SizeOf(Ret), DataType, @Ret, DataSize);
   Result := Ret and $FFFFFFFF;
 end;
 
@@ -571,7 +576,12 @@ var
   Ret: Int64;
 begin
   Ret := 0;
-  InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD], SizeOf(Ret), DataType, @Ret, DataSize);
+  RegGetDataType(RootKey, Key, Name, DataType);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    Ret := StrToInt64(RegReadString(RootKey, Key, Name))
+  else
+    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+      SizeOf(Ret), DataType, @Ret, DataSize);
   Result := Ret and $FFFFFFFF;
 end;
 
@@ -606,15 +616,27 @@ function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64
 var
   DataType, DataSize: DWORD;
   Data: array [0..1] of Integer;
+  Ret: Int64;
 begin
-  FillChar(Data[0], SizeOf(Data), 0);
-  InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD], SizeOf(Data), DataType, @Data, DataSize);
-  // REG_BINARY is implicitly unsigned if DataSize < 8
-  if DataType = REG_DWORD then
-    // DWORDs get sign extended
-    Result := Data[0]
+  RegGetDataType(RootKey, Key, Name, DataType);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+  begin
+    // (rom) circumvents internal compiler error for D6
+    Ret := StrToInt64(RegReadString(RootKey, Key, Name));
+    Result := Ret;
+  end
   else
-    Move(Data[0], Result, SizeOf(Data));
+  begin
+    FillChar(Data[0], SizeOf(Data), 0);
+    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+       SizeOf(Data), DataType, @Data, DataSize);
+    // REG_BINARY is implicitly unsigned if DataSize < 8
+    if DataType = REG_DWORD then
+      // DWORDs get sign extended
+      Result := Data[0]
+    else
+      Move(Data[0], Result, SizeOf(Data));
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -633,9 +655,20 @@ end;
 function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 var
   DataType, DataSize: DWORD;
+  Ret: Int64;
 begin
-  Result := 0;
-  InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD], SizeOf(Result), DataType, @Result, DataSize);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+  begin
+    // (rom) circumvents internal compiler error for D6
+    Ret := StrToInt64(RegReadString(RootKey, Key, Name));
+    Result := UInt64(Ret);
+  end
+  else
+  begin
+    Result := 0;
+    InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
+      SizeOf(Result), DataType, @Result, DataSize);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -819,7 +852,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Boolean); overload;
+procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Boolean);
 begin
   RegWriteCardinal(RootKey, Key, Name, DataType, Cardinal(Ord(Value)));
 end;
@@ -828,14 +861,31 @@ end;
 
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 begin
-  RegWriteCardinal(RootKey, Key, Name, REG_DWORD, Cardinal(Value));
+  RegWriteInteger(RootKey, Key, Name, REG_DWORD, Cardinal(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Integer); overload;
+procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Integer);
+var
+  Val: Int64;
+  Size: Integer;
 begin
-  RegWriteCardinal(RootKey, Key, Name, DataType, Cardinal(Value));
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%d', [Value]))
+  else
+  if DataType in [REG_DWORD, REG_QWORD, REG_BINARY] then
+  begin
+    // sign extension
+    Val := Value;
+    if DataType = REG_QWORD then
+      Size := SizeOf(Int64)
+    else
+      Size := SizeOf(Value);
+    InternalRegSetData(RootKey, Key, Name, DataType, @Val, Size);
+  end
+  else
+    DataError(Key, Name);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -847,13 +897,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Cardinal); overload;
+procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Cardinal);
 var
   Val: Int64;
   Size: Integer;
 begin
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%u', [Value]))
+  else
   if DataType in [REG_DWORD, REG_QWORD, REG_BINARY] then
   begin
+    // no sign extension
     Val := Value and $FFFFFFFF;
     if DataType = REG_QWORD then
       Size := SizeOf(Int64)
@@ -874,7 +928,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: DWORD); overload;
+procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: DWORD);
 begin
   RegWriteCardinal(RootKey, Key, Name, DataType, Cardinal(Value));
 end;
@@ -883,14 +937,17 @@ end;
 
 procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 begin
-  RegWriteUInt64(RootKey, Key, Name, REG_QWORD, Value);
+  RegWriteInt64(RootKey, Key, Name, REG_QWORD, Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Int64); overload;
+procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Int64);
 begin
-  RegWriteUInt64(RootKey, Key, Name, DataType, Value);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%d', [Value]))
+  else
+    RegWriteUInt64(RootKey, Key, Name, DataType, UInt64(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -902,8 +959,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: UInt64); overload;
+procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: UInt64);
 begin
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%u', [Value]))
+  else
   if DataType in [REG_QWORD, REG_BINARY] then
     InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
   else
@@ -919,7 +979,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: string); overload;
+procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: string);
 begin
   RegWriteAnsiString(RootKey, Key, Name, DataType, Value);
 end;
@@ -933,7 +993,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString; DataType: Cardinal; Value: AnsiString); overload;
+procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString; DataType: Cardinal; Value: AnsiString);
 begin
   if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
     InternalRegSetData(RootKey, Key, Name, DataType, PChar(Value),
@@ -951,7 +1011,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: WideString); overload;
+procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: WideString);
 begin
   if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
     InternalRegSetWideData(RootKey, Key, Name, REG_BINARY, PWideChar(Value),
@@ -973,7 +1033,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PMultiSz); overload;
+procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PMultiSz);
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
     InternalRegSetData(RootKey, Key, Name, DataType, Value,
@@ -991,7 +1051,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: TStrings); overload;
+procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: TStrings);
 var
   Dest: PMultiSz;
 begin
@@ -1017,7 +1077,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PWideMultiSz); overload;
+procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PWideMultiSz);
 begin
   if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
     DataType := REG_BINARY;
@@ -1037,7 +1097,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: TWideStrings); overload;
+procedure RegWriteWideMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; const Value: TWideStrings);
 var
   Dest: PWideMultiSz;
 begin
@@ -1254,6 +1314,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2004/10/19 06:27:03  marquardt
+// JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
+//
 // Revision 1.23  2004/10/18 16:22:14  marquardt
 // JclRegistry redesign to remove PH contributor
 //
@@ -1305,3 +1368,4 @@ end;
 // Int64, UInt64 and Multistring support
 
 end.
+

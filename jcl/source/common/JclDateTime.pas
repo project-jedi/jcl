@@ -181,8 +181,8 @@ const
     (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
   MinutesPerDay     = 60 * 24;
-  SecondsPerMinute = 60;
-  SecondsPerHour = 3600;
+  SecondsPerMinute  = 60;
+  SecondsPerHour    = 3600;
   SecondsPerDay     = MinutesPerDay * 60;
   MsecsPerMinute    = 60 * 1000;
   MsecsPerHour      = 60 * MsecsPerMinute;
@@ -213,7 +213,7 @@ const
 
 function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 begin
-  if (Year > 0) and (Year < EncodeDateMaxYear+1) then
+  if (Year > 0) and (Year < EncodeDateMaxYear + 1) then
     Result := SysUtils.EncodeDate(Year, Month, Day)
   else
   begin
@@ -222,11 +222,11 @@ begin
     else      // Year >= 10000
               // for some reason year 0 does not exist so we switch from
               // the last day of year -1 (-693594) to the first days of year 1
-      Result := (Year-1) * DaysPerYear + DateTimeBaseDay // BaseDate is 1/1/1
-                + SolarDifference;                       // guarantee a smooth transition at 1/1/10000
+      Result := (Year-1) * DaysPerYear + DateTimeBaseDay + // BaseDate is 1/1/1
+        SolarDifference;  // guarantee a smooth transition at 1/1/10000
     Result := Trunc(Result);
-    Result := Result + (Month-1) * DaysPerMonth;
-    Result := Round(Result) + (Day-1);
+    Result := Result + (Month - 1) * DaysPerMonth;
+    Result := Round(Result) + (Day - 1);
   end;
 end;
 
@@ -244,7 +244,7 @@ var
   WMonth, WDay: Word;
 begin
   DecodeDate(Date, Year, WMonth, WDay);
-  Month := Wmonth;
+  Month := WMonth;
   Day := WDay;
 end;
 
@@ -278,11 +278,11 @@ begin
       Year := Year - 1;
     end;
     Month := Trunc(RMonths);
-    Rmonths := Month;
+    RMonths := Month;
     Month := Month + 1;
     RDays := RDays - Year * DaysPerYear;    // subtract Base Day ot the year
     RDays := RDays - RMonths * DaysPerMonth;// subtract Base Day of the month
-    Day := Trunc (RDays)+ 1;
+    Day := Trunc(RDays)+ 1;
     if Year > 0 then                        // Year >= 10000
       Year := Year + 1;                     // BaseDate is 1/1/1
   end;
@@ -448,14 +448,13 @@ end;
 
 function ISODayOfWeek(const DateTime: TDateTime): Word;
 var
-  tmpDayOfWeek: Word;
-
+  TmpDayOfWeek: Word;
 begin
-  tmpDayOfWeek := SysUtils.DayOfWeek(DateTime);
-  if tmpDayOfWeek = 1 then
+  TmpDayOfWeek := SysUtils.DayOfWeek(DateTime);
+  if TmpDayOfWeek = 1 then
     Result := 7
   else
-    Result := tmpDayOfWeek - 1;
+    Result := TmpDayOfWeek - 1;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -465,22 +464,20 @@ end;
 
 function IsISOLongYear(const DateTime: TDateTime): Boolean;
 var
-  tmpYear: Word;
-
+  TmpYear: Word;
 begin
-  tmpYear := YearOfDate(DateTime);
-  Result := IsISOLongYear(tmpYear);
+  TmpYear := YearOfDate(DateTime);
+  Result := IsISOLongYear(TmpYear);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function IsISOLongYear(const Year: Word): Boolean;
 var
-  tmpWeekday: Word;
-
+  TmpWeekday: Word;
 begin
-  tmpWeekday := ISODayOfWeek(DayOfTheYearToDateTime(Year, 1));
-  Result := (IsLeapYear(Year) and ((tmpWeekday = 3) or (tmpWeekday = 4))) or (tmpWeekday=4);
+  TmpWeekday := ISODayOfWeek(DayOfTheYearToDateTime(Year, 1));
+  Result := (IsLeapYear(Year) and ((TmpWeekday = 3) or (TmpWeekday = 4))) or (TmpWeekday = 4);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -488,41 +485,41 @@ end;
 function GetISOYearNumberOfDays(const Year: Word): Word;
 begin
   Result := 52;
-  if IsISOLongYear(Year) then Result := 53;
+  if IsISOLongYear(Year) then
+    Result := 53;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-// ISOWeekNumber function returns integer 1..7 equivalent to Sunday..Saturday.
+// ISOWeekNumber function returns Integer 1..7 equivalent to Sunday..Saturday.
 // ISO 8601 weeks start with Monday and the first week of a year is the one which
 // includes the first Thursday
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer;
 var
- tmpYear: Integer;
+ TmpYear: Integer;
  January4th: TDateTime;
  FirstMonday: TDateTime;
-
 begin
   // Applying the rule: The first calender week is the week that includes January, 4th
-  tmpYear := YearOfDate(DateTime);
+  TmpYear := YearOfDate(DateTime);
 
   // adjust if we are between 12/29 and 12/31
-  if (MonthOfDate(DateTime) = 12) and (DayOfDate(DateTime) >= 29)
-      and (ISODayOfWeek(DateTime) <= 3) then tmpYear := tmpYear + 1;
+  if (MonthOfDate(DateTime) = 12) and (DayOfDate(DateTime) >= 29) and
+    (ISODayOfWeek(DateTime) <= 3) then
+    TmpYear := TmpYear + 1;
 
-  January4th := DayOfTheYearToDateTime(tmpYear, 4);
+  January4th := DayOfTheYearToDateTime(TmpYear, 4);
   FirstMonday := January4th + 1 - ISODayOfWeek(January4th);
 
   // If our date is < FirstMonday we are in the last week of the previous year
-  if (DateTime < FirstMonday) then
+  if DateTime < FirstMonday then
   begin
-    Result := GetISOYearNumberOfDays(tmpYear - 1);
-    YearOfWeekNumber := tmpYear - 1;
+    Result := GetISOYearNumberOfDays(TmpYear - 1);
+    YearOfWeekNumber := TmpYear - 1;
     Exit;
-  end;
-
-  if (DateTime >= FirstMonday) then
+  end
+  else
     Result := (Trunc(DateTime - FirstMonday) div 7) + 1;
 
   if Result > GetISOYearNumberOfDays(YearOfDate(DateTime)) then
@@ -533,19 +530,18 @@ end;
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
 var
-  temp: Integer;
-
+  Temp: Integer;
 begin
-  Result := ISOWeekNumber(DateTime, YearOfWeekNumber, temp);
+  Result := ISOWeekNumber(DateTime, YearOfWeekNumber, Temp);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime): Integer;
 var
-  temp: Integer;
+  Temp: Integer;
 begin
-  Result := ISOWeekNumber(DateTime, temp, temp);
+  Result := ISOWeekNumber(DateTime, Temp, Temp);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -554,7 +550,6 @@ function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
 var
  January4th: TDateTime;
  FirstMonday: TDateTime;
-
 begin
   January4th := DayOfTheYearToDateTime(Year, 4);
   FirstMonday := January4th + 1 - ISODayOfWeek(January4th);
@@ -633,9 +628,9 @@ var
   Gold, Cent, Corx, Corz: Integer;
 begin
   { The Golden Number of the year in the 19 year Metonic Cycle: }
-  Gold := (Year mod 19) + 1;
+  Gold := Year mod 19 + 1;
   { Calculate the Century: }
-  Cent := (Year div 100) + 1;
+  Cent := Year div 100 + 1;
   { Number of years in which leap year was dropped in order... }
   { to keep in step with the sun: }
   Corx := (3 * Cent) div 4 - 12;
@@ -682,9 +677,9 @@ begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
     TIME_ZONE_ID_STANDARD, TIME_ZONE_ID_UNKNOWN:
-      Result := DateTime - ((TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay);
+      Result := DateTime - (TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay;
     TIME_ZONE_ID_DAYLIGHT:
-      Result := DateTime - ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
+      Result := DateTime - (TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay;
   else
     raise EJclDateTimeError.Create(RsMakeUTCTime);
   end;
@@ -699,9 +694,9 @@ begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
     TIME_ZONE_ID_STANDARD, TIME_ZONE_ID_UNKNOWN:
-      Result := DateTime + ((TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay);
+      Result := DateTime + (TimeZoneInfo.Bias + TimeZoneInfo.StandardBias) / MinutesPerDay;
     TIME_ZONE_ID_DAYLIGHT:
-      Result := DateTime + ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
+      Result := DateTime + (TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay;
   else
     raise EJclDateTimeError.Create(RsMakeUTCTime);
   end;
@@ -721,7 +716,7 @@ end;
 
 function MinutesToMSecs(Minutes: Integer): Integer;
 begin
-  Assert(Minutes < MaxInt / MsecsPerMinute);
+  Assert(Minutes < MaxInt div MsecsPerMinute);
   Result := Minutes * MsecsPerMinute;
 end;
 
@@ -729,7 +724,7 @@ end;
 
 function SecondsToMSecs(Seconds: Integer): Integer;
 begin
-  Assert(Seconds < MaxInt / 1000);
+  Assert(Seconds < MaxInt div 1000);
   Result := Seconds * 1000;
 end;
 
@@ -894,7 +889,7 @@ end;
 
 function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
 begin
-  ResultCheck(Windows.DosDateTimeToFileTime(HiWord(DosTime), LoWord(DosTime), Result));
+  ResultCheck(Windows.DosDateTimeToFileTime(HIWORD(DosTime), LOWORD(DosTime), Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1223,6 +1218,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/19 06:26:48  marquardt
+// JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
+//
 // Revision 1.15  2004/10/17 20:05:31  mthoma
 // style cleaned.
 //
