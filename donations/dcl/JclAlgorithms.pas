@@ -32,7 +32,7 @@ unit JclAlgorithms;
 interface
 
 uses
-  JclDCL_intf,   JclStrings,   JclBase;
+  JclBase, JclDCL_intf;
 
 // function pointer types
 type

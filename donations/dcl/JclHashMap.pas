@@ -32,7 +32,7 @@ unit JclHashMap;
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer, JclStrings, JclBase;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil;
 
 type
   TJclIntfIntfEntry = record
@@ -279,7 +279,7 @@ implementation
 
 uses
   SysUtils,
-  JclArraySet, JclArrayList;
+  JclArrayList, JclArraySet;
 
 //=== { TJclIntfIntfHashMap } ================================================
 

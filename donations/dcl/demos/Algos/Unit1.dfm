@@ -24,6 +24,7 @@ object frmAlgos: TfrmAlgos
     Height = 303
     ActivePage = tbsApply
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object tbsApply: TTabSheet
       Caption = 'Apply'
@@ -70,7 +71,6 @@ object frmAlgos: TfrmAlgos
         Top = 136
         Width = 3
         Height = 13
-        Transparent = False
       end
       object btnFindGenerate: TButton
         Left = 152
@@ -115,7 +115,6 @@ object frmAlgos: TfrmAlgos
         Width = 6
         Height = 13
         Caption = '0'
-        Transparent = False
       end
       object btnCountGenerate: TButton
         Left = 152

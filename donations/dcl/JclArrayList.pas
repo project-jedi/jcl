@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer,   JclStrings,   JclBase;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclStrings;
 
 type
   TJclIntfArrayList = class(TJclAbstractContainer, IIntfCollection, IIntfList,
@@ -1899,11 +1899,10 @@ end;
 
 procedure TJclStrArrayList.AppendFromStrings(Strings: TStrings);
 var
-  I: Cardinal;
+  I: Integer;
 begin
-  if Strings.Count > 0 then
-    for I := 0 to Strings.Count - 1 do
-      Add(Strings[I]);
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
 end;
 
 function TJclStrArrayList.GetAsDelimited(Separator: string): string;

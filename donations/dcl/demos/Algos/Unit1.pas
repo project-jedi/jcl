@@ -224,7 +224,7 @@ begin
   Randomize;
   List.Clear;
   for I := 1 to 10 do
-    List.Add(TObject(Random(10) + 1));
+    List.Add(TObject(Random(10) - 5));
   lbxSort.Items.Clear;
   It := List.First;
   while It.HasNext do

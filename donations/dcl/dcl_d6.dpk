@@ -41,6 +41,7 @@ contains
   JclHashSet in 'JclHashSet.pas',
   JclLinkedList in 'JclLinkedList.pas',
   JclQueue in 'JclQueue.pas',
-  JclStack in 'JclStack.pas';
+  JclStack in 'JclStack.pas',
+  JclBinaryTree in 'JclBinaryTree.pas';
 
 end.

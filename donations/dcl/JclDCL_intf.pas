@@ -32,12 +32,8 @@ unit JclDCL_intf;
 interface
 
 uses
-  Classes, JclBase, JclStrings;
-
-{.$IFNDEF DELPHI6_UP}
-//type
-  //IInterface = IUnknown;
-{.$ENDIF DELPHI6_UP}
+  Classes,
+  JclBase, JclStrings;
 
 type
   IIntfCloneable = interface

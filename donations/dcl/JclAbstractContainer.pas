@@ -38,7 +38,7 @@ uses
   {$IFDEF UNIX}
   Libc,
   {$ENDIF UNIX}
-  JclDCL_Intf, JclDCLUtil,   JclStrings,   JclBase;
+  JclBase, JclDCL_Intf, JclDCLUtil;
 
 type
   TJclIntfCriticalSection = class(TObject, IInterface)

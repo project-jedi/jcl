@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclDCL_intf, JclAbstractContainer,   JclStrings,   JclBase;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclStrings;
 
 type
   PJclIntfLinkedListItem = ^TJclIntfLinkedListItem;
@@ -2305,11 +2305,10 @@ end;
 
 procedure TJclStrLinkedList.AppendFromStrings(Strings: TStrings);
 var
-  I: Cardinal;
+  I: Integer;
 begin
-  if Strings.Count > 0 then
-    for I := 0 to Strings.Count - 1 do
-      Add(Strings[I]);
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
 end;
 
 function TJclStrLinkedList.GetAsDelimited(Separator: string): string;

@@ -33,7 +33,7 @@ interface
 
 uses
   Classes,
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer,   JclStrings,   JclBase;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclStrings;
 
 type
   TJclIntfVector = class(TJclAbstractContainer, IIntfCollection, IIntfList,
@@ -1416,7 +1416,7 @@ begin
   Strings.BeginUpdate;
   try
     while It.HasNext do
-      Strings.Add(it.Next);
+      Strings.Add(It.Next);
   finally
     Strings.EndUpdate;
   end;
@@ -1430,11 +1430,10 @@ end;
 
 procedure TJclStrVector.AppendFromStrings(Strings: TStrings);
 var
-  I: Cardinal;
+  I: Integer;
 begin
-  if Strings.Count > 0 then
-    for I := 0 to Strings.Count - 1 do
-      Add(Strings[I]);
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
 end;
 
 function TJclStrVector.GetAsDelimited(Separator: string): string;

@@ -31,7 +31,7 @@ interface
 
 uses
   SysUtils,
-  JclDCL_Intf,   JclStrings,   JclBase;
+  JclBase, JclDCL_Intf;
 
 const
   DCLDefaultCapacity = 16;

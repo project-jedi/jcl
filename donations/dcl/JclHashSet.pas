@@ -33,7 +33,8 @@ interface
 
 uses
   Classes,
-  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer,   JclStrings,   JclBase;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil, JclHashMap,
+  JclStrings;
 
 type
   TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
@@ -643,11 +644,10 @@ end;
 
 procedure TJclStrHashSet.AppendFromStrings(Strings: TStrings);
 var
-  I: Cardinal;
+  I: Integer;
 begin
-  if Strings.Count > 0 then
-    for I := 0 to Strings.Count - 1 do
-      Add(Strings[I]);
+  for I := 0 to Strings.Count - 1 do
+    Add(Strings[I]);
 end;
 
 function TJclStrHashSet.GetAsDelimited(Separator: string): string;

@@ -32,7 +32,7 @@ unit JclStack;
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer,   JclStrings,   JclBase;
+  JclBase, JclAbstractContainer, JclDCL_intf, JclDCLUtil;
 
 type
   TJclIntfStack = class(TJclAbstractContainer, IIntfStack)
