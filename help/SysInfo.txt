@@ -1,24 +1,187 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function RunningProcessesList(List: TStrings): Boolean;
+function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
 [ShortDescr]
 Returns a list of all running processes.
 [Description]
 RunningProcessesList fills the List parameter with a list of all running processes.
 [Parameters]
-Count=1
+Count=2
 1=List:TStrings=The list which is filled with the names of all running processes.
 Note that if this function is executed NT 3 or NT 4 the Objects property of the
 list contains INVALID_HANDLE_VALUE, on all other systems the Objects property is
 filled with the ToolHelp Process ID which you can use to further investigate the
-process. Note that upon entry the function immediately clears the list so all
-contents are lost.
+process.
+2=FullPath:Boolean=If True the names of processes in the list are expanded to include
+the full path of the executable file. If False only the process name (filename of
+the executable) is put in the list.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. In the latter
 case the contents of the list is undefined.
+[Notes]
+Count=1
+1=On Windows NT/2000 there exists two processes with PIDs 0 and 2 (8 on Windows 2000)
+which do not map to an executable image file. The names of these processes are
+fabricated by the routine as "System Idle Process" and "System Process" respectively.
 [Quick Info]
 Unit=JclSysInfo
 Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
+[ShortDescr]
+Returns the list of modules loaded by a process.
+[Description]
+Returns a list of modules (dynamic link libraries) which are in use (loaded) by
+the process specified by ProcessID.
+[Parameters]
+Count=2
+1=List:TStrings=List which receives the name of each loaded module. Each entry
+contains the full path to the modules image file.
+2=ProcessID:DWORD=Process ID of the process for which you want a list of loaded
+modules. To get the list of modules for the current process pass in the return
+value of the GetCurrentProcessID API function.
+[Result]
+If the function it returns True, otherwise it returns False. In this latter case
+the contents of the list are undefined.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetTasksList(const List: TStrings): Boolean;
+[ShortDescr]
+Returns a list of running tasks.
+[Description]
+Returns a list of running tasks. This is similar to the items visible on the
+Applications tab of the Windows NT task manager. The routine uses a similar method
+to discover all running tasks (described on http://msdn.microsoft.com/library/periodic/period97/win321197.htm)
+but is not always accurate.
+[Parameters]
+Count=1
+1=List:TStrings=List which receives the running tasks.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In this
+latter case the contents of the list are undefined.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
+[ShortDescr]
+Determines whether a windows is responding to messages.
+[Description]
+The IsWindowResponding function determines whether the window specified by the
+Wnd parameter is still responding to messages. In effect this determines whether
+the window "is hung" by the user perception. In reality the thread which "owns"
+the window may not actually be hung but is too busy (in some kind of loop or by
+a blocking wait operation) to receive messages.
+[Parameters]
+Count=2
+1=Wnd:HWND=Handle to the window which you want to test.
+2=Timeout:Integer=Timeout in milliseconds. The function send a bogus message to
+the window and then waits the specified time out value before returning. If the
+window responds to the message within the timeout value or Windows itself detects,
+by some other means, that the specified window is hung, the function may return
+earlier.
+[Result]
+If the window is not responding the function returns False, otherwise it returns
+True.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
+[ShortDescr]
+Returns the icon of a window.
+[Description]
+Returns a handle to the icon of the specified window.
+[Parameters]
+Count=2
+1=Wnd:HWND=Handle to the window for which to retrieve an icon.
+2=LargeIcon:Boolean=If True the function returns the large icon. If False the
+function returns the small icon. Note that the dimension of large and small can
+be retrieved by the GetSystemMetrics API function using the SM_C<X>ICON and
+SM_C<X>SMICON flags respectively (where <X> is either X or Y for the width and
+height respectively).
+[Result]
+If the function succeeds it returns a handle to the requested icon, otherwise
+it returns 0. In case of success you must release the handle by calling the
+DestroyIcon API function.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
+[ShortDescr]
+Terminates the application which owns the specified window.
+[Description]
+Terminates the application which owns the specified window. For further details
+see the <REF>TerminateApp</REF> function/
+[Parameters]
+Count=2
+1=Wnd:HWND=Handle to a top-level window owned by the application you wish to terminate.
+2=Timeout:Integer=Timeout value, in milliseconds, indicating the time to wait
+between sending the WM_CLOSE message and forcefully terminating the application.
+You should set this timeout value to at least 5 seconds.
+[Result]
+If the function succeeds to normally terminate the application (through the WM_CLOSE
+message) it returns taClean. If the function had to terminate the application by
+a call to TerminateProcess it returns taKill. If the function fails to terminate
+the application it returns taError.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
+[ShortDescr]
+Terminates the application specified by ProcessID.
+[Description]
+Terminates the application specified by ProcessID. The function first attempts
+to terminate the application normally by sending it a WM_CLOSE message. If the
+application doesn't terminate itself in response to that message and within the
+specified timeout period, the function continues to forcefully terminate the
+application using the TerminateProcess function. In this latter case the application
+gets no change whatsoever to clean up it's resources and as such this may lead
+to data loss. Be carefull and very sure there's no other way! The logic used
+by this function is described in knowledge base article Q178893.
+[Parameters]
+Count=2
+1=ProcessID:DWORD=Process ID of the application to terminate.
+2=Timeout:Integer=Timeout value, in milliseconds, indicating the time to wait
+between sending the WM_CLOSE message and forcefully terminating the application.
+You should set this timeout value to at least 5 seconds.
+[Result]
+If the function succeeds to normally terminate the application (through the WM_CLOSE
+message) it returns taClean. If the function had to terminate the application by
+a call to TerminateProcess it returns taKill. If the function fails to terminate
+the application it returns taError.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
@@ -41,6 +204,7 @@ if it fails the result is an empty string.
 [Quick Info]
 Unit=JclSysInfo
 Category=System Information Routines
+SubCat=Processes, Tasks and Modules
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=3,4,5
 [SeeAlso]
@@ -64,6 +228,7 @@ returns an empty string.
 [Quick Info]
 Unit=JclSysInfo
 Category=System Information Routines
+SubCat=Processes, Tasks and Modules
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 [SeeAlso]
@@ -92,6 +257,7 @@ you didn't specify the full name of the process.
 [Quick Info]
 Unit=JclSysInfo
 Category=System Information Routines
+SubCat=Processes, Tasks and Modules
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 [SeeAlso]
