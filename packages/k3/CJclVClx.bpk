@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="bplCJclVClxK3.so"/>
-    <OBJFILES value="../../lib/K3/CJclVClx.obj ../../lib/K3/JclQGraphics.obj
-      ../../lib/K3/JclQGraphUtils.obj"/>
+    <PROJECT value="CJclVClxK3.so"/>
+    <OBJFILES value="../../lib/k3/CJclVClx.obj ../../lib/k3/JclQGraphics.obj 
+      ../../lib/k3/JclQGraphUtils.obj"/>
     <RESFILES value="CJclVClx.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -16,7 +16,7 @@
     <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi visualclx.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;../../source/Common;../../source/Windows;../../source/VisCLX"/>
+    <PATHPAS value=".;../../source/visclx"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)/lib/debug"/>
@@ -25,20 +25,20 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="CJclVClx.cpp"/>
-    <INCLUDEPATH value="../../source/Common;../../source/Windows;../../source/VisCLX;$(BCB)/include;$(BCB)/include/vcl"/>
-    <LIBPATH value="../../source/Common;../../source/Windows;../../source/VisCLX;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
+    <INCLUDEPATH value="../../source/common;../../source/unix;../../source/visclx;$(BCB)/include;$(BCB)/include/vcl"/>
+    <LIBPATH value="../../source/common;../../source/unix;../../source/visclx;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I../../source/Common;../../source/Windows;../../source/VisCLX -I$(BCB)/include -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG
-      -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
+    <IDLCFLAGS value="-I../../source/common -I../../source/unix -I../../source/visclx 
+      -I$(BCB)/include -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2../../lib/K3 -N0../../lib/K3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2../../lib/k3 -N0../../lib/k3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I../../lib/K3 -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I../../lib/k3 -GB&quot;CJclVClx&quot; -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -51,9 +51,9 @@
       <FILE FILENAME="CJclVClx.res" FORMNAME="" UNITNAME="CJclVClx.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJclVClx.cpp" FORMNAME="" UNITNAME="CJclVClx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/VisCLX/JclQGraphics.pas" FORMNAME="" UNITNAME="JclQGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/VisCLX/JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/visclx/JclQGraphics.pas" FORMNAME="" UNITNAME="JclQGraphics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/visclx/JclQGraphUtils.pas" FORMNAME="" UNITNAME="JclQGraphUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="visualclx.bpi" FORMNAME="" UNITNAME="visualclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -77,13 +77,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.0.0
+FileVersion=1.90.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=1.0.0.0
+ProductVersion=1.90.0.0
 Comments=
 
 [Debugging]
