@@ -1,30 +1,28 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclCounter.pas.                                         }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains a high performance counter class which can be used for    }
-{ highly accurate timing.                                                      }
-{                                                                              }
-{ Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 25, 2001                                             }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclCounter.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains a high performance counter class which can be used for highly accurate timing }
+{                                                                                                  }
+{ Unit owner: Marcel van Brakel                                                                    }
+{ Last modified: November 25, 2001                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclCounter;
 
@@ -84,9 +82,9 @@ implementation
 
 uses
   SysUtils,
-  JclResources;
+  JclResources, JclSysUtils;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclCounter.Create(const Compensate: Boolean);
 const
@@ -133,7 +131,7 @@ begin
   FElapsedTime := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCounter.Start;
 begin
@@ -151,7 +149,7 @@ begin
   {$ENDIF}
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCounter.Stop: Float;
 begin
@@ -171,7 +169,7 @@ begin
   Result := FElapsedTime;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCounter.GetRunElapsedTime: Float;
 var
@@ -190,7 +188,7 @@ begin
   Result := FOverallElapsedTime + ((TimeNow - FStart - FOverhead) / FFrequency);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCounter.Continue;
 var
@@ -205,7 +203,7 @@ begin
    end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure StartCount(var Counter: TJclCounter; const Compensate: Boolean = False);
 begin
@@ -213,7 +211,7 @@ begin
   Counter.Start;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function StopCount(var Counter: TJclCounter): Float;
 begin
@@ -226,7 +224,7 @@ begin
     Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ContinueCount(var Counter: TJclCounter);
 begin
