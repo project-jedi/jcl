@@ -143,7 +143,7 @@ function GetProcessNameFromPid(PID: DWORD): string;
 
 type
   TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE,
-                     wvWinME, wvWinNT3, wvWinNT4, wvWin2000);
+                     wvWinME, wvWinNT3, wvWinNT4, wvWin2000, wvWinXP);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
 
 var
@@ -159,6 +159,7 @@ var
   IsWinNT3: Boolean = False;
   IsWinNT4: Boolean = False;
   IsWin2K: Boolean = False;
+  IsWinXP: Boolean = False;
 
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
@@ -1595,7 +1596,12 @@ begin
         4:
           Result := wvWinNT4;
         5:
-          Result := wvWin2000;
+          case Win32MinorVersion of
+            0:
+              Result := wvWin2000;
+            1:
+              Result := wvWinXP;
+          end;
       end;
   end;
 end;
@@ -2701,6 +2707,8 @@ begin
       IsWinNT4 := True;
     wvWin2000:
       IsWin2K := True;
+    wvWinXP
+      IsWinXP := True;
   end;
 end;
 
