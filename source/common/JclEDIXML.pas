@@ -872,7 +872,7 @@ begin
   StrReplace(FData, EDIXML_HTMLApostrophe, EDIXML_Apostrophe, [rfReplaceAll]);
   StrReplace(FData, EDIXML_HTMLAmpersand, EDIXML_Ampersand, [rfReplaceAll]);
   //
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1156,7 +1156,7 @@ begin
   end;
   FData := '';
   //
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1854,7 +1854,7 @@ begin
   end;
   FData := '';
   //
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2076,7 +2076,7 @@ begin
   end;
   FData := '';
   //
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2250,7 +2250,7 @@ begin
     raise EJclEDIError.CreateResRec(@EDIXMLError022);
   FData := '';
   //
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2422,7 +2422,7 @@ begin
     raise EJclEDIError.CreateResRec(@EDIXMLError012);
   FData := '';
   //
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2567,7 +2567,7 @@ begin
   end;
   FData := '';
 
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------

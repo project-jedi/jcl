@@ -750,7 +750,7 @@ end;
 
 procedure TEDIElement.Disassemble;
 begin
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -928,7 +928,7 @@ begin
     end;
   end;
   FData := '';
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1270,7 +1270,7 @@ begin
     SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
   end;
   FData := '';
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1588,7 +1588,7 @@ begin
   else
     raise EJclEDIError.CreateResRec(@RsEDIError024);
   FData := '';
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1926,7 +1926,7 @@ begin
   else
     raise EJclEDIError.CreateResRec(@RsEDIError017);
   FData := '';
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2220,7 +2220,7 @@ begin
     end;
   end;
   FData := '';
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2504,7 +2504,7 @@ begin
     FMinimumLength := StrToInt(FReservedData.Values[RDFN_MinimumLength]);
     FMaximumLength := StrToInt(FReservedData.Values[RDFN_MaximumLength]);
   end;
-  FState := ediDissassembled;
+  FState := ediDisassembled;
 end;
 
 //==================================================================================================

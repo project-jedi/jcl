@@ -139,7 +139,7 @@ type
     ediTransactionSet, ediMessage, ediFunctionalGroup,
     ediInterchangeControl, ediFile, ediCustom);
 
-  TEDIDataObjectDataState = (ediCreated, ediAssembled, ediDissassembled);
+  TEDIDataObjectDataState = (ediCreated, ediAssembled, ediDisassembled);
 
   TEDIDataObject = class(TEDIObject)
   private
