@@ -243,7 +243,7 @@ begin
   {$IFDEF MSWINDOWS}
     and FileExists(FVclDialogFileName)  and FileExists(FVclDialogIconFileName)
   {$ENDIF MSWINDOWS};
-  FJclReadmeFileName := PathAddSeparator(FJclPath) + RsReadmeFileName;
+  FJclReadmeFileName := PathAddSeparator(FJclPath) + 'docs' + PathSeparator + RsReadmeFileName;
   if FileExists(FJclReadmeFileName) then
   begin
     ReadmeText := FileToString(FJclReadmeFileName);
@@ -520,12 +520,6 @@ begin
   Tool.WriteInstallLog(Format('Installation started %s', [DateTimeToStr(Now)]));
   try
     {$IFDEF KYLIX}
-    Installation := Tool.DelphiInstallations.InstallationFromVersion[1];
-    if Assigned(Installation) and Installation.Valid then
-      KylixInstall;
-    Installation := Tool.DelphiInstallations.InstallationFromVersion[2];
-    if Assigned(Installation) and Installation.Valid then
-      KylixInstall;
     Installation := Tool.DelphiInstallations.InstallationFromVersion[3];
     if Assigned(Installation) and Installation.Valid then
       KylixInstall;
