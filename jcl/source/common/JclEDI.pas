@@ -478,12 +478,16 @@ begin
   // Calculate length of result string
   ReplaceCount := 0;
   SearchResult := StrSearch(SearchPattern, SearchString, 1);
-  while SearchResult <> 0 do
-  begin
-    Inc(SearchResult);
-    Inc(ReplaceCount);
-    SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
-  end;
+  if rfReplaceAll in Flags then
+    while SearchResult <> 0 do
+    begin
+      Inc(SearchResult);
+      Inc(ReplaceCount);
+      SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
+    end
+  else
+    if SearchResult <> 0 then
+      Inc(ReplaceCount);
   SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
   // Copy the characters by looping through the result and source at the same time
   ReplaceCount := 0;
@@ -517,10 +521,6 @@ begin
     // Copy character
     if (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) then
       Result[ReplaceIndex] := S[SearchIndex];
-
-    if ReplacePatternLength > 0 then
-      if not (rfReplaceAll in Flags) then
-        Break;
 
     // Set indexes for next copy
     Inc(SearchIndex);
