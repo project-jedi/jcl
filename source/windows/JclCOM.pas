@@ -40,12 +40,9 @@ implementation
 uses
   {$IFDEF WIN32}
   Windows, ActiveX,
-  {$ENDIF}
+  {$ENDIF WIN32}
   SysUtils,
-  {$IFNDEF DELPHI5_UP}
-  JclSysUtils,
-  {$ENDIF}
-  JclFileUtils, JclRegistry, JclWin32;
+  JclFileUtils, JclRegistry, JclSysUtils, JclWin32;
 
 function IsDCOMEnabled: Boolean;
 var
