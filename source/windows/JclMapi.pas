@@ -33,10 +33,7 @@ unit JclMapi;
 interface
 
 uses
-  Windows, Classes, Mapi, SysUtils,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Windows, Classes, Mapi, SysUtils, Contnrs,
   JclBase;
 
 type
