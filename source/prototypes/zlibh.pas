@@ -1482,13 +1482,18 @@ const
 
   {$UNDEF LINK_LIBC}
 {$ELSE ~ZLIB_DLL}
+
 {$IFDEF HAS_UNIT_LIBC}
 uses
   Libc;
 {$ELSE ~HAS_UNIT_LIBC}
+{$IFDEF UNIX}
+  dl;
+{$ENDIF UNIX}
+
 type
   size_t = Longint;
-{$ENDIF HAS_UNIT_LIBC}
+{$ENDIF ~HAS_UNIT_LIBC}
 
 {$LINK obj\adler32.obj} // OS: CHECKTHIS - Kylix version may need forward slashes?
 {$LINK obj\compress.obj}
@@ -1502,8 +1507,8 @@ type
 {$LINK obj\uncompr.obj}
 {$LINK obj\zutil.obj}
 {$IFDEF STATIC_GZIO}
-  {$LINK obj\gzio.obj}
-  {$DEFINE LINK_LIBC}
+{$LINK obj\gzio.obj}
+{$DEFINE LINK_LIBC}
 {$ENDIF STATIC_GZIO}
 
 {$IFDEF MSWINDOWS}
@@ -1644,7 +1649,20 @@ end;
 //-----------------------------------------------------------------------------
 // START Unix specific
 //-----------------------------------------------------------------------------
-// OS: CHECKTHIS
+
+function ZlibModuleHandle: Pointer;
+begin
+  if _ZLibModuleHandle = INVALID_MODULEHANDLE_VALUE then
+    _ZLibModuleHandle := dlopen(ZLibModuleName, RTLD_NOW);
+  Result := _ZLibModuleHandle;
+end;
+
+function GetFunctionAdress(FunctionName: string): Pointer;
+begin
+  Result := ZlibModuleHandle;
+  if Result <> nil then
+    Result := dlsym(Result, PChar(FunctionName));
+end;
 
 //-----------------------------------------------------------------------------
 // END Unix specific
@@ -1685,4 +1703,7 @@ begin
 end;
 
 end.
+
+
+
 
