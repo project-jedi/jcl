@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: June 5, 2002                                                                      }
+{ Last modified: July 16, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -374,10 +374,17 @@ type
 // TJclMappedTextReader
 //--------------------------------------------------------------------------------------------------
 
+  TJclMappedTextReaderIndex = (tiNoIndex, tiFull);
+
+  PPCharArray = ^TPCharArray;
+  TPCharArray = array [0..0] of PChar;
+
   TJclMappedTextReader = class (TPersistent)
   private
     FContent: PChar;
     FEnd: PChar;
+    FIndex: PPCharArray;
+    FIndexOption: TJclMappedTextReaderIndex;
     FFreeStream: Boolean;
     FLastLineNumber: Integer;
     FLastPosition: PChar;
@@ -395,12 +402,15 @@ type
     procedure SetPosition(const Value: Integer);
   protected
     procedure AssignTo(Dest: TPersistent); override;
+    procedure CreateIndex;
     procedure Init;
     function PtrFromLine(LineNumber: Integer): PChar;
     function StringFromPosition(var StartPos: PChar): string;
   public
-    constructor Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean = True); overload;
-    constructor Create(const FileName: string); overload;
+    constructor Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean = True;
+      const AIndexOption: TJclMappedTextReaderIndex = tiNoIndex); overload;
+    constructor Create(const FileName: string;
+      const AIndexOption: TJclMappedTextReaderIndex = tiNoIndex); overload;
     destructor Destroy; override;
     procedure GoBegin;
     function Read: Char;
@@ -409,6 +419,7 @@ type
     property Chars[Index: Integer]: Char read GetChars;
     property Content: PChar read FContent;
     property Eof: Boolean read GetEof;
+    property IndexOption: TJclMappedTextReaderIndex read FIndexOption;
     property Lines[LineNumber: Integer]: string read GetLines;
     property LineCount: Integer read GetLineCount;
     property PositionFromLine[LineNumber: Integer]: Integer read GetPositionFromLine;
@@ -942,20 +953,61 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean);
+constructor TJclMappedTextReader.Create(MemoryStream: TCustomMemoryStream; FreeStream: Boolean;
+  const AIndexOption: TJclMappedTextReaderIndex);
 begin
   FMemoryStream := MemoryStream;
   FFreeStream := FreeStream;
+  FIndexOption := AIndexOption;
   Init;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclMappedTextReader.Create(const FileName: string);
+constructor TJclMappedTextReader.Create(const FileName: string;
+  const AIndexOption: TJclMappedTextReaderIndex);
 begin
   FMemoryStream := TJclFileMappingStream.Create(FileName);
   FFreeStream := True;
+  FIndexOption := AIndexOption;
   Init;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclMappedTextReader.CreateIndex;
+var
+  P, LastLineStart: PChar;
+  I: Integer;
+begin
+  {$RANGECHECKS OFF}
+  P := FContent;
+  I := 0;
+  LastLineStart := P;
+  while P < FEnd do
+  begin
+    if P^ = AnsiLineFeed then
+    begin
+      if I and $FFFF = 0 then
+        ReallocMem(FIndex, (I + $10000) * SizeOf(Pointer));
+      FIndex[I] := LastLineStart;
+      Inc(I);
+      LastLineStart := P + 1;
+    end;
+    Inc(P);
+  end;
+  if P > LastLineStart then
+  begin
+    ReallocMem(FIndex, (I + 1) * SizeOf(Pointer));
+    FIndex[I] := LastLineStart;
+    Inc(I);
+  end
+  else
+    ReallocMem(FIndex, I * SizeOf(Pointer));
+  FLineCount := I;
+  {$IFDEF RANGECHECKS_ON}
+  {$RANGECHECKS ON}
+  {$ENDIF RANGECHECKS_ON}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -964,6 +1016,7 @@ destructor TJclMappedTextReader.Destroy;
 begin
   if FFreeStream then
     FMemoryStream.Free;
+  FreeMem(FIndex);
   inherited;
 end;
 
@@ -993,28 +1046,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclMappedTextReader.GetLineCount: Integer;
-{var
-  P: PChar;
-  L: Integer;
-  C: Cardinal;
-begin
-  if FLineCount = -1 then
-  begin
-    P := FContent;
-    L := 0;
-    while P < FEnd do
-    begin
-      if P^ = AnsiLineFeed then
-        Inc(L);
-      Inc(P);
-    end;
-    Dec(P);
-    if (P >= FContent) and (P^ <> AnsiLineFeed) then
-      Inc(L);
-    FLineCount := L;
-  end;
-  Result := FLineCount;
-end;}
 
   function CountLines(StartPtr: PChar; Len: Integer): Integer; assembler;
   asm
@@ -1072,6 +1103,8 @@ begin
   FLineCount := -1;
   FLastLineNumber := 0;
   FLastPosition := FContent;
+  if IndexOption = tiFull then
+    CreateIndex;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1094,53 +1127,62 @@ var
   LineOffset: Integer;
 begin
   Result := nil;
-  LineOffset := LineNumber - FLastLineNumber;
-  if (FLineCount <> -1) and (LineNumber > 0) then
+  {$RANGECHECKS OFF}
+  if (IndexOption <> tiNoIndex) and (LineNumber < FLineCount) and (FIndex[LineNumber] <> nil) then
+    Result := FIndex[LineNumber]
+  {$IFDEF RANGECHECKS_ON}
+  {$RANGECHECKS ON}
+  {$ENDIF RANGECHECKS_ON}
+  else
   begin
-    if -LineOffset > LineNumber then
+    LineOffset := LineNumber - FLastLineNumber;
+    if (FLineCount <> -1) and (LineNumber > 0) then
     begin
-      FLastLineNumber := 0;
-      FLastPosition := FContent;
-      LineOffset := LineNumber;
+      if -LineOffset > LineNumber then
+      begin
+        FLastLineNumber := 0;
+        FLastPosition := FContent;
+        LineOffset := LineNumber;
+      end
+      else
+      if LineOffset > FLineCount - LineNumber then
+      begin
+        FLastLineNumber := FLineCount;
+        FLastPosition := FEnd;
+        LineOffset := LineNumber - FLineCount;
+      end;
+    end;
+    if LineNumber <= 0 then
+      Result := FContent
+    else
+    if LineOffset = 0 then
+      Result := FLastPosition
+    else
+    if LineOffset > 0 then
+    begin
+      Result := FLastPosition;
+      while (Result < FEnd) and (LineOffset > 0) do
+      begin
+        if Result^ = AnsiLineFeed then
+          Dec(LineOffset);
+        Inc(Result);
+      end;
     end
     else
-    if LineOffset > FLineCount - LineNumber then
+    if LineOffset < 0 then
     begin
-      FLastLineNumber := FLineCount;
-      FLastPosition := FEnd;
-      LineOffset := LineNumber - FLineCount;
+      Result := FLastPosition;
+      while (Result >= FContent) and (LineOffset < 1) do
+      begin
+        if Result^ = AnsiLineFeed then
+          Inc(LineOffset);
+        Dec(Result);
+      end;
+      Inc(Result, 2);
     end;
+    FLastLineNumber := LineNumber;
+    FLastPosition := Result;
   end;
-  if LineNumber <= 0 then
-    Result := FContent
-  else
-  if LineOffset = 0 then
-    Result := FLastPosition
-  else
-  if LineOffset > 0 then
-  begin
-    Result := FLastPosition;
-    while (Result < FEnd) and (LineOffset > 0) do
-    begin
-      if Result^ = AnsiLineFeed then
-        Dec(LineOffset);
-      Inc(Result);
-    end;
-  end
-  else
-  if LineOffset < 0 then
-  begin
-    Result := FLastPosition;
-    while (Result >= FContent) and (LineOffset < 1) do
-    begin
-      if Result^ = AnsiLineFeed then
-        Inc(LineOffset);
-      Dec(Result);
-    end;
-    Inc(Result, 2);
-  end;
-  FLastLineNumber := LineNumber;
-  FLastPosition := Result;
 end;
 
 //--------------------------------------------------------------------------------------------------
