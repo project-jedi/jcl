@@ -1391,8 +1391,8 @@ Count=2
 1=SubStr:AnsiString=The substring to search for.
 2=S:AnsiString=The source string.
 [Result]
-The portion of the string after the specified substring. If the substring does
-not appear in the source string the result is an empty string.
+The portion of the string before the specified substring. If the substring does
+not appear in the source string the result is the source string.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
