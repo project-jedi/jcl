@@ -60,7 +60,7 @@ type
     function InstallPackageSourceFile(const Name: string): Boolean;
     function InstallRunTimePackage(const BaseName: string): Boolean;
     function InstallOption(Option: TJediInstallOption): Boolean;
-    procedure RemoveDialogFromRepository(const DialogFileName: string);
+    procedure RemoveDialogFromRepository(const DialogName, DialogFileName: string);
     function UninstallPackage(const Name: string): Boolean;
     function UninstallRunTimePackage(const BaseName: string): Boolean;
     function UninstallOption(Option: TJediInstallOption): Boolean;
@@ -1007,9 +1007,9 @@ begin
     ioJclEnvDebugDCUPath:
       Target.RemoveFromDebugDCUPath(DebugDcuDir);
     // ioJclMake:
-    ioJclMakeRelease: { TODO :  };
-    ioJclMakeDebug: { TODO :  };
-    ioJclCopyHppFiles: { TODO :  };
+    ioJclMakeRelease: { TODO :  Delete generated files };
+    ioJclMakeDebug: { TODO : Delete generated files  };
+    ioJclCopyHppFiles: { TODO : Delete copied files };
     ioJclPackages:
       begin
         Result := UninstallRunTimePackage('Jcl');
@@ -1022,18 +1022,18 @@ begin
     // ioJclExperts:
     ioJclExpertDebug..ioJclExpertsThrNames:
       Result := UninstallPackage(ExpertPaths[Option]);
-    // ioJclCopyPackagesHppFiles: handled by InstallPackageSourceFile
+    // ioJclCopyPackagesHppFiles: 
     // ioJclExcDialog:
     ioJclExcDialogVCL:
       with Distribution do
-        RemoveDialogFromRepository(VclDialogFileName);
+        RemoveDialogFromRepository(VclDialogName, VclDialogFileName);
     ioJclExcDialogVCLSnd:
       with Distribution do
-        RemoveDialogFromRepository(VclDlgSndFileName);
+        RemoveDialogFromRepository(VclDialogNameSend, VclDlgSndFileName);
     {$ENDIF MSWINDOWS}
     ioJclExcDialogCLX:
       with Distribution do
-        RemoveDialogFromRepository(ClxDialogFileName);
+        RemoveDialogFromRepository(ClxDialogName, ClxDialogFileName);
     {$IFDEF MSWINDOWS}
     // ioJclHelp:
     ioJclHelpHlp:
@@ -1197,9 +1197,10 @@ begin
   end;
 end;
 
-procedure TJclInstallation.RemoveDialogFromRepository(const DialogFileName: string);
+procedure TJclInstallation.RemoveDialogFromRepository(const DialogName, DialogFileName: string);
 begin
   Target.Repository.RemoveObjects(DialogsPath, DialogFileName, BorRADToolRepositoryFormTemplate);
+  WriteLog(Format(AnsiLineBreak + 'Removed %s.', [DialogName]));
 end;
 
 {$IFDEF MSWINDOWS}
@@ -1210,7 +1211,7 @@ end;
 
 procedure TJclInstallation.RemoveHelpFromOpenHelp;
 begin
-  { TODO : Implement }
+  Target.OpenHelp.RemoveHelpFile(Distribution.FJclHlpHelpFileName, JclHelpIndexName);
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1238,9 +1239,14 @@ begin
 end;
 
 function TJclInstallation.UninstallPackage(const Name: string): Boolean;
+var
+  PackageFileName: string;
 begin
+  PackageFileName := Distribution.Path + Format(Name, [Target.VersionNumber]);
+  Result := Target.UninstallPackage(PackageFileName, StoredBPLPath, StoredDCPPath);
   { TODO : evtl. remove .HPP Files }
-  Result := False;
+  if Result then
+    WriteLog(Format(AnsiLineBreak + 'Removed package %s.', [PackageFileName]));
 end;
 
 function TJclInstallation.UninstallRunTimePackage(const BaseName: string): Boolean;
@@ -1257,12 +1263,17 @@ function TJclInstallation.UninstallSelectedOptions: Boolean;
 
 var
   Option: TJediInstallOption;
+  Success: Boolean;
 begin
   Result := True;
   Tool.UpdateStatus(Format(RsUninstallMessage, [Target.Name]));
   for Option := ioJCL to ioJclLast do
     if OptionSelected(Option) then
-      Result := Result and UninstallOption(Option);
+    begin
+      // Don't stop uninstall process when one step fails
+      Success := UninstallOption(Option);
+      Result := Result and Success;
+    end
 end;
 
 procedure TJclInstallation.SaveOption(Option: TJediInstallOption);
@@ -1559,6 +1570,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.49  2005/02/04 05:19:41  rrossmair
+// - some uninstall support finally functional
+//
 // Revision 1.48  2005/02/03 06:15:41  rrossmair
 // - fixed for Kylix
 //
