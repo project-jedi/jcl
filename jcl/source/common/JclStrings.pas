@@ -21,7 +21,7 @@
 { Various character and string routines (searching, testing and transforming)  }
 {                                                                              }
 { Unit owner: Azret Botash                                                     }
-{ Last modified: December 30, 2001                                             }
+{ Last modified: Februari 10, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -147,6 +147,8 @@ function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 function StrStringToEscaped(const S: AnsiString): AnsiString;
 function StrStripNonNumberChars(const S: AnsiString): AnsiString;
 function StrToHex(const Source: AnsiString): AnsiString;
+function StrTrimCharLeft(const S: AnsiString; C: AnsiChar): AnsiString;
+function StrTrimCharRight(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrTrimQuotes(const S: AnsiString): AnsiString;
 function StrUpper(const S: AnsiString): AnsiString;
 procedure StrUpperInPlace(var S: AnsiString);
@@ -1164,11 +1166,11 @@ end;
 
 { Temporary replacement of StrReplace. Basic algorithm is the same except that
   it has been simplified a little. This version is a little slower than the one
-  below but at least it works. Someone will have to go over this sometime.
+  below but at least it works. Someone will have to go over this sometime. }
 
-  TODO: Implement case-insensitive version (Flags = rfIgnoreCase) }
+// case insensitive StrReplace
 
-procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
+procedure StrReplaceCS(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
 var
   Result: string;        { result string }
   SourcePtr: PChar;      { pointer into S of character under examination }
@@ -1180,7 +1182,7 @@ var
   ResultLength: Integer; { length of result string (maximum, worst-case scenario) }
   C: Char;               { first character of search string }
 begin
-  if (S = '') or (Search = '') then Exit;
+  //if (S = '') or (Search = '') then Exit;
   { avoid having to call Length() within the loop }
   SearchLength := Length(Search);
   ReplaceLength := Length(Replace);
@@ -1250,6 +1252,104 @@ begin
   ResultPtr^ := #0;
   S := Result;
   SetLength(S, StrLen(PChar(S)));
+end;
+
+// case insensitive StrReplace
+
+procedure StrReplaceCI(var S: AnsiString; Search, Replace: AnsiString; Flags: TReplaceFlags);
+var
+  Result: string;        { result string }
+  SourcePtr: PChar;      { pointer into S of character under examination }
+  SourceMatchPtr: PChar; { pointers into S and Search when first character has }
+  SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
+  ResultPtr: PChar;      { pointer into Result of character being written }
+  SearchLength,          { length of search string }
+  ReplaceLength,         { length of replace string }
+  ResultLength: Integer; { length of result string (maximum, worst-case scenario) }
+  C: Char;               { first character of search string }
+begin
+  //if (S = '') or (Search = '') then Exit;
+  Search := UpperCase(Search);
+  { avoid having to call Length() within the loop }
+  SearchLength := Length(Search);
+  ReplaceLength := Length(Replace);
+  { initialize result string to maximum (worst case scenario) length }
+  if Length(Search) >= ReplaceLength then
+    ResultLength := Length(S)
+  else
+    ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
+  SetLength(Result, ResultLength);
+  { get pointers to begin of source and result }
+  ResultPtr := PChar(Result);
+  SourcePtr := PChar(S);
+  C := Search[1];
+  { while we haven't reached the end of the string }
+  while True do
+  begin
+    { copy characters until we find the first character of the search string }
+    while (UpCase(SourcePtr^) <> C) and (SourcePtr^ <> #0) do
+    begin
+      ResultPtr^ := SourcePtr^;
+      Inc(ResultPtr);
+      Inc(SourcePtr);
+    end;
+    { did we find that first character or did we hit the end of the string? }
+    if SourcePtr^ = #0 then
+      Break
+    else
+    begin
+      { continue comparing, +1 because first character was matched already }
+      SourceMatchPtr := SourcePtr + 1;
+      SearchMatchPtr := PChar(Search) + 1;
+      while (UpCase(SourceMatchPtr^) = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
+      begin
+        Inc(SourceMatchPtr);
+        Inc(SearchMatchPtr);
+      end;
+      { did we find a complete match? }
+      if SearchMatchPtr^ = #0 then
+      begin
+        { append replace to result and move past the search string in source }
+        Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+        Inc(SourcePtr, SearchLength);
+        Inc(ResultPtr, ReplaceLength);
+        { replace all instances or just one? }
+        if not (rfReplaceAll in Flags) then
+        begin
+          { just one, copy until end of source and break out of loop }
+          while SourcePtr^ <> #0 do
+          begin
+            ResultPtr^ := SourcePtr^;
+            Inc(ResultPtr);
+            Inc(SourcePtr);
+          end;
+          Break;
+        end;
+      end
+      else
+      begin
+        { copy current character and start over with the next }
+        ResultPtr^ := SourcePtr^;
+        Inc(ResultPtr);
+        Inc(SourcePtr);
+      end;
+    end;
+  end;
+  { append null terminator, copy into S and reset the string length }
+  ResultPtr^ := #0;
+  S := Result;
+  SetLength(S, StrLen(PChar(S)));
+end;
+
+procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
+begin
+  if (S <> '') and (Search <> '') then
+  begin
+    if rfIgnoreCase in Flags then
+      StrReplaceCI(S, Search, Replace, Flags)
+    else
+      StrReplaceCS(S, Search, Replace, Flags);
+  end;
 end;
 
 (*
@@ -1486,37 +1586,59 @@ var
   BL, BH: Byte;
   S: AnsiString;
 begin
-  S := Source;
   Result := '';
-  if S = '' then
-    Exit;
-
-  L := Length(S);
-  if Odd(L) then
+  if S <> '' then
   begin
-    S := '0' + S;
-    Inc(L);
-  end;
-
-  P := PChar(S);
-  SetLength(Result, L div 2);
-  C := 1;
-  N := 1;
-  while C <= L do
-  begin
-    BH := CharHex(P^);
-    Inc(P);
-    BL := CharHex(P^);
-    Inc(P);
-    Inc(C, 2);
-    if (BH = $FF) or (BL = $FF) then
+    S := Source;
+    L := Length(S);
+    if Odd(L) then
     begin
-      Result := '';
-      Exit;
+      S := '0' + S;
+      Inc(L);
     end;
-    Byte(Result[N]) := Byte((BH shl 4) + BL);
-    Inc(N);
+    P := PChar(S);
+    SetLength(Result, L div 2);
+    C := 1;
+    N := 1;
+    while C <= L do
+    begin
+      BH := CharHex(P^);
+      Inc(P);
+      BL := CharHex(P^);
+      Inc(P);
+      Inc(C, 2);
+      if (BH = $FF) or (BL = $FF) then
+      begin
+        Result := '';
+        Exit;
+      end;
+      Byte(Result[N]) := Byte((BH shl 4) + BL);
+      Inc(N);
+    end;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function StrTrimCharLeft(const S: AnsiString; C: AnsiChar): AnsiString;
+var
+  I, L: Integer;
+begin
+  I := 1;
+  L := Length(S);
+  while (I <= L) and (S[I] = C) do Inc(I);
+  Result := Copy(S, I, L - I);
+end;
+
+//------------------------------------------------------------------------------
+
+function StrTrimCharRight(const S: AnsiString; C: AnsiChar): AnsiString;
+var
+  I: Integer;
+begin
+  I := Length(S);
+  while (I >= 1) and (S[I] = C) do Dec(I);
+  Result := Copy(S, 1, I);
 end;
 
 //------------------------------------------------------------------------------
