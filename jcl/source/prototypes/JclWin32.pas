@@ -112,6 +112,8 @@ uses
 
 {$I win32api\DelayImp.int}
 
+{$IFDEF MSWINDOWS}
+
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
     SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
@@ -175,6 +177,8 @@ const
 
   RtdlNetBios: function(P: PNCB): UCHAR; stdcall = NetBios;
 
+{$ENDIF MSWINDOWS}
+
 implementation
 
 uses
@@ -219,6 +223,9 @@ end;
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.3  2005/03/07 07:49:12  marquardt
+// made the generator not remove IFDEF MSWINDOWS and UNIX
+//
 // Revision 1.2  2004/12/23 04:31:43  rrossmair
 // - check-in for JCL 1.94 RC 1
 //
