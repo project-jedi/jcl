@@ -1014,23 +1014,16 @@
 
 // for Delphi/BCB trial versions remove the point from the line below
 {.$UNDEF SUPPORTS_WEAKPACKAGEUNIT}
-{$ENDIF ~JEDI_INC}
 
 // History:
 
 // $Log$
-// Revision 1.17  2004/08/09 06:38:08  marquardt
-// - D8/D9 support added by peter3 (D9:guesswork).
+// Revision 1.18  2004/08/10 02:52:02  rrossmair
+// - moved {$ENDIF ~JEDI_INC} to EOF.
 //
-// Revision 1.9  2004/08/08 20:13:05  peter3
-// - Missing ENDIF added
-//
-// Revision 1.8  2004/08/08 16:04:17  peter3
+// Revision 1.17  2004/08/09 06:38:08  peter3
 // - D8 support added
 // - D9 support added (guesswork)
-//
-// Revision 1.7  2004/07/30 07:33:34  marquardt
-// inc files on JCL level, minor cleanings
 //
 // Revision 1.16  2004/07/29 17:12:28  rrossmair
 // fixed comment ("KYLIXX_UP from KYLIXX mappings")
@@ -1093,3 +1086,5 @@
 //  - add Kylix definitions
 //  - add RTL definitions
 //  - add FPC definitions
+
+{$ENDIF ~JEDI_INC}
