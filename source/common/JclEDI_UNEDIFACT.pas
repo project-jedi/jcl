@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclEDI.pas.                                                                 }
+{ The Original Code is JclEDI_UNIEDIFACT.pas.                                                                 }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -701,8 +701,7 @@ begin
         end;
         // Get the delimiters from the interchange control header
         if Assigned(Parent.Parent.Parent) and (Parent.Parent.Parent is TEDIInterchangeControl) then
-          if Assigned(Parent.Parent.Parent.Delimiters) then
-            Result := Parent.Parent.Parent.Delimiters;
+          Result := Parent.Parent.Parent.Delimiters;
       end;
     end;
   end;
@@ -846,8 +845,7 @@ begin
       end;
       // Get the delimiters from the interchange control
       if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
-        if Assigned(Parent.Parent.Delimiters) then
-          Result := Parent.Parent.Delimiters;
+        Result := Parent.Parent.Delimiters;
     end;
   end;
 end;
@@ -870,12 +868,9 @@ begin
   Result := nil;
   // Attempt to assign the delimiters
   if not Assigned(FDelimiters) then
-  begin
     // Get the delimiters from the interchange control
     if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-      if Assigned(Parent.Delimiters) then
-        Result := Parent.Delimiters;
-  end;
+      Result := Parent.Delimiters;
 end;
 
 //==================================================================================================
@@ -1142,20 +1137,13 @@ function TEDIMessage.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := nil;
   if FDelimiters = nil then // Attempt to assign the delimiters
-  begin
     if Assigned(Parent) and
       ((Parent is TEDIFunctionalGroup) or (Parent is TEDIInterchangeControl)) then
-    begin
       if Assigned(Parent.Delimiters) then
-      begin
-        Result := Parent.Delimiters;
-        Exit;
-      end;
+        Result := Parent.Delimiters
+      else
       if Assigned(Parent.Parent) and (Parent.Parent is TEDIInterchangeControl) then
-        if Assigned(Parent.Parent.Delimiters) then
-          Result := Parent.Parent.Delimiters;
-    end;
-  end;
+        Result := Parent.Parent.Delimiters;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1191,11 +1179,7 @@ end;
 
 procedure TEDIMessage.SetUNTSegment(const UNTSegment: TEDIMessageSegment);
 begin
-  if Assigned(FUNTSegment) then
-  begin
-    FUNTSegment.Free;
-    FUNTSegment := nil;
-  end;
+  FreeAndNil(FUNTSegment);
   FUNTSegment := UNTSegment;
   if Assigned(FUNTSegment) then
     FUNTSegment.Parent := Self;
@@ -1205,11 +1189,7 @@ end;
 
 procedure TEDIMessage.SetUNHSegment(const UNHSegment: TEDIMessageSegment);
 begin
-  if Assigned(FUNHSegment) then
-  begin
-    FUNHSegment.Free;
-    FUNHSegment := nil;
-  end;
+  FreeAndNil(FUNHSegment);
   FUNHSegment := UNHSegment;
   if Assigned(FUNHSegment) then
     FUNHSegment.Parent := Self;
@@ -1509,8 +1489,7 @@ begin
   // Attempt to assign the delimiters
   if not Assigned(FDelimiters) then
     if Assigned(Parent) and (Parent is TEDIInterchangeControl) then
-      if Assigned(Parent.Delimiters) then
-        Result := Parent.Delimiters;
+      Result := Parent.Delimiters;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1539,11 +1518,7 @@ end;
 
 procedure TEDIFunctionalGroup.SetUNESegment(const UNESegment: TEDIFunctionalGroupSegment);
 begin
-  if Assigned(FUNESegment) then
-  begin
-    FUNESegment.Free;
-    FUNESegment := nil;
-  end;
+  FreeAndNil(FUNESegment);
   FUNESegment := UNESegment;
   if Assigned(FUNESegment) then
     FUNESegment.Parent := Self;
@@ -1553,11 +1528,7 @@ end;
 
 procedure TEDIFunctionalGroup.SetUNGSegment(const UNGSegment: TEDIFunctionalGroupSegment);
 begin
-  if Assigned(FUNGSegment) then
-  begin
-    FUNGSegment.Free;
-    FUNGSegment := nil;
-  end;
+  FreeAndNil(FUNGSegment);
   FUNGSegment := UNGSegment;
   if Assigned(FUNGSegment) then
     FUNGSegment.Parent := Self;
@@ -1698,9 +1669,7 @@ begin
     DeleteEDIDataObjects;
 
     if not Assigned(FDelimiters) then
-    begin
       raise EJclEDIError.CreateResRec(@RsEDIError012);
-    end;
 
     StartPos := 1;
     // Search for Interchange Control Header
@@ -1907,11 +1876,7 @@ end;
 
 procedure TEDIInterchangeControl.SetUNZSegment(const UNZSegment: TEDIInterchangeControlSegment);
 begin
-  if Assigned(FUNZSegment) then
-  begin
-    FUNZSegment.Free;
-    FUNZSegment := nil;
-  end;
+  FreeAndNil(FUNZSegment);
   FUNZSegment := UNZSegment;
   if Assigned(FUNZSegment) then
     FUNZSegment.Parent := Self;
@@ -1921,11 +1886,7 @@ end;
 
 procedure TEDIInterchangeControl.SetUNBSegment(const UNBSegment: TEDIInterchangeControlSegment);
 begin
-  if Assigned(FUNBSegment) then
-  begin
-    FUNBSegment.Free;
-    FUNBSegment := nil;
-  end;
+  FreeAndNil(FUNBSegment);
   FUNBSegment := UNBSegment;
   if Assigned(FUNBSegment) then
     FUNBSegment.Parent := Self;
@@ -2704,10 +2665,9 @@ function TEDICompositeElement.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := nil;
   if not Assigned(FDelimiters) then // Attempt to assign the delimiters
-    // Get the delimiters from the segemnt
+    // Get the delimiters from the segment
     if Assigned(Parent) and (Parent is TEDISegment) then
-      if Assigned(Parent.Delimiters) then
-        Result := Parent.Delimiters;
+      Result := Parent.Delimiters;
 end;
 
 //--------------------------------------------------------------------------------------------------
