@@ -31,6 +31,7 @@
 unit JclPrint;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 
@@ -156,15 +157,14 @@ function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 
 function GetDefaultPrinterName: string;
-
 function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
 implementation
 
 uses
-  Graphics, IniFiles, Messages, Printers, WinSpool, StrUtils,
-  JclWin32, JclSysInfo, JclResources;
+  Graphics, IniFiles, Messages, Printers, WinSpool,
+  JclSysInfo, JclResources;
 
 const
   PrintIniPrinterName   = 'PrinterName';
@@ -182,8 +182,10 @@ const
   PrintIniYResolution   = 'YResolution';
   PrintIniTTOption      = 'TTOption';
 
-  WindowsIdent = 'windows';
-  DeviceIdent = 'device';
+  cWindows: PChar = 'windows';
+  cDevice = 'device';
+  cPrintSpool = 'winspool.drv';
+
 //==================================================================================================
 // Misc. functions
 //==================================================================================================
@@ -295,14 +297,13 @@ var
   MemoText: PChar;
 begin
   MemoText := Memo.Lines.GetText;
-  if MemoText = nil then
-    Exit;
-  try
-    DrawText(Canvas.Handle, MemoText, StrLen(MemoText), Rect,
-      DT_Left or DT_ExpandTabs or DT_WordBreak);
-  finally
-    FreeMem(MemoText);
-  end;
+  if MemoText <> nil then
+    try
+      DrawText(Canvas.Handle, MemoText, StrLen(MemoText), Rect,
+        DT_LEFT or DT_EXPANDTABS or DT_WORDBREAK);
+    finally
+      StrDispose(MemoText);
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -310,6 +311,185 @@ end;
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 begin
   CanvasMemoOut(Printer.Canvas, Memo, Rect);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetDefaultPrinterName: string;
+begin
+  DPGetDefaultPrinter(Result);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : DPGetDefaultPrinter, Author: Microsoft }
+// DPGetDefaultPrinter
+// Parameters:
+//   PrinterName: Return the printer name.
+// Returns: True for success, False for failure.
+
+// Source of the original code: Microsoft Knowledge Base Article - 246772
+//   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
+function DPGetDefaultPrinter(out PrinterName: string): Boolean;
+const
+  BUFSIZE = 8192;
+type
+  TGetDefaultPrinter = function(Buffer: PChar; var Size: DWORD): BOOL; stdcall;
+var
+  Needed, Returned: DWORD;
+  PI2: PPrinterInfo2;
+  WinVer: TWindowsVersion;
+  hWinSpool: HMODULE;
+  GetDefPrint: TGetDefaultPrinter;
+  Size: DWORD;
+begin
+  Result := False;
+  PrinterName := '';
+  WinVer := GetWindowsVersion;
+  // Windows 9x uses EnumPrinters
+  if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
+  begin
+    SetLastError(0);
+    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, Needed, Returned);
+    if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
+      Exit;
+    GetMem(PI2, Needed);
+    try
+      Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PI2, Needed, Needed, Returned);
+      if Result then
+        PrinterName := PI2^.pPrinterName;
+    finally
+      FreeMem(PI2);
+    end;
+  end
+  else
+  // Win NT uses WIN.INI (registry)
+  if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
+  begin
+    SetLength(PrinterName, BUFSIZE);
+    Result := GetProfileString(cWindows, cDevice, ',,,', PChar(PrinterName), BUFSIZE) > 0;
+    if Result then
+      PrinterName := Copy(PrinterName, 1, Pos(',', PrinterName) - 1)
+    else
+      PrinterName := '';
+  end
+  else
+  // >= Win 2000 uses GetDefaultPrinter
+  begin
+    hWinSpool := LoadLibrary(cPrintSpool);
+    if hWinSpool <> 0 then
+      try
+        @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterA');
+        if not Assigned(GetDefPrint) then
+          Exit;
+        Size := BUFSIZE;
+        SetLength(PrinterName, Size);
+        Result := GetDefPrint(PChar(PrinterName), Size);
+        if Result then
+          SetLength(PrinterName, StrLen(PChar(PrinterName)))
+        else
+          PrinterName := '';
+      finally
+        FreeLibrary(hWinSpool);
+      end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft }
+// DPSetDefaultPrinter
+// Parameters:
+//   PrinterName: Valid name of existing printer to make default.
+// Returns: True for success, False for failure.
+
+// Source of the original code: Microsoft Knowledge Base Article - 246772
+//   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
+function DPSetDefaultPrinter(const PrinterName: string): Boolean;
+type
+  TSetDefaultPrinter = function(APrinterName: PChar): BOOL; stdcall;
+var
+  Needed: DWORD;
+  PI2: PPrinterInfo2;
+  WinVer: TWindowsVersion;
+  hPrinter: THandle;
+  hWinSpool: HMODULE;
+  SetDefPrint: TSetDefaultPrinter;
+  PrinterStr: string;
+begin
+  Result := False;
+  if PrinterName = '' then
+    Exit;
+  WinVer := GetWindowsVersion;
+  if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
+  begin
+    Result := OpenPrinter(PChar(PrinterName), hPrinter, nil);
+    if Result and (hPrinter <> 0) then
+      try
+        SetLastError(0);
+        Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
+        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
+          Exit;
+        GetMem(PI2, Needed);
+        try
+          Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
+          if Result then
+          begin
+            PI2^.Attributes := PI2^.Attributes or PRINTER_ATTRIBUTE_DEFAULT;
+            Result := SetPrinter(hPrinter, 2, PI2, 0);
+            if Result then
+              SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
+                LPARAM(cWindows), SMTO_NORMAL, 1000, Needed);
+          end;
+        finally
+          FreeMem(PI2);
+        end;
+      finally
+        ClosePrinter(hPrinter);
+      end;
+  end
+  else
+  // Win NT uses WIN.INI (registry)
+  if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
+  begin
+    Result := OpenPrinter(PChar(PrinterName), hPrinter, nil);
+    if Result and (hPrinter <> 0) then
+      try
+        SetLastError(0);
+        Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
+        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
+          Exit;
+        GetMem(PI2, Needed);
+        try
+          Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
+          if Result and (PI2^.pDriverName <> nil) and (PI2^.pPortName <> nil) then
+          begin
+            PrinterStr := PrinterName + ',' + PI2^.pDriverName + ',' + PI2^.pPortName;
+            Result := WriteProfileString(cWindows, cDevice, PChar(PrinterStr));
+            if Result then
+              SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0,
+                SMTO_NORMAL, 1000, Needed);
+          end;
+        finally
+          FreeMem(PI2);
+        end;
+      finally
+        ClosePrinter(hPrinter);
+      end;
+  end
+  else
+  // >= Win 2000 uses SetDefaultPrinter
+  begin
+    hWinSpool := LoadLibrary(cPrintSpool);
+    if hWinSpool <> 0 then
+      try
+        @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterA');
+        if Assigned(SetDefPrint) then
+          Result := SetDefPrint(PChar(PrinterName));
+      finally
+        FreeLibrary(hWinSpool);
+      end;
+  end;
 end;
 
 //==================================================================================================
@@ -399,10 +579,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclPrintSet.DefaultPaperName(const PaperID: Word): string;
 { TODO : complete this list }
 // Since Win32 the strings are stored in the printer driver, no chance to get
 // a list from Windows
+function TJclPrintSet.DefaultPaperName(const PaperID: Word): string;
 begin
   case PaperID of
     dmpaper_Letter:
@@ -1119,189 +1299,13 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-function GetDefaultPrinterName: string;
-begin
-  DPGetDefaultPrinter(Result);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : DPGetDefaultPrinter, Author: Microsoft }
-// DPGetDefaultPrinter
-// Parameters:
-//   PrinterName: Return the printer name.
-// Returns: True for success, False for failure.
-
-// Source of the original code: Microsoft Knowledge Base Article - 246772
-//   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
-function DPGetDefaultPrinter(out PrinterName: string): Boolean;
-const
-  BUFSIZE = 8192;
-type
-  TGetDefaultPrinter = function(Buffer: PChar; var Size: DWORD): BOOL; stdcall;
-var
-  Needed, Returned: DWORD;
-  PI2: PPrinterInfo2;
-  WinVer: TWindowsVersion;
-  hWinSpool: HMODULE;
-  GetDefPrint: TGetDefaultPrinter;
-  Size: DWORD;
-begin
-  Result := False;
-  PrinterName := '';
-  WinVer := GetWindowsVersion;
-  // Windows 9x uses EnumPrinters
-  if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
-  begin
-    SetLastError(0);
-    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, Needed, Returned);
-    if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
-      Exit;
-    GetMem(PI2, Needed);
-    try
-      Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PI2, Needed, Needed, Returned);
-      if Result then
-        PrinterName := PI2^.pPrinterName;
-    finally
-      FreeMem(PI2);
-    end;
-  end
-  else
-  // Win NT uses WIN.INI (registry)
-  if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
-  begin
-    SetLength(PrinterName, BUFSIZE);
-    Result := GetProfileString('windows', 'device', ',,,', PChar(PrinterName), BUFSIZE) > 0;
-    if Result then
-      PrinterName := LeftStr(PrinterName, Pos(',', PrinterName) - 1)
-    else
-      PrinterName := '';
-  end
-  else
-  // >= Win 2000 uses GetDefaultPrinter
-  begin
-    hWinSpool := LoadLibrary('winspool.drv');
-    if hWinSpool <> 0 then
-      try
-        @GetDefPrint := GetProcAddress(hWinSpool, 'GetDefaultPrinterA');
-        if not Assigned(GetDefPrint) then
-          Exit;
-        Size := BUFSIZE;
-        SetLength(PrinterName, Size);
-        Result := GetDefPrint(PChar(PrinterName), Size);
-        if Result then
-          SetLength(PrinterName, StrLen(PChar(PrinterName)))
-        else
-          PrinterName := '';
-      finally
-        FreeLibrary(hWinSpool);
-      end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft }
-// DPSetDefaultPrinter
-// Parameters:
-//   PrinterName: Valid name of existing printer to make default.
-// Returns: True for success, False for failure.
-
-// Source of the original code: Microsoft Knowledge Base Article - 246772
-//   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
-function DPSetDefaultPrinter(const PrinterName: string): Boolean;
-type
-  TSetDefaultPrinter = function(APrinterName: PChar): BOOL; stdcall;
-var
-  Needed: DWORD;
-  PI2: PPrinterInfo2;
-  WinVer: TWindowsVersion;
-  hPrinter: THandle;
-  hWinSpool: HMODULE;
-  SetDefPrint: TSetDefaultPrinter;
-  PrinterStr: string;
-begin
-  Result := False;
-  if PrinterName = '' then
-    Exit;
-  WinVer := GetWindowsVersion;
-  if WinVer in [wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME] then
-  begin
-    Result := OpenPrinter(PChar(PrinterName), hPrinter, nil);
-    if Result and (hPrinter <> 0) then
-      try
-        SetLastError(0);
-        Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
-        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
-          Exit;
-        GetMem(PI2, Needed);
-        try
-          Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
-          if Result then
-          begin
-            PI2^.Attributes := PI2^.Attributes or PRINTER_ATTRIBUTE_DEFAULT;
-            Result := SetPrinter(hPrinter, 2, PI2, 0);
-            if Result then
-              SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
-                LPARAM(PChar('windows')), SMTO_NORMAL, 1000, Needed);
-          end;
-        finally
-          FreeMem(PI2);
-        end;
-      finally
-        ClosePrinter(hPrinter);
-      end;
-  end
-  else
-  // Win NT uses WIN.INI (registry)
-  if WinVer in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
-  begin
-    Result := OpenPrinter(PChar(PrinterName), hPrinter, nil);
-    if Result and (hPrinter <> 0) then
-      try
-        SetLastError(0);
-        Result := GetPrinter(hPrinter, 2, nil, 0, @Needed);
-        if not Result and ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
-          Exit;
-        GetMem(PI2, Needed);
-        try
-          Result := GetPrinter(hPrinter, 2, PI2, Needed, @Needed);
-          if Result and (PI2^.pDriverName <> nil) and (PI2^.pPortName <> nil) then
-          begin
-            PrinterStr := PrinterName + ',' + PI2^.pDriverName + ',' + PI2^.pPortName;
-            Result := WriteProfileString('windows', 'device', PChar(PrinterStr));
-            if Result then
-              SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0,
-                SMTO_NORMAL, 1000, Needed);
-          end;
-        finally
-          FreeMem(PI2);
-        end;
-      finally
-        ClosePrinter(hPrinter);
-      end;
-  end
-  else
-  // >= Win 2000 uses SetDefaultPrinter
-  begin
-    hWinSpool := LoadLibrary('winspool.drv');
-    if hWinSpool <> 0 then
-      try
-        @SetDefPrint := GetProcAddress(hWinSpool, 'SetDefaultPrinterA');
-        if not Assigned(SetDefPrint) then
-          Exit;
-        Result := SetDefPrint(PChar(PrinterName));
-      finally
-        FreeLibrary(hWinSpool);
-      end;
-  end;
-end;
-
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/09 13:58:52  marquardt
+// style cleaning JclPrint
+// remove WinSpool related functions from JclWin32
+//
 // Revision 1.15  2004/10/09 06:17:27  marquardt
 // PH cleaning DPSetDefaultPrinter reimplemented from scratch
 //
