@@ -137,7 +137,7 @@ resourcestring
   RsOSVersion = 'System   : %s %s, Version: %d.%d, Build: %x, "%s"';
   RsProcessor = 'Processor: %s, %s, %d MHz %s%s';
   RsScreenRes = 'Display  : %dx%d pixels, %d bpp';
-  RsActiveControl = 'Active Controls hiearchy:';
+  RsActiveControl = 'Active Controls hierarchy:';
   RsThread = 'Thread: %s';
   RsMissingVersionInfo = '(no version info)';
 
