@@ -76,7 +76,8 @@ function GetMDACVersion: string;
     Parameters the same, apart from the "stm" type now being a Var rather than just
     an Out - to allow a little flexibility if the developer wants the destination
     to be a specific stream, otherwise it creates one into the passed variable! }
-
+function MarshalInterThreadInterfaceInVarArray(const iid: TIID;
+  unk: IUnknown; var VarArray: OleVariant): HResult;
 function MarshalInterProcessInterfaceInStream(const iid: TIID;
   unk: IUnknown; var stm: IStream): HResult;
 function MarshalInterProcessInterfaceInVarArray(const iid: TIID;
@@ -231,6 +232,51 @@ end;
   { Other Marshalling Routines to complement "CoMarshalInterThreadInterfaceInStream" }
 
 
+function MarshalInterThreadInterfaceInVarArray(const iid: TIID; unk: IUnknown;
+  var VarArray: OleVariant): HResult;
+var
+  msData: TMemoryStream;
+  itfStream: IStream;
+begin
+  { TODO:  Test this routine.
+    TOTEST:  D4, D5, D6 (CBx ??) }
+  try
+    { Will need a stream to obtain the data initially before creating the Variant Array }
+    msData := TMemoryStream.Create;
+
+    itfStream := (TStreamAdapter.Create(msData, soOwned) as IStream);
+
+    { Probably would never get here in such a condition, but just in case }
+    if itfStream = Nil then
+    begin
+      Result := E_OUTOFMEMORY;
+      Exit;
+    end;
+
+    if itfStream <> Nil then
+    begin
+      { Different Machine }
+      Result := CoMarshalInterThreadInterfaceInStream(iid, unk, itfStream);
+
+      if Result <> S_OK then
+        Exit;
+
+    {$IFDEF SUPPORTS_OVERLOAD}
+      VarArray := StreamToVariantArray(itfStream);
+    {$ELSE}
+      VarArray := IStreamToVariantArray(itfStream);
+    {$ENDIF}
+
+      if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
+        Result := E_FAIL;
+    end else
+      { TODO:  Most likely out of memory, though should not reach here }
+      Result := E_POINTER;
+  except
+    Result := E_UNEXPECTED;
+  end;
+end;
+
 function MarshalInterProcessInterfaceInStream(const iid: TIID; unk: IUnknown;
   var stm: IStream): HResult;
 var
@@ -258,7 +304,7 @@ begin
       { Same Machine, Different Process}
       Result := CoMarshalInterface(stm, iid, unk, MSHCTX_LOCAL, Nil, MSHLFLAGS_NORMAL)
     else
-      { TODO:  Most likely out of memory, though to add to }
+      { TODO:  Most likely out of memory, though should not reach here }
       Result := E_POINTER;
   except
     Result := E_UNEXPECTED;
@@ -285,7 +331,7 @@ begin
   VarArray := IStreamToVariantArray(itfStream);
 {$ENDIF}
 
-  if VarIsNull(VarArray) then
+  if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
     Result := E_FAIL;
 end;
 
@@ -316,7 +362,7 @@ begin
       { Different Machine }
       Result := CoMarshalInterface(stm, iid, unk, MSHCTX_DIFFERENTMACHINE, Nil, MSHLFLAGS_NORMAL)
     else
-      { TODO:  Most likely out of memory, though to add to }
+      { TODO:  Most likely out of memory, though should not reach here }
       Result := E_POINTER;
   except
     Result := E_UNEXPECTED;
@@ -343,7 +389,7 @@ begin
   VarArray := IStreamToVariantArray(itfStream);
 {$ENDIF}
 
-  if VarIsNull(VarArray) then
+  if VarIsNull(VarArray) or VarIsEmpty(VarArray) then
     Result := E_FAIL;
 end;
 
@@ -580,6 +626,10 @@ var
 begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
+  { Check if the Variant is Empty or Null }
+  if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
+    raise EInvalidParam.Create(pcInvalidParam);
+
   { TODO:  Should we allow them to write to the Stream, not matter what position it is at? }
   if Assigned(Stream) then
     Stream.Position := 0
@@ -609,6 +659,9 @@ var
 begin
   { TODO:  Test this routine.
     TOTEST:  D4 (CBx ??) }
+  { Check if the Variant is Empty or Null }
+  if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
+    raise EInvalidParam.Create(pcInvalidParam);
 
   bCreated := False;
 
