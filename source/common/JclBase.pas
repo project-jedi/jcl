@@ -47,9 +47,9 @@ uses
 
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 90;   // Forth minor release JCL 1.20
+  JclVersionMinor   = 91;   // Forth minor release JCL 1.20
   JclVersionRelease = 0;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1497;  // build number, days since march 1, 2000
+  JclVersionBuild   = 1531;  // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -62,7 +62,6 @@ const
 function SysErrorMessage(ErrNo: Integer): string;
 
 {$IFDEF MSWINDOWS}
-procedure RaiseLastWin32Error;
 function Win32Check(RetVal: BOOL): BOOL;
 {$ENDIF MSWINDOWS}
 
@@ -137,9 +136,11 @@ type
   PPointer = ^Pointer;
   {$ENDIF ~FPC}
 
+  {$IFNDEF FPC}
   {$IFNDEF RTL140_UP}
-  PBoolean = ^Boolean;  // FPC defines "PBOOLEAN = ^BYTE;" in rtl\win32\wininc\base.inc.
+  PBoolean = ^Boolean;
   {$ENDIF RTL140_UP}
+  {$ENDIF ~FPC}
 
   {$IFNDEF COMPILER7}
   UInt64 = Int64;
@@ -206,12 +207,14 @@ procedure RaiseLastOSError;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_INTERFACE}
+{$IFNDEF FPC}
 {$IFNDEF RTL140_UP}
 
 type
   IInterface = IUnknown;
 
-{$ENDIF RTL140_UP}
+{$ENDIF ~RTL140_UP}
+{$ENDIF ~FPC}
 {$ENDIF SUPPORTS_INTERFACE}
 
 implementation
@@ -257,13 +260,6 @@ begin
   Size := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrNo,
     0, Buffer, 4000, nil);
   SetString(Result, Buffer, Size);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-{ TODO -oPJH -cFPC : exists? }
-procedure RaiseLastWin32Error;
-begin
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -365,6 +361,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/05/08 19:56:55  rrossmair
+// FPC-related improvements
+//
 // Revision 1.12  2004/05/06 05:09:55  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //
