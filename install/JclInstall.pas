@@ -528,12 +528,13 @@ var
   LogSize: Integer;
 begin
   Result := True;
-  if Tool.FeatureChecked(FID_JCL, Installation) then
-  begin
-    LogSize := FIniFile.ReadInteger(RsLogSize, Installation.Name, 0);
-    Inc(FTotalLogSize, LogSize);
-    Result := LogSize > 0;
-  end;
+  if Supports(Installation) then
+    if Tool.FeatureChecked(FID_JCL, Installation) then
+    begin
+      LogSize := FIniFile.ReadInteger(RsLogSize, Installation.Name, 0);
+      Inc(FTotalLogSize, LogSize);
+      Result := LogSize > 0;
+    end;
 end;
 
 procedure TJclInstall.InitProgress;
