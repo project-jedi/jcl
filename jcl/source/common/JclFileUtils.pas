@@ -22,7 +22,6 @@
 {   Charlie Calvert                                                                                }
 {   Wim De Cleen                                                                                   }
 {   Massimo Maria Ghisalberti                                                                      }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   David Hervieux                                                                                 }
 {   Jeff                                                                                           }
 {   Pelle F. S. Liljendal                                                                          }
@@ -149,6 +148,7 @@ function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF MSWINDOWS}
 function PathGetRelativePath(Origin, Destination: string): string;
+function PathGetTempPath: string;
 function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: AnsiString): Boolean;
 function PathIsDiskDevice(const Path: string): Boolean;
@@ -200,14 +200,19 @@ function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTr
 function DirectoryExists(const Name: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): Boolean;
 {$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
-function FileCreateTemp(var Prefix: string): THandle;
 {$ENDIF MSWINDOWS}
+function FileCreateTemp(var Prefix: string): THandle;
+function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
+function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
+function FileDelete(const FileName: string; MoveToRecycleBin: Boolean = False): Boolean;
 function FileExists(const FileName: string): Boolean;
+function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
+function FileRestore(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
 function FileGetDisplayName(const FileName: string): string;
 function FileGetSize(const FileName: string): Integer;
-{$IFDEF MSWINDOWS}
 function FileGetTempName(const Prefix: string): string;
+{$IFDEF MSWINDOWS}
 function FileGetTypeName(const FileName: string): string;
 {$ENDIF MSWINDOWS}
 function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
@@ -268,12 +273,19 @@ function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): B
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
+
+{$IFDEF DROP_OBSOLETE_CODE}
 {$IFNDEF FPC}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$ENDIF ~FPC}
-function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
+function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function Win32RestoreFile(const FileName: string): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+{$ENDIF DROP_OBSOLETE_CODE}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -535,7 +547,7 @@ type
     property FileMask: string read GetFileMask write SetFileMask;
     property IncludeSubDirectories: Boolean
       read GetIncludeSubDirectories write SetIncludeSubDirectories;
-    property IncludeHiddenSubDirectories: Boolean 
+    property IncludeHiddenSubDirectories: Boolean
       read GetIncludeHiddenSubDirectories write SetIncludeHiddenSubDirectories;
     property SearchOption[const Option: TFileSearchOption]: Boolean read GetOption write SetOption;
     property LastChangeAfterAsString: string read GetLastChangeAfterStr write SetLastChangeAfterStr;
@@ -2165,8 +2177,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Author: Olivier Sannier }
-
 function PathGetRelativePath(Origin, Destination: string): string;
 var
   OrigList: TStringList;
@@ -2228,6 +2238,26 @@ begin
     OrigList.Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PathGetTempPath: string;
+{$IFDEF MSWINDOWS}
+var
+  BufSize: Cardinal;
+begin
+  BufSize := Windows.GetTempPath(0, nil);
+  SetLength(Result, BufSize);
+  { TODO : Check length (-1 or not) }
+  Windows.GetTempPath(BufSize, PChar(Result));
+  StrResetLength(Result);
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  Result := GetEnvironmentVariable('TMPDIR');
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2608,8 +2638,11 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function DirectoryExists(const Name: string): Boolean;
 var
   R: DWORD;
@@ -2652,9 +2685,12 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 function FileCreateTemp(var Prefix: string): THandle;
+{$IFDEF MSWINDOWS}
 var
   TempName: string;
 begin
@@ -2671,8 +2707,106 @@ begin
     Prefix := TempName;
   end;
 end;
-
 {$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+var
+  Template: string;
+begin
+  // The mkstemp function generates a unique file name just as mktemp does, but
+  // it also opens the file for you with open. If successful, it modifies
+  // template in place and returns a file descriptor for that file open for
+  // reading and writing. If mkstemp cannot create a uniquely-named file, it
+  // returns -1. If template does not end with `XXXXXX', mkstemp returns -1 and
+  // does not modify template.
+
+  // The file is opened using mode 0600. If the file is meant to be used by
+  // other users this mode must be changed explicitly.
+
+  // Unlike mktemp, mkstemp is actually guaranteed to create a unique file that
+  // cannot possibly clash with any other program trying to create a temporary
+  // file. This is because it works by calling open with the O_EXCL flag, which
+  // says you want to create a new file and get an error if the file already
+  // exists.
+  Template := Prefix + 'XXXXXX';
+  Result := mkstemp(PChar(Template));
+  Prefix := Template;
+end;
+{$ENDIF UNIX}
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp: Donator: Robert Rossmair }
+
+function FileBackup(const FileName: string; Move: Boolean = False): Boolean;
+begin
+  if Move then
+    Result := FileMove(FileName, GetBackupFileName(FileName), True)
+  else
+    Result := FileCopy(FileName, GetBackupFileName(FileName), True);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp: Donator: Robert Rossmair }
+
+function FileCopy(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
+var
+  {$IFDEF UNIX}
+  SrcFile, DstFile: file;
+  Buf: array[0..511] of Byte;
+  BytesRead: Integer;
+  {$ENDIF UNIX}
+  DestFileName: string;
+begin
+  if IsDirectory(NewFileName) then
+    DestFileName := PathAddSeparator(NewFileName) + ExtractFileName(ExistingFileName)
+  else
+    DestFileName := NewFileName;
+  {$IFDEF MSWINDOWS}
+  { TODO : Use CopyFileEx where available? }
+  Result := CopyFile(PChar(ExistingFileName), PChar(DestFileName), not ReplaceExisting);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := False;
+  if not FileExists(DestFileName) or ReplaceExisting then
+  begin
+    AssignFile(SrcFile, ExistingFileName);
+    Reset(SrcFile, 1);
+    AssignFile(DstFile, DestFileName);
+    Rewrite(DstFile, 1);
+    while not Eof(SrcFile) do
+    begin
+      BlockRead(SrcFile, Buf, SizeOf(Buf), BytesRead);
+      BlockWrite(DstFile, Buf, BytesRead);
+    end;
+    CloseFile(DstFile);
+    CloseFile(SrcFile);
+    Result := True;
+  end;
+  {$ENDIF UNIX}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function FileDelete(const FileName: string; MoveToRecycleBin: Boolean = False): Boolean;
+{$IFDEF MSWINDOWS}
+  { TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?) }
+begin
+  {$IFNDEF FPC}  // needs JclShell
+  if MoveToRecycleBin then
+    Result := SHDeleteFiles(0, FileName, [doSilent, doAllowUndo, doFilesOnly])
+  else
+  {$ENDIF ~FPC}
+    Result := Windows.DeleteFile(PChar(FileName));
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+  { TODO -cHelp: Donator: Robert Rossmair }
+  { TODO : implement MoveToRecycleBin for appropriate Desktops (e.g. KDE) }
+begin
+  Result := remove(PChar(FileName)) <> -1;
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2680,6 +2814,46 @@ function FileExists(const FileName: string): Boolean;
 begin
   // Attempt to access the file, doesn't matter how, using FileGetSize is as good as anything else.
   Result := FileGetSize(FileName) <> -1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp: Donator: Robert Rossmair }
+
+function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: Boolean = False): Boolean;
+{$IFDEF MSWINDOWS}
+const
+  Flag: array[Boolean] of Cardinal = (0, MOVEFILE_REPLACE_EXISTING);
+{$ENDIF MSWINDOWS}
+begin
+  {$IFDEF MSWINDOWS}
+  Result := MoveFileEx(PChar(ExistingFileName), PChar(NewFileName), Flag[ReplaceExisting]);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Result := __rename(PChar(ExistingFileName), PChar(NewFileName)) = 0;
+  {$ENDIF UNIX}
+  if not Result then
+  begin
+    Result := FileCopy(ExistingFileName, NewFileName, ReplaceExisting);
+    if Result then
+      FileDelete(ExistingFileName);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp: Donator: Robert Rossmair }
+
+function FileRestore(const FileName: string): Boolean;
+var
+  TempFileName: string;
+begin
+  Result := False;
+  TempFileName := FileGetTempName('');
+
+  if FileMove(GetBackupFileName(FileName), TempFileName, True) then
+    if FileBackup(FileName, False) then
+      Result := FileMove(TempFileName, FileName, True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2762,32 +2936,44 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
-
 function FileGetTempName(const Prefix: string): string;
+{$IFDEF MSWINDOWS}
 var
   TempPath, TempFile: string;
   R: Cardinal;
 begin
   Result := '';
-  R := GetTempPath(0, nil);
-  SetLength(TempPath, R);
-  { TODO : Check length (-1 or not) }
-  R := GetTempPath(R, PChar(TempPath));
-  if R <> 0 then
+  TempPath := PathGetTempPath;
+  if TempPath <> '' then
   begin
-    SetLength(TempPath, StrLen(PChar(TempPath)));
     SetLength(TempFile, MAX_PATH);
     R := GetTempFileName(PChar(TempPath), PChar(Prefix), 0, PChar(TempFile));
     if R <> 0 then
     begin
-      SetLength(TempFile, StrLen(PChar(TempFile)));
+      StrResetLength(TempFile);
       Result := TempFile;
     end;
   end;
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+// Warning: Between the time the pathname is constructed and the file is created
+// another process might have created a file with the same name using tmpnam,
+// leading to a possible security hole. The implementation generates names which
+// can hardly be predicted, but when opening the file you should use the O_EXCL
+// flag. Using tmpfile or mkstemp is a safe way to avoid this problem.
+var
+  P: PChar;
+begin
+  P := tempnam(PChar(PathGetTempPath), PChar(Prefix));
+  Result := P;
+  Libc.free(P);
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function FileGetTypeName(const FileName: string): string;
 {$IFDEF FPC}
@@ -2926,11 +3112,7 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-{ TODO : UNC Version }
 function GetDriveTypeStr(const Drive: Char): string;
-const
-  DriveTypeIdents: array [DRIVE_REMOVABLE..DRIVE_RAMDISK] of string = (
-    RsRemovableDrive, RsHardDisk, RsRemoteDrive, RsCDRomDrive, RsRamDisk);
 var
   DriveType: Integer;
   DriveStr: string;
@@ -2940,10 +3122,18 @@ begin
   DriveStr := Drive + ':\';
   DriveType := GetDriveType(PChar(DriveStr));
   case DriveType of
-    Low(DriveTypeIdents)..High(DriveTypeIdents):
-      Result := DriveTypeIdents[DriveType];
-  else
-    Result := RsUnknownDrive;
+    DRIVE_REMOVABLE:
+      Result := RsRemovableDrive;
+    DRIVE_FIXED:
+      Result := RsHardDisk;
+    DRIVE_REMOTE:
+      Result := RsRemoteDrive;
+    DRIVE_CDROM:
+      Result := RsCDRomDrive;
+    DRIVE_RAMDISK:
+      Result := RsRamDisk;
+    else
+      Result := RsUnknownDrive;
   end;
 end;
 
@@ -3332,28 +3522,29 @@ var
   FileInfo: TByHandleFileInformation;
 begin
   Assert(FileName <> '');
-  if not RtdlGetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
+  { TODO : Use RTDL-Version of GetFileAttributesEx }
+  if IsWin95 or IsWin95OSR2 or IsWinNT3 then
   begin
-    if GetLastError = ERROR_CALL_NOT_IMPLEMENTED then
-    begin
-      Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
-      if Handle <> INVALID_HANDLE_VALUE then
-      try
-        if not GetFileInformationByHandle(Handle, FileInfo) then
-          raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
-        Result.dwFileAttributes := FileInfo.dwFileAttributes;
-        Result.ftCreationTime := FileInfo.ftCreationTime;
-        Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
-        Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
-        Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
-        Result.nFileSizeLow := FileInfo.nFileSizeLow;
-      finally
-        CloseHandle(Handle);
-      end
-      else
+    Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    try
+      if not GetFileInformationByHandle(Handle, FileInfo) then
         raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+      Result.dwFileAttributes := FileInfo.dwFileAttributes;
+      Result.ftCreationTime := FileInfo.ftCreationTime;
+      Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
+      Result.ftLastWriteTime := FileInfo.ftLastWriteTime;
+      Result.nFileSizeHigh := FileInfo.nFileSizeHigh;
+      Result.nFileSizeLow := FileInfo.nFileSizeLow;
+    finally
+      CloseHandle(Handle);
     end
     else
+      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
+  end
+  else
+  begin
+    if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
       raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end;
 end;
@@ -3658,50 +3849,35 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF FPC}  // needs JclShell
-{ TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?) }
+{$IFDEF DROP_OBSOLETE_CODE}
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
-  if MoveToRecycleBin then
-    Result := SHDeleteFiles(0, FileName, [doSilent, doAllowUndo, doFilesOnly])
-  else
-    Result := Windows.DeleteFile(PChar(FileName));
+  Result := FileDelete(FileName, MoveToRecycleBin);
 end;
-{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 
-function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
+function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
 begin
-  Result := RtdlMoveFileEx(PChar(SrcFilename), PChar(DstFilename), MOVEFILE_REPLACE_EXISTING);
-  if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
-  begin
-    Result := CopyFile(PChar(SrcFilename), PChar(DstFilename), False);
-    if Result then
-      DeleteFile(PChar(SrcFilename));   { TODO : return the result of deleting? }
-  end;
+  Result := FileMove(SrcFilename, DstFilename, True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Win9x and Move = True, the function returns True, if the file is
-  copied, but not deleted }
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 begin
-  if Move then
-    Result := Win32MoveFileReplaceExisting(Filename, GetBackupFileName(FileName))
-  else
-    Result := CopyFile(PChar(FileName), PChar(GetBackupFileName(FileName)), False)
+  Result := FileBackup(FileName, Move);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function Win32RestoreFile(const FileName: string): Boolean;
 begin
-  Result := CopyFile(PChar(GetBackupFileName(FileName)), PChar(FileName), False);
+  Result := FileRestore(FileName);
 end;
 
+{$ENDIF DROP_OBSOLETE_CODE}
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -4738,6 +4914,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+// author: Robert Rossmair
+
 function CanonicalizedSearchPath(const Directory: string): string;
 begin
   Result := PathCanonicalize(Directory);
@@ -5763,6 +5941,18 @@ end;
 // History:
 
 // $Log$
+// Revision 1.29  2004/10/15 03:54:20  rrossmair
+// - added FileCreateTemp/Unix
+// - added FileBackup
+// - added FileCopy
+// - added FileDelete
+// - added FileMove
+// - added FileRestore
+// - added FileGetTempName/Unix
+// - added PathGetTempPath
+// - reworked Win32* functions as mere wrappers for corresponding File* functions
+// - removed some PH contributions
+//
 // Revision 1.28  2004/08/03 07:22:36  marquardt
 // resourcestring cleanup
 //
@@ -5813,9 +6003,6 @@ end;
 //
 // Revision 1.12  2004/05/05 00:04:11  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
-//
-// Revision 1.11  2004/04/06 04:53:18  peterjhaas
-// adapt compiler conditions, add log entry
 //
 
 end.
