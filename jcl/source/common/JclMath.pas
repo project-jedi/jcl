@@ -26,6 +26,10 @@
 { Last modified: December 15, 2001                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
+// - Added functions: Versine, Coversine, Haversine, exsecand
+// - Added TruncPower function (Truncated Power)
+//   A: MT
+//   D: TruncPower(Base, Exponent)  Power(Base, Exponent) for Base >= 0, 0 for Base < 0
 // - Added Exp function
 // - Added special value handling to sin
 // - Added function IsSpecialValue
@@ -136,14 +140,19 @@ function ArcCsc(X: Float): Float;
 function ArcSec(X: Float): Float;
 function ArcSin(X: Float): Float;
 function ArcTan(X: Float): Float;
-function ArcTan2(Y, X: Float): Float;
+function ArcTan2(Y, X: Float): Float; 
 function Cos(X: Float): Float;
 function Cot(X: Float): Float;
+function Coversine(X: Float): Float;
 function Csc(X: Float): Float;
+function Exsecans(X: Float): Float;
+function Haversine(X: Float): Float;
 function Sec(X: Float): Float;
 function Sin(X: Float): Float;
 procedure SinCos(X: Float; var Sin, Cos: Float);
 function Tan(X: Float): Float;
+function Versine(X: Float): Float;
+
 
 { Hyperbolic }
 
@@ -162,8 +171,8 @@ function TanH(X: Float): Float;
 
 { Coordinate conversion }
 
-function DegMinSecToFloat(const Degs, Mins, Secs: Float): Float;
-procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float);
+function DegMinSecToFloat(const Degs, Mins, Secs: Float): Float; // obsolete (see JclUnitConv)
+procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obsolete (see JclUnitConv)
 
 { Exponential }
 
@@ -171,7 +180,9 @@ function Exp(const x: Float): Float;
 function Power(const Base, Exponent: Float): Float;
 function PowerInt(const X: Float; N: Integer): Float;
 function TenToY(const Y: Float): Float;
+function TruncPower(const Base, Exponent: Float): Float;
 function TwoToY(const Y: Float): Float;
+
 
 { Floating point support routines }
 
@@ -457,7 +468,7 @@ begin
   if X < Y then
     Result := X
   else
-    result := Y;
+    Result := Y;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -720,19 +731,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ArcTan2(Y, X: Float): Float;
-
-  function FArcTan2(Y, X: Float): Float; assembler;
-  asm
-          FLD     Y
-          FLD     X
-          FPATAN
-          FWAIT
-  end;
-
-begin
-  DomainCheck(not ((Y >= 0.0) and (X >= Y)));
-  Result := FArcTan2(Y, X);
+function ArcTan2(Y, X: Float): Float; assembler;
+asm
+        FLD     Y
+        FLD     X
+        FPATAN
+        FWAIT
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -771,6 +775,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function Coversine(X: Float): Float;
+begin
+  Result := 1 - sin(x);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function Csc(X: Float): Float;
 var
   Y: Float;
@@ -780,6 +791,20 @@ begin
   Y := Sin(X);
   DomainCheck(Y = 0.0);
   Result := 1.0 / Y;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Exsecans(X: Float): Float;
+begin
+  Result := sec(x) - 1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Haversine(X: Float): Float;
+begin
+  Result := 0.5 * (1 - cos(x)) ;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -853,6 +878,13 @@ function Tan(X: Float): Float;
 begin
   DomainCheck(Abs(X) > MaxAngle);
   Result := FTan(X);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Versine(X: Float): Float;
+begin
+  Result := 1 - cos(x);
 end;
 
 //===================================================================================================
@@ -1055,14 +1087,14 @@ end;
 // Coordinate conversion
 //===================================================================================================
 
-function DegMinSecToFloat(const Degs, Mins, Secs: Float): Float;
+function DegMinSecToFloat(const Degs, Mins, Secs: Float): Float; // obsolete
 begin
   Result := Degs + (Mins / 60.0) + (Secs / 3600.0);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float);
+procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obsolete
 var
   Y: Float;
 begin
@@ -1189,6 +1221,16 @@ begin
     Result := 1.0
   else
     Result := Exp(Y * Ln10);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TruncPower(const Base, Exponent: Float): Float;
+begin
+  if Base > 0 then
+    Result := Power(Base, Exponent)
+  else
+    Result := 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
