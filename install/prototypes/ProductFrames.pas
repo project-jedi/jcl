@@ -317,7 +317,7 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
   var
     Node: TTreeNode;
   begin
-    if Value and not NodeChecked[Node] then
+    if Value and not NodeChecked[N] then
     begin
       Node := N.Parent;
       if Node <> nil then
