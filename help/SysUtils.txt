@@ -118,16 +118,18 @@ SizeOfMem returns the size of the memory block pointed to by the specified point
 This routine depends on information peeked from the standard Delphi memory manager
 implemention (in GetMem.inc) and will not work when a custom memory manager
 replacement is in use. Also, it will only work for memory allocated using the
-AllocMem, GetMem and New routines.
+AllocMem, GetMem and New routines; that is, using the Delphi memory manager.
 [Parameters]
 Count=1
 1=P:Pointer=Pointer to the memory block whose size to retrieve.
 [Result]
 The total size of the memory block pointed to by P. Note that the current
 implementation uses a 4 byte header to store some additonal information (such as
-the size) about the memory block. This 4 bytes are included in the result. To get
+the size) about the memory block. These 4 bytes are included in the result. To get
 the size of the block available to the user (the size specified when the block
-was allocated) simply subtract 4.
+was allocated) simply subtract 4. If the function fails to determine the size of
+the memory, for example because it detected that the Delphi memory manager was 
+replaced by a custom memory manager, it returns -1.
 [Quick Info]
 Unit=JclSysUtils
 Category=Memory, Classes and Objects
