@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 18, 2001                                              }
+{ Last modified: January 20, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -148,6 +148,7 @@ type
   private
     FAddressesType: string;
     function GetItems(Index: Integer): TJclEmailRecip;
+    function GetOriginator: TJclEmailRecip;
   public
     function Add(const Address: string;
       const Name: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
@@ -156,16 +157,17 @@ type
     procedure SortRecips;
     property AddressesType: string read FAddressesType write FAddressesType;
     property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
+    property Originator: TJclEmailRecip read GetOriginator;
   end;
 
+  TJclEmailFindOptions = set of (foFifo, foUnreadOnly);
   TJclEmailLogonOptions = set of (loLogonUI, loNewSession);
-  TJclEmailReadOptions = set of (roUnreadOnly, roFifo, roPeek, roHeaderOnly,
-    roAttachments);
+  TJclEmailReadOptions = set of (roAttachments, roHeaderOnly, roMarkAsRead);
 
   TJclEmailReadedMsg = record
-    MessageType: string;
-    DateReceived: TDateTime;
     ConversationID: string;
+    DateReceived: TDateTime;
+    MessageType: string;
     Flags: FLAGS;
   end;
 
@@ -173,37 +175,49 @@ type
   private
     FAttachments: TStrings;
     FBody: string;
+    FFindOptions: TJclEmailFindOptions;
     FLogonOptions: TJclEmailLogonOptions;
+    FParentWnd: HWND;
     FReadedMsg: TJclEmailReadedMsg;
-    FReadMailOptions: TJclEmailReadOptions;
     FRecipients: TJclEmailRecips;
     FSeedMessageID: string;
     FSessionHandle: THandle;
     FSubject: string;
     function GetUserLogged: Boolean;
+    procedure SetBody(const Value: string);
+    function GetParentWnd: HWND;
   protected
     procedure BeforeUnloadClientLib; override;
-    function GetParentWindow(Wnd: HWND): HWND;
-    function LogonOptionsToFlags: DWORD;
+    procedure DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
+    function InternalSendOrSave(Save: Boolean; ShowDialog: Boolean): Boolean;
+    function LogonOptionsToFlags(ShowDialog: Boolean): DWORD;
   public
     constructor Create;
     destructor Destroy; override;
+    function Address(const Caption: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+      EditFields: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 3 {$ENDIF}): Boolean;
     procedure Clear;
-    procedure LogOff(ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
-    procedure LogOn(const ProfileName, Password: string;
-      ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
-    procedure MessageReport(Strings: TStrings; MaxWidth: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 80 {$ENDIF});
-    function Send(ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
-      ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
-    procedure SortAttachments;
-    property Attachments: TStrings read FAttachments;
-    property Body: string read FBody write FBody;
+    function Delete(const MessageID: string): Boolean;
     function FindFirstMessage: Boolean;
     function FindNextMessage: Boolean;
-    function Read: Boolean;
+    procedure LogOff;
+    procedure LogOn(const ProfileName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+      const Password: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
+    function MessageReport(Strings: TStrings;
+      MaxWidth: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 80 {$ENDIF};
+      IncludeAddresses: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Integer;
+    function Read(const Options: TJclEmailReadOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+    function ResolveName(var Name, Address: string;
+      ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
+    function Save: Boolean;
+    function Send(ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+    procedure SortAttachments;
+    property Attachments: TStrings read FAttachments;
+    property Body: string read FBody write SetBody;
+    property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
     property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
+    property ParentWnd: HWND read GetParentWnd write FParentWnd;
     property ReadedMsg: TJclEmailReadedMsg read FReadedMsg;
-    property ReadMailOptions: TJclEmailReadOptions read FReadMailOptions write FReadMailOptions;
     property Recipients: TJclEmailRecips read FRecipients;
     property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
     property SessionHandle: THandle read FSessionHandle;
@@ -218,7 +232,7 @@ type
 function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
   const AAttachment: TFileName {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
-  ParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+  AParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
 
 //------------------------------------------------------------------------------
 // MAPI Errors
@@ -272,38 +286,61 @@ end;
 //------------------------------------------------------------------------------
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
-const
-  ErrorMessages: array [1..26] of PResStringRec = (
-    @RsMapiErrUSER_ABORT,
-    @RsMapiErrFAILURE,
-    @RsMapiErrLOGIN_FAILURE,
-    @RsMapiErrDISK_FULL,
-    @RsMapiErrINSUFFICIENT_MEMORY,
-    @RsMapiErrACCESS_DENIED,
-    nil,
-    @RsMapiErrTOO_MANY_SESSIONS,
-    @RsMapiErrTOO_MANY_FILES,
-    @RsMapiErrTOO_MANY_RECIPIENTS,
-    @RsMapiErrATTACHMENT_NOT_FOUND,
-    @RsMapiErrATTACHMENT_OPEN_FAILURE,
-    @RsMapiErrATTACHMENT_WRITE_FAILURE,
-    @RsMapiErrUNKNOWN_RECIPIENT,
-    @RsMapiErrBAD_RECIPTYPE,
-    @RsMapiErrNO_MESSAGES,
-    @RsMapiErrINVALID_MESSAGE,
-    @RsMapiErrTEXT_TOO_LARGE,
-    @RsMapiErrINVALID_SESSION,
-    @RsMapiErrTYPE_NOT_SUPPORTED,
-    @RsMapiErrAMBIGUOUS_RECIPIENT,
-    @RsMapiErrMESSAGE_IN_USE,
-    @RsMapiErrNETWORK_FAILURE,
-    @RsMapiErrINVALID_EDITFIELDS,
-    @RsMapiErrINVALID_RECIPS,
-    @RsMapiErrNOT_SUPPORTED);
 begin
-  Result := '';
-  if ErrorCode <= High(ErrorMessages) then
-    Result := LoadResString(ErrorMessages[ErrorCode]);
+  case ErrorCode of
+    MAPI_E_USER_ABORT:
+      Result := RsMapiErrUSER_ABORT;
+    MAPI_E_FAILURE:
+      Result := RsMapiErrFAILURE;
+    MAPI_E_LOGIN_FAILURE:
+      Result := RsMapiErrLOGIN_FAILURE;
+    MAPI_E_DISK_FULL:
+      Result := RsMapiErrDISK_FULL;
+    MAPI_E_INSUFFICIENT_MEMORY:
+      Result := RsMapiErrINSUFFICIENT_MEMORY;
+    MAPI_E_ACCESS_DENIED:
+      Result := RsMapiErrACCESS_DENIED;
+    MAPI_E_TOO_MANY_SESSIONS:
+      Result := RsMapiErrTOO_MANY_SESSIONS;
+    MAPI_E_TOO_MANY_FILES:
+      Result := RsMapiErrTOO_MANY_FILES;
+    MAPI_E_TOO_MANY_RECIPIENTS:
+      Result := RsMapiErrTOO_MANY_RECIPIENTS;
+    MAPI_E_ATTACHMENT_NOT_FOUND:
+      Result := RsMapiErrATTACHMENT_NOT_FOUND;
+    MAPI_E_ATTACHMENT_OPEN_FAILURE:
+      Result := RsMapiErrATTACHMENT_OPEN_FAILURE;
+    MAPI_E_ATTACHMENT_WRITE_FAILURE:
+      Result := RsMapiErrATTACHMENT_WRITE_FAILURE;
+    MAPI_E_UNKNOWN_RECIPIENT:
+      Result := RsMapiErrUNKNOWN_RECIPIENT;
+    MAPI_E_BAD_RECIPTYPE:
+      Result := RsMapiErrBAD_RECIPTYPE;
+    MAPI_E_NO_MESSAGES:
+      Result := RsMapiErrNO_MESSAGES;
+    MAPI_E_INVALID_MESSAGE:
+      Result := RsMapiErrINVALID_MESSAGE;
+    MAPI_E_TEXT_TOO_LARGE:
+      Result := RsMapiErrTEXT_TOO_LARGE;
+    MAPI_E_INVALID_SESSION:
+      Result := RsMapiErrINVALID_SESSION;
+    MAPI_E_TYPE_NOT_SUPPORTED:
+      Result := RsMapiErrTYPE_NOT_SUPPORTED;
+    MAPI_E_AMBIGUOUS_RECIPIENT:
+      Result := RsMapiErrAMBIGUOUS_RECIPIENT;
+    MAPI_E_MESSAGE_IN_USE:
+      Result := RsMapiErrMESSAGE_IN_USE;
+    MAPI_E_NETWORK_FAILURE:
+      Result := RsMapiErrNETWORK_FAILURE;
+    MAPI_E_INVALID_EDITFIELDS:
+      Result := RsMapiErrINVALID_EDITFIELDS;
+    MAPI_E_INVALID_RECIPS:
+      Result := RsMapiErrINVALID_RECIPS;
+    MAPI_E_NOT_SUPPORTED:
+      Result := RsMapiErrNOT_SUPPORTED;
+  else
+    Result := '';
+  end;
 end;
 
 //==============================================================================
@@ -414,7 +451,7 @@ begin
     RaiseLastWin32Error;
   for I := 0 to Length(FFunctions) - 1 do
   begin
-    P := GetProcAddress(FClientLibHandle, MapiExportNames[I]);
+    P := GetProcAddress(FClientLibHandle, PChar(MapiExportNames[I]));
     if P = nil then
     begin
       UnloadClientLib;
@@ -446,7 +483,7 @@ var
     if Result then
     begin
       for I := Low(MapiExportNames) to High(MapiExportNames) do
-        if GetProcAddress(LibHandle, MapiExportNames[I]) = nil then
+        if GetProcAddress(LibHandle, PChar(MapiExportNames[I])) = nil then
         begin
           Result := False;
           Break;
@@ -611,6 +648,21 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclEmailRecips.GetOriginator: TJclEmailRecip;
+var
+  I: Integer;
+begin
+  Result := nil;
+  for I := 0 to Count - 1 do
+    if Items[I].Kind = rkOriginator then
+    begin
+      Result := Items[I];
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
 function EmailRecipsCompare(Item1, Item2: Pointer): Integer;
 var
   R1, R2: TJclEmailRecip;
@@ -631,10 +683,31 @@ end;
 // TJclEmail
 //==============================================================================
 
+function TJclEmail.Address(const Caption: string; EditFields: Integer): Boolean;
+var
+  NewRecipCount: ULONG;
+  NewRecips: PMapiRecipDesc;
+  Recips: TMapiRecipDesc;
+  Res: DWORD;
+begin
+  LoadClientLib;
+  NewRecips := nil;
+  NewRecipCount := 0;
+  Res := MapiAddress(FSessionHandle, ParentWnd, PChar(Caption), EditFields, nil,
+    0, Recips, LogonOptionsToFlags(False), 0, @NewRecipCount, NewRecips);
+  Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
+  if Result then
+  begin
+    DecodeRecips(NewRecips, NewRecipCount);
+    MapiFreeBuffer(NewRecips);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 procedure TJclEmail.BeforeUnloadClientLib;
 begin
-  if UserLogged then
-    LogOff(0);
+  LogOff;
   inherited;
 end;
 
@@ -658,10 +731,48 @@ constructor TJclEmail.Create;
 begin
   inherited;
   FAttachments := TStringList.Create;
-  FLogonOptions := [loLogonUI, loNewSession];
-  FReadMailOptions := [roFifo, roPeek];
+  FLogonOptions := [loLogonUI];
+  FFindOptions := [foFifo];
   FRecipients := TJclEmailRecips.Create(False);
   FRecipients.AddressesType := 'SMTP';
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclEmail.DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
+var
+  S: string;
+  N, I: Integer;
+  Kind: TJclEmailRecipKind;
+begin
+  for I := 0 to Count - 1 do
+  begin
+    if RecipDesc = nil then
+      Break;
+    Kind := rkOriginator;
+    with RecipDesc^ do
+    begin
+      S := lpszAddress;
+      N := Pos(':', S);
+      if N = 0 then
+        N := Length(S) + 1;
+      if ulRecipClass in [MAPI_ORIG..MAPI_BCC] then
+        Kind := TJclEmailRecipKind(ulRecipClass)
+      else
+        MapiCheck(MAPI_E_INVALID_MESSAGE, True);
+      Recipients.Add(Copy(S, 1, N - 1), lpszName, Kind, Copy(S, N + 1, Length(S)));
+    end;
+    Inc(RecipDesc);
+  end;  
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.Delete(const MessageID: string): Boolean;
+begin
+  LoadClientLib;
+  Result := MapiCheck(MapiDeleteMail(FSessionHandle, 0, PChar(MessageID), 0, 0),
+    False) = SUCCESS_SUCCESS;
 end;
 
 //------------------------------------------------------------------------------
@@ -692,9 +803,9 @@ begin
   if not UserLogged then
     Exit;
   Flags := MAPI_LONG_MSGID;
-  if roFifo in FReadMailOptions then
+  if foFifo in FFindOptions then
     Inc(Flags, MAPI_GUARANTEE_FIFO);
-  if roUnreadOnly in FReadMailOptions then
+  if foUnreadOnly in FFindOptions then
     Inc(Flags, MAPI_UNREAD_ONLY);
   Res := MapiFindNext(FSessionHandle, 0, nil, PChar(FSeedMessageID), Flags, 0, MsgId);
   Result := (Res = SUCCESS_SUCCESS);
@@ -710,7 +821,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclEmail.GetParentWindow(Wnd: HWND): HWND;
+function TJclEmail.GetParentWnd: HWND;
 var
   FoundWnd: HWND;
 
@@ -720,13 +831,14 @@ var
     begin
       PDWORD(Param)^ := Wnd;
       Result := False;
-    end else
+    end
+    else
       Result := True;
   end;
 
 begin
-  if IsWindow(Wnd) then
-    Result := Wnd
+  if IsWindow(FParentWnd) then
+    Result := FParentWnd
   else
   begin
     FoundWnd := 0;
@@ -744,169 +856,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclEmail.LogOff(ParentWND: HWND);
-begin
-  if UserLogged then
-  begin
-    MapiCheck(MapiLogOff(FSessionHandle, GetParentWindow(ParentWND), 0, 0), True);
-    FSessionHandle := 0;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TJclEmail.LogOn(const ProfileName, Password: string; ParentWND: HWND);
-begin
-  if not UserLogged then
-  begin
-    LoadClientLib;
-    MapiCheck(MapiLogOn(GetParentWindow(ParentWND), PChar(ProfileName),
-      PChar(Password), LogonOptionsToFlags, 0, @FSessionHandle), True);
-  end; 
-end;
-
-//------------------------------------------------------------------------------
-
-function TJclEmail.LogonOptionsToFlags: DWORD;
-begin
-  Result := 0;
-  if loLogonUI in FLogonOptions then
-    Inc(Result, MAPI_LOGON_UI);
-  if loNewSession in FLogonOptions then
-    Inc(Result, MAPI_NEW_SESSION);
-end;
-
-//------------------------------------------------------------------------------
-
-procedure TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer);
-const
-  NameDelimiter = ', ';
-  KindNames: array [TJclEmailRecipKind] of string =
-    (RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
-var
-  LabelsWidth: Integer;
-  NamesList: array [TJclEmailRecipKind] of string;
-  ReportKind: TJclEmailRecipKind;
-  I: Integer;
-  BreakStr, S: string;
-begin
-  LabelsWidth := Length(RsMapiMailSubject);
-  for ReportKind := Low(ReportKind) to High(ReportKind) do
-  begin
-    NamesList[ReportKind] := '';
-    LabelsWidth := Max(LabelsWidth, Length(KindNames[ReportKind]));
-  end;
-  BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
-  for I := 0 to FRecipients.Count - 1 do
-    with FRecipients[I] do
-      NamesList[Kind] := NamesList[Kind] + AddressAndName + NameDelimiter;
-  for ReportKind := Low(ReportKind) to High(ReportKind) do
-    if NamesList[ReportKind] <> '' then
-    begin
-      S := StrPadRight(KindNames[ReportKind], LabelsWidth, AnsiSpace) + ': ' +
-        Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
-      Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
-    end;
-  S := RsMapiMailSubject + ': ' + Subject;
-  Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
-  Strings.Add('');
-  Strings.Add(WrapText(Body, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
-  if FAttachments.Count > 0 then
-  begin
-    Strings.Add('');
-    Strings.Add(RsMapiMailAttachments + ':');
-    Strings.AddStrings(FAttachments);
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function TJclEmail.Read: Boolean;
-var
-  Flags: ULONG;
-  Msg: PMapiMessage;
-  I: Integer;
-  Recips: PMapiRecipDesc;
-  Files: PMapiFileDesc;
-
-  procedure AddRecip(RecipDesc: PMapiRecipDesc);
-  var
-    S: string;
-    N: Integer;
-    Kind: TJclEmailRecipKind;
-  begin
-    if RecipDesc = nil then
-      Exit;
-    Kind := rkOriginator;
-    with RecipDesc^ do
-    begin
-      S := lpszAddress;
-      N := Pos(':', S);
-      if N = 0 then
-        N := Length(S) + 1;
-      if ulRecipClass in [MAPI_ORIG..MAPI_BCC] then
-        Kind := TJclEmailRecipKind(ulRecipClass)
-      else
-        MapiCheck(MAPI_E_INVALID_MESSAGE, True);
-      Recipients.Add(Copy(S, 1, N - 1), lpszName, Kind, Copy(S, N + 1, Length(S)));
-    end;
-  end;
-
-  function MessageDateToDate(const S: string): TDateTime;
-  var
-    T: TSystemTime;
-  begin
-    FillChar(T, SizeOf(T), #0);
-    with T do
-    begin
-      Sscanf(S, '%4h/%2h/%2h %2h:%2h', [@wYear, @wMonth, @wDay, @wHour, @wMinute]);
-      Result := EncodeDate(wYear, wMonth, wDay) +
-        EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
-    end;
-  end;
-
-begin
-  Result := False;
-  if not UserLogged then
-    Exit;
-  Clear;
-  Flags := 0;
-  if roHeaderOnly in FReadMailOptions then
-    Inc(Flags, MAPI_ENVELOPE_ONLY);
-  if roPeek in FReadMailOptions then
-    Inc(Flags, MAPI_PEEK);
-  if not (roAttachments in FReadMailOptions) then
-    Inc(Flags, MAPI_SUPPRESS_ATTACH);
-  MapiCheck(MapiReadMail(SessionHandle, 0, PChar(FSeedMessageID), Flags, 0, Msg), True);
-  try
-    AddRecip(Msg^.lpOriginator);
-    Recips := Msg^.lpRecips;
-    for I := 0 to Msg^.nRecipCount - 1 do
-    begin
-      AddRecip(Recips);
-      Inc(Recips);
-    end;
-    FSubject := Msg^.lpszSubject;
-    FBody := AdjustLineBreaks(Msg^.lpszNoteText);
-    Files := Msg^.lpFiles;
-    for I := 0 to Msg^.nFileCount - 1 do
-    begin
-      Attachments.Add(Files^.lpszFileName);
-      Inc(Files);
-    end;
-    FReadedMsg.MessageType := Msg^.lpszMessageType;
-    FReadedMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
-    FReadedMsg.ConversationID := Msg^.lpszConversationID;
-    FReadedMsg.Flags := Msg^.flFlags;
-    Result := True;
-  finally
-    MapiFreeBuffer(Msg);
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function TJclEmail.Send(ShowDialog: Boolean; ParentWND: HWND): Boolean;
+function TJclEmail.InternalSendOrSave(Save, ShowDialog: Boolean): Boolean;
 const
   RecipClasses: array [TJclEmailRecipKind] of DWORD =
     (MAPI_ORIG, MAPI_TO, MAPI_CC, MAPI_BCC);
@@ -915,8 +865,9 @@ var
   RecipArray: array of TMapiRecipDesc;
   RealAdresses: array of string;
   MapiMessage: TMapiMessage;
-  Flags: DWORD;
+  Flags, Res: DWORD;
   I: Integer;
+  MsgID: array[0..512] of AnsiChar;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateResRec(@RsMapiMailNoClient);
@@ -934,7 +885,8 @@ begin
       AttachArray[I].lpszFileName := nil;
       AttachArray[I].lpszPathName := PChar(FAttachments[I]);
     end;
-  end else
+  end
+  else
     AttachArray := nil;
 
   if Recipients.Count > 0 then
@@ -965,7 +917,8 @@ begin
         lpszAddress := PCharOrNil(RealAdresses[I]);
       end;
     end;
-  end else
+  end
+  else
   begin
     if ShowDialog then
       RecipArray := nil
@@ -982,13 +935,200 @@ begin
   MapiMessage.nRecipCount := Length(RecipArray);
   MapiMessage.lpFiles := PMapiFileDesc(AttachArray);
   MapiMessage.nFileCount := Length(AttachArray);
-  Flags := LogonOptionsToFlags;
-  if ShowDialog then
+  Flags := LogonOptionsToFlags(ShowDialog);
+  if Save then
   begin
-    Flags := Flags or MAPI_DIALOG;
-    ParentWND := GetParentWindow(ParentWnd);
+    StrPCopy(MsgID, FSeedMessageID);
+    Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
+    if Res = SUCCESS_SUCCESS then
+      FSeedMessageID := MsgID;
+  end
+  else
+    Res := MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0);
+  Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclEmail.LogOff;
+begin
+  if UserLogged then
+  begin
+    MapiCheck(MapiLogOff(FSessionHandle, ParentWND, 0, 0), True);
+    FSessionHandle := 0;
   end;
-  Result := (MapiCheck(MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0), True) = SUCCESS_SUCCESS);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclEmail.LogOn(const ProfileName, Password: string);
+begin
+  if not UserLogged then
+  begin
+    LoadClientLib;
+    MapiCheck(MapiLogOn(ParentWND, PChar(ProfileName), PChar(Password),
+      LogonOptionsToFlags(False), 0, @FSessionHandle), True);
+  end; 
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.LogonOptionsToFlags(ShowDialog: Boolean): DWORD;
+begin
+  Result := 0;
+  if FSessionHandle = 0 then
+  begin
+    if loLogonUI in FLogonOptions then
+      Inc(Result, MAPI_LOGON_UI);
+    if loNewSession in FLogonOptions then
+      Inc(Result, MAPI_NEW_SESSION);
+  end;    
+  if ShowDialog then
+    Inc(Result, MAPI_DIALOG);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer;
+  IncludeAddresses: Boolean): Integer;
+const
+  NameDelimiter = ', ';
+  KindNames: array [TJclEmailRecipKind] of string =
+    (RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
+var
+  LabelsWidth: Integer;
+  NamesList: array [TJclEmailRecipKind] of string;
+  ReportKind: TJclEmailRecipKind;
+  I, Cnt: Integer;
+  BreakStr, S: string;
+begin
+  Cnt := Strings.Count;
+  LabelsWidth := Length(RsMapiMailSubject);
+  for ReportKind := Low(ReportKind) to High(ReportKind) do
+  begin
+    NamesList[ReportKind] := '';
+    LabelsWidth := Max(LabelsWidth, Length(KindNames[ReportKind]));
+  end;
+  BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
+  for I := 0 to FRecipients.Count - 1 do
+    with FRecipients[I] do
+    begin
+      if IncludeAddresses then
+        S := AddressAndName
+      else
+        S := Name;
+      NamesList[Kind] := NamesList[Kind] + S + NameDelimiter;
+    end;  
+  for ReportKind := Low(ReportKind) to High(ReportKind) do
+    if NamesList[ReportKind] <> '' then
+    begin
+      S := StrPadRight(KindNames[ReportKind], LabelsWidth, AnsiSpace) + ': ' +
+        Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
+      Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+    end;
+  S := RsMapiMailSubject + ': ' + Subject;
+  Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+  Result := Strings.Count - Cnt;
+  Strings.Add('');
+  Strings.Add(WrapText(Body, MaxWidth));
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.Read(const Options: TJclEmailReadOptions ): Boolean;
+var
+  Flags: ULONG;
+  Msg: PMapiMessage;
+  I: Integer;
+  Files: PMapiFileDesc;
+
+  function MessageDateToDate(const S: string): TDateTime;
+  var
+    T: TSystemTime;
+  begin
+    FillChar(T, SizeOf(T), #0);
+    with T do
+    begin
+      Sscanf(S, '%4h/%2h/%2h %2h:%2h', [@wYear, @wMonth, @wDay, @wHour, @wMinute]);
+      Result := EncodeDate(wYear, wMonth, wDay) +
+        EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
+    end;
+  end;
+
+begin
+  Result := False;
+  if not UserLogged then
+    Exit;
+  Clear;
+  Flags := 0;
+  if roHeaderOnly in Options then
+    Inc(Flags, MAPI_ENVELOPE_ONLY);
+  if not (roMarkAsRead in Options) then
+    Inc(Flags, MAPI_PEEK);
+  if not (roAttachments in Options) then
+    Inc(Flags, MAPI_SUPPRESS_ATTACH);
+  MapiCheck(MapiReadMail(SessionHandle, 0, PChar(FSeedMessageID), Flags, 0, Msg), True);
+  if Msg <> nil then
+  try
+    DecodeRecips(Msg^.lpOriginator, 1);
+    DecodeRecips(Msg^.lpRecips, Msg^.nRecipCount);
+    FSubject := Msg^.lpszSubject;
+    FBody := AdjustLineBreaks(Msg^.lpszNoteText);
+    Files := Msg^.lpFiles;
+    for I := 0 to Msg^.nFileCount - 1 do
+    begin
+      Attachments.Add(Files^.lpszFileName);
+      Inc(Files);
+    end;
+    FReadedMsg.MessageType := Msg^.lpszMessageType;
+    FReadedMsg.DateReceived := MessageDateToDate(Msg^.lpszDateReceived);
+    FReadedMsg.ConversationID := Msg^.lpszConversationID;
+    FReadedMsg.Flags := Msg^.flFlags;
+    Result := True;
+  finally
+    MapiFreeBuffer(Msg);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.ResolveName(var Name, Address: string; ShowDialog: Boolean): Boolean;
+var
+  Recip: PMapiRecipDesc;
+  Res, Flags: DWORD;
+begin
+  LoadClientLib;
+  Flags := LogonOptionsToFlags(ShowDialog) or MAPI_AB_NOMODIFY;
+  Recip := nil;
+  Res := MapiResolveName(FSessionHandle, ParentWnd, PChar(Name), Flags, 0, Recip);
+  Result := (MapiCheck(Res, True) = SUCCESS_SUCCESS) and (Recip <> nil);
+  if Result then
+  begin
+    Address := Recip^.lpszAddress;
+    Name := Recip^.lpszName;
+    MapiFreeBuffer(Recip);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.Save: Boolean;
+begin
+  Result := InternalSendOrSave(True, False);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmail.Send(ShowDialog: Boolean): Boolean;
+begin
+  Result := InternalSendOrSave(False, ShowDialog);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclEmail.SetBody(const Value: string);
+begin
+  FBody := StrEnsureSuffix(AnsiCrLf, Value);
 end;
 
 //------------------------------------------------------------------------------
@@ -1003,16 +1143,17 @@ end;
 //==============================================================================
 
 function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName; ShowDialog: Boolean; ParentWND: HWND): Boolean;
+  const AAttachment: TFileName; ShowDialog: Boolean; AParentWND: HWND): Boolean;
 begin
   with TJclEmail.Create do
   try
+    ParentWnd := AParentWND;
     Recipients.Add(ARecipient, AName, rkTO, '');
     Subject := ASubject;
     Body := ABody;
     if AAttachment <> '' then
       Attachments.Add(AAttachment);
-    Result := Send(ShowDialog, ParentWND);
+    Result := Send(ShowDialog);
   finally
     Free;
   end;
