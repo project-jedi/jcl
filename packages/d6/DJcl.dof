@@ -1,3 +1,3 @@
 [Directories]
-UnitOutputDir=..\..\dcu\D6
+UnitOutputDir=..\..\lib\D6
 SearchPath=..\..\Source\Common;..\..\Source\Windows
