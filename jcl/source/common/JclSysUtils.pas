@@ -26,7 +26,7 @@
 { floating point operations and retrieving the coprocessor's status word.      }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: Februari 10, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -821,7 +821,8 @@ end;
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 begin
   Result := IntToStr(Value);
-  Result := StrFillChar('0', Count - Length(Result)) + Result;
+  if Lenght(Result) < Count then
+    Result := StrFillChar('0', Count - Length(Result)) + Result;
 end;
 
 //==============================================================================
