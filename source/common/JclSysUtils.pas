@@ -20,22 +20,13 @@
 { Description: Various pointer and class related routines.                                         }
 { Unit Owner: Jeroen Speldekamp                                                                    }
 {                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ This unit contains various routine for manipulating the math coprocessor. This includes such     }
-{ things as querying and setting the rounding precision of floating point operations and           }
-{ retrieving the coprocessor's status word.                                                        }
-{                                                                                                  }
-{ Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: October 15, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
 unit JclSysUtils;
 
 {$I jcl.inc}
-
-{$WEAKPACKAGEUNIT ON}
 
 interface
 
@@ -58,6 +49,9 @@ function PWideCharOrNil(const W: WideString): PWideChar;
 {$ENDIF SUPPORTS_WIDESTRING}
 
 function SizeOfMem(const APointer: Pointer): Integer;
+
+function WriteProtectedMemory(BaseAddress, Buffer: Pointer; Size: Cardinal;
+  out WrittenBytes: Cardinal): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Guards
@@ -184,9 +178,7 @@ type
 
 function GetVirtualMethodCount(AClass: TClass): Integer;
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
-{$IFDEF MSWINDOWS}
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
-{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Dynamic Methods
@@ -258,9 +250,7 @@ function GetMethodEntry(MethodTable: PMethodTable; Index: Integer): PMethodEntry
 // Class Parent
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
-{$ENDIF MSWINDOWS}
 function GetClassParent(AClass: TClass): TClass;
 
 function IsClass(Address: Pointer): Boolean;
@@ -276,16 +266,81 @@ function GetImplementorOfInterface(const I: IInterface): TObject;
 // Numeric formatting routines
 //--------------------------------------------------------------------------------------------------
 
+type
+  TDigitCount = 0..255;
+  TDigitValue = 0..35;  // '0'..'9', 'A'..'Z'
+  TNumericSystemBase = 2..Succ(High(TDigitValue));
+
+  TJclNumericFormat = class(TObject)
+  private
+    FWantedPrecision: TDigitCount;
+    FPrecision: TDigitCount;
+    FNumberOfFractionalDigits: TDigitCount;
+    FExpDivision: Integer;
+    FDigitBlockSize: TDigitCount;
+    FWidth: TDigitCount;
+    FSignChars: array[Boolean] of Char;
+    FBase: TNumericSystemBase;
+    FFractionalPartSeparator: Char;
+    FDigitBlockSeparator: Char;
+    FShowPositiveSign: Boolean;
+    FPaddingChar: Char;
+    FMultiplier: string;
+    function GetDigitValue(Digit: Char): Integer;
+    function GetNegativeSign: Char;
+    function GetPositiveSign: Char;
+    procedure InvalidDigit(Digit: Char);
+    procedure SetPrecision(const Value: TDigitCount);
+    procedure SetBase(const Value: TNumericSystemBase);
+    procedure SetNegativeSign(const Value: Char);
+    procedure SetPositiveSign(const Value: Char);
+    procedure SetExpDivision(const Value: Integer);
+  protected
+    function IntToStr(const Value: Int64; out FirstDigitPos: Integer): string; overload;
+    function ShowSign(const Value: Float): Boolean; overload;
+    function ShowSign(const Value: Int64): Boolean; overload;
+    function SignChar(const Value: Float): Char; overload;
+    function SignChar(const Value: Int64): Char; overload;
+    property WantedPrecision: TDigitCount read FWantedPrecision;
+  public
+    constructor Create;
+    function Digit(DigitValue: TDigitValue): Char;
+    function DigitValue(Digit: Char): TDigitValue;
+    function IsDigit(Value: Char): Boolean;
+    function Sign(Value: Char): Integer;
+    procedure GetMantissaExp(const Value: Float; out Mantissa: string; out Exponent: Integer);
+    function FloatToHTML(const Value: Float): string;
+    function IntToStr(const Value: Int64): string; overload;
+    function FloatToStr(const Value: Float): string; overload;
+    function StrToInt(const Value: string): Int64;
+    property Base: TNumericSystemBase read FBase write SetBase;
+    property Precision: TDigitCount read FPrecision write SetPrecision;
+    property NumberOfFractionalDigits: TDigitCount read FNumberOfFractionalDigits write FNumberOfFractionalDigits;
+    property ExponentDivision: Integer read FExpDivision write SetExpDivision;
+    property DigitBlockSize: TDigitCount read FDigitBlockSize write FDigitBlockSize;
+    property DigitBlockSeparator: Char read FDigitBlockSeparator write FDigitBlockSeparator;
+    property FractionalPartSeparator: Char read FFractionalPartSeparator write FFractionalPartSeparator;
+    property Multiplier: string read FMultiplier write FMultiplier;
+    property PaddingChar: Char read FPaddingChar write FPaddingChar;
+    property ShowPositiveSign: Boolean read FShowPositiveSign write FShowPositiveSign;
+    property Width: TDigitCount read FWidth write FWidth;
+    property NegativeSign: Char read GetNegativeSign write SetNegativeSign;
+    property PositiveSign: Char read GetPositiveSign write SetPositiveSign;
+  end;
+
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
 //--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
-
 type
+{$IFDEF MSWINDOWS}
   TModuleHandle = HINST;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  TModuleHandle = THandle;
+{$ENDIF LINUX}
 
 const
   INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
@@ -297,8 +352,6 @@ function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
 function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
 function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
 function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
-
-{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Conversion Utilities
@@ -321,8 +374,11 @@ function IsCompiledWithPackages: Boolean;
 implementation
 
 uses
+  {$IFDEF LINUX}
+  Types, Libc,
+  {$ENDIF LINUX}
   SysUtils,
-  JclResources, JclStrings;
+  JclResources, JclStrings, JclMath;
 
 //==================================================================================================
 // Pointer manipulation
@@ -401,6 +457,67 @@ begin
     end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WriteProtectedMemory(BaseAddress, Buffer: Pointer;
+  Size: Cardinal; out WrittenBytes: Cardinal): Boolean;
+{$IFDEF MSWINDOWS}
+begin
+  Result := WriteProcessMemory(GetCurrentProcess, BaseAddress, Buffer, Size, WrittenBytes);
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+// TODOc Author: Andreas Hausladen
+{ TODO : Works so far, but causes app to hang on termination }
+var
+  AlignedAddress: Cardinal;
+  PageSize, ProtectSize: Cardinal;
+begin
+  Result := False;
+  WrittenBytes := 0;
+
+  PageSize := Cardinal(getpagesize);
+  AlignedAddress := Cardinal(BaseAddress) and not (PageSize - 1); // start memory page
+  // get the number of needed memory pages
+  ProtectSize := PageSize;
+  while Cardinal(BaseAddress) + Size > AlignedAddress + ProtectSize do
+    Inc(ProtectSize, PageSize);
+
+  if mprotect(Pointer(AlignedAddress), ProtectSize,
+       PROT_READ or PROT_WRITE or PROT_EXEC) = 0 then // obtain write access
+  begin
+    try
+      Move(Buffer^, BaseAddress^, Size); // replace code
+      Result := True;
+      WrittenBytes := Size;
+    finally
+      // Is there any function that returns the current page protection?
+//    mprotect(p, ProtectSize, PROT_READ or PROT_EXEC); // lock memory page
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure FlushInstructionCache;
+// TODOc Author: Andreas Hausladen
+// Cannot find any glibc function that can flush the instruction code
+{ TODO : Needs commenting }
+asm
+        JMP     @@Exit
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+        NOP
+@@Exit:
+end;
+
+{$ENDIF LINUX}
 
 //==================================================================================================
 // Guards
@@ -1116,6 +1233,28 @@ end;
 // Virtual Methods
 //==================================================================================================
 
+// Helper method
+
+procedure SetVMTPointer(AClass: TClass; Offset: Integer; Value: Pointer);
+var
+  WrittenBytes: DWORD;
+  PatchAddress: Pointer;
+begin
+  PatchAddress := PPointer(Integer(AClass) + Offset)^;
+  //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
+  // better VirtualProtect, direct patch, VirtualProtect
+  if not WriteProtectedMemory(PatchAddress, Value, SizeOf(Pointer), WrittenBytes) then
+    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
+
+  if WrittenBytes <> SizeOf(Pointer) then
+    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
+
+  // make sure that everything keeps working in a dual processor setting
+  FlushInstructionCache{$IFDEF MSWINDOWS}(GetCurrentProcess, PatchAddress, SizeOf(Pointer)){$ENDIF};
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function GetVirtualMethodCount(AClass: TClass): Integer;
 var
   BeginVMT: Longint;
@@ -1153,28 +1292,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
-
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
-var
-  WrittenBytes: DWORD;
-  PatchAddress: Pointer;
 begin
-  PatchAddress := PPointer(Integer(AClass) + Index * SizeOf(Pointer))^;
-  //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
-  // better VirtualProtect, direct patch, VirtualProtect
-  if not WriteProcessMemory(GetCurrentProcess, PatchAddress, {@}Method,
-    SizeOf(Pointer), WrittenBytes) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
-
-  if WrittenBytes <> SizeOf(Pointer) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
-
-  // make sure that everything keeps working in a dual processor setting
-  FlushInstructionCache(GetCurrentProcess, PatchAddress, SizeOf(Pointer));
+  SetVMTPointer(AClass, Index * SizeOf(Pointer), Method);
 end;
-
-{$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // Dynamic Methods
@@ -1296,33 +1417,17 @@ end;
 // Class Parent methods
 //==================================================================================================
 
-{$IFDEF MSWINDOWS}
-
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
-var
-  WrittenBytes: DWORD;
-  PatchAddress: Pointer;
 begin
-  PatchAddress := PPointer(Integer(AClass) + vmtParent)^;
-  //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
-  // better VirtualProtect, direct patch, VirtualProtect
-  if not WriteProcessMemory(GetCurrentProcess, PatchAddress, @NewClassParent,
-    SizeOf(Pointer), WrittenBytes) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
-  if WrittenBytes <> SizeOf(Pointer) then
-    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
-  // make sure that everything keeps working in a dual processor setting
-  FlushInstructionCache(GetCurrentProcess, PatchAddress, SizeOf(Pointer));
+  SetVMTPointer(AClass, vmtParent, @NewClassParent);
 end;
-
-{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
 function GetClassParent(AClass: TClass): TClass; assembler;
 asm
-        MOV     EAX, [AClass].vmtParent
-        TEST    Result, EAX
+        MOV     EAX, [EAX].vmtParent
+        TEST    EAX, EAX
         JE      @@Exit
         MOV     EAX, [EAX]
 @@Exit:
@@ -1411,11 +1516,459 @@ begin
     Result := StrFillChar('0', Count - Length(Result)) + Result;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+{ TJclNumericFormat }
+
+{ TODOc Author: Robert Rossmair
+
+  Digit:         converts a digit value (number) to a digit (char)
+  DigitValue:    converts a digit (char) into a number (digit value)
+  IntToStr,
+  FloatToStr,
+  FloatToHTML:   converts a numeric value to a base <Base> numeric representation with formating options
+  StrToIn:       converts a base <Base> numeric representation into an integer, if possible
+  GetMantisseExponent: similar to AsString, but returns the Exponent separately as an integer
+}
+const
+{$IFDEF MATH_EXTENDED_PRECISION}
+  BinaryPrecision = 64;
+{$ENDIF MATH_EXTENDED_PRECISION}
+{$IFDEF MATH_DOUBLE_PRECISION}
+  BinaryPrecision = 53;
+{$ENDIF MATH_DOUBLE_PRECISION}
+{$IFDEF MATH_SINGLE_PRECISION}
+  BinaryPrecision = 24;
+{$ENDIF MATH_SINGLE_PRECISION}
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclNumericFormat.Create;
+begin
+  inherited Create;
+  { TODO:  Initialize, when possible, from locale info }
+  FBase := 10;
+  FExpDivision := 1;
+  SetPrecision(6);
+  FNumberOfFractionalDigits := BinaryPrecision;
+  FSignChars[False] := '-';
+  FSignChars[True] := '+';
+  FPaddingChar := ' ';
+  FMultiplier := '×';
+  FFractionalPartSeparator := DecimalSeparator;
+  FDigitBlockSeparator := ThousandSeparator;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.InvalidDigit(Digit: Char);
+begin
+  raise EConvertError.CreateResFmt(@RsInvalidDigit, [Base, Digit]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.Digit(DigitValue: TDigitValue): Char;
+begin
+  Assert(DigitValue < Base, Format(RsInvalidDigitValue, [Base, DigitValue]));
+  if DigitValue > 9 then
+    Result := Chr(Ord('A') + DigitValue - 10)
+  else
+    Result := Chr(Ord('0') + DigitValue);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.GetDigitValue(Digit: Char): Integer;
+begin
+  Result := -1;
+  if Digit in ['0'..'9'] then
+    Result := Ord(Digit) - Ord('0')
+  else
+  begin
+    Digit := UpCase(Digit);
+    if Digit in ['A'..'Z'] then
+      Result := Ord(Digit) - Ord('A') + 10;
+  end;
+  if Result >= Base then
+    Result := -1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.DigitValue(Digit: Char): TDigitValue;
+begin
+  Result := GetDigitValue(Digit);
+  if Result = -1 then
+    InvalidDigit(Digit);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.IsDigit(Value: Char): Boolean;
+begin
+  Result := GetDigitValue(Value) <> -1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.FloatToHTML(const Value: Float): string;
+var
+  Mantissa: string;
+  Exponent: Integer;
+begin
+  GetMantissaExp(Value, Mantissa, Exponent);
+  Result := Format('%s %s %d<sup>%d</sup>', [Mantissa, Multiplier, Base, Exponent]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.GetMantissaExp(const Value: Float;
+  out Mantissa: string; out Exponent: Integer);
+const
+  InfMantissa: array[Boolean] of string = ('inf', '-inf');
+var
+  BlockDigits: TDigitCount;
+  IntDigits, FracDigits: Integer;
+  FirstDigitPos, Prec: Integer;
+  I, J, N: Integer;
+  X: Extended;
+  HighDigit: Char;
+
+  function GetDigit(X: Extended): Char;
+  var
+    N: Integer;
+  begin
+    N := Trunc(X);
+    if N > 9 then
+      Result := Chr(Ord('A') + N - 10)
+    else
+      Result := Chr(Ord('0') + N);
+  end;
+
+begin
+  X := Abs(Value);
+
+  if X > MaxFloatingPoint then
+  begin
+    Mantissa := InfMantissa[Value < 0];
+    Exponent := 1;
+    Exit;
+  end
+  else
+  if X < MinFloatingPoint then
+  begin
+    Mantissa := Format('%.*f', [Precision, 0.0]);
+    Exponent := 1;
+    Exit;
+  end;
+
+  IntDigits := 1;
+  Prec := Precision;
+
+  Exponent := Trunc(LogBaseN(Base, X));
+  if FExpDivision > 1 then
+  begin
+    N := Exponent mod FExpDivision;
+    Dec(Exponent, N);
+    Inc(IntDigits, N);
+  end;
+  X := X / Power(Base, Exponent);
+
+  if X < 1.0 then
+  begin
+    Dec(Exponent, FExpDivision);
+    X := X * PowerInt(Base, FExpDivision);
+    Inc(IntDigits, FExpDivision - 1);
+  end;
+
+  Mantissa := IntToStr(Sgn(Value) * Trunc(X), FirstDigitPos);
+
+  FracDigits := Prec - IntDigits;
+  if FracDigits > NumberOfFractionalDigits then
+    FracDigits := NumberOfFractionalDigits;
+
+  if FracDigits > 0 then
+  begin
+    J := Length(Mantissa) + 1;
+    // allocate sufficient space for point + digits + digit block separators
+    SetLength(Mantissa, FracDigits * 2 + J);
+    Mantissa[J] := FractionalPartSeparator;
+    I := J + 1;
+    BlockDigits := 0;
+    while FracDigits > 0 do
+    begin
+      if (BlockDigits > 0) and (BlockDigits = DigitBlockSize) then
+      begin
+        Mantissa[I] := DigitBlockSeparator;
+        Inc(I);
+        BlockDigits := 0;
+      end;
+      X := Frac(X) * Base;
+      Mantissa[I] := GetDigit(X);
+      Inc(I);
+      Inc(BlockDigits);
+      Dec(FracDigits);
+    end;
+    Mantissa[I] := #0;
+    StrResetLength(Mantissa);
+  end;
+
+  if Frac(X) >= 0.5 then
+  // round up
+  begin
+    HighDigit := Digit(Base - 1);
+    for I := Length(Mantissa) downto 1 do
+    begin
+      if Mantissa[I] = HighDigit then
+        if (I = FirstDigitPos) then
+        begin
+          Mantissa[I] := '1';
+          Inc(Exponent);
+          Break;
+        end
+        else
+          Mantissa[I] := '0'
+      else
+      if Mantissa[I] in [DigitBlockSeparator, FractionalPartSeparator] then
+        Continue
+      else
+      begin
+        if Mantissa[I] = '9' then
+          Mantissa[I] := 'A'
+        else
+          Mantissa[I] := Succ(Mantissa[I]);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.FloatToStr(const Value: Float): string;
+var
+  Mantissa: string;
+  Exponent: Integer;
+begin
+  GetMantissaExp(Value, Mantissa, Exponent);
+  Result := Format('%s %s %d^%d', [Mantissa, Multiplier, Base, Exponent]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.IntToStr(const Value: Int64): string;
+var
+  FirstDigitPos: Integer;
+begin
+  IntToStr(Value, FirstDigitPos);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.IntToStr(const Value: Int64; out FirstDigitPos: Integer): string;
+const
+  MaxResultLen = 64 + 63 + 1; // max. digits + max. group separators + sign
+var
+  Remainder: Int64;
+  I, N: Integer;
+  Chars, Digits: Cardinal;
+  LoopFinished, HasSign, SpacePadding: Boolean;
+begin
+  SpacePadding := PaddingChar = ' ';
+  HasSign := ShowSign(Value);
+  Chars := MaxResultLen;
+  if Width > Chars then
+    Chars := Width;
+  SetLength(Result, Chars);
+  FillChar(Result[1], Chars, ' ');
+
+  Remainder := Abs(Value);
+  Digits := 0;
+
+  Chars := 0;
+  if HasSign then
+    Chars := 1;
+
+  I := MaxResultLen;
+
+  while True do
+  begin
+    N := Remainder mod Base;
+    Remainder := Remainder div Base;
+    if N > 9 then
+      Result[I] := Chr(Ord('A') + N - 10)
+    else
+      Result[I] := Chr(Ord('0') + N);
+    Dec(I);
+    Inc(Digits);
+    Inc(Chars);
+    if (Remainder = 0) and (SpacePadding or (Chars >= Width)) then Break;
+    if (Digits = DigitBlockSize) then
+    begin
+      Inc(Chars);
+      LoopFinished := (Remainder = 0) and (Chars = Width);
+      if LoopFinished then
+        Result[I] := ' '
+      else
+        Result[I] := DigitBlockSeparator;
+      Dec(I);
+      if LoopFinished then
+        Break;
+      Digits := 0;
+    end;
+  end;
+
+  FirstDigitPos := I + 1;
+  
+  if HasSign then
+    Result[I] := SignChar(Value)
+  else
+    Inc(I);
+  N := MaxResultLen - Width + 1;
+  if N < I then
+    I := N;
+  Result := Copy(Result, I, MaxResultLen);
+  Dec(FirstDigitPos, I - 1);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.SetBase(const Value: TNumericSystemBase);
+begin
+  FBase := Value;
+  SetPrecision(FWantedPrecision);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.SetExpDivision(const Value: Integer);
+begin
+  if Value <= 1 then
+    FExpDivision := 1
+  else
+    FExpDivision := Value;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.SetPrecision(const Value: TDigitCount);
+begin
+  FWantedPrecision := Value;
+  // Do not display more digits than Float precision justifies
+  FPrecision := Trunc(BinaryPrecision / LogBase2(Base));
+  if Value < FPrecision then
+    FPrecision := Value;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.Sign(Value: Char): Integer;
+begin
+  Result := 0;
+  if Value = FSignChars[False] then
+    Result := -1;
+  if Value = FSignChars[True] then
+    Result := +1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.StrToInt(const Value: string): Int64;
+var
+  I, N: Integer;
+  C: Char;
+begin
+  Result := 0;
+  N := 0;
+  I := 1;
+  if Value[I] in ['+', '-'] then
+    Inc(I);
+  for I := I to Length(Value) do
+  begin
+    C := Value[I];
+    if C in ['0'..'9'] then
+      N := Ord(C) - Ord('0')
+    else
+    begin
+      C := UpCase(C);
+      if C in ['A'..'Z'] then
+      begin
+        N := Ord(C) - Ord('A') + 10;
+        if N >= Base then
+          InvalidDigit(C);
+      end
+      else
+        if C = DigitBlockSeparator then
+          Continue
+      else
+        InvalidDigit(C);
+    end;
+    Result := Result * Base + N;
+  end;
+  if Value[1] = '-' then
+    Result := -Result;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.ShowSign(const Value: Float): Boolean;
+begin
+  Result := FShowPositiveSign or (Value < 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.ShowSign(const Value: Int64): Boolean;
+begin
+  Result := FShowPositiveSign or (Value < 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.SignChar(const Value: Float): Char;
+begin
+  Result := FSignChars[Value >= 0];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.SignChar(const Value: Int64): Char;
+begin
+  Result := FSignChars[Value >= 0];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.GetNegativeSign: Char;
+begin
+  Result := FSignChars[False];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclNumericFormat.GetPositiveSign: Char;
+begin
+  Result := FSignChars[True];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.SetNegativeSign(const Value: Char);
+begin
+  FSignChars[False] := Value;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclNumericFormat.SetPositiveSign(const Value: Char);
+begin
+  FSignChars[True] := Value;
+end;
+
 //==================================================================================================
 // Loading of modules (DLLs)
 //==================================================================================================
-
-{$IFDEF MSWINDOWS}
 
 function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
 begin
@@ -1428,9 +1981,14 @@ end;
 
 function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
 begin
+{$IFDEF MSWINDOWS}
   if Module = INVALID_MODULEHANDLE_VALUE then
     Module := LoadLibraryEx(PChar(FileName), 0, Flags);
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  Result := LoadModule(Module, Filename); // ignore Flags
+{$ENDIF LINUX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1484,8 +2042,6 @@ begin
   if Result then
     Move(Buffer, Sym^, Size);
 end;
-
-{$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // Conversion Utilities
@@ -1556,7 +2112,5 @@ function IsCompiledWithPackages: Boolean;
 begin
   Result := SystemTObjectInstance <> HInstance;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.
