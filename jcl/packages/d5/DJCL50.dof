@@ -40,7 +40,7 @@ ImageBase=4194304
 ExeDescription=JEDI Code Library Design-time package for Delphi 5
 [Directories]
 OutputDir=
-UnitOutputDir=Dcu
+UnitOutputDir=..\Dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\Source
