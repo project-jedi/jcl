@@ -1,0 +1,793 @@
+TD {
+   font-family : "Arial", "Helvetica", Sans-serif; 
+}
+
+PRE.SourceCode2 {
+   background-color : #e0ffff; 
+   border-width : medium; 
+   border-style : outset; 
+   border-color : silver; 
+   white-space : pre;
+}
+
+PRE.SourceCode EM {
+   font-style : normal; 
+   color : #9933cc; 
+   white-space : pre;  
+}
+
+PRE.SourceCode {
+   font-family : "Courier", monospace; 
+   background-color : white; 
+   margin-right : 20px; 
+   margin-left : 20px; 
+   padding : 5px 20px; 
+   border-width : medium; 
+   border-style : outset; 
+   border-color : silver; 
+   white-space : pre;  
+}
+
+P.chatuser {
+   font-weight : bold; 
+   color : #3366cc; 
+   vertical-align : top; 
+}
+
+P.chatquestionpresented {
+   font-weight : bold; 
+   background-color : #dddddd; 
+   vertical-align : top; 
+}
+
+P.chatpublicmsg {
+   font-weight : normal; 
+   vertical-align : top; 
+   padding : 0 0 20px; 
+}
+
+P.chateditor {
+   color : red; 
+   padding : 0 0 10px; 
+}
+
+P.chataction {
+   font-style : italic; 
+   vertical-align : top; 
+}
+
+P.TechNote {
+   font-weight : normal; 
+   background-color : #e0ffff; 
+   padding : 2px 5px; 
+   border-width : medium; 
+   border-style : outset; 
+   border-color : silver; 
+}
+
+H3 {
+   font-weight : bold; 
+   font-size : 11pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+H2 {
+   font-weight : bold; 
+   font-size : 14pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+H1 {
+   font-weight : bold; 
+   font-size : 18pt; 
+   line-height : 18pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+   padding : 10px 0 0; 
+}
+
+BODY {
+   background : #ffffff; 
+   margin-left : 20 px;
+   margin-right : 20 px;}
+
+B.Help {
+   color : white; 
+   background-color : gray; 
+}
+
+A:hover {
+   color : #cc3300; 
+}
+
+.webDirectoryLink {
+   font-size : 0.8em; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #3366cc; 
+   text-decoration : underline; 
+}
+
+.webDirectoryCategoryLink {
+   font-size : 0.8em; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.webDirectoryCatHead {
+   font-size : 0.9em; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #ffffff; 
+   text-decoration : none; 
+}
+
+.vspace5 {
+   padding : 5px 0 0; 
+}
+
+.visibility {
+   font-weight : bold; 
+   font-size : 0.8em; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #ff0000; 
+   text-decoration : none; 
+}
+
+.tuser {
+   color : blue; 
+   background-color : white; 
+}
+
+.ttitle {
+   font-weight : bold; 
+   color : black; 
+   background-color : #dddddd; 
+}
+
+.tthis {
+   font-weight : bold; 
+   line-height : 1; 
+   color : white; 
+   background-color : red; 
+   vertical-align : top; 
+}
+
+.tother {
+   font-weight : bold; 
+   line-height : 1; 
+   color : white; 
+   background-color : blue; 
+   vertical-align : top; 
+}
+
+.tmine {
+   font-weight : bold; 
+   color : black; 
+   background-color : #c71585; 
+}
+
+.title3 {
+   font-weight : bold; 
+   font-size : 12pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.thi {
+   background-color : #dddddd; 
+}
+
+.textAdLink {
+   font-weight : bold; 
+   color : #ffffff; 
+   text-decoration : none; 
+}
+
+.textAdCell {
+   font-size : 0.8em; 
+}
+
+.searchCell {
+   font-weight : bold; 
+   font-size : 11px; 
+}
+
+.rightSidebarLink {
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.rightSidebarHeading {
+   font-weight : bold; 
+   font-size : 10pt; 
+   color : #ffffff; 
+   background : #3366cc; 
+}
+
+.rightSidebarCell {
+   font-weight : bold; 
+   font-size : 10pt; 
+   color : #000000; 
+   background : #dddddd; 
+}
+
+.presentLocation {
+   font-weight : bold; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.logoCell {
+   background : #000000; 
+}
+
+.logoBar {
+   background : #000000; 
+}
+
+.loginLinkCell {
+   font-weight : bold; 
+   font-size : 0.8em; 
+   background : #3366cc; 
+}
+
+.loginLink {
+   color : #ffffff; 
+   text-decoration : none; 
+}
+
+.loginStd {
+   text-align : right; 
+}
+
+.loginReq {
+   text-align : right; 
+   font-weight : bold; 
+   color : blue; 
+}
+
+.login_std {
+   text-align : right; 
+}
+
+.login_req {
+   text-align : right; 
+   font-weight : bold; 
+   color : blue; 
+}
+
+.locationLink {
+   color : #000000; 
+   text-decoration : underline; 
+}
+
+.localLinkCell {
+   font-size : 9pt; 
+   color : #ffffff; 
+   background : #3366cc; 
+}
+
+.localLink {
+   font-weight : bold; 
+   color : #ffffff; 
+   text-decoration : none; 
+}
+
+.leftSidebarText {
+   font-weight : normal; 
+   font-size : 9pt; 
+   color : #000000;
+}
+
+.leftSidebarSoapboxLink {
+   font-weight : normal; 
+   font-size : 10pt; 
+   color : #0000cc; 
+   font-style : italic;
+   text-decoration : none 
+
+}
+
+.leftSidebarSoapboxLink:hover {
+	COLOR: #6666cc;
+   font-weight : normal; 
+   font-size : 10pt; 
+   font-style : italic;
+   text-decoration : none 
+
+}
+
+
+.leftSidebarHeading {
+   font-weight : bold; 
+   font-size : 12pt; 
+   color : #3366cc; 
+}
+
+.leftSidebarCell {
+   font-size : 0.8em; 
+   background : #dddddd; 
+}
+
+.heading3 {
+   font-weight : bold; 
+   font-size : 11pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+   vertical-align:   baseline; 
+}
+
+.heading2 {
+   font-weight : bold; 
+   font-size : 14pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.heading1 {
+   font-weight : bold; 
+   font-size : 18pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+   padding : 10px 0 0; 
+}
+
+.globalNavBar {
+   background : #dddddd; 
+}
+
+.globalLinkCell {
+   font-size : 0.8em; 
+   background : #dddddd; 
+}
+
+.globalLink {
+   font-weight : bold; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.fineprint {
+   font-weight : normal; 
+   font-size : 8pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.directoryStuff {
+   font-size : 0.8em; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+}
+
+.directoryLink {
+   font-size : 9pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.directoryCategory {
+   font-size : 10pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : underline; 
+}
+
+.date3 {
+   font-weight : normal; 
+   font-size : 9pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+   vertical-align:    baseline ;
+
+ }
+
+.copyrightLink {
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.copyrightCell {
+   font-size : 7pt; 
+   background : #dddddd; 
+}
+
+.contentshortDescription {
+   font-weight : normal; 
+   font-size : 9pt; 
+   color : #000000; 
+}
+
+.contentTableCell {
+   font-size : 0.8em; 
+   background : #ffffff; 
+}
+
+.contentTable {
+   background : #ffffff; 
+}
+
+.contentStoryLink {
+   color : #3366cc; 
+}
+
+.contentStoryHeadingCell {
+   background : #dddddd; 
+}
+
+.contentStoryHeading {
+   font-weight : normal; 
+   font-size : 11pt; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.contentStoryByline {
+   font-style : italic; 
+   font-weight : normal; 
+   font-size : 9pt; 
+   color : #000000; 
+}
+
+.contentSectionHeading {
+   font-weight : bold; 
+   font-size : 12pt; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.contentRule {
+   background : #3366cc; 
+}
+
+.contentMoreLink {
+   font-weight : bold; 
+   color : #3366cc; 
+}
+
+.contentHat {
+   font-weight : bold; 
+   font-size : 10pt; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.contentDevNewsStoryHeading {
+   font-weight : normal; 
+   font-size : 10pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.contentArticleTypeIndex {
+   font-size : 0.7em; 
+   color : #3366cc; 
+}
+
+.body3, blb, bottomlink {
+   font-weight : normal; 
+   font-size : 11pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+}
+
+.blueHeading2 {
+   font-weight : bold; 
+   font-size : 12pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #003399; 
+   text-decoration : none; 
+}
+
+.bigBlue {
+   font-weight : bold; 
+   font-size : 14pt; 
+   color : #013399; 
+   text-decoration : none; 
+}
+
+.abstract {
+   font-style : italic; 
+   font-weight : normal; 
+   font-size : 10pt; 
+   line-height : 11pt; 
+   font-family : "Arial", "Helvetica", Sans-serif; 
+   color : #000000; 
+   text-decoration : none; 
+   padding : 10px; 
+}
+/* new classes - added 01/11/01 rare medium */
+
+.whiteLink { font-size : 10pt; text-decoration : none; color : #ffffff; }
+
+.whiteLinkB { font-size : 10pt; font-weight : bold; text-decoration : none; color : #ffffff; }
+
+.whiteLinkSmall { font-size : 9pt; text-decoration : none; color : #ffffff; }
+.yellowLinkSmall { font-size : 9pt; font-weight : bold; text-decoration : none; color : #ffdf00; }
+.whiteLinkVerySmall { font-size : 8pt; text-decoration : none; color : #ffffff; }
+
+.newBody { font-weight : normal; font-size : 9pt; font-family : "Arial", "Helvetica", Sans-serif; color : #000000; text-decoration : none; }
+
+.newTitle { font-weight : bold; font-size : 11pt; font-family : "Arial", "Helvetica", Sans-serif; color : #000000; text-decoration : none; }
+
+.newDate { font-weight : normal; font-size : 8pt;  font-family : "Arial", "Helvetica", Sans-serif; color : #000000; text-decoration : none; margin-top : 3pt; }
+
+.newHeading { font-weight : bold; font-size : 9pt; font-family : "Arial", "Helvetica", Sans-serif; color : #000000; text-decoration : none; }
+
+.bigBlack { font-weight : bold; font-size : 14pt; font-family : "Arial", "Helvetica", Sans-serif; color : #000000; text-decoration : none; }
+
+BODY
+{
+    MARGINLEFT: 18px
+}
+/* Changed font size from 12px to 14 px here due to complaints 2002/5/20 Tom Lam */
+TR, TD, P, LAYER {
+    FONT-SIZE: 14px;
+    COLOR: #000000;
+    FONT-FAMILY: arial, helvetica, sans-serif;
+    TEXT-DECORATION: none;
+}
+
+.newsItem {
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    FONT-FAMILY: arial, helvetica, sans-serif;
+    TEXT-DECORATION: none;
+}
+
+A {
+	COLOR: #0000cc;
+    TEXT-DECORATION: none;
+}
+
+A: hover {
+	COLOR: #6666cc;
+    TEXT-DECORATION: none;
+}
+
+.divider
+{
+	BACKGROUND: #999999
+}
+
+.lightBG
+{
+	BACKGROUND: #cccccc;
+}
+
+.intTopnav {
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: bold;
+	COLOR: #666666;
+}
+
+.intTopnav A {
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: bold;
+	COLOR: #000000;
+    TEXT-DECORATION: none;
+}
+
+.intTopnav A:hover {
+	FONT-SIZE: 12px;
+	FONT-WEIGHT: bold;
+	COLOR: #666666;
+    TEXT-DECORATION: underline;
+}
+
+.leftNavTop {
+	FONT-SIZE: 14px;
+	FONT-WEIGHT: bold;
+}
+
+.leftNavTop A {
+	FONT-SIZE: 14px;
+	FONT-WEIGHT: bold;
+	COLOR: #0000cc;
+    TEXT-DECORATION: underline;
+}
+
+.leftNavTop A:hover {
+	FONT-SIZE: 14px;
+	FONT-WEIGHT: bold;
+	COLOR: #6666cc;
+}
+
+.leftNav {
+	FONT-SIZE: 12px;
+	COLOR: #666666;
+	FONT-WEIGHT: bold;
+}
+
+.leftNav A {
+	FONT-SIZE: 12px;
+	COLOR: #0000cc;
+	FONT-WEIGHT: normal;
+    TEXT-DECORATION: underline;
+}
+
+.leftNav A:hover {
+	FONT-SIZE: 12px;
+	COLOR: #6666cc;
+	FONT-WEIGHT: normal;
+}
+
+.prodList {
+    FONT-SIZE: 13px;
+	FONT-WEIGHT: bold;
+	COLOR: #666666;
+    TEXT-DECORATION: none;
+	MARGIN-TOP: -6px;
+}
+
+.prodList A {
+	COLOR: #666666;
+    TEXT-DECORATION: none;
+}
+
+.prodList A:hover {
+	COLOR: #6666cc;
+    TEXT-DECORATION: underline;
+}
+
+.contentHeader {
+    FONT-FAMILY: arial, helvetica, sans-serif;
+	FONT-SIZE: 20px;
+	FONT-WEIGHT: bold;
+}
+
+.contentHeader A {
+	COLOR: #000000;
+    TEXT-DECORATION: underline;
+}
+
+.contentHeader A: hover {
+	COLOR: #666666;
+    TEXT-DECORATION: underline;
+}
+
+.contentSubHeader {
+    FONT-FAMILY: arial, helvetica, sans-serif;
+	FONT-SIZE: 16px;
+	FONT-WEIGHT: bold;
+	MARGIN-BOTTOM: -8px;
+}
+
+.subHeader {
+    FONT-FAMILY: arial, helvetica, sans-serif;
+	FONT-SIZE: 16px;
+	FONT-WEIGHT: bold;
+}
+
+.pressSubHead {
+	FONT-WEIGHT: bold;
+	COLOR: #003366;
+}
+
+.bodyLight {
+	COLOR: #666666;
+}
+
+A.bodyNav1 {
+	COLOR: #0000cc;
+    TEXT-DECORATION: underline;
+}
+
+A.bodyNav1:hover {
+	COLOR: #6666cc;
+    TEXT-DECORATION: underline;
+}
+
+A.bodyNav2 {
+	COLOR: #333333;
+    TEXT-DECORATION: underline;
+}
+
+A.bodyNav2:hover {
+	COLOR: #003366;
+    TEXT-DECORATION: underline;
+}
+
+INPUT.TEXT {
+	font-size: 12px;
+}
+
+.tableHeader {
+    FONT-SIZE: 11px;
+	COLOR: #333333;
+}
+
+.footer {
+	font-size: 11px;
+	COLOR: #666666;
+	MARGIN-BOTTOM: 0px;
+}
+
+.footer A {
+	COLOR: #003366;
+}
+
+.footer A:hover {
+	COLOR: #006699;
+}
+
+.Menu
+{
+    VISIBILITY: hidden;
+	POSITION: absolute;
+    TOP: 93px;
+}
+
+.Menu TD
+{
+    FONT-SIZE: 11px;
+    COLOR: #ffffff;
+    FONT-FAMILY: arial, helvetica, sans-serif;
+    TEXT-DECORATION: none;
+}
+
+.Menu A
+{
+    FONT-SIZE: 11px;
+    COLOR: #ffffff;
+    FONT-FAMILY: arial, helvetica, sans-serif;
+    TEXT-DECORATION: none;
+}
+
+.Menu A:hover
+{
+    FONT-SIZE: 11px;
+    COLOR: #cccccc;
+    FONT-FAMILY:  arial, helvetica, sans-serif;
+    TEXT-DECORATION: none;
+}
+
+.Trigger
+{
+    POSITION: relative;
+    TOP: 0px;
+    LEFT: 0px;
+}
+
+select {
+    FONT-SIZE: 10px;
+    COLOR: #000000;
+    FONT-FAMILY: arial, helvetica, sans-serif;
+}
+
+INPUT.TEXT.srchBox {
+	FONT-SIZE: 12px;
+	WIDTH: 116px;
+}
+A.leftLink {
+	COLOR: #0000cc;
+    TEXT-DECORATION: none;
+}
+
+A.leftLink:hover {
+	COLOR: #6666cc;
+    TEXT-DECORATION: none;
+}
+
+A.leftLinkB {
+	COLOR: #000000;
+    TEXT-DECORATION: none;
+	FONT-WEIGHT: bold;
+}
+
+.topLinkB {
+
