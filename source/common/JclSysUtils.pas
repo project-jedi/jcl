@@ -821,7 +821,7 @@ end;
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 begin
   Result := IntToStr(Value);
-  if Lenght(Result) < Count then
+  if Length(Result) < Count then
     Result := StrFillChar('0', Count - Length(Result)) + Result;
 end;
 
