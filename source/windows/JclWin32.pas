@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: February 14, 2002                                                                 }
+{ Last modified: February 21, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,7 +35,7 @@ unit JclWin32;
 interface
 
 uses
-  Windows, ActiveX, ImageHlp,
+  Windows, ActiveX, ImageHlp, WinSvc,
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
   {$ENDIF COMPILER5_UP}
@@ -108,50 +108,6 @@ function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
 
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD;
   lpName: PChar): THandle; stdcall; external kernel32 name 'CreateMutexA';
-
-//--------------------------------------------------------------------------------------------------
-// Shell related declarations (missing/incorrect in different delphi versions)
-//--------------------------------------------------------------------------------------------------
-
-{$IFNDEF COMPILER4_UP}
-{$IFDEF SUPPORTS_INTERFACE}
-
-type
-  IContextMenu2 = interface (IContextMenu)
-    [SID_IContextMenu2]
-    function HandleMenuMsg(uMsg: UINT; WParam: WPARAM; LParam: LPARAM): HRESULT; stdcall;
-  end;
-
-function SHGetSpecialFolderPath(hwndOwner: HWND; lpszPath: PChar;
-  nFolder: Integer; fCreate: BOOL): BOOL; stdcall; external
-  'shell32.dll' name 'SHGetSpecialFolderPathA'
-
-const
-  SID_IQueryInfo = '{00021500-0000-0000-C000-000000000046}';
-
-type
-  IQueryInfo = interface (IUnknown)
-    [SID_IQueryInfo]
-    function GetInfoTip(dwFlags: DWORD; var ppwszTip: PWideChar): HRESULT; stdcall;
-    function GetInfoFlags(out pdwFlags: DWORD): HRESULT; stdcall;
-  end;
-
-{$ENDIF SUPPORTS_INTERFACE}
-{$ENDIF COMPILER4_UP}
-
-//==================================================================================================
-// Miscellanuous (missing in delphi 3)
-//==================================================================================================
-
-{$IFNDEF COMPILER4_UP}
-
-const
-  TIME_ZONE_ID_INVALID  = DWORD($FFFFFFFF);
-  TIME_ZONE_ID_UNKNOWN  = 0;
-  TIME_ZONE_ID_STANDARD = 1;
-  TIME_ZONE_ID_DAYLIGHT = 2;
-
-{$ENDIF COMPILER4_UP}
 
 //==================================================================================================
 // COM related declarations
@@ -337,13 +293,6 @@ type
   );
 
 {$ENDIF COMPILER5_UP}
-
-{$IFNDEF COMPILER4_UP}
-const
-  SECURITY_DESCRIPTOR_REVISION = 1;
-  SECURITY_DESCRIPTOR_REVISION1 = 1;
-  SECURITY_DESCRIPTOR_MIN_LENGTH = 20;
-{$ENDIF COMPILER4_UP}
 
 // TODO SetNamedSecurityInfo is incorrectly declared, at least for Windows 2000
 // it is. D5 unit tries to import from aclapi.dll but it is located in advapi3.dll
@@ -957,6 +906,14 @@ type
     CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
     external 'imagehlp.dll' name 'ImageEnumerateCertificates';
 
+{$IFNDEF DELPHI5_UP}
+  // lpServiceConfig can be nil
+  function QueryServiceConfig(hService: SC_HANDLE;
+    lpServiceConfig: PQueryServiceConfig; cbBufSize: DWORD;
+    var pcbBytesNeeded: DWORD): BOOL; stdcall;
+    external advapi32 name 'QueryServiceConfigA';
+{$ENDIF DELPHI5_UP}
+
 //==================================================================================================
 // JclShell
 //==================================================================================================
@@ -998,24 +955,6 @@ const
 {$EXTERNALSYM VER_SUITE_SINGLEUSERTS}
 {$EXTERNALSYM VER_SUITE_PERSONAL}
 {$EXTERNALSYM VER_SUITE_SERVERAPPLIANCE}
-
-{$IFNDEF COMPILER4_UP}
-
-  {$EXTERNALSYM IContextMenu2}
-  {$EXTERNALSYM SHGetSpecialFolderPath}
-  {$EXTERNALSYM SID_IQueryInfo}
-  {$EXTERNALSYM IQueryInfo}
-
-{$ENDIF COMPILER4_UP}
-
-{$IFNDEF COMPILER4_UP}
-
-  {$EXTERNALSYM TIME_ZONE_ID_INVALID}
-  {$EXTERNALSYM TIME_ZONE_ID_UNKNOWN}
-  {$EXTERNALSYM TIME_ZONE_ID_STANDARD}
-  {$EXTERNALSYM TIME_ZONE_ID_DAYLIGHT}
-
-{$ENDIF COMPILER4_UP}
 
   {$EXTERNALSYM SECURITY_NULL_SID_AUTHORITY}
   {$EXTERNALSYM SECURITY_WORLD_SID_AUTHORITY}
@@ -1119,14 +1058,6 @@ const
   {$EXTERNALSYM SE_OBJECT_TYPE}
 
 {$ENDIF COMPILER5_UP}
-
-{$IFNDEF COMPILER4_UP}
-
-  {$EXTERNALSYM SECURITY_DESCRIPTOR_REVISION}
-  {$EXTERNALSYM SECURITY_DESCRIPTOR_REVISION1}
-  {$EXTERNALSYM SECURITY_DESCRIPTOR_MIN_LENGTH}
-
-{$ENDIF COMPILER4_UP}
 
 {$EXTERNALSYM PPSID}
 {$EXTERNALSYM _TOKEN_USER}
@@ -1277,6 +1208,10 @@ const
   {$EXTERNALSYM ImageRvaToVa}
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
+
+{$IFNDEF DELPHI5_UP}
+  {$EXTERNALSYM QueryServiceConfig}
+{$ENDIF DELPHI5_UP}
 
   {$EXTERNALSYM CSIDL_COMMON_APPDATA}
 
