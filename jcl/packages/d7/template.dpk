@@ -31,10 +31,12 @@ requires
 <%%% START REQUIRES %%%>
   %NAME%,
 <%%% END REQUIRES %%%>
+  ;
   
 contains
 <%%% START FILES %%%>
   %UNITNAME% in '%FILENAME%' {%FORMNAMEANDTYPE%},
 <%%% END FILES %%%>
-  
+  ;
+
 end.
