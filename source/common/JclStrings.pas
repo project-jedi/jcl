@@ -15,20 +15,18 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Azret Botash                                                                                   }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
-{ Unit owner: Azret Botash                                                                         }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
-
-// rr  25 feb 2003 Linux port (implemented LoadCharTypes & LoadCaseMap)
-// mvb 20 jan 2002 added StrIToStrings to interface section
-// mvb 20 jan 2002 added AllowEmptyString parameter to StringsToStr function
-// mvb 20 jan 2002 added AddStringToStrings() by Jeff
+// Last modified: $Data$
+// For history see end of file
 
 // - StrIToStrings default parameter now true
 // - StrToStrings default parameter now true
@@ -325,6 +323,17 @@ function StringsToMultiSz(var Dest: PChar; const Source: TStrings): PChar;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
 procedure FreeMultiSz(var Dest: PChar);
 
+{ TODO -cHelp : Author: Peter J. Haas }
+function StringsToMultiString(const Value: array of String): String; overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+function StringsToMultiString(const Value: TDynStringArray): String; overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+function StringsToMultiString(const Value: TStrings): String; overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: String); overload;
+{ TODO -cHelp : Author: Peter J. Haas }
+procedure MultiStringToStrings(Dest: TStrings; const Value: String); overload;
+
 //--------------------------------------------------------------------------------------------------
 // TStrings Manipulation
 //--------------------------------------------------------------------------------------------------
@@ -352,7 +361,7 @@ function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: integer); overload;
 
-{$IFNDEF COMPILER5_UP}
+{$IFNDEF RTL130_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Backward compatibility
@@ -360,7 +369,7 @@ procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: int
 
 function AnsiSameText(const S1, S2: AnsiString): Boolean;
 
-{$ENDIF COMPILER5_UP}
+{$ENDIF RTL130_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Exceptions
@@ -378,8 +387,7 @@ uses
   {$IFDEF LINUX}
   Libc,
   {$ENDIF LINUX}
-  JclLogic,
-  JclResources;
+  JclSysUtils, JclLogic, JclResources;
 
 //==================================================================================================
 // Internal
@@ -865,7 +873,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODOc Author: Olivier Sannier}
+{ TODO -cHelp : Author: Olivier Sannier }
 
 function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
 var
@@ -882,7 +890,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODOc Author: Olivier Sannier}
+{ TODO -cHelp : Author: Olivier Sannier }
 
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 var
@@ -3418,6 +3426,138 @@ begin
   Dest := nil;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function StringsToMultiString(const Value: array of String): String;
+var
+  Len, I: Integer;
+  DstPtr: PChar;
+  S: String;
+begin
+  Result := '';
+  // calculate length
+  Len := 0;
+  for I := Low(Value) to High(Value) do
+    Inc(Len, Length(Value[I]) + 1);
+  // Copy the contents
+  SetLength(Result, Len);
+  DstPtr := PChar(Result);
+  for I := Low(Value) to High(Value) do
+  begin
+    S := Value[I];
+    DstPtr := CopyMemE(DstPtr, PChar(S), Length(S) + 1);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StringsToMultiString(const Value: TDynStringArray): String;
+var
+  Len, I: Integer;
+  DstPtr: PChar;
+  S: String;
+begin
+  Result := '';
+  // calculate length
+  Len := 0;
+  for I := Low(Value) to High(Value) do
+    Inc(Len, Length(Value[I]) + 1);
+  // Copy the contents
+  SetLength(Result, Len);
+  DstPtr := PChar(Result);
+  for I := Low(Value) to High(Value) do
+  begin
+    S := Value[I];
+    DstPtr := CopyMemE(DstPtr, PChar(S), Length(S) + 1);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StringsToMultiString(const Value: TStrings): String;
+var
+  Len, I: Integer;
+  DstPtr: PChar;
+  S: String;
+begin
+  Result := '';
+  if not Assigned(Value) then
+    Exit;
+  // calculate length
+  Len := 0;
+  for I := 0 to Value.Count - 1 do
+    Inc(Len, Length(Value[I]) + 1);
+  // Copy the contents
+  SetLength(Result, Len);
+  DstPtr := PChar(Result);
+  for I := 0 to Value.Count - 1 do
+  begin
+    S := Value[I];
+    DstPtr := CopyMemE(DstPtr, PChar(S), Length(S) + 1);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: String);
+var
+  PtrValueEnd, PtrStart, PtrEnd: PChar;
+  Count, I: Integer;
+  S: String;
+begin
+  // get count
+  PtrStart := PChar(Value);
+  PtrValueEnd := PtrStart + Length(Value);
+  Count := 0;
+  while PtrStart^ <> #0 do
+  begin
+    PtrEnd := StrEnd(PtrStart);
+    Inc(Count);
+    // single string or missing the double null at end
+    if PtrEnd >= PtrValueEnd then
+      Break;
+    PtrStart := PtrEnd + 1;
+  end;
+  SetLength(Dest, Count);
+  // get items
+  PtrStart := PChar(Value);
+  for I := Low(Dest) to High(Dest) do
+  begin
+    PtrEnd := StrEnd(PtrStart);
+    SetString(S, PtrStart, PtrEnd - PtrStart);
+    Dest[I] := S;
+    PtrStart := PtrEnd + 1;
+  end;
+end;
+
+procedure MultiStringToStrings(Dest: TStrings; const Value: String);
+var
+  PtrValueEnd, PtrStart, PtrEnd: PChar;
+  S: String;
+begin
+  Assert(Assigned(Dest));
+  if not Assigned(Dest) then
+    Exit;    { TODO : Exception? }
+  Dest.BeginUpdate;
+  try
+    Dest.Clear;
+    PtrStart := PChar(Value);
+    PtrValueEnd := PtrStart + Length(Value);
+    while PtrStart^ <> #0 do
+    begin
+      PtrEnd := StrEnd(PtrStart);
+      SetString(S, PtrStart, PtrEnd - PtrStart);
+      Dest.Add(S);
+      // single string or missing the double null at end
+      if PtrEnd >= PtrValueEnd then
+        Break;
+      PtrStart := PtrEnd + 1;
+    end;
+  finally
+    Dest.EndUpdate;
+  end;
+end;
+
 //==================================================================================================
 // TStrings Manipulation
 //==================================================================================================
@@ -3541,8 +3681,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ todoc
-  descr: conditionally adds a string to a string list.
+{ TODO -cHelp : AddStringToStrings }
+{ descr: conditionally adds a string to a string list.
   s: the string to add
   strings: the string list to add s to
   unique: determines whether s can be added to the list if an entry already exists
@@ -3709,7 +3849,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function StrToFloatSafe(const S: AnsiString): Float;
-{ TODOc: Contributors: Robert Rossmair }
+{ TODO -cHelp : Contributors: Robert Rossmair }
 var
   Temp: AnsiString;
   I, J, K: Integer;
@@ -3794,7 +3934,7 @@ end;
 // Backward compatibility
 //==================================================================================================
 
-{$IFNDEF COMPILER5_UP}
+{$IFNDEF RTL130_UP}
 
 function AnsiSameText(const S1, S2: AnsiString): Boolean;
 begin
@@ -3802,7 +3942,7 @@ begin
     Length(S1), PChar(S2), Length(S2)) = 2;
 end;
 
-{$ENDIF COMPILER5_UP}
+{$ENDIF RTL130_UP}
 
 //==================================================================================================
 // Initialization
@@ -3813,5 +3953,19 @@ initialization
   LoadCharTypes;  // this table first
   LoadCaseMap;    // or this function does not work
 
-end.
+// History:
 
+// 2003-02-25, Robert Rossmair
+//  - Linux port (implemented LoadCharTypes & LoadCaseMap)
+
+// 2002-01-20, Marcel van Brakel
+//  - added StrIToStrings to interface section
+//  - added AllowEmptyString parameter to StringsToStr function
+//  - added AddStringToStrings() by Jeff
+
+// $Log$
+// Revision 1.10  2004/04/06 04:31:32  peterjhaas
+// Add functions for String <--> MultiString conversion
+//
+
+end.
