@@ -3,14 +3,12 @@
 Summary:
   Opens a folder in Explorer.
 Description:
-
   The OpenFolder function opens Explorer with the specified Folder as the root
   of the namespace (root of the lefthand treeview).
 Parameters:
   Folder - Path of the folder to open. You can either specify a fully qualified path or a relative one, which will be relative to the current directory.
   Parent - Handle of the window to serve as the parent of any dialogs displayed.
 Result:
-
   If the function succeeds the result is True, otherwise it is False. You can call
   GetLastError to get more detailed information about the reason of failure.
 Quick info:
@@ -29,14 +27,12 @@ Quick info:
 Summary:
   Opens a special folder in Explorer,.
 Description:
-
   The OpenSpecialFolder function opens Explorer with the specified Folder as the root
   of the namespace (root of the lefthand treeview).
 Parameters:
   FolderId - SpecialFolder id to open. One of the CSIDL_Xxx constants must be specified here (see ShlObj.pas for the full list).
   Parent - Handle of the window to serve as the parent of any dialogs displayed
 Result:
-
   If the function succeeds the result is True, otherwise it is False.
 Quick info:
   Unit: JclShell
@@ -54,7 +50,6 @@ Quick info:
 Summary:
   Deletes the specified folder.
 Description:
-
   SHDeleteFolder deletes the specified folder, either permanently or to the recycle
   bin depending on the Options parameter. Additionally the function provides
   visual feedback by displaying the familiar delete folder dialog you also see
@@ -64,7 +59,6 @@ Parameters:
   Folder - The folder to delete.
   Options - Set of options that control the behavior of this function. See TSHDeleteOptions for more information.
 Result:
-
   If the function succeeds the result is True, otherwise it is False.
 Quick info:
   Unit: JclShell
@@ -82,7 +76,6 @@ Quick info:
 Summary:
   Deletes one or more files.
 Description:
-
   SHDeleteFiles delete a single file, multiple files or even files specified with
   a wildcard expression such as *.dcu. If doSilent is not specified the function
   provides visual feedback of its progress by showing the familiar delete files
@@ -93,7 +86,6 @@ Parameters:
   Files - Files to delete. This can be a single fully qualified filename, a list of files separated by a #0 or a wildcard expression (e.g. *.*). If Files specifies a (single) folder then make sure it is not ended in a backslash. In this latter case, the function deletes all files in the folder and then deletes the folder itself. The folder cannot have subfolders or the function fails.
   Options - Set of options that control the behavior of this function. See TSHDeleteOptions for more information.
 Result:
-
   If the function succeeds the result is True, otherwise it is False.
 Quick info:
   Unit: JclShell
@@ -111,7 +103,6 @@ Quick info:
 Summary:
   Renames a file.
 Description:
-
   SHRenameFile renames the specified file. Options allows you to control the
   behavior of the function. For example, if you specify [roRenameOnCollision] the
   function automatically modifies the destination filename in case the specified
@@ -121,10 +112,8 @@ Parameters:
   Dest - Fully qualified name of the destination file (the name to rename Src to).
   Options - Set of options that control the behavior of this function. See TSHRenameOptions for more information.
 Result:
-
   If the function succeeds the result is True, otherwise it is False.
 Notes:
-
   Use this function only to rename a single file.
 Quick info:
   Unit: JclShell
@@ -188,7 +177,6 @@ Summary:
 Description:
   The TEnumFolderRec is used to return information about an item that was found during the enumeration of a folder using the SHEnumFolderFirst and SHEnumFolderNext functions. It also holds data needed to perform the enumeration. Because of this you must always call SHEnumFolderClose to release these resources if SHEnumFolderFirst returned True.
 Notes:
-
   The returned icons are the 'plain' icons. You can use code such as below to transform them into how the shell displays them:   <P class="syntax">   if (F.Attributes and SFGAO_SHARE) = SFGAO_SHARE then     OverlayIconShared(F.IconLarge, F.IconSmall);   </P> You can also use the Folder member to get additional info about the found item:   <P class="syntax">   S := GetItemInfoTip(F.Folder, F.Item);   </P>
 Quick info:
   Unit: JclShell
@@ -243,7 +231,6 @@ Quick info:
 Summary:
   Begins the enumeration of the items in a folder
 Description:
-
   SHEnumFolderFirst begins the enumeration of all items in the specified folder that
   match the specified Flags. If the function succeeds then the return value is True
   and the F parameter will contain information
@@ -262,14 +249,12 @@ Parameters:
   SpecialFolder - One of the CSIDL_x constants that identify the special folder to enumerate.
   Folder - Fully qualified name of the folder you want to enumerate.
 Result:
-
   If the function succeeds it returns True and the Types\TEnumFolderRec record
   is filled with information about the first found item. If the function fails the
   return value is False. In this latter case you cannot call SHEnumFolderNext and
   don't need to call SHEnumFolderClose. If the function succeeded you can continue
   the enumeration with SHEnumFolderNext
 Notes:
-
   If SHEnumFolderFirst returns False there is no need to call SHEnumFolderClose.
   Passing an empty string as the Folder parameter will enumerate 'My Computer'.
 Quick info:
@@ -288,7 +273,6 @@ Quick info:
 Summary:
   Closes an enumeration sequence started by SHEnumFolderFirst.
 Description:
-
   This function closes a folder enumeration initiated earlier with SHEnumFolderFirst.
   You must call this function to release resources held during the enumeration. Note
   that it is only necessary to call this function if SHEnumFolderFirst returned True.
@@ -310,7 +294,6 @@ Quick info:
 Summary:
   Retrieves the next item in the enumeration matching the attributes specified by a previous call to SHEnumFolderFirst.
 Description:
-
   SHEnumFolderNext retrieves the next item in the enumeration of a folder that
   was previously started with SHEnumFolderFirst. If the function succeeds it returns
   True and the F parameter is filled with the information about the next item. If
@@ -320,7 +303,6 @@ Description:
 Parameters:
   F - TEnumFolderRec that was returned by SHEnumFolderFirst
 Result:
-
   If the function finds a next item it returns True. If there is no next item or
   an error occurred it returns False.
 Quick info:
@@ -339,7 +321,6 @@ Quick info:
 Summary:
   Displays the properties sheet of a shell item.
 Description:
-
   Displays the properties sheet of the item specified by FileName or Item. The
   window defined by handle is used as the parent of this dialog. To make the
   desktop the parent of the dialog use the return value of GetDesktopWindow.
@@ -348,7 +329,6 @@ Parameters:
   FileName - Fully qualified name of the file whose properties dialog you want to display.
   Item - Pidl of the item whose properties dialog you want to display.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. You can call
   GetLastError to get more detailed information about the reason of failure.
 Quick info:
@@ -367,7 +347,6 @@ Quick info:
 Summary:
   Displays the context menu of a shell item.
 Description:
-
   Displays the context menu of the item specified by Item at position Pos using
   window defined by Handle as the parent for the menu. Folder should be the parent
   folder of the specified Item, which should be relative to the folder. The function
@@ -379,7 +358,6 @@ Parameters:
   Item - The Item for which to display a context menu. Should be relative to Folder.
   Pos - Position, in client coordinates relative to the window identified by Handle, of the top, left corner of the context menu.
 Result:
-
   If the function succeeds the result is True, if it fails the result is False.
 Quick info:
   Unit: JclShell
@@ -397,7 +375,6 @@ Quick info:
 Summary:
   Displays the context menu of a shell item.
 Description:
-
   Displays the context menu of the file specified by FileName at position Pos using
   the window defined by Handle as the parent for the menu. The function returns
   True on success and False on failure. Note that when the user selects an item
@@ -407,7 +384,6 @@ Parameters:
   FileName - Fully qualified name of the file for which you want to display a context menu.
   Pos - Position, in client coordinates relative to the window identified by Handle, of the top, left corner of the context menu.
 Result:
-
   If the function succeeds the result is True, if it fails the result is False.
 Quick info:
   Unit: JclShell
@@ -425,7 +401,6 @@ Quick info:
 Summary:
   Overlays Icon with OverlayIcon.
 Description:
-
   OverlayIcon will overlay Icon with Overlay and return the result in Icon. If the
   function succeeds the return value is True. If it fails the return value is
   False in which case Icon retains its old value. The Large parameter controls
@@ -435,11 +410,9 @@ Parameters:
   Overlay - Handle of the overlay icon.
   Large - If True Icon and Overlay are assumed to be large icons, if False they are assumed to be small icons. See Notes.
 Result:
-
   If the function succeeds the result is True and Icon contains a handle to the
   overlayed version. If the function fails the return value is False.
 Notes:
-
   The dimensions of large and small are determined by using the GetSystemMetrics function with SM_CXICON, SM_CXSMICON respectively.
 Quick info:
   Unit: JclShell
@@ -456,7 +429,6 @@ Quick info:
 Summary:
   Overlays an icon with the system 'shortcut' icon.
 Description:
-
   OverlayIconShortCut overlays the icon passed in with the icon that the shell
   uses to represent a shortcut. This function uses the OverlayIcon
   function internally and the notes about icon sizes mentioned there apply here.
@@ -464,7 +436,6 @@ Parameters:
   Large - On input this must be a valid handle to a large icon. On exit this will be the handle of that same icon, overlayed with the shortcut icon.
   Small - On input this must be a valid handle to a small icon. On exit this will be the handle of that same icon, overlayed with the shortcut icon.
 Result:
-
   If the function succeeds it returns True, if it fails it returns False.
 Quick info:
   Unit: JclShell
@@ -481,7 +452,6 @@ Quick info:
 Summary:
   Overlays an icon with the system 'shared' icon.
 Description:
-
   OverlayIconShortCut overlays the icon passed in with the icon that the shell
   uses to represent a shared item. This function uses the OverlayIcon
   function internally and the notes about icon sizes mentioned there apply here.
@@ -489,7 +459,6 @@ Parameters:
   Large - On input this must be a valid handle to a large icon. On exit this will be the handle of that same icon, overlayed with the shared folder icon.
   Small - On input this must be a valid handle to a small icon. On exit this will be the handle of that same icon, overlayed with the shared folder icon.
 Result:
-
   If the function succeeds it returns True, if it fails it returns False.
 Quick info:
   Unit: JclShell
@@ -507,7 +476,6 @@ Quick info:
 Summary:
   Retrieves the icon at the specified index from the system imagelist.
 Description:
-
   GetSystemIcon returns the icon at specified index from the system imagelist. If
   the function succeeds the result is a handle to that icon, otherwise it is 0. The
   caller is responsible for eventually releasing the icon by calling DestroyIcon.
@@ -520,12 +488,10 @@ Parameters:
   IconIndex - The index into the system imagelist of the icon you want to retrieve.
   Flags - Flags that further specify the returned icon. This can be a combination of the SHGFI_x flags listed in the documentation of SHGetFileInfo. For example, you can set this flag to SHGFI_SMALLICON to get its small icon.
 Result:
-
   Handle of the requested icon or 0 on failure. The caller is responsible for
   destroying the icon when it is no longer used. Do that by calling the DestroyIcon
   API function.
 Notes:
-
   If you assign the returned handle to the Handle property of a TIcon you don't have to explicitly destroy the icon any longer. TIcon does that for you.
   This function requires COM to be initialized. Delphi normally does that for you but you may have to call CoInitialize yourself depending on the circumstances.
 Quick info:
@@ -571,7 +537,6 @@ Quick info:
 Summary:
   Reads version information from the specified file.
 Description:
-
   SHDllGetVersion attempts to read version information from the specified file using
   the well-known DllGetVersion exported function. This function is exported by all
   the newer Windows shell related DLLs starting with shell version 4.71. FileName
@@ -582,7 +547,6 @@ Parameters:
   FileName - The fully qualified path name of the file for which you want to retrieve version information. Most likely the name of a shell DLL. If the DLL can be found on the search path then the filename is sufficient (for example Shell32.dll does not have to include the path).
   Version - Record which is filled with version information if the function succeeds. See TDllVersionInfo
 Result:
-
   If the function succeeds the return value is True and the Version record is filled
   with the version information. If the function fails the return value is False and
   the Version record contains whatever it contained on entry.
@@ -602,7 +566,6 @@ Quick info:
 Summary:
   Performs an action on a file.
 Description:
-
   ShellExec is a wrapper for the Win32 API function ShellExecuteEx which alleviates
   some of the complexities of this function by providing defaults for some
   of its lesser used parameters. This function performs an action specified on a
@@ -614,7 +577,6 @@ Parameters:
   Verb - Specifies the action to be performed. The available verbs depend on the type of object specified in the FileName parameter but some of the more commonly used ones are 'open', 'print' and 'edit'. See the Platform SDK documentation for more information. This parameter defaults to an empty string which causes the default verb to be executed (usually 'open').
   CmdShow - Flags that specify how the application should display when it is opened. See the Platform SDK documentation on ShellExecute for more information. Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOWNORMAL.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. You can call
   GetLastError to get more detailed information about the reason of failure.
 Quick info:
@@ -633,7 +595,6 @@ Quick info:
 Summary:
   Performs an action on a file.
 Description:
-
   ShellExexAndWait is a wrapper for the Win32 API function ShellExecuteEx which alleviates
   some of the complexities of this function by providing defaults for some
   of its lesser used parameters. This function performs an action specified on a
@@ -648,7 +609,6 @@ Parameters:
   Verb - Specifies the action to be performed. The available verbs depend on the type of object specified in the FileName parameter but some of the more commonly used ones are 'open', 'print' and 'edit'. See the Platform SDK documentation for more information. This parameter defaults to an empty string which causes the default verb to be executed (usually 'open').
   CmdShow - Flags that specify how the application should display when it is opened. See the Platform SDK documentation on ShellExecute for more information. Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOWNORMAL.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. You can call
   GetLastError to get more detailed information about the reason of failure.
 Quick info:
@@ -667,7 +627,6 @@ Quick info:
 Summary:
   Invokes the shell's "Open With..." dialog for the specified file.
 Description:
-
   The ShellOpenAs function invokes the shell's "Open With..." dialog with the
   specified filename selected. This allows the user to select an application to
   open the file with, or dismiss opening all together. If the user selects an
@@ -676,7 +635,6 @@ Description:
 Parameters:
   FileName - The fully qualified name of the file for which to invoke the "Open With..." dialog. The caller is responsible for ensuring that the specified file actually exists, this function nor the shell does so. If the file does not exist the eventually invoke application, if any, is the one to determine that fact (and will likely display an error message).
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. Note that
   the invocation of the dialog is asynchronously so at the time the function returns
   the dialog likely is not on screen yet. The result therefore doesn't indicate
@@ -697,13 +655,11 @@ Quick info:
 Summary:
   Invokes the RAS Connect dialog.
 Description:
-
   The ShellRasDial function invoked the RAS Connect dialog (the one you get when
   you double click a RAS connection) for the specified connection.
 Parameters:
   EntryName - The name of the dial up connection to invoke. This name must be the exact name of an existing dial up connection.
 Result:
-
   If the function succeeds it returns True, otherwise it fails. Reasons for possible
   failure are an incorrect (non-existing) entry name, the user pressing the Cancel
   button in the dialog or failure to connect.
@@ -723,13 +679,11 @@ Quick info:
 Summary:
   Executes a control panel application.
 Description:
-
   ShellRunControlPanel executes a control panel application.
 Parameters:
   NameOrFileName - Filename of the control panel application to execute (a .cpl)
   AppletNumber - Zero based index of the applet to execute. Most control panel applications only implement a single applet so this parameter is most often 0. However, for those control panel applications that implement multiple applets you can use this index to choose the applet to execute. For example, on Windows 2000 main.cpl implements two applets, Mouse Properties (index 0) and Keyboard Properties (index 1).
 Result:
-
   If the control panel application can be executed the function returns True,
   otherwise it returns False. Note that the application is executed asynchronously
   so the application may not be running yet when the function returns. Note that
@@ -777,12 +731,10 @@ Quick info:
 Summary:
   Returns the type of executable file.
 Description:
-
   GetFileExeType returns the type of executable file of the specified file.
 Parameters:
   FileName - Fully qualified name of the file to test.
 Result:
-
   If the function succeeds it returns the type of executable file represented by
   the TJclFileExeType type. If the function fails it returns etError.
 Quick info:
@@ -800,7 +752,6 @@ Quick info:
 Summary:
   Returns the executable associated with a file.
 Description:
-
   ShellFindExecutable returns the name of the application that is associated with
   the specified file. That is, the application that would be executed when you
   double click the document (file).
@@ -808,7 +759,6 @@ Parameters:
   FileName - Fully qualified name of the file for which to determine the associated application.
   DefaultDir - TODO
 Result:
-
   If the function succeeds it returns the name of the application associated with
   the specified file. If the function fails it returns an empty string.
 Quick info:
@@ -826,7 +776,6 @@ Quick info:
 Summary:
   Reallocates (changes the size) a block of memory in the shell's memory space. The contents of the block prior to reallocation are reserved but there is no guarantee that the pointer will retain its value. The newly allocated block may be on a different address if there is not enough room to expand it in place. Also the actual size of the allocated block maybe slightly larger then the requested size because of additional maintenance data (not accessible).
 Description:
-
   SHReallocMem reallocates a specified memory block to a new size using the shell's
   memory allocator. If on input P is not nil then it must point to a block of
   memory previously allocated with the shell's memory allocator (SHGetMem or SHAllocMem).
@@ -834,7 +783,6 @@ Parameters:
   P - On input pointer to a memory block previously allocated with either SHGetMem SHAllocMem or nil. In the latter case SHReallocMem functions just like SHGetMem.
   Count - Total size, in bytes, to (re)allocate. If 0 then the memory pointed to be P (if not nil) is freed.
 Result:
-
   If the function succeeds it returns True and P contains the address of the reallocated
   memory block. If the function fails it returns False, and P will retain its value.
 Quick info:
@@ -853,7 +801,6 @@ Quick info:
 Summary:
   Allocates memory using the Shell's memory allocator.
 Description:
-
   SHAllocMem allocates the specified amount of memory using the Shell's memory
   allocator. If the allocation succeeds then P is set to point to the allocated
   memory and the return value will be True. You should assume that the memory
@@ -863,7 +810,6 @@ Parameters:
   P - Pointer variable which returns the address of the allocated memory block
   Count - Size, in byte, of the block of memory to allocate.
 Result:
-
   If the function succeeds it returns True and P contains the address of the allocated
   memory block. If the function fails then it returns False and P will be set to nil.
 Quick info:
@@ -882,7 +828,6 @@ Quick info:
 Summary:
   Allocates memory using the Shell's memory allocator.
 Description:
-
   SHAllocMem allocates the specified amount of memory using the Shell's memory
   allocator. If the allocation succeeds then the memory block is initialized to
   all 0's, P is set to point to the allocated memory and the return value will be
@@ -891,7 +836,6 @@ Parameters:
   P - Pointer variable which returns the address of the allocated memory block
   Count - Size, in bytes, of the block of memory to allocate.
 Result:
-
   If the function succeeds it returns True and P contains the address of the allocated
   memory block. If the function fails it returns False and P will be set to nil.
 Quick info:
@@ -910,7 +854,6 @@ Quick info:
 Summary:
   Frees the memory pointed to by P.
 Description:
-
   SHFreeMem frees the memory pointed to by P in the Shell's memory space. The memory
   must be allocated by the Shell's memory allocator. On success P is set to nil
   and the return value is True. On failure P retains its value and the return
@@ -918,7 +861,6 @@ Description:
 Parameters:
   P - Pointer to the memory block to free. If the function succeeds this parameter is set to nil.
 Result:
-
   If the function succeeds it returns True, if it fails it returns False. The latter
   case means that either the shell's memory allocator couldn't be retrieved or that
   the memory block wasn't allocated by the shell. Either case, the memory is not
@@ -941,7 +883,6 @@ Summary:
 Description:
   The TShellLink record is used when creating or resolving shortcuts with the ShellLinkCreate , ShellLinkCreateSystem and ShellLinkResolve functions.
 Notes:
-
   To avoid problems you should set the IdList field to nil before using this record.
   You must call ShellLinkFree when you no longer need the ShellLink record.
   The shell shortcut functions rely on COM internally and as such you should ensure COM is propertly initialized by calling the Win32 CoInitialize(nil) function before using these functions.
@@ -979,7 +920,6 @@ Quick info:
 Summary:
   Releases resources held by the ShellLink record.
 Description:
-
   ShellLinkFree releases the resources held by the TShellLink
   parameter. You must call this function when you no longer need the record,
   otherwise your application leaks memory.
@@ -1001,7 +941,6 @@ Quick info:
 Summary:
   Resolves a shortcut.
 Description:
-
   ShellLinkResolve resolves the ShellLink specified by FileName parameter and returns
   information about it in the ShellLink parameter.
   On success the return value is S_OK, on failure an OLE error code.
@@ -1009,10 +948,8 @@ Parameters:
   FileName - Fully qualified name of the shortcut file to resolve.
   ShellLink - TShellLink record which retrieves the details about the specified shortcut.
 Result:
-
   If the function succeeds it returns S_OK. If it fails it returns an OLE error code.
 Notes:
-
   You must free the TShellLink record by calling ShellLinkFree
 Quick info:
   Unit: JclShell
@@ -1030,7 +967,6 @@ Quick info:
 Summary:
   Creates a new shortcut.
 Description:
-
   ShellLinkCreate creates a new shortcut specified by filename. If the function
   succeeds it returns S_OK otherwise it returns an OLE error code.
   See TShellLink for information about the ShellLink
@@ -1039,11 +975,9 @@ Parameters:
   ShellLink - TShellLink record with the details about the shortcut to create.
   FileName - Fully qualified Filename for the new shortcut.
 Result:
-
   If the function succeeds the shortcut is created and the return value is S_OK. If
   the function fails the return value is an OLE error code.
 Notes:
-
   You must free the TShellLink record by calling ShellLinkFree
 Quick info:
   Unit: JclShell
@@ -1061,7 +995,6 @@ Quick info:
 Summary:
   Creates a new shortcut in the specified system folder.
 Description:
-
   ShellLinkCreateSystem creates a new shortcut specified by FileName in the system
   folder specified by the Folder parameter (CSIDL_XXX constants). FileName can
   contain a path but not a drive specification. See TShellLink for information about the ShortCut parameter. If the function succeeds it returns
@@ -1071,11 +1004,9 @@ Parameters:
   Folder - The folder in which to create the shortcut. This must be set to one of the CSIDL_x constants.
   FileName - Filename for the new shortcut. This can include a folder but no drive indication.
 Result:
-
   If the function succeeds the shortcut is created and the return value is S_OK. If
   the function fails the return value is an OLE error code.
 Notes:
-
   You must free the TShellLink record by calling ShellLinkFree
 Quick info:
   Unit: JclShell
@@ -1093,7 +1024,6 @@ Quick info:
 Summary:
   Returns the icon associate with a shell link.
 Description:
-
   ShellLinkGetIcon obtains the icon for the specified link. Due to the fact that
   Windows does not document how the shell itself determines the icon to display,
   the returned icon may be different than the one the shell actually dispays.
@@ -1101,7 +1031,6 @@ Parameters:
   Link - ShellLink record specifying the shell link for which to obtain the icon. This is, for example, the recor as initialized by ShellLinkResolve.
   Icon - TIcon instance which receives the icon associated with the shell link.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclShell
@@ -1119,7 +1048,6 @@ Quick info:
 Summary:
   Returns the item's info tip.
 Description:
-
   GetItemInfoTip returns the infotip (hint) associated with the specified item.
   Set Item to the item identifier for which you want to retrieve the infotip and set
   Folder to the parent of the supplied item. If the function fails or the specified
@@ -1128,10 +1056,8 @@ Parameters:
   Folder - Parent folder of the Item
   Item - Item for which to retrieve the infotip
 Result:
-
   The item's infotip or an empty string if the function fails.
 Notes:
-
   The returned string may contain multiple carriage return linefeed (#13#10) combinations
 Quick info:
   Unit: JclShell
@@ -1149,14 +1075,12 @@ Quick info:
 Summary:
   Frees the memory associated with the StrRet record.
 Description:
-
   If the supplied StrRet record is of type STRRET_WSTR then this function frees
   the memory associated with this record's pOleStr member. If the StrRet record
   is a different type this function does nothing.
 Parameters:
    - The TStrRet record for which to free the memory associated with the pOleStr member.
 Result:
-
   If the function releases the memory it returns True. If it fails to free the
   memory or the StrRet record is not of STRRET_WSTR type then the return value is False.
 Quick info:
@@ -1175,7 +1099,6 @@ Quick info:
 Summary:
   Converts a TStrRet record to a string.
 Description:
-
   StrRetToString converts the StrRet record to a Delphi long string. If the function
   succeeds it returns the converted string, if it fails it returns an empty string.
   If Free is set to False you must manually release the memory associated with the
@@ -1186,11 +1109,9 @@ Parameters:
   StrRet - The TStrRet record to convert to a string.
   Free - Determines whether the memory associated with the pOleStr member of StrRet is freed (only applies if StrRet.uType = STRRET_WSTR).
 Result:
-
   If the function succeeds it returns the string extracted from the StrRet parameter.
   If it fails the return value is an empty string.
 Notes:
-
   Windows 2000 introduced StrRetToStr and StrRetToBuf which can be used instead.
 Quick info:
   Unit: JclShell
@@ -1208,14 +1129,12 @@ Quick info:
 Summary:
   Converts an item identifier list to a path.
 Description:
-
   PidlToPath converts the supplied item identifier list to its path representation.
   If the function succeeds the path representation is returned as the function
   result. On failure the function returns an empty string.
 Parameters:
   IdList - The item identifier list to convert to a path.
 Result:
-
   If the function succeeds it returns the path of the specified pidl. If it fails
   it returns an empty string.
 Quick info:
@@ -1234,7 +1153,6 @@ Quick info:
 Summary:
   Converts a path to an item identifier list.
 Description:
-
   PathToPidl converts the supplied path to an item identifier list relative to the
   folder given by the Folder parameter. If the Folder parameter is nil then the
   resulting item identifier list will be relative to the desktop, in other words:
@@ -1243,7 +1161,6 @@ Parameters:
   Path - The fully qualified path to convert to an item identifier list
   Folder - The folder that the returned pidl must be relative to. If you specify nil then the returned pidl will be relative to the desktop.
 Result:
-
   If the function succeeds the return value is the item identifier list of the
   specified path, relative to the specified Folder. If the function fails the
   return value is nil. Note that the caller is responsible for eventually releasing
@@ -1264,7 +1181,6 @@ Quick info:
 Summary:
   Converts a path to an item identifier list and binds to its parent folder.
 Description:
-
   PathToPidlBind converts the supplied path given by FileName to an item identifier
   list and binds to the parent folder of this item. The item identifier list is
   returned as the function result and the bound folder is returned in the Folder
@@ -1273,13 +1189,11 @@ Parameters:
   FileName - The fully qualified name of the file or folder you want to bind to.
   Folder - On successful return contains a reference to the parent folder of the specified item.
 Result:
-
   If the function succeeds the return value is the item identifier list of the
   specified FileName, relative to the returned Folder. If the function fails the
   return value is nil. Note that the caller is responsible for eventually releasing
   the memory associated with the returned pidl by calling PidlFree.
 Notes:
-
   This function will correctly handle drives but you should use DriveToPidlBind
 Quick info:
   Unit: JclShell
@@ -1297,7 +1211,6 @@ Quick info:
 Summary:
   Converts a drive to an item identifier list and binds to the CSIDL_DRIVES folder.
 Description:
-
   DriveToPidlBind converts the specified drive to an item identifier list and binds
   Folder to the CSIDL_DRIVES special folder (which is the parent of all drives).
   You should specify drive as "c:" or "c:\" where c can be replaced by any valid
@@ -1306,7 +1219,6 @@ Parameters:
   DriveName - The drive you want to bind to. Pass in "x:" or "x:\" (replace 'x' with the required drive).
   Folder - On success the Folder contains a reference to the parent of the specified drive. This will always be the CSIDL_DRIVES folder.
 Result:
-
   If the function succeeds the return value is the item identifier list of the
   specified drive, relative to the returned Folder. On failure the return value
   is nil. Note that the caller is responsible for eventually releasing the returned
@@ -1327,7 +1239,6 @@ Quick info:
 Summary:
   Binds the Folder to the parent folder of the specified item identifier.
 Description:
-
   PidlBindToParent binds Folder to the parent folder of the absolute item identifier
   specified in IdList. The function also returns an item identifier for the IdList
   but relative to the parent folder. If the function succeeds it returns True, on
@@ -1337,7 +1248,6 @@ Parameters:
   Folder - On return contains a reference to the parent folder of IdList.
   Last - Item identifier list of IdList but relative to Folder.
 Result:
-
   If the function succeeds the return value is True, otherwise the return value is
   False. In this latter case the Folder and Last parameter will contain nil on return.
 Quick info:
@@ -1356,7 +1266,6 @@ Quick info:
 Summary:
   Compares two item identifier lists.
 Description:
-
   PidlCompare compares the two supplied item identifier lists (pidl's). If they are
   equal the result is True, otherwise the result is False. Note that if both pidl's
   are nil they considered equal. Equality is determined by directly comparing the
@@ -1368,7 +1277,6 @@ Parameters:
   Pidl1 - An item identifier list to compare against Pidl2
   Pidl2 - An item identifier list to compare against Pidl1
 Result:
-
   If the two pidl's are equal the function returns True, if they are not equal it
   returns False.
 Quick info:
@@ -1387,7 +1295,6 @@ Quick info:
 Summary:
   Copies the item identifier list from source into destination.
 Description:
-
   PidlCopy copies the item identifier list given by source into dest. If the item
   identifier list was successfully copied the result is True, otherwise the result
   is False. Note that the item identifier list given by Dest is not freed before
@@ -1397,7 +1304,6 @@ Parameters:
   Source - The item identifier to copy.
   Dest - The item identifier that receives a copy of Source. Note that you must eventually free this item identifier by calling PidlFree
 Result:
-
   If the function succeeds then the return value is True, otherwise it is False.
 Quick info:
   Unit: JclShell
@@ -1415,7 +1321,6 @@ Quick info:
 Summary:
   Frees the given item identifier list.
 Description:
-
   PidlFree frees the memory associated with the item identifier list given by IdList.
   If the memory was successfully freed the IdList is set to nil and the function
   returns True. If the memory could not be freed the result is False. This function
@@ -1424,7 +1329,6 @@ Description:
 Parameters:
   IdList - The item identifier list whose associated memory shall be freed
 Result:
-
   If the function succeeds the return value is True and IdList is set to nil. If
   the function fails the return value is False and the IdList parameter will retain
   its value.
@@ -1444,13 +1348,11 @@ Quick info:
 Summary:
   Returns the depth of the given item identifier list.
 Description:
-
   PidlGetDepth returns the number of items in the item identifier list excluding
   the zero terminator.
 Parameters:
   Pidl - The item identifier list for which to determine the depth.
 Result:
-
   The depth of the item identifier list. If the supplied pidl is either unassigned
   or empty the function returns 0. If the pidl is invalid (depth is greater than
   MAX_PATH) the function returns -1.
@@ -1470,7 +1372,6 @@ Quick info:
 Summary:
   Returns the length of the given item identifier list.
 Description:
-
   PidlGetLength returns the size in bytes of the item identifier list, excluding
   the zero terminator. Note that by definition the length of a pidl should equal
   IMalloc.GetSize(Pidl) - 2. This function does not rely on that and instead walks
@@ -1478,7 +1379,6 @@ Description:
 Parameters:
   Pidl - The item identifier list for which to calculate the length.
 Result:
-
   The length, in bytes, of the item identifier list. If the supplied pidl is either
   unassigned or empty the result value is 0. If the pidl is invalid (depth greater
   than MAX_PATH) the function returns -1.
@@ -1498,7 +1398,6 @@ Quick info:
 Summary:
   Returns the next item identifier in the supplied item identifier list.
 Description:
-
   PidlGetNext returns the next item identifier in the supplied item identifier list
   or nil if there is no next item identifier (the null terminating pidl is not
   considered an item identifier). The returned item identifier is simply a pointer
@@ -1506,7 +1405,6 @@ Description:
 Parameters:
   Pidl - Item identifier list for which to retrieve the next element.
 Result:
-
   The next element in the supplied item identifier list, or nil if there is no next element.
 Quick info:
   Unit: JclShell
