@@ -308,6 +308,7 @@ var
   oldLexer, newLexer: TJppLexer;
   fsIn: TStream;
 begin
+  Result := '';
   Assert(Lexer.TokenAsString <> '');
   { we must prevent case of $I- & $I+ becoming file names }
   if (Lexer.TokenAsString[1] in ['-', '+'])
@@ -408,6 +409,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/12/22 14:31:01  rrossmair
+// - fixed TJppParser.ParseInclude: missing Result initialization caused garbage output
+//
 // Revision 1.9  2004/12/03 04:17:19  rrossmair
 // - "i" option changed to allow for excluding specified files from processing
 //
