@@ -934,8 +934,155 @@ Kylix=1
 FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+IMultiSafeGuard = interface
+[ShortDescr]
+Interface used to provide automatic resource destruction for multiple resources.
+[Description]
+IMultiSafeGuard is the interface used by the Guard functions to provide automatic
+resource destruction for multiple resources. A safeguard is an interface which gets
+associated with the resources and ensures that when execution leaves the scope at
+which the safeguard variable is declared, the resources are released (e.g. memory
+freed or objects destroyed). Since a safeguard is an interface and Delphi ensures
+that interfaces are released even when an exception is raised, you can use a
+safeguard to ensure that a resource always gets freed without having to explicitly
+code it. For example: <BR>
+ <PRE class=syntax>
+ <B>var</B><BR>
+   SafeGuard: IMultiSafeGuard;<BR>
+   O1, O2: TObject;
+ <B>begin</B><BR>
+   O1 := Guard(TObject.Create, SafeGuard);<BR>
+   O2 := Guard(TObject.Create, SafeGuard);<BR>
+   // use O1 and O2 here
+ <B>end</B>;<BR>
+ </PRE>
+In the above code, the objects are associated with the SafeGuard. No matter
+how the function terminates, the safeguard ensures that the objects are
+destroyed. Usually you will simply store the returned safeguard interface pointer
+in a variable at the appropriate scope and forget about it. However, the ISafeGuard
+interface does provide some additional functionality which may be useful at times.
+[Notes]
+Count=1
+1=You can use IMultiSafeGuard to guard multiple memory allocations or multiple objects.
+However, a single IMultiSafeGuard interface can only store one or the other, you can
+not mix memory and objects in a single IMultiSafeGuard.
+[Quick Info]
+Unit=JclSysUtils
+Category=Memory, Classes and Objects
+SubCat=Guards\IMultiSafeGuard
+Author=Team JEDI;jcl@delphi-jedi.org
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+[SeeAlso]
+Count=2
+1=..\Guard;Guard
+2=..\ISafeGuard;ISafeGuard
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ReleaseItem(Index: Integer): Pointer;
+[ShortDescr]
+Disassociates the resource from the safeguard.
+[Description]
+ReleaseItem returns a pointer to the associated resource and then disassociates it
+with the safeguard. This means that when execution leaves the scope in which
+the interface variable is declared, the resource will not be automatically freed.
+By using ReleaseItem you are handed back the responsibility to explicitly release
+the resource.
+[Result]
+Pointer to the resource associated with the safeguard.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclSysUtils
+Category=Memory, Classes and Objects
+SubCat=Guards\IMultiSafeGuard
+Author=Team JEDI;jcl@delphi-jedi.org
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetItem(Index: Integer): Pointer;
+[ShortDescr]
+Returns a pointer to the resource associated with the safeguard.
+[Description]
+The GetItem method returns a pointer to the resource associated with the safeguard.
+Usually you will hold on to this pointer when you associated it with the safeguard,
+however you can use the safeguard as the storage for the resource pointer itself.
+[Result]
+Pointer to the resource associated with the safeguard.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclSysUtils
+Category=Memory, Classes and Objects
+SubCat=Guards\IMultiSafeGuard
+Author=Team JEDI;jcl@delphi-jedi.org
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure FreeItem(Index: Integer);
+[ShortDescr]
+Frees the memory of the associated resource.
+[Description]
+The FreeItem method frees the resource associated with the safeguard. You should
+never call this method directly, it is called automatically when execution leaves
+the scope in which the interface variable is declared.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclSysUtils
+Category=Memory, Classes and Objects
+SubCat=Guards\IMultiSafeGuard
+Author=Team JEDI;jcl@delphi-jedi.org
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: Integer read GetCount;
+[ShortDescr]
+Returns the number of items guarded by the interface.
+[Description]
+The Count property returns the number of items guarded by the interface.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclSysUtils
+Category=Memory, Classes and Objects
+SubCat=Guards\IMultiSafeGuard
+Author=Team JEDI;jcl@delphi-jedi.org
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: Pointer read GetItem;
+[ShortDescr]
+Returns a pointer to the protected resource.
+[Description]
+The Items property provides zero-based indexed access to the items guarded by the
+interface. The total numer of items can be learned from the Count property. 
+You'll have to cast the pointer to the appropriate type.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclSysUtils
+Category=Memory, Classes and Objects
+SubCat=Guards\IMultiSafeGuard
+Author=Team JEDI;jcl@delphi-jedi.org
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function Guard(Mem: Pointer; out SafeGuard: ISafeGuard): Pointer; overload;
 function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
+function Guard(Mem: Pointer; var SafeGuard: IMultiSafeGuard): Pointer; overload;
+function Guard(Obj: TObject; var SafeGuard: IMultiSafeGuard): TObject; overload;
 [ShortDescr]
 Associates a resource, pointer or object reference, with a safeguard.
 [Description]
@@ -967,6 +1114,7 @@ See the <REF Target"ISafeGuard\ISafeGuard">ISafeGuard</REF> interface for more i
 Count=2
 1=Mem:Pointer=The pointer (or object in the case of the overloaded Guard function)
 which to associate with the safeguard.
+2=SafeGuard:I[Multi]SafeGuard=The guard variable to associate the resource with.
 [Result]
 Copy of the Mem (or Obj) parameter. This is merely a convenience which allows
 you to create the resource embedded inside the function call as demonstrated above.
