@@ -21,7 +21,7 @@
 { versions of Delphi as well as FPC.                                                               }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: August 25, 2001                                                                   }
+{ Last modified: March 08, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -120,6 +120,8 @@ type
   {$IFDEF MATH_SINGLE_PRECISION}
   Float = Single;
   {$ENDIF MATH_SINGLE_PRECISION}
+
+  PFloat = ^Float;
 
 {$IFDEF FPC}
 type
