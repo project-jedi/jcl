@@ -1463,6 +1463,7 @@ end;
 
 function TJclMeteredSection.Enter(TimeOut: Longword): TJclWaitResult;
 begin
+  Result := wrError; // Delphi 7.1 compiler warning bug
   while True do
   begin
     AcquireLock;
@@ -1500,6 +1501,7 @@ function TJclMeteredSection.Leave(ReleaseCount: Integer; var PrevCount: Integer)
 var
   Count: Integer;
 begin
+  Result := False;
   AcquireLock;
   try
     PrevCount := FMetSect^.SharedInfo^.AvailableCount;
@@ -1507,7 +1509,6 @@ begin
       (FMetSect^.SharedInfo^.AvailableCount + ReleaseCount > FMetSect^.SharedInfo^.MaximumCount) then
     begin
       Windows.SetLastError(ERROR_INVALID_PARAMETER);
-      Result := False;
       Exit;
     end;
     Inc(FMetSect^.SharedInfo^.AvailableCount, ReleaseCount);
@@ -1635,6 +1636,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/07 19:29:09  ahuser
+// Fix for Delphi 7.1 compiler warning bug.
+//
 // Revision 1.5  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
