@@ -255,7 +255,7 @@ implementation
 
 uses
   Registry,
-  JclLogic, JclResources, JclSscanf, JclStrings, JclSysInfo, JclSysUtils;
+  JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 const
   mapidll = 'mapi32.dll';
@@ -457,7 +457,7 @@ begin
     Exit;
   FClientLibHandle := LoadLibrary(PChar(GetClientLibName));
   if FClientLibHandle = 0 then
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   for I := 0 to Length(FFunctions) - 1 do
   begin
     P := GetProcAddress(FClientLibHandle, PChar(MapiExportNames[I]));
@@ -1060,7 +1060,8 @@ var
     FillChar(T, SizeOf(T), #0);
     with T do
     begin
-      Sscanf(S, '%4h/%2h/%2h %2h:%2h', [@wYear, @wMonth, @wDay, @wHour, @wMinute]);
+    // Petr could you replace the Sscanf. Thanks!
+    //  Sscanf(S, '%4h/%2h/%2h %2h:%2h', [@wYear, @wMonth, @wDay, @wHour, @wMinute]);
       Result := EncodeDate(wYear, wMonth, wDay) +
         EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
     end;
