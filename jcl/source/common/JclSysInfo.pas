@@ -78,9 +78,7 @@ uses
   Classes,
   JclResources;
 
-//--------------------------------------------------------------------------------------------------
 // Environment Variables
-//--------------------------------------------------------------------------------------------------
 {$IFDEF MSWINDOWS}
 type
   TEnvironmentOption = (eoLocalMachine, eoCurrentUser, eoAdditional);
@@ -100,10 +98,7 @@ procedure DestroyEnvironmentBlock(var Env: PChar);
 procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 // Common Folder Locations
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
 function GetCommonFilesFolder: string;
 {$ENDIF MSWINDOWS}
@@ -141,10 +136,7 @@ function GetCookiesFolder: string;
 function GetHistoryFolder: string;
 function GetProfileFolder: string;
 
-//--------------------------------------------------------------------------------------------------
 // Advanced Power Management (APM)
-//--------------------------------------------------------------------------------------------------
-
 type
   TAPMLineStatus = (alsOffline, alsOnline, alsUnknown);
   TAPMBatteryFlag = (abfHigh, abfLow, abfCritical, abfCharging, abfNoBattery, abfUnknown);
@@ -157,10 +149,7 @@ function GetAPMBatteryLifePercent: Integer;
 function GetAPMBatteryLifeTime: DWORD;
 function GetAPMBatteryFullLifeTime: DWORD;
 
-//--------------------------------------------------------------------------------------------------
 // Identification
-//--------------------------------------------------------------------------------------------------
-
 type
   TFileSystemFlag =
    (
@@ -207,10 +196,7 @@ function GetBIOSExtendedInfo: string;
 function GetBIOSDate: TDateTime;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 // Processes, Tasks and Modules
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclTerminateAppResult = (taError, taClean, taKill);
 
@@ -245,10 +231,7 @@ function GetShellProcessName: string;
 function GetShellProcessHandle: THandle;
 {.$ENDIF ~FPC}
 
-//--------------------------------------------------------------------------------------------------
 // Version Information
-//--------------------------------------------------------------------------------------------------
-
 type
   TWindowsVersion =
    (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
@@ -285,10 +268,7 @@ function GetOpenGLVersion(const Win: HWND; out Version, Vendor: AnsiString): Boo
 
 function GetOSVersionString: string;
 
-//--------------------------------------------------------------------------------------------------
 // Hardware
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 {$ENDIF MSWINDOWS}
@@ -362,9 +342,7 @@ const
 // eg. IF (Features and FPU_FLAG = 0) then CPU has Floating-Point unit on chip.
 
 const
-
-{ Standard (Intel) Feature Flags }
-
+  { Standard (Intel) Feature Flags }
   FPU_FLAG    = $00000001; // Floating-Point unit on chip
   VME_FLAG    = $00000002; // Virtual Mode Extention
   DE_FLAG     = $00000004; // Debugging Extention
@@ -637,10 +615,7 @@ function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Memory Information
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
 function GetMaxAppAddress: Integer;
 function GetMinAppAddress: Integer;
@@ -657,27 +632,18 @@ function GetTotalVirtualMemory: Integer;
 function GetFreeVirtualMemory: Integer;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 // Alloc granularity
-//--------------------------------------------------------------------------------------------------
-
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
 // Keyboard Information
-//--------------------------------------------------------------------------------------------------
-
 function GetKeyState(const VirtualKey: Cardinal): Boolean;
 function GetNumLockKeyState: Boolean;
 function GetScrollLockKeyState: Boolean;
 function GetCapsLockKeyState: Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Windows 95/98/Me system resources information
-//--------------------------------------------------------------------------------------------------
-
 type
   TFreeSysResKind = (rtSystem, rtGdi, rtUser);
   TFreeSystemResources = record
@@ -692,10 +658,7 @@ function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer; o
 function GetFreeSystemResources: TFreeSystemResources; overload;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 // Public global variables
-//--------------------------------------------------------------------------------------------------
-
 var
   ProcessorCount: Cardinal = 0;
   AllocGranularity: Cardinal = 0;
@@ -722,9 +685,7 @@ uses
 {$I JclSysInfo.fpc}
 {$ENDIF FPC}
 
-//==================================================================================================
-// Environment
-//==================================================================================================
+//=== Environment ============================================================
 
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
@@ -736,8 +697,6 @@ begin
   Result := SetEnvironmentVariable(PChar(Name), nil);
   {$ENDIF MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ExpandEnvironmentVar(var Value: string): Boolean;
 {$IFDEF UNIX}
@@ -761,8 +720,6 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
 
@@ -805,8 +762,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF KYLIX}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
@@ -874,8 +829,6 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
   {$IFDEF UNIX}
@@ -886,8 +839,6 @@ begin
   Result := SetEnvironmentVariable(PChar(Name), PChar(Value));
   {$ENDIF MSWINDOWS}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
 
@@ -955,8 +906,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // frees an environment block allocated by CreateEnvironmentBlock and
 // sets Env to nil
 
@@ -964,8 +913,6 @@ procedure DestroyEnvironmentBlock(var Env: PChar);
 begin
   FreeMultiSz(Env);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
 const
@@ -986,9 +933,7 @@ begin
   SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar(cEnvironment)));
 end;
 
-//==================================================================================================
-// Common Folders
-//==================================================================================================
+//=== Common Folders =========================================================
 
 // Utility function which returns the Windows independent CurrentVersion key
 // inside HKEY_LOCAL_MACHINE
@@ -1005,8 +950,6 @@ begin
     Result := HKLM_CURRENT_VERSION_WINDOWS;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO : Check for documented solution }
 function GetCommonFilesFolder: string;
 begin
@@ -1015,8 +958,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 function GetCurrentFolder: string;
 {$IFDEF UNIX}
@@ -1056,15 +997,11 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 { TODO : Check for documented solution }
 function GetProgramFilesFolder: string;
 begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS, 'ProgramFilesDir', '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO : Check for documented solution }
 function GetWindowsFolder: string;
@@ -1081,8 +1018,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO : Check for documented solution }
 function GetWindowsSystemFolder: string;
 var
@@ -1097,8 +1032,6 @@ begin
     StrResetLength(Result);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetWindowsTempFolder: string;
 var
@@ -1115,14 +1048,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetDesktopFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_DESKTOP);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO : Check GetProgramsFolder = GetProgramFilesFolder }
 function GetProgramsFolder: string;
@@ -1131,8 +1060,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function GetPersonalFolder: string;
 begin
   {$IFDEF UNIX}
@@ -1144,147 +1071,105 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function GetFavoritesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetStartupFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_STARTUP);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetRecentFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_RECENT);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetSendToFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_SENDTO);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetStartmenuFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_STARTMENU);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetDesktopDirectoryFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetNethoodFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_NETHOOD);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetFontsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FONTS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetCommonStartmenuFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTMENU);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetCommonProgramsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_PROGRAMS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetCommonStartupFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTUP);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetCommonDesktopdirectoryFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetCommonAppdataFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_APPDATA);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetAppdataFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_APPDATA);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetPrinthoodFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PRINTHOOD);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetCommonFavoritesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_FAVORITES);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetTemplatesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_TEMPLATES);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetInternetCacheFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_INTERNET_CACHE);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetCookiesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COOKIES);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetHistoryFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_HISTORY);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetProfileFolder: string;
 begin
@@ -1302,10 +1187,7 @@ end;
 // CSIDL_ALTSTARTUP
 // CSIDL_COMMON_ALTSTARTUP
 
-//==================================================================================================
 // Identification
-//==================================================================================================
-
 type
   TVolumeInfoKind = (vikName, vikSerial, vikFileSystem);
 
@@ -1348,28 +1230,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetVolumeName(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikName);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetVolumeSerialNumber(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikSerial);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetVolumeFileSystem(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikFileSystem);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : Donator (incl. TFileSystemFlag[s]): Robert Rossmair }
 
@@ -1388,8 +1262,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cDoc: Contributor: twm }
 
@@ -1428,7 +1300,6 @@ begin
     {$ENDIF MSWINDOWS}
 end;
 
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
 { TODO -cDoc: Donator: twm, Contributor rrossmair }
@@ -1487,8 +1358,6 @@ end;
 
 {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetLocalComputerName: string;
 // (rom) UNIX or LINUX?
 {$IFDEF LINUX}
@@ -1514,8 +1383,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetLocalUserName: string;
 {$IFDEF UNIX}
 begin
@@ -1538,23 +1405,17 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function GetRegisteredCompany: string;
 begin
   { TODO : check for MSDN documentation }
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetRegisteredOwner: string;
 begin
   { TODO : check for MSDN documentation }
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO: Check supported platforms, maybe complete rewrite }
 
@@ -1583,8 +1444,6 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function GetDomainName: string;
 {$IFDEF UNIX}
 var
@@ -1601,8 +1460,6 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 // Reference: How to Obtain BIOS Information from the Registry
 // http://support.microsoft.com/default.aspx?scid=kb;en-us;q195268
 
@@ -1615,8 +1472,6 @@ begin
   else
     Result := RegReadStringDef(HKEY_LOCAL_MACHINE, Win9xBIOSInfoKey, 'BIOSName', '');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetBIOSCopyright: string;
 const
@@ -1631,8 +1486,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetBIOSExtendedInfo: string;
 const
   ADR_BIOSEXTENDEDINFO = $FEC71;
@@ -1645,8 +1498,6 @@ begin
     Result := '';
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // Reference: How to Obtain BIOS Information from the Registry
 // http://support.microsoft.com/default.aspx?scid=kb;en-us;q195268
@@ -1707,9 +1558,7 @@ end;
 
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
-// Processes, Tasks and Modules
-//==================================================================================================
+//=== Processes, Tasks and Modules ===========================================
 
 {$IFDEF UNIX}
 const
@@ -1907,8 +1756,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 { TODO Windows 9x ? }
 
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean): Boolean;
@@ -2028,8 +1875,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetTasksList(const List: TStrings): Boolean;
 
   function EnumWindowsProc(Wnd: HWND; List: TStrings): Boolean; stdcall;
@@ -2050,8 +1895,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 var
   MI: TMemoryBasicInformation;
@@ -2062,8 +1905,6 @@ begin
   else
     Result := HMODULE(MI.AllocationBase);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}
 function IsSystemModule(const Module: HMODULE): Boolean;
@@ -2087,8 +1928,6 @@ begin
 end;
 {$ENDIF ~FPC}
 
-//--------------------------------------------------------------------------------------------------
-
 // Reference: http://msdn.microsoft.com/library/periodic/period97/win321197.htm
 { TODO : wrong link }
 
@@ -2108,16 +1947,12 @@ begin
     Result := False;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
 var
   Res: DWORD;
 begin
   Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, Res) <> 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
 var
@@ -2146,8 +1981,6 @@ begin
   Result := CopyImage(TempIcon, IMAGE_ICON, Width, Height, 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetWindowCaption(Wnd: HWND): string;
 const
   BufferAllocStep = 256;
@@ -2171,8 +2004,6 @@ begin
     FreeMem(Buffer);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // Q178893
 // http://support.microsoft.com/default.aspx?scid=kb;en-us;178893
@@ -2210,8 +2041,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 var
   PID: DWORD;
@@ -2221,8 +2050,6 @@ begin
   else
     Result := taError;  
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetProcessNameFromWnd(Wnd: HWND): string;
 var
@@ -2249,8 +2076,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 var
   List: TStringList;
@@ -2271,8 +2096,6 @@ begin
     List.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetProcessNameFromPid(PID: DWORD): string;
 var
@@ -2295,8 +2118,6 @@ begin
     List.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetMainAppWndFromPid(PID: DWORD): HWND;
 type
@@ -2330,8 +2151,6 @@ begin
   Result := SearchRec.Wnd;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetShellProcessName: string;
 const
   cShellKey = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon';
@@ -2348,8 +2167,6 @@ begin
     Result := cShellDefault;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetShellProcessHandle: THandle;
 var
   Pid: Longword;
@@ -2360,9 +2177,7 @@ begin
     RaiseLastOSError;
 end;
 
-//==================================================================================================
-// Version Information
-//==================================================================================================
+//=== Version Information ====================================================
 
 { Q159/238
 
@@ -2433,8 +2248,6 @@ begin
       end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtProductType: TNtProductType;
 const
@@ -2510,8 +2323,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetWindowsVersionString: string;
 begin
   case GetWindowsVersion of
@@ -2540,8 +2351,6 @@ begin
   end;  
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtProductTypeString: string;
 begin
   case NtProductType of
@@ -2561,8 +2370,6 @@ begin
     Result := '';
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetWindowsServicePackVersion: Integer;
 const
@@ -2586,8 +2393,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetWindowsServicePackVersionString: string;
 var
   SP: Integer;
@@ -2598,8 +2403,6 @@ begin
   else
     Result := '';
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // Imports copied from OpenGL unit. Direct using of OpenGL unit might cause unexpected problems due
 // setting 8087CW in the intialization section
@@ -2742,9 +2545,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
-// Hardware
-//==================================================================================================
+//=== Hardware ===============================================================
 
 // Helper function for GetMacAddress()
 // Converts the adapter_address array to a string
@@ -2756,8 +2557,6 @@ begin
     Integer(Adapter[2]), Integer(Adapter[3]),
     Integer(Adapter[4]), Integer(Adapter[5])]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO: RTLD version of NetBios }
 {$IFDEF MSWINDOWS}
@@ -2952,14 +2751,10 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-//--------------------------------------------------------------------------------------------------
-
 function ReadTimeStampCounter: Int64; assembler;
 asm
         DW      $310F
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetIntelCacheDescription(const D: Byte): string;
 var
@@ -2977,8 +2772,6 @@ begin
   if Result = '' then
     Result := Format(RsIntelUnknownCache,[D]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 begin
@@ -3005,8 +2798,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RoundFrequency(const Frequency: Integer): Integer;
 const
   NF: array [0..8] of Integer = (0, 20, 33, 50, 60, 66, 80, 90, 100);
@@ -3032,8 +2823,6 @@ begin
   end;
   Result := Frequency + RF;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 {$IFDEF UNIX}
@@ -3151,8 +2940,6 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 // Helper function for CPUID. Initializes Intel specific fields.
 
@@ -3281,8 +3068,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // Helper function for CPUID. Initializes Cyrix specific fields.
 
 procedure CyrixSpecific(var CpuInfo: TCpuInfo);
@@ -3311,8 +3096,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // Helper function for CPUID. Initializes AMD specific fields.
 
@@ -3355,8 +3138,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TransmetaSpecific(var CpuInfo: TCpuInfo);
 begin
   with CpuInfo do
@@ -3367,8 +3148,6 @@ begin
   end;
 end;
   
-//--------------------------------------------------------------------------------------------------
-
 function CPUID: TCpuInfo;
 var
   CPUInfo: TCpuInfo;
@@ -3692,8 +3471,6 @@ begin
   Result := CPUInfo;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TestFDIVInstruction: Boolean;
 var
   TopNum: Double;
@@ -3723,9 +3500,7 @@ begin
   Result := ISOK;
 end;
 
-//==================================================================================================
-// Alloc granularity
-//==================================================================================================
+//=== Alloc granularity ======================================================
 
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 begin
@@ -3736,8 +3511,6 @@ begin
       Value := (Value div AllocGranularity) * AllocGranularity;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 begin
   if (Cardinal(Value) mod AllocGranularity) <> 0 then
@@ -3747,9 +3520,7 @@ begin
       Value := Pointer((Cardinal(Value) div AllocGranularity) * AllocGranularity);
 end;
 
-//==================================================================================================
-// Advanced Power Management (APM)
-//==================================================================================================
+//=== Advanced Power Management (APM) ========================================
 
 {$IFDEF MSWINDOWS}
 function GetAPMLineStatus: TAPMLineStatus;
@@ -3775,8 +3546,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 var
@@ -3807,8 +3576,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 
 function GetAPMBatteryFlags: TAPMBatteryFlags;
@@ -3842,8 +3609,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetAPMBatteryLifePercent: Integer;
 var
   SystemPowerStatus: TSystemPowerStatus;
@@ -3858,8 +3623,6 @@ begin
   else
     Result := SystemPowerStatus.BatteryLifePercent;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetAPMBatteryLifeTime: DWORD;
 var
@@ -3876,8 +3639,6 @@ begin
     Result := SystemPowerStatus.BatteryLifeTime;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetAPMBatteryFullLifeTime: DWORD;
 var
   SystemPowerStatus: TSystemPowerStatus;
@@ -3893,9 +3654,7 @@ begin
     Result := SystemPowerStatus.BatteryFullLifeTime;
 end;
 
-//==================================================================================================
-// Memory Information
-//==================================================================================================
+//=== Memory Information =====================================================
 
 function GetMaxAppAddress: Integer;
 var
@@ -3906,8 +3665,6 @@ begin
   Result := Integer(SystemInfo.lpMaximumApplicationAddress);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetMinAppAddress: Integer;
 var
   SystemInfo: TSystemInfo;
@@ -3917,8 +3674,6 @@ begin
   Result := Integer(SystemInfo.lpMinimumApplicationAddress);
 end;
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 function GetMemoryLoad: Byte;
 {$IFDEF UNIX}
@@ -3941,8 +3696,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetSwapFileSize: Integer;
 {$IFDEF UNIX}
 var
@@ -3963,8 +3716,6 @@ begin
     Result := Trunc(dwTotalPageFile - dwAvailPageFile);
 end;
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 function GetSwapFileUsage: Integer;
 {$IFDEF UNIX}
@@ -3991,8 +3742,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetTotalPhysicalMemory: Integer;
 {$IFDEF UNIX}
 var
@@ -4013,8 +3762,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 function GetFreePhysicalMemory: Integer;
 {$IFDEF UNIX}
 var
@@ -4034,8 +3781,6 @@ begin
   Result := MemoryStatus.dwAvailPhys;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetTotalPageFileMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
@@ -4045,8 +3790,6 @@ begin
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwTotalPageFile;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetFreePageFileMemory: Integer;
 var
@@ -4058,8 +3801,6 @@ begin
   Result := MemoryStatus.dwAvailPageFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetTotalVirtualMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
@@ -4069,8 +3810,6 @@ begin
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwTotalVirtual;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetFreeVirtualMemory: Integer;
 var
@@ -4082,9 +3821,7 @@ begin
   Result := MemoryStatus.dwAvailVirtual;
 end;
 
-//==================================================================================================
-// Keyboard Information
-//==================================================================================================
+//=== Keyboard Information ===================================================
 
 function GetKeybStateHelper(VirtualKey: Cardinal; Mask: Byte): Boolean;
 var
@@ -4093,44 +3830,32 @@ begin
   Result := GetKeyBoardState(Keys) and (Keys[VirtualKey] and Mask <> 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetKeyState(const VirtualKey: Cardinal): Boolean;
 begin
   Result := GetKeybStateHelper(VirtualKey, $80);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetNumLockKeyState: Boolean;
 begin
   Result := GetKeybStateHelper(VK_NUMLOCK, $01);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetScrollLockKeyState: Boolean;
 begin
   Result := GetKeybStateHelper(VK_SCROLL, $01);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetCapsLockKeyState: Boolean;
 begin
   Result := GetKeybStateHelper(VK_CAPITAL, $01);
 end;
 
-//==================================================================================================
-// Windows 95/98/Me system resources information
-//==================================================================================================
+//=== Windows 95/98/ME system resources information ==========================
 
 { TODO -oPJH : compare to Win9xFreeSysResources }
 var
   ResmeterLibHandle: THandle;
   MyGetFreeSystemResources: function(ResType: UINT): UINT; stdcall;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure UnloadSystemResourcesMeterLib;
 begin
@@ -4141,8 +3866,6 @@ begin
     @MyGetFreeSystemResources := nil;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function IsSystemResourcesMeterPresent: Boolean;
 
@@ -4170,8 +3893,6 @@ begin
   Result := (ResmeterLibHandle <> 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer;
 const
   ParamValues: array [TFreeSysResKind] of UINT = (0, 1, 2);
@@ -4181,8 +3902,6 @@ begin
   else
     Result := -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetFreeSystemResources: TFreeSystemResources;
 begin
@@ -4194,9 +3913,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// Initialization
-//==================================================================================================
+//=== Initialization/Finalization ============================================
 
 procedure InitSysInfo;
 var
@@ -4262,16 +3979,10 @@ begin
   end;
 end;
 
-//==================================================================================================
-// Finalization
-//==================================================================================================
-
 procedure FinalizeSysInfo;
 begin
   UnloadSystemResourcesMeterLib;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 initialization
   InitSysInfo;
@@ -4284,6 +3995,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.38  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.37  2005/02/24 07:36:24  marquardt
 // resolved the compiler warnings, style cleanup, removed code from JclContainerIntf.pas
 //

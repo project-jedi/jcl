@@ -47,10 +47,7 @@ uses
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 
-//--------------------------------------------------------------------------------------------------
 // TD32 constants and structures
-//--------------------------------------------------------------------------------------------------
-
 {*******************************************************************************
 
   [-----------------------------------------------------------------------]
@@ -524,10 +521,7 @@ type
 
 {$ENDIF SUPPORTS_EXTSYM}
 
-//--------------------------------------------------------------------------------------------------
 // TD32 information related classes
-//--------------------------------------------------------------------------------------------------
-
 type
   TJclModuleInfo = class(TObject)
   private
@@ -599,10 +593,7 @@ type
   TJclLocalProcSymbolInfo = class(TJclProcSymbolInfo);
   TJclGlobalProcSymbolInfo = class(TJclProcSymbolInfo);
 
-//--------------------------------------------------------------------------------------------------
-// TD32 parser
-//--------------------------------------------------------------------------------------------------
-
+  // TD32 parser
   TJclTD32InfoParser = class(TObject)
   private
     FBase: Pointer;
@@ -648,10 +639,7 @@ type
     property ValidData: Boolean read FValidData;
   end;
 
-//--------------------------------------------------------------------------------------------------
-// TD32 scanner with source location methods
-//--------------------------------------------------------------------------------------------------
-
+  // TD32 scanner with source location methods
   TJclTD32InfoScanner = class(TJclTD32InfoParser)
   public
     function LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer; overload;
@@ -662,10 +650,7 @@ type
     function SourceNameFromAddr(AAddr: DWORD): string;
   end;
 
-//--------------------------------------------------------------------------------------------------
-// PE Image with TD32 information and source location support 
-//--------------------------------------------------------------------------------------------------
-
+  // PE Image with TD32 information and source location support 
   TJclPeBorTD32Image = class(TJclPeBorImage)
   private
     FIsTD32DebugPresent: Boolean;
@@ -692,9 +677,7 @@ uses
 const
   TurboDebuggerSymbolExt = '.tds';
 
-//==================================================================================================
-// TJclModuleInfo
-//==================================================================================================
+//=== { TJclModuleInfo } =====================================================
 
 constructor TJclModuleInfo.Create(pModInfo: PModuleInfo);
 begin
@@ -705,17 +688,13 @@ begin
   FSegmentCount := pModInfo.SegmentCount;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclModuleInfo.GetSegment(const Idx: Integer): TSegmentInfo;
 begin
   Assert((0 <= Idx) and (Idx < FSegmentCount));
   Result := FSegments[Idx];
 end;
 
-//==================================================================================================
-// TJclLineInfo
-//==================================================================================================
+//=== { TJclLineInfo } =======================================================
 
 constructor TJclLineInfo.Create(ALineNo, AOffset: DWORD);
 begin
@@ -724,9 +703,7 @@ begin
   FOffset := AOffset;
 end;
 
-//==================================================================================================
-// TJclSourceModuleInfo
-//==================================================================================================
+//=== { TJclSourceModuleInfo } ===============================================
 
 constructor TJclSourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: DWORD);
 type
@@ -757,37 +734,27 @@ begin
   {$ENDIF RANGECHECKS_ON}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclSourceModuleInfo.Destroy;
 begin
   FreeAndNil(FLines);
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSourceModuleInfo.GetLine(const Idx: Integer): TJclLineInfo;
 begin
   Result := TJclLineInfo(FLines.Items[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSourceModuleInfo.GetLineCount: Integer;
 begin
   Result := FLines.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclSourceModuleInfo.GetSegment(const Idx: Integer): TOffsetPair;
 begin
   Assert((0 <= Idx) and (Idx < FSegmentCount));
   Result := FSegments[Idx];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclSourceModuleInfo.FindLine(const AAddr: DWORD; var ALine: TJclLineInfo): Boolean;
 var
@@ -814,9 +781,7 @@ begin
   ALine := nil;
 end;
 
-//==================================================================================================
-// TJclSymbolInfo
-//==================================================================================================
+//=== { TJclSymbolInfo } =====================================================
 
 constructor TJclSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
@@ -825,9 +790,7 @@ begin
   FSymbolType := pSymInfo.SymbolType;
 end;
 
-//==================================================================================================
-// TJclProcSymbolInfo
-//==================================================================================================
+//=== { TJclProcSymbolInfo 0 =================================================
 
 constructor TJclProcSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
@@ -841,9 +804,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TJclTD32InfoParser
-//==================================================================================================
+//=== { TJclTD32InfoParser } =================================================
 
 constructor TJclTD32InfoParser.Create(const ATD32Data: TCustomMemoryStream);
 begin
@@ -861,8 +822,6 @@ begin
     Analyse;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclTD32InfoParser.Destroy;
 begin
   FreeAndNil(FSymbols);
@@ -871,8 +830,6 @@ begin
   FreeAndNil(FNames);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclTD32InfoParser.Analyse;
 var
@@ -912,8 +869,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclTD32InfoParser.AnalyseNames(const pSubsection: Pointer; const Size: DWORD);
 var
   I, Count, Len: Integer;
@@ -932,8 +887,6 @@ begin
     Inc(pszName, Len + 1);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclTD32InfoParser.AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD);
 var
@@ -959,14 +912,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclTD32InfoParser.AnalyseModules(pModInfo: PModuleInfo; const Size: DWORD);
 begin
   FModules.Add(TJclModuleInfo.Create(pModInfo));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclTD32InfoParser.AnalyseSourceModules(pSrcModInfo: PSourceModuleInfo; const Size: DWORD);
 var
@@ -985,70 +934,50 @@ begin
   {$ENDIF RANGECHECKS_ON}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclTD32InfoParser.AnalyseUnknownSubSection(const pSubsection: Pointer; const Size: DWORD);
 begin
   // do nothing
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoParser.GetModule(const Idx: Integer): TJclModuleInfo;
 begin
   Result := TJclModuleInfo(FModules.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.GetModuleCount: Integer;
 begin
   Result := FModules.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoParser.GetName(const Idx: Integer): string;
 begin
   Result := PChar(FNames.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.GetNameCount: Integer;
 begin
   Result := FNames.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoParser.GetSourceModule(const Idx: Integer): TJclSourceModuleInfo;
 begin
   Result := TJclSourceModuleInfo(FSourceModules.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.GetSourceModuleCount: Integer;
 begin
   Result := FSourceModules.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoParser.GetSymbol(const Idx: Integer): TJclSymbolInfo;
 begin
   Result := TJclSymbolInfo(FSymbols.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.GetSymbolCount: Integer;
 begin
   Result := FSymbols.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoParser.FindModule(const AAddr: DWORD;
   var AMod: TJclModuleInfo): Boolean;
@@ -1074,8 +1003,6 @@ begin
   AMod := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.FindSourceModule(const AAddr: DWORD;
   var ASrcMod: TJclSourceModuleInfo): Boolean;
 var
@@ -1096,8 +1023,6 @@ begin
   ASrcMod := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.FindProc(const AAddr: DWORD; var AProc: TJclProcSymbolInfo): Boolean;
 var
   I: Integer;
@@ -1115,8 +1040,6 @@ begin
   Result := False;
   AProc := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclTD32InfoParser.IsTD32DebugInfoValid(
   const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
@@ -1138,24 +1061,18 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclTD32InfoParser.IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
 begin
   Result := (Sign.Signature = Borland32BitSymbolFileSignatureForDelphi) or
     (Sign.Signature = Borland32BitSymbolFileSignatureForBCB);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoParser.LfaToVa(Lfa: DWORD): Pointer;
 begin
   Result := Pointer(DWORD(FBase) + Lfa)
 end;
 
-//==================================================================================================
-// TJclTD32InfoScanner
-//==================================================================================================
+//=== { TJclTD32InfoScanner } ================================================
 
 function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD): Integer;
 var
@@ -1163,8 +1080,6 @@ var
 begin
   Result := LineNumberFromAddr(AAddr, Dummy);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer;
 var
@@ -1183,8 +1098,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoScanner.ModuleNameFromAddr(AAddr: DWORD): string;
 var
   AMod: TJclModuleInfo;
@@ -1195,16 +1108,12 @@ begin
     Result := '';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD): string;
 var
   Dummy: Integer;
 begin
   Result := ProcNameFromAddr(AAddr, Dummy);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD; var Offset: Integer): string;
 var
@@ -1247,8 +1156,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclTD32InfoScanner.SourceNameFromAddr(AAddr: DWORD): string;
 var
   ASrcMod: TJclSourceModuleInfo;
@@ -1257,17 +1164,13 @@ begin
     Result := Names[ASrcMod.NameIndex];
 end;
 
-//==================================================================================================
-// TJclPeBorTD32Image
-//==================================================================================================
+//=== { TJclPeBorTD32Image } =================================================
 
 procedure TJclPeBorTD32Image.AfterOpen;
 begin
   inherited AfterOpen;
   CheckDebugData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeBorTD32Image.CheckDebugData;
 begin
@@ -1286,15 +1189,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPeBorTD32Image.Clear;
 begin
   ClearDebugData;
   inherited Clear;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeBorTD32Image.ClearDebugData;
 begin
@@ -1302,8 +1201,6 @@ begin
   FreeAndNil(FTD32Scanner);
   FreeAndNil(FTD32DebugData);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorTD32Image.IsDebugInfoInImage(var DataStream: TCustomMemoryStream): Boolean;
 var
@@ -1326,8 +1223,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorTD32Image.IsDebugInfoInTds(var DataStream: TCustomMemoryStream): Boolean;
 var
@@ -1356,6 +1251,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/24 16:34:53  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.10  2004/10/17 21:00:16  mthoma
 // cleaning
 //

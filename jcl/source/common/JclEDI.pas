@@ -80,10 +80,7 @@ type
 
   EJclEDIError = EJclError;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Forward Class Declarations
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Forward Class Declarations
   TEDIDataObject = class;
   TEDIDataObjectGroup = class;
   TEDIObjectListItem = class;
@@ -91,10 +88,7 @@ type
   TEDIDataObjectListItem = class;
   TEDIDataObjectList = class;  
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Delimiters Object
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Delimiters Object
   TEDIDelimiters = class(TEDIObject)
   private
     FSegmentDelimiter: string;
@@ -118,10 +112,7 @@ type
     property SSLen: Integer read FSubElementSeperatorLength;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Data Object
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Data Object
   TEDIDataObjectType =
    (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
     ediTransactionSet, ediMessage, ediFunctionalGroup,
@@ -163,10 +154,7 @@ type
 
   TEDIDataObjectArray = array of TEDIDataObject;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Data Object Group
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Data Object Group
   TEDIDataObjectGroup = class(TEDIDataObject)
   protected
     FGroupIsParent: Boolean;
@@ -210,10 +198,7 @@ type
 
   TEDIDataObjectGroupArray = array of TEDIDataObjectGroup;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Data Object Linked List Header and Item classes
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Data Object Linked List Header and Item classes
   TEDIObjectListItem = class(TEDIObject)
   protected
     FParent: TEDIObjectList;
@@ -317,10 +302,7 @@ type
       write SetEDIDataObject; default;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI Loop Stack
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Loop Stack
   TEDILoopStackRecord = record
     SegmentId: string;
     SpecStartIndex: Integer;
@@ -376,10 +358,7 @@ type
     property OnAddLoop: TEDILoopStackOnAddLoopEvent read FOnAddLoop write FOnAddLoop;
   end;
 
-//--------------------------------------------------------------------------------------------------
 //  Other
-//--------------------------------------------------------------------------------------------------
-
 // Compatibility functions
 function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
@@ -389,10 +368,7 @@ implementation
 uses
   JclResources, JclStrings;
 
-//--------------------------------------------------------------------------------------------------
 //  Other
-//--------------------------------------------------------------------------------------------------
-
 function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
 var
   SearchPattern: string;
@@ -451,8 +427,6 @@ begin
     Inc(Offset);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
 var
@@ -528,16 +502,12 @@ begin
   end;
 end;
 
-//==================================================================================================
-// { TEDIDelimiters }
-//==================================================================================================
+//=== { TEDIDelimiters } =====================================================
 
 constructor TEDIDelimiters.Create;
 begin
   Create('~', '*', '>');
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TEDIDelimiters.Create(const SD, ED, SS: string);
 begin
@@ -547,15 +517,11 @@ begin
   SetSS(SS);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIDelimiters.SetED(const Delimiter: string);
 begin
   FElementDelimiter := Delimiter;
   FElementDelimiterLength := Length(FElementDelimiter);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDelimiters.SetSD(const Delimiter: string);
 begin
@@ -563,17 +529,13 @@ begin
   FSegmentDelimiterLength := Length(FSegmentDelimiter);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIDelimiters.SetSS(const Delimiter: string);
 begin
   FSubelementSeperator := Delimiter;
   FSubelementSeperatorLength := Length(FSubElementSeperator);
 end;
 
-//==================================================================================================
-// { TEDIDataObject }
-//==================================================================================================
+//=== { TEDIDataObject } =====================================================
 
 constructor TEDIDataObject.Create(Parent: TEDIDataObject);
 begin
@@ -592,8 +554,6 @@ begin
   {$ENDIF ENABLE_EDI_DEBUGGING}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIDataObject.Destroy;
 begin
   {$IFDEF ENABLE_EDI_DEBUGGING}
@@ -608,22 +568,16 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObject.GetData: string;
 begin
   Result := FData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObject.SetData(const Data: string);
 begin
   FData := Data;
   FLength := Length(FData);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObject.SetDelimiters(const Delimiters: TEDIDelimiters);
 begin
@@ -632,9 +586,7 @@ begin
   FDelimiters := Delimiters;
 end;
 
-//==================================================================================================
-// { TEDIDataObjectGroup }
-//==================================================================================================
+//=== { TEDIDataObjectGroup } ================================================
 
 constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
 begin
@@ -646,8 +598,6 @@ begin
     AddEDIDataObjects(EDIDataObjectCount);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
 var
   I: Integer;
@@ -657,15 +607,11 @@ begin
     FEDIDataObjects.Add(InternalCreateEDIDataObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectGroup.AddEDIDataObject: Integer;
 begin
   Result := FEDIDataObjects.Count; // Return position
   FEDIDataObjects.Add(InternalCreateEDIDataObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.AppendEDIDataObject(EDIDataObject: TEDIDataObject): Integer;
 begin
@@ -674,8 +620,6 @@ begin
   if FGroupIsParent then
     EDIDataObject.Parent := Self;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.AppendEDIDataObjects(EDIDataObjectArray: TEDIDataObjectArray): Integer;
 var
@@ -690,8 +634,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIDataObjectGroup.DeleteEDIDataObject(EDIDataObject: TEDIDataObject);
 begin
   if loAutoUpdateIndexes in FEDIDataObjects.Options then
@@ -699,8 +641,6 @@ begin
   else
     FEDIDataObjects.Remove(EDIDataObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObject(Index: Integer);
 begin
@@ -710,14 +650,10 @@ begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIDataObjectGroup.DeleteEDIDataObjects;
 begin
   FEDIDataObjects.Clear;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.DeleteEDIDataObjects(Index, Count: Integer);
 var
@@ -737,16 +673,12 @@ begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError011, [IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIDataObjectGroup.Destroy;
 begin
   DeleteEDIDataObjects;
   FreeAndNil(FEDIDataObjects);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIDataObject;
 begin
@@ -766,14 +698,10 @@ begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError003, [Self.ClassName, IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
 begin
   Result := FEDIDataObjects.IndexIsValid(Index);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer): Integer;
 begin
@@ -783,8 +711,6 @@ begin
   else
     Result := AddEDIDataObject;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.InsertEDIDataObject(InsertIndex: Integer;
   EDIDataObject: TEDIDataObject): Integer;
@@ -799,8 +725,6 @@ begin
   else
     Result := AppendEDIDataObject(EDIDataObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex: Integer;
   EDIDataObjectArray: TEDIDataObjectArray): Integer;
@@ -821,8 +745,6 @@ begin
     Result := AppendEDIDataObjects(EDIDataObjectArray);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectGroup.InsertEDIDataObjects(InsertIndex, Count: Integer): Integer;
 var
   I: Integer;
@@ -836,8 +758,6 @@ begin
   else
     Result := AddEDIDataObjects(Count);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
 begin
@@ -858,8 +778,6 @@ begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError007, [Self.ClassName, IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectGroup.GetIndexPositionFromParent: Integer;
 var
   I: Integer;
@@ -878,16 +796,12 @@ begin
   end; // if
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectGroup.GetCount: Integer;
 begin
   Result := FEDIDataObjects.Count;
 end;
 
-//==================================================================================================
-// { TEDIObjectListItem }
-//==================================================================================================
+//=== { TEDIObjectListItem } =================================================
 
 constructor TEDIObjectListItem.Create(Parent: TEDIObjectList;
   PriorItem: TEDIObjectListItem; EDIObject: TEDIObject = nil);
@@ -906,8 +820,6 @@ begin
   {$ENDIF ENABLE_EDI_DEBUGGING}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIObjectListItem.Destroy;
 begin
   {$IFDEF ENABLE_EDI_DEBUGGING}
@@ -922,23 +834,17 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectListItem.FreeAndNilEDIDataObject;
 begin
   FreeAndNil(FEDIObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectListItem.GetIndexPositionFromParent: Integer;
 begin
   Result := FParent.IndexOf(Self);
 end;
 
-//==================================================================================================
-// { TEDIObjectList }
-//==================================================================================================
+//=== { TEDIObjectList } =====================================================
 
 constructor TEDIObjectList.Create(OwnsObjects: Boolean = True);
 begin
@@ -954,8 +860,6 @@ begin
   {$ENDIF ENABLE_EDI_DEBUGGING}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDIObjectList.Destroy;
 begin
   {$IFDEF ENABLE_EDI_DEBUGGING}
@@ -964,8 +868,6 @@ begin
   Clear;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIObjectList.Clear;
 var
@@ -985,8 +887,6 @@ begin
   FCount := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.First(Index: Integer): TEDIObjectListItem;
 begin
   if Index = 0 then
@@ -996,15 +896,11 @@ begin
   FCurrentItem := Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.Last: TEDIObjectListItem;
 begin
   FCurrentItem := FLastItem;
   Result := FCurrentItem;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.Next: TEDIObjectListItem;
 begin
@@ -1012,15 +908,11 @@ begin
   Result := FCurrentItem;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.Prior: TEDIObjectListItem;
 begin
   FCurrentItem := FCurrentItem.PriorItem;
   Result := FCurrentItem;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.Add(EDIObject: TEDIObject; Name: string): TEDIObjectListItem;
 begin
@@ -1034,8 +926,6 @@ begin
   FCurrentItem := Result;
   Inc(FCount);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.FindItemByName(Name: string;
   StartItem: TEDIObjectListItem): TEDIObjectListItem;
@@ -1057,8 +947,6 @@ begin
     ListItem := Next;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIObjectList.Insert(InsertIndex: Integer; EDIObject: TEDIObject);
 var
@@ -1087,8 +975,6 @@ begin
   else
     Add(EDIObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.GetItem(Index: Integer): TEDIObjectListItem;
 var
@@ -1153,8 +1039,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectList.Delete(Index: Integer);
 var
   ListItem: TEDIObjectListItem;
@@ -1169,8 +1053,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectList.Delete(EDIObject: TEDIObject);
 begin
   Remove(EDIObject);
@@ -1178,8 +1060,6 @@ begin
   if loAutoUpdateIndexes in FOptions then
     UpdateIndexes(nil); //Pass nil to force update of all items
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIObjectList.UpdateIndexes(StartItem: TEDIObjectListItem = nil);
 var
@@ -1204,8 +1084,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectList.UpdateCount;
 var
   ListItem: TEDIObjectListItem;
@@ -1218,8 +1096,6 @@ begin
     Inc(FCount);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDIObjectList.Remove(EDIObject: TEDIObject);
 var
@@ -1234,8 +1110,6 @@ begin
     FreeAndNil(ListItem);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.Extract(EDIObject: TEDIObject): TEDIObject;
 var
@@ -1254,8 +1128,6 @@ begin
     FreeAndNil(ListItem);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.IndexOf(EDIObject: TEDIObject): Integer;
 var
@@ -1279,8 +1151,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.GetEDIObject(Index: Integer): TEDIObject;
 var
   ListItem: TEDIObjectListItem;
@@ -1291,8 +1161,6 @@ begin
     Result := ListItem.EDIObject;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectList.SetEDIObject(Index: Integer; const Value: TEDIObject);
 var
   ListItem: TEDIObjectListItem;
@@ -1301,8 +1169,6 @@ begin
   if ListItem <> nil then
     ListItem.EDIObject := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.ReturnListItemsByName(Name: string): TEDIObjectList;
 var
@@ -1317,8 +1183,6 @@ begin
     ListItem := Next;
   end; //while
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.IndexOf(Item: TEDIObjectListItem): Integer;
 var
@@ -1342,8 +1206,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectList.Remove(Item: TEDIObjectListItem);
 begin
   // Remove the item from the list
@@ -1351,8 +1213,6 @@ begin
   // Free the list item
   FreeAndNil(Item);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.Extract(Item: TEDIObjectListItem): TEDIObjectListItem;
 begin
@@ -1375,8 +1235,6 @@ begin
   Dec(FCount);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIObjectList.Add(Item: TEDIObjectListItem; Name: string);
 begin
   Item.Parent := Self;
@@ -1394,8 +1252,6 @@ begin
   FCurrentItem := Item;
   Inc(FCount);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.FindEDIObject(EDIObject: TEDIObject): TEDIObject;
 var
@@ -1415,8 +1271,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.Find(Item: TEDIObjectListItem): TEDIObjectListItem;
 var
   ListItem: TEDIObjectListItem;
@@ -1434,8 +1288,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.Find(EDIObject: TEDIObject): TEDIObjectListItem;
 var
@@ -1455,16 +1307,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.IndexIsValid(Index: Integer): Boolean;
 begin
   Result := False;
   if (FCount > 0) and (Index >= 0) and (Index <= FCount - 1) then
     Result := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.Insert(Item, BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
 begin
@@ -1495,8 +1343,6 @@ begin
   Inc(FCount);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.Insert(EDIObject, BeforeEDIObject: TEDIObject): TEDIObjectListItem;
 var
   BeforeItem: TEDIObjectListItem;
@@ -1506,44 +1352,30 @@ begin
   Insert(Result, BeforeItem);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.Insert(BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
 begin
   Result := CreateListItem(BeforeItem, nil);
   Insert(Result, BeforeItem);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIObjectList.Insert(BeforeEDIObject: TEDIObject): TEDIObjectListItem;
 begin
   Result := Insert(nil, BeforeEDIObject);
 end;
 
-//==================================================================================================
-// TEDIDataObjectListItem
-//==================================================================================================
-
-{ TEDIDataObjectListItem }
+//=== { TEDIDataObjectListItem } =============================================
 
 function TEDIDataObjectListItem.GetEDIDataObject: TEDIDataObject;
 begin
   Result := TEDIDataObject(FEDIObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIDataObjectListItem.SetEDIDataObject(const Value: TEDIDataObject);
 begin
   FEDIObject := Value;
 end;
 
-//==================================================================================================
-// TEDIDataObjectList
-//==================================================================================================
-
-{ TEDIDataObjectList }
+//=== { TEDIDataObjectList } =================================================
 
 function TEDIDataObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
   EDIObject: TEDIObject): TEDIObjectListItem;
@@ -1551,21 +1383,15 @@ begin
   Result := TEDIDataObjectListItem.Create(Self, PriorItem, EDIObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDIDataObjectList.GetEDIDataObject(Index: Integer): TEDIDataObject;
 begin
   Result := TEDIDataObject(GetEDIObject(Index));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDIDataObjectList.SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
 begin
   SetEDIObject(Index, Value);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDIObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
   EDIObject: TEDIObject = nil): TEDIObjectListItem;
@@ -1573,9 +1399,7 @@ begin
   Result := TEDIObjectListItem.Create(Self, PriorItem, EDIObject);
 end;
 
-//==================================================================================================
-// { TEDILoopStack }
-//==================================================================================================
+//=== { TEDILoopStack } ======================================================
 
 constructor TEDILoopStack.Create;
 begin
@@ -1583,8 +1407,6 @@ begin
   SetLength(FStack, 0);
   FFlags := [];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TEDILoopStack.Destroy;
 var
@@ -1595,8 +1417,6 @@ begin
   SetLength(FStack, 0);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDILoopStack.Debug: string;
 var
@@ -1610,16 +1430,12 @@ begin
       IntToStr(FStack[I].SpecStartIndex) + #13#10;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDILoopStack.DoAddLoop(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
 begin
   if Assigned(FOnAddLoop) then
     FOnAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDILoopStack.GetSafeStackIndex(Index: Integer): Integer;
 begin
@@ -1639,21 +1455,15 @@ begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError057, [IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDILoopStack.GetSize: Integer;
 begin
   Result := Length(FStack);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDILoopStack.Peek: TEDILoopStackRecord;
 begin
   Result := FStack[High(FStack)];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDILoopStack.Peek(Index: Integer): TEDILoopStackRecord;
 begin
@@ -1669,8 +1479,6 @@ begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError056, [IntToStr(Index)]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDILoopStack.Pop(Index: Integer);
 begin
   // Resize loop stack if the index is less than the length
@@ -1681,8 +1489,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDILoopStack.Push(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
   EDIObject: TEDIObject): Integer;
 begin
@@ -1691,8 +1497,6 @@ begin
   UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId, StartIndex, EDIObject);
   Result := High(FStack);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDILoopStack.SetStackPointer(OwnerLoopId,
   ParentLoopId: string): Integer;
@@ -1733,8 +1537,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDILoopStack.UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId: string;
   StartIndex: Integer; EDIObject: TEDIObject);
 begin
@@ -1745,14 +1547,10 @@ begin
   FStack[High(FStack)].EDIObject := EDIObject;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDILoopStack.UpdateStackObject(EDIObject: TEDIObject);
 begin
   FStack[High(FStack)].EDIObject := EDIObject;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDILoopStack.ValidateLoopStack(SegmentId, OwnerLoopId, ParentLoopId: string;
   StartIndex: Integer; EDIObject: TEDIObject): TEDILoopStackRecord;

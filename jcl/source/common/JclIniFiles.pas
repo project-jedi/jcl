@@ -35,10 +35,7 @@ interface
 uses
   Classes, IniFiles, SysUtils;
   
-//--------------------------------------------------------------------------------------------------
 // Initialization (ini) Files
-//--------------------------------------------------------------------------------------------------
-
 function IniReadBool(const FileName, Section, Line: string): Boolean;              // John C Molyneux
 function IniReadInteger(const FileName, Section, Line: string): Integer;           // John C Molyneux
 function IniReadString(const FileName, Section, Line: string): string;             // John C Molyneux
@@ -46,19 +43,13 @@ procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);  
 procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);  // John C Molyneux
 procedure IniWriteString(const FileName, Section, Line, Value: string);            // John C Molyneux
 
-//--------------------------------------------------------------------------------------------------
 // Initialization (ini) Files helper routines
-//--------------------------------------------------------------------------------------------------
-
 procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 
 implementation
 
-//==================================================================================================
 // Initialization Files
-//==================================================================================================
-
 function IniReadBool(const FileName, Section, Line: string): Boolean;
 var
   Ini: TIniFile;
@@ -70,8 +61,6 @@ begin
     Ini.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function IniReadInteger(const FileName, Section, Line: string): Integer;
 var
@@ -85,8 +74,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function IniReadString(const FileName, Section, Line: string): string;
 var
   Ini: TIniFile;
@@ -98,8 +85,6 @@ begin
     Ini.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure IniWriteBool(const FileName, Section, Line: string; Value: Boolean);
 var
@@ -113,8 +98,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure IniWriteInteger(const FileName, Section, Line: string; Value: Integer);
 var
   Ini: TIniFile;
@@ -126,8 +109,6 @@ begin
     Ini.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure IniWriteString(const FileName, Section, Line, Value: string);
 var
@@ -141,14 +122,9 @@ begin
   end;
 end;
 
-//==================================================================================================
 // Initialization (ini) Files helper routines
-//==================================================================================================
-
 const
   ItemCountName = 'Count';
-
-//--------------------------------------------------------------------------------------------------
 
 procedure IniReadStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 var
@@ -168,8 +144,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure IniWriteStrings(IniFile: TCustomIniFile; const Section: string; Strings: TStrings);
 var
   I: Integer;
@@ -186,6 +160,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.8  2004/09/28 14:22:01  rrossmair
 // removed PH contributions
 //

@@ -47,18 +47,12 @@ uses
   Windows, SysUtils,
   JclBase;
 
-//--------------------------------------------------------------------------------------------------
 // Access Control
-//--------------------------------------------------------------------------------------------------
-
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 
-//--------------------------------------------------------------------------------------------------
 // Privileges
-//--------------------------------------------------------------------------------------------------
-
 function IsAdministrator: Boolean;
 function EnableProcessPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
@@ -70,10 +64,7 @@ function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 function GetUserObjectName(hUserObject: THandle): string;
 
-//--------------------------------------------------------------------------------------------------
 // Account Information
-//--------------------------------------------------------------------------------------------------
-
 procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
 procedure FreeTokenInformation(var Buffer: Pointer);
@@ -92,10 +83,7 @@ uses
   {$ENDIF FPC}
   JclResources, JclStrings, JclSysInfo, JclWin32;
 
-//==================================================================================================
 // Access Control
-//==================================================================================================
-
 function CreateNullDacl(var Sa: TSecurityAttributes;
   const Inheritable: Boolean): PSecurityAttributes;
 begin
@@ -121,8 +109,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
 begin
   Sa.nLength := SizeOf(Sa);
@@ -134,10 +120,7 @@ begin
     Result := nil;
 end;
 
-//==================================================================================================
 // Privileges
-//==================================================================================================
-
 function IsAdministrator: Boolean;
 var
   psidAdmin: Pointer;
@@ -199,8 +182,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function EnableProcessPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 const
@@ -222,8 +203,6 @@ begin
     CloseHandle(Token);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function EnableThreadPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
@@ -254,8 +233,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function IsPrivilegeEnabled(const Privilege: string): Boolean;
 var
   Token: THandle;
@@ -279,8 +256,6 @@ begin
     CloseHandle(Token);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 var
@@ -306,8 +281,6 @@ begin
     Result := '';  // Win9x/ME
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
 var
   Sd: PSecurity_Descriptor;
@@ -326,8 +299,6 @@ begin
 
   LocalFree(HLOCAL(Sd));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetUserObjectName(hUserObject: THandle): string;
 var
@@ -348,10 +319,7 @@ begin
     Result := '';
 end;
 
-//==================================================================================================
 // Account Information
-//==================================================================================================
-
 procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 var
   NameSize, DomainSize: DWORD;
@@ -375,8 +343,6 @@ begin
     Domain := '';
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass;
   var Buffer: Pointer);
@@ -410,16 +376,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FreeTokenInformation(var Buffer: Pointer);
 begin
   if Buffer <> nil then
     FreeMem(Buffer);
   Buffer := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC} // JclSysInfo.GetShellProcessHandle not available
 function GetInteractiveUserName: string;
@@ -455,6 +417,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.15  2004/10/25 08:51:23  marquardt
 // PH cleaning
 //

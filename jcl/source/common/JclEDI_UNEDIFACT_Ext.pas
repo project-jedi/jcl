@@ -51,10 +51,7 @@ uses
 
 type
 
-//--------------------------------------------------------------------------------------------------
 //  EDI Transaction Set Document and related types and classes
-//--------------------------------------------------------------------------------------------------
-
   TEDIMessageDocumentOptions = set of (doLinkSpecToDataObject);
 
   TEDI_UNEDIFACT_Document = class(TEDIMessageLoop)
@@ -95,10 +92,7 @@ type
 
 implementation
 
-//==================================================================================================
 // { TEDI_UNEDIFACT_Document }
-//==================================================================================================
-
 constructor TEDI_UNEDIFACT_Document.Create(Parent: TEDIDataObject;
   AEDIMessage: TEDIMessage; SEFSet: TEDISEFSet);
 begin
@@ -111,8 +105,6 @@ begin
   FEDITSDOptions := [];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDI_UNEDIFACT_Document.Destroy;
 begin
   FreeAndNil(FEDILoopStack);
@@ -120,8 +112,6 @@ begin
   FEDIMessageSpec.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDI_UNEDIFACT_Document.FormatDocument;
 var
@@ -196,16 +186,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDI_UNEDIFACT_Document.ValidateData(TSDocument: TEDI_UNEDIFACT_Document;
   LoopStack: TEDILoopStack; DataSegment: TEDISegment; SpecSegment: TEDISEFSegment;
   var DataIndex, SpecIndex: Integer; var ErrorOccured: Boolean);
 begin
   ErrorOccured := False;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDI_UNEDIFACT_Document.SetSpecificationPointers(DataSegment: TEDISegment;
   SpecSegment: TEDISEFSegment);
@@ -224,8 +210,6 @@ begin
     // ToDo: Assign SubElement Specs
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDI_UNEDIFACT_Document.AddLoopToDoc(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);

@@ -52,17 +52,11 @@ uses
   Windows, Classes,
   JclBase, JclWin32;
 
-//--------------------------------------------------------------------------------------------------
 // NTFS Exception
-//--------------------------------------------------------------------------------------------------
-
 type
   EJclNtfsError = class(EJclWin32Error);
 
-//--------------------------------------------------------------------------------------------------
 // NTFS - Compression
-//--------------------------------------------------------------------------------------------------
-
 type
   TFileCompressionState = (fcNoCompression, fcDefaultCompression, fcLZNT1Compression);
 
@@ -74,10 +68,7 @@ procedure NtfsSetDirectoryTreeCompression(const Directory: string; const State: 
 procedure NtfsSetDefaultFileCompression(const Directory: string; const State: TFileCompressionState);
 procedure NtfsSetPathCompression(const Path: string; const State: TFileCompressionState; Recursive: Boolean);
 
-//--------------------------------------------------------------------------------------------------
 // NTFS - Sparse Files
-//--------------------------------------------------------------------------------------------------
-
 type
   TNtfsAllocRanges = record
     Entries: Integer;
@@ -93,10 +84,7 @@ function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges; Index: Integer):
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
 function NtfsGetSparse(const FileName: string): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // NTFS - Reparse Points
-//--------------------------------------------------------------------------------------------------
-
 function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
 function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
 function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
@@ -104,22 +92,13 @@ function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
 function NtfsReparsePointsSupported(const Volume: string): Boolean;
 function NtfsFileHasReparsePoint(const Path: string): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // NTFS - Volume Mount Points
-//--------------------------------------------------------------------------------------------------
-
 function NtfsIsFolderMountPoint(const Path: string): Boolean;
 function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
 function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // NTFS - Change Journal
-//--------------------------------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------------------------------
 // NTFS - Opportunistic Locks
-//--------------------------------------------------------------------------------------------------
-
 type
   TOpLock = (olExclusive, olReadOnly, olBatch, olFilter);
 
@@ -129,18 +108,12 @@ function NtfsOpLockBreakAcknowledge(Handle: THandle; Overlapped: TOverlapped): B
 function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolean;
 function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapped): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Junction Points
-//--------------------------------------------------------------------------------------------------
-
 function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 function NtfsDeleteJunctionPoint(const Source: string): Boolean;
 function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Streams
-//--------------------------------------------------------------------------------------------------
-
 type
   TStreamId = (siInvalid, siStandard, siExtendedAttribute, siSecurity, siAlternate,
     siHardLink, siProperty, siObjectIdentifier, siReparsePoints, siSparseFile);
@@ -164,10 +137,7 @@ function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds; var 
 function NtfsFindNextStream(var Data: TFindStreamData): Boolean;
 function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 
-//--------------------------------------------------------------------------------------------------
 // Hard links
-//--------------------------------------------------------------------------------------------------
-
 function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
 // ANSI-specific version
 function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
@@ -199,10 +169,7 @@ uses
   SysUtils, Hardlinks,
   JclFileUtils, JclSysInfo, JclResources, JclSecurity;
 
-//==================================================================================================
 // NTFS - Compression
-//==================================================================================================
-
 // Helper consts, helper types, helper routines
 
 const
@@ -224,8 +191,6 @@ type
 
   EJclInvalidArgument = class(EJclError);
 
-//--------------------------------------------------------------------------------------------------
-
 {$STACKFRAMES OFF}
 
 function CallersCallerAddress: Pointer;
@@ -233,8 +198,6 @@ asm
         MOV     EAX, [EBP]
         MOV     EAX, TStackFrame([EAX]).CallerAddress
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -249,8 +212,6 @@ end;
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
-
-//--------------------------------------------------------------------------------------------------
 
 function SetCompression(const FileName: string; const State: Short; FileFlag: DWORD): Boolean;
 var
@@ -270,8 +231,6 @@ begin
     CloseHandle(Handle);
   end
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SetPathCompression(Dir: string; const Mask: string; const State: Short;
   const SetDefault, Recursive: Boolean): Boolean;
@@ -310,8 +269,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
 var
   Handle: THandle;
@@ -328,8 +285,6 @@ begin
       CloseHandle(Handle);
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsGetCompression(const FileName: string): TFileCompressionState;
 var
@@ -348,14 +303,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
 begin
   Result := SetCompression(FileName, State, FileFlag[IsDirectory(FileName)]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -366,16 +317,12 @@ begin
     RaiseLastOSError;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure NtfsSetDefaultFileCompression(const Directory: string; const State: TFileCompressionState);
 begin
   ValidateArgument(IsDirectory(Directory), 'NtfsSetDefaultFileCompression', 'Directory');
   if not SetCompression(Directory, CompressionFormat[State], FILE_FLAG_BACKUP_SEMANTICS) then
     RaiseLastOSError;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure NtfsSetDirectoryTreeCompression(const Directory: string; const State: TFileCompressionState);
 begin
@@ -387,8 +334,6 @@ end;
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
 {$ENDIF ~STACKFRAMES_ON}
-
-//--------------------------------------------------------------------------------------------------
 
 procedure NtfsSetPathCompression(const Path: string;
   const State: TFileCompressionState; Recursive: Boolean);
@@ -413,10 +358,7 @@ begin
     RaiseLastOSError;
 end;
 
-//==================================================================================================
 // NTFS - Sparse Files
-//==================================================================================================
-
 function NtfsSetSparse(const FileName: string): Boolean;
 var
   Handle: THandle;
@@ -431,8 +373,6 @@ begin
       CloseHandle(Handle);
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
 var
@@ -457,8 +397,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
 var
   Handle: THandle;
@@ -473,8 +411,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges;
   Index: Integer): TFileAllocatedRangeBuffer;
 var
@@ -484,8 +420,6 @@ begin
   Offset := Longint(Ranges.Data) + Index * SizeOf(TFileAllocatedRangeBuffer);
   Result := PFileAllocatedRangeBuffer(Offset)^;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function __QueryAllocRanges(const Handle: THandle; const Offset, Count: Int64;
   var Ranges: PFileAllocatedRangeBuffer; var MoreData: Boolean; var Size: Cardinal): Boolean;
@@ -541,14 +475,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
 begin
   Result := fsSupportsSparseFiles in GetVolumeFileSystemFlags(Volume);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsGetSparse(const FileName: string): Boolean;
 var
@@ -567,10 +497,7 @@ begin
     end;
 end;
 
-//==================================================================================================
 // NTFS - Reparse Points
-//==================================================================================================
-
 function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
 var
   SearchRec: TSearchRec;
@@ -591,14 +518,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsReparsePointsSupported(const Volume: string): Boolean;
 begin
   Result := fsSupportsReparsePoints in GetVolumeFileSystemFlags(Volume);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsFileHasReparsePoint(const Path: string): Boolean;
 var
@@ -609,8 +532,6 @@ begin
   if Attr <> DWORD(-1) then
     Result := (Attr and FILE_ATTRIBUTE_REPARSE_POINT) <> 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
 var
@@ -632,8 +553,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
 var
   Handle: THandle;
@@ -650,8 +569,6 @@ begin
       CloseHandle(Handle);
     end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
 var
@@ -678,10 +595,7 @@ begin
     end;
 end;
 
-//==================================================================================================
 // NTFS - Volume Mount Points
-//==================================================================================================
-
 function NtfsIsFolderMountPoint(const Path: string): Boolean;
 var
   Tag: DWORD;
@@ -690,8 +604,6 @@ begin
   if Result then
     Result := (Tag = IO_REPARSE_TAG_MOUNT_POINT);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsMountDeviceAsDrive(const Device: string; Drive: Char): Boolean;
 const
@@ -720,8 +632,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
 var
   VolumeName: string;
@@ -738,14 +648,8 @@ begin
   end;
 end;
 
-//==================================================================================================
 // NTFS - Change Journal
-//==================================================================================================
-
-//==================================================================================================
 // NTFS - Opportunistic Locks
-//==================================================================================================
-
 function NtfsOpLockAckClosePending(Handle: THandle; Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
@@ -754,8 +658,6 @@ begin
     0, BytesReturned, @Overlapped);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsOpLockBreakAckNo2(Handle: THandle; Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
@@ -763,8 +665,6 @@ begin
   Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_ACK_NO_2, nil, 0, nil, 0,
     BytesReturned, @Overlapped);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsOpLockBreakAcknowledge(Handle: THandle; Overlapped: TOverlapped): Boolean;
 var
@@ -775,8 +675,6 @@ begin
   Result := Result or (GetLastError = ERROR_IO_PENDING);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
@@ -784,8 +682,6 @@ begin
   Result := DeviceIoControl(Handle, FSCTL_OPLOCK_BREAK_NOTIFY, nil, 0, nil, 0,
     BytesReturned, @Overlapped);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapped): Boolean;
 const
@@ -799,10 +695,7 @@ begin
   Result := Result or (GetLastError = ERROR_IO_PENDING);
 end;
 
-//==================================================================================================
 // Junction Points
-//==================================================================================================
-
 type
   TReparseDataBufferOverlay = record
   case Boolean of
@@ -812,15 +705,11 @@ type
       (Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;);
   end;
   
-//--------------------------------------------------------------------------------------------------
-
 function IsReparseTagValid(Tag: DWORD): Boolean;
 begin
   Result := (Tag and (not IO_REPARSE_TAG_VALID_VALUES) = 0) and
     (Tag > IO_REPARSE_TAG_RESERVED_RANGE);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 var
@@ -861,14 +750,10 @@ begin
     ReparseData.Reparse.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsDeleteJunctionPoint(const Source: string): Boolean;
 begin
   Result := NtfsDeleteReparsePoint(Source, IO_REPARSE_TAG_MOUNT_POINT);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsGetJunctionPointDestination(const Source: string; var Destination: string): Boolean;
 var
@@ -903,10 +788,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // Streams
-//==================================================================================================
-
 // FindStream is an internal helper routine for NtfsFindFirstStream and
 // NtfsFindNextStream. It uses the backup API to enumerate the streams in an
 // NTFS file and returns when it either finds a stream that matches the filter
@@ -996,8 +878,6 @@ begin
   Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds;
   var Data: TFindStreamData): Boolean;
 begin
@@ -1026,8 +906,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsFindNextStream(var Data: TFindStreamData): Boolean;
 begin
   Result := False;
@@ -1036,8 +914,6 @@ begin
   else
     SetLastError(ERROR_INVALID_HANDLE);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 var
@@ -1061,10 +937,7 @@ begin
   SetLastError(LastError);
 end;
 
-//==================================================================================================
 // Hard links
-//==================================================================================================
-
 (*
    Implementation of CreateHardLink completely swapped to the unit Hardlink.pas
 
@@ -1075,7 +948,6 @@ end;
    This holds both for the homegrown and the Windows API (where it exists).
 *)
 
-//--------------------------------------------------------------------------------------------------
 // For a description see: NtfsCreateHardLink()
 (* ANSI implementation of the function - calling UNICODE anyway ;-) *)
 function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
@@ -1084,7 +956,6 @@ begin
   result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
 end;
 
-//--------------------------------------------------------------------------------------------------
 // For a description see: NtfsCreateHardLink()
 (* UNICODE implementation of the function - we are on NT, aren't we ;-) *)
 function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
@@ -1093,7 +964,6 @@ begin
   result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName), nil);
 end;
 
-//--------------------------------------------------------------------------------------------------
 // NtfsCreateHardLink
 //
 // Creates a hardlink on NT 4 and above.
@@ -1137,8 +1007,6 @@ begin
 {$ENDIF}
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
 var
   F: THandle;
@@ -1159,8 +1027,6 @@ begin
     CloseHandle(F);
   end
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsFindHardLinks(const Path: string; const FileIndexHigh, FileIndexLow: Cardinal; const List: TStrings): Boolean;
 var
@@ -1207,8 +1073,6 @@ begin
   if R = ERROR_ACCESS_DENIED then
     Result := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function NtfsDeleteHardLinks(const FileName: string): Boolean;
 var
@@ -1282,11 +1146,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // History:
 
 // $Log$
+// Revision 1.21  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.20  2004/12/07 02:46:44  rrossmair
 // - NtfsSparseStreamsSupported, NtfsReparsePointsSupported:
 //   Fixed bug in call to GetVolumeInformation (did not ensure trailing backslash)

@@ -45,19 +45,13 @@ unit JclResources;
 
 interface
 
-//--------------------------------------------------------------------------------------------------
-// JclBase
-//--------------------------------------------------------------------------------------------------
-
+//=== JclBase ================================================================
 resourcestring
   RsWin32Prefix        = 'Win32: %s (%u)';
   RsDynArrayError      = 'DynArrayInitialize: ElementSize out of bounds';
   RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
 
-//--------------------------------------------------------------------------------------------------
-// JclBorlandTools
-//--------------------------------------------------------------------------------------------------
-
+//=== JclBorlandTools ========================================================
 resourcestring
   RsIndexOufOfRange  = 'Index out of range';
   RsNeedUpdate       = 'You should install latest Update Pack #%d for %s';
@@ -81,71 +75,44 @@ resourcestring
   RsPersonal         = 'Personal';
   RsProfessional     = 'Professional';
 
-//--------------------------------------------------------------------------------------------------
-// JclCIL
-//--------------------------------------------------------------------------------------------------
-
+//=== JclCIL =================================================================
 resourcestring
   RsInstructionStreamInvalid = 'Invalid IL instruction stream';
 
-//--------------------------------------------------------------------------------------------------
-// JclClasses
-//--------------------------------------------------------------------------------------------------
-
+//=== JclClasses =============================================================
 resourcestring
   RsVMTMemoryWriteError = 'Error writing VMT memory (%s)';
 
-//--------------------------------------------------------------------------------------------------
-// JclClr
-//--------------------------------------------------------------------------------------------------
-
+//=== JclClr =================================================================
 resourcestring
   RsClrCopyright = '// Delphi-JEDI .NET Framework IL Disassembler.  Version 0.1' +  #13#10 +
     '// Project JEDI Code Library (JCL) Team. All rights reserved.' +  #13#10;
 
-//--------------------------------------------------------------------------------------------------
-// JclCOM
-//--------------------------------------------------------------------------------------------------
-
+//=== JclCOM =================================================================
 resourcestring
   RsComInvalidParam      = 'An invalid parameter was passed to the routine. If a parameter was ' +
     'expected, it might be an unassigned item or nil pointer';
   RsComFailedStreamRead  = 'Failed to read all of the data from the specified stream';
   RsComFailedStreamWrite = 'Failed to write all of the data into the specified stream';
 
-//--------------------------------------------------------------------------------------------------
-// JclComplex
-//--------------------------------------------------------------------------------------------------
-
+//=== JclComplex =============================================================
 resourcestring
   RsComplexInvalidString = 'Failed to create a complex number from the string provided';
 
-//--------------------------------------------------------------------------------------------------
-// JclConsole
-//--------------------------------------------------------------------------------------------------
-
+//=== JclConsole =============================================================
 resourcestring
   RsCannotRaiseSignal = 'Cannot raise %s signal.';
 
-//--------------------------------------------------------------------------------------------------
-// JclCounter
-//--------------------------------------------------------------------------------------------------
-
+//=== JclCounter =============================================================
 resourcestring
   RsNoCounter = 'No high performance counters supported';
 
-//--------------------------------------------------------------------------------------------------
-// JclDateTime
-//--------------------------------------------------------------------------------------------------
-
+//=== JclDateTime ============================================================
 resourcestring
   RsMakeUTCTime    = 'Error converting to UTC time. Time zone could not be determined';
   RsDateConversion = 'Error illegal date or time format';
 
-//--------------------------------------------------------------------------------------------------
-// JclDebug
-//--------------------------------------------------------------------------------------------------
-
+//=== JclDebug ===============================================================
 resourcestring
   // Diagnostics
   RsDebugAssertValidPointer = 'Invalid Pointer passed to AssertValid';
@@ -156,10 +123,7 @@ resourcestring
   RsDebugNoProcessInfo    = 'Unable to obtain process information';
   RsDebugSnapshot         = 'Failure creating toolhelp32 snapshot';
 
-//--------------------------------------------------------------------------------------------------
-// JclEDI
-//--------------------------------------------------------------------------------------------------
-
+//=== JclEDI =================================================================
 resourcestring
   RsEDIError001 = 'Could not open edi file.  File not specified.';
   RsEDIError002 = 'Could not save edi file.  File name and path not specified.';
@@ -228,10 +192,7 @@ resourcestring
 
   RsUnknownAttribute = 'Unknown Attribute';
 
-//--------------------------------------------------------------------------------------------------
-// JclEDISEF
-//--------------------------------------------------------------------------------------------------
-
+//== JclEDISEF ===============================================================
 resourcestring
   // Transaction Set:850
   SEFTextSetsCode_Set0_Desc = 'Transaction Set or message title.';
@@ -255,10 +216,7 @@ resourcestring
   SEFTextSetsCode_Elm2_Desc = 'Name of element or composite.';
   SEFTextSetsCode_Elm4_Desc = 'Level 3 note on element or composite.';
 
-//--------------------------------------------------------------------------------------------------
-// JclEDIXML
-//--------------------------------------------------------------------------------------------------
-
+//=== JclEDIXML ==============================================================
 resourcestring
   EDIXMLError001 = 'Could not open edi file.  File not specified.';
   EDIXMLError002 = 'Could not save edi file.  File name and path not specified.';
@@ -323,10 +281,7 @@ resourcestring
   EDIXMLError061 = 'Could not find transaction set header and trailer.';
   EDIXMLError062 = 'TEDIXMLANSIX12FormatTranslator: Unexpected object [%s] found.';
 
-//--------------------------------------------------------------------------------------------------
-// JclExprEval
-//--------------------------------------------------------------------------------------------------
-
+//=== JclExprEval ============================================================
 resourcestring
   RsExprEvalRParenExpected = 'Parse error: '')'' expected';
   RsExprEvalFactorExpected = 'Parse error: Factor expected';
@@ -340,10 +295,7 @@ resourcestring
   RsExprEvalExprPtrNotFound       = 'Expression compiler error: Expression pointer not found';
   RsExprEvalExprRefCountAssertion = 'Expression compiler error: expression refcount < 0';
 
-//--------------------------------------------------------------------------------------------------
-// JclFileUtils
-//--------------------------------------------------------------------------------------------------
-
+//=== JclFileUtils ===========================================================
 resourcestring
   // Path manipulation
   RsPathInvalidDrive = '%s is not a valid drive';
@@ -444,10 +396,7 @@ resourcestring
   // FileGetTypeName()
   RsDefaultFileTypeName = ' File';
 
-//--------------------------------------------------------------------------------------------------
-// JclGraphics, JclGraphUtils
-//--------------------------------------------------------------------------------------------------
-
+//=== JclGraphics, JclGraphUtils =============================================
 resourcestring
   RsBitsPerSampleNotSupported = '%d bits per sample not supported in color space conversion';
   RsAssertUnpairedEndUpdate   = 'Unpaired BeginUpdate EndUpdate';
@@ -469,10 +418,7 @@ resourcestring
   RsBitmapExtension           = '.bmp';
   RsJpegExtension             = '.jpg';
 
-//--------------------------------------------------------------------------------------------------
-// JclMapi
-//--------------------------------------------------------------------------------------------------
-
+//=== JclMapi ================================================================
 resourcestring
   RsMapiError         = 'MAPI Error: (%d) "%s"';
   RsMapiMissingExport = 'Function "%s" is not exported by client';
@@ -512,10 +458,7 @@ resourcestring
   RsMapiMailSubject = 'Subject';
   RsMapiMailBody    = 'Body';
 
-//--------------------------------------------------------------------------------------------------
-// JclMath
-//--------------------------------------------------------------------------------------------------
-
+//=== JclMath ================================================================
 resourcestring
   RsMathDomainError    = 'Domain check failure in JclMath';
   RsEmptyArray         = 'Empty array is not allowed as input parameter';
@@ -532,10 +475,7 @@ resourcestring
   RsPowerInfinite      = 'Power function: Result is infinite';
   RsPowerComplex       = 'Power function: Result is complex';
 
-//--------------------------------------------------------------------------------------------------
-// JclMetadata
-//--------------------------------------------------------------------------------------------------
-
+//=== JclMetadata ============================================================
 resourcestring
   RsUnknownClassLayout      = 'Unknown class layout - $%.8x';
   RsUnknownStringFormatting = 'Unknown string formatting - $%.8x';
@@ -544,10 +484,7 @@ resourcestring
   RsNoLocalVarSig           = 'Signature %s is not LocalVarSig';
   RsLocalVarSigOutOfRange   = 'LocalVarSig count %d is out of range [1..$$FFFE]';
 
-//--------------------------------------------------------------------------------------------------
-// JclMIDI
-//--------------------------------------------------------------------------------------------------
-
+//=== JclMIDI ================================================================
 resourcestring
   RsOctaveC      = 'C';
   RsOctaveCSharp = 'C#';
@@ -567,10 +504,7 @@ resourcestring
   RsMidiNotImplemented    = 'JclMidi: MIDI I/O for Unix not (yet) implemented';
   {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-// JclMiscel
-//--------------------------------------------------------------------------------------------------
-
+//=== JclMiscel ==============================================================
 resourcestring
   // CreateProcAsUser
   RsCreateProcOSVersionError          = 'Unable to determine OS version';
@@ -588,10 +522,7 @@ resourcestring
   RsCreateProcCommandNotFound         = 'Command or filename not found: "%s"';
   RsCreateProcFailed                  = 'CreateProcessAsUser failed';
 
-//--------------------------------------------------------------------------------------------------
-// JclMultimedia
-//--------------------------------------------------------------------------------------------------
-
+//=== JclMultimedia ==========================================================
 resourcestring
   // Multimedia timer
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
@@ -633,18 +564,12 @@ resourcestring
   RsMMTrackAudio       = 'Audio';
   RsMMTrackOther       = 'Other';
 
-//--------------------------------------------------------------------------------------------------
-// JclNTFS
-//--------------------------------------------------------------------------------------------------
-
+//=== JclNTFS ================================================================
 resourcestring
   RsInvalidArgument = '%s: Invalid argument <%s>';
   RsNtfsUnableToDeleteSymbolicLink = 'Unable to delete temporary symbolic link';
 
-//--------------------------------------------------------------------------------------------------
-// JclPCRE
-//--------------------------------------------------------------------------------------------------
-
+//=== JclPCRE ================================================================
 resourcestring
   SErrNoMatch      = 'No match';
   SErrNull         = 'Required value is null';
@@ -655,10 +580,7 @@ resourcestring
   SErrNoSubString  = 'No substring';
   SErrLibNotLoaded = 'PCRE library not loaded';
 
-//--------------------------------------------------------------------------------------------------
-// JclPeImage
-//--------------------------------------------------------------------------------------------------
-
+//=== JclPeImage =============================================================
 resourcestring
   RsPeReadOnlyStream = 'Stream is read-only';
 
@@ -791,10 +713,7 @@ resourcestring
   RsPePkgOrgWeak  = 'OrgWeak';
   RsPePkgImplicit = 'Implicit';
 
-//--------------------------------------------------------------------------------------------------
-// JclPrint
-//--------------------------------------------------------------------------------------------------
-
+//=== JclPrint ===============================================================
 resourcestring
   RsSpoolerDocName = 'My Document';
 
@@ -842,10 +761,7 @@ resourcestring
   RsPSUser        = 'User Defined Size';
   RsPSUnknown     = 'Unknown Paper Size';
 
-//--------------------------------------------------------------------------------------------------
-// JclRegistry
-//--------------------------------------------------------------------------------------------------
-
+//=== JclRegistry ============================================================
 resourcestring
   RsUnableToOpenKeyRead  = 'Unable to open key "%s" for read';
   RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
@@ -853,10 +769,7 @@ resourcestring
   RsWrongDataType        = '"%s\%s" is of wrong kind or size';
   RsInconsistentPath     = '"%s" does not match RootKey';
 
-//--------------------------------------------------------------------------------------------------
-// JclRTTI
-//--------------------------------------------------------------------------------------------------
-
+//=== JclRTTI ================================================================
 resourcestring
   RsRTTIValueOutOfRange   = 'Value out of range (%s).';
   RsRTTIUnknownIdentifier = 'Unknown identifier ''%s''.';
@@ -911,10 +824,7 @@ resourcestring
 
   RsDeclarationFormat = '// Declaration for ''%s'' not supported.';
 
-//--------------------------------------------------------------------------------------------------
-// JclSchedule
-//--------------------------------------------------------------------------------------------------
-
+//=== JclSchedule ============================================================
 resourcestring
   RsScheduleInvalidTime     = 'Invalid time specification';
   RsScheduleEndBeforeStart  = 'End time can not be before start time';
@@ -926,36 +836,24 @@ resourcestring
   RsScheduleDayInRange      = 'Day values should fall in the range 1 .. 31';
   RsScheduleMonthInRange    = 'Month values should fall in the range 1 .. 12';
 
-//--------------------------------------------------------------------------------------------------
-// JclStatistics
-//--------------------------------------------------------------------------------------------------
-
+//=== JclStatistics ==========================================================
 resourcestring
   RsInvalidSampleSize = 'Invalid sample size (%d)';
 
-//--------------------------------------------------------------------------------------------------
-// JclStrHashMap
-//--------------------------------------------------------------------------------------------------
-
+//=== JclStrHashMap ==========================================================
 resourcestring
   RsStringHashMapMustBeEmpty = 'HashList: must be empty to set size to zero';
   RsStringHashMapDuplicate   = 'Duplicate hash list entry: %s';
   RsStringHashMapInvalidNode = 'Tried to remove invalid node: %s';
   RsStringHashMapNoTraits    = 'HashList must have traits';
 
-//--------------------------------------------------------------------------------------------------
-// JclStrings
-//--------------------------------------------------------------------------------------------------
-
+//=== JclStrings =============================================================
 resourcestring
   RsBlankSearchString       = 'Search string cannot be blank';
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
 
-//--------------------------------------------------------------------------------------------------
-// JclSynch
-//--------------------------------------------------------------------------------------------------
-
+//=== JclSynch ===============================================================
 resourcestring
   RsSynchAttachWin32Handle    = 'Invalid handle to TJclWin32HandleObject.Attach';
   RsSynchDuplicateWin32Handle = 'Invalid handle to TJclWin32HandleObject.Duplicate';
@@ -973,10 +871,7 @@ resourcestring
   RsMetSectInitialize         = 'Failed to initialize the metered section.';
   RsMetSectNameEmpty          = 'Name cannot be empty when using the Open constructor.';
 
-//--------------------------------------------------------------------------------------------------
-// JclSysInfo
-//--------------------------------------------------------------------------------------------------
-
+//=== JclSysInfo =============================================================
 resourcestring
   RsSystemProcess     = 'System Process';
   RsSystemIdleProcess = 'System Idle Process';
@@ -1062,10 +957,7 @@ resourcestring
   RsInvalidProcessID = 'Invalid process ID %d';
   {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-// JclSysUtils
-//--------------------------------------------------------------------------------------------------
-
+//=== JclSysUtils ============================================================
 resourcestring
   RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
   RsStringToBoolean      = 'Unable to convert the string "%s" to a boolean';
@@ -1076,17 +968,11 @@ resourcestring
   RsReadKeyError         = 'ReadKey: Problem waiting on stdin';
   {$ENDIF UNIX}
 
-//--------------------------------------------------------------------------------------------------
-// JclTD32
-//--------------------------------------------------------------------------------------------------
-
+//=== JclTD32 ================================================================
 resourcestring
   RsHasNotTD32Info = 'File [%s] has not TD32 debug information!';
 
-//--------------------------------------------------------------------------------------------------
-// JclUnicode
-//--------------------------------------------------------------------------------------------------
-
+//=== JclUnicode =============================================================
 resourcestring
   RsUREBaseString          = 'Error in regular expression: %s' + #13;
   RsUREUnexpectedEOS       = 'Unexpected end of pattern.';
@@ -1097,53 +983,44 @@ resourcestring
   RsURERepeatRangeOpen     = 'Repetition range not closed, ''}'' is missing.';
   RsUREExpressionEmpty     = 'Expression is empty.';
 
-//--------------------------------------------------------------------------------------------------
-// JclUnitConv
-//--------------------------------------------------------------------------------------------------
-
+//=== JclUnitConv ============================================================
 resourcestring
   RsTempConvTypeError = 'An invalid type has been provided for the %s parameter';
   RsConvTempBelowAbsoluteZero = 'Temperature can not be below Absolute Zero!';
 
-//--------------------------------------------------------------------------------------------------
-// JclWin32
-//--------------------------------------------------------------------------------------------------
-
+//=== JclWin32 ===============================================================
 resourcestring
   RsELibraryNotFound  = 'Library not found: %s';
   RsEFunctionNotFound = 'Function not found: %s.%s';
 
-//--------------------------------------------------------------------------------------------------
-// JclWinMidi
-//--------------------------------------------------------------------------------------------------
-
+//=== JclWinMidi =============================================================
 resourcestring
   RsMidiInUnknownError  = 'Unknown MIDI-In error No. %d';
   RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
 
-//--------------------------------------------------------------------------------------------------
-// JclCompression
-//--------------------------------------------------------------------------------------------------
-
+//=== JclCompression =========================================================
 resourcestring
-  RsCompressionOperationNotSupported  = 'Operation is not supported.';
-  RsCompressionReadNotSupported       = 'read is not an supported operation.';
-  RsCompressionWriteNotSupported      = 'write is not an supported operation.';
-  RsCompressionResetNotSupported      = 'reset is not an supported operation.';
-  RsCompressionSeekNotSupported       = 'seek is not an supported operation.';
-  RsCompressionZLibZErrNo             = 'zlib returned: ERRNO';
-  RsCompressionZLibZStreamError       = 'zlib returned: Stream error';
-  RsCompressionZLibZDataError         = 'zlib returned: data error';
-  RsCompressionZLibZMemError          = 'zlib returned: memory error';
-  RsCompressionZLibZBufError          = 'zlib returned: buffer error';
-  RsCompressionZLibZVersionError      = 'zlib returned: Version error';
-  RsCompressionZLibError              = 'ZLib error';
+  RsCompressionOperationNotSupported = 'Operation is not supported.';
+  RsCompressionReadNotSupported      = 'read is not an supported operation.';
+  RsCompressionWriteNotSupported     = 'write is not an supported operation.';
+  RsCompressionResetNotSupported     = 'reset is not an supported operation.';
+  RsCompressionSeekNotSupported      = 'seek is not an supported operation.';
+  RsCompressionZLibZErrNo            = 'zlib returned: ERRNO';
+  RsCompressionZLibZStreamError      = 'zlib returned: Stream error';
+  RsCompressionZLibZDataError        = 'zlib returned: data error';
+  RsCompressionZLibZMemError         = 'zlib returned: memory error';
+  RsCompressionZLibZBufError         = 'zlib returned: buffer error';
+  RsCompressionZLibZVersionError     = 'zlib returned: Version error';
+  RsCompressionZLibError             = 'ZLib error';
 
 implementation
 
 // History:
 
 // $Log$
+// Revision 1.26  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.25  2004/12/19 20:16:31  rrossmair
 // - added TCpuInfo improvements by Florent Ouchet
 //

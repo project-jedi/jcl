@@ -159,8 +159,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CompareFilenames(const Fn1, Fn2: string): Integer;
 begin
   {$IFDEF MSWINDOWS}
@@ -171,17 +169,13 @@ begin
   {$ENDIF UNIX}
 end;
 
-//--------------------------------------------------------------------------------------------------
-{ TUnitVersion }
-//--------------------------------------------------------------------------------------------------
+//=== { TUnitVersion } =======================================================
 
 constructor TUnitVersion.Create(AInfo: PUnitVersionInfo);
 begin
   inherited Create;
   FInfo := AInfo;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.RCSfile: string;
 var
@@ -202,16 +196,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersion.Revision: string;
 begin
   Result := Trim(FInfo.Revision);
   if StartsWith('$' + 'Revision: ', Result) then // a CVS command
     Result := Copy(Result, 12, Length(Result) - 11 - 2);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.Date: string;
 begin
@@ -223,28 +213,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersion.Data: Pointer;
 begin
   Result := FInfo.Data;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.Extra: string;
 begin
   Result := Trim(FInfo.Extra);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersion.LogPath: string;
 begin
   Result := Trim(FInfo.LogPath);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.DateTime: TDateTime;
 var
@@ -317,9 +299,7 @@ begin
   Result := EncodeDate(Year, Month, Day) + EncodeTime(Hour, Minute, Second, 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-{ TUnitVersioningModule }
-//--------------------------------------------------------------------------------------------------
+//=== { TUnitVersioningModule } ==============================================
 
 constructor TUnitVersioningModule.Create(AInstance: THandle);
 begin
@@ -328,36 +308,26 @@ begin
   FItems := TObjectList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TUnitVersioningModule.Destroy;
 begin
   FItems.Free;
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersioningModule.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioningModule.GetItems(Index: Integer): TUnitVersion;
 begin
   Result := TUnitVersion(FItems[Index]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TUnitVersioningModule.Add(Info: PUnitVersionInfo);
 begin
   FItems.Add(TUnitVersion.Create(Info));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioningModule.IndexOfInfo(Info: PUnitVersionInfo): Integer;
 begin
@@ -366,8 +336,6 @@ begin
       Exit;
   Result := -1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioningModule.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
 var
@@ -379,8 +347,6 @@ begin
   else
     Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioningModule.IndexOf(const RCSfile: string; const LogPath: string): Integer;
 begin
@@ -394,32 +360,24 @@ begin
   Result := -1;
 end;
 
-//--------------------------------------------------------------------------------------------------
-{ TCustomUnitVersioningProvider }
-//--------------------------------------------------------------------------------------------------
+//=== { TCustomUnitVersioningProvider } ======================================
 
 constructor TCustomUnitVersioningProvider.Create;
 begin
   inherited Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TCustomUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
 begin
 //
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TCustomUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(Instance: THandle);
 begin
 //
 end;
 
-//--------------------------------------------------------------------------------------------------
-{ TUnitVersioning }
-//--------------------------------------------------------------------------------------------------
+//=== { TUnitVersioning } ====================================================
 
 constructor TUnitVersioning.Create;
 begin
@@ -428,16 +386,12 @@ begin
   FProviders := TObjectList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TUnitVersioning.Destroy;
 begin
   FProviders.Free;
   FModules.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TUnitVersioning.Add(Instance: THandle; Info: PUnitVersionInfo);
 var
@@ -457,8 +411,6 @@ begin
   Module.Add(Info);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TUnitVersioning.UnregisterModule(Instance: THandle);
 var
   I: Integer;
@@ -473,14 +425,10 @@ begin
     TCustomUnitVersioningProvider(FProviders[I]).ReleaseModuleUnitVersioningInfo(Instance);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TUnitVersioning.UnregisterModule(Module: TUnitVersioningModule);
 begin
   FModules.Remove(Module);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioning.GetCount: Integer;
 var
@@ -491,8 +439,6 @@ begin
   for I := 0 to FModules.Count - 1 do
     Inc(Result, Modules[I].Count);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioning.GetItems(Index: Integer): TUnitVersion;
 var
@@ -512,22 +458,16 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersioning.GetModuleCount: Integer;
 begin
   ValidateModules;
   Result := FModules.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersioning.GetModules(Index: Integer): TUnitVersioningModule;
 begin
   Result := TUnitVersioningModule(FModules[Index]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TUnitVersioning.ValidateModules;
 var
@@ -544,8 +484,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TUnitVersioning.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
 var
   I: Integer;
@@ -558,8 +496,6 @@ begin
   end;
   Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioning.IndexOf(const RCSfile: string; const LogPath: string): Integer;
 var
@@ -579,8 +515,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TUnitVersioning.RegisterProvider(AProviderClass: TUnitVersioningProviderClass);
 var
   I, Idx: Integer;
@@ -596,8 +530,6 @@ begin
     FProviders.Add(AProviderClass.Create);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TUnitVersioning.LoadModuleUnitVersioningInfo(Instance: THandle);
 var
   I: Integer;
@@ -605,8 +537,6 @@ begin
   for I := 0 to FProviders.Count - 1 do
     TCustomUnitVersioningProvider(FProviders[I]).LoadModuleUnitVersioningInfo(Instance);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer; forward;
   // Returns a 3820 Bytes large block [= 4096 - 276 = 4096 - (8+256+4+8)]
@@ -745,8 +675,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ReleaseNamedProcessAddress(P: Pointer): Integer;
 var
   Requested: PNPARecord;
@@ -766,8 +694,6 @@ begin
       {$ENDIF UNIX}
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 type
   PUnitVersioning = ^TUnitVersioning;
@@ -806,8 +732,6 @@ begin
   Result := GlobalUnitVersioning;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FinalizeUnitVersioning;
 var
   RefCount: Integer;
@@ -829,8 +753,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RegisterUnitVersion(Instance: THandle; const Info: TUnitVersionInfo);
 var
   UnitVersioning: TUnitVersioning;
@@ -839,8 +761,6 @@ begin
   if Assigned(UnitVersioning) then
     UnitVersioning.Add(Instance, @Info);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure UnregisterUnitVersion(Instance: THandle);
 var
@@ -868,6 +788,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.9  2005/02/22 07:28:08  uschuster
 // added unit versioning provider solution from donations\source\common
 //

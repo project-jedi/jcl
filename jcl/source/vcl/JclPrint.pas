@@ -186,10 +186,7 @@ const
   cDevice = 'device';
   cPrintSpool = 'winspool.drv';
 
-//==================================================================================================
 // Misc. functions
-//==================================================================================================
-
 procedure DirectPrint(const Printer, Data: string);
 const
   cRaw = 'RAW';
@@ -250,8 +247,6 @@ begin
     EJclPrinterError.CreateResRec(@RsNATransmission);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure SetPrinterPixelsPerInch;
 var
   FontSize: Integer;
@@ -261,15 +256,11 @@ begin
   Printer.Canvas.Font.Size := FontSize;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetPrinterResolution: TPoint;
 begin
   Result.X := GetDeviceCaps(Printer.Handle, LogPixelsX);
   Result.Y := GetDeviceCaps(Printer.Handle, LogPixelsY);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 begin
@@ -278,7 +269,6 @@ begin
     Dec(Result);
 end;
 
-//--------------------------------------------------------------------------------------------------
 //WIMDC: The function CanvasTextOutRotation contains a bug in DxGraphics so no need to
 //       implement it right now here
 (*
@@ -288,7 +278,6 @@ begin
 end;
 *)
 
-//--------------------------------------------------------------------------------------------------
 //WIMDC took the function from DXGraphics and replaced some lines to work with the TStrings class
 //      of the memo.
 
@@ -306,21 +295,15 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 begin
   CanvasMemoOut(Printer.Canvas, Memo, Rect);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetDefaultPrinterName: string;
 begin
   DPGetDefaultPrinter(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : DPGetDefaultPrinter, Author: Microsoft }
 // DPGetDefaultPrinter
@@ -394,8 +377,6 @@ begin
       end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft }
 // DPSetDefaultPrinter
@@ -492,10 +473,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // TJclPrintSet
-//==================================================================================================
-
 constructor TJclPrintSet.Create;
 begin
   inherited Create;
@@ -506,8 +484,6 @@ begin
   GetMem(FDriver, 255);
   GetMem(FPort, 255);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 destructor TJclPrintSet.Destroy;
 begin
@@ -524,8 +500,6 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.CheckPrinter;
 begin
   if FPrinter <> Printer.PrinterIndex then
@@ -535,8 +509,6 @@ begin
     SetDeviceMode(False);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetBinArray;
 var
@@ -556,8 +528,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SetPaperArray;
 var
   NumPapersRec: Integer;
@@ -576,8 +546,6 @@ begin
   else
     FPaperArray := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { TODO : complete this list }
 // Since Win32 the strings are stored in the printer driver, no chance to get
@@ -644,8 +612,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetBinSourceList: TStringList;
 begin
   Result := TStringList.Create;
@@ -691,8 +657,6 @@ begin
       FreeMem(BinArray, FNumBins * SizeOf(TBinName));
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.GetPaperList: TStringList;
 begin
@@ -749,8 +713,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SetDeviceMode(Creating: Boolean);
 var
   Res: TPoint;
@@ -790,8 +752,6 @@ begin
     GlobalUnLock(FHandle);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.UpdateDeviceMode;
 var
   DrvHandle: THandle;
@@ -816,8 +776,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SaveToDefaults;
 var
   DrvHandle: THandle;
@@ -834,15 +792,11 @@ begin
   ClosePrinter(DrvHandle);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SavePrinterAsDefault;
 begin
   CheckPrinter;
   DPSetDefaultPrinter(FDevice);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.ResetPrinterDialogs;
 begin
@@ -851,70 +805,50 @@ begin
   SetDeviceMode(False);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.XInchToDot(const Inches: Double): Integer;
 begin
   Result := Trunc(DpiX * Inches);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.YInchToDot(const Inches: Double): Integer;
 begin
   Result := Trunc(DpiY * Inches);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.XCmToDot(const Cm: Double): Integer;
 begin
   Result := Trunc(DpiX * (Cm * 2.54));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.YCmToDot(const Cm: Double): Integer;
 begin
   Result := Trunc(DpiY * (Cm * 2.54));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.CpiToDot(const Cpi, Chars: Double): Integer;
 begin
   Result := Trunc((DpiX * Chars) / Cpi);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.LpiToDot(const Lpi, Lines: Double): Integer;
 begin
   Result := Trunc((DpiY * Lpi) / Lines);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.TextOutInch(const X, Y: Double; const Text: string);
 begin
   Printer.Canvas.TextOut(XInchToDot(X), YInchToDot(Y), Text);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.TextOutCm(const X, Y: Double; const Text: string);
 begin
   Printer.Canvas.TextOut(XCmToDot(X), YCmToDot(Y), Text);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.TextOutCpiLpi(const Cpi, Chars, Lpi, Lines: Double; const Text: string);
 begin
   Printer.Canvas.TextOut(CpiToDot(Cpi, Chars), LpiToDot(Lpi, Lines), Text);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.CustomPageSetup(const Width, Height: Double);
 begin
@@ -923,8 +857,6 @@ begin
   YResolution := Trunc(DpiY * Height);
   PaperWidth := Trunc(254 * Width);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SaveToIniFile(const IniFileName, Section: string);
 var
@@ -949,8 +881,6 @@ begin
   PrIniFile.WriteInteger(Section, PrintIniTTOption, TrueTypeOption);
   PrIniFile.Free;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.ReadFromIniFile(const IniFileName, Section: string): Boolean;
 var
@@ -988,8 +918,6 @@ begin
   PrIniFile.Free;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SetOrientation(Orientation: Integer);
 begin
   CheckPrinter;
@@ -998,15 +926,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_ORIENTATION;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetOrientation: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmOrientation;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetPaperSize(Size: Integer);
 begin
@@ -1015,15 +939,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PAPERSIZE;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetPaperSize: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmPaperSize;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetPaperLength(Length: Integer);
 begin
@@ -1032,15 +952,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PAPERLENGTH;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetPaperLength: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmPaperLength;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetPaperWidth(Width: Integer);
 begin
@@ -1049,15 +965,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PAPERWIDTH;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetPaperWidth: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmPaperWidth;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetScale(Scale: Integer);
 begin
@@ -1066,15 +978,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_SCALE;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetScale: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmScale;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetCopies(Copies: Integer);
 begin
@@ -1083,15 +991,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_COPIES;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetCopies: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmCopies;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetBin(Bin: Integer);
 begin
@@ -1100,15 +1004,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_DEFAULTSOURCE;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetBin: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmDefaultSource;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetPrintQuality(Quality: Integer);
 begin
@@ -1117,15 +1017,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_PRINTQUALITY;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetPrintQuality: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmPrintQuality;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetColor(Color: Integer);
 begin
@@ -1134,15 +1030,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_ORIENTATION;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetColor: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmColor;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetDuplex(Duplex: Integer);
 begin
@@ -1151,15 +1043,11 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_DUPLEX;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetDuplex: Integer;
 begin
   CheckPrinter;
   Result := FDeviceMode^.dmDuplex;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetYResolution(YRes: Integer);
 var
@@ -1171,8 +1059,6 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_YRESOLUTION;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetYResolution: Integer;
 var
   PrintDevMode: PDeviceModeA;
@@ -1181,8 +1067,6 @@ begin
   PrintDevMode := @FDeviceMode^;
   Result := PrintDevMode^.dmYResolution;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetTrueTypeOption(Option: Integer);
 var
@@ -1194,8 +1078,6 @@ begin
   FDeviceMode^.dmFields := FDeviceMode^.dmFields or DM_TTOPTION;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetTrueTypeOption: Integer;
 var
   PrintDevMode: PDeviceModeA;
@@ -1205,15 +1087,11 @@ begin
   Result := PrintDevMode^.dmTTOption;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetPrinterName: string;
 begin
   CheckPrinter;
   Result := StrPas(FDevice);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.GetPrinterPort: string;
 begin
@@ -1221,15 +1099,11 @@ begin
   Result := StrPas(FPort);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclPrintSet.GetPrinterDriver: string;
 begin
   CheckPrinter;
   Result := StrPas(FDriver);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclPrintSet.SetBinFromList(BinNum: Byte);
 begin
@@ -1241,8 +1115,6 @@ begin
   else
     DefaultSource := FBinArray^[BinNum];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.GetBinIndex: Byte;
 var
@@ -1259,8 +1131,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SetPaperFromList(PaperNum: Byte);
 begin
   CheckPrinter;
@@ -1272,8 +1142,6 @@ begin
     PaperSize := FPaperArray^[PaperNum];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclPrintSet.SetPort(Port: string);
 begin
   CheckPrinter;
@@ -1281,8 +1149,6 @@ begin
   Move(Port[1], FPort^, Length(Port));
   Printer.SetPrinter(FDevice, FDriver, FPort, FHandle);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclPrintSet.GetPaperIndex: Byte;
 var
@@ -1302,6 +1168,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2005/02/24 16:34:51  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.17  2004/11/06 02:07:05  mthoma
 // cleaning.
 //

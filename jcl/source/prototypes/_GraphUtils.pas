@@ -143,10 +143,7 @@ const
 
 procedure EMMS;
 
-//--------------------------------------------------------------------------------------------------
 // Dialog Functions
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF MSWINDOWS}
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
@@ -154,10 +151,7 @@ function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
 // Points
-//--------------------------------------------------------------------------------------------------
-
 function NullPoint: TPoint;
 
 function PointAssign(const X, Y: Integer): TPoint;
@@ -166,10 +160,7 @@ function PointEqual(const P1, P2: TPoint): Boolean;
 function PointIsNull(const P: TPoint): Boolean;
 procedure PointMove(var P: TPoint; const DeltaX, DeltaY: Integer);
 
-//--------------------------------------------------------------------------------------------------
 // Rectangles
-//--------------------------------------------------------------------------------------------------
-
 function NullRect: TRect;
 
 function RectAssign(const Left, Top, Right, Bottom: Integer): TRect;
@@ -198,10 +189,7 @@ function RectsAreValid(R: array of TRect): Boolean;
 function RectUnion(const R1, R2: TRect): TRect;
 function RectWidth(const R: TRect): Integer;
 
-//--------------------------------------------------------------------------------------------------
 // Clipping
-//--------------------------------------------------------------------------------------------------
-
 function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes; overload;
 function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes; overload;
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean; overload;
@@ -209,10 +197,7 @@ function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float
   Codes: PClipCodes = nil): Boolean; overload;
 procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const ClipRect: TRect);
 
-//--------------------------------------------------------------------------------------------------
 // Color
-//--------------------------------------------------------------------------------------------------
-
 type
   EColorConversionError = class(EJclError);
 
@@ -283,10 +268,7 @@ procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
 {$ENDIF VCL}
 
-//--------------------------------------------------------------------------------------------------
 // Misc
-//--------------------------------------------------------------------------------------------------
-
 function ColorToHTML(const Color: TColor): string;
 
 // Petr Vones
@@ -411,9 +393,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//==================================================================================================
-// Internal LowLevel
-//==================================================================================================
+//=== Internal LowLevel ======================================================
 
 function ColorSwap(WinColor: TColor): TColor32;
 // this function swaps R and B bytes in ABGR and writes $FF into A component
@@ -439,9 +419,7 @@ begin
     TColor32((WinColor and $FF0000) shr 16);    // B component
 end;
 
-//==================================================================================================
-// Blending routines
-//==================================================================================================
+//=== Blending routines ======================================================
 
 function _CombineReg(X, Y, W: TColor32): TColor32;
 {asm
@@ -524,8 +502,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32);
 {asm
   // EAX <- F
@@ -540,8 +516,6 @@ end;}
 begin
   B := _CombineReg(F, B, W);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function _BlendReg(F, B: TColor32): TColor32;
 {asm
@@ -558,8 +532,6 @@ begin
   Result := _CombineReg(F, B, F shr 24);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure _BlendMem(F: TColor32; var B: TColor32);
 {asm
   // EAX <- F
@@ -575,8 +547,6 @@ end;}
 begin
   B := _CombineReg(F, B, F shr 24);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function _BlendRegEx(F, B, M: TColor32): TColor32;
 {asm
@@ -596,8 +566,6 @@ end;}
 begin
   Result := _CombineReg(F, B, ((F shr 24) * M) shr 8);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
 {asm
@@ -620,8 +588,6 @@ begin
   B := _CombineReg(F, B, ((F shr 24) * M) shr 8);
 end;
 
-
-//--------------------------------------------------------------------------------------------------
 
 procedure _BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
@@ -705,8 +671,6 @@ asm
 @4:     RET
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure _BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32);
 begin
   while Count > 0 do
@@ -717,8 +681,6 @@ begin
     Dec(Count);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { MMX versions }
 
@@ -749,15 +711,11 @@ begin
   bias_ptr := Pointer(Integer(alpha_ptr) + $80 * 8);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure FreeAlphaTable;
 begin
   FreeMem(AlphaTable);
   AlphaTable := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure EMMS;
 begin
@@ -766,8 +724,6 @@ begin
           db      $0F, $77               // EMMS
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function M_CombineReg(X, Y, W: TColor32): TColor32; assembler;
 asm
@@ -794,8 +750,6 @@ asm
         db $0F, $7E, $C8           // MOVD      EAX, MM1
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
 {asm
   // EAX - Color X
@@ -811,8 +765,6 @@ end;}
 begin
   B := M_CombineReg(F, B, W);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function M_BlendReg(F, B: TColor32): TColor32; assembler;
 asm
@@ -840,8 +792,6 @@ asm
         db $0F, $7E, $D0           // MOVD      EAX, MM2
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure M_BlendMem(F: TColor32; var B: TColor32);
 {asm
   // EAX - Color X
@@ -856,8 +806,6 @@ end;}
 begin
   B := M_BlendReg(F, B);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function M_BlendRegEx(F, B, M: TColor32): TColor32; assembler;
 asm
@@ -895,8 +843,6 @@ asm
         POP       EBX
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
 {asm
   // blend foreground color (F) to a background color (B),
@@ -914,8 +860,6 @@ end;}
 begin
   B := M_BlendRegEx(F, B, M);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure M_BlendLine(Src, Dst: PColor32; Count: Integer); assembler;
 asm
@@ -973,8 +917,6 @@ asm
 
 @4:     RET
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure M_BlendLineEx(Src, Dst: PColor32; Count: Integer; M: TColor32); assembler;
 asm
@@ -1072,9 +1014,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// Dialog functions
-//==================================================================================================
+//=== Dialog functions =======================================================
 
 {$IFDEF MSWINDOWS}
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
@@ -1082,21 +1022,15 @@ begin
   Result := (DialogUnits * LoWord(GetDialogBaseUnits)) div 4;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
 begin
   Result := (DialogUnits * HiWord(GetDialogBaseUnits)) div 8;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 begin
   Result := PixelUnits * 4 div LoWord(GetDialogBaseUnits);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
 begin
@@ -1104,9 +1038,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
-// Points
-//==================================================================================================
+//=== Points =================================================================
 
 function NullPoint: TPoint;
 begin
@@ -1114,15 +1046,11 @@ begin
   Result.Y := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function PointAssign(const X, Y: Integer): TPoint;
 begin
   Result.X := X;
   Result.Y := Y;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure PointCopy(var Dest: TPoint; const Source: TPoint);
 begin
@@ -1130,21 +1058,15 @@ begin
   Dest.Y := Source.Y;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function PointEqual(const P1, P2: TPoint): Boolean;
 begin
   Result := (P1.X = P2.X) and (P1.Y = P2.Y);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function PointIsNull(const P: TPoint): Boolean;
 begin
   Result := (P.X = 0) and (P.Y = 0);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure PointMove(var P: TPoint; const DeltaX, DeltaY: Integer);
 begin
@@ -1152,9 +1074,7 @@ begin
   P.Y := P.Y + DeltaY;
 end;
 
-//==================================================================================================
-// Rectangles
-//==================================================================================================
+//=== Rectangles =============================================================
 
 function NullRect: TRect;
 begin
@@ -1167,8 +1087,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectAssign(const Left, Top, Right, Bottom: Integer): TRect;
 begin
   Result.Left := Left;
@@ -1177,22 +1095,16 @@ begin
   Result.Bottom := Bottom;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectAssignPoints(const TopLeft, BottomRight: TPoint): TRect;
 begin
   Result.TopLeft := TopLeft;
   Result.BottomRight := BottomRight;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectBounds(const Left, Top, Width, Height: Integer): TRect;
 begin
   Result := RectAssign(Left, Top, Left + Width, Top + Height);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectCenter(const R: TRect): TPoint;
 begin
@@ -1200,14 +1112,10 @@ begin
   Result.Y := R.Top + (RectHeight(R) div 2);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RectCopy(var Dest: TRect; const Source: TRect);
 begin
   Dest := Source;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RectFitToScreen(var R: TRect);
 var
@@ -1253,8 +1161,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RectGrow(var R: TRect; const Delta: Integer);
 begin
   with R do
@@ -1266,8 +1172,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RectGrowX(var R: TRect; const Delta: Integer);
 begin
   with R do
@@ -1276,8 +1180,6 @@ begin
     Inc(Right, Delta);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RectGrowY(var R: TRect; const Delta: Integer);
 begin
@@ -1288,22 +1190,16 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectEqual(const R1, R2: TRect): Boolean;
 begin
   Result := (R1.Left = R2.Left) and (R1.Top = R2.Top) and
     (R1.Right = R2.Right) and (R1.Bottom = R2.Bottom);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectHeight(const R: TRect): Integer;
 begin
   Result := Abs(R.Bottom - R.Top);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectIncludesPoint(const R: TRect; const Pt: TPoint): Boolean;
 begin
@@ -1311,15 +1207,11 @@ begin
     (Pt.Y > R.Top) and (Pt.Y < R.Bottom);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectIncludesRect(const R1, R2: TRect): Boolean;
 begin
   Result := (R1.Left >= R2.Left) and (R1.Top >= R2.Top) and
     (R1.Right <= R2.Right) and (R1.Bottom <= R2.Bottom);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectIntersection(const R1, R2: TRect): TRect;
 begin
@@ -1334,21 +1226,15 @@ begin
     Result := NullRect;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectIntersectRect(const R1, R2: TRect): Boolean;
 begin
   Result := not RectIsNull(RectIntersection(R1, R2));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectIsEmpty(const R: TRect): Boolean;
 begin
   Result := (R.Right = R.Left) and (R.Bottom = R.Top);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectIsNull(const R: TRect): Boolean;
 begin
@@ -1356,22 +1242,16 @@ begin
     Result := (Left = 0) and (Right = 0) and (Top = 0) and (Bottom = 0);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectIsSquare(const R: TRect): Boolean;
 begin
   Result := (RectHeight(R) = RectWidth(R));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectIsValid(const R: TRect): Boolean;
 begin
   with R do
     Result := (Left <= Right) and (Top <= Bottom);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RectMove(var R: TRect; const DeltaX, DeltaY: Integer);
 begin
@@ -1384,8 +1264,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RectMoveTo(var R: TRect; const X, Y: Integer);
 begin
   with R do
@@ -1396,8 +1274,6 @@ begin
     Top := Y;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RectNormalize(var R: TRect);
 var
@@ -1416,8 +1292,6 @@ begin
     R.Bottom := Temp;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RectsAreValid(R: array of TRect): Boolean;
 var
@@ -1438,8 +1312,6 @@ begin
   Result := True;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectUnion(const R1, R2: TRect): TRect;
 begin
   with Result do
@@ -1453,16 +1325,12 @@ begin
     Result := NullRect;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RectWidth(const R: TRect): Integer;
 begin
   Result := Abs(R.Right - R.Left);
 end;
 
-//==================================================================================================
-// Color
-//==================================================================================================
+//=== Color ==================================================================
 
 const
   MaxBytePercent = High(Byte) * 0.01;
@@ -1477,8 +1345,6 @@ begin
   Blue := Temp.B;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SetRGBValue(const Red, Green, Blue: Byte): TColor;
 begin
   TColorRec(Result).Red := Red;
@@ -1487,30 +1353,22 @@ begin
   TColorRec(Result).Flag := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SetColorFlag(const Color: TColor; const Flag: Byte): TColor;
 begin
   Result := Color;
   TColorRec(Result).Flag := Flag;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetColorFlag(const Color: TColor): Byte;
 begin
   Result := TColorRec(Color).Flag;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function SetColorRed(const Color: TColor; const Red: Byte): TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Red := Red;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetColorRed(const Color: TColor): Byte;
 var
@@ -1520,15 +1378,11 @@ begin
   Result := Temp.Red;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SetColorGreen(const Color: TColor; const Green: Byte): TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Green := Green;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetColorGreen(const Color: TColor): Byte;
 var
@@ -1538,15 +1392,11 @@ begin
   Result := Temp.Green;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SetColorBlue(const Color: TColor; const Blue: Byte): TColor;
 begin
   Result := ColorToRGB(Color);
   TColorRec(Result).Blue := Blue;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetColorBlue(const Color: TColor): Byte;
 var
@@ -1555,8 +1405,6 @@ begin
   Temp.Value := ColorToRGB(Color);
   Result := Temp.Blue;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BrightColor(const Color: TColor; const Pct: Single): TColor;
 var
@@ -1568,8 +1416,6 @@ begin
   Temp.B := BrightColorChannel(Temp.B, Pct);
   Result := Temp.Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function BrightColorChannel(const Channel: Byte; const Pct: Single): Byte;
 var
@@ -1587,8 +1433,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function DarkColor(const Color: TColor; const Pct: Single): TColor;
 var
   Temp: TColorRec;
@@ -1599,8 +1443,6 @@ begin
   Temp.B := DarkColorChannel(Temp.B, Pct);
   Result := Temp.Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function DarkColorChannel(const Channel: Byte; const Pct: Single): Byte;
 var
@@ -1618,8 +1460,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // Converts values of the XYZ color space using the D65 white point to D50 white point.
 // The values were taken from www.srgb.com/hpsrgbprof/sld005.htm
 
@@ -1634,8 +1474,6 @@ begin
   Y := Yn;
   Z := Zn;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // converts each color component from a 16bits per sample to 8 bit used in Windows DIBs
 // Count is the number of entries in Source and Target
@@ -1656,8 +1494,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 type
   PCMYK = ^TCMYK;
   TCMYK = packed record
@@ -1674,8 +1510,6 @@ type
     Y: Word;
     K: Word;
   end;
-
-//--------------------------------------------------------------------------------------------------
 
 // converts a stream of Count CMYK values to BGR
 // BitsPerSample : 8 or 16
@@ -1735,8 +1569,6 @@ begin
       raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // converts a stream of Count CMYK values to BGR
 
@@ -1803,8 +1635,6 @@ begin
       raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
 // first a conversion to CIE XYZ is performed and then from there to RGB
@@ -1878,8 +1708,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
 // first a conversion to CIE XYZ is performed and then from there to RGB
 // The BitsPerSample are not used so why leave it here.
@@ -1951,8 +1779,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done
 
 procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
@@ -1996,8 +1822,6 @@ begin
       raise EColorConversionError.CreateResRecFmt(@RsBitsPerSampleNotSupported, [BitsPerSample]);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done
 
@@ -2055,8 +1879,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // reorders a stream of "Count" RGBA values to BGRA, additionally an eventual sample
 // size adjustment is done
 
@@ -2104,8 +1926,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure WinColorToOpenGLColor(const Color: TColor; out Red, Green, Blue: Float);
 var
   Temp: TColorRec;
@@ -2115,8 +1935,6 @@ begin
   Green := (Temp.G / High(Temp.G));
   Blue  := (Temp.B / High(Temp.B));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function OpenGLColorToWinColor(const Red, Green, Blue: Float): TColor;
 var
@@ -2129,37 +1947,27 @@ begin
   Result := Temp.Value;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Color32(WinColor: TColor): TColor32; overload;
 begin
   WinColor := ColorToRGB(WinColor);
   Result := ColorSwap(WinColor);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Color32(const R, G, B: Byte; const A: Byte): TColor32; overload;
 begin
   Result := A shl 24 + R shl 16 + G shl 8 + B;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Color32(const Index: Byte; const Palette: TPalette32): TColor32; overload;
 begin
   Result := Palette[Index];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function Gray32(const Intensity: Byte; const Alpha: Byte): TColor32;
 begin
   Result := TColor32(Alpha) shl 24 + TColor32(Intensity) shl 16 +
     TColor32(Intensity) shl 8 + TColor32(Intensity);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function WinColor(const Color32: TColor32): TColor;
 begin
@@ -2168,35 +1976,25 @@ begin
     (Color32 and _B shl 16);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RedComponent(const Color32: TColor32): Integer;
 begin
   Result := Color32 and _R shr 16;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GreenComponent(const Color32: TColor32): Integer;
 begin
   Result := Color32 and _G shr 8;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function BlueComponent(const Color32: TColor32): Integer;
 begin
   Result := Color32 and _B;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AlphaComponent(const Color32: TColor32): Integer;
 begin
   Result := Color32 shr 24;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function Intensity(const R, G, B: Single): Single;
 const
@@ -2206,8 +2004,6 @@ const
 begin
   Result := RFactor * R + GFactor * G + BFactor * B;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // input:  RGB components
 // output: (R * 61 + G * 174 + B * 21) div 256
@@ -2220,14 +2016,10 @@ begin
   Result := Result shr 8;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function SetAlpha(const Color32: TColor32; NewAlpha: Integer): TColor32;
 begin
   Result := (Color32 and _RGB) or (TColor32(NewAlpha) shl 24);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure HLSToRGB(const H, L, S: Single; out R, G, B: Single);
 var
@@ -2269,14 +2061,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single);
 begin
   HLSToRGB(H, L, S, R, G, B);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function HSLToRGB(const H, S, L: Single): TColor32;
 var
@@ -2286,14 +2074,10 @@ begin
   Result := Color32(Round(R * 255), Round(G * 255), Round(B * 255), 255);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function HLSToRGB(const HLS: TColorVector): TColorVector;
 begin
   HLSToRGB(HLS.H, HLS.L, HLS.S, Result.R, Result.G, Result.B);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RGBToHLS(const R, G, B: Single; out H, L, S: Single);
 var
@@ -2328,28 +2112,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); 
 begin
   RGBToHLS(R, G, B, H, L, S);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single);
 begin
   RGBToHLS(RedComponent(RGB) / 255, GreenComponent(RGB) / 255, BlueComponent(RGB) / 255, H, L, S);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RGBToHLS(const RGB: TColorVector): TColorVector;
 begin
   RGBToHLS(RGB.R, RGB.G, RGB.B, Result.H, Result.L, Result.S);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 { Translated C-code from Microsoft Knowledge Base
 -------------------------------------------
@@ -2398,8 +2174,6 @@ type
     I: Byte;
   end;
 
-//--------------------------------------------------------------------------------------------------
-
 function RGB(R, G, B: Byte): TColor;
 begin
   TInternalRGB(Result).R := R;
@@ -2407,8 +2181,6 @@ begin
   TInternalRGB(Result).B := B;
   TInternalRGB(Result).I := 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function RGBToHLS(const RGBColor: TColorRef): THLSVector;
 var
@@ -2472,8 +2244,6 @@ begin
   Result.Saturation := S;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function HueToRGB(M1, M2, Hue: Integer): Integer;
 // utility routine for HLSToRGB
 begin
@@ -2494,8 +2264,6 @@ begin
   else
     Result := M1;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function HLSToRGB(const Hue, Luminance, Saturation: THLSValue): TColorRef;
 var
@@ -2527,8 +2295,6 @@ begin
   Result :=  RGB(R, G, B);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 {$IFDEF VCL}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
 type
@@ -2559,9 +2325,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//==================================================================================================
-// Misc
-//==================================================================================================
+//=== Misc ===================================================================
 
 function ColorToHTML(const Color: TColor): string;
 var
@@ -2570,8 +2334,6 @@ begin
   Temp.Value := ColorToRGB(Color);
   Result := Format('#%.2x%.2x%.2x', [Temp.R, Temp.G, Temp.B]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF VCL}
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
@@ -2608,8 +2370,6 @@ begin
   Result := True;
 end;
 {$ENDIF VCL}
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
@@ -2670,9 +2430,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
-// Clipping
-//==================================================================================================
+//=== Clipping ===============================================================
 
 function ClipCodes(const X, Y, MinX, MinY, MaxX, MaxY: Float): TClipCodes;
 begin
@@ -2689,14 +2447,10 @@ begin
     Include(Result, ccBelow);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ClipCodes(const X, Y: Float; const ClipRect: TRect): TClipCodes;
 begin
   Result := ClipCodes(X, Y, ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ClipLine(var X1, Y1, X2, Y2: Integer; const ClipRect: TRect): Boolean;
 var
@@ -2716,8 +2470,6 @@ begin
     Y2 := Round(FY2);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ClipLine(var X1, Y1, X2, Y2: Float; const MinX, MinY, MaxX, MaxY: Float;
   Codes: PClipCodes): Boolean;
@@ -2808,8 +2560,6 @@ begin
   until Done;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure DrawPolyLine(const Canvas: TCanvas; var Points: TPointArray; const ClipRect: TRect);
 var
   I: Integer;
@@ -2863,8 +2613,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 initialization
   SetupFunctions;
   if MMX_ACTIVE then
@@ -2878,6 +2626,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.18  2005/02/24 16:34:41  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.17  2004/11/25 21:56:12  rrossmair
 // - TColor32Array declaration changed to avoid range check errors in JclGraphics
 //

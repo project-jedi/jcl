@@ -222,14 +222,10 @@ type
     property WinVer: string read GetWinVer write SetWinVer;
   end;
 
-//--------------------------------------------------------------------------------------------------
-
 function GetMsdosSys: IJclMsdosSys;
 begin
   Result := TJclMsdosSys.Create;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TJclMsdosSys.Create;
 begin
@@ -237,169 +233,121 @@ begin
   ReadMsdosSys;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclMsdosSys.Destroy;
 begin
   WriteMsdosSys;
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetAutoScan: Boolean;
 begin
   Result := FAutoScan;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetBootDelay: Cardinal;
 begin
   Result := FBootDelay;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetBootGUI: Boolean;
 begin
   Result := FBootGUI;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetBootMenu: Boolean;
 begin
   Result := FBootMenu;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetBootKeys: Boolean;
 begin
   Result := FBootKeys;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetBootMenuDefault: Cardinal;
 begin
   Result := FBootMenuDefault;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetBootMenuDelay: Cardinal;
 begin
   Result := FBootMenuDelay;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetBootMulti: Boolean;
 begin
   Result := FBootMulti;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetBootSafe: Boolean;
 begin
   Result := FBootSafe;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetBootWarn: Boolean;
 begin
   Result := FBootWarn;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetBootWin: Boolean;
 begin
   Result := FBootWin;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetDBLSpace: Boolean;
 begin
   Result := FDBLSpace;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetDoubleBuffer: Boolean;
 begin
   Result := FDoubleBuffer;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetDRVSpace: Boolean;
 begin
   Result := FDRVSpace;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetHostWinBootDrv: Char;
 begin
   Result := FHostWinBootDrv;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetLoadTop: Boolean;
 begin
   Result := FLoadTop;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetLogo: Boolean;
 begin
   Result := FLogo;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetNetwork: Boolean;
 begin
   Result := FNetWork;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetUninstallDir: Char;
 begin
   Result := FUninstallDir;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclMsdosSys.GetWinBootDir: string;
 begin
   Result := FWinBootDir;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetWinDir: string;
 begin
   Result := FWinDir;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclMsdosSys.GetWinVer: string;
 begin
   Result := FWinVer;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetUninstallDir(AUninstallDir: Char);
 begin
@@ -410,21 +358,15 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetWinDir(AWinDir: string);
 begin
   SetString(FWinDir, AWinDir);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetWinBootDir(AWinBootDir: string);
 begin
   SetString(FWinBootDir, AWinBootDir);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetHostWinBootDrv(AHostWinBootDrv: Char);
 begin
@@ -435,14 +377,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetAutoScan(AAutoScan: Boolean);
 begin
   SetBool(FAutoScan, AAutoScan);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetBootDelay(ABootDelay: Cardinal);
 begin
@@ -453,28 +391,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetBootGUI(ABootGUI: Boolean);
 begin
   SetBool(FBootGUI, ABootGUI);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetBootKeys(ABootKeys: Boolean);
 begin
   SetBool(FBootKeys, ABootKeys);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetBootMenu(ABootMenu: Boolean);
 begin
   SetBool(FBootMenu, ABootMenu);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetBootMenuDefault(ABootMenuDefault: Cardinal);
 begin
@@ -485,8 +415,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetBootMenuDelay(ABootMenuDelay: Cardinal);
 begin
   if BootMenuDelay <> ABootMenuDelay then
@@ -496,84 +424,60 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetBootMulti(ABootMulti: Boolean);
 begin
   SetBool(FBootMulti, ABootMulti);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetBootSafe(ABootSafe: Boolean);
 begin
   SetBool(FBootSafe, ABootSafe);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetBootWarn(ABootWarn: Boolean);
 begin
   SetBool(FBootWarn, ABootWarn);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetBootWin(ABootWin: Boolean);
 begin
   SetBool(FBootWin, ABootWin);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetDBLSpace(ADBLSpace: Boolean);
 begin
   SetBool(FDBLSpace, ADBLSpace);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetDRVSpace(ADRVSpace: Boolean);
 begin
   SetBool(FDRVSpace, ADRVSpace);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetDoubleBuffer(ADoubleBuffer: Boolean);
 begin
   SetBool(FDoubleBuffer, ADoubleBuffer);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetLoadTop(ALoadTop: Boolean);
 begin
   SetBool(FLoadTop, ALoadTop);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetLogo(ALogo: Boolean);
 begin
   SetBool(FLogo, ALogo);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetNetwork(ANetwork: Boolean);
 begin
   SetBool(FNetwork, ANetwork);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetWinVer(AWinVer: string);
 begin
   SetString(FWinVer, AWinVer);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.SetBool(var ANew: Boolean; AOld: Boolean);
 begin
@@ -584,8 +488,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclMsdosSys.SetString(var ANew: string; AOld: string);
 begin
   if ANew <> AOld then
@@ -594,8 +496,6 @@ begin
     WriteMsdosSys;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.ReadMsdosSys;
 var
@@ -653,8 +553,6 @@ begin
     List.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclMsdosSys.WriteMsdosSys;
 var
@@ -733,6 +631,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.6  2004/10/17 21:00:15  mthoma
 // cleaning
 //

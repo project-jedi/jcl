@@ -1633,10 +1633,7 @@ const
   MAX_CLASS_NAME = 1024;
   MAX_PATH_NAME  = 260;
 
-//==================================================================================================
 // Assembly attr bits, used by DefineAssembly.
-//==================================================================================================
-
   afPublicKey                  = $0001; // The assembly ref holds the full (unhashed) public key.
   afCompatibilityMask          = $0070;
   afSideBySideCompatible       = $0000; // The assembly is side by side compatible.
@@ -1662,10 +1659,7 @@ const
   ManifestResourceVisibilityMapping: array [TJclClrTableManifestResourceVisibility] of DWORD =
     (mrPublic, mrPrivate);
 
-//==================================================================================================
 // MethodDef attr bits, Used by DefineMethod.
-//==================================================================================================
-
   // member access mask - Use this mask to retrieve accessibility information.
   mdMemberAccessMask      = $0007;
   mdPrivateScope          = $0000;     // Member not referenceable.
@@ -1704,10 +1698,7 @@ const
   mdHasSecurity           = $4000;     // Method has security associate with it.
   mdRequireSecObject      = $8000;     // Method calls another method containing security code.
 
-//==================================================================================================
 // MethodImpl attr bits, used by DefineMethodImpl.
-//==================================================================================================
-
   // code impl mask
   miCodeTypeMask     = $0003;   // Flags about code type.
   miIL               = $0000;   // Method impl is IL.
@@ -1732,10 +1723,7 @@ const
   miNoInlining       = $0008;   // Method may not be inlined.
   miMaxMethodImplVal = $ffff;   // Range check value
 
-//==================================================================================================
 // Calling convention flags.
-//==================================================================================================
-
   IMAGE_CEE_CS_CALLCONV_DEFAULT      = $0;
   IMAGE_CEE_CS_CALLCONV_VARARG       = $5;
   IMAGE_CEE_CS_CALLCONV_FIELD        = $6;
@@ -1748,10 +1736,7 @@ const
   IMAGE_CEE_CS_CALLCONV_HASTHIS      = $20;  // Top bit indicates a 'this' parameter
   IMAGE_CEE_CS_CALLCONV_EXPLICITTHIS = $40;  // This parameter is explicitly in the signature
 
-//==================================================================================================
 // TypeDef/ExportedType attr bits, used by DefineTypeDef.
-//==================================================================================================
-
   // Use this mask to retrieve the type visibility information.
   tdVisibilityMask     = $00000007;
   tdNotPublic          = $00000000;     // Class is not public scope.
@@ -1799,10 +1784,7 @@ const
   tdRTSpecialName      = $00000800;     // Runtime should check name encoding.
   tdHasSecurity        = $00040000;     // Class has security associate with it.
 
-//==================================================================================================
 // FieldDef attr bits, used by DefineField.
-//==================================================================================================
-
   // member access mask - Use this mask to retrieve accessibility information.
   fdFieldAccessMask = $0007;
   fdPrivateScope    = $0000;     // Member not referenceable.
@@ -1832,10 +1814,7 @@ const
   fdHasDefault      = $8000;     // Field has default.
   fdHasFieldRVA     = $0100;     // Field has RVA.
 
-//==================================================================================================
 // Flags for Params
-//==================================================================================================
-
   pdIn              = $0001;     // Param is [In]
   pdOut             = $0002;     // Param is [out]
   pdOptional        = $0010;     // Param is optional
@@ -1850,10 +1829,7 @@ const
   ClrParamKindMapping: array [TJclClrParamKind] of DWORD =
     (pdIn, pdOut, pdOptional, pdHasDefault, pdHasFieldMarshal);
 
-//==================================================================================================
 // Element type for Cor signature
-//==================================================================================================
-
   ELEMENT_TYPE_END        = $0;
   ELEMENT_TYPE_VOID       = $1;
   ELEMENT_TYPE_BOOLEAN    = $2;
@@ -2010,38 +1986,27 @@ const
   pmCallConvThiscall = $0400;   // In M9, pinvoke will raise exception.
   pmCallConvFastcall = $0500;
 
-//--------------------------------------------------------------------------------------------------
-
 function IsBitSet(const Value, Flag: DWORD): Boolean;
 begin
   Result := (Value and Flag) = Flag;
 end;
 
-//==================================================================================================
 // TJclClrSignature
-//==================================================================================================
-
 constructor TJclClrSignature.Create(const ABlob: TJclClrBlobRecord);
 begin
   inherited Create;
   FBlob := ABlob;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.IsModifierType(const AElementType: TJclClrElementType): Boolean;
 begin
   Result := AElementType in [etPtr, etByRef, etModifier, etSentinel, etPinned];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.IsPrimitiveType(const AElementType: TJclClrElementType): Boolean;
 begin
   Result := AElementType < etPtr;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.UncompressedDataSize(DataPtr: PByteArray): Integer;
 begin
@@ -2053,8 +2018,6 @@ begin
   else
     Result := 4;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.UncompressData(DataPtr: PByteArray; var Value: DWord): Integer;
 begin
@@ -2080,8 +2043,6 @@ begin
       [DataPtr[0], DataPtr[1], DataPtr[2], DataPtr[3]]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.UncompressToken(DataPtr: PByteArray; var Token: TJclClrToken): Integer;
 const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
@@ -2090,14 +2051,10 @@ begin
   Token  := Byte(TableMapping[Token and 3]) shl 24 + Token shr 2;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.UncompressCallingConv(DataPtr: PByteArray): Byte;
 begin
   Result := DataPtr[0];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.UncompressSignedInt(DataPtr: PByteArray; var Value: Integer): Integer;
 var
@@ -2118,16 +2075,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.UncompressElementType(DataPtr: PByteArray): TJclClrElementType;
 begin
   for Result := Low(TJclClrElementType) to High(TJclClrElementType) do
     if ClrElementTypeMapping[Result] = (DataPtr[0] and $7F) then
       Break;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.UncompressFieldSignature: string;
 var
@@ -2139,8 +2092,6 @@ begin
   Inc(DataPtr);
   Result := UncompressTypeSignature(DataPtr);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.UncompressTypeSignature(DataPtr: PByteArray): string;
 const
@@ -2187,36 +2138,26 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.Inc(var DataPtr: PByteArray; Step: Integer): PByte;
 begin
   Result := PByte(Integer(DataPtr) + Step);
   DataPtr := PByteArray(Result);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.ReadValue: DWORD;
 begin
   FBlob.Seek(UncompressData(Blob.Data, Result), soFromCurrent);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.ReadInteger: Integer;
 begin
   FBlob.Seek(UncompressSignedInt(Blob.Data, Result), soFromCurrent);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.ReadToken: TJclClrToken;
 begin
   FBlob.Seek(UncompressToken(Blob.Data, Result), soFromCurrent);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrSignature.ReadElementType: TJclClrElementType;
 begin
@@ -2224,18 +2165,13 @@ begin
   FBlob.Seek(1, soFromCurrent);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrSignature.ReadByte: Byte;
 begin
   Result := Blob.Data[0];
   FBlob.Seek(1, soFromCurrent);
 end;
 
-//==================================================================================================
 // TJclClrArraySign
-//==================================================================================================
-
 constructor TJclClrArraySign.Create(const ABlob: TJclClrBlobRecord);
 var
   I: Integer;
@@ -2255,10 +2191,7 @@ begin
     FBounds[I][adLowBound] := ReadInteger;
 end;
 
-//==================================================================================================
 // TJclClrTableModuleRow
-//==================================================================================================
-
 constructor TJclClrTableModuleRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2269,21 +2202,15 @@ begin
   FEncBaseIdIdx := Table.ReadIndex(hkGuid);   // Mvid (index into Guid heap)
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRow.HasEncId: Boolean;
 begin
   Result := FEncIdIdx > 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRow.HasEncBaseId: Boolean;
 begin
   Result := FEncBaseIdIdx > 0;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableModuleRow.GetName: WideString;
 begin
@@ -2292,8 +2219,6 @@ begin
   Assert(Length(Result) < MAX_PATH_NAME);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRow.GetMvid: TGUID;
 begin
   // Mvid shall index a non-null GUID in the Guid heap
@@ -2301,83 +2226,59 @@ begin
   Result := Table.Stream.Metadata.Guids[FMvidIdx-1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRow.GetEncId: TGUID;
 begin
   Result := Table.Stream.Metadata.Guids[FEncIdIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableModuleRow.GetEncBaseId: TGUID;
 begin
   Result := Table.Stream.Metadata.Guids[FEncBaseIdIdx-1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRow.DumpIL: string;
 begin
   Result := '.module ' + Name + ' // MVID:' + GuidToString(Mvid) + CrLf;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableModule.GetRow(const Idx: Integer): TJclClrTableModuleRow;
 begin
   Result := TJclClrTableModuleRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableModule.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableModuleRow;
 end;
 
-//==================================================================================================
 // TJclClrTableModuleRefRow
-//==================================================================================================
-
 constructor TJclClrTableModuleRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FNameOffset := Table.ReadIndex(hkString);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRefRow.DumpIL: string;
 begin
   Result := '.module extern ' + Name + CrLf;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableModuleRefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableModuleRef.GetRow(const Idx: Integer): TJclClrTableModuleRefRow;
 begin
   Result := TJclClrTableModuleRefRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableModuleRef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableModuleRefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableAssemblyRow
-//==================================================================================================
-
 constructor TJclClrTableAssemblyRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2396,42 +2297,30 @@ begin
   FCultureOffset   := Table.ReadIndex(hkString);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRow.GetCulture: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FCultureOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRow.GetPublicKey: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FPublicKeyOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRow.GetVersion: string;
 begin
   Result := FormatVersionString(FMajorVersion, FMinorVersion, FBuildNumber, FRevisionNumber);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRow.GetFlags: TJclClrAssemblyFlags;
 begin
   Result := AssemblyFlags(FFlagMask);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableAssemblyRow.AssemblyFlags(const Flags: DWORD): TJclClrAssemblyFlags;
 var
@@ -2443,8 +2332,6 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableAssemblyRow.AssemblyFlags(const Flags: TJclClrAssemblyFlags): DWORD;
 var
   AFlag: TJclClrAssemblyFlag;
@@ -2454,8 +2341,6 @@ begin
     if AFlag in Flags then
       Result := Result or ClrAssemblyFlagMapping[AFlag];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRow.DumpIL: string;
 var
@@ -2488,24 +2373,17 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssembly.GetRow(const Idx: Integer): TJclClrTableAssemblyRow;
 begin
   Result := TJclClrTableAssemblyRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableAssembly.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableAssemblyRow;
 end;
 
-//==================================================================================================
 // TJclClrTableAssemblyOSRow
-//==================================================================================================
-
 constructor TJclClrTableAssemblyOSRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2515,55 +2393,39 @@ begin
   FMinorVersion := Table.ReadDWord;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyOSRow.GetVersion: string;
 begin
   Result := FormatVersionString(FMajorVersion, FMinorVersion);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyOS.GetRow(const Idx: Integer): TJclClrTableAssemblyOSRow;
 begin
   Result := TJclClrTableAssemblyOSRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableAssemblyOS.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableAssemblyOSRow;
 end;
 
-//==================================================================================================
 // TJclClrTableAssemblyProcessorRow
-//==================================================================================================
-
 constructor TJclClrTableAssemblyProcessorRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FProcessor := Table.ReadDWord;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyProcessor.GetRow(const Idx: Integer): TJclClrTableAssemblyProcessorRow;
 begin
   Result := TJclClrTableAssemblyProcessorRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableAssemblyProcessor.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableAssemblyProcessorRow;
 end;
 
-//==================================================================================================
 // TJclClrTableAssemblyRefRow
-//==================================================================================================
-
 constructor TJclClrTableAssemblyRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2580,8 +2442,6 @@ begin
   FCultureOffset          := Table.ReadIndex(hkString);
   FHashValueOffset        := Table.ReadIndex(hkBlob);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRefRow.DumpIL: string;
 var
@@ -2634,73 +2494,52 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRefRow.GetCulture: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FCultureOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRefRow.GetFlags: TJclClrAssemblyFlags;
 begin
   Result := TJclClrTableAssemblyRow.AssemblyFlags(FFlagMask);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRefRow.GetHashValue: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FHashValueOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRefRow.GetPublicKeyOrToken: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FPublicKeyOrTokenOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRefRow.GetVersion: string;
 begin
   Result := FormatVersionString(FMajorVersion, FMinorVersion, FBuildNumber, FRevisionNumber);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRef.GetRow(const Idx: Integer): TJclClrTableAssemblyRefRow;
 begin
   Result := TJclClrTableAssemblyRefRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableAssemblyRef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableAssemblyRefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableAssemblyRefOSRow
-//==================================================================================================
-
 constructor TJclClrTableAssemblyRefOSRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FAssemblyRefIdx := Table.ReadIndex([ttAssemblyRef]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRefOSRow.GetAssemblyRef: TJclClrTableAssemblyRefRow;
 var
@@ -2712,8 +2551,6 @@ begin
     Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRefOS.GetRow(const Idx: Integer): TJclClrTableAssemblyRefOSRow;
 begin
   Result := TJclClrTableAssemblyRefOSRow(inherited GetRow(Idx));
@@ -2724,17 +2561,12 @@ begin
   Result := TJclClrTableAssemblyRefOSRow;
 end;
 
-//==================================================================================================
 // TJclClrTableAssemblyRefProcessorRow
-//==================================================================================================
-
 constructor TJclClrTableAssemblyRefProcessorRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FAssemblyRefIdx := Table.ReadIndex([ttAssemblyRef]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableAssemblyRefProcessorRow.GetAssemblyRef: TJclClrTableAssemblyRefRow;
 var
@@ -2746,25 +2578,18 @@ begin
     Result := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableAssemblyRefProcessor.GetRow(
   const Idx: Integer): TJclClrTableAssemblyRefProcessorRow;
 begin
   Result := TJclClrTableAssemblyRefProcessorRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableAssemblyRefProcessor.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableAssemblyRefProcessorRow;
 end;
 
-//==================================================================================================
 // TJclClrTableClassLayoutRow
-//==================================================================================================
-
 constructor TJclClrTableClassLayoutRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2773,24 +2598,17 @@ begin
   FParentIdx   := Table.ReadIndex([ttTypeDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableClassLayout.GetRow(const Idx: Integer): TJclClrTableClassLayoutRow;
 begin
   Result := TJclClrTableClassLayoutRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableClassLayout.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableClassLayoutRow;
 end;
 
-//==================================================================================================
 // TJclClrTableConstantRow
-//==================================================================================================
-
 constructor TJclClrTableConstantRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2799,8 +2617,6 @@ begin
   FParentIdx   := Table.ReadIndex([ttParamDef, ttFieldDef, ttPropertyDef]);
   FValueOffset := Table.ReadIndex(hkBlob);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableConstantRow.DumpIL: string;
 begin
@@ -2845,8 +2661,6 @@ begin
   Result := ' = ' + Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableConstantRow.GetElementType: TJclClrElementType;
 begin
   for Result := Low(TJclClrElementType) to High(TJclClrElementType) do
@@ -2854,8 +2668,6 @@ begin
       Exit;
   Result := etEnd;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableConstantRow.GetParent: TJclClrTableRow;
 const
@@ -2866,31 +2678,22 @@ begin
   Result := Table.Stream.Tables[HasConstantMapping[FParentIdx and 3]].Rows[FParentIdx shr 2 - 1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableConstantRow.GetValue: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FValueOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableConstant.GetRow(const Idx: Integer): TJclClrTableConstantRow;
 begin
   Result := TJclClrTableConstantRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableConstant.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableConstantRow;
 end;
 
-//==================================================================================================
 // TJclClrTableCustomAttributeRow
-//==================================================================================================
-
 constructor TJclClrTableCustomAttributeRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2904,8 +2707,6 @@ begin
   FTypeIdx := Table.ReadIndex([ttMethodDef, ttMemberRef]);
   FValueOffset := Table.ReadIndex(hkBlob);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableCustomAttributeRow.GetParent: TJclClrTableRow;
 const
@@ -2931,8 +2732,6 @@ begin
     Rows[Table.GetCodedIndexValue(FParentIdx, 5, WideIndex)-1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableCustomAttributeRow.GetMethod: TJclClrTableRow;
 const
   MapTagToTable: array [2..3] of TJclClrTableKind = (ttMethodDef, ttMemberRef);
@@ -2946,14 +2745,10 @@ begin
     Rows[Table.GetCodedIndexValue(FTypeIdx, 3, WideIndex)-1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableCustomAttributeRow.GetValue: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FValueOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableCustomAttributeRow.DumpIL: string;
 begin
@@ -2961,24 +2756,17 @@ begin
   Result := Value.Dump(Format('.custom /*%.8x:%.8x*/ %s = ', [Token, Method.Token, Method.DumpIL]));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableCustomAttribute.GetRow(const Idx: Integer): TJclClrTableCustomAttributeRow;
 begin
   Result := TJclClrTableCustomAttributeRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableCustomAttribute.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableCustomAttributeRow;
 end;
 
-//==================================================================================================
 // TJclClrTableDeclSecurityRow
-//==================================================================================================
-
 constructor TJclClrTableDeclSecurityRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -2987,24 +2775,17 @@ begin
   FPermissionSetOffset := Table.ReadIndex(hkBlob);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableDeclSecurity.GetRow(const Idx: Integer): TJclClrTableDeclSecurityRow;
 begin
   Result := TJclClrTableDeclSecurityRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableDeclSecurity.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableDeclSecurityRow;
 end;
 
-//==================================================================================================
 // TJclClrTableEventMapRow
-//==================================================================================================
-
 constructor TJclClrTableEventMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3012,24 +2793,17 @@ begin
   FEventListIdx := Table.ReadIndex([ttEventDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableEventMap.GetRow(const Idx: Integer): TJclClrTableEventMapRow;
 begin
   Result := TJclClrTableEventMapRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableEventMap.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableEventMapRow;
 end;
 
-//==================================================================================================
 // TJclClrTableEventDefRow
-//==================================================================================================
-
 constructor TJclClrTableEventDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3038,62 +2812,44 @@ begin
   FEventTypeIdx := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableEventDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableEventDef.GetRow(const Idx: Integer): TJclClrTableEventDefRow;
 begin
   Result := TJclClrTableEventDefRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableEventDef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableEventDefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableEventPtrRow
-//==================================================================================================
-
 constructor TJclClrTableEventPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FEventIdx := Table.ReadIndex([ttEventDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableEventPtrRow.GetEvent: TJclClrTableEventDefRow;
 begin
   Result := TJclClrTableEventDef(Table.Stream.Tables[ttEventDef]).Rows[FEventIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableEventPtr.GetRow(const Idx: Integer): TJclClrTableEventPtrRow;
 begin
   Result := TJclClrTableEventPtrRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableEventPtr.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableEventPtrRow;
 end;
 
-//==================================================================================================
 // TJclClrTableExportedTypeRow
-//==================================================================================================
-
 constructor TJclClrTableExportedTypeRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3104,38 +2860,27 @@ begin
   FImplementationIdx   := Table.ReadIndex([ttFile, ttExportedType]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableExportedTypeRow.GetTypeName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FTypeNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableExportedTypeRow.GetTypeNamespace: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FTypeNamespaceOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableExportedType.GetRow(const Idx: Integer): TJclClrTableExportedTypeRow;
 begin
   Result := TJclClrTableExportedTypeRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableExportedType.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableExportedTypeRow;
 end;
 
-//==================================================================================================
 // TJclClrTableFieldDefRow
-//==================================================================================================
-
 constructor TJclClrTableFieldDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3144,8 +2889,6 @@ begin
   FSignatureOffset := Table.ReadIndex(hkBlob);
   FParentToken     := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFieldDefRow.DumpIL: string;
 const
@@ -3200,21 +2943,15 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFieldDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFieldDefRow.GetSignature: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFieldDefRow.GetVisibility: TJclClrTableFieldDefVisibility;
 const
@@ -3223,8 +2960,6 @@ const
 begin
   Result := FieldVisibilityMapping[FFlags and fdFieldAccessMask];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFieldDefRow.GetFlag: TJclClrTableFieldDefFlags;
 const
@@ -3239,62 +2974,44 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrTableFieldDefRow.SetParentToken(const ARow: TJclClrTableTypeDefRow);
 begin
   FParentToken := ARow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFieldDef.GetRow(const Idx: Integer): TJclClrTableFieldDefRow;
 begin
   Result := TJclClrTableFieldDefRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableFieldDef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableFieldDefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableFieldPtrRow
-//==================================================================================================
-
 constructor TJclClrTableFieldPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FFieldIdx := Table.ReadIndex([ttFieldDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFieldPtrRow.GetField: TJclClrTableFieldDefRow;
 begin
   Result := TJclClrTableFieldDef(Table.Stream.Tables[ttFieldDef]).Rows[FFieldIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFieldPtr.GetRow(const Idx: Integer): TJclClrTableFieldPtrRow;
 begin
   Result := TJclClrTableFieldPtrRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableFieldPtr.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableFieldPtrRow;
 end;
 
-//==================================================================================================
 // TJclClrTableFieldLayoutRow
-//==================================================================================================
-
 constructor TJclClrTableFieldLayoutRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3302,25 +3019,18 @@ begin
   FFieldIdx := Table.ReadIndex([ttFieldDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFieldLayout.GetRow(
   const Idx: Integer): TJclClrTableFieldLayoutRow;
 begin
   Result := TJclClrTableFieldLayoutRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableFieldLayout.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableFieldLayoutRow;
 end;
 
-//==================================================================================================
 // TJclClrTableFieldMarshalRow
-//==================================================================================================
-
 constructor TJclClrTableFieldMarshalRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3328,25 +3038,18 @@ begin
   FNativeTypeOffset := Table.ReadIndex(hkBlob);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFieldMarshal.GetRow(
   const Idx: Integer): TJclClrTableFieldMarshalRow;
 begin
   Result := TJclClrTableFieldMarshalRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableFieldMarshal.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableFieldMarshalRow;
 end;
 
-//==================================================================================================
 // TJclClrTableFieldRVARow
-//==================================================================================================
-
 constructor TJclClrTableFieldRVARow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3354,24 +3057,17 @@ begin
   FFieldIdx := Table.ReadIndex([ttFieldDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFieldRVA.GetRow(const Idx: Integer): TJclClrTableFieldRVARow;
 begin
   Result := TJclClrTableFieldRVARow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableFieldRVA.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableFieldRVARow;
 end;
 
-//==================================================================================================
 // TJclClrTableFileRow
-//==================================================================================================
-
 constructor TJclClrTableFileRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3380,21 +3076,15 @@ begin
   FHashValueOffset := Table.ReadIndex(hkBlob);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFileRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFileRow.GetHashValue: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FHashValueOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFileRow.GetContainsMetadata: Boolean;
 const
@@ -3402,8 +3092,6 @@ const
 begin
   Result := (FFlags and ffContainsNoMetaData) = ffContainsNoMetaData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableFileRow.DumpIL: string;
 
@@ -3417,24 +3105,17 @@ begin
   Result := HashValue.Dump('.file ' + GetMetadataName + Name + ' .hash = ');
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableFile.GetRow(const Idx: Integer): TJclClrTableFileRow;
 begin
   Result := TJclClrTableFileRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableFile.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableFileRow;
 end;
 
-//==================================================================================================
 // TJclClrTableImplMapRow
-//==================================================================================================
-
 constructor TJclClrTableImplMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3444,39 +3125,28 @@ begin
   FImportScopeIdx     := Table.ReadIndex([ttModuleRef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableImplMapRow.GetImportName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FImportNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableImplMap.GetRow(const Idx: Integer): TJclClrTableImplMapRow;
 begin
   Result := TJclClrTableImplMapRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableImplMap.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableImplMapRow;
 end;
 
-//==================================================================================================
 // TJclClrTableInterfaceImplRow
-//==================================================================================================
-
 constructor TJclClrTableInterfaceImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FClassIdx     := Table.ReadIndex([ttTypeDef]);
   FInterfaceIdx := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableInterfaceImplRow.DumpIL: string;
 begin
@@ -3490,21 +3160,15 @@ begin
     Result := 'Unknown';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableInterfaceImplRow.GetImplClass: TJclClrTableRow;
 begin
   Result := Table.Stream.Metadata.Tokens[FClassIdx];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableInterfaceImplRow.GetImplInterface: TJclClrTableRow;
 begin
   Result := DecodeTypeDefOrRef(FInterfaceIdx);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableInterfaceImpl.GetRow(
   const Idx: Integer): TJclClrTableInterfaceImplRow;
@@ -3512,17 +3176,12 @@ begin
   Result := TJclClrTableInterfaceImplRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableInterfaceImpl.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableInterfaceImplRow;
 end;
 
-//==================================================================================================
 // TJclClrTableManifestResourceRow
-//==================================================================================================
-
 constructor TJclClrTableManifestResourceRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3531,8 +3190,6 @@ begin
   FNameOffset        := Table.ReadIndex(hkString);
   FImplementationIdx := Table.ReadIndex([ttFile, ttAssemblyRef]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableManifestResourceRow.DumpIL: string;
 const
@@ -3566,21 +3223,15 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableManifestResourceRow.GetImplementationRow: TJclClrTableRow;
 begin
   Result := Table.Stream.Metadata.Tokens[FImplementationIdx];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableManifestResourceRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableManifestResourceRow.GetVisibility: TJclClrTableManifestResourceVisibility;
 begin
@@ -3590,25 +3241,18 @@ begin
   raise EJclMetadataError.CreateResRecFmt(@RsUnknownManifestResource, [FFlags and mrVisibilityMask]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableManifestResource.GetRow(
   const Idx: Integer): TJclClrTableManifestResourceRow;
 begin
   Result := TJclClrTableManifestResourceRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableManifestResource.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableManifestResourceRow;
 end;
 
-//==================================================================================================
 // TJclClrTableMemberRefRow
-//==================================================================================================
-
 constructor TJclClrTableMemberRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3617,21 +3261,15 @@ begin
   FSignatureOffset := Table.ReadIndex(hkBlob);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMemberRefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMemberRefRow.GetSignature: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMemberRefRow.GetParentClass: TJclClrTableRow;
 const
@@ -3646,8 +3284,6 @@ begin
     MapTagToTable[Table.GetCodedIndexTag(FClassIdx, 3, WideIndex)]].
     Rows[Table.GetCodedIndexValue(FClassIdx, 3, WideIndex)-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMemberRefRow.GetFullName: WideString;
 var
@@ -3673,24 +3309,17 @@ begin
   Result := Result + '.' + Name;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMemberRef.GetRow(const Idx: Integer): TJclClrTableMemberRefRow;
 begin
   Result := TJclClrTableMemberRefRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableMemberRef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableMemberRefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableParamDefRow
-//==================================================================================================
-
 constructor TJclClrTableParamDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -3702,21 +3331,15 @@ begin
   FFlags      := ParamFlags(FFlagMask);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableParamDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrTableParamDefRow.SetMethod(const AMethod: TJclClrTableMethodDefRow);
 begin
   FMethod := AMethod;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableParamDefRow.ParamFlags(const AFlags: TJclClrParamKinds): Word;
 var
@@ -3728,8 +3351,6 @@ begin
       Result := Result or ClrParamKindMapping[AFlag];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableParamDefRow.ParamFlags(const AFlags: Word): TJclClrParamKinds;
 var
   AFlag: TJclClrParamKind;
@@ -3740,59 +3361,42 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableParamDefRow.DumpIL: string;
 begin
   { TODO : What to do? }
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableParamDef.GetRow(const Idx: Integer): TJclClrTableParamDefRow;
 begin
   Result := TJclClrTableParamDefRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableParamDef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableParamDefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableParamPtrRow
-//==================================================================================================
-
 constructor TJclClrTableParamPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FParamIdx := Table.ReadIndex([ttParamDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableParamPtrRow.GetParam: TJclClrTableParamDefRow;
 begin
   Result := TJclClrTableParamDef(Table.Stream.Tables[ttParamDef]).Rows[FParamIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableParamPtr.GetRow(const Idx: Integer): TJclClrTableParamPtrRow;
 begin
   Result := TJclClrTableParamPtrRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableParamPtr.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableParamPtrRow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // Indicates the format for the COR_ILMETHOD header
 const
@@ -3827,10 +3431,7 @@ const
    (COR_ILEXCEPTION_CLAUSE_NONE, COR_ILEXCEPTION_CLAUSE_FILTER,
     COR_ILEXCEPTION_CLAUSE_FINALLY, COR_ILEXCEPTION_CLAUSE_FAULT);
 
-//==================================================================================================
 // TJclClrExceptionHandler
-//==================================================================================================
-
 constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseSmall);
 begin
   FFlags               := EHClause.Flags;
@@ -3849,8 +3450,6 @@ begin
     FFilterOffset := 0;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 constructor TJclClrExceptionHandler.Create(const EHClause: TImageCorILMethodSectEHClauseFat);
 begin
@@ -3871,8 +3470,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrExceptionHandler.GetFlags: TJclClrExceptionClauseFlags;
 var
   AFlag: TJclClrExceptionClauseFlag;
@@ -3883,10 +3480,7 @@ begin
       Include(Result, AFlag);
 end;
 
-//==================================================================================================
 // TJclClrMethodBody
-//==================================================================================================
-
 constructor TJclClrMethodBody.Create(const AMethod: TJclClrTableMethodDefRow);
 var
   ILMethod: PImageCorILMethodHeader;
@@ -3916,16 +3510,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrMethodBody.Destroy;
 begin
   FreeAndNil(FLocalVarSign);
   FreeAndNil(FEHTable);
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrMethodBody.AddEHTable(EHTable: PImageCorILMethodSectEH);
 var
@@ -3947,14 +3537,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrMethodBody.AddOptILTable(OptILTable: Pointer; Size: Integer);
 begin
   { TODO : What to do? }
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrMethodBody.ParseMoreSections(SectHeader: PImageCorILMethodSectHeader);
 var
@@ -3975,21 +3561,15 @@ begin
     ParseMoreSections(Pointer(DWORD(SectHeader) + SectSize));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrMethodBody.GetExceptionHandler(const Idx: Integer): TJclClrExceptionHandler;
 begin
   Result := TJclClrExceptionHandler(FEHTable.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrMethodBody.GetExceptionHandlerCount: Integer;
 begin
   Result := FEHTable.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrMethodBody.GetLocalVarSign: TJclClrLocalVarSign;
 begin
@@ -3999,17 +3579,12 @@ begin
   Result := FLocalVarSign;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrMethodBody.GetLocalVarSignData: TJclClrBlobRecord;
 begin
   Result := TJclClrTableStandAloneSigRow(FMethod.Table.Stream.Metadata.Tokens[FLocalVarSignToken]).Signature;
 end;
 
-//==================================================================================================
 // TJclClrTableMethodDefRow
-//==================================================================================================
-
 constructor TJclClrTableMethodDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4031,8 +3606,6 @@ begin
     FMethodBody := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrTableMethodDefRow.Destroy;
 begin
   FreeAndNil(FParams);
@@ -4040,28 +3613,20 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.GetSignatureData: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrTableMethodDefRow.SetParentToken(const ARow: TJclClrTableTypeDefRow);
 begin
   FParentToken := ARow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrTableMethodDefRow.UpdateParams;
 var
@@ -4088,35 +3653,25 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrTableMethodDefRow.Update;
 begin
   UpdateParams;
 end;
               
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetHasParam: Boolean;
 begin
   Result := Assigned(FParams);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.GetParam(const Idx: Integer): TJclClrTableParamDefRow;
 begin
   Result := TJclClrTableParamDefRow(FParams.Items[Idx]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetParamCount: Integer;
 begin
   Result := FParams.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.DumpIL: string;
 const
@@ -4258,14 +3813,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetFullName: WideString;
 begin
   Result := ParentToken.FullName + '.' + Name;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.GetSignature: TJclClrMethodSign;
 begin
@@ -4274,14 +3825,10 @@ begin
   Result := FSignature;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetMemberAccess: TJclClrMemberAccess;
 begin
   Result := TJclClrMemberAccess(FFlags and mdMemberAccessMask)
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.GetMethodFlags: TJclClrMethodFlags;
 var
@@ -4292,28 +3839,20 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetNewSlot: Boolean;
 begin
   Result := (FFlags and mdVtableLayoutMask) = mdNewSlot;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.GetCodeType: TJclClrMethodCodeType;
 begin
   Result := TJclClrMethodCodeType(FImplFlags and miCodeTypeMask);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDefRow.GetManaged: Boolean;
 begin
   Result := (FImplFlags and miManagedMask) = miManaged;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodDefRow.GetMethodImplFlags: TJclClrMethodImplFlags;
 var
@@ -4324,55 +3863,39 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodDef.GetRow(const Idx: Integer): TJclClrTableMethodDefRow;
 begin
   Result := TJclClrTableMethodDefRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableMethodDef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableMethodDefRow;
 end;
 
-//==================================================================================================
 // TJclClrTableMethodPtrRow
-//==================================================================================================
-
 constructor TJclClrTableMethodPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FMethodIdx := Table.ReadIndex([ttMethodDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodPtrRow.GetMethod: TJclClrTableMethodDefRow;
 begin
   Result := TJclClrTableMethodDef(Table.Stream.Tables[ttMethodDef]).Rows[FMethodIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodPtr.GetRow(const Idx: Integer): TJclClrTableMethodPtrRow;
 begin
   Result := TJclClrTableMethodPtrRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableMethodPtr.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableMethodPtrRow;
 end;
 
-//==================================================================================================
 // TJclClrTableMethodImplRow
-//==================================================================================================
-
 constructor TJclClrTableMethodImplRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4381,25 +3904,18 @@ begin
   FMethodDeclarationIdx := Table.ReadIndex([ttMethodDef, ttMemberRef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodImpl.GetRow(
   const Idx: Integer): TJclClrTableMethodImplRow;
 begin
   Result := TJclClrTableMethodImplRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableMethodImpl.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableMethodImplRow;
 end;
 
-//==================================================================================================
 // TJclClrTableMethodSemanticsRow
-//==================================================================================================
-
 constructor TJclClrTableMethodSemanticsRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4408,32 +3924,23 @@ begin
   FAssociationIdx := Table.ReadIndex([ttEventDef, ttPropertyDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodSemantics.GetRow(const Idx: Integer): TJclClrTableMethodSemanticsRow;
 begin
   Result := TJclClrTableMethodSemanticsRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableMethodSemantics.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableMethodSemanticsRow;
 end;
 
-//==================================================================================================
 // TJclClrTableMethodSpecRow
-//==================================================================================================
-
 constructor TJclClrTableMethodSpecRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FMethodIdx           := Table.ReadIndex([ttMethodDef, ttMemberRef]);
   FInstantiationOffset := Table.ReadIndex(hkBlob);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodSpecRow.GetMethod: TJclClrTableRow;
 const
@@ -4443,31 +3950,22 @@ begin
   Result := Table.Stream.Metadata.Tables[MethodDefOrRefEncodedTag[FMethodIdx and 1]].Rows[FMethodIdx shr 1];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableMethodSpecRow.GetInstantiation: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FInstantiationOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableMethodSpec.GetRow(const Idx: Integer): TJclClrTableMethodSpecRow;
 begin
   Result := TJclClrTableMethodSpecRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableMethodSpec.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableMethodSpecRow;
 end;
 
-//==================================================================================================
 // TJclClrTableNestedClassRow
-//==================================================================================================
-
 constructor TJclClrTableNestedClassRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4475,24 +3973,17 @@ begin
   FEnclosingClassIdx := Table.ReadIndex([ttTypeDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableNestedClass.GetRow(const Idx: Integer): TJclClrTableNestedClassRow;
 begin
   Result := TJclClrTableNestedClassRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableNestedClass.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableNestedClassRow;
 end;
 
-//==================================================================================================
 // TJclClrTablePropertyDefRow
-//==================================================================================================
-
 constructor TJclClrTablePropertyDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4500,8 +3991,6 @@ begin
   FNameOffset := Table.ReadIndex(hkString);
   FKindIdx    := Table.ReadIndex(hkBlob);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTablePropertyDefRow.DumpIL: string;
 
@@ -4518,8 +4007,6 @@ begin
   Result := Format('.property /*%.8x*/ %s%s ()', [Token, DumpFlags, Name]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTablePropertyDefRow.GetFlags: TJclClrTablePropertyFlags;
 var
   AFlag: TJclClrTablePropertyFlag;
@@ -4529,62 +4016,44 @@ begin
       Include(Result, AFlag);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTablePropertyDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTablePropertyDef.GetRow(const Idx: Integer): TJclClrTablePropertyDefRow;
 begin
   Result := TJclClrTablePropertyDefRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTablePropertyDef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTablePropertyDefRow;
 end;
 
-//==================================================================================================
 // TJclClrTablePropertyPtrRow
-//==================================================================================================
-
 constructor TJclClrTablePropertyPtrRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FPropertyIdx := Table.ReadIndex([ttPropertyDef]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTablePropertyPtrRow.GetProperty: TJclClrTablePropertyDefRow;
 begin
   Result := TJclClrTablePropertyDef(Table.Stream.Tables[ttPropertyDef]).Rows[FPropertyIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTablePropertyPtr.GetRow(const Idx: Integer): TJclClrTablePropertyPtrRow;
 begin
   Result := TJclClrTablePropertyPtrRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTablePropertyPtr.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTablePropertyPtrRow;
 end;
 
-//==================================================================================================
 // TJclClrTablePropertyMapRow
-//==================================================================================================
-
 constructor TJclClrTablePropertyMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4593,57 +4062,41 @@ begin
   FProperties      := TList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrTablePropertyMapRow.Destroy;
 begin
   FreeAndNil(FProperties);
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTablePropertyMapRow.GetParent: TJclClrTableTypeDefRow;
 begin
   Result := TJclClrTableTypeDef(Table.Stream.Tables[ttTypeDef]).Rows[FParentIdx-1];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTablePropertyMapRow.Add(const ARow: TJclClrTablePropertyDefRow): Integer;
 begin
   Result := FProperties.Add(ARow);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTablePropertyMapRow.GetProperty(const Idx: Integer): TJclClrTablePropertyDefRow;
 begin
   Result := TJclClrTablePropertyDefRow(FProperties.Items[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTablePropertyMapRow.GetPropertyCount: Integer;
 begin
   Result := FProperties.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTablePropertyMap.GetRow(const Idx: Integer): TJclClrTablePropertyMapRow;
 begin
   Result := TJclClrTablePropertyMapRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTablePropertyMap.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTablePropertyMapRow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrTablePropertyMap.Update;
 var
@@ -4661,24 +4114,17 @@ begin
     end;
 end;
 
-//==================================================================================================
 // TJclClrTableStandAloneSigRow
-//==================================================================================================
-
 constructor TJclClrTableStandAloneSigRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FSignatureOffset := Table.ReadIndex(hkBlob);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableStandAloneSigRow.GetSignature: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableStandAloneSig.GetRow(
   const Idx: Integer): TJclClrTableStandAloneSigRow;
@@ -4686,17 +4132,12 @@ begin
   Result := TJclClrTableStandAloneSigRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableStandAloneSig.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableStandAloneSigRow;
 end;
 
-//==================================================================================================
 // TJclClrTableTypeDefRow
-//==================================================================================================
-
 constructor TJclClrTableTypeDefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -4711,8 +4152,6 @@ begin
   FMethods := nil;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrTableTypeDefRow.Destroy;
 begin
   FreeAndNil(FFields);
@@ -4720,63 +4159,45 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.GetNamespace: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNamespaceOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetField(const Idx: Integer): TJclClrTableFieldDefRow;
 begin
   Result := TJclClrTableFieldDefRow(FFields.Items[Idx])
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.GetFieldCount: Integer;
 begin
   Result := FFields.Count
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.HasField: Boolean;
 begin
   Result := Assigned(FFields);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.GetMethod(const Idx: Integer): TJclClrTableMethodDefRow;
 begin
   Result := TJclClrTableMethodDefRow(FMethods.Items[Idx])
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetMethodCount: Integer;
 begin
   Result := FMethods.Count
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.HasMethod: Boolean;
 begin
   Result := Assigned(FMethods);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclClrTableTypeDefRow.UpdateFields;
 var
@@ -4803,8 +4224,6 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrTableTypeDefRow.UpdateMethods;
 var
   MethodTable: TJclClrTableMethodDef;
@@ -4830,16 +4249,12 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclClrTableTypeDefRow.Update;
 begin
   inherited Update;
   UpdateFields;
   UpdateMethods;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.GetFullName: WideString;
 begin
@@ -4848,8 +4263,6 @@ begin
   else
     Result := Name;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.GetAttributes: TJclClrTypeAttributes;
 const
@@ -4865,8 +4278,6 @@ begin
       Include(Result, Attr);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetClassLayout: TJclClrClassLayout;
 begin
   case FFlags and tdLayoutMask of
@@ -4881,8 +4292,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetClassSemantics: TJclClrClassSemantics;
 const
   ClassSemanticsMapping: array [Boolean] of TJclClrClassSemantics =
@@ -4890,8 +4299,6 @@ const
 begin
   Result := ClassSemanticsMapping[(FFlags and tdClassSemanticsMask) = tdInterface];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.GetStringFormatting: TJclClrStringFormatting;
 begin
@@ -4907,21 +4314,15 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetVisibility: TJclClrTypeVisibility;
 begin
   Result := TJclClrTypeVisibility(FFlags and tdVisibilityMask);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeDefRow.GetExtends: TJclClrTableRow;
 begin
   Result := DecodeTypeDefOrRef(FExtendsIdx);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDefRow.DumpIL: string;
 const
@@ -5022,24 +4423,17 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableTypeDef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableTypeDefRow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeDef.GetRow(const Idx: Integer): TJclClrTableTypeDefRow;
 begin
   Result := TJclClrTableTypeDefRow(inherited GetRow(Idx));
 end;
 
-//==================================================================================================
 // TJclClrTableTypeRefRow
-//==================================================================================================
-
 constructor TJclClrTableTypeRefRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
@@ -5048,43 +4442,31 @@ begin
   FNamespaceOffset    := Table.ReadIndex(hkString);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeRefRow.DumpIL: string;
 begin
   Result := Format('[%s/* %.8x */]%s.%s/* %.8x */',
     [ResolutionScopeName, ResolutionScope.Token, Namespace, Name, Token]);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeRefRow.GetFullName: WideString;
 begin
   Result := Namespace + '.' + Name;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeRefRow.GetName: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNameOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeRefRow.GetNamespace: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNamespaceOffset);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeRefRow.GetResolutionScope: TJclClrTableRow;
 begin
   Result := DecodeResolutionScope(FResolutionScopeIdx);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeRefRow.GetResolutionScopeName: string;
 begin
@@ -5104,100 +4486,71 @@ begin
     Result := 'Unknown';
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableTypeRef.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableTypeRefRow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeRef.GetRow(const Idx: Integer): TJclClrTableTypeRefRow;
 begin
   Result := TJclClrTableTypeRefRow(inherited GetRow(Idx));
 end;
 
-//==================================================================================================
 // TJclClrTableTypeSpecRow
-//==================================================================================================
-
 constructor TJclClrTableTypeSpecRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FSignatureOffset := Table.ReadIndex(hkBlob);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableTypeSpecRow.GetSignature: TJclClrBlobRecord;
 begin
   Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrTableTypeSpec.GetRow(const Idx: Integer): TJclClrTableTypeSpecRow;
 begin
   Result := TJclClrTableTypeSpecRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableTypeSpec.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableTypeSpecRow;
 end;
 
-//==================================================================================================
 // TJclClrTableENCMapRow
-//==================================================================================================
-
 constructor TJclClrTableENCMapRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FToken := Table.ReadDWord;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableENCMap.GetRow(const Idx: Integer): TJclClrTableENCMapRow;
 begin
   Result := TJclClrTableENCMapRow(inherited GetRow(Idx));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 class function TJclClrTableENCMap.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableENCMapRow;
 end;
 
-//==================================================================================================
 // TJclClrTableENCLogRow
-//==================================================================================================
-
 constructor TJclClrTableENCLogRow.Create(const ATable: TJclClrTable);
 begin
   inherited Create(ATable);
   FFuncCode := Table.ReadDWord;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrTableENCLog.GetRow(const Idx: Integer): TJclClrTableENCLogRow;
 begin
   Result := TJclClrTableENCLogRow(inherited GetRow(Idx));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 class function TJclClrTableENCLog.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableENCLogRow;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrLocalVar.GetName: WideString;
 const
@@ -5234,10 +4587,7 @@ begin
   end;
 end;
 
-//==================================================================================================
 // TJclClrLocalVarSign
-//==================================================================================================
-
 constructor TJclClrLocalVarSign.Create(const ABlob: TJclClrBlobRecord);
 var
   Sign, ElemType: Byte;
@@ -5292,32 +4642,23 @@ begin
   FreeAndNil(LocalVar);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrLocalVarSign.Destroy;
 begin
   FreeAndNil(FLocalVars);
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrLocalVarSign.GetLocalVar(const Idx: Integer): TJclClrLocalVar;
 begin
   Result := TJclClrLocalVar(FLocalVars[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrLocalVarSign.GetLocalVarCount: Integer;
 begin
   Result := FLocalVars.Count;
 end;
 
-//==================================================================================================
 // TJclClrMethodSign
-//==================================================================================================
-
 constructor TJclClrMethodSign.Create(const ABlob: TJclClrBlobRecord);
 var
   Sign: Byte;
@@ -5350,32 +4691,23 @@ begin
     FParams.Add(TJclClrMethodParam.Create(Blob));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrMethodSign.Destroy;
 begin
   FreeAndNil(FParams);
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrMethodSign.GetParam(const Idx: Integer): TJclClrMethodParam;
 begin
   Result := TJclClrMethodParam(FParams.Items[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrMethodSign.GetParamCount: Integer;
 begin
   Result := FParams.Count;
 end;
 
-//==================================================================================================
 // TJclClrCustomModifierSign
-//==================================================================================================
-
 constructor TJclClrCustomModifierSign.Create(const ABlob: TJclClrBlobRecord);
 begin
   inherited Create(ABlob);
@@ -5384,10 +4716,7 @@ begin
   FToken    := ReadToken;
 end;
 
-//==================================================================================================
 // TJclClrMethodParam
-//==================================================================================================
-
 constructor TJclClrMethodParam.Create(const ABlob: TJclClrBlobRecord);
 var
   By: Byte;
@@ -5428,8 +4757,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclClrMethodParam.Destroy;
 begin
   FreeAndNil(FCustomMods);
@@ -5437,14 +4764,10 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclClrMethodParam.GetCustomModifier(const Idx: Integer): TJclClrCustomModifierSign;
 begin
   Result := TJclClrCustomModifierSign(FCustomMods.Items[Idx]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclClrMethodParam.GetCustomModifierCount: Integer;
 begin
@@ -5454,6 +4777,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/24 16:34:52  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.10  2004/10/17 21:00:15  mthoma
 // cleaning
 //

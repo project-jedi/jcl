@@ -86,8 +86,6 @@ uses
   SysUtils,
   JclResources;
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclCounter.Create(const Compensate: Boolean);
 const
   Iterations: Integer = 10000;
@@ -127,8 +125,6 @@ begin
   FElapsedTime := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclCounter.Start;
 begin
   FCounting := True;
@@ -143,8 +139,6 @@ begin
   FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
   {$ENDIF LINUX}
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclCounter.Stop: Float;
 begin
@@ -162,8 +156,6 @@ begin
   Result := FElapsedTime;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclCounter.GetRunElapsedTime: Float;
 var
   TimeNow: Int64;
@@ -179,8 +171,6 @@ begin
   Result := FOverallElapsedTime + ((TimeNow - FStart - FOverhead) / FFrequency);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclCounter.Continue;
 var
   Overall: Float;
@@ -193,15 +183,11 @@ begin
    end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure StartCount(var Counter: TJclCounter; const Compensate: Boolean = False);
 begin
   Counter := TJclCounter.Create(Compensate);
   Counter.Start;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function StopCount(var Counter: TJclCounter): Float;
 begin
@@ -214,8 +200,6 @@ begin
     Result := 0.0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ContinueCount(var Counter: TJclCounter);
 begin
   if Counter <> nil then
@@ -225,6 +209,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/24 16:34:39  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.10  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //

@@ -140,10 +140,7 @@ type
   TEDISEFObjectParentType =
     (sefNil, sefList, sefElement, sefCompositeElement, sefSegment);
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Data Object
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Data Object
   TEDISEFDataObject = class(TEDISEFObject)
   private
     procedure SetId(const Value: string);
@@ -182,10 +179,7 @@ type
 
   TEDISEFDataObjectClass = class of TEDISEFDataObject;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Data Object List Item
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Data Object List Item
   TEDISEFDataObjectListItem = class(TEDIObjectListItem)
   private
     function GetEDISEFDataObject: TEDISEFDataObject;
@@ -199,10 +193,7 @@ type
     property EDISEFDataObject: TEDISEFDataObject read GetEDISEFDataObject write SetEDISEFDataObject;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Data Object List
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Data Object List
   TEDISEFDataObjectList = class(TEDIObjectList)
   private
     function GetEDISEFDataObject(Index: Integer): TEDISEFDataObject;
@@ -230,10 +221,7 @@ type
       write SetEDISEFDataObject; default;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Data Object Group
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Data Object Group
   TEDISEFDataObjectGroup = class(TEDISEFDataObject)
   private
     function GetEDISEFDataObject(Index: Integer): TEDISEFDataObject;
@@ -250,10 +238,7 @@ type
     property EDISEFDataObjectCount: Integer read GetCount;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Repeating Pattern
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Repeating Pattern
   TEDISEFRepeatingPattern = class(TEDISEFDataObjectGroup)
   private
     FBaseParent: TEDISEFDataObject;
@@ -284,10 +269,7 @@ type
     property RepeatCount: Integer read FRepeatCount write FRepeatCount;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Text Objects
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Text Objects
   TEDISEFWhereType = (twUnknown, twSet, twSegment, twElementOrCompositeElement, twSubElement);
 
   TEDISEFText = class(TEDIObject)
@@ -338,10 +320,7 @@ type
     procedure SetText(EDISEFFile: TEDISEFFile; Location, Code, Text: string);
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Element
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Element
   TEDISEFElement = class(TEDISEFDataObject)
   protected
     FUserAttribute: string;
@@ -441,10 +420,7 @@ type
     property TEXTSETS: TEDISEFTextSets read FEDISEFTextSets;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Segment
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Segment
   TEDISEFSegment = class(TEDISEFDataObjectGroup)
   private
     FUserAttribute: string;
@@ -530,10 +506,7 @@ type
     property TEXTSETS: TEDISEFTextSets read FEDISEFTextSets;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Loop
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Loop
   TEDISEFLoop = class(TEDISEFDataObjectGroup)
   private
     FMaximumRepeat: Integer;
@@ -571,10 +544,7 @@ type
     property ParentTable: TEDISEFTable read GetParentTable;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Table
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Table
   TEDISEFTable = class(TEDISEFDataObjectGroup)
   private
     function GetSEFSet: TEDISEFSet;
@@ -605,10 +575,7 @@ type
     property SEFSet: TEDISEFSet read GetSEFSet;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF Set
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF Set
   TEDISEFSet = class(TEDISEFDataObjectGroup)
   private
     FEDISEFTextSets: TEDISEFTextSets;
@@ -642,10 +609,7 @@ type
     property TEXTSETS: TEDISEFTextSets read FEDISEFTextSets;
   end;
 
-//--------------------------------------------------------------------------------------------------
-//  EDI SEF File
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI SEF File
   TEDISEFFile = class(TEDISEFDataObject)
   private
     FFileName: string;
@@ -703,10 +667,7 @@ type
     property TEXTSETS: TEDISEFTextSets read FEDISEFTextSets;
   end;
 
-//--------------------------------------------------------------------------------------------------
 //  Procedures
-//--------------------------------------------------------------------------------------------------
-
 function GetEDISEFUserAttributeDescription(
   Attribute: TEDISEFComsUserAttributes): string; overload;
 function GetEDISEFUserAttributeDescription(Attribute: string): string; overload;
@@ -860,10 +821,7 @@ const
   SEFDelimiter_MinusSign = '-';
   SEFDelimiter_Asterisk = '*';
 
-//--------------------------------------------------------------------------------------------------
 //  Procedures
-//--------------------------------------------------------------------------------------------------
-
 function GetEDISEFUserAttributeDescription(Attribute: TEDISEFComsUserAttributes): string;
 begin
   case Attribute of
@@ -881,8 +839,6 @@ begin
     Result := RsUnknownAttribute;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function GetEDISEFUserAttributeDescription(Attribute: string): string;
 begin
@@ -903,8 +859,6 @@ begin
     Result := RsUnknownAttribute;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ParseELMSDataOfELMSDefinition(Data: string; Element: TEDISEFElement);
 var
@@ -939,15 +893,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CombineELMSDataOfELMSDefinition(Element: TEDISEFElement): string;
 begin
   Result := Element.Id + SEFDelimiter_EqualSign + Element.ElementType + SEFDelimiter_Comma +
     IntToStr(Element.MinimumLength) + SEFDelimiter_Comma + IntToStr(Element.MaximumLength);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ParseELMSDataOfCOMSDefinition(Data: string; Element: TEDISEFElement;
   ELMSList: TEDISEFDataObjectList);
@@ -1058,8 +1008,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CombineELMSDataOfCOMSorSEGSDefinition(Element: TEDISEFElement;
   ELMSList: TEDISEFDataObjectList): string;
 var
@@ -1111,8 +1059,6 @@ begin
     Result := Result + SEFDelimiter_Comma + IntToStr(Element.RepeatCount);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ParseELMSDataOfSEGSDefinition(Data: string; Element: TEDISEFElement;
   ELMSList: TEDISEFDataObjectList);
@@ -1223,8 +1169,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 // Parse TEDISEFCompositeElement or Repeating Pattern in TEDISEFCompositeElement
 
 procedure InternalParseCOMSDataOfCOMSDefinition(Data: string; Element: TEDISEFDataObjectGroup;
@@ -1290,15 +1234,11 @@ begin
     TEDISEFCompositeElement(Element).FExtendedData := Copy(Data, M, (Length(Data) - M) + 1);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ParseCOMSDataOfCOMSDefinition(Data: string; CompositeElement: TEDISEFCompositeElement;
   ELMSList: TEDISEFDataObjectList);
 begin
   InternalParseCOMSDataOfCOMSDefinition(Data, CompositeElement, ELMSList);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CombineCOMSDataOfCOMSDefinition(CompositeElement: TEDISEFCompositeElement): string;
 var
@@ -1318,8 +1258,6 @@ begin
   end;
   Result := Result + CompositeElement.FExtendedData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ParseCOMSDataOfSEGSDefinition(Data: string; CompositeElement: TEDISEFCompositeElement;
   COMSList: TEDISEFDataObjectList);
@@ -1347,8 +1285,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CombineCOMSDataOfSEGSDefinition(CompositeElement: TEDISEFCompositeElement): string;
 begin
   if CompositeElement.UserAttribute <> '' then
@@ -1362,8 +1298,6 @@ begin
     Result := Result + SEFDelimiter_Comma + CompositeElement.RequirementDesignator;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 // Parse TEDISEFSegment or Repeating Pattern in TEDISEFSegment
 
@@ -1446,15 +1380,11 @@ begin
     TEDISEFSegment(Segment).FExtendedData := Copy(Data, M, (Length(Data) - M) + 1);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ParseSEGSDataOfSEGSDefinition(Data: string; Segment: TEDISEFSegment;
   SEFFile: TEDISEFFile);
 begin
   InternalParseSEGSDataOfSEGSDefinition(Data, Segment, SEFFile);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function CombineSEGSDataOfSEGSDefinition(Segment: TEDISEFSegment): string;
 var
@@ -1474,8 +1404,6 @@ begin
   end;
   Result := Result + Segment.FExtendedData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
   SEFFile: TEDISEFFile);
@@ -1555,8 +1483,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function CombineSEGSDataOfSETSDefinition(Segment: TEDISEFSegment): string;
 begin
   if Segment.UserAttribute <> '' then
@@ -1580,8 +1506,6 @@ begin
       Result := Result + SEFDelimiter_Comma + IntToStr(Segment.MaximumUse);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ParseLoopDataOfSETSDefinition(Data: string; Loop: TEDISEFLoop;
   SEFFile: TEDISEFFile);
@@ -1695,8 +1619,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ParseTableDataOfSETSDefinition(Data: string; Table: TEDISEFTable;
   SEFFile: TEDISEFFile);
 var
@@ -1807,8 +1729,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ParseSetsDataOfSETSDefinition(Data: string; ASet: TEDISEFSet; SEFFile: TEDISEFFile);
 var
   I, J: Integer;
@@ -1848,8 +1768,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure ExtractFromDataObjectGroup(DataObjectClass: TEDISEFDataObjectClass;
   DataObjectGroup: TEDISEFDataObjectGroup; ObjectList: TObjectList);
 var
@@ -1870,8 +1788,6 @@ begin
     ListItem := ListItem.NextItem;
   end; 
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure ExtractFromDataObjectGroup(DataObjectClasses: array of TEDISEFDataObjectClass;
   DataObjectGroup: TEDISEFDataObjectGroup; ObjectList: TObjectList); overload;
@@ -1907,15 +1823,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddSubElementTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFSubElement;
 begin
   Result := TEDISEFSubElement.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendSubElementTo(DataObjectGroup: TEDISEFDataObjectGroup;
   SubElement: TEDISEFSubElement): TEDISEFSubElement;
@@ -1941,16 +1853,12 @@ begin
     Result := AddSubElementTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractSubElementFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   SubElement: TEDISEFSubElement): TEDISEFSubElement;
 begin
   Result := TEDISEFSubElement(DataObjectGroup.EDISEFDataObjects.Extract(SubElement));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteSubElementFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   SubElement: TEDISEFSubElement);
@@ -1959,8 +1867,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertSubElementInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFSubElement; overload;
 begin
@@ -1968,8 +1874,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertSubElementInto(DataObjectGroup: TEDISEFDataObjectGroup;
   SubElement: TEDISEFSubElement; BeforeObject: TEDISEFDataObject): TEDISEFSubElement; overload;
@@ -1996,15 +1900,11 @@ begin
     Result := InsertSubElementInto(DataObjectGroup, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddElementTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFElement;
 begin
   Result := TEDISEFElement.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendElementTo(DataObjectGroup: TEDISEFDataObjectGroup;
   Element: TEDISEFElement): TEDISEFElement;
@@ -2030,16 +1930,12 @@ begin
     Result := AddElementTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractElementFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Element: TEDISEFElement): TEDISEFElement;
 begin
   Result := TEDISEFElement(DataObjectGroup.EDISEFDataObjects.Extract(Element));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteElementFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Element: TEDISEFElement);
@@ -2048,8 +1944,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertElementInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFElement; overload;
 begin
@@ -2057,8 +1951,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertElementInto(DataObjectGroup: TEDISEFDataObjectGroup;
   Element: TEDISEFElement; BeforeObject: TEDISEFDataObject): TEDISEFElement; overload;
@@ -2085,15 +1977,11 @@ begin
     Result := InsertElementInto(DataObjectGroup, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddRepeatingPatternTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFRepeatingPattern;
 begin
   Result := TEDISEFRepeatingPattern.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendRepeatingPatternTo(DataObjectGroup: TEDISEFDataObjectGroup;
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -2119,16 +2007,12 @@ begin
     Result := AddRepeatingPatternTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractRepeatingPatternFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
 begin
   Result := TEDISEFRepeatingPattern(DataObjectGroup.EDISEFDataObjects.Extract(RepeatingPattern));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteRepeatingPatternFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   RepeatingPattern: TEDISEFRepeatingPattern);
@@ -2137,8 +2021,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertRepeatingPatternInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern; overload;
 begin
@@ -2146,8 +2028,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertRepeatingPatternInto(DataObjectGroup: TEDISEFDataObjectGroup;
   RepeatingPattern: TEDISEFRepeatingPattern;
@@ -2175,15 +2055,11 @@ begin
     Result := InsertRepeatingPatternInto(DataObjectGroup, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddCompositeElementTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFCompositeElement;
 begin
   Result := TEDISEFCompositeElement.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendCompositeElementTo(DataObjectGroup: TEDISEFDataObjectGroup;
   CompositeElement: TEDISEFCompositeElement): TEDISEFCompositeElement;
@@ -2209,16 +2085,12 @@ begin
     Result := AddCompositeElementTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractCompositeElementFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   CompositeElement: TEDISEFCompositeElement): TEDISEFCompositeElement;
 begin
   Result := TEDISEFCompositeElement(DataObjectGroup.EDISEFDataObjects.Extract(CompositeElement));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteCompositeElementFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   CompositeElement: TEDISEFCompositeElement);
@@ -2227,8 +2099,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertCompositeElementInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFCompositeElement; overload;
 begin
@@ -2236,8 +2106,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertCompositeElementInto(DataObjectGroup: TEDISEFDataObjectGroup;
   CompositeElement: TEDISEFCompositeElement;
@@ -2265,15 +2133,11 @@ begin
     Result := InsertCompositeElementInto(DataObjectGroup, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddSegmentTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFSegment;
 begin
   Result := TEDISEFSegment.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendSegmentTo(DataObjectGroup: TEDISEFDataObjectGroup;
   Segment: TEDISEFSegment): TEDISEFSegment;
@@ -2299,16 +2163,12 @@ begin
     Result := AddSegmentTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractSegmentFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Segment: TEDISEFSegment): TEDISEFSegment;
 begin
   Result := TEDISEFSegment(DataObjectGroup.EDISEFDataObjects.Extract(Segment));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteSegmentFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Segment: TEDISEFSegment);
@@ -2317,8 +2177,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertSegmentInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFSegment; overload;
 begin
@@ -2326,8 +2184,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertSegmentInto(DataObjectGroup: TEDISEFDataObjectGroup;
   Segment: TEDISEFSegment; BeforeObject: TEDISEFDataObject): TEDISEFSegment; overload;
@@ -2354,15 +2210,11 @@ begin
     Result := InsertSegmentInto(DataObjectGroup, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddLoopTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFLoop;
 begin
   Result := TEDISEFLoop.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendLoopTo(DataObjectGroup: TEDISEFDataObjectGroup;
   Loop: TEDISEFLoop): TEDISEFLoop;
@@ -2388,16 +2240,12 @@ begin
     Result := AddLoopTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractLoopFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Loop: TEDISEFLoop): TEDISEFLoop;
 begin
   Result := TEDISEFLoop(DataObjectGroup.EDISEFDataObjects.Extract(Loop));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteLoopFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Loop: TEDISEFLoop);
@@ -2406,8 +2254,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertLoopInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFLoop; overload;
 begin
@@ -2415,8 +2261,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertLoopInto(DataObjectGroup: TEDISEFDataObjectGroup;
   Loop: TEDISEFLoop; BeforeObject: TEDISEFDataObject): TEDISEFLoop; overload;
@@ -2443,15 +2287,11 @@ begin
     Result := InsertLoopInto(DataObjectGroup, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function AddTableTo(DataObjectGroup: TEDISEFDataObjectGroup): TEDISEFTable;
 begin
   Result := TEDISEFTable.Create(DataObjectGroup);
   DataObjectGroup.EDISEFDataObjects.Add(Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function AppendTableTo(DataObjectGroup: TEDISEFDataObjectGroup;
   Table: TEDISEFTable): TEDISEFTable;
@@ -2477,16 +2317,12 @@ begin
     Result := AddTableTo(DataObjectGroup);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ExtractTableFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Table: TEDISEFTable): TEDISEFTable;
 begin
   Result := TEDISEFTable(DataObjectGroup.EDISEFDataObjects.Extract(Table));
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure DeleteTableFrom(DataObjectGroup: TEDISEFDataObjectGroup;
   Table: TEDISEFTable);
@@ -2495,8 +2331,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function InsertTableInto(DataObjectGroup: TEDISEFDataObjectGroup;
   BeforeObject: TEDISEFDataObject): TEDISEFTable; overload;
 begin
@@ -2504,8 +2338,6 @@ begin
   DataObjectGroup.EDISEFDataObjects.Insert(Result, BeforeObject);
   DataObjectGroup.EDISEFDataObjects.UpdateIndexes(nil); // Force update all index positions
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function InsertTableInto(DataObjectGroup: TEDISEFDataObjectGroup;
   Table: TEDISEFTable; BeforeObject: TEDISEFDataObject): TEDISEFTable; overload;
@@ -2532,9 +2364,7 @@ begin
     Result := InsertTableInto(DataObjectGroup, BeforeObject);
 end;
 
-//==================================================================================================
-// { TEDISEFDataObject }
-//==================================================================================================
+//=== { TEDISEFDataObject } ==================================================
 
 constructor TEDISEFDataObject.Create(Parent: TEDISEFDataObject);
 begin
@@ -2555,15 +2385,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFDataObject.Destroy;
 begin
   FOwnerItemRef := nil;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF COMPILER6_UP}
 function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
@@ -2572,22 +2398,16 @@ begin
 end;
 {$ENDIF ~COMPILER6_UP}
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObject.GetData: string;
 begin
   Result := FData;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFDataObject.SetData(const Data: string);
 begin
   FData := Data;
   FLength := Length(FData);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFDataObject.SetParent(const Value: TEDISEFDataObject);
 begin
@@ -2598,15 +2418,11 @@ begin
     FSEFFile := FParent.SEFFile;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFDataObject.SetId(const Value: string);
 begin
   FId := Value;
   UpdateOwnerItemName;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFDataObject.UpdateOwnerItemName;
 begin
@@ -2614,18 +2430,12 @@ begin
     FOwnerItemRef.UpdateName;
 end;
 
-//==================================================================================================
-// TEDISEFDataObjectListItem
-//==================================================================================================
-
-{ TEDISEFDataObjectListItem }
+//=== { TEDISEFDataObjectListItem } ==========================================
 
 function TEDISEFDataObjectListItem.GetEDISEFDataObject: TEDISEFDataObject;
 begin
   Result := TEDISEFDataObject(FEDIObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFDataObjectListItem.LinkToObject;
 begin
@@ -2633,28 +2443,20 @@ begin
     TEDISEFDataObject(FEDIObject).OwnerItemRef := Self;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectListItem.NextItem: TEDISEFDataObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem(FNextItem);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFDataObjectListItem.PriorItem: TEDISEFDataObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem(FPriorItem);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFDataObjectListItem.SetEDISEFDataObject(const Value: TEDISEFDataObject);
 begin
   FEDIObject := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFDataObjectListItem.UpdateName;
 begin
@@ -2662,11 +2464,7 @@ begin
     FName := TEDISEFDataObject(FEDIObject).Id;
 end;
 
-//==================================================================================================
-// TEDISEFDataObjectList
-//==================================================================================================
-
-{ TEDISEFDataObjectList }
+//=== { TEDISEFDataObjectList } ==============================================
 
 function TEDISEFDataObjectList.Add(EDISEFDataObject: TEDISEFDataObject;
   Name: string): TEDISEFDataObjectListItem;
@@ -2677,15 +2475,11 @@ begin
   Result.LinkToObject;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
   EDIObject: TEDIObject): TEDIObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem.Create(Self, PriorItem, EDIObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFDataObjectList.FindItemByName(Name: string;
   StartItem: TEDIObjectListItem = nil): TEDISEFDataObjectListItem;
@@ -2696,21 +2490,15 @@ begin
   Result := TEDISEFDataObjectListItem(ListItem);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectList.First(Index: Integer): TEDISEFDataObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem(inherited First(Index));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectList.GetEDISEFDataObject(Index: Integer): TEDISEFDataObject;
 begin
   Result := TEDISEFDataObject(GetEDIObject(Index));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFDataObjectList.GetObjectByItemByName(Name: string): TEDISEFDataObject;
 var
@@ -2722,8 +2510,6 @@ begin
     Result := FindItemByName(Name).EDISEFDataObject;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectList.Insert(
   EDISEFDataObject, BeforeEDISEFDataObject: TEDISEFDataObject): TEDISEFDataObjectListItem;
 begin
@@ -2731,37 +2517,27 @@ begin
   Result.LinkToObject;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectList.Last: TEDISEFDataObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem(inherited Last);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFDataObjectList.Next: TEDISEFDataObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem(inherited Next);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectList.Prior: TEDISEFDataObjectListItem;
 begin
   Result := TEDISEFDataObjectListItem(inherited Prior);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFDataObjectList.SetEDISEFDataObject(Index: Integer; const Value: TEDISEFDataObject);
 begin
   SetEDIObject(Index, Value);
 end;
 
-//==================================================================================================
-// { TEDISEFDataObjectGroup }
-//==================================================================================================
+//=== { TEDISEFDataObjectGroup } =============================================
 
 constructor TEDISEFDataObjectGroup.Create(Parent: TEDISEFDataObject);
 begin
@@ -2769,31 +2545,23 @@ begin
   FEDISEFDataObjects := TEDISEFDataObjectList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFDataObjectGroup.Destroy;
 begin
   FEDISEFDataObjects.Free;
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFDataObjectGroup.GetCount: Integer;
 begin
   Result := FEDISEFDataObjects.Count;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFDataObjectGroup.GetEDISEFDataObject(Index: Integer): TEDISEFDataObject;
 begin
   Result := FEDISEFDataObjects[Index];
 end;
 
-//==================================================================================================
-// { TEDISEFElement }
-//==================================================================================================
+//=== { TEDISEFElement } =====================================================
 
 constructor TEDISEFElement.Create(Parent: TEDISEFDataObject);
 begin
@@ -2809,15 +2577,11 @@ begin
   FEDISEFTextSets := TEDISEFTextSets.Create(False);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFElement.Destroy;
 begin
   FEDISEFTextSets.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFElement.Assemble: string;
 begin
@@ -2838,8 +2602,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFElement.Assign(EDISEFElement: TEDISEFElement);
 begin
   // FUserAttribute := EDISEFElement.UserAttribute;
@@ -2851,8 +2613,6 @@ begin
   FRequirementDesignator := EDISEFElement.RequirementDesignator;
   FRepeatCount := EDISEFElement.RepeatCount;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFElement.Clone(NewParent: TEDISEFDataObject): TEDISEFElement;
 begin
@@ -2866,8 +2626,6 @@ begin
   Result.MaximumLength := FMaximumLength;
   Result.RequirementDesignator := FRequirementDesignator;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFElement.Disassemble;
 begin
@@ -2890,8 +2648,6 @@ begin
   end;
   UpdateOwnerItemName;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFElement.GetTextSetsLocation: string;
 var
@@ -2917,15 +2673,11 @@ begin
     Result := Result + '~' + IntToStr(FOrdinal);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFElement.BindTextSets(TEXTSETS: TEDISEFTextSets);
 begin
   FEDISEFTextSets.Free;
   FEDISEFTextSets := TEDISEFTextSets(TextSets.ReturnListItemsByName(GetTextSetsLocation));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFElement.CloneAsSubElement(NewParent: TEDISEFDataObject): TEDISEFSubElement;
 begin
@@ -2940,30 +2692,22 @@ begin
   Result.RequirementDesignator := FRequirementDesignator;
 end;
 
-//==================================================================================================
-// { TEDISEFSubElement }
-//==================================================================================================
+//=== { TEDISEFSubElement } ==================================================
 
 constructor TEDISEFSubElement.Create(Parent: TEDISEFDataObject);
 begin
   inherited Create(Parent);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFSubElement.Destroy;
 begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSubElement.Assemble: string;
 begin
   Result := inherited Assemble;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSubElement.Clone(NewParent: TEDISEFDataObject): TEDISEFSubElement;
 begin
@@ -2978,16 +2722,12 @@ begin
   Result.RequirementDesignator := FRequirementDesignator;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSubElement.Disassemble;
 begin
   inherited Disassemble;
 end;
 
-//==================================================================================================
-// { TEDISEFCompositeElement }
-//==================================================================================================
+//=== { TEDISEFCompositeElement } ============================================
 
 constructor TEDISEFCompositeElement.Create(Parent: TEDISEFDataObject);
 begin
@@ -3000,15 +2740,11 @@ begin
   FEDISEFTextSets := TEDISEFTextSets.Create(False);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFCompositeElement.Destroy;
 begin
   FEDISEFTextSets.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.Assemble: string;
 begin
@@ -3023,8 +2759,6 @@ begin
     if TEDISEFRepeatingPattern(FParent).BaseParent is TEDISEFSegment then
       Result := CombineCOMSDataOfSEGSDefinition(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFCompositeElement.Assign(CompositeElement: TEDISEFCompositeElement);
 var
@@ -3060,8 +2794,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.Clone(NewParent: TEDISEFDataObject): TEDISEFCompositeElement;
 var
@@ -3102,8 +2834,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFCompositeElement.Disassemble;
 begin
   if FParent is TEDISEFFile then
@@ -3121,8 +2851,6 @@ begin
   AssignElementOrdinals;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFCompositeElement.GetTextSetsLocation: string;
 begin
   Result := '';
@@ -3135,8 +2863,6 @@ begin
   if Result <> '' then
     Result := Result + '~' + IntToStr(FOrdinal);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFCompositeElement.AssignElementOrdinals;
 var
@@ -3170,15 +2896,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFCompositeElement.GetElementObjectList: TObjectList;
 begin
   Result := TObjectList.Create(False);
   ExtractFromDataObjectGroup(TEDISEFElement, Self, Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFCompositeElement.BindTextSets(TEXTSETS: TEDISEFTextSets);
 begin
@@ -3186,28 +2908,20 @@ begin
   FEDISEFTextSets := TEDISEFTextSets(TextSets.ReturnListItemsByName(GetTextSetsLocation));
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFCompositeElement.AddSubElement: TEDISEFSubElement;
 begin
   Result := AddSubElementTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.AppendSubElement(SubElement: TEDISEFSubElement): TEDISEFSubElement;
 begin
   Result := AppendSubElementTo(Self, SubElement);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFCompositeElement.DeleteSubElement(SubElement: TEDISEFSubElement);
 begin
   DeleteSubElementFrom(Self, SubElement);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.ExtractSubElement(
   SubElement: TEDISEFSubElement): TEDISEFSubElement;
@@ -3215,15 +2929,11 @@ begin
   Result := ExtractSubElementFrom(Self, SubElement);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFCompositeElement.InsertSubElement(
   BeforeObject: TEDISEFDataObject): TEDISEFSubElement;
 begin
   Result := InsertSubElementInto(Self, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.InsertSubElement(SubElement: TEDISEFSubElement;
   BeforeObject: TEDISEFDataObject): TEDISEFSubElement;
@@ -3231,14 +2941,10 @@ begin
   Result := InsertSubElementInto(Self, SubElement, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFCompositeElement.AddRepeatingPattern: TEDISEFRepeatingPattern;
 begin
   Result := AddRepeatingPatternTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.AppendRepeatingPattern(
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -3246,14 +2952,10 @@ begin
   Result := AppendRepeatingPatternTo(Self, RepeatingPattern);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFCompositeElement.DeleteRepeatingPattern(RepeatingPattern: TEDISEFRepeatingPattern);
 begin
   DeleteRepeatingPatternFrom(Self, RepeatingPattern);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.ExtractRepeatingPattern(
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -3261,15 +2963,11 @@ begin
   Result := ExtractRepeatingPatternFrom(Self, RepeatingPattern);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFCompositeElement.InsertRepeatingPattern(RepeatingPattern: TEDISEFRepeatingPattern;
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern;
 begin
   Result := InsertRepeatingPatternInto(Self, RepeatingPattern, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFCompositeElement.InsertRepeatingPattern(
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern;
@@ -3277,9 +2975,7 @@ begin
   Result := InsertRepeatingPatternInto(Self, BeforeObject);
 end;
 
-//==================================================================================================
-// { TEDISEFSegment }
-//==================================================================================================
+//=== { TEDISEFSegment } =====================================================
 
 constructor TEDISEFSegment.Create(Parent: TEDISEFDataObject);
 begin
@@ -3315,14 +3011,10 @@ begin
   FEDISEFTextSets := TEDISEFTextSets.Create(False);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFSegment.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.Assemble: string;
 begin
@@ -3333,8 +3025,6 @@ begin
   if (FParent is TEDISEFTable) or (FParent is TEDISEFLoop) then
     Result := CombineSEGSDataOfSETSDefinition(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSegment.Assign(Segment: TEDISEFSegment);
 var
@@ -3365,8 +3055,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.Clone(NewParent: TEDISEFDataObject): TEDISEFSegment;
 var
@@ -3400,8 +3088,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSegment.Disassemble;
 begin
   if FParent is TEDISEFFile then
@@ -3413,16 +3099,12 @@ begin
   AssignElementOrdinals;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.GetOwnerLoopId: string;
 begin
   Result := NA_LoopId;
   if FParent is TEDISEFLoop then
     Result := FParent.Id;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.GetParentLoopId: string;
 begin
@@ -3431,8 +3113,6 @@ begin
     Result := TEDISEFLoop(FParent).ParentLoopId;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.GetTextSetsLocation: string;
 begin
   Result := '';
@@ -3440,15 +3120,11 @@ begin
     Result := FParentSet.GetTextSetsLocation + '~' + IntToStr(FOrdinal);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.GetElementObjectList: TObjectList;
 begin
   Result := TObjectList.Create(False);
   ExtractFromDataObjectGroup([TEDISEFElement, TEDISEFCompositeElement], Self, Result);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSegment.AssignElementOrdinals;
 var
@@ -3498,15 +3174,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSegment.BindTextSets(TEXTSETS: TEDISEFTextSets);
 begin
   FEDISEFTextSets.Free;
   FEDISEFTextSets := TEDISEFTextSets(TextSets.ReturnListItemsByName(GetTextSetsLocation));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSegment.BindElementTextSets;
 var
@@ -3536,42 +3208,30 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.AddElement: TEDISEFElement;
 begin
   Result := AddElementTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.AppendElement(Element: TEDISEFElement): TEDISEFElement;
 begin
   Result := AppendElementTo(Self, Element);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSegment.DeleteElement(Element: TEDISEFElement);
 begin
   DeleteElementFrom(Self, Element);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.ExtractElement(Element: TEDISEFElement): TEDISEFElement;
 begin
   Result := ExtractElementFrom(Self, Element);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.InsertElement(BeforeObject: TEDISEFDataObject): TEDISEFElement;
 begin
   Result := InsertElementInto(Self, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.InsertElement(Element: TEDISEFElement;
   BeforeObject: TEDISEFDataObject): TEDISEFElement;
@@ -3579,14 +3239,10 @@ begin
   Result := InsertElementInto(Self, Element, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.AddCompositeElement: TEDISEFCompositeElement;
 begin
   Result := AddCompositeElementTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.AppendCompositeElement(
   CompositeElement: TEDISEFCompositeElement): TEDISEFCompositeElement;
@@ -3594,14 +3250,10 @@ begin
   Result := AppendCompositeElementTo(Self, CompositeElement);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSegment.DeleteCompositeElement(CompositeElement: TEDISEFCompositeElement);
 begin
   DeleteCompositeElementFrom(Self, CompositeElement);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.ExtractCompositeElement(
   CompositeElement: TEDISEFCompositeElement): TEDISEFCompositeElement;
@@ -3609,15 +3261,11 @@ begin
   Result := ExtractCompositeElementFrom(Self, CompositeElement);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.InsertCompositeElement(
   BeforeObject: TEDISEFDataObject): TEDISEFCompositeElement;
 begin
   Result := InsertCompositeElementInto(Self, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.InsertCompositeElement(CompositeElement: TEDISEFCompositeElement;
   BeforeObject: TEDISEFDataObject): TEDISEFCompositeElement;
@@ -3625,14 +3273,10 @@ begin
   Result := InsertCompositeElementInto(Self, CompositeElement, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.AddRepeatingPattern: TEDISEFRepeatingPattern;
 begin
   Result := AddRepeatingPatternTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.AppendRepeatingPattern(
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -3640,14 +3284,10 @@ begin
   Result := AppendRepeatingPatternTo(Self, RepeatingPattern);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSegment.DeleteRepeatingPattern(RepeatingPattern: TEDISEFRepeatingPattern);
 begin
   DeleteRepeatingPatternFrom(Self, RepeatingPattern);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.ExtractRepeatingPattern(
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -3655,15 +3295,11 @@ begin
   Result := ExtractRepeatingPatternFrom(Self, RepeatingPattern);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSegment.InsertRepeatingPattern(RepeatingPattern: TEDISEFRepeatingPattern;
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern;
 begin
   Result := InsertRepeatingPatternInto(Self, RepeatingPattern, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSegment.InsertRepeatingPattern(
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern;
@@ -3671,9 +3307,7 @@ begin
   Result := InsertRepeatingPatternInto(Self, BeforeObject);
 end;
 
-//==================================================================================================
-// { TEDISEFLoop }
-//==================================================================================================
+//=== { TEDISEFLoop } ========================================================
 
 constructor TEDISEFLoop.Create(Parent: TEDISEFDataObject);
 begin
@@ -3681,14 +3315,10 @@ begin
   FMaximumRepeat := Value_UndefinedMaximum; 
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFLoop.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.Assemble: string;
 var
@@ -3749,14 +3379,10 @@ begin
     Result := FId + SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.Clone(NewParent: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFLoop.Disassemble;
 begin
@@ -3765,16 +3391,12 @@ begin
   UpdateOwnerItemName;  
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.GetParentLoopId: string;
 begin
   Result := NA_LoopId;
   if FParent is TEDISEFLoop then
     Result := FParent.Id;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.GetParentSet: TEDISEFSet;
 var
@@ -3795,77 +3417,55 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.AddLoop: TEDISEFLoop;
 begin
   Result := AddLoopTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.AddSegment: TEDISEFSegment;
 begin
   Result := AddSegmentTo(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.AppendLoop(Loop: TEDISEFLoop): TEDISEFLoop;
 begin
   Result := AppendLoopTo(Self, Loop);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.AppendSegment(Segment: TEDISEFSegment): TEDISEFSegment;
 begin
   Result := AppendSegmentTo(Self, Segment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFLoop.DeleteLoop(Loop: TEDISEFLoop);
 begin
   DeleteLoopFrom(Self, Loop);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFLoop.DeleteSegment(Segment: TEDISEFSegment);
 begin
   DeleteSegmentFrom(Self, Segment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.ExtractLoop(Loop: TEDISEFLoop): TEDISEFLoop;
 begin
   Result := ExtractLoopFrom(Self, Loop);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.ExtractSegment(Segment: TEDISEFSegment): TEDISEFSegment;
 begin
   Result := ExtractSegmentFrom(Self, Segment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.InsertLoop(Loop: TEDISEFLoop; BeforeObject: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := InsertLoopInto(Self, Loop, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.InsertLoop(BeforeObject: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := InsertLoopInto(Self, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.InsertSegment(Segment: TEDISEFSegment;
   BeforeObject: TEDISEFDataObject): TEDISEFSegment;
@@ -3873,14 +3473,10 @@ begin
   Result := InsertSegmentInto(Self, Segment, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFLoop.InsertSegment(BeforeObject: TEDISEFDataObject): TEDISEFSegment;
 begin
   Result := InsertSegmentInto(Self, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFLoop.GetParentTable: TEDISEFTable;
 var
@@ -3901,23 +3497,17 @@ begin
   end;
 end;
 
-//==================================================================================================
-// { TEDISEFTable }
-//==================================================================================================
+//=== { TEDISEFTable } =======================================================
 
 constructor TEDISEFTable.Create(Parent: TEDISEFDataObject);
 begin
   inherited Create(Parent);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFTable.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFTable.Assemble: string;
 var
@@ -3955,14 +3545,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.Clone(NewParent: TEDISEFDataObject): TEDISEFTable;
 begin
   Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFTable.GetSEFSet: TEDISEFSet;
 begin
@@ -3971,77 +3557,55 @@ begin
     Result := TEDISEFSet(FParent);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.AddLoop: TEDISEFLoop;
 begin
   Result := AddLoopTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFTable.AddSegment: TEDISEFSegment;
 begin
   Result := AddSegmentTo(Self);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.AppendLoop(Loop: TEDISEFLoop): TEDISEFLoop;
 begin
   Result := AppendLoopTo(Self, Loop);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFTable.AppendSegment(Segment: TEDISEFSegment): TEDISEFSegment;
 begin
   Result := AppendSegmentTo(Self, Segment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFTable.DeleteLoop(Loop: TEDISEFLoop);
 begin
   DeleteLoopFrom(Self, Loop);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFTable.DeleteSegment(Segment: TEDISEFSegment);
 begin
   DeleteSegmentFrom(Self, Segment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.ExtractLoop(Loop: TEDISEFLoop): TEDISEFLoop;
 begin
   Result := ExtractLoopFrom(Self, Loop);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFTable.ExtractSegment(Segment: TEDISEFSegment): TEDISEFSegment;
 begin
   Result := ExtractSegmentFrom(Self, Segment);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.InsertLoop(Loop: TEDISEFLoop; BeforeObject: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := InsertLoopInto(Self, Loop, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.InsertLoop(BeforeObject: TEDISEFDataObject): TEDISEFLoop;
 begin
   Result := InsertLoopInto(Self, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFTable.InsertSegment(Segment: TEDISEFSegment;
   BeforeObject: TEDISEFDataObject): TEDISEFSegment;
@@ -4049,16 +3613,12 @@ begin
   Result := InsertSegmentInto(Self, Segment, BeforeObject);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTable.InsertSegment(BeforeObject: TEDISEFDataObject): TEDISEFSegment;
 begin
   Result := InsertSegmentInto(Self, BeforeObject);
 end;
 
-//==================================================================================================
-// { TEDISEFSet }
-//==================================================================================================
+//=== { TEDISEFSet } =========================================================
 
 constructor TEDISEFSet.Create(Parent: TEDISEFDataObject);
 begin
@@ -4066,15 +3626,11 @@ begin
   FEDISEFTextSets := TEDISEFTextSets.Create(False);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFSet.Destroy;
 begin
   FEDISEFTextSets.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSet.Assemble: string;
 var
@@ -4089,14 +3645,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSet.Clone(NewParent: TEDISEFDataObject): TEDISEFSet;
 begin
   Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSet.Disassemble;
 begin
@@ -4119,14 +3671,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSet.GetEDISEFTable(Index: Integer): TEDISEFTable;
 begin
   Result := TEDISEFTable(FEDISEFDataObjects[Index])
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSet.BuildSegmentObjectListFromLoop(ObjectList: TObjectList; Loop: TEDISEFLoop);
 var
@@ -4151,8 +3699,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSet.GetSegmentObjectList: TObjectList;
 var
@@ -4181,8 +3727,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSet.AssignSegmentOrdinals;
 var
@@ -4213,22 +3757,16 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSet.GetTextSetsLocation: string;
 begin
   Result := FId;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSet.BindTextSets(TEXTSETS: TEDISEFTextSets);
 begin
   FEDISEFTextSets.Free;
   FEDISEFTextSets := TEDISEFTextSets(TextSets.ReturnListItemsByName(GetTextSetsLocation));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSet.BindSegmentTextSets;
 var
@@ -4249,49 +3787,35 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSet.AddTable: TEDISEFTable;
 begin
   Result := AddTableTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSet.InsertTable(Table, BeforeTable: TEDISEFTable): TEDISEFTable;
 begin
   Result := InsertTableInto(Self, Table, BeforeTable);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSet.InsertTable(BeforeTable: TEDISEFTable): TEDISEFTable;
 begin
   Result := InsertTableInto(Self, BeforeTable);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFSet.ExtractTable(Table: TEDISEFTable): TEDISEFTable;
 begin
   Result := ExtractTableFrom(Self, Table);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFSet.AppendTable(Table: TEDISEFTable): TEDISEFTable;
 begin
   Result := AppendTableTo(Self, Table);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFSet.DeleteTable(Table: TEDISEFTable);
 begin
   DeleteTableFrom(Self, Table);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFSet.AssignSegmentPositions;
 var
@@ -4326,9 +3850,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// { TEDISEFFile }
-//==================================================================================================
+//=== { TEDISEFFile } ========================================================
 
 constructor TEDISEFFile.Create(Parent: TEDISEFDataObject);
 begin
@@ -4344,8 +3866,6 @@ begin
   FEDISEFTextSets := TEDISEFTextSets.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFFile.Destroy;
 begin
   FEDISEFIni.Free;
@@ -4358,8 +3878,6 @@ begin
   FEDISEFTextSets.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFFile.Assemble: string;
 var
@@ -4411,14 +3929,10 @@ begin
   FData := Result;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFFile.Clone(NewParent: TEDISEFDataObject): TEDISEFFile;
 begin
   Result := nil;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.Disassemble;
 begin
@@ -4443,16 +3957,12 @@ begin
   ParseVER;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.LoadFromFile(const FileName: string);
 begin
   if FileName <> '' then
     FFileName := FileName;
   LoadFromFile;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.LoadFromFile;
 var
@@ -4472,8 +3982,6 @@ begin
   else
     raise EJclEDIError.CreateResRec(@RsEDIError001);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.ParseTextSets;
 var
@@ -4507,8 +4015,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.ParseCodes;
 var
   SearchResult, SearchResult2: Integer;
@@ -4525,8 +4031,6 @@ begin
       Codes.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.ParseCOMS;
 var
@@ -4561,8 +4065,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.ParseELMS;
 var
   TempList: TStringList;
@@ -4596,8 +4098,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.ParseINI;
 var
   SearchResult, SearchResult2: Integer;
@@ -4620,8 +4120,6 @@ begin
   end;
   FId := INI.Text;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.ParseSEGS;
 var
@@ -4655,8 +4153,6 @@ begin
     TempList.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.ParseSETS;
 var
@@ -4692,8 +4188,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.ParseSTD;
 var
   SearchResult, SearchResult2: Integer;
@@ -4728,8 +4222,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.ParseVER;
 var
   SearchResult, SearchResult2: Integer;
@@ -4749,15 +4241,11 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFFile.SaveToFile(const FileName: string);
 begin
   FFileName := FileName;
   SaveToFile;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.SaveToFile;
 var
@@ -4776,8 +4264,6 @@ begin
     raise EJclEDIError.CreateResRec(@RsEDIError002);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFTable.Disassemble;
 begin
   // FParent is TEDISEFSet
@@ -4785,28 +4271,20 @@ begin
   UpdateOwnerItemName;  
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFFile.GetEDISEFCodesList: TStrings;
 begin
   Result := FEDISEFCodesList;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFFile.GetEDISEFStd: TStrings;
 begin
   Result := FEDISEFStd;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFFile.GetEDISEFIni: TStrings;
 begin
   Result := FEDISEFIni;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.Unload;
 begin
@@ -4820,9 +4298,7 @@ begin
   FEDISEFVer := '';
 end;
 
-//==================================================================================================
-// { TEDISEFRepeatingPattern }
-//==================================================================================================
+//=== { TEDISEFRepeatingPattern } ============================================
 
 constructor TEDISEFRepeatingPattern.Create(Parent: TEDISEFDataObject);
 begin
@@ -4833,14 +4309,10 @@ begin
     FBaseParent := Parent;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFRepeatingPattern.Destroy;
 begin
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFRepeatingPattern.Assemble: string;
 var
@@ -4859,8 +4331,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFRepeatingPattern.Clone(NewParent: TEDISEFDataObject): TEDISEFRepeatingPattern;
 var
@@ -4893,8 +4363,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFRepeatingPattern.Disassemble;
 begin
   FEDISEFDataObjects.Clear;
@@ -4916,8 +4384,6 @@ begin
   UpdateOwnerItemName;  
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFRepeatingPattern.SetParent(const Value: TEDISEFDataObject);
 begin
   inherited SetParent(Value);
@@ -4927,14 +4393,10 @@ begin
     FBaseParent := Value;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFRepeatingPattern.AddRepeatingPattern: TEDISEFRepeatingPattern;
 begin
   Result := AddRepeatingPatternTo(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFRepeatingPattern.AppendRepeatingPattern(
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -4942,14 +4404,10 @@ begin
   Result := AppendRepeatingPatternTo(Self, RepeatingPattern);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFRepeatingPattern.DeleteRepeatingPattern(RepeatingPattern: TEDISEFRepeatingPattern);
 begin
   DeleteRepeatingPatternFrom(Self, RepeatingPattern);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFRepeatingPattern.ExtractRepeatingPattern(
   RepeatingPattern: TEDISEFRepeatingPattern): TEDISEFRepeatingPattern;
@@ -4957,15 +4415,11 @@ begin
   Result := ExtractRepeatingPatternFrom(Self, RepeatingPattern);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFRepeatingPattern.InsertRepeatingPattern(RepeatingPattern: TEDISEFRepeatingPattern;
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern;
 begin
   Result := InsertRepeatingPatternInto(Self, RepeatingPattern, BeforeObject);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFRepeatingPattern.InsertRepeatingPattern(
   BeforeObject: TEDISEFDataObject): TEDISEFRepeatingPattern;
@@ -4973,9 +4427,7 @@ begin
   Result := InsertRepeatingPatternInto(Self, BeforeObject);
 end;
 
-//==================================================================================================
-// { TEDISEFText }
-//==================================================================================================
+//=== { TEDISEFText } ========================================================
 
 constructor TEDISEFText.Create;
 begin
@@ -4988,15 +4440,11 @@ begin
   FWhereLocation := TStringList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFText.Destroy;
 begin
   FWhereLocation.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFText.Assemble: string;
 var
@@ -5011,8 +4459,6 @@ begin
   end;
   Result := FWhere + ',' + FWhat + ',' + FText;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFText.Disassemble;
 var
@@ -5029,8 +4475,6 @@ begin
     FText := Copy(FData, SearchResult2 + 1, Length(FData) - SearchResult2);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFText.GetData: string;
 begin
   Result := FData;
@@ -5041,8 +4485,6 @@ begin
   Result := FWhereLocation;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFText.GetText: string;
 begin
   Result := FText;
@@ -5050,8 +4492,6 @@ begin
   Result := JclEDI.StringReplace(Result, SEFTextCR, AnsiCarriageReturn, [rfReplaceAll]);
   Result := JclEDI.StringReplace(Result, SEFTextLF, AnsiLineFeed, [rfReplaceAll]);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TEDISEFText.GetDescription: string;
 begin
@@ -5087,14 +4527,10 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDISEFText.SetData(const Value: string);
 begin
   FData := Value;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFText.SetText(const Value: string);
 var
@@ -5107,9 +4543,7 @@ begin
   FText := Temp;
 end;
 
-//==================================================================================================
-// { TEDISEFTextSet }
-//==================================================================================================
+//=== { TEDISEFTextSet } =====================================================
 
 constructor TEDISEFTextSet.Create;
 begin
@@ -5120,21 +4554,15 @@ begin
   FWhereSubElement := -1;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDISEFTextSet.Destroy;
 begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TEDISEFTextSet.Assemble: string;
 begin
   Result := inherited Assemble;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFTextSet.Disassemble;
 begin
@@ -5175,11 +4603,7 @@ begin
   end;
 end;
 
-//==================================================================================================
-// TEDISEFTextSets
-//==================================================================================================
-
-{ TEDISEFTextSets }
+//=== { TEDISEFTextSets } ====================================================
 
 function TEDISEFTextSets.GetText(Code: string): string;
 var
@@ -5199,8 +4623,6 @@ begin
     ListItem := ListItem.NextItem;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFTextSets.SetText(EDISEFFile: TEDISEFFile; Location, Code, Text: string);
 var

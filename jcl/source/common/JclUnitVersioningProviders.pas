@@ -16,7 +16,7 @@
 { Portions created by Uwe Schuster are Copyright (C) Uwe Schuster. All rights reserved.            }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Uwe Schuster (uschuster)                                                                     }
+{   Uwe Schuster (uschuster)                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -37,12 +37,14 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, JclPeImage,
+  Windows,
+  JclPeImage,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Types,
   {$ENDIF LINUX}
-  SysUtils, Classes, Contnrs, JclUnitVersioning;
+  SysUtils, Classes, Contnrs,
+  JclUnitVersioning;
 
 type
   { TODO : store compressed? }
@@ -54,7 +56,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Add(Info: TUnitVersionInfo);
     procedure Clear;
     function Load(AModule: HMODULE): Boolean;
@@ -65,7 +66,6 @@ type
     {$ENDIF MSWINDOWS}
     procedure SaveToFile(AFileName: string);
     procedure SaveToStream(AStream: TStream);
-
     property Count: Integer read GetCount;
     property Items[AIndex: Integer]: PUnitVersionInfo read GetItems; default;
   end;
@@ -108,9 +108,7 @@ type
     UnitCount: Integer;
   end;
 
-//--------------------------------------------------------------------------------------------------
-{ TJclUnitVersioningList }
-//--------------------------------------------------------------------------------------------------
+//=== { TJclUnitVersioningList } =============================================
 
 constructor TJclUnitVersioningList.Create;
 begin
@@ -118,16 +116,12 @@ begin
   FItems := TList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclUnitVersioningList.Destroy;
 begin
   Clear;
   FItems.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclUnitVersioningList.Add(Info: TUnitVersionInfo);
 var
@@ -138,8 +132,6 @@ begin
   FItems.Add(UnitVersionInfoPtr);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclUnitVersioningList.Clear;
 var
   I: Integer;
@@ -149,21 +141,15 @@ begin
   FItems.Clear;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclUnitVersioningList.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclUnitVersioningList.GetItems(AIndex: Integer): PUnitVersionInfo;
 begin
   Result := FItems[AIndex];
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure WriteStringToStream(AStream: TStream; const AString: string);
 var
@@ -177,8 +163,6 @@ begin
       AStream.Write(PChar(AString)^, StringLength);
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ReadStringFromStream(AStream: TStream; var AString: string): Boolean;
 var
@@ -204,8 +188,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function ReadUnitVersionInfo(AStream: TStream; var AVersionInfo: TUnitVersionInfo): Boolean;
 begin
   Result := True;
@@ -220,8 +202,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TJclUnitVersioningList.Load(AModule: HMODULE): Boolean;
 begin
   Result := LoadFromDefaultResource(AModule);
@@ -230,8 +210,6 @@ begin
     Result := LoadFromDefaultSection(AModule);
   {$ENDIF MSWINDOWS}    
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclUnitVersioningList.LoadFromDefaultResource(AModule: HMODULE): Boolean;
 var
@@ -248,8 +226,6 @@ begin
     end;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
 function TJclUnitVersioningList.LoadFromDefaultSection(AModule: HMODULE): Boolean;
@@ -268,8 +244,6 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclUnitVersioningList.LoadFromStream(AStream: TStream): Boolean;
 var
@@ -299,8 +273,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclUnitVersioningList.SaveToFile(AFileName: string);
 var
   FileStream: TFileStream;
@@ -312,8 +284,6 @@ begin
     FileStream.Free;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclUnitVersioningList.SaveToStream(AStream: TStream);
 var
@@ -333,9 +303,7 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-{ TJclUnitVersioningProviderModule }
-//--------------------------------------------------------------------------------------------------
+//=== { TJclUnitVersioningProviderModule } ===================================
 
 {$IFDEF MSWINDOWS}
 function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
@@ -358,8 +326,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclUnitVersioningProviderModule.Create(Instance: THandle);
 var
   I: Integer;
@@ -378,9 +344,7 @@ begin
   inherited Destroy;
 end;
 
-//--------------------------------------------------------------------------------------------------
-{ TJclDefaultUnitVersioningProvider }
-//--------------------------------------------------------------------------------------------------
+//=== { TJclDefaultUnitVersioningProvider } ==================================
 
 constructor TJclDefaultUnitVersioningProvider.Create;
 begin
@@ -388,15 +352,11 @@ begin
   FModules := TObjectList.Create;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TJclDefaultUnitVersioningProvider.Destroy;
 begin
   FModules.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TJclDefaultUnitVersioningProvider.IndexOfInstance(Instance: THandle): Integer;
 var
@@ -411,15 +371,11 @@ begin
     end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDefaultUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
 begin
   if IndexOfInstance(Instance) < 0 then
     FModules.Add(TJclUnitVersioningProviderModule.Create(Instance));
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TJclDefaultUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(Instance: THandle);
 var
@@ -447,6 +403,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.2  2005/02/24 16:34:40  marquardt
+// remove divider lines, add section lines (unfinished)
+//
 // Revision 1.1  2005/02/22 07:31:38  uschuster
 // new unit
 //

@@ -50,11 +50,7 @@ uses
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
-
-//--------------------------------------------------------------------------------------------------
-//  EDI Transaction Set Document and related types and classes
-//--------------------------------------------------------------------------------------------------
-
+  //  EDI Transaction Set Document and related types and classes
   TEDI_ANSIX12_Document = class(TEDITransactionSetLoop)
   private
     FEDISEFSet: TEDISEFSet;
@@ -93,13 +89,8 @@ type
 
 implementation
 
-//==================================================================================================
-// { TEDI_ANSIX12_Document }
-//==================================================================================================
-
 constructor TEDI_ANSIX12_Document.Create(Parent: TEDIDataObject;
-  TransactionSet: TEDITransactionSet;
-  SEFSet: TEDISEFSet);
+  TransactionSet: TEDITransactionSet; SEFSet: TEDISEFSet);
 begin
   inherited Create(Parent);
   FEDILoopStack := TEDILoopStack.Create;
@@ -110,8 +101,6 @@ begin
   FEDITSDOptions := [];
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 destructor TEDI_ANSIX12_Document.Destroy;
 begin
   FreeAndNil(FEDILoopStack);
@@ -119,8 +108,6 @@ begin
   FEDITransactionSetSpec.Free;
   inherited Destroy;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDI_ANSIX12_Document.FormatDocument;
 var
@@ -195,16 +182,12 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TEDI_ANSIX12_Document.ValidateData(TSDocument: TEDI_ANSIX12_Document;
   LoopStack: TEDILoopStack; DataSegment: TEDISegment; SpecSegment: TEDISEFSegment;
   var DataIndex, SpecIndex: Integer; var ErrorOccured: Boolean);
 begin
   ErrorOccured := False;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDI_ANSIX12_Document.SetSpecificationPointers(DataSegment: TEDISegment;
   SpecSegment: TEDISEFSegment);
@@ -222,8 +205,6 @@ begin
     DataSegment.Element[I].SpecPointer := SpecSegment.Elements[I];
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TEDI_ANSIX12_Document.AddLoopToDoc(StackRecord: TEDILoopStackRecord;
   SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);

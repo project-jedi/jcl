@@ -883,8 +883,6 @@ initialization
     @CreateHardLinkW := @MyCreateHardLinkW;
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
 
-//--------------------------------------------------------------------------------------------------
-
 // History:
 
 
