@@ -17,7 +17,6 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Flier Lu (flier)                                                                               }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
@@ -211,42 +210,10 @@ type
     property TaskFlags: DWORD read GetTaskFlags write SetTaskFlags;
   end;
 
-type
-  TTSServiceControlFunction = (scfQueryStatus, scfStop, scfStart, scfPause,
-    scfContinue, scfStartAndContinue);
-
-{ TODO -cHelp : Author Peter J. Haas }  
-// TaskSchedulerServiceControl controls the status of the task scheduler service
-// Func:
-//   scfQueryStatus: Get the current status of the task scheduler service.
-//   scfStop: Stop the task scheduler service.
-//   scfStart: Start the task scheduler service.
-//   scfPause: Pause the task scheduler service.
-//   scfContinue: Continue the task scheduler service.
-//   scfStartAndContinue: Start or continue the task scheduler service,
-//     dependent of the current status.
-// Result:
-//   0: Error. To get extended error information, call GetLastError.
-//      Potential errors are
-//        ERROR_SERVICE_DOES_NOT_EXIST: The task scheduler is not installed.
-//        ERROR_INVALID_SERVICE_CONTROL: Wrong value in Func.
-//   SERVICE_STOPPED: The task scheduler service is stopped.
-//   SERVICE_PAUSED: The task scheduler service is started but paused.
-//   SERVICE_RUNNING: The task scheduler service is started and running.
-// In case of a timeout other potential return values are:
-//   SERVICE_START_PENDING, SERVICE_STOP_PENDING, SERVICE_CONTINUE_PENDING and
-//   SERVICE_PAUSE_PENDING
-function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
-
 implementation
 
 uses
   ActiveX, ComObj, CommCtrl,
-  {$IFDEF FPC}
-  JwaWinSvc,
-  {$ELSE}
-  WinSvc,
-  {$ENDIF FPC}
   JclSvcCtrl;
 
 const
@@ -299,28 +266,117 @@ end;
 
 procedure TJclTaskSchedule.SetTargetComputer(const Value: WideString);
 begin
-  OleCheck(FTaskScheduler.SetTargetComputer(Pointer(Value)));
+  OleCheck(FTaskScheduler.SetTargetComputer(PWideCharOrNil(Value)));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 class function TJclTaskSchedule.IsRunning: Boolean;
+
+  function IsRunning9x: Boolean;
+  begin
+    Result := FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW') <> 0;
+  end;
+
+  function IsRunningNt: Boolean;
+  var
+    NtSvc: TJclNtService;
+  begin
+    with TJclSCManager.Create do
+    try
+      Refresh;
+      Result := FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
+    finally
+      Free;
+    end;
+  end;
+
 begin
-  Result := TaskSchedulerServiceControl(scfQueryStatus) = SERVICE_RUNNING;
+  if IsWinNT then
+    Result := IsRunningNt
+  else
+    Result := IsRunning9x;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 class procedure TJclTaskSchedule.Start;
+
+  procedure Start9x;
+  var
+    AppName: array [0..MAX_PATH] of Char;
+    FilePart: PChar;
+    si: TStartupInfo;
+    pi: TProcessInformation;
+  begin
+    Win32Check(SearchPath(nil, 'mstask.exe', nil, MAX_PATH, AppName, FilePart) > 0);
+
+    si.cb := SizeOf(si);
+    Win32Check(CreateProcess(AppName, nil, nil, nil, False,
+      CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, nil, nil, si, pi));
+
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+  end;
+
+  procedure StartNt;
+  var
+    NtSvc: TJclNtService;
+  begin
+    with TJclSCManager.Create do
+    try
+      Refresh;
+      if FindService('Schedule', NtSvc) then
+        NtSvc.Start;
+    finally
+      Free;
+    end;
+  end;
+
 begin
-  TaskSchedulerServiceControl(scfStartAndContinue);
+  if IsWinNT then
+    StartNt
+  else
+    Start9x;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 class procedure TJclTaskSchedule.Stop;
+
+  procedure Stop9x;
+  var
+    hProcess: THandle;
+  begin
+    if IsRunning then
+    begin
+      hProcess := OpenProcess(PROCESS_TERMINATE, False,
+        GetWindowThreadProcessId(
+          FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
+      Win32Check(hProcess <> 0);
+      Win32Check(TerminateProcess(hProcess, ERROR_PROCESS_ABORTED));
+      Win32Check(CloseHandle(hProcess));
+    end;
+  end;
+
+  procedure StopNt;
+  var
+    NtSvc: TJclNtService;
+  begin
+    with TJclSCManager.Create do
+    try
+      if FindService('Schedule', NtSvc) then
+        NtSvc.Stop;
+    finally
+      Free;
+    end;
+  end;
+
 begin
-  TaskSchedulerServiceControl(scfStop);
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    StopNt
+  else
+    Stop9x;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -342,7 +398,7 @@ end;
 procedure TJclTaskSchedule.Refresh;
 var
   EnumWorkItems: IEnumWorkItems;
-  ItemName: PLPWSTR;    
+  ItemName: PLPWSTR;
   RealItemName: PWideChar;
   FetchedCount: DWORD;
   TaskIid: TIID;
@@ -584,30 +640,28 @@ var
   AccountName: PWideChar;
 begin
   Result := '';
-  if Win32Platform <> VER_PLATFORM_WIN32_NT then  // ignore this method in Win9x/ME
-    Exit;
-  try
-    OleCheck(FScheduledWorkItem.GetAccountInformation(AccountName));
-    Result := AccountName;
-    CoTaskMemFree(AccountName);
+  if IsWinNT then  // ignore this method in Win9x/ME
+    try
+      OleCheck(FScheduledWorkItem.GetAccountInformation(AccountName));
+      Result := AccountName;
+      CoTaskMemFree(AccountName);
 
-    if Result = '' then
-      Result := GetLocalComputerName + '\' + LocalSystemAccount;
-  except
-    Result := '';
-  end;
+      if Result = '' then
+        Result := GetLocalComputerName + '\' + LocalSystemAccount;
+    except
+      Result := '';
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclScheduledWorkItem.SetAccountInformation(const Name, Password: WideString);
 begin
-  if Win32Platform <> VER_PLATFORM_WIN32_NT then  // ignore this method in Win9x/ME
-    Exit;
-  if (Name = LocalSystemAccount) or (Name = '') then
-    OleCheck(FScheduledWorkItem.SetAccountInformation('', nil))
-  else
-    OleCheck(FScheduledWorkItem.SetAccountInformation(PWideChar(Name), PWideChar(Password)));
+  if IsWinNT then  // ignore this method in Win9x/ME
+    if (Name = LocalSystemAccount) or (Name = '') then
+      OleCheck(FScheduledWorkItem.SetAccountInformation('', nil))
+    else
+      OleCheck(FScheduledWorkItem.SetAccountInformation(PWideChar(Name), PWideChar(Password)));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -716,7 +770,7 @@ begin
     OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, @EndSysTime, Count, TaskTimes));
   try
     SetLength(Result, Count);
-    for I:=0 to Count-1 do
+    for I := 0 to Count-1 do
     begin
       Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
       Inc(TaskTimes);
@@ -965,18 +1019,18 @@ end;
 
 function TJclScheduledTask.ShowPage(Pages: TJclScheduleTaskPropertyPages): Boolean;
 var
-  hPropPages: array [0..2] of MSTask.HPropSheetPage;
-  PropHeader: {Commctrl.}TPropSheetHeader;
+  PropPages: array [0..2] of MSTask.HPropSheetPage;
+  PropHeader: {CommCtrl.}TPropSheetHeader;
 begin
-  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_TASK, True, hPropPages[0]));
-  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SCHEDULE, True, hPropPages[1]));
-  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SETTINGS, True, hPropPages[2]));
+  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_TASK, True, PropPages[0]));
+  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SCHEDULE, True, PropPages[1]));
+  OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SETTINGS, True, PropPages[2]));
 
   FillChar(PropHeader, SizeOf(PropHeader), 0);
   PropHeader.dwSize := SizeOf(PropHeader);
   PropHeader.dwFlags := PSH_DEFAULT or PSH_NOAPPLYNOW;
-  PropHeader.phpage := @hPropPages;
-  PropHeader.nPages := Length(hPropPages);
+  PropHeader.phpage := @PropPages;
+  PropHeader.nPages := Length(PropPages);
   Result := PropertySheet(PropHeader) > 0;
 end;
 
@@ -987,233 +1041,12 @@ begin
   Result := ScheduledWorkItem as ITask;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
-const
-  SCHED_CLASS            = 'SAGEWINDOWCLASS';
-  SCHED_TITLE            = 'SYSTEM AGENT COM WINDOW';
-  SCHED_SERVICE_APP_NAME = 'mstask.exe';
-  SCHED_SERVICE_NAME     = 'Schedule';
-
-const
-  WM_TASK_SCHEDULER_SERVICE_QUERYSTATUS = WM_USER + 200;
-  WM_TASK_SCHEDULER_SERVICE_STOP        = WM_USER + 201;
-  WM_TASK_SCHEDULER_SERVICE_PAUSE       = WM_USER + 202;
-  WM_TASK_SCHEDULER_SERVICE_CONTINUE    = WM_USER + 203;
-
-function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
-
-  function Win9x(Func: TTSServiceControlFunction): Integer;
-  var
-    WinHandle: HWnd;
-
-    function QueryServiceStatus(WinHandle: HWnd): Integer;
-    begin
-      if WinHandle = 0 then
-        Result := SERVICE_STOPPED
-      else
-        Result := SendMessage(WinHandle, WM_TASK_SCHEDULER_SERVICE_QUERYSTATUS, 0, 0);
-    end;
-
-    function StopService(WinHandle: HWnd): Integer;
-    begin
-      if WinHandle <> 0 then
-        PostMessage(WinHandle, WM_COMMAND, 100, 0);
-      Result := SERVICE_STOPPED;  // we assume this
-    end;
-
-    function StartService(WinHandle: HWnd): Integer;
-    var
-      StartupInfo: TStartupInfo;
-      ProcessInfo: TProcessInformation;
-      StartTickCount: DWord;
-    begin
-      // Start mstask.exe
-      FillChar(StartupInfo, SizeOf(StartupInfo), 0);
-      StartupInfo.cb := SizeOf(StartupInfo);
-      // CreateProcess search for mstask.exe, see Platform-SDK for details
-      if CreateProcess(nil, SCHED_SERVICE_APP_NAME, nil, nil, False,
-          CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, nil, nil,
-          StartupInfo, ProcessInfo) then
-      begin
-        CloseHandle(ProcessInfo.hProcess);
-        CloseHandle(ProcessInfo.hThread);
-        // get service window handle; wait maximal 1 sec
-        StartTickCount := GetTickCount;
-        repeat
-          WinHandle := FindWindow(SCHED_CLASS, SCHED_TITLE);
-          if WinHandle = 0 then
-            Sleep(100);
-        until (WinHandle <> 0) and ((GetTickCount - StartTickCount) > 1000);
-        Result := QueryServiceStatus(WinHandle);
-      end
-      else
-      begin
-        Result := 0;
-        if GetLastError = ERROR_FILE_NOT_FOUND then
-          SetLastError(ERROR_SERVICE_DOES_NOT_EXIST)
-        else
-          RaiseLastOSError;
-      end;
-    end;
-
-    function PauseService(WinHandle: HWnd): Integer;
-    begin
-      if WinHandle = 0 then
-        Result := SERVICE_STOPPED
-      else
-      begin
-        PostMessage(WinHandle, WM_TASK_SCHEDULER_SERVICE_PAUSE, 0, 0);
-        Result := SERVICE_PAUSED;  // we assume this
-      end;
-    end;
-
-    function ContinueService(WinHandle: HWnd): Integer;
-    begin
-      if WinHandle = 0 then
-        Result := SERVICE_STOPPED
-      else
-      begin
-        PostMessage(WinHandle, WM_TASK_SCHEDULER_SERVICE_CONTINUE, 0, 0);
-        Result := SERVICE_RUNNING;  // we assume this
-      end;
-    end;
-
-    function StartAndContinueService(WinHandle: HWnd): Integer;
-    begin
-      if WinHandle = 0 then
-        Result := StartService(WinHandle)
-      else
-      begin
-        WinHandle := FindWindow(SCHED_CLASS, SCHED_TITLE);
-        Result := QueryServiceStatus(WinHandle);
-      end;
-      if Result = SERVICE_PAUSED then
-      begin
-        PostMessage(WinHandle, WM_TASK_SCHEDULER_SERVICE_CONTINUE, 0, 0);
-        Result := SERVICE_RUNNING;  // we assume this
-      end;
-    end;
-
-  begin {Win9x}
-    // get service window handle
-    WinHandle := FindWindow(SCHED_CLASS, SCHED_TITLE);
-    case Func of
-      scfQueryStatus:
-        Result := QueryServiceStatus(WinHandle);
-      scfStop:
-        Result := StopService(WinHandle);
-      scfStart:
-        Result := StartService(WinHandle);
-      scfPause:
-        Result := PauseService(WinHandle);
-      scfContinue:
-        Result := ContinueService(WinHandle);
-      scfStartAndContinue:
-        Result := StartAndContinueService(WinHandle);
-    else
-      SetLastError(ERROR_INVALID_SERVICE_CONTROL);
-      Result := 0;
-    end;
-  end;
-
-  function WinNT(Func: TTSServiceControlFunction): Integer;
-  type
-    PPChar = ^PChar;
-  var
-    ServiceManagerHandle, ServiceHandle: SC_HANDLE;
-    SvcStatus: TServiceStatus;
-  begin
-    Result := 0;
-    // get service handle
-    ServiceManagerHandle := OpenSCManager(nil, nil, SC_MANAGER_CONNECT);
-    if ServiceManagerHandle = 0 then
-      RaiseLastOSError;
-    ServiceHandle := OpenService(ServiceManagerHandle, SCHED_SERVICE_NAME,
-      SERVICE_START or SERVICE_QUERY_STATUS or SERVICE_STOP or SERVICE_PAUSE_CONTINUE);
-    CloseServiceHandle(ServiceManagerHandle);
-    if ServiceHandle <> 0 then
-    begin
-      try  // ServiceHandle
-        case Func of
-          scfQueryStatus:
-            Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-          scfStop:
-            begin
-              Result := GetServiceStatus(ServiceHandle);
-              if not (Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING]) then
-                if not ControlService(ServiceHandle, SERVICE_CONTROL_STOP, SvcStatus) then
-                  RaiseLastOSError;
-              Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-            end;
-          scfStart:
-            begin
-              Result := GetServiceStatus(ServiceHandle);
-              if Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING] then
-              begin
-                if not StartService(ServiceHandle, 0, PPChar(nil)^) then
-                  RaiseLastOSError;
-              end;
-              Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-            end;
-          scfPause:
-            begin
-              Result := GetServiceStatus(ServiceHandle);
-              if not (Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING,
-                                 SERVICE_PAUSED, SERVICE_PAUSE_PENDING]) then
-                if not ControlService(ServiceHandle, SERVICE_CONTROL_PAUSE, SvcStatus) then
-                  RaiseLastOSError;
-              Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-            end;
-          scfContinue:
-            begin
-              Result := GetServiceStatus(ServiceHandle);
-              if not (Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING,
-                                 SERVICE_RUNNING, SERVICE_CONTINUE_PENDING]) then
-                if not ControlService(ServiceHandle, SERVICE_CONTROL_CONTINUE, SvcStatus) then
-                  RaiseLastOSError;
-              Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-            end;
-          scfStartAndContinue:
-            begin
-              Result := GetServiceStatus(ServiceHandle);
-              if Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING] then
-              begin
-                // start, if stopped
-                if not StartService(ServiceHandle, 0, PPChar(nil)^) then
-                  RaiseLastOSError;
-                Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-              end;
-              if not (Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING,
-                                 SERVICE_RUNNING, SERVICE_CONTINUE_PENDING]) then
-                if not ControlService(ServiceHandle, SERVICE_CONTROL_CONTINUE, SvcStatus) then
-                  RaiseLastOSError;
-              Result := GetServiceStatusWaitingIfPending(ServiceHandle);
-            end;
-        else
-          SetLastError(ERROR_INVALID_SERVICE_CONTROL);
-        end;
-      finally
-        CloseServiceHandle(ServiceHandle);
-      end;
-    end
-    else
-    begin  // ServiceHandle = 0
-      if GetLastError <> ERROR_SERVICE_DOES_NOT_EXIST then
-        RaiseLastOSError;
-    end;
-  end;
-
-begin {TaskSchedulerServiceControl}
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Result := WinNT(Func)
-  else
-    Result := Win9X(Func);
-end;
-
 // History:
 
 // $Log$
+// Revision 1.18  2004/10/25 08:51:23  marquardt
+// PH cleaning
+//
 // Revision 1.17  2004/10/19 21:26:03  rrossmair
 // got rid of MSTaskError unit
 //
@@ -1244,7 +1077,7 @@ end;
 // Revision 1.8  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.7  2004/04/26 04:28:16  
+// Revision 1.7  2004/04/26 04:28:16
 // - add TaskSchedulerServiceControl
 // - some bugfixes for Win9x
 //
