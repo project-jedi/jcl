@@ -2637,9 +2637,9 @@ begin
     NameWild := FWildChars[I] and 1 = 1;
     ExtWild := FWildChars[I] and 2 = 2;
     if ( (not NameWild and StrSame(FNames[I], NamePart)) or
-      (NameWild and (StrMatch(FNames[I], NamePart, 1) = 1)) ) and
+      (NameWild and (StrMatches(FNames[I], NamePart, 1))) ) and
       ( (not ExtWild and StrSame(FExts[I], ExtPart)) or
-      (ExtWild and (StrMatch(FExts[I], ExtPart, 1) = 1)) ) then
+      (ExtWild and (StrMatches(FExts[I], ExtPart, 1))) ) then
     begin
       Result := True;
       Break;
@@ -2821,13 +2821,13 @@ begin
     LocAttr := Attr;
 
   // here's the recursive search for nested folders
-  
+
   if flRecursive in Options then
     BuildFolderList;
 
   for Counter := 0 to Folders.Count - 1 do
   begin
-    if (((flMaskedSubfolders in Options) and (StrMatch(SubfoldersMask, Folders[Counter]) <> 0)) or
+    if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask, Folders[Counter]))) or
       (not (flMaskedSubfolders in Options))) then
       FillFileList(Counter);
   end;
