@@ -19,6 +19,8 @@
 
   Cosmetics and review by:
     2004-10-08 - Oliver Schneider <oliver at assarbad dot net>
+  Changes:
+    2004-11-15 - Scott Price <scottprice@users dot sourceforge dot net>
  *****************************************************************************)
 
 unit MSTask;
@@ -295,7 +297,7 @@ type
 
 type
 {$EXTERNALSYM _TASK_TRIGGER}
-  _TASK_TRIGGER = packed record
+  _TASK_TRIGGER = record // SP: removed packed record statement as seemed to affect SetTrigger
     cbTriggerSize: WORD; // Structure size.
     Reserved1: WORD; // Reserved. Must be zero.
     wBeginYear: WORD; // Trigger beginning date year.
