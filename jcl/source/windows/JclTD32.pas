@@ -20,7 +20,7 @@
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,10 +36,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Classes, SysUtils, Contnrs,
   JclBase, JclFileUtils, JclPeImage;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
