@@ -24,8 +24,11 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.7  2004/03/15 01:23:22  rrossmair
-// minor improvements
+// Revision 1.8  2004/03/17 17:39:03  rrossmair
+// Win32 installation fixed
+//
+// Revision 1.6  2004/03/15 01:25:07  rrossmair
+// label caption changed for BCB
 //
 // Revision 1.5  2004/03/13 07:46:49  rrossmair
 // Kylix/Delphi installation fixed; C++ incomplete
@@ -83,6 +86,7 @@ type
     { Private declarations }
     FInstallation: TJclBorRADToolInstallation;
     function GetNodeChecked(Node: TTreeNode): Boolean;
+    function IsStandAloneParent(Node: TTreeNode): Boolean;
     procedure SetInstallation(Value: TJclBorRADToolInstallation);
     procedure SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     procedure ToggleNodeChecked(Node: TTreeNode);
@@ -132,6 +136,11 @@ end;
 function TProductFrame.GetNodeChecked(Node: TTreeNode): Boolean;
 begin
   Result := Cardinal(Node.Data) and FID_Checked <> 0;
+end;
+
+function TProductFrame.IsStandAloneParent(Node: TTreeNode): Boolean;
+begin
+  Result := Cardinal(Node.Data) and FID_StandAloneParent <> 0;
 end;
 
 procedure TProductFrame.SetInstallation(Value: TJclBorRADToolInstallation);
@@ -190,7 +199,7 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
   procedure UpdateTreeUp(N: TTreeNode; C: Boolean);
   var
     TempNode, SiblingNode: TTreeNode;
-    AnyChecked: Boolean;
+    ParentChecked: Boolean;
   begin
     TempNode := N;
     if C then
@@ -203,20 +212,23 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
     while True do
     begin
       SiblingNode := TempNode;
+      ParentChecked := False;
       if SiblingNode.Parent <> nil then
+      begin
         SiblingNode := TempNode.Parent.getFirstChild;
-      AnyChecked := False;
+        ParentChecked := IsStandAloneParent(TempNode.Parent);
+      end;
       while Assigned(SiblingNode) do
         if NodeChecked[SiblingNode] then
         begin
-          AnyChecked := True;
+          ParentChecked := True;
           Break;
         end
         else
           SiblingNode := SiblingNode.getNextSibling;
       TempNode := TempNode.Parent;
       if Assigned(TempNode) then
-        UpdateNode(TempNode, AnyChecked)
+        UpdateNode(TempNode, ParentChecked)
       else
         Break;
     end;

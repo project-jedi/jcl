@@ -24,8 +24,11 @@
 {**************************************************************************************************}
 
 // $Log$
-// Revision 1.8  2004/03/15 01:23:22  rrossmair
-// minor improvements
+// Revision 1.9  2004/03/17 17:39:03  rrossmair
+// Win32 installation fixed
+//
+// Revision 1.10  2004/03/15 01:22:42  rrossmair
+// compilation speed-up, minor improvements
 //
 // Revision 1.9  2004/03/13 09:06:23  rrossmair
 // minor fixes
@@ -104,7 +107,7 @@ function CreateJediInstall: IJediInstall;
 implementation
 
 uses
-  JclBase, JclFileUtils, JclStrings;
+  JclBase, JclSysInfo, JclFileUtils, JclStrings;
 
 const
   {$IFDEF KYLIX}
@@ -159,20 +162,19 @@ const
   FID_JCL_EnvBrowsingPath  = FID_JCL + $00010200;
   FID_JCL_EnvDebugDCUPath  = FID_JCL + $00010300;
   FID_JCL_Make             = FID_JCL + $00020000;
-  FID_JCL_MakeRelease      = FID_JCL + $00020100;
-  FID_JCL_MakeDebug        = FID_JCL + $00020200;
-  FID_JCL_Windows          = $00000001;
-  FID_JCL_Vcl              = $00000002;
-  FID_JCL_VClx             = $00000003;
+  FID_JCL_MakeRelease      = FID_JCL + $00020100 + FID_StandaloneParent;
+  FID_JCL_MakeDebug        = FID_JCL + $00020200 + FID_StandaloneParent;
+  FID_JCL_Vcl              = $00000001;
+  FID_JCL_VClx             = $00000002;
   FID_JCL_Help             = FID_JCL + $00030000;
   FID_JCL_HelpHlp          = FID_JCL + $00030100;
   FID_JCL_HelpChm          = FID_JCL + $00030200;
-  FID_JCL_Packages         = FID_JCL + $00040000;
-  FID_JCL_Experts          = FID_JCL + $00050000;
-  FID_JCL_ExpertDebug      = FID_JCL + $00050100;
-  FID_JCL_ExpertAnalyzer   = FID_JCL + $00050200;
-  FID_JCL_ExpertFavorite   = FID_JCL + $00050300;
-  FID_JCL_ExpertsThrNames  = FID_JCL + $00050400;
+  FID_JCL_Packages         = FID_JCL + $00040000 + FID_StandaloneParent;
+  FID_JCL_Experts          = FID_JCL + $00040100;
+  FID_JCL_ExpertDebug      = FID_JCL + $00040101;
+  FID_JCL_ExpertAnalyzer   = FID_JCL + $00040102;
+  FID_JCL_ExpertFavorite   = FID_JCL + $00040103;
+  FID_JCL_ExpertsThrNames  = FID_JCL + $00040104;
   FID_JCL_ExcDialog        = FID_JCL + $00060000;
   FID_JCL_ExcDialogVCL     = FID_JCL + $00060100;
   FID_JCL_ExcDialogVCLSnd  = FID_JCL + $00060200;
@@ -195,7 +197,7 @@ const
 
   RsHelpFiles       = 'Help files';
   RsIdeExperts      = 'IDE experts';
-  RsJCLPackages     = 'Runtime packages';
+  RsJCLPackages     = 'Packages';
   RsIdeHelpHlp      = 'Add help file to IDE help system';
   RsIdeHelpChm      = 'Add HTML help to the Tools menu';
 
@@ -288,6 +290,7 @@ var
   UnitType: string;
   LibDescriptor: string;
   SaveDir, UnitOutputDir, LibObjDir: string;
+  Path, ListFileName: string;
   Success: Boolean;
 begin
   Result := True;
@@ -298,8 +301,12 @@ begin
   Units := TStringList.Create;
   try
     Tool.UpdateStatus(Format('Compiling %s ...', [LibDescriptor]));
-    BuildFileList(Format('%ssource' + PathSeparator + '%s' + PathSeparator + '*.pas',
-      [FJclPath, SubDir]), faAnyFile, Units);
+    Path := Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]);
+    ListFileName := MakePath(Installation, Format('%s' + PathSeparator + '%s.lst', [FLibDirMask, SubDir]));
+    if FileExists(ListFileName) then
+      Units.LoadFromFile(ListFileName)
+    else
+      BuildFileList(Path + '\*.pas', faAnyFile, Units);
     for I := 0 to Units.Count -1 do
       Units[I] := Copy(Units[I], 1, Length(Units[I]) - 4);
     with Installation.DCC do
@@ -362,7 +369,7 @@ begin
       end;
       AddPathOption('I', FJclSourceDir);
       SaveDir := GetCurrentDir;
-      Success := SetCurrentDir(Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]));
+      Success := SetCurrentDir(Path);
       {$IFDEF WIN32}
       Win32Check(Success);
       {$ELSE}
@@ -478,9 +485,10 @@ begin
     Installation.AddToLibraryBrowsingPath(FJclSourcePath);
   if Tool.FeatureChecked(FID_JCL_Make, Installation) then
   begin
-    MakeUnits(Installation, False);
     if Tool.FeatureChecked(FID_JCL_MakeDebug, Installation) then
       MakeUnits(Installation, True);
+    if Tool.FeatureChecked(FID_JCL_MakeRelease, Installation) then
+      MakeUnits(Installation, False);
   end;
   {$IFDEF MSWINDOWS}
   if Tool.FeatureChecked(FID_JCL_HelpHlp, Installation) then
@@ -496,48 +504,63 @@ begin
       Installation.Repository.FindPage(DialogPage, 1), VclDialogNameSend, FVclDialogSendIconFileName,
       DialogDescription, DialogAuthor, BorRADToolRepositoryDesignerDfm, FVclDialogFileName);
   {$ENDIF MSWINDOWS}
-  if Tool.FeatureChecked(FID_JCL_Packages, Installation)
-  or Tool.FeatureChecked(FID_JCL_Experts, Installation) then
-  begin
-    Result := Result and InstallRunTimePackage(Installation, 'Jcl');
-    {$IFDEF MSWINDOWS}
-    if Installation.VersionNumber >= 6 then
-      Result := Result and InstallRunTimePackage(Installation, 'JclVcl');
-    {$ENDIF}
-    if Installation.SupportsVisualCLX then
-      Result := Result and InstallRunTimePackage(Installation, 'JclVClx');
-  end;
   if Tool.FeatureChecked(FID_JCL_ExcDialogCLX, Installation) then
     Installation.Repository.AddObject(FClxDialogFileName, BorRADToolRepositoryFormTemplate,
       Installation.Repository.FindPage(DialogPage, 1), ClxDialogName, FClxDialogIconFileName,
       DialogDescription, DialogAuthor, BorRADToolRepositoryDesignerXfm);
-  {$IFDEF MSWINDOWS}
-  if Tool.FeatureChecked(FID_JCL_ExpertDebug, Installation) then
-    Result := Result and InstallPackage(Installation, JclIdeDebugDpk);
-  if Tool.FeatureChecked(FID_JCL_ExpertAnalyzer, Installation) then
-    Result := Result and InstallPackage(Installation, JclIdeAnalyzerDpk);
-  if Tool.FeatureChecked(FID_JCL_ExpertFavorite, Installation) then
-    Result := Result and InstallPackage(Installation, JclIdeFavoriteDpk);
-  if Tool.FeatureChecked(FID_JCL_ExpertsThrNames, Installation) then
-    Result := Result and InstallPackage(Installation, JclIdeThrNamesDpk);
-  {$ENDIF MSWINDOWS}
+  if Tool.FeatureChecked(FID_JCL_Packages, Installation) then
+  begin
+    Result := Result and InstallRunTimePackage(Installation, 'Jcl');
+    if Installation.SupportsVisualCLX then
+      Result := Result and InstallRunTimePackage(Installation, 'JclVClx');
+    {$IFDEF MSWINDOWS}
+    if Installation.VersionNumber >= 6 then
+      Result := Result and InstallRunTimePackage(Installation, 'JclVcl');
+    if Tool.FeatureChecked(FID_JCL_ExpertDebug, Installation) then
+      Result := Result and InstallPackage(Installation, JclIdeDebugDpk);
+    if Tool.FeatureChecked(FID_JCL_ExpertAnalyzer, Installation) then
+      Result := Result and InstallPackage(Installation, JclIdeAnalyzerDpk);
+    if Tool.FeatureChecked(FID_JCL_ExpertFavorite, Installation) then
+      Result := Result and InstallPackage(Installation, JclIdeFavoriteDpk);
+    if Tool.FeatureChecked(FID_JCL_ExpertsThrNames, Installation) then
+      Result := Result and InstallPackage(Installation, JclIdeThrNamesDpk);
+    {$ENDIF MSWINDOWS}
+  end;
 end;
 
 function TJclInstall.InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
+const
+  {$IFDEF MSWINDOWS}
+  BcbBmk = '\BCB.bmk';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF KYLIX}
+  BcbBmk = '/BCB.bmk';
+  {$ENDIF KYLIX}
 var
   PackageFileName: string;
 begin
   PackageFileName := FJclPath + Format(Name, [Installation.VersionNumber]);
   Tool.WriteInstallLog(Format('Installing package %s', [PackageFileName]));
   Tool.UpdateStatus(Format(RsStatusDetailMessage, [ExtractFileName(PackageFileName), Installation.Name]));
-  Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
-    Tool.DCPPath(Installation));
-  Tool.WriteInstallLog(Installation.DCC.Output);
   if Installation is TJclBCBInstallation then
-  with TJclBCBInstallation(Installation) do
+    with TJclBCBInstallation(Installation) do
+    begin
+      Bpr2Mak.Options.Clear;
+      Bpr2Mak.Options.Add('-t..' + BcbBmk);
+      Make.Options.Clear;
+      Make.Options.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
+      Make.Options.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
+      Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
+        Tool.DCPPath(Installation));
+      Tool.WriteInstallLog(Installation.DCC.Output);
+      Tool.WriteInstallLog(Bpr2Mak.Output);
+      Tool.WriteInstallLog(Make.Output);
+    end
+  else
   begin
-    Tool.WriteInstallLog(Bpr2Mak.Output);
-    Tool.WriteInstallLog(Make.Output);
+    Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
+      Tool.DCPPath(Installation));
+    Tool.WriteInstallLog(Installation.DCC.Output);
   end;
   Tool.WriteInstallLog('');
   if not Result then
@@ -562,12 +585,8 @@ procedure TJclInstall.MakeUnits(Installation: TJclBorRADToolInstallation; Debug:
 begin
   CompileLibraryUnits(Installation, 'common', Debug);
   {$IFDEF MSWINDOWS}
-  if (Installation.VersionNumber < 6)
-  or Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_Windows, Installation) then
-    CompileLibraryUnits(Installation, 'windows', Debug);
-  if (Installation.VersionNumber < 6)
-  or Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_Vcl, Installation) then
-    CompileLibraryUnits(Installation, 'vcl', Debug);
+  CompileLibraryUnits(Installation, 'windows', Debug);
+  CompileLibraryUnits(Installation, 'vcl', Debug);
   {$ENDIF MSWINDOWS}
   if Tool.FeatureChecked(FID_JCL_MakeRelease + FID_JCL_VClx, Installation) then
     CompileLibraryUnits(Installation, 'visclx', Debug);
@@ -596,10 +615,9 @@ var
     {$IFDEF KYLIX}
     AddNode(Node, RsMakeVClx, Feature[DebugSettings] or FID_JCL_VClx);
     {$ELSE}
+    AddNode(Node, RsMakeVcl, Feature[DebugSettings] or FID_JCL_Vcl);
     if Installation.VersionNumber >= 6 then
     begin
-      AddNode(Node, RsMakeWindows, Feature[DebugSettings] or FID_JCL_Windows);
-      AddNode(Node, RsMakeVcl, Feature[DebugSettings] or FID_JCL_Vcl);
       if Installation.SupportsVisualCLX then
         AddNode(Node, RsMakeVClx, Feature[DebugSettings] or FID_JCL_VClx);
     end;
@@ -641,9 +659,9 @@ begin
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
       {$ENDIF}
-      AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
+      TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
       {$IFDEF MSWINDOWS}
-      TempNode := AddNode(ProductNode, RsIdeExperts, FID_JCL_Experts);
+      TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts);
       AddNode(TempNode, RsJCLIdeDebug, FID_JCL_ExpertDebug);
       AddNode(TempNode, RsJCLIdeAnalyzer, FID_JCL_ExpertAnalyzer);
       AddNode(TempNode, RsJCLIdeFavorite, FID_JCL_ExpertFavorite);
@@ -651,7 +669,7 @@ begin
         AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames);
       {$ENDIF MSWINDOWS}
       InstallationNode.Expand(True);
-      //MakeNode.Collapse(True);
+      
     end;
   finally
     Nodes.EndUpdate;

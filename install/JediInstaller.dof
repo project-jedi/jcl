@@ -1,7 +1,5 @@
-[FileVersion]
-Version=6.0
 [Compiler]
-A=8
+A=1
 B=0
 C=1
 D=1
@@ -10,7 +8,7 @@ F=0
 G=1
 H=1
 I=1
-J=0
+J=1
 K=0
 L=1
 M=0
@@ -23,7 +21,7 @@ S=0
 T=0
 U=0
 V=1
-W=0
+W=1
 X=1
 Y=1
 Z=1
@@ -31,7 +29,7 @@ ShowHints=1
 ShowWarnings=1
 UnitAliases=
 [Linker]
-MapFile=3
+MapFile=0
 OutputObjs=0
 ConsoleApp=1
 DebugInfo=0
@@ -45,17 +43,14 @@ OutputDir=..\bin
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=$(DELPHI)\Lib\Debug
-Packages=
+SearchPath=$(DELPHI)\Lib\Debug;I:\Quellen\jedi\jcl\lib\d5\debug
+Packages=Vcl50;TeeQR50;dclocx50;Vclx50;dclqsprint50;dcliex50;ex2fs;Vcldb50;Vclbde50;ibevnt50;Indy50;A406_R50;dclJvFileSearch50;DJCL50;VclSmp50;TeeUI50;TeeDB50;Tee50;vcldbx50;VCLIB50;vclie50;Inetdb50;Inet50;dclaxserver50;EPCOTAUtils50;ADSD50;dclqsads50;dclqsbde50
 Conditionals=JCLINSTALL
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
 RunParams=
 HostApplication=
-Launcher=
-UseLauncher=0
-DebugCWD=
 [Language]
 ActiveLang=
 ProjectLang=$00000407
@@ -84,3 +79,18 @@ LegalTrademarks=
 OriginalFilename=JediInstaller.dpr
 ProductName=Jedi Installer
 ProductVersion=2.0
+[Excluded Packages]
+$(DELPHI)\Bin\dclie50.bpl=Internet Explorer Components
+[HistoryLists\hlConditionals]
+Count=1
+Item0=JCLINSTALL
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=DelphiInstall=BorRADToolInstall
+[HistoryLists\hlSearchPath]
+Count=2
+Item0=$(DELPHI)\Lib\Debug;I:\Quellen\jedi\jcl\lib\d5\debug
+Item1=$(DELPHI)\Lib\Debug
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=..\bin
