@@ -1053,7 +1053,7 @@ var
   LastError: DWORD;
 begin
   Result := Data.Internal.FileHandle <> INVALID_HANDLE_VALUE;
-  LastError := ERROR_SUCCESS
+  LastError := ERROR_SUCCESS;
   if Result then
   begin
     // Call BackupRead one last time to signal that we're done with it
@@ -1139,9 +1139,9 @@ function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boole
 {$DEFINE ANSI} // TODO: review for possible existing compatible DEFINES in the JCL
 begin
 {$IFDEF ANSI}
-  result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
+  Result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
 {$ELSE}
-  result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName));
+  Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName));
 {$ENDIF}
 end;
 
@@ -1295,6 +1295,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/10/19 06:26:48  marquardt
+// JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
+//
 // Revision 1.17  2004/10/18 18:42:49  assarbad
 // Just removed a stupidity (BTW: introduced by PH)
 //
