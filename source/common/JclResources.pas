@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 07, 2002                                                                    }
+{ Last modified: March 10, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -734,6 +734,7 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
+  RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
   RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
 
 //--------------------------------------------------------------------------------------------------
@@ -741,8 +742,6 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsCannotWriteRefStream = 'Can''t write a read-only memory stream!';
-  RsUnknownName          = 'Unknown';
   RsHasNotTD32Info       = 'File [%s] has not TD32 debug information!';
 
 //--------------------------------------------------------------------------------------------------
