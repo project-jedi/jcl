@@ -64,10 +64,10 @@ uses
 type
   uLong = LongWord;
   {$EXTERNALSYM uLong}
-  uShort = Word;
-  {$EXTERNALSYM uShort}
   uInt = Cardinal;
   {$EXTERNALSYM uInt}
+  uShort = Word;
+  {$EXTERNALSYM uShort}
   size_t = Longint;
   {$EXTERNALSYM size_t}
 {$ENDIF ~HAS_UNIT_LIBC}
@@ -1513,7 +1513,6 @@ function inflateSync;          external ZLibModuleName;
 function inflateCopy;          external ZLibModuleName;
 function inflateReset;         external ZLibModuleName;
 
-
 var
   _inflateBackInit_: function (var strm:z_stream; windowBits: Integer;
     window: PByte; {const} version: PChar; stream_size: Integer): Integer = nil;
@@ -1524,7 +1523,6 @@ begin
     _inflateBackInit_ := GetFunctionAddress('inflateBackInit_');
   Result := _inflateBackInit_(strm, windowBits, window, version, stream_size);
 end;
-
 
 function inflateBack;          external ZLibModuleName;
 function inflateBackEnd;       external ZLibModuleName;
@@ -1541,7 +1539,6 @@ function crc32;                external ZLibModuleName;
 function zError;               external ZLibModuleName;
 function inflateSyncPoint;     external ZLibModuleName;
 function get_crc_table;        external ZLibModuleName;
-
 
 
 //-----------------------------------------------------------------------------
