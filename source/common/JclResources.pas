@@ -23,7 +23,6 @@
 {   Marcel van Brakel                                                                              }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Peter Friese                                                                                   }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones                                                                                     }
 {   Raymond Alexander (rayspostbox3)                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
@@ -1109,6 +1108,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.15  2004/09/30 13:11:27  marquardt
+// remove PH contributions
+//
 // Revision 1.14  2004/09/30 08:09:07  marquardt
 // remove JclDITs remains
 //

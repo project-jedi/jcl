@@ -680,10 +680,14 @@ asm
        MOV     EDI, EDX
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function StrCopyE(Dest: PChar; const Source: PChar): PChar;
 begin
   Result := StrCopy(Dest, Source) + StrLen(Source) + 1;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function WStrCopyE(Dest: PWideChar; Source: PWideChar): PWideChar;
 begin
@@ -4238,6 +4242,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.26  2004/09/30 13:11:27  marquardt
+// remove PH contributions
+//
 // Revision 1.25  2004/09/30 07:50:29  marquardt
 // remove PH contributions
 //
