@@ -200,8 +200,10 @@ type
 //------------------------------------------------------------------------------
 
 type
-  TJclKeybLayoutFlags = set of (klReorder, klUnloadPrevious, klSetForProcess,
+  TJclKeybLayoutFlag = (klReorder, klUnloadPrevious, klSetForProcess,
     klActivate, klNotEllShell, klReplaceLang, klSubstituteOK);
+
+  TJclKeybLayoutFlags = set of TJclKeybLayoutFlag;
 
   TJclKeyboardLayoutList = class;
 
