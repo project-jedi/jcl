@@ -1,3 +1,9 @@
+@@Jcl8087.pas
+Summary
+  Unit <B>Jcl8087</B> contains various routine for manipulating the math coprocessor.
+  This includes such things as querying and setting the rounding precision of
+  floating point operations and retrieving the coprocessor's status word.                                                        }
+--------------------------------------------------------------------------------
 @@$MathRoutines.Hardware
 <GROUP MathRoutines>
 <TITLE Hardware>
@@ -99,7 +105,7 @@ Description:
   the error situation. Note that by default exceptions previously masked are cleared if they
   do not appear in the Exception parameter.
 Parameters:
-  Exceptions - Set of exceptions to mask.
+  Exceptions \- Set of exceptions to mask.
   ClearBefore - If set to True the routine clears pending exceptions, if any, before modifying the exception mask. This is the default behavior.  If set to False the routine does not clear pending exceptions.
 Result:
   The result is the exception mask before it was modified.
@@ -122,7 +128,7 @@ Description:
   and you call Mask8087Exceptions([emZeroDivide]), then upon return the exception
   mask equals [emInvalidOp, emDenormalizedOperand, emZeroDivide].
 Parameters:
-  Exceptions - Set of exceptions to mask, in addition to the current set of masked exceptions.
+  Exceptions \- Set of exceptions to mask, in addition to the current set of masked exceptions.
 Result:
   The set of exceptions that were masked upon routine entry. Upon exit the set of
   masked exceptions equals Result + Exceptions.
@@ -144,7 +150,7 @@ Description:
   unchanged, unlike SetMasked8087Exceptions which modifies the entire
   mask.
 Parameters:
-  Exceptions - The set of exceptions to unmask.
+  Exceptions \- The set of exceptions to unmask.
   ClearBefore - If set to True any pending exceptions are cleared before the routine returns, if set to False pending exceptions are not cleared.
 Result:
   The set of exceptions that were masked upon routine entry. Upon exit the set of
@@ -240,7 +246,7 @@ Donator: Marcel van Brakel
 See Also
 Set8087Precision, Set8087Rounding, Get8087Infinity, Get8087Precision,
 Get8087Rounding, Get8087ControlWord, Set8087ControlWord
-
+--------------------------------------------------------------------------------
 @@Set8087Precision
 <GROUP MathRoutines.Hardware>
 Summary:
@@ -282,8 +288,8 @@ See also:
   Get8087Rounding
   Get8087ControlWord
   Set8087ControlWord
+Quick info: 
   Donator: Marcel van Brakel
-  
 --------------------------------------------------------------------------------
 @@Get8087Infinity
 <GROUP MathRoutines.Hardware>
