@@ -148,8 +148,7 @@ type
     ZLibRecord: TZStreamRec;
     procedure SetWindowBits(Value: Integer);
   public
-    constructor Create(Source: TStream); overload;
-    constructor Create(Source: TStream; WindowBits: Integer); overload;
+    constructor Create(Source: TStream; WindowBits: Integer = DEF_WBITS);
     destructor Destroy; override;
     function Read(var Buffer; Count: Longint): Longint; override;
     function Seek(Offset: Longint; Origin: Word): Longint; override;
@@ -471,26 +470,7 @@ end;
 
 //=== {  TJclZLibDecompressionStream } =======================================
 
-constructor TJclZLibDecompressStream.Create(Source: TStream);
-begin
-  inherited Create(Source);
-
-  // Initialize ZLib StreamRecord
-  with ZLibRecord do
-  begin
-    zalloc := nil; // Use build-in memory allocation functionality
-    zfree := nil;
-    next_in := nil;
-    avail_in := 0;
-    next_out := FBuffer;
-    avail_out := FBufferSize;
-  end;
-
-  FInflateInitialized := False;
-  FWindowBits := DEF_WBITS;
-end;
-
-constructor TJclZLibDecompressStream.Create(Source: TStream; WindowBits: Integer);
+constructor TJclZLibDecompressStream.Create(Source: TStream; WindowBits: Integer = DEF_WBITS);
 begin
   inherited Create(Source);
 
@@ -775,6 +755,9 @@ end;
 
 // History:
 // $Log$
+// Revision 1.7  2005/02/27 14:55:25  marquardt
+// changed overloaded constructors to constructor with default parameter (BCB friendly)
+//
 // Revision 1.6  2005/02/24 16:34:39  marquardt
 // remove divider lines, add section lines (unfinished)
 //
