@@ -37,9 +37,9 @@ interface
 
 uses
   Windows, Classes, SysUtils,
-  {$IFDEF RTL130_UP}
+  {$IFDEF COMPILER5_UP}
   Contnrs,
-  {$ENDIF RTL130_UP}
+  {$ENDIF COMPILER5_UP}
   WinSvc,
   JclBase, JclSysUtils;
 
@@ -1359,6 +1359,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/04/08 12:18:07  obones
+// BCB5 compatibility fix
+//
 // Revision 1.7  2004/04/08 02:44:52  rrossmair
 // Log clean-up, typo in $Date$ corrected
 //
