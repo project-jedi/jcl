@@ -17,10 +17,10 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
+{   Oliver Schneider (assarbad)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -37,8 +37,8 @@
 
 // Comments on Win9x compatibility of the functions used in this unit
 
-// The following functions exist at least since Win95C, but invariably returns
-// ERROR_CALL_NOT_IMPLEMENTED:
+// These stubs exist on Windows 95B already but all of them
+// return ERROR_CALL_NOT_IMPLEMENTED:
 //   BackupSeek, BackupRead, BackupWrite
 
 unit JclNTFS;
@@ -168,7 +168,11 @@ function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 // Hard links
 //--------------------------------------------------------------------------------------------------
 
-function NtfsCreateHardLink(const LinkFileName, ExistingFileName: string): Boolean;
+function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
+// ANSI-specific version
+function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
+// UNICODE-specific version
+function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
 
 type
   TNtfsHardLinkInfo = record
@@ -193,7 +197,7 @@ uses
   WinSysUt,
   {$ENDIF FPC}
   SysUtils,
-  JclFileUtils, JclResources, JclSecurity;
+  JclFileUtils, JclResources, JclSecurity, Hardlink;
 
 //==================================================================================================
 // NTFS - Compression
@@ -1069,124 +1073,77 @@ end;
 //==================================================================================================
 // Hard links
 //==================================================================================================
-//
-// CreateHardLinkNT
-//
-// Creates a hard link on NT 4. Both LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
-//
-// LinkName: Name of the hard link to create
-// ExistingFileName: Fully qualified path of the file for which to create a hard link
-// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
-//
-// Remarks: On Windows 2000 and up you should favor the usage of CreateHardLinkNT5.
-//          You must be a member of the Administrators or Backup Operators group.
-// Requirements: Windows NT 3.51, 4.0, 2000 or XP
-//
-function CreateHardLinkNT(const LinkFileName, ExistingFileName: string): BOOL;
-var
-  BackupPriv, RestorePriv: Boolean;      // we're these privileges enabled on entry?
-  HardLink: THandle;                     // handle for hard link
-  HardLinkName: WideString;              // full path name of the hard link in unicode
-  FullPath: string;                      // full path name of the hard link in ansi
-  FilePart: PChar;                       // we need this to call GetFullPathName but don't use it
-  StreamId: TWin32StreamId;              // the stream header record
-  Context: Pointer;                      // context pointer for BackupWrite
-  BytesToWrite, BytesWritten: Cardinal;  // number of bytes to write, that got written
+
+(*
+   Implementation of CreateHardLink completely swapped to the unit Hardlink.pas
+
+   As with all APIs on the NT platform this version is completely implemented in
+   UNICODE and calling the ANSI version results in conversion of parameters and
+   call of the underlying UNICODE version of the function.
+
+   This holds both for the homegrown and the Windows API (where it exists).
+*)
+
+//--------------------------------------------------------------------------------------------------
+// For a description see: NtfsCreateHardLink()
+(* ANSI implementation of the function - calling UNICODE anyway ;-) *)
+function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
 begin
-  // always the pessimist...
-  Result := False;
-  // test if the required privileges are enabled
-  BackupPriv := IsPrivilegeEnabled(SE_BACKUP_NAME);
-  RestorePriv := IsPrivilegeEnabled(SE_RESTORE_NAME);
-  try
-    // if not enable them now, just in case we're not an administrator
-    if not BackupPriv then
-      Win32Check(EnableThreadPrivilege(True, SE_BACKUP_NAME));
-    if not RestorePriv then
-      Win32Check(EnableThreadPrivilege(True, SE_RESTORE_NAME));
-    // test if the hard link already exists, if so bail out
-    HardLink := CreateFile(PChar(LinkFileName), 0, 0, nil, OPEN_EXISTING, 0, 0);
-    if HardLink <> INVALID_HANDLE_VALUE then
-    begin
-      CloseHandle(HardLink);
-      SetLastError(ERROR_ALREADY_EXISTS);
-      Exit;
-    end;
-    // open the _existing_ file. this may seem counter intuitive but creating a hard link consists of writing a
-    // backup_link stream to the existing file containing the path of the hard link. in response NTFS will add the
-    // hard link name as an alternate filename and create a directory entry for the hard link.
-    HardLink := CreateFile(PChar(ExistingFileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_POSIX_SEMANTICS, 0);
-    if HardLink <> INVALID_HANDLE_VALUE then
-    try
-      // get the full unicode path name for the hard link
-      SetLength(FullPath, MAX_PATH);
-      GetFullPathName(PChar(LinkFileName), MAX_PATH, PChar(FullPath), FilePart);
-      SetLength(FullPath, StrLen(PChar(FullPath)));
-      HardLinkName := FullPath;
-      // initialize and write the stream header
-      FillChar(StreamId, SizeOf(StreamId), 0);
-      StreamId.dwStreamId := BACKUP_LINK;
-      {$IFDEF FPC}
-      StreamId.Size.QuadPart := (Length(HardLinkName) + 1) * SizeOf(WideChar);
-      {$ELSE}
-      StreamId.Size := (Length(HardLinkName) + 1) * SizeOf(WideChar);
-      {$ENDIF FPC}
-      BytesToWrite := DWORD(@StreamId.cStreamName[0]) - DWORD(@StreamId.dwStreamId);
-      Context := nil;
-      Win32Check(Windows.BackupWrite(HardLink, @StreamId, BytesToWrite, BytesWritten, False, False, Context));
-      if BytesToWrite <> BytesWritten then
-        RaiseLastOSError;
-      // now write the hard link name
-      {$IFDEF FPC}
-      Win32Check(Windows.BackupWrite(HardLink, @HardLinkName[1], StreamId.Size.QuadPart, BytesWritten, False, False, Context));
-      if BytesWritten <> StreamId.Size.QuadPart then
-      {$ELSE}
-      Win32Check(Windows.BackupWrite(HardLink, @HardLinkName[1], StreamId.Size, BytesWritten, False, False, Context));
-      if BytesWritten <> StreamId.Size then
-      {$ENDIF FPC}
-        RaiseLastOSError;
-      // and finally release the context
-      Windows.BackupWrite(HardLink, nil, 0, BytesWritten, True, False, Context);
-      Result := True;
-    finally
-      CloseHandle(HardLink);
-    end;
-  finally
-    // if we enabled them we should disable as well
-    if not BackupPriv then
-      Win32Check(EnableThreadPrivilege(False, SE_BACKUP_NAME));
-    if not RestorePriv then
-      Win32Check(EnableThreadPrivilege(False, SE_RESTORE_NAME));
-  end;
+// Invoke either (homegrown vs. API) function and supply NIL for security attributes
+  result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
 end;
 
 //--------------------------------------------------------------------------------------------------
-//
-// CreateHardLink2000
-//
-// Creates a hard link on NT 5. Simple wrapper around CreateHardLink API function. See PSDK docs for more details.
-//
-// LinkName: Name of the hard link to create
-// ExistingFileName: Fully qualified path of the file for which to create a hard link
-// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
-//
-// Remarks: On Windows NT 4 and earlier you can use CreateHardLinkNT.
-// Requirements: Windows 2000 or XP
-//
-function CreateHardLink2000(const LinkFileName, ExistingFileName: string): BOOL;
+// For a description see: NtfsCreateHardLink()
+(* UNICODE implementation of the function - we are on NT, aren't we ;-) *)
+function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
 begin
-  Result := RtdlCreateHardLink(PChar(LinkFileName), PChar(ExistingFileName), nil);
+// Invoke either (homegrown vs. API) function and supply NIL for security attributes
+  result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName), nil);
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-function NtfsCreateHardLink(const LinkFileName, ExistingFileName: string): Boolean;
+// NtfsCreateHardLink
+//
+// Creates a hardlink on NT 4 and above.
+// Both, LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
+//
+// LinkName:          Name of the hard link to create
+// ExistingFileName:  Fully qualified path of the file for which to create a hard link
+// Result:            True if successfull,
+//                    False if failed.
+//                    In the latter case use GetLastError to obtain the reason of failure.
+//
+// Remark:
+//   Hardlinks are the same as cross-referenced files were on DOS. With one exception
+//   on NTFS they are allowed and are a feature of the filesystem, whereas on FAT
+//   they were a feared kind of corruption of the filesystem.
+//
+//   Hardlinks are no more than references (with different names, but not necessarily
+//   in different directories) of the filesystem to exactly the same data!
+//
+//   To test this you may create a hardlink to some file on your harddisk and then edit
+//   it using Notepad (some editors do not work on the original file, but Notepad does).
+//   The changes will appear in the "linked" and the "original" location.
+//
+//   Why did I use quotes? Easy: hardlinks are references to the same data - and such
+//   as with handles the object (i.e. data) is only destroyed after all references are
+//   "released". To "release" a reference (i.e. a hardlink) simply delete it using
+//   the well-known methods to delete files. Because:
+//
+//   Files are hardlinks and hardlinks are files.
+//
+//   The above holds for NTFS volumes (and those filesystems supporting hardlinks).
+//   Why all references need to reside on the same volume should be clear from these
+//   remarks.
+function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
+{$DEFINE ANSI} // TODO: review for possible existing compatible DEFINES in the JCL
 begin
-  // first try the official CreateHardLink Windows API function, which only exists for Windows 2000 and up
-  Result := CreateHardLink2000(LinkFileName, ExistingFileName);
-  // if that fails try the akward NT method using the Tapi Backup API
-  if not Result then
-    Result := CreateHardLinkNT(LinkFileName, ExistingFileName);
+{$IFDEF ANSI}
+  result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
+{$ELSE}
+  result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName));
+{$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1339,6 +1296,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/18 18:20:55  assarbad
+// Completely replaced the CreateHardLink() implementation. For the sake of brevity it is kept in the separate unit Hardlink.pas now.
+//
+// Please check wether it compiles. I had to change fragments as the JCL will not compile on my Delphi 4.
+//
 // Revision 1.15  2004/10/17 21:00:15  mthoma
 // cleaning
 //
