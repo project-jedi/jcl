@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: June 2, 2002                                                                     }
+{ Last modified: July 7, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -2542,8 +2542,13 @@ begin
     SetSize(0, 0)
   else
   begin
+    {$IFDEF COMPILER4}
+    WidthInfo := GetPropInfo(PTypeInfo(Source.ClassType.ClassInfo), 'Width');
+    HeightInfo := GetPropInfo(PTypeInfo(Source.ClassType.ClassInfo), 'Height');
+    {$ELSE COMPILER4}
     WidthInfo := GetPropInfo(Source, 'Width', [tkInteger]);
     HeightInfo := GetPropInfo(Source, 'Height', [tkInteger]);
+    {$ENDIF COMPILER4}
     if Assigned(WidthInfo) and Assigned(HeightInfo) then
       SetSize(GetOrdProp(Source, WidthInfo), GetOrdProp(Source, HeightInfo))
     else
