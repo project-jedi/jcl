@@ -211,7 +211,7 @@ type
 
 {$IFNDEF FPC}
 function GetVirtualMethodCount(AClass: TClass): Integer;
-{$ENDIF}
+{$ENDIF ~FPC}
 function GetVirtualMethod(AClass: TClass; const Index: Integer): Pointer;
 procedure SetVirtualMethod(AClass: TClass; const Index: Integer; const Method: Pointer);
 
@@ -231,7 +231,7 @@ function GetDynamicAddressList(AClass: TClass): PDynamicAddressList;
 function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean;
 {$IFNDEF FPC}
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 { init table methods }
 
@@ -293,7 +293,7 @@ function GetClassParent(AClass: TClass): TClass;
 {$IFNDEF FPC}
 function IsClass(Address: Pointer): Boolean;
 function IsObject(Address: Pointer): Boolean;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 // Interface information
@@ -417,7 +417,7 @@ function BoolToInt(B: Boolean): Integer;
 {$IFNDEF FPC}
 function SystemTObjectInstance: LongWord;
 function IsCompiledWithPackages: Boolean;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 implementation
 
@@ -1380,7 +1380,7 @@ begin
 
   Result := (EndVMT - BeginVMT) div SizeOf(Pointer);
 end;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1480,7 +1480,7 @@ function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer; assembler;
 asm
         CALL    System.@FindDynaClass
 end;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 //==================================================================================================
 // Interface Table
@@ -1558,7 +1558,7 @@ asm
         MOV     Result, False
 @Exit:
 end;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1575,7 +1575,7 @@ asm
         MOV     Result, False
 @Exit:
 end;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 //==================================================================================================
 // Interface information
@@ -1742,10 +1742,10 @@ procedure TJclNumericFormat.GetMantissaExp(const Value: Float;
   out Mantissa: string; out Exponent: Integer);
 const
   {$IFDEF FPC}
-  InfMantissa: array[Boolean] of string[4] = ('inf', '-inf');
+  InfMantissa: array [Boolean] of string[4] = ('inf', '-inf');
   {$ElSE}
-  InfMantissa: array[Boolean] of string = ('inf', '-inf');
-  {$ENDIF}
+  InfMantissa: array [Boolean] of string = ('inf', '-inf');
+  {$ENDIF FPC}
 var
   BlockDigits: TDigitCount;
   IntDigits, FracDigits: Integer;
@@ -2318,11 +2318,14 @@ begin
   Result := SystemTObjectInstance <> HInstance;
 end;
 
-{$ENDIF}
+{$ENDIF ~FPC}
 
 // History:
 
 // $Log$
+// Revision 1.20  2004/06/14 11:05:51  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.19  2004/05/27 20:27:26  ahuser
 // Updated Linux code
 //

@@ -137,7 +137,7 @@ implementation
 uses
   {$IFDEF FPC}
   Types,
-  {$ENDIF}
+  {$ENDIF FPC}
   SysUtils,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
@@ -707,6 +707,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/14 11:05:52  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.7  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

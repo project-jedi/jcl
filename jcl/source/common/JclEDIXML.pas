@@ -617,7 +617,7 @@ begin
     {$ELSE}
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.Values[FAttributes.Names[I]]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.Values[FAttributes.Names[I]]);
-    {$ENDIF}
+    {$ENDIF DELPHI7_UP}
     if J > K then
       QuoteDelimiter := FDelimiters.SingleQuote
     else
@@ -630,7 +630,7 @@ begin
     {$ELSE}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
       QuoteDelimiter + FAttributes.Values[FAttributes.Names[I]] + QuoteDelimiter;
-    {$ENDIF}
+    {$ENDIF DELPHI7_UP}
   end;
 end;
 

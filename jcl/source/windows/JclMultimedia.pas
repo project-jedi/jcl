@@ -717,12 +717,12 @@ end;
 procedure TJclMixerLineControl.SetValue(const Value: TDynCardinalArray);
 var
   ControlDetails: TMixerControlDetails;
-  {$IFOPT C+} // assertions on
+  {$IFDEF ASSERTIONS_ON}
   ItemCount: Cardinal;
-  {$ENDIF}
+  {$ENDIF ASSERTIONS_ON}
 begin
   PrepareControlDetailsStruc(ControlDetails, IsUniform, IsMultiple);
-  {$IFOPT C+} // assertions on
+  {$IFDEF ASSERTIONS_ON}
   if IsUniform then
     ItemCount := 1
   else
@@ -730,7 +730,7 @@ begin
   if IsMultiple then
     ItemCount := ItemCount * ControlDetails.cMultipleItems;
   Assert(ItemCount = Cardinal(Length(Value)));
-  {$ENDIF}
+  {$ENDIF ASSERTIONS_ON}
   ControlDetails.cbDetails := SizeOf(Cardinal);
   ControlDetails.paDetails := @Value[0];
   MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
@@ -1535,6 +1535,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.8  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

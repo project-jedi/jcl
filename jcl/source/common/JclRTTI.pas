@@ -43,7 +43,7 @@ uses
   Types,
   {$ELSE}
   Windows,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_TYPES}
   Classes, SysUtils, TypInfo,
   JclBase;
 
@@ -388,7 +388,7 @@ implementation
 uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   SysConst,
   JclLogic, JclResources, JclStrings;     
 
@@ -2745,11 +2745,11 @@ end;
 type
   PReadLoc = ^TReadLoc;
   TReadLoc = packed record
-    {$IFOPT O+}
+    {$IFDEF OPTIMIZATION_ON}
     Code: array [0..9] of Byte;
     {$ELSE}
     Code: array [0..17] of Byte;
-    {$ENDIF}
+    {$ENDIF OPTIMIZATION_ON}
     OpCode_Call: Byte;
     CallOffset: Longint;
   end;
@@ -2841,6 +2841,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/14 11:05:51  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.9  2004/06/11 14:08:51  twm
 // Bugfix: now uses AnsiLineBreak rather than AnsiCrLf so it will work with unix systems
 //

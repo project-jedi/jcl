@@ -55,9 +55,28 @@
 {                                                                              }
 {******************************************************************************}
 
-{$I jediwinapi.inc}
+{$I jcl.inc}
+{$I windowsonly.inc}
 
-unit MSTaskError{$IFDEF SUPPORTS_PLATFORM} platform{$ENDIF};
+unit MSTaskError;
+
+{$ALIGN ON}
+{$MINENUMSIZE 4}
+{$WEAKPACKAGEUNIT}
+
+{$IFDEF SUPPORTS_PLATFORM}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM}
+
+{$IFDEF SUPPORTS_DEPRECATED}
+{$WARN SYMBOL_DEPRECATED OFF}
+{$ENDIF SUPPORTS_DEPRECATED}
+
+{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
+{$WARN UNSAFE_CODE OFF}
+{$WARN UNSAFE_TYPE OFF}
+{$WARN UNSAFE_CAST OFF}
+{$ENDIF SUPPORTS_UNSAFE_WARNINGS}
 
 interface
 

@@ -111,17 +111,17 @@ procedure LookupAccountBySid(Sid: PSID; out Name, Domain: string);
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
 {$IFNDEF FPC}
 function GetInteractiveUserName: string;
-{$ENDIF}
+{$ENDIF ~FPC}
 
 implementation
 
 uses
-{$IFDEF FPC}
+  {$IFDEF FPC}
   WinSysUt,
   JwaAccCtrl,
-{$ELSE}
+  {$ELSE}
   AccCtrl,
-{$ENDIF}
+  {$ENDIF FPC}
   JclStrings, JclSysInfo, JclWin32;
 
 //==================================================================================================
@@ -456,7 +456,7 @@ begin
   B := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
   {$ELSE}
   B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
-  {$ENDIF}
+  {$ENDIF FPC}
   while (not B) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) do
   begin
     ReallocMem(Buffer, Length);
@@ -464,7 +464,7 @@ begin
     B := GetTokenInformation(Token, InformationClass, Buffer, Length, @Length);
     {$ELSE}
     B := GetTokenInformation(Token, InformationClass, Buffer, Length, Length);
-    {$ENDIF}
+    {$ENDIF FPC}
     if not B then
       LastError := GetLastError;
   end;
@@ -483,7 +483,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC} // JclSysInfo.GetShellProcessHandle not available
-
 function GetInteractiveUserName: string;
 var
   Handle: THandle;
@@ -512,12 +511,14 @@ begin
     CloseHandle(Handle);
   end;
 end;
-
 {$ENDIF ~FPC}
 
 // History:
 
 // $Log$
+// Revision 1.11  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.10  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

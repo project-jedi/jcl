@@ -1034,7 +1034,7 @@ uses
   {$ELSE}
   {$IFNDEF FPC}
   Consts,
-  {$ENDIF not FPC}
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils,
   JclBase, JclResources, JclSynch;
@@ -8091,6 +8091,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.9  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

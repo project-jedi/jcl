@@ -716,9 +716,9 @@ function IsHandleValid(Handle: THandle): Boolean;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF SUPPORTS_EXTSYM}
-  {$EXTERNALSYM __FILE__}
-  {$EXTERNALSYM __LINE__}
-{$ENDIF}
+{$EXTERNALSYM __FILE__}
+{$EXTERNALSYM __LINE__}
+{$ENDIF SUPPORTS_EXTSYM}
 
 implementation
 
@@ -4366,6 +4366,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 11:05:52  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

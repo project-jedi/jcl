@@ -183,12 +183,12 @@ function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName
 // Do not use.
 
 function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 
 procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 
 {$ENDIF ~DROP_OBSOLETE_CODE}
 
@@ -200,7 +200,7 @@ uses
   JwaRegStr,
   {$ELSE}
   RegStr,
-  {$ENDIF}
+  {$ENDIF FPC}
   JclWin32, JclSysUtils, JclStrings, JclResources;
 
 type
@@ -1373,6 +1373,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.15  2004/05/31 22:45:07  rrossmair
 // rollback to rev. 1.13 state
 //

@@ -33,16 +33,22 @@
 
 // Last modified: $Date$
 // For history see end of file
-{$R+} { TODO : Why Rangecheck on here? }
-unit JclSvcCtrl;
 
-interface
+{$R+} { TODO : Why Rangecheck on here? }
+
+unit JclSvcCtrl;
 
 {$I jcl.inc}
 
+interface
+
 uses
   Windows, Classes, SysUtils, Contnrs,
-  {$IFDEF FPC} JwaWinNT, JwaWinSvc, {$ELSE} WinSvc, {$ENDIF}
+  {$IFDEF FPC}
+  JwaWinNT, JwaWinSvc,
+  {$ELSE}
+  WinSvc,
+  {$ENDIF FPC}
   JclBase, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
@@ -365,7 +371,7 @@ uses
   WinSysUt, JwaRegStr,
   {$ELSE}
   RegStr,
-  {$ENDIF}
+  {$ENDIF FPC}
   Math,
   JclStrings, JclRegistry, JclSysInfo;
 
@@ -1446,6 +1452,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.17  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

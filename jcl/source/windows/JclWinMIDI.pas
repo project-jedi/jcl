@@ -32,15 +32,13 @@
 unit JclWinMidi;
 
 {$I jcl.inc}
-
-{$IFNDEF MSWINDOWS}
-Error // This Unit contains code specific to the MS Windows platform
-{$ENDIF}
+{$I windowsonly.inc}
 
 interface
 
 uses
-  SysUtils, Classes, Windows, MMSystem, JclMIDI;
+  SysUtils, Classes, Windows, MMSystem,
+  JclMIDI;
 
 type
   TStereoChannel = (scLeft, scRight);
@@ -49,7 +47,7 @@ type
 // MIDI Out
 //--------------------------------------------------------------------------------------------------
 
-  IJclWinMidiOut = interface (IJclMidiOut)
+  IJclWinMidiOut = interface(IJclMidiOut)
     ['{F3FCE71C-B924-462C-BA0D-8C2DC118DADB}']
     // property access methods
     function GetChannelVolume(Channel: TStereoChannel): Word;
@@ -73,7 +71,8 @@ procedure MidiInCheck(Code: MMResult);
 
 implementation
 
-uses JclStrings, JclResources;
+uses
+  JclResources, JclStrings;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -248,7 +247,7 @@ var
   Msg: packed record
   case Integer of
     0:
-      (Bytes: array[0..2] of Byte);
+      (Bytes: array [0..2] of Byte);
     1:
       (DWord: LongWord);
   end;
@@ -316,12 +315,16 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 initialization
+
 finalization
   FMidiOutputs.Free;
   
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

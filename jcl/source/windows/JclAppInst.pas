@@ -132,7 +132,7 @@ type
     CopyDataStruct: PCopyDataStruct;
     Result: Longint;
   end;
-{$ENDIF}
+{$ENDIF FPC}
 
 const
   { strings to form a unique name for file mapping and optex objects }
@@ -150,9 +150,8 @@ const
   ClassNameOfTApplication = 'TApplication';
 
 type
-
-{ management data to keep track of application instances. this data is shared amongst all instances
-  and must be appropriately protected from concurrent access at all time }
+  { management data to keep track of application instances. this data is shared amongst all instances
+    and must be appropriately protected from concurrent access at all time }
 
   PJclAISharedData = ^TJclAISharedData;
   TJclAISharedData = packed record
@@ -642,6 +641,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 11:05:52  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

@@ -48,7 +48,7 @@ uses
   Windows, SysUtils,
   {$IFNDEF FPC}
   ShlObj,
-  {$ENDIF}
+  {$ENDIF ~FPC}
   JclWin32;
 
 //--------------------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ uses
   ActiveX,
   {$IFNDEF FPC}
   CommCtrl,
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
   Messages, ShellApi,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
@@ -235,7 +235,7 @@ begin
     hwnd := Parent;
     {$ELSE}
     Wnd := Parent;
-    {$ENDIF}
+    {$ENDIF FPC}
     wFunc := FO_DELETE;
     Source := Files + #0#0;
     pFrom := PChar(Source);
@@ -245,7 +245,7 @@ begin
   Result := SHFileOperation(@FileOp) = 0;
   {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
-  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -284,7 +284,7 @@ begin
     hwnd := GetDesktopWindow;
     {$ELSE}
     Wnd := GetDesktopWindow;
-    {$ENDIF}
+    {$ENDIF FPC}
     wFunc := FO_RENAME;
     Source := Src + #0#0;
     Destination := Dest + #0#0;
@@ -296,7 +296,7 @@ begin
   Result := SHFileOperation(@FileOp) = 0;
   {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
-  {$ENDIF}
+  {$ENDIF FPC}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1446,6 +1446,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.11  2004/05/09 11:22:39  rrossmair
 // Contributor list update
 //

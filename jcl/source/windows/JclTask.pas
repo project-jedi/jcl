@@ -41,7 +41,10 @@ interface
 uses
   Windows, Messages, Classes, SysUtils, Contnrs,
   MSTask, MSTaskError,
-  JclBase, JclSysUtils, JclSysInfo{$IFNDEF RTL140_UP}, JclUnicode{$ENDIF};
+  {$IFNDEF RTL140_UP}
+  JclUnicode,
+  {$ENDIF RTL140_UP}
+  JclBase, JclSysUtils, JclSysInfo;
 
 type
   TDateTimeArray = array of TDateTime;
@@ -242,7 +245,11 @@ implementation
 
 uses
   ActiveX, ComObj, CommCtrl,
-  {$IFDEF FPC} JwaWinSvc, {$ELSE} WinSvc, {$ENDIF}
+  {$IFDEF FPC}
+  JwaWinSvc,
+  {$ELSE}
+  WinSvc,
+  {$ENDIF FPC}
   JclSvcCtrl;
 
 const
@@ -1213,6 +1220,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.10  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

@@ -2509,7 +2509,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}  // needs JclShell
-
 { TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Anthony Steele". Excuse me?) }
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -2519,7 +2518,6 @@ begin
   else
     Result := DelTree(DirectoryName);
 end;
-
 {$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
@@ -2541,13 +2539,13 @@ var
   Attr: DWORD;
 begin
   Assert(Path <> '', RsDelTreePathIsEmpty);
-{$IFOPT C-}
+  {$IFNDEF ASSERTIONS_ON}
   if Path = '' then
   begin
     Result := False;
     Exit;
   end;
-{$ENDIF ASSERTIONS OFF}
+  {$ENDIF ~ASSERTIONS_ON}
   Result := True;
   Files := TStringList.Create;
   try
@@ -5730,6 +5728,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2004/06/14 11:05:51  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.20  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //

@@ -55,7 +55,7 @@ type
     FStop: Int64;
     {$IFDEF LINUX}
     FTimeval: TTimeval;
-    {$ENDIF}
+    {$ENDIF LINUX}
   protected
     function GetRunElapsedTime: Float;
 
@@ -97,10 +97,10 @@ begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceFrequency(FFrequency) then
     raise EJclCounterError.CreateResRec(@RsNoCounter);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefor we have to devide by 10E5
-  {$ENDIF}
+  FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefore we have to divide by 10E5
+  {$ENDIF LINUX}
 
   FCounting := False;
   FOverhead := 0;
@@ -134,11 +134,11 @@ begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStart) then  
     raise EJclCounterError.CreateResRec(@RsNoCounter);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
   FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
-  {$ENDIF}
+  {$ENDIF LINUX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -148,11 +148,11 @@ begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(FStop) then
     raise EJclCounterError.CreateResRec(@RsNoCounter);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
   FStop := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
-  {$ENDIF}
+  {$ENDIF LINUX}
   FCounting := False;
   FElapsedTime := FOverallElapsedTime + ((FStop - FStart - FOverhead) / FFrequency);
   FOverallElapsedTime := FElapsedTime;
@@ -168,11 +168,11 @@ begin
   {$IFDEF MSWINDOWS}
   if not QueryPerformanceCounter(TimeNow) then
     raise EJclCounterError.CreateResRec(@RsNoCounter);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
   TimeNow := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
-  {$ENDIF}
+  {$ENDIF LINUX}
   Result := FOverallElapsedTime + ((TimeNow - FStart - FOverhead) / FFrequency);
 end;
 
@@ -222,6 +222,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 11:05:50  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.6  2004/05/08 08:44:17  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //

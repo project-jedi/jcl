@@ -1027,27 +1027,27 @@ resourcestring
 
 // zlib
 resourcestring
-  RsZlibNeedDict     = 'need dictionary';
-  RsZlibStreamEnd    = 'stream end';
-  RsZlibOK           = '';
-  RsZlibErrNo        = 'file error';
-  RsZlibStreamError  = 'stream error';
-  RsZlibDataError    = 'data error';
-  RsZlibMemError     = 'insufficient memory';
-  RsZlibBufError     = 'buffer error';
-  RsZlibVersionError = 'incompatible version';
-  RsZlibUnknownError = 'unknown zlib error';
-  RsZlibNoSetSize    = 'TZLibStream can''t perform set size';
-  RsZlibNoSeek       = 'TZLibStream can''t perform seek';
-  RsZlibNoWrite      = 'TZLibReader can''t write';
-  RsZlibNoRead       = 'TZLibWriter can''t read';
+  RsZLibNeedDict     = 'need dictionary';
+  RsZLibStreamEnd    = 'stream end';
+  RsZLibOK           = '';
+  RsZLibErrNo        = 'file error';
+  RsZLibStreamError  = 'stream error';
+  RsZLibDataError    = 'data error';
+  RsZLibMemError     = 'insufficient memory';
+  RsZLibBufError     = 'buffer error';
+  RsZLibVersionError = 'incompatible version';
+  RsZLibUnknownError = 'unknown zlib error';
+  RsZLibNoSetSize    = 'TZLibStream cannot perform set size';
+  RsZLibNoSeek       = 'TZLibStream cannot perform seek';
+  RsZLibNoWrite      = 'TZLibReader cannot write';
+  RsZLibNoRead       = 'TZLibWriter cannot read';
 
 // gzip
 resourcestring
-  RsGzipNoSetSize    = 'gzip stream can''t perform set size';
-  RsGzipNoSeek       = 'gzip stream can''t perform seek';
-  RsGzipNoWrite      = 'gzip reader can''t write';
-  RsGzipNoRead       = 'gzip writer can''t read';
+  RsGzipNoSetSize    = 'gzip stream cannot perform set size';
+  RsGzipNoSeek       = 'gzip stream cannot perform seek';
+  RsGzipNoWrite      = 'gzip reader cannot write';
+  RsGzipNoRead       = 'gzip writer cannot read';
 
   RsGzipNoGZipStream          = 'no gzip stream';
   RsGzipNoDeflate             = 'no deflate compression';
@@ -1079,6 +1079,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/14 11:05:51  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.7  2004/06/02 03:23:46  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

@@ -348,10 +348,10 @@ type
     ncb_lana_num: UCHAR;                             // lana (adapter) number
     ncb_cmd_cplt: UCHAR;                             // 0xff => commmand pending
     {$IFDEF _WIN64}
-    ncb_reserve: array[0..17] of AnsiChar;           // reserved, used by BIOS
+    ncb_reserve: array [0..17] of AnsiChar;          // reserved, used by BIOS
     {$ELSE}
-    ncb_reserve: array[0..9] of AnsiChar;            // reserved, used by BIOS
-    {$ENDIF}
+    ncb_reserve: array [0..9] of AnsiChar;           // reserved, used by BIOS
+    {$ENDIF _WIN64}
     ncb_event: THandle;                              // HANDLE to Win32 event which
                                                      // will be set to the signalled
                                                      // state when an ASYNCH command
@@ -1708,7 +1708,7 @@ type
   PIMAGE_COR20_HEADER = ^IMAGE_COR20_HEADER;
   TImageCor20Header = IMAGE_COR20_HEADER;
   PImageCor20Header = PIMAGE_COR20_HEADER;
-{$ENDIF FPC}
+{$ENDIF ~FPC}
 
 //==================================================================================================
 // from DelayImp.h
@@ -1939,7 +1939,7 @@ function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
 function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall; overload;
 {$EXTERNALSYM GetVersionEx}
 function GetVersionEx(lpVersionInformation: POSVERSIONINFOEX): BOOL; stdcall; overload;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+  {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 
 { TODO -cTest : test the CreateMutex - BOOL problem }
 // Supposition: modified conversion to avoid a WinAPI bug
@@ -4033,6 +4033,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.22  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.21  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //
