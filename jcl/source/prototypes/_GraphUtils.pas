@@ -33,7 +33,11 @@
 {$ELSE ~PROTOTYPE}
 // For history, see end of file
 
-unit {$IFDEF VisualCLX}JclQGraphUtils{$ELSE}JclGraphUtils{$ENDIF};
+{$IFDEF VCL}
+unit JclGraphUtils;
+{$ELSE VisualCLX}
+unit JclQGraphUtils;
+{$ENDIF VisualCLX}
 {$ENDIF ~PROTOTYPE}
 
 interface
@@ -2873,10 +2877,12 @@ finalization
 
 // History:
 
-// 2001-03-28, Mike Lischke:
-//  - ShortenString included
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.12  2004/07/16 03:58:14  rrossmair
+// some style cleaning
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.11  2004/06/27 23:28:51  rrossmair
 // some style cleaning (case, spaces)
 //
@@ -2891,7 +2897,6 @@ finalization
 // renamed Hue/Luminance/Saturation related routines from *HSL* to *HLS*, as far as possible; old identifiers kept as deprecated
 // header updated according to new policy: initial developers & contributors listed
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.7  2004/05/01 00:21:10  rrossmair
 // fixed for Kylix
 //
@@ -2904,5 +2909,7 @@ finalization
 // Revision 1.4  2004/04/06 05:01:54  peterjhaas
 // adapt compiler conditions, add log entry
 //
+// 2001-03-28, Mike Lischke:
+//  - ShortenString included
 
 end.
