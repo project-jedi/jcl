@@ -26,13 +26,13 @@ unit mscoree_TLB;
 //   Hint: Member 'type' of 'tagSTATSTG' changed to 'type_'
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{$WARN SYMBOL_PLATFORM OFF}
-{$WRITEABLECONST ON}
-{$VARPROPSETTER ON}
+{ $WARN SYMBOL_PLATFORM OFF}
+{ $WRITEABLECONST ON}
+{ $VARPROPSETTER ON}
 interface
 
-uses Windows, ActiveX, Classes, Graphics, OleServer, StdVCL, Variants;
-  
+uses ActiveX, Classes, OleServer;
+
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        

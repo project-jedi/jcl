@@ -44,13 +44,13 @@ unit mscorlib_TLB;
 //   Hint: Parameter 'Type' of _Assembly.GetManifestResourceStream changed to 'Type_'
 // ************************************************************************ //
 {$TYPEDADDRESS OFF} // Unit must be compiled without type-checked pointers. 
-{$WARN SYMBOL_PLATFORM OFF}
-{$WRITEABLECONST ON}
-{$VARPROPSETTER ON}
+{ $WARN SYMBOL_PLATFORM OFF}
+{ $WRITEABLECONST ON}
+{ $VARPROPSETTER ON}
 interface
 
-uses Windows, ActiveX, Classes, Graphics, OleServer, StdVCL, Variants;
-  
+uses ActiveX, Classes;
+
 
 // *********************************************************************//
 // GUIDS declared in the TypeLibrary. Following prefixes are used:        
