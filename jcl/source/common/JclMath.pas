@@ -16,7 +16,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 21, 2001                                              }
+{******************************************************************************}
+{                                                                              }
+{ Various mathematics classes and routines. Includes prime numbers, rational   }
+{ numbers, generic floating point routines, hyperbolic and transcendenatal     }
+{ routines, NAN and INF support and more.                                      }
+{                                                                              }
+{ Unit owner: Matthias Thoma                                                   }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -421,7 +428,7 @@ function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 
-function Crc32_P(X: PBytearray ; N: Integer; Crc: Cardinal = 0): Cardinal;
+function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 
 type
@@ -447,34 +454,34 @@ uses
 // Internal helper routines
 //==============================================================================
 
-// to be independent from JCLLogic
+// to be independent from JclLogic
 
-function Min(const x, y: Integer): Integer;
+function Min(const X, Y: Integer): Integer;
 begin
-  if x < y then
-    Result := x
+  if X < Y then
+    Result := X
   else
-    result := y;
+    result := Y;
 end;
 
 //------------------------------------------------------------------------------
 
 // to be independent from JCLLogic
 
-procedure SwapOrd(var x, y: Integer);
+procedure SwapOrd(var X, Y: Integer);
 var
   Temp: Integer;
 begin
-  Temp := x;
-  x := y;
-  y := Temp;
+  Temp := X;
+  X := Y;
+  Y := Temp;
 end;
 
 //------------------------------------------------------------------------------
 
-function DoubleToHex(const d: Double): string;
+function DoubleToHex(const D: Double): string;
 var
-  Overlay: array [1..2] of LongInt absolute d;
+  Overlay: array [1..2] of LongInt absolute D;
 begin
   // Look at element 2 before element 1 because of "Little Endian" order.
   Result := IntToHex(Overlay[2], 8) + IntToHex(Overlay[1], 8);
@@ -482,18 +489,16 @@ end;
 
 //------------------------------------------------------------------------------
 
-function HexToDouble(const hex: string): Double;
+function HexToDouble(const Hex: string): Double;
 var
-  d: Double;
-  Overlay: array [1..2] of LongInt absolute d;
+  D: Double;
+  Overlay: array [1..2] of LongInt absolute D;
 begin
-  if Length(hex) <> 16 then
+  if Length(Hex) <> 16 then
     raise EJclMathError.CreateResRec(@RsUnexpectedValue);
-
-  Overlay[1] := StrToInt('$' + Copy(hex, 9, 8));
-  Overlay[2] := StrToInt('$' + Copy(hex, 1, 8));
-
-  Result := d;
+  Overlay[1] := StrToInt('$' + Copy(Hex, 9, 8));
+  Overlay[2] := StrToInt('$' + Copy(Hex, 1, 8));
+  Result := D;
 end;
 
 //------------------------------------------------------------------------------
@@ -1300,7 +1305,6 @@ begin
   Z := Int(Result);
   if Result < 0.0 then
     Z := Z - 1.0;
-
   Result := X - Z * Y;
 end;
 
@@ -1331,12 +1335,10 @@ var
 begin
   One := 1.0;
   EpsSingle := One;
-
   repeat
     EpsSingle := 0.5 * EpsSingle;
     T := One + EpsSingle;
   until One = T;
-
   EpsSingle := 2.0 * EpsSingle;
   ThreeEpsSingle := 3.0 * EpsSingle;
 end;
@@ -1350,12 +1352,10 @@ var
 begin
   One := 1.0;
   EpsDouble := One;
-
   repeat
     EpsDouble := 0.5 * EpsDouble;
     T := One + EpsDouble;
   until One = T;
-
   EpsDouble := 2.0 * EpsDouble;
   ThreeEpsDouble := 3.0 * EpsDouble;
 end;
@@ -1369,12 +1369,10 @@ var
 begin
   One := 1.0;
   EpsExtended := One;
-
   repeat
     EpsExtended := 0.5 * EpsExtended;
     T := One + EpsExtended;
   until One = T;
-
   EpsExtended := 2.0 * EpsExtended;
   ThreeEpsExtended := 3.0 * EpsExtended;
 end;
@@ -2207,9 +2205,8 @@ begin
     Exit
   else
   begin
-    if PrimeSet = nil then // initialize look-up table
+    if PrimeSet = nil then
       InitPrimeSet;
-
     L := 0;
     J := N;
     R := N;
@@ -2219,7 +2216,6 @@ begin
         Inc(L);
         SetLength(Result, L);
         Result[L - 1] := I;
-
         repeat
           J := J div I;
           if J = 1 then // no more factors
@@ -2298,7 +2294,7 @@ var
 begin
   // calculate Syndrome
   for I := 1 to CrcBytes do
-      Crc := Crc32Table[Crc shr 24] xor (Crc shl 8);
+    Crc := Crc32Table[Crc shr 24] xor (Crc shl 8);
   I := -1;
   repeat
     Inc(I);
@@ -2310,12 +2306,12 @@ begin
   if Crc <> CrcHighBit then
     Result := -1000 // not correctable
   else
-      // I = No. of single faulty bit
-      // (high bit first,
-      // starting from lowest with CRC bits)
+    // I = No. of single faulty bit
+    // (high bit first,
+    // starting from lowest with CRC bits)
     Result := I - (CrcBytes * 8);
-      // Result <  0 faulty CRC-bit
-      // Result >= 0 No. of faulty data bit
+    // Result <  0 faulty CRC-bit
+    // Result >= 0 No. of faulty data bit
 end;
 
 //------------------------------------------------------------------------------
@@ -2327,12 +2323,12 @@ begin
   Result := CrcStart;
   for I := 0 to N - 1 do // The CRC Bytes are located at the end of the information
   begin
-//  a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
     Result := Crc32Table[Result shr 24] xor (Result shl 8) xor X[I];
   end;
   for i := 0 to CrcBytes - 1 do
   begin
-//  a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    // a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
     Result := Crc32Table[Result shr 24] xor (Result shl 8) xor (Crc shr 24);
     Crc := Crc shl 8;
   end;
@@ -2737,19 +2733,17 @@ end;
 {$IFDEF WIN32}
 
 procedure InitExceptObjProc;
-var
-  P: Pointer;
-begin
-  if not ExceptObjProcInitialized then
-  begin
-    if Win32Platform = VER_PLATFORM_WIN32_NT then
-    begin
-      P := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
-      if P <> @GetExceptionObject then
-        PrevExceptObjProc := P;
-    end;
-    ExceptObjProcInitialized := True;
+
+  function IsInitialized: Boolean;
+  asm
+     MOV   AL, True
+     LOCK XCHG  AL, ExceptObjProcInitialized
   end;
+
+begin
+  if not IsInitialized then
+    if Win32Platform = VER_PLATFORM_WIN32_NT then
+      PrevExceptObjProc := Pointer(InterlockedExchange(Integer(ExceptObjProc), Integer(@GetExceptionObject)));
 end;
 
 {$ENDIF WIN32}
