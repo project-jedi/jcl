@@ -677,10 +677,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.Delete;
+{$IFDEF FPC}
 const
-  {$IFDEF FPC}
   _DELETE = $00010000; { Renamed from DELETE }
-  {$ENDIF FPC}
+{$ENDIF FPC}
 begin
   Open(_DELETE);
   try
@@ -1448,6 +1448,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/05/06 23:41:33  rrossmair
+// fix: $IFDEF FPC left empty const section
+//
 // Revision 1.14  2004/05/06 22:37:10  rrossmair
 // contributor list updated
 //
