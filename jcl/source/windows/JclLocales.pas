@@ -216,7 +216,7 @@ implementation
 
 uses
   Registry, SysUtils,
-  JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
 
 const
   JclMaxKeyboardLayouts = 16;
