@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 04, 2000                                             }
+{ Last modified: December 10, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -608,23 +608,25 @@ const
     $0F, $8F, $4F, $CF, $2F, $AF, $6F, $EF,
     $1F, $9F, $5F, $DF, $3F, $BF, $7F, $FF);
 
-// Table based reverse bits implementation. Generalisation of other overloaded
-// ReverseBits implementation. Original assembler implementation by Mike Lishke
-// rewritten to OP by MVB. Implementation note: OP version is faster than asm!
-
 function ReverseBits(P: Pointer; Count: Integer): Pointer;
 var
-  I: Integer;
-  PB: PByte;
+  P1, P2: PByte;
+  T: Byte;
 begin
   if (P <> nil) and (Count > 0) then
   begin
-    PB := P;
-    for I := 1 to Count do
+    P1 := P;
+    P2 := PByte(Integer(P) + Count - 1);
+    while Integer(P1) < Integer(P2) do
     begin
-      PB^ := ReverseTable[PB^];
-      Inc(PB);
+      T := ReverseTable[P1^];
+      P1^ := ReverseTable[P2^];
+      P2^ := T;
+      Inc(P1);
+      Dec(P2);
     end;
+    if (P1 = P2) then
+      P1^ := ReverseTable[P1^];
   end;
   Result := P;
 end;
