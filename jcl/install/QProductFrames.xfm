@@ -68,7 +68,7 @@ object ProductFrame: TProductFrame
       Height = 15
       Caption = '&Information'
     end
-    object InfoDisplay: TTextBrowser
+    object InfoDisplay: TTextViewer
       Left = 4
       Top = 24
       Width = 395
