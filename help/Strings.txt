@@ -2401,7 +2401,7 @@ Count=2
 2=MultiSzToStrings
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure StrToStrings(S: AnsiString; Sep: AnsiString; var List: TStrings);
+procedure StrToStrings(S: AnsiString; Sep: AnsiString; const List: TStrings);
 [ShortDescr]
 Converts a string into a list of strings using the specified separator character.
 [Description]
