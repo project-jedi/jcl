@@ -19,7 +19,7 @@
 { Various COM (Component Object Model) utility routines.                       }
 {                                                                              }
 { Unit Owner: Marcel van Brakel                                                }
-{ Last modified: December 18, 2000                                             }
+{ Last modified: January 09, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -42,6 +42,9 @@ uses
   Windows, ActiveX,
   {$ENDIF}
   SysUtils,
+  {$IFNDEF DELPHI5_UP}
+  JclSysUtils,
+  {$ENDIF}
   JclFileUtils, JclRegistry, JclWin32;
 
 function IsDCOMEnabled: Boolean;
