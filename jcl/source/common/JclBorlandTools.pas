@@ -41,12 +41,20 @@ uses
   Classes, SysUtils, IniFiles, Contnrs,
   JclBase;
 
-const
-
 //--------------------------------------------------------------------------------------------------
 // Various definitions
 //--------------------------------------------------------------------------------------------------
 
+type
+  TJclBorRADToolKind = (brDelphi, brCppBuilder);
+  {$IFDEF KYLIX}
+  TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
+  {$ELSE}
+  TJclBorRADToolEdition = (deSTD, dePRO, deCSS);
+  {$ENDIF}
+  TJclBorRADToolPath = string;
+
+const
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
 
@@ -70,19 +78,17 @@ const
   BorRADToolRepositoryObjectNewForm   = 'DefaultNewForm';
   BorRADToolRepositoryObjectMainForm  = 'DefaultMainForm';
 
+  {$IFDEF KYLIX}
+  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar = ('OPEN', 'PRO', 'SVR');
+  {$ELSE}
+  BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar = ('STD', 'PRO', 'CSS');
+  {$ENDIF}
+
 //--------------------------------------------------------------------------------------------------
 // Installed versions information classes
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclBorRADToolKind = (brDelphi, brCppBuilder); 
-  {$IFDEF KYLIX}
-  TJclBorRADToolEdition = (deOPEN, dePRO, deSVR);
-  {$ELSE}
-  TJclBorRADToolEdition = (deSTD, dePRO, deCSS);
-  {$ENDIF}
-  TJclBorRADToolPath = string;
-
   TJclBorRADToolInstallation = class;
 
   TJclBorRADToolInstallationObject = class (TInterfacedObject)
@@ -1846,10 +1852,8 @@ procedure TJclBorRADToolInstallation.ReadInformation;
 const
   {$IFDEF KYLIX}
   BinDir = 'bin/';
-  EditionNames: array [TJclBorRADToolEdition] of PChar = ('OPEN', 'PRO', 'SVR');
   {$ELSE}
   BinDir = 'Bin\';
-  EditionNames: array [TJclBorRADToolEdition] of PChar = ('STD', 'PRO', 'CSS');
   {$ENDIF}
   UpdateKeyName = 'Update #';
   IdeFileNames: array[TJclBorRADToolKind] of string = (DelphiIdeFileName, BCBIdeFileName);
@@ -1878,7 +1882,7 @@ begin
 
   Key := Globals.Values[VersionValueName];
   for Ed := Low(Ed) to High(Ed) do
-    if EditionNames[Ed] = Key then
+    if BorRADToolEditionIDs[Ed] = Key then
       FEdition := Ed;
 
   for I := 0 to Globals.Count - 1 do
