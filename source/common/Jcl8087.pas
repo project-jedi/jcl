@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 21, 2000                                             }
+{ Last modified: December 12, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -188,7 +188,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean): T8087Exceptions;
 asm
         TEST   DL, DL             // if ClearBefore then
         JZ     @1
@@ -216,7 +216,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
+function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean): T8087Exceptions;
 begin
   Result := GetMasked8087Exceptions;
   Exceptions := Result - Exceptions;
