@@ -22,11 +22,9 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: April 12, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
-
-// (rom)   added ScreenShot() functions from Bernhard Berger
 
 unit JclGraphics;
 
@@ -240,8 +238,7 @@ type
   {$DEFINE Bitmap32}
 
   { TJclBitmap32 }
-  { This is the core of Graphics32 unit. The TJclBitmap32 class is responsible
-    for storage of a bitmap, as well as for drawing in it }
+  { The TJclBitmap32 class is responsible for storage of a bitmap, as well as for drawing in it }
   TJclBitmap32 = class (TJclCustomMap)
   private
     FBitmapInfo: TBitmapInfo;
@@ -266,6 +263,7 @@ type
     procedure SetMasterAlpha(Value: Byte);
     procedure SetPixel(X, Y: Integer; Value: TColor32);
     procedure SetPixelS(X, Y: Integer; Value: TColor32);
+    procedure SetStippleStep(Value: Single);
     procedure SetStretchFilter(Value: TStretchFilter);
   protected
     FontHandle: HFont;
@@ -275,13 +273,14 @@ type
     RasterYF: Single;
     procedure AssignTo(Dst: TPersistent); override;
     function  ClipLine(var X0, Y0, X1, Y1: Integer): Boolean;
-    function  ClipLineF(var X0, Y0, X1, Y1: Single; MinX, MaxX, MinY, MaxY: Single): Boolean;
+    class function ClipLineF(var X0, Y0, X1, Y1: Single; MinX, MaxX, MinY, MaxY: Single): Boolean;
     procedure FontChanged(Sender: TObject);
     procedure SET_T256(X, Y: Integer; C: TColor32);
     procedure SET_TS256(X, Y: Integer; C: TColor32);
     procedure ReadData(Stream: TStream); virtual;
     procedure WriteData(Stream: TStream); virtual;
     procedure DefineProperties(Filer: TFiler); override;
+    property StippleCounter: Single read FStippleCounter;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -320,7 +319,6 @@ type
 
     procedure SetStipple(NewStipple: TArrayOfColor32); overload;
     procedure SetStipple(NewStipple: array of TColor32); overload;
-    procedure SetStippleStep(Value: Single);
     procedure ResetStippleCounter;
     function  GetStippleColor: TColor32;
 
@@ -383,6 +381,7 @@ type
     property PixelS[X, Y: Integer]: TColor32 read GetPixelS write SetPixelS;
     property PixelPtr[X, Y: Integer]: PColor32 read GetPixelPtr;
     property ScanLine[Y: Integer]: PColor32Array read GetScanLine;
+    property StippleStep: Single read FStippleStep write SetStippleStep;
   published
     property DrawMode: TDrawMode read FDrawMode write SetDrawMode default dmOpaque;
     property MasterAlpha: Byte read FMasterAlpha write SetMasterAlpha default $FF;
@@ -468,14 +467,14 @@ procedure JPegToBitmap(const FileName: string);
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
-procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap; WriteLength: Boolean);
-  overload;
-procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean); overload;
+procedure SaveIconToFile(Icon: HICON; const FileName: string);
+procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap;
+  WriteLength: Boolean = False); overload;
+procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False); overload;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF VCL}
-procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap; HotSpotX: Integer = 0;
-  HotSpotY: Integer = 0);
+procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 {$ENDIF VCL}
@@ -1757,17 +1756,22 @@ end;
 
 {$IFDEF VCL}
 
-procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap; HotSpotX: Integer = 0;
-  HotSpotY: Integer = 0);
+procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 var
   IconInfo: TIconInfo;
 begin
-  IconInfo.fIcon := True;
-  IconInfo.xHotSpot := HotSpotX;
-  IconInfo.yHotSpot := HotSpotY;
-  IconInfo.hbmMask := Bitmap.MaskHandle;
-  IconInfo.hbmColor := Bitmap.Handle;
-  Icon.Handle := CreateIconIndirect(IconInfo);
+  with TBitmap.Create do
+  try
+    Assign(Bitmap);
+    if not Transparent then
+      TransparentColor := clNone;
+    IconInfo.fIcon := True;
+    IconInfo.hbmMask := MaskHandle;
+    IconInfo.hbmColor := Handle;
+    Icon.Handle := CreateIconIndirect(IconInfo);
+  finally
+    Free;
+  end;
 end;
 
 {$ENDIF VCL}
@@ -1826,7 +1830,7 @@ type
     DIBOffset: Longint;
   end;
 
-procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap; WriteLength: Boolean);
+procedure WriteIcon(Stream: TStream; ColorBitmap, MaskBitmap: HBitmap; WriteLength: Boolean = False);
 var
   MonoInfoSize, ColorInfoSize: DWORD;
   MonoBitsSize, ColorBitsSize: DWORD;
@@ -1886,7 +1890,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean);
+procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False);
 var
   IconInfo: TIconInfo;
 begin
@@ -1899,6 +1903,20 @@ begin
   end
   else
     RaiseLastOSError;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure SaveIconToFile(Icon: HICON; const FileName: string);
+var
+  Stream: TFileStream;
+begin
+  Stream := TFileStream.Create(FileName, fmCreate);
+  try
+    WriteIcon(Stream, Icon, False);
+  finally
+    Stream.Free;
+  end;
 end;
 
 {$ENDIF MSWINDOWS}
@@ -3737,7 +3755,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclBitmap32.ClipLineF(var X0, Y0, X1, Y1: Single;
+class function TJclBitmap32.ClipLineF(var X0, Y0, X1, Y1: Single;
   MinX, MaxX, MinY, MaxY: Single): Boolean;
 type
   Edge = (Left, Right, Top, Bottom);
