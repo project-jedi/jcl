@@ -24,7 +24,7 @@
 { and so forth. Note that some functions require NTFS 5 or higher!             }
 {                                                                              }
 { Unit Owner: Marcel van Brakel                                                }
-{ Last modified: November 22, 2000                                             }
+{ Last modified: January 09, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -358,7 +358,7 @@ begin
   Result := NtfsFileHasReparsePoint(Path);
   if Result then
   begin
-    Result := DWORD(FindFirst(Path, faAnyFile, SearchRec)) <> INVALID_HANDLE_VALUE;
+    Result := FindFirst(Path, faAnyFile, SearchRec) = 0;
     if Result then
     begin
       // Check if file has a reparse point
