@@ -5545,7 +5545,7 @@ var
   CurrName: PChar;
   ImportEntry: PImageThunkData;
   FoundProc: Boolean;
-  LastProtect: Cardinal;
+  LastProtect, Dummy: Cardinal;
 begin
   Result := False;
   FromProcDebugThunk := PWin9xDebugThunk(FromProc);
@@ -5579,8 +5579,10 @@ begin
             begin
               ImportEntry^.Function_ := Cardinal(ToProc);
 
+              // According to Platform SDK documentation, the last parameter
+              // has to be (point to) a valid variable
               VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc),
-                LastProtect, nil);
+                LastProtect, Dummy);
               Result := True;
             end;
           end;
@@ -5917,6 +5919,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/10/23 23:31:27  rrossmair
+// - fixed bug # 0001885
+//
 // Revision 1.17  2004/10/19 21:26:47  rrossmair
 // restore JclWin32 compatibility
 //
