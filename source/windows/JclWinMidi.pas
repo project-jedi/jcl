@@ -20,7 +20,7 @@
 { MIDI functions for MS Windows platform                                                           }
 {                                                                                                  }
 { Unit owner: Robert Rossmair                                                                      }
-{ Last modified: April 8, 2002                                                                     }
+{ Last modified: June 5, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -31,7 +31,7 @@ unit JclWinMidi;
 interface
 
 uses
-  SysUtils, Classes, Windows, MMSystem, JclBase, JclMidi;
+  SysUtils, Classes, Windows, MMSystem, JclBase, JclMIDI;
 
 type
   TStereoChannel = (scLeft, scRight);
@@ -52,8 +52,8 @@ type
     property Volume: Word read GetVolume write SetVolume;
   end;
 
-function MidiOut(DeviceID: UINT): IJclWinMidiOut;
-function MidiOutputs: TStrings;
+function MidiOut(DeviceID: Cardinal): IJclWinMidiOut;
+procedure GetMidiOutputs(const List: TStrings);
 procedure MidiOutCheck(Code: MMResult);
 
 //--------------------------------------------------------------------------------------------------
@@ -65,10 +65,6 @@ procedure MidiInCheck(Code: MMResult);
 implementation
 
 uses JclStrings, JclResources;
-
-resourcestring
-  RsMidiInUnknownError = 'Unknown MIDI-In error No. %d';
-  RsMidiOutUnknownError = 'Unknown MIDI-Out error No. %d';
 
 //--------------------------------------------------------------------------------------------------
 
@@ -90,6 +86,13 @@ begin
     end;
   end;
   Result := FMidiOutputs;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure GetMidiOutputs(const List: TStrings);
+begin
+  List.Assign(MidiOutputs);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -135,14 +138,12 @@ end;
 //==================================================================================================
 
 type
-  TMidiOut = class(TJclMidiOut, IJclWinMidiOut)
+  TMidiOut = class (TJclMidiOut, IJclWinMidiOut)
   private
     FHandle: HMIDIOUT;
-    FDeviceID: UINT;
+    FDeviceID: Cardinal;
     FDeviceCaps: TMidiOutCaps;
     FVolume: DWord;
-    FRunningStatus: TMidiStatusByte;
-    FRunningStatusEnabled: Boolean;
     function GetChannelVolume(Channel: TStereoChannel): Word;
     procedure SetChannelVolume(Channel: TStereoChannel; const Value: Word);
     function GetVolume: Word;
@@ -150,11 +151,12 @@ type
     procedure SetLRVolume(const LeftValue, RightValue: Word);
   protected
     function GetName: string; override;
-    procedure ShortMessage(Status: TMidiStatusByte; Data1, Data2: TMidiDataByte); override;
-    procedure LongMessage(Data: array of Byte); override;
+    procedure LongMessage(const Data: array of Byte);
+    procedure DoSendMessage(const Data: array of Byte); override;
   public
-    constructor Create(ADeviceID: UINT);
+    constructor Create(ADeviceID: Cardinal);
     destructor Destroy; override;
+    property DeviceID: Cardinal read FDeviceID;
     property Name: string read GetName;
     property ChannelVolume[Channel: TStereoChannel]: Word read GetChannelVolume write SetChannelVolume;
     property Volume: Word read GetVolume write SetVolume;
@@ -162,25 +164,39 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
-function MidiOut(DeviceID: UINT): IJclWinMidiOut;
+var
+  MidiMapperDeviceID: Cardinal = MIDI_MAPPER;
+
+function MidiOut(DeviceID: Cardinal): IJclWinMidiOut;
+var
+  Device: TMidiOut;
 begin
-  if DeviceID < midiOutGetNumDevs then
+  if DeviceID = MIDI_MAPPER then
+    DeviceID := MidiMapperDeviceID;
+  Device := nil;
+  if DeviceID <> MIDI_MAPPER then
+    Device := TMidiOut(MidiOutputs.Objects[DeviceID]);
+  // make instance a singleton for a given device ID
+  if not Assigned(Device) then
   begin
-    if MidiOutputs.Objects[DeviceID] = nil then
-      MidiOutputs.Objects[DeviceID] := TMidiOut.Create(DeviceID);
-    Result := TMidiOut(MidiOutputs.Objects[DeviceID]);
+    Device := TMidiOut.Create(DeviceID);
+    if DeviceID = MIDI_MAPPER then
+      MidiMapperDeviceID := Device.DeviceID;
+    // cannot use DeviceID argument as index here, since it might be MIDI_MAPPER
+    MidiOutputs.Objects[Device.DeviceID] := Device;
   end;
+  Result := Device;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TMidiOut.Create(ADeviceID: UINT);
+constructor TMidiOut.Create(ADeviceID: Cardinal);
 begin
   inherited Create;
   FVolume := $FFFFFFFF; // max. volume, in case Get/SetChannelVolume not supported
   MidiOutCheck(midiOutGetDevCaps(ADeviceID, @FDeviceCaps, SizeOf(FDeviceCaps)));
   MidiOutCheck(midiOutOpen(@FHandle, ADeviceID, 0, 0, 0));
-  FDeviceID := ADeviceID;
+  MidiOutCheck(midiOutGetID(FHandle, @FDeviceID));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -201,42 +217,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TMidiOut.ShortMessage(Status: TMidiStatusByte; Data1,
-  Data2: TMidiDataByte);
-type
-  TMidiShortMsg = packed record
-  case Integer of
-    0: (DWord: DWORD);
-    1: (StatusByte: TMidiStatusByte;
-        DataByte1,
-        DataByte2: TMidiDataByte);
-    2: { Running status }
-       (RDataByte1,
-        RDataByte2: TMidiDataByte);
-  end;
-var
-  Msg: TMidiShortMsg;
-begin
-  with Msg do
-  begin
-    StatusByte := Status;
-    if FRunningStatusEnabled and (Status = FRunningStatus) then
-    begin
-      RDataByte1 := Data1 and MidiDataMask;
-      RDataByte2 := Data2 and MidiDataMask;
-    end else
-    begin
-      FRunningStatus := Status;
-      DataByte1 := Data1 and MidiDataMask;
-      DataByte2 := Data2 and MidiDataMask;
-    end;
-    MidiOutCheck(midiOutShortMsg(FHandle, DWord));
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TMidiOut.LongMessage(Data: array of Byte);
+procedure TMidiOut.LongMessage(const Data: array of Byte);
 var
   Hdr: TMidiHdr;
 begin
@@ -248,6 +229,28 @@ begin
   MidiOutCheck(midiOutPrepareHeader(FHandle, @Hdr, SizeOf(Hdr)));
   MidiOutCheck(midiOutLongMsg(FHandle, @Hdr, SizeOf(Hdr)));
   repeat until (Hdr.dwFlags and MHDR_DONE) <> 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TMidiOut.DoSendMessage(const Data: array of Byte);
+var
+  I: Integer;
+  Msg: packed record
+  case Integer of
+    0:
+      (Bytes: array[0..2] of Byte);
+    1:
+      (DWord: LongWord);
+  end;
+begin
+  if High(Data) < 3 then
+  begin
+    for I := 0 to High(Data) do
+      Msg.Bytes[I] := Data[I];
+    MidiOutCheck(midiOutShortMsg(FHandle, Msg.DWord));
+  end
+  else LongMessage(Data);
 end;
 
 //--------------------------------------------------------------------------------------------------
