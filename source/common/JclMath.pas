@@ -181,7 +181,7 @@ procedure SetPrecisionToleranceToEpsilon;
 
 function Ceiling(const X: Float): Integer;
 function Factorial(const N: Integer): Float;
-function Floor(const X: Float): Float;
+function Floor(const X: Float): Integer;
 function GCD(const X, Y: Cardinal): Cardinal;
 function ISqrt(const I: Smallint): Smallint;
 function LCM(const X, Y: Cardinal): Cardinal;
@@ -197,21 +197,17 @@ function IsPrime(const N: Integer): Boolean;
 function IsPrimeFactor(const F, N: Integer): Boolean;
 function PrimeFactors(const N: Integer): TDynIntegerArray;
 
+
 { NaN and INF support }
 
 const
-  Infinity = 1/0; // tricky
-  NaN      = 0/0; // tricky
+  Infinity     = 1/0;       // tricky
+  NaN          = 0/0;       // tricky
+  NegInfinity  = -Infinity; // tricky
 
-//function IsNaN(const d: Single): Boolean; overload;
- function IsNaN(const d: Double): Boolean; overload;
-// function IsNaN(const d: Extended): Boolean; overload;
-//function IsInfinity(const d: Single): Boolean; overload;
-function IsInfinity(const d: Double): Boolean; overload;
-//function IsInfinity(const d: Extended): Boolean; overload;
-//function IsRealIndeterminate(const d: Single): Boolean; overload;
-//function IsRealIndeterminate(const d: Double): Boolean; overload;
-//function IsRealIndeterminate(const d: Extended): Boolean; overload;
+function IsNaN(const d: Double): Boolean;
+function IsInfinite(const d: Double): Boolean;
+
 
 { Set support }
 
@@ -367,10 +363,14 @@ type
 
 { CRC }
 
-function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal): Cardinal;
-function Crc16(const X: array of Byte; N: Integer; Crc: Word): Word;
-function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
-function InternetChecksum(const X: array of Byte; N: Integer): Cardinal;
+function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
+function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer; 
+
+function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
+function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
+
+function Crc32_P(X: PBytearray ; N: Integer; Crc: Cardinal = 0): Cardinal;
+function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer; 
 
 
 type
@@ -1435,9 +1435,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Floor(const X: Float): Float;
+function Floor(const X: Float): Integer;
 begin
-  Result := Int(X);
+  Result := Integer(Trunc(X));
+  if Frac(X) < 0 then
+    dec(Result);
 end;
 
 //------------------------------------------------------------------------------
@@ -2152,27 +2154,13 @@ const
 
 //------------------------------------------------------------------------------
 
-function UpdateCrc32(CurByte: Byte; CurCrc: Cardinal): Cardinal; assembler;
-asm
-//Result := Crc32Table[Byte(CurCrc shr 24)] xor (CurCrc shl 8) xor CurByte;
-        MOV     ECX, EAX
-        MOV     EAX, EDX
-        SHR     EAX, 24
-        MOV     EAX, DWORD PTR [4 * EAX + Crc32Table]
-        SHL     EDX, 8
-        XOR     EAX, EDX
-        XOR     AL, CL
-end;
-
-//------------------------------------------------------------------------------
-
 function Crc32Corr(Crc: Cardinal; N: Integer): Integer;
 var
   I: Integer;
 begin
   //calculate Syndrome
   for I := 1 to CrcBytes do
-    Crc := UpdateCrc32(0, Crc);
+      Crc := Crc32Table[Crc shr 24] xor (Crc shl 8);
   I := -1;
   repeat
     Inc(I);
@@ -2194,30 +2182,32 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal): Cardinal;
+function Crc32_P(X: PBytearray ; N: Integer; Crc: Cardinal = 0): Cardinal;
 var
   I: Integer;
 begin
   Result := CrcStart;
   for I := 0 to N - 1 do // The CRC Bytes are located at the end of the information
   begin
-    Result := UpdateCrc32(X[I], Result);
+//  a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    Result := Crc32Table[Result shr 24] xor (Result shl 8) xor X[I];
   end;
   for i := 0 to CrcBytes - 1 do
   begin
-    Result := UpdateCrc32(Byte(Crc shr (8 * (CrcBytes - 1))), Result);
+//  a 32 bit value shr 24 is a Byte, explictit type conversion to Byte adds an ASM instruction
+    Result := Crc32Table[Result shr 24] xor (Result shl 8) xor (Crc shr 24);
     Crc := Crc shl 8;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
+function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer; 
 var
   I, J: Integer;
   C: Byte;
 begin
-  Crc := Crc32(X, N, Crc);
+  Crc := Crc32_P(X, N, Crc);
   if Crc = 0 then
     Result := 0 // No CRC-error
   else
@@ -2243,86 +2233,30 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Crc16(const X: array of Byte; N: Integer; Crc: Word): Word;
-
-  function FCrc16(CRC: Word; Data: Pointer; DataSize: LongWord): Word; assembler;
-  asm
-           AND    EDX,EDX
-           JZ     @@2
-           AND    ECX,ECX
-           JLE    @@2
-           PUSH   EBX
-           PUSH   EDI
-           XOR    EBX,EBX
-           LEA    EDI,CS:[OFFSET @CRC16]
-  @@1:     MOV    BL,[EDX]
-           XOR    BL,AL
-           SHR    AX,8
-           INC    EDX
-           XOR    AX,[EDI + EBX * 2]
-           DEC    ECX
-           JNZ    @@1
-           POP    EDI
-           POP    EBX
-  @@2:     RET
-           NOP
-  @CRC16:  DW     00000h, 0C0C1h, 0C181h, 00140h, 0C301h, 003C0h, 00280h, 0C241h
-           DW     0C601h, 006C0h, 00780h, 0C741h, 00500h, 0C5C1h, 0C481h, 00440h
-           DW     0CC01h, 00CC0h, 00D80h, 0CD41h, 00F00h, 0CFC1h, 0CE81h, 00E40h
-           DW     00A00h, 0CAC1h, 0CB81h, 00B40h, 0C901h, 009C0h, 00880h, 0C841h
-           DW     0D801h, 018C0h, 01980h, 0D941h, 01B00h, 0DBC1h, 0DA81h, 01A40h
-           DW     01E00h, 0DEC1h, 0DF81h, 01F40h, 0DD01h, 01DC0h, 01C80h, 0DC41h
-           DW     01400h, 0D4C1h, 0D581h, 01540h, 0D701h, 017C0h, 01680h, 0D641h
-           DW     0D201h, 012C0h, 01380h, 0D341h, 01100h, 0D1C1h, 0D081h, 01040h
-           DW     0F001h, 030C0h, 03180h, 0F141h, 03300h, 0F3C1h, 0F281h, 03240h
-           DW     03600h, 0F6C1h, 0F781h, 03740h, 0F501h, 035C0h, 03480h, 0F441h
-           DW     03C00h, 0FCC1h, 0FD81h, 03D40h, 0FF01h, 03FC0h, 03E80h, 0FE41h
-           DW     0FA01h, 03AC0h, 03B80h, 0FB41h, 03900h, 0F9C1h, 0F881h, 03840h
-           DW     02800h, 0E8C1h, 0E981h, 02940h, 0EB01h, 02BC0h, 02A80h, 0EA41h
-           DW     0EE01h, 02EC0h, 02F80h, 0EF41h, 02D00h, 0EDC1h, 0EC81h, 02C40h
-           DW     0E401h, 024C0h, 02580h, 0E541h, 02700h, 0E7C1h, 0E681h, 02640h
-           DW     02200h, 0E2C1h, 0E381h, 02340h, 0E101h, 021C0h, 02080h, 0E041h
-           DW     0A001h, 060C0h, 06180h, 0A141h, 06300h, 0A3C1h, 0A281h, 06240h
-           DW     06600h, 0A6C1h, 0A781h, 06740h, 0A501h, 065C0h, 06480h, 0A441h
-           DW     06C00h, 0ACC1h, 0AD81h, 06D40h, 0AF01h, 06FC0h, 06E80h, 0AE41h
-           DW     0AA01h, 06AC0h, 06B80h, 0AB41h, 06900h, 0A9C1h, 0A881h, 06840h
-           DW     07800h, 0B8C1h, 0B981h, 07940h, 0BB01h, 07BC0h, 07A80h, 0BA41h
-           DW     0BE01h, 07EC0h, 07F80h, 0BF41h, 07D00h, 0BDC1h, 0BC81h, 07C40h
-           DW     0B401h, 074C0h, 07580h, 0B541h, 07700h, 0B7C1h, 0B681h, 07640h
-           DW     07200h, 0B2C1h, 0B381h, 07340h, 0B101h, 071C0h, 07080h, 0B041h
-           DW     05000h, 090C1h, 09181h, 05140h, 09301h, 053C0h, 05280h, 09241h
-           DW     09601h, 056C0h, 05780h, 09741h, 05500h, 095C1h, 09481h, 05440h
-           DW     09C01h, 05CC0h, 05D80h, 09D41h, 05F00h, 09FC1h, 09E81h, 05E40h
-           DW     05A00h, 09AC1h, 09B81h, 05B40h, 09901h, 059C0h, 05880h, 09841h
-           DW     08801h, 048C0h, 04980h, 08941h, 04B00h, 08BC1h, 08A81h, 04A40h
-           DW     04E00h, 08EC1h, 08F81h, 04F40h, 08D01h, 04DC0h, 04C80h, 08C41h
-           DW     04400h, 084C1h, 08581h, 04540h, 08701h, 047C0h, 04680h, 08641h
-           DW     08201h, 042C0h, 04380h, 08341h, 04100h, 081C1h, 08081h, 04040h
-  end;
-
+function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
 begin
-  Result := not FCRC16(Crc, pointer(X[0]), N);
+   Result := Crc32_P(@X, N, Crc);
 end;
 
 //------------------------------------------------------------------------------
 
-function InternetChecksum(const X: array of Byte; N: Integer): Cardinal;
+function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 begin
-  Result := 0;
+  Result := CheckCRC32_P(@X, N, CRC);
+end;
 
-  while(N > 1) do
-  begin
-    Result := Result + Word(X[N] shl 8 + X[N]) ;
-    N := N - 2;
-  end;
+//------------------------------------------------------------------------------
 
-  if (N > 0) then
-     Result := Result + X[1];
+function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
+begin
+   Result := Crc32_P(@X, Length(X), Crc);
+end;
 
-  while ((Result shr 16)<>0) do
-    Result := (Result and $ffff) + (Result shr 16);
+//------------------------------------------------------------------------------
 
-  Result := not(Result);
+function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
+begin
+  Result := CheckCrc32_P(@X, Length(X), Crc);
 end;
 
 
@@ -2352,23 +2286,13 @@ end;
 
 //------------------------------------------------------------------------------
 
-function IsInfinity(const d: Double): Boolean;
+function IsInfinite(const d: Double): Boolean;
 var
   Overlay: Int64 absolute d;
 begin
   Result := (Overlay and $7FF0000000000000) = $7FF0000000000000;
 end;
 
-//------------------------------------------------------------------------------
-(*
-function IsNAN(const d: Extended): Boolean;
-var
-  Overlay: Int64 absolute d;
-begin
-  Result := ((Overlay and $7FF0000000000000) = $7FF0000000000000) and
-    ((Overlay and $000FFFFFFFFFFFFF) <> $0000000000000000)
-end;
-*)
 //------------------------------------------------------------------------------
 
 function IsIndeterminate(const d: Double): Boolean;
@@ -2378,12 +2302,7 @@ begin
   Result := (Overlay and $FFF8000000000000) = $FFF8000000000000;
 end;
 
-//------------------------------------------------------------------------------
 
-function NegativeInfinity: Double;
-begin
-  Result := dNegativeInfinity
-end;
 
 //==============================================================================
 // Rational Numbers
