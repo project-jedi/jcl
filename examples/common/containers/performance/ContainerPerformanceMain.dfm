@@ -46,6 +46,7 @@ object MainForm: TMainForm
       Caption = '&File'
       object Exit1: TMenuItem
         Caption = 'E&xit'
+        OnClick = Exit1Click
       end
     end
     object TestMenu: TMenuItem

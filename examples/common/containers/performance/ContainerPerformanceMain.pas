@@ -42,6 +42,7 @@ type
     procedure mnJclHashMapClick(Sender: TObject);
     procedure mnHashedStringListClick(Sender: TObject);
     procedure mnJclStrStrHashMapClick(Sender: TObject);
+    procedure Exit1Click(Sender: TObject);
   public
   end;
 
@@ -136,6 +137,11 @@ end;
 procedure TMainForm.mnJclStrStrHashMapClick(Sender: TObject);
 begin
   TestJclStrStrHashMap(HashPerformanceGrid.Cols[4]);
+end;
+
+procedure TMainForm.Exit1Click(Sender: TObject);
+begin
+  Close;
 end;
 
 end.
