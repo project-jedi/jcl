@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 25, 2001                                             }
+{ Last modified: March 26, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -243,6 +243,13 @@ type
   end;
 
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
+
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
+  MapFileName: TFileName; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
+  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean; overload;
 
 //------------------------------------------------------------------------------
 // Source Locations
@@ -1353,6 +1360,121 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
+  MapFileName: TFileName; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+var
+  BinDebug: TJclBinDebugGenerator;
+begin
+  BinDebug := TJclBinDebugGenerator.Create(MapFileName);
+  try
+    Result := InsertDebugDataIntoExecutableFile(ExecutableFileName, BinDebug,
+      LinkerBugUnit, MapFileSize, JclDebugDataSize);
+  finally
+    BinDebug.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName: TFileName;
+  BinDebug: TJclBinDebugGenerator; var LinkerBugUnit: string;
+  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+var
+  ImageStream: TMemoryStream;
+  NtHeaders: PImageNtHeaders;
+  Sections, LastSection, JclDebugSection: PImageSectionHeader;
+  VirtualAlignedSize: DWORD;
+  I, X, NeedFill: Integer;
+
+  procedure RoundUpToAlignment(var Value: DWORD; Alignment: DWORD);
+  begin
+    if (Value mod Alignment <> 0) then
+      Value := ((Value div Alignment) + 1) * Alignment;
+  end;
+
+begin
+  MapFileSize := 0;
+  JclDebugDataSize := 0;
+  LinkerBugUnit := '';
+  if BinDebug.Stream <> nil then
+  begin
+    Result := not BinDebug.LinkerBug;
+    if not Result then
+      LinkerBugUnit := BinDebug.LinkerBugUnitName;
+  end
+  else
+    Result := False;
+  if not Result then
+    Exit;
+
+  ImageStream := TMemoryStream.Create;
+  try
+    try
+      ImageStream.LoadFromFile(ExecutableFileName);
+      MapFileSize := BinDebug.Stream.Size;
+      JclDebugDataSize := BinDebug.DataStream.Size;
+      NtHeaders := PeMapImgNtHeaders(ImageStream.Memory);
+      Assert(NtHeaders <> nil);
+      Sections := PeMapImgSections(NtHeaders);
+      Assert(Sections <> nil);
+      // Check whether there is not a section with the name already. This
+      // should never occur.
+      Assert(PeMapImgFindSection(NtHeaders, JclDbgDataResName) = nil);
+      LastSection := Sections;
+      Inc(LastSection, NtHeaders^.FileHeader.NumberOfSections - 1);
+      JclDebugSection := LastSection;
+      Inc(JclDebugSection);
+
+      // Increase the number of sections
+      Inc(NtHeaders^.FileHeader.NumberOfSections);
+      FillChar(JclDebugSection^, SizeOf(TImageSectionHeader), #0);
+      // JCLDEBUG Virtual Address
+      JclDebugSection^.VirtualAddress := LastSection^.VirtualAddress + LastSection^.Misc.VirtualSize;
+      RoundUpToAlignment(JclDebugSection^.VirtualAddress, NtHeaders^.OptionalHeader.SectionAlignment);
+      // JCLDEBUG Physical Ofset
+      JclDebugSection^.PointerToRawData := LastSection^.PointerToRawData + LastSection^.SizeOfRawData;
+      RoundUpToAlignment(JclDebugSection^.PointerToRawData, NtHeaders^.OptionalHeader.FileAlignment);
+      // JCLDEBUG Section name
+      StrPLCopy(PChar(@JclDebugSection^.Name), JclDbgDataResName, IMAGE_SIZEOF_SHORT_NAME);
+      // JCLDEBUG Characteristics flags
+      JclDebugSection^.Characteristics := IMAGE_SCN_MEM_READ or IMAGE_SCN_CNT_INITIALIZED_DATA;
+
+      // Size of virtual data area
+      JclDebugSection^.Misc.VirtualSize := JclDebugDataSize;
+      VirtualAlignedSize := JclDebugDataSize;
+      RoundUpToAlignment(VirtualAlignedSize, NtHeaders^.OptionalHeader.SectionAlignment);
+      // Update Size of Image
+      Inc(NtHeaders^.OptionalHeader.SizeOfImage, VirtualAlignedSize);
+      // Raw data size
+      JclDebugSection^.SizeOfRawData := JclDebugDataSize;
+      RoundUpToAlignment(JclDebugSection^.SizeOfRawData, NtHeaders^.OptionalHeader.FileAlignment);
+      // Update Initialized data size
+      Inc(NtHeaders^.OptionalHeader.SizeOfInitializedData, JclDebugSection^.SizeOfRawData);
+
+      // Fill data to alignment
+      NeedFill := Integer(JclDebugSection^.SizeOfRawData) - JclDebugDataSize;
+
+      // Note: Delphi linker seems to generate incorrect (unaligned) size of
+      // the executable when adding TD32 debug data so the position could be
+      // behind the size of the file then.
+      ImageStream.Seek(JclDebugSection^.PointerToRawData, soFromBeginning);
+      ImageStream.CopyFrom(BinDebug.DataStream, 0);
+      X := 0;
+      for I := 1 to NeedFill do
+        ImageStream.WriteBuffer(X, 1);
+
+      ImageStream.SaveToFile(ExecutableFileName);
+    except
+      Result := False;
+    end;    
+  finally
+    ImageStream.Free;
+  end;
+end;
+
 //==============================================================================
 // TJclBinDebugGenerator
 //==============================================================================
@@ -2220,14 +2342,18 @@ end;
 
 function Caller(Level: Integer): Pointer;
 begin
-  with TJclStackInfoList.Create(False, 1, nil) do
   try
-    if Level < Count then
-      Result := Pointer(Items[Level].StackInfo.CallerAdr)
-    else
-      Result := nil;
-  finally
-    Free;
+    with TJclStackInfoList.Create(False, 1, nil) do
+    try
+      if Level < Count then
+        Result := Pointer(Items[Level].StackInfo.CallerAdr)
+      else
+        Result := nil;
+    finally
+      Free;
+    end;
+  except
+    Result := nil;
   end;
 end;
 
@@ -2237,12 +2363,16 @@ end;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
 begin
-  DebugInfoCritSect.Enter;
   try
-    NeedDebugInfoList;
-    DebugInfoList.GetLocationInfo(Addr, Result)
-  finally
-    DebugInfoCritSect.Leave;
+    DebugInfoCritSect.Enter;
+    try
+      NeedDebugInfoList;
+      DebugInfoList.GetLocationInfo(Addr, Result)
+    finally
+      DebugInfoCritSect.Leave;
+    end;
+  except
+    FillChar(Result, SizeOf(Result), #0);
   end;
 end;
 
