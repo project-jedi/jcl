@@ -1,29 +1,28 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclHookExcept.pas.                                      }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Exception hooking routines                                                   }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: July 15, 2001                                                 }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclHookExcept.pas.                                                          }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Exception hooking routines                                                                       }
+{                                                                                                  }
+{ Unit owner: Petr Vones                                                                           }
+{ Last modified: July 15, 2001                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclHookExcept;
 
@@ -34,9 +33,9 @@ interface
 uses
   SysUtils;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Exception hooking notifiers routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
@@ -44,17 +43,17 @@ type
 
   TJclExceptNotifyPriority = (npNormal, npFirstChain);
 
-function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority {$IFDEF SUPPORTS_DEFAULTPARAMS} = npNormal {$ENDIF}): Boolean; overload;
-function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority {$IFDEF SUPPORTS_DEFAULTPARAMS} = npNormal {$ENDIF}): Boolean; overload;
+function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
+function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority = npNormal): Boolean; overload;
 
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProc): Boolean; overload;
 function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Boolean;  overload;
 
 procedure JclReplaceExceptObj(NewExceptObj: Exception);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Exception initialization routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclHookExceptions: Boolean;
 function JclUnhookExceptions: Boolean;
@@ -96,9 +95,9 @@ threadvar
   Recursive: Boolean;
   NewResultExc: Exception;
 
-//==============================================================================
+//==================================================================================================
 // TNotifierItem
-//==============================================================================
+//==================================================================================================
 
 constructor TNotifierItem.Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority);
 begin
@@ -106,7 +105,7 @@ begin
   FPriority := Priority;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TNotifierItem.Create(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority);
 begin
@@ -114,7 +113,7 @@ begin
   FPriority := Priority;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TNotifierItem.DoNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
@@ -125,7 +124,7 @@ begin
     FNotifyMethod(ExceptObj, ExceptAddr, OSException);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$STACKFRAMES ON}
 
@@ -154,7 +153,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
   Arguments: PExceptionArguments); stdcall;
@@ -176,7 +175,7 @@ end;
 {$STACKFRAMES OFF}
 {$ENDIF STACKFRAMES_ON}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function HookedExceptObjProc(P: PExceptionRecord): Exception;
 var
@@ -189,7 +188,7 @@ begin
     Result := NewResultExcCache;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclAddExceptNotifier(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority): Boolean;
 begin
@@ -203,7 +202,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclAddExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority): Boolean;
 begin
@@ -217,7 +216,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclRemoveExceptNotifier(const NotifyProc: TJclExceptNotifyProc): Boolean;
 var
@@ -243,7 +242,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclRemoveExceptNotifier(const NotifyMethod: TJclExceptNotifyMethod): Boolean;
 var
@@ -270,7 +269,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure JclReplaceExceptObj(NewExceptObj: Exception);
 begin
@@ -278,7 +277,7 @@ begin
   NewResultExc := NewExceptObj;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclHookExceptions: Boolean;
 var
@@ -303,7 +302,7 @@ begin
     Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclUnhookExceptions: Boolean;
 begin
@@ -321,14 +320,14 @@ begin
     Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclExceptionsHooked: Boolean;
 begin
   Result := ExceptionsHooked;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure FreeNotifiers;
 var
@@ -344,7 +343,7 @@ begin
   FreeAndNil(Notifiers);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 initialization
   Notifiers := TThreadList.Create;
