@@ -29,8 +29,6 @@ unit JclStrHashMap;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
-
 interface
 
 uses
@@ -1106,5 +1104,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+initialization
+finalization
+  if @_CaseInsensitiveTraits <> nil then
+    _CaseInsensitiveTraits.Free;
+
+  if @_CaseSensitiveTraits <> nil then
+    _CaseSensitiveTraits.Free;
 end.
 
