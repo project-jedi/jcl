@@ -19,16 +19,18 @@ MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) $(DCC32EXTRA) -w $<
+DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT) -w $<
 BRCC = $(ROOT)\bin\brcc32.exe $**
 jpp = ..\source\prototypes\jpp.exe
 #---------------------------------------------------------------------------------------------------
-default:	clean prototypes prepare install
+default:	clean prototypes install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
-	$(DCC)
-	if exist *.dcu del *.dcu
+  @if exist "$(ROOT)\Lib\Obj\vcl.dcp" $(DCC) -LUvcl -LUrtl
+  @if exist "$(ROOT)\Lib\Obj\vcl50.dcp" $(DCC) -LUvcl50
+  @if not exist "$(ROOT)\Lib\Obj" $(DCC)
+	@if exist *.dcu del *.dcu
 
 $(BIN)\JediInstaller.exe: \
 		VclUnits \
@@ -60,16 +62,8 @@ clean:
 
 prototypes: VclUnits ClxUnits
 
-prepare:	BCB5
-	if exist "$(ROOT)\Lib\vcl.dcp" SET DCC32EXTRA="-LUvcl -LUrtl"
-	@echo $(DCC32EXTRA)
-
-BCB5:
-	if exist "$(ROOT)\Lib\Obj\vcl50.dcp" SET DCC32EXTRA="-LUvcl50"
-	#$(MAKEDIR)\make.exe -fBCB5-dcc32.cfg.mak
-
 VclUnits:
-	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
+	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
 
 ClxUnits:
-	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
+	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
