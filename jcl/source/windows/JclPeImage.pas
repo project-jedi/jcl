@@ -417,7 +417,7 @@ type
 
   TJclPeRootResourceList = class(TJclPeResourceList)
   private
-    FManifestContent: TStrings;
+    FManifestContent: TStringList;
     function GetManifestContent: TStrings;
   public
     destructor Destroy; override;
@@ -601,7 +601,7 @@ type
     FCLRHeader: TJclPeCLRHeader;
     FDebugList: TJclPeDebugList;
     FFileName: TFileName;
-    FImageSections: TStrings;
+    FImageSections: TStringList;
     FLoadedImage: TLoadedImage;
     FExportList: TJclPeExportFuncList;
     FImportList: TJclPeImportList;
@@ -708,15 +708,17 @@ type
   TJclPePackageInfo = class(TObject)
   private
     FAvailable: Boolean;
-    FContains: TStrings;
+    FContains: TStringList;
     FDcpName: string;
-    FRequires: TStrings;
+    FRequires: TStringList;
     FFlags: Integer;
     FDescription: string;
     FEnsureExtension: Boolean;
+    function GetContains: TStrings;
     function GetContainsCount: Integer;
     function GetContainsFlags(Index: Integer): Byte;
     function GetContainsNames(Index: Integer): string;
+    function GetRequires: TStrings;
     function GetRequiresCount: Integer;
     function GetRequiresNames(Index: Integer): string;
   protected
@@ -729,7 +731,7 @@ type
     class function ProducerToString(Flags: Integer): string;
     class function UnitInfoFlagsToString(UnitFlags: Byte): string;
     property Available: Boolean read FAvailable;
-    property Contains: TStrings read FContains;
+    property Contains: TStrings read GetContains;
     property ContainsCount: Integer read GetContainsCount;
     property ContainsNames[Index: Integer]: string read GetContainsNames;
     property ContainsFlags[Index: Integer]: Byte read GetContainsFlags;
@@ -737,7 +739,7 @@ type
     property DcpName: string read FDcpName;
     property EnsureExtension: Boolean read FEnsureExtension write FEnsureExtension;
     property Flags: Integer read FFlags;
-    property Requires: TStrings read FRequires;
+    property Requires: TStrings read GetRequires;
     property RequiresCount: Integer read GetRequiresCount;
     property RequiresNames[Index: Integer]: string read GetRequiresNames;
   end;
@@ -2809,12 +2811,19 @@ begin
   ResTypeItem := FindResource(ResourceType, '');
   Result := (ResTypeItem <> nil);
   if Result then
-    with ResTypeItem.List do
-      for I := 0 to Count - 1 do
-      begin
-        TempItem := Items[I];
-        Strings.AddObject(TempItem.Name, Pointer(TempItem.IsName));
-      end;  
+  begin
+    Strings.BeginUpdate;
+    try
+      with ResTypeItem.List do
+        for I := 0 to Count - 1 do
+        begin
+          TempItem := Items[I];
+          Strings.AddObject(TempItem.Name, Pointer(TempItem.IsName));
+        end;
+    finally
+      Strings.EndUpdate;
+    end;
+  end;
 end;
 
 //==================================================================================================
@@ -4026,37 +4035,51 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclPePackageInfo.GetContains: TStrings;
+begin
+  Result := FContains;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclPePackageInfo.GetContainsCount: Integer;
 begin
-  Result := FContains.Count;
+  Result := Contains.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetContainsFlags(Index: Integer): Byte;
 begin
-  Result := Byte(FContains.Objects[Index]);
+  Result := Byte(Contains.Objects[Index]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetContainsNames(Index: Integer): string;
 begin
-  Result := FContains[Index];
+  Result := Contains[Index];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPePackageInfo.GetRequires: TStrings;
+begin
+  Result := FRequires;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetRequiresCount: Integer;
 begin
-  Result := FRequires.Count;
+  Result := Requires.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetRequiresNames(Index: Integer): string;
 begin
-  Result := FRequires[Index];
+  Result := Requires[Index];
   if FEnsureExtension then
     StrEnsureSuffix(BPLExtension, Result);
 end;
@@ -4113,9 +4136,9 @@ begin
   with TJclPePackageInfo(Param) do
     case NameType of
       ntContainsUnit:
-        FContains.AddObject(Name, Pointer(AFlags));
+        Contains.AddObject(Name, Pointer(AFlags));
       ntRequiresPackage:
-        FRequires.Add(Name);
+        Requires.Add(Name);
       {$IFDEF COMPILER6_UP}
       ntDcpBpiName:
         FDcpName := Name;
@@ -4134,8 +4157,8 @@ begin
     GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
     if FDcpName = '' then
       FDcpName := PathExtractFileNameNoExt(GetModulePath(ALibHandle)) + DCPExtension;
-    TStringList(FContains).Sort;
-    TStringList(FRequires).Sort;
+    FContains.Sort;
+    FRequires.Sort;
   end;
   DescrResInfo := FindResource(ALibHandle, DescriptionResName, RT_RCDATA);
   if DescrResInfo <> 0 then
@@ -4308,6 +4331,7 @@ begin
   if not Result then
     Exit;
   ImportList := InternalImportedLibraries(FileName, True, FullPathName, nil);
+  List.BeginUpdate;
   try
     for I := 0 to ImportList.Count - 1 do
     begin
@@ -4322,6 +4346,7 @@ begin
     end;
   finally
     ImportList.Free;
+    List.EndUpdate;
   end;
 end;
 
@@ -4574,7 +4599,7 @@ begin
   try
     PathList.Sorted := True;
     PathList.Duplicates := dupIgnore;
-    StrToStrings(FPath, ';', TStrings(PathList));
+    StrToStrings(FPath, ';', PathList);
     for I := 0 to PathList.Count - 1 do
       ProcessDirectorySearch(PathAddSeparator(Trim(PathList[I])) + '*.*');
   finally
@@ -4930,26 +4955,31 @@ var
   I: Integer;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-      with ImportList do
-      begin
-        TryGetNamesForOrdinalImports;
-        for I := 0 to AllItemCount - 1 do
-          with AllItems[I] do
-            if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) and
-              (Name <> '') then
-            begin
-              if IncludeLibNames then
-                FunctionsList.Add(ImportLib.Name + '=' + Name)
-              else
-                FunctionsList.Add(Name);
-            end;
-      end;
-  finally
-    Free;
-  end;
+    try
+      Result := StatusOK;
+      if Result then
+        with ImportList do
+        begin
+          TryGetNamesForOrdinalImports;
+          FunctionsList.BeginUpdate;
+          try
+            for I := 0 to AllItemCount - 1 do
+              with AllItems[I] do
+                if ((Length(LibraryName) = 0) or StrSame(ImportLib.Name, LibraryName)) and
+                  (Name <> '') then
+                begin
+                  if IncludeLibNames then
+                    FunctionsList.Add(ImportLib.Name + '=' + Name)
+                  else
+                    FunctionsList.Add(Name);
+                end;
+          finally
+            FunctionsList.EndUpdate;
+          end;
+        end;
+    finally
+      Free;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4959,17 +4989,24 @@ var
   I: Integer;
 begin
   with CreatePeImage(FileName) do
-  try
-    Result := StatusOK;
-    if Result then
-      with ExportList do
-        for I := 0 to Count - 1 do
-          with Items[I] do
-            if not IsExportedVariable then
-              FunctionsList.Add(Name);
-  finally
-    Free;
-  end;
+    try
+      Result := StatusOK;
+      if Result then
+      begin
+        FunctionsList.BeginUpdate;
+        try
+          with ExportList do
+            for I := 0 to Count - 1 do
+              with Items[I] do
+                if not IsExportedVariable then
+                  FunctionsList.Add(Name);
+        finally
+          FunctionsList.EndUpdate;
+        end;
+      end;
+    finally
+      Free;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4982,9 +5019,16 @@ begin
   try
     Result := StatusOK;
     if Result then
-      with ExportList do
-        for I := 0 to Count - 1 do
-          FunctionsList.Add(Items[I].Name);
+    begin
+      FunctionsList.BeginUpdate;
+      try
+        with ExportList do
+          for I := 0 to Count - 1 do
+            FunctionsList.Add(Items[I].Name);
+      finally
+        FunctionsList.EndUpdate;
+      end;
+    end;
   finally
     Free;
   end;
@@ -5000,11 +5044,18 @@ begin
   try
     Result := StatusOK;
     if Result then
-      with ExportList do
-        for I := 0 to Count - 1 do
-          with Items[I] do
-            if IsExportedVariable then
-              FunctionsList.AddObject(Name, Pointer(Address));
+    begin
+      FunctionsList.BeginUpdate;
+      try
+        with ExportList do
+          for I := 0 to Count - 1 do
+            with Items[I] do
+              if IsExportedVariable then
+                FunctionsList.AddObject(Name, Pointer(Address));
+      finally
+        FunctionsList.EndUpdate;
+      end;
+    end;
   finally
     Free;
   end;
@@ -5036,11 +5087,18 @@ begin
     BorImage.FileName := FileName;
     Result := BorImage.IsBorlandImage;
     if Result then
-      for I := 0 to BorImage.FormCount - 1 do
-      begin
-        BorForm := BorImage.Forms[I];
-        NamesList.AddObject(BorForm.DisplayName, Pointer(BorForm.ResItem.RawEntryDataSize));
+    begin
+      NamesList.BeginUpdate;
+      try
+        for I := 0 to BorImage.FormCount - 1 do
+        begin
+          BorForm := BorImage.Forms[I];
+          NamesList.AddObject(BorForm.DisplayName, Pointer(BorForm.ResItem.RawEntryDataSize));
+        end;
+      finally
+        NamesList.EndUpdate;
       end;
+    end;
   finally
     BorImage.Free;
   end;
@@ -5243,11 +5301,18 @@ begin
     AttachLoadedModule(Module);
     Result := StatusOK;
     if Result then
-      with ExportList do
-        for I := 0 to Count - 1 do
-          with Items[I] do
-            if IsExportedVariable then
-              VariablesList.AddObject(Name, MappedAddress);
+    begin
+      VariablesList.BeginUpdate;
+      try
+        with ExportList do
+          for I := 0 to Count - 1 do
+            with Items[I] do
+              if IsExportedVariable then
+                VariablesList.AddObject(Name, MappedAddress);
+      finally
+        VariablesList.EndUpdate;
+      end;
+    end;
   finally
     Free;
   end;
@@ -5853,6 +5918,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.12  2004/07/29 07:58:22  marquardt
 // inc files updated
 //

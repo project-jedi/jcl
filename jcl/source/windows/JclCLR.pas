@@ -182,7 +182,7 @@ type
 
   TJclClrStringsStream = class(TJclClrStream)
   private
-    FStrings: TStrings;
+    FStrings: TStringList;
     function GetString(const Idx: Integer): WideString;
     function GetOffset(const Idx: Integer): DWORD;
     function GetStringCount: Integer;
@@ -1978,6 +1978,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.7  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

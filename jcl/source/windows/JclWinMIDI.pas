@@ -317,11 +317,14 @@ end;
 initialization
 
 finalization
-  FMidiOutputs.Free;
+  FreeAndNil(FMidiOutputs);
   
 // History:
 
 // $Log$
+// Revision 1.10  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.9  2004/07/28 18:00:55  marquardt
 // various style cleanings, some minor fixes
 //

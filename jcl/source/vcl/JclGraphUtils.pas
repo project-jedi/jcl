@@ -727,6 +727,7 @@ end;
 procedure FreeAlphaTable;
 begin
   FreeMem(AlphaTable);
+  AlphaTable := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------

@@ -236,10 +236,15 @@ begin
   if Err = NERR_SUCCESS then
   begin
     Details := PLocalGroupInfo0(Buffer);
-    for I := 0 to EntriesRead - 1 do
-    begin
-      Groups.Add(Details^.lgrpi0_name);
-      Inc(Details);
+    Groups.BeginUpdate;
+    try
+      for I := 0 to EntriesRead - 1 do
+      begin
+        Groups.Add(Details^.lgrpi0_name);
+        Inc(Details);
+      end;
+    finally
+      Groups.EndUpdate;
     end;
   end;
 
@@ -267,11 +272,18 @@ begin
     Details := PGroupInfo0(Buffer);
     // (rom) is 'None' locale independent?
     if (EntriesRead <> 1) or (Details^.grpi0_name <> 'None') then
-      for I := 0 to EntriesRead - 1 do
-      begin
-        Groups.Add(Details^.grpi0_name);
-        Inc(Details);
+    begin
+      Groups.BeginUpdate;
+      try
+        for I := 0 to EntriesRead - 1 do
+        begin
+          Groups.Add(Details^.grpi0_name);
+          Inc(Details);
+        end;
+      finally
+        Groups.EndUpdate;
       end;
+    end;
   end
   else
     RaiseLastOSError;
@@ -284,7 +296,7 @@ end;
 
 function LocalGroupExists(const Group: string): Boolean;
 var
-  Groups: TStrings;
+  Groups: TStringList;
 begin
   Groups := TStringList.Create;
   try
@@ -299,7 +311,7 @@ end;
 
 function GlobalGroupExists(const Server, Group: string): Boolean;
 var
-  Groups: TStrings;
+  Groups: TStringList;
 begin
   Groups := TStringList.Create;
   try
@@ -432,7 +444,7 @@ end;
 
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
 var
-  Parts: TStrings;
+  Parts: TStringList;
 begin
   Parts := TStringList.Create;
   try
@@ -463,6 +475,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

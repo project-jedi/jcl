@@ -209,7 +209,7 @@ type
 
   TJclEmail = class(TJclSimpleMapi)
   private
-    FAttachments: TStrings;
+    FAttachments: TStringList;
     FBody: string;
     FFindOptions: TJclEmailFindOptions;
     FHtmlBody: Boolean;
@@ -222,6 +222,7 @@ type
     FSessionHandle: THandle;
     FSubject: string;
     FTaskWindowList: TJclTaskWindowsList;
+    function GetAttachments: TStrings;
     function GetParentWnd: HWND;
     function GetUserLogged: Boolean;
     procedure SetBody(const Value: string);
@@ -249,7 +250,7 @@ type
     procedure SaveTaskWindows;
     function Send(ShowDialog: Boolean = True): Boolean;
     procedure SortAttachments;
-    property Attachments: TStrings read FAttachments;
+    property Attachments: TStrings read GetAttachments;
     property Body: string read FBody write SetBody;
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
     property HtmlBody: Boolean read FHtmlBody write FHtmlBody;
@@ -853,10 +854,10 @@ end;
 
 procedure TJclEmail.Clear;
 begin
-  FAttachments.Clear;
-  FBody := '';
+  Attachments.Clear;
+  Body := '';
   FSubject := '';
-  FRecipients.Clear;
+  Recipients.Clear;
   FReadMsg.MessageType := '';
   FReadMsg.DateReceived := 0;
   FReadMsg.ConversationID := '';
@@ -897,7 +898,7 @@ begin
         Recipients.Add(Copy(S, N + 1, Length(S)), lpszName, Kind, Copy(S, 1, N - 1));
     end;
     Inc(RecipDesc);
-  end;  
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -913,7 +914,7 @@ end;
 
 function TJclEmail.FindFirstMessage: Boolean;
 begin
-  FSeedMessageID := '';
+  SeedMessageID := '';
   Result := FindNextMessage;
 end;
 
@@ -935,13 +936,20 @@ begin
   Res := MapiFindNext(FSessionHandle, 0, nil, PChar(FSeedMessageID), Flags, 0, MsgId);
   Result := (Res = SUCCESS_SUCCESS);
   if Result then
-    FSeedMessageID := MsgID
+    SeedMessageID := MsgID
   else
   begin
-    FSeedMessageID := '';
+    SeedMessageID := '';
     if Res <> MAPI_E_NO_MESSAGES then
       MapiCheck(Res, True);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclEmail.GetAttachments: TStrings;
+begin
+  Result := FAttachments;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -985,22 +993,22 @@ begin
     if FHtmlBody then
     begin
       HtmlBodyFileName := FindUnusedFileName(PathAddSeparator(GetWindowsTempFolder) + 'JclMapi', 'htm', 'Temp');
-      FAttachments.Insert(0, HtmlBodyFileName);
-      StringToFile(HtmlBodyFileName, FBody);
+      Attachments.Insert(0, HtmlBodyFileName);
+      StringToFile(HtmlBodyFileName, Body);
     end;
     // Create attachments
-    if FAttachments.Count > 0 then
+    if Attachments.Count > 0 then
     begin
-      SetLength(AttachArray, FAttachments.Count);
-      for I := 0 to FAttachments.Count - 1 do
+      SetLength(AttachArray, Attachments.Count);
+      for I := 0 to Attachments.Count - 1 do
       begin
-        if not FileExists(FAttachments[I]) then
+        if not FileExists(Attachments[I]) then
           MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
-        FAttachments[I] := ExpandFileName(FAttachments[I]);
+        Attachments[I] := ExpandFileName(Attachments[I]);
         FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
         AttachArray[I].nPosition := DWORD(-1);
         AttachArray[I].lpszFileName := nil;
-        AttachArray[I].lpszPathName := PChar(FAttachments[I]);
+        AttachArray[I].lpszPathName := PChar(Attachments[I]);
       end;
     end
     else
@@ -1058,10 +1066,10 @@ begin
     Flags := LogonOptionsToFlags(ShowDialog);
     if Save then
     begin
-      StrPLCopy(MsgID, FSeedMessageID, SizeOf(MsgID));
+      StrPLCopy(MsgID, SeedMessageID, SizeOf(MsgID));
       Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
       if Res = SUCCESS_SUCCESS then
-        FSeedMessageID := MsgID;
+        SeedMessageID := MsgID;
     end
     else
       Res := MapiSendMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0);
@@ -1070,7 +1078,7 @@ begin
     if HtmlBodyFileName <> '' then
     begin
       DeleteFile(HtmlBodyFileName);
-      FAttachments.Delete(0);
+      Attachments.Delete(0);
     end;
   end;
 end;
@@ -1136,8 +1144,8 @@ begin
     LabelsWidth := Max(LabelsWidth, Length(TJclEmailRecip.RecipKindToString(ReportKind)));
   end;
   BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
-  for I := 0 to FRecipients.Count - 1 do
-    with FRecipients[I] do
+  for I := 0 to Recipients.Count - 1 do
+    with Recipients[I] do
     begin
       if IncludeAddresses then
         S := AddressAndName
@@ -1145,18 +1153,24 @@ begin
         S := Name;
       NamesList[Kind] := NamesList[Kind] + S + NameDelimiter;
     end;
-  for ReportKind := Low(ReportKind) to High(ReportKind) do
-    if NamesList[ReportKind] <> '' then
-    begin
-      S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind), LabelsWidth, AnsiSpace) + ': ' +
-        Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
-      Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
-    end;
-  S := RsMapiMailSubject + ': ' + Subject;
-  Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
-  Result := Strings.Count - Cnt;
-  Strings.Add('');
-  Strings.Add(WrapText(Body, AnsiCrLf, [AnsiTab, AnsiSpace, '-'], MaxWidth));
+
+  Strings.BeginUpdate;
+  try
+    for ReportKind := Low(ReportKind) to High(ReportKind) do
+      if NamesList[ReportKind] <> '' then
+      begin
+        S := StrPadRight(TJclEmailRecip.RecipKindToString(ReportKind), LabelsWidth, AnsiSpace) + ': ' +
+          Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
+        Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+      end;
+    S := RsMapiMailSubject + ': ' + Subject;
+    Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+    Result := Strings.Count - Cnt;
+    Strings.Add('');
+    Strings.Add(WrapText(Body, AnsiCrLf, [AnsiTab, AnsiSpace, '-'], MaxWidth));
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1207,7 +1221,7 @@ begin
     DecodeRecips(Msg^.lpOriginator, 1);
     DecodeRecips(Msg^.lpRecips, Msg^.nRecipCount);
     FSubject := Msg^.lpszSubject;
-    FBody := AdjustLineBreaks(Msg^.lpszNoteText);
+    Body := AdjustLineBreaks(Msg^.lpszNoteText);
     Files := Msg^.lpFiles;
     if Files <> nil then
       for I := 0 to Msg^.nFileCount - 1 do
@@ -1300,7 +1314,7 @@ end;
 
 procedure TJclEmail.SortAttachments;
 begin
-  TStringList(FAttachments).Sort;
+  FAttachments.Sort;
 end;
 
 //==================================================================================================
@@ -1361,6 +1375,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.7  2004/07/28 18:00:53  marquardt
 // various style cleanings, some minor fixes
 //

@@ -168,12 +168,12 @@ var
   I: Integer;
 begin
   with Notifiers.LockList do
-  try
-    for I := 0 to Count - 1 do
-      TObject(Items[I]).Free;
-  finally
-    Notifiers.UnlockList;
-  end;
+    try
+      for I := 0 to Count - 1 do
+        TObject(Items[I]).Free;
+    finally
+      Notifiers.UnlockList;
+    end;
   FreeAndNil(Notifiers);
 end;
 
@@ -625,6 +625,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.5  2004/06/16 07:30:30  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
