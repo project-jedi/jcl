@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: August 11, 2000                                               }
+{ Last modified: September 7, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -976,7 +976,7 @@ type
     function GetItemFromOriginalAddress(OriginalAddress: Pointer): TJclPeMapImgHookItem;
     function GetItemFromNewAddress(NewAddress: Pointer): TJclPeMapImgHookItem;
   public
-    function HookImport(const ModuleName, FunctionName: string;
+    function HookImport(Base: Pointer; const ModuleName, FunctionName: string;
       NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
     class function IsWin9xDebugThunk(P: Pointer): Boolean;
     class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
@@ -3501,26 +3501,9 @@ end;
 
 function IsValidPeFile(const FileName: TFileName): Boolean;
 var
-  FileHandle: THandle;
-  Mapping: TJclFileMapping;
-  View: TJclFileMappingView;
-  NtHeaders: PImageNtHeaders;
+  NtHeaders: TImageNtHeaders;
 begin
-  Result := False;
-  FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
-  if FileHandle = 0 then Exit;
-  try
-    Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
-    try
-      View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
-      NtHeaders := PeMapImgNtHeaders(View.Memory);
-      Result := NtHeaders <> nil;
-    finally
-      Mapping.Free;
-    end;
-  finally
-    FileClose(FileHandle);
-  end;
+  Result := PeGetNtHeaders(FileName, NtHeaders);
 end;
 
 //------------------------------------------------------------------------------
@@ -3925,16 +3908,31 @@ end;
 //------------------------------------------------------------------------------
 
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+var
+  FileHandle: THandle;
+  Mapping: TJclFileMapping;
+  View: TJclFileMappingView;
+  HeadersPtr: PImageNtHeaders;
 begin
-  GlobalCritSection.Enter;
+  Result := False;
+  FillChar(NtHeaders, SizeOf(NtHeaders), 0);
+  FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
+  if FileHandle = INVALID_HANDLE_VALUE then Exit;
   try
-    Result := CreateGlobalPeImage(FileName);
-    if Result then
-      NtHeaders := GlobalPeImage.LoadedImage.FileHeader^
-    else
-      FillChar(NtHeaders, SizeOf(NtHeaders), #0);
+    Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
+    try
+      View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
+      HeadersPtr := PeMapImgNtHeaders(View.Memory);
+      if HeadersPtr <> nil then
+      begin
+        Result := True;
+        NtHeaders := HeadersPtr^;
+      end;  
+    finally
+      Mapping.Free;
+    end;
   finally
-    GlobalCritSection.Leave;
+    FileClose(FileHandle);
   end;
 end;
 
@@ -4078,7 +4076,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclPeMapImgHooks.HookImport(const ModuleName, FunctionName: string;
+function TJclPeMapImgHooks.HookImport(Base: Pointer; const ModuleName, FunctionName: string;
   NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
 var
   Item: TJclPeMapImgHookItem;
@@ -4106,11 +4104,11 @@ begin
     Exit;
   end;
   if Result then
-    Result := ReplaceImport(Pointer(HInstance), ModuleName, OriginalAddress, NewAddress);
+    Result := ReplaceImport(Base, ModuleName, OriginalAddress, NewAddress);
   if Result then
   begin
     Item := TJclPeMapImgHookItem.Create;
-    Item.FBaseAddress := Pointer(HInstance);
+    Item.FBaseAddress := Base;
     Item.FFunctionName := FunctionName;
     Item.FModuleName := ModuleName;
     Item.FOriginalAddress := OriginalAddress;
