@@ -9,7 +9,7 @@ Copyright=Project JEDI (http://www.delphi-jedi.org)
 Type=1
 
 [Source Files]
-Count=39
+Count=38
 File0=..\source\Jcl8087.pas
 File1=..\source\JclAppInst.pas
 File2=..\source\JclBase.pas
@@ -35,20 +35,19 @@ File21=..\source\JclNTFS.pas
 File22=..\source\JclPeImage.pas
 File23=..\source\JclPrint.pas
 File24=..\source\JclRegistry.pas
-File25=..\source\JclResources.pas
-File26=..\source\JclRTF.pas
-File27=..\source\JclRTTI.pas
-File28=..\source\JclSecurity.pas
-File29=..\source\JclShell.pas
-File30=..\source\JclSscanf.pas
-File31=..\source\JclStatistics.pas
-File32=..\source\JclStrings.pas
-File33=..\source\JclSynch.pas
-File34=..\source\JclSysInfo.pas
-File35=..\source\JclSysUtils.pas
-File36=..\source\JclUnicode.pas
-File37=..\source\JclUnitConv.pas
-File38=..\source\JclWin32.pas
+File25=..\source\JclRTF.pas
+File26=..\source\JclRTTI.pas
+File27=..\source\JclSecurity.pas
+File28=..\source\JclShell.pas
+File29=..\source\JclSscanf.pas
+File30=..\source\JclStatistics.pas
+File31=..\source\JclStrings.pas
+File32=..\source\JclSynch.pas
+File33=..\source\JclSysInfo.pas
+File34=..\source\JclSysUtils.pas
+File35=..\source\JclUnicode.pas
+File36=..\source\JclUnitConv.pas
+File37=..\source\JclWin32.pas
 
 [Source Include Directories]
 Count=0
