@@ -205,7 +205,7 @@ type
     function GetRunningStatusEnabled: Boolean;
     procedure SetRunningStatusEnabled(const Value: Boolean);
     // Channel Voice Messages
-    procedure SendNoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
+    procedure SendNoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte = $40);
     procedure SendNoteOn(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
     procedure SendPolyphonicKeyPressure(Channel: TMIDIChannel; Key: TMIDINote; Value: TMIDIDataByte);
     procedure SendControlChange(Channel: TMIDIChannel; ControllerNum, Value: TMIDIDataByte);
@@ -255,7 +255,8 @@ type
     procedure SwitchMonoModeOn(Channel: TMIDIChannel; ChannelCount: Integer);
     procedure SwitchPolyModeOn(Channel: TMIDIChannel);
     //
-    procedure SendSingleNoteTuningChange(TuningData: array of TSingleNoteTuningData);
+    procedure SendSingleNoteTuningChange(const TargetDeviceID, TuningProgramNum: TMidiDataByte;
+      const TuningData: array of TSingleNoteTuningData);
     function NoteIsOn(Channel: TMIDIChannel; Key: TMIDINote): Boolean;
     procedure SwitchActiveNotesOff(Channel: TMIDIChannel); overload;
     procedure SwitchActiveNotesOff; overload;
@@ -288,7 +289,7 @@ type
   public
     destructor Destroy; override;
     // Channel Voice Messages
-    procedure SendNoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
+    procedure SendNoteOff(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte = $40);
     procedure SendNoteOn(Channel: TMIDIChannel; Key: TMIDINote; Velocity: TMIDIDataByte);
     procedure SendPolyphonicKeyPressure(Channel: TMIDIChannel; Key: TMIDINote; Value: TMIDIDataByte);
     procedure SendControlChange(Channel: TMIDIChannel; ControllerNum, Value: TMIDIDataByte);
@@ -336,7 +337,8 @@ type
     procedure SwitchMonoModeOn(Channel: TMIDIChannel; ChannelCount: Integer);
     procedure SwitchPolyModeOn(Channel: TMIDIChannel);
     //
-    procedure SendSingleNoteTuningChange(TuningData: array of TSingleNoteTuningData);
+    procedure SendSingleNoteTuningChange(const TargetDeviceID, TuningProgramNum: TMidiDataByte;
+      const TuningData: array of TSingleNoteTuningData);
     function NoteIsOn(Channel: TMIDIChannel; Key: TMIDINote): Boolean;
     procedure SwitchActiveNotesOff(Channel: TMIDIChannel); overload;
     procedure SwitchActiveNotesOff; overload;
@@ -600,7 +602,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclMIDIOut.SendSingleNoteTuningChange(TuningData: array of TSingleNoteTuningData);
+procedure TJclMIDIOut.SendSingleNoteTuningChange(const TargetDeviceID, TuningProgramNum: TMidiDataByte;
+  const TuningData: array of TSingleNoteTuningData);
 var
   Count: Integer;
   Buf: PByteArray;
@@ -610,12 +613,12 @@ begin
   BufSize := 8 + Count * SizeOf(TSingleNoteTuningData);
   GetMem(Buf, BufSize);
   try
-    Buf[0] := MIDIMsgSysEx;  // Universal Real Time SysEx header, first byte
-    Buf[1] := $7F;           // second byte
-    Buf[2] := 0;             // ID of target device (?)
-    Buf[3] := 8;             // sub-ID#1 (MIDI Tuning)
-    Buf[4] := 2;             // sub-ID#2 (note change)
-    Buf[5] := 0;             // tuning program number (0 – 127)
+    Buf[0] := MIDIMsgSysEx;      // Universal Real Time SysEx header, first byte
+    Buf[1] := $7F;               // second byte
+    Buf[2] := TargetDeviceID;    // ID of target device (?)
+    Buf[3] := 8;                 // sub-ID#1 (MIDI Tuning)
+    Buf[4] := 2;                 // sub-ID#2 (note change)
+    Buf[5] := TuningProgramNum;  // tuning program number (0 – 127)
     Buf[6] := Count;
     Move(TuningData, Buf[7], Count * SizeOf(TSingleNoteTuningData));
     Buf[BufSize - 1] := MIDIMsgEOX;
