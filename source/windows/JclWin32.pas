@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: December 29, 2003                                                                 }
+{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -97,6 +97,15 @@ type
 
 function GetFileAttributesEx(lpFileName: PChar;
   fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): BOOL; stdcall;
+  external kernel32 name 'GetFileAttributesExA';
+function CancelWaitableTimer(hTimer: THandle): BOOL; stdcall;
+  external kernel32 name 'CancelWaitableTimer';
+function CreateWaitableTimer(lpTimerAttributes: PSecurityAttributes; bManualReset: BOOL;
+  lpTimerName: PChar): THandle; stdcall;
+  external kernel32 name 'CreateWaitableTimerA';
+function OpenWaitableTimer(dwDesiredAccess: DWORD; bInheritHandle: BOOL;
+  lpTimerName: PChar): THandle; stdcall;
+  external kernel32 name 'OpenWaitableTimerA';
 
 // from unit AccCtrl
 type
@@ -1930,15 +1939,5 @@ function IMAGE_ORDINAL(Ordinal: DWORD): Word;
 begin
   Result := Ordinal and $FFFF;
 end;
-
-//==================================================================================================
-// FPC compatibility
-//==================================================================================================
-
-{$IFDEF FPC}
-
-function GetFileAttributesEx; external kernel32 name 'GetFileAttributesExA';
-
-{$ENDIF FPC}
 
 end.
