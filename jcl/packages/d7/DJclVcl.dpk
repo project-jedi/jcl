@@ -1,41 +1,40 @@
 package DJclVcl;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
-{$TYPEDADDRESS ON}
+{$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $400000}
+{$IMAGEBASE $48000000}
 {$DESCRIPTION 'JEDI Code Library VCL package for Delphi 7'}
 {$LIBSUFFIX '70'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
+  vcl,
   vcljpg,
-  DJcl,
-  vcl;
-
+  Jcl;
+  
 contains
-  JclGraphUtils in '..\..\Source\Vcl\JclGraphUtils.pas',
-  JclGraphics in '..\..\Source\Vcl\JclGraphics.pas',
-  JclPrint in '..\..\Source\Vcl\JclPrint.pas';
-
+  JclPrint in '..\..\source\vcl\JclPrint.pas' ,
+  JclGraphUtils in '..\..\source\vcl\JclGraphUtils.pas' ,
+  JclGraphics in '..\..\source\vcl\JclGraphics.pas' ;
+  
 end.
