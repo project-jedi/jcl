@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: October 13, 2002                                                                  }
+{ Last modified: April 16, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -33,7 +33,7 @@ unit JclSysInfo;
 interface
 
 uses
-  Windows, ActiveX, Classes, ShlObj, Controls,
+  Windows, ActiveX, Classes, ShlObj, 
   JclResources;
 
 //--------------------------------------------------------------------------------------------------
@@ -159,8 +159,8 @@ function GetShellProcessHandle: THandle;
 // TODOC Added wvWinNT351, wvWinNT35, IsWinNT351 and changed wvWinNT3 to wvWinNT31
 
 type
-  TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE,
-                     wvWinME, wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP);
+  TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
+                     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP, wvWin2003);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
                     ptPersonal, ptProfessional, ptDatacenterServer);
                     
@@ -189,6 +189,7 @@ var
   IsWinNT4: Boolean = False;
   IsWin2K: Boolean = False;
   IsWinXP: Boolean = False;
+  IsWin2003: Boolean = False;
 
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
@@ -228,7 +229,7 @@ Result: The major version number of the latest installed Service Pack. In case o
 Author: Jean-Fabien Connault
 }
 
-function GetOpenGLVersion(const Win: TWinControl; var Version, Vendor: String): boolean;
+function GetOpenGLVersion(const Win: HWND; var Version, Vendor: string): Boolean;
 {
 ShortDescr: Returns the current OpenGL library version string
 Descr: Takes a WinControl against which to perform the tests, and then Returns
@@ -572,10 +573,7 @@ var
 implementation
 
 uses
-  Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp, OpenGL,
-  {$IFNDEF DELPHI5_UP}
-  JclSysUtils,
-  {$ENDIF DELPHI5_UP}
+  Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp, 
   JclBase, JclFileUtils, JclIniFiles, JclRegistry, JclShell, JclStrings, JclWin32;
 
 //==================================================================================================
@@ -1825,13 +1823,16 @@ var
   KernelVersionHi: DWORD;
 
 function GetWindowsVersion: TWindowsVersion;
+var
+  TrimmedWin32CSDVersion: string;
 begin
   Result := wvUnknown;
+  TrimmedWin32CSDVersion := Trim(Win32CSDVersion);
   case Win32Platform of
     VER_PLATFORM_WIN32_WINDOWS:
       case Win32MinorVersion of
         0..9:
-          if Trim(Win32CSDVersion) = 'B' then
+          if (TrimmedWin32CSDVersion = 'B') or (TrimmedWin32CSDVersion = 'C') then
             Result := wvWin95OSR2
           else
             Result := wvWin95;
@@ -1842,7 +1843,7 @@ begin
           if KernelVersionHi = $0004005A then // 4.90.x.x
             Result := wvWinME
           else
-          if Trim(Win32CSDVersion) = 'A' then
+          if TrimmedWin32CSDVersion = 'A' then
             Result := wvWin98SE
           else
             Result := wvWin98;
@@ -1868,6 +1869,8 @@ begin
               Result := wvWin2000;
             1:
               Result := wvWinXP;
+            2:
+              Result := wvWin2003;  
           end;
       end;
   end;
@@ -1968,6 +1971,7 @@ begin
     wvWinNT4: Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
     wvWin2000: Result := RsOSVersionWin2000;
     wvWinXP: Result := RsOSVersionWinXP;
+    wvWin2003: Result := RsOSVersionWin2003;
   else
     Result := '';
   end;
@@ -2027,7 +2031,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetOpenGLVersion(const Win: TWinControl; var Version, Vendor: String): boolean;
+
+// Imports copied from OpenGL unit. Direct using of OpenGL unit might cause unexpected problems due
+// setting 8087CW in the intialization section
+function glGetString(name: Cardinal): PChar; stdcall; external opengl32;
+function glGetError: Cardinal; stdcall; external opengl32;
+function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
+
+function GetOpenGLVersion(const Win: HWND; var Version, Vendor: string): Boolean;
+const
+  GL_NO_ERROR = 0;
+  GL_VENDOR   = $1F00;
+  GL_VERSION  = $1F02;
 const
   RsOpenGLInfoError = 'Err';
   RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
@@ -2040,98 +2055,106 @@ var
   hGLContext: HGLRC;
   hGLDC: HDC;
   pcTemp: PChar;
-  glErr: glEnum;
+  glErr: Cardinal;
   bError: Boolean;
-  sOpenGLVersion, sOpenGLVendor: String;
+  sOpenGLVersion, sOpenGLVendor: string;
+  Save8087CW: Word;
 begin
   { To call for the version information string we must first have an active
     context established for use.  We can, of course, close this after use }
-  hGLContext := 0;
-  Result := False;
-  bError := False;
 
-  if Win = Nil then
-  begin
-    Result := False;
-    Vendor := RsOpenGLInfoError;
-    Version := RsOpenGLInfoError;
-    Exit;
-  end;
-
-  FillChar(pfd, SizeOf(pfd), 0);
-  with pfd do
-  begin
-    nSize := SizeOf(pfd);
-    nVersion := 1;  { The Current Version of the descriptor is 1 }
-    dwFlags := PFD_DRAW_TO_WINDOW OR PFD_SUPPORT_OPENGL;
-    iPixelType := PFD_TYPE_RGBA;
-    cColorBits := 24;  { support 24-bit colour }
-    cDepthBits := 32;  { Depth of the z-buffer }
-    iLayerType := PFD_MAIN_PLANE;
-  end;
-
-  hGLDC := GetDC(Win.Handle);
+  Save8087CW := Get8087CW;
   try
-    iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
-    if iFormatIndex = 0 then
-      raise Exception.Create(RsOpenGLInfoExcep_CPF);
+    Set8087CW($133F);
+    hGLContext := 0;
+    Result := False;
+    bError := False;
 
-    if NOT SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
-      raise Exception.Create(RsOpenGLInfoExcep_SPF);
-
-    hGLContext := wglCreateContext(hGLDC);
-    if hGLContext = 0 then
-      raise Exception.Create(RsOpenGLInfoExcep_CC);
-
-    if NOT wglMakeCurrent(hGLDC, hGLContext) then
-      raise Exception.Create(RsOpenGLInfoExcep_MC);
-
-    { TODO:  Review the following.  Not sure I am 100% happy with this code in }
-    {        its current structure. }
-    pcTemp := glGetString(GL_VERSION);
-    if pcTemp <> Nil then
+    if Win = 0 then
     begin
-      { TODO:  Store this information in a Global Variable, and return that?? }
-      {        This would save this work being performed again with later calls }
-      sOpenGLVersion := StrPas(pcTemp);
-    end
-    else
-    begin
-      bError := True;
-      glErr := glGetError;
-      if (glErr <> GL_NO_ERROR) then
-      begin
-        sOpenGLVersion := gluErrorString(glErr);
-        sOpenGLVendor := '';
-      end;
+      Result := False;
+      Vendor := RsOpenGLInfoError;
+      Version := RsOpenGLInfoError;
+      Exit;
     end;
 
-    pcTemp := glGetString(GL_VENDOR);
-    if pcTemp <> Nil then
+    FillChar(pfd, SizeOf(pfd), 0);
+    with pfd do
     begin
-      { TODO:  Store this information in a Global Variable, and return that?? }
-      {        This would save this work being performed again with later calls }
-      sOpenGLVendor := StrPas(pcTemp);
-    end
-    else
-    begin
-      bError := True;
-      glErr := glGetError;
-      if (glErr <> GL_NO_ERROR) then
-      begin
-        sOpenGLVendor := gluErrorString(glErr);
-        Exit;
-      end;
+      nSize := SizeOf(pfd);
+      nVersion := 1;  { The Current Version of the descriptor is 1 }
+      dwFlags := PFD_DRAW_TO_WINDOW OR PFD_SUPPORT_OPENGL;
+      iPixelType := PFD_TYPE_RGBA;
+      cColorBits := 24;  { support 24-bit colour }
+      cDepthBits := 32;  { Depth of the z-buffer }
+      iLayerType := PFD_MAIN_PLANE;
     end;
 
-    Result := (NOT bError);
-    Version := sOpenGLVersion;
-    Vendor := sOpenGLVendor;
+    hGLDC := GetDC(Win);
+    try
+      iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
+      if iFormatIndex = 0 then
+        raise Exception.Create(RsOpenGLInfoExcep_CPF);
+
+      if not SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
+        raise Exception.Create(RsOpenGLInfoExcep_SPF);
+
+      hGLContext := wglCreateContext(hGLDC);
+      if hGLContext = 0 then
+        raise Exception.Create(RsOpenGLInfoExcep_CC);
+
+      if not wglMakeCurrent(hGLDC, hGLContext) then
+        raise Exception.Create(RsOpenGLInfoExcep_MC);
+
+      { TODO:  Review the following.  Not sure I am 100% happy with this code in }
+      {        its current structure. }
+      pcTemp := glGetString(GL_VERSION);
+      if pcTemp <> Nil then
+      begin
+        { TODO:  Store this information in a Global Variable, and return that?? }
+        {        This would save this work being performed again with later calls }
+        sOpenGLVersion := StrPas(pcTemp);
+      end
+      else
+      begin
+        bError := True;
+        glErr := glGetError;
+        if (glErr <> GL_NO_ERROR) then
+        begin
+          sOpenGLVersion := gluErrorString(glErr);
+          sOpenGLVendor := '';
+        end;
+      end;
+
+      pcTemp := glGetString(GL_VENDOR);
+      if pcTemp <> Nil then
+      begin
+        { TODO:  Store this information in a Global Variable, and return that?? }
+        {        This would save this work being performed again with later calls }
+        sOpenGLVendor := StrPas(pcTemp);
+      end
+      else
+      begin
+        bError := True;
+        glErr := glGetError;
+        if (glErr <> GL_NO_ERROR) then
+        begin
+          sOpenGLVendor := gluErrorString(glErr);
+          Exit;
+        end;
+      end;
+
+      Result := (not bError);
+      Version := sOpenGLVersion;
+      Vendor := sOpenGLVendor;
+    finally
+      { Close all resources }
+      wglMakeCurrent(hGLDC, 0);
+      if hGLContext <> 0 then
+        wglDeleteContext(hGLContext);
+    end;
   finally
-    { Close all resources }
-    wglMakeCurrent(hGLDC, 0);
-    if hGLContext <> 0 then
-      wglDeleteContext(hGLContext);
+    Set8087CW(Save8087CW);
   end;
 end;
 
@@ -3434,6 +3457,8 @@ begin
     wvWin2000:
       IsWin2K := True;
     wvWinXP:
+      IsWinXP := True;
+    wvWin2003:
       IsWinXP := True;
   end;
 end;
