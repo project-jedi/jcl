@@ -678,7 +678,24 @@ asm
        REPNE   SCASW
        LEA     EAX, [EDI - 2]
        MOV     EDI, EDX
+end;
 
+function StrCopyE(Dest: PChar; const Source: PChar): PChar;
+begin
+  Result := StrCopy(Dest, Source) + StrLen(Source) + 1;
+end;
+
+function WStrCopyE(Dest: PWideChar; Source: PWideChar): PWideChar;
+begin
+  while True do
+  begin
+    Dest^ := Source^;
+    Inc(Dest);
+    if Source^ = #0 then
+      Break;
+    Inc(Source);
+  end;
+  Result := Dest;
 end;
 
 //==================================================================================================
@@ -3498,7 +3515,7 @@ begin
   begin
     S := Value[I];
     if S <> '' then
-      DstPtr := CopyMemE(DstPtr, PAnsiChar(S), Length(S) + 1);
+      DstPtr := StrCopyE(DstPtr, PAnsiChar(S));
   end;
 end;
 
@@ -3527,7 +3544,7 @@ begin
   begin
     S := Value[I];  { TODO : or other convert? }
     if S <> '' then
-      DstPtr := CopyMemE(DstPtr, PWideChar(S), (Length(S) + 1) * SizeOf(WideChar));
+      DstPtr := WStrCopyE(DstPtr, PWideChar(S));
   end;
 end;
 
@@ -3556,7 +3573,7 @@ begin
   begin
     S := Value[I];
     if S <> '' then
-      DstPtr := CopyMemE(DstPtr, PAnsiChar(S), Length(S) + 1);
+      DstPtr := StrCopyE(DstPtr, PAnsiChar(S));
   end;
 end;
 
@@ -3585,7 +3602,7 @@ begin
   begin
     S := Value[I];  { TODO : or other convert? }
     if S <> '' then
-      DstPtr := CopyMemE(DstPtr, PWideChar(S), (Length(S) + 1) * SizeOf(WideChar));
+      DstPtr := WStrCopyE(DstPtr, PWideChar(S));
   end;
 end;
 
@@ -3616,7 +3633,7 @@ begin
   begin
     S := Value[I];
     if S <> '' then
-      DstPtr := CopyMemE(DstPtr, PAnsiChar(S), Length(S) + 1);
+      DstPtr := StrCopyE(DstPtr, PAnsiChar(S));
   end;
 end;
 
@@ -3647,7 +3664,7 @@ begin
   begin
     S := Value[I];  { TODO : or other convert? }
     if S <> '' then
-      DstPtr := CopyMemE(DstPtr, PWideChar(S), (Length(S) + 1) * SizeOf(WideChar));
+      DstPtr := WStrCopyE(DstPtr, PWideChar(S));
   end;
 end;
 
@@ -4221,6 +4238,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.25  2004/09/30 07:50:29  marquardt
+// remove PH contributions
+//
 // Revision 1.24  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
 //

@@ -18,7 +18,6 @@
 { Contributors:                                                                                    }
 {   Marcel van Brakel,                                                                             }
 {   Peter Friese,                                                                                  }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
@@ -161,7 +160,6 @@ type
   TDynShortIntArray = array of Shortint;
   TDynWordArray     = array of Word;
   TDynSmallIntArray = array of Smallint;
-  TDynLongWordArray = array of Longword;
   TDynLongIntArray  = array of Longint;
   TDynInt64Array    = array of Int64;
   TDynCardinalArray = array of Cardinal;
@@ -172,7 +170,6 @@ type
   TDynFloatArray    = array of Float;
   TDynPointerArray  = array of Pointer;
   TDynStringArray   = array of string;
-  TDynBooleanArray  = array of Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Cross-Platform Compatibility
@@ -302,6 +299,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2004/09/30 07:50:29  marquardt
+// remove PH contributions
+//
 // Revision 1.20  2004/09/16 19:47:32  rrossmair
 // check-in in preparation for release 1.92
 //

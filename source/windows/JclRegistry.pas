@@ -584,7 +584,29 @@ function InternalRegRead64(const RootKey: DelphiHKEY; const Key, Name: string;
   RaiseException: Boolean; Signed: Boolean; out Value: Int64): Boolean;
 var
   DataPtr: Pointer;
-  DataSize: DWord;
+  DataSize: Cardinal;
+
+  function ExtendToInt64(const Value: Int64; ValidBytes: Integer): Int64;
+  const
+    SignMasks: array [1..7] of Int64 = (
+      $0000000000000080, $0000000000008000, $0000000000800000, $0000000080000000,
+      $0000008000000000, $0000800000000000, $0080000000000000);
+    ExtendMasks: array [1..7] of Int64 = (
+      $FFFFFFFFFFFFFF80, $FFFFFFFFFFFF8000, $FFFFFFFFFF800000, $FFFFFFFF80000000,
+      $FFFFFF8000000000, $FFFF800000000000, $FF80000000000000);
+  begin
+    Result := Value;
+    case ValidBytes of
+      0:
+        Result := 0;
+      1..7:
+        if (Result and SignMasks[ValidBytes]) = 0 then
+          Result := Result and not ExtendMasks[ValidBytes]  // extend positive
+        else
+          Result := Result or ExtendMasks[ValidBytes];      // extend negative
+    end;
+  end;
+
 begin
   Value := 0;
   DataPtr := @Value;
@@ -881,9 +903,9 @@ function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
 begin
   Result := ValueSize;
+  FillChar(Value, ValueSize, Def);
   if not InternalRegReadBinaryFixedSize(RootKey, Key, Name, False, Value, Result) then
     Result := 0;
-  FillRemainBytes(Value, ValueSize, Result, Def);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1388,6 +1410,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2004/09/30 07:50:29  marquardt
+// remove PH contributions
+//
 // Revision 1.19  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //

@@ -16,7 +16,7 @@
 { Portions created Marcel Bestebroer are Copyright (C) Marcel Bestebroer. All rights reserved.     }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Theo Bebekis, Marcel Bestebroer (marcelb), Peter J. Haas, Robert Marquardt, Robert Rossmair,   }
+{   Theo Bebekis, Marcel Bestebroer (marcelb), Robert Marquardt, Robert Rossmair,                  }
 {   Matthias Thoma, Petr Vones                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -2772,24 +2772,26 @@ type
   end;
 
 //--------------------------------------------------------------------------------------------------
+// Copied from System.pas (_IsClass function)
 
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
-type
-  PClass = ^TClass;
-var
-  ClassPtr: PClass;
-  CurrentClass: TClass;
-begin
-  Result := False;
-  ClassPtr := PClass(AnObj);
-  while Assigned(ClassPtr) do
-  begin
-    CurrentClass := ClassPtr^;
-    Result := CurrentClass = AClass;
-    if Result then
-      Break;
-    ClassPtr := PClass(PPointer(Integer(CurrentClass) + vmtParent)^);
-  end;
+asm
+        { ->    EAX     left operand (class)    }
+        {       EDX VMT of right operand        }
+        { <-    AL      left is derived from right      }
+        TEST    EAX,EAX
+        JE      @@exit
+@@loop:
+        MOV     EAX,[EAX]
+        CMP     EAX,EDX
+        JE      @@success
+        MOV     EAX,[EAX].vmtParent
+        TEST    EAX,EAX
+        JNE     @@loop
+        JMP     @@exit
+@@success:
+        MOV     AL,1
+@@exit:
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2848,6 +2850,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.15  2004/09/30 07:50:29  marquardt
+// remove PH contributions
+//
 // Revision 1.14  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
 //
