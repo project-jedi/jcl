@@ -6,13 +6,7 @@ unit MidiOutExampleMain;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VisualCLX}
-  QControls, QForms, QMenus, QTypes, QStdCtrls, QComCtrls, QButtons,
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
-  Controls, Forms, Menus, StdCtrls, ComCtrls, Buttons, Spin,
-  {$ENDIF VCL}
+  SysUtils, Classes, Controls, Forms, Menus, StdCtrls, ComCtrls, Buttons, Spin,
   JclMIDI;
 
 type
