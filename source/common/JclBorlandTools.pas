@@ -242,10 +242,12 @@ type
 
   TJclDCC = class(TJclBorlandCommandLineTool)
   protected
+    constructor Create(AInstallation: TJclBorRADToolInstallation); override;
     function GetExeName: string; override;
   public
     function Execute(const CommandLine: string): Boolean; override;
     function MakePackage(const PackageName, BPLPath, DCPPath: string): Boolean;
+    procedure SetDefaultOptions;
     function SupportsLibSuffix: Boolean;
   end;
 
@@ -376,6 +378,7 @@ type
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
     function IsBDSPersonality: Boolean;
+    function LibFolderName: string;
     function RemoveFromDebugDCUPath(const Path: string): Boolean;
     function RemoveFromLibrarySearchPath(const Path: string): Boolean;
     function RemoveFromLibraryBrowsingPath(const Path: string): Boolean;
@@ -1161,8 +1164,19 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclBorlandCommandLineTool.AddPathOption(const Option, Path: string);
+var
+  S: string;
 begin
-  Options.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
+  S := PathRemoveSeparator(Path);
+  {$IFDEF MSWINDOWS}
+  S := LowerCase(S); // file names are case insensitive
+  {$ENDIF MSWINDOWS}
+  { TODO : If we were sure that options are always case-insensitive
+           for Borland tools, we could use UpperCase(Option) below. }
+  S := Format('-%s"%s"', [Option, S]);
+  // avoid duplicate entries
+  if Options.IndexOf(S) = -1 then
+    Options.Add(S);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1235,6 +1249,14 @@ end;
 // TJclDCC
 //==================================================================================================
 
+constructor TJclDCC.Create(AInstallation: TJclBorRADToolInstallation);
+begin
+  inherited Create(AInstallation);
+  SetDefaultOptions; // in case $(DELPHI)\bin\dcc32.cfg (replace as appropriate) is invalid
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclDCC.Execute(const CommandLine: string): Boolean;
 const
   {$IFDEF WIN32}
@@ -1288,6 +1310,16 @@ begin
   finally
     SetCurrentDir(SaveDir);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDCC.SetDefaultOptions;
+begin
+  Options.Clear;
+  AddPathOption('U', Installation.LibFolderName);
+  if Installation.RadToolKind = brCppBuilder then
+    AddPathOption('U', Installation.LibFolderName + PathAddSeparator('obj'));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2136,6 +2168,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclBorRADToolInstallation.LibFolderName: string;
+begin
+  Result := PathAddSeparator(RootDir) + PathAddSeparator('lib');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclBorRADToolInstallation.RemoveFromDebugDCUPath(const Path: string): Boolean;
 var
   TempDebugDCUPath: TJclBorRADToolPath;
@@ -2202,9 +2241,9 @@ procedure TJclBorRADToolInstallation.ReadInformation;
 const
   {$IFDEF KYLIX}
   BinDir = 'bin/';
-  {$ELSE}
-  BinDir = 'Bin\';
-  {$ENDIF KYLIX}
+  {$ELSE ~KYLIX}
+  BinDir = 'bin\';
+  {$ENDIF ~KYLIX}
   UpdateKeyName = 'Update #';
 var
   KeyLen, I: Integer;
@@ -2632,8 +2671,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclCommandLineTool.AddPathOption(const Option, Path: string);
+var
+  S: string;
 begin
-  GetOptions.Add(Format('-%s"%s"', [Option, PathRemoveSeparator(Path)]));
+  S := PathRemoveSeparator(Path);
+  {$IFDEF MSWINDOWS}
+  S := LowerCase(S); // file names are case insensitive
+  {$ENDIF MSWINDOWS}
+  S := Format('-%s"%s"', [Option, S]);
+  // avoid duplicate entries (note that search is case sensitive)
+  if GetOptions.IndexOf(S) = -1 then
+    GetOptions.Add(S);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2686,6 +2734,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.34  2005/02/23 07:53:13  rrossmair
+// - added TJclDCC.SetDefaultOptions, which includes the path(s) normally found in $(DELPHI)\bin\dcc32.cfg.
+// - AddPathOption() methods enhanced.
+//
 // Revision 1.33  2005/02/04 05:11:21  rrossmair
 // - fixed TJclBorRADToolInstallation.UninstallPackage
 //
