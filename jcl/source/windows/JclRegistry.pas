@@ -374,7 +374,6 @@ begin
   DataType := REG_NONE;
   DataSize := 0;
   if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
-  begin
     try
       if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
@@ -387,8 +386,7 @@ begin
         ValueError(Key, Name);
     finally
       RegCloseKey(RegKey);
-    end;
-  end
+    end
   else
     ReadError(Key);
 end;
@@ -405,7 +403,6 @@ begin
   DataSize := 0;
   Result := '';
   if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
-  begin
     try
       if RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
@@ -426,8 +423,7 @@ begin
         ValueError(Key, Name);
     finally
       RegCloseKey(RegKey);
-    end;
-  end
+    end
   else
     ReadError(Key);
 end;
@@ -444,7 +440,6 @@ begin
   DataSize := 0;
   Result := '';
   if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
-  begin
     try
       if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
@@ -469,8 +464,7 @@ begin
         ValueError(Key, Name);
     finally
       RegCloseKey(RegKey);
-    end;
-  end
+    end
   else
     ReadError(Key);
 end;
@@ -1594,6 +1588,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.33  2005/02/22 07:36:46  marquardt
+// minor cleanups
+//
 // Revision 1.32  2005/02/20 13:09:52  marquardt
 // Win 9x bugfixes
 //
