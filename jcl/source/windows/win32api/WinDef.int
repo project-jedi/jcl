@@ -1,0 +1,21 @@
+
+type
+
+  PQuad = ^TQuad;
+  _QUAD = record                // QUAD is for those times we want
+    DoNotUseThisField: Double;  // an 8 byte aligned 8 byte long structure
+  end;                          // which is NOT really a floating point
+  {$EXTERNALSYM _QUAD}          // number.  Use DOUBLE if you want an FP number.
+  QUAD = _QUAD;
+  {$EXTERNALSYM QUAD}
+  TQuad = _QUAD;
+
+//
+// Unsigned Basics
+//
+
+  USHORT = Word;
+  {$EXTERNALSYM USHORT}
+  UQUAD = QUAD;
+  {$EXTERNALSYM UQUAD}
+
