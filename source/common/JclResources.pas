@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: July 23, 2000                                                 }
+{ Last modified: August 9, 2000                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -228,10 +228,25 @@ resourcestring
 // JclMiscel
 //------------------------------------------------------------------------------
 
-  // StrLstSaveLoad
-
 resourcestring
+  // StrLstSaveLoad
   RsErrNotExist = 'Specified list ["%s"] does not exist';
+
+  // CreateProcAsUser
+  RsCreateProcOSVersionError          = 'Unable to determine OS version';
+  RsCreateProcNTRequiredError         = 'Windows NT required';
+  RsCreateProcBuild1057Error          = 'NT version 3.51 build 1057 or later required';
+
+  RsCreateProcPrivilegeMissing        = 'This account does not have the privilege "%s"(%s)';
+  RsCreateProcLogonUserError          = 'LogonUser failed';
+  RsCreateProcAccessDenied            = 'Access denied';
+  RsCreateProcLogonFailed             = 'Unable to logon';
+  RsCreateProcSetStationSecurityError = 'Can''t set WindowStation "%s" security.';
+  RsCreateProcSetDesktopSecurityError = 'Can''t set Desktop "%s" security.';
+  RsCreateProcPrivilegesMissing       = 'This account does not have on (or more) of ' +
+    'the following privileges: ' + '"%s"(%s)' + #13 + '"%s"(%s)' + #13;
+  RsCreateProcCommandNotFound         = 'Command or filename not found: "%s"';
+  RsCreateProcFailed                  = 'CreateProcessAsUser failed';                                  
 
 //------------------------------------------------------------------------------
 // JclMultimedia
