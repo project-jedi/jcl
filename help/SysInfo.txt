@@ -1357,3 +1357,58 @@ Delphi=3,4,5
 [SeeAlso]
 Count=1
 1=CreateEnvironmentBlock;..\CreateEnvironmentBlock
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetUserDomainName(const CurUser: string): string;
+[ShortDescr]
+Looks up the domain the user is defined.
+[Description]
+GetUserDomainName looks up the domain the given user account is defined in.
+[Parameters]
+Count=1
+1=CurUser:string=The name of the user account to look up.
+[Result]
+As the result, you will receive the name of the domain the user is defined in.
+[Notes]
+Count=1
+1=The function tries to find the user account on the local system first. Next,
+the primary domain is checked. If the name is not found there, trusted domains
+are checked.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Not tested.
+[SeeAlso]
+Count=2
+1=GetDomainName;GetDomainName
+2=GetLocalUserName;GetLocalUserName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetDomainName: string;
+[ShortDescr]
+Returns the name of the domain the workstation is signed in to.
+[Description]
+GetDomainName returns the name of the domain the workstation is currently signed
+in to.
+[Result]
+As the result, you will get the name of the domain.
+[Notes]
+Count=1
+1=The function determines the name of the domain by checking which domain the
+currently logged in user is belonging to.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Not tested.
+[SeeAlso]
+Count=2
+1=GetUserDomainName;GetUserDomainName
+2=GetLocalUserName;GetLocalUserName
