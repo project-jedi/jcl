@@ -56,24 +56,26 @@ type
     wkrReplicator, wkrEveryone);
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
-  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
+  Homedir, Script: string;
+  const PasswordNeverExpires: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
 function CreateLocalAccount(const Username, Fullname, Password, Description,
-  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
+  Homedir, Script: string;
+  const PasswordNeverExpires: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
 function DeleteAccount(const Servername, Username: string): Boolean;
 function DeleteLocalAccount(Username: string): Boolean;
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
 function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 
-function GetLocalGroups(const Server: string; const Groups: TStrings): boolean;
-function GetGlobalGroups(const Server: string; const Groups: TStrings): boolean;
-function LocalGroupExists(const Group: string): boolean;
-function GlobalGroupExists(const Server, Group: string): boolean;
+function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
+function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
+function LocalGroupExists(const Group: string): Boolean;
+function GlobalGroupExists(const Server, Group: string): Boolean;
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
 procedure ParseAccountName(const QualifiedName: string; var Domain, UserName: string);
-function IsLocalAccount(const AccountName: string): boolean;
+function IsLocalAccount(const AccountName: string): Boolean;
 
 implementation
 
@@ -86,13 +88,13 @@ uses
 //------------------------------------------------------------------------------
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
-  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
+  Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 var
   wServer, wUsername, wFullname,
   wPassword, wDescription, wHomedir, wScript: WideString;
-  details: USER_INFO_2;
-  err: NET_API_STATUS;
-  parmErr: DWORD;
+  Details: USER_INFO_2;
+  Err: NET_API_STATUS;
+  ParmErr: DWORD;
 begin
   wServer := Server;
   wUsername := Username;
@@ -102,8 +104,8 @@ begin
   wScript := Script;
   wHomedir := Homedir;
 
-  FillChar (details, sizeof(details), 0);
-  with details do
+  FillChar (Details, SizeOf(Details), 0);
+  with Details do
   begin
     usri2_name := PWideChar(wUsername);
     usri2_full_name := PWideChar(wFullname);
@@ -118,14 +120,14 @@ begin
     usri2_acct_expires := TIMEQ_FOREVER;
   end;
 
-  err := NetUserAdd(PWideChar(wServer), 2, @details, @parmErr);
-  Result := (err = NERR_SUCCESS);
+  Err := NetUserAdd(PWideChar(wServer), 2, @Details, @ParmErr);
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
 
 function CreateLocalAccount(const Username, Fullname, Password, Description,
-  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
+  Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 begin
   Result := CreateAccount('', Username, Fullname, Password, Description, Homedir,
     Script, PassWordNeverExpires);
@@ -136,12 +138,12 @@ end;
 function DeleteAccount(const Servername, Username: string): Boolean;
 var
   wServername, wUsername: WideString;
-  err: NET_API_STATUS;
+  Err: NET_API_STATUS;
 begin
   wServername := Servername;
   wUsername := Username;
-  err := NetUserDel(PWideChar(wServername), PWideChar(wUsername));
-  Result := (err = NERR_SUCCESS);
+  Err := NetUserDel(PWideChar(wServername), PWideChar(wUsername));
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -153,44 +155,44 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CreateGlobalGroup(const Server, Groupname, Description: string): boolean;
+function CreateGlobalGroup(const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
-  details: GROUP_INFO_1;
-  err: NET_API_STATUS;
-  parmErr: DWORD;
+  Details: GROUP_INFO_1;
+  Err: NET_API_STATUS;
+  ParmErr: DWORD;
 begin
   wServer := Server;
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar (details, sizeof(details), 0);
-  details.grpi1_name := PWideChar(wGroupName);
-  details.grpi1_comment := PWideChar(wDescription);
+  FillChar (Details, SizeOf(Details), 0);
+  Details.grpi1_name := PWideChar(wGroupName);
+  Details.grpi1_comment := PWideChar(wDescription);
 
-  err := NetGroupAdd(PWideChar(wServer), 1, @details, @parmErr);
-  Result := (err = NERR_SUCCESS);
+  Err := NetGroupAdd(PWideChar(wServer), 1, @Details, @ParmErr);
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
 
-function CreateLocalGroup(const Server, Groupname, Description: string): boolean;
+function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
 var
   wServer, wGroupname, wDescription: WideString;
-  details: LOCALGROUP_INFO_1;
-  err: NET_API_STATUS;
-  parmErr: DWORD;
+  Details: LOCALGROUP_INFO_1;
+  Err: NET_API_STATUS;
+  ParmErr: DWORD;
 begin
   wServer := Server;
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar (details, sizeof(details), 0);
-  details.lgrpi1_name := PWideChar(wGroupName);
-  details.lgrpi1_comment := PWideChar(wDescription);
+  FillChar (Details, SizeOf(Details), 0);
+  Details.lgrpi1_name := PWideChar(wGroupName);
+  Details.lgrpi1_comment := PWideChar(wDescription);
 
-  err := NetLocalGroupAdd(PWideChar(wServer), 1, @details, @parmErr);
-  Result := (err = NERR_SUCCESS);
+  Err := NetLocalGroupAdd(PWideChar(wServer), 1, @Details, @ParmErr);
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -198,127 +200,132 @@ end;
 function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
-  err: NET_API_STATUS;
+  Err: NET_API_STATUS;
 begin
   wServername := Server;
   wUsername := Groupname;
-  err := NetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername));
-  Result := (err = NERR_SUCCESS);
+  Err := NetLocalGroupDel(PWideChar(wServername), PWideChar(wUsername));
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
 
-function GetLocalGroups(const Server: string; const Groups: TStrings): boolean;
+function GetLocalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
-  err: NET_API_STATUS;
+  Err: NET_API_STATUS;
   wServername: WideString;
-  buffer: Pointer;
-  details: PLocalGroupInfo0;
-  entriesread, totalentries: Cardinal;
-  i: integer;
+  Buffer: Pointer;
+  Details: PLocalGroupInfo0;
+  EntriesRead, TotalEntries: Cardinal;
+  I: Integer;
 begin
   wServername := Server;
-  err := NetLocalGroupEnum(PWideChar(wServername), 0, buffer, MAX_PREFERRED_LENGTH,
-    entriesread, totalentries, nil);
+  Err := NetLocalGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
+    EntriesRead, TotalEntries, nil);
 
-  if err = NERR_SUCCESS then begin
-    details := PLocalGroupInfo0(buffer);
-    for i := 0 to entriesread - 1 do begin
-      Groups.Add(details^.lgrpi0_name);
-      Inc(details);
+  if Err = NERR_SUCCESS then
+  begin
+    Details := PLocalGroupInfo0(Buffer);
+    for I := 0 to EntriesRead - 1 do
+    begin
+      Groups.Add(Details^.lgrpi0_name);
+      Inc(Details);
     end;
   end;
 
-  NetApiBufferFree(@details);
-  Result := (err = NERR_SUCCESS);
+  NetApiBufferFree(@Details);
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
 
-function GetGlobalGroups(const Server: string; const Groups: TStrings): boolean;
+function GetGlobalGroups(const Server: string; const Groups: TStrings): Boolean;
 var
-  err: NET_API_STATUS;
+  Err: NET_API_STATUS;
   wServername: WideString;
-  buffer: Pointer;
-  details: PGroupInfo0;
-  entriesread, totalentries: Cardinal;
-  i: integer;
+  Buffer: Pointer;
+  Details: PGroupInfo0;
+  EntriesRead, TotalEntries: Cardinal;
+  I: Integer;
 begin
   wServername := Server;
-  err := NetGroupEnum(PWideChar(wServername), 0, buffer, MAX_PREFERRED_LENGTH,
-    entriesread, totalentries, nil);
+  Err := NetGroupEnum(PWideChar(wServername), 0, Buffer, MAX_PREFERRED_LENGTH,
+    EntriesRead, TotalEntries, nil);
 
-  if err = NERR_SUCCESS then begin
-    details := PGroupInfo0(buffer);
-    if (entriesread <> 1) or (details^.grpi0_name <> 'None') then
-      for i := 0 to entriesread - 1 do begin
-        Groups.Add(details^.grpi0_name);
-        Inc(details);
+  if Err = NERR_SUCCESS then
+  begin
+    Details := PGroupInfo0(Buffer);
+    if (EntriesRead <> 1) or (Details^.grpi0_name <> 'None') then
+      for I := 0 to EntriesRead - 1 do
+      begin
+        Groups.Add(Details^.grpi0_name);
+        Inc(Details);
       end;
   end
   else
     RaiseLastOSError;
 
-  NetApiBufferFree(@details);
-  Result := (err = NERR_SUCCESS);
+  NetApiBufferFree(@Details);
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
 
-function LocalGroupExists(const Group: string): boolean;
+function LocalGroupExists(const Group: string): Boolean;
 var
-  groups: TStrings;
+  Groups: TStrings;
 begin
-  groups := TStringList.Create;
+  Groups := TStringList.Create;
   try
-    GetLocalGroups('', groups);
-    Result := (groups.IndexOf(Group) >= 0);
+    GetLocalGroups('', Groups);
+    Result := (Groups.IndexOf(Group) >= 0);
   finally
-    groups.Free;
+    Groups.Free;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function GlobalGroupExists(const Server, Group: string): boolean;
+function GlobalGroupExists(const Server, Group: string): Boolean;
 var
-  groups: TStrings;
+  Groups: TStrings;
 begin
-  groups := TStringList.Create;
+  Groups := TStringList.Create;
   try
-    GetGlobalGroups(Server, groups);
-    Result := (groups.IndexOf(Group) >= 0);
+    GetGlobalGroups(Server, Groups);
+    Result := (Groups.IndexOf(Group) >= 0);
   finally
-    groups.Free;
+    Groups.Free;
   end;
 end;
 
 //------------------------------------------------------------------------------
+
 function DeleteGlobalGroup(const Server, Groupname: string): Boolean;
 var
   wServername, wUsername: WideString;
-  err: NET_API_STATUS;
+  Err: NET_API_STATUS;
 begin
   wServername := Server;
   wUsername := Groupname;
-  err := NetGroupDel(PWideChar(wServername), PWideChar(wUsername));
-  Result := (err = NERR_SUCCESS);
+  Err := NetGroupDel(PWideChar(wServername), PWideChar(wUsername));
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
 
-function AddAccountToLocalGroup(const Accountname, Groupname: string): boolean;
+function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 var
-  err: NET_API_STATUS;
+  Err: NET_API_STATUS;
   wAccountname, wGroupname: WideString;
-  details: LOCALGROUP_MEMBERS_INFO_3;
+  Details: LOCALGROUP_MEMBERS_INFO_3;
 begin
   wGroupname := Groupname;
   wAccountname := AccountName;
 
-  details.lgrmi3_domainandname := PWideChar(wAccountname);
-  err := NetLocalGroupAddMembers(nil, PWideChar(wGroupname), 3, @details, 1);
-  Result := (err = NERR_SUCCESS);
+  Details.lgrmi3_domainandname := PWideChar(wAccountname);
+  Err := NetLocalGroupAddMembers(nil, PWideChar(wGroupname), 3, @Details, 1);
+  Result := (Err = NERR_SUCCESS);
 end;
 
 //------------------------------------------------------------------------------
@@ -326,29 +333,40 @@ end;
 function RIDToDWORD(const RID: TNetWellKnownRID): DWORD;
 begin
   case RID of
-    wkrAdmins: Result := DOMAIN_ALIAS_RID_ADMINS;
-    wkrUsers: Result := DOMAIN_ALIAS_RID_USERS;
-    wkrGuests: Result := DOMAIN_ALIAS_RID_GUESTS;
-    wkrPowerUsers: Result := DOMAIN_ALIAS_RID_POWER_USERS;
-    wkrBackupOPs: Result := DOMAIN_ALIAS_RID_BACKUP_OPS;
-    wkrReplicator: Result := DOMAIN_ALIAS_RID_REPLICATOR;
+    wkrAdmins:
+      Result := DOMAIN_ALIAS_RID_ADMINS;
+    wkrUsers:
+      Result := DOMAIN_ALIAS_RID_USERS;
+    wkrGuests:
+      Result := DOMAIN_ALIAS_RID_GUESTS;
+    wkrPowerUsers:
+      Result := DOMAIN_ALIAS_RID_POWER_USERS;
+    wkrBackupOPs:
+      Result := DOMAIN_ALIAS_RID_BACKUP_OPS;
+    wkrReplicator:
+      Result := DOMAIN_ALIAS_RID_REPLICATOR;
   else // (wkrEveryone)
     Result := SECURITY_WORLD_RID;
   end;
 end;
-
 
 //------------------------------------------------------------------------------
 
 function DWORDToRID(const RID: DWORD): TNetWellKnownRID;
 begin
   case RID of
-    DOMAIN_ALIAS_RID_ADMINS: Result := wkrAdmins;
-    DOMAIN_ALIAS_RID_USERS: Result := wkrUsers;
-    DOMAIN_ALIAS_RID_GUESTS: Result := wkrGuests;
-    DOMAIN_ALIAS_RID_POWER_USERS: Result := wkrPowerUsers;
-    DOMAIN_ALIAS_RID_BACKUP_OPS: Result := wkrBackupOPs;
-    DOMAIN_ALIAS_RID_REPLICATOR: Result := wkrReplicator;
+    DOMAIN_ALIAS_RID_ADMINS:
+      Result := wkrAdmins;
+    DOMAIN_ALIAS_RID_USERS:
+      Result := wkrUsers;
+    DOMAIN_ALIAS_RID_GUESTS:
+      Result := wkrGuests;
+    DOMAIN_ALIAS_RID_POWER_USERS:
+      Result := wkrPowerUsers;
+    DOMAIN_ALIAS_RID_BACKUP_OPS:
+      Result := wkrBackupOPs;
+    DOMAIN_ALIAS_RID_REPLICATOR:
+      Result := wkrReplicator;
   else // (SECURITY_WORLD_RID)
     Result := wkrEveryone;
   end;
@@ -360,7 +378,7 @@ function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): str
 var
   sia: SID_IDENTIFIER_AUTHORITY;
   rd1, rd2: DWORD;
-  ridCOunt: integer;
+  ridCount: Integer;
   sd: PSID;
   AccountNameLen, DomainNameLen: DWORD;
   SidNameUse: SID_NAME_USE;
@@ -386,13 +404,11 @@ begin
     AccountNameLen := 0;
     DomainNameLen := 0;
     if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-                            nil, DomainNameLen, SidNameUse)
-    then
+             nil, DomainNameLen, SidNameUse) then
       SetLength(Result, AccountNamelen);
 
     if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-                        nil, DomainNameLen, sidNameUse)
-    then
+         nil, DomainNameLen, sidNameUse) then
       StrResetLength(Result)
     else
       RaiseLastOSError;
@@ -412,7 +428,8 @@ begin
     StrTokenToStrings(QualifiedName, '\', Parts);
     if Parts.Count = 1 then
       UserName := Parts[0]
-    else begin
+    else
+    begin
       Domain := Parts[0];
       UserName := Parts[1];
     end;
@@ -423,7 +440,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function IsLocalAccount(const AccountName: string): boolean;
+function IsLocalAccount(const AccountName: string): Boolean;
 var
   Domain: string;
   Username: string;
