@@ -14,7 +14,7 @@ Count=1
 If S contains only alpha characters the result is True, otherwise the result is False.
 [Notes]
 Count=1
-1=If S is an empty string the result is True.
+1=If S is an empty string the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -42,7 +42,7 @@ Count=1
 If S contains only alpha-numerical characters the result is True, otherwise the result is False.
 [Notes]
 Count=1
-1=If S is an empty string the result is True.
+1=If S is an empty string the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -72,7 +72,7 @@ If S contains only alpha-numerical and underscore characters the result is True,
 otherwise the result is False.
 [Notes]
 Count=1
-1=If S is an empty string the result is True.
+1=If S is an empty string the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -127,7 +127,7 @@ Count=1
 If S contains only numerical characters the result is True, otherwise the result is False.
 [Notes]
 Count=1
-1=If S is an empty string the result is True.
+1=If S is an empty string the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -157,7 +157,7 @@ Count=1
 If S contains only numerical characters the result is True, otherwise the result is False.
 [Notes]
 Count=1
-1=If S is an empty string the result is True.
+1=If S is an empty string the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
