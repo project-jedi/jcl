@@ -37,6 +37,8 @@
 
 unit LM;
 
+{$I jcl.inc}
+
 {$DEFINE LANMAN_DYNAMIC_LINK}
 
 {$ALIGN ON}
