@@ -24,7 +24,7 @@
 { and program execution.                                                       }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 03, 2001                                              }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -205,8 +205,7 @@ uses
 // Helper function and constant to map a TSHDeleteOptions set to a Cardinal
 
 const
-  FOF_COMPLETELYSILENT = FOF_SILENT or FOF_NOCONFIRMATION or FOF_NOERRORUI or
-                         FOF_NOCONFIRMMKDIR;
+  FOF_COMPLETELYSILENT = FOF_SILENT or FOF_NOCONFIRMATION or FOF_NOERRORUI or FOF_NOCONFIRMMKDIR;
 
 function DeleteOptionsToCardinal(Options: TSHDeleteOptions): Cardinal;
 begin
