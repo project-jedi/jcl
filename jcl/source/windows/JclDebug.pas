@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 11, 2002                                                                    }
+{ Last modified: March 15, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -475,8 +475,10 @@ type
   TJclStackInfoItem = class (TObject)
   private
     FStackInfo: TStackInfo;
+    function GetCallerAdr: Pointer;
     function GetLogicalAddress: DWORD;
   public
+    property CallerAdr: Pointer read GetCallerAdr; 
     property LogicalAddress: DWORD read GetLogicalAddress;
     property StackInfo: TStackInfo read FStackInfo;
   end;
@@ -2672,7 +2674,7 @@ begin
     with TJclStackInfoList.Create(False, 1, nil) do
     try
       if Level < Count then
-        Result := Pointer(Items[Level].StackInfo.CallerAdr)
+        Result := Items[Level].CallerAdr
       else
         Result := nil;
     finally
@@ -3208,7 +3210,7 @@ begin
   with List do
   begin
     for I := Count - 1 downto TopItem do
-      if JclBelongsHookedCode(Pointer(Items[I].StackInfo.CallerAdr)) then
+      if JclBelongsHookedCode(Items[I].CallerAdr) then
       begin
         FoundPos := I;
         Break;
@@ -3273,9 +3275,16 @@ end;
 // TJclStackInfoItem
 //==================================================================================================
 
+function TJclStackInfoItem.GetCallerAdr: Pointer;
+begin
+  Result := Pointer(FStackInfo.CallerAdr);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclStackInfoItem.GetLogicalAddress: DWORD;
 begin
-  Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(Pointer(FStackInfo.CallerAdr)));
+  Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(CallerAdr));
 end;
 
 //==================================================================================================
@@ -3288,8 +3297,8 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName,
-      IncludeAddressOffset, IncludeStartProcLineOffset));
+    Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
+      IncludeStartProcLineOffset));
 end;
 
 //--------------------------------------------------------------------------------------------------
