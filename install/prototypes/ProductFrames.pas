@@ -118,7 +118,7 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}
-  Messages,
+  Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF VisualCLX}
   Qt, QDialogs,
@@ -424,6 +424,9 @@ begin
   {$IFDEF VCL}
   if not Assigned(FormCompile) then
     FormCompile := TFormCompile.Create(Self);
+  {$IFDEF MSWINDOWS}
+  SetWindowLong(FormCompile.Handle, GWL_HWNDPARENT, Handle);
+  {$ENDIF MSWINDOWS}
   FormCompile.Init(Installation.Name, True);
   FormCompile.Show;
   Application.ProcessMessages;
