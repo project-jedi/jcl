@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 07, 2001                                             }
+{ Last modified: February 10, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -532,9 +532,10 @@ uses
 {$IFOPT W+}
   {$DEFINE StackFramesWasOn}
 {$ENDIF W+}
-
-{$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$UNDEF OverflowChecksWasOn}
+{$IFOPT Q+}
+  {$DEFINE OverflowChecksWasOn}
+{$ENDIF Q+}
 
 //==============================================================================
 // Diagnostics
@@ -687,6 +688,7 @@ var
     SetString(Result, P, CurrPos - P);
   end;
 
+
   function ReadDecValue: Integer;
   begin
     Result := 0;
@@ -697,6 +699,7 @@ var
     end;
   end;
 
+{$OVERFLOWCHECKS OFF}
   function ReadHexValue: Integer;
   var
     C: Char;
@@ -731,6 +734,7 @@ var
       Inc(CurrPos);
     until False;
   end;
+{$IFDEF OverflowChecksWasOn} {$OVERFLOWCHECKS ON} {$ENDIF}
 
   function ReadAddress: TJclMapAddress;
   begin
@@ -1773,7 +1777,7 @@ end;
 
 function TJclBinDebugScanner.ReadValue(var P: Pointer; var Value: Integer): Boolean;
 var
-  N: DWORD;
+  N: Integer;
   I: Integer;
   B: Byte;
 begin
@@ -2160,9 +2164,7 @@ begin
   end;
 end;
 
-{$IFNDEF StackFramesWasOn}
-  {$STACKFRAMES OFF}
-{$ENDIF StackFramesWasOn}
+{$IFNDEF StackFramesWasOn} {$STACKFRAMES OFF} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2268,9 +2270,7 @@ begin
   Result := MapByLevel(Level + 1, _File, _Module, _Proc, _Line);
 end;
 
-{$IFNDEF StackFramesWasOn}
-  {$STACKFRAMES OFF}
-{$ENDIF StackFramesWasOn}
+{$IFNDEF StackFramesWasOn} {$STACKFRAMES OFF} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2439,6 +2439,7 @@ end;
 //   http://developer.intel.com/design/pentiumii/manuals/243191.htm
 //   Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
 
+{$OVERFLOWCHECKS OFF}
 function ValidCallSite(CodeAddr: DWORD): Boolean;
 var
   CodeDWORD4: DWORD;
@@ -2479,6 +2480,7 @@ begin
     // can also get false negatives.
   end;
 end;
+{$IFDEF OverflowChecksWasOn} {$OVERFLOWCHECKS ON} {$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2671,9 +2673,7 @@ begin
   Result := TJclStackInfoItem(inherited Items[Index]);
 end;
 
-{$IFNDEF StackFramesWasOn}
-  {$STACKFRAMES OFF}
-{$ENDIF StackFramesWasOn}
+{$IFNDEF StackFramesWasOn} {$STACKFRAMES OFF} {$ENDIF}
 
 //==============================================================================
 // Exception frame info routines
