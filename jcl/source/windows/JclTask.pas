@@ -12,17 +12,18 @@
 {                                                                                                  }
 { The Original Code is JclSvcCtrl.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes to control Microsoft task schedule service               }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: January 3, 2003                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclTask;
 
@@ -30,7 +31,9 @@ interface
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 uses
   Windows,

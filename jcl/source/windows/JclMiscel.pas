@@ -12,23 +12,26 @@
 {                                                                                                  }
 { The Original Code is JclMiscel.pas.                                                              }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various miscellanuous routines that do not (yet) fit nicely into other units                     }
 {                                                                                                  }
 { Unit owner: Jeroen Speldekamp                                                                    }
-{ Last modified: January 6, 2004                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclMiscel;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 

@@ -35,6 +35,8 @@
 {                                                                  }
 {******************************************************************}
 
+// $Id$
+
 unit Snmp;
 
 interface
@@ -43,11 +45,13 @@ interface
 
 {$DEFINE SNMP_DYNAMIC_LINK}
 {$DEFINE SNMP_DYNAMIC_LINK_EXPLICIT}
-{$DEFINE SNMPSTRICT}
+
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
-{$WEAKPACKAGEUNIT ON}
 
 uses
   Windows;

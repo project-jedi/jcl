@@ -12,17 +12,18 @@
 {                                                                                                  }
 { The Original Code is JclSchedule.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains scheduler classes.                                                            }
 {                                                                                                  }
 { Unit owner: Marcel Bestebroer                                                                    }
-{ Last modified: Semptember 5, 2002                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclSchedule;
 

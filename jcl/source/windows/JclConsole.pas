@@ -12,23 +12,26 @@
 {                                                                                                  }
 { The Original Code is JclConsole.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains classes and routines to support windows Character-Mode Applications           }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclConsole;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 {$HPPEMIT 'namespace JclConsole'}
 (*$HPPEMIT '{'*)

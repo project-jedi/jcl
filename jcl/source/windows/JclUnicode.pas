@@ -12,17 +12,18 @@
 {                                                                                                  }
 { The Original Code is JclUnicode.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various Unicode related routines                                                                 }
 {                                                                                                  }
 { Unit owner: Mike Lischke                                                                         }
-{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclUnicode;
 

@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclStrHashMap.pas.                                                          }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -21,9 +21,10 @@
 { a passed-in traits object.                                                                       }
 {                                                                                                  }
 { Unit owner: Barry Kelly                                                                          }
-{ Last modified: June 6, 2001                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclStrHashMap;
 

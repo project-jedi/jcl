@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclLogic.pas.                                                               }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -22,15 +22,19 @@
 { conversion to string.                                                                            }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: September 2, 2001                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclLogic;
 
 {$I jcl.inc}
 {$RANGECHECKS OFF}
-{$WEAKPACKAGEUNIT ON}
+
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 

@@ -12,24 +12,25 @@
 {                                                                                                  }
 { The Original Code is JclMime.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Lightening fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf Junker               }
 { (ralfjunker@gmx.de).                                                                             }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: January 29, 2001                                                                  }
-{                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclMime;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
