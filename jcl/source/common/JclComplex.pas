@@ -1041,7 +1041,7 @@ end;
 
 function TJclComplex.CoreCos(const Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(Cos(FCoord.X) * CosH(FCoord.Y), -Sin(FCoord.X) * SinH(FCoord.Y));
+  Result := RectCoord(Cos(Value.X) * CosH(Value.Y), -Sin(Value.X) * SinH(Value.Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1071,7 +1071,7 @@ end;
 
 function TJclComplex.CoreSin(const Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(Sin(FCoord.X) * CosH(FCoord.Y), Cos(FCoord.X) * SinH(FCoord.Y));
+  Result := RectCoord(Sin(Value.X) * CosH(Value.Y), Cos(Value.X) * SinH(Value.Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1247,7 +1247,7 @@ end;
 
 function TJclComplex.CoreCosH(const Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(CosH(FCoord.X) * Cos(FCoord.Y), SinH(FCoord.X) * Sin(FCoord.Y));
+  Result := RectCoord(CosH(Value.X) * Cos(Value.Y), SinH(Value.X) * Sin(Value.Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1277,7 +1277,7 @@ end;
 
 function TJclComplex.CoreSinH(const Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(SinH(FCoord.X) * Cos(FCoord.Y), CosH(FCoord.X) * Sin(FCoord.Y));
+  Result := RectCoord(SinH(Value.X) * Cos(Value.Y), CosH(Value.X) * Sin(Value.Y));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1774,6 +1774,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2005/02/13 09:55:20  mthoma
+// Fixed:  0000060: Don's use parameter 'Value' in trigonometric functions
+//
 // Revision 1.10  2004/10/17 20:25:21  mthoma
 // style cleaning, adjusting contributors
 //
