@@ -31,7 +31,7 @@ interface
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+  {$ENDIF WIN32}
   JclBase;
 
 type
