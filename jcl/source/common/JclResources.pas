@@ -788,7 +788,6 @@ resourcestring
 resourcestring
   RsRTTIValueOutOfRange   = 'Value out of range (%s).';
   RsRTTIUnknownIdentifier = 'Unknown identifier ''%s''.';
-  RsRTTIInvalidGUIDString = 'Invalid conversion from string to GUID (%s).';
   RsRTTIInvalidBaseType   = 'Invalid base type (%s is of type %s).';
 
   RsRTTIVar           = 'var ';
@@ -983,6 +982,8 @@ resourcestring
   RsReadKeyError         = 'ReadKey: Problem waiting on stdin';
   {$ENDIF UNIX}
 
+  RsInvalidGUIDString    = 'Invalid conversion from string to GUID (%s).';
+
 //=== JclTD32 ================================================================
 resourcestring
   RsHasNotTD32Info = 'File [%s] has not TD32 debug information!';
@@ -1041,6 +1042,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.29  2005/03/06 18:15:02  marquardt
+// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
+//
 // Revision 1.28  2005/02/27 11:36:20  marquardt
 // fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
 //

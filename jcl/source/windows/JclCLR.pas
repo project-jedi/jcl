@@ -46,7 +46,7 @@ uses
   {$IFDEF RTL130_UP}
   Contnrs,
   {$ENDIF RTL130_UP}
-  JclBase, JclSysUtils, JclFileUtils, JclPeImage;
+  JclBase, JclFileUtils, JclPeImage, JclSysUtils;
 
 type
   _IMAGE_COR_VTABLEFIXUP = packed record
@@ -1089,7 +1089,7 @@ function TJclClrTable.DumpIL: string;
 var
   I: Integer;
 begin
-  Result := '// Dump ' + ClassName + AnsiCrLf;
+  Result := '// Dump ' + ClassName + AnsiLineBreak;
   {$IFDEF RTL140_UP}
   if Supports(ClassType, ITableCanDumpIL) then
   {$ELSE RTL140_UP}
@@ -1497,7 +1497,7 @@ begin
     if Assigned(FTableStream) then
     begin
       FTableStream.Update;
-      Result := Text + AnsiCrLf + FTableStream.DumpIL;
+      Result := Text + AnsiLineBreak + FTableStream.DumpIL;
     end;
   finally
     Free;
@@ -1731,7 +1731,7 @@ begin
   try
     Add(RsClrCopyright);
     Add(Format('.corflags 0x%.8x', [Header.Flags]));
-    Result := Text + AnsiCrLf + Metadata.DumpIL;
+    Result := Text + AnsiLineBreak + Metadata.DumpIL;
   finally
     Free;
   end;
@@ -1740,6 +1740,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/03/06 18:15:03  marquardt
+// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
+//
 // Revision 1.12  2005/02/25 07:20:15  marquardt
 // add section lines
 //

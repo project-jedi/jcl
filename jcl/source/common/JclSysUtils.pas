@@ -370,6 +370,10 @@ function SystemTObjectInstance: LongWord;
 function IsCompiledWithPackages: Boolean;
 {$ENDIF ~FPC}
 
+// GUID
+function JclGUIDToString(const GUID: TGUID): string;
+function JclStringToGUID(const S: string): TGUID;
+
 implementation
 
 uses
@@ -2202,9 +2206,39 @@ end;
 
 {$ENDIF ~FPC}
 
+//=== GUID ===================================================================
+
+function JclGUIDToString(const GUID: TGUID): string;
+begin
+  Result := Format('{%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x}',
+    [GUID.D1, GUID.D2, GUID.D3, GUID.D4[0], GUID.D4[1], GUID.D4[2],
+     GUID.D4[3], GUID.D4[4], GUID.D4[5], GUID.D4[6], GUID.D4[7]]);
+end;
+
+function JclStringToGUID(const S: string): TGUID;
+begin
+  if (Length(S) <> 38) or (S[1] <> '{') or (S[10] <> '-') or (S[15] <> '-') or
+      (S[20] <> '-') or (S[25] <> '-') or (S[38] <> '}') then
+    raise EJclConversionError.CreateResRecFmt(@RsInvalidGUIDString, [S]);
+  Result.D1 := StrToInt('$' + Copy(S, 2, 8));
+  Result.D2 := StrToInt('$' + Copy(S, 11, 4));
+  Result.D3 := StrToInt('$' + Copy(S, 16, 4));
+  Result.D4[0] := StrToInt('$' + Copy(S, 21, 2));
+  Result.D4[1] := StrToInt('$' + Copy(S, 23, 2));
+  Result.D4[2] := StrToInt('$' + Copy(S, 26, 2));
+  Result.D4[3] := StrToInt('$' + Copy(S, 28, 2));
+  Result.D4[4] := StrToInt('$' + Copy(S, 30, 2));
+  Result.D4[5] := StrToInt('$' + Copy(S, 32, 2));
+  Result.D4[6] := StrToInt('$' + Copy(S, 34, 2));
+  Result.D4[7] := StrToInt('$' + Copy(S, 36, 2));
+end;
+
 // History:
 
 // $Log$
+// Revision 1.33  2005/03/06 18:15:03  marquardt
+// JclGUIDToString and JclStringToGUID moved to JclSysUtils.pas, CrLf replaced by AnsiLineBreak
+//
 // Revision 1.32  2005/03/02 17:51:24  rrossmair
 // - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
 //
