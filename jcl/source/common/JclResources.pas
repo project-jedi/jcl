@@ -186,6 +186,8 @@ resourcestring
   RsEDIError058 = 'Could not assign element specification to element at index [%s] ' +
                   'in segment [%s] at index [%s] in transaction set.';
 
+  RsUnknownAttribute = 'Unknown Attribute';
+
 //--------------------------------------------------------------------------------------------------
 // JclEDIXML
 //--------------------------------------------------------------------------------------------------
