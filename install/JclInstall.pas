@@ -1202,6 +1202,7 @@ begin
   Target.Repository.RemoveObjects(DialogsPath, DialogFileName, BorRADToolRepositoryFormTemplate);
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJclInstallation.RemoveHelpFromIdeTools;
 begin
   { TODO : Implement }
@@ -1211,6 +1212,7 @@ procedure TJclInstallation.RemoveHelpFromOpenHelp;
 begin
   { TODO : Implement }
 end;
+{$ENDIF MSWINDOWS}
 
 function TJclInstallation.Run: Boolean;
 begin
@@ -1557,6 +1559,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.48  2005/02/03 06:15:41  rrossmair
+// - fixed for Kylix
+//
 // Revision 1.47  2005/02/03 05:22:17  rrossmair
 // - more uninstall support (still unfinished)
 //
