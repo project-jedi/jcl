@@ -102,6 +102,14 @@ const
 
 var
   PrecisionTolerance: Float = 0.0000001;
+  EpsSingle: Single;
+  EpsDouble: Double;
+  EpsExtended: Extended;
+  Epsilon: Float;
+  ThreeEpsSingle: Single;
+  ThreeEpsDouble: Double;
+  ThreeEpsExtended: Extended;
+  ThreeEpsilon: Float;
 
 { Logarithmic }
 
@@ -161,7 +169,13 @@ function MaxFloat(const X, Y: Float): Float;
 function MinFloat(const X, Y: Float): Float;
 function ModFloat(const X, Y: Float): Float;
 function RemainderFloat(const X, Y: Float): Float;
+function SetPrecisionTolerance(NewTolerance: Float): Float;
 procedure SwapFloats(var X, Y: Float);
+procedure CalcMachineEpsSingle;
+procedure CalcMachineEpsDouble;
+procedure CalcMachineEpsExtended;
+procedure CalcMachineEps;
+procedure SetPrecisionToleranceToEpsilon;
 
 { Miscellaneous }
 
@@ -175,6 +189,29 @@ function NormalizeAngle(const Angle: Float): Float;
 function Pythagoras(const X, Y: Float): Float;
 function Sgn(const X: Float): Integer;
 function Signe(const X, Y: Float): Float;
+
+{ Prime numbers }
+
+function IsRelativePrime(const X, Y: Cardinal): Boolean;
+function IsPrime(const N: Integer): Boolean;
+function IsPrimeFactor(const F, N: Integer): Boolean;
+function PrimeFactors(const N: Integer): TDynIntegerArray;
+
+{ NaN and INF support }
+
+const
+  Infinity = 1/0; // tricky
+  NaN      = 0/0; // tricky
+
+//function IsNaN(const d: Single): Boolean; overload;
+ function IsNaN(const d: Double): Boolean; overload;
+// function IsNaN(const d: Extended): Boolean; overload;
+//function IsInfinity(const d: Single): Boolean; overload;
+function IsInfinity(const d: Double): Boolean; overload;
+//function IsInfinity(const d: Extended): Boolean; overload;
+//function IsRealIndeterminate(const d: Single): Boolean; overload;
+//function IsRealIndeterminate(const d: Double): Boolean; overload;
+//function IsRealIndeterminate(const d: Extended): Boolean; overload;
 
 { Set support }
 
@@ -257,24 +294,6 @@ type
     procedure SetRange(const Low, High: Integer; const Value: Boolean); override;
   end;
 
-{ Prime numbers }
-
-function IsRelativePrime(const X, Y: Cardinal): Boolean;
-function IsPrime(const N: Integer): Boolean;
-function IsPrimeFactor(const F, N: Integer): Boolean;
-function PrimeFactors(const N: Integer): TDynIntegerArray;
-
-{ NaN and INF support }
-
-const
-  Infinity = 1/0; // tricky
-  NaN      = 0/0; // tricky
-
-function NegativeInfinity: Double;
-function IsNaN(const d: Double): Boolean;
-function IsInfinity(const d: Double): Boolean;
-function IsIndeterminate(const d: Double): Boolean;
-
 { Rational numbers }
 
 type
@@ -349,7 +368,9 @@ type
 { CRC }
 
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal): Cardinal;
+function Crc16(const X: array of Byte; N: Integer; Crc: Word): Word;
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
+function InternetChecksum(const X: array of Byte; N: Integer): Cardinal;
 
 
 type
@@ -1198,7 +1219,16 @@ end;
 
 function FloatsEqual(const X1, X2: Float): Boolean;
 begin
-  Result := Abs(X1 - X2) < PrecisionTolerance;
+  try
+    if X1 = 0 then
+      result := (X1 = X2) or     // catch exact equality
+                (Abs(1 - X1/X2 ) <= PrecisionTolerance)
+    else
+      result := (X1 = X2) or     // catch exact equality
+                (Abs(1 - X1/X2 ) <= PrecisionTolerance);
+  except
+    Result := False;  // catch real rare overflow e.g.  1.0e3000/1.0e-3000
+  end
 end;
 
 //------------------------------------------------------------------------------
@@ -1251,6 +1281,99 @@ begin
   T := X;
   X := Y;
   Y := T;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CalcMachineEpsSingle;
+var
+  One: Single;
+  T: Single;
+
+begin
+  One := 1.0;
+  EpsSingle := One;
+
+  repeat
+    EpsSingle := 0.5 * EpsSingle;
+    T := One + EpsSingle;
+  until One = T;
+
+  EpsSingle := 2.0 * EpsSingle;
+  ThreeEpsSingle := 3.0 * EpsSingle;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CalcMachineEpsDouble;
+var
+  One: Double;
+  T: Double;
+begin
+  One := 1.0;
+  EpsDouble := One;
+  repeat
+    EpsDouble := 0.5 * EpsDouble;
+    T := One + EpsDouble;
+  until One = T;
+
+  EpsDouble := 2.0 * EpsDouble;
+  ThreeEpsDouble := 3.0 * EpsDouble;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CalcMachineEpsExtended;
+var
+  One: Extended;
+  T: Extended;
+begin
+  One := 1.0;
+  EpsExtended := One;
+  repeat
+    EpsExtended := 0.5 * EpsExtended;
+    T := One + EpsExtended;
+  until One = T;
+
+  EpsExtended := 2.0 * EpsExtended;
+  ThreeEpsExtended := 3.0 * EpsExtended;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure CalcMachineEps;
+begin
+{$IFDEF MATH_EXTENDED_PRECISION}
+  CalcMachineEpsExtended;
+  Epsilon := EpsExtended;
+  ThreeEpsilon := ThreeEpsExtended;
+{$ELSE}
+{$IFDEF MATH_Double_PRECISION}
+  CalcMachineEpsDouble;
+  Epsilon := EpsDouble;
+  ThreeEpsilon := ThreeEpsDouble;
+{$ELSE}
+{$IFDEF MATH_SINGLE_PRECISION}
+  CalcMachineEpsSingle;
+  Epsilon := EpsSingle;
+  ThreeEpsilon := ThreeEpsSingle;
+{$ENDIF}{$ENDIF}{$ENDIF}
+end;
+
+//------------------------------------------------------------------------------
+
+procedure SetPrecisionToleranceToEpsilon;
+begin
+  CalcMachineEps;
+  PrecisionTolerance := Epsilon;
+end;
+
+//------------------------------------------------------------------------------
+
+function SetPrecisionTolerance(NewTolerance: Float): Float;
+begin
+  Result := PrecisionTolerance;
+  PrecisionTolerance := NewTolerance;
 end;
 
 //==============================================================================
@@ -1984,7 +2107,6 @@ end;
 // CRC
 //==============================================================================
 
-{$IFDEF DELPHI4_UP}
 const
   CRCPolynom = $04C11DB7;
 
@@ -2030,7 +2152,7 @@ const
 
 //------------------------------------------------------------------------------
 
-function UpdateCrc32(CurByte: Byte; CurCrc: Integer): Cardinal; assembler;
+function UpdateCrc32(CurByte: Byte; CurCrc: Cardinal): Cardinal; assembler;
 asm
 //Result := Crc32Table[Byte(CurCrc shr 24)] xor (CurCrc shl 8) xor CurByte;
         MOV     ECX, EAX
@@ -2118,7 +2240,91 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+function Crc16(const X: array of Byte; N: Integer; Crc: Word): Word;
+
+  function FCrc16(CRC: Word; Data: Pointer; DataSize: LongWord): Word; assembler;
+  asm
+           AND    EDX,EDX
+           JZ     @@2
+           AND    ECX,ECX
+           JLE    @@2
+           PUSH   EBX
+           PUSH   EDI
+           XOR    EBX,EBX
+           LEA    EDI,CS:[OFFSET @CRC16]
+  @@1:     MOV    BL,[EDX]
+           XOR    BL,AL
+           SHR    AX,8
+           INC    EDX
+           XOR    AX,[EDI + EBX * 2]
+           DEC    ECX
+           JNZ    @@1
+           POP    EDI
+           POP    EBX
+  @@2:     RET
+           NOP
+  @CRC16:  DW     00000h, 0C0C1h, 0C181h, 00140h, 0C301h, 003C0h, 00280h, 0C241h
+           DW     0C601h, 006C0h, 00780h, 0C741h, 00500h, 0C5C1h, 0C481h, 00440h
+           DW     0CC01h, 00CC0h, 00D80h, 0CD41h, 00F00h, 0CFC1h, 0CE81h, 00E40h
+           DW     00A00h, 0CAC1h, 0CB81h, 00B40h, 0C901h, 009C0h, 00880h, 0C841h
+           DW     0D801h, 018C0h, 01980h, 0D941h, 01B00h, 0DBC1h, 0DA81h, 01A40h
+           DW     01E00h, 0DEC1h, 0DF81h, 01F40h, 0DD01h, 01DC0h, 01C80h, 0DC41h
+           DW     01400h, 0D4C1h, 0D581h, 01540h, 0D701h, 017C0h, 01680h, 0D641h
+           DW     0D201h, 012C0h, 01380h, 0D341h, 01100h, 0D1C1h, 0D081h, 01040h
+           DW     0F001h, 030C0h, 03180h, 0F141h, 03300h, 0F3C1h, 0F281h, 03240h
+           DW     03600h, 0F6C1h, 0F781h, 03740h, 0F501h, 035C0h, 03480h, 0F441h
+           DW     03C00h, 0FCC1h, 0FD81h, 03D40h, 0FF01h, 03FC0h, 03E80h, 0FE41h
+           DW     0FA01h, 03AC0h, 03B80h, 0FB41h, 03900h, 0F9C1h, 0F881h, 03840h
+           DW     02800h, 0E8C1h, 0E981h, 02940h, 0EB01h, 02BC0h, 02A80h, 0EA41h
+           DW     0EE01h, 02EC0h, 02F80h, 0EF41h, 02D00h, 0EDC1h, 0EC81h, 02C40h
+           DW     0E401h, 024C0h, 02580h, 0E541h, 02700h, 0E7C1h, 0E681h, 02640h
+           DW     02200h, 0E2C1h, 0E381h, 02340h, 0E101h, 021C0h, 02080h, 0E041h
+           DW     0A001h, 060C0h, 06180h, 0A141h, 06300h, 0A3C1h, 0A281h, 06240h
+           DW     06600h, 0A6C1h, 0A781h, 06740h, 0A501h, 065C0h, 06480h, 0A441h
+           DW     06C00h, 0ACC1h, 0AD81h, 06D40h, 0AF01h, 06FC0h, 06E80h, 0AE41h
+           DW     0AA01h, 06AC0h, 06B80h, 0AB41h, 06900h, 0A9C1h, 0A881h, 06840h
+           DW     07800h, 0B8C1h, 0B981h, 07940h, 0BB01h, 07BC0h, 07A80h, 0BA41h
+           DW     0BE01h, 07EC0h, 07F80h, 0BF41h, 07D00h, 0BDC1h, 0BC81h, 07C40h
+           DW     0B401h, 074C0h, 07580h, 0B541h, 07700h, 0B7C1h, 0B681h, 07640h
+           DW     07200h, 0B2C1h, 0B381h, 07340h, 0B101h, 071C0h, 07080h, 0B041h
+           DW     05000h, 090C1h, 09181h, 05140h, 09301h, 053C0h, 05280h, 09241h
+           DW     09601h, 056C0h, 05780h, 09741h, 05500h, 095C1h, 09481h, 05440h
+           DW     09C01h, 05CC0h, 05D80h, 09D41h, 05F00h, 09FC1h, 09E81h, 05E40h
+           DW     05A00h, 09AC1h, 09B81h, 05B40h, 09901h, 059C0h, 05880h, 09841h
+           DW     08801h, 048C0h, 04980h, 08941h, 04B00h, 08BC1h, 08A81h, 04A40h
+           DW     04E00h, 08EC1h, 08F81h, 04F40h, 08D01h, 04DC0h, 04C80h, 08C41h
+           DW     04400h, 084C1h, 08581h, 04540h, 08701h, 047C0h, 04680h, 08641h
+           DW     08201h, 042C0h, 04380h, 08341h, 04100h, 081C1h, 08081h, 04040h
+  end;
+
+begin
+  Result := not FCRC16(Crc, pointer(X[0]), N);
+end;
+
+//------------------------------------------------------------------------------
+
+function InternetChecksum(const X: array of Byte; N: Integer): Cardinal;
+begin
+  Result := 0;
+
+  while(N > 1) do
+  begin
+    Result := Result + Word(X[N] shl 8 + X[N]) ;
+    N := N - 2;
+  end;
+
+  if (N > 0) then
+     Result := Result + X[1];
+
+  while ((Result shr 16)<>0) do
+    Result := (Result and $ffff) + (Result shr 16);
+
+  Result := not(Result);
+end;
+
 
 //==============================================================================
 // NAN and Infinity support
@@ -2134,7 +2340,7 @@ var
   dPositiveInfinity: Double = 1/0;
   dNegativeInfinity: Double absolute NegativeInfinityBits;
 
-//------------------------------------------------------------------------------
+
 
 function IsNAN(const d: Double): Boolean;
 var
@@ -2153,6 +2359,16 @@ begin
   Result := (Overlay and $7FF0000000000000) = $7FF0000000000000;
 end;
 
+//------------------------------------------------------------------------------
+(*
+function IsNAN(const d: Extended): Boolean;
+var
+  Overlay: Int64 absolute d;
+begin
+  Result := ((Overlay and $7FF0000000000000) = $7FF0000000000000) and
+    ((Overlay and $000FFFFFFFFFFFFF) <> $0000000000000000)
+end;
+*)
 //------------------------------------------------------------------------------
 
 function IsIndeterminate(const d: Double): Boolean;
