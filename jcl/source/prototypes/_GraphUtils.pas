@@ -2880,6 +2880,9 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.14  2004/10/17 20:54:14  mthoma
+// cleaning
+//
 // Revision 1.13  2004/07/31 06:21:02  marquardt
 // - reset AlphaTable to nil in FreeAlphaTable
 //
@@ -2910,7 +2913,7 @@ finalization
 // Revision 1.5  2004/04/18 06:32:07  rrossmair
 // replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
 //
-// Revision 1.4  2004/04/06 05:01:54  peterjhaas
+// Revision 1.4  2004/04/06 05:01:54
 // adapt compiler conditions, add log entry
 //
 // 2001-03-28, Mike Lischke:

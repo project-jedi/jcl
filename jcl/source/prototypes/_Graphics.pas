@@ -6128,8 +6128,11 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.16  2004/10/17 20:54:14  mthoma
+// cleaning
+//
 // Revision 1.15  2004/07/28 07:40:41  marquardt
-// remove compiler warnings
+// remove comiler warnings
 //
 // Revision 1.14  2004/07/16 03:50:35  rrossmair
 // fixed "not accesssible with BCB" warning for TJclRegion.CreateRect
@@ -6156,7 +6159,7 @@ initialization
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //
-// Revision 1.6  2004/04/06 05:01:54  peterjhaas
+// Revision 1.6  2004/04/06 05:01:54  
 // adapt compiler conditions, add log entry
 
 end.
