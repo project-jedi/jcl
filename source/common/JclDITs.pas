@@ -95,7 +95,7 @@ const
 // Convert TDateTime to string
 function ISODateTimeToStrCustom(const Value: TDateTime;
   Options: TISODateTimeOptions;
-  DateTimeSeparator: TISODateTimeSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = dtsT{$ENDIF}): String;
+  DateTimeSeparator: TISODateTimeSeparator = dtsT): String;
 
 // Converts TDateTime to date string 'YYYY-MM-DD'
 function ISODateToStr(const Value: TDateTime): String;
@@ -161,8 +161,8 @@ function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDa
 // 'Scientific' format
 // if Value is NAN, INF or -INF the function return 'NAN', 'INF' or '-INF'
 function ISOFloatToStr(const Value: Extended;
-  Precision: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 15 {$ENDIF};
-  DecimalSeparator: TISOFloatDecimalSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = fdsComma{$ENDIF}): String;
+  Precision: Integer = 15 ;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma): String;
 
 // Converts a string to a float value
 // Decimal separators are ',' or '.'
@@ -191,7 +191,7 @@ uses
 // Convert TDateTime to string
 function ISODateTimeToStrCustom(const Value: TDateTime;
   Options: TISODateTimeOptions;
-  DateTimeSeparator: TISODateTimeSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = dtsT{$ENDIF}): String;
+  DateTimeSeparator: TISODateTimeSeparator = dtsT): String;
 var
   DTFormat: String;
 
@@ -508,7 +508,7 @@ end;
 //==================================================================================================
 
 function ISOFloatRecToStr(const Rec: TFloatRec;
-  DecimalSeparator: TISOFloatDecimalSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = fdsComma{$ENDIF}): String;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma): String;
 var
   DecimalSeparatorPos: Integer;
   I: Integer;
@@ -554,8 +554,8 @@ end;
 // Convert a float value to string
 // with DecimalSeparator as decimal separator and without thousand separator
 function ISOFloatToStr(const Value: Extended;
-  Precision: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 15{$ENDIF};
-  DecimalSeparator: TISOFloatDecimalSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = fdsComma{$ENDIF}): String;
+  Precision: Integer = 15;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma): String;
 var
   FloatRec: TFloatRec;
 begin
@@ -642,6 +642,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.6  2004/05/31 22:49:29  rrossmair
+//   resolved $IFDEF DEFAULTPARAMS (always true in supported versions)
+//
 //   Revision 1.5  2004/05/31 22:04:22  rrossmair
 //   added PJH disclaimer; some formatting. Not longer generated file.
 //
