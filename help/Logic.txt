@@ -102,11 +102,13 @@ Count=2
 3=CountBitsSet
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function CountBitsSet(X: Byte): Integer; assembler; overload;
+function CountBitsSet(X: Word): Integer; assembler; overload;
+function CountBitsSet(X: Smallint): Integer; overload;
+function CountBitsSet(X: ShortInt): Integer; overload;
+function CountBitsSet(X: Integer): Integer; overload;
 function CountBitsSet(X: Cardinal): Integer; assembler; overload;
 function CountBitsSet(X: Int64): Integer; overload;
-function CountBitsSet(X: Integer): Integer; overload;
-function CountBitsSet(X: Byte): Integer; overload;
-function CountBitsSet(X: Word): Integer; overload;
 [ShortDescr]
 Returns the number of 1 bits in the passed value.
 [Description]
@@ -133,11 +135,13 @@ Count=2
 2=BitsHighest
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function BitsHighest(X: Cardinal): Integer; overload;
-function BitsHighest(X: Int64): Integer; overload;
-function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Byte): Integer; overload;
 function BitsHighest(X: Word): Integer; overload;
+function BitsHighest(X: SmallInt): Integer; overload;
+function BitsHighest(X: ShortInt): Integer; overload;
+function BitsHighest(X: Integer): Integer; overload;
+function BitsHighest(X: Cardinal): Integer; assembler; overload;
+function BitsHighest(X: Int64): Integer; overload;
 [ShortDescr]
 Returns the highest bit set in the passed in value.
 [Description]
