@@ -21,7 +21,7 @@
 { This unit contains various PE file classes and support routines              }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 21, 2001                                              }
+{ Last modified: January 22, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -555,7 +555,7 @@ type
 // Resource section related classes
 //------------------------------------------------------------------------------
 
-  TJclResourceType = (
+  TJclPeResourceKind = (
     rtUnknown0,
     rtCursorEntry,
     rtBitmap,
@@ -604,7 +604,7 @@ type
     function GetIsName: Boolean;
     function GetParameterName: string;
     function GetRawEntryData: Pointer;
-    function GetResourceType: TJclResourceType;
+    function GetResourceType: TJclPeResourceKind;
     function GetResourceTypeStr: string;
     function GetRawEntryDataSize: Integer;
   protected
@@ -624,7 +624,7 @@ type
     property ParentItem: TJclPeResourceItem read FParentItem;
     property RawEntryData: Pointer read GetRawEntryData;
     property RawEntryDataSize: Integer read GetRawEntryDataSize;
-    property ResourceType: TJclResourceType read GetResourceType;
+    property ResourceType: TJclPeResourceKind read GetResourceType;
     property ResourceTypeStr: string read GetResourceTypeStr;
   end;
 
@@ -644,7 +644,7 @@ type
   TJclPeRootResourceList = class (TJclPeResourceList)
   public
     constructor Create(ADirectory: PImageResourceDirectory; AImage: TJclPeImage);
-    function FindResource(ResourceType: TJclResourceType;
+    function FindResource(ResourceType: TJclPeResourceKind;
       const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem;
   end;
 
@@ -2599,12 +2599,12 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclPeResourceItem.GetResourceType: TJclResourceType;
+function TJclPeResourceItem.GetResourceType: TJclPeResourceKind;
 begin
   with Level1Item do
   begin
     if FEntry^.Name <= 23 then
-      Result := TJclResourceType(FEntry^.Name)
+      Result := TJclPeResourceKind(FEntry^.Name)
     else
       Result := rtUserDefined
   end;
@@ -2617,7 +2617,7 @@ begin
   with Level1Item do
   begin
     if FEntry^.Name <= 23 then
-      Result := Copy(GetEnumName(TypeInfo(TJclResourceType), Ord(FEntry^.Name)), 3, 30)
+      Result := Copy(GetEnumName(TypeInfo(TJclPeResourceKind), Ord(FEntry^.Name)), 3, 30)
     else
       Result := Name;
   end;
@@ -2698,7 +2698,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclPeRootResourceList.FindResource(ResourceType: TJclResourceType;
+function TJclPeRootResourceList.FindResource(ResourceType: TJclPeResourceKind;
   const ResourceName: string): TJclPeResourceItem;
 var
   I: Integer;
