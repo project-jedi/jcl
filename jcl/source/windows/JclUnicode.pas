@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: June 07, 2001                                                 }
+{ Last modified: October 14, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -347,13 +347,15 @@ type
 
   TWideStrings = class;
 
-  TSearchFlags = set of (
+  TSearchFlag = (
     sfCaseSensitive,    // match letter case
     sfIgnoreNonSpacing, // ignore non-spacing characters in search
     sfSpaceCompress,    // handle several consecutive white spaces as one white space
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
   );
+
+  TSearchFlags = set of TSearchFlag;
 
   // a generic search class defininition used for tuned Boyer-Moore and Unicode
   // regular expression searches
