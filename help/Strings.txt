@@ -86,12 +86,70 @@ Count=2
 2=StrIsNumber
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function StrIsNumber(const S: AnsiString): Boolean;
+function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
+[ShortDescr]
+Determines whether a string contains a specified set of characters.
+[Description]
+StrContainsChars checks whether the specified string contains at least one character
+that matches one of the characters in the Chars set. If CheckAll is True, the
+function checks whether all characters in the Chars set appear at least ones in
+the specified string.
+[Parameters]
+Count=3
+1=S:AnsiString=The string to test.
+2=Chars:TSysCharSet=The characters for which to test.
+3=CheckAll:Boolean=If True, all characters from Chars must appear at least ones
+in the specified string. If False, at least one of the characters in Chars must
+appear at least ones in the specified string.
+[Result]
+Returns True if the condition is met, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Test Routines
+Author=Petr Vones;jcl@delphi-jedi.org
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrIsDigit(const S: AnsiString): Boolean;
 [ShortDescr]
 Tests whether S contains only numerical characters.
 [Description]
 StrIsNumber tests whether the supplied string consists only of numerical characters.
 That is, whether or not all individual characters come from the ['0'..'9'] set.
+The test does not include the decimal separator. To include it in the test
+use <REF>StrIsNumber</REF> instead.
+[Parameters]
+Count=1
+1=S:AnsiString=The string to test
+[Result]
+If S contains only numerical characters the result is True, otherwise the result is False.
+[Notes]
+Count=1
+1=If S is an empty string the result is True.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Test Routines
+Author=Martin Kubecka;martin.kubecka@amenit.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=3
+1=StrIsAlpha
+2=StrIsAlphaNum
+3=StrIsNumber
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrIsNumber(const S: AnsiString): Boolean;
+[ShortDescr]
+Tests whether S contains only numerical characters.
+[Description]
+StrIsNumber tests whether the supplied string consists only of numerical characters.
+That is, whether or not all individual characters come from the ['0'..'9'] set
+including the decimal separator. To test for numerical characters without the
+decimal separator, use <REF>StrIsDigit</REF> instead;
 [Parameters]
 Count=1
 1=S:AnsiString=The string to test
@@ -108,9 +166,10 @@ SubCat=String Test Routines
 Author=Nick Hodges;nick@xapware.com
 Delphi=3,4,5
 [SeeAlso]
-Count=2
+Count=3
 1=StrIsAlpha
 2=StrIsAlphaNum
+3=StrIsDigit
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrIsSubset(const S: AnsiString; ValidChars: TSysCharSet): Boolean;
