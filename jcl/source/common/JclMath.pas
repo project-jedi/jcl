@@ -1261,15 +1261,15 @@ end;
 
 //------------------------------------------------------------------------------
 
-function FloatsEqual(const X1, X2: Float): Boolean;
+function FloatsEqual(const X, Y: Float): Boolean;
 begin
   try
-    if X1 = 0 then
+    if Y = 0 then
       // catch exact equality
-      Result := (X1 = X2) or (Abs(1 - X1/X2 ) <= PrecisionTolerance)
+      Result := (X = Y) or (Abs(1 - Y/X ) <= PrecisionTolerance)
     else
       // catch exact equality
-      Result := (X1 = X2) or (Abs(1 - X1/X2 ) <= PrecisionTolerance);
+      Result := (X = Y) or (Abs(1 - X/Y ) <= PrecisionTolerance);
   except
     Result := False;  // catch real rare overflow e.g.  1.0e3000/1.0e-3000
   end
