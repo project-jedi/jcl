@@ -20,7 +20,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ A unit version information system. That collects information form prepared units by each module. }
+{ A unit version information system. It collects information from prepared units by each module.   }
 { It also works with units in DLLs.                                                                }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -612,10 +612,11 @@ function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): P
   // max 20 blocks can be allocated
 function ReleaseNamedProcessAddress(P: Pointer): Integer; forward;
 
-{$IFDEF UNIX}
+// (rom) PAGE_OFFSET is clearly Linux specific
+{$IFDEF LINUX}
 const
   PAGE_OFFSET = $C0000000; // from linux/include/asm-i386/page.h
-{$ENDIF UNIX}
+{$ENDIF LINUX}
 
 const
   Signature1 = $ABCDEF0123456789;
@@ -866,6 +867,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.2  2005/01/31 06:47:33  marquardt
+// cleanup and simplifications
+//
 // Revision 1.1  2005/01/30 13:51:02  uschuster
 // initial checkin (modified JclUnitVersioning 1.8)
 //

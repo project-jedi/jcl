@@ -20,7 +20,7 @@
 { Contains a TCustomUnitVersioningProvider implementation                                          }
 {                                                                                                  }
 { Known Issues:                                                                                    }
-{   This is a preview - class and functionnames might be changed                                   }
+{   This is a preview - class and function names might be changed                                  }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
 { Last modified: January 30, 2005                                                                  }
@@ -29,9 +29,6 @@
 
 {
 Todo
-- style
-  - sort class members
-  - insert markers
 - store compressed?
 - make crossplatform compatible
 }
@@ -44,7 +41,8 @@ interface
 
 uses
   Windows,
-  SysUtils, Classes, Contnrs, JclPeImage, JclMiscExtensions, JclUnitVersioning;
+  SysUtils, Classes, Contnrs,
+  JclPeImage, JclMiscExtensions, JclUnitVersioning;
 
 type
   TJclUnitVersioningList = class(TObject)
@@ -58,10 +56,10 @@ type
 
     procedure Add(Info: TUnitVersionInfo);
     procedure Clear;
-    function Load(AModule: HModule): Boolean;
+    function Load(AModule: HMODULE): Boolean;
     function LoadFromStream(AStream: TStream): Boolean;
-    function LoadFromDefaultResource(AModule: HModule): Boolean;
-    function LoadFromDefaultSection(AModule: HModule): Boolean;
+    function LoadFromDefaultResource(AModule: HMODULE): Boolean;
+    function LoadFromDefaultSection(AModule: HMODULE): Boolean;
     procedure SaveToFile(AFileName: string);
     procedure SaveToStream(AStream: TStream);
 
@@ -71,13 +69,13 @@ type
 
   TJclUnitVersioningProviderModule = class(TObject)
   private
-    FInstance: THandle;
     FInfoList: TJclUnitVersioningList;
+    FInstance: THandle;
   public
     constructor Create(Instance: THandle);
     destructor Destroy; override;
-    property Instance: THandle read FInstance;
     property InfoList: TJclUnitVersioningList read FInfoList;
+    property Instance: THandle read FInstance;
   end;
 
   TJclDefaultUnitVersioningProvider = class(TCustomUnitVersioningProvider)
@@ -105,11 +103,17 @@ type
     UnitCount: Integer;
   end;
 
+//--------------------------------------------------------------------------------------------------
+{ TJclUnitVersioningList }
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclUnitVersioningList.Create;
 begin
   inherited Create;
   FItems := TList.Create;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclUnitVersioningList.Destroy;
 begin
@@ -117,6 +121,8 @@ begin
   FItems.Free;
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclUnitVersioningList.Add(Info: TUnitVersionInfo);
 var
@@ -127,43 +133,47 @@ begin
   FItems.Add(UnitVersionInfoPtr);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclUnitVersioningList.Clear;
 var
   I: Integer;
 begin
-  for I := 0 to Pred(FItems.Count) do
+  for I := FItems.Count - 1 downto 0 do
     Dispose(FItems[I]);
   FItems.Clear;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclUnitVersioningList.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TJclUnitVersioningList.GetItems(AIndex: Integer): PUnitVersionInfo;
 begin
   Result := FItems[AIndex];
 end;
 
-procedure WriteStringToStream(AStream: TStream; AString: string);
+//--------------------------------------------------------------------------------------------------
+
+procedure WriteStringToStream(AStream: TStream; const AString: string);
 var
   StringLength: Integer;
-  PC: PChar;
 begin
   if Assigned(AStream) then
   begin
     StringLength := Length(AString);
     AStream.Write(StringLength, SizeOf(StringLength));
     if StringLength > 0 then
-    begin
-      GetMem(PC, StringLength + 1);
-      StrPCopy(PC, AString);
-      AStream.Write(PC^, StringLength);
-      FreeMem(PC);
-    end;
+      AStream.Write(PChar(AString)^, StringLength);
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function ReadStringFromStream(AStream: TStream; var AString: string): Boolean;
 var
@@ -174,23 +184,20 @@ begin
   AString := '';
   if Assigned(AStream) then
   begin
-    if AStream.Size - AStream.Position >= 4 then
+    if AStream.Size - AStream.Position >= SizeOf(StringLength) then
     begin
       AStream.Read(StringLength, SizeOf(StringLength));
       if StringLength <= AStream.Size - AStream.Position then
       begin
         if StringLength > 0 then
-        begin
-          GetMem(PC, StringLength + 1);
-          AStream.Read(PC^, StringLength);
-          AString := Copy(StrPas(PC), 1, StringLength);
-          FreeMem(PC);
-        end;
+          AStream.Read(PChar(AString)^, StringLength);
         Result := True;
       end;
     end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function ReadUnitVersionInfo(AStream: TStream; var AVersionInfo: TUnitVersionInfo): Boolean;
 begin
@@ -206,17 +213,18 @@ begin
   end;
 end;
 
-function TJclUnitVersioningList.Load(AModule: HModule): Boolean;
+//--------------------------------------------------------------------------------------------------
+
+function TJclUnitVersioningList.Load(AModule: HMODULE): Boolean;
 begin
-  Result := False;
-  if LoadFromDefaultResource(AModule) then
-    Result := True
-  else
-  if LoadFromDefaultSection(AModule) then
-    Result := True;
+  Result := LoadFromDefaultResource(AModule);
+  if not Result then
+    Result := LoadFromDefaultSection(AModule);
 end;
 
-function TJclUnitVersioningList.LoadFromDefaultResource(AModule: HModule): Boolean;
+//--------------------------------------------------------------------------------------------------
+
+function TJclUnitVersioningList.LoadFromDefaultResource(AModule: HMODULE): Boolean;
 var
   ResourceStream: TResourceStream;
 begin
@@ -232,7 +240,9 @@ begin
   end;
 end;
 
-function TJclUnitVersioningList.LoadFromDefaultSection(AModule: HModule): Boolean;
+//--------------------------------------------------------------------------------------------------
+
+function TJclUnitVersioningList.LoadFromDefaultSection(AModule: HMODULE): Boolean;
 var
   PeSectionStream: TJclPeSectionStream;
 begin
@@ -247,6 +257,8 @@ begin
     end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclUnitVersioningList.LoadFromStream(AStream: TStream): Boolean;
 var
@@ -276,6 +288,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclUnitVersioningList.SaveToFile(AFileName: string);
 var
   FileStream: TFileStream;
@@ -287,6 +301,8 @@ begin
     FileStream.Free;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclUnitVersioningList.SaveToStream(AStream: TStream);
 var
@@ -305,6 +321,10 @@ begin
       WriteStringToStream(AStream, Extra);
     end;
 end;
+
+//--------------------------------------------------------------------------------------------------
+{ TJclUnitVersioningProviderModule }
+//--------------------------------------------------------------------------------------------------
 
 function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
   AUnitList: TJclUnitVersioningList): Boolean;
@@ -325,6 +345,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclUnitVersioningProviderModule.Create(Instance: THandle);
 var
   I: Integer;
@@ -343,17 +365,25 @@ begin
   inherited Destroy;
 end;
 
+//--------------------------------------------------------------------------------------------------
+{ TJclDefaultUnitVersioningProvider }
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclDefaultUnitVersioningProvider.Create;
 begin
   inherited Create;
   FModules := TObjectList.Create;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TJclDefaultUnitVersioningProvider.Destroy;
 begin
   FModules.Free;
   inherited Destroy;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TJclDefaultUnitVersioningProvider.IndexOfInstance(Instance: THandle): Integer;
 var
@@ -368,11 +398,15 @@ begin
     end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclDefaultUnitVersioningProvider.LoadModuleUnitVersioningInfo(Instance: THandle);
 begin
-  if IndexOfInstance(Instance) = -1 then
+  if IndexOfInstance(Instance) < 0 then
     FModules.Add(TJclUnitVersioningProviderModule.Create(Instance));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclDefaultUnitVersioningProvider.ReleaseModuleUnitVersioningInfo(Instance: THandle);
 var

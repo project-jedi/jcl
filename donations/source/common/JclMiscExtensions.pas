@@ -39,16 +39,17 @@ unit JclMiscExtensions;
 interface
 
 uses
-  Windows, SysUtils, Classes, JclPeImage, JclDebug, JclUnitVersioning, JclSysInfo,
-  JclFileUtils;
+  Windows, Classes, SysUtils,
+  JclDebug, JclFileUtils, JclPeImage, JclSysInfo, JclUnitVersioning;
 
 //new function for JclPeImage
 function InsertSection(const ExecutableFileName: TFileName;
   SectionStream: TStream; SectionName: string): Boolean;
 
 //changed function for JclDebug
-function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeAddressOffset,
-  IncludeStartProcLineOffset: Boolean; IncludeVAdress: Boolean): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean;
+  IncludeAddressOffset: Boolean; IncludeStartProcLineOffset: Boolean;
+  IncludeVAdress: Boolean): string;
 
 implementation
 
