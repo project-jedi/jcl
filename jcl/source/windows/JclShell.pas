@@ -597,6 +597,13 @@ begin
       lpVerb := 'open';
       lpIDList := Pidl;
       nShow := SW_SHOWNORMAL;
+      if PidlToPath(Pidl) = '' then
+      begin
+        fMask := SEE_MASK_INVOKEIDLIST;
+        lpIDList := Pidl;
+      end
+      else
+        lpFile := PChar(PidlToPath(Pidl));
     end;
     Result := ShellExecuteEx(@Sei);
     Malloc.Free(Pidl);
