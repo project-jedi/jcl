@@ -611,15 +611,20 @@ Count=4
 4=GetCpuSpeed
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GetCPUSpeed: TFreqInfo;
+function GetCpuSpeed(var CpuSpeed: TFreqInfo): Boolean;
 [ShortDescr]
 Returns information about the processor speed.
 [Description]
 GetCpuSpeed calculates the speed (frequency) of a processor. It returns the
 information in a <REF Target"Types\TFreqInfo">TFreqInfo</REF> record which includes the actual calculated
 speed as well as a normalized speed.
+[Parameters]
+Count=1
+1=CpuSpeed:TFreqInfo=Receives the CPU speed. See the description of TFreqInfo for more information about
+the members of this record.
 [Result]
-GetCpuSpeed returns information in a <REF Target"Types\TFreqInfo">TFreqInfo</REF> record.
+If the function succeeds it returns True, otherwise it returns False. In the latter
+case the content of the CpuSpeed parameter is undefined.
 [Quick Info]
 BCB=3,4,5
 Unit=JclSysInfo
