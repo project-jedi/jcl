@@ -1176,7 +1176,7 @@ procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer);
 [ShortDescr]
 Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
 [Description]
-Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
+Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
 [Parameters]
 Count=4
 1=Date:TDateTime=date to be converted.
