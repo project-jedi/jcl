@@ -1,4 +1,4 @@
-@@T8087Exception
+@@T8087Exceptions
 <GROUP MathRoutines.Hardware>
 Summary:
   An enumeration describing the set of available FPU exception masks.
@@ -13,21 +13,18 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
-@@T8087Exception.emInvalidOp
+@@T8087Exceptions.emInvalidOp
   Invalid operation mask.
-@@T8087Exception.emDenormalizedOperand
+@@T8087Exceptions.emDenormalizedOperand
   Denormalized operation mask.
-@@T8087Exception.emZeroDivide
+@@T8087Exceptions.emZeroDivide
   Division by zero mask.
-@@T8087Exception.emOverflow
+@@T8087Exceptions.emOverflow
   Overflow mask.
-@@T8087Exception.emUnderflow
+@@T8087Exceptions.emUnderflow
   Underflow mask.
-@@T8087Exception.emPrecision
+@@T8087Exceptions.emPrecision
   Precision error mask.
-@@T8087Exception
-<GROUP MathRoutines.Hardware>
-<COMBINE T8087Exception>
 --------------------------------------------------------------------------------
 @@All8087Exceptions
 <GROUP MathRoutines.Hardware>
@@ -53,6 +50,9 @@ Description:
 Result:
   The result is the set of exception flags that were set before the entire mask
   was cleared.
+See also:
+  T8087Exceptions
+  GetPending8087Exceptions
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -72,6 +72,9 @@ Description:
   routine.
 Result:
   The result is the set of pending FPU exceptions.
+See also:
+  T8087Exceptions
+  ClearPending8087Exceptions
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -89,6 +92,11 @@ Description:
   that are currently masked (i.e. the exceptions ignored by the FPU).
 Result:
   The result is the set of masked FPU exceptions.
+See also:
+  T8087Exceptions
+  SetMasked8087Exceptions
+  Unmask8087Exceptions
+  Mask8087Exceptions
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -112,6 +120,11 @@ Parameters:
   ClearBefore - If set to True the routine clears pending exceptions, if any, before modifying the exception mask. This is the default behavior.  If set to False the routine does not clear pending exceptions.
 Result:
   The result is the exception mask before it was modified.
+See also:
+  T8087Exceptions
+  GetMasked8087Exceptions
+  Unmask8087Exceptions
+  Mask8087Exceptions
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -135,6 +148,11 @@ Parameters:
 Result:
   The set of exceptions that were masked upon routine entry. Upon exit the set of
   masked exceptions equals Result + Exceptions.
+See also:
+  T8087Exceptions
+  Unmask8087Exceptions
+  GetMasked8087Exceptions
+  SetMasked8087Exceptions
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -158,6 +176,11 @@ Parameters:
 Result:
   The set of exceptions that were masked upon routine entry. Upon exit the set of
   masked exceptions equals Result - Exceptions.
+See also:
+  T8087Exceptions
+  Mask8087Exceptions
+  GetMasked8087Exceptions
+  SetMasked8087Exceptions
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -194,6 +217,9 @@ Summary:
   Enumeration used for retrieving and setting the FPU rounding control.
 Description:
   T8087Rounding is an enumeration used to set and retrieve the FPU rounding control.
+See also:
+  Get8087Rounding
+  Set8087Rounding
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -216,6 +242,8 @@ Summary:
   Enumeration used for retrieving and setting the FPU infinity control.
 Description:
   T8087Infinity is an enumeration used to set and retrieve the FPU infinity control.
+See also:
+  <LINK Set8087Infinity,Set8087Precision>
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -239,6 +267,14 @@ Parameters:
   Infinity - New value for the infinity control of the FPU. See T8087Infinity for the possible values and their meaning.
 Result:
   The previous infinity setting of the FPU.
+See also:
+  Set8087Precision
+  Set8087Rounding
+  Get8087Infinity
+  Get8087Precision
+  Get8087Rounding
+  Get8087ControlWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -258,6 +294,14 @@ Parameters:
   Precision - New value for the precision control of the FPU. See T8087Precision for the possible values and their meaning.
 Result:
   The previous precision setting of the FPU.
+See also:
+  Set8087Infinity
+  Set8087Rounding
+  Get8087Infinity
+  Get8087Precision
+  Get8087Rounding
+  Get8087ControlWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -277,6 +321,14 @@ Parameters:
   Rounding - New value for the rounding control of the FPU. See T8087Rounding for the possible values and their meaning.
 Result:
   The previous rounding setting of the FPU.
+See also:
+  Set8087Infinity
+  Set8087Precision
+  Get8087Infinity
+  Get8087Precision
+  Get8087Rounding
+  Get8087ControlWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -296,6 +348,14 @@ Result:
   The infinity setting of the FPU in the form of an enumerated type.
   See T8087Infinity for the possible values
   and their meaning.
+See also:
+  Get8087Precision
+  Get8087Rounding
+  Set8087Infinity
+  Set8087Precision
+  Set8087Rounding
+  Get8087ControlWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -314,6 +374,14 @@ Description:
 Result:
   The precision setting of the FPU. See T8087Precision
   for the possible values and their meaning.
+See also:
+  Get8087Infinity
+  Get8087Rounding
+  Set8087Infinity
+  Set8087Precision
+  Set8087Rounding
+  Get8087ControlWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -332,6 +400,14 @@ Description:
 Result:
   The rounding setting of the FPU. See T8087Rounding
   for more information about the possible values and their meaning.
+See also:
+  Get8087Infinity
+  Get8087Precision
+  Set8087Infinity
+  Set8087Precision
+  Set8087Rounding
+  Get8087ControlWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -351,6 +427,9 @@ Parameters:
   Control - New value for the 80x87 control word.
 Result:
   Previous value of the control word.
+See also:
+  Get8087ControlWord
+  Get8087StatusWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -384,6 +463,9 @@ Bit(s)      Description
 
 Result:
   The 80x87 control word.
+See also:
+  Get8087StatusWord
+  Set8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
@@ -420,6 +502,9 @@ Bit(s)               Description
 15 (B)               Busy bit indicating the coprocessor is performing some task.
 </TABLE>
 
+See also:
+  Set8087ControlWord
+  Get8087ControlWord
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
