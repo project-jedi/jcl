@@ -538,6 +538,13 @@ resourcestring
   RsSscanfInsufficient = 'Insufficient pointers for format specifiers';
 
 //------------------------------------------------------------------------------
+// JclStrings
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsInvalidEmptyStringItem = 'String list passed to StringsToMultiSz cannot contain empty strings.';
+
+//------------------------------------------------------------------------------
 // JclSynch
 //------------------------------------------------------------------------------
 
