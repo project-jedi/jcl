@@ -27,7 +27,9 @@ interface
 {$I JCL.INC}
 
 uses
+  {$IFDEF WIN32}
   Windows, Graphics,
+  {$ENDIF WIN32}
   JclBase;
 
 type
@@ -82,10 +84,14 @@ procedure EMMS;
 // Dialog Functions
 //------------------------------------------------------------------------------
 
+{$IFDEF WIN32}
+
 function DialogUnitsToPixelsX(DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(DialogUnits: Word): Word;
 function PixelsToDialogUnitsX(PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(PixelUnits: Word): Word;
+
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 // Points
@@ -184,8 +190,11 @@ procedure RGBToHSL(RGB: TColor32; out H, S, L: Single);
 // Misc
 //------------------------------------------------------------------------------
 
+
+{$IFDEF WIN32}
 //Petr Vones
 function DottedLineTo(Canvas: TCanvas; X, Y: Integer): Boolean;
+{$ENDIF WIN32}
 
 var
  { Blending Function Variables }
@@ -1165,6 +1174,8 @@ end;
 // Dialog functions
 //==============================================================================
 
+{$IFDEF WIN32}
+
 function DialogUnitsToPixelsX(DialogUnits: Word): Word;
 begin
   Result := (DialogUnits * LoWord(GetDialogBaseUnits)) div 4;
@@ -1190,6 +1201,8 @@ function PixelsToDialogUnitsY(PixelUnits: Word): Word;
 begin
   Result := PixelUnits * 8 div HiWord(GetDialogBaseUnits);
 end;
+
+{$ENDIF WIN32}
 
 //==============================================================================
 // Points
@@ -2328,6 +2341,8 @@ end;
 // Misc
 //==============================================================================
 
+{$IFDEF WIN32}
+
 function DottedLineTo(Canvas: TCanvas; X, Y: Integer): Boolean;
 const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
@@ -2361,6 +2376,8 @@ begin
   DeleteObject(Bitmap);
   Result := True;
 end;
+
+{$ENDIF WIN32}
 
 //------------------------------------------------------------------------------
 
