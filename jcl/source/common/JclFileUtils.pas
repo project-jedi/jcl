@@ -789,8 +789,10 @@ type
 
   TJclMappedTextReaderIndex = (tiNoIndex, tiFull);
 
+  {$IFNDEF FPC}
   PPCharArray = ^TPCharArray;
   TPCharArray = array [0..0] of PChar;
+  {$ENDIF FPC}
 
   TJclMappedTextReader = class(TPersistent)
   private
@@ -890,10 +892,9 @@ implementation
 
 uses
   {$IFDEF MSWINDOWS}
-  ActiveX, ShellApi,
+  ShellApi,
   {$IFNDEF FPC}
-  ShlObj,
-  JclShell,
+  ActiveX, ShlObj, JclShell, 
   {$ENDIF}
   JclWin32, JclDateTime, JclSecurity, JclSysInfo,
   {$ENDIF MSWINDOWS}
@@ -923,18 +924,11 @@ const
   ERROR_NO_MORE_FILES = -1;
 {$ENDIF UNIX}
 
-{$IFDEF FPC}
-{$IFDEF MSWINDOWS}
-type
-  TSHFileInfo = SHFILEINFOA;
-{$ENDIF MSWINDOWS}
-{$ENDIF FPC}
-
 //==================================================================================================
 // replacements for defective Libc.pas declarations
 //==================================================================================================
 
-{$IFDEF UNIX}
+{$IFDEF KYLIX}
 
 function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer;
 begin
@@ -955,7 +949,7 @@ begin
   Result := __xstat64(_STAT_VER, FileName, StatBuffer);
 end;
 
-{$ENDIF UNIX}
+{$ENDIF KYLIX}
 
 //==================================================================================================
 // TJclTempFileStream
@@ -2684,29 +2678,40 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function FileGetDisplayName(const FileName: string): string;
 {$IFDEF MSWINDOWS}
+
+function FileGetDisplayName(const FileName: string): string;
+{$IFDEF FPC}
+var
+  FileInfo: TSHFileInfoA;
+begin
+  FillChar(FileInfo, SizeOf(FileInfo), #0);
+  if SHGetFileInfo(PChar(FileName), 0, @FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> nil then
+    Result := FileInfo.szDisplayName
+  else
+    Result := FileName;
+end;
+{$ELSE ~FPC}
 var
   FileInfo: TSHFileInfo;
 begin
   FillChar(FileInfo, SizeOf(FileInfo), #0);
-  {$IFDEF FPC}
-  if SHGetFileInfo(PChar(FileName), 0, @FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> nil then
-    Result := PChar(FileInfo.szDisplayName)
-  {$ELSE}
   if SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME) <> 0 then
     Result := FileInfo.szDisplayName
-  {$ENDIF FPC}
   else
     Result := FileName;
 end;
-{$ELSE}
+{$ENDIF ~FPC}
+
+{$ELSE ~MSWINDOWS}
+
+function FileGetDisplayName(const FileName: string): string;
 begin
   { TODO -cHelp : mention this reduced solution }
   Result := FileName;
 end;
-{$ENDIF MSWINDOWS}
 
+{$ENDIF ~MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2764,18 +2769,32 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function FileGetTypeName(const FileName: string): string;
+{$IFDEF FPC}
+var
+  FileInfo: TSHFileInfoA;
+  RetVal: Pointer;
+begin
+  FillChar(FileInfo, SizeOf(FileInfo), #0);
+  RetVal := SHGetFileInfo(PChar(FileName), 0, @FileInfo, SizeOf(FileInfo),
+    SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
+  if RetVal <> nil then
+    Result := FileInfo.szTypeName;
+  if (RetVal = nil) or (Trim(Result) = '') then
+  begin
+    // Lookup failed so mimic explorer behaviour by returning "XYZ File"
+    Result := ExtractFileExt(FileName);
+    Delete(Result, 1, 1);
+    Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
+  end;
+end;
+{$ELSE ~FPC}
 var
   FileInfo: TSHFileInfo;
   RetVal: DWORD;
 begin
   FillChar(FileInfo, SizeOf(FileInfo), #0);
-  {$IFDEF FPC}
-  RetVal := DWORD(SHGetFileInfo(PChar(FileNAme), 0, @FileInfo, SizeOf(FileInfo),
-    SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES));
-  {$ELSE}
   RetVal := SHGetFileInfo(PChar(FileNAme), 0, FileInfo, SizeOf(FileInfo),
     SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
-  {$ENDIF FPC}
   if RetVal <> 0 then
     Result := FileInfo.szTypeName;
   if (RetVal = 0) or (Trim(Result) = '') then
@@ -2786,6 +2805,7 @@ begin
     Result := TrimLeft(UpperCase(Result) + RsDefaultFileTypeName);
   end;
 end;
+{$ENDIF ~FPC}
 
 {$ENDIF MSWINDOWS}
 
@@ -4726,7 +4746,7 @@ begin
 
   Attr := faAnyFile and not RejectedAttributes;
 
-  Found := FindFirst(Path, Attr, FileInfo) = 0;
+  Found := SysUtils.FindFirst(Path, Attr, FileInfo) = 0;
   try
     while Found do
     begin
@@ -4760,7 +4780,7 @@ var
   begin
     HandleDirectory(Directory);
 
-    Found := FindFirst(Directory + '*', Attr, DirInfo) = 0;
+    Found := SysUtils.FindFirst(Directory + '*', Attr, DirInfo) = 0;
     try
       while Found do
       begin
@@ -5707,6 +5727,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/05/06 05:09:55  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.12  2004/05/05 00:04:11  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

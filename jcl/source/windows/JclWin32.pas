@@ -151,9 +151,9 @@ uses
   {$IFDEF FPC}
   JwaWinNT,
   {$ELSE}
-  AccCtrl,
+  AccCtrl, ActiveX, 
   {$ENDIF FPC}
-  Windows, ActiveX, SysUtils,
+  Windows, SysUtils,
   JclBase;
 
 {$HPPEMIT '#include <winnt.h>'}
@@ -4024,6 +4024,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.19  2004/05/06 05:09:55  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.18  2004/05/05 05:38:38  rrossmair
 // Changes for FPC compatibility; header updated according to new policy: initial developers, contributors listed
 //

@@ -34,18 +34,7 @@ const
   CSIDL_INTERNET_CACHE            = $0020;
   CSIDL_COOKIES                   = $0021;
   CSIDL_HISTORY                   = $0022;
-
-type
-{ TItemIDList -- List if item IDs (combined with 0-terminator) }
-  PItemIDList = ^TItemIDList;
-  {$EXTERNALSYM _ITEMIDLIST}
-  _ITEMIDLIST = record
-     mkid: TSHItemID;
-   end;
-  TItemIDList = _ITEMIDLIST;
-  {$EXTERNALSYM ITEMIDLIST}
-  ITEMIDLIST = _ITEMIDLIST;
-
+  
 function SHGetMalloc(var ppMalloc: IMalloc): HResult; stdcall;
   external shell32 name 'SHGetMalloc';
   
