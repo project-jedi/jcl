@@ -3,6 +3,8 @@
 BCB = $(MAKEDIR)\..
 !endif
 
+DCCOPT = $(DCCOPT) -N1"$(HPPDIR)"
+
 # ---------------------------------------------------------------------------
 # IDE SECTION
 # ---------------------------------------------------------------------------
@@ -182,7 +184,7 @@ BRCC32 = brcc32
 !endif
 # ---------------------------------------------------------------------------
 $(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
-    $(BCB)\BIN\$(LINKER) @&&!
+    "$(BCB)\BIN\$(LINKER)" @&&!
     $(LFLAGS) -l"$(BPILIBDIR)" -L"$(LIBPATH)" +
     $(ALLOBJ), +
     "$(BPLDIR)\$(PROJECT)",, +
@@ -192,28 +194,28 @@ $(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
 !
 # ---------------------------------------------------------------------------
 .pas.hpp:
-    $(BCB)\BIN\$(DCC32) $(PFLAGS) -I$(INCLUDEPATH) $(ADDFLAGS) -R$(LIBPATH) -U$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -O$(INCLUDEPATH) --BCB {$< }
+    "$(BCB)\BIN\$(DCC32)" $(DCCOPT) $(PFLAGS) -I$(INCLUDEPATH) $(ADDFLAGS) -R$(LIBPATH) -U$(INCLUDEPATH) -U$(BCB)\Lib\Obj -D$(USERDEFINES);$(SYSDEFINES) -O$(INCLUDEPATH) --BCB {$< }
 
 .pas.obj:
-    $(BCB)\BIN\$(DCC32) $(PFLAGS) -I$(INCLUDEPATH) $(ADDFLAGS) -R$(LIBPATH) -U$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -O$(INCLUDEPATH) --BCB {$< }
+    "$(BCB)\BIN\$(DCC32)" $(DCCOPT) $(PFLAGS) -I$(INCLUDEPATH) $(ADDFLAGS) -R$(LIBPATH) -U$(INCLUDEPATH) -U$(BCB)\Lib\Obj -D$(USERDEFINES);$(SYSDEFINES) -O$(INCLUDEPATH) --BCB {$< }
 
 .cpp.obj:
-    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n$(@D) {$< }
+    "$(BCB)\BIN\$(BCC32)" $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n$(@D) {$< }
 
 .c.obj:
-    $(BCB)\BIN\$(BCC32) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n$(@D) {$< }
+    "$(BCB)\BIN\$(BCC32)" $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n$(@D) {$< }
 
 .c.i:
-    $(BCB)\BIN\$(CPP32) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n. {$< }
+    "$(BCB)\BIN\$(CPP32)" $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n. {$< }
 
 .cpp.i:
-    $(BCB)\BIN\$(CPP32) $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n. {$< }
+    "$(BCB)\BIN\$(CPP32)" $(CFLAG1) $(WARNINGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -n. {$< }
 
 .asm.obj:
-    $(BCB)\BIN\$(TASM32) $(AFLAGS) -i$(INCLUDEPATH:;= -i) $(AUSERDEFINES) -d$(SYSDEFINES:;= -d) $<, $@
+    "$(BCB)\BIN\$(TASM32)" $(AFLAGS) -i$(INCLUDEPATH:;= -i) $(AUSERDEFINES) -d$(SYSDEFINES:;= -d) $<, $@
 
 .rc.res:
-    $(BCB)\BIN\$(BRCC32) $(RFLAGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -fo$@ $<
+    "$(BCB)\BIN\$(BRCC32)" $(RFLAGS) -I$(INCLUDEPATH) -D$(USERDEFINES);$(SYSDEFINES) -fo$@ $<
 
 %BUILDTOOLS%
 
