@@ -1,35 +1,33 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL) http://delphi-jedi.org                       }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclFileUtils.pas.                                       }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2000 of these individuals.                                                   }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains routines and classes for working with files, directories  }
-{ and path strings. Additionally it contains wrapper classes for file mapping  }
-{ objects and version resources. Generically speaking, everything that has to  }
-{ do with files and directories. Note that filesystem specific functionality   }
-{ has been extracted into external units, for example JclNTFS which contains   }
-{ NTFS specific utility routines, and that the JclShell unit contains some     }
-{ file related routines as well but they are specific to the Windows shell.    }
-{                                                                              }
-{ Unit owner: Marcel van Brakel                                                }
-{ Last modified: April 19, 2001                                                }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclFileUtils.pas.                                                           }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains routines and classes for working with files, directories and path strings.    }
+{ Additionally it contains wrapper classes for file mapping objects and version resources.         }
+{ Generically speaking, everything that has to do with files and directories. Note that filesystem }
+{ specific functionality has been extracted into external units, for example JclNTFS which         }
+{ contains NTFS specific utility routines, and that the JclShell unit contains some file related   }
+{ routines as well but they are specific to the Windows shell.                                     }
+{                                                                                                  }
+{ Unit owner: Marcel van Brakel                                                                    }
+{ Last modified: January 20, 2002                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclFileUtils;
 
@@ -40,30 +38,30 @@ unit JclFileUtils;
 interface
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
   Classes, Graphics, SysUtils,
   JclBase, JclSysInfo;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Path Manipulation
 //
-// Various support routines for working with path strings. For example, building
-// a path from elements or extracting the elements from a path, interpretation
-// of paths and transformations of paths.
-//------------------------------------------------------------------------------
+// Various support routines for working with path strings. For example, building a path from
+// elements or extracting the elements from a path, interpretation of paths and transformations of
+// paths.
+//--------------------------------------------------------------------------------------------------
 
 const
   {$IFDEF LINUX}
   PathSeparator    = '/';
   {$ENDIF LINUX}
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   DriveLetters     = ['a'..'z', 'A'..'Z'];
   PathDevicePrefix = '\\.\';
   PathSeparator    = '\';
   PathUncPrefix    = '\\';
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
 
 type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
@@ -93,13 +91,12 @@ function PathIsUNC(const Path: string): Boolean;
 function PathRemoveSeparator(const Path: string): string;
 function PathRemoveExtension(const Path: string): string;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Files and Directories
 //
-// Routines for working with files and directories. Includes routines to extract
-// various file attributes or update them, volume locking and routines for
-// creating temporary files.
-//------------------------------------------------------------------------------
+// Routines for working with files and directories. Includes routines to extract various file
+// attributes or update them, volume locking and routines for creating temporary files.
+//--------------------------------------------------------------------------------------------------
 
 type
   TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
@@ -108,17 +105,17 @@ type
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer;
-  const Files: TStrings; const Options: TFileListOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF};
-  const SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
+  const Files: TStrings; const Options: TFileListOptions = [];
+  const SubfoldersMask: string = ''): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 function DiskInDrive(Drive: Char): Boolean;
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 function FileCreateTemp(var Prefix: string): THandle;
 function FileExists(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
@@ -150,17 +147,17 @@ function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boole
 function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
-procedure ShredFile(const FileName: string; Times: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF});
+procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 function Win32RestoreFile(const FileName: string): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TFileVersionInfo
 //
 // Class that enables reading the version information stored in a PE file.
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TFileFlag = (ffDebug, ffInfoInferred, ffPatched, ffPreRelease, ffPrivateBuild, ffSpecialBuild);
@@ -211,7 +208,7 @@ type
     destructor Destroy; override;
     class function VersionLanguageId(const LangIdRec: TLangIdRec): string;
     class function VersionLanguageName(const LangId: Word): string;
-    function TranslationMatchesLanguages(Exact: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+    function TranslationMatchesLanguages(Exact: Boolean = True): Boolean;
     property BinFileVersion: string read GetBinFileVersion;
     property BinProductVersion: string read GetBinProductVersion;
     property Comments: string index 1 read GetVersionKeyValue;
@@ -244,15 +241,14 @@ type
   EJclFileVersionInfoError = class (EJclError);
 
 function OSIdentToString(const OSIdent: DWORD): string;
-function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
+function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD = 0): string;
 function VersionResourceAvailable(const FileName: string): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Streams
 //
-// TStream descendent classes for dealing with temporary files and for using
-// file mapping objects.
-//------------------------------------------------------------------------------
+// TStream descendent classes for dealing with temporary files and for using file mapping objects.
+//--------------------------------------------------------------------------------------------------
 
 { TTempFileStream }
 
@@ -351,9 +347,9 @@ type
       const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclFileMappingStream
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclFileMappingStream = class (TCustomMemoryStream)
   private
@@ -362,15 +358,14 @@ type
   protected
     procedure Close;
   public
-    constructor Create(const FileName: string; FileMode: Word
-      {$IFDEF SUPPORTS_DEFAULTPARAMS} = fmOpenRead or fmShareDenyWrite {$ENDIF});
+    constructor Create(const FileName: string; FileMode: Word = fmOpenRead or fmShareDenyWrite);
     destructor Destroy; override;
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // TJclFileMaskComparator
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // TODO UNTESTET/UNDOCUMENTED
 
@@ -400,9 +395,9 @@ type
     property Separator: Char read FSeparator write SetSeparator;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Exceptions
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   EJclPathError = class (EJclError);
   EJclFileUtilsError = class (EJclError);
@@ -413,29 +408,27 @@ type
 implementation
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   ActiveX, ShellApi, ShlObj,
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
   JclDateTime, JclResources, JclSecurity, JclShell, JclStrings, JclSysUtils, JclWin32;
 
 { Some general notes:
 
-  This unit redeclares some functions from FileCtrl.pas to avoid a dependeny on
-  that unit in the JCL. The problem is that FileCtrl.pas uses some units (eg
-  Forms.pas) which have ridiculous initialization requirements. They add 4KB (!)
-  to the executable and roughly 1 second of startup. That initialization is only
-  necessary for GUI applications and is unacceptable for high performance
-  services or console apps.
+  This unit redeclares some functions from FileCtrl.pas to avoid a dependeny on that unit in the
+  JCL. The problem is that FileCtrl.pas uses some units (eg Forms.pas) which have ridiculous
+  initialization requirements. They add 4KB (!) to the executable and roughly 1 second of startup.
+  That initialization is only necessary for GUI applications and is unacceptable for high
+  performance services or console apps.
 
-  The routines which query files or directories for their attributes
-  deliberately use FindFirst eventhough there may be easier ways to get at the
-  required information. This is because FindFirst is about the only routine
-  which doesn't cause the file's last modification/accessed time to be changed
-  which is usually an undesired side-effect. }
+  The routines which query files or directories for their attributes deliberately use FindFirst
+  eventhough there may be easier ways to get at the required information. This is because FindFirst
+  is about the only routine which doesn't cause the file's last modification/accessed time to be
+  changed which is usually an undesired side-effect. }
 
-//==============================================================================
+//==================================================================================================
 // TJclTempFileStream
-//==============================================================================
+//==================================================================================================
 
 constructor TJclTempFileStream.Create(const Prefix: string);
 var
@@ -448,7 +441,7 @@ begin
   inherited Create(FileHandle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclTempFileStream.Destroy;
 begin
@@ -457,9 +450,9 @@ begin
   inherited Destroy;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclFileMappingView
-//==============================================================================
+//==================================================================================================
 
 constructor TJclFileMappingView.Create(const FileMap: TJclCustomFileMapping;
   Access, Size: Cardinal; ViewOffset: Int64);
@@ -479,11 +472,10 @@ begin
   BaseAddress := MapViewOfFile(FFileMapping.Handle, Access, FOffsetHigh, FOffsetLow, Size);
   if BaseAddress = nil then
     raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
-  // If we are mapping a file and size = 0 then MapViewOfFile has mapped the
-  // entire file. We must figure out the size ourselves before we can call
-  // SetPointer. Since in case of failure to retrieve the size we raise an
-  // exception, we also have to explicitly unmap the view which otherwise would
-  // have been done by the destructor.
+  // If we are mapping a file and size = 0 then MapViewOfFile has mapped the entire file. We must
+  // figure out the size ourselves before we can call SetPointer. Since in case of failure to
+  // retrieve the size we raise an exception, we also have to explicitly unmap the view which
+  // otherwise would have been done by the destructor.
   if (Size = 0) and (FileMap is TJclFileMapping) then
   begin
     Size := GetFileSize(TJclFileMapping(FileMap).FFileHandle, nil);
@@ -497,7 +489,7 @@ begin
   FFileMapping.FViews.Add(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMappingView.CreateAt(FileMap: TJclCustomFileMapping;
   Access, Size: Cardinal; ViewOffset: Int64; Address: Pointer);
@@ -519,11 +511,10 @@ begin
     FOffsetLow, Size, Address);
   if BaseAddress = nil then
     raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
-  // If we are mapping a file and size = 0 then MapViewOfFile has mapped the
-  // entire file. We must figure out the size ourselves before we can call
-  // SetPointer. Since in case of failure to retrieve the size we raise an
-  // exception, we also have to explicitly unmap the view which otherwise would
-  // have been done by the destructor.
+  // If we are mapping a file and size = 0 then MapViewOfFile has mapped the entire file. We must
+  // figure out the size ourselves before we can call SetPointer. Since in case of failure to
+  // retrieve the size we raise an exception, we also have to explicitly unmap the view which
+  // otherwise would have been done by the destructor.
   if (Size = 0) and (FileMap is TJclFileMapping) then
   begin
     Size := GetFileSize(TJclFileMapping(FileMap).FFileHandle, nil);
@@ -537,7 +528,7 @@ begin
   FFileMapping.FViews.Add(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclFileMappingView.Destroy;
 var
@@ -557,28 +548,28 @@ begin
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMappingView.Flush(const Count: Cardinal): Boolean;
 begin
   Result := FlushViewOfFile(Memory, Count);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMappingView.GetIndex: Integer;
 begin
   Result := FFileMapping.IndexOf(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMappingView.GetOffset: Int64;
 begin
   CardinalsToI64(Result, FOffsetLow, FOffsetHigh);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileMappingView.LoadFromFile(const FileName: string);
 var
@@ -592,7 +583,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileMappingView.LoadFromStream(const Stream: TStream);
 begin
@@ -602,7 +593,7 @@ begin
   Stream.ReadBuffer(Memory^, Stream.Size);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMappingView.Write(const Buffer; Count: Integer): Longint;
 begin
@@ -615,9 +606,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclCustomFileMapping
-//==============================================================================
+//==================================================================================================
 
 function TJclCustomFileMapping.Add(const Access, Count: Cardinal; const Offset: Int64): Integer;
 var
@@ -628,7 +619,7 @@ begin
   Result := View.Index;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCustomFileMapping.AddAt(const Access, Count: Cardinal;
   const Offset: Int64; const Address: Pointer): Integer;
@@ -640,19 +631,19 @@ begin
   Result := View.Index;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomFileMapping.ClearViews;
 var
   I: Integer;
 begin
-  // Note that the view destructor removes the view object from the FViews
-  // list so we must loop downwards from count to 0
+  // Note that the view destructor removes the view object from the FViews list so we must loop
+  // downwards from count to 0
   for I := FViews.Count - 1 downto 0 do
     TJclFileMappingView(FViews[I]).Free;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclCustomFileMapping.Create;
 begin
@@ -661,7 +652,7 @@ begin
   FRoundViewOffset := rvDown;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclCustomFileMapping.Open(const Name: string;
   const InheritHandle: Boolean; const DesiredAccess: Cardinal);
@@ -670,7 +661,7 @@ begin
   InternalOpen(Name, InheritHandle, DesiredAccess);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomFileMapping.Delete(const Index: Integer);
 begin
@@ -678,7 +669,7 @@ begin
   TJclFileMappingView(FViews[Index]).Free;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclCustomFileMapping.Destroy;
 begin
@@ -689,28 +680,28 @@ begin
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCustomFileMapping.GetCount: Integer;
 begin
   Result := FViews.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCustomFileMapping.GetView(Index: Integer): TJclFileMappingView;
 begin
   Result := TJclFileMappingView(FViews.Items[index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCustomFileMapping.IndexOf(const View: TJclFileMappingView): Integer;
 begin
   Result := FViews.IndexOf(View);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomFileMapping.InternalCreate(const FileHandle: THandle;
   const Name: string; const Protect: Cardinal; MaximumSize: Int64;
@@ -727,7 +718,7 @@ begin
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomFileMapping.InternalOpen(const Name: string;
   const InheritHandle: Boolean; const DesiredAccess: Cardinal);
@@ -739,9 +730,9 @@ begin
     raise EJclFileMappingError.CreateResRec(@RsCreateFileMapping);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclFileMapping
-//==============================================================================
+//==================================================================================================
 
 constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
   const Name: string; Protect: Cardinal; const MaximumSize: Int64;
@@ -755,7 +746,7 @@ begin
   InternalCreate(FFileHandle, Name, Protect, MaximumSize, SecAttr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMapping.Create(const FileHandle: THandle; const Name: string;
   Protect: Cardinal; const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
@@ -765,16 +756,15 @@ begin
   if FileHandle = INVALID_HANDLE_VALUE then
     raise EJclFileMappingError.CreateResRec(@RsFileMappingInvalidHandle);
   InternalCreate(FileHandle, Name, Protect, MaximumSize, SecAttr);
-  // Duplicate the handle into FFileHandle as opposed to assigning it directly.
-  // This will cause FFileHandle to retrieve a unique copy which is independent
-  // of FileHandle. This makes the remainder of the class, especially the
-  // destructor, easier. The caller will have to close it's own copy of the
-  // handle explicitly.
+  // Duplicate the handle into FFileHandle as opposed to assigning it directly. This will cause
+  // FFileHandle to retrieve a unique copy which is independent of FileHandle. This makes the
+  // remainder of the class, especially the destructor, easier. The caller will have to close it's
+  // own copy of the handle explicitly.
   DuplicateHandle(GetCurrentProcess, FileHandle, GetCurrentProcess,
     @FFileHandle, 0, False, DUPLICATE_SAME_ACCESS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclFileMapping.Destroy;
 begin
@@ -783,9 +773,9 @@ begin
   inherited Destroy;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclSwapFileMapping
-//==============================================================================
+//==================================================================================================
 
 constructor TJclSwapFileMapping.Create(const Name: string; Protect: Cardinal;
   const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
@@ -794,9 +784,9 @@ begin
   InternalCreate(INVALID_HANDLE_VALUE, Name, Protect, MaximumSize, SecAttr);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclFileMappingStream
-//==============================================================================
+//==================================================================================================
 
 procedure TJclFileMappingStream.Close;
 begin
@@ -817,7 +807,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMappingStream.Create(const FileName: string; FileMode: Word);
 var
@@ -860,7 +850,7 @@ begin
   SetPointer(BaseAddress, Size);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclFileMappingStream.Destroy;
 begin
@@ -868,7 +858,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMappingStream.Write(const Buffer; Count: Integer): Longint;
 begin
@@ -881,9 +871,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Path manipulation
-//==============================================================================
+//==================================================================================================
 
 function PathAddSeparator(const Path: string): string;
 begin
@@ -892,16 +882,15 @@ begin
     Result := Path + PathSeparator;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathAddExtension(const Path, Extension: string): string;
 begin
   Result := Path;
   if (Path <> '') and (ExtractFileExt(Path) = '') and (Extension <> '') then
   begin
-    // Note that if we get here Path is quarenteed not to end in a '.' otherwise
-    // ExtractFileExt would have returned '.' therefore there's no need to check
-    // it explicitly in the code below
+    // Note that if we get here Path is quarenteed not to end in a '.' otherwise ExtractFileExt
+    // would have returned '.' therefore there's no need to check it explicitly in the code below
     if Extension[1] = '.' then
       Result := Result + Extension
     else
@@ -909,7 +898,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathAppend(const Path, Append: string): string;
 var
@@ -925,9 +914,8 @@ begin
       Result := Append
     else
     begin
-      // The following code may look a bit complex but al it does is add Append
-      // to Path ensuring that there is one and only one path separator character
-      // between them
+      // The following code may look a bit complex but al it does is add Append to Path ensuring
+      // that there is one and only one path separator character between them
       B1 := Path[PathLength] = PathSeparator;
       B2 := Append[1] = PathSeparator;
       if B1 and B2 then
@@ -943,23 +931,23 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathBuildRoot(const Drive: Byte): string;
 begin
   {$IFDEF LINUX}
   Result := PathSeparator;
   {$ENDIF LINUX}
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   // Remember, Win32 only allows 'a' to 'z' as drive letters (mapped to 0..25)
   if Drive < 26 then
     Result := Char(Drive + 65) + ':\'
   else
     raise EJclPathError.CreateResRecFmt(@RsPathInvalidDrive, [IntToStr(Drive)]);
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 { todoc
 
@@ -1009,7 +997,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathCommonPrefix(const Path1, Path2: string): Integer;
 var
@@ -1019,8 +1007,8 @@ begin
   Result := 0;
   if (Path1 <> '') and (Path2 <> '') then
   begin
-    // Initialize P1 to the shortest of the two paths so that the actual comparison
-    // loop below can use the terminating #0 of that string to terminate the loop.
+    // Initialize P1 to the shortest of the two paths so that the actual comparison loop below can
+    // use the terminating #0 of that string to terminate the loop.
     if Length(Path1) <= Length(Path2) then
     begin
       P1 := @Path1[1];
@@ -1043,7 +1031,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathCompactPath(const DC: HDC; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string;
@@ -1057,10 +1045,10 @@ begin
   Result := '';
   if (DC <> 0) and (Path <> '') and (Width > 0) then
   begin
-  { Here's a note from the Platform SDK to explain the + 5 in the call below:
-    "If dwDTFormat includes DT_MODIFYSTRING, the function could add up to four
-    additional characters to this string. The buffer containing the string
-    should be large enough to accommodate these extra characters." }
+    { Here's a note from the Platform SDK to explain the + 5 in the call below:
+    "If dwDTFormat includes DT_MODIFYSTRING, the function could add up to four additional characters
+    to this string. The buffer containing the string should be large enough to accommodate these
+    extra characters." }
     P := StrAlloc(Length(Path) + 5);
     try
       StrPCopy(P, Path);
@@ -1074,7 +1062,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathCompactPath(const Canvas: TCanvas; const Path: string;
   const Width: Integer; CmpFmt: TCompactPath): string; overload;
@@ -1082,7 +1070,7 @@ begin
   Result := PathCompactPath(Canvas.Handle, Path, Width, CmpFmt);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 begin
@@ -1101,21 +1089,21 @@ begin
   Ext := ExtractFileExt(Source);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 begin
   Result := PathAddSeparator(ExtractFileDir(S));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathExtractFileNameNoExt(const Path: string): string;
 begin
   Result := PathRemoveExtension(ExtractFileName(Path));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 { todoc
 
@@ -1149,7 +1137,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 { todoc
 
@@ -1187,7 +1175,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathGetLongName2(Path: string): string;
 var
@@ -1233,7 +1221,7 @@ begin
   until Length(Path) = 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathGetLongName(const Path: string): string;
 var
@@ -1261,7 +1249,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathGetShortName(const Path: string): string;
 var
@@ -1280,13 +1268,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathIsAbsolute(const Path: string): Boolean;
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 var
   I: Integer;
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 begin
   Result := False;
   if Path <> '' then
@@ -1294,7 +1282,7 @@ begin
     {$IFDEF LINUX}
     Result := (Path[1] = PathSeparator);
     {$ENDIF LINUX}
-    {$IFDEF WIN32}
+    {$IFDEF MSWINDOWS}
     I := 0;
     if PathIsUnc(Path) then
       I := Length(PathUncPrefix)
@@ -1303,11 +1291,11 @@ begin
       I := Length(PathDevicePrefix);
     Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
       (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
-    {$ENDIF WIN32}
+    {$ENDIF MSWINDOWS}
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathIsChild(const Path, Base: AnsiString): Boolean;
 var
@@ -1321,30 +1309,30 @@ begin
   L := Length(B);
   if (P = '') or (L >= Length(P)) then
     Exit;
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
   {$ENDIF LINUX}
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathIsDiskDevice(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
   NotImplemented('PathIsDiskDevice');
   {$ENDIF LINUX}
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathIsUNC(const Path: string): Boolean;
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 const
   cUNCSuffix = '?\UNC';
@@ -1363,8 +1351,8 @@ var
   var
     NonDigitFound: Boolean;
   begin
-    // a valid machine name is a string composed of the set [a-z, A-Z, 0-9, -, _]
-    // but it may not consist entirely out of numbers
+    // a valid machine name is a string composed of the set [a-z, A-Z, 0-9, -, _] but it may not
+    // consist entirely out of numbers
     Result := True;
     NonDigitFound := False;
     while (P <> nil) and (P^ <> #0) and (P^ <> '\') do
@@ -1390,8 +1378,8 @@ var
   const
     InvalidCharacters = ['<','>','?','/',',','*','+','=','[',']','|',':',';','"',''''];
   begin
-    // a valid share name is a string composed of a set the set !InvalidCharacters
-    // note that a leading '$' is valid (indicates a hidden share)
+    // a valid share name is a string composed of a set the set !InvalidCharacters note that a
+    // leading '$' is valid (indicates a hidden share)
     Result := True;
     while (P <> nil) and (P^ <> #0) and (P^ <> '\') do
     begin
@@ -1424,7 +1412,7 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 
 begin
@@ -1433,7 +1421,7 @@ end;
 
 {$ENDIF LINUX}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathRemoveSeparator(const Path: string): string;
 var
@@ -1446,7 +1434,7 @@ begin
     Result := Path;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PathRemoveExtension(const Path: string): string;
 var
@@ -1459,9 +1447,9 @@ begin
     Result := Path;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Files and Directories
-//==============================================================================
+//==================================================================================================
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 var
@@ -1484,7 +1472,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CloseVolume(var Volume: THandle): Boolean;
 begin
@@ -1497,7 +1485,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure CreateEmptyFile(const FileName: string);
 var
@@ -1510,7 +1498,7 @@ begin
     RaiseLastOSError;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // todoc author Jeff
 
@@ -1522,14 +1510,14 @@ begin
     Result := DelTree(DirectoryName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DelTree(const Path: string): Boolean;
 begin
   Result := DelTreeEx(Path, False, nil);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 var
@@ -1581,15 +1569,17 @@ begin
     Result := SetFileAttributes(PChar(LPath), FILE_ATTRIBUTE_NORMAL);
     if Result then
     begin
-      {$I-}
+      {$IOCHECKS OFF}
       RmDir(LPath);
-      {$I+}
+      {$IFDEF IOCHECKS_ON}
+      {$IOCHECKS ON}
+      {$ENDIF IOCHECKS_ON}
       Result := IOResult = 0;
     end;
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function DirectoryExists(const Name: string): Boolean;
 var
@@ -1599,9 +1589,9 @@ begin
   Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-{$IFDEF WIN32}
+{$IFDEF MSWINDOWS}
 
 function DiskInDrive(Drive: Char): Boolean;
 var
@@ -1613,10 +1603,9 @@ begin
   Assert(Drive in ['A'..'Z']);
   if Drive in ['A'..'Z'] then
   begin
-  { try to access the drive, it doesn't really matter how we access the drive
-    and as such calling DiskSize is more or less a random choice. The call to
-    SetErrorMode supresses the system provided error dialog if there is no
-    disk in the drive and causes the to DiskSize to fail. }
+  { try to access the drive, it doesn't really matter how we access the drive and as such calling
+    DiskSize is more or less a random choice. The call to SetErrorMode supresses the system provided
+    error dialog if there is no disk in the drive and causes the to DiskSize to fail. }
     ErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
     try
       Result := DiskSize(Ord(Drive) - $40) <> -1;
@@ -1626,9 +1615,9 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
+{$ENDIF MSWINDOWS}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileCreateTemp(var Prefix: string): THandle;
 var
@@ -1640,31 +1629,30 @@ begin
   begin
     Result := CreateFile(PChar(TempName), GENERIC_READ or GENERIC_WRITE, 0, nil,
       OPEN_EXISTING, FILE_ATTRIBUTE_TEMPORARY or FILE_FLAG_DELETE_ON_CLOSE, 0);
-    // In certain situations it's possible that CreateFile fails yet the file is
-    // actually created, therefore explicitly delete it upon failure.
+    // In certain situations it's possible that CreateFile fails yet the file is actually created,
+    // therefore explicitly delete it upon failure.
     if Result = INVALID_HANDLE_VALUE then
       DeleteFile(TempName);
     Prefix := TempName;
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileExists(const FileName: string): Boolean;
 begin
-  // Attempt to access the file, doesn't matter how, using FileGetSize is as
-  // good as anything else.
+  // Attempt to access the file, doesn't matter how, using FileGetSize is as good as anything else.
   Result := FileGetSize(FileName) <> -1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 { todoc
 
   returns a filename that can be used for backup purposes. this is similar to
   how delphi uses backup's: it simply prepends a tilde (~) to the extension.
   filename: the filename for which to return a backup filename
-  result: the filename used for backup purposes 
+  result: the filename used for backup purposes
   author: Jeff
 }
 
@@ -1681,7 +1669,7 @@ begin
   Result := ChangeFileExt(FileName, NewExt);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileGetDisplayName(const FileName: string): string;
 var
@@ -1694,7 +1682,7 @@ begin
     Result := FileName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileGetSize(const FileName: string): Integer;
 var
@@ -1714,7 +1702,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileGetTempName(const Prefix: string): string;
 var
@@ -1738,7 +1726,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FileGetTypeName(const FileName: string): string;
 var
@@ -1759,7 +1747,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
 var
@@ -1774,7 +1762,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // This routine is copied from FileCtrl.pas to avoid dependency on that unit.
 // See the remark at the top of this section
@@ -1791,7 +1779,7 @@ begin
   Result := ForceDirectories(ExtractFilePath(Name)) and CreateDir(Name);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetDirectorySize(const Path: string): Int64;
 
@@ -1833,7 +1821,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetDriveTypeStr(const Drive: Char): string;
 var
@@ -1860,7 +1848,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFileAgeCoherence(const FileName: string): Boolean;
 var
@@ -1876,7 +1864,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 begin
@@ -1897,7 +1885,7 @@ begin
     Items.Add(RsAttrHidden);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 begin
@@ -1928,7 +1916,7 @@ begin
     Items.Add(RsAttrSparseFile);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFileInformation(const FileName: string): TSearchRec;
 begin
@@ -1938,28 +1926,28 @@ begin
     RaiseLastOSError;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFileLastWrite(const FileName: string): TFileTime;
 begin
   Result := GetFileInformation(FileName).FindData.ftLastWriteTime;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFileLastAccess(const FileName: string): TFileTime;
 begin
   Result := GetFileInformation(FileName).FindData.ftLastAccessTime;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFileCreation(const FileName: string): TFileTime;
 begin
   Result := GetFileInformation(FileName).FindData.ftCreationTime;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetModulePath(const Module: HMODULE): string;
 var
@@ -1971,7 +1959,7 @@ begin
   SetLength(Result, L);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSizeOfFile(const FileName: string): Int64;
 var
@@ -1989,7 +1977,7 @@ begin
     RaiseLastOSError;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSizeOfFile(Handle: THandle): Int64;
 var
@@ -1999,7 +1987,7 @@ begin
   Result := Size.QuadPart;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
@@ -2033,7 +2021,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsDirectory(const FileName: string): Boolean;
 var
@@ -2043,7 +2031,7 @@ begin
   Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 var
@@ -2065,7 +2053,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OpenVolume(const Drive: Char): THandle;
 var
@@ -2077,7 +2065,7 @@ begin
     nil, OPEN_EXISTING, 0, 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   // indicates the file time to set, used by SetFileTimesHelper and SetDirTimesHelper
@@ -2112,28 +2100,28 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
 begin
   Result := SetFileTimesHelper(FileName, DateTime, ftLastAccess);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
 begin
   Result := SetFileTimesHelper(FileName, DateTime, ftLastWrite);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 begin
   Result := SetFileTimesHelper(FileName, DateTime, ftCreation);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // utility function for SetDirTimesHelper
 
@@ -2142,7 +2130,7 @@ begin
   Result := IsPrivilegeEnabled(SE_BACKUP_NAME) and IsPrivilegeEnabled(SE_RESTORE_NAME);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetDirTimesHelper(const DirName: string; const DateTime: TDateTime;
   Times: TFileTimes): Boolean;
@@ -2174,28 +2162,28 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
 begin
   Result := SetDirTimesHelper(DirName, DateTime, ftLastWrite);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
 begin
   Result := SetDirTimesHelper(DirName, DateTime, ftLastAccess);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
 begin
   Result := SetDirTimesHelper(DirName, DateTime, ftCreation);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ShredFile(const FileName: string; Times: Integer);
 const
@@ -2241,7 +2229,7 @@ begin
     DeleteFile(FileName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function UnlockVolume(var Handle: THandle): Boolean;
 var
@@ -2260,7 +2248,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // todoc Author: Jeff
 
@@ -2272,7 +2260,7 @@ begin
     Result := Windows.DeleteFile(PChar(FileName));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // todoc Author: Jeff
 
@@ -2284,7 +2272,7 @@ begin
     Result := CopyFile(PChar(FileName), PChar(GetBackupFileName(FileName)), False)
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // todoc Author: Jeff
 
@@ -2299,9 +2287,9 @@ begin
       Result := MoveFile(PChar(TempFileName), PChar(FileName));
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclFileVersionInfo
-//==============================================================================
+//==================================================================================================
 
 const
   VerKeyNames: array [1..12] of string[17] =
@@ -2318,7 +2306,7 @@ const
     'SpecialBuild',
     'PrivateBuild');
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OSIdentToString(const OSIdent: DWORD): string;
 begin
@@ -2358,7 +2346,7 @@ begin
     Result := RsVosDesignedFor + Result;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function OSFileTypeToString(const OSFileType: DWORD; const OSFileSubType: DWORD): string;
 begin
@@ -2421,7 +2409,7 @@ begin
   Result := TrimLeft(Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function VersionResourceAvailable(const FileName: string): Boolean;
 var
@@ -2438,7 +2426,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileVersionInfo.Attach(VersionInfoData: Pointer; Size: Integer);
 begin
@@ -2446,7 +2434,7 @@ begin
   ExtractData;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileVersionInfo.CheckLanguageIndex(Value: Integer);
 begin
@@ -2454,7 +2442,7 @@ begin
     raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileVersionInfo.Create(const FileName: string);
 var
@@ -2469,7 +2457,7 @@ begin
   ExtractData;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileVersionInfo.CreateItemsForLanguage;
 var
@@ -2481,7 +2469,7 @@ begin
       FItems.AddObject(FItemList[I], Pointer(FLanguages[FLanguageIndex].Pair));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclFileVersionInfo.Destroy;
 begin
@@ -2490,7 +2478,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileVersionInfo.ExtractData;
 var
@@ -2646,7 +2634,7 @@ begin
     raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsNoVersionInfo);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileVersionInfo.ExtractFlags;
 var
@@ -2668,7 +2656,7 @@ begin
     Include(FFileFlags, ffSpecialBuild);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetBinFileVersion: string;
 begin
@@ -2677,7 +2665,7 @@ begin
       LoWord(dwFileVersionMS), HiWord(dwFileVersionLS), LoWord(dwFileVersionLS)]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetBinProductVersion: string;
 begin
@@ -2687,42 +2675,42 @@ begin
       LoWord(dwProductVersionLS)]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetFileOS: DWORD;
 begin
   Result := FFixedInfo^.dwFileOS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetFileSubType: DWORD;
 begin
   Result := FFixedInfo^.dwFileSubtype;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetFileType: DWORD;
 begin
   Result := FFixedInfo^.dwFileType;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetFixedInfo: TVSFixedFileInfo;
 begin
   Result := FFixedInfo^;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguageCount: Integer;
 begin
   Result := Length(FLanguages);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguageIds(Index: Integer): string;
 begin
@@ -2730,7 +2718,7 @@ begin
   Result := VersionLanguageId(FLanguages[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguages(Index: Integer): TLangIdRec;
 begin
@@ -2738,7 +2726,7 @@ begin
   Result := FLanguages[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetLanguageNames(Index: Integer): string;
 begin
@@ -2746,28 +2734,28 @@ begin
   Result := VersionLanguageName(FLanguages[Index].LangId);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetTranslationCount: Integer;
 begin
   Result := Length(FTranslations);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetTranslations(Index: Integer): TLangIdRec;
 begin
   Result := FTranslations[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.GetVersionKeyValue(Index: Integer): string;
 begin
   Result := FItems.Values[VerKeyNames[Index]];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileVersionInfo.SetLanguageIndex(const Value: Integer);
 begin
@@ -2779,7 +2767,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileVersionInfo.TranslationMatchesLanguages(Exact: Boolean): Boolean;
 var
@@ -2802,7 +2790,7 @@ begin
     end;  
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclFileVersionInfo.VersionLanguageId(const LangIdRec: TLangIdRec): string;
 begin
@@ -2810,7 +2798,7 @@ begin
     Result := Format('%.4x%.4x', [LangId, CodePage]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclFileVersionInfo.VersionLanguageName(const LangId: Word): string;
 var
@@ -2821,9 +2809,9 @@ begin
   SetLength(Result, R);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclFileMaskComparator
-//==============================================================================
+//==================================================================================================
 
 function TJclFileMaskComparator.Compare(const NameExt: string): Boolean;
 var
@@ -2858,7 +2846,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMaskComparator.Create;
 begin
@@ -2866,7 +2854,7 @@ begin
   FSeparator := ';';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileMaskComparator.CreateMultiMasks;
 const
@@ -2912,35 +2900,35 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMaskComparator.GetCount: Integer;
 begin
   Result := Length(FWildChars);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMaskComparator.GetExts(Index: Integer): string;
 begin
   Result := FExts[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMaskComparator.GetMasks(Index: Integer): string;
 begin
   Result := FNames[Index] + '.' + FExts[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclFileMaskComparator.GetNames(Index: Integer): string;
 begin
   Result := FNames[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileMaskComparator.SetFileMask(const Value: string);
 begin
@@ -2948,7 +2936,7 @@ begin
   CreateMultiMasks;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclFileMaskComparator.SetSeparator(const Value: Char);
 begin
@@ -2959,7 +2947,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function AdvBuildFileList(const Path: string; const Attr: Integer;
   const Files: TStrings; const Options: TFileListOptions; const SubfoldersMask: string): Boolean;
