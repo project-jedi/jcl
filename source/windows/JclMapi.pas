@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: July 8, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -140,6 +140,7 @@ type
 const
   MapiAddressTypeSMTP = 'SMTP';
   MapiAddressTypeFAX  = 'FAX';
+  MapiAddressTypeTLX  = 'TLX';
 
 type
   TJclEmailRecipKind = (rkOriginator, rkTO, rkCC, rkBCC);
