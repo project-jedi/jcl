@@ -2,8 +2,6 @@
 *.~*
 *~
 *.bpi
-*.cfg
-*.conf
 *.dcp
 *.dcu
 *.dpu
