@@ -23,6 +23,7 @@ package DJclVcl;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI Code Library developer VCL package for Delphi 6'}
+{$RUNONLY}
 {$LIBSUFFIX '60'}
 {$IMPLICITBUILD OFF}
 
