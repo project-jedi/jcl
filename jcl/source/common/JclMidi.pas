@@ -20,7 +20,7 @@
 { Platform-independent MIDI declarations                                                           }
 {                                                                                                  }
 { Unit owner: Robert Rossmair                                                                      }
-{ Last modified: June 5, 2002                                                                     }
+{ Last modified: July 9, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -215,8 +215,8 @@ type
     procedure SendSwitchChange(Channel: TMIDIChannel; ControllerNum: TMIDIDataByte; Value: Boolean);
     procedure SendProgramChange(Channel: TMIDIChannel; ProgramNum: TMIDIDataByte);
     procedure SendChannelPressure(Channel: TMIDIChannel; Value: TMIDIDataByte);
-    procedure SendPitchWheelChange(Channel: TMIDIChannel; Value: TMIDIDataWord); overload;
-    procedure SendPitchWheelChange(Channel: TMIDIChannel; Value: Single); overload;
+    procedure SendPitchWheelChange(Channel: TMIDIChannel; Value: TMIDIDataWord);
+    procedure SendPitchWheelPos(Channel: TMIDIChannel; Value: Single);
     // Control Change Messages
     procedure SelectProgram(Channel: TMIDIChannel; BankNum: TMIDIDataWord; ProgramNum: TMIDIDataByte);
     procedure SendModulationWheelChange(Channel: TMIDIChannel; Value: TMidiDataByte);
@@ -297,8 +297,8 @@ type
     procedure SendSwitchChange(Channel: TMIDIChannel; ControllerNum: TMIDIDataByte; Value: Boolean);
     procedure SendProgramChange(Channel: TMIDIChannel; ProgramNum: TMIDIDataByte);
     procedure SendChannelPressure(Channel: TMIDIChannel; Value: TMIDIDataByte);
-    procedure SendPitchWheelChange(Channel: TMIDIChannel; Value: TMIDIDataWord); overload;
-    procedure SendPitchWheelChange(Channel: TMIDIChannel; Value: Single); overload;
+    procedure SendPitchWheelChange(Channel: TMIDIChannel; Value: TMIDIDataWord);
+    procedure SendPitchWheelPos(Channel: TMIDIChannel; Value: Single);
     // Control Change Messages
     procedure SelectProgram(Channel: TMIDIChannel; BankNum: TMIDIDataWord; ProgramNum: TMIDIDataByte);
     procedure SendModulationWheelChange(Channel: TMIDIChannel; Value: TMidiDataByte);
@@ -551,9 +551,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclMIDIOut.SendPitchWheelChange(Channel: TMIDIChannel; Value: Single);
+procedure TJclMIDIOut.SendPitchWheelPos(Channel: TMIDIChannel; Value: Single);
 var
-  Temp: Word;
+  Temp: TMIDIDataWord;
 begin
   if Value < 0 then
     Temp := Round(Value * (1 shl 13))
