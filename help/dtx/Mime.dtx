@@ -1,14 +1,27 @@
-
+@@EJclMimeError
+<GROUP MIME>
+Summary:
+  Base class for exceptions raised in response to MIME encoding/decoding errors.
+Description:
+  The EJclMimeError class is the exception class that is raised when an error occurs
+  within one of MIME-routines.
+Quick info:
+  Unit: JclMime
+  Category: MIME
+  Donator: Ralf Junker
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
 @@MimeEncodeString
+<GROUP MIME>
 Summary:
   MIME-Encodes a string
 Description:
-
   MimeEncodeString encodes the supplied string with a MIME64 encoding algorithm.
 Parameters:
   s - String to be encoded
 Result:
-
   MIME encoded string
 Quick info:
   Unit: JclMime
@@ -19,15 +32,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeDecodeString
+<GROUP MIME>
 Summary:
   MIME-Decodes a string
 Description:
-
   MimeDecodeString decodes the supplied MIME64-encoded string.
 Parameters:
   s - MIME64-encoded string to be decoded
 Result:
-
   Decoded string
 Quick info:
   Unit: JclMime
@@ -38,10 +50,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeEncodeStream
+<GROUP MIME>
 Summary:
   MIME-Encodes a stream
 Description:
-
   MimeEncodeStream encodes InputStream starting at the current position up to the
   end and writes the result to OutputStream, again starting at the current
   position. When done, it will not reset either stream's positions, but leave
@@ -62,10 +74,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeDecodeStream
+<GROUP MIME>
 Summary:
   Decodes a MIME-encoded stream
 Description:
-
   MimeDecodeStream decodes InputStream starting at the current position up to the
   end and writes the result to OutputStream, again starting at the current
   position. When done, it will not reset either stream's positions, but leave
@@ -86,15 +98,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeEncodedSize
+<GROUP MIME>
 Summary:
   Calculates the output size for encoding
 Description:
-
   MimeEncodedSize calculates the output size of I MimeEncoded bytes. Use for MimeEncode only.
 Parameters:
   I - Number of bytes to encode
 Result:
-
   Number of bytes needed for encoding
 Quick info:
   Unit: JclMime
@@ -105,17 +116,16 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeDecodedSize
+<GROUP MIME>
 Summary:
   Calculates the output size for decoding
 Description:
-
   MimeDecodedSize calculates the maximum output size of I MimeDecoded bytes. You
   may use it for MimeDecode to calculate the maximum amount of memory required for
   decoding in one single pass.
 Parameters:
   I - Number of bytes to decode
 Result:
-
   Maximum number of bytes needed for decoding
 Quick info:
   Unit: JclMime
@@ -126,10 +136,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeEncode
+<GROUP MIME>
 Summary:
   The primary Mime encoding routine
 Description:
-
   MimeEncode is the primary MIME-encoding routine and is used by MimeEncodeString
   and MimeEncodeStream but can also be used directly.<B>
   CAUTION:</B> OutputBuffer must have enough memory allocated to take all encoded
@@ -142,7 +152,6 @@ Parameters:
   InputByteCount - Number of bytes to encode
   OutputBuffer - Points to the output buffer
 Notes:
-
   If not all data fits into memory at once, you can use MimeEncode multiple times, but you must be very careful about the size of the InputBuffer. It should be set to a number that is a multiple of 3.
 Quick info:
   Unit: JclMime
@@ -153,10 +162,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeDecode
+<GROUP MIME>
 Summary:
   The primary Mime decoding routine
 Description:
-
   MimeDecode is the primary MIME-decoding routine and can also be used directly.<B>
   CAUTION:</B> OutputBuffer must have enough memory allocated to take all
   output. MimeDecodedSize(InputBytesCount) calculates this amount in bytes. There is no
@@ -170,7 +179,6 @@ Parameters:
   InputBytesCount - Number of bytes to encode
   OutputBuffer - Points to the output buffer
 Result:
-
   Number of bytes actually written to the OutputBuffer
 Quick info:
   Unit: JclMime
@@ -181,10 +189,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeDecodePartial
+<GROUP MIME>
 Summary:
   MIME decode a chunk of data in a multi-phase decoding routine
 Description:
-
   MIME decodes a chunk of data in a mutli-phase decoding routine. It is used
   within MimeDecodeString, MimeDecodeStream, and MimeDecode, but can also be used
   directly.
@@ -195,10 +203,8 @@ Parameters:
   ByteBuffer - Bytes of buffer from previous call
   ByteBufferSpace - Number of bytes to read before ByteBuffer is full
 Result:
-
   Number of bytes actually written to the OutputBuffer
 Notes:
-
   On first call ByteBuffer should be 0 (zero) and ByteBufferSpace should be 4. The values returned in these parameters should be used in the next call to MimeDecodePartial or MimeDecodePartialEnd.
 Quick info:
   Unit: JclMime
@@ -209,10 +215,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MimeDecodePartialEnd
+<GROUP MIME>
 Summary:
   MIME decode the last chunk of data in a multi-phase decoding routine
 Description:
-
   MIME decodes the last chunk of data in a mutli-phase decoding routine. It is
   used within MimeDecodeString, MimeDecodeStream,/REF> and MimeDecode, but can also be
   used directly.
@@ -221,10 +227,8 @@ Parameters:
   ByteBuffer - Bytes of buffer from previous call
   ByteBufferSpace - Number of bytes to read before ByteBuffer is full
 Result:
-
   Number of bytes actually written to the OutputBuffer
 Notes:
-
   ByteBuffer and ByteBufferSpace are the values returned in the last call to MimeDecodePartial.
 Quick info:
   Unit: JclMime
