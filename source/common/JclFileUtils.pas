@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 04, 2003                                                                 }
+{ Last modified: April 21, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -44,7 +44,6 @@ uses
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   Windows,
-  JclSysInfo,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Graphics,
@@ -55,6 +54,21 @@ uses
   Classes, SysUtils;
 
 //--------------------------------------------------------------------------------------------------
+// replacements for defective Libc.pas declarations
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF LINUX}
+
+function stat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
+{$EXTERNALSYM stat64}
+function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer; cdecl;
+{$EXTERNALSYM fstat64}
+function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer; cdecl;
+{$EXTERNALSYM lstat64}
+
+{$ENDIF LINUX}
+
+//--------------------------------------------------------------------------------------------------
 // Path Manipulation
 //
 // Various support routines for working with path strings. For example, building a path from
@@ -63,9 +77,9 @@ uses
 //--------------------------------------------------------------------------------------------------
 
 const
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   PathSeparator    = '/';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   DriveLetters     = ['a'..'z', 'A'..'Z'];
   PathDevicePrefix = '\\.\';
@@ -83,8 +97,12 @@ const
   faNotContentIndexed = $00002000 {$IFDEF COMPILER6_UP} platform {$ENDIF};
   faEncrypted         = $00004000 {$IFDEF COMPILER6_UP} platform {$ENDIF};
 
-  faRejectedByDefault = faHidden or faSysFile or faVolumeID or faDirectory;
- type
+  faRejectedByDefault = faHidden + faSysFile + faVolumeID + faDirectory;
+  faWindowsSpecific   = faVolumeID + faArchive + faTemporary + faSparseFile + faReparsePoint +
+                        faCompressed + faOffline + faNotContentIndexed + faEncrypted;
+  faUnixSpecific      = faSymLink;
+
+type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
 
 function PathAddSeparator(const Path: string): string;
@@ -110,8 +128,8 @@ function PathGetDepth(const Path: string): Integer;
 function PathGetLongName(const Path: string): string;
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
-function PathIsAbsolute(const Path: string): Boolean;
 {$ENDIF MSWINDOWS}
+function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: AnsiString): Boolean;
 function PathIsDiskDevice(const Path: string): Boolean;
 function PathIsUNC(const Path: string): Boolean;
@@ -126,10 +144,6 @@ function PathRemoveExtension(const Path: string): string;
 //--------------------------------------------------------------------------------------------------
 
 type
-  {$IFNDEF COMPILER6_UP}
-  PBoolean = ^Boolean;
-  {$ENDIF not def COMPILER6_UP}
-
   TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
   TFileListOption  = (flFullNames, flRecursive, flMaskedSubfolders);
   TFileListOptions = set of TFileListOption;
@@ -151,7 +165,7 @@ procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
   const Abort: PBoolean = nil);
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
-  const Abort: PBoolean = nil {$IFDEF LINUX}; DereferenceSymLinks: Boolean = True {$ENDIF});
+  const Abort: PBoolean = nil {$IFDEF UNIX}; DereferenceSymLinks: Boolean = True {$ENDIF});
 {$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
@@ -183,34 +197,46 @@ procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 {$IFDEF MSWINDOWS}
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 {$ENDIF MSWINDOWS}
-function GetFileInformation(const FileName: string): TSearchRec;
+function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean; overload;
+function GetFileInformation(const FileName: string): TSearchRec; overload;
 {$IFDEF MSWINDOWS}
-function GetFileLastWrite(const FileName: string): TFileTime;
-function GetFileLastAccess(const FileName: string): TFileTime;
+function GetFileLastWrite(const FileName: string): TFileTime; overload;
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime): Boolean; overload;
+function GetFileLastAccess(const FileName: string): TFileTime; overload;
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime): Boolean; overload;
+function GetFileCreation(const FileName: string): TFileTime; overload;
+function GetFileCreation(const FileName: string; out LocalTime: TDateTime): Boolean; overload;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
-function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
-{$ENDIF LINUX}
-{$IFDEF MSWINDOWS}
-function GetFileCreation(const FileName: string): TFileTime;
+{$IFDEF UNIX}
+function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean; overload;
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean; overload;
+function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = False): Integer; overload;
+function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean; overload;
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean; overload;
+function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = False): Integer; overload;
+function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean; overload;
+function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean; overload;
+function GetFileLastAttrChange(const FileName: string; DereferenceSymLinks: Boolean = False): Integer; overload;
+{$ENDIF UNIX}
 function GetModulePath(const Module: HMODULE): string;
-function GetSizeOfFile(Handle: THandle): Int64; overload;
-{$ENDIF MSWINDOWS}
 function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 {$IFDEF MSWINDOWS}
+function GetSizeOfFile(Handle: THandle): Int64; overload;
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 {$ENDIF MSWINDOWS}
 function IsDirectory(const FileName: string): Boolean;
+function IsRootDirectory(const FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): THandle;
 function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
 function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
 function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
+{$ENDIF MSWINDOWS}
 function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
+{$IFDEF MSWINDOWS}
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
@@ -233,7 +259,7 @@ function ResolveSymLink(const Name: string): string;
 type
   TAttributeInterest = (aiIgnored, aiRejected, aiRequired);
 
-  TJclFileAttributeMask = class (TPersistent)
+  TJclCustomFileAttrMask = class (TPersistent)
   private
     FRequiredAttr: Integer;
     FRejectedAttr: Integer;
@@ -245,15 +271,6 @@ type
     procedure WriteRejectedAttributes(Writer: TWriter);
   protected
     procedure DefineProperties(Filer: TFiler); override;
-  public
-    constructor Create;
-    procedure Assign(Source: TPersistent); override;
-    function Match(FileAttributes: Integer): Boolean; overload;
-    function Match(const FileInfo: TSearchRec): Boolean; overload;
-    property Required: Integer read FRequiredAttr write FRequiredAttr;
-    property Rejected: Integer read FRejectedAttr write FRejectedAttr;
-    property Attribute[Index: Integer]: TAttributeInterest read GetAttr write SetAttr; default;
-  published
     property ReadOnly: TAttributeInterest index faReadOnly
       read GetAttr write SetAttr stored False;
     property Hidden: TAttributeInterest index faHidden
@@ -266,9 +283,9 @@ type
       read GetAttr write SetAttr stored False;
     property SymLink: TAttributeInterest index faSymLink
       read GetAttr write SetAttr stored False;
-    property Archive: TAttributeInterest index faArchive
-      read GetAttr write SetAttr stored False;
     property Normal: TAttributeInterest index faNormalFile
+      read GetAttr write SetAttr stored False;
+    property Archive: TAttributeInterest index faArchive
       read GetAttr write SetAttr stored False;
     property Temporary: TAttributeInterest index faTemporary
       read GetAttr write SetAttr stored False;
@@ -284,16 +301,45 @@ type
       read GetAttr write SetAttr stored False;
     property Encrypted: TAttributeInterest index faEncrypted
       read GetAttr write SetAttr stored False;
+  public
+    constructor Create;
+    procedure Assign(Source: TPersistent); override;
+    procedure Clear;
+    function Match(FileAttributes: Integer): Boolean; overload;
+    function Match(const FileInfo: TSearchRec): Boolean; overload;
+    property Required: Integer read FRequiredAttr write FRequiredAttr;
+    property Rejected: Integer read FRejectedAttr write FRejectedAttr;
+    property Attribute[Index: Integer]: TAttributeInterest read GetAttr write SetAttr; default;
+  end;
+
+  TJclFileAttributeMask = class (TJclCustomFileAttrMask)
+  published
+    property ReadOnly;
+    property Hidden;
+    property System;
+    property Directory;
+    property Normal;
+{$IFDEF UNIX}
+    property SymLink;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
+    property VolumeID;
+    property Archive;
+    property Temporary;
+    property SparseFile;
+    property ReparsePoint;
+    property Compressed;
+    property OffLine;
+    property NotContentIndexed;
+    property Encrypted;
+{$ENDIF MSWINDOWS}
   end;
 
 //--------------------------------------------------------------------------------------------------
-// TJclFileEnumerator
+// IJclFileEnumerator / TJclFileEnumerator
 //
-// Class for thread-based file search
+// Interface / class for thread-based file search
 //--------------------------------------------------------------------------------------------------
-
-const
-  DefaultFileTime = 29221; // 1980-01-01  
 
 type
   TFileSearchOption = (fsIncludeSubDirectories, fsIncludeHiddenSubDirectories, fsLastChangeAfter,
@@ -309,6 +355,7 @@ type
     function GetAttributeMask: TJclFileAttributeMask;
     function GetRootDirectory: string;
     function GetFileMask: string;
+    function GetFileMasks: TStrings;
     function GetFileSizeMax: Int64;
     function GetFileSizeMin: Int64;
     function GetIncludeSubDirectories: Boolean;
@@ -327,6 +374,7 @@ type
     procedure SetAttributeMask(const Value: TJclFileAttributeMask);
     procedure SetRootDirectory(const Value: string);
     procedure SetFileMask(const Value: string);
+    procedure SetFileMasks(const Value: TStrings);
     procedure SetFileSizeMax(const Value: Int64);
     procedure SetFileSizeMin(const Value: Int64);
     procedure SetIncludeSubDirectories(const Value: Boolean);
@@ -374,7 +422,7 @@ type
   private
     FOwnerInterface: IInterface;
     FTasks: TList;
-    FFileMask: string;
+    FFileMasks: TStrings;
     FRootDirectory: string;
     FSubDirectoryMask: string;
     FOnEnterDirectory: TFileHandler;
@@ -389,6 +437,7 @@ type
     FOptions: TFileSearchOptions;
     function IsLastChangeAfterStored: Boolean;
     function IsLastChangeBeforeStored: Boolean;
+    function GetNextTaskID: TFileSearchTaskID;
   protected
     FRefCount: Integer;
     function CreateTask: TThread;
@@ -400,6 +449,7 @@ type
     function GetAttributeMask: TJclFileAttributeMask;
     function GetRootDirectory: string;
     function GetFileMask: string;
+    function GetFileMasks: TStrings;
     function GetFileSizeMax: Int64;
     function GetFileSizeMin: Int64;
     function GetIncludeSubDirectories: Boolean;
@@ -418,6 +468,7 @@ type
     procedure SetAttributeMask(const Value: TJclFileAttributeMask);
     procedure SetRootDirectory(const Value: string);
     procedure SetFileMask(const Value: string);
+    procedure SetFileMasks(const Value: TStrings);
     procedure SetFileSizeMax(const Value: Int64);
     procedure SetFileSizeMin(const Value: Int64);
     procedure SetIncludeSubDirectories(const Value: Boolean);
@@ -432,6 +483,7 @@ type
     procedure SetSynchronizationMode(const Value: TFileEnumeratorSyncMode);
     procedure SetOnEnterDirectory(const Value: TFileHandler);
     procedure SetOnTerminateTask(const Value: TFileSearchTerminationEvent);
+    property NextTaskID: TFileSearchTaskID read GetNextTaskID;
   public
     constructor Create;
     destructor Destroy; override;
@@ -442,6 +494,7 @@ type
     function ForEach(Handler: TFileHandlerEx): TFileSearchTaskID; overload;
     procedure StopTask(ID: TFileSearchTaskID);
     procedure StopAllTasks(Silently: Boolean = False); // Silently: Don't call OnTerminateTask
+    property FileMask: string read GetFileMask write SetFileMask;
     property IncludeSubDirectories: Boolean index fsIncludeSubDirectories
       read GetOption write SetOption;
     property IncludeHiddenSubDirectories: Boolean index fsIncludeHiddenSubDirectories
@@ -450,8 +503,8 @@ type
     property LastChangeAfterAsString: string read GetLastChangeAfterStr write SetLastChangeAfterStr;
     property LastChangeBeforeAsString: string read GetLastChangeBeforeStr write SetLastChangeBeforeStr;
   published
+    property FileMasks: TStrings read FFileMasks write SetFileMasks;
     property RootDirectory: string read FRootDirectory write FRootDirectory;
-    property FileMask: string read FFileMask write FFileMask;
     property SubDirectoryMask: string read FSubDirectoryMask write FSubDirectoryMask;
     property AttributeMask: TJclFileAttributeMask read FAttributeMask write SetAttributeMask;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
@@ -826,9 +879,9 @@ implementation
 uses
   {$IFDEF MSWINDOWS}
   ActiveX, ShellApi, ShlObj,
-  JclWin32, JclSecurity, JclShell,
+  JclWin32, JclSecurity, JclShell, JclDateTime, JclSysInfo,
   {$ENDIF MSWINDOWS}
-  JclDateTime, JclResources, JclStrings, JclSysUtils;
+  JclResources, JclStrings, JclSysUtils;
 
 { Some general notes:
 
@@ -843,16 +896,49 @@ uses
   is about the only routine which doesn't cause the file's last modification/accessed time to be
   changed which is usually an undesired side-effect. }
 
-{$IFDEF LINUX}
+{$IFNDEF COMPILER6_UP}
+const
+  MinDateTime: TDateTime = -657434.0;      { 01/01/0100 12:00:00.000 AM }
+  MaxDateTime: TDateTime =  2958465.99999; { 12/31/9999 11:59:59.999 PM }
+{$ENDIF not def COMPILER6_UP}
+
+{$IFDEF UNIX}
 const
   ERROR_NO_MORE_FILES = -1;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
-{$IFDEF MSWINDOWS}
+//==================================================================================================
+// replacements for defective Libc.pas declarations
+//==================================================================================================
+
+{$IFDEF LINUX}
+
+function fstat64(FileDes: Integer; var StatBuffer: TStatBuf64): Integer;
+begin
+  Result := __fxstat64(_STAT_VER, FileDes, StatBuffer);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function lstat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer;
+begin
+  Result := __lxstat64(_STAT_VER, FileName, StatBuffer);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function stat64(FileName: PChar; var StatBuffer: TStatBuf64): Integer;
+begin
+  Result := __xstat64(_STAT_VER, FileName, StatBuffer);
+end;
+
+{$ENDIF LINUX}
 
 //==================================================================================================
 // TJclTempFileStream
 //==================================================================================================
+
+{$IFDEF MSWINDOWS}
 
 constructor TJclTempFileStream.Create(const Prefix: string);
 var
@@ -1660,9 +1746,9 @@ end;
 
 function PathBuildRoot(const Drive: Byte): string;
 begin
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := PathSeparator;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   {$IFDEF MSWINDOWS}
   // Remember, Win32 only allows 'a' to 'z' as drive letters (mapped to 0..25)
   if Drive < 26 then
@@ -1693,8 +1779,8 @@ end;
   Result: the canonicalized path
   Author: Jeff
 
-  Linux: Libc.canonicalize_file_name() is different in that it converts relative paths
-         to absolute ones - and thus needs to evaluate the program's environment.
+  Unix: Libc.canonicalize_file_name() is different in that it converts relative paths
+        to absolute ones - and thus needs to evaluate the program's environment.
 
 }
 
@@ -1720,8 +1806,10 @@ begin
     I := 0;
     while I < List.Count do
     begin
-      if List[I] = '.' then List.Delete(I)
-      else if (IsAbsolute or (I > 0) and not (List[I-1] = '..')) and (List[I] = '..') then
+      if List[I] = '.' then
+        List.Delete(I)
+      else
+      if (IsAbsolute or (I > 0) and not (List[I-1] = '..')) and (List[I] = '..') then
       begin
         List.Delete(I);
         if I > 0 then
@@ -2037,9 +2125,9 @@ begin
   Result := False;
   if Path <> '' then
   begin
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     Result := (Path[1] = PathSeparator);
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     {$IFDEF MSWINDOWS}
     I := 0;
     if PathIsUnc(Path) then
@@ -2070,9 +2158,9 @@ begin
   {$IFDEF MSWINDOWS}
   Result := AnsiSameText(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Result := AnsiSameStr(StrLeft(P, L), B) and (P[L+1] = PathSeparator);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2092,6 +2180,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function PathIsUNC(const Path: string): Boolean;
+
 {$IFDEF MSWINDOWS}
 
 const
@@ -2173,13 +2262,14 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+
+{$IFDEF UNIX}
 
 begin
   Result := False;
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2716,31 +2806,33 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean;
+begin
+  Result := FindFirst(FileName, faAnyFile, FileInfo) = 0;
+  if Result then
+    SysUtils.FindClose(FileInfo);
+end;
+
 function GetFileInformation(const FileName: string): TSearchRec;
 begin
-  if FindFirst(FileName, faAnyFile, Result) = 0 then
-    SysUtils.FindClose(Result)
-  else
+  if not GetFileInformation(FileName, Result) then
     RaiseLastOSError;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
 function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
-  const DereferenceSymLinks: Boolean = True): Integer;
-const
-  _STAT_VER_LINUX = 3; // defined in bits/stat.h
+  const DereferenceSymLinks: Boolean): Integer;
 begin
-  // stat64/lstat64 from unit Libc always(?) report "file not found" - why?
   if DereferenceSymLinks then
-    Result := __xstat64(_STAT_VER_LINUX, PChar(FileName), StatBuf)
+    Result := stat64(PChar(FileName), StatBuf)
   else
-    Result := __lxstat64(_STAT_VER_LINUX, PChar(FileName), StatBuf);
+    Result := lstat64(PChar(FileName), StatBuf);
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2751,11 +2843,38 @@ begin
   Result := GetFileInformation(FileName).FindData.ftLastWriteTime;
 end;
 
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime): Boolean;
+var
+  FileInfo: TSearchRec;
+begin
+  Result := GetFileInformation(FileName, FileInfo);
+  if Result then
+    LocalTime := FileTimeToLocalDateTime(GetFileInformation(FileName).FindData.ftLastWriteTime);
+end;
+
 {$ENDIF MSWINDOWS}
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 
-function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
+function GetFileLastWrite(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean;
+var
+  Buf: TStatBuf64;
+begin
+  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  if Result then
+    TimeStamp := Buf.st_mtime
+end;
+
+function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean;
+var
+  Buf: TStatBuf64;
+begin
+  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  if Result then
+    LocalTime := FileDateToDateTime(Buf.st_mtime);
+end;
+
+function GetFileLastWrite(const FileName: string; DereferenceSymLinks: Boolean = False): Integer;
 var
   Buf: TStatBuf64;
 begin
@@ -2765,7 +2884,7 @@ begin
     Result := -1;
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2776,12 +2895,38 @@ begin
   Result := GetFileInformation(FileName).FindData.ftLastAccessTime;
 end;
 
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime): Boolean;
+var
+  FileInfo: TSearchRec;
+begin
+  Result := GetFileInformation(FileName, FileInfo);
+  if Result then
+    LocalTime := FileTimeToLocalDateTime(GetFileInformation(FileName).FindData.ftLastAccessTime);
+end;
+
 {$ENDIF MSWINDOWS}
 
+{$IFDEF UNIX}
 
-{$IFDEF LINUX}
+function GetFileLastAccess(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean;
+var
+  Buf: TStatBuf64;
+begin
+  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  if Result then
+    TimeStamp := Buf.st_atime
+end;
 
-function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = True): Integer;
+function GetFileLastAccess(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean;
+var
+  Buf: TStatBuf64;
+begin
+  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  if Result then
+    LocalTime := FileDateToDateTime(Buf.st_atime);
+end;
+
+function GetFileLastAccess(const FileName: string; DereferenceSymLinks: Boolean = False): Integer;
 var
   Buf: TStatBuf64;
 begin
@@ -2791,7 +2936,7 @@ begin
     Result := -1;
 end;
 
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2802,6 +2947,51 @@ begin
   Result := GetFileInformation(FileName).FindData.ftCreationTime;
 end;
 
+function GetFileCreation(const FileName: string; out LocalTime: TDateTime): Boolean;
+var
+  FileInfo: TSearchRec;
+begin
+  Result := GetFileInformation(FileName, FileInfo);
+  if Result then
+    LocalTime := FileTimeToLocalDateTime(GetFileInformation(FileName).FindData.ftCreationTime);
+end;
+
+{$ENDIF MSWINDOWS}
+
+//--------------------------------------------------------------------------------------------------
+
+{$IFDEF UNIX}
+
+function GetFileLastAttrChange(const FileName: string; out TimeStamp: Integer; DereferenceSymLinks: Boolean = False): Boolean;
+var
+  Buf: TStatBuf64;
+begin
+  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  if Result then
+    TimeStamp := Buf.st_ctime
+end;
+
+function GetFileLastAttrChange(const FileName: string; out LocalTime: TDateTime; DereferenceSymLinks: Boolean = False): Boolean;
+var
+  Buf: TStatBuf64;
+begin
+  Result := GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0;
+  if Result then
+    LocalTime := FileDateToDateTime(Buf.st_ctime);
+end;
+
+function GetFileLastAttrChange(const FileName: string; DereferenceSymLinks: Boolean = False): Integer;
+var
+  Buf: TStatBuf64;
+begin
+  if GetFileStatus(FileName, Buf, DereferenceSymLinks) = 0 then
+    Result := Buf.st_ctime
+  else
+    Result := -1;
+end;
+
+{$ENDIF UNIX}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetModulePath(const Module: HMODULE): string;
@@ -2810,11 +3000,14 @@ var
 begin
   L := MAX_PATH + 1;
   SetLength(Result, L);
+{$IFDEF MSWINDOWS}
   L := Windows.GetModuleFileName(Module, Pointer(Result), L);
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  L := GetModuleFileName(Module, Pointer(Result), L);
+{$ENDIF LINUX}
   SetLength(Result, L);
 end;
-
-{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2838,15 +3031,15 @@ begin
     RaiseLastOSError;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 var
   Buf: TStatBuf64;
 begin
-  if GetFileStatus(FileName, Buf) <> 0 then
+  if GetFileStatus(FileName, Buf, False) <> 0 then
     RaiseLastOSError;
   Result := Buf.st_size
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2874,19 +3067,19 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 var
   Buf: TStatBuf64;
 begin
   // Note that SysUtils.FindFirst/Next do not "see" files >= 2 GB under Linux, thus the following
   // code is rather pointless at the moment of this writing.
   // We apparently need to write our own set of Findxxx functions to overcome this limitation.
-  // (rr, 2003-03-06)
-  if GetFileStatus(FileInfo.PathOnly + FileInfo.Name, Buf) <> 0 then
-    RaiseLastOSError;
-  Result := Buf.st_size
+  if GetFileStatus(FileInfo.PathOnly + FileInfo.Name, Buf, True) <> 0 then
+    Result := -1
+  else
+    Result := Buf.st_size
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2937,11 +3130,28 @@ begin
   Result := (R <> DWORD(-1)) and ((R and FILE_ATTRIBUTE_DIRECTORY) <> 0);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   Result := DirectoryExists(FileName);
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
+
+//--------------------------------------------------------------------------------------------------
+
+function IsRootDirectory(const FileName: string): Boolean;
+{$IFDEF MSWINDOWS}
+var
+  I: Integer;
+begin
+  I := Pos(':\', FileName);
+  Result := (I > 0) and (I + 1 = Length(FileName));
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  Result := FileName = PathSeparator;
+end;
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2979,11 +3189,15 @@ begin
     nil, OPEN_EXISTING, 0, 0);
 end;
 
+{$ENDIF MSWINDOWS}
+
 //--------------------------------------------------------------------------------------------------
 
 type
   // indicates the file time to set, used by SetFileTimesHelper and SetDirTimesHelper
-  TFileTimes = (ftLastAccess, ftLastWrite, ftCreation);
+  TFileTimes = (ftLastAccess, ftLastWrite{$IFDEF MSWINDOWS}, ftCreation{$ENDIF});
+
+{$IFDEF MSWINDOWS}
 
 function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime; Times: TFileTimes): Boolean;
 var
@@ -3014,6 +3228,32 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+
+function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime; Times: TFileTimes): Boolean;
+var
+  FileTime: Integer;
+  StatBuf: TStatBuf64;
+  TimeBuf: utimbuf;
+begin
+  Result := False;
+  FileTime := DateTimeToFileDate(DateTime);
+  if GetFileStatus(FileName, StatBuf, False) = 0 then
+  begin
+    TimeBuf.actime := StatBuf.st_atime;
+    TimeBuf.modtime := StatBuf.st_mtime;
+    case Times of
+      ftLastAccess: TimeBuf.actime := FileTime;
+      ftLastWrite: TimeBuf.modtime := FileTime;
+    end;
+    Result := utime(PChar(FileName), @TimeBuf) = 0;
+  end;
+end;
+
+{$ENDIF UNIX}
+
 //--------------------------------------------------------------------------------------------------
 
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
@@ -3029,6 +3269,8 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+{$IFDEF MSWINDOWS}
 
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 begin
@@ -4137,11 +4379,13 @@ function AttributeMatch(FileAttributes, RejectedAttr, RequiredAttr: Integer): Bo
 begin
   {$IFDEF MSWINDOWS}
   Assert(FileAttributes <> 0, 'File attributes can be null?');
+  RequiredAttr := RequiredAttr and not faUnixSpecific;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   if FileAttributes = 0 then
     FileAttributes := faNormalFile;
-  {$ENDIF LINUX}
+  RequiredAttr := RequiredAttr and not faWindowsSpecific;
+  {$ENDIF def UNIX}
   Result := (FileAttributes and RejectedAttr = 0)
     and (FileAttributes and RequiredAttr = RequiredAttr);
 end;
@@ -4160,7 +4404,7 @@ end;
 function FileAttributesStr(const FileInfo: TSearchRec): string;
 {$IFDEF MSWINDOWS}
 const
-  SAllAttrSet = 'rahs';
+  SAllAttrSet = 'rahs'; // readonly, archive, hidden, system
   Attributes: array[1..4] of Integer =
     (
       faReadOnly,
@@ -4177,7 +4421,7 @@ begin
       Result[I] := '-';
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 const
   SAllAttrSet = 'drwxrwxrwx';
 var
@@ -4195,7 +4439,7 @@ begin
     Flag := Flag shr 1;
   end;
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4305,7 +4549,7 @@ end;
 // class TJclFileAttributeMask
 //==================================================================================================
 
-constructor TJclFileAttributeMask.Create;
+constructor TJclCustomFileAttrMask.Create;
 begin
   inherited;
   FRejectedAttr := faRejectedByDefault;
@@ -4313,12 +4557,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.Assign(Source: TPersistent);
+procedure TJclCustomFileAttrMask.Assign(Source: TPersistent);
 begin
-  if Source is TJclFileAttributeMask then
+  if Source is TJclCustomFileAttrMask then
   begin
-    Required := TJclFileAttributeMask(Source).Required;
-    Rejected := TJclFileAttributeMask(Source).Rejected;
+    Required := TJclCustomFileAttrMask(Source).Required;
+    Rejected := TJclCustomFileAttrMask(Source).Rejected;
   end
   else
     inherited Assign(Source);
@@ -4326,13 +4570,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.DefineProperties(Filer: TFiler);
+procedure TJclCustomFileAttrMask.Clear;
+begin
+  Rejected := 0;
+  Required := 0;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclCustomFileAttrMask.DefineProperties(Filer: TFiler);
 var
-  Ancestor: TJclFileAttributeMask;
+  Ancestor: TJclCustomFileAttrMask;
   Attr: Integer;
 begin
   Attr := 0;
-  Ancestor := TJclFileAttributeMask(Filer.Ancestor);
+  Ancestor := TJclCustomFileAttrMask(Filer.Ancestor);
   if Assigned(Ancestor) then
     Attr := Ancestor.FRequiredAttr;
   Filer.DefineProperty('Required', ReadRequiredAttributes, WriteRequiredAttributes,
@@ -4345,21 +4597,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclFileAttributeMask.Match(FileAttributes: Integer): Boolean;
+function TJclCustomFileAttrMask.Match(FileAttributes: Integer): Boolean;
 begin
   Result := AttributeMatch(FileAttributes, Rejected, Required);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclFileAttributeMask.Match(const FileInfo: TSearchRec): Boolean;
+function TJclCustomFileAttrMask.Match(const FileInfo: TSearchRec): Boolean;
 begin
   Result := Match(FileInfo.Attr);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclFileAttributeMask.GetAttr(Index: Integer): TAttributeInterest;
+function TJclCustomFileAttrMask.GetAttr(Index: Integer): TAttributeInterest;
 begin
   if (FRequiredAttr and Index <> 0)
   or (Index = faNormalFile) and (FRejectedAttr = not faNormalFile) then
@@ -4373,21 +4625,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.ReadRejectedAttributes(Reader: TReader);
+procedure TJclCustomFileAttrMask.ReadRejectedAttributes(Reader: TReader);
 begin
   FRejectedAttr := Reader.ReadInteger;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.ReadRequiredAttributes(Reader: TReader);
+procedure TJclCustomFileAttrMask.ReadRequiredAttributes(Reader: TReader);
 begin
   FRequiredAttr := Reader.ReadInteger;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.SetAttr(Index: Integer; const Value: TAttributeInterest);
+procedure TJclCustomFileAttrMask.SetAttr(Index: Integer; const Value: TAttributeInterest);
 begin
   case Value of
     aiIgnored:
@@ -4418,14 +4670,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.WriteRejectedAttributes(Writer: TWriter);
+procedure TJclCustomFileAttrMask.WriteRejectedAttributes(Writer: TWriter);
 begin
   Writer.WriteInteger(FRejectedAttr);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileAttributeMask.WriteRequiredAttributes(Writer: TWriter);
+procedure TJclCustomFileAttrMask.WriteRequiredAttributes(Writer: TWriter);
 begin
   Writer.WriteInteger(FRequiredAttr);
 end;
@@ -4438,7 +4690,7 @@ type
   TEnumFileThread = class (TThread)
   private
     FID: TFileSearchTaskID;
-    FFileMask: TStringList;
+    FFileMasks: TStrings;
     FDirectory: string;
     FSubDirectoryMask: string;
     FOnEnterDirectory: TFileHandler;
@@ -4462,7 +4714,7 @@ type
     procedure SyncProcessDirectory(const Directory: string);
     procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
     procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
-    procedure SetFileMask(const Value: string);
+    procedure SetFileMasks(const Value: TStrings);
   protected
     procedure DoTerminate; override;
     procedure Execute; override;
@@ -4470,7 +4722,7 @@ type
     procedure ProcessDirectory;
     procedure ProcessDirFiles;
     procedure ProcessFile;
-    property FileMask: string write SetFileMask;
+    property FileMasks: TStrings read FFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
     property Directory: string read FDirectory write FDirectory;
@@ -4493,7 +4745,7 @@ type
 constructor TEnumFileThread.Create;
 begin
   inherited Create(True);
-  FFileMask := TStringList.Create;
+  FFileMasks := TStringList.Create;
   FFileTimeMin := Low(FFileInfo.Time);
   FFileTimeMax := High(FFileInfo.Time);
   FFileSizeMax := High(FFileSizeMax);
@@ -4511,7 +4763,7 @@ end;
 
 destructor TEnumFileThread.Destroy;
 begin
-  FFileMask.Free;
+  FFileMasks.Free;
   inherited;
 end;
 
@@ -4519,12 +4771,12 @@ end;
 
 procedure TEnumFileThread.Execute;
 begin
-  if FSynchronizationMode = smPerDirectory then
+  if SynchronizationMode = smPerDirectory then
   begin
     FInternalDirHandler := SyncProcessDirectory;
     FInternalFileHandler := AsyncProcessFile;
   end
-  else // FSynchronizationMode = smPerFile
+  else // SynchronizationMode = smPerFile
   begin
     FInternalDirHandler := AsyncProcessDirectory;
     FInternalFileHandler := SyncProcessFile;
@@ -4585,8 +4837,8 @@ procedure TEnumFileThread.ProcessDirFiles;
 var
   I: Integer;
 begin
-  for I := 0 to FFileMask.Count - 1 do
-    EnumFiles(Directory + FFileMask[I], FInternalFileHandler, FRejectedAttr, FRequiredAttr,
+  for I := 0 to FFileMasks.Count - 1 do
+    EnumFiles(Directory + FFileMasks[I], FInternalFileHandler, FRejectedAttr, FRequiredAttr,
       @Terminated);
 end;
 
@@ -4596,13 +4848,11 @@ function TEnumFileThread.FileMatch: Boolean;
 var
   FileSize: Int64;
 begin
-  Result := (FFileInfo.Time >= FFileTimeMin)
-        and (FFileInfo.Time <= FFileTimeMax);
+  Result := (FFileInfo.Time >= FFileTimeMin) and (FFileInfo.Time <= FFileTimeMax);
   if Result then
   begin
     FileSize := GetSizeOfFile(FFileInfo);
-    Result := (FileSize >= FFileSizeMin)
-          and (FileSize <= FFileSizeMax);
+    Result := (FileSize >= FFileSizeMin) and (FileSize <= FFileSizeMax);
   end;
 end;
 
@@ -4636,9 +4886,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEnumFileThread.SetFileMask(const Value: string);
+procedure TEnumFileThread.SetFileMasks(const Value: TStrings);
 begin
-  StrIToStrings(Value, ';', FFileMask, False);
+  FFileMasks.Assign(Value);
 end;
 
 //==================================================================================================
@@ -4651,11 +4901,12 @@ begin
   FTasks := TList.Create;
   FAttributeMask := TJclFileAttributeMask.Create;
   FRootDirectory := '.';
-  FFileMask := '*';
+  FFileMasks := TStringList.Create;
+  FFileMasks.Add('*');
   FSubDirectoryMask := '*';
   FOptions := [fsIncludeSubDirectories];
-  FLastChangeAfter := DefaultFileTime;
-  FLastChangeBefore := DefaultFileTime;
+  FLastChangeAfter := MinDateTime;
+  FLastChangeBefore := MaxDateTime;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4665,6 +4916,7 @@ begin
   StopAllTasks(True);
   FTasks.Free;
   FAttributeMask.Free;
+  FFileMasks.Free;
   inherited;
 end;
 
@@ -4720,7 +4972,7 @@ begin
   if Source is TJclFileEnumerator then
   begin
     Src := TJclFileEnumerator(Source);
-    FileMask := Src.FileMask;
+    FileMasks.Assign(Src.FileMasks);
     RootDirectory := Src.RootDirectory;
     SubDirectoryMask := Src.SubDirectoryMask;
     AttributeMask := Src.AttributeMask;
@@ -4744,9 +4996,8 @@ var
   Task: TEnumFileThread;
 begin
   Task := TEnumFileThread.Create;
-  Task.FID := FNextTaskID;
-  Inc(FNextTaskID);
-  Task.FileMask := FileMask;
+  Task.FID := NextTaskID;
+  Task.FileMasks := FileMasks;
   Task.Directory := RootDirectory;
   Task.RejectedAttr := AttributeMask.Rejected;
   Task.RequiredAttr := AttributeMask.Required;
@@ -4853,6 +5104,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclFileEnumerator.GetNextTaskID: TFileSearchTaskID;
+begin
+  Result := FNextTaskID;
+  Inc(FNextTaskID);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclFileEnumerator.SetAttributeMask(
   const Value: TJclFileAttributeMask);
 begin
@@ -4878,7 +5137,7 @@ end;
 procedure TJclFileEnumerator.SetLastChangeAfterStr(const Value: string);
 begin
   if Value = '' then
-    LastChangeAfter := DefaultFileTime
+    LastChangeAfter := MinDateTime
   else
     LastChangeAfter := StrToDateTime(Value);
 end;
@@ -4888,7 +5147,7 @@ end;
 procedure TJclFileEnumerator.SetLastChangeBeforeStr(const Value: string);
 begin
   if Value = '' then
-    LastChangeBefore := DefaultFileTime
+    LastChangeBefore := MaxDateTime
   else
     LastChangeBefore := StrToDateTime(Value);
 end;
@@ -4911,7 +5170,14 @@ end;
 
 function TJclFileEnumerator.GetFileMask: string;
 begin
-  Result := FFileMask;
+  Result := StringsToStr(FFileMasks, ';', False);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclFileEnumerator.GetFileMasks: TStrings;
+begin
+  Result := FFileMasks;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5002,14 +5268,14 @@ end;
 
 function TJclFileEnumerator.IsLastChangeAfterStored: Boolean;
 begin
-  Result := FLastChangeAfter <> DefaultFileTime;
+  Result := FLastChangeAfter <> MinDateTime;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclFileEnumerator.IsLastChangeBeforeStored: Boolean;
 begin
-  Result := FLastChangeBefore <> DefaultFileTime;
+  Result := FLastChangeBefore <> MaxDateTime;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5023,7 +5289,14 @@ end;
 
 procedure TJclFileEnumerator.SetFileMask(const Value: string);
 begin
-  FFileMask := Value;
+  StrToStrings(Value, ';', FFileMasks, False);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclFileEnumerator.SetFileMasks(const Value: TStrings);
+begin
+  FileMasks.Assign(Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
