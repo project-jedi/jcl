@@ -406,24 +406,25 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
-  RsAssertUnpairedEndUpdate  = 'Unpaired BeginUpdate EndUpdate';
-  RsCreateCompatibleDc       = 'Could not create compatible DC';
-  RsDestinationBitmapEmpty   = 'Destination bitmap is empty';
-  RsDibHandleAllocation      = 'Could not allocate handle for DIB';
-  RsMapSizeFmt               = 'Could not set size on class "%s"';
-  RsSelectObjectInDc         = 'Could not select object in DC';
-  RsSourceBitmapEmpty        = 'Source bitmap is empty';
-  RsSourceBitmapInvalid      = 'Source bitmap is invalid';
-  RsNoBitmapForRegion        = 'No bitmap for region';
-  RsNoDeviceContextForWindow = 'Cannot get device context of the window';
-  RsInvalidRegion            = 'Invalid Region defined for RegionInfo';
-  RsRegionDataOutOfBound     = 'Out of bound index on RegionData';
-  RsRegionCouldNotCreated    = 'Region could not be created';
-  RsInvalidHandleForRegion   = 'Invalid handle for region';
-  RsInvalidRegionInfo        = 'Invalid RegionInfo';
+  RsBitsPerSampleNotSupported = '%d bits per sample not supported in color space conversion';
+  RsAssertUnpairedEndUpdate   = 'Unpaired BeginUpdate EndUpdate';
+  RsCreateCompatibleDc        = 'Could not create compatible DC';
+  RsDestinationBitmapEmpty    = 'Destination bitmap is empty';
+  RsDibHandleAllocation       = 'Could not allocate handle for DIB';
+  RsMapSizeFmt                = 'Could not set size on class "%s"';
+  RsSelectObjectInDc          = 'Could not select object in DC';
+  RsSourceBitmapEmpty         = 'Source bitmap is empty';
+  RsSourceBitmapInvalid       = 'Source bitmap is invalid';
+  RsNoBitmapForRegion         = 'No bitmap for region';
+  RsNoDeviceContextForWindow  = 'Cannot get device context of the window';
+  RsInvalidRegion             = 'Invalid Region defined for RegionInfo';
+  RsRegionDataOutOfBound      = 'Out of bound index on RegionData';
+  RsRegionCouldNotCreated     = 'Region could not be created';
+  RsInvalidHandleForRegion    = 'Invalid handle for region';
+  RsInvalidRegionInfo         = 'Invalid RegionInfo';
 
-  RsBitmapExtension          = '.bmp';
-  RsJpegExtension            = '.jpg';
+  RsBitmapExtension           = '.bmp';
+  RsJpegExtension             = '.jpg';
 
 //--------------------------------------------------------------------------------------------------
 // JclMapi
