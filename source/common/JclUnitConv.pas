@@ -103,12 +103,12 @@ function DegToDmsStr(const Degrees: Float; const SecondPrecision: Cardinal = 3):
 
 { Coordinate conversion }
 
-procedure CartesianToPolar(const X, Y: Float; var R, Phi: Float);
-procedure PolarToCartesian(const R, Phi: Float; var X, Y: Float);
-procedure CartesianToCylinder(const X, Y, Z: Float; var R, Phi, Zeta: Float);
-procedure CartesianToSpheric(const X, Y, Z: Float; var Rho, Theta, Phi: Float);
-procedure CylinderToCartesian(const R, Phi, Zeta: Float; var X, Y, Z: Float);
-procedure SphericToCartesian(const Rho, Theta, Phi: Float; var X, Y, Z: Float);
+procedure CartesianToPolar(const X, Y: Float; out R, Phi: Float);
+procedure PolarToCartesian(const R, Phi: Float; out X, Y: Float);
+procedure CartesianToCylinder(const X, Y, Z: Float; out R, Phi, Zeta: Float);
+procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Theta, Phi: Float);
+procedure CylinderToCartesian(const R, Phi, Zeta: Float; out X, Y, Z: Float);
+procedure SphericToCartesian(const Rho, Theta, Phi: Float; out X, Y, Z: Float);
 
 { Length conversion }
 
@@ -371,7 +371,7 @@ end;
 // Coordinate conversion
 //==================================================================================================
 
-procedure CartesianToCylinder(const X, Y, Z: Float; var R, Phi, Zeta: Float);
+procedure CartesianToCylinder(const X, Y, Z: Float; out R, Phi, Zeta: Float);
 begin
   Zeta := Z;
   CartesianToPolar(X, Y, R, Phi);
@@ -379,41 +379,28 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CartesianToPolar(const X, Y: Float; var R, Phi: Float);
+procedure CartesianToPolar(const X, Y: Float; out R, Phi: Float);
 begin
   R := Sqrt(Sqr(X) + Sqr(Y));
-  if Abs(X) > PrecisionTolerance then
-  begin
-    Phi := ArcTan(Abs(Y) / Abs(X));
-    if Sgn(X) = 1 then
-    begin
-      if Sgn(Y) = -1 then
-        Phi := TwoPi - Phi
-    end
-    else
-    begin
-      if Sgn(Y) = 1 then
-       Phi := Pi - Phi
-      else
-       Phi := Pi + Phi;
-      end;
-    end
-    else
-      Phi := Sgn(Y) * PiOn2;
+  Phi := ArcTan2(Y, X);
+  if Phi < 0 then
+    Phi := Phi + TwoPi;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CartesianToSpheric(const X, Y, Z: Float; var Rho, Theta, Phi: Float);
+procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Theta, Phi: Float);
 begin
   Rho := Sqrt(X*X+Y*Y+Z*Z);
-  Phi := ArcTan(Y/X);
+  Phi := ArcTan2(Y, X);
+  if Phi < 0 then
+    Phi := Phi + TwoPi;
   Theta := ArcCos(Z/Rho);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CylinderToCartesian(const R, Phi, Zeta: Float; var X, Y, Z: Float);
+procedure CylinderToCartesian(const R, Phi, Zeta: Float; out X, Y, Z: Float);
 var
   Sine, CoSine: Float;
 begin
@@ -425,7 +412,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure PolarToCartesian(const R, Phi: Float; var X, Y: Float);
+procedure PolarToCartesian(const R, Phi: Float; out X, Y: Float);
 var
   Sine, CoSine: Float;
 begin
@@ -436,7 +423,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure SphericToCartesian(const Rho, Theta, Phi: Float; var X, Y, Z: Float);
+procedure SphericToCartesian(const Rho, Theta, Phi: Float; out X, Y, Z: Float);
 var
   SineTheta, CoSineTheta: Float;
   SinePhi, CoSinePhi: Float;
