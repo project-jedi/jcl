@@ -510,7 +510,6 @@ procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
 function GetIntelCacheDescription(const D: Byte): string;
 function RoundFrequency(const Frequency: Integer): Integer;
-function GetCPUFreq(var FreqInfo: TFreqInfo): Boolean;
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
@@ -2346,7 +2345,7 @@ begin
   if CpuInfo.HasInstruction then
   begin
     if (CpuInfo.Features and TSC_FLAG) = TSC_FLAG then
-      GetCpuFreq(CpuInfo.FrequencyInfo);
+      GetCpuSpeed(CpuInfo.FrequencyInfo);
     CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   end;
 end;
@@ -2381,7 +2380,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean; overload;
+function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 var
   T0, T1: Int64;
   CountFreq: Int64;
@@ -2463,50 +2462,6 @@ begin
 
     CpuSpeed.NormFreq := RoundFrequency(CpuSpeed.NormFreq);
     Result := True;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function GetCPUFreq(var FreqInfo: TFreqInfo): Boolean;
-const
-  MHz = 1.0E6;
-var
-  TickFreq: Int64;
-  Cycles, Ticks: Int64;
-  StartTicks: Int64;
-  Priority: Integer;
-  PriorityClass: LongWord;
-  Process, Thread: THandle;
-begin
-  Result := QueryPerformanceFrequency(TickFreq);
-  if Result then
-  begin
-    Process := GetCurrentProcess;
-    Thread := GetCurrentThread;
-    PriorityClass := GetPriorityClass(Process);
-    if PriorityClass <> 0 then
-      SetPriorityClass(Process, REALTIME_PRIORITY_CLASS);
-    Priority := GetThreadPriority(Thread);
-    if Priority <> THREAD_PRIORITY_ERROR_RETURN then
-      SetThreadPriority(Thread, THREAD_PRIORITY_TIME_CRITICAL);
-    try
-      QueryPerformanceCounter(StartTicks);
-      Cycles := ReadTimeStampCounter;
-      Sleep(2);
-      QueryPerformanceCounter(Ticks);
-      Cycles := ReadTimeStampCounter - Cycles;
-      Ticks := Ticks - StartTicks;
-    finally
-      if Priority <> THREAD_PRIORITY_ERROR_RETURN then
-        SetThreadPriority(Thread, Priority);
-      if PriorityClass <> 0 then
-        SetPriorityClass(Process, PriorityClass);
-    end;
-    FreqInfo.RawFreq := Round(TickFreq  * Cycles / (Ticks * MHz));
-    FreqInfo.NormFreq := RoundFrequency(FreqInfo.RawFreq);
-    FreqInfo.InCycles := Cycles;
-    FreqInfo.ExTicks := Round(Ticks / TickFreq * MHz);
   end;
 end;
 
