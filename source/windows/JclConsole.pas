@@ -230,7 +230,7 @@ type
     function GetTextAttribute: Word; virtual; abstract;
     procedure SetTextAttribute(const Value: Word); virtual; abstract;
   public
-    constructor Create(const attr: TJclScreenCustomTextAttribute = nil); overload;
+    constructor Create(const Attr: TJclScreenCustomTextAttribute = nil); overload;
     procedure Clear;
     property TextAttribute: Word read GetTextAttribute write SetTextAttribute;
     property Color: TJclScreenFontColor read GetColor write SetColor;
@@ -1451,6 +1451,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/03/04 06:40:26  marquardt
+// changed overloaded constructors to constructor with default parameter (BCB friendly)
+//
 // Revision 1.14  2005/02/25 07:20:15  marquardt
 // add section lines
 //

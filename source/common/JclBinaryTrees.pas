@@ -68,7 +68,7 @@ type
   end;
 
   TJclIntfBinaryTree = class(TJclAbstractContainer, IJclIntfCollection,
-      IJclIntfTree, IJclIntfCloneable)
+    IJclIntfTree, IJclIntfCloneable)
   private
     FComparator: TIntfCompare;
     FCount: Integer;
@@ -97,8 +97,7 @@ type
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create; overload;
-    constructor Create(Comparator: TIntfCompare); overload;
+    constructor Create(AComparator: TIntfCompare = nil);
     destructor Destroy; override;
   end;
 
@@ -135,13 +134,12 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Comparator: TStrCompare); overload;
+    constructor Create(AComparator: TStrCompare = nil);
     destructor Destroy; override;
   end;
 
   TJclBinaryTree = class(TJclAbstractContainer, IJclCollection, IJclTree,
-      IJclCloneable)
+    IJclCloneable)
   private
     FComparator: TCompare;
     FCount: Integer;
@@ -170,8 +168,7 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create; overload;
-    constructor Create(Comparator: TCompare); overload;
+    constructor Create(AComparator: TCompare = nil);
     destructor Destroy; override;
   end;
 
@@ -1131,15 +1128,13 @@ end;
 
 //=== { TJclIntfBinaryTree } =================================================
 
-constructor TJclIntfBinaryTree.Create;
-begin
-  Create(IntfSimpleCompare);
-end;
-
-constructor TJclIntfBinaryTree.Create(Comparator: TIntfCompare);
+constructor TJclIntfBinaryTree.Create(AComparator: TIntfCompare = nil);
 begin
   inherited Create;
-  FComparator := Comparator;
+  if Assigned(AComparator) then
+    FComparator := AComparator
+  else
+    FComparator := @IntfSimpleCompare;
   FTraverseOrder := toPreOrder;
 end;
 
@@ -1772,15 +1767,13 @@ end;
 
 //=== { TJclStrBinaryTree } ==================================================
 
-constructor TJclStrBinaryTree.Create;
-begin
-  Create(StrSimpleCompare);
-end;
-
-constructor TJclStrBinaryTree.Create(Comparator: TStrCompare);
+constructor TJclStrBinaryTree.Create(AComparator: TStrCompare = nil);
 begin
   inherited Create;
-  FComparator := Comparator;
+  if Assigned(AComparator) then
+    FComparator := AComparator
+  else
+    FComparator := @StrSimpleCompare;
   FTraverseOrder := toPreOrder;
 end;
 
@@ -2483,15 +2476,13 @@ end;
 
 //=== { TJclBinaryTree } =====================================================
 
-constructor TJclBinaryTree.Create;
-begin
-  Create(SimpleCompare);
-end;
-
-constructor TJclBinaryTree.Create(Comparator: TCompare);
+constructor TJclBinaryTree.Create(AComparator: TCompare = nil);
 begin
   inherited Create;
-  FComparator := Comparator;
+  if Assigned(AComparator) then
+    FComparator := AComparator
+  else
+    FComparator := @SimpleCompare;
   FTraverseOrder := toPreOrder;
 end;
 
@@ -3125,6 +3116,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/03/04 06:40:25  marquardt
+// changed overloaded constructors to constructor with default parameter (BCB friendly)
+//
 // Revision 1.6  2005/03/03 08:02:56  marquardt
 // various style cleanings, bugfixes and improvements
 //
