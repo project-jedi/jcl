@@ -102,11 +102,13 @@ type
   TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
   TFileListOption  = (flFullNames, flRecursive, flMaskedSubfolders);
   TFileListOptions = set of TFileListOption;
+  TJclAttributeMatch = (amAny, amExact, amSubSetOf, amSuperSetOf, amCustom);
+  TFileMatchFunc = function(const Attr: Integer; const FileInfo: TSearchRec): Boolean;
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
-function AdvBuildFileList(const Path: string; const Attr: Integer;
-  const Files: TStrings; const Options: TFileListOptions = [];
-  const SubfoldersMask: string = ''): Boolean;
+function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
+  const AttributeMatch: TJclAttributeMatch = amSubsetOf; const Options: TFileListOptions = [];
+  const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -3339,8 +3341,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function AdvBuildFileList(const Path: string; const Attr: Integer;
-  const Files: TStrings; const Options: TFileListOptions; const SubfoldersMask: string): Boolean;
+function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
+  const AttributeMatch: TJclAttributeMatch = amSubsetOf; const Options: TFileListOptions = [];
+  const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
+
 var
   FileMask: string;
   RootDir: string;
@@ -3356,6 +3360,7 @@ var
   begin
     Counter := Folders.Count - 1;
     CurrentItem := 0;
+
     while CurrentItem <= Counter do
     begin
       // searching for subfolders
@@ -3366,6 +3371,7 @@ var
           if (FindInfo.Name <> '.') and (FindInfo.Name <> '..') and
             (FindInfo.Attr and faDirectory = faDirectory) then
             Folders.Add(Folders[CurrentItem] + FindInfo.Name + PathSeparator);
+
           Rslt := FindNext(FindInfo);
         end;
       finally
@@ -3381,21 +3387,32 @@ var
     FindInfo: TSearchRec;
     Rslt: Integer;
     CurrentFolder: String;
-    FileAttr: Integer;
+    Matches: Boolean;
 
   begin
     CurrentFolder := Folders[CurrentCounter];
     Rslt := FindFirst(CurrentFolder + FileMask, LocAttr, FindInfo);
+
     try
       while Rslt = 0 do
       begin
-        FileAttr := FindInfo.Attr and not FILE_ATTRIBUTE_NORMAL; // Include all normal files
+         Matches := False;
 
-        if (LocAttr and FileAttr) = FileAttr  then
+         case AttributeMatch of
+           amAny: Matches := (LocAttr and FindInfo.Attr) <> 0;
+           amExact: Matches := LocAttr = FindInfo.Attr;
+           amSuperSetOf: Matches := (LocAttr and FindInfo.Attr) = FindInfo.Attr;
+           amSubSetOf: Matches := (LocAttr and FindInfo.Attr) = LocAttr;
+           amCustom: if @FileMatchFunc <> nil then
+                       Matches := FileMatchFunc(LocAttr,  FindInfo);
+         end;
+
+         if Matches then
           if flFullNames in Options then
             Files.Add(CurrentFolder + FindInfo.Name)
           else
             Files.Add(FindInfo.Name);
+
         Rslt := FindNext(FindInfo);
       end;
     finally
@@ -3424,14 +3441,15 @@ begin
 
     for Counter := 0 to Folders.Count - 1 do
     begin
-      if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask, Folders[Counter], 1))) or
-        (not (flMaskedSubfolders in Options))) then
-        FillFileList(Counter);
+      if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask,
+        Folders[Counter], 1))) or (not (flMaskedSubfolders in Options))) then
+          FillFileList(Counter);
     end;
   finally
     Folders.Free;
   end;
   Result := True;
 end;
+
 
 end.
