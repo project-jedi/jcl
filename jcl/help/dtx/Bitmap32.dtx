@@ -1,0 +1,220 @@
+@@TJclThreadPersistent
+<GROUP Graphics.Bitmap32>
+Summary:
+  Ancestor class for TJclBitmap32.
+Description:
+  TJclThreadPersistent extends the standard TPersistent class with the thread-safe locking and
+  declares change notification events.
+
+  The locking provides means of synchronization of simultaneous access to the same resource in
+  applications with multiple threads and it works similar to that in TCanvas class. For additional
+  information, see Delphi documentation on TCanvas.
+
+  This class also declares change notification abilities. That is, it provides methods and events
+  allowing it descendants to issue notification on their changes. For example, TJclBitmap32 uses
+  OnChange to notify its container that it was modified and its data has to be repainted to the
+  screen. TJclThreadPersistent, however, does not use or implement automatic change notification
+  itself. This is done in descendants.
+Quick info:
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.LockCount
+<GROUP $Graphics.Bitmap32>
+Summary
+  Threading lock count
+Description
+  LockCount represents the current nesting level of the
+  threading lock. This is a counter shared by all running
+  threads in the curent process.
+
+  The object is unlocked only when LockCount is 0 and only one
+  thread can lock the object at the time. Call Lock to increase
+  LockCount value and Unlock to decrease it.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+See Also
+  Lock, Unlock
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.UpdateCount
+<GROUP $Graphics.Bitmap32>
+Summary
+  Threading lock count
+Description
+  The current nesting level of the update lock.
+
+  UpdateCount is increased each time you call the BeginUpdate method and is
+  decreased with EndUpdate calls. The object does not generate OnChange as long
+  as its UpdateCount is greater than 0.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+See Also
+  BeginUpdate, EndUpdate, OnChange
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.BeginUpdate
+<GROUP $Graphics.Bitmap32>
+Summary
+  Disables update notification.
+Description
+  Call this method in order to temporarily disable the update notification.
+
+  BeginUpdate increases the UpdateCount property, which disables generation of OnChange events. Calls to BeginUpdate must be
+  paired with EndUpdate and they may be safely nested.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+SeeAlso
+  EndUpdate
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.EndUpdate
+<GROUP $Graphics.Bitmap32>
+Summary
+  Re-enables update notification.
+Description
+  Re-enables change notification previously disabled with BeginUpdate.
+
+  EndUpdate decreases the UpdateCount property and re-enables generation of OnChange events.
+
+  EndUpdate itself does not generate the OnChange event. You will need to call Changed explicitly,
+  after calling EndUpdate in case the change notification is required.
+SeeAlso
+  BeginUpdate
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.Changing
+<GROUP $Graphics.Bitmap32>
+Summary
+  Occurs just before a change is made to the object.
+Description
+  Changing is called every time before a change is about to be made to the object. If the object is
+  being updated Changing does nothing, otherwise it fires the OnChanging event.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.Changed
+<GROUP $Graphics.Bitmap32>
+Summary
+  Calls the OnChange event.
+Description
+  Calls the OnChange event, provided the change notification is not masked with BeginUpdate.
+
+  Descendants of TThreadPersistent call Changed after making changes to their data or properties.
+
+  You will need to call Changed explicitly in your application after leaving the
+  BeginUpdate... EndUpdate block since EndUpdate itself does not internally call Changed.
+See Also
+  BeginUpdate, EndUpdate, OnChange
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.Lock
+<GROUP $Graphics.Bitmap32>
+Summary
+  Prevents other threads from acessing the object.
+Description
+  Blocks other execution threads from locking the object until the Unlock method is called. If another thread tryes to call the Lock method of an object which is already locked, its execution will be stalled until the lock is released with Unlock method.
+
+  Once a thread has locked the object, it can make additional calls to Lock method without blocking its own execution. This prevents the thread from deadlocking itself while waiting for releasing of a lock that it already owns. LockCount is increased each time Lock is called.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.Unlock
+<GROUP $Graphics.Bitmap32>
+Summary
+  Decreases the LockCount property, allowing other threads to execute when LockCount reaches 0.
+Description
+  Call Unlock at the end of a critical section begun with a call to the Lock method. Every call to Lock must be matched by a call to Unlock.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.OnChanging
+<GROUP $Graphics.Bitmap32>
+Summary
+  Occurs just before a change is made to the object.
+Description
+  Changing is called every time before a change is about to be made to the object. If the object is
+  being updated Changing does nothing, otherwise it fires the OnChanging event.
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@TJclThreadPersistent.OnChange
+<GROUP $Graphics.Bitmap32>
+Summary
+  Occurs when the image has just changed.
+Description
+  OnChange is called immediately after the object changes. For example, TJclThreadPersistent’s
+  descendant TJclBitmap32 uses the OnChange event to notify its parent that something was changed
+  in a bitmap, and the screen image must be updated.
+
+  Generation of OnChange events can be prevented by calling BeginUpdate.
+See Also
+  BeginUpdate, Changed, TJclBitmap32, TJclThreadPersistent
+QuickInfo
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+  Delphi Versions: 4,5,6
+  Kylix Versions: not applicable
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IdentityMatrix
+<GROUP Graphics.Bitmap32>
+Summary:
+  A 3x3 identity matrix.
+Description:
+  Identity matrix to use with TJclLinearTransformation.
+Quick info:
+  Unit: JclGraphics
+  Category: Graphics
+  Donator: Alex Denissov
+--------------------------------------------------------------------------------
+
