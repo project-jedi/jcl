@@ -3430,11 +3430,6 @@ begin
   P := Dest;
   for I := 0 to Source.Count - 1 do
   begin
-    if Source[I] = '' then
-    begin
-      FreeMultiSz(Dest);
-      raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem);
-    end;
     P := StrECopy(P, PChar(Source[I]));
     Inc(P);
   end;
@@ -3490,7 +3485,10 @@ end;
 
 procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
 begin
-  GetMem(Dest, Len * SizeOf(Char));
+  if Len > 0 then
+    GetMem(Dest, Len * SizeOf(Char))
+  else
+    Dest := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3508,9 +3506,14 @@ function MultiSzDup(const Source: PMultiSz): PMultiSz;
 var
   Len: Integer;
 begin
-  Len := MultiSzLength(Source);
-  AllocateMultiSz(Result, Len);
-  Move(Source^, Result^, Len * SizeOf(Char));
+  if Source <> nil then
+  begin
+    Len := MultiSzLength(Source);
+    AllocateMultiSz(Result, Len);
+    Move(Source^, Result^, Len * SizeOf(Char));
+  end
+  else
+    Result := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3586,7 +3589,10 @@ end;
 
 procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer);
 begin
-  GetMem(Dest, Len * SizeOf(WideChar));
+  if Len > 0 then
+    GetMem(Dest, Len * SizeOf(WideChar))
+  else
+    Dest := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3604,9 +3610,14 @@ function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
 var
   Len: Integer;
 begin
-  Len := WideMultiSzLength(Source);
-  AllocateWideMultiSz(Result, Len);
-  Move(Source^, Result^, Len * SizeOf(WideChar));
+  if Source <> nil then
+  begin
+    Len := WideMultiSzLength(Source);
+    AllocateWideMultiSz(Result, Len);
+    Move(Source^, Result^, Len * SizeOf(WideChar));
+  end
+  else
+    Result := nil;
 end;
 
 //==================================================================================================
@@ -4053,6 +4064,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.29  2004/10/11 14:54:38  marquardt
+// MultiSz finetuning
+//
 // Revision 1.28  2004/10/11 08:13:03  marquardt
 // PH cleaning of JclStrings
 //
