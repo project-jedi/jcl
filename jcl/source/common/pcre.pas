@@ -197,6 +197,7 @@ procedure pcre_free(P: Pointer); cdecl;
 {$ELSE}
   // dynamic linking
 type
+  TPCRELibNotLoadedHandler = procedure; cdecl;
   pcre_compile_func = function(const pattern: PChar; options: Integer;
     const errptr: PPChar; erroffset: PInteger; const tableptr: PChar): PPCRE; cdecl;
   pcre_copy_substring_func = function(const subject: PChar; ovector: PInteger; stringcount, stringnumber: Integer;
@@ -219,6 +220,10 @@ type
   pcre_malloc_func = function(Size: Integer): Pointer; cdecl;
   pcre_free_func = procedure(P: Pointer); cdecl;
 var
+  // Value to initialize function pointers below with, in case LoadPCRE fails
+  // or UnloadPCRE is called.  Typically the handler will raise an exception.
+  LibNotLoadedHandler: TPCRELibNotLoadedHandler = nil;
+
   pcre_compile: pcre_compile_func = nil;
   {$EXTERNALSYM pcre_compile}
   pcre_copy_substring: pcre_copy_substring_func = nil;
@@ -287,18 +292,37 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   libpcremodulename = 'libpcre.so.0';
-  INVALID_HANDLE_VALUE = TModuleHandle(0);
   {$ENDIF UNIX}
+  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
 
 {$IFDEF PCRE_LINKONREQUEST}
 var
-  PCRELib: TModuleHandle = INVALID_HANDLE_VALUE;
+  PCRELib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+
+procedure InitPCREFuncPtrs(const Value: Pointer);
+begin
+  @pcre_compile := Value;
+  @pcre_copy_substring := Value;
+  @pcre_exec := Value;
+  @pcre_study := Value;
+  @pcre_get_substring := Value;
+  @pcre_get_substring_list := Value;
+  @pcre_free_substring := Value;
+  @pcre_free_substring_list := Value;
+  @pcre_maketables := Value;
+  @pcre_fullinfo := Value;
+  @pcre_info := Value;
+  @pcre_version := Value;
+
+  @pcre_malloc := Value;
+  @pcre_free := Value;
+end;
 {$ENDIF PCRE_LINKONREQUEST}
 
 function IsPCRELoaded: Boolean;
 begin
   {$IFDEF PCRE_LINKONREQUEST}
-  Result := PCRELib <> INVALID_HANDLE_VALUE;
+  Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
   {$ELSE}
   Result := True;
   {$ENDIF PCRE_LINKONREQUEST}
@@ -317,15 +341,18 @@ function LoadPCRE: Boolean;
   end;
 
 begin
+  Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
+  if Result then
+    Exit;
   {$IFDEF PCRE_LINKONREQUEST}
-  if PCRELib = INVALID_HANDLE_VALUE then
+  if PCRELib = INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
     PCRELib := LoadLibrary(libpcremodulename);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     PCRELib := dlopen(PChar(libpcremodulename), RTLD_NOW);
     {$ENDIF UNIX}
-  Result := PCRELib <> INVALID_HANDLE_VALUE;
+  Result := PCRELib <> INVALID_MODULEHANDLE_VALUE;
   if Result then
   begin
     @pcre_compile := GetSymbol('pcre_compile');
@@ -345,7 +372,7 @@ begin
     @pcre_free := GetSymbol('pcre_free');
   end
   else
-    UnloadPCRE;
+    InitPCREFuncPtrs(@LibNotLoadedHandler);
   {$ELSE}
   Result := True;
   {$ENDIF PCRE_LINKONREQUEST}
@@ -354,29 +381,15 @@ end;
 procedure UnloadPCRE;
 begin
   {$IFDEF PCRE_LINKONREQUEST}
-  if PCRELib <> INVALID_HANDLE_VALUE then
+  if PCRELib <> INVALID_MODULEHANDLE_VALUE then
     {$IFDEF MSWINDOWS}
     FreeLibrary(PCRELib);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     dlclose(Pointer(PCRELib));
     {$ENDIF UNIX}
-  PCRELib := INVALID_HANDLE_VALUE;
-  @pcre_compile := nil;
-  @pcre_copy_substring := nil;
-  @pcre_exec := nil;
-  @pcre_study := nil;
-  @pcre_get_substring := nil;
-  @pcre_get_substring_list := nil;
-  @pcre_free_substring := nil;
-  @pcre_free_substring_list := nil;
-  @pcre_maketables := nil;
-  @pcre_fullinfo := nil;
-  @pcre_info := nil;
-  @pcre_version := nil;
-
-  @pcre_malloc := nil;
-  @pcre_free := nil;
+  PCRELib := INVALID_MODULEHANDLE_VALUE;
+  InitPCREFuncPtrs(@LibNotLoadedHandler);
   {$ENDIF PCRE_LINKONREQUEST}
 end;
 
@@ -400,6 +413,10 @@ procedure pcre_free; external libpcremodulename name 'pcre_free';
 // History
 
 // $Log$
+// Revision 1.6  2004/11/06 02:19:34  rrossmair
+// - bug fix (Windows: module handle was tested against INVALID_HANDLE_VALUE = -1, instead of 0)
+// - better handling of calls into DLL when it got not loaded.
+//
 // Revision 1.5  2004/10/02 05:47:28  marquardt
 // added check for incompatible jedi.inc
 // replaced jedi.inc with jvcl.inc
