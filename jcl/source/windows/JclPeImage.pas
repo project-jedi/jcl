@@ -24,7 +24,7 @@
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 22, 2002                                              }
+{ Last modified: February 01, 2002                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -472,6 +472,29 @@ type
   end;
 
 //------------------------------------------------------------------------------
+// Certificates section related classes
+//------------------------------------------------------------------------------
+
+  TJclPeCertificate = class (TObject)
+  private
+    FData: Pointer;
+    FHeader: TWinCertificate;
+  public
+    property Data: Pointer read FData;
+    property Header: TWinCertificate read FHeader;
+  end;
+
+  TJclPeCertificateList = class (TJclPeImageBaseList)
+  private
+    function GetItems(Index: Integer): TJclPeCertificate;
+  protected
+    procedure CreateList;
+  public
+    constructor Create(AImage: TJclPeImage);
+    property Items[Index: Integer]: TJclPeCertificate read GetItems; default;
+  end;
+
+//------------------------------------------------------------------------------
 // Common Language Runtime section related classes
 //------------------------------------------------------------------------------
 
@@ -562,6 +585,7 @@ type
   TJclPeImage = class (TObject)
   private
     FAttachedImage: Boolean;
+    FCertificateList: TJclPeCertificateList;
     FCLRHeader: TJclPeCLRHeader;
     FDebugList: TJclPeDebugList;
     FFileName: TFileName;
@@ -576,6 +600,7 @@ type
     FResourceVA: DWORD;
     FStatus: TJclPeImageStatus;
     FVersionInfo: TJclFileVersionInfo;
+    function GetCertificateList: TJclPeCertificateList;
     function GetCLRHeader: TJclPeCLRHeader;
     function GetDebugList: TJclPeDebugList;
     function GetDescription: string;
@@ -634,6 +659,7 @@ type
     class function ShortSectionInfo(Characteristics: DWORD): string;
     class function StampToDateTime(TimeDateStamp: DWORD): TDateTime;
     property AttachedImage: Boolean read FAttachedImage;
+    property CertificateList: TJclPeCertificateList read GetCertificateList;
     property CLRHeader: TJclPeCLRHeader read GetCLRHeader;
     property DebugList: TJclPeDebugList read GetDebugList;
     property Description: string read GetDescription;
@@ -2825,6 +2851,47 @@ begin
 end;
 
 //==============================================================================
+// TJclPeCertificateList
+//==============================================================================
+
+constructor TJclPeCertificateList.Create(AImage: TJclPeImage);
+begin
+  inherited;
+  CreateList;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeCertificateList.CreateList;
+var
+  Directory: TImageDataDirectory;
+  CertPtr: PChar;
+  TotalSize: Integer;
+  Item: TJclPeCertificate;
+begin
+  Directory := FImage.Directories[IMAGE_DIRECTORY_ENTRY_SECURITY];
+  if Directory.VirtualAddress = 0 then
+    Exit;
+  CertPtr := FImage.RawToVa(Directory.VirtualAddress); // Security directory is a raw offset
+  TotalSize := Directory.Size;
+  while TotalSize >= SizeOf(TWinCertificate) do
+  begin
+    Item := TJclPeCertificate.Create;
+    Item.FHeader := PWinCertificate(CertPtr)^;
+    Item.FData := CertPtr + SizeOf(TWinCertificate);
+    Dec(TotalSize, Item.Header.dwLength);
+    Add(Item);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeCertificateList.GetItems(Index: Integer): TJclPeCertificate;
+begin
+  Result := TJclPeCertificate(inherited Items[Index]);
+end;
+
+//==============================================================================
 // TJclPeCLRHeader
 //==============================================================================
 
@@ -2924,6 +2991,7 @@ end;
 procedure TJclPeImage.Clear;
 begin
   FImageSections.Clear;
+  FreeAndNil(FCertificateList);
   FreeAndNil(FCLRHeader);
   FreeAndNil(FDebugList);
   FreeAndNil(FImportList);
@@ -3058,6 +3126,15 @@ end;
 
 //------------------------------------------------------------------------------
 
+function TJclPeImage.GetCertificateList: TJclPeCertificateList;
+begin
+  if FCertificateList = nil then
+    FCertificateList := TJclPeCertificateList.Create(Self);
+  Result := FCertificateList;   
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclPeImage.GetCLRHeader: TJclPeCLRHeader;
 begin
   if FCLRHeader = nil then
@@ -3088,14 +3165,20 @@ end;
 
 function TJclPeImage.GetDirectories(Directory: Word): TImageDataDirectory;
 begin
-  Result := FLoadedImage.FileHeader.OptionalHeader.DataDirectory[Directory];
+  if StatusOK then
+    Result := FLoadedImage.FileHeader.OptionalHeader.DataDirectory[Directory]
+  else
+  begin
+    Result.VirtualAddress := 0;
+    Result.Size := 0;
+  end;
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclPeImage.GetDirectoryExists(Directory: Word): Boolean;
 begin
-  Result := StatusOK and (Directories[Directory].VirtualAddress <> 0);
+  Result := (Directories[Directory].VirtualAddress <> 0);
 end;
 
 //------------------------------------------------------------------------------
