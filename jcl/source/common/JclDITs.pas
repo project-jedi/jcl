@@ -211,7 +211,6 @@ begin
     
     if dtoMilliseconds in Options then
       DTFormat := DTFormat + ISOTimeMSec;
-    
   end;
   // convert
   Result := FormatDateTime(DTFormat, Value);
@@ -373,9 +372,7 @@ begin
   Minutes := StrToIntDef(Copy(Value, 3 + 1 * Offset, 2), 100);
 
   if WithSeconds then
-  begin
-    Seconds := StrToIntDef(Copy(Value, 5 + 2 * Offset, 2), 100);
-  end
+    Seconds := StrToIntDef(Copy(Value, 5 + 2 * Offset, 2), 100)
   else
   begin
     Seconds := 0;
@@ -589,6 +586,7 @@ begin
       if Value[1] = '+' then
         Delete(Value, 1, 1);
       Value := UpperCase(Value);
+      // (rom) better based on JclMath
       if Value = 'NAN' then
         Float := 0/0
       else
@@ -636,6 +634,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.10  2004/07/29 15:16:51  marquardt
+//   simple style cleaning
+//
 //   Revision 1.9  2004/07/28 20:59:01  rrossmair
 //   comments added to except blocks
 //
