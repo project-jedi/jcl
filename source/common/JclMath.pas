@@ -86,19 +86,19 @@ const
   MaxFactorial   = 1754;
   MaxFloatingPoint: Float = 1.189731495357231765085759326628E+4932; // 2^16384
   MinFloatingPoint: Float = 3.3621031431120935062626778173218E-4932; // 2^(-16382)
-{$ELSE}
-{$IFDEF MATH_Double_PRECISION}
+{$ENDIF}
+{$IFDEF MATH_DOUBLE_PRECISION}
   MaxTanH: Float = 354.89135644669199842162284618659; // Ln(2^1024)/2
   MaxFactorial   = 170;
   MaxFloatingPoint: Float = 1.797693134862315907729305190789E+308; // 2^1024
   MinFloatingPoint: Float = 2.2250738585072013830902327173324E-308; // 2^(-1022)
-{$ELSE}
+{$ENDIF}
 {$IFDEF MATH_SINGLE_PRECISION}
   MaxTanH: Float = 44.361419555836499802702855773323; // Ln(2^128)/2
   MaxFactorial   = 33;
   MaxFloatingPoint: Float = 3.4028236692093846346337460743177E+38; // 2^128
   MinFloatingPoint: Float = 1.1754943508222875079687365372222E-38; // 2^(-126)
-{$ENDIF}{$ENDIF}{$ENDIF}
+{$ENDIF}
 
 var
   PrecisionTolerance: Float = 0.0000001;
@@ -1347,17 +1347,17 @@ begin
   CalcMachineEpsExtended;
   Epsilon := EpsExtended;
   ThreeEpsilon := ThreeEpsExtended;
-{$ELSE}
-{$IFDEF MATH_Double_PRECISION}
+{$ENDIF}
+{$IFDEF MATH_DOUBLE_PRECISION}
   CalcMachineEpsDouble;
   Epsilon := EpsDouble;
   ThreeEpsilon := ThreeEpsDouble;
-{$ELSE}
+{$ENDIF}
 {$IFDEF MATH_SINGLE_PRECISION}
   CalcMachineEpsSingle;
   Epsilon := EpsSingle;
   ThreeEpsilon := ThreeEpsSingle;
-{$ENDIF}{$ENDIF}{$ENDIF}
+{$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
