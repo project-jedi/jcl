@@ -1,3 +1,6 @@
+{$IFNDEF WINDOWSONLY_INC}
+{$DEFINE WINDOWSONLY_INC}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -8,28 +11,42 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: WINDOWSONLY.INC, released on 2002-07-04.
+The Original Code is: windowsonly.inc, released on 2002-07-04.
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the JCL home page,
+located at http://homepages.borland.com/jedi/jcl/
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+// Last modified: $Date$
+// For history see end of file
+
+{$I jedi.inc}
+
+{$IFDEF SUPPORTS_PLATFORM_WARNINGS}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM_WARNINGS}
 
 {$IFNDEF MSWINDOWS}
-{$IFDEF COMPILER6_UP}
-{$MESSAGE FATAL 'This unit is only supported on Windows!'}
-{$ELSE}
-{$IFNDEF BCB5}
-{$IFNDEF DELPHI5}
-This unit is only supported on Windows!
-{$ENDIF DELPHI5}
-{$ENDIF BCB5}
-{$ENDIF COMPILER6_UP}
+  {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
+    {$MESSAGE FATAL 'This unit is only supported on Windows!'}
+  {$ELSE}
+    {$IFDEF XPLATFORM_RTL}
+      'This unit is only supported on Windows!'
+    {$ENDIF XPLATFORM_RTL}
+  {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF MSWINDOWS}
+
+// History:
+
+// $Log$
+// Revision 1.2  2004/06/21 01:17:51  rrossmair
+// - $IFDEFed contents (to prevent from repeated inclusion)
+// - use of feature friendly symbol names
+// - header text adapted for JCL
+//
+
+{$ENDIF ~WINDOWSONLY_INC}
+
