@@ -24,7 +24,6 @@
 {   Matthias Thoma (mthoma)                                                                        }
 {   Michael Schnell                                                                                }
 {   Nick Hodges                                                                                    }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones                                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
@@ -82,6 +81,10 @@ function SecondOfTime(const DateTime: TDateTime): Integer;
 
 { ISO 8601 support }
 
+function GetISOYearNumberOfDays(const Year: Word): Word;  
+function IsISOLongYear(const Year: Word): Boolean; overload;
+function IsISOLongYear(const DateTime: TDateTime): Boolean; overload;
+function ISODayOfWeek(const DateTime: TDateTime): Word;
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer; overload;
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer; overload;
 function ISOWeekNumber(DateTime: TDateTime): Integer; overload;
@@ -164,8 +167,8 @@ function DateTimeToUnixTime(DateTime : TDateTime) : TJclUnixTime32;
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 
 {$IFDEF MSWINDOWS}
-function FileTimeToUnixTime(const FileTime: TFileTime): TJclUnixTime32;
-function UnixTimeToFileTime(const UnixTime: TJclUnixTime32): TFileTime;
+function FileTimeToUnixTime(const AValue: TFileTime): TJclUnixTime32;
+function UnixTimeToFileTime(const AValue: TJclUnixTime32): TFileTime;
 {$ENDIF MSWINDOWS}
 
 type
@@ -436,44 +439,127 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-// DayOfWeek function returns integer 1..7 equivalent to Sunday..Saturday.
+// SysUtils.DayOfWeek returns the day of the week of the given date. The result is an integer between
+// 1 and 7, corresponding to Sunday through Saturday. ISODayOfWeek on the other hand returns an integer
+// between 1 and 7 where the first day is a Monday. The forumla for calculation ISODayOfTheWeek is
+// simply
+//                    DayOfWeek(D) - 1  if DayOfWeek(D) > 1
+// ISODayOfWeek (D) = 7                 if DayOfWeek(D) = 1
+
+function ISODayOfWeek(const DateTime: TDateTime): Word;
+var
+  tmpDayOfWeek: Word;
+
+begin
+  tmpDayOfWeek := SysUtils.DayOfWeek(DateTime);
+  if tmpDayOfWeek = 1 then
+    Result := 7
+  else
+    Result := tmpDayOfWeek - 1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+// Determines if the ISO Year is ordinary  (52 weeks) or Long (53 weeks). Uses a rule first
+// suggested by Sven Pran (Norway) and Lars Nordentoft (Denmark) - according to
+// http://www.phys.uu.nl/~vgent/calendar/isocalendar.htm
+
+function IsISOLongYear(const DateTime: TDateTime): Boolean;
+var
+  tmpYear: Word;
+
+begin
+  tmpYear := YearOfDate(DateTime);
+  Result := IsISOLongYear(tmpYear);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsISOLongYear(const Year: Word): Boolean;
+var
+  tmpWeekday: Word;
+
+begin
+  tmpWeekday := ISODayOfWeek(DayOfTheYearToDateTime(Year, 1));
+  Result := (IsLeapYear(Year) and ((tmpWeekday = 3) or (tmpWeekday = 4))) or (tmpWeekday=4);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetISOYearNumberOfDays(const Year: Word): Word;
+begin
+  Result := 52;
+  if IsISOLongYear(Year) then Result := 53;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+// ISOWeekNumber function returns integer 1..7 equivalent to Sunday..Saturday.
 // ISO 8601 weeks start with Monday and the first week of a year is the one which
 // includes the first Thursday
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber, WeekDay: Integer): Integer;
 var
-  Month, Day: Word;
+ tmpYear: Integer;
+ January4th: TDateTime;
+ FirstMonday: TDateTime;
+ DaysBetween: Word;
+
 begin
-  WeekDay := ((DayOfWeek(DateTime) - ISOFirstWeekDay + 7) mod 7) + 1;
-  DateTime := DateTime - WeekDay + 8 - ISOFirstWeekMinDays;
-  DecodeDate(DateTime, YearOfWeekNumber, Month, Day);
-  Result := (Trunc(DateTime - EncodeDate(YearOfWeekNumber, 1, 1)) div 7) + 1;
+  // Applying the rule: The first calender week is the week that includes January, 4th
+  tmpYear := YearOfDate(DateTime);
+
+  // adjust if we are between 12/29 and 12/31
+  if (MonthOfDate(DateTime) = 12) and (DayOfDate(DateTime) >= 29)
+      and (ISODayOfWeek(DateTime) <= 3) then tmpYear := tmpYear + 1;
+
+  January4th := DayOfTheYearToDateTime(tmpYear, 4);
+  FirstMonday := January4th + 1 - ISODayOfWeek(January4th);
+
+  // If our date is < FirstMonday we are in the last week of the previous year
+  if (DateTime < FirstMonday) then
+  begin
+    Result := GetISOYearNumberOfDays(tmpYear - 1);
+    YearOfWeekNumber := tmpYear - 1;
+    Exit;
+  end;
+
+  if (DateTime >= FirstMonday) then
+    Result := (Trunc(DateTime - FirstMonday) div 7) + 1;
+
+  if Result > GetISOYearNumberOfDays(YearOfDate(DateTime)) then
+    Result := GetISOYearNumberOfDays(YearOfDate(DateTime));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
 var
-  Dummy: Integer;
+  temp: Integer;
+
 begin
-  Result := ISOWeekNumber(DateTime, YearOfWeekNumber, Dummy);
+  ISOWeekNumber(DateTime, YearOfWeekNumber, temp);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function ISOWeekNumber(DateTime: TDateTime): Integer;
 var
-  Dummy1, Dummy2: Integer;
+  temp: Integer;
 begin
-  Result := ISOWeekNumber(DateTime, Dummy1, Dummy2);
+  ISOWeekNumber(DateTime, temp, temp);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function ISOWeekToDateTime(const Year, Week, Day: Integer): TDateTime;
+var
+ January4th: TDateTime;
+ FirstMonday: TDateTime;
+
 begin
-  Result := EncodeDate(Year, 1, ISOFirstWeekMinDays);
-  Result := Result + (Week - 1) * 7 - ((DayOfWeek(Result) + (7 - ISOFirstWeekDay)) mod 7) + Day - 1;
+  January4th := DayOfTheYearToDateTime(Year, 4);
+  FirstMonday := January4th + 1 - ISODayOfWeek(January4th);
+  Result := FirstMonday + (Week - 1) * 7 + (Day - 1);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1107,7 +1193,7 @@ const
 
 function DateTimeToUnixTime(DateTime : TDateTime) : TJclUnixTime32;
 begin
-  Result := Trunc ((DateTime-UnixTimeStart) * SecondsPerDay);
+  Result := Trunc((DateTime-UnixTimeStart) * SecondsPerDay);
 end;
 
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
@@ -1121,16 +1207,16 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-function FileTimeToUnixTime(const FileTime: TFileTime): TJclUnixTime32;
+function UnixTimeToFileTime(const AValue: TJclUnixTime32): TFileTime;
 begin
-  Result := (Int64(FileTime) - FileTimeUnixStart) div FileTimeSecond;
+  Result := DateTimeToFileTime(UnixTimeToDateTime(AValue));
 end;
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-function UnixTimeToFileTime(const UnixTime: TJclUnixTime32): TFileTime;
+function FileTimeToUnixTime(const AValue: TFileTime): TJclUnixTime32;
 begin
-  Int64(Result) := Int64(UnixTime) * FileTimeSecond + FileTimeUnixStart;
+ Result := DateTimeToUnixTime(FileTimeToDateTime(AValue));
 end;
 
 {$ENDIF MSWINDOWS}
@@ -1138,6 +1224,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/10/17 19:43:44  mthoma
+// Wrote "placeholders" for FileTimeToUnixTime, UnixTimeToFileTime until someone writes a better cleanroom solution. Rewrote ISOWeekNumber and ISOWeekToDateTime. Introduced new functions: GetISOYearNumberOfDays,
+// IsISOLongYear, ISODayOfWeek.
+//
 // Revision 1.13  2004/10/15 14:41:00  rrossmair
 // restored Kylix compatibility
 //
@@ -1169,10 +1259,6 @@ end;
 // changed $data$ to $date$, removed the todoc statements, changed function prototypes from Value
 // to a more JclDateTime like naming.
 //
-// Revision 1.4  2004/04/06 04:33:37  peterjhaas
-// Add UNIX time <--> TDateTime / TFiletime conversion
-//
-
 // 2001-02-10, Michael Schnell
 //  added overload procedures for compatibility:
 //    DateTimeToSystemTime, DosDateTimeToFileTime, FileTimeToDosDateTime,
