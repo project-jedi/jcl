@@ -822,7 +822,7 @@ end;
 //------------------------------------------------------------------------------
 
 function PathIsAbsolute(const Path: string): Boolean;
-{$IFNDEF LINUX}
+{$IFDEF WIN32}
 var
   I: Integer;
 {$ENDIF}
