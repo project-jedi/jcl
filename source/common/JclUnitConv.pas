@@ -123,6 +123,10 @@ function GalUsToGalCan(const GalUs: Float): Float;
 function GalCanToGalUs(const GalCan: Float): Float;
 function GalUsToGalUk(const GalUs: Float): Float;
 function GalUkToGalUs(const GalUk: Float): Float;
+function LitreToGalCan(const Litre: Float): Float;
+function GalCanToLitre(const GalCan: Float): Float;
+function LitreToGalUk(const Litre: Float): Float;
+function GalUkToLitre(const GalUk: Float): Float;
 
 { Mass conversion }
 
@@ -505,6 +509,34 @@ end;
 function GalUkToGalUs(const GalUk: Float): Float;
 begin
   Result := GalUk * 1.20095045385;
+end;
+
+//------------------------------------------------------------------------------
+
+function LitreToGalCan(const Litre: Float): Float;
+begin
+  Result := Litre / 4.54609;
+end;
+
+//------------------------------------------------------------------------------
+
+function GalCanToLitre(const GalCan: Float): Float;
+begin
+  Result := GalCan * 4.54609;
+end;
+
+//------------------------------------------------------------------------------
+
+function LitreToGalUk(const Litre: Float): Float;
+begin
+  Result := Litre / 4.54609;
+end;
+
+//------------------------------------------------------------------------------
+
+function GalUkToLitre(const GalUk: Float): Float;
+begin
+  Result := GalUk * 4.54609;
 end;
 
 //==============================================================================
