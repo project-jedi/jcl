@@ -156,14 +156,6 @@
 			<Language Name="ActiveLang" Type="String"></Language>
 			<Language Name="ProjectLang" Type="String">$00000000</Language>
 			<Language Name="RootDir" Type="String"></Language>
-		</Language>  <Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvCtrlsD7D.bpl" Type="String">JVCL Visual Controls</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvDBD7D.bpl" Type="String">JVCL Database Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvCoreD7D.bpl" Type="String">JVCL Core Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvStdCtrlsD7D.bpl" Type="String">JVCL Standard Controls</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvDlgsD7D.bpl" Type="String">JVCL Dialog Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvPluginD7D.bpl" Type="String">JVCL Plugin Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvPageCompsD7D.bpl" Type="String">JVCL Page Style Components</Excluded_Packages>
-    </Excluded_Packages>
+		</Language>
   </Delphi.Personality>
 </BorlandProject>

@@ -151,30 +151,22 @@
 			<VersionInfo Name="DLL" Type="Boolean">False</VersionInfo>
 			<VersionInfo Name="Locale" Type="Integer">1053</VersionInfo>
 			<VersionInfo Name="CodePage" Type="Integer">1252</VersionInfo>
-		</VersionInfo>  <Language>
-      <Language Name="ActiveLang" Type="String"></Language>
-      <Language Name="ProjectLang" Type="String">$00000000</Language>
-      <Language Name="RootDir" Type="String"></Language>
-    </Language>
-    <VersionInfoKeys>
-      <VersionInfoKeys Name="CompanyName" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileDescription" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion" Type="String">1.0.0.0</VersionInfoKeys>
-      <VersionInfoKeys Name="InternalName" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="LegalTrademarks" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="ProductName" Type="String"></VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion" Type="String">1.0.0.0</VersionInfoKeys>
-    </VersionInfoKeys>
-    <Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvCtrlsD7D.bpl" Type="String">JVCL Visual Controls</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvDBD7D.bpl" Type="String">JVCL Database Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvCoreD7D.bpl" Type="String">JVCL Core Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvStdCtrlsD7D.bpl" Type="String">JVCL Standard Controls</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvDlgsD7D.bpl" Type="String">JVCL Dialog Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvPluginD7D.bpl" Type="String">JVCL Plugin Components</Excluded_Packages>
-      <Excluded_Packages Name="F:_Program_Borland_Add_JEDI_jvcl_packages_d7_JvPageCompsD7D.bpl" Type="String">JVCL Page Style Components</Excluded_Packages>
-    </Excluded_Packages>
+		</VersionInfo>
+		<Language>
+			<Language Name="ActiveLang" Type="String"></Language>
+			<Language Name="ProjectLang" Type="String">$00000000</Language>
+			<Language Name="RootDir" Type="String"></Language>
+		</Language>
+		<VersionInfoKeys>
+			<VersionInfoKeys Name="CompanyName" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion" Type="String">1.0.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="InternalName" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="LegalCopyright" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="LegalTrademarks" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="OriginalFilename" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName" Type="String"></VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion" Type="String">1.0.0.0</VersionInfoKeys>
+		</VersionInfoKeys>
   </Delphi.Personality>
 </BorlandProject>
