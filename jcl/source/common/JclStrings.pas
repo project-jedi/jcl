@@ -1260,186 +1260,21 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ Temporary replacement of StrReplace. Basic algorithm is the same except that
-  it has been simplified a little. This version is a little slower than the one
-  below but at least it works. Someone will have to go over this sometime. }
-
-// case insensitive StrReplace
-
-procedure StrReplaceCS(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
-var
-  ResultStr: AnsiString; { result string }
-  SourcePtr: PChar;      { pointer into S of character under examination }
-  SourceMatchPtr: PChar; { pointers into S and Search when first character has }
-  SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
-  ResultPtr: PChar;      { pointer into Result of character being written }
-  SearchLength,          { length of search string }
-  ReplaceLength,         { length of replace string }
-  ResultLength: Integer; { length of result string (maximum, worst-case scenario) }
-  C: Char;               { first character of search string }
-begin
-  //if (S = '') or (Search = '') then Exit;
-  { avoid having to call Length() within the loop }
-  SearchLength := Length(Search);
-  ReplaceLength := Length(Replace);
-  { initialize result string to maximum (worst case scenario) length }
-  if Length(Search) >= ReplaceLength then
-    ResultLength := Length(S)
-  else
-    ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
-  SetLength(ResultStr, ResultLength);
-  { get pointers to begin of source and result }
-  ResultPtr := PChar(ResultStr);
-  SourcePtr := PChar(S);
-  C := Search[1];
-  { while we haven't reached the end of the string }
-  while True do
-  begin
-    { copy characters until we find the first character of the search string }
-    while (SourcePtr^ <> C) and (SourcePtr^ <> #0) do
-    begin
-      ResultPtr^ := SourcePtr^;
-      Inc(ResultPtr);
-      Inc(SourcePtr);
-    end;
-    { did we find that first character or did we hit the end of the string? }
-    if SourcePtr^ = #0 then
-      Break
-    else
-    begin
-      { continue comparing, +1 because first character was matched already }
-      SourceMatchPtr := SourcePtr + 1;
-      SearchMatchPtr := PChar(Search) + 1;
-      while (SourceMatchPtr^ = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
-      begin
-        Inc(SourceMatchPtr);
-        Inc(SearchMatchPtr);
-      end;
-      { did we find a complete match? }
-      if SearchMatchPtr^ = #0 then
-      begin
-        if ReplaceLength > 0 then
-          { append replace to result and move past the search string in source }
-          Move((@Replace[1])^, ResultPtr^, ReplaceLength);
-        Inc(SourcePtr, SearchLength);
-        Inc(ResultPtr, ReplaceLength);
-        { replace all instances or just one? }
-        if not (rfReplaceAll in Flags) then
-        begin
-          { just one, copy until end of source and break out of loop }
-          while SourcePtr^ <> #0 do
-          begin
-            ResultPtr^ := SourcePtr^;
-            Inc(ResultPtr);
-            Inc(SourcePtr);
-          end;
-          Break;
-        end;
-      end
-      else
-      begin
-        { copy current character and start over with the next }
-        ResultPtr^ := SourcePtr^;
-        Inc(ResultPtr);
-        Inc(SourcePtr);
-      end;
-    end;
-  end;
-  { append null terminator, copy into S and reset the string length }
-  ResultPtr^ := #0;
-  S := ResultStr;
-  SetLength(S, StrLen(PChar(S)));
-end;
-
-// case insensitive StrReplace
-
-procedure StrReplaceCI(var S: AnsiString; Search, Replace: AnsiString; Flags: TReplaceFlags);
-var
-  ResultStr: AnsiString; { result string }
-  SourcePtr: PChar;      { pointer into S of character under examination }
-  SourceMatchPtr: PChar; { pointers into S and Search when first character has }
-  SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
-  ResultPtr: PChar;      { pointer into Result of character being written }
-  SearchLength,          { length of search string }
-  ReplaceLength,         { length of replace string }
-  ResultLength: Integer; { length of result string (maximum, worst-case scenario) }
-  C: Char;               { first character of search string }
-begin
-  //if (S = '') or (Search = '') then Exit;
-  Search := AnsiUpperCase(Search);
-  { avoid having to call Length() within the loop }
-  SearchLength := Length(Search);
-  ReplaceLength := Length(Replace);
-  { initialize result string to maximum (worst case scenario) length }
-  if Length(Search) >= ReplaceLength then
-    ResultLength := Length(S)
-  else
-    ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
-  SetLength(ResultStr, ResultLength);
-  { get pointers to begin of source and result }
-  ResultPtr := PChar(ResultStr);
-  SourcePtr := PChar(S);
-  C := Search[1];
-  { while we haven't reached the end of the string }
-  while True do
-  begin
-    { copy characters until we find the first character of the search string }
-    while (CharUpper(SourcePtr^) <> C) and (SourcePtr^ <> #0) do
-    begin
-      ResultPtr^ := SourcePtr^;
-      Inc(ResultPtr);
-      Inc(SourcePtr);
-    end;
-    { did we find that first character or did we hit the end of the string? }
-    if SourcePtr^ = #0 then
-      Break
-    else
-    begin
-      { continue comparing, +1 because first character was matched already }
-      SourceMatchPtr := SourcePtr + 1;
-      SearchMatchPtr := PChar(Search) + 1;
-      while (CharUpper(SourceMatchPtr^) = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
-      begin
-        Inc(SourceMatchPtr);
-        Inc(SearchMatchPtr);
-      end;
-      { did we find a complete match? }
-      if SearchMatchPtr^ = #0 then
-      begin
-        if ReplaceLength > 0 then
-          { append replace to result and move past the search string in source }
-          Move((@Replace[1])^, ResultPtr^, ReplaceLength);
-        Inc(SourcePtr, SearchLength);
-        Inc(ResultPtr, ReplaceLength);
-        { replace all instances or just one? }
-        if not (rfReplaceAll in Flags) then
-        begin
-          { just one, copy until end of source and break out of loop }
-          while SourcePtr^ <> #0 do
-          begin
-            ResultPtr^ := SourcePtr^;
-            Inc(ResultPtr);
-            Inc(SourcePtr);
-          end;
-          Break;
-        end;
-      end
-      else
-      begin
-        { copy current character and start over with the next }
-        ResultPtr^ := SourcePtr^;
-        Inc(ResultPtr);
-        Inc(SourcePtr);
-      end;
-    end;
-  end;
-  { append null terminator, copy into S and reset the string length }
-  ResultPtr^ := #0;
-  S := ResultStr;
-  SetLength(S, StrLen(PChar(S)));
-end;
-
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags);
+var
+  SearchStr: AnsiString;
+  ResultStr: AnsiString; { result string }
+  SourcePtr: PChar;      { pointer into S of character under examination }
+  SourceMatchPtr: PChar; { pointers into S and Search when first character has }
+  SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
+  ResultPtr: PChar;      { pointer into Result of character being written }
+  ResultIndex,
+  SearchLength,          { length of search string }
+  ReplaceLength,         { length of replace string }
+  BufferLength,          { length of temporary result buffer }
+  ResultLength: Integer; { length of result string }
+  C: Char;               { first character of search string }
+  IgnoreCase: Boolean;
 begin
   if Search = '' then
     if S = '' then
@@ -1449,13 +1284,107 @@ begin
     end
     else
       raise EJclStringError.CreateResRec(@RsBlankSearchString);
-    
+
   if S <> '' then
   begin
-    if rfIgnoreCase in Flags then
-      StrReplaceCI(S, Search, Replace, Flags)
+    IgnoreCase := rfIgnoreCase in Flags;
+    if IgnoreCase then
+      SearchStr := AnsiUpperCase(Search)
     else
-      StrReplaceCS(S, Search, Replace, Flags);
+      SearchStr := Search;
+    { avoid having to call Length() within the loop }
+    SearchLength := Length(Search);
+    ReplaceLength := Length(Replace);
+    ResultLength := Length(S);
+    BufferLength := ResultLength;
+    SetLength(ResultStr, BufferLength);
+    { get pointers to begin of source and result }
+    ResultPtr := PChar(ResultStr);
+    SourcePtr := PChar(S);
+    C := SearchStr[1];
+    { while we haven't reached the end of the string }
+    while True do
+    begin
+      { copy characters until we find the first character of the search string }
+      if IgnoreCase then
+        while (CharUpper(SourcePtr^) <> C) and (SourcePtr^ <> #0) do
+        begin
+          ResultPtr^ := SourcePtr^;
+          Inc(ResultPtr);
+          Inc(SourcePtr);
+        end
+      else
+        while (SourcePtr^ <> C) and (SourcePtr^ <> #0) do
+        begin
+          ResultPtr^ := SourcePtr^;
+          Inc(ResultPtr);
+          Inc(SourcePtr);
+        end;
+      { did we find that first character or did we hit the end of the string? }
+      if SourcePtr^ = #0 then
+        Break
+      else
+      begin
+        { continue comparing, +1 because first character was matched already }
+        SourceMatchPtr := SourcePtr + 1;
+        SearchMatchPtr := PChar(SearchStr) + 1;
+        if IgnoreCase then
+          while (CharUpper(SourceMatchPtr^) = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
+          begin
+            Inc(SourceMatchPtr);
+            Inc(SearchMatchPtr);
+          end
+        else
+          while (SourceMatchPtr^ = SearchMatchPtr^) and (SearchMatchPtr^ <> #0) do
+          begin
+            Inc(SourceMatchPtr);
+            Inc(SearchMatchPtr);
+          end;
+        { did we find a complete match? }
+        if SearchMatchPtr^ = #0 then
+        begin
+          // keep track of result length
+          Inc(ResultLength, ReplaceLength - SearchLength);
+          if ReplaceLength > 0 then
+          begin
+            // increase buffer size if required
+            if ResultLength > BufferLength then
+            begin
+              BufferLength := ResultLength * 2;
+              ResultIndex := ResultPtr - PChar(ResultStr) + 1;
+              SetLength(ResultStr, BufferLength);
+              ResultPtr := @ResultStr[ResultIndex];
+            end;
+            { append replace to result and move past the search string in source }
+            Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+          end;
+          Inc(SourcePtr, SearchLength);
+          Inc(ResultPtr, ReplaceLength);
+          { replace all instances or just one? }
+          if not (rfReplaceAll in Flags) then
+          begin
+            { just one, copy until end of source and break out of loop }
+            while SourcePtr^ <> #0 do
+            begin
+              ResultPtr^ := SourcePtr^;
+              Inc(ResultPtr);
+              Inc(SourcePtr);
+            end;
+            Break;
+          end;
+        end
+        else
+        begin
+          { copy current character and start over with the next }
+          ResultPtr^ := SourcePtr^;
+          Inc(ResultPtr);
+          Inc(SourcePtr);
+        end;
+      end;
+    end;
+    { set result length and copy result into S }
+    SetLength(ResultStr, ResultLength);
+    S := ResultStr;
   end;
 end;
 
@@ -4062,6 +3991,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.34  2005/02/05 03:45:35  rrossmair
+// - fixed issue #0002455 (Calculation of ResultLength inappropriate in StrReplace)
+//
 // Revision 1.33  2005/01/06 18:48:31  marquardt
 // AnsiLineBreak, AnsiLineFeed, AnsiCarriageReturn, AnsiCrLf moved to JclBase JclStrings now reexports the names
 //
