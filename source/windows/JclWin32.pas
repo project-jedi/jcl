@@ -42,12 +42,20 @@ uses
   ShlObj,
   JclBase;
 
+{$HPPEMIT '#include <winnt.h>'}
+{$HPPEMIT 'typedef _IMAGE_THUNK_DATA32 _IMAGE_THUNK_DATA;'}
+{$HPPEMIT 'typedef _IMAGE_TLS_DIRECTORY32 _IMAGE_TLS_DIRECTORY;'}
+
+{$HPPEMIT '#include <winioctl.h>'}
+{$HPPEMIT '#include <delayimp.h>'}
+{$HPPEMIT '#include <nb30.h>'}
+
 //--------------------------------------------------------------------------------------------------
 // Locales related
 //--------------------------------------------------------------------------------------------------
 
 const
-  KLF_SETFORPROCESS = $00000100;
+  KLF_SETFORPROCESS         = $00000100;
 
   LCID_ALTERNATE_SORTS      = $00000004;
 
@@ -1148,6 +1156,21 @@ const
 {$IFDEF SUPPORTS_EXTSYM}
 
 // centralized EXTERNALSYMs to keep this Delphi 3 compatible
+
+{$IFDEF COMPILER6_UP}
+  {$EXTERNALSYM KLF_SETFORPROCESS}
+  {$EXTERNALSYM MAXIMUM_REPARSE_DATA_BUFFER_SIZE}
+  {$EXTERNALSYM IO_REPARSE_TAG_RESERVED_ZERO}
+  {$EXTERNALSYM IO_REPARSE_TAG_RESERVED_ONE}
+  {$EXTERNALSYM IO_REPARSE_TAG_RESERVED_RANGE}
+  {$EXTERNALSYM FILE_FLAG_OPEN_REPARSE_POINT}
+
+  {$EXTERNALSYM MAKELANGID}
+  {$EXTERNALSYM PRIMARYLANGID}
+  {$EXTERNALSYM SUBLANGID}
+  {$EXTERNALSYM MAKELCID}
+  {$EXTERNALSYM SORTIDFROMLCID}
+{$ENDIF}
 
 {$EXTERNALSYM LCID_ALTERNATE_SORTS}
 {$EXTERNALSYM CP_THREAD_ACP}
