@@ -5,7 +5,7 @@
 # Robert Rossmair, 2004-02-16
 #
 
-DCC="dcc -I../source -U../source/common"
+DCC="dcc -I../source -R~/kylix3/lib -U../source/common"
 
 cd install
 $DCC QJediInstaller.dpr         # build...
