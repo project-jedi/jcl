@@ -1,0 +1,744 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclComplex = class (TObject)
+[ShortDescr]
+TJclComplex implements various operations with complex numbers.
+[Description]
+TJclComplex is designated to provide complex numbers computations for your
+applications. It supports both rectangular and polar number representations.
+All the operations are divided into groups as follow:
+  - basic arithmetics;
+  - natural logarithmic and exponential functions;
+  - trigonometric functions;
+  - hyperbolic trigonometric functions;
+  - complex Bessel functions;
+  - various miscellaneous routines.
+All the methods could be used in two ways. Firstly you can use the methods 
+with the prefix "C", like CAdd or CLn to perform the operation over the
+object itself, i.e. after using such methods the value of the object itself
+will be changed. Using these methods gives you the opportunity to use quite a
+convenient method of coding the sequential calculations like this:
+  MyComplex.Add(4,3).Mul(2,5).Ln.AsString;
+The other way is two use the subset of methods with "CNew" prefix. They do the
+same computations but as the result they create a new object of TComplex type.
+It might be useful in situations when you'd like to remain your object intact
+and get ther result in a separate object. Please note that such an approach
+requires a very attentive coding style when you need to destroy every object
+after every "CNew*" method invocation.
+[Quick Info]
+Kind=Object
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TComplexType = (crRectangular, crPolar)
+[ShortDescr]
+Enumeration specifies the way of representing a complex numer using either
+rectangular representation or polar coordinates.
+[Enumeration]
+Count=2
+1=crRectangular=the parameters specified in a constructor or any other method
+are of the rectangular representation.
+2=crPolar=the parameters specified in a constructor or any other method
+represent the number in polar coordinates.
+[Quick Info]
+Kind=Type
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FracLength: Byte;
+[ShortDescr]
+Determines the precision used in formatting the value of the complex number.
+[Description]
+Use FracLength to set the number of digits beyond the decimal point that
+the value should be formatted to before rounding begins. FracLength affects
+the format of the floating-point value when it is displayed using properties <REF>AsString</REF> or <REF>AsPolarString</REF>,
+not the actual floating-point
+value that is stored in the complex number structures.
+The default value of FracLength is 8 decimal places.<br>
+ <TABLE CELLSPACING=0 BORDER=0 CELLPADDING=0 WIDTH="100%"><tr>
+ <td><strong>Note:</strong></td><td>FracLength must be greater less or equal to 18.
+Trying to set FracLength to a value greater than 18 changes the value of
+FracLength to 18.</td>
+ </tr></table>
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create;
+constructor Create(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]);
+[ShortDescr]
+Creates a new TComplex object.
+[Description]
+Call create to construct a complex number object either equal to (0,0) or
+filled with the values provided in X and Y parameters.
+[Parameters]
+Count=3
+1=X:Float=The real part in the rectangular representation or radius in polar coordinates.
+2=Y:Float=The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
+3=ComplexType:TComplexType=<I>Optional.</I> Represents the type of the complex number to be create.
+[Notes]
+Count=2
+1=All the calculations with complex numbers are performed with their rectangular
+representation members, except those that requires polar coordinates instead
+like exponential functions for instance.
+2=The results of the calculations as well as the value of the complex number
+itself might be obtained in either rectangular or polar representation at any
+time using <REF Target"..\Properties\AsString">AsString</REF> or <REF Target"..\Properties\AsString">AsPolarString</REF> respectively.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=TComplexType;..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property RealPart: Float;
+[ShortDescr]
+Specifies the value of the real part of the complex number i.e. X value
+in the pair of (X;Y).
+[Description]
+Use RealPart property to obtain the value of the real part of the
+complex number i.e. X value in the pair of (X;Y).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=ImaginaryPart
+2=Radius
+3=Angle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ImaginaryPart: Float;
+[ShortDescr]
+Specifies the value of the imaginary part of the complex number i.e. Y value
+in the pair of (X;Y).
+[Description]
+Use ImaginaryPart property to obtain the value of the imaginary part of the
+complex number i.e. Y value in the pair of (X;Y).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=RealPart
+2=Radius
+3=Angle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Radius: Float;
+[ShortDescr]
+Specifies the value of the radius in polar coordinates representation i.e. r value
+in the pair of (r;theta).
+[Description]
+Use Radius property to obtain the value of the radius in polar coordinates
+representation of the complex number, i.e. r value in the pair of (r;theta).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=RealPart
+2=ImaginaryPart
+3=Angle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Angle: Float;
+[ShortDescr]
+Specifies the value of the angle in polar coordinates representation of the
+complex number, i.e. theta value in the pair of (r;theta).
+[Description]
+Use Angle property to obtain the value of the angle in polar coordinates
+representation of the complex number, i.e. theta value in the pair of (r;theta).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=RealPart
+2=ImaginaryPart
+3=Radius
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AsString: Float;
+[ShortDescr]
+AsString converts the value of the complex number to a string.
+[Description]
+Use AsString property to obtain a string representation of the complex number
+formatted according to the canonical form of complex numbers in rectangular
+representation. <REF>FracLength</REF> property is used to determine the
+precision of float parts of the complex number. For example if your complex
+number is (5.2345355; -3.599) and FracLength=2 you will get the
+following string as the result of calling AsString:<br><p align=center>5.23-3.60i</p>
+Also you might use this property to assign the value of a
+string to the complex number object like this:<p align=center>
+MyComplex.AsString := '-5.3453-3.543i'</p> The string provided should be represent
+a complex number in its canonical rectangular form like this: x+yi, where
+x and y are either positive or negative or zero floating values and i is the
+constant text part. If eiter x or y is equal to zero, the corresponding part
+of the complex number can be omitted.<br>If the object is unable to parse the
+string provided then EJclMathError exception will be raised.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=AsPolarString
+2=FracLength;..\Properties\FracLength
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AsPolarString: Float;
+[ShortDescr]
+AsPolarString converts the value of the complex number to a string with a pair
+of complex number's polar coordinates.
+[Description]
+Use AsPolarString property to obtain a string representation of the complex number
+formatted according to the canonical form of complex numbers in polar coordinates
+representation. <REF>FracLength</REF> property is used to determine the
+precision of float parts of the complex number. For example if your complex
+number is (5.2345355; -3.599) and FracLength=2 you will get the
+following string as the result of calling AsString:<br><p align=center>5.23-CIS(3.60)</p>
+Here CIS(theta) = COS(theta) + SIN(theta)*i<br>
+Also you might use this property to assign the value of a
+string to the complex number object like this:<p align=center>
+MyComplex.AsPolarString := '-5.3453-CIS(3.543)'</p>
+The string provided should be represent
+a complex number in its canonical polar coordinates form like this: r+CIS(theta), where
+r and theta are either positive or negative or zero floating values.
+If eiter r or theta is equal to zero, the corresponding part
+of the complex number can be omitted.<br>If the object is unable to parse the
+string provided then EJclMathError exception will be raised.
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=AsString
+2=FracLength;..\Properties\FracLength
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Assign(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>): TJclComplex;
+[ShortDescr]
+Assign the value of (X;Y) to the complex number object using ComplexType
+representation.
+[Description]
+Use Assing method to set the value of your complex number object to (X;Y). ComplexType
+parameter is used to determine whether floating-point parameters represents (X;Y)
+or (r;theta) pair of values.
+[Parameters]
+Count=3
+1=X:Float=The real part in the rectangular representation or radius in polar coordinates.
+2=Y:Float=The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
+3=ComplexType:TComplexType=<I>Optional.</I> Represents the type the floating-point parameters above.
+[Result]
+Method Assing returns complex number object itself.
+[Notes]
+Count=2
+1=To assign a complex number the value of zero use <REF>AssignZero</REF> method instead.
+2=To assign a complex number the value of 1 ("complex unit") use <REF>AssignOne</REF> method instead.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=TComplexType;..\..\Types\TComplexType
+2=AssignZero
+3=AssignOne
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function AssignOne: TJclComplex;
+[ShortDescr]
+Assign the value of (1;0) to the complex number object.
+[Description]
+Use AssingOne method to set the value of your complex number object to 1
+("complex unit"). The call to AssignOne is equal to the following: Assign(1, 0).
+[Result]
+Method AssingOne returns the complex number object itself.
+[Notes]
+Count=2
+1=To assign a complex number the value of zero use <REF>AssignZero</REF> method instead.
+2=To assign a complex number any value that differs from 1 or 0 use <REF>Assign</REF> method instead.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=TComplexType;..\..\Types\TComplexType
+2=Assign
+3=AssignZero
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function AssignZero: TJclComplex;
+[ShortDescr]
+Assign the value of (0;0) to the complex number object.
+[Description]
+Use AssingOne method to set the value of your complex number object to zero
+The call to AssignZero is equal to the following: Assign(0, 0). Also if you
+call the constructor <REF>Create</REF> omitting the parameters this method
+will be invoked automatically.
+[Result]
+Method AssingZero returns the complex number object itself.
+[Notes]
+Count=2
+1=To assign a complex number the value of 1 ("complex unit") use <REF>AssignOne</REF> method instead.
+2=To assign a complex number any value that differs from 1 or 0 use <REF>Assign</REF> method instead.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=Create
+2=TComplexType;..\..\Types\TComplexType
+3=Assign
+4=AssignOne
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Duplicate: TJclComplex;
+[ShortDescr]
+Creates a new object of TJclComplex type and assign the value of the calling object to it.
+[Description]
+Use Duplicate method to create a new object of TJclComplex type and assign
+the value of the calling object to it.
+[Result]
+Method Duplicate returns the newly created complex number object.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Alexei Koudinov;kudinov@vlink.ru
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CAdd(AddValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CAdd(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Adds the value given by AddValue or X and Y parameters to the value
+of the current complex number object.
+[Parameters]
+Count=4
+1=AddValue:TJclComplex=The complex number that should be added to the value
+of the object.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that should be added to the value
+of the object.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that should be added to the value
+of the object.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CAdd method to add the value of the complex number provided to the
+value of the calling object itself. The complex number to be added could be
+set either as an object of TJclComplex type or a pair of its values (X;Y).
+[Notes]
+Count=2
+1=The addition of the complex numbers is performed according to the following
+formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>)</I>.
+2=For leaving the value of the calling object intact use <REF>CNewAdd</REF>
+method to create a new resulting object of TJclComplex type.
+[Result]
+Method CAdd returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CNewAdd
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CDiv(DivValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Divide the value of the current complex number object by the value given by
+DivValue or X and Y parameters.
+[Parameters]
+Count=4
+1=DivValue:TJclComplex=The complex number that is the denominator for the operation.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the denominator for the operation.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the denominator for the operation.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CDiv method to perform a division operation where the cureent complex
+number object is a numerator and the value provided through either X and Y
+or DivValue parameters is a denominator. The complex number to be divided by could be
+set either as an object of TJclComplex type or a pair of its values (X;Y).
+[Notes]
+Count=2
+1=The division of the complex numbers is performed according to the following
+formula: <I>
+(X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub>
+*X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>);
+(Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/
+(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)]</I>.
+2=For leaving the value of the calling object intact use <REF>CNewDiv</REF>
+method to create a new resulting object of TJclComplex type.
+[Result]
+Method CDiv returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CNewDiv
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CMul(MulValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Multiply the value of the current complex number object by the value given by
+MulValue or X and Y parameters.
+[Parameters]
+Count=4
+1=MulValue:TJclComplex=The complex number that is the second multiplier.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the second multiplier.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the second multiplier.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CMul method to perform a multiplication operation where the cureent complex
+number object is the first and the value provided through either X and Y
+or DivValue parameters is the second multiplier. The complex number to be
+multiplied by could be set either as an object of TJclComplex type or a pair
+of its values (X;Y).
+[Notes]
+Count=3
+1=The multiplication of the complex numbers is performed according to the following
+formula: <I>
+(X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>
+*X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>;
+X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>)</I>.
+2=Note that for complex numbers the operations <I>Z<sub>1</sub>*Z<sub>2</sub></I> and <I>Z<sub>2</sub>*Z<sub>1</sub></I>
+give different results and cannot substitute each other.
+3=For leaving the value of the calling object intact use <REF>CNewMul</REF>
+method to create a new resulting object of TJclComplex type.
+[Result]
+Method CMul returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CNewMul
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CSub(SubValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Subtract the value given by MulValue or X and Y parameters from the value of
+the current complex number object.
+[Parameters]
+Count=4
+1=SubValue:TJclComplex=The complex number that is the subtrahend.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the subtrahend.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the subtrahend.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CSub method to perform a subtraction operation where the cureent complex
+number object is the minuend and the value provided through either X and Y
+or DivValue parameters is the subtrahend. The complex number to be
+subtracted could be set either as an object of TJclComplex type or a pair
+of its values (X;Y).
+[Notes]
+Count=2
+1=The subtraction of the complex numbers is performed according to the following
+formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>)</I>.
+2=For leaving the value of the calling object intact use <REF>CNewSub</REF>
+method to create a new resulting object of TJclComplex type.
+[Result]
+Method CSub returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CNewSub
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewAdd(AddValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CNewAdd(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Adds the value given by AddValue or X and Y parameters to the value
+of the current complex number object and creates a new resulting object of TJclComplex type.
+[Parameters]
+Count=4
+1=AddValue:TJclComplex=The complex number that should be added to the value
+of the object.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that should be added to the value
+of the object.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that should be added to the value
+of the object.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CNewAdd method to add the value of the complex number provided to the
+value of the calling object and to create a new resulting object of
+TJclComplex type. The complex number to be added could be
+set either as an object of TJclComplex type or a pair of its values (X;Y).
+[Notes]
+Count=2
+1=The addition of the complex numbers is performed according to the following
+formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) + (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>+X<sub>2</sub>;Y<sub>1</sub>+Y<sub>2</sub>)</I>.
+2=For changing the value of the calling object instead of creating a new object
+of TJclComplex type use <REF>CAdd</REF> method.
+[Result]
+Method CNewAdd returns a newly created object of TJclComplex type that contains
+the value of the addition.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CAdd
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewDiv(DivValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CNewDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Divide the value of the current complex number object by the value given by
+DivValue or X and Y parameters and creates a new resulting object of TJclComplex type.
+[Parameters]
+Count=4
+1=DivValue:TJclComplex=The complex number that is the denominator for the operation.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the denominator for the operation.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the denominator for the operation.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CDiv method to perform a division operation where the cureent complex
+number object is a numerator and the value provided through either X and Y
+or DivValue parameters is a denominator and to create a resulting object of
+TJclComplex type. The complex number to be divided by could be
+set either as an object of TJclComplex type or a pair of its values (X;Y).
+[Notes]
+Count=2
+1=The division of the complex numbers is performed according to the following
+formula: <I>
+(X<sub>1</sub>;Y<sub>1</sub>) / (X<sub>2</sub>;Y<sub>2</sub>) = [(X<sub>1</sub>
+*X<sub>2</sub>+Y<sub>1</sub>*Y<sub>2</sub>)/(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>);
+(Y<sub>1</sub>*X<sub>2</sub>-X<sub>1</sub>*Y<sub>2</sub>)/
+(X<sub>2</sub><sup>2</sup>+Y<sub>2</sub><sup>2</sup>)]</I>.
+2=For changing the value of the calling object instead of creating a resulting
+object of TJclComplex type use <REF>CDiv</REF> method.
+[Result]
+Method CNewDiv returns a newly created object of TJclComplex type that contains
+the value of the division.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CDiv
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewMul(MulValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CNewMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Multiply the value of the current complex number object by the value given by
+MulValue or X and Y parameters and creates a new resulting object of TJclComplex type.
+[Parameters]
+Count=4
+1=MulValue:TJclComplex=The complex number that is the second multiplier.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the second multiplier.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the second multiplier.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CMul method to perform a multiplication operation where the cureent complex
+number object is the first and the value provided through either X and Y
+or DivValue parameters is the second multiplier and to create a resulting object of
+TJclComplex type. The complex number to be multiplied by could be set either as
+an object of TJclComplex type or a pair of its values (X;Y).
+[Notes]
+Count=3
+1=The multiplication of the complex numbers is performed according to the following
+formula: <I>
+(X<sub>1</sub>;Y<sub>1</sub>) * (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>
+*X<sub>2</sub>-Y<sub>1</sub>*Y<sub>2</sub>;
+X<sub>1</sub>*Y<sub>2</sub>+Y<sub>1</sub>*X<sub>2</sub>)</I>.
+2=Note that for complex numbers the operations <I>Z<sub>1</sub>*Z<sub>2</sub></I> and <I>Z<sub>2</sub>*Z<sub>1</sub></I>
+give different results and cannot substitute each other.
+3=For changing the value of the calling object instead of creating a resulting
+object of TJclComplex type use <REF>CMul</REF> method.
+[Result]
+Method CNewMul returns a newly created object of TJclComplex type that contains
+the value of the multiplication.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CMul
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewSub(SubValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
+function CNewSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+[ShortDescr]
+Subtract the value given by MulValue or X and Y parameters from the value of
+the current complex number object and creates a new resulting object of TJclComplex type.
+[Parameters]
+Count=4
+1=SubValue:TJclComplex=The complex number that is the subtrahend.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the subtrahend.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the subtrahend.
+4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Description]
+Use CSub method to perform a subtraction operation where the cureent complex
+number object is the minuend and the value provided through either X and Y
+or DivValue parameters is the subtrahend and to create a resulting object of
+TJclComplex type. The complex number to be subtracted could be set either as
+an object of TJclComplex type or a pair of its values (X;Y).
+[Notes]
+Count=2
+1=The subtraction of the complex numbers is performed according to the following
+formula: <I>(X<sub>1</sub>;Y<sub>1</sub>) - (X<sub>2</sub>;Y<sub>2</sub>) = (X<sub>1</sub>-X<sub>2</sub>;Y<sub>1</sub>-Y<sub>2</sub>)</I>.
+2=For changing the value of the calling object instead of creating a resulting
+object of TJclComplex type use <REF>CSub</REF> method.
+[Result]
+Method CNewSub returns a newly created object of TJclComplex type that contains
+the value of the subtraction.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Delphi=4,5
+[SeeAlso]
+Count=3
+1=CSub
+2=TJclComplex; ..\TJclComplex
+3=TCompexType; ..\..\Types\TComplexType
