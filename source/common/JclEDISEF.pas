@@ -91,29 +91,6 @@ const
      EDISEFUserAttributeDollarSign, EDISEFUserAttributeHyphen,
      EDISEFUserAttributeAmpersand];
 
-resourcestring
-  // Transaction Set:850
-  SEFTextSetsCode_Set0_Desc = 'Transaction Set or message title.';
-  SEFTextSetsCode_Set1_Desc = 'Transaction Set functional group (X12).';
-  SEFTextSetsCode_Set2_Desc = 'Transaction Set or message purpose.';
-  SEFTextSetsCode_Set3_Desc = 'Level 1 note on transaction set or message.';
-  SEFTextSetsCode_Set4_Desc = 'Level 2 note on transaction set or message.';
-  SEFTextSetsCode_Set5_Desc = 'Level 3 note on transaction set or message.';
-  // Transaction Set~segment ordinal number: 850~1
-  SEFTextSetsCode_Seg0_Desc = 'Segment reference notes that are part of the transaction set in X12.';
-  SEFTextSetsCode_Seg1_Desc = 'Segment reference notes documented with the segment (like in VICS/UCS).';
-  SEFTextSetsCode_Seg2_Desc = 'Segment reference comment documented with the transaction set.';
-  SEFTextSetsCode_Seg3_Desc = 'Segment name.';
-  SEFTextSetsCode_Seg4_Desc = 'Level 1 note on segment.';
-  SEFTextSetsCode_Seg5_Desc = 'Level 2 note on segment.';
-  SEFTextSetsCode_Seg6_Desc = 'Segment purpose.';
-  SEFTextSetsCode_Seg7_Desc = 'Level 3 note on segment. See * below for other levels of notes.';
-  // Transaction Set~segment ordinal number~element or composite ordinal number: 850~1~4
-  SEFTextSetsCode_Elm0_Desc = 'Level 1 note on element or composite.';
-  SEFTextSetsCode_Elm1_Desc = 'Level 2 note on element or composite.';
-  SEFTextSetsCode_Elm2_Desc = 'Name of element or composite.';
-  SEFTextSetsCode_Elm4_Desc = 'Level 3 note on element or composite.';
-
 const
   // EDI SEF Text,Sets Constants
   SEFTextCR = '\r'; // carriage return
@@ -3761,7 +3738,8 @@ begin
     begin
       if FMaximumRepeat >= Value_UndefinedMaximum then
         Result := FId + SEFDelimiter_Colon + Value_GreaterThanOne + Result
-      else if FMaximumRepeat > 1 then
+      else
+      if FMaximumRepeat > 1 then
         Result := FId + SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result
       else
         Result := FId + Result;
@@ -3770,7 +3748,8 @@ begin
     begin
       if FMaximumRepeat >= Value_UndefinedMaximum then
         Result := SEFDelimiter_Colon + Value_GreaterThanOne + Result
-      else if FMaximumRepeat > 1 then
+      else
+      if FMaximumRepeat > 1 then
         Result := SEFDelimiter_Colon + IntToStr(FMaximumRepeat) + Result
       else
         Result := FId + Result;

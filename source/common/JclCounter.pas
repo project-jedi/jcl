@@ -44,7 +44,7 @@ uses
   JclBase;
 
 type
-  TJclCounter = class (TObject)
+  TJclCounter = class(TObject)
   private
     FCounting: Boolean;
     FElapsedTime: Float;
@@ -58,7 +58,6 @@ type
     {$ENDIF LINUX}
   protected
     function GetRunElapsedTime: Float;
-
   public
     constructor Create(const Compensate: Boolean = False);
     procedure Continue;
@@ -222,6 +221,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:49  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/14 13:05:16  marquardt
 // style cleaning ENDIF, Tabs
 //

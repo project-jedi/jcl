@@ -74,7 +74,7 @@ function LockedSub(var Target: Integer; Value: Integer): Integer;
 type
   TJclWaitResult = (wrAbandoned, wrError, wrIoCompletion, wrSignaled, wrTimeout);
 
-  TJclDispatcherObject = class (TObject)
+  TJclDispatcherObject = class(TObject)
   private
     FExisted: Boolean;
     FHandle: THandle;
@@ -111,7 +111,7 @@ function WaitAlertableForMultipleObjects(const Objects: array of TJclDispatcherO
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclCriticalSection = class (TObject)
+  TJclCriticalSection = class(TObject)
   private
     FCriticalSection: TRTLCriticalSection;
   public
@@ -127,7 +127,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclCriticalSectionEx = class (TJclCriticalSection)
+  TJclCriticalSectionEx = class(TJclCriticalSection)
   private
     FSpinCount: Cardinal;
     function GetSpinCount: Cardinal;
@@ -146,7 +146,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclEvent = class (TJclDispatcherObject)
+  TJclEvent = class(TJclDispatcherObject)
   public
     constructor Create(SecAttr: PSecurityAttributes; Manual, Signaled: Boolean; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
@@ -160,7 +160,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclWaitableTimer = class (TJclDispatcherObject)
+  TJclWaitableTimer = class(TJclDispatcherObject)
   private
     FResume: Boolean;
   public
@@ -176,7 +176,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclSemaphore = class (TJclDispatcherObject)
+  TJclSemaphore = class(TJclDispatcherObject)
   public
     constructor Create(SecAttr: PSecurityAttributes; Initial, Maximum: Longint; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
@@ -189,7 +189,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclMutex = class (TJclDispatcherObject)
+  TJclMutex = class(TJclDispatcherObject)
   public
     constructor Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
     constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
@@ -210,7 +210,7 @@ type
     RecursionCount: Integer; // number of times the optex is owned, 0 if free
   end;
 
-  TJclOptex = class (TObject)
+  TJclOptex = class(TObject)
   private
     FEvent: TJclEvent;
     FExisted: Boolean;
@@ -246,7 +246,7 @@ type
   end;
   TMrewThreadInfoArray = array of TMrewThreadInfo;
 
-  TJclMultiReadExclusiveWrite = class (TObject)
+  TJclMultiReadExclusiveWrite = class(TObject)
   private
     FLock: TJclCriticalSection;
     FPreferred: TMrewPreferred;
@@ -292,7 +292,7 @@ type
     SharedInfo: PMetSectSharedInfo;
   end;
 
-  TJclMeteredSection = class (TObject)
+  TJclMeteredSection = class(TObject)
   private
     FMetSect: PMeteredSection;
     procedure CloseMeteredSection;
@@ -343,7 +343,7 @@ type
   end;
 
 function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
-{ TODO -cTest : Test this 4 functions }
+{ TODO -cTest : Test these 4 functions }
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
@@ -354,14 +354,14 @@ function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclWin32HandleObjectError = class (EJclWin32Error);
-  EJclDispatcherObjectError = class (EJclWin32Error);
-  EJclCriticalSectionError = class (EJclWin32Error);
-  EJclEventError = class (EJclWin32Error);
-  EJclWaitableTimerError = class (EJclWin32Error);
-  EJclSemaphoreError = class (EJclWin32Error);
-  EJclMutexError = class (EJclWin32Error);
-  EJclMeteredSectionError = class (EJclError);
+  EJclWin32HandleObjectError = class(EJclWin32Error);
+  EJclDispatcherObjectError = class(EJclWin32Error);
+  EJclCriticalSectionError = class(EJclWin32Error);
+  EJclEventError = class(EJclWin32Error);
+  EJclWaitableTimerError = class(EJclWin32Error);
+  EJclSemaphoreError = class(EJclWin32Error);
+  EJclMutexError = class(EJclWin32Error);
+  EJclMeteredSectionError = class(EJclError);
 
 implementation
 
@@ -866,11 +866,9 @@ end;
 //==================================================================================================
 
 constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
-const
-  InitialOwners: array[Boolean] of DWORD = (0, 1);
 begin
   FName := Name;
-  FHandle := JclWin32.CreateMutex(SecAttr, InitialOwners[InitialOwner], PChar(Name));
+  FHandle := JclWin32.CreateMutex(SecAttr, Ord(InitialOwner), PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateResRec(@RsSynchCreateMutex);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -1567,7 +1565,7 @@ var
   ResultStatus: NTSTATUS;
 begin
   ResultStatus := RtdlNtQueryEvent(Handle, EventBasicInformation,
-    @Info, SizeOf(Info), Nil);
+    @Info, SizeOf(Info), nil);
   if ResultStatus = STATUS_NOT_IMPLEMENTED then
     RaiseLastOSError;
   Result := (ResultStatus and $80000000) = 0;
@@ -1580,7 +1578,7 @@ var
   ResultStatus: NTSTATUS;
 begin
   ResultStatus := RtdlNtQueryMutant(Handle, MutantBasicInformation,
-    @Info, SizeOf(Info), Nil);
+    @Info, SizeOf(Info), nil);
   if ResultStatus = STATUS_NOT_IMPLEMENTED then
     RaiseLastOSError;
   Result := (ResultStatus and $80000000) = 0;
@@ -1593,7 +1591,7 @@ var
   ResultStatus: NTSTATUS;
 begin
   ResultStatus := RtdlNtQuerySemaphore(Handle, SemaphoreBasicInformation,
-    @Info, SizeOf(Info), Nil);
+    @Info, SizeOf(Info), nil);
   if ResultStatus = STATUS_NOT_IMPLEMENTED then
     RaiseLastOSError;
   Result := (ResultStatus and $80000000) = 0;
@@ -1606,7 +1604,7 @@ var
   ResultStatus: NTSTATUS;
 begin
   ResultStatus := RtdlNtQueryTimer(Handle, TimerBasicInformation,
-    @Info, SizeOf(Info), Nil);
+    @Info, SizeOf(Info), nil);
   if ResultStatus = STATUS_NOT_IMPLEMENTED then
     RaiseLastOSError;
   Result := (ResultStatus and $80000000) = 0;
@@ -1617,6 +1615,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.9  2004/07/26 03:47:36  rrossmair
 // replaced SetCriticalSectionSpinCount by RtdlSetCriticalSectionSpinCount to make it Win95 compatible
 //

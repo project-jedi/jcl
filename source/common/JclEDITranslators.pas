@@ -279,7 +279,8 @@ begin
         SEFSegment.ParentSet.AssignSegmentOrdinals;
         TranslateToSEFSegmentTEXTSETS(SegmentSpec, SEFSegment);
       end
-      else if LSR.EDIObject is TEDISEFLoop then
+      else
+      if LSR.EDIObject is TEDISEFLoop then
       begin
         SEFLoop := TEDISEFLoop(LSR.EDIObject);
         SEFSegment := TranslateToSEFSegment(SegmentSpec, SEFLoop);

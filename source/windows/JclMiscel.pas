@@ -76,7 +76,7 @@ function RebootOS: Boolean;
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclCreateProcessError = class (EJclWin32Error);
+  EJclCreateProcessError = class(EJclWin32Error);
 
 procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
 procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
@@ -185,7 +185,7 @@ function WinExec32AndRedirectOutput(const Cmd: string; var Output: string; RawOu
 const
   BufferSize = 1024;
 var
-  Buffer: array[0..BufferSize] of Char;
+  Buffer: array [0..BufferSize] of Char;
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
   SecurityAttr: TSecurityAttributes;
@@ -461,6 +461,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/07/28 18:00:53  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.7  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

@@ -46,9 +46,11 @@ type
     FHooks: TJclPeMapImgHooks;
     FIsOpenPictDialog: Boolean;
     FParentWnd: HWND;
-    FParentWndInstance, FOldParentWndInstance: Pointer;
+    FParentWndInstance: Pointer;
+    FOldParentWndInstance: Pointer;
     FPictureDialogLastFolder: string;
-    FWndInstance, FOldWndInstance: Pointer;
+    FWndInstance: Pointer;
+    FOldWndInstance: Pointer;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
     procedure AddButtonClick(Sender: TObject);
@@ -319,7 +321,7 @@ begin
   FreeAndNil(FFavoritePanel);
   FreeAndNil(FFavoriteFolders);
   FreeAndNil(FHooks);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------

@@ -1343,7 +1343,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 const
-  SignedExpandOrMasks: array[1..31] of Longword = (
+  SignedExpandOrMasks: array [1..31] of Longword = (
     $80000000, $C0000000, $E0000000, $F0000000,
     $F8000000, $FC000000, $FE000000, $FF000000,
     $FF800000, $FFC00000, $FFE00000, $FFF00000,
@@ -2510,6 +2510,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/07/28 18:00:50  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.9  2004/06/14 13:05:18  marquardt
 // style cleaning ENDIF, Tabs
 //

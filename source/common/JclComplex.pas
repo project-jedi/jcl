@@ -56,9 +56,8 @@ type
     Y: Float;
   end;
 
-  TJclComplex = class (TObject)
+  TJclComplex = class(TObject)
   private   {z = x + yi}
-    // -----------------------------
     FCoord: TCoords;
     FFracLen: Byte;
     function MiscalcSingle(const X: Float): Float;
@@ -1771,6 +1770,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/07/28 18:00:49  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.5  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

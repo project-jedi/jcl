@@ -99,7 +99,7 @@ const
 
 const
   { The mime encoding table. Do not alter. }
-  MIME_ENCODE_TABLE: array[0..63] of Byte = (
+  MIME_ENCODE_TABLE: array [0..63] of Byte = (
     065, 066, 067, 068, 069, 070, 071, 072, //  00 - 07
     073, 074, 075, 076, 077, 078, 079, 080, //  08 - 15
     081, 082, 083, 084, 085, 086, 087, 088, //  16 - 23
@@ -111,7 +111,7 @@ const
 
   MIME_PAD_CHAR = Byte('=');
 
-  MIME_DECODE_TABLE: array[Byte] of Cardinal = (
+  MIME_DECODE_TABLE: array [Byte] of Cardinal = (
     255, 255, 255, 255, 255, 255, 255, 255, //   0 -   7
     255, 255, 255, 255, 255, 255, 255, 255, //   8 -  15
     255, 255, 255, 255, 255, 255, 255, 255, //  16 -  23
@@ -578,8 +578,8 @@ end;
 
 procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
-  InputBuffer: array[0..MIME_BUFFER_SIZE - 1] of Byte;
-  OutputBuffer: array[0..(MIME_BUFFER_SIZE + 2) div 3 * 4 + MIME_BUFFER_SIZE div MIME_DECODED_LINE_BREAK * 2 - 1] of Byte;
+  InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
+  OutputBuffer: array [0..(MIME_BUFFER_SIZE + 2) div 3 * 4 + MIME_BUFFER_SIZE div MIME_DECODED_LINE_BREAK * 2 - 1] of Byte;
   BytesRead: Cardinal;
   IDelta, ODelta: Cardinal;
 begin
@@ -606,8 +606,8 @@ end;
 
 procedure MimeEncodeStreamNoCRLF(const InputStream: TStream; const OutputStream: TStream);
 var
-  InputBuffer: array[0..MIME_BUFFER_SIZE - 1] of Byte;
-  OutputBuffer: array[0..((MIME_BUFFER_SIZE + 2) div 3) * 4 - 1] of Byte;
+  InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
+  OutputBuffer: array [0..((MIME_BUFFER_SIZE + 2) div 3) * 4 - 1] of Byte;
   BytesRead: Cardinal;
 begin
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
@@ -627,8 +627,8 @@ end;
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
-  InputBuffer: array[0..MIME_BUFFER_SIZE - 1] of Byte;
-  OutputBuffer: array[0..(MIME_BUFFER_SIZE + 3) div 4 * 3 - 1] of Byte;
+  InputBuffer: array [0..MIME_BUFFER_SIZE - 1] of Byte;
+  OutputBuffer: array [0..(MIME_BUFFER_SIZE + 3) div 4 * 3 - 1] of Byte;
   BytesRead: Cardinal;
 begin
   ByteBuffer := 0;
@@ -645,6 +645,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/07/07 22:34:25  mthoma
 // Added Ralf MimeStreams and MimeFile utilities...
 //

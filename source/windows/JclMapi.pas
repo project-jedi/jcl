@@ -40,7 +40,7 @@ unit JclMapi;
 interface
 
 uses
-  Windows, Classes, Mapi, SysUtils, Contnrs,
+  Windows, Classes, Contnrs, Mapi, SysUtils,
   JclBase;
 
 type
@@ -77,7 +77,7 @@ type
     FClientLibHandle: THandle;
     FDefaultClientIndex: Integer;
     FDefaultProfileName: string;
-    FFunctions: array[TMapiFunction] of ^Pointer;
+    FFunctions: array [TMapiFunction] of ^Pointer;
     FMapiInstalled: Boolean;
     FMapiVersion: string;
     FProfiles: array of string;
@@ -294,7 +294,7 @@ uses
 
 const
   MapiDll = 'mapi32.dll';
-  MapiExportNames: array[TMapiFunction] of PChar = (
+  MapiExportNames: array [TMapiFunction] of PChar = (
     'MAPIAddress',
     'MAPIDeleteMail',
     'MAPIDetails',
@@ -331,7 +331,7 @@ end;
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
 const
-  Messages: array[MAPI_E_USER_ABORT..MAPI_E_NOT_SUPPORTED] of String = (
+  Messages: array [MAPI_E_USER_ABORT..MAPI_E_NOT_SUPPORTED] of string = (
     RsMapiErrUSER_ABORT, RsMapiErrFAILURE, RsMapiErrLOGIN_FAILURE,
     RsMapiErrDISK_FULL, RsMapiErrINSUFFICIENT_MEMORY, RsMapiErrACCESS_DENIED,
     '', RsMapiErrTOO_MANY_SESSIONS, RsMapiErrTOO_MANY_FILES,
@@ -712,7 +712,7 @@ end;
 
 class function TJclEmailRecip.RecipKindToString(const AKind: TJclEmailRecipKind): string;
 const
-  Idents: array[TJclEmailRecipKind] of String = (
+  Idents: array [TJclEmailRecipKind] of string = (
     RsMapiMailORIG, RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
 begin
   case AKind of
@@ -867,8 +867,8 @@ end;
 
 procedure TJclEmail.DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
 const
-  RecipClassToRecipKind: array[MAPI_ORIG..MAPI_BCC] of TJclEmailRecipKind = (
-    rkOriginator, rkTO, rkCC, rkBCC);
+  RecipClassToRecipKind: array [MAPI_ORIG..MAPI_BCC] of TJclEmailRecipKind =
+    (rkOriginator, rkTO, rkCC, rkBCC);
 var
   S: string;
   N, I: Integer;
@@ -965,7 +965,7 @@ end;
 
 function TJclEmail.InternalSendOrSave(Save, ShowDialog: Boolean): Boolean;
 const
-  RecipClasses: array[TJclEmailRecipKind] of DWORD =
+  RecipClasses: array [TJclEmailRecipKind] of DWORD =
     (MAPI_ORIG, MAPI_TO, MAPI_CC, MAPI_BCC);
 var
   AttachArray: array of TMapiFileDesc;
@@ -974,7 +974,7 @@ var
   MapiMessage: TMapiMessage;
   Flags, Res: DWORD;
   I: Integer;
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
   HtmlBodyFileName: string;
 begin
   if not AnyClientInstalled then
@@ -1361,6 +1361,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/07/28 18:00:53  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.6  2004/06/16 07:30:30  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

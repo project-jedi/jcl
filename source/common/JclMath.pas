@@ -294,7 +294,7 @@ function GetNaNTag(const NaN: Extended): TNaNTag; overload;
 { Set support }
 
 type
-  TJclASet = class (TObject)
+  TJclASet = class(TObject)
   protected
     function GetBit(const Idx: Integer): Boolean; virtual; abstract;
     procedure SetBit(const Idx: Integer; const Value: Boolean); virtual; abstract;
@@ -305,7 +305,7 @@ type
   end;
 
 type
-  TJclFlatSet = class (TJclASet)
+  TJclFlatSet = class(TJclASet)
   private
     FBits: TBits;
   public
@@ -330,7 +330,7 @@ const
   CompleteDelphiSet: TDelphiSet = [0..255];
 
 type
-  TJclSparseFlatSet = class (TJclASet)
+  TJclSparseFlatSet = class(TJclASet)
   private
     FSetList: PPointerArray;
     FSetListEntries: Integer;
@@ -347,7 +347,7 @@ type
 { Rational numbers }
 
 type
-  TJclRational = class (TObject)
+  TJclRational = class(TObject)
   private
     FT: Integer;
     FN: Integer;
@@ -414,9 +414,9 @@ type
 
 
 type
-  EJclMathError = class (EJclError);
+  EJclMathError = class(EJclError);
 
-  EJclNaNSignal = class (EJclMathError)
+  EJclNaNSignal = class(EJclMathError)
   private
     FTag: TNaNTag;
   public
@@ -3760,6 +3760,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/16 07:30:27  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

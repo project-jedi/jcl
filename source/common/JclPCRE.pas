@@ -92,16 +92,8 @@ type
 implementation
 
 uses
-  pcre;
-
-resourcestring
-  SErrNoMatch = 'No match';
-  SErrNull = 'Required value is null';
-  SErrBadOption = 'Bad option';
-  SErrBadMagic = 'Bad magic';
-  SErrUnknownNode = 'Unknown node';
-  SErrNoMemory = 'Out of memory';
-  SErrNoSubString = 'No substring';
+  pcre,
+  JclResources;
 
 function PCRECheck(Value: Integer): Boolean;
 var
@@ -265,6 +257,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.5  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.4  2004/07/28 00:14:12  rrossmair
 // fixed TJclAnsiRegEx.GetAPIOptions bug introduced in 1.3
 //

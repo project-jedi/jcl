@@ -61,8 +61,8 @@ type
   TSHRenameOption  = (roSilent, roRenameOnCollision);
   TSHRenameOptions = set of TSHRenameOption;
 
-  TUnicodePath     = array[0..MAX_PATH-1] of WideChar;
-  TAnsiPath        = array[0..MAX_PATH-1] of char;
+  TUnicodePath     = array [0..MAX_PATH-1] of WideChar;
+  TAnsiPath        = array [0..MAX_PATH-1] of char;
 
 function SHDeleteFiles(Parent: HWND; const Files: string; Options: TSHDeleteOptions): Boolean;
 function SHDeleteFolder(Parent: HWND; const Folder: string; Options: TSHDeleteOptions): Boolean;
@@ -1446,6 +1446,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.12  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

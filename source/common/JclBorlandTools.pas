@@ -94,7 +94,7 @@ const
 type
   TJclBorRADToolInstallation = class;
 
-  TJclBorRADToolInstallationObject = class (TInterfacedObject)
+  TJclBorRADToolInstallationObject = class(TInterfacedObject)
   private
     FInstallation: TJclBorRADToolInstallation;
   protected
@@ -104,7 +104,7 @@ type
   end;
 
   {$IFDEF MSWINDOWS}
-  TJclBorlandOpenHelp = class (TJclBorRADToolInstallationObject)
+  TJclBorlandOpenHelp = class(TJclBorRADToolInstallationObject)
   private
     function GetContentFileName: string;
     function GetIndexFileName: string;
@@ -122,7 +122,7 @@ type
   end;
   {$ENDIF MSWINDOWS}
 
-  TJclBorRADToolIdeTool = class (TJclBorRADToolInstallationObject)
+  TJclBorRADToolIdeTool = class(TJclBorRADToolInstallationObject)
   private
     FKey: string;
     function GetCount: Integer;
@@ -149,7 +149,7 @@ type
     property WorkingDir[Index: Integer]: string read GetWorkingDir write SetWorkingDir;
   end;
 
-  TJclBorRADToolIdePackages = class (TJclBorRADToolInstallationObject)
+  TJclBorRADToolIdePackages = class(TJclBorRADToolInstallationObject)
   private
     FDisabledPackages: TStringList;
     FKnownPackages: TStringList;
@@ -201,7 +201,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJclBorlandCommandLineTool = class (TJclBorRADToolInstallationObject, IJclCommandLineTool)
+  TJclBorlandCommandLineTool = class(TJclBorRADToolInstallationObject, IJclCommandLineTool)
   private
     FOptions: TStrings;
     FOutput: string;
@@ -220,7 +220,7 @@ type
     property Options: TStrings read FOptions;
   end;
 
-  TJclDCC = class (TJclBorlandCommandLineTool)
+  TJclDCC = class(TJclBorlandCommandLineTool)
   protected
     function GetExeName: string; override;
   public
@@ -229,17 +229,17 @@ type
     function SupportsLibSuffix: Boolean;
   end;
 
-  TJclBpr2Mak = class (TJclBorlandCommandLineTool)
+  TJclBpr2Mak = class(TJclBorlandCommandLineTool)
   protected
     function GetExeName: string; override;
   end;
 
-  TJclBorlandMake = class (TJclBorlandCommandLineTool)
+  TJclBorlandMake = class(TJclBorlandCommandLineTool)
   protected
     function GetExeName: string; override;
   end;
 
-  TJclBorRADToolPalette = class (TJclBorRADToolInstallationObject)
+  TJclBorRADToolPalette = class(TJclBorRADToolInstallationObject)
   private
     FKey: string;
     FTabNames: TStringList;
@@ -263,7 +263,7 @@ type
     property TabNameCount: Integer read GetTabNameCount;
   end;
 
-  TJclBorRADToolRepository = class (TJclBorRADToolInstallationObject)
+  TJclBorRADToolRepository = class(TJclBorRADToolInstallationObject)
   private
     FIniFile: TIniFile;
     FFileName: string;
@@ -283,7 +283,7 @@ type
     property Pages: TStrings read FPages;
   end;
 
-  TJclBorRADToolInstallation = class (TObject)
+  TJclBorRADToolInstallation = class(TObject)
   private
     FConfigData: TCustomIniFile;
     FGlobals: TStrings;
@@ -376,7 +376,7 @@ type
     property VersionNumber: Integer read FVersionNumber;
   end;
 
-  TJclBCBInstallation = class (TJclBorRADToolInstallation)
+  TJclBCBInstallation = class(TJclBorRADToolInstallation)
   private
     FBpr2Mak: TJclBpr2Mak;
   protected
@@ -394,7 +394,7 @@ type
     property VclIncludeDir: string read GetVclIncludeDir;
   end;
 
-  TJclDelphiInstallation = class (TJclBorRADToolInstallation)
+  TJclDelphiInstallation = class(TJclBorRADToolInstallation)
   public
     class function PackageSourceFileExtension: string; override;
     class function RadToolName: string; override;
@@ -406,7 +406,7 @@ type
 
   TTraverseMethod = function (Installation: TJclBorRADToolInstallation): Boolean of object;
 
-  TJclBorRADToolInstallations = class (TObject)
+  TJclBorRADToolInstallations = class(TObject)
   private
     FList: TObjectList;
     function GetCount: Integer;
@@ -444,7 +444,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JclFileUtils, JclLogic, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 //==================================================================================================
 // Internal
@@ -549,29 +549,6 @@ const
      (Version: 0; LatestUpdatePack: 0))
   {$ENDIF KYLIX}
   );
-
-resourcestring
-  RsIndexOufOfRange = 'Index out of range';
-  RsNeedUpdate      = 'You should install latest Update Pack #%d for %s';
-  RsUpdatePackName  = 'Update Pack #%d';
-  {$IFDEF KYLIX}
-  RsDelphiName      = 'Kylix %d for Delphi';
-  RsBCBName         = 'Kylix %d for C++Builder';
-  RsOpenEdition     = 'Open Edition';
-  RsServerDeveloper = 'Server Developer';
-  RsVclIncludeDir   = '/include/vcl/';
-  {$ENDIF KYLIX}
-  {$IFDEF MSWINDOWS}
-  RsDelphiName      = 'Delphi %d';
-  RsBCBName         = 'C++Builder %d';
-  RsClientServer    = 'Client/Server';
-  RsStandard        = 'Standard';
-  RsVclIncludeDir   = '\Include\Vcl\';
-  {$ENDIF MSWINDOWS}
-  RsArchitect       = 'Architect';
-  RsEnterprise      = 'Enterprise';
-  RsPersonal        = 'Personal';
-  RsProfessional    = 'Professional';
 
 const
   RsToolNames: array [TJclBorRADToolKind] of string = (RsDelphiName, RsBCBName);
@@ -2313,6 +2290,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/07/28 18:00:48  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.14  2004/07/14 03:36:20  rrossmair
 // fixed bug #1897 ( TJclBorRADToolInstallation.GetEnvironmentVariables failure)
 //

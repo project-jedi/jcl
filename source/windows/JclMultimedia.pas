@@ -61,7 +61,7 @@ type
   TMmTimerKind = (tkOneShot, tkPeriodic);
   TMmNotificationKind = (nkCallback, nkSetEvent, nkPulseEvent);
 
-  TJclMultimediaTimer = class (TObject)
+  TJclMultimediaTimer = class(TObject)
   private
     FEvent: TJclEvent;
     FKind: TMmTimerKind;
@@ -95,7 +95,7 @@ type
   end;
 
 type
-  EJclMmTimerError = class (EJclError);
+  EJclMmTimerError = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
 // Audio Mixer
@@ -104,13 +104,13 @@ type
 { TODO -cDoc : mixer API wrapper code. Author: Petr Vones }
 
 type
-  EJclMixerError = class (EJclError);
+  EJclMixerError = class(EJclError);
 
   TJclMixerDevice = class;
   TJclMixerLine = class;
   TJclMixerDestination = class;
 
-  TJclMixerLineControl = class (TObject)
+  TJclMixerLineControl = class(TObject)
   private
     FControlInfo: TMixerControl;
     FIsList: Boolean;
@@ -147,7 +147,7 @@ type
     property ValueString: string read GetValueString;
   end;
 
-  TJclMixerLine = class (TObject)
+  TJclMixerLine = class(TObject)
   private
     FLineControls: TObjectList;
     FLineInfo: TMixerLine;
@@ -176,7 +176,7 @@ type
     property MixerDevice: TJclMixerDevice read FMixerDevice;
   end;
 
-  TJclMixerSource = class (TJclMixerLine)
+  TJclMixerSource = class(TJclMixerLine)
   private
     FMixerDestination: TJclMixerDestination;
   protected
@@ -185,7 +185,7 @@ type
     property MixerDestination: TJclMixerDestination read FMixerDestination;
   end;
 
-  TJclMixerDestination = class (TJclMixerLine)
+  TJclMixerDestination = class(TJclMixerLine)
   private
     FSources: TObjectList;
     function GetSourceCount: Integer;
@@ -199,7 +199,7 @@ type
     property SourceCount: Integer read GetSourceCount;
   end;
 
-  TJclMixerDevice = class (TObject)
+  TJclMixerDevice = class(TObject)
   private
     FCapabilities: TMixerCaps;
     FDestinations: TObjectList;
@@ -239,7 +239,7 @@ type
     property ProductName: string read GetProductName;
   end;
 
-  TJclMixer = class (TObject)
+  TJclMixer = class(TObject)
   private
     FCallbackWnd: HWND;
     FDeviceList: TObjectList;
@@ -276,7 +276,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclMciError = class (EJclError)
+  EJclMciError = class(EJclError)
   private
     FMciErrorNo: DWORD;
     FMciErrorMsg: string;
@@ -1362,7 +1362,7 @@ end;
 function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms; Drive: Char): MCIERROR;
 var
   OpenParam: DWORD;
-  DriveName: array[0..2] of Char;
+  DriveName: array [0..2] of Char;
 begin
   FillChar(OpenParams, SizeOf(OpenParams), 0);
   OpenParam := MCI_OPEN_TYPE or MCI_OPEN_TYPE_ID or MCI_OPEN_SHAREABLE;
@@ -1430,7 +1430,7 @@ const
 var
   Mci: TMCI_Open_Parms;
   InfoParams: TMCI_Info_Parms;
-  Buffer: array[0..255] of Char;
+  Buffer: array [0..255] of Char;
 begin
   Result := '';
   MMCheck(OpenCdMciDevice(Mci, Drive), RsMmNoCdAudio);
@@ -1535,6 +1535,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/07/28 18:00:53  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.10  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

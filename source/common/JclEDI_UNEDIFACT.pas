@@ -506,7 +506,8 @@ begin
         Break;
       end;
   end
-  else if Assigned(Parent) and (Parent is TEDICompositeElement) then
+  else
+  if Assigned(Parent) and (Parent is TEDICompositeElement) then
   begin
     EDICompositeElement := TEDICompositeElement(Parent);
     for I := 0 to EDICompositeElement.EDIDataObjectCount - 1 do

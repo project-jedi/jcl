@@ -1495,7 +1495,8 @@ begin
       Result.PriorItem.NextItem := Result;
     Result.NextItem := BeforeItem;
   end
-  else if FFirstItem <> nil then  // Insert as first item
+  else
+  if FFirstItem <> nil then  // Insert as first item
   begin
     FFirstItem.PriorItem := Result;
     Result.NextItem := FFirstItem;

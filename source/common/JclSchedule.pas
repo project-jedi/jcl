@@ -63,7 +63,7 @@ type
   IJclMonthlySchedule = interface;
   IJclYearlySchedule = interface;
 
-  ESchedule = class (EJclError);
+  ESchedule = class(EJclError);
 
   IJclSchedule = interface(IUnknown)
     ['{1CC54450-7F84-4F27-B1C1-418C451DAD80}']
@@ -267,11 +267,13 @@ function CompareTimeStamps(const Stamp1, Stamp2: TTimeStamp): Int64;
 begin
   if Stamp1.Date < Stamp2.Date then
     Result := -1
-  else if Stamp1.Date = Stamp2.Date then
+  else
+  if Stamp1.Date = Stamp2.Date then
   begin
     if Stamp1.Time < Stamp2.Time then
       Result := -1
-    else if Stamp1.Time = Stamp2.Time then
+    else
+    if Stamp1.Time = Stamp2.Time then
       Result := 0
     else // If Stamp1.Time > Stamp2.Time then
       Result := 1;
@@ -391,7 +393,8 @@ var
 begin
   if Index > 0 then
     Result := FirstWeekDayPrim(Year, Month, DOW)
-  else if Index < 0 then
+  else
+  if Index < 0 then
     Result := LastWeekDayPrim(Year, Month, DOW)
   else
     Result := 0;
@@ -413,7 +416,8 @@ begin
     end;
     Result := Result + (7 * (Index div 5)) + (Index mod 5);
   end
-  else if Index < -1 then             // n-th weekday from end of month
+  else
+  if Index < -1 then             // n-th weekday from end of month
   begin
     Index := Abs(Index) - 1;
     if DOW < 5 then                   // adjust to last friday
@@ -461,7 +465,8 @@ var
 begin
   if Index > 0 then
     Result := FirstWeekendDayPrim(Year, Month, DOW)
-  else if Index < 0 then
+  else
+  if Index < 0 then
     Result := LastWeekendDayPrim(Year, Month, DOW)
   else
     Result := 0;
@@ -478,7 +483,8 @@ begin
       Result := Result + (7 * (Index div 2)) + (Index mod 2);
     end;
   end
-  else if Index < -1 then                   // n-th weekend day from the start of the month
+  else
+  if Index < -1 then                   // n-th weekend day from the start of the month
   begin
     Index := Abs(Index);
     if (DOW < 7) and not Odd(Index) then    // Adjust to last sunday
@@ -505,7 +511,8 @@ begin
   DOW := ISODayOfWeek(JclDateTime.EncodeDate(Year, Month, 1));
   if DOW > DayOfWeek then
     Result := 8 + DayOfWeek - DOW
-  else if DOW < DayOfWeek then
+  else
+  if DOW < DayOfWeek then
     Result := 1 + DayOfWeek - DOW
   else
     Result := 1;
@@ -520,7 +527,8 @@ begin
   DOW := ISODayOfWeek(JclDateTime.EncodeDate(Year, Month, DaysInMonth(JclDateTime.EncodeDate(Year, Month, 1))));
   if DOW > DayOfWeek then
     Result := DaysInMonth(JclDateTime.EncodeDate(Year, Month, 1)) - (DOW - DayOfWeek)
-  else if DOW < DayOfWeek then
+  else
+  if DOW < DayOfWeek then
     Result := DaysInMonth(JclDateTime.EncodeDate(Year, Month, 1)) - (7 + DayOfWeek - DOW)
   else
     Result := DaysInMonth(JclDateTime.EncodeDate(Year, Month, 1));
@@ -532,7 +540,8 @@ function IndexedDayOfWeek(const Year, Month, DayOfWeek, Index: Integer): Integer
 begin
   if Index > 0 then
     Result := FirstDayOfWeek(Year, Month, DayOfWeek) + 7 * (Index - 1)
-  else if Index < 0 then
+  else
+  if Index < 0 then
     Result := LastDayOfWeek(Year, Month, DayOfWeek) - 7 * (Abs(Index) - 1)
   else
     Result := 0;
@@ -629,7 +638,8 @@ begin
   Result := Stamp;
   if Stamp.Time < Integer(FStartTime) then
     Result.Time := FStartTime
-  else if ((Cardinal(Stamp.Time) - FStartTime) mod FInterval) <> 0 then
+  else
+  if ((Cardinal(Stamp.Time) - FStartTime) mod FInterval) <> 0 then
     Result.Time := Stamp.Time + Integer(FInterval-(Cardinal(Stamp.Time) - FStartTime) mod FInterval)
   else
     Result.Time := Stamp.Time + Integer(FInterval);
@@ -760,7 +770,8 @@ procedure TDailySchedule.MakeValidStamp(var Stamp: TTimeStamp);
 begin
   if FEveryWeekDay and (TimeStampDOW(Stamp) >= 6) then
     Inc(Stamp.Date, 2 - (TimeStampDOW(Stamp) - 6))
-  else if not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval <> 0) then
+  else
+  if not FEveryWeekDay and (Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval <> 0) then
     Inc(Stamp.Date, Interval - Cardinal(Stamp.Date - Schedule.StartDate.Date) mod Interval);
 end;
 
@@ -1098,7 +1109,8 @@ begin
               begin
                 if IndexValue > 0 then
                   TempDay := LastWeekDay(TYear, TMonth)
-                else if IndexValue < 0 then
+                else
+                if IndexValue < 0 then
                   TempDay := FirstWeekDay(TYear, TMonth);
               end;
             end;
@@ -1119,7 +1131,8 @@ begin
               begin
                 if IndexValue > 0 then
                   TempDay := LastWeekendDay(TYear, TMonth)
-                else if IndexValue < 0 then
+                else
+                if IndexValue < 0 then
                   TempDay := FirstWeekendDay(TYear, TMonth);
               end;
             end;
@@ -1147,7 +1160,8 @@ begin
               begin
                 if IndexValue > 0 then
                   TempDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-                else if IndexValue < 0 then
+                else
+                if IndexValue < 0 then
                   TempDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
               end;
             end;
@@ -1177,7 +1191,8 @@ begin
       begin
         if (IndexValue = sivLast) or (Integer(IndexValue) > DIM) then
           TDay := DIM
-        else if IndexValue > 0 then
+        else
+        if IndexValue > 0 then
           TDay := IndexValue
         else
         begin
@@ -1201,7 +1216,8 @@ begin
               begin
                 if IndexValue > 0 then
                   TDay := LastWeekDay(TYear, TMonth)
-                else if IndexValue < 0 then
+                else
+                if IndexValue < 0 then
                   TDay := FirstWeekDay(TYear, TMonth);
               end;
             end;
@@ -1221,19 +1237,14 @@ begin
               begin
                 if IndexValue > 0 then
                   TDay := LastWeekendDay(TYear, TMonth)
-                else if IndexValue < 0 then
+                else
+                if IndexValue < 0 then
                   TDay := FirstWeekendDay(TYear, TMonth);
               end;
             end;
         end;
       end;
-    sikMonday,
-    sikTuesday,
-    sikWednesday,
-    sikThursday,
-    sikFriday,
-    sikSaturday,
-    sikSunday:
+    sikMonday..sikSunday:
       begin
         case IndexValue of
           sivFirst:
@@ -1248,7 +1259,8 @@ begin
               begin
                 if IndexValue > 0 then
                   TDay := LastDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay))
-                else if IndexValue < 0 then
+                else
+                if IndexValue < 0 then
                   TDay := FirstDayOfWeek(TYear, TMonth, Ord(IndexKind) - Ord(sikWeekendDay));
               end;
             end;
@@ -1788,6 +1800,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.7  2004/06/16 07:30:28  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

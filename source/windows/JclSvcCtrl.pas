@@ -197,7 +197,7 @@ type
   TJclServiceGroup = class;
   TJclSCManager = class;
 
-  TJclNtService = class (TObject)
+  TJclNtService = class(TObject)
   private
     FSCManager: TJclSCManager;
     FHandle: SC_HANDLE;
@@ -267,7 +267,7 @@ type
     property ControlsAccepted: TJclServiceControlAccepteds read FControlsAccepted;
   end;
 
-  TJclServiceGroup = class (TObject)
+  TJclServiceGroup = class(TObject)
   private
     FSCManager: TJclSCManager;
     FName: string;
@@ -288,7 +288,7 @@ type
     property ServiceCount: Integer read GetServiceCount;
   end;
 
-  TJclSCManager = class (TObject)
+  TJclSCManager = class(TObject)
   private
     FMachineName: string;
     FDatabaseName: string;
@@ -378,12 +378,12 @@ uses
 const
   INVALID_SCM_HANDLE = 0;
 
-  ServiceTypeMapping: array[TJclServiceType] of DWORD =
+  ServiceTypeMapping: array [TJclServiceType] of DWORD =
     (SERVICE_KERNEL_DRIVER, SERVICE_FILE_SYSTEM_DRIVER, SERVICE_ADAPTER,
      SERVICE_RECOGNIZER_DRIVER, SERVICE_WIN32_OWN_PROCESS,
      SERVICE_WIN32_SHARE_PROCESS, SERVICE_INTERACTIVE_PROCESS);
 
-  ServiceControlAcceptedMapping: array[TJclServiceControlAccepted] of DWORD =
+  ServiceControlAcceptedMapping: array [TJclServiceControlAccepted] of DWORD =
     (SERVICE_ACCEPT_STOP, SERVICE_ACCEPT_PAUSE_CONTINUE, SERVICE_ACCEPT_SHUTDOWN);
 
 //==================================================================================================
@@ -699,7 +699,7 @@ end;
 procedure TJclNtService.Start(const Args: array of string; const Sync: Boolean);
 type
   PStrArray = ^TStrArray;
-  TStrArray = array[0..32767] of PChar;
+  TStrArray = array [0..32767] of PChar;
 var
   I: Integer;
   lpServiceArgVectors: PChar;
@@ -1429,7 +1429,8 @@ begin
       WaitTime := SvcStatus.dwWaitHint div 10;
       if WaitTime < 1000 then
         WaitTime := 1000
-      else if WaitTime > 10000 then
+      else
+      if WaitTime > 10000 then
         WaitTime := 10000;
       Sleep(WaitTime);
       // check the status again
@@ -1452,6 +1453,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.20  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

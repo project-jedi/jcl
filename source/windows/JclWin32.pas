@@ -241,7 +241,7 @@ type
 
 type
   PKeyboardState = ^TKeyboardState;
-  TKeyboardState = array[0..255] of Byte;
+  TKeyboardState = array [0..255] of Byte;
 
 // from unit AccCtrl
 type
@@ -340,8 +340,8 @@ type
     ncb_num: UCHAR;                                  // number of our network name
     ncb_buffer: PAnsiChar;                           // address of message buffer
     ncb_length: WORD;                                // size of message buffer
-    ncb_callname: array[0..NCBNAMSZ-1] of AnsiChar;  // blank-padded name of remote
-    ncb_name: array[0..NCBNAMSZ-1] of AnsiChar;      // our blank-padded netname
+    ncb_callname: array [0..NCBNAMSZ-1] of AnsiChar; // blank-padded name of remote
+    ncb_name: array [0..NCBNAMSZ-1] of AnsiChar;     // our blank-padded netname
     ncb_rto: UCHAR;                                  // rcv timeout/retry count
     ncb_sto: UCHAR;                                  // send timeout/sys timeout
     ncb_post: procedure(pnbc: PNCB); stdcall;        // POST routine address
@@ -367,7 +367,7 @@ type
 type
   {$EXTERNALSYM _ADAPTER_STATUS}
   _ADAPTER_STATUS = packed record
-    adapter_address: array[0..5] of AnsiChar;
+    adapter_address: array [0..5] of AnsiChar;
     rev_major: UCHAR;
     reserved0: UCHAR;
     adapter_type: UCHAR;
@@ -408,7 +408,7 @@ type
 
   {$EXTERNALSYM _NAME_BUFFER}
   _NAME_BUFFER = packed record
-    name: array[0..NCBNAMSZ-1] of AnsiChar;
+    name: array [0..NCBNAMSZ-1] of AnsiChar;
     name_num: UCHAR;
     name_flags: UCHAR;
   end;
@@ -426,7 +426,7 @@ type
   {$EXTERNALSYM NAME_BUFFER}
   _LANA_ENUM = packed record
     length: UCHAR;         //  Number of valid entries in lana[]
-    lana: array[0..MAX_LANA] of UCHAR;
+    lana: array [0..MAX_LANA] of UCHAR;
   end;
   {$EXTERNALSYM LANA_ENUM}
   LANA_ENUM = _LANA_ENUM;
@@ -888,7 +888,7 @@ type
     dwMinorVersion: DWORD;
     dwBuildNumber: DWORD;
     dwPlatformId: DWORD;
-    szCSDVersion: array[0..127] of AnsiChar;     // Maintenance string for PSS usage
+    szCSDVersion: array [0..127] of AnsiChar;     // Maintenance string for PSS usage
     wServicePackMajor: WORD;
     wServicePackMinor: WORD;
     wSuiteMask: WORD;
@@ -1268,7 +1268,7 @@ type
   {$EXTERNALSYM _IMAGE_IMPORT_BY_NAME}
   _IMAGE_IMPORT_BY_NAME = packed record
     Hint: WORD;
-    Name: array[0..0] of AnsiChar;
+    Name: array [0..0] of AnsiChar;
   end;
   {$EXTERNALSYM IMAGE_IMPORT_BY_NAME}
   IMAGE_IMPORT_BY_NAME = _IMAGE_IMPORT_BY_NAME;
@@ -1522,7 +1522,7 @@ type
   {$EXTERNALSYM _IMAGE_RESOURCE_DIRECTORY_STRING}
   _IMAGE_RESOURCE_DIRECTORY_STRING = packed record
     Length: WORD;
-    NameString: array[0..0] of AnsiChar;
+    NameString: array [0..0] of AnsiChar;
   end;
   {$EXTERNALSYM IMAGE_RESOURCE_DIRECTORY_STRING}
   IMAGE_RESOURCE_DIRECTORY_STRING = _IMAGE_RESOURCE_DIRECTORY_STRING;
@@ -1534,7 +1534,7 @@ type
   {$EXTERNALSYM _IMAGE_RESOURCE_DIR_STRING_U}
   _IMAGE_RESOURCE_DIR_STRING_U = packed record
     Length: WORD;
-    NameString: array[0..0] of WideChar;
+    NameString: array [0..0] of WideChar;
   end;
   {$EXTERNALSYM IMAGE_RESOURCE_DIR_STRING_U}
   IMAGE_RESOURCE_DIR_STRING_U = _IMAGE_RESOURCE_DIR_STRING_U;
@@ -1614,7 +1614,7 @@ type
   _IMAGE_BASE_RELOCATION = packed record
     VirtualAddress: DWORD;
     SizeOfBlock: DWORD;
-    // TypeOffset: array[0..0] of WORD;
+    // TypeOffset: array [0..0] of WORD;
   end;
   {$EXTERNALSYM _IMAGE_BASE_RELOCATION}
   IMAGE_BASE_RELOCATION = _IMAGE_BASE_RELOCATION;
@@ -3142,7 +3142,7 @@ type
   psidOwner, psidGroup: PSID; pDacl, pSacl: PACL): DWORD; stdcall;
 
 var
-  _SetNamedSecurityInfoW: TFNSetNamedSecurityInfoW{ = Nil};
+  _SetNamedSecurityInfoW: TFNSetNamedSecurityInfoW{ = nil};
 
 function RtdlSetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
@@ -3166,7 +3166,7 @@ type
   TFNNetBios = function(P: PNCB): UCHAR; stdcall;
 
 var
-  _NetBios: TFNNetBios{ = Nil};
+  _NetBios: TFNNetBios{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3355,7 +3355,7 @@ type
     lpInfo: LPRASDIALDLG): BOOL; stdcall;
 
 var
-  _RasDialDlgA: TFNRasDialDlgA{ = Nil};
+  _RasDialDlgA: TFNRasDialDlgA{ = nil};
 
 function RtdlRasDialDlgA(lpszPhonebook, lpszEntry, lpszPhoneNumber: LPSTR;
   lpInfo: LPRASDIALDLG): BOOL;
@@ -3425,20 +3425,20 @@ type
     lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall;
 
 var
-  _GetVolumeNameForVolumeMountPointA: TFNGetVolumeNameForVolumeMountPointA{ = Nil};
-  _SetVolumeMountPointA: TFNSetVolumeMountPointA{ = Nil};
-  _DeleteVolumeMountPointA: TFNDeleteVolumeMountPointA{ = Nil};
-  _GetFileAttributesExA: TFNGetFileAttributesExA{ = Nil};
-  _MoveFileExA: TFNMoveFileExA{ = Nil};
-  _CreateHardLinkA: TFNCreateHardLinkA{ = Nil};
-  _SignalObjectAndWait: TFNSignalObjectAndWait{ = Nil};
-  _InitializeCriticalSectionAndSpinCount: TFNInitializeCriticalSectionAndSpinCount{ = Nil};
-  _SetCriticalSectionSpinCount: TFNSetCriticalSectionSpinCount{ = Nil};
-  _TryEnterCriticalSection: TFNTryEnterCriticalSection{ = Nil};
-  _CancelWaitableTimer: TFNCancelWaitableTimer{ = Nil};
-  _CreateWaitableTimerA: TFNCreateWaitableTimerA{ = Nil};
-  _OpenWaitableTimerA: TFNOpenWaitableTimerA{ = Nil};
-  _SetWaitableTimer: TFNSetWaitableTimer{ = Nil};
+  _GetVolumeNameForVolumeMountPointA: TFNGetVolumeNameForVolumeMountPointA{ = nil};
+  _SetVolumeMountPointA: TFNSetVolumeMountPointA{ = nil};
+  _DeleteVolumeMountPointA: TFNDeleteVolumeMountPointA{ = nil};
+  _GetFileAttributesExA: TFNGetFileAttributesExA{ = nil};
+  _MoveFileExA: TFNMoveFileExA{ = nil};
+  _CreateHardLinkA: TFNCreateHardLinkA{ = nil};
+  _SignalObjectAndWait: TFNSignalObjectAndWait{ = nil};
+  _InitializeCriticalSectionAndSpinCount: TFNInitializeCriticalSectionAndSpinCount{ = nil};
+  _SetCriticalSectionSpinCount: TFNSetCriticalSectionSpinCount{ = nil};
+  _TryEnterCriticalSection: TFNTryEnterCriticalSection{ = nil};
+  _CancelWaitableTimer: TFNCancelWaitableTimer{ = nil};
+  _CreateWaitableTimerA: TFNCreateWaitableTimerA{ = nil};
+  _OpenWaitableTimerA: TFNOpenWaitableTimerA{ = nil};
+  _SetWaitableTimer: TFNSetWaitableTimer{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3627,15 +3627,15 @@ type
     totalentries: DWORD): NET_API_STATUS; stdcall;
 
 var
-  _NetUserAdd: TFNNetUserAdd{ = Nil};
-  _NetUserDel: TFNNetUserDel{ = Nil};
-  _NetGroupAdd: TFNNetGroupAdd{ = Nil};
-  _NetGroupEnum: TFNNetGroupEnum{ = Nil};
-  _NetGroupDel: TFNNetGroupDel{ = Nil};
-  _NetLocalGroupAdd: TFNNetLocalGroupAdd{ = Nil};
-  _NetLocalGroupEnum: TFNNetLocalGroupEnum{ = Nil};
-  _NetLocalGroupDel: TFNNetLocalGroupDel{ = Nil};
-  _NetLocalGroupAddMembers: TFNNetLocalGroupAddMembers{ = Nil};
+  _NetUserAdd: TFNNetUserAdd{ = nil};
+  _NetUserDel: TFNNetUserDel{ = nil};
+  _NetGroupAdd: TFNNetGroupAdd{ = nil};
+  _NetGroupEnum: TFNNetGroupEnum{ = nil};
+  _NetGroupDel: TFNNetGroupDel{ = nil};
+  _NetLocalGroupAdd: TFNNetLocalGroupAdd{ = nil};
+  _NetLocalGroupEnum: TFNNetLocalGroupEnum{ = nil};
+  _NetLocalGroupDel: TFNNetLocalGroupDel{ = nil};
+  _NetLocalGroupAddMembers: TFNNetLocalGroupAddMembers{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3740,7 +3740,7 @@ type
   TFNNetApiBufferFree = function(Buffer: Pointer): NET_API_STATUS; stdcall;
 
 var
-  _NetApiBufferFree: TFNNetApiBufferFree{ = Nil};
+  _NetApiBufferFree: TFNNetApiBufferFree{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3785,7 +3785,7 @@ type
     Rva: ULONG; LastRvaSection: PPImageSectionHeader): Pointer; stdcall;
 
 var
-  _ImageRvaToVa: TFNImageRvaToVa{ = Nil};
+  _ImageRvaToVa: TFNImageRvaToVa{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3795,7 +3795,7 @@ begin
   if JclGetProcAddressBool(@_ImageRvaToVa, ImageHlpHandle, 'ImageRvaToVa') then
     Result := _ImageRvaToVa(NtHeaders, Base, Rva, LastRvaSection)
   else
-    Result := Nil;
+    Result := nil;
 end;
 
 //==================================================================================================
@@ -3807,8 +3807,8 @@ type
   TFNGetDefaultPrinterA = function(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL; stdcall;
 
 var
-  _SetDefaultPrinterA: TFNSetDefaultPrinterA{ = Nil};
-  _GetDefaultPrinterA: TFNGetDefaultPrinterA{ = Nil};
+  _SetDefaultPrinterA: TFNSetDefaultPrinterA{ = nil};
+  _GetDefaultPrinterA: TFNGetDefaultPrinterA{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3841,8 +3841,8 @@ type
   TFNglGetError = function: GLenum; stdcall;
 
 var
-  _glGetString: TFNglGetString{ = Nil};
-  _glGetError: TFNglGetError{ = Nil};
+  _glGetString: TFNglGetString{ = nil};
+  _glGetError: TFNglGetError{ = nil};
 
 //--------------------------------------------------------------------------------------------------
   
@@ -3851,7 +3851,7 @@ begin
   if JclGetProcAddressOpenGl(@_glGetString, OpenGl32Handle, 'glGetString') then
     Result := _glGetString(name)
   else
-    Result := Nil;
+    Result := nil;
 end;
 
 function RtdlglGetError: GLenum;
@@ -3877,7 +3877,7 @@ type
   TFNgluErrorString = function(errCode: GLenum): PGLubyte; stdcall;
 
 var
-  _gluErrorString: TFNgluErrorString{ = Nil};
+  _gluErrorString: TFNgluErrorString{ = nil};
   
 //--------------------------------------------------------------------------------------------------
 
@@ -3888,7 +3888,7 @@ begin
   else
     { TODO : maybe we should return a own error message in case of GL_INVALID_OPERATION
              this need to use a global variable initalized from a resource string }
-    Result := Nil;
+    Result := nil;
 end;
 
 //==================================================================================================
@@ -3905,9 +3905,9 @@ type
   TFNwglMakeCurrent = function(hdc: HDC; hglrc: HGLRC): BOOL; stdcall;
 
 var
-  _wglCreateContext: TFNwglCreateContext{ = Nil};
-  _wglDeleteContext: TFNwglDeleteContext{ = Nil};
-  _wglMakeCurrent: TFNwglMakeCurrent{ = Nil};
+  _wglCreateContext: TFNwglCreateContext{ = nil};
+  _wglDeleteContext: TFNwglDeleteContext{ = nil};
+  _wglMakeCurrent: TFNwglMakeCurrent{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3953,10 +3953,10 @@ type
     TimerInformationLength: ULONG; {out, optional} ResultLength: PULONG): NTSTATUS; stdcall;
 
 var
-  _NtQueryEvent: TFNNtQueryEvent{ = Nil};
-  _NtQueryMutant: TFNNtQueryMutant{ = Nil};
-  _NtQuerySemaphore: TFNNtQuerySemaphore{ = Nil};
-  _NtQueryTimer: TFNNtQueryTimer{ = Nil};
+  _NtQueryEvent: TFNNtQueryEvent{ = nil};
+  _NtQueryMutant: TFNNtQueryMutant{ = nil};
+  _NtQuerySemaphore: TFNNtQuerySemaphore{ = nil};
+  _NtQueryTimer: TFNNtQueryTimer{ = nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -4035,6 +4035,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.24  2004/07/28 18:00:55  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.23  2004/06/14 13:05:22  marquardt
 // style cleaning ENDIF, Tabs
 //

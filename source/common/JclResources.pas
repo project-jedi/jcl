@@ -54,6 +54,33 @@ resourcestring
   RsSysErrorMessageFmt = 'Win32 Error %d (%x)';
 
 //--------------------------------------------------------------------------------------------------
+// JclBorlandTools
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsIndexOufOfRange = 'Index out of range';
+  RsNeedUpdate      = 'You should install latest Update Pack #%d for %s';
+  RsUpdatePackName  = 'Update Pack #%d';
+  {$IFDEF KYLIX}
+  RsDelphiName      = 'Kylix %d for Delphi';
+  RsBCBName         = 'Kylix %d for C++Builder';
+  RsOpenEdition     = 'Open Edition';
+  RsServerDeveloper = 'Server Developer';
+  RsVclIncludeDir   = '/include/vcl/';
+  {$ENDIF KYLIX}
+  {$IFDEF MSWINDOWS}
+  RsDelphiName      = 'Delphi %d';
+  RsBCBName         = 'C++Builder %d';
+  RsClientServer    = 'Client/Server';
+  RsStandard        = 'Standard';
+  RsVclIncludeDir   = '\Include\Vcl\';
+  {$ENDIF MSWINDOWS}
+  RsArchitect       = 'Architect';
+  RsEnterprise      = 'Enterprise';
+  RsPersonal        = 'Personal';
+  RsProfessional    = 'Professional';
+
+//--------------------------------------------------------------------------------------------------
 // JclCIL
 //--------------------------------------------------------------------------------------------------
 
@@ -201,6 +228,33 @@ resourcestring
                   'in segment [%s] at index [%s] in transaction set.';
 
   RsUnknownAttribute = 'Unknown Attribute';
+
+//--------------------------------------------------------------------------------------------------
+// JclEDISEF
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  // Transaction Set:850
+  SEFTextSetsCode_Set0_Desc = 'Transaction Set or message title.';
+  SEFTextSetsCode_Set1_Desc = 'Transaction Set functional group (X12).';
+  SEFTextSetsCode_Set2_Desc = 'Transaction Set or message purpose.';
+  SEFTextSetsCode_Set3_Desc = 'Level 1 note on transaction set or message.';
+  SEFTextSetsCode_Set4_Desc = 'Level 2 note on transaction set or message.';
+  SEFTextSetsCode_Set5_Desc = 'Level 3 note on transaction set or message.';
+  // Transaction Set~segment ordinal number: 850~1
+  SEFTextSetsCode_Seg0_Desc = 'Segment reference notes that are part of the transaction set in X12.';
+  SEFTextSetsCode_Seg1_Desc = 'Segment reference notes documented with the segment (like in VICS/UCS).';
+  SEFTextSetsCode_Seg2_Desc = 'Segment reference comment documented with the transaction set.';
+  SEFTextSetsCode_Seg3_Desc = 'Segment name.';
+  SEFTextSetsCode_Seg4_Desc = 'Level 1 note on segment.';
+  SEFTextSetsCode_Seg5_Desc = 'Level 2 note on segment.';
+  SEFTextSetsCode_Seg6_Desc = 'Segment purpose.';
+  SEFTextSetsCode_Seg7_Desc = 'Level 3 note on segment. See * below for other levels of notes.';
+  // Transaction Set~segment ordinal number~element or composite ordinal number: 850~1~4
+  SEFTextSetsCode_Elm0_Desc = 'Level 1 note on element or composite.';
+  SEFTextSetsCode_Elm1_Desc = 'Level 2 note on element or composite.';
+  SEFTextSetsCode_Elm2_Desc = 'Name of element or composite.';
+  SEFTextSetsCode_Elm4_Desc = 'Level 3 note on element or composite.';
 
 //--------------------------------------------------------------------------------------------------
 // JclEDIXML
@@ -615,6 +669,19 @@ resourcestring
   RsNtfsUnableToDeleteSymbolicLink = 'Unable to delete temporary symbolic link';
 
 //--------------------------------------------------------------------------------------------------
+// JclPCRE
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  SErrNoMatch = 'No match';
+  SErrNull = 'Required value is null';
+  SErrBadOption = 'Bad option';
+  SErrBadMagic = 'Bad magic';
+  SErrUnknownNode = 'Unknown node';
+  SErrNoMemory = 'Out of memory';
+  SErrNoSubString = 'No substring';
+
+//--------------------------------------------------------------------------------------------------
 // JclPeImage
 //--------------------------------------------------------------------------------------------------
 
@@ -810,21 +877,6 @@ resourcestring
   RsPSESheet      = 'E size sheet';
   RsPSUser        = 'User Defined Size';
   RsPSUnknown     = 'Unknown Paper Size';
-
-  RsPrintIniPrinterName   = 'PrinterName';
-  RsPrintIniPrinterPort   = 'PrinterPort';
-  RsPrintIniOrientation   = 'Orientation';
-  RsPrintIniPaperSize     = 'PaperSize';
-  RsPrintIniPaperLength   = 'PaperLength';
-  RsPrintIniPaperWidth    = 'PaperWidth';
-  RsPrintIniScale         = 'Scale';
-  RsPrintIniCopies        = 'Copies';
-  RsPrintIniDefaultSource = 'DefaultSource';
-  RsPrintIniPrintQuality  = 'PrintQuality';
-  RsPrintIniColor         = 'Color';
-  RsPrintIniDuplex        = 'Duplex';
-  RsPrintIniYResolution   = 'YResolution';
-  RsPrintIniTTOption      = 'TTOption';
 
 //--------------------------------------------------------------------------------------------------
 // JclRegistry
@@ -1079,6 +1131,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/14 11:05:51  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

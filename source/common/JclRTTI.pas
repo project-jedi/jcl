@@ -48,7 +48,7 @@ uses
   JclBase;
 
 type
-  EJclRTTI = class (EJclError);
+  EJclRTTI = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
 // TypeInfo writing
@@ -2841,6 +2841,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.11  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.10  2004/06/14 11:05:51  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

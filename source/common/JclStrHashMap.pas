@@ -39,11 +39,11 @@ uses
   JclBase, JclResources;
 
 type
-  EJclStringHashMapError = class (EJclError);
+  EJclStringHashMapError = class(EJclError);
   THashValue = Cardinal;
 
 type
-  TStringHashMapTraits = class (TObject)
+  TStringHashMapTraits = class(TObject)
   public
     function Hash(const s: string): Cardinal; virtual; abstract;
     function Compare(const l, r: string): Integer; virtual; abstract;
@@ -71,9 +71,9 @@ type
   TNodeIterateFunc = procedure(AUserData: Pointer; ANode: PPHashNode);
 
   PHashArray = ^THashArray;
-  THashArray = array[0..MaxInt div SizeOf(PHashNode) - 1] of PHashNode;
+  THashArray = array [0..MaxInt div SizeOf(PHashNode) - 1] of PHashNode;
 
-  TStringHashMap = class (TObject)
+  TStringHashMap = class(TObject)
   private
     FHashSize: Cardinal;
     FCount: Cardinal;
@@ -437,7 +437,8 @@ begin
       { left, then right, then match }
       if r < 0 then
         ppn := @ppn^^.Left
-      else if r > 0 then
+      else
+      if r > 0 then
         ppn := @ppn^^.Right
       else
         Break;
@@ -855,6 +856,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.5  2004/05/18 18:58:04  rrossmair
 // documentation extracted to StrHashMap.dtx
 //

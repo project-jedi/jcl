@@ -1814,7 +1814,8 @@ begin
       if (TA1SegmentId + FDelimiters.ED) =
         Copy(FData, StartPos, (Length(TA1SegmentId) + FDelimiters.EDLen)) then
         ProcessTA1 := True
-      else if(FGHSegmentId + FDelimiters.ED) <>
+      else
+      if (FGHSegmentId + FDelimiters.ED) <>
         Copy(FData, StartPos, (Length(FGHSegmentId) + FDelimiters.EDLen)) then
         Break;
     end
@@ -1835,7 +1836,8 @@ begin
       if (TA1SegmentId + FDelimiters.ED) =
         Copy(FData, StartPos, (Length(TA1SegmentId) + FDelimiters.EDLen)) then
         ProcessTA1 := True
-      else if (FGHSegmentId + FDelimiters.ED) <>
+      else
+      if (FGHSegmentId + FDelimiters.ED) <>
         Copy(FData, StartPos, (Length(FGHSegmentId) + FDelimiters.EDLen)) then
         Break;
     end;

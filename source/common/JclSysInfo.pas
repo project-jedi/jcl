@@ -222,14 +222,15 @@ function GetShellProcessHandle: THandle;
 //--------------------------------------------------------------------------------------------------
 
 type
-  TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
-                     wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP, wvWin2003);
-  TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
-                    ptPersonal, ptProfessional, ptDatacenterServer);
+  TWindowsVersion =
+   (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
+    wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4, wvWin2000, wvWinXP, wvWin2003);
+  TNtProductType =
+   (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
+    ptPersonal, ptProfessional, ptDatacenterServer);
 
 var
   { in case of additions, don't forget to update initialization section! }
-
   IsWin95: Boolean = False;
   IsWin95OSR2: Boolean = False;
   IsWin98: Boolean = False;
@@ -609,7 +610,7 @@ uses
   JwaTlHelp32, JwaPsApi,
   {$ELSE}
   TLHelp32, PsApi,
-  JclShell, 
+  JclShell,
   {$ENDIF FPC}
   {$ENDIF MSWINDOWS}
   JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
@@ -2262,14 +2263,13 @@ begin
     else
       Result := ptUnknown;
   end;
-
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function GetWindowsVersionString: string;
 const
-  OSVersionStrings: array[Succ(Low(TWindowsVersion))..High(TWindowsVersion)] of String = (
+  OSVersionStrings: array [Succ(Low(TWindowsVersion))..High(TWindowsVersion)] of string = (
     RsOSVersionWin95, RsOSVersionWin95OSR2, RsOSVersionWin98, RsOSVersionWin98SE,
     RsOSVersionWinME, RsOSVersionWinNT3, RsOSVersionWinNT3, RsOSVersionWinNT3,
     RsOSVersionWinNT4, RsOSVersionWin2000, RsOSVersionWinXP, RsOSVersionWin2003);
@@ -2289,7 +2289,7 @@ end;
 
 function NtProductTypeString: string;
 const
-  NtProductTypeStrings: array[Succ(Low(TNtProductType))..High(TNtProductType)] of String = (
+  NtProductTypeStrings: array [Succ(Low(TNtProductType))..High(TNtProductType)] of string = (
     RsProductTypeWorkStation, RsProductTypeServer, RsProductTypeAdvancedServer,
     RsProductTypePersonal, RsProductTypeProfessional, RsProductTypeDatacenterServer);
 var
@@ -2463,7 +2463,7 @@ begin
   finally
     ReleaseDC(Win, DCHandle);
     // Redraw window
-    InvalidateRect(Win, Nil, False);
+    InvalidateRect(Win, nil, False);
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -2513,7 +2513,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
   type
     TAStat = packed record
       adapt: TAdapterStatus;
-      NameBuff: array[0..29] of TNameBuffer;
+      NameBuff: array [0..29] of TNameBuffer;
     end;
   var
     NCB: TNCB;
@@ -2562,9 +2562,9 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
   procedure GetMacAddressesSnmp;
   const
     InetMib1 = 'inetmib1.dll';
-    DunAdapterAddress: array[0..4] of Byte = ($44, $45, $53, $54, $00);
-    NullAdapterAddress: array[0..5] of Byte = ($00, $00, $00, $00, $00, $00);
-    OID_ipMACEntAddr: array[0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 6);
+    DunAdapterAddress: array [0..4] of Byte = ($44, $45, $53, $54, $00);
+    NullAdapterAddress: array [0..5] of Byte = ($00, $00, $00, $00, $00, $00);
+    OID_ipMACEntAddr: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 6);
     OID_ifEntryType: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 3);
     OID_ifEntryNum: array [0..7] of UINT = (1, 3, 6, 1, 2, 1, 2, 1);
   var
@@ -2574,7 +2574,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     MIB_ifEntryType: TAsnObjectIdentifier;
     MIB_ifEntryNum: TAsnObjectIdentifier;
     varBindList: TSnmpVarBindList;
-    varBind: array[0..1] of TSnmpVarBind;
+    varBind: array [0..1] of TSnmpVarBind;
     ErrorStatus, ErrorIndex: TAsnInteger32;
     Dtmp: Integer;
     Ret: Boolean;
@@ -3903,7 +3903,8 @@ begin
     KernelVersionHi := 0;
 
   case GetWindowsVersion of
-    wvUnknown: ;
+    wvUnknown:
+      ;
     wvWin95:
       IsWin95 := True;
     wvWin95OSR2:
@@ -3927,6 +3928,7 @@ begin
     wvWinNT351:
       begin
         IsWinNT3 := True;
+        // (rom) bug? IsWinNT35 not set here
         IsWinNT351 := True;
       end;
     wvWinNT4:
@@ -3961,6 +3963,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.25  2004/07/28 18:00:51  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.24  2004/07/16 04:11:46  rrossmair
 // fixed RunningProcessesList for Win2003
 //

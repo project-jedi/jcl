@@ -55,9 +55,9 @@ of "structured storage"...
 
 -----------------------------------------------------------------------------}
 
-{$I jedi.inc}
-
 unit JclStructStorage;
+
+{$I jedi.inc}
 
 interface
 
@@ -74,12 +74,12 @@ type
     function GetName: string;
   protected
     FStorage: IStorage;
-    FLastError: HResult;
+    FLastError: HRESULT;
     FFileName: string;
     FAccessMode: TJclStructStorageAccessModes;
     FConvertedMode: UINT;
     procedure Check;
-    function CheckResult(HR: HResult): Boolean;
+    function CheckResult(HR: HRESULT): Boolean;
     // Calls to Dest.Assign will eventually end up here.
     // AssignTo is implemented as a call to IStorage.CopyTo(Dest)
     // This method merges elements contained in the source storage object with
@@ -96,11 +96,11 @@ type
     procedure AssignTo(Dest: TPersistent); override;
   public
     // Returns S_OK if FileName is a compound file
-    class function IsStructured(const FileName: string): HResult;
+    class function IsStructured(const FileName: string): HRESULT;
     // Converts FileName to a structured file and puts the existing content of the file
     // into a root file stream called 'CONTENTS'
     // Returns S_OK or STG_S_CONVERTED if the file could be converted or if it was already a structured file
-    class function Convert(const FileName: string): HResult;
+    class function Convert(const FileName: string): HRESULT;
     // Copies a sub storage or stream to another storage
     // Before calling this method, the element to be copied must be closed,
     // and the destination storage must be open. Also, the destination object
@@ -122,8 +122,8 @@ type
     // Create a new or open an existing structured file (or subfolder) depending on AccessMode.
     // NOTE that the file will not actually be opened or created until you call
     // one of the methods in this class (except for Destroy). To force a direct open of the file, set OpenDirect to true
-    constructor Create(const FileName: string; AccessMode: TJclStructStorageAccessModes; OpenDirect: Boolean = False);
-      virtual;
+    constructor Create(const FileName: string; AccessMode: TJclStructStorageAccessModes;
+      OpenDirect: Boolean = False); virtual;
     // Destroys the class instance and releases the compound file (or subfolder)
     destructor Destroy; override;
     // Returns statistics for this storage. The returned structure contains
@@ -167,7 +167,7 @@ type
     // pointer to the IStorage
     property Intf: IStorage read FStorage;
     // last error for this object (can be S_OK)
-    property LastError: HResult read FLastError;
+    property LastError: HRESULT read FLastError;
   end;
 
   // NOTE: you should not create instances of this class: an instance is created by
@@ -178,9 +178,9 @@ type
   protected
     FStream: IStream;
     FName: string;
-    FLastError: HResult;
+    FLastError: HRESULT;
     procedure Check;
-    function CheckResult(HR: HResult): Boolean;
+    function CheckResult(HR: HRESULT): Boolean;
     procedure SetSize(NewSize: Longint); override;
   public
     destructor Destroy; override;
@@ -211,7 +211,7 @@ type
     // pointer to the IStream interface
     property Intf: IStream read FStream;
     // the last error for this object (can be S_OK)
-    property LastError: HResult read FLastError;
+    property LastError: HRESULT read FLastError;
   end;
 
 procedure CoMallocFree(P: Pointer);
@@ -237,10 +237,10 @@ type
 
   TStgCreateStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
     PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HResult; stdcall;
+    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
   TStgOpenStorageExFunc = function(pwcsName: POleStr; grfMode: Longint; StgFmt: Longint; grfAttrs: DWORD; pStgOptions:
     PStgOptions;
-    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HResult; stdcall;
+    reserved2: Pointer; riid: TIID; out ppObjectOpen: IUnknown): HRESULT; stdcall;
 
 var
   // replacements for StgCreateDocFile and StgOpenStorage on Win2k and XP - not currently used
@@ -311,7 +311,7 @@ begin
     Result := Result or STGM_SHARE_DENY_WRITE
   else
     Result := Result or STGM_SHARE_DENY_NONE;
-      // not strictly necessary, since STGM_SHARE_DENY_NONE = 0, but makes it more self-documenting
+    // not strictly necessary, since STGM_SHARE_DENY_NONE = 0, but makes it more self-documenting
 end;
 
 // simpler and less convoluted than using StringToWideChar
@@ -322,8 +322,9 @@ begin
     Result := nil
   else
   begin
-    Result := AllocMem(Length(S) * 2 + 2); // +1 might suffice?
-    MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S));
+    Result := AllocMem((Length(S)+1) * SizeOf(WideChar));
+    // (rom) fixed output buffer size 
+    MultiByteToWideChar(CP_ACP, 0, PChar(S), Length(S), Result, Length(S) div 2);
   end;
 end;
 
@@ -390,7 +391,7 @@ end;
 procedure TJclStructStorageFolder.Check;
 var
   AName: PWideChar;
-  HR: HResult;
+  HR: HRESULT;
 begin
   if FStorage = nil then
   begin
@@ -408,7 +409,7 @@ begin
   end;
 end;
 
-function TJclStructStorageFolder.CheckResult(HR: HResult): Boolean;
+function TJclStructStorageFolder.CheckResult(HR: HRESULT): Boolean;
 begin
   Result := Succeeded(HR);
   FLastError := HR;
@@ -518,7 +519,7 @@ begin
   end;
 end;
 
-class function TJclStructStorageFolder.IsStructured(const FileName: string): HResult;
+class function TJclStructStorageFolder.IsStructured(const FileName: string): HRESULT;
 var
   AName: PWideChar;
 begin
@@ -530,7 +531,7 @@ begin
   end;
 end;
 
-class function TJclStructStorageFolder.Convert(const FileName: string): HResult;
+class function TJclStructStorageFolder.Convert(const FileName: string): HRESULT;
 var
   Strg: IStorage;
   AName: PWideChar;
@@ -662,7 +663,7 @@ begin
     raise EJclStructStorageError.Create('IStream is nil');
 end;
 
-function TJclStructStorageStream.CheckResult(HR: HResult): Boolean;
+function TJclStructStorageStream.CheckResult(HR: HRESULT): Boolean;
 begin
   Result := Succeeded(HR);
   FlastError := HR;
@@ -759,6 +760,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.2  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
