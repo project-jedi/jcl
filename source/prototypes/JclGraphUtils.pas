@@ -2341,9 +2341,9 @@ function Intensity(const Color32: TColor32): Integer;
 // input:  RGB components
 // output: (R * 61 + G * 174 + B * 21) div 256
 begin
-  Result := (Color32 and $FF) * 21      // Blue
-    + ((Color32 shr 8) and $FF) * 174   // Green
-    + ((Color32 shr 16) and $FF) * 61); // Red
+  Result := (Color32 and _B) * 21      // Blue
+    + ((Color32 and _G) shr 8) * 174   // Green
+    + ((Color32 and _R) shr 16) * 61); // Red
   Result := Result shr 8;
 end;
 
