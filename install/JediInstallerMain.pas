@@ -23,7 +23,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Last modified: February 13, 2004                                                                 }
+{ Last modified: February 17, 2004                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -61,13 +61,16 @@ type
     StatusLabel: TLabel;
     Bevel1: TBevel;
     
+    //
     D5TabSheet: TTabSheet;
     D5Product: TProductFrame;
+    //
     D6TabSheet: TTabSheet;
     D6Product: TProductFrame;
+    //
     D7TabSheet: TTabSheet;
     D7Product: TProductFrame;
-    
+    //
     ImageList: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -277,13 +280,13 @@ end;
 
 procedure TMainForm.UpdateInfo(VersionNumber: Integer; const InfoText: String);
 var
-  
-  InfoDisplay: TMemo;
-  
+  P: TProductFrame;
 begin
-  InfoDisplay := Product(VersionNumber).InfoDisplay;
-  if Assigned(InfoDisplay) then
-    InfoDisplay.Text := InfoText;
+  P := Product(VersionNumber);
+  if Assigned(P) then
+  begin
+    P.InfoDisplay.Text := InfoText;
+  end;
 end;
 
 procedure TMainForm.UpdateStatus(const Text: string);
@@ -409,9 +412,9 @@ end;
 
 procedure TMainForm.JediImageClick(Sender: TObject);
 begin
+  { TODO : implement for Unix }
   
   ShellExecEx(DelphiJediURL);
-  
   
 end;
 
