@@ -54,6 +54,7 @@ type
 
   TEDI_ANSIX12_Document = class(TEDITransactionSetLoop)
   private
+    FEDISEFSet: TEDISEFSet;
   protected
     FErrorOccured: Boolean;
     FEDITSDOptions: TEDITransactionSetDocumentOptions;
@@ -103,6 +104,7 @@ begin
   FEDILoopStack := TEDILoopStack.Create;
   FEDILoopStack.OnAddLoop := AddLoopToDoc;
   FEDITransactionSet := TransactionSet;
+  FEDISEFSet := SEFSet; 
   FEDITransactionSetSpec := SEFSet.GetSegmentObjectList;
   FEDITSDOptions := [];
 end;
@@ -125,45 +127,14 @@ var
   LSR: TEDILoopStackRecord;
   DataSegment: TEDISegment;
   SpecSegment: TEDISEFSegment;
-{
-  EDIFunctionalGroup: TEDIFunctionalGroup;
-  EDIFunctionalGroupSpec: TEDIFunctionalGroupSpec;
-  EDIInterchangeControl: TEDIInterchangeControl;
-  EDIInterchangeControlSpec: TEDIInterchangeControlSpec;
-}
 begin
   I := 0;
   J := 0;
-{ ToDo:  
   if doLinkSpecToDataObject in FEDITSDOptions then
   begin
-    FEDITransactionSet.SpecPointer := FEDITransactionSetSpec;
-    FEDITransactionSet.SegmentST.SpecPointer := FEDITransactionSetSpec.SegmentST;
-    SetSpecificationPointers(FEDITransactionSet.SegmentST, FEDITransactionSetSpec.SegmentST);
-    FEDITransactionSet.SegmentSE.SpecPointer := FEDITransactionSetSpec.SegmentSE;
-    SetSpecificationPointers(FEDITransactionSet.SegmentSE, FEDITransactionSetSpec.SegmentSE);
-    if FEDITransactionSet.Parent <> nil then
-    begin
-      EDIFunctionalGroup := TEDIFunctionalGroup(FEDITransactionSet.Parent);
-      EDIFunctionalGroupSpec := TEDIFunctionalGroupSpec(FEDITransactionSetSpec.Parent);
-      EDIFunctionalGroup.SpecPointer := EDIFunctionalGroupSpec;
-      EDIFunctionalGroup.SegmentGS.SpecPointer := EDIFunctionalGroupSpec.SegmentGS;
-      SetSpecificationPointers(EDIFunctionalGroup.SegmentGS, EDIFunctionalGroupSpec.SegmentGS);
-      EDIFunctionalGroup.SegmentGE.SpecPointer := EDIFunctionalGroupSpec.SegmentGE;
-      SetSpecificationPointers(EDIFunctionalGroup.SegmentGE, EDIFunctionalGroupSpec.SegmentGE);
-      if EDIFunctionalGroup.Parent <> nil then
-      begin
-        EDIInterchangeControl := TEDIInterchangeControl(EDIFunctionalGroup.Parent);
-        EDIInterchangeControlSpec := TEDIInterchangeControlSpec(EDIFunctionalGroupSpec.Parent);
-        EDIInterchangeControl.SpecPointer := EDIInterchangeControlSpec;
-        EDIInterchangeControl.SegmentISA.SpecPointer := EDIInterchangeControlSpec.SegmentISA;
-        SetSpecificationPointers(EDIInterchangeControl.SegmentISA, EDIInterchangeControlSpec.SegmentISA);
-        EDIInterchangeControl.SegmentIEA.SpecPointer := EDIInterchangeControlSpec.SegmentIEA;
-        SetSpecificationPointers(EDIInterchangeControl.SegmentIEA, EDIInterchangeControlSpec.SegmentIEA);
-      end;
-    end;
+    FEDISEFSet.BindTextSets(FEDISEFSet.SEFFile.TEXTSETS);
+    FEDISEFSet.BindSegmentTextSets;
   end;
-}
   // Initialize the stack
   FEDILoopStack.Flags := FEDILoopStack.Flags - [ediLoopRepeated];
   LSR := FEDILoopStack.ValidateLoopStack(FEDITransactionSet.Segment[I].SegmentID,
@@ -197,7 +168,11 @@ begin
       TEDITransactionSetLoop(LSR.EDIObject).AppendSegment(DataSegment);
       //
       if doLinkSpecToDataObject in FEDITSDOptions then
+      begin
+        SpecSegment.BindTextSets(SpecSegment.SEFFile.TEXTSETS);
+        SpecSegment.BindElementTextSets;
         SetSpecificationPointers(DataSegment, SpecSegment);
+      end;
       // Move to the next data segment
       Inc(I);
     end
@@ -240,7 +215,7 @@ begin
   for I := 0 to DataSegment.ElementCount - 1 do
   begin
     if I > J then
-      raise EJclEDIError.CreateResRecFmt(@RsEDIError058, // ToDo: create new error message
+      raise EJclEDIError.CreateResRecFmt(@RsEDIError058,
         [IntToStr(I), DataSegment.SegmentId,
          IntToStr(DataSegment.GetIndexPositionFromParent)]);
     DataSegment.Element[I].SpecPointer := SpecSegment.Elements[I];
