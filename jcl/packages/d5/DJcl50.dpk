@@ -77,6 +77,7 @@ contains
   JclRegistry in '..\..\source\windows\JclRegistry.pas',
   JclSecurity in '..\..\source\windows\JclSecurity.pas',
   JclShell in '..\..\source\windows\JclShell.pas',
+  JclStructStorage in '..\..\source\windows\JclStructStorage.pas',
   JclSvcCtrl in '..\..\source\windows\JclSvcCtrl.pas',
   JclSynch in '..\..\source\windows\JclSynch.pas',
   JclTD32 in '..\..\source\windows\JclTD32.pas',

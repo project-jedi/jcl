@@ -38,7 +38,7 @@ $Id$
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="91"/>
+  <property name="version.minor"    value="92"/>
   <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
 
   <!-- why won't the following line work with subst=""? -->
@@ -170,6 +170,7 @@ $Id$
 
           <include name="${basedir}/include/**" />
           <include name="${bin.dir}/JCL-install.ini" />
+          <include name="${bin.dir}/JediInstaller.exe" />
           <include name="${install.dir}/**/*.cfg" />
           <include name="${install.dir}/**/*.conf" />
           <include name="${install.dir}/QJediInstaller.conf" />

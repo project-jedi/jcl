@@ -51,9 +51,9 @@ uses
 
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 91;   // First minor release since JCL 1.90
+  JclVersionMinor   = 92;   // First minor release since JCL 1.90
   JclVersionRelease = 1;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1558; // build number, days since march 1, 2000
+  JclVersionBuild   = 1661; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -302,6 +302,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2004/09/16 19:47:32  rrossmair
+// check-in in preparation for release 1.92
+//
 // Revision 1.19  2004/06/16 07:30:14  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

@@ -3,11 +3,15 @@
 
   Jedi Code Library
 
-Release 1.91
-Build 1558
-06-June-2004
+Release 1.92
+Build 1661
+16-September-2004
 
 ------------------------------------------------------------------------
+
+*Note: JCL release 1.92 is an interim release to support JVCL 3 Beta 2.
+Due to lack of time, the text below has not been updated and does not
+reflect the changes in JCL since release 1.91.*
 
 It has been a long time since we released the last publicly promoted
 version 1.22 of the Jedi Code Library (JCL). Now, about eight weeks

@@ -95,14 +95,14 @@ type
   public
     constructor Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
     destructor Destroy; override;
-    procedure Add(const s: string; const p{: Pointer});
+    procedure Add(const s: string; const p);
     function Remove(const s: string): Pointer;
-    procedure RemoveData(const p{: Pointer});
+    procedure RemoveData(const p);
     procedure Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
     procedure IterateMethod(AUserData: Pointer; AIterateMethod: TIterateMethod);
     function Has(const s: string): Boolean;
-    function Find(const s: string; var p{: Pointer}): Boolean;
-    function FindData(const p{: Pointer}; var s: string): Boolean;
+    function Find(const s: string; var p): Boolean;
+    function FindData(const p; var s: string): Boolean;
     procedure Clear;
     property Count: Cardinal read FCount;
     property Data[const s: string]: Pointer read GetData write SetData; default;
@@ -852,6 +852,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2004/09/16 19:47:32  rrossmair
+// check-in in preparation for release 1.92
+//
 // Revision 1.8  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
 //
