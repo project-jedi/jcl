@@ -21,7 +21,7 @@
 { Unit which provides a central place for all resource strings used in the JCL }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: April 18, 2001                                                }
+{ Last modified: June 4, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -567,6 +567,57 @@ resourcestring
   RsUnableToOpenKeyRead  = 'Unable to open key "%s" for read';
   RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
   RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
+
+//------------------------------------------------------------------------------
+// JclRegistry
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsRTTIValueOutOfRange =   'Value out of range (%s).';
+  RsRTTIUnknownIdentifier = 'Unknown identifier ''%s''.';
+  RsRTTIInvalidGUIDString = 'Invalid conversion from string to GUID (%s).';
+  RsRTTIInvalidBaseType   = 'Invalid base type (%s is of type %s).';
+
+  RsRTTIVar =               'var ';
+  RsRTTIConst =             'const ';
+  RsRTTIArrayOf =           'array of ';
+  RsRTTIOut =               'out ';
+  RsRTTIBits =              'bits';
+  RsRTTIOrdinal =           'ordinal=';
+  RsRTTITrue =              'True';
+  RsRTTIFalse =             'False';
+  RsRTTITypeInfoAt =        'Type info: %p';
+
+  RsRTTIPropRead =          'read';
+  RsRTTIPropWrite =         'write';
+  RsRTTIPropStored =        'stored';
+
+  RsRTTIField =             'field';
+  RsRTTIStaticMethod =      'static method';
+  RsRTTIVirtualMethod =     'virtual method';
+
+  RsRTTIIndex =             'index';
+  RsRTTIDefault =           'default';
+
+  RsRTTIName =              'Name: ';
+  RsRTTIType =              'Type: ';
+  RsRTTIFlags =             'Flags: ';
+  RsRTTIGUID =              'GUID: ';
+  RsRTTITypeKind =          'Type kind: ';
+  RsRTTIOrdinalType =       'Ordinal type: ';
+  RsRTTIMinValue =          'Min value: ';
+  RsRTTIMaxValue =          'Max value: ';
+  RsRTTINameList =          'Names: ';
+  RsRTTIClassName =         'Class name: ';
+  RsRTTIParent =            'Parent: ';
+  RsRTTIPropCount =         'Property count: ';
+  RsRTTIUnitName =          'Unit name: ';
+  RsRTTIBasedOn =           'Based on: ';
+  RsRTTIFloatType =         'Float type: ';
+  RsRTTIMethodKind =        'Method kind: ';
+  RsRTTIParamCount =        'Parameter count: ';
+  RsRTTIReturnType =        'Return type: ';
+  RsRTTIMaxLen =            'Max length: ';
 
 //------------------------------------------------------------------------------
 // JclSscanf
