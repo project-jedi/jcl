@@ -53,8 +53,10 @@ type
   TNetWellKnownRID = (wkrAdmins, wkrUsers, wkrGuests, wkrPowerUsers, wkrBackupOPs,
     wkrReplicator, wkrEveryone);
 
-function CreateAccount(const Server, Username, Fullname, Password, Description, Homedir, Script: string): boolean;
-function CreateLocalAccount(const Username, Fullname, Password, Description, Homedir, Script: string): Boolean;
+function CreateAccount(const Server, Username, Fullname, Password, Description,
+  Homedir, Script: string): boolean;
+function CreateLocalAccount(const Username, Fullname, Password, Description,
+  Homedir, Script: string): Boolean;
 function DeleteAccount(const Servername, Username: string): Boolean;
 function DeleteLocalAccount(Username: string): Boolean;
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
@@ -81,7 +83,8 @@ uses
 // User Management
 //------------------------------------------------------------------------------
 
-function CreateAccount(const Server, Username, Fullname, Password, Description, Homedir, Script: string): boolean;
+function CreateAccount(const Server, Username, Fullname, Password, Description,
+  Homedir, Script: string): boolean;
 var
   wServer, wUsername, wFullname,
   wPassword, wDescription, wHomedir, wScript: WideString;
@@ -116,7 +119,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CreateLocalAccount(const Username, Fullname, Password, Description, Homedir, Script: string): boolean;
+function CreateLocalAccount(const Username, Fullname, Password, Description,
+  Homedir, Script: string): boolean;
 begin
   Result := CreateAccount('', Username, Fullname, Password, Description, Homedir, Script);
 end;
@@ -259,7 +263,6 @@ function LocalGroupExists(const Group: string): boolean;
 var
   groups: TStrings;
 begin
-  Result := false;
   groups := TStringList.Create;
   try
     GetLocalGroups('', groups);
@@ -275,7 +278,6 @@ function GlobalGroupExists(const Server, Group: string): boolean;
 var
   groups: TStrings;
 begin
-  Result := false;
   groups := TStringList.Create;
   try
     GetGlobalGroups(Server, groups);
