@@ -14,14 +14,15 @@ Count=2
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Access Control
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
@@ -45,14 +46,15 @@ code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
 Count=1
 1=The caller is responsible for freeing the memory associated with the lpSecurityDescriptor member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Access Control
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateInheritable
@@ -74,14 +76,15 @@ member to set to True resulting in an inheritable object.
 A pointer to the passed in TSecurityAttributes structure. This allows you to write
 code such as CreateFile(..., CreateInheritable(Sa), ...).
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Access Control
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CreateNullDacl
@@ -106,14 +109,15 @@ If the specified privilege is enabled for the calling thread then the function
 returns True, otherwise the function returns False - this is also the return
 value if the function fails in retrieving the status of the specified privilege.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Privileges
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=EnableProcessPrivilege
@@ -141,14 +145,15 @@ If the function succeeds the result is True, otherwise the result is False. Fail
 is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
 to enable or disable privileges.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Privileges
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=EnableThreadPrivilege
@@ -177,14 +182,15 @@ If the function succeeds the result is True, otherwise the result is False. Fail
 is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
 to enable or disable privileges.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Privileges
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=EnableProcessPrivilege
@@ -202,11 +208,12 @@ administrator.
 If the process is running in the user context of a local administrator the function
 returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclSecurity
 Category=Security
 SubCat=Privileges
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
