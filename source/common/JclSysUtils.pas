@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: March 08, 2002                                                                    }
+{ Last modified: March 10, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -146,6 +146,17 @@ function DynArrayCompareText(Item1, Item2: Pointer): Integer;
 
 procedure ClearObjectList(List: TList);
 procedure FreeObjectList(var List: TList);
+
+//--------------------------------------------------------------------------------------------------
+// Reference memory stream
+//--------------------------------------------------------------------------------------------------
+
+type
+  TJclReferenceMemoryStream = class (TCustomMemoryStream)
+  public
+    constructor Create(const Ptr: Pointer; Size: Longint);
+    function Write(const Buffer; Count: Longint): Longint; override;
+  end;
 
 //--------------------------------------------------------------------------------------------------
 // replacement for the C ternary conditional operator ? :
@@ -981,6 +992,24 @@ begin
     ClearObjectList(List);
     FreeAndNil(List);
   end;
+end;
+
+//==================================================================================================
+// TJclReferenceMemoryStream
+//==================================================================================================
+
+constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
+begin
+  Assert(not IsBadReadPtr(Ptr, Size));
+  inherited Create;
+  SetPointer(Ptr, Size);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  raise EJclError.CreateResRec(@RsCannotWriteRefStream);
 end;
 
 //==================================================================================================
