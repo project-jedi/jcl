@@ -24,11 +24,11 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: May 25, 2003                                                                      }
+{ Last modified: July 28, 2003                                                                     }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
-{   Help and Demos at http://24.54.82.216/DelphiJedi/Default.htm                                   }
-{    My website is usually available between 8:00am-10:00pm EST                                    }
+{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -68,6 +68,8 @@ type
 
   TEDIDataObject = class;
   TEDIDataObjectGroup = class;
+  TEDIDataObjectLinkedListItem = class;
+  TEDIDataObjectLinkedListHeader = class;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Delimiters Object
@@ -109,7 +111,7 @@ type
 
   TEDIDataObject = class(TEDIObject)
   private
-    procedure SetDelimiters(const Delimiters: TEDIDelimiters);  
+    procedure SetDelimiters(const Delimiters: TEDIDelimiters);
   protected
     FEDIDOT: TEDIDataObjectType;
     FState: TEDIDataObjectDataState;
@@ -125,7 +127,7 @@ type
     procedure SetData(const Data: string);
   public
     function Assemble: string; virtual; abstract;
-    procedure Disassemble; virtual; abstract;  
+    procedure Disassemble; virtual; abstract;
     constructor Create(Parent: TEDIDataObject); reintroduce;
     destructor Destroy; override;
     property SpecPointer: Pointer read FSpecPointer write FSpecPointer;
@@ -146,16 +148,17 @@ type
   TEDIDataObjectGroupArray = array of TEDIDataObjectGroup;
 
   TEDIDataObjectGroup = class(TEDIDataObject)
+  private
   protected
     FEDIDataObjects: TEDIDataObjectArray;
     FCreateObjectType: TEDIDataObjectType;
+    function GetCount: Integer;
     function GetEDIDataObject(Index: Integer): TEDIDataObject;
     procedure SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
     function InternalAssignDelimiters: TEDIDelimiters; virtual; abstract;
     function InternalCreateEDIDataObject: TEDIDataObject; virtual; abstract;
   public
-    constructor Create(Parent: TEDIDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer); reintroduce; overload;
+    constructor Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer{= 0}); reintroduce;
     destructor Destroy; override;
     //
     function AddEDIDataObject: Integer;
@@ -179,11 +182,63 @@ type
     property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
       write SetEDIDataObject; default;
     property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects write FEDIDataObjects;
+  published
+    property CreateObjectType: TEDIDataObjectType read FCreateObjectType;
+    property EDIDataObjectCount: Integer read GetCount; //[recommended instead of Length(EDIDataObject)]
+  end;
+
+//--------------------------------------------------------------------------------------------------
+//  EDI Data Object Linked List Header and Item classes
+//--------------------------------------------------------------------------------------------------
+
+  TEDIDataObjectLinkedListItemOptions = set of (lhFreeDataObject);
+
+  TEDIDataObjectLinkedListItem = class(TEDIObject)
+  protected
+    FParent: TEDIDataObjectLinkedListHeader;
+    FOptions: TEDIDataObjectLinkedListItemOptions;
+    FPriorItem: TEDIDataObjectLinkedListItem;
+    FNextItem: TEDIDataObjectLinkedListItem;
+    FEDIDataObject: TEDIDataObject;
+  public
+    constructor Create(Parent: TEDIDataObjectLinkedListHeader;
+      PriorItem: TEDIDataObjectLinkedListItem);
+    destructor Destroy; override;
+    function GetIndexPositionFromParent: Integer;
+  published
+    property PriorItem: TEDIDataObjectLinkedListItem read FPriorItem write FPriorItem;
+    property NextItem: TEDIDataObjectLinkedListItem read FNextItem write FNextItem;
+    property EDIDataObject: TEDIDataObject read FEDIDataObject write FEDIDataObject;
+  end;
+
+  TEDIDataObjectLinkedListHeader = class(TEDIObject)
+  private
+    function GetCount: Integer;
+  protected
+    FFirstItem: TEDIDataObjectLinkedListItem;
+    FLastItem: TEDIDataObjectLinkedListItem;
+    FCurrentItem: TEDIDataObjectLinkedListItem;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AppendEDIDataObject(EDIDataObject: TEDIDataObject);
+    procedure DeleteEDIDataObjects(FreeReferences: Boolean = False);
+    function First(Index: Integer = 0): TEDIDataObjectLinkedListItem;
+    function Next: TEDIDataObjectLinkedListItem;
+    function Prior: TEDIDataObjectLinkedListItem;
+    function Last: TEDIDataObjectLinkedListItem;
+  published
+    property ItemCount: Integer read GetCount;
+    property FirstItem: TEDIDataObjectLinkedListItem read FFirstItem;
+    property LastItem: TEDIDataObjectLinkedListItem read FLastItem;
   end;
 
 //--------------------------------------------------------------------------------------------------
 //  Other
 //--------------------------------------------------------------------------------------------------
+
+function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
+function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
 
 implementation
 
@@ -260,6 +315,9 @@ begin
     FParent := nil;
   end;
   FDelimiters := nil;
+  FSpecPointer := nil;
+  FCustomData1 := nil;
+  FCustomData2 := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -372,21 +430,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject);
-begin
-  if Assigned(Parent) then
-  begin
-    inherited Create(Parent);
-  end
-  else
-  begin
-    inherited Create(nil);
-  end;
-  SetLength(FEDIDataObjects, 0);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
 begin
   if Assigned(Parent) then
@@ -397,8 +440,12 @@ begin
   begin
     inherited Create(nil);
   end;
+  FCreateObjectType := ediUnknown;
   SetLength(FEDIDataObjects, 0);
-  AddEDIDataObjects(EDIDataObjectCount);
+  if EDIDataObjectCount > 0 then
+  begin
+    AddEDIDataObjects(EDIDataObjectCount);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -571,7 +618,7 @@ begin
     end;
     //Insert
     FEDIDataObjects[InsertIndex] := nil;
-    FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
+    FEDIDataObjects[InsertIndex] := EDIDataObject;
     FEDIDataObjects[InsertIndex].Parent := Self;
   end
   else
@@ -690,5 +737,309 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectGroup.GetCount: Integer;
+begin
+  Result := Length(FEDIDataObjects);
+end;
+
+//==================================================================================================
+// TEDIDataObjectLinkedListItem
+//==================================================================================================
+
+{ TEDIDataObjectLinkedListItem }
+
+constructor TEDIDataObjectLinkedListItem.Create(Parent: TEDIDataObjectLinkedListHeader;
+  PriorItem: TEDIDataObjectLinkedListItem);
+begin
+  inherited Create;
+  FOptions := [lhFreeDataObject];
+  FEDIDataObject := nil;
+  FPriorItem := PriorItem;
+  FNextItem := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIDataObjectLinkedListItem.Destroy;
+begin
+  FPriorItem := nil;
+  FNextItem := nil;
+  if (lhFreeDataObject in FOptions) and (FEDIDataObject <> nil) then
+  begin
+    FEDIDataObject.Free;
+  end;
+  FEDIDataObject := nil;
+  FParent := nil;
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectLinkedListItem.GetIndexPositionFromParent: Integer;
+var
+  I: Integer;
+  ListItem: TEDIDataObjectLinkedListItem;
+begin
+  Result := -1;
+  for I := 0 to FParent.ItemCount - 1 do
+  begin
+    if I = 0 then
+      ListItem := FParent.First
+    else
+      ListItem := FParent.Next;
+    if Self = ListItem then
+    begin
+      Result := I;
+      Break;
+    end;
+  end; //for I
+end;
+
+//==================================================================================================
+// TEDIDataObjectLinkedListHeader
+//==================================================================================================
+
+{ TEDIDataObjectLinkedListHeader }
+
+procedure TEDIDataObjectLinkedListHeader.AppendEDIDataObject(EDIDataObject: TEDIDataObject);
+var
+  ListItem: TEDIDataObjectLinkedListItem;
+begin
+  ListItem := TEDIDataObjectLinkedListItem.Create(Self, FLastItem);
+  ListItem.EDIDataObject := EDIDataObject;
+  if FLastItem <> nil then
+  begin
+    FLastItem.NextItem := ListItem;
+  end;
+  if FFirstItem = nil then
+  begin
+    FFirstItem := ListItem;
+  end;
+  FLastItem := ListItem;
+  FCurrentItem := ListItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDIDataObjectLinkedListHeader.Create;
+begin
+  inherited Create;
+  FFirstItem := nil;
+  FLastItem := nil;
+  FCurrentItem := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIDataObjectLinkedListHeader.DeleteEDIDataObjects(FreeReferences: Boolean = False);
+var
+  ListItem: TEDIDataObjectLinkedListItem;
+  PriorItem: TEDIDataObjectLinkedListItem;
+begin
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if FreeReferences and (ListItem.EDIDataObject <> nil) then
+    begin
+      ListItem.EDIDataObject.Free;
+    end;
+    ListItem.EDIDataObject := nil;
+    PriorItem := ListItem;
+    ListItem := ListItem.NextItem;
+    PriorItem.Free;
+  end;
+  FFirstItem := nil;
+  FLastItem := nil;
+  FCurrentItem := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIDataObjectLinkedListHeader.Destroy;
+begin
+  DeleteEDIDataObjects;
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectLinkedListHeader.First(Index: Integer): TEDIDataObjectLinkedListItem;
+begin
+  Result := nil;
+  if Index = 0 then
+    Result := FFirstItem;
+  FCurrentItem := FFirstItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectLinkedListHeader.GetCount: Integer;
+var
+  EDIDataObjectLinkedListItem: TEDIDataObjectLinkedListItem;
+begin
+  Result := 0;
+  EDIDataObjectLinkedListItem := FFirstItem;
+  while EDIDataObjectLinkedListItem <> nil do
+  begin
+    EDIDataObjectLinkedListItem := EDIDataObjectLinkedListItem.NextItem;
+    Inc(Result);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectLinkedListHeader.Last: TEDIDataObjectLinkedListItem;
+begin
+  FCurrentItem := FLastItem;
+  Result := FCurrentItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectLinkedListHeader.Next: TEDIDataObjectLinkedListItem;
+begin
+  FCurrentItem := FCurrentItem.NextItem;
+  Result := FCurrentItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIDataObjectLinkedListHeader.Prior: TEDIDataObjectLinkedListItem;
+begin
+  FCurrentItem := FCurrentItem.PriorItem;
+  Result := FCurrentItem;
+end;
+
+//--------------------------------------------------------------------------------------------------
+//  Other
+//--------------------------------------------------------------------------------------------------
+
+function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
+var
+  SearchPattern: string;
+  I, Offset, SearchPatternLength: Integer;
+begin
+  if rfIgnoreCase in Flags then
+  begin
+    Result := AnsiUpperCase(S);
+    SearchPattern := AnsiUpperCase(Pattern);
+  end else
+  begin
+    Result := S;
+    SearchPattern := Pattern;
+  end;
+  SearchPatternLength := Length(SearchPattern);
+  Result := S;
+
+  I := 1;
+  Offset := 1;
+  while I <= Length(Result) do
+  begin
+    if SearchPatternLength = 1 then
+    begin
+      while Result[I] = SearchPattern[1] do
+      begin
+        Offset := Offset + SearchPatternLength;
+        if not (rfReplaceAll in Flags) then Break;
+        Inc(I);
+      end;
+    end
+    else //PattLen > 1
+    begin
+      while Copy(Result, Offset, SearchPatternLength) = SearchPattern do
+      begin
+        Offset := Offset + SearchPatternLength;
+        if not (rfReplaceAll in Flags) then Break;
+      end;
+    end;
+
+    if Offset <= Length(Result) then
+    begin
+      Result[I] := S[Offset];
+    end
+    else
+    begin
+      Result[I] := #0;
+      SetLength(Result, I-1);
+      Break;
+    end;
+
+    if not (rfReplaceAll in Flags) then Break;
+
+    Inc(I);
+    Inc(Offset);
+  end; //while
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
+var
+  SearchString, SearchPattern: string;
+  I, SearchIndex, ReplaceIndex: Integer;
+  SearchPatternLength, ReplacePatternLength: Integer;
+  SearchResult, ReplaceCount: Integer;
+begin
+  Result := '';
+  //Handle Case Sensitivity
+  if rfIgnoreCase in Flags then
+  begin
+    SearchString := AnsiUpperCase(S);
+    SearchPattern := AnsiUpperCase(OldPattern);
+  end
+  else
+  begin
+    SearchString := S;
+    SearchPattern := OldPattern;
+  end;
+  SearchPatternLength := Length(OldPattern);
+  ReplacePatternLength := Length(NewPattern);
+  //Calculate length of result string
+  ReplaceCount := 0;
+  SearchResult := StrSearch(SearchPattern, SearchString, 1);
+  while SearchResult <> 0 do
+  begin
+    Inc(SearchResult);
+    Inc(ReplaceCount);
+    SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
+  end;
+  SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
+  //Shift the characters
+  ReplaceCount := 0;
+  ReplaceIndex := 1;
+  SearchIndex := 1;
+  while (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) do
+  begin
+    if (rfReplaceAll in Flags) or ((not (rfReplaceAll in Flags)) and (ReplaceCount = 0)) then
+    begin
+      while Copy(SearchString, SearchIndex, SearchPatternLength) = SearchPattern do
+      begin
+        //Move forward in the search string
+        SearchIndex := SearchIndex + Length(SearchPattern);
+        //Replace old pattern
+        I := 1;
+        while (ReplaceIndex <= Length(Result)) and (I <= ReplacePatternLength) do
+        begin
+          Result[ReplaceIndex] := NewPattern[I];
+          Inc(I);
+          Inc(ReplaceIndex);
+        end; //while
+        Inc(ReplaceCount);
+        if not (rfReplaceAll in Flags) then Break;
+      end; //while
+    end; //if (rfReplaceAll in Flags) or ((not (rfReplaceAll in Flags)) and (ReplaceCount = 0)) then
+
+    if (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) then
+    begin
+      Result[ReplaceIndex] := S[SearchIndex];
+    end;
+
+    if not (rfReplaceAll in Flags) then Break;
+
+    Inc(SearchIndex);
+    Inc(ReplaceIndex);
+  end; //while
+end;
 
 end.
