@@ -1,0 +1,263 @@
+/* Partial copy of the Platform SDK style sheet #FFF7C6*/
+
+body
+	{
+	padding: 0px 0px 0px 26px;
+	background: #ffffff;
+	color: #000000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 70%;
+	}
+
+div
+	{
+	width: 90%;
+	border: 2px solid #999999;
+	padding: 4px 8px;
+	background: #cccccc;
+	}
+	
+h1, h2, h3, h4
+	{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	margin-left: -26px;
+	}
+	
+h1
+	{
+	font-size: 145%;
+	margin-top: .5em;
+	margin-bottom: .5em; 
+	}
+	
+h2
+	{
+	font-size: 130%;
+	margin-top: 1em;
+	margin-bottom: .6em; 
+	}
+	
+h3
+	{
+	font-size: 115%;
+	margin-top: 1em;
+	margin-bottom: .6em;
+	}
+	
+h4
+	{
+	font-size: 100%;
+	margin-top: 1em;
+	margin-bottom: .6em; 
+	}
+
+ul p, ol p, dl p
+	{
+	margin-left: 0em;
+	}
+
+p
+	{
+	margin-top: .6em;
+	margin-bottom: .6em;
+	}
+
+dl
+	{
+	margin-top: 0em; 
+	}
+
+dd
+	{
+	margin-bottom: 0em;  
+	margin-left: 1.9em; 
+	}
+
+dt
+	{
+	margin-top: .6em; 
+	}
+
+ul, ol
+	{
+	margin-top: .6em; 	
+	margin-bottom: 0em;
+	}
+	
+ol
+	{
+	margin-left: 1.9em; 
+	}	
+	
+ul
+	{
+	list-style-type: disc;
+	margin-left: 1.9em; 
+	}
+
+li
+	{
+	margin-bottom: .6em;
+	}
+
+ul ol, ol ol
+	{
+	list-style-type: lower-alpha;
+	{
+
+pre
+	{
+	margin-top: .6em;
+	margin-bottom: .6em;
+	}
+
+pre,code
+	{
+	font: 100% Courier New, Courier, mono; 
+	color: #660000;
+	}
+
+table
+	{
+	width: 90%;
+	background: #999999;
+	margin-top: .6em;
+	margin-bottom: .3em;
+	}
+
+th
+	{ 
+	padding: 4px 8px;
+	background: #cccccc;
+	text-align: left;
+	font-size: 70%;
+	vertical-align: bottom;
+	}
+		
+td
+	{ 
+	padding: 4px 8px;
+	background: #ffffff;
+	vertical-align: top;
+	font-size: 70%;
+	}
+
+blockquote
+	{
+	margin-left: 3.8em;
+	margin-right: 3.8em;
+	margin-top: .6em;
+	margin-bottom: .6em;
+	}
+
+sup
+	{
+	text-decoration: none;
+	font-size: smaller; 
+	}
+
+a:link
+	{
+	color: #0066ff;
+	}
+	
+a:visited
+	{
+	color: #996600; 
+	}
+	
+a:hover
+	{
+	color: #cc9900;
+	}
+	
+.label
+	{
+	font-weight: bold; 
+	margin-top: 1em;
+	margin-left: -26px;
+	}
+	
+.tl
+	{
+	margin-bottom: .75em; 
+	}
+	
+.atl
+	{
+	padding-left: 1.5em;
+	padding-bottom: .75em; 
+	}
+	
+.cfe
+	{
+	font-weight: bold; 
+	}
+	
+.mini
+	{
+	font-size: smaller;
+	}
+	
+.dt
+	{
+	margin-bottom: -.6em; 
+	}
+	
+.indent
+	{
+	margin-left: 1.9em; 
+	margin-right: 1.9em;
+	}
+
+.product
+	{
+	text-align: right;
+	color: #333333;
+	font-size: smaller;
+	font-style: italic;
+	}
+
+pre.syntax
+	{
+	background: #dddddd;
+	padding: 2pt,4pt;
+	cursor: text;
+	}
+
+pre.syntax
+	{
+	color: #000000;
+	}
+
+div.footer
+	{
+	width: 100%;
+	border: none;
+	background: #ffffff;
+	margin-top: 18pt;
+	color: #228B22;
+	text-align: center;
+	font-size: 75%;
+	}
+
+.note
+	{
+	margin-left: 14pt;
+	margin-right: 12pt;
+	}
+
+.indent1
+	{
+	margin-left: 12pt;
+	}
+
+.indent2
+	{
+	margin-left: 24pt;
+	}
+
+.indent3
+	{
+	margin-left: 36pt;
+	}
