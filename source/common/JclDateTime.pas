@@ -224,7 +224,7 @@ function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
 function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
 procedure FileTimeToDosDateTime(const FileTime: TFileTime; var Date, Time: Word); overload;
 function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
-procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload
+procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload;
 {$ENDIF MSWINDOWS}
 function FileTimeToStr(const FileTime: TFileTime): string;
 
@@ -840,7 +840,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure  FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload
+procedure FileTimeToSystemTime(const FileTime: TFileTime; var ST: TSystemTime); overload;
 begin
   Windows.FileTimeToSystemTime(FileTime, ST);
 end;
