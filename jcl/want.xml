@@ -22,9 +22,11 @@
 { This unit contains want script for build JCl.                                                    }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: February 17, 2004 (Robert Rossmair)                                                }
 {                                                                                                  }
 {**************************************************************************************************}
+
+$Id$
+
 -->
 <project name="Project JEDI Code Library (JCL)" basedir="." default="help">
   <tstamp>
@@ -36,7 +38,7 @@
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="90"/>
+  <property name="version.minor"    value="91"/>
   <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
 
   <!-- why won't the following line work with subst=""? -->
@@ -122,6 +124,7 @@
     <delete file="${bin.dir}/*.dll" />
     <!-- BCB generated files -->
     <delete file="${lib.dir}/**/*.obj" />
+    <delete file="${lib.dir}/**/*.res" />
     <delete file="**/*.lib" />
     <delete file="**/*.bpi" />
     <!-- fpc generated files -->
@@ -141,11 +144,14 @@
     <zip zipfile="${zipfile}" >
       <fileset dir="${basedir}\.." >
           <exclude name="${basedir}/dist/**" />
+          <exclude name="${basedir}/docs/about jcl/**" />
+          <exclude name="${basedir}/docs/contributors.txt" />
           <exclude name="${install.dir}/prototypes/**" />
           <exclude name="${install.dir}/prototypes.mak" />
           <exclude name="${help.dir}/dtx/**" />
           <exclude name="${help.dir}/HIT/**" />
           <exclude name="${help.dir}/*.txt" />
+          <exclude name="${lib.dir}/**/*.res" />
           <exclude name="${lib.dir}/k1/**" />
           <exclude name="${lib.dir}/k2/**" />
           <exclude name="${pack.dir}/*.dev/**" />
@@ -162,6 +168,7 @@
           <exclude name="${basedir}/want.*" />
           <exclude name="${basedir}/devtools/**" />
 
+          <include name="${basedir}/include/**" />
           <include name="${bin.dir}/JCL-install.ini" />
           <include name="${install.dir}/**/*.cfg" />
           <include name="${install.dir}/**/*.conf" />
@@ -170,7 +177,9 @@
           <include name="${lib.dir}/**/*.exc" />
           <include name="${pack.dir}/**/*.bmk" />
           <include name="${pack.dir}/**/*.gmk" />
+          <include name="${pack.dir}/**/*.xml" />
           <include name="${src.dir}/**/*.obj" />
+          <include name="${src.dir}/common/*.fpc" />
           <include name="${basedir}/**/*.pas" />
           <include name="${basedir}/**/*.dfm" />
           <include name="${basedir}/**/*.xfm" />
@@ -198,7 +207,6 @@
           <include name="${basedir}/**/*.txt" />
           <include name="${basedir}/**/*.htm" />
           <include name="${basedir}/**/*.html" />
-          <!-- include name="${basedir}/**/*.xml" / -->
           <include name="${basedir}/Install.bat" />
           <include name="${basedir}/QInstall.bat" />
           <include name="${basedir}/clean.bat" />
