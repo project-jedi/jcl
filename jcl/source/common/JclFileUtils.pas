@@ -1493,10 +1493,20 @@ end;
 
 function TJclMappedTextReader.GetLineCount: Integer;
 
-  // (rom) assembler is problematic here
-  // (rom) also not portable because Unix uses Carriage Return
-  
-  function CountLines(StartPtr: PChar; Len: Integer): Integer; assembler;
+  function CountLines(P: PChar; Len: Integer): Integer;
+  {$IFDEF PUREPASCAL}
+  var
+    I: Integer;
+  begin
+    Result := 0;
+    for I := 0 to Len-1 do
+    begin
+      if P^ = AnsiLineFeed then
+        Inc(Result);
+      Inc(P);
+    end;
+  end;
+  {$ELSE}
   asm
        PUSH    EDI
        MOV     EDI, EAX
@@ -1510,6 +1520,7 @@ function TJclMappedTextReader.GetLineCount: Integer;
        MOV     EAX, EDX
        POP     EDI
   end;
+  {$ENDIF}
 
 begin
   if FLineCount = -1 then
