@@ -1048,20 +1048,21 @@ end;
 function TJclTD32InfoParser.FindModule(const AAddr: DWORD;
   var AMod: TJclModuleInfo): Boolean;
 var
-  I, J, Offset: Integer;
+  I, J: Integer;
 begin
   if ValidData then
     for I := 0 to ModuleCount - 1 do
     with Modules[I] do
       for J := 0 to SegmentCount - 1 do
       begin
-        Offset := AAddr; // splitt in 2 lines to avoid EIntOverflow if AAddr < FSegments[J].Offset
-        Offset := Offset - FSegments[J].Offset;
-        if (0 <= Offset) and (Offset <= Integer(Segment[J].Size)) then
+        if AAddr >= FSegments[J].Offset then
         begin
-          Result := True;
-          AMod := Modules[I];
-          Exit;
+          if AAddr - FSegments[J].Offset <= Segment[J].Size then
+          begin
+            Result := True;
+            AMod := Modules[I];
+            Exit;
+          end;
         end;
       end;
   Result := False;
