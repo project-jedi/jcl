@@ -4,20 +4,25 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="CJCL50.bpl"/>
-    <OBJFILES value="..\..\lib\C5\JclStrHashMap.obj ..\..\lib\C5\JclStrings.obj ..\..\lib\C5\JclSysInfo.obj 
-      ..\..\lib\C5\JclUnicode.obj ..\..\lib\C5\JclAppInst.obj ..\..\lib\C5\JclDebug.obj 
-      ..\..\lib\C5\JclGraphics.obj ..\..\lib\C5\JclGraphUtils.obj ..\..\lib\C5\JclHookExcept.obj 
-      ..\..\lib\C5\JclRTTI.obj ..\..\lib\C5\JclResources.obj ..\..\lib\C5\JclBase.obj 
-      ..\..\lib\C5\JclLogic.obj ..\..\lib\C5\JclWin32.obj ..\..\lib\C5\JclShell.obj 
-      ..\..\lib\C5\JclRegistry.obj ..\..\lib\C5\JclFileUtils.obj ..\..\lib\C5\JclSynch.obj 
-      ..\..\lib\C5\JclSysUtils.obj ..\..\lib\C5\JclTD32.obj ..\..\lib\C5\JclPeImage.obj 
-      ..\..\lib\C5\JclSecurity.obj ..\..\lib\C5\JclDateTime.obj ..\..\lib\C5\JclCOM.obj 
-      ..\..\lib\C5\JclComplex.obj ..\..\lib\C5\JclCounter.obj ..\..\lib\C5\JclIniFiles.obj 
-      ..\..\lib\C5\JclLocales.obj ..\..\lib\C5\JclMiscel.obj ..\..\lib\C5\JclMath.obj 
-      ..\..\lib\C5\JclMime.obj ..\..\lib\C5\JclMultimedia.obj ..\..\lib\C5\JclNTFS.obj 
-      ..\..\lib\C5\JclMapi.obj ..\..\lib\C5\JclPrint.obj ..\..\lib\C5\JclStatistics.obj 
-      ..\..\lib\C5\JclExprEval.obj ..\..\lib\C5\Jcl8087.obj ..\..\lib\C5\JclUnitConv.obj 
-      ..\..\lib\C5\JclSvcCtrl.obj ..\..\lib\C5\Snmp.obj ..\..\lib\C5\CJCL50.obj"/>
+    <OBJFILES value="..\..\lib\C5\Jcl8087.obj ..\..\lib\C5\JclBase.obj ..\..\lib\C5\JclComplex.obj
+      ..\..\lib\C5\JclCounter.obj ..\..\lib\C5\JclDateTime.obj ..\..\lib\C5\JclEDIXML.obj
+      ..\..\lib\C5\JclEDI_ANSIX12.obj ..\..\lib\C5\JclEDI_UNEDIFACT.obj ..\..\lib\C5\JclEDI.obj
+      ..\..\lib\C5\JclEDISEF.obj ..\..\lib\C5\JclEDITranslators.obj ..\..\lib\C5\JclExprEval.obj
+      ..\..\lib\C5\JclFileUtils.obj ..\..\lib\C5\JclIniFiles.obj ..\..\lib\C5\JclLogic.obj
+      ..\..\lib\C5\JclMath.obj ..\..\lib\C5\JclMIDI.obj ..\..\lib\C5\JclMime.obj
+      ..\..\lib\C5\JclResources.obj ..\..\lib\C5\JclSchedule.obj ..\..\lib\C5\JclStatistics.obj
+      ..\..\lib\C5\JclStrHashMap.obj ..\..\lib\C5\JclStrings.obj ..\..\lib\C5\JclSysInfo.obj
+      ..\..\lib\C5\JclSysUtils.obj ..\..\lib\C5\JclUnitConv.obj ..\..\lib\C5\JclAppInst.obj
+      ..\..\lib\C5\JclCOM.obj ..\..\lib\C5\JclConsole.obj ..\..\lib\C5\JclDebug.obj
+      ..\..\lib\C5\JclHookExcept.obj ..\..\lib\C5\JclLANMan.obj ..\..\lib\C5\JclLocales.obj
+      ..\..\lib\C5\JclMapi.obj ..\..\lib\C5\JclMiscel.obj ..\..\lib\C5\JclMsdosSys.obj
+      ..\..\lib\C5\JvMsdosSys.obj ..\..\lib\C5\JclMultimedia.obj ..\..\lib\C5\JclNTFS.obj
+      ..\..\lib\C5\JclPeImage.obj ..\..\lib\C5\JclRegistry.obj ..\..\lib\C5\JclRTTI.obj
+      ..\..\lib\C5\JclSecurity.obj ..\..\lib\C5\JclShell.obj ..\..\lib\C5\JclSvcCtrl.obj
+      ..\..\lib\C5\JclSynch.obj ..\..\lib\C5\JclTD32.obj ..\..\lib\C5\JclUnicode.obj
+      ..\..\lib\C5\JclWin32.obj ..\..\lib\C5\JclWinMIDI.obj ..\..\lib\C5\LM.obj
+      ..\..\lib\C5\Snmp.obj ..\..\lib\C5\JclGraphics.obj ..\..\lib\C5\JclGraphUtils.obj
+      ..\..\lib\C5\JclPrint.obj ..\..\lib\C5\CJCL50.obj"/>
     <RESFILES value="CJCL50.res ..\..\lib\C5\JclUnicode.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -76,7 +81,7 @@ CompanyName=Project JEDI
 FileDescription=C5 package for JCL
 FileVersion=1.20.1.779
 InternalName=CJCL50
-LegalCopyright=Copyright (C) 1999, 2002 Project JEDI
+LegalCopyright=Copyright (C) 1999, 2003 Project JEDI
 LegalTrademarks=
 OriginalFilename=CJCL50.bpk
 ProductName=Jedi Code Library
