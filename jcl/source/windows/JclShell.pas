@@ -49,7 +49,7 @@ uses
   {$IFNDEF FPC}
   ShlObj,
   {$ENDIF ~FPC}
-  JclWin32;
+  JclWin32, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
 // Files and Folders
@@ -186,6 +186,19 @@ function GetFileExeType(const FileName: TFileName): TJclFileExeType;
 
 function ShellFindExecutable(const FileName, DefaultDir: string): string;
 
+//MSI functions and types used in ShellLinkResolve - copied from JwaMsi.pas
+type
+  INSTALLSTATE = Longint;
+const
+  MSILIB='msi.dll';
+var
+  RtdlMsiLibHandle:  TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+  RtdlMsiGetShortcutTarget: function (szShortcutPath: LPCSTR; szProductCode: LPSTR;
+                                    szFeatureId: LPSTR; szComponentCode: LPSTR): UINT; stdcall = nil;
+
+  RtdlMsiGetComponentPath: function (szProduct: LPCSTR; szComponent: LPCSTR;
+                                  lpPathBuf: LPSTR; pcchBuf: LPDWORD): INSTALLSTATE; stdcall =nil;
+
 implementation
 
 uses
@@ -194,7 +207,7 @@ uses
   CommCtrl,
   {$ENDIF ~FPC}
   Messages, ShellApi,
-  JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
+  JclFileUtils, JclStrings, JclSysInfo;
 
 const
   cVerbProperties = 'properties';
@@ -1036,9 +1049,24 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function RtdlLoadMsiFuncs:Boolean;
+begin
+  Result:=False;
+  if LoadModule(rtdlMsiLibHandle,MSILIB) then
+  begin
+    if not Assigned(RtdlMsiGetShortcutTarget) then
+      RtdlMsiGetShortcutTarget:=GetModuleSymbol(rtdlMsiLibHandle,'MsiGetShortcutTargetA');
+
+    if not Assigned(RtdlMsiGetComponentPath) then
+      RtdlMsiGetComponentPath:=GetModuleSymbol(rtdlMsiLibHandle,'MsiGetComponentPathA');
+
+    Result:=(Assigned(RtdlMsiGetShortcutTarget)) and (Assigned(RtdlMsiGetComponentPath));
+  end;
+end;
+
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 const
-  SLR_INVOKE_MSI = 128;
+  MAX_FEATURE_CHARS = 38;   // maximum chars in MSI feature name
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
@@ -1046,30 +1074,63 @@ var
   Buffer: string;
   Win32FindData: TWin32FindData;
   FullPath: string;
+  ProductGuid: array[0..38] of char;
+  FeatureID: array[0..MAX_FEATURE_CHARS] of char;
+  ComponentGUID: array[0..38] of char;
+  TargetFile: array[0..MAX_PATH] of Char;
+  PathSize: DWORD;
+  TargetResolved: Boolean;
 begin
   Result := CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
-    IID_IShellLink, ShellLink);
+                             IID_IShellLink, ShellLink);
+
   if Succeeded(Result) then
   begin
+    TargetResolved:=False;
+
+    //Handle MSI style shortcuts without invoking the Windows installer if the feature was
+    //set to "Install on first use"
+    if RtdlLoadMsiFuncs then
+    begin
+      FillChar(ProductGuid, SizeOf(ProductGuid), #0);
+      FillChar(FeatureID, SizeOf(FeatureID), #0);
+      FillChar(ComponentGuid, SizeOf(ComponentGuid), #0);
+      FillChar(TargetFile, SizeOf(TargetFile),#0);
+
+      if RtdlMsiGetShortcutTarget(PAnsiChar(FileName), ProductGuid, FeatureID, ComponentGuid) = ERROR_SUCCESS then
+      begin
+        PathSize := MAX_PATH + 1;
+        RtdlMsiGetComponentPath(ProductGuid, ComponentGuid, TargetFile, @PathSize);
+
+        if TargetFile <> '' then
+        begin
+          Link.Target := TargetFile;
+          TargetResolved:=True;
+        end;
+      end;
+    end;
+
     PersistFile := ShellLink as IPersistFile;
     // PersistFile.Load fails if the filename is not fully qualified
     FullPath := ExpandFileName(FileName);
     MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1,
-      LinkName, MAX_PATH);
+                        LinkName, MAX_PATH);
     Result := PersistFile.Load(LinkName, STGM_READ);
+
     if Succeeded(Result) then
     begin
-      Result := ShellLink.Resolve(0, SLR_ANY_MATCH or SLR_INVOKE_MSI);
+      Result := ShellLink.Resolve(0, SLR_ANY_MATCH);
+
       if Succeeded(Result) then
       begin
         SetLength(Buffer, MAX_PATH);
-        ShellLink.GetIDList(Link.IdList);
 
-        //GetPath doesn't support SLR_INVOKE_MSI - need to use the PIDL to get the path
-        if not SHGetPathFromIDList(Link.IdList,PChar(Buffer)) then
+        if not TargetResolved then
+        begin
           ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData, SLGP_SHORTPATH);
+          Link.Target := PChar(Buffer);
+        end;
 
-        Link.Target := PChar(Buffer);
         ShellLink.GetArguments(PChar(Buffer), MAX_PATH);
         Link.Arguments := PChar(Buffer);
         ShellLink.GetShowCmd(Link.ShowCmd);
@@ -1080,6 +1141,7 @@ begin
         ShellLink.GetIconLocation(PChar(Buffer), MAX_PATH, Link.IconIndex);
         Link.IconLocation := PChar(Buffer);
         ShellLink.GetHotkey(Link.HotKey);
+        ShellLink.GetIDList(Link.IdList);
       end;
     end;
   end;
@@ -1363,11 +1425,11 @@ begin
          Result := RasDialDlgA(nil, PChar(EntryName), nil, @Info);
        end;   
      finally   
-       FreeLibrary(RasDlg);   
+       FreeLibrary(RasDlg);
      end;   
    end 
    else
-     Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL); 
+     Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1465,11 +1527,19 @@ begin
     Result := 0;
 end;
 
+initialization
+  //We don't load the msi functions until the first attempt to resolve an MSI link
+finalization
+  UnloadModule(rtdlMsiLibHandle);
+
 //--------------------------------------------------------------------------------------------------
 
 // History:
 
 // $Log$
+// Revision 1.17  2004/12/22 11:44:22  rikbarker
+// Modified ShellLinkResolve to correctly read the target from MSI style shortcuts without invoking the windows installer if the product component was set to "Install on First Use".  Added dynamic links to MSI functions in msi.dll
+//
 // Revision 1.16  2004/12/03 15:36:04  rikbarker
 // Fixed ShellLinkResolve to correctly Resolve TargetPath for MS-Office style link files.
 //
