@@ -278,11 +278,11 @@ var
   {$IFDEF KYLIX}
   J: Integer;
   {$ENDIF}
-  Units: TStringList;
+  Units, ExcludeList: TStringList;
   UnitType: string;
   LibDescriptor: string;
   SaveDir, UnitOutputDir: string;
-  Path, ListFileName: string;
+  Path, ExcludeListFileName: string;
   Success: Boolean;
 begin
   Result := True;
@@ -292,13 +292,24 @@ begin
   Tool.WriteInstallLog(Format('Making %s', [LibDescriptor]));
   Units := TStringList.Create;
   try
-    Tool.UpdateStatus(Format('Compiling %s ...', [LibDescriptor]));
+    Tool.UpdateStatus(Format('Compiling %s...', [LibDescriptor]));
     Path := Format('%ssource' + PathSeparator + '%s', [FJclPath, SubDir]);
-    ListFileName := MakePath(Installation, Format('%s' + PathSeparator + '%s.lst', [FLibDirMask, SubDir]));
-    if FileExists(ListFileName) then
-      Units.LoadFromFile(ListFileName)
-    else
-      BuildFileList(Path + (PathSeparator + '*.pas'), faAnyFile, Units);
+    BuildFileList(Path + (PathSeparator + '*.pas'), faAnyFile, Units);
+
+    // check for units not to compile
+    ExcludeListFileName := MakePath(Installation, Format('%s' + PathSeparator + '%s.exc', [FLibDirMask, SubDir]));
+    if FileExists(ExcludeListFileName) then
+    begin
+      ExcludeList := TStringList.Create;
+      try
+        ExcludeList.LoadFromFile(ExcludeListFileName);
+        for I := 0 to ExcludeList.Count - 1 do
+          Units.Delete(Units.IndexOf(ExcludeList[I]));
+      finally
+        ExcludeList.Free;
+      end;
+    end;
+
     for I := 0 to Units.Count -1 do
       Units[I] := Copy(Units[I], 1, Length(Units[I]) - 4);
     with Installation.DCC do
@@ -392,8 +403,10 @@ begin
 end;
 
 function TJclInstall.DocFileName(const BaseFileName: string): string;
+const
+  SDocFileMask = '%sdocs' + PathSeparator + '%s';
 begin
-  Result := Format('%s' + PathSeparator + 'docs' + PathSeparator + '%s', [FJclPath, BaseFileName]);
+  Result := Format(SDocFileMask, [FJclPath, BaseFileName]);
 end;
 
 function TJclInstall.FeatureInfoFileName(FeatureID: Cardinal): string;
