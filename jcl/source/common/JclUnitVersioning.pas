@@ -30,7 +30,7 @@
 
 unit JclUnitVersioning;
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 interface
 
@@ -41,8 +41,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils,
-  Contnrs;
+  SysUtils, Contnrs;
 
 type
   PUnitVersionInfo = ^TUnitVersionInfo;
@@ -51,7 +50,6 @@ type
     Revision: string; // $'Revision$
     Date: string;     // $'Date$     in UTC (GMT)
     LogPath: string;  // logical file path
-
     Extra: string;    // user defined string
     Data: Pointer;    // user data
   end;
@@ -61,14 +59,12 @@ type
     FInfo: PUnitVersionInfo;
   public
     constructor Create(AInfo: PUnitVersionInfo);
-
     function RCSfile: string;
     function Revision: string;
     function Date: string;
     function Extra: string;
     function LogPath: string;
     function Data: Pointer;
-
     function DateTime: TDateTime;
   end;
 
@@ -132,22 +128,23 @@ function GetUnitVersioning: TUnitVersioning;
 
 implementation
 
-// Delphi 5 does not know this function 
+// Delphi 5 does not know this function
 function StartsWith(const SubStr, S: string): Boolean;
 var
-  i, Len: Integer;
+  I, Len: Integer;
 begin
   Result := False;
   Len := Length(SubStr);
   if Len <= Length(S) then
   begin
-    for i := 1 to Len do
-      if S[i] <> SubStr[i] then
+    for I := 1 to Len do
+      if S[I] <> SubStr[I] then
         Exit;
     Result := True;
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
 
 function CompareFilenames(const Fn1, Fn2: string): Integer;
 begin
@@ -159,7 +156,9 @@ begin
   {$ENDIF UNIX}
 end;
 
+//--------------------------------------------------------------------------------------------------
 { TUnitVersion }
+//--------------------------------------------------------------------------------------------------
 
 constructor TUnitVersion.Create(AInfo: PUnitVersionInfo);
 begin
@@ -167,61 +166,73 @@ begin
   FInfo := AInfo;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersion.RCSfile: string;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := Trim(FInfo.RCSfile);
-  if StartsWith('$'+'RCSfile: ', Result) then // a CVS command
+  if StartsWith('$RCSfile: ', Result) then // a CVS command
   begin
     Delete(Result, 1, 10);
     Delete(Result, Length(Result) - 1, 2);
-    for i := Length(Result) downto 1 do
-    begin
+    for I := Length(Result) downto 1 do
       if Result[I] = ',' then
       begin
-        Delete(Result, i, MaxInt);
+        Delete(Result, I, MaxInt);
         Break;
       end;
-    end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.Revision: string;
 begin
   Result := Trim(FInfo.Revision);
-  if StartsWith('$'+'Revision: ', Result) then // a CVS command
-    Result := Copy(Result, 12, Length(Result) - 11 - 2)
+  if StartsWith('$Revision: ', Result) then // a CVS command
+    Result := Copy(Result, 12, Length(Result) - 11 - 2);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.Date: string;
 begin
   Result := Trim(FInfo.Date);
-  if StartsWith('$'+'Date: ', Result) then // a CVS command
+  if StartsWith('$Date: ', Result) then // a CVS command
   begin
     Delete(Result, 1, 7);
     Delete(Result, Length(Result) - 1, 2);
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersion.Data: Pointer;
 begin
   Result := FInfo.Data;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersion.Extra: string;
 begin
   Result := Trim(FInfo.Extra);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersion.LogPath: string;
 begin
   Result := Trim(FInfo.LogPath);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersion.DateTime: TDateTime;
 var
-  ps: Integer;
+  Ps: Integer;
   S: string;
   Error: Integer;
   Year, Month, Day, Hour, Minute, Second: Word;
@@ -231,12 +242,12 @@ begin
   S := Date;
 
   // date:   yyyy/mm/dd | yyyy-mm-dd | mm/dd/yyyy | mm-dd-yyyy | dd.mm.yyyy
-  ps := Pos('/', S);
-  if ps = 0 then
-    ps := Pos('-', S);
-  if ps <> 0 then
+  Ps := Pos('/', S);
+  if Ps = 0 then
+    Ps := Pos('-', S);
+  if Ps <> 0 then
   begin
-    if ps = 5 then
+    if Ps = 5 then
     begin
       // yyyy/mm/dd  |  yyyy-mm-dd
       Val(Copy(S, 1, 4), Year, Error);
@@ -253,8 +264,8 @@ begin
   end
   else
   begin
-    ps := Pos('.', S);
-    if ps <> 0 then
+    Ps := Pos('.', S);
+    if Ps <> 0 then
     begin
       // dd.mm.yyyy
       Val(Copy(S, 1, 2), Day, Error);
@@ -266,31 +277,33 @@ begin
   end;
 
   // time:   hh:mm:ss  |  hh/mm/ss
-  ps := Pos(' ', S);
-  S := Trim(Copy(S, ps + 1, MaxInt));
+  Ps := Pos(' ', S);
+  S := Trim(Copy(S, Ps + 1, MaxInt));
 
-  ps := Pos(':', S);
-  if ps <> 0 then
+  Ps := Pos(':', S);
+  if Ps <> 0 then
     TimeSep := ':'
   else
   begin
-    ps := Pos('/', S);
+    Ps := Pos('/', S);
     TimeSep := '/';
   end;
-  Val(Copy(S, 1, ps - 1), Hour, Error);
-  Delete(S, 1, ps);
-  ps := Pos(TimeSep, S);
-  Val(Copy(S, 1, ps - 1), Minute, Error);
-  Delete(S, 1, ps);
-  ps := Pos(TimeSep, S);
-  if ps = 0 then
-    ps := Length(S) + 1;
-  Val(Copy(S, 1, ps - 1), Second, Error);
+  Val(Copy(S, 1, Ps - 1), Hour, Error);
+  Delete(S, 1, Ps);
+  Ps := Pos(TimeSep, S);
+  Val(Copy(S, 1, Ps - 1), Minute, Error);
+  Delete(S, 1, Ps);
+  Ps := Pos(TimeSep, S);
+  if Ps = 0 then
+    Ps := Length(S) + 1;
+  Val(Copy(S, 1, Ps - 1), Second, Error);
 
   Result := EncodeDate(Year, Month, Day) + EncodeTime(Hour, Minute, Second, 0);
 end;
 
+//--------------------------------------------------------------------------------------------------
 { TUnitVersioningModule }
+//--------------------------------------------------------------------------------------------------
 
 constructor TUnitVersioningModule.Create(AInstance: THandle);
 begin
@@ -299,26 +312,36 @@ begin
   FItems := TObjectList.Create;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TUnitVersioningModule.Destroy;
 begin
   FItems.Free;
   inherited Destroy;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioningModule.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioningModule.GetItems(Index: Integer): TUnitVersion;
 begin
   Result := TUnitVersion(FItems[Index]);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TUnitVersioningModule.Add(Info: PUnitVersionInfo);
 begin
   FItems.Add(TUnitVersion.Create(Info));
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioningModule.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
 var
@@ -331,23 +354,23 @@ begin
     Result := nil;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioningModule.IndexOf(const RCSfile: string; const LogPath: string): Integer;
 begin
   for Result := 0 to FItems.Count - 1 do
-  begin
     if CompareFilenames(Items[Result].RCSfile, RCSfile) = 0 then
-    begin
       if LogPath = '*' then
         Exit
       else
       if CompareFilenames(LogPath, Items[Result].LogPath) = 0 then
         Exit;
-    end;
-  end;
   Result := -1;
 end;
 
+//--------------------------------------------------------------------------------------------------
 { TUnitVersioning }
+//--------------------------------------------------------------------------------------------------
 
 constructor TUnitVersioning.Create;
 begin
@@ -355,49 +378,55 @@ begin
   FModules := TObjectList.Create;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 destructor TUnitVersioning.Destroy;
 begin
   FModules.Free;
   inherited Destroy;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TUnitVersioning.Add(Instance: THandle; Info: PUnitVersionInfo);
 var
-  i: Integer;
+  I: Integer;
   Module: TUnitVersioningModule;
 begin
-  for i := 0 to FModules.Count - 1 do
-  begin
-    if Modules[i].Instance = Instance then
+  for I := 0 to FModules.Count - 1 do
+    if Modules[I].Instance = Instance then
     begin
-      Modules[i].Add(Info);
+      Modules[I].Add(Info);
       Exit;
     end;
-  end;
   // create a new module entry
   Module := TUnitVersioningModule.Create(Instance);
   FModules.Add(Module);
   Module.Add(Info);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TUnitVersioning.UnregisterModule(Instance: THandle);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := FModules.Count - 1 downto 0 do
-  begin
-    if Modules[i].Instance = Instance then
+  for I := FModules.Count - 1 downto 0 do
+    if Modules[I].Instance = Instance then
     begin
       FModules.Delete(I);
       Break;
     end;
-  end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TUnitVersioning.UnregisterModule(Module: TUnitVersioningModule);
 begin
   FModules.Remove(Module);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioning.GetCount: Integer;
 var
@@ -408,6 +437,8 @@ begin
   for I := 0 to FModules.Count - 1 do
     Inc(Result, Modules[I].Count);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TUnitVersioning.GetItems(Index: Integer): TUnitVersion;
 var
@@ -427,16 +458,22 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioning.GetModuleCount: Integer;
 begin
   ValidateModules;
   Result := FModules.Count;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioning.GetModules(Index: Integer): TUnitVersioningModule;
 begin
   Result := TUnitVersioningModule(FModules[Index]);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TUnitVersioning.ValidateModules;
 var
@@ -453,33 +490,38 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioning.FindUnit(const RCSfile: string; const LogPath: string): TUnitVersion;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FModules.Count - 1 do
+  for I := 0 to FModules.Count - 1 do
   begin
-    Result := Modules[i].FindUnit(RCSfile, LogPath);
+    Result := Modules[I].FindUnit(RCSfile, LogPath);
     if Result <> nil then
       Exit;
   end;
   Result := nil;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TUnitVersioning.IndexOf(const RCSfile: string; const LogPath: string): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FModules.Count - 1 do
+  for I := 0 to FModules.Count - 1 do
   begin
-    Result := Modules[i].IndexOf(RCSfile, LogPath);
+    Result := Modules[I].IndexOf(RCSfile, LogPath);
     if Result <> -1 then
       Exit;
   end;
   Result := -1;
 end;
 
-{******************************************************************************}
+//--------------------------------------------------------------------------------------------------
+
 function GetNamedProcessAddress(const Id: ShortString; out RefCount: Integer): Pointer; forward;
   // Returns a 3820 Bytes large block [= 4096 - 276 = 4096 - (8+256+4+8)]
   // max 20 blocks can be allocated
@@ -566,8 +608,8 @@ begin
     else
     begin
       if (Requested.Signature1 = Signature1 xor pid) and
-         (Requested.Signature2 = Signature2 xor pid) and
-         (Requested.Id = Id) then
+        (Requested.Signature2 = Signature2 xor pid) and
+        (Requested.Id = Id) then
         Break; // Found correct, already existing block.
     end;
 
@@ -591,8 +633,8 @@ begin
   else
   begin
     if (Requested.Signature1 = Signature1 xor pid) and
-       (Requested.Signature2 = Signature2 xor pid) and
-       (Requested.Id = Id) then
+      (Requested.Signature2 = Signature2 xor pid) and
+      (Requested.Id = Id) then
     begin
       Inc(Requested.RefCount);
       Result := @Requested.Data;
@@ -600,6 +642,8 @@ begin
     end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function ReleaseNamedProcessAddress(P: Pointer): Integer;
 var
@@ -621,7 +665,7 @@ begin
   end;
 end;
 
-{******************************************************************************}
+//--------------------------------------------------------------------------------------------------
 
 var
   UnitVersioningOwner: Boolean = False;
@@ -662,6 +706,8 @@ begin
   Result := GlobalUnitVersioning;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure FinalizeUnitVersioning;
 var
   RefCount: Integer;
@@ -683,6 +729,8 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure RegisterUnitVersion(hInstance: THandle; const Info: TUnitVersionInfo);
 var
   UnitVersioning: TUnitVersioning;
@@ -691,6 +739,8 @@ begin
   if Assigned(UnitVersioning) then
     UnitVersioning.Add(hInstance, @Info);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure UnregisterUnitVersion(hInstance: THandle);
 var
@@ -718,6 +768,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.3  2004/09/02 06:16:09  marquardt
+// style cleaning
+//
 // Revision 1.2  2004/09/01 23:24:53  ahuser
 // Replaced single linked list by TObjectList
 // New methods FindUnit, IndexOf
