@@ -238,7 +238,7 @@ function Min(const B1, B2: Int64): Int64; overload;
 implementation
 
 uses
-  JclBase, JclResources;
+  JclBase;
 
 type
   PByte = ^Byte;
