@@ -298,6 +298,7 @@ resourcestring
   RsFileUtilsAttrUnavailable = 'Unable to retrieve attributes of %s';
 
   RsCannotCreateDir = 'Unable to create directory';
+  RsDelTreePathIsEmpty = 'DelTree: Path is empty';
 
   // TJclFileVersionInfo
 
@@ -954,6 +955,8 @@ resourcestring
 resourcestring
   RsCannotWriteRefStream = 'Can not write to a read-only memory stream';
   RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
+  RsInvalidDigit = 'Invalid base %d digit ''%s'' encountered.';
+  RsInvalidDigitValue = 'Don''t know a digit for %d';
 
 //--------------------------------------------------------------------------------------------------
 // JclTD32
