@@ -315,7 +315,7 @@ begin
   begin
     PidlFree(F.Item);
     DestroyIcon(F.IconLarge);
-    DestroyIcon(F.IconLarge);
+    DestroyIcon(F.IconSmall);
   end;
   F.Attributes := 0;
   F.Item := nil;
