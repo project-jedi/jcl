@@ -1,3 +1,3 @@
 unit JclGraphUtils;
-{$DEFINE Develop}
+{$DEFINE PROTOTYPE}
 {$INCLUDE _GraphUtils.pas}
