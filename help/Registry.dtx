@@ -3,6 +3,15 @@ Summary
 Unit <B>JclRegistry </B>contains useful routines for registry
 manipulation in addition to standard routines provided by
 several Delphi classes.
+Description:
+  Contains various utility routines to read and write registry values. Using these routines
+  prevents you from having to instantiate temporary TRegistry objects and since the routines
+  directly call the registry API they do not suffer from the resource overhead as TRegistry does.
+Donators: John C Molyneux, Marcel van Brakel, Charlie Calvert
+Contributors:
+  Marcel van Brakel, Stephane Fillon, Eric S.Fisher, Peter Friese, Peter J. Haas,
+  Andreas Hausladen, Manlio Laschena, Robert Marquardt, Robert Rossmair,
+  Olivier Sannier, Petr Vones
 --------------------------------------------------------------------------------
 @@$RegistryandInifiles
 <GROUP JCL>
@@ -199,6 +208,62 @@ See also:
 Donator: John C Molyneux
 Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
+@@RegWriteCardinal
+<GROUP RegistryandInifiles.Registry>
+Summary:
+  Writes an unsigned integer key to the registry.
+Description:
+  RegWriteCardinal writes a single unsigned integer value to the registry. If the function fails
+  it raises an EJclRegistryError exception. The specified Key must already exist.
+Parameters:
+  RootKey - The rootkey which to write to, one of the HKEY_XXX constants.
+  Key - The key (path) where the desired value is located, relative to RootKey.
+  Name - Name of the value to write.
+  Value - Value to write.
+See also:
+  RegWriteBool
+  RegWriteString
+  RegWriteBinary
+Donator: Peter J. Haas
+--------------------------------------------------------------------------------
+@@RegWriteInt64
+<GROUP RegistryandInifiles.Registry>
+Summary:
+  Writes an 64 bit integer key to the registry.
+Description:
+  RegWriteInteger writes a single 64 bit integer value to the registry. If the function fails
+  it raises an EJclRegistryError exception. The specified Key must already exist.
+Parameters:
+  RootKey - The rootkey which to write to, one of the HKEY_XXX constants.
+  Key - The key (path) where the desired value is located, relative to RootKey.
+  Name - Name of the value to write.
+  Value - Value to write.
+See also:
+  RegWriteUInt64
+  RegWriteBool
+  RegWriteString
+  RegWriteBinary
+Donator: Peter J. Haas
+--------------------------------------------------------------------------------
+@@RegWriteUInt64
+<GROUP RegistryandInifiles.Registry>
+Summary:
+  Writes an unsigned 64 bit integer key to the registry.
+Description:
+  RegWriteInteger writes a single unsigned 64 bit integer value to the registry. If the function fails
+  it raises an EJclRegistryError exception. The specified Key must already exist.
+Parameters:
+  RootKey - The rootkey which to write to, one of the HKEY_XXX constants.
+  Key - The key (path) where the desired value is located, relative to RootKey.
+  Name - Name of the value to write.
+  Value - Value to write.
+See also:
+  RegWriteInt64
+  RegWriteBool
+  RegWriteString
+  RegWriteBinary
+Donator: Peter J. Haas
+--------------------------------------------------------------------------------
 @@RegWriteString
 <GROUP RegistryandInifiles.Registry>
 Summary:
@@ -216,6 +281,30 @@ See also:
   RegWriteInteger
   RegWriteBinary
 Donator: John C Molyneux
+Contributor: Peter J. Haas
+
+@@RegWriteAnsiString
+<COMBINE RegWriteString>
+
+@@RegWriteWideString
+<COMBINE RegWriteString>
+--------------------------------------------------------------------------------
+@@RegWriteMultiString
+<GROUP RegistryandInifiles.Registry>
+Summary:
+  Writes a string key to the registry.
+Description:
+  RegWriteMultiString writes a single string value to the registry. If the function fails
+  it raises an EJclRegistryError exception. The specified Key must already exist.
+Parameters:
+  RootKey - The rootkey which to write to, one of the HKEY_XXX constants.
+  Key - The key (path) where the desired value is located, relative to RootKey.
+  Name - Name of the value to write.
+  Value - Value to write.
+See also:
+  RegWriteString
+  RegReadMultiString
+Donator: Peter J. Haas
 --------------------------------------------------------------------------------
 @@RegWriteBinary
 <GROUP RegistryandInifiles.Registry>
@@ -320,6 +409,24 @@ See also:
   RegReadString
 Donator: Stephane Fillon
 Contributor: Peter J. Haas
+
+@@RegReadBinaryDef
+Donator: Peter J. Haas
+<COMBINE RegReadBinary>
+--------------------------------------------------------------------------------
+@@RegReadBinaryAsAnsiString
+<GROUP RegistryandInifiles.Registry>
+Donator: Peter J. Haas
+
+@@RegReadBinaryAsAnsiStringDef
+<COMBINE RegReadBinaryAsAnsiString>
+--------------------------------------------------------------------------------
+@@RegReadBinaryAsWideString
+<GROUP RegistryandInifiles.Registry>
+Donator: Peter J. Haas
+
+@@RegReadBinaryAsWideStringDef
+<COMBINE RegReadBinaryAsWideString>
 --------------------------------------------------------------------------------
 @@UnregisterAutoExec
 <GROUP RegistryandInifiles.Registry>
@@ -558,4 +665,94 @@ QuickInfo
   Category: Registry and Ini files
   Windows NT/2000: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
+--------------------------------------------------------------------------------
+@@RegGetDataSize
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+--------------------------------------------------------------------------------
+@@RegGetDataType
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+--------------------------------------------------------------------------------
+@@RegReadCardinal
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadCardinalDef
+<COMBINE RegReadCardinal>
+--------------------------------------------------------------------------------
+@@RegReadInt64
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadInt64Def
+<COMBINE RegReadInt64>
+--------------------------------------------------------------------------------
+@@RegReadUInt64
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadUInt64Def
+<COMBINE RegReadUInt64>
+--------------------------------------------------------------------------------
+@@RegReadAnsiString
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadAnsiStringDef
+<COMBINE RegReadAnsiString>
+--------------------------------------------------------------------------------
+@@RegReadWideString
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadWideStringDef
+<COMBINE RegReadWideString>
+--------------------------------------------------------------------------------
+@@RegReadMultiString
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadMultiStringDef
+<COMBINE RegReadMultiString>
+--------------------------------------------------------------------------------
+@@RegReadMultiAnsiString
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadMultiAnsiStringDef
+<COMBINE RegReadMultiAnsiString>
+--------------------------------------------------------------------------------
+@@RegReadMultiWideString
+<GROUP RegistryandInifiles.Registry>
+Description: TODO
+Donator: Peter J. Haas
+
+@@RegReadMultiWideStringDef
+<COMBINE RegReadMultiWideString>
+--------------------------------------------------------------------------------
+@@RegReadDWORD
+<GROUP RegistryandInifiles.Registry>
+This functions read invalid 8 byte REG_DWORD values.
+Obsolete, use RegReadInt64 instead.
+Contributor: Peter J. Haas
+
+@@RegReadDWORDDef
+<COMBINE RegReadDWORD>
+--------------------------------------------------------------------------------
+@@RegWriteDWORD
+<GROUP RegistryandInifiles.Registry>
+Obsolete, RegWriteDWORD creates invalid 8 byte REG_DWORD keys.
+Use RegWriteInt64 instead (which creates REG_QWORD values).
+Donator: Unknown
+--------------------------------------------------------------------------------
 
