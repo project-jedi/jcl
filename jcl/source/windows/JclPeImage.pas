@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 28, 2002                                                                    }
+{ Last modified: May 23, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -652,6 +652,7 @@ type
     function RawToVa(Raw: DWORD): Pointer;
     function RvaToSection(Rva: DWORD): PImageSectionHeader;
     function RvaToVa(Rva: DWORD): Pointer;
+    function RvaToVaEx(Rva: DWORD): Pointer;
     function StatusOK: Boolean;
     procedure TryGetNamesForOrdinalImports;
     function VerifyCheckSum: Boolean;
@@ -1452,12 +1453,10 @@ end;
 procedure TJclPeImportLibItem.CreateList;
 var
   FuncItem: TJclPeImportFuncItem;
-  ImageBase: DWORD;
   OrdinalName: PImageImportByName;
 begin
   if FThunk = nil then
     Exit;
-  ImageBase := Image.OptionalHeader.ImageBase;
   while FThunk^.Function_ <> 0 do
   begin
     FuncItem := TJclPeImportFuncItem.Create;
@@ -1474,7 +1473,7 @@ begin
         ikImport, ikBoundImport:
           OrdinalName := PImageImportByName(Image.RvaToVa(DWORD(FThunk^.AddressOfData)));
         ikDelayImport:
-          OrdinalName := PImageImportByName(Image.RvaToVa(DWORD(FThunk^.AddressOfData - ImageBase)));
+          OrdinalName := PImageImportByName(Image.RvaToVaEx(DWORD(FThunk^.AddressOfData)));
       else
         OrdinalName := nil;
       end;
@@ -1591,7 +1590,6 @@ var
   ImportDesc: PImageImportDescriptor;
   LibItem: TJclPeImportLibItem;
   DelayImportDesc: PImgDelayDescr;
-  ImageBase: DWORD;
   BoundImports, BoundImport: PImageBoundImportDescriptor;
   S: string;
   I: Integer;
@@ -1630,14 +1628,13 @@ begin
     DelayImportDesc := DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT);
     if DelayImportDesc <> nil then
     begin
-      ImageBase := OptionalHeader.ImageBase;
       while DelayImportDesc^.szName <> 0 do
       begin
         LibItem := TJclPeImportLibItem.Create(Image);
         LibItem.FImportKind := ikDelayImport;
         LibItem.FImportDescriptor := DelayImportDesc;
-        LibItem.FName := RvaToVa(DelayImportDesc^.szName - ImageBase);
-        LibItem.FThunk := PImageThunkData(RvaToVa(DelayImportDesc^.pINT.AddressOfData - ImageBase));
+        LibItem.FName := RvaToVaEx(DelayImportDesc^.szName);
+        LibItem.FThunk := PImageThunkData(RvaToVaEx(DelayImportDesc^.pINT.AddressOfData));
         Add(LibItem);
         FUniqueNamesList.AddObject(AnsiLowerCase(LibItem.Name), LibItem);
         Inc(DelayImportDesc);
@@ -3843,6 +3840,15 @@ begin
     Result := FLoadedImage.MappedAddress + Rva
   else
     Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPeImage.RvaToVaEx(Rva: DWORD): Pointer;
+begin
+  if (Rva > FLoadedImage.SizeOfImage) and (Rva > OptionalHeader.ImageBase) then
+    Dec(Rva, OptionalHeader.ImageBase);
+  Result := RvaToVa(Rva);
 end;
 
 //--------------------------------------------------------------------------------------------------
