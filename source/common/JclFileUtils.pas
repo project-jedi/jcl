@@ -22,7 +22,7 @@
 {   Charlie Calvert                                                                                }
 {   Wim De Cleen                                                                                   }
 {   Massimo Maria Ghisalberti                                                                      }
-{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de                                                    }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   David Hervieux                                                                                 }
 {   Jeff                                                                                           }
 {   Pelle F. S. Liljendal                                                                          }
@@ -30,7 +30,7 @@
 {   John Molyneux                                                                                  }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Olivier Sannier (obones)                                                                       }
-{   André Snepvangers (asn)                                                                        }
+{   André Snepvangers (asnepvangers)                                                               }
 {   Anthony Steele                                                                                 }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Rudy Velthuis                                                                                  }
@@ -5751,6 +5751,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/05/18 19:07:58  rrossmair
+// fixed contributor information
+//
 // Revision 1.17  2004/05/13 07:46:05  rrossmair
 // changes for FPC 1.9.3+ compatibility
 //
