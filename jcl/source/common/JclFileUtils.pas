@@ -5256,11 +5256,14 @@ end;
 procedure TJclFileEnumerator.TaskTerminated(Sender: TObject);
 begin
   FTasks.Remove(Sender);
-  if Assigned(FOnTerminateTask) then
-    with TEnumFileThread(Sender) do
-      FOnTerminateTask(ID, Terminated);
-  if FRefCount > 0 then
-    _Release;
+  try
+    if Assigned(FOnTerminateTask) then
+      with TEnumFileThread(Sender) do
+        FOnTerminateTask(ID, Terminated);
+  finally
+    if FRefCount > 0 then
+      _Release;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
