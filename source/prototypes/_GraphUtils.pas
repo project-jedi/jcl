@@ -963,8 +963,8 @@ var
   CpuInfo: TCpuInfo;
 begin
   //WIMDC
-  GetCpuInfo(CpuInfo);
-  MMX_ACTIVE := CpuInfo.MMX;
+  CpuInfo := CPUID;
+  MMX_ACTIVE := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   if MMX_ACTIVE then
   begin
     // link MMX functions
