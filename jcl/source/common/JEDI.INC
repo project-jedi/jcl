@@ -459,6 +459,16 @@
   {$DEFINE SUPPORTS_OVERLOAD}
 {$ENDIF}
 
+{$IFDEF COMPILER6_UP}
+  {$DEFINE SUPPORTS_DEPRECATED}
+  {$DEFINE SUPPORTS_LIBRARY}
+  {$DEFINE SUPPORTS_PLATFORM}
+  {$DEFINE SUPPORTS_CUSTOMVARIANTS}
+  {$DEFINE HAS_UNIT_RTLCONST}
+  {$DEFINE HAS_UNIT_TYPES}
+  {$DEFINE HAS_UNIT_VARIANTS}
+{$ENDIF COMPILER6_UP}
+
 //--------------------------------------------------------------------------------------------------
 // Cross-platform related defines
 //--------------------------------------------------------------------------------------------------
