@@ -493,29 +493,28 @@ type
 var
   NumBinsRec: Integer;
   BinArray: PBinArray;
-  BinList: TStringList;
   BinStr: string;
   Idx: Integer;
 begin
-  List.Clear;
   CheckPrinter;
   BinArray := nil;
   if FNumBins = 0 then
     Exit;
+  List.BeginUpdate;
   try
     GetMem(BinArray, FNumBins * SizeOf(TBinName));
+    List.Clear;
     NumBinsRec := DeviceCapabilities(FDevice, FPort, DC_BinNames,
       PChar(BinArray), FDeviceMode);
     if NumBinsRec <> FNumBins then
       raise EJclPrinterError.CreateResRec(@RsRetrievingSource);
-    BinList := TStringList.Create;
     for Idx := 1 to NumBinsRec do
     begin
       BinStr := StrPas(BinArray^[Idx]);
-      BinList.Add(BinStr);
+      List.Add(BinStr);
     end;
-    List.Assign(BinList);
   finally
+    List.EndUpdate;
     if BinArray <> nil then
       FreeMem(BinArray, FNumBins * SizeOf(TBinName));
   end;
@@ -542,39 +541,37 @@ type
 var
   NumPaperRec: Integer;
   PaperArray: PPaperArray;
-  PaperList: TStringList;
   PaperStr: string;
   Idx: Integer;
 begin
-  List.Clear;
   CheckPrinter;
   PaperArray := nil;
   if FNumPapers = 0 then
     Exit;
+  List.BeginUpdate;
+  List.Clear;
   try
     GetMem(PaperArray, FNumPapers * SizeOf(TPaperName));
     NumPaperRec := DeviceCapabilities(FDevice, FPort, DC_PaperNames,
       PChar(PaperArray), FDeviceMode);
     if NumPaperRec <> FNumPapers then
     begin
-      PaperList := TStringList.Create;
       for Idx := 1 to FNumPapers do
       begin
         PaperStr := DefaultPaperName(FPaperArray^[Idx - 1]);
-        PaperList.Add(PaperStr);
+        List.Add(PaperStr);
       end;
     end
     else
     begin
-      PaperList := TStringList.Create;
       for Idx := 1 to NumPaperRec do
       begin
         PaperStr := StrPas(PaperArray^[Idx]);
-        PaperList.Add(PaperStr);
+        List.Add(PaperStr);
       end;
     end;
-    List.Assign(PaperList);
   finally
+    List.EndUpdate;
     if PaperArray <> nil then
       FreeMem(PaperArray, FNumPapers * SizeOf(TPaperName));
   end;
@@ -657,8 +654,7 @@ begin
   CheckPrinter;
   OpenPrinter(FDevice, DrvHandle, nil);
   ExtDevCode := DocumentProperties(0, DrvHandle, FDevice,
-    FDeviceMode^, FDeviceMode^,
-    DM_IN_BUFFER or DM_UPDATE);
+    FDeviceMode^, FDeviceMode^, DM_IN_BUFFER or DM_UPDATE);
   if ExtDevCode <> IDOK then
     raise EJclPrinterError.CreateResRec(@RsUpdatingPrinter)
   else
@@ -765,7 +761,6 @@ var
 begin
   PrIniFile := TIniFile.Create(IniFileName);
   CurrentName := Printer.Printers[Printer.PrinterIndex];
-  { TODO : why resourcestrings? }
   PrIniFile.WriteString(Section, PrintIniPrinterName, CurrentName);
   PrIniFile.WriteString(Section, PrintIniPrinterPort, PrinterPort);
   PrIniFile.WriteInteger(Section, PrintIniOrientation, Orientation);
@@ -801,7 +796,6 @@ begin
     begin
       Result := True;
       Printer.PrinterIndex := NewIndex;
-      { TODO : why resourcestrings? }
       PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort, PrinterPort);
       Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation, Orientation);
       PaperSize := PrIniFile.ReadInteger(Section, PrintIniPaperSize, PaperSize);
@@ -1387,6 +1381,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/07/30 07:20:25  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate
+//
 // Revision 1.9  2004/07/28 18:00:52  marquardt
 // various style cleanings, some minor fixes
 //

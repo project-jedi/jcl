@@ -186,7 +186,7 @@ type
   TJclCommandLineTool = class(TInterfacedObject, IJclCommandLineTool)
   private
     FExeName: string;
-    FOptions: TStrings;
+    FOptions: TStringList;
     FOutput: string;
   protected
     function GetExeName: string;
@@ -203,7 +203,7 @@ type
 
   TJclBorlandCommandLineTool = class(TJclBorRADToolInstallationObject, IJclCommandLineTool)
   private
-    FOptions: TStrings;
+    FOptions: TStringList;
     FOutput: string;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation); virtual;
@@ -217,7 +217,7 @@ type
     function Execute(const CommandLine: string): Boolean; virtual;
     property FileName: string read GetFileName;
     property Output: string read FOutput;
-    property Options: TStrings read FOptions;
+    property Options: TStrings read GetOptions;
   end;
 
   TJclDCC = class(TJclBorlandCommandLineTool)
@@ -267,8 +267,9 @@ type
   private
     FIniFile: TIniFile;
     FFileName: string;
-    FPages: TStrings;
+    FPages: TStringList;
     function GetIniFile: TIniFile;
+    function GetPages: TStrings;
   protected
     constructor Create(AInstallation: TJclBorRADToolInstallation);
   public
@@ -280,19 +281,19 @@ type
     procedure RemoveObjects(const PartialPath, FileName, ObjectType: string);
     property FileName: string read FFileName;
     property IniFile: TIniFile read GetIniFile;
-    property Pages: TStrings read FPages;
+    property Pages: TStrings read GetPages;
   end;
 
   TJclBorRADToolInstallation = class(TObject)
   private
     FConfigData: TCustomIniFile;
-    FGlobals: TStrings;
+    FGlobals: TStringList;
     FRootDir: string;
     FBinFolderName: string;
     FDCC: TJclDCC;
     FMake: IJclCommandLineTool;
     FEdition: TJclBorRADToolEdition;
-    FEnvironmentVariables: TStrings;
+    FEnvironmentVariables: TStringList;
     FIdeExeFileName: string;
     FIdePackages: TJclBorRADToolIdePackages;
     FIdeTools: TJclBorRADToolIdeTool;
@@ -311,6 +312,7 @@ type
     function GetDescription: string;
     function GetEditionAsText: string;
     function GetEnvironmentVariables: TStrings;
+    function GetGlobals: TStrings;
     function GetIdeExeBuildNumber: string;
     function GetIdePackages: TJclBorRADToolIdePackages;
     function GetLibrarySearchPath: TJclBorRADToolPath;
@@ -365,7 +367,7 @@ type
     property OpenHelp: TJclBorlandOpenHelp read FOpenHelp;
     {$ENDIF MSWINDOWS}
     property ConfigData: TCustomIniFile read FConfigData;
-    property Globals: TStrings read FGlobals;
+    property Globals: TStrings read GetGlobals;
     property Make: IJclCommandLineTool read FMake;
     property Name: string read GetName;
     property Palette: TJclBorRADToolPalette read GetPalette;
@@ -1390,13 +1392,13 @@ function TJclBorRADToolRepository.FindPage(const Name: string; OptionalIndex: In
 var
   I: Integer;
 begin
-  I := FPages.IndexOf(Name);
+  I := Pages.IndexOf(Name);
   if I >= 0 then
-    Result := FPages[I]
+    Result := Pages[I]
   else
   begin
-    if OptionalIndex < FPages.Count then
-      Result := FPages[OptionalIndex]
+    if OptionalIndex < Pages.Count then
+      Result := Pages[OptionalIndex]
     else
       Result := '';
   end;
@@ -1409,6 +1411,13 @@ begin
   if not Assigned(FIniFile) then
     FIniFile := TIniFile.Create(FileName);
   Result := FIniFile;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolRepository.GetPages: TStrings;
+begin
+  Result := FPages;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1707,6 +1716,13 @@ begin
       FEnvironmentVariables.Values['DELPHI'] := RootDir;
   end;
   Result := FEnvironmentVariables;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclBorRADToolInstallation.GetGlobals: TStrings;
+begin
+  Result := FGlobals;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2290,6 +2306,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/07/30 07:20:24  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate
+//
 // Revision 1.15  2004/07/28 18:00:48  marquardt
 // various style cleanings, some minor fixes
 //

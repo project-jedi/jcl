@@ -292,13 +292,14 @@ type
 
   TEDISEFText = class(TEDIObject)
   private
+    FWhereLocation: TStringList;
     function GetText: string;
     procedure SetText(const Value: string);
     function GetDescription: string;
+    function GetWhereLocation: TStrings;
   protected
     FData: string;
     FEDISEFWhereType: TEDISEFWhereType;
-    FWhereLocation: TStrings;
     FWhere: string;
     FWhat: string;
     FText: string;
@@ -311,7 +312,7 @@ type
     destructor Destroy; override;
   published
     property Data: string read GetData write SetData;
-    property WhereLocation: TStrings read FWhereLocation;
+    property WhereLocation: TStrings read GetWhereLocation;
     property Where: string read FWhere;
     property What: string read FWhat;
     property Text: string read GetText write SetText;
@@ -649,13 +650,13 @@ type
   private
     FFileName: string;
     FEDISEFTextSets: TEDISEFTextSets;
-    FEDISEFCodesList: TStrings;
+    FEDISEFCodesList: TStringList;
     FEDISEFElms: TEDISEFDataObjectList;
     FEDISEFComs: TEDISEFDataObjectList;
     FEDISEFSegs: TEDISEFDataObjectList;
     FEDISEFSets: TEDISEFDataObjectList;
-    FEDISEFStd: TStrings;
-    FEDISEFIni: TStrings;
+    FEDISEFStd: TStringList;
+    FEDISEFIni: TStringList;
     FEDISEFVer: string;
     procedure ParseTextSets;
     procedure ParseCodes;
@@ -671,6 +672,9 @@ type
     //procedure ParseCOMSExt;
     //procedure ParseSEGSExt;
     //procedure ParseSETSExt;
+    function GetEDISEFCodesList: TStrings;
+    function GetEDISEFStd: TStrings;
+    function GetEDISEFIni: TStrings;
   public
     constructor Create(Parent: TEDISEFDataObject); reintroduce;
     destructor Destroy; override;
@@ -687,13 +691,13 @@ type
     function Clone(NewParent: TEDISEFDataObject): TEDISEFFile; reintroduce;
   published
     property FileName: string read FFileName write FFileName;
-    property Codes: TStrings read FEDISEFCodesList;
+    property Codes: TStrings read GetEDISEFCodesList;
     property ELMS: TEDISEFDataObjectList read FEDISEFElms;
     property COMS: TEDISEFDataObjectList read FEDISEFComs;
     property SEGS: TEDISEFDataObjectList read FEDISEFSegs;
     property SETS: TEDISEFDataObjectList read FEDISEFSets;
-    property STD: TStrings read FEDISEFStd;
-    property INI: TStrings read FEDISEFIni;
+    property STD: TStrings read GetEDISEFStd;
+    property INI: TStrings read GetEDISEFIni;
     property VER: string read FEDISEFVer write FEDISEFVer;
     //
     property TEXTSETS: TEDISEFTextSets read FEDISEFTextSets;
@@ -904,7 +908,7 @@ end;
 
 procedure ParseELMSDataOfELMSDefinition(Data: string; Element: TEDISEFElement);
 var
-  Temp: TStrings;
+  Temp: TStringList;
 begin
   // Clear any old values
   Element.UserAttribute := '';
@@ -1320,7 +1324,7 @@ end;
 procedure ParseCOMSDataOfSEGSDefinition(Data: string; CompositeElement: TEDISEFCompositeElement;
   COMSList: TEDISEFDataObjectList);
 var
-  Temp: TStrings;
+  Temp: TStringList;
   ListItem: TEDISEFDataObjectListItem;
   DefaultCompositeElement: TEDISEFCompositeElement;
 begin
@@ -1476,7 +1480,7 @@ end;
 procedure ParseSEGSDataOfSETSDefinition(Data: string; Segment: TEDISEFSegment;
   SEFFile: TEDISEFFile);
 var
-  Temp: TStrings;
+  Temp: TStringList;
   ListItem: TEDISEFDataObjectListItem;
   SegmentDef: TEDISEFSegment;
   I, J, K: Integer;
@@ -4383,10 +4387,10 @@ begin
   Result := '';
   Result := Result + SectionTag_VER + AnsiSpace + FEDISEFVer + AnsiCrLf;
   Result := Result + SectionTag_INI + AnsiCrLf;
-  Result := Result + FEDISEFIni.Text + AnsiCrLf;
-  if FEDISEFStd.Text <> '' then
+  Result := Result + INI.Text + AnsiCrLf;
+  if STD.Text <> '' then
     Result := Result + SectionTag_STD + AnsiCrLf;
-  Result := Result + FEDISEFStd.Text + AnsiCrLf;
+  Result := Result + STD.Text + AnsiCrLf;
   if FEDISEFSets.Count > 0 then
   begin
     Result := Result + SectionTag_SETS + AnsiCrLf;
@@ -4411,10 +4415,10 @@ begin
     for I := 0 to FEDISEFElms.Count - 1 do
       Result := Result + FEDISEFElms[I].Assemble + AnsiCrLf;
   end;
-  if FEDISEFCodesList.Text <> '' then
+  if Codes.Text <> '' then
   begin
     Result := Result + SectionTag_CODES + AnsiCrLf;
-    Result := Result + FEDISEFCodesList.Text + AnsiCrLf;
+    Result := Result + Codes.Text + AnsiCrLf;
   end;
   if FEDISEFTextSets.Count > 0 then
   begin
@@ -4492,7 +4496,7 @@ end;
 
 procedure TEDISEFFile.ParseTextSets;
 var
-  TempList: TStrings;
+  TempList: TStringList;
   SearchResult, SearchResult2, I: Integer;
   TextSet: TEDISEFTextSet;
 begin
@@ -4528,16 +4532,16 @@ procedure TEDISEFFile.ParseCodes;
 var
   SearchResult, SearchResult2: Integer;
 begin
-  FEDISEFCodesList.Clear;
+  Codes.Clear;
   SearchResult := StrSearch(SectionTag_CODES, FData, 1);
   if SearchResult > 0 then
   begin
     SearchResult := SearchResult + Length(SectionTag_CODES + AnsiCrLf);
     SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
-      FEDISEFCodesList.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
+      Codes.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
-      FEDISEFCodesList.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
+      Codes.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
   end;
 end;
 
@@ -4545,7 +4549,7 @@ end;
 
 procedure TEDISEFFile.ParseCOMS;
 var
-  TempList: TStrings;
+  TempList: TStringList;
   SearchResult, SearchResult2, I: Integer;
   CompositeElement: TEDISEFCompositeElement;
 begin
@@ -4580,7 +4584,7 @@ end;
 
 procedure TEDISEFFile.ParseELMS;
 var
-  TempList: TStrings;
+  TempList: TStringList;
   SearchResult, SearchResult2, I: Integer;
   Element: TEDISEFElement;
 begin
@@ -4617,9 +4621,9 @@ procedure TEDISEFFile.ParseINI;
 var
   SearchResult, SearchResult2: Integer;
 begin
-  FEDISEFIni.Clear;
+  INI.Clear;
   {$IFDEF DELPHI6_UP}
-  FEDISEFIni.Delimiter := SEFDelimiter_Comma;
+  INI.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
   // TODO : (rom) ?
   {$ENDIF DELPHI6_UP}
@@ -4629,18 +4633,18 @@ begin
     SearchResult := SearchResult + Length(SectionTag_INI + AnsiCrLf);
     SearchResult2 := StrSearch(AnsiCrLf + SEFDelimiter_Period, FData, SearchResult + 1);
     if SearchResult2 <> 0 then
-      FEDISEFIni.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
+      INI.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult)
     else
-      FEDISEFIni.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
+      INI.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
   end;
-  FId := FEDISEFIni.Text;
+  FId := INI.Text;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDISEFFile.ParseSEGS;
 var
-  TempList: TStrings;
+  TempList: TStringList;
   SearchResult, SearchResult2, I: Integer;
   Segment: TEDISEFSegment;
 begin
@@ -4675,7 +4679,7 @@ end;
 
 procedure TEDISEFFile.ParseSETS;
 var
-  TempList: TStrings;
+  TempList: TStringList;
   SearchResult, SearchResult2, I: Integer;
   TransactionSet: TEDISEFSet;
 begin
@@ -4713,9 +4717,9 @@ procedure TEDISEFFile.ParseSTD;
 var
   SearchResult, SearchResult2: Integer;
 begin
-  FEDISEFStd.Clear;
+  STD.Clear;
   {$IFDEF DELPHI6_UP}
-  FEDISEFStd.Delimiter := SEFDelimiter_Comma;
+  STD.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
   // TODO : (rom) ?
   {$ENDIF DELPHI6_UP}
@@ -4727,17 +4731,17 @@ begin
     if SearchResult2 <> 0 then
     begin
       {$IFDEF DELPHI6_UP}
-      FEDISEFStd.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
+      STD.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
       {$ELSE}
-      FEDISEFStd.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
+      STD.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
       {$ENDIF DELPHI6_UP}
     end
     else
     begin
       {$IFDEF DELPHI6_UP}
-      FEDISEFStd.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
+      STD.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
       {$ELSE}
-      FEDISEFStd.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
+      STD.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
       {$ENDIF DELPHI6_UP}
     end;
   end;
@@ -4802,15 +4806,36 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TEDISEFFile.GetEDISEFCodesList: TStrings;
+begin
+  Result := FEDISEFCodesList;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISEFFile.GetEDISEFStd: TStrings;
+begin
+  Result := FEDISEFStd;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISEFFile.GetEDISEFIni: TStrings;
+begin
+  Result := FEDISEFIni;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDISEFFile.Unload;
 begin
-  FEDISEFCodesList.Clear;
+  Codes.Clear;
   FEDISEFElms.Clear;
   FEDISEFComs.Clear;
   FEDISEFSegs.Clear;
   FEDISEFSets.Clear;
-  FEDISEFStd.Clear;
-  FEDISEFIni.Clear;
+  STD.Clear;
+  INI.Clear;
   FEDISEFVer := '';
 end;
 
@@ -4980,11 +5005,11 @@ var
   I: Integer;
 begin
   FWhere := '';
-  for I := 0 to FWhereLocation.Count - 1 do
+  for I := 0 to WhereLocation.Count - 1 do
   begin
-    if (FWhere <> '') and (FWhereLocation[I] <> '') then
+    if (FWhere <> '') and (WhereLocation[I] <> '') then
       FWhere := FWhere + '~';
-    FWhere := FWhere + FWhereLocation[I];
+    FWhere := FWhere + WhereLocation[I];
   end;
   Result := FWhere + ',' + FWhat + ',' + FText;
 end;
@@ -5019,8 +5044,8 @@ begin
   FEDISEFWhereType := twUnknown;
   SearchResult := StrSearch(',', FData, 1);
   FWhere := Copy(FData, 1, SearchResult - 1);
-  FWhereLocation.Text := Copy(FData, 1, SearchResult - 1);
-  FWhereLocation.CommaText := JclEDI.StringReplace(FWhereLocation.Text,'~',',',[rfReplaceAll]);
+  WhereLocation.Text := Copy(FData, 1, SearchResult - 1);
+  WhereLocation.CommaText := JclEDI.StringReplace(WhereLocation.Text, '~', ',', [rfReplaceAll]);
   SearchResult2 := StrSearch(',', FData, SearchResult + 1);
   FWhat := Copy(FData, SearchResult + 1, (SearchResult2 - SearchResult) - 1);
   if SearchResult2 > 0 then
@@ -5032,6 +5057,11 @@ end;
 function TEDISEFText.GetData: string;
 begin
   Result := FData;
+end;
+
+function TEDISEFText.GetWhereLocation: TStrings;
+begin
+  Result := FWhereLocation;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5138,32 +5168,32 @@ begin
   FWhereElement := -1;
   FWhereSubElement := -1;
   inherited Disassemble;
-  if FWhereLocation.Count >= 1 then
+  if WhereLocation.Count >= 1 then
   begin
     FEDISEFWhereType := twSet;
-    FWhereSet := FWhereLocation[0];
+    FWhereSet := WhereLocation[0];
   end;
-  if FWhereLocation.Count >= 2 then
+  if WhereLocation.Count >= 2 then
   begin
     FEDISEFWhereType := twSegment;
-    FWhereSegment := StrToInt(FWhereLocation[1]);
+    FWhereSegment := StrToInt(WhereLocation[1]);
   end;
-  if FWhereLocation.Count >= 3 then
+  if WhereLocation.Count >= 3 then
   begin
     FEDISEFWhereType := twElementOrCompositeElement;
     try
-      if FWhereLocation[2][1] in ['0'..'9'] then
-        FWhereElement := StrToInt(FWhereLocation[2]);
+      if WhereLocation[2][1] in ['0'..'9'] then
+        FWhereElement := StrToInt(WhereLocation[2]);
     except
       // Eat this error if it occurs for now
     end;
   end;
-  if FWhereLocation.Count >= 4 then
+  if WhereLocation.Count >= 4 then
   begin
     FEDISEFWhereType := twSubElement;
     try
-      if FWhereLocation[3][1] in ['0'..'9'] then
-        FWhereSubElement := StrToInt(FWhereLocation[3]);
+      if WhereLocation[3][1] in ['0'..'9'] then
+        FWhereSubElement := StrToInt(WhereLocation[3]);
     except
       // Eat this error if it occurs for now
     end;

@@ -125,7 +125,7 @@ type
 
   TEDIElementSpec = class(TEDIElement)
   private
-    FReservedData: TStrings;
+    FReservedData: TStringList;
     FElementId: string;
     FPosition: Integer;
     FDescription: string;
@@ -134,13 +134,14 @@ type
     FType: string;
     FMinimumLength: Integer;
     FMaximumLength: Integer;
+    function GetReservedData: TStrings;
   public
     constructor Create(Parent: TEDIDataObject); reintroduce;
     destructor Destroy; override;
     function Assemble: string; override;
     procedure Disassemble; override;
   published
-    property ReservedData: TStrings read FReservedData;
+    property ReservedData: TStrings read GetReservedData;
     property Id: string read FElementId write FElementId;
     property ElementId: string read FElementId write FElementId;
     property Position: Integer read FPosition write FPosition;
@@ -220,7 +221,7 @@ type
 
   TEDISegmentSpec = class(TEDISegment)
   private
-    FReservedData: TStrings;
+    FReservedData: TStringList;
     FPosition: Integer;
     FDescription: string;
     FNotes: string;
@@ -229,6 +230,7 @@ type
     FMaximumUsage: Integer;
     FOwnerLoopId: string;
     FParentLoopId: string;
+    function GetReservedData: TStrings;
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     destructor Destroy; override;
@@ -239,7 +241,7 @@ type
     procedure Disassemble; override;
     procedure ValidateElementIndexPositions;
   published
-    property ReservedData: TStrings read FReservedData;
+    property ReservedData: TStrings read GetReservedData;
     property Id: string read FSegmentId write FSegmentId;
     property Position: Integer read FPosition write FPosition;
     property Description: string read FDescription write FDescription;
@@ -2373,25 +2375,25 @@ begin
   begin
     if FElementId = '' then
       FElementId := Value_NotAssigned;
-    FReservedData.Values[RDFN_Id] := FElementId;
-    FReservedData.Values[RDFN_Position] := IntToStr(FPosition);
+    ReservedData.Values[RDFN_Id] := FElementId;
+    ReservedData.Values[RDFN_Position] := IntToStr(FPosition);
     if FDescription = '' then
       FDescription := Value_None;
-    FReservedData.Values[RDFN_Description] := FDescription;
+    ReservedData.Values[RDFN_Description] := FDescription;
     if FNotes = '' then
       FNotes := Value_None;
-    FReservedData.Values[RDFN_Notes] := FNotes;
+    ReservedData.Values[RDFN_Notes] := FNotes;
     if FRequirementDesignator = '' then
       FRequirementDesignator := Value_Optional;
-    FReservedData.Values[RDFN_RequirementDesignator] := FRequirementDesignator;
+    ReservedData.Values[RDFN_RequirementDesignator] := FRequirementDesignator;
     if FType = '' then
       FType := Value_AlphaNumeric;
-    FReservedData.Values[RDFN_Type] := FType;
-    FReservedData.Values[RDFN_MinimumLength] := IntToStr(FMinimumLength);
-    FReservedData.Values[RDFN_MaximumLength] := IntToStr(FMaximumLength);
-    FData := FReservedData.CommaText;
+    ReservedData.Values[RDFN_Type] := FType;
+    ReservedData.Values[RDFN_MinimumLength] := IntToStr(FMinimumLength);
+    ReservedData.Values[RDFN_MaximumLength] := IntToStr(FMaximumLength);
+    FData := ReservedData.CommaText;
   end;
-  FReservedData.Clear;
+  ReservedData.Clear;
   Result := FData;
   FState := ediAssembled;
 end;
@@ -2400,30 +2402,35 @@ end;
 
 procedure TEDIElementSpec.Disassemble;
 begin
-  FReservedData.Clear;
-  FReservedData.CommaText := FData;
-  if FReservedData.Values[RDFN_Id] <> ElementSpecId_Reserved then
+  ReservedData.Clear;
+  ReservedData.CommaText := FData;
+  if ReservedData.Values[RDFN_Id] <> ElementSpecId_Reserved then
   begin
-    FElementId := FReservedData.Values[RDFN_Id];
+    FElementId := ReservedData.Values[RDFN_Id];
     if FElementId = '' then
       FElementId := Value_NotAssigned;
-    FPosition := StrToInt(FReservedData.Values[RDFN_Position]);
-    FDescription := FReservedData.Values[RDFN_Description];
+    FPosition := StrToInt(ReservedData.Values[RDFN_Position]);
+    FDescription := ReservedData.Values[RDFN_Description];
     if FDescription = '' then
       FDescription := Value_None;
-    FNotes := FReservedData.Values[RDFN_Notes];
+    FNotes := ReservedData.Values[RDFN_Notes];
     if FNotes = '' then
       FNotes := Value_None;
-    FRequirementDesignator := FReservedData.Values[RDFN_RequirementDesignator];
+    FRequirementDesignator := ReservedData.Values[RDFN_RequirementDesignator];
     if FRequirementDesignator = '' then
       FRequirementDesignator := Value_Optional;
-    FType := FReservedData.Values[RDFN_Type];
+    FType := ReservedData.Values[RDFN_Type];
     if FType = '' then
       FType := Value_AlphaNumeric;
-    FMinimumLength := StrToInt(FReservedData.Values[RDFN_MinimumLength]);
-    FMaximumLength := StrToInt(FReservedData.Values[RDFN_MaximumLength]);
+    FMinimumLength := StrToInt(ReservedData.Values[RDFN_MinimumLength]);
+    FMaximumLength := StrToInt(ReservedData.Values[RDFN_MaximumLength]);
   end;
   FState := ediDisassembled;
+end;
+
+function TEDIElementSpec.GetReservedData: TStrings;
+begin
+  Result := FReservedData;
 end;
 
 //==================================================================================================
@@ -2459,9 +2466,9 @@ begin
   // Insert Segment Spec as Element[0]
   InsertElement(0);
   TEDIElementSpec(FEDIDataObjects[0]).ElementId := ElementSpecId_Reserved;
-  AssembleReservedData(FReservedData);
-  FEDIDataObjects[0].Data := FReservedData.CommaText;
-  FReservedData.Clear;
+  AssembleReservedData(ReservedData);
+  FEDIDataObjects[0].Data := ReservedData.CommaText;
+  ReservedData.Clear;
   //
   Result := inherited Assemble;
 end;
@@ -2470,21 +2477,26 @@ end;
 
 procedure TEDISegmentSpec.AssembleReservedData(ReservedData: TStrings);
 begin
-  with FReservedData do
+  with ReservedData do
   begin
-    Values[RDFN_Id] := ElementSpecId_Reserved;
-    Values[RDFN_Position] := IntToStr(FPosition);
-    Values[RDFN_Description] := FDescription;
-    Values[RDFN_Notes] := FNotes;
-    Values[RDFN_Section] := FSection;
-    Values[RDFN_RequirementDesignator] := FRequirementDesignator;
-    Values[RDFN_MaximumUsage] := IntToStr(FMaximumUsage);
-    if FOwnerLoopId = '' then
-      FOwnerLoopId := NA_LoopId;
-    Values[RDFN_OwnerLoopId] := FOwnerLoopId;
-    if FParentLoopId = '' then
-      FParentLoopId := NA_LoopId;
-    Values[RDFN_ParentLoopId] := FParentLoopId;
+    BeginUpdate;
+    try
+      Values[RDFN_Id] := ElementSpecId_Reserved;
+      Values[RDFN_Position] := IntToStr(FPosition);
+      Values[RDFN_Description] := FDescription;
+      Values[RDFN_Notes] := FNotes;
+      Values[RDFN_Section] := FSection;
+      Values[RDFN_RequirementDesignator] := FRequirementDesignator;
+      Values[RDFN_MaximumUsage] := IntToStr(FMaximumUsage);
+      if FOwnerLoopId = '' then
+        FOwnerLoopId := NA_LoopId;
+      Values[RDFN_OwnerLoopId] := FOwnerLoopId;
+      if FParentLoopId = '' then
+        FParentLoopId := NA_LoopId;
+      Values[RDFN_ParentLoopId] := FParentLoopId;
+    finally
+      EndUpdate;
+    end;
   end;
 end;
 
@@ -2494,10 +2506,17 @@ procedure TEDISegmentSpec.Disassemble;
 begin
   inherited Disassemble;
   // Element[0] is always the Segment Spec
-  FReservedData.Clear;
-  FReservedData.CommaText := FEDIDataObjects[0].Data;
-  DisassembleReservedData(FReservedData);
+  ReservedData.Clear;
+  ReservedData.CommaText := FEDIDataObjects[0].Data;
+  DisassembleReservedData(ReservedData);
   DeleteElement(0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDISegmentSpec.GetReservedData: TStrings;
+begin
+  Result := FReservedData;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2514,7 +2533,7 @@ end;
 
 procedure TEDISegmentSpec.DisassembleReservedData(ReservedData: TStrings);
 begin
-  with FReservedData do
+  with ReservedData do
   begin
     // FSegmentId already set by the inherited Disassemble
     FPosition := StrToInt(Values[RDFN_Position]);
@@ -2581,10 +2600,15 @@ begin
     Spec := TEDITransactionSetSpec(Parent);
     if Spec.TransactionSetId = '' then
       Spec.TransactionSetId := Value_Unknown;
-    ReservedData.Values[RDFN_TransSetId] := Spec.TransactionSetId;
-    if Spec.TSDescription = '' then
-      Spec.TSDescription := Value_None;
-    ReservedData.Values[RDFN_TransSetDesc] := Spec.TSDescription;
+    ReservedData.BeginUpdate;
+    try
+      ReservedData.Values[RDFN_TransSetId] := Spec.TransactionSetId;
+      if Spec.TSDescription = '' then
+        Spec.TSDescription := Value_None;
+      ReservedData.Values[RDFN_TransSetDesc] := Spec.TSDescription;
+    finally
+      ReservedData.EndUpdate;
+    end;
   end;
   inherited AssembleReservedData(ReservedData);
 end;
@@ -2664,16 +2688,21 @@ begin
     Spec := TEDIFunctionalGroupSpec(Parent);
     if Spec.FunctionalGroupId = '' then
       Spec.FunctionalGroupId := Value_Unknown;
-    ReservedData.Values[RDFN_FunctionalGroupId] := Spec.FunctionalGroupId;
-    if Spec.FGDescription = '' then
-      Spec.FGDescription := Value_None;
-    ReservedData.Values[RDFN_FGDescription] := Spec.FGDescription;
-    if Spec.AgencyCodeId = '' then
-      Spec.AgencyCodeId := Value_Unknown;
-    ReservedData.Values[RDFN_AgencyCodeId] := Spec.AgencyCodeId;
-    if Spec.VersionReleaseId = '' then
-      Spec.VersionReleaseId := Value_Unknown;
-    ReservedData.Values[RDFN_VersionReleaseId] := Spec.VersionReleaseId;
+    ReservedData.BeginUpdate;
+    try
+      ReservedData.Values[RDFN_FunctionalGroupId] := Spec.FunctionalGroupId;
+      if Spec.FGDescription = '' then
+        Spec.FGDescription := Value_None;
+      ReservedData.Values[RDFN_FGDescription] := Spec.FGDescription;
+      if Spec.AgencyCodeId = '' then
+        Spec.AgencyCodeId := Value_Unknown;
+      ReservedData.Values[RDFN_AgencyCodeId] := Spec.AgencyCodeId;
+      if Spec.VersionReleaseId = '' then
+        Spec.VersionReleaseId := Value_Unknown;
+      ReservedData.Values[RDFN_VersionReleaseId] := Spec.VersionReleaseId;
+    finally
+      ReservedData.EndUpdate;
+    end;
   end;
   inherited AssembleReservedData(ReservedData);
 end;
@@ -2762,13 +2791,18 @@ begin
     Spec := TEDIInterchangeControlSpec(Parent);
     if Spec.StandardId = '' then
       Spec.StandardId := Value_Unknown;
-    ReservedData.Values[RDFN_StandardId] := Spec.StandardId;
-    if Spec.VersionId = '' then
-      Spec.VersionId := Value_Unknown;
-    ReservedData.Values[RDFN_VersionId] := Spec.VersionId;
-    if Spec.ICDescription = '' then
-      Spec.ICDescription := Value_None;
-    ReservedData.Values[RDFN_ICDescription] := Spec.ICDescription;
+    ReservedData.BeginUpdate;
+    try
+      ReservedData.Values[RDFN_StandardId] := Spec.StandardId;
+      if Spec.VersionId = '' then
+        Spec.VersionId := Value_Unknown;
+      ReservedData.Values[RDFN_VersionId] := Spec.VersionId;
+      if Spec.ICDescription = '' then
+        Spec.ICDescription := Value_None;
+      ReservedData.Values[RDFN_ICDescription] := Spec.ICDescription;
+    finally
+      ReservedData.EndUpdate;
+    end;
   end;
   inherited AssembleReservedData(ReservedData);
 end;

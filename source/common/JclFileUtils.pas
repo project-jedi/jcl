@@ -457,7 +457,7 @@ type
   private
     FOwnerInterface: IInterface;
     FTasks: TList;
-    FFileMasks: TStrings;
+    FFileMasks: TStringList;
     FRootDirectory: string;
     FSubDirectoryMask: string;
     FOnEnterDirectory: TFileHandler;
@@ -543,7 +543,7 @@ type
   published
     property CaseSensitiveSearch: Boolean read GetCaseSensitiveSearch write SetCaseSensitiveSearch
       default {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF};
-    property FileMasks: TStrings read FFileMasks write SetFileMasks;
+    property FileMasks: TStrings read GetFileMasks write SetFileMasks;
     property RootDirectory: string read FRootDirectory write FRootDirectory;
     property SubDirectoryMask: string read FSubDirectoryMask write FSubDirectoryMask;
     property AttributeMask: TJclFileAttributeMask read FAttributeMask write SetAttributeMask;
@@ -593,12 +593,13 @@ type
     FBuffer: string;
     FFixedInfo: PVSFixedFileInfo;
     FFileFlags: TFileFlags;
-    FItemList: TStrings;
-    FItems: TStrings;
+    FItemList: TStringList;
+    FItems: TStringList;
     FLanguages: array of TLangIdRec;
     FLanguageIndex: Integer;
     FTranslations: array of TLangIdRec;
     function GetFixedInfo: TVSFixedFileInfo;
+    function GetItems: TStrings;
     function GetLanguageCount: Integer;
     function GetLanguageIds(Index: Integer): string;
     function GetLanguageNames(Index: Integer): string;
@@ -635,7 +636,7 @@ type
     property FileSubType: DWORD read GetFileSubType;
     property FileType: DWORD read GetFileType;
     property FileVersion: string index 4 read GetVersionKeyValue;
-    property Items: TStrings read FItems;
+    property Items: TStrings read GetItems;
     property InternalName: string index 5 read GetVersionKeyValue;
     property LanguageCount: Integer read GetLanguageCount;
     property LanguageIds[Index: Integer]: string read GetLanguageIds;
@@ -1430,8 +1431,13 @@ begin
   if Dest is TStrings then
   begin
     GoBegin;
-    while not Eof do
-      TStrings(Dest).Add(ReadLn);
+    TStrings(Dest).BeginUpdate;
+    try
+      while not Eof do
+        TStrings(Dest).Add(ReadLn);
+    finally
+      TStrings(Dest).EndUpdate;
+    end;
   end
   else
     inherited AssignTo(Dest);
@@ -1841,7 +1847,7 @@ end;
 
 function PathCanonicalize(const Path: string): string;
 var
-  List: TStrings;
+  List: TStringList;
   S: string;
   I, K: Integer;
   IsAbsolute: Boolean;
@@ -1998,7 +2004,7 @@ end;
 
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
 var
-  List: TStrings;
+  List: TStringList;
   LocalPath: string;
   I: Integer;
 begin
@@ -2032,7 +2038,7 @@ end;
 
 function PathGetDepth(const Path: string): Integer;
 var
-  List: TStrings;
+  List: TStringList;
   LocalPath: string;
   I, Start: Integer;
 begin
@@ -2276,6 +2282,13 @@ end;
 
 function PathIsDiskDevice(const Path: string): Boolean;
 {$IFDEF UNIX}
+var
+  FullPath: string;
+  F: PIOFile;
+  Buffer: array [0..255] of Char;
+  MountEntry: TMountEntry;
+  FsTypes: TStringList;
+
   procedure GetAvailableFileSystems(const List: TStrings);
   var
     F: TextFile;
@@ -2284,20 +2297,14 @@ function PathIsDiskDevice(const Path: string): Boolean;
     AssignFile(F, '/proc/filesystems');
     Reset(F);
     repeat
-      ReadLn(F, S);
+      Readln(F, S);
       if Pos('nodev', S) = 0 then // how portable is this ?
         List.Add(Trim(S));
     until Eof(F);
-    List.Add('supermount');    
+    List.Add('supermount');
     CloseFile(F);
   end;
 
-var
-  FullPath: string;
-  F: PIOFile;
-  Buffer: array [0..255] of char;
-  MountEntry: TMountEntry;
-  FsTypes: TStrings;
 begin
   Result := False;
 
@@ -2306,7 +2313,7 @@ begin
     RaiseLastOSError;
   StrResetLength(FullPath);
   
-  FsTypes := TStringlist.Create;
+  FsTypes := TStringList.Create;
   try
     GetAvailableFileSystems(FsTypes);
     F := setmntent(_PATH_MOUNTED, 'r'); // PATH_MOUNTED is deprecated,
@@ -2463,6 +2470,7 @@ begin
   Assert(List <> nil);
   R := FindFirst(Path, Attr, SearchRec);
   Result := R = 0;
+  List.BeginUpdate;
   try
     if Result then
     begin
@@ -2476,6 +2484,7 @@ begin
     end;
   finally
     SysUtils.FindClose(SearchRec);
+    List.EndUpdate;
   end;  
 end;
 
@@ -2963,26 +2972,30 @@ end;
 
 procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 begin
-  { TODO : why const? }
   { TODO : clear list? }
   Assert(Assigned(Items));
   if not Assigned(Items) then
     Exit;
-  { TODO : differentiate Windows/UNIX idents }
-  if Attr and faDirectory = faDirectory then
-    Items.Add(RsAttrDirectory);
-  if Attr and faReadOnly = faReadOnly then
-    Items.Add(RsAttrReadOnly);
-  if Attr and faSysFile = faSysFile then
-    Items.Add(RsAttrSystemFile);
-  if Attr and faVolumeID = faVolumeID then
-    Items.Add(RsAttrVolumeID);
-  if Attr and faArchive = faArchive then
-    Items.Add(RsAttrArchive);
-  if Attr and faAnyFile = faAnyFile then
-    Items.Add(RsAttrAnyFile);
-  if Attr and faHidden = faHidden then
-    Items.Add(RsAttrHidden);
+  Items.BeginUpdate;
+  try
+    { TODO : differentiate Windows/UNIX idents }
+    if Attr and faDirectory = faDirectory then
+      Items.Add(RsAttrDirectory);
+    if Attr and faReadOnly = faReadOnly then
+      Items.Add(RsAttrReadOnly);
+    if Attr and faSysFile = faSysFile then
+      Items.Add(RsAttrSystemFile);
+    if Attr and faVolumeID = faVolumeID then
+      Items.Add(RsAttrVolumeID);
+    if Attr and faArchive = faArchive then
+      Items.Add(RsAttrArchive);
+    if Attr and faAnyFile = faAnyFile then
+      Items.Add(RsAttrAnyFile);
+    if Attr and faHidden = faHidden then
+      Items.Add(RsAttrHidden);
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2992,33 +3005,39 @@ end;
 { TODO : GetFileAttributeListEx - Unix version }
 procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 begin
-  { TODO : why const? }
   { TODO : clear list? }
-  Assert(Items <> nil);
-  if Attr and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
-    Items.Add(RsAttrReadOnly);
-  if Attr and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
-    Items.Add(RsAttrHidden);
-  if Attr and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
-    Items.Add(RsAttrSystemFile);
-  if Attr and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY then
-    Items.Add(RsAttrDirectory);
-  if Attr and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
-    Items.Add(RsAttrArchive);
-  if Attr and FILE_ATTRIBUTE_NORMAL = FILE_ATTRIBUTE_NORMAL then
-    Items.Add(RsAttrNormal);
-  if Attr and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
-    Items.Add(RsAttrTemporary);
-  if Attr and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
-    Items.Add(RsAttrCompressed);
-  if Attr and FILE_ATTRIBUTE_OFFLINE = FILE_ATTRIBUTE_OFFLINE then
-    Items.Add(RsAttrOffline);
-  if Attr and FILE_ATTRIBUTE_ENCRYPTED = FILE_ATTRIBUTE_ENCRYPTED then
-    Items.Add(RsAttrEncrypted);
-  if Attr and FILE_ATTRIBUTE_REPARSE_POINT = FILE_ATTRIBUTE_REPARSE_POINT then
-    Items.Add(RsAttrReparsePoint);
-  if Attr and FILE_ATTRIBUTE_SPARSE_FILE = FILE_ATTRIBUTE_SPARSE_FILE then
-    Items.Add(RsAttrSparseFile);
+  Assert(Assigned(Items));
+  if not Assigned(Items) then
+    Exit;
+  Items.BeginUpdate;
+  try
+    if Attr and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
+      Items.Add(RsAttrReadOnly);
+    if Attr and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
+      Items.Add(RsAttrHidden);
+    if Attr and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
+      Items.Add(RsAttrSystemFile);
+    if Attr and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY then
+      Items.Add(RsAttrDirectory);
+    if Attr and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
+      Items.Add(RsAttrArchive);
+    if Attr and FILE_ATTRIBUTE_NORMAL = FILE_ATTRIBUTE_NORMAL then
+      Items.Add(RsAttrNormal);
+    if Attr and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
+      Items.Add(RsAttrTemporary);
+    if Attr and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
+      Items.Add(RsAttrCompressed);
+    if Attr and FILE_ATTRIBUTE_OFFLINE = FILE_ATTRIBUTE_OFFLINE then
+      Items.Add(RsAttrOffline);
+    if Attr and FILE_ATTRIBUTE_ENCRYPTED = FILE_ATTRIBUTE_ENCRYPTED then
+      Items.Add(RsAttrEncrypted);
+    if Attr and FILE_ATTRIBUTE_REPARSE_POINT = FILE_ATTRIBUTE_REPARSE_POINT then
+      Items.Add(RsAttrReparsePoint);
+    if Attr and FILE_ATTRIBUTE_SPARSE_FILE = FILE_ATTRIBUTE_SPARSE_FILE then
+      Items.Add(RsAttrSparseFile);
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 {$ENDIF MSWINDOWS}
@@ -3990,10 +4009,10 @@ procedure TJclFileVersionInfo.CreateItemsForLanguage;
 var
   I: Integer;
 begin
-  FItems.Clear;
+  Items.Clear;
   for I := 0 to FItemList.Count - 1 do
     if Integer(FItemList.Objects[I]) = FLanguageIndex then
-      FItems.AddObject(FItemList[I], Pointer(FLanguages[FLanguageIndex].Pair));
+      Items.AddObject(FItemList[I], Pointer(FLanguages[FLanguageIndex].Pair));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4252,6 +4271,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclFileVersionInfo.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclFileVersionInfo.GetLanguageCount: Integer;
 begin
   Result := Length(FLanguages);
@@ -4299,7 +4325,7 @@ end;
 
 function TJclFileVersionInfo.GetVersionKeyValue(Index: Integer): string;
 begin
-  Result := FItems.Values[VerKeyNames[Index]];
+  Result := Items.Values[VerKeyNames[Index]];
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4409,7 +4435,7 @@ procedure TJclFileMaskComparator.CreateMultiMasks;
 const
   WildChars = ['*', '?'];
 var
-  List: TStrings;
+  List: TStringList;
   I, N: Integer;
   NS, ES: string;
 begin
@@ -4582,11 +4608,12 @@ var
   end;
 
 begin
-  Assert(Files <> nil);
+  Assert(Assigned(Files));
   FileMask := ExtractFileName(Path);
   RootDir := ExtractFilePath(Path);
 
   Folders := TStringList.Create;
+  Files.BeginUpdate;
   try
     Folders.Add(RootDir);
 
@@ -4610,6 +4637,7 @@ begin
     end;
   finally
     Folders.Free;
+    Files.EndUpdate;
   end;
   Result := True;
 end;
@@ -4956,7 +4984,7 @@ type
   TEnumFileThread = class(TThread)
   private
     FID: TFileSearchTaskID;
-    FFileMasks: TStrings;
+    FFileMasks: TStringList;
     FDirectory: string;
     FSubDirectoryMask: string;
     FOnEnterDirectory: TFileHandler;
@@ -4982,6 +5010,7 @@ type
     procedure SyncProcessDirectory(const Directory: string);
     procedure AsyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
     procedure SyncProcessFile(const Directory: string; const FileInfo: TSearchRec);
+    function GetFileMasks: TStrings;
     procedure SetFileMasks(const Value: TStrings);
   protected
     procedure DoTerminate; override;
@@ -4993,7 +5022,7 @@ type
     procedure ProcessFile;
     property AllNamesMatch: Boolean read FAllNamesMatch;
     property CaseSensitiveSearch: Boolean read FCaseSensitiveSearch write FCaseSensitiveSearch;
-    property FileMasks: TStrings read FFileMasks write SetFileMasks;
+    property FileMasks: TStrings read GetFileMasks write SetFileMasks;
     property FileSizeMin: Int64 read FFileSizeMin write FFileSizeMin;
     property FileSizeMax: Int64 read FFileSizeMax write FFileSizeMax;
     property Directory: string read FDirectory write FDirectory;
@@ -5134,8 +5163,8 @@ var
 begin
   Result := AllNamesMatch;
   if not Result then
-    for I := 0 to FFileMasks.Count - 1 do
-      if IsFileNameMatch(FFileInfo.Name, FFileMasks[I], CaseSensitiveSearch) then
+    for I := 0 to FileMasks.Count - 1 do
+      if IsFileNameMatch(FFileInfo.Name, FileMasks[I], CaseSensitiveSearch) then
       begin
         Result := True;
         Break;
@@ -5168,6 +5197,13 @@ begin
   FFileInfo := FileInfo;
   if FileMatch then
     Synchronize(ProcessFile);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEnumFileThread.GetFileMasks: TStrings;
+begin
+  Result := FFileMasks;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5327,7 +5363,12 @@ end;
 
 function TJclFileEnumerator.FillList(List: TStrings): TFileSearchTaskID;
 begin
-  Result := ForEach(List.Append);
+  List.BeginUpdate;
+  try
+    Result := ForEach(List.Append);
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5418,8 +5459,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclFileEnumerator.SetAttributeMask(
-  const Value: TJclFileAttributeMask);
+procedure TJclFileEnumerator.SetAttributeMask(const Value: TJclFileAttributeMask);
 begin
   FAttributeMask.Assign(Value);
 end;
@@ -5483,7 +5523,7 @@ end;
 
 function TJclFileEnumerator.GetFileMask: string;
 begin
-  Result := StringsToStr(FFileMasks, ';', False);
+  Result := StringsToStr(FileMasks, ';', False);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5722,6 +5762,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.25  2004/07/30 07:20:25  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate
+//
 // Revision 1.24  2004/07/29 07:58:20  marquardt
 // inc files updated
 //
