@@ -16,11 +16,28 @@
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{  Jack N.A. Bakker, Azret Botash, Jean-Fabien Connault, Massimo Maria Ghisalberti,                }
-{  Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Nick Hodges, Barry Kelly, Martin Kimmings,         }
-{  Martin Kubecka, Robert Lee, Pelle F. S. Liljendal, Robert Marquardt, John C Molyneux,           }
-{  Alexander Radchenko, Robert Rossmair, Olivier Sannier, Anthony Steele, Matthias Thoma,          }
-{  Huanlin Tsai, Petr Vones, Leonard Wennekers, Michael Winter                                     }
+{   Alexander Radchenko                                                                            }
+{   Anthony Steele                                                                                 }
+{   Azret Botash                                                                                   }
+{   Barry Kelly                                                                                    }
+{   Huanlin Tsai                                                                                   }
+{   Jack N.A. Bakker                                                                               }
+{   Jean-Fabien Connault                                                                           }
+{   John C Molyneux                                                                                }
+{   Leonard Wennekers                                                                              }
+{   Martin Kimmings                                                                                }
+{   Martin Kubecka                                                                                 }
+{   Massimo Maria Ghisalberti                                                                      }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Michael Winter                                                                                 }
+{   Nick Hodges                                                                                    }
+{   Olivier Sannier                                                                                }
+{   Pelle F. S. Liljendal                                                                          }
+{   Peter J. Haas (peterjhaas)                                                                     }
+{   Petr Vones                                                                                     }
+{   Robert Lee                                                                                     }
+{   Robert Marquardt                                                                               }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -302,34 +319,18 @@ function StringsToMultiSz(var Dest: PChar; const Source: TStrings): PChar;
 procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
 procedure FreeMultiSz(var Dest: PChar);
 
-{ TODO -cHelp : Author: Peter J. Haas }
-{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: array of AnsiString): AnsiString; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
-{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: TDynStringArray): AnsiString; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
-{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiString(const Value: TStrings): AnsiString; overload;
 
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString); overload;
 
-{ TODO -cHelp : Author: Peter J. Haas }
-{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiWideString(const Value: array of AnsiString): WideString; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
-{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiWideString(const Value: TDynStringArray): WideString; overload;
-{ TODO -cHelp : Author: Peter J. Haas }
-{ TODO -cHelp : Empty list entries will be deleted and a assertion created }
 function StringsToMultiWideString(const Value: TStrings): WideString; overload;
 
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure MultiWideStringToStrings(out Dest: TDynStringArray; const Value: WideString); overload;
-{ TODO -cHelp : Author: Peter J. Haas }
 procedure MultiWideStringToStrings(Dest: TStrings; const Value: WideString); overload;
 
 //--------------------------------------------------------------------------------------------------
@@ -887,8 +888,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Author: Olivier Sannier }
-
 function StrEnsureNoSuffix(const Suffix, Text: AnsiString): AnsiString;
 var
   SuffixLen : Integer;
@@ -903,8 +902,6 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : Author: Olivier Sannier }
 
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 var
@@ -1106,7 +1103,7 @@ begin
   if (FromIndex <= 0) or (FromIndex > Length(Source)) or
      (ToIndex <= 0) or (ToIndex > Length(Dest)) or
      ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
-     { TODO -orr : Is failure without notice the proper thing to do here? }
+     { TODO : Is failure without notice the proper thing to do here? }
      Exit;
 
   // Move
@@ -4052,7 +4049,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function StrToFloatSafe(const S: AnsiString): Float;
-{ TODO -cHelp : Contributors: Robert Rossmair }
 var
   Temp: AnsiString;
   I, J, K: Integer;
@@ -4180,6 +4176,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.21  2004/05/30 23:54:42  rrossmair
+// Processed documentation TODOs
+//
 // Revision 1.20  2004/05/08 08:44:17  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //
