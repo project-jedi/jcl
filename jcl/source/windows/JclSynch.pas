@@ -18,7 +18,6 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Olivier Sannier (obones)                                                                       }
 {   Matthias Thoma (mthoma)                                                                        }
 {                                                                                                  }
@@ -519,12 +518,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO: Use RTDL Version of SignalObjectAndWait }
+
 function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
   // Note: Do not make this method virtual! It's only available on NT 4 up...
-  Result := MapSignalResult(RtdlSignalObjectAndWait(Obj.Handle, Handle, TimeOut,
-    Alertable));
+  Result := MapSignalResult(Cardinal(Windows.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable)));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -641,14 +641,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO: Use RTDL Version of InitializeCriticalSectionAndSpinCount }
+
 constructor TJclCriticalSectionEx.CreateEx(SpinCount: Cardinal;
   NoFailEnter: Boolean);
 begin
   FSpinCount := SpinCount;
   if NoFailEnter then
     SpinCount := SpinCount or Cardinal($80000000);
-  // InitializeCriticalSectionAndSpinCount need Win98 and later or WinNT4.0 SP3 and later
-  if not RtdlInitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
+
+  if not InitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
     raise EJclCriticalSectionError.CreateResRec(@RsSynchInitCriticalSection);
 end;
 
@@ -674,12 +676,11 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-                             
+
+{ TODO: Use RTLD version of SetCriticalSectionSpinCount }
 procedure TJclCriticalSectionEx.SetSpinCount(const Value: Cardinal);
 begin
-  FSpinCount := RtdlSetCriticalSectionSpinCount(FCriticalSection, Value);
-  { TODO : Exception for Win9x, older WinNT? }
-  // RaiseLastOSError;
+  FSpinCount := SetCriticalSectionSpinCount(FCriticalSection, Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -692,12 +693,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO: Use RTLD version of TryEnterCriticalSection }
 function TJclCriticalSectionEx.TryEnter: Boolean;
 begin
-  Result := RtdlTryEnterCriticalSection(FCriticalSection);
-  { TODO : Exception for Win9x, older WinNT? }
-  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
-  //   RaiseLastOSError;
+  Result := TryEnterCriticalSection(FCriticalSection);
 end;
 
 //==================================================================================================
@@ -752,24 +751,21 @@ end;
 // TJclWaitableTimer
 //==================================================================================================
 
-{ TODO -cHelp : OS restrictions }
+{ TODO: Use RTLD version of CancelWaitableTimer }
 function TJclWaitableTimer.Cancel: Boolean;
 begin
-  Result := RtdlCancelWaitableTimer(FHandle);
-  { TODO : Exception for Win9x, older WinNT? }
-  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
-  //   RaiseLastOSError;
+  Result := CancelWaitableTimer(FHandle);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : OS restrictions }
+{ TODO: Use RTLD version of CreateWaitableTimer }
 constructor TJclWaitableTimer.Create(SecAttr: PSecurityAttributes;
   Manual: Boolean; const Name: string);
 begin
   FName := Name;
   FResume := False;
-  FHandle := RtdlCreateWaitableTimer(SecAttr, Manual, PChar(Name));
+  FHandle := CreateWaitableTimer(SecAttr, Manual, PChar(Name));
   if FHandle = 0 then
     raise EJclWaitableTimerError.CreateResRec(@RsSynchCreateWaitableTimer);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -777,31 +773,29 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : OS restrictions }
+{ TODO: Use RTLD version of OpenWaitableTimer }
+
 constructor TJclWaitableTimer.Open(Access: Cardinal; Inheritable: Boolean;
   const Name: string);
 begin
   FExisted := True;
   FName := Name;
   FResume := False;
-  FHandle := RtdlOpenWaitableTimer(Access, Inheritable, PChar(Name));
+  FHandle := OpenWaitableTimer(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclWaitableTimerError.CreateResRec(@RsSynchOpenWaitableTimer);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : OS restrictions }
+{ TODO: Use RTLD version of SetWaitableTimer }
 function TJclWaitableTimer.SetTimer(const DueTime: Int64; Period: Longint;
   Resume: Boolean): Boolean;
 var
   DT: Int64;
 begin
   DT := DueTime;
-  Result := RtdlSetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
-  { TODO : Exception for Win9x, older WinNT? }
-  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
-  //   RaiseLastOSError;
+  Result := SetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1560,54 +1554,64 @@ end;
 
 // http://undocumented.ntinternals.net/
 
+{ TODO: RTLD version }
+
+type
+ TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
+     Len: Longint; ResLen: PLongint): Longint; stdcall;
+
+ var
+   _QueryEvent: TNtQueryProc = nil;
+   _QueryMutex: TNtQueryProc = nil;
+   _QuerySemaphore: TNtQueryProc = nil;
+   _QueryTimer: TNtQueryProc = nil;
+
+ function CallQueryProc(var P: TNtQueryProc; const Name: string; Handle: THandle;
+   Info: Pointer; InfoSize: Longint): Boolean;
+ var
+   NtDll: THandle;
+   Status: Longint;
+ begin
+   Result := False;
+   if @P = nil then
+   begin
+     NtDll := GetModuleHandle(PChar('ntdll.dll'));
+     if NtDll <> 0 then
+       @P := GetProcAddress(NtDll, PChar(Name));
+   end;
+   if @P <> nil then
+   begin
+     Status := P(Handle, 0, Info, InfoSize, nil);
+     Result := (Status and $80000000) = 0;
+   end;
+ end;
+
+//--------------------------------------------------------------------------------------------------
+
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
-var
-  ResultStatus: NTSTATUS;
 begin
-  ResultStatus := RtdlNtQueryEvent(Handle, EventBasicInformation,
-    @Info, SizeOf(Info), nil);
-  if ResultStatus = STATUS_NOT_IMPLEMENTED then
-    RaiseLastOSError;
-  Result := (ResultStatus and $80000000) = 0;
+  Result := CallQueryProc(_QueryEvent, 'NtQueryEvent', Handle, @Info, SizeOf(Info));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
-var
-  ResultStatus: NTSTATUS;
 begin
-  ResultStatus := RtdlNtQueryMutant(Handle, MutantBasicInformation,
-    @Info, SizeOf(Info), nil);
-  if ResultStatus = STATUS_NOT_IMPLEMENTED then
-    RaiseLastOSError;
-  Result := (ResultStatus and $80000000) = 0;
+  Result := CallQueryProc(_QueryMutex, 'NtQueryMutex', Handle, @Info, SizeOf(Info));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
-var
-  ResultStatus: NTSTATUS;
 begin
-  ResultStatus := RtdlNtQuerySemaphore(Handle, SemaphoreBasicInformation,
-    @Info, SizeOf(Info), nil);
-  if ResultStatus = STATUS_NOT_IMPLEMENTED then
-    RaiseLastOSError;
-  Result := (ResultStatus and $80000000) = 0;
+  Result := CallQueryProc(_QuerySemaphore, 'NtQuerySemaphore', Handle, @Info, SizeOf(Info));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
-var
-  ResultStatus: NTSTATUS;
 begin
-  ResultStatus := RtdlNtQueryTimer(Handle, TimerBasicInformation,
-    @Info, SizeOf(Info), nil);
-  if ResultStatus = STATUS_NOT_IMPLEMENTED then
-    RaiseLastOSError;
-  Result := (ResultStatus and $80000000) = 0;
+  Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle, @Info, SizeOf(Info));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1615,6 +1619,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/10/17 23:09:37  mthoma
+// More cleaning. Removing RTLD versions of some functions.
+//
 // Revision 1.12  2004/10/17 21:00:16  mthoma
 // cleaning
 //
