@@ -85,7 +85,7 @@ begin
   FFileEnumerator.OnEnterDirectory := DirectoryEntered;
   FFileEnumerator.OnTerminateTask := TaskDone;
   FileMaskInput.Text := '*.pas;*.dfm;*.xfm;*.dpr;*.dpk*';
-  RootDirInput.Text := '..'; // FFileEnumerator.RootDirectory;
+  RootDirInput.Text := ExpandFileName(FFileEnumerator.RootDirectory);
   edLastChangeAfter.Text := FFileEnumerator.LastChangeAfterAsString;
   edLastChangeBefore.Text := FFileEnumerator.LastChangeBeforeAsString;
   cbCaseInsensitiveSearch.Checked := not FFileEnumerator.CaseSensitiveSearch;
@@ -181,9 +181,7 @@ begin
 
   FFileListLiveUpdate := cbDisplayLiveUpdate.Checked;
 
-  FileList.Items.BeginUpdate;
   FileList.Items.Clear;
-  FileList.Items.EndUpdate;
   if not FFileListLiveUpdate then
     FileList.Items.BeginUpdate;
   FileList.Sorted := False;
