@@ -16,23 +16,23 @@
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributors:                                                                                    }
-{   Marcel Bestebroer                                                                              }
-{   Marcel van Brakel                                                                              }
-{   Azret Botash                                                                                   }
-{   Charlie Calvert                                                                                }
-{   Wim De Cleen                                                                                   }
-{   Massimo Maria Ghisalberti                                                                      }
-{   David Hervieux                                                                                 }
-{   Jeff                                                                                           }
-{   Pelle F. S. Liljendal                                                                          }
-{   Robert Marquardt (marquardt)                                                                   }
-{   John Molyneux                                                                                  }
-{   Robert Rossmair (rrossmair)                                                                    }
-{   Olivier Sannier (obones)                                                                       }
 {   André Snepvangers (asnepvangers)                                                               }
 {   Anthony Steele                                                                                 }
+{   Azret Botash                                                                                   }
+{   Charlie Calvert                                                                                }
+{   David Hervieux                                                                                 }
+{   Jeff                                                                                           }
+{   John Molyneux                                                                                  }
+{   Marcel Bestebroer                                                                              }
+{   Marcel van Brakel                                                                              }
+{   Massimo Maria Ghisalberti                                                                      }
 {   Matthias Thoma (mthoma)                                                                        }
+{   Olivier Sannier (obones)                                                                       }
+{   Pelle F. S. Liljendal                                                                          }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {   Rudy Velthuis                                                                                  }
+{   Wim De Cleen                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -141,10 +141,7 @@ function PathExtractFileNameNoExt(const Path: string): string;
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
 function PathGetDepth(const Path: string): Integer;
 {$IFDEF MSWINDOWS}
-{$IFNDEF FPC}
 function PathGetLongName(const Path: string): string;
-{$ENDIF ~FPC}
-function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF MSWINDOWS}
 function PathGetRelativePath(Origin, Destination: string): string;
@@ -273,19 +270,6 @@ function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): B
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
-
-{$IFDEF DROP_OBSOLETE_CODE}
-{$IFNDEF FPC}
-function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF ~FPC}
-function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-function Win32RestoreFile(const FileName: string): Boolean;
-{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF DROP_OBSOLETE_CODE}
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -921,6 +905,26 @@ type
   EJclFileMappingViewError = class(EJclWin32Error);
   {$ENDIF MSWINDOWS}
 
+{$IFNDEF DROP_OBSOLETE_CODE}
+//--------------------------------------------------------------------------------------------------
+// Deprecated, do not use
+//--------------------------------------------------------------------------------------------------
+
+function PathGetLongName2(const Path: string): string;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+{$IFNDEF FPC}
+function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+{$ENDIF ~FPC}
+function Win32MoveFileReplaceExisting(const SrcFileName, DstFileName: string): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+function Win32RestoreFile(const FileName: string): Boolean;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+
+{$ENDIF ~DROP_OBSOLETE_CODE}
+
 implementation
 
 uses
@@ -931,7 +935,7 @@ uses
   {$ELSE ~FPC}
   ActiveX, ShlObj, JclShell,
   {$ENDIF ~FPC}
-  JclWin32, JclDateTime, JclSecurity, JclSysInfo,
+  JclSysUtils, JclWin32, JclDateTime, JclSecurity, JclSysInfo,
   {$ENDIF MSWINDOWS}
   JclResources, JclStrings;
 
@@ -1834,29 +1838,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : PathCanonicalize }
-{ Canonicalizes a path. Meaning, it parses the specified path for the character
-  sequences '.' and '..' where '.' means skip over the next path part and '..'
-  means remove the previous path part.
-
-  For example:
-    c:\users\.\delphi\data => c:\users\delphi\data
-    c:\users\..\delphi\data => c:\brakelm\delphi\data
-    c:\users\.\delphi\.. => c:\users
-    c:\users\.\..\data => c:\data
-
-  Thus, the '.' and '..' sequences have similar meaning to their counterparts in
-  the filesystem.
-
-  Path: the path to canonicalize
-  Result: the canonicalized path
-  Author: Jeff
-
-  Linux: Libc.canonicalize_file_name() is different in that it converts relative paths
-         to absolute ones - and thus needs to evaluate the program's environment.
-
-}
-
 function PathCanonicalize(const Path: string): string;
 var
   List: TStringList;
@@ -2006,14 +1987,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : PathExtractPathDepth }
-{ Returns the first Depth path parts of the specified path exclusing drive.
-  Example: PathExtractPathDepth('c:\users\brakelm\data', 2) => 'c:\users\brakelm'
-  Path: the path to extract from
-  Depth: the depth of the path to return (i.e. the number of directory parts).
-  Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?)
-}
-
 function PathExtractPathDepth(const Path: string; Depth: Integer): string;
 var
   List: TStringList;
@@ -2040,13 +2013,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : PathGetDepth }
-{ Returns the depth of a path. That is the number of subdirectories in the path.
-  Path: the path for which to return the depth
-  Result: depth of the path
-  Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?)
-  Notes: maybe this function should first apply PathCanonicalize() ?
-}
+//  Notes: maybe this function should first apply PathCanonicalize() ?
 
 function PathGetDepth(const Path: string): Integer;
 var
@@ -2080,54 +2047,24 @@ end;
 
 {$IFDEF MSWINDOWS}
 
-function PathGetLongName2(Path: string): string;
-var
-  I : Integer;
-  SearchHandle : THandle;
-  FindData : TWin32FindData;
-  IsBackSlash : Boolean;
+{$IFNDEF DROP_OBSOLETE_CODE}
+
+function PathGetLongName2(const Path: string): string;
 begin
-  Path := ExpandFileName(Path);
-  Result := ExtractFileDrive(Path);
-  I := Length(Result);
-  if Length(Path) <= I then
-    Exit;   // only drive
-  if Path[I + 1] = '\' then
-  begin
-    Result := Result + '\';
-    Inc(I);
-  end;
-  Delete(Path, 1, I);
-  repeat
-    I := Pos('\', Path);
-    IsBackSlash := I > 0;
-    if Not IsBackSlash then
-      I := Length(Path) + 1;
-    SearchHandle := FindFirstFile(PChar(Result + Copy(Path, 1, 
-      I - 1)), FindData);
-    if SearchHandle <> INVALID_HANDLE_VALUE then
-    begin
-      try
-        Result := Result + FindData.cFileName;
-        if IsBackSlash then
-          Result := Result + '\';
-      finally
-        Windows.FindClose(SearchHandle);
-      end;
-    end
-    else
-    begin
-      Result := Result + Path;
-      Break;
-    end;
-    Delete(Path, 1, I);
-  until Length(Path) = 0;
+  Result := PathGetLongName(Path);
 end;
+
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF FPC}
-function PathGetLongName(const Path: string): string;
+function ShellGetLongPathName(const Path: string): string;
+{$IFDEF FPC}
+// As of 2004-10-17, FPC's ShlObj unit is just a dummy
+begin
+  Result := Path;
+end;
+{$ElSE ~FPC}
 var
   PIDL: PItemIDList;
   Desktop: IShellFolder;
@@ -2145,7 +2082,8 @@ begin
       try
         SetLength(AnsiName, MAX_PATH);
         if SHGetPathFromIDList(PIDL, PChar(AnsiName)) then
-          Result := PChar(AnsiName);
+          StrResetLength(AnsiName);
+        Result := AnsiName;
       finally
         CoTaskMemFree(PIDL);
       end;
@@ -2153,6 +2091,41 @@ begin
   end;
 end;
 {$ENDIF ~FPC}
+
+{ TODO : Move RTDL code over to JclWin32 when JclWin32 gets overhauled. }
+var
+  _Kernel32Handle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+  _GetLongPathName: function (lpszShortPath: PChar; lpszLongPath: PChar;
+    cchBuffer: DWORD): DWORD; stdcall;
+
+function Kernel32Handle: HMODULE;
+begin
+  JclSysUtils.LoadModule(_Kernel32Handle, kernel32);
+  Result := _Kernel32Handle;
+end;
+
+function RtdlGetLongPathName(const Path: string): string;
+begin
+  Result := Path;
+  if not Assigned(_GetLongPathName) then
+    _GetLongPathName := GetModuleSymbol(Kernel32Handle, 'GetLongPathNameA');
+  if not Assigned(_GetLongPathName) then
+    Result := ShellGetLongPathName(Path)
+  else
+  begin
+    SetLength(Result, MAX_PATH);
+    _GetLongPathName(PChar(Path), PChar(Result), MAX_PATH);
+    StrResetLength(Result);
+  end;
+end;
+
+function PathGetLongName(const Path: string): string;
+begin
+  if Pos('::', Path) > 0 then // Path contains '::{<GUID>}'
+    ShellGetLongPathName(Path)
+  else
+    Result := RtdlGetLongPathName(Path);
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2936,6 +2909,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF FPC}
+{ TODO : Move this over to JclWin32 when JclWin32 gets overhauled. }
+function GetTempFileName(lpPathName, lpPrefixString: PChar;
+  uUnique: UINT; lpTempFileName: PChar): UINT; stdcall;
+external kernel32 name 'GetTempFileNameA';
+{$ENDIF FPC}
+
 function FileGetTempName(const Prefix: string): string;
 {$IFDEF MSWINDOWS}
 var
@@ -3516,6 +3496,13 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+{$IFDEF FPC}
+{ TODO : Move this over to JclWin32 when JclWin32 gets overhauled. }
+function GetFileAttributesEx(lpFileName: PChar;
+  fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): BOOL; stdcall;
+external kernel32 name 'GetFileAttributesExA';
+{$ENDIF FPC}
+
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
   Handle: THandle;
@@ -3849,7 +3836,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF DROP_OBSOLETE_CODE}
+{$IFNDEF DROP_OBSOLETE_CODE}
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
 begin
@@ -3877,7 +3864,7 @@ begin
   Result := FileRestore(FileName);
 end;
 
-{$ENDIF DROP_OBSOLETE_CODE}
+{$ENDIF ~DROP_OBSOLETE_CODE}
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -5941,6 +5928,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2004/10/17 06:02:51  rrossmair
+// - rewrote PathGetLongName
+// - rewrote PathGetLongName2 (now mere wrapper around PathGetLongName)
+// - restored FPC compatibility
+//
 // Revision 1.29  2004/10/15 03:54:20  rrossmair
 // - added FileCreateTemp/Unix
 // - added FileBackup
