@@ -84,7 +84,7 @@
 {                                                                              }
 {  Contributor(s):                                                             }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
-{    Robert Rossmair (rrossmair}                                               }
+{    Robert Rossmair (rrossmair)                                               }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
 {  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
@@ -2201,6 +2201,9 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number                  
 // 
 //  $Log$
+//  Revision 1.6  2004/05/05 05:50:40  rrossmair
+//  fixed typo: '}' instead of ')'
+//
 //  Revision 1.5  2004/05/05 05:24:58  rrossmair
 //  fixed typo
 //

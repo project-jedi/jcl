@@ -23,7 +23,7 @@
 {                                                                                                  }
 {  Contributor(s):                                                                                 }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
-{    Robert Rossmair (rrossmair}                                                                   }
+{    Robert Rossmair (rrossmair)                                                                   }
 {                                                                                                  }
 { Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
 { Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
@@ -69,7 +69,7 @@
 {                                                                              }
 {  Contributor(s):                                                             }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
-{    Robert Rossmair (rrossmair}                                               }
+{    Robert Rossmair (rrossmair)                                               }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
 {  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
@@ -779,6 +779,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.4  2004/05/05 05:50:40  rrossmair
+//   fixed typo: '}' instead of ')'
+//
 //   Revision 1.3  2004/05/05 05:28:00  rrossmair
 //   ISOFloatToStr changed for FPC compatibility
 //
