@@ -76,7 +76,7 @@ unit zlibh;
 
 interface
 uses
-  LibC;
+  Libc;
 
 {$HPPEMIT '#include <zlib.h>'}
 

@@ -135,7 +135,7 @@ uses
   Windows;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  LibC;
+  Libc;
   {$ENDIF UNIX}
 
 {$HPPEMIT '#include <zlib.h>'}
@@ -1644,6 +1644,9 @@ end;
 //    - compiler symbol to hide platform specific comments
 //
 //   $Log$
+//   Revision 1.2  2004/04/20 01:34:06  rrossmair
+//   "uses LibC" changed to "uses Libc" (unit names are case-sensitive on Unix)
+//
 //   Revision 1.1  2004/04/08 00:29:22  peterjhaas
 //   Zlib header conversion prototype
 //
