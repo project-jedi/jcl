@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclStrings.pas.                                                                }
+{ The Original Code is JclStrings.pas.                                                             }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -20,7 +20,7 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: Januari 20, 2002                                                                  }
+{ Last modified: March 19, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -3373,6 +3373,7 @@ function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEm
 var
   I, L: Integer;
 begin
+  Result := '';
   for I := 0 to List.Count - 1 do
   begin
     if (List[I] <> '') or AllowEmptyString then
