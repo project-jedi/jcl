@@ -82,8 +82,9 @@ uses
   SysUtils,             // for exceptions and FloatToText
   Classes,              // for TStrings, in error-reporting code
   JclBase,              // for PByte and PCardinal
-  JclStrings,           // for BooleanToStr, StrLen
   JclMath,              // for TDelphiSet
+  JclResources,         // for resourcestrings
+  JclStrings,           // for BooleanToStr, StrLen
   JclWideStrings;       // for StrLenW, MoveWideChar
 
 type
@@ -713,13 +714,6 @@ end;
 {$Q+}
 {$ENDIF OVERFLOWCHECKS_ON}
 
-resourcestring
-  RsFormatSyntaxError = 'Syntax error at index %u';
-  RsFormatNoArgument = 'No argument at index %u';
-  RsFormatBadArgumentType = 'Invalid argument type (%s) at index %u. Expected [%s]';
-  RsFormatBadArgumentTypeEx = 'Invalid argument type (%s) at index %u for format ''%s''. Expected [%s]';
-  RsFormatNoArgumentEx = 'No argument at index %u for format ''%s''';
-
 function FormatNoArgumentError(const ArgIndex: Cardinal): Exception;
 begin
   Result := EConvertError.CreateResFmt(PResStringRec(@RsFormatNoArgument), [ArgIndex]);
@@ -781,6 +775,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/02/27 07:27:47  marquardt
+// moved resourcestrings to JclResource.pas
+//
 // Revision 1.4  2005/02/25 07:20:16  marquardt
 // add section lines
 //
