@@ -9,7 +9,6 @@
       ../../lib/k3/obj/JclComplex.o 
       ../../lib/k3/obj/JclCounter.o 
       ../../lib/k3/obj/JclDateTime.o 
-      ../../lib/k3/obj/JclDITs.o 
       ../../lib/k3/obj/JclEDI_ANSIX12.o 
       ../../lib/k3/obj/JclEDI_ANSIX12_Ext.o 
       ../../lib/k3/obj/JclEDI.o 

@@ -36,7 +36,6 @@ contains
   JclComplex in '..\..\source\common\JclComplex.pas',
   JclCounter in '..\..\source\common\JclCounter.pas',
   JclDateTime in '..\..\source\common\JclDateTime.pas',
-  JclDITs in '..\..\source\common\JclDITs.pas',
   JclEDIXML in '..\..\source\common\JclEDIXML.pas',
   JclEDI_ANSIX12 in '..\..\source\common\JclEDI_ANSIX12.pas',
   JclEDI_UNEDIFACT in '..\..\source\common\JclEDI_UNEDIFACT.pas',
