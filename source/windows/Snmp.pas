@@ -33,7 +33,7 @@
 {                                                                              }
 {******************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit Snmp;
@@ -896,6 +896,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.5  2004/05/05 05:32:38  rrossmair
+// CVS key word typo corrected: $Data$ -> $Date$
+//
 // Revision 1.4  2004/04/06 04:59:07  peterjhaas
 // adapt compiler conditions, add log entry
 //
