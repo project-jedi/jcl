@@ -21,11 +21,11 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: March 6, 2003                                                                      }
-{ Last modified: March 25, 2003                                                                     }
+{ Last modified: March 25, 2003                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
-{   Help and Demos at http://24.54.82.216/DelphiJedi/Default.htm                                   }
-{    My website is usually available between 8:00am-10:00pm EST                                    }
+{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -50,7 +50,6 @@ interface
 uses
   SysUtils, Classes, JclBase, JclStrings, JclEDI, JclEDI_ANSIX12;
 
-//Resource strings need to go in JclResources.pas
 resourcestring
   EDIXMLError001 = 'Could not open edi file.  File not specified.';
   EDIXMLError002 = 'Could not save edi file.  File name and path not specified.';
@@ -630,8 +629,13 @@ begin
   Result := '';
   for I := 0 to FAttributes.Count - 1 do
   begin
+{$IFDEF DELPHI7_UP}
     J := StrSearch(FDelimiters.SingleQuote, FAttributes.ValueFromIndex[I]);
     K := StrSearch(FDelimiters.DoubleQuote, FAttributes.ValueFromIndex[I]);
+{$ELSE}
+    J := StrSearch(FDelimiters.SingleQuote, FAttributes.Values[FAttributes.Names[I]]);
+    K := StrSearch(FDelimiters.DoubleQuote, FAttributes.Values[FAttributes.Names[I]]);
+{$ENDIF}
     if J > K then
     begin
       QuoteDelimiter := FDelimiters.SingleQuote;
@@ -641,8 +645,13 @@ begin
       QuoteDelimiter := FDelimiters.DoubleQuote;
     end;
     if Result <> '' then Result := Result + FDelimiters.SpaceDelimiter;
+{$IFDEF DELPHI7_UP}
     Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
       QuoteDelimiter + FAttributes.ValueFromIndex[I] + QuoteDelimiter;
+{$ELSE}
+    Result := Result + FAttributes.Names[I] + FDelimiters.AssignmentDelimiter +
+      QuoteDelimiter + FAttributes.Values[FAttributes.Names[I]] + QuoteDelimiter;
+{$ENDIF}
   end;
 end;
 
