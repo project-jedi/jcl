@@ -11,11 +11,16 @@
 	<Default.Personality>  <Projects>
       <Projects Name="DJcl90.bpl">d9\DJcl.bdsproj</Projects>
       <Projects Name="DJclVcl90.bpl">d9\DJclVcl.bdsproj</Projects>
-      <Projects Name="Targets">DJcl90.bpl DJclVcl90.bpl</Projects>
+      <Projects Name="IdeOpenDlgFavorite90.bpl">..\examples\vcl\idefavopendialogs\IdeOpenDlgFavorite90.bdsproj</Projects>
+      <Projects Name="Targets">DJcl90.bpl DJclVcl90.bpl IdeOpenDlgFavorite90.bpl</Projects>
     </Projects>
     <Dependencies>
       <Dependency GUID="{56BD28A4-80E6-467C-BD0E-CAC01DE0CE04}">
         <Dependency GUID="{727821B9-CAC9-4A6B-8F7A-31B5E1CD3BC4}"/>
+      </Dependency>
+      <Dependency GUID="{9CFD228F-5842-4448-8234-07AA2544B86F}">
+        <Dependency GUID="{727821B9-CAC9-4A6B-8F7A-31B5E1CD3BC4}"/>
+        <Dependency GUID="{56BD28A4-80E6-467C-BD0E-CAC01DE0CE04}"/>
       </Dependency>
     </Dependencies>
   </Default.Personality>
