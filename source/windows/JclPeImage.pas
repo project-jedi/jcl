@@ -24,7 +24,7 @@
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: July 2, 2001                                                  }
+{ Last modified: October 14, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -686,11 +686,13 @@ type
     FIsBorlandImage: Boolean;
     FLibHandle: THandle;
     FPackageInfo: TJclPePackageInfo;
+    FPackageCompilerVersion: Integer;
     function GetFormCount: Integer;
     function GetForms(Index: Integer): TJclPeBorForm;
     function GetFormFromName(const FormClassName: string): TJclPeBorForm;
     function GetIsTD32DebugPresent: Boolean;
     function GetLibHandle: THandle;
+    function GetPackageCompilerVersion: Integer;
     function GetPackageInfo: TJclPePackageInfo;
   protected
     procedure AfterOpen; override;
@@ -702,11 +704,12 @@ type
     function FreeLibHandle: Boolean;
     property Forms[Index: Integer]: TJclPeBorForm read GetForms;
     property FormCount: Integer read GetFormCount;
-    property FormFromName[const FormClassName: string]: TJclPeBorForm read GetFormFromName; 
+    property FormFromName[const FormClassName: string]: TJclPeBorForm read GetFormFromName;
     property IsBorlandImage: Boolean read FIsBorlandImage;
     property IsPackage: Boolean read FIsPackage;
     property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
     property LibHandle: THandle read GetLibHandle;
+    property PackageCompilerVersion: Integer read GetPackageCompilerVersion;
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
   end;
 
@@ -3826,6 +3829,7 @@ begin
   inherited;
   FIsBorlandImage := False;
   FIsPackage := False;
+  FPackageCompilerVersion := 0;
 end;
 
 //------------------------------------------------------------------------------
@@ -3968,6 +3972,49 @@ begin
       RaiseLastOSError;
   end;
   Result := FLibHandle;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.GetPackageCompilerVersion: Integer;
+var
+  I: Integer;
+  ImportName: string;
+
+  function CheckName: Boolean;
+  begin
+    Result := False;
+    ImportName := AnsiUpperCase(ImportName);
+    if ExtractFileExt(ImportName) = '.BPL' then
+    begin
+      ImportName := PathExtractFileNameNoExt(ImportName);
+      if (Length(ImportName) = 5) and
+        CharIsDigit(ImportName[4]) and CharIsDigit(ImportName[5]) and
+        ((Pos('RTL', ImportName) = 1) or (Pos('VCL', ImportName) = 1)) then
+      begin
+        FPackageCompilerVersion := StrToIntDef(Copy(ImportName, 4, 2), 0);
+        Result := True;
+      end;
+    end;
+  end;
+
+begin
+  if (FPackageCompilerVersion = 0) and IsPackage then
+  begin
+    with ImportList do
+      for I := 0 to UniqueLibItemCount - 1 do
+      begin
+        ImportName := UniqueLibNames[I];
+        if CheckName then
+          Break;
+      end;
+    if FPackageCompilerVersion = 0 then
+    begin
+      ImportName := ExtractFileName(FileName);
+      CheckName;
+    end;  
+  end;
+  Result := FPackageCompilerVersion;
 end;
 
 //------------------------------------------------------------------------------
