@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 18, 2002                                                                 }
+{ Last modified: February 19, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -366,8 +366,7 @@ function FileOfAddr(const Addr: Pointer): string;
 function ModuleOfAddr(const Addr: Pointer): string;
 function ProcOfAddr(const Addr: Pointer): string;
 function LineOfAddr(const Addr: Pointer): Integer;
-function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean;
+function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
 
 function ExtractClassName(const ProcedureName: string): string;
 function ExtractMethodName(const ProcedureName: string): string;
@@ -2314,8 +2313,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclDebugInfoExports.GetLocationInfo(const Addr: Pointer;
-  var Info: TJclLocationInfo): Boolean;
+function TJclDebugInfoExports.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
 var
   I, BasePos: Integer;
   VA: DWORD;
@@ -2413,7 +2411,7 @@ function TJclDebugInfoTD32.InitializeSource: Boolean;
 begin
   FImage := TJclPeBorTD32Image.Create(True);
   try
-    FImage.FileName := FileName;
+    FImage.AttachLoadedModule(Module);
     Result := TJclTD32InfoParser.Parse(FImage, True);
   except
     Result := False;
