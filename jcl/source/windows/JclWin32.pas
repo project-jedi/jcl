@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: Februari 10, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -1089,7 +1089,7 @@ end;
 
 function SORTIDFROMLCID(const lcid: LCID): Word;
 begin
-  Result := (lcid shl 16) and $0F;
+  Result := (lcid shr 16) and $0F;
 end;
 
 //------------------------------------------------------------------------------
