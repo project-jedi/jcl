@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 01, 2002                                                                 }
+{ Last modified: February 19, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -374,6 +374,7 @@ type
     constructor Create(AImage: TJclPeImage; AParentItem: TJclPeResourceItem;
       AEntry: PImageResourceDirectoryEntry);
     destructor Destroy; override;
+    function CompareName(AName: PChar): Boolean;
     property DataEntry: PImageResourceDataEntry read GetDataEntry;
     property Entry: PImageResourceDirectoryEntry read FEntry;
     property Image: TJclPeImage read FImage;
@@ -407,12 +408,17 @@ type
   end;
 
   TJclPeRootResourceList = class (TJclPeResourceList)
+  private
+    FManifestContent: TStrings;
+    function GetManifestContent: TStrings;
   public
+    destructor Destroy; override;
     function FindResource(ResourceType: TJclPeResourceKind;
       const ResourceName: string = ''): TJclPeResourceItem; overload;
     function FindResource(const ResourceType: PChar;
-      const ResourceName: string = ''): TJclPeResourceItem; overload;
+      const ResourceName: PChar = nil): TJclPeResourceItem; overload;
     function ListResourceNames(ResourceType: TJclPeResourceKind; const Strings: TStrings): Boolean;
+    property ManifestContent: TStrings read GetManifestContent;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -499,10 +505,12 @@ type
     FHeader: TImageCor20Header;
     FImage: TJclPeImage;
     function GetVersionString: string;
+    function GetHasMetadata: Boolean;
   protected
     procedure ReadHeader;
   public
     constructor Create(AImage: TJclPeImage);
+    property HasMetadata: Boolean read GetHasMetadata; 
     property Header: TImageCor20Header read FHeader;
     property VersionString: string read GetVersionString;
     property Image: TJclPeImage read FImage;
@@ -630,7 +638,7 @@ type
       AParentItem: TJclPeResourceItem): TJclPeResourceItem; virtual;
     function ResourceListCreate(ADirectory: PImageResourceDirectory;
       AParentItem: TJclPeResourceItem): TJclPeResourceList; virtual;
-    property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
+    property NoExceptions: Boolean read FNoExceptions;
   public
     constructor Create(ANoExceptions: Boolean = False); virtual;
     destructor Destroy; override;
@@ -674,6 +682,7 @@ type
     property LoadedImage: TLoadedImage read FLoadedImage;
     property MappedAddress: DWORD read GetMappedAddress;
     property OptionalHeader: TImageOptionalHeader read GetOptionalHeader;
+    property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
     property RelocationList: TJclPeRelocList read GetRelocationList;
     property ResourceList: TJclPeRootResourceList read GetResourceList;
     property Status: TJclPeImageStatus read FStatus;
@@ -751,7 +760,6 @@ type
     function GetFormCount: Integer;
     function GetForms(Index: Integer): TJclPeBorForm;
     function GetFormFromName(const FormClassName: string): TJclPeBorForm;
-    function GetIsTD32DebugPresent: Boolean;
     function GetLibHandle: THandle;
     function GetPackageCompilerVersion: Integer;
     function GetPackageInfo: TJclPePackageInfo;
@@ -769,7 +777,6 @@ type
     property FormFromName[const FormClassName: string]: TJclPeBorForm read GetFormFromName;
     property IsBorlandImage: Boolean read FIsBorlandImage;
     property IsPackage: Boolean read FIsPackage;
-    property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
     property LibHandle: THandle read GetLibHandle;
     property PackageCompilerVersion: Integer read GetPackageCompilerVersion;
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
@@ -988,14 +995,15 @@ uses
   JclLogic, JclResources, JclSysUtils;
 
 const
-  BPLExtension = '.BPL';
+  BPLExtension      = '.bpl';
+  MANIFESTExtension = '.manifest';
 
-  PackageInfoResName = 'PACKAGEINFO';
-  DescriptionResName = 'DESCRIPTION';
+  PackageInfoResName    = 'PACKAGEINFO';
+  DescriptionResName    = 'DESCRIPTION';
   PackageOptionsResName = 'PACKAGEOPTIONS';
-  DVclAlResName = 'DVCLAL';
+  DVclAlResName         = 'DVCLAL';
 
-  DebugSectionName = '.debug';
+  DebugSectionName    = '.debug';
   ReadOnlySectionName = '.rdata';
 
 //==================================================================================================
@@ -1023,7 +1031,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function CompareResourceType(T1, T2: PChar): Boolean;
+function CompareResourceName(T1, T2: PChar): Boolean;
 begin
   if (LongRec(T1).Hi = 0) or (LongRec(T2).Hi = 0) then
     Result := Word(T1) = Word(T2)
@@ -2400,6 +2408,13 @@ end;
 // TJclPeResourceItem
 //==================================================================================================
 
+function TJclPeResourceItem.CompareName(AName: PChar): Boolean;
+begin
+  Result := CompareResourceName(AName, PChar(Entry^.Name));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclPeResourceItem.Create(AImage: TJclPeImage;
   AParentItem: TJclPeResourceItem; AEntry: PImageResourceDirectoryEntry);
 begin
@@ -2619,6 +2634,14 @@ end;
 // TJclPeRootResourceList
 //==================================================================================================
 
+destructor TJclPeRootResourceList.Destroy;
+begin
+  FreeAndNil(FManifestContent);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclPeRootResourceList.FindResource(ResourceType: TJclPeResourceKind;
   const ResourceName: string): TJclPeResourceItem;
 var
@@ -2651,7 +2674,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclPeRootResourceList.FindResource(const ResourceType: PChar;
-  const ResourceName: string): TJclPeResourceItem;
+  const ResourceName: PChar): TJclPeResourceItem;
 var
   I: Integer;
   TypeItem: TJclPeResourceItem;
@@ -2659,22 +2682,53 @@ begin
   Result := nil;
   TypeItem := nil;
   for I := 0 to Count - 1 do
-    if CompareResourceType(ResourceType, PChar(Items[I].Entry^.Name)) then
+    if Items[I].CompareName(ResourceType) then
     begin
       TypeItem := Items[I];
       Break;
     end;
   if TypeItem <> nil then
-    if ResourceName = '' then
+    if ResourceName = nil then
       Result := TypeItem
     else
       with TypeItem.List do
         for I := 0 to Count - 1 do
-          if Items[I].Name = ResourceName then
+          if Items[I].CompareName(ResourceName) then
           begin
             Result := Items[I];
             Break;
           end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPeRootResourceList.GetManifestContent: TStrings;
+var
+  ManifestFileName: string;
+  ResItem: TJclPeResourceItem;
+  ResStream: TJclPeResourceRawStream;
+begin
+  if FManifestContent = nil then
+  begin
+    FManifestContent := TStringList.Create;
+    ResItem := FindResource(RT_MANIFEST, CREATEPROCESS_MANIFEST_RESOURCE_ID);
+    if ResItem = nil then
+    begin
+      ManifestFileName := Image.FileName + MANIFESTExtension;
+      if FileExists(ManifestFileName) then
+        FManifestContent.LoadFromFile(ManifestFileName);
+    end
+    else
+    begin
+      ResStream := TJclPeResourceRawStream.Create(ResItem.List[0]);
+      try
+        FManifestContent.LoadFromStream(ResStream);
+      finally
+        ResStream.Free;
+      end;    
+    end;
+  end;
+  Result := FManifestContent;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2890,6 +2944,17 @@ begin
   FImage := AImage;
   ReadHeader;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclPeCLRHeader.GetHasMetadata: Boolean;
+const
+  METADATA_SIGNATURE = $424A5342; // Reference: Partition II Metadata.doc - 23.2.1 Metadata root
+begin
+  with Header.MetaData do
+    Result := (VirtualAddress <> 0) and (PDWORD(FImage.RvaToVa(VirtualAddress))^ = METADATA_SIGNATURE);
+end;
+{ TODO -cDOC : "Flier Lu" <flier_lu@yahoo.com.cn> }
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3605,7 +3670,7 @@ end;
 
 function TJclPeImage.IsCLR: Boolean;
 begin
-  Result := DirectoryExists[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
+  Result := DirectoryExists[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR] and CLRHeader.HasMetadata;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4222,25 +4287,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclPeBorImage.GetIsTD32DebugPresent: Boolean;
-const
-  TD32Signature = $39304246; // FB09
-var
-  DebugDir: TImageDebugDirectory;
-  Signature: PDWORD;
-begin
-  if IsBorlandImage and (DebugList.Count = 1) then
-  begin
-    DebugDir := DebugList[0];
-    Signature := RvaToVa(DebugDir.AddressOfRawData);
-    Result := (DebugDir._Type = IMAGE_DEBUG_TYPE_UNKNOWN) and (Signature^ = TD32Signature);
-  end
-  else
-    Result := False;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function TJclPeBorImage.GetLibHandle: THandle;
 begin
   if StatusOK and (FLibHandle = 0) then
@@ -4263,7 +4309,7 @@ var
   begin
     Result := False;
     ImportName := AnsiUpperCase(ImportName);
-    if ExtractFileExt(ImportName) = BPLExtension then
+    if StrSame(ExtractFileExt(ImportName), BPLExtension) then
     begin
       ImportName := PathExtractFileNameNoExt(ImportName);
       if (Length(ImportName) = 5) and
@@ -4983,7 +5029,7 @@ begin
     AttachLoadedModule(Module);
     if StatusOK then
     begin
-      ResItem := ResourceList.FindResource(ResourceType, ResourceName);
+      ResItem := ResourceList.FindResource(ResourceType, PChar(ResourceName));
       if (ResItem <> nil) and ResItem.IsDirectory then
         Result := ResItem.List[0].RawEntryData;
     end;  
