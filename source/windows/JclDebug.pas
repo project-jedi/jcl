@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: April 11, 2001                                                }
+{ Last modified: June 18, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -384,9 +384,11 @@ type
   private
     FThreadID: DWORD;
     FTimeStamp: TDateTime;
+    function GetThreadInfo: string;
   public
     constructor Create;
     property ThreadID: DWORD read FThreadID;
+    property ThreadInfo: string read GetThreadInfo;
     property TimeStamp: TDateTime read FTimeStamp;
   end;
 
@@ -436,11 +438,9 @@ type
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
 
-var
-  TrackAllModules: Boolean;
-
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 function JclLastExceptStackList: TJclStackInfoList;
+function JclLastExceptStackListToStrings(Strings: TStrings): Boolean;
 
 //------------------------------------------------------------------------------
 // Exception frame info routines
@@ -544,6 +544,35 @@ var
   StackTrackingEnable: Boolean;
   RawStackTracking: Boolean;
   ExceptionFrameTrackingEnable: Boolean;
+
+  TrackAllModules: Boolean;
+
+//------------------------------------------------------------------------------
+// Advanced thread debugging
+//------------------------------------------------------------------------------
+
+type
+  TJclDebugThread = class (TThread)
+  private
+    FSyncException: Exception;
+    FThreadName: string;
+    procedure DoHandleException;
+    function GetThreadInfo: string;
+    procedure RegisterThread;
+    procedure UnRegisterThread;
+  protected
+    procedure DoSyncHandleException; dynamic;
+    procedure HandleException;
+    property SyncException: Exception read FSyncException;
+  public
+    constructor Create(Suspended: Boolean; const AThreadName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
+    destructor Destroy; override;
+    property ThreadInfo: string read GetThreadInfo;
+    property ThreadName: string read FThreadName;
+  end;
+
+function JclFindDebugThread(ThreadID: DWORD): TJclDebugThread;
+function JclDebugThreadInfoStr(ThreadID: DWORD): string;
 
 //------------------------------------------------------------------------------
 // Miscellanuous
@@ -2634,6 +2663,13 @@ begin
   FTimeStamp := Now;
 end;
 
+//------------------------------------------------------------------------------
+
+function TJclStackBaseList.GetThreadInfo: string;
+begin
+  Result := JclDebugThreadInfoStr(FThreadID);
+end;
+
 //==============================================================================
 // TJclGlobalStackList
 //==============================================================================
@@ -2641,11 +2677,15 @@ end;
 type
   TJclGlobalStackList = class (TThreadList)
   private
+    FLockedTID: DWORD;
+    FTIDLocked: Boolean;  
     function GetExceptStackInfo: TJclStackInfoList;
     function GetLastExceptFrameList: TJclExceptFrameList;
   public
     destructor Destroy; override;
     procedure AddObject(AObject: TJclStackBaseList);
+    procedure LockThreadID(TID: DWORD);
+    procedure UnlockThreadID;
     function FindObject(TID: DWORD; AClass: TClass): TJclStackBaseList;
     property ExceptStackInfo: TJclStackInfoList read GetExceptStackInfo;
     property LastExceptFrameList: TJclExceptFrameList read GetLastExceptFrameList;
@@ -2667,7 +2707,7 @@ begin
     begin
       Remove(ReplacedObj);
       ReplacedObj.Free;
-    end;  
+    end;
     Add(AObject);
   finally
     UnlockList;
@@ -2686,7 +2726,7 @@ begin
       TObject(Items[I]).Free;
   finally
     UnlockList;
-  end;      
+  end;
   inherited;
 end;
 
@@ -2700,6 +2740,8 @@ begin
   Result := nil;
   with LockList do
   try
+    if FTIDLocked and (GetCurrentThreadId = MainThreadID) then
+      TID := FLockedTID;
     for I := 0 to Count - 1 do
     begin
       Item := Items[I];
@@ -2726,6 +2768,36 @@ end;
 function TJclGlobalStackList.GetLastExceptFrameList: TJclExceptFrameList;
 begin
   Result := TJclExceptFrameList(FindObject(GetCurrentThreadId, TJclExceptFrameList));
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclGlobalStackList.LockThreadID(TID: DWORD);
+begin
+  with LockList do
+  try
+    if GetCurrentThreadId = MainThreadID then
+    begin
+      FTIDLocked := True;
+      FLockedTID := TID;
+    end
+    else
+      FTIDLocked := False;
+  finally
+    UnlockList;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclGlobalStackList.UnlockThreadID;
+begin
+  with LockList do
+  try
+    FTIDLocked := False;
+  finally
+    UnlockList;
+  end;
 end;
 
 //==============================================================================
@@ -2867,6 +2939,18 @@ end;
 function JclLastExceptStackList: TJclStackInfoList;
 begin
   Result := GlobalStackList.ExceptStackInfo;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclLastExceptStackListToStrings(Strings: TStrings): Boolean;
+var
+  List: TJclStackInfoList;
+begin
+  List := JclLastExceptStackList;
+  Result := Assigned(List);
+  if Result then
+    List.AddToStrings(Strings);
 end;
 
 //------------------------------------------------------------------------------
@@ -3318,6 +3402,155 @@ begin
 end;
 
 //==============================================================================
+// Advanced thread debugging
+//==============================================================================
+
+var
+  RegisteredThreads: TStringList;
+
+//------------------------------------------------------------------------------
+
+function JclFindDebugThread(ThreadID: DWORD): TJclDebugThread;
+var
+  I: Integer;
+begin
+  Result := nil;
+  DebugInfoCritSect.Enter;
+  try
+    if RegisteredThreads <> nil then
+    begin
+      I := RegisteredThreads.IndexOf(IntToHex(ThreadID, 8));
+      if I >= 0 then
+        Result := TJclDebugThread(RegisteredThreads.Objects[I]);
+    end;
+  finally
+    DebugInfoCritSect.Leave;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclDebugThreadInfoStr(ThreadID: DWORD): string;
+var
+  Thread: TJclDebugThread;
+begin
+  try
+    if ThreadID = MainThreadID then
+      Result := Format('[%.8x] MainThread', [ThreadID])
+    else
+    begin
+      Thread := JclFindDebugThread(ThreadID);
+      if Thread = nil then
+        Result := Format('[%.8x] ???', [ThreadID])
+      else
+        Result := Format('[%.8x - %s] "%s"', [ThreadID, Thread.ClassName, Thread.ThreadName]);
+    end;
+  except
+    Result := '';
+  end;
+end;
+
+//==============================================================================
+// TJclDebugThread
+//==============================================================================
+
+constructor TJclDebugThread.Create(Suspended: Boolean; const AThreadName: string);
+begin
+  inherited Create(True);
+  FThreadName := AThreadName;
+  RegisterThread;
+  if not Suspended then
+    Resume;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclDebugThread.Destroy;
+begin
+  inherited;
+  UnRegisterThread;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThread.DoHandleException;
+begin
+  GlobalStackList.LockThreadID(ThreadID);
+  try
+    DoSyncHandleException;
+  finally
+    GlobalStackList.UnlockThreadID;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThread.DoSyncHandleException;
+begin
+ // Note: JclLastExceptStackList and JclLastExceptFrameList returns information
+ // for this Thread ID instead of MainThread ID here to allow use a common
+ // exception handling routine easily.
+ // Any other call of those JclLastXXX routines from another thread at the same
+ // time will return expected information for current Thread ID.
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclDebugThread.GetThreadInfo: string;
+begin
+  Result := JclDebugThreadInfoStr(ThreadID);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThread.HandleException;
+begin
+  FSyncException := Exception(ExceptObject);
+  try
+    if not (FSyncException is EAbort) then
+      Synchronize(DoHandleException);
+  finally
+    FSyncException := nil;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThread.RegisterThread;
+begin
+  DebugInfoCritSect.Enter;
+  try
+    if RegisteredThreads = nil then
+    begin
+      RegisteredThreads := TStringList.Create;
+      RegisteredThreads.Sorted := True;
+    end;
+    RegisteredThreads.AddObject(IntToHex(ThreadID, 8), Self);
+  finally
+    DebugInfoCritSect.Leave;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclDebugThread.UnRegisterThread;
+var
+  I: Integer;
+begin
+  DebugInfoCritSect.Enter;
+  try
+    with RegisteredThreads do
+    begin
+      I := IndexOfObject(Self);
+      if I >= 0 then
+        Delete(I);
+    end;
+  finally
+    DebugInfoCritSect.Leave;
+  end;
+end;
+
+//==============================================================================
 // Miscellanuous
 //==============================================================================
 
@@ -3389,6 +3622,7 @@ end;
 
 //------------------------------------------------------------------------------
 
+
 initialization
   DebugInfoCritSect := TJclCriticalSection.Create;
   GlobalStackList := TJclGlobalStackList.Create;
@@ -3398,6 +3632,7 @@ finalization
   FreeAndNil(DebugInfoList);
   FreeAndNil(GlobalStackList);
   FreeAndNil(PeImportHooks);
+  FreeAndNil(RegisteredThreads);
   FreeAndNil(DebugInfoCritSect);
 
 end.
