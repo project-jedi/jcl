@@ -16,7 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 24, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ Various NT security related routines to perform commen asks such as enabling }
+{ and disabling privileges.                                                    }
+{                                                                              }
+{ Unit owner: Peter Friese                                                     }
+{ Last modified: January 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
