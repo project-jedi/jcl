@@ -245,12 +245,10 @@ function ColorToHTML(const Color: TColor): String;
 {$IFDEF VCL}
 // Petr Vones
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean; overload;
-{$ENDIF VCL}
 
-{$IFDEF MSWINDOWS}
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
   EllipsisWidth: Integer = 0): WideString;
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 
 var
   { Blending Function Variables }
@@ -270,9 +268,9 @@ implementation
 
 uses
   Math,
-  {$IFDEF MSWINDOWS}
+  {$IFDEF VCL}
   JclSysInfo,
-  {$ENDIF MSWINDOWS}
+  {$ENDIF VCL}
   JclLogic;
 
 type
@@ -965,12 +963,12 @@ end;
 
 procedure SetupFunctions;
 { TODO : Make MMX-Detection independent from Windows-tied code }
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 var
   CpuInfo: TCpuInfo;
 {$ENDIF}
 begin
-  {$IFDEF MSWINDOWS}
+  {$IFDEF VCL}
   //WIMDC
   GetCpuInfo(CpuInfo);
   MMX_ACTIVE := CpuInfo.MMX;
@@ -2287,7 +2285,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 
 function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
   EllipsisWidth: Integer): WideString;
@@ -2348,7 +2346,7 @@ begin
   end;
 end;
 
-{$ENDIF MSWINDOWS}
+{$ENDIF VCL}
 
 //==================================================================================================
 // Clipping
