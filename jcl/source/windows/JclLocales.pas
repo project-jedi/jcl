@@ -336,7 +336,7 @@ begin
     try
       EnumDateFormats(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
         LocaleUseAcp[FUseSystemACP]);
-      Include(FValidDateFormatLists, Format);  
+      Include(FValidDateFormatLists, Format);
     finally
       ProcessedLocaleInfoList := nil;
     end;
