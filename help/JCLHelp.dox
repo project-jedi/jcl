@@ -168,10 +168,8 @@ NestedClasses-4=1
 Count=0
 
 [Enabled Topics]
-Count=3
-ID0=$Graphics
-ID1=$RegistryandInifiles
-ID2=$RTTI
+Count=1
+ID0=$RTTI
 
 [Disabled Topics]
 Count=0
