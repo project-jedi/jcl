@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 16, 2002                                                                     }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,10 +36,7 @@ unit JclPeImage;
 interface
 
 uses
-  Windows, Classes, ImageHlp, SysUtils, TypInfo,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Windows, Classes, ImageHlp, SysUtils, TypInfo, Contnrs,
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
@@ -649,6 +646,7 @@ type
     function DirectoryEntryToData(Directory: Word): Pointer;
     function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
     function GetSectionName(const Header: PImageSectionHeader): string;
+    function IsBrokenFormat: Boolean;
     function IsCLR: Boolean;
     function IsSystemImage: Boolean;
     function RawToVa(Raw: DWORD): Pointer;
@@ -3725,6 +3723,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclPeImage.IsBrokenFormat: Boolean;
+begin
+  Result := not ((OptionalHeader.AddressOfEntryPoint = 0) or IsCLR); 
+  if Result then
+  begin
+    Result := (ImageSectionCount = 0);
+    if not Result then
+      with ImageSectionHeaders[0] do
+        Result := (VirtualAddress <> OptionalHeader.BaseOfCode) or (SizeOfRawData = 0) or
+          (OptionalHeader.AddressOfEntryPoint > VirtualAddress + Misc.VirtualSize) or
+          (Characteristics and (IMAGE_SCN_CNT_CODE or IMAGE_SCN_MEM_WRITE) <> IMAGE_SCN_CNT_CODE);
+  end;        
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclPeImage.IsCLR: Boolean;
 begin
   Result := DirectoryExists[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR] and CLRHeader.HasMetadata;
@@ -3950,17 +3964,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.StampToDateTime(TimeDateStamp: DWORD): TDateTime;
-var
-  Days: DWORD;
-  Hour, Min, Sec: Word;
+const
+  UnixDateDelta = 25569;
 begin
-  Days := TimeDateStamp div 86400;
-  TimeDateStamp := TimeDateStamp mod 86400;
-  Hour := TimeDateStamp div 3600;
-  TimeDateStamp := TimeDateStamp mod 3600;
-  Min := TimeDateStamp div 60;
-  Sec := TimeDateStamp mod 60;
-  Result := EncodeTime(Hour, Min, Sec, 0) + EncodeDate(1970, 1, 1) + Days;
+   Result := TimeDateStamp / SecsPerDay + UnixDateDelta
 end;
 
 //--------------------------------------------------------------------------------------------------
