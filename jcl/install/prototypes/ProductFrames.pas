@@ -270,58 +270,53 @@ procedure TProductFrame.SetNodeChecked(Node: TTreeNode; const Value: Boolean);
   end;
 
   procedure UpdateTreeDown(N: TTreeNode; C: Boolean);
-  var
-    TempNode: TTreeNode;
   begin
-    TempNode := N.getFirstChild;
-    while Assigned(TempNode) do
+    N := N.getFirstChild;
+    while Assigned(N) do
     begin
-      if not IsRadioButton(TempNode) then
-        UpdateNode(TempNode, C);
-      UpdateTreeDown(TempNode, C);
-      TempNode := TempNode.getNextSibling;
+      if not IsRadioButton(N) then
+        UpdateNode(N, C);
+      UpdateTreeDown(N, C);
+      N := N.getNextSibling;
     end;
   end;
 
   procedure UpdateTreeUp(N: TTreeNode; C: Boolean);
   var
-    TempNode, SiblingNode: TTreeNode;
+    ParentNode: TTreeNode;
     ParentChecked: Boolean;
   begin
-    TempNode := N;
     if C then
-    while Assigned(TempNode) do
-    begin
-      UpdateNode(TempNode, True);
-      TempNode := TempNode.Parent;
-    end
-    else
-    while True do
-    begin
-      SiblingNode := TempNode;
-      ParentChecked := False;
-      if SiblingNode.Parent <> nil then
+      while Assigned(N) do
       begin
-        SiblingNode := TempNode.Parent.getFirstChild;
-        ParentChecked := IsStandAloneParent(TempNode.Parent);
+        UpdateNode(N, True);
+        N := N.Parent;
+      end
+    else
+    begin
+      ParentNode := N.Parent;
+      while Assigned(ParentNode) do
+      begin
+        ParentChecked := False;
+        N := ParentNode.getFirstChild;
+        ParentChecked := IsStandAloneParent(ParentNode);
+        while Assigned(N) do
+          if NodeChecked[N] and not IsRadioButton(N) then
+          begin
+            ParentChecked := True;
+            Break;
+          end
+          else
+            N := N.getNextSibling;
+        UpdateNode(ParentNode, ParentChecked);
+        ParentNode := ParentNode.Parent;
       end;
-      while Assigned(SiblingNode) do
-        if NodeChecked[SiblingNode] then
-        begin
-          ParentChecked := True;
-          Break;
-        end
-        else
-          SiblingNode := SiblingNode.getNextSibling;
-      TempNode := TempNode.Parent;
-      if Assigned(TempNode) then
-        UpdateNode(TempNode, ParentChecked)
-      else
-        Break;
     end;
   end;
 
   procedure UpdateRadioButton(N: TTreeNode; C: Boolean);
+  var
+    Node: TTreeNode;
   begin
     if Value and not NodeChecked[Node] then
     begin
