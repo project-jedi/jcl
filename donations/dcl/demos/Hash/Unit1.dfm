@@ -2,7 +2,7 @@ object frmHash: TfrmHash
   Left = 281
   Top = 201
   Width = 497
-  Height = 290
+  Height = 279
   HorzScrollBar.Range = 476
   VertScrollBar.Range = 209
   ActiveControl = btnIntfIntfHashMap
@@ -17,6 +17,9 @@ object frmHash: TfrmHash
   Font.Style = []
   OldCreateOrder = True
   Scaled = False
+  DesignSize = (
+    489
+    252)
   PixelsPerInch = 96
   TextHeight = 13
   object btnIntfIntfHashMap: TButton
@@ -54,14 +57,6 @@ object frmHash: TfrmHash
     Caption = 'HashSet'
     TabOrder = 7
     OnClick = btnHashSetClick
-  end
-  object memResult: TMemo
-    Left = 304
-    Top = 0
-    Width = 185
-    Height = 263
-    Align = alRight
-    TabOrder = 11
   end
   object btnStrIntfHashMap: TButton
     Left = 16
@@ -125,5 +120,14 @@ object frmHash: TfrmHash
     Caption = 'StrArraySet'
     TabOrder = 9
     OnClick = btnStrArraySetClick
+  end
+  object memResult: TListBox
+    Left = 304
+    Top = 0
+    Width = 185
+    Height = 248
+    Anchors = [akTop, akRight, akBottom]
+    ItemHeight = 13
+    TabOrder = 11
   end
 end

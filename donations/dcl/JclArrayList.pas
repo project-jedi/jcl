@@ -689,6 +689,8 @@ begin
     Grow;
   System.Move(FElementData[Index], FElementData[Index + 1],
     (FSize - Index) * SizeOf(IInterface));
+  // (rom) otherwise interface reference counting may crash
+  FillChar(FElementData[Index], SizeOf(IInterface), 0);
   FElementData[Index] := AObject;
   Inc(FSize);
 end;
@@ -753,6 +755,8 @@ begin
   Size := ACollection.Size;
   System.Move(FElementData[Index], FElementData[Index + Size],
     Size * SizeOf(IInterface));
+  // (rom) otherwise interface reference counting may crash
+  FillChar(FElementData[Index], Size * SizeOf(IInterface), 0);
   It := ACollection.First;
   Result := It.HasNext;
   while It.HasNext do
@@ -1092,6 +1096,8 @@ begin
     Grow;
   System.Move(FElementData[Index], FElementData[Index + 1],
     (FSize - Index) * SizeOf(string));
+  // (rom) otherwise string reference counting would crash
+  FillChar(FElementData[Index], SizeOf(string), 0);
   FElementData[Index] := AString;
   Inc(FSize);
 end;
@@ -1131,6 +1137,8 @@ begin
   Size := ACollection.Size;
   System.Move(FElementData[Index], FElementData[Index + Size],
     Size * SizeOf(string));
+  // (rom) otherwise string reference counting would crash
+  FillChar(FElementData[Index], Size * SizeOf(string), 0);
   It := ACollection.First;
   Result := It.HasNext;
   while It.HasNext do

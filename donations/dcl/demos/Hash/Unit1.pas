@@ -17,7 +17,6 @@ type
     btnIntfHashSet: TButton;
     btnHashMap: TButton;
     btnHashSet: TButton;
-    memResult: TMemo;
     btnStrIntfHashMap: TButton;
     btnIntfArraySet: TButton;
     btnArraySet: TButton;
@@ -25,6 +24,7 @@ type
     btnStrHashMap: TButton;
     btnStrHashSet: TButton;
     btnStrArraySet: TButton;
+    memResult: TListBox;
     procedure btnIntfIntfHashMapClick(Sender: TObject);
     procedure btnStrIntfHashMapClick(Sender: TObject);
     procedure btnHashMapClick(Sender: TObject);
@@ -118,14 +118,12 @@ begin
   KeyObject := TInterfacedObject.Create;
   Map.PutValue(KeyObject, MyObject);
   MyObject := IIntfMyObject(Map.GetValue(KeyObject));
-  memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
+  memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
 
   It := Map.Values.First;
   while It.HasNext do
-  begin
-    memResult.Lines.Add(IIntfMyObject(It.Next).Str);
-  end;
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(IIntfMyObject(It.Next).Str);
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnStrIntfHashMapClick(Sender: TObject);
@@ -143,8 +141,8 @@ begin
   MyObject.Str := 'AnotherString';
   Map.PutValue('MyKey2', MyObject);
   MyObject := IIntfMyObject(Map.GetValue('MyKey2'));
-  memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
-  memResult.Lines.Add('--------------------------------------------------------');
+  memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnHashMapClick(Sender: TObject);
@@ -162,11 +160,11 @@ begin
     MyObject.Str := 'MyString';
     Map.PutValue(KeyObject, MyObject);
     MyObject := TMyObject(Map.GetValue(KeyObject));
-    memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
+    memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
     It := Map.Values.First;
     while It.HasNext do
-      memResult.Lines.Add(TMyObject(It.Next).Str);
-    memResult.Lines.Add('--------------------------------------------------------');
+      memResult.Items.Add(TMyObject(It.Next).Str);
+    memResult.Items.Add('--------------------------------------------------------');
   finally
     // MyObject.Free;  // Free in the map (Default: OwnsObject = True)
     // KeyObject.Free;
@@ -187,9 +185,9 @@ begin
   MySet.Add(MyObject);
   It := MySet.First;
   while It.HasNext do
-    memResult.Lines.Add(IIntfMyObject(It.Next).Str);
-  memResult.Lines.Add(IntToStr(MySet.Size));
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(IIntfMyObject(It.Next).Str);
+  memResult.Items.Add(IntToStr(MySet.Size));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnHashSetClick(Sender: TObject);
@@ -206,9 +204,9 @@ begin
   MySet.Add(MyObject);
   It := MySet.First;
   while It.HasNext do
-    memResult.Lines.Add(TMyObject(It.Next).Str);
-  memResult.Lines.Add(IntToStr(MySet.Size));
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(TMyObject(It.Next).Str);
+  memResult.Items.Add(IntToStr(MySet.Size));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnIntfArraySetClick(Sender: TObject);
@@ -225,9 +223,9 @@ begin
   MySet.Add(MyObject);
   It := MySet.First;
   while It.HasNext do
-    memResult.Lines.Add(IIntfMyObject(It.Next).Str);
-  memResult.Lines.Add(IntToStr(MySet.Size));
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(IIntfMyObject(It.Next).Str);
+  memResult.Items.Add(IntToStr(MySet.Size));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnArraySetClick(Sender: TObject);
@@ -244,9 +242,9 @@ begin
   MySet.Add(MyObject);
   It := MySet.First;
   while It.HasNext do
-    memResult.Lines.Add(TMyObject(It.Next).Str);
-  memResult.Lines.Add(IntToStr(MySet.Size));
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(TMyObject(It.Next).Str);
+  memResult.Items.Add(IntToStr(MySet.Size));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnStrStrHashMapClick(Sender: TObject);
@@ -260,13 +258,13 @@ begin
   Map.PutValue('MyKey3', 'MyString3');
   It := Map.KeySet.First;
   while It.HasNext do
-    memResult.Lines.Add(It.Next);
+    memResult.Items.Add(It.Next);
   It := Map.Values.First;
   while It.HasNext do
-    memResult.Lines.Add(It.Next);
+    memResult.Items.Add(It.Next);
   Map.PutValue('MyKey2', 'AnotherString2');
-  memResult.Lines.Add(Map.GetValue('MyKey2'));
-  memResult.Lines.Add('--------------------------------------------------------');
+  memResult.Items.Add(Map.GetValue('MyKey2'));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 type
@@ -286,11 +284,11 @@ begin
 
 {  Map.PutValue('MyKey1', MyObject);
   MyObject := TMyObject(Map.GetValue('MyKey1'));
-  memResult.Lines.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
+  memResult.Items.Add(IntToStr(MyObject.Int) + ' ' + MyObject.Str);
   It := Map.KeySet.First;
   while It.HasNext do
-    memResult.Lines.Add(It.Next);
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(It.Next);
+  memResult.Items.Add('--------------------------------------------------------');
   }
   Links := TLinks.Create;
   Links.PutValue('MyKey1', MyObject);
@@ -308,24 +306,29 @@ begin
   MySet.Add('MyString');
   It := MySet.First;
   while It.HasNext do
-    memResult.Lines.Add(It.Next);
-  memResult.Lines.Add(IntToStr(MySet.Size));
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(It.Next);
+  memResult.Items.Add(IntToStr(MySet.Size));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 procedure TfrmHash.btnStrArraySetClick(Sender: TObject);
 var
   MySet: IStrSet;
   It: IStrIterator;
+  I: Integer;
 begin
   MySet := TJclStrArraySet.Create;
+  for I := 1 to 8 do
+    MySet.Add(IntToStr(I));
+  for I := 8 downto 1 do
+    MySet.Add(IntToStr(I));
   MySet.Add('MyString');
   MySet.Add('MyString');
   It := MySet.First;
   while It.HasNext do
-    memResult.Lines.Add(It.Next);
-  memResult.Lines.Add(IntToStr(MySet.Size));
-  memResult.Lines.Add('--------------------------------------------------------');
+    memResult.Items.Add(It.Next);
+  memResult.Items.Add(IntToStr(MySet.Size));
+  memResult.Items.Add('--------------------------------------------------------');
 end;
 
 end.

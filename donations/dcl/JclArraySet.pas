@@ -36,9 +36,15 @@ uses
 
 type
   TJclIntfArraySet = class(TJclIntfArrayList, IIntfCollection, IIntfSet, IIntfCloneable)
+  private
+    function BinarySearch(AObject: IInterface): Integer;
   protected
+    { IIntfCollection }
     function Add(AObject: IInterface): Boolean;
     function AddAll(ACollection: IIntfCollection): Boolean;
+    function Contains(AObject: IInterface): Boolean;
+    { IIntfList }
+    procedure Insert(Index: Integer; AObject: IInterface); overload;
     { IIntfSet }
     procedure Intersect(ACollection: IIntfCollection);
     procedure Subtract(ACollection: IIntfCollection);
@@ -46,9 +52,15 @@ type
   end;
 
   TJclStrArraySet = class(TJclStrArrayList, IStrCollection, IStrSet, ICloneable)
+  private
+    function BinarySearch(const AString: string): Integer;
   protected
+    { IStrCollection }
     function Add(const AString: string): Boolean;
     function AddAll(ACollection: IStrCollection): Boolean;
+    function Contains(const AString: string): Boolean;
+    { IStrList }
+    procedure Insert(Index: Integer; const AString: string); overload;
     { IStrSet }
     procedure Intersect(ACollection: IStrCollection);
     procedure Subtract(ACollection: IStrCollection);
@@ -56,9 +68,15 @@ type
   end;
 
   TJclArraySet = class(TJclArrayList, ICollection, ISet, ICloneable)
+  private
+    function BinarySearch(AObject: TObject): Integer;
   protected
+    { ICollection }
     function Add(AObject: TObject): Boolean;
     function AddAll(ACollection: ICollection): Boolean;
+    function Contains(AObject: TObject): Boolean;
+    { IStrList }
+    procedure Insert(Index: Integer; AObject: TObject); overload;
     { ISet }
     procedure Intersect(ACollection: ICollection);
     procedure Subtract(ACollection: ICollection);
@@ -67,13 +85,52 @@ type
 
 implementation
 
+uses
+  SysUtils;
+
+function ObjectCompare(Obj1, Obj2: TObject): Integer;
+begin
+  if Cardinal(Obj1) < Cardinal(Obj2) then
+    Result := -1
+  else
+  if Cardinal(Obj1) > Cardinal(Obj2) then
+    Result := 1
+  else
+    Result := 0;
+end;
+
+function InterfaceCompare(Obj1, Obj2: IInterface): Integer;
+begin
+  if Cardinal(Obj1) < Cardinal(Obj2) then
+    Result := -1
+  else
+  if Cardinal(Obj1) > Cardinal(Obj2) then
+    Result := 1
+  else
+    Result := 0;
+end;
+
 //=== { TJclIntfArraySet } ===================================================
 
 function TJclIntfArraySet.Add(AObject: IInterface): Boolean;
+var
+  Idx: Integer;
 begin
-  Result := not Contains(AObject);
-  if Result then
-    inherited Add(AObject);
+  Idx := BinarySearch(AObject);
+  if Size = 0 then
+  begin
+    Result := True;
+    inherited Insert(0, AObject);
+  end
+  else
+  begin
+    if Idx >= 0 then
+      Result := InterfaceCompare(GetObject(Idx), AObject) <> 0
+    else
+      Result := True;
+    if Result then
+      inherited Insert(Idx + 1, AObject);
+  end;
 end;
 
 function TJclIntfArraySet.AddAll(ACollection: IIntfCollection): Boolean;
@@ -94,6 +151,48 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
+function TJclIntfArraySet.BinarySearch(AObject: IInterface): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos - LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := InterfaceCompare(GetObject(CompPos), AObject);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
+    begin
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
+    end;
+    CompPos := (HiPos - LoPos) div 2 + LoPos;
+  end;
+  Result := HiPos;
+end;
+
+function TJclIntfArraySet.Contains(AObject: IInterface): Boolean;
+var
+  Idx: Integer;
+begin
+  Idx := BinarySearch(AObject);
+  if Idx >= 0 then
+    Result := InterfaceCompare(GetObject(Idx), AObject) = 0
+  else
+    Result := False;
+end;
+
+procedure TJclIntfArraySet.Insert(Index: Integer; AObject: IInterface);
+begin
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+end;
+
 procedure TJclIntfArraySet.Intersect(ACollection: IIntfCollection);
 begin
   RetainAll(ACollection);
@@ -112,10 +211,24 @@ end;
 //=== { TJclStrArraySet } ====================================================
 
 function TJclStrArraySet.Add(const AString: string): Boolean;
+var
+  Idx: Integer;
 begin
-  Result := not Contains(AString);
-  if Result then
-    inherited Add(AString);
+  Idx := BinarySearch(AString);
+  if Size = 0 then
+  begin
+    Result := True;
+    inherited Insert(0, AString);
+  end
+  else
+  begin
+    if Idx >= 0 then
+      Result := CompareStr(GetString(Idx), AString) <> 0
+    else
+      Result := True;
+    if Result then
+      inherited Insert(Idx + 1, AString);
+  end;
 end;
 
 function TJclStrArraySet.AddAll(ACollection: IStrCollection): Boolean;
@@ -136,6 +249,48 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
+function TJclStrArraySet.BinarySearch(const AString: string): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos - LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := CompareStr(GetString(CompPos), AString);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
+    begin
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
+    end;
+    CompPos := (HiPos - LoPos) div 2 + LoPos;
+  end;
+  Result := HiPos;
+end;
+
+function TJclStrArraySet.Contains(const AString: string): Boolean;
+var
+  Idx: Integer;
+begin
+  Idx := BinarySearch(AString);
+  if Idx >= 0 then
+    Result := CompareStr(GetString(Idx), AString) = 0
+  else
+    Result := False;
+end;
+
+procedure TJclStrArraySet.Insert(Index: Integer; const AString: string);
+begin
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
+end;
+
 procedure TJclStrArraySet.Intersect(ACollection: IStrCollection);
 begin
   RetainAll(ACollection);
@@ -154,10 +309,24 @@ end;
 //=== { TJclArraySet } =======================================================
 
 function TJclArraySet.Add(AObject: TObject): Boolean;
+var
+  Idx: Integer;
 begin
-  Result := not Contains(AObject);
-  if Result then
-    inherited Add(AObject);
+  Idx := BinarySearch(AObject);
+  if Size = 0 then
+  begin
+    Result := True;
+    inherited Insert(0, AObject);
+  end
+  else
+  begin
+    if Idx >= 0 then
+      Result := ObjectCompare(GetObject(Idx), AObject) <> 0
+    else
+      Result := True;
+    if Result then
+      inherited Insert(Idx + 1, AObject);
+  end;
 end;
 
 function TJclArraySet.AddAll(ACollection: ICollection): Boolean;
@@ -176,6 +345,48 @@ begin
   It := ACollection.First;
   while It.HasNext do
     Result := Add(It.Next) or Result;
+end;
+
+function TJclArraySet.BinarySearch(AObject: TObject): Integer;
+var
+  HiPos, LoPos, CompPos: Integer;
+  Comp: Integer;
+begin
+  LoPos := 0;
+  HiPos := Size - 1;
+  CompPos := (HiPos - LoPos) div 2;
+  while HiPos >= LoPos do
+  begin
+    Comp := ObjectCompare(GetObject(CompPos), AObject);
+    if Comp < 0 then
+      LoPos := CompPos + 1
+    else
+    if Comp > 0 then
+      HiPos := CompPos - 1
+    else
+    begin
+      HiPos := CompPos;
+      LoPos := CompPos + 1;
+    end;
+    CompPos := (HiPos - LoPos) div 2 + LoPos;
+  end;
+  Result := HiPos;
+end;
+
+function TJclArraySet.Contains(AObject: TObject): Boolean;
+var
+  Idx: Integer;
+begin
+  Idx := BinarySearch(AObject);
+  if Idx >= 0 then
+    Result := ObjectCompare(GetObject(Idx), AObject) = 0
+  else
+    Result := False;
+end;
+
+procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
+begin
+  raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;
 
 procedure TJclArraySet.Intersect(ACollection: ICollection);
