@@ -68,7 +68,7 @@ function SysErrorMessage(ErrNo: Integer): string;
 procedure RaiseLastWin32Error;
 function Win32Check(RetVal: BOOL): BOOL;
 
-procedure QueryPerformanceCounter(var C: Int64);
+function QueryPerformanceCounter(var C: Int64): Boolean;
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 {$ENDIF MSWINDOWS}
 
@@ -286,7 +286,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure QueryPerformanceCounter(var C: Int64);
+function QueryPerformanceCounter(var C: Int64): Boolean;
 var
   T: TULargeInteger;
 begin
@@ -394,6 +394,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/04/19 06:02:18  rrossmair
+// fixed QueryPerformanceCounter (FPC compatibility routine)
+//
 // Revision 1.9  2004/04/14 23:04:09  peterjhaas
 // add TDynLongWordArray, TDynBooleanArray
 //
