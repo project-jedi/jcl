@@ -16,7 +16,10 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: May 3, 2000                                                   }
+{******************************************************************************}
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
