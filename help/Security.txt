@@ -1,0 +1,214 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function AllowRegKeyForEveryone(Key: HKEY; Path: string): Boolean;
+[ShortDescr]
+Allows full access to everyone for a registry key.
+[Description]
+AllowRegKeyForEveryone sets the dacl of the specified registry key to NULL thereby
+granting full access to everyone. Be careful with this one because you can do
+real damage on the registry!
+[Parameters]
+Count=2
+1=Key:HKEY=The rootkey of the specified path. Can be one of the HKEY_XXX constants.
+2=Path:string=Path of the registry key for which to set full access to everyone.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Access Control
+Author=John C Molyneux;jaymol@hotmail.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4.0 or later.
+Windows 95/98=Unsupported.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CreateNullDacl(var Sa: TSecurityAttributes; const Inheritable: Boolean): PSecurityAttributes;
+[ShortDescr]
+Initializes a security attributes structure for NULL access and optional inheritability.
+[Description]
+CreateInheritable initializes a TSecurityAttributes structure for the creation of
+an optionally inheritable object with a NULL dacl. Meaning the bInheritHandle
+member is set to True allowing processes spawned by the current process to inherit
+the handle to the object that was created with this TSecurityAttributes structure.
+Also the TSecurityAttributes lpSecurityDescriptor member is initialized with a NULL
+dacl. This will result in the created object allowing full access to everyone.
+Make sure you read the Notes section for memory issues.
+[Parameters]
+Count=2
+1=Sa:TSecurityAttributes=The TSecurityAttributes structure to initialize.
+2=Inheritable:Boolean=Specifies inheritability. The bInheritHandle member of Sa
+is set to the same value as the Inheritable parameter.
+[Result]
+A pointer to the passed in TSecurityAttributes structure. This allow you to write
+code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
+[Notes]
+Count=1
+1=The caller is responsible for freeing the memory associated with the lpSecurityDescriptor member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Access Control
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=CreateInheritable
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CreateInheritable(var Sa: TSecurityAttributes): PSecurityAttributes;
+[ShortDescr]
+Initializes a security attributes structure for inheritable object creation.
+[Description]
+CreateInheritable initializes a TSecurityAttributes structure for
+the creation of an inheritable object. Meaning the bInheritHandle member is set
+to True allowing processes spawned by the current process to inherit the handle
+to the object that was created with this TSecurityAttributes structure.
+[Parameters]
+Count=1
+1=Sa:TSecurityAttributes=The TSecurityAttributes structure whose fInheritHandle
+member to set to True resulting in an inheritable object.
+[Result]
+A pointer to the passed in TSecurityAttributes structure. This allow you to write
+code such as CreateFile(..., CreateInheritable(Sa), ...).
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Access Control
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=CreateNullDacl
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PrivilegeEnabled(const Privilege: string): Boolean;
+[ShortDescr]
+Tests if the specified Privilege is enabled.
+[Description]
+PrivilegeEnabled tests whether the specified privilege is enabled for the current
+thread. If the thread is currently impersonating a client the test is made against
+the credentials of that client, otherwise the test is made against the credentials
+of the user associated with the process that the calling thread runs in.
+[Parameters]
+Count=1
+1=Privilege:string=The privilege to check for.  This is one of the SE_Xxx
+constants as documented in the Platform SDK under Security | Access Control |
+Access Control | Access Control Reference | Windows NT Privileges. For example,
+you can pass in SE_DEBUG_NAME to test if the debugging privilege is enabled.
+[Result]
+If the specified privilege is enabled for the calling thread then the function
+returns True, otherwise the function returns False - this is also the return
+value if the function fails in retrieving the status of the specified privilege.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Privileges
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=2
+1=EnableProcessPrivilege
+2=EnableThreadPrivilege
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function EnableProcessPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
+[ShortDescr]
+Enables or disables a privilege for the process.
+[Description]
+EnableProcessPrivilege enables or disables the specified privilege for the
+current process. You can, for example, enable the debug privilege by using this
+function. The user associated with the calling process must already have
+TOKEN_ADJUST_PRIVILEGES access.
+[Parameters]
+Count=2
+1=Enable:Boolean=If True the function attempts to enable the specified privilege.
+If False the function attempts to disable the specified privilege.
+2=Privilege:string=The privilege to enable/disable. This is one of the SE_Xxx
+constants as documented in the Platform SDK under Security | Access Control |
+Access Control | Access Control Reference | Windows NT Privileges. For example,
+you can pass in SE_DEBUG_NAME to enable or disable the debugging privilege.
+[Result]
+If the function succeeds the result is True, otherwise the result is False. Failure
+is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
+to enable or disable privileges.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Privileges
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=2
+1=EnableThreadPrivilege
+2=PrivilegeEnabled
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function EnableThreadPrivilege(const Enable: Boolean; const Privilege: string): Boolean;
+[ShortDescr]
+Enables or disables a privilege for the thread.
+[Description]
+EnableThreadPrivilege enables or disables the specified privilege for the
+calling thread. You can, for example, enable the debug privilege by using this
+function. The user associated with the calling process must already have
+TOKEN_ADJUST_PRIVILEGES access. If the thread is currently impersonating a client
+then the client must have the appropriate access.
+[Parameters]
+Count=2
+1=Enable:Boolean=If True the function attempts to enable the specified privilege.
+If False the function attempts to disable the specified privilege.
+2=Privilege:string=The privilege to enable/disable. This is one of the SE_Xxx
+constants as documented in the Platform SDK under Security | Access Control |
+Access Control | Access Control Reference | Windows NT Privileges. For example,
+you can pass in SE_DEBUG_NAME to enable or disable the debugging privilege.
+[Result]
+If the function succeeds the result is True, otherwise the result is False. Failure
+is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
+to enable or disable privileges.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Privileges
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=2
+1=EnableProcessPrivilege
+2=PrivilegeEnabled
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsAdministrator: Boolean;
+[ShortDescr]
+Tests whether the process is running in the user context of a local administrator.
+[Description]
+The IsAdministrator function tests if the calling process is running in the
+context of a user with local administrative rights. That is, if the user is an
+administrator.
+[Result]
+If the process is running in the user context of a local administrator the function
+returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSecurity
+Category=Security
+SubCat=Privileges
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
