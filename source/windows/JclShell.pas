@@ -24,7 +24,7 @@
 { and program execution.                                                       }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 20, 2000                                             }
+{ Last modified: January 03, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -191,6 +191,8 @@ type
   TJclFileExeType = (etError, etMsDos, etWin16, etWin32Gui, etWin32Con);
 
 function GetFileExeType(const FileName: TFileName): TJclFileExeType;
+
+function ShellFindExecutable(const FileName, DefaultDir: string): string;
 
 implementation
 
@@ -700,25 +702,14 @@ end;
 function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
 var
   Malloc: IMalloc;
-  Ptr: Pointer;
 begin
   Result := False;
   if Succeeded(SHGetMalloc(Malloc)) then
   begin
     if (P <> nil) and (Malloc.DidAlloc(P) <= 0) then
       Exit;
-    Ptr := Malloc.ReAlloc(P, Count);
-    if Ptr <> nil then
-    begin
-      P := Ptr;
-      Result := True;
-    end
-    else
-    if Count = 0 then
-    begin
-      P := nil;
-      Result := True;
-    end;
+    P := Malloc.ReAlloc(P, Count);
+    Result := (P <> nil) or (Count = 0);
   end;
 end;
 
@@ -1313,4 +1304,25 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
+function ShellFindExecutable(const FileName, DefaultDir: string): string;
+var
+  Res: HINST;
+  Buffer: array [0..MAX_PATH] of Char;
+  I: Integer;
+begin
+  FillChar(Buffer, SizeOf(Buffer), #0);
+  Res := FindExecutable(PChar(FileName), PCharOrNil(DefaultDir), Buffer);
+  if Res > 32 then
+  begin
+    for I := Low(Buffer) to High(Buffer) - 1 do
+      if Buffer[I] = #0 then
+        Buffer[I] := #32; // FindExecutable replaces #32 with #0
+    Buffer[High(Buffer)] := #0;
+    Result := Trim(Buffer);
+  end
+  else
+    Result := '';
+end;
 end.
