@@ -24,7 +24,7 @@
 { and so forth. Note that some functions require NTFS 5 or higher!             }
 {                                                                              }
 { Unit Owner: Marcel van Brakel                                                }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: July 05, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -46,6 +46,7 @@ uses
 
 function NtfsGetCompression(const FileName: string; var State: Short): Boolean;
 function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
+function NtfsSetCompressionRecursively(const Directory: string; const State: Short): Boolean;
 
 //------------------------------------------------------------------------------
 // NTFS - Sparse Files
@@ -170,13 +171,16 @@ end;
 //------------------------------------------------------------------------------
 
 function NtfsSetCompression(const FileName: string; const State: Short): Boolean;
+const
+  FileFlag: array[Boolean] of DWORD = (0, FILE_FLAG_BACKUP_SEMANTICS);
 var
   Handle: THandle;
   BytesReturned: DWORD;
   Buffer: Short;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE,
+    FILE_SHARE_READ, nil, OPEN_EXISTING, FileFlag[IsDirectory(FileName)], 0);
   if Handle <> INVALID_HANDLE_VALUE then
   try
     Buffer := State;
@@ -184,6 +188,39 @@ begin
       SizeOf(Short), nil, 0, BytesReturned, nil);
   finally
     CloseHandle(Handle);
+  end
+end;
+
+//------------------------------------------------------------------------------
+
+function NtfsSetCompressionRecursively(const Directory: string; const State: Short): Boolean;
+var
+  SearchRec: TSearchRec;
+  R: Integer;
+  FileName, Dir: string;
+begin
+  Result := NtfsSetCompression(Directory, State);
+  if not Result then
+    Exit;
+  Dir := IncludeTrailingBackslash(Directory);
+  if FindFirst(Dir + '*.*', faAnyFile, SearchRec) = 0 then
+  try
+    repeat
+      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+      begin
+        FileName := Dir + SearchRec.Name;
+        Result := NtfsSetCompression(FileName, State);
+        if Result then
+          if (SearchRec.Attr and faDirectory) <> 0 then
+            Result := NtfsSetCompressionRecursively(FileName, State);
+        if not Result then
+          Exit;
+      end;
+      R := FindNext(SearchRec);
+    until R <> 0;
+    Result := R = ERROR_NO_MORE_FILES;
+  finally
+    SysUtils.FindClose(SearchRec);
   end;
 end;
 
