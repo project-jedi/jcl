@@ -1060,8 +1060,11 @@ end;
 }
 
 const
-  DefaultYesBoolStr = 'Yes';  // DO NOT LOCALIZE
-  DefaultNoBoolStr  = 'No';   // DO NOT LOCALIZE
+  DefaultTrueBoolStr   = 'True';  // DO NOT LOCALIZE
+  DefaultFalseBoolStr  = 'False'; // DO NOT LOCALIZE
+
+  DefaultYesBoolStr    = 'Yes';   // DO NOT LOCALIZE
+  DefaultNoBoolStr     = 'No';    // DO NOT LOCALIZE
 
 resourcestring
   RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
