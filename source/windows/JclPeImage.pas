@@ -2744,7 +2744,7 @@ begin
     CheckNotAttached;
     if CheckSumMappedFile(FLoadedImage.MappedAddress, FLoadedImage.SizeOfImage,
       @C, @Result) = nil then
-        RaiseLastWin32Error;
+        RaiseLastOSError;
   end
   else
     Result := 0;
@@ -3250,7 +3250,7 @@ begin
   CheckNotAttached;
   Result.VirtualAddress := GetImageUnusedHeaderBytes(@FLoadedImage, Result.Size);
   if Result.VirtualAddress = 0 then
-    RaiseLastWin32Error;
+    RaiseLastOSError;
 end;
 
 //------------------------------------------------------------------------------
@@ -3419,7 +3419,7 @@ begin
       stNotFound:
         raise EJclPeImageError.CreateResRecFmt(@RsPeCantOpen, [FFileName]);
       stError:
-        RaiseLastWin32Error;
+        RaiseLastOSError;
     end;
 end;
 
@@ -3959,7 +3959,7 @@ begin
   begin
     FLibHandle := LoadLibraryEx(PChar(FileName), 0, LOAD_LIBRARY_AS_DATAFILE);
     if FLibHandle = 0 then
-      RaiseLastWin32Error;
+      RaiseLastOSError;
   end;
   Result := FLibHandle;
 end;
