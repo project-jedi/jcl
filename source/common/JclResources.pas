@@ -45,6 +45,11 @@ unit JclResources;
 
 interface
 
+{$IFDEF COMPILER5}
+const
+  sLineBreak = #13#10;
+{$ENDIF COMPILER5}
+
 //=== JclBase ================================================================
 resourcestring
   RsWin32Prefix        = 'Win32: %s (%u)';
@@ -1636,6 +1641,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.32  2005/03/08 11:45:26  ahuser
+// Fixed missing sLineBreak for Delphi5
+//
 // Revision 1.31  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
