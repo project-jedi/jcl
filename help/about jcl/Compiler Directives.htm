@@ -1,0 +1,381 @@
+<HTML>
+<HEAD>
+<LINK REL="stylesheet" HREF="..\..\DclStyle.css">
+<TITLE>Compiler Directives</TITLE>
+</HEAD>
+<BODY>
+<H1>Compiler Directives</H1>
+<P><span style="color:#FF0000">[This is preliminary documentation and subject to change.]</span></P>
+
+<H3>Description</H3>
+<P>
+All units in the JEDI Code Library include the file JCL.inc. Within this file
+are a number of compiler directives that control how JCL units are compiled and
+to support the various Delphi and C++ Builder versions.
+</P>
+<P>
+If you have to change compiler directives it is recommended you do so on a global
+scale by modifying the JCL.inc file. This because units may have unexpected
+interdependencies which could break and lead to undefined behaviour if directives
+we're to be modified on a local scale (per unit).
+</P>
+
+<H4>Delphi vs C++ Builder</H4>
+<P>
+There exist two defines, DELPHI and BCB which distinquish between Delphi and
+C++ Builder.
+</P>
+
+<TABLE>
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>DELPHI</TD>
+<TD width=75%>Defined if compiling with Delphi.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>BCB</TD>
+<TD width=75%>Defined if compiling with C++ Builder.</TD>
+</TR>
+</TABLE>
+
+<H4>Platform</H4>
+<P>
+Although they are not defined in the JCL.INC file (they're defined by the compiler)
+you'll also find heavy use of the LINUX and WIN32 directives in the JCL source files.
+These directives are defined when you're compiling under Linux and Windows
+respectively and are mutually exclusive.
+</P>
+
+<H4>Delphi versions</H4>
+
+<P>
+The following directives are mappings to the Delphi VERXXX directives. They are
+used to test which version of Delphi the JCL is compiled with. Use of these
+directives is not recommended but you may come across of few uses in the JCL
+source code usually in the context of API functions parameter types. Whenever
+possible the features directives are used instead.<BR>
+</P>
+
+<TABLE>
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>DELPHI1</TD>
+<TD width=75%>Defined if compiling with Delphi 1.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>DELPHI1_UP</TD>
+<TD width=75%>Defined if compiling with Delphi 1 or higher.</TD>
+</TR>
+
+
+<TR VALIGN="top">
+<TD width=25%>DELPHI2</TD>
+<TD width=75%>Defined if compiling with Delphi 2.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>DELPHI2_UP</TD>
+<TD width=75%>Defined if compiling with Delphi 2 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>DELPHI3</TD>
+<TD width=75%>Defined if compiling with Delphi 3.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>DELPHI3_UP</TD>
+<TD width=75%>Defined if compiling with Delphi 3 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>DELPHI4</TD>
+<TD width=75%>Defined if compiling with Delphi 4.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>DELPHI4_UP</TD>
+<TD width=75%>Defined if compiling with Delphi 4 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>DELPHI5</TD>
+<TD width=75%>Defined if compiling with Delphi 5.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>DELPHI5_UP</TD>
+<TD width=75%>Defined if compiling with Delphi 5 or higher.</TD>
+</TR>
+
+</TABLE>
+
+<H4>CBuilder versions</H4>
+
+<P>
+The following directives are mappings to the CBuilder VERXXX directives. They are
+used to test which version of CBuilder the JCL is compiled with. Use of these
+directives is not recommended but you may come across of few uses in the JCL
+source code usually in the context of API functions parameter types. Whenever
+possible the features directives are used instead.<BR>
+</P>
+
+<TABLE>
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>BCB1</TD>
+<TD width=75%>Defined if compiling with CBuilder 1.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>BCB1_UP</TD>
+<TD width=75%>Defined if compiling with CBuilder 1 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>BCB3</TD>
+<TD width=75%>Defined if compiling with CBuilder 3.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>BCB3_UP</TD>
+<TD width=75%>Defined if compiling with CBuilder 3 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>BCB4</TD>
+<TD width=75%>Defined if compiling with CBuilder 4.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>BCB4_UP</TD>
+<TD width=75%>Defined if compiling with CBuilder 4 or higher.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>BCB5</TD>
+<TD width=75%>Defined if compiling with CBuilder 5.</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>BCB5_UP</TD>
+<TD width=75%>Defined if compiling with CBuilder 5 or higher.</TD>
+</TR>
+
+</TABLE>
+
+<H4>Generic compiler directives</H4>
+
+<P>
+Following is the list of generic compiler directives. These directives map Delphi
+and C++ Builder versions to the underlying compiler.
+</P>
+
+<TABLE>
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>COMPILER1</TD>
+<TD width=75%>Defined when compiling with Delphi 1</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER1_UP</TD>
+<TD width=75%>Defined when compiling with Delphi 1 or higher</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>COMPILER2</TD>
+<TD width=75%>Defined when compiling with Delphi 2 or C++ Builder 1</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER2_UP</TD>
+<TD width=75%>Defined when compiling with Delphi 2 or C++ Builder 1 or higher</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>COMPILER3</TD>
+<TD width=75%>Defined when compiling with Delphi 3</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER3_UP</TD>
+<TD width=75%>Defined when compiling with Delphi 3 or higher</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>COMPILER35</TD>
+<TD width=75%>Defined when compiling with C++ Builder 3</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER35_UP</TD>
+<TD width=75%>Defined when compiling with C++ Builder 3 or higher</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>COMPILER4</TD>
+<TD width=75%>Defined when compiling with Delphi 4 or C++ Builder 4</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER4_UP</TD>
+<TD width=75%>Defined when compiling with Delphi 4 or C++ Builder 4 or higher</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>COMPILER5</TD>
+<TD width=75%>Defined when compiling with Delphi 5 or C++ Builder 5</TD>
+</TR>
+<TR VALIGN="top">
+<TD width=25%>COMPILER5_UP</TD>
+<TD width=75%>Defined when compiling with Delphi 5 or C++ Builder 5 or higher</TD>
+</TR>
+</TABLE>
+
+<H4>Features</H4>
+
+<P>
+The features directives are used to test if the compiler supports specific
+features, such as method overloading, and adjust the sources accordingly. Use of
+these directives is preferred over the use of the DELPHI and COMPILER directives.
+</P>
+
+<TABLE>
+
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_DEFAULTPARAMS</TD>
+<TD width=75%>Defined if the compiler supports default parameters. Currently this
+directive is defined if the compiler is at least Delphi 4 or C++ Builder 4.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_OVERLOAD</TD>
+<TD width=75%>Defined if the compiler supports function and method overloading
+parameters. Currently this directive is defined if the compiler equals at least
+Delphi 4 or C++ Builder 4.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_INT64</TD>
+<TD width=75%>Defined if the compiler natively supports the Int64 type . Currently
+this directive is defined if the compiler equals at least Delphi 4 or C++ Builder 4.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_DYNAMICARRAYS</TD>
+<TD width=75%>Defined if the compiler supports dynamic arrays. Currently this
+directive is defined if the compiler equals at least Delphi 4 or C++ Builder 4.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_INTERFACE</TD>
+<TD width=75%>Defined if the compiler supports interfaces. Currently this
+directive is defined if the compiler equals at least Delphi 3 or C++ Builder 3.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>SUPPORTS_WIDESTRING</TD>
+<TD width=75%>Defined if the compiler supports the WideString type. Currently this
+directive is defined if the compiler equals at least Delphi 3 or C++ Builder 3.</TD>
+</TR>
+
+</TABLE>
+
+<H4>Math Precision</H4>
+
+<P>
+The JclMath unit uses a type named Float for all floating point parameters and
+return types. Float is conditionally defined as either Single, Double or
+Extended. This way the programmer has the most control over the memory usage,
+precision and speed of floating point math. By default Float is defined as
+Extended which has the greatest precision but not the highest performance. The
+following directives are mutually exclusive.
+</P>
+
+<TABLE>
+
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>MATH_EXTENDED_PRECISION</TD>
+<TD width=75%>If defined, Float is prototyped as Extended. This gives you the
+greatest range and highest precision but consumes more memory (10 bytes per
+variable). Because Delphi uses the Extended type this is the default for Float.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>MATH_DOUBLE_PRECISION</TD>
+<TD width=75%>If defines, Float is prototypes as Double. This gives you the
+greatest performance, at least on current implementations, but does not offer
+the range and precision that Extended does. Double consumes slightly less
+memory (8 bytes per variable).</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>MATH_SINGLE_PRECISION</TD>
+<TD width=75%>If defined, Float is prototyped as Single. This gives you the
+the smallest precision but uses the least memory (4 bytes per variable).</TD>
+</TR>
+
+</TABLE>
+
+<H4>Math Angles</H4>
+
+<P>
+The following two directives, which are mutually exclusive, determine how angles
+in the JclMath unit are interpreted. Since the math coprocessor only accepts
+radians all angles must be converted to radians before being passed to the FPU.
+This must be done by software since the coprocessor has no provisions for this.
+The default for JclMath is radians but this can be changed to degrees or grads.
+However, this is not recommended. If MATH_ANGLES_DEGREES is defined all the math
+routines convert angles on entry and convert them back on exit. This takes significant
+overhead in terms of processing cycles and slows down execution. This is especially
+true when you do extensive math calling several routines one after another. In
+this case it is recommended you convert to radians once before the calculation
+using the DegToRad or GradToRad function, perform the calculation and then convert
+back to degrees or grads - if necessary - by using RadToDeg or RadToGrad. If you
+only occasionally call a math routine you have nothing to worry about.
+</P>
+
+<TABLE>
+
+<TR VALIGN="top">
+<TH align=left width=25%>Directive</TH>
+<TH align=left width=75%>Description</TH>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>MATH_ANGLES_RADIANS</TD>
+<TD width=75%>If defined all angles are assumed to be in radians. This is the default.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>MATH_ANGLES_DEGREES</TD>
+<TD width=75%>If defined all angles are assumed to be in degrees. Conversion is
+automatic but not without a price, see above.</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>MATH_ANGLES_GRADS</TD>
+<TD width=75%>If defined all angles are assumed to be in grads. Conversion is
+automatic but not without a price, see above.</TD>
+</TR>
+
+</TABLE>
+
+<DIV CLASS="footer">Built on Saterday, July 1, 2000</DIV>
+</BODY>
+</HTML>
