@@ -114,9 +114,13 @@ type
 
 {$IFNDEF COMPILER4_UP}
 
+{$IFDEF FPC}
+
 type
   LongWord = Cardinal;
   TSysCharSet = set of Char;
+
+{$ENDIF}
 
 {$ENDIF} // COMPILER4_UP
 
