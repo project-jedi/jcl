@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 12, 2001                                              }
+{ Last modified: January 14, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -71,8 +71,8 @@ type
     FStream: TJclFileMappingStream;
   protected
     FLastUnitName, FLastUnitFileName: PJclMapString;
-    procedure ClassTableItem(const Address: TJclMapAddress; Length: Integer; SectionName, ClassName: PJclMapString); virtual; abstract;
-    procedure SegmentItem(const Address: TJclMapAddress; Length: Integer; ClassName, UnitName: PJclMapString); virtual; abstract;
+    procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); virtual; abstract;
+    procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); virtual; abstract;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
     procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); virtual; abstract;
     procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); virtual; abstract;
@@ -89,8 +89,8 @@ type
 // MAP file parser
 //------------------------------------------------------------------------------
 
-  TJclMapClassTableEvent = procedure (Sender: TObject; const Address: TJclMapAddress; Length: Integer; const SectionName, ClassName: string) of object;
-  TJclMapSegmentEvent = procedure (Sender: TObject; const Address: TJclMapAddress; Length: Integer; const ClassName, UnitName: string) of object;
+  TJclMapClassTableEvent = procedure (Sender: TObject; const Address: TJclMapAddress; Len: Integer; const SectionName, GroupName: string) of object;
+  TJclMapSegmentEvent = procedure (Sender: TObject; const Address: TJclMapAddress; Len: Integer; const GroupName, UnitName: string) of object;
   TJclMapPublicsEvent = procedure (Sender: TObject; const Address: TJclMapAddress; const Name: string) of object;
   TJclMapLineNumberUnitEvent = procedure (Sender: TObject; const UnitName, UnitFileName: string) of object;
   TJclMapLineNumbersEvent = procedure (Sender: TObject; LineNumber: Integer; const Address: TJclMapAddress) of object;
@@ -104,8 +104,8 @@ type
     FOnPublicsByName: TJclMapPublicsEvent;
     FOnSegmentItem: TJclMapSegmentEvent;
   protected
-    procedure ClassTableItem(const Address: TJclMapAddress; Length: Integer; SectionName, ClassName: PJclMapString); override;
-    procedure SegmentItem(const Address: TJclMapAddress; Length: Integer; ClassName, UnitName: PJclMapString); override;
+    procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
+    procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure LineNumberUnitItem(UnitName, UnitFileName: PJclMapString); override;
@@ -147,8 +147,8 @@ type
     FLineNumbersCnt, FProcNamesCnt: Integer;
     FNewUnitFileName: PJclMapString;
   protected
-    procedure ClassTableItem(const Address: TJclMapAddress; Length: Integer; SectionName, ClassName: PJclMapString); override;
-    procedure SegmentItem(const Address: TJclMapAddress; Length: Integer; ClassName, UnitName: PJclMapString); override;
+    procedure ClassTableItem(const Address: TJclMapAddress; Len: Integer; SectionName, GroupName: PJclMapString); override;
+    procedure SegmentItem(const Address: TJclMapAddress; Len: Integer; GroupName, UnitName: PJclMapString); override;
     procedure PublicsByNameItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure PublicsByValueItem(const Address: TJclMapAddress; Name: PJclMapString); override;
     procedure LineNumbersItem(LineNumber: Integer; const Address: TJclMapAddress); override;
@@ -229,7 +229,7 @@ type
 
   TJclLocationInfo = record
     Address: Pointer;               // Error adderss
-    ModuleName: string;             // Name of Delphi module (unit)
+    UnitName: string;               // Name of Delphi unit
     ProcedureName: string;          // Procedure name
     LineNumber: Integer;            // Line number
     SourceName: string;             // Module file name
@@ -323,18 +323,12 @@ function __PROC_OF_ADDR__(const Addr: Pointer): string;
 function __LINE_OF_ADDR__(const Addr: Pointer): Integer;
 
 //------------------------------------------------------------------------------
-// Hooked exception notify procedure
-//------------------------------------------------------------------------------
-
-type
-  TJclExceptNotify = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-
-//------------------------------------------------------------------------------
-// Stack info classes
+// Stack info routines
 //------------------------------------------------------------------------------
 
 { TODO -cDOC : Hallvard Vassbotn }
 
+type
   PDWORDArray = ^TDWORDArray;
   TDWORDArray = array[0..(MaxInt - $F) div SizeOf(DWORD)] of DWORD;
 
@@ -379,24 +373,105 @@ type
     property TimeStamp: TDateTime read FTimeStamp;
   end;
 
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer;
+  FirstCaller: Pointer): TJclStackInfoList;
+function JclLastExceptStackList: TJclStackInfoList;
+
 //------------------------------------------------------------------------------
-// Global exceptional stack tracker functions
+// Stack frame info routines
 //------------------------------------------------------------------------------
+
+{ TODO -cDOC : Marcel Bestebroer }
+
+type
+  JmpInstruction = packed record // from System.pas
+    opCode: Byte;
+    distance: Longint;
+  end;
+
+  TExcDescEntry = record // from System.pas
+    vTable: Pointer;
+    handler: Pointer;
+  end;
+
+  PExcDesc = ^TExcDesc;
+  TExcDesc = packed record // from System.pas
+    jmp: JmpInstruction;
+    case Integer of
+      0:      (instructions: array [0..0] of Byte);
+      1{...}: (cnt: Integer; excTab: array [0..0{cnt-1}] of TExcDescEntry);
+  end;
+
+  PExcFrame = ^TExcFrame;
+  TExcFrame =  record // from System.pas
+    next: PExcFrame;
+    desc: PExcDesc;
+    hEBP: Pointer;
+    case Integer of
+    0:  ( );
+    1:  ( ConstructedObject: Pointer );
+    2:  ( SelfOfMethod: Pointer );
+  end;
+
+  TExcFrameType = (eftUnknown, eftFinally, eftAnyException, eftOnException,
+    eftAutoException);
+
+  TJclExceptFrame = class(TObject)
+  private
+    FExcFrame: PExcFrame;
+    FFrameType: TExcFrameType;
+  protected
+    procedure DoDetermineFrameType;
+  public
+    constructor Create(AExcFrame: PExcFrame);
+    function Handles(ExceptObj: TObject): Boolean;
+    function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
+    property ExcFrame: PExcFrame read FExcFrame;
+    property FrameType: TExcFrameType read FFrameType;
+  end;
+
+  TJclExceptFrameList = class(TObjectList)
+  private
+    FIgnoreLevels: Integer;
+    function GetItems(Index: Integer): TJclExceptFrame;
+  protected
+    function AddFrame(AFrame: PExcFrame): TJclExceptFrame; 
+  public
+    constructor Create(AIgnoreLevels: Integer);
+    procedure TraceExceptionFrames; 
+    property Items[Index: Integer]: TJclExceptFrame read GetItems;
+    property IgnoreLevels: Integer read FIgnoreLevels write FIgnoreLevels;
+  end;
+
+function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
+function JclLastExceptFrameList: TJclExceptFrameList;
+
+//------------------------------------------------------------------------------
+// Exception hooking
+//------------------------------------------------------------------------------
+
+{ TODO -cDOC : Hallvard Vassbotn }
+
+type
+  TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+  TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
 
 function JclHookExceptions: Boolean;
 function JclUnhookExceptions: Boolean;
 function JclExceptionsHooked: Boolean;
 
-function JclCreateStackInfo(Raw: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF};
-  AIgnoreLevels: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS}= 0{$ENDIF};
-  FirstCaller: Pointer {$IFDEF SUPPORTS_DEFAULTPARAMS}= nil{$ENDIF}): TJclStackInfoList;
+var
+  ExceptNotifyProc: TJclExceptNotifyProc;
+  ExceptNotifyMethod: TJclExceptNotifyMethod;
 
-function JclLastStackInfo: TJclStackInfoList;
+//------------------------------------------------------------------------------
+// Global exceptional stack trackers enable variables
+//------------------------------------------------------------------------------
 
 var
-  ExceptNotify: TJclExceptNotify;
   StackTrackingEnable: Boolean;
   RawStackTracking: Boolean;
+  ExceptionFrameTrackingEnable: Boolean;
 
 implementation
 
@@ -650,7 +725,8 @@ var
         Break;
       SkipEndLine;
     end;
-    SkipWhiteSpace;
+    if not Eof then
+      SkipWhiteSpace;
   end;
 
   function SyncToPrefix(const Prefix: string): Boolean;
@@ -659,10 +735,15 @@ var
     P: PChar;
     S: string;
   begin
+    if Eof then
+    begin
+      Result := False;
+      Exit;
+    end;  
     SkipWhiteSpace;
     I := Length(Prefix);
     P := CurrPos;
-    while (not (P^ in [AnsiCarriageReturn, AnsiNull])) and (I > 0) do
+    while not Eof and (not (P^ in [AnsiCarriageReturn, AnsiNull])) and (I > 0) do
     begin
       Inc(P);
       Dec(I);
@@ -743,11 +824,11 @@ end;
 //==============================================================================
 
 procedure TJclMapParser.ClassTableItem(const Address: TJclMapAddress;
-  Length: Integer; SectionName, ClassName: PJclMapString);
+  Len: Integer; SectionName, GroupName: PJclMapString);
 begin
   if Assigned(FOnClassTable) then
-    FOnClassTable(Self, Address, Length, MapStringToStr(SectionName),
-    MapStringToStr(ClassName));
+    FOnClassTable(Self, Address, Len, MapStringToStr(SectionName),
+    MapStringToStr(GroupName));
 end;
 
 //------------------------------------------------------------------------------
@@ -787,10 +868,10 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TJclMapParser.SegmentItem(const Address: TJclMapAddress;
-  Length: Integer; ClassName, UnitName: PJclMapString);
+  Len: Integer; GroupName, UnitName: PJclMapString);
 begin
   if Assigned(FOnSegmentItem) then
-    FOnSegmentItem(Self, Address, Length, MapStringToStr(ClassName),
+    FOnSegmentItem(Self, Address, Len, MapStringToStr(GroupName),
     MapStringToStr(UnitName));
 end;
 
@@ -799,7 +880,7 @@ end;
 //==============================================================================
 
 procedure TJclMapScanner.ClassTableItem(const Address: TJclMapAddress;
-  Length: Integer; SectionName, ClassName: PJclMapString);
+  Len: Integer; SectionName, GroupName: PJclMapString);
 begin
 end;
 
@@ -919,16 +1000,16 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TJclMapScanner.SegmentItem(const Address: TJclMapAddress;
-  Length: Integer; ClassName, UnitName: PJclMapString);
+  Len: Integer; GroupName, UnitName: PJclMapString);
 var
   C: Integer;
 begin
   if Address.Segment = 1 then
   begin
-    C := System.Length(FSegments);
+    C := Length(FSegments);
     SetLength(FSegments, C + 1);
     FSegments[C].StartAddr := Address.Offset;
-    FSegments[C].EndAddr := Address.Offset + Length;
+    FSegments[C].EndAddr := Address.Offset + Len;
     FSegments[C].UnitName := UnitName;
   end;
 end;
@@ -1613,8 +1694,8 @@ begin
   VA := VAFromAddr(Addr);
   with FScanner do
   begin
-    Info.ModuleName := ModuleNameFromAddr(VA);
-    Result := (Info.ModuleName <> '');
+    Info.UnitName := ModuleNameFromAddr(VA);
+    Result := (Info.UnitName <> '');
     if Result then
     begin
       Info.Address := Addr;
@@ -1658,8 +1739,8 @@ begin
   VA := VAFromAddr(Addr);
   with FScanner do
   begin
-    Info.ModuleName := ModuleNameFromAddr(VA);
-    Result := (Info.ModuleName) <> '';
+    Info.UnitName := ModuleNameFromAddr(VA);
+    Result := (Info.UnitName) <> '';
     if Result then
     begin
       Info.Address := Addr;
@@ -1720,7 +1801,6 @@ begin
       begin
         if RawName then
         begin
-          Info.ModuleName := Name;
           Info.ProcedureName := Items[I].Name;
           Result := True;
         end else
@@ -1729,8 +1809,10 @@ begin
             urOk:
               if not (Desc.Kind in [skRTTI, skVTable]) then
               begin
-                Info.ModuleName := Copy(Unmangled, 1, BasePos - 2);
+                Info.UnitName := Copy(Unmangled, 1, BasePos - 2);
                 Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
+                if smLinkProc in Desc.Modifiers then
+                  Info.ProcedureName := '@' + Info.ProcedureName; 
                 Result := True;
               end;
             urNotMangled:
@@ -1830,7 +1912,7 @@ begin
   NeedDebugInfoList;
   if DebugInfoList.GetLocationInfo(Addr, Info) then
     with Info do
-      Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, ModuleName,
+      Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, UnitName,
         ProcedureName, LineNumber, SourceName])
   else
     Result := Format('[%p]', [Addr]);
@@ -1855,7 +1937,7 @@ end;
 
 function __MODULE__(const Level: Integer): string;
 begin
-  Result := GetLocationInfo(Caller(Level + 1)).ModuleName;
+  Result := GetLocationInfo(Caller(Level + 1)).UnitName;
 end;
 
 //------------------------------------------------------------------------------
@@ -1883,7 +1965,7 @@ end;
 
 function __MODULE_OF_ADDR__(const Addr: Pointer): string;
 begin
-  Result := GetLocationInfo(Addr).ModuleName;
+  Result := GetLocationInfo(Addr).UnitName;
 end;
 
 //------------------------------------------------------------------------------
@@ -1901,19 +1983,13 @@ begin
 end;
 
 //==============================================================================
-// Stack info classes
+// Stack info routines
 //==============================================================================
 
 {$STACKFRAMES OFF}
 
 var
-  Kernel32_RaiseException: procedure (dwExceptionCode, dwExceptionFlags,
-    nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
-  SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
-  ExceptionsHooked: Boolean;
-  PeImportHooks: TJclPeMapImgHooks;
-
-  LastStackInfo: TJclStackInfoList;
+  ExceptStackInfo: TJclStackInfoList;
   TopOfStack: DWORD = 0;
   BaseOfCode: DWORD = 0;
   TopOfCode: DWORD = 0;
@@ -1951,6 +2027,21 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure InitGlobalVar;
+var
+  NTHeader: PImageNTHeaders;
+begin
+  if BaseOfCode = 0 then
+  begin
+    NTHeader := PeMapImgNtHeaders(Pointer(HInstance));
+    BaseOfCode := DWORD(HInstance) + NTHeader.OptionalHeader.BaseOfCode;
+    TopOfCode := BaseOfCode + NTHeader.OptionalHeader.SizeOfCode;
+    TopOfStack := GetStackTop;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 {$STACKFRAMES ON}
 procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 var
@@ -1965,122 +2056,24 @@ begin
     FirstCaller := ExceptAddr
   else
     FirstCaller := nil;
-  JclCreateStackInfo(RawStackTracking, IgnoreLevels, FirstCaller);
+  JclCreateStackList(RawStackTracking, IgnoreLevels, FirstCaller);
 end;
 {$STACKFRAMES OFF}
 
 //------------------------------------------------------------------------------
 
-var
-  Recursive: Boolean = False;
-
-procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+function JclLastExceptStackList: TJclStackInfoList;
 begin
-  if not Recursive and (StackTrackingEnable or Assigned(ExceptNotify)) then
-  begin
-    Recursive := True;
-    try
-      if StackTrackingEnable then
-        DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
-      if Assigned(ExceptNotify) then
-        ExceptNotify(ExceptObj, ExceptAddr, OSException);
-    finally
-      Recursive := False;
-    end;
-  end;
+  Result := ExceptStackInfo;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
-  Arguments: PExceptionArguments); stdcall;
-const
-  cDelphiException = {$IFDEF DELPHI2}$0EEDFACE{$ELSE}$0EEDFADE{$ENDIF};
-  cNonContinuable = 1;
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 begin
-  if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
-    (NumberOfArguments = 7) and (DWORD(Arguments) = DWORD(@Arguments) + 4) then
-      DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False);
-  Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
-end;
-
-//------------------------------------------------------------------------------
-
-function HookedExceptObjProc(P: PExceptionRecord): Exception;
-begin
-  Result := SysUtils_ExceptObjProc(P);
-  DoExceptNotify(Result, P^.ExceptionAddress, True);
-end;
-
-//------------------------------------------------------------------------------
-
-procedure InitGlobalVar;
-var
-  NTHeader: PImageNTHeaders;
-begin
-  Recursive := False;
-  if BaseOfCode = 0 then
-  begin
-    NTHeader := PeMapImgNtHeaders(Pointer(HInstance));
-    BaseOfCode := DWORD(HInstance) + NTHeader.OptionalHeader.BaseOfCode;
-    TopOfCode := BaseOfCode + NTHeader.OptionalHeader.SizeOfCode;
-    TopOfStack := GetStackTop;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclHookExceptions: Boolean;
-begin
-  if ExceptionsHooked then
-    Result := False
-  else
-  begin
-    InitGlobalVar;
-    SysUtils_ExceptObjProc := System.ExceptObjProc;
-    System.ExceptObjProc := @HookedExceptObjProc;
-    if PeImportHooks = nil then
-      PeImportHooks := TJclPeMapImgHooks.Create;
-    Result := PeImportHooks.HookImport(Pointer(FindClassHInstance(System.TObject)),
-      kernel32, 'RaiseException', @HookedRaiseException, @Kernel32_RaiseException);
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclUnhookExceptions: Boolean;
-begin
-  if ExceptionsHooked then
-  begin
-    Result := PeImportHooks.UnhookByNewAddress(@HookedRaiseException);
-    System.ExceptObjProc := @SysUtils_ExceptObjProc;
-    @SysUtils_ExceptObjProc := nil;
-    @Kernel32_RaiseException := nil;
-  end else
-    Result := False;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclExceptionsHooked: Boolean;
-begin
-  Result := ExceptionsHooked;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclLastStackInfo: TJclStackInfoList;
-begin
-  Result := LastStackInfo;
-end;
-
-//------------------------------------------------------------------------------
-
-function JclCreateStackInfo(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
-begin
-  FreeAndNil(LastStackInfo);
-  LastStackInfo := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
-  Result := LastStackInfo;
+  FreeAndNil(ExceptStackInfo);
+  ExceptStackInfo := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
+  Result := ExceptStackInfo;
 end;
 
 //==============================================================================
@@ -2325,13 +2318,294 @@ begin
   Result := TJclStackInfoItem(inherited Items[Index]);
 end;
 
+//==============================================================================
+// Stack frame info routines
+//==============================================================================
+
+function GetFS: Pointer;
+asm
+  XOR EAX, EAX
+  MOV EAX, FS:[EAX]
+end;
+
+//------------------------------------------------------------------------------
+
+var
+  LastExceptFrameList: TJclExceptFrameList;
+
+function JclCreateExceptFrameList(AIgnoreLevels: Integer): TJclExceptFrameList;
+begin
+  FreeAndNil(LastExceptFrameList);
+  LastExceptFrameList := TJclExceptFrameList.Create(AIgnoreLevels);
+  Result := LastExceptFrameList;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclLastExceptFrameList: TJclExceptFrameList;
+begin
+  Result := LastExceptFrameList;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure DoExceptFrameTrace;
+begin
+  { Ignore first 2 levels; this is the try finally in DoExceptNotify and a
+    FindClose call in the kernel. Note that it now ignores 3 levels; there's one
+    level that is unexplainable; by the time it gets to the notifier method is
+    already gone and invalid }
+  JclCreateExceptFrameList(3);
+end;
+
+//==============================================================================
+// TJclExceptFrame
+//==============================================================================
+
+procedure TJclExceptFrame.DoDetermineFrameType;
+var
+  Dest: Longint;
+  LocInfo: TJclLocationInfo;
+begin
+  FFrameType := eftUnknown;
+  if FExcFrame <> nil then
+  begin
+    if ExcFrame.desc.jmp.opCode = $E9 then
+      Dest := ExcFrame.desc.jmp.distance + 5 + Longint(ExcFrame.desc)
+    else if ExcFrame.desc.jmp.opCode = $EB then
+      Dest := Byte(ExcFrame.desc.jmp.distance) + 2 + Longint(ExcFrame.desc)
+    else
+      Dest := 0;
+    if Dest <> 0 then
+    begin
+      LocInfo := GetLocationInfo(Pointer(Dest));
+      if (CompareText(LocInfo.UnitName, 'system') = 0) then
+      begin
+        if (CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0) then
+          FFrameType := eftAnyException
+        else if (CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0) then
+          FFrameType := eftOnException
+        else if (CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0) then
+          FFrameType := eftAutoException
+        else if (CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0) then
+          FFrameType := eftFinally;
+      end;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclExceptFrame.Create(AExcFrame: PExcFrame);
+begin
+  inherited Create;
+  FExcFrame := AExcFrame;
+  DoDetermineFrameType;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclExceptFrame.Handles(ExceptObj: TObject): Boolean;
+var
+  Handler: Pointer;
+begin
+  Result := HandlerInfo(ExceptObj, Handler);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclExceptFrame.HandlerInfo(ExceptObj: TObject;
+  var HandlerAt: Pointer): Boolean;
+var
+  I: Integer;
+  vTable: Pointer;
+begin
+  Result := FrameType = eftAnyException;
+  if not Result and (FrameType = eftOnException) then
+  begin
+    I := 0;
+    vTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
+    while (I < ExcFrame.desc.cnt) and not Result and (vTable <> nil) do
+    begin
+      Result := (ExcFrame.desc.excTab[I].vTable = nil) or
+        (ExcFrame.desc.excTab[I].vTable = vTable);
+      if not Result then
+      begin
+        Move(PChar(vTable)[vmtParent - vmtSelfPtr], vTable, 4);
+        if vTable = nil then
+        begin
+          vTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
+          Inc(I);
+        end;
+      end;
+    end;
+    if Result then
+      HandlerAt := ExcFrame.desc.excTab[I].handler;
+  end
+  else if Result then
+    HandlerAt := @ExcFrame.desc.instructions
+  else
+    HandlerAt := nil;
+end;
+
+//==============================================================================
+// TJclExceptFrameList
+//==============================================================================
+
+function TJclExceptFrameList.AddFrame(AFrame: PExcFrame): TJclExceptFrame;
+begin
+  Result := TJclExceptFrame.Create(AFrame);
+  try
+    Add(Result);
+  except
+    Remove(Result);
+    Result.Free;
+    raise;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclExceptFrameList.GetItems(Index: Integer): TJclExceptFrame;
+begin
+  Result := TJclExceptFrame(inherited Items[Index]);
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclExceptFrameList.Create(AIgnoreLevels: Integer);
+begin
+  inherited Create;
+  FIgnoreLevels := AIgnoreLevels;
+  TraceExceptionFrames;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclExceptFrameList.TraceExceptionFrames;
+var
+  FS: PExcFrame;
+  Level: Integer;
+begin
+  Clear;
+  Level := 0;
+  FS := GetFS;
+  while Longint(FS) <> -1 do
+  begin
+    if Level >= IgnoreLevels then
+      AddFrame(FS);
+    Inc(Level);
+    FS := FS.next;
+  end;
+end;
+
+//==============================================================================
+// Exception hooking
+//==============================================================================
+
+var
+  Kernel32_RaiseException: procedure (dwExceptionCode, dwExceptionFlags,
+    nNumberOfArguments: DWORD; lpArguments: PDWORD); stdcall;
+  SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
+  ExceptionsHooked: Boolean;
+  PeImportHooks: TJclPeMapImgHooks;
+
+//------------------------------------------------------------------------------
+
+var
+  Recursive: Boolean;
+
+procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+begin
+  if not Recursive and (StackTrackingEnable or
+    Assigned(ExceptNotifyProc) or Assigned(ExceptNotifyMethod)) then
+  begin
+    Recursive := True;
+    try
+      if StackTrackingEnable then
+        DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
+      if ExceptionFrameTrackingEnable then
+        DoExceptFrameTrace;
+      if Assigned(ExceptNotifyProc) then
+        ExceptNotifyProc(ExceptObj, ExceptAddr, OSException);
+      if Assigned(ExceptNotifyMethod) then
+        ExceptNotifyMethod(ExceptObj, ExceptAddr, OSException);
+    finally
+      Recursive := False;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
+  Arguments: PExceptionArguments); stdcall;
+const
+  cDelphiException = {$IFDEF DELPHI2}$0EEDFACE{$ELSE}$0EEDFADE{$ENDIF};
+  cNonContinuable = 1;
+begin
+  if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
+    (NumberOfArguments = 7) and (DWORD(Arguments) = DWORD(@Arguments) + 4) then
+      DoExceptNotify(Arguments.ExceptObj, Arguments.ExceptAddr, False);
+  Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
+end;
+
+//------------------------------------------------------------------------------
+
+function HookedExceptObjProc(P: PExceptionRecord): Exception;
+begin
+  Result := SysUtils_ExceptObjProc(P);
+  DoExceptNotify(Result, P^.ExceptionAddress, True);
+end;
+
+//------------------------------------------------------------------------------
+
+function JclHookExceptions: Boolean;
+begin
+  if ExceptionsHooked then
+    Result := False
+  else
+  begin
+    InitGlobalVar;
+    Recursive := False;
+    SysUtils_ExceptObjProc := System.ExceptObjProc;
+    System.ExceptObjProc := @HookedExceptObjProc;
+    if PeImportHooks = nil then
+      PeImportHooks := TJclPeMapImgHooks.Create;
+    Result := PeImportHooks.HookImport(Pointer(FindClassHInstance(System.TObject)),
+      kernel32, 'RaiseException', @HookedRaiseException, @Kernel32_RaiseException);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclUnhookExceptions: Boolean;
+begin
+  if ExceptionsHooked then
+  begin
+    Result := PeImportHooks.UnhookByNewAddress(@HookedRaiseException);
+    System.ExceptObjProc := @SysUtils_ExceptObjProc;
+    @SysUtils_ExceptObjProc := nil;
+    @Kernel32_RaiseException := nil;
+  end else
+    Result := False;
+end;
+
+//------------------------------------------------------------------------------
+
+function JclExceptionsHooked: Boolean;
+begin
+  Result := ExceptionsHooked;
+end;
+
 //------------------------------------------------------------------------------
 
 initialization
 
 finalization
   FreeAndNil(DebugInfoList);
-  FreeAndNil(LastStackInfo);
+  FreeAndNil(ExceptStackInfo);
   FreeAndNil(PeImportHooks);
+  FreeAndNil(LastExceptFrameList);
 
 end.
