@@ -589,6 +589,7 @@ begin
   InternalCreate(Handle, Name, Protect, MaximumSize, SecAttr);
   DuplicateHandle(GetCurrentProcess, FileHandle, GetCurrentProcess,
     @FFileHandle, 0, False, DUPLICATE_SAME_ACCESS);
+  CloseHandle(Handle);
 end;
 
 //------------------------------------------------------------------------------
