@@ -34,10 +34,11 @@ unit JclRTTI;
 interface
 
 uses
-  Windows, Classes, TypInfo, SysUtils, JclBase;
+  Windows, Classes, SysUtils, TypInfo,
+  JclBase;
 
 type
-  EJclRTTI = class(EJclError);
+  EJclRTTI = class (EJclError);
 
 //------------------------------------------------------------------------------
 // TypeInfo writing
@@ -138,7 +139,7 @@ type
     function GetNames(const I: Integer): string;
     {$IFDEF COMPILER6_UP}
     function GetUnitName: string;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
     function IndexOfName(const Name: string): Integer;
 
@@ -146,7 +147,7 @@ type
     property Names[const I: Integer]: string read GetNames; default;
     {$IFDEF COMPILER6_UP}
     property UnitName: string read GetUnitName;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 
   IJclSetTypeInfo = interface(IJclOrdinalTypeInfo)
@@ -350,8 +351,8 @@ function JclSetToList(const TypeInfo: PTypeInfo; const Value;
   const WantBrackets: Boolean; const WantRanges: Boolean;
   const Strings: TStrings): string;
 function JclSetToStr(const TypeInfo: PTypeInfo; const Value;
-  const WantBrackets: Boolean = False;
-  const WantRanges: Boolean = False): string;
+  const WantBrackets: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
+  const WantRanges: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): string;
 procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar;
   const Value: string);
 procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar;
@@ -390,12 +391,13 @@ function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
 implementation
 
 uses
-  Consts, SysConst, JclSysUtils, JclStrings, JclLogic, JclResources;
+  Consts, SysConst,
+  JclLogic, JclResources, JclStrings, JclSysUtils;
 
 {$IFNDEF COMPILER5_UP}
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: DWORD;
   var flOldProtect: DWORD): BOOL; stdcall; external 'kernel32.dll' name 'VirtualProtect';
-{$ENDIF}
+{$ENDIF COMPILER5_UP}
 
 //------------------------------------------------------------------------------
 // TJclInfoWriter
@@ -428,7 +430,7 @@ begin
     TmpLines.Text := CurLine;
     TmpLines2 := TStringList.Create;
     try
-      I := Pred(TmpLines.Count);
+      I := TmpLines.Count-1;
       if not EndedInCRLF then
         Dec(I);
       while I >= 0 do
@@ -438,7 +440,7 @@ begin
         begin
           TmpLines2.Text := WrapText(
             TmpLines[I],
-            AnsiCrLf + StringOfChar(' ', 2 * Succ(IndentLevel)),
+            AnsiCrLf + StringOfChar(' ', 2 * (IndentLevel+1)),
             [#0 .. ' ', '-'],
             Wrap);
           TmpLines.Delete(I);
@@ -467,8 +469,8 @@ begin
   CRLFPos := StrLastPos(AnsiCrLf, CurLine);
   if CRLFPos > 0 then
   begin
-    PrimWrite(Copy(CurLine, 1, Pred(CRLFPos)));
-    Delete(FCurLine, 1, Succ(CRLFPos));
+    PrimWrite(Copy(CurLine, 1, CRLFPos-1));
+    Delete(FCurLine, 1, CRLFPos+1);
   end;
 end;
 
@@ -485,7 +487,7 @@ end;
 destructor TJclInfoWriter.Destroy;
 begin
   if CurLine <> '' then
-    Writeln;
+    Writeln('');
   inherited Destroy;
 end;
 
@@ -716,7 +718,7 @@ begin
   else
     Dest.Write(IntToStr(MinValue) + ' .. ' + IntToStr(MaxValue) + '; // ');
   Dest.Write(JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
-  Dest.Writeln;
+  Dest.Writeln('');
 end;
 
 //------------------------------------------------------------------------------
@@ -761,7 +763,6 @@ var
   Base: IJclEnumerationTypeInfo;
   Idx: Integer;
   P: ^ShortString;
-
 begin
   Base := BaseType;
   Idx := I;
@@ -777,11 +778,11 @@ end;
 //------------------------------------------------------------------------------
 
 {$IFDEF COMPILER6_UP}
+
 function TJclEnumerationTypeInfo.GetUnitName: string;
 var
   I: Integer;
   P: ^ShortString;
-
 begin
   if BaseType.TypeInfo = TypeInfo then
   begin
@@ -797,6 +798,7 @@ begin
   else
     Result := TypeData.NameList;
 end;
+
 {$ENDIF COMPILER6_UP}
 
 //------------------------------------------------------------------------------
@@ -857,7 +859,7 @@ begin
   begin
     Dest.Write('; // ' + JclEnumValueToIdent(System.TypeInfo(TOrdType),
       TypeData.OrdType));
-    Dest.Writeln;
+    Dest.Writeln('');
   end;
 end;
 
@@ -903,7 +905,7 @@ var
     OrdNum: Int64;
   begin
     FirstOrdNum := (StartBit - FirstBit) + BaseInfo.MinValue;
-    LastOrdNum := (Pred(Bit) - FirstBit) + BaseInfo.MinValue;
+    LastOrdNum := (Bit - 1 - FirstBit) + BaseInfo.MinValue;
     if WantRanges and (LastOrdNum <> FirstOrdNum) then
     begin
       if BaseInfo.TypeKind = tkEnumeration then
@@ -972,7 +974,7 @@ var
     LastBit: Integer;
     ByteCount: Integer;
   begin
-    LastBit := Succ(BaseInfo.MaxValue - BaseInfo.MinValue) + FirstBit;
+    LastBit := BaseInfo.MaxValue - BaseInfo.MinValue + 1 + FirstBit;
     ByteCount := (LastBit - FirstBit) div 8;
     if LastBit mod 8 <> 0 then
       Inc(ByteCount);
@@ -983,7 +985,7 @@ begin
   BaseInfo := BaseType as IJclOrdinalRangeTypeInfo;
   FirstBit := BaseInfo.MinValue mod 8;
   ClearValue;
-  for I := 0 to Pred(Strings.Count) do
+  for I := 0 to Strings.Count-1 do
   begin
     if Trim(Strings[I]) <> '' then
     begin
@@ -1056,7 +1058,7 @@ begin
   begin
     Dest.Write('; // ' + JclEnumValueToIdent(System.TypeInfo(TOrdType),
       TypeData.OrdType));
-    Dest.Writeln;
+    Dest.Writeln('');
   end;
 end;
 
@@ -1282,8 +1284,7 @@ end;
 function TJclPropInfo.GetSpecValue(const Value: Integer): Integer;
 begin
   case GetSpecKind(Value) of
-    pskStaticMethod,
-    pskConstant:
+    pskStaticMethod, pskConstant:
       Result := Value;
     pskVirtualMethod:
       Result := Smallint(Value and $0000FFFF);
@@ -1437,7 +1438,7 @@ var
 begin
   PropData := @TypeData.UnitName;
   Inc(Integer(PropData), 1 + Length(UnitName));
-  if Succ(PropIdx) > PropData.PropCount then
+  if PropIdx + 1 > PropData.PropCount then
     Result := Parent.Properties[PropIdx - PropData.PropCount]
   else
   begin
@@ -1480,7 +1481,7 @@ begin
     IntToStr(TotalPropertyCount) + ')');
   Dest.Indent;
   try
-    for I := 0 to Pred(PropertyCount) do
+    for I := 0 to PropertyCount-1 do
     begin
       Prop := Properties[I];
       Dest.Writeln(Prop.Name + ': ' + Prop.PropType.Name);
@@ -1561,7 +1562,7 @@ begin
     Dest.Write(Name + ' = class(' + Parent.Name);
     IntfTbl := ClassRef.GetInterfaceTable;
     if IntfTbl <> nil then
-      for I := 0 to Pred(IntfTbl.EntryCount) do
+      for I := 0 to IntfTbl.EntryCount-1 do
         Dest.Write(', [''' + JclGUIDToString(IntfTbl.Entries[I].IID) + ''']');
     Dest.Writeln(') // unit ' + UnitName);
   end
@@ -1572,7 +1573,7 @@ begin
     Dest.Writeln('published');
     Dest.Indent;
     try
-      for I := 0 to Pred(PropertyCount) do
+      for I := 0 to PropertyCount-1 do
       begin
         Prop := Properties[I];
         Dest.Write('property ' + Prop.Name + ': ' +  Prop.PropType.Name);
@@ -1771,7 +1772,7 @@ begin
   begin
     if ParameterCount > 0 then
     begin
-      LastParam := Parameters[Pred(ParameterCount)];
+      LastParam := Parameters[ParameterCount-1];
       ResPtr := Pointer(Longint(LastParam.Param) + LastParam.RecSize);
     end
     else
@@ -1796,7 +1797,7 @@ begin
   Dest.Writeln(RsRTTIParamCount + IntToStr(ParameterCount));
   Dest.Indent;
   try
-    for I := 0 to Pred(ParameterCount) do
+    for I := 0 to ParameterCount-1 do
     begin
       if I > 0 then
         Dest.Writeln('');
@@ -1828,7 +1829,7 @@ begin
   else
     Dest.Write('procedure');
   Prefix := '(';
-  for I := 0 to Pred(ParameterCount) do
+  for I := 0 to ParameterCount-1 do
   begin
     Dest.Write(Prefix);
     Prefix := '; ';
@@ -2099,7 +2100,8 @@ begin
   Dest.Writeln(RsRTTIElSize + IntToStr(ElementSize));
   if ElementType = nil then
     Dest.Writeln(RsRTTIElType + RsRTTITypeError)
-  else if ElementType.Name[1] <> '.' then
+  else
+  if ElementType.Name[1] <> '.' then
     Dest.Writeln(RsRTTIElType + ElementType.Name)
   else
   begin
@@ -2130,7 +2132,8 @@ begin
     Dest.Write(RsRTTIArrayOf);
   if ElementType = nil then
     Dest.Write(RsRTTITypeError)
-  else if ElementType.Name[1] = '.' then
+  else
+  if ElementType.Name[1] = '.' then
     ElementType.DeclarationTo(Dest)
   else
     Dest.Write(ElementType.Name);
@@ -2388,7 +2391,7 @@ begin
       TypeData^.OrdType := otULong;
       {$ELSE}
       TypeData^.OrdType := otSLong;
-      {$ENDIF}
+      {$ENDIF COMPILER5_UP}
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
     TypeData^.BaseType^ := Result;   // No sub-range: basetype points to itself
@@ -2399,8 +2402,8 @@ begin
       Inc(Integer(CurName), Length(Literals[I])+1);
     end;
     {$IFDEF COMPILER6_UP}
-    CurName^:= ''; // Unit name unknown
-    {$ENDIF}
+    CurName^ := ''; // Unit name unknown
+    {$ENDIF COMPILER6_UP}
     AddType(Result);
   except
     try
@@ -2430,7 +2433,7 @@ begin
       JclEnumValueToIdent(System.TypeInfo(TTypeKind), BaseKind)]);
   with BaseInfo as IJclEnumerationTypeInfo do
   begin
-    SetLength(Literals, Succ(MaxValue - MinValue));
+    SetLength(Literals, MaxValue - MinValue + 1);
     for I := MinValue to MaxValue do
     begin
       S := Names[I];
@@ -2446,7 +2449,7 @@ begin
     if PrefixCut = PREFIX_CUT_EQUAL then
     begin
       S := Literals[High(Literals)];
-      I := Pred(High(Literals));
+      I := High(Literals)-1;
       while (I >= 0) and (S > '') do
       begin
         while Copy(Literals[I], 1, Length(S)) <> S do
@@ -2518,7 +2521,7 @@ begin
   HaveConversion := (@Conv <> nil) and Conv(Value, Result);
   if not HaveConversion then
   begin
-    if (TypeInfo <> nil) then
+    if TypeInfo <> nil then
     begin
       Info := JclTypeInfo(TypeInfo);
       if Info.QueryInterface(IJclOrdinalRangeTypeInfo, RangeInfo) <> S_OK then
@@ -2571,7 +2574,7 @@ begin
   Result := '';
   SetType := JclTypeInfo(TypeInfo) as IJclSetTypeInfo;
   SetType.GetAsList(Value, WantRanges, Strings);
-  for I := I to Pred(Strings.Count) do
+  for I := I to Strings.Count-1 do
   begin
     if Result <> '' then
       Result := Result + ', ' + Strings[I]
@@ -2615,8 +2618,8 @@ begin
       if S[0][1] = '[' then
       begin
         S[0] := Copy(S[0], 2, Length(S[0]));
-        S[Pred(S.Count)] := Copy(S[Pred(S.Count)], 1,
-          Length(S[Pred(S.Count)]) - 1);
+        S[S.Count-1] := Copy(S[S.Count-1], 1,
+          Length(S[S.Count-1]) - 1);
       end;
     end;
     SetInfo.SetAsList(SetVar, S);
