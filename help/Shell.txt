@@ -64,7 +64,7 @@ Deletes the specified folder.
 SHDeleteFolder deletes the specified folder, either permanently or to the recycle
 bin depending on the Options parameter. Additionally the function provides
 visual feedback by displaying the familiar delete folder dialog you also see
-when deleting a folder through explorer.
+when deleting a folder through Explorer.
 [Parameters]
 Count=3
 1=Parent:HWND=Handle of the window to serve as the parent of any dialogs displayed
@@ -96,8 +96,8 @@ Deletes one or more files.
 [Description]
 SHDeleteFiles delete a single file, multiple files or even files specified with
 a wildcard expression such as *.dcu. If doSilent is not specified the function
-provides visual feedback of it's progress by showing the familiar delete files
-dialog you also see when deleting (a) file(s) through explorer. In addition the
+provides visual feedback of its progress by showing the familiar delete files
+dialog you also see when deleting files through Explorer. In addition the
 function allows for deletion to the recycle bin through the doAllowUndo flag.
 [Parameters]
 Count=3
@@ -268,7 +268,8 @@ Requirements=Shell32 Version 4.00 or later.
 TEnumFolderFlags = set of TEnumFolderFlag;
 TEnumFolderFlag = (efFolders, efNonFolders, efIncludeHidden);
 [ShortDescr]
-Enumeration used by <REF Target"..\SHEnumFolderFirst">SHEnumFolderFirst</REF> to specify the type of items to include in the enumeration.
+Enumeration used by <REF Target"..\SHEnumFolderFirst">SHEnumFolderFirst</REF> to specify 
+the type of items to include in the enumeration.
 [Enumeration]
 Count=3
 1=efFolders=include folder items in the enumeration
@@ -300,7 +301,7 @@ Begins the enumeration of the items in a folder
 SHEnumFolderFirst begins the enumeration of all items in the specified folder that
 match the specified Flags. If the function succeeds then the return value is True
 and the <REF Target"Types\TEnumFolderRec">F</REF> parameter will contain information
-about the found item such as it's name and attributes. To continue the enumeration
+about the found item such as its name and attributes. To continue the enumeration
 call <REF>SHEnumFolderNext</REF>. To close the enumeration and release the
 resources held call <REF>SHEnumFolderClose</REF>. If the function fails the
 return value is False. This might indicate an error such as a non-existing
@@ -315,11 +316,11 @@ Count=4
 include in the enumeration.
 2=F:TEnumFolderRec=Record that returns information about the items found and holds data used to continue the enumeration with a later call the <REF>SHEnumFolderNext</REF>.
 3=SpecialFolder:DWORD=One of the CSIDL_x constants that identify the special folder to enumerate.
-4=Folder:string=Fully qualied name of the folder you want to enumerate.
+4=Folder:string=Fully qualified name of the folder you want to enumerate.
 [Result]
 If the function succeeds it returns True and the <REF>Types\TEnumFolderRec</REF> record
 is filled with information about the first found item. If the function fails the
-return value is False. In this latter case you can not call SHEnumFolderNext and
+return value is False. In this latter case you cannot call SHEnumFolderNext and
 don't need to call SHEnumFolderClose. If the function succeeded you can continue
 the enumeration with <REF>SHEnumFolderNext</REF>
 [Notes]
@@ -500,7 +501,7 @@ Overlays Icon with OverlayIcon.
 [Description]
 OverlayIcon will overlay Icon with Overlay and return the result in Icon. If the
 function succeeds the return value is True. If it fails the return value is
-False in which case Icon retains it's old value. The Large parameter controls
+False in which case Icon retains its old value. The Large parameter controls
 whether the icons are assumed to be large (True) or small (False).
 [Parameters]
 Count=3
@@ -608,7 +609,7 @@ Count=2
 1=IconIndex:Integer=The index into the system imagelist of the icon you want to retrieve.
 2=Flags:Cardinal=Flags that further specify the returned icon. This can be a
 combination of the SHGFI_x flags listed in the documentation of SHGetFileInfo.
-For example, you can set this flag to SHGFI_SMALLICON to get it's small icon.
+For example, you can set this flag to SHGFI_SMALLICON to get its small icon.
 [Result]
 Handle of the requested icon or 0 on failure. The caller is responsible for
 destroying the icon when it is no longer used. Do that by calling the DestroyIcon
@@ -672,7 +673,7 @@ Reads version information from the specified file.
 [Description]
 SHDllGetVersion attempts to read version information from the specified file using
 the well-known DllGetVersion exported function. This function is exported by all
-the newer Windows shell related DLL's starting with shell version 4.71. FileName
+the newer Windows shell related DLLs starting with shell version 4.71. FileName
 should be the fully qualified name of the file for which to return version
 information. If the function succeeds then the result is True, otherwise the result
 is False and the <REF Target"Types\TDllVersionInfo">Version</REF> record contains garbage.
@@ -707,9 +708,9 @@ function ShellExec(const FileName: string; const Parameters: string; const Verb:
 [ShortDescr]
 Performs an action on a file.
 [Description]
-ShellExex is a wrapper for the Win32 API function ShellExecuteEx which alleviates
-removes some of the complexities of this function by providing defaults for some
-of it's lesser used parameters. This function performs an action specified on a
+ShellExec is a wrapper for the Win32 API function ShellExecuteEx which alleviates
+some of the complexities of this function by providing defaults for some
+of its lesser used parameters. This function performs an action specified on a
 file which can be anything from executing the file to opening it using the associated
 editor.
 [Parameters]
@@ -723,7 +724,7 @@ depend on the type of object specified in the FileName parameter but some of the
 more commonly used ones are 'open', 'print' and 'edit'. See the Platform SDK
 documentation for more information. This parameter defaults to an empty string
 which causes the default verb to be executed (usually 'open').
-4=CmdShow:Integer=Flags that specify how the application should display when it's
+4=CmdShow:Integer=Flags that specify how the application should display when it is
 opened. See the Platform SDK documentation on ShellExecute for more information.
 Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOWNORMAL.
 [Result]
@@ -749,13 +750,13 @@ function ShellExecAndWait(const FileName: string; const Parameters: string; cons
 Performs an action on a file.
 [Description]
 ShellExexAndWait is a wrapper for the Win32 API function ShellExecuteEx which alleviates
-removes some of the complexities of this function by providing defaults for some
-of it's lesser used parameters. This function performs an action specified on a
+some of the complexities of this function by providing defaults for some
+of its lesser used parameters. This function performs an action specified on a
 file which can be anything from executing the file to opening it using the associated
 editor. This routine is identical to ShellExec except that this function waits
-for the action to be completed. For example, when using this file to open a html
+for the action to be completed. For example, when using this file to open a HTML
 document, the function will launch the default webbrowser and then wait until the
-browser is terminated, only then will this function return to it's caller.
+browser terminates, only then will this function call return to its caller.
 [Parameters]
 Count=4
 1=FileName:string=Name of the file or object on which to perform the action.
@@ -767,7 +768,7 @@ depend on the type of object specified in the FileName parameter but some of the
 more commonly used ones are 'open', 'print' and 'edit'. See the Platform SDK
 documentation for more information. This parameter defaults to an empty string
 which causes the default verb to be executed (usually 'open').
-4=CmdShow:Integer=Flags that specify how the application should display when it's
+4=CmdShow:Integer=Flags that specify how the application should display when it is
 opened. See the Platform SDK documentation on ShellExecute for more information.
 Commonly used values are SW_HIDE and SW_SHOW. This parameter defaults to SW_SHOWNORMAL.
 [Result]
@@ -792,7 +793,7 @@ function SHReallocMem(var P: Pointer; Count: Integer): Boolean;
 [ShortDescr]
 Reallocates (changes the size) a block of memory in the shell's memory space. The
 contents of the block prior to reallocation are reserved but there is no guarantee
-that the pointer will retain it's value. The newly allocated block may be on a
+that the pointer will retain its value. The newly allocated block may be on a
 different address if there is not enough room to expand it in place. Also the
 actual size of the allocated block maybe slightly larger then the requested size
 because of additional maintenance data (not accessible).
@@ -834,7 +835,7 @@ Allocates memory using the Shell's memory allocator.
 SHAllocMem allocates the specified amount of memory using the Shell's memory
 allocator. If the allocation succeeds then P is set to point to the allocated
 memory and the return value will be True. You should assume that the memory
-contains random values. On failure, P retains it's value and the return value
+contains random values. On failure, P retains its value and the return value
 will be False.
 [Parameters]
 Count=2
@@ -842,7 +843,7 @@ Count=2
 2=Count:Integer=Size, in byte, of the block of memory to allocate.
 [Result]
 If the function succeeds it returns True and P contains the address of the allocated
-memory block. If the function fails the it returns False and P will be set to nil.
+memory block. If the function fails then it returns False and P will be set to nil.
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -866,11 +867,11 @@ Allocates memory using the Shell's memory allocator.
 SHAllocMem allocates the specified amount of memory using the Shell's memory
 allocator. If the allocation succeeds then the memory block is initialized to
 all 0's, P is set to point to the allocated memory and the return value will be
-True. On failure, P retains it's value and the return value will be False.
+True. On failure, P retains its value and the return value will be False.
 [Parameters]
 Count=2
 1=P:Pointer=Pointer variable which returns the address of the allocated memory block
-2=Count:Integer=Size, in byte, of the block of memory to allocate.
+2=Count:Integer=Size, in bytes, of the block of memory to allocate.
 [Result]
 If the function succeeds it returns True and P contains the address of the allocated
 memory block. If the function fails it returns False and P will be set to nil.
@@ -896,7 +897,7 @@ Frees the memory pointed to by P.
 [Description]
 SHFreeMem frees the memory pointed to by P in the Shell's memory space. The memory
 must be allocated by the Shell's memory allocator. On success P is set to nil
-and the return value is True. On failure P retains it's value and the return
+and the return value is True. On failure P retains its value and the return
 value is False.
 [Parameters]
 Count=1
@@ -906,7 +907,7 @@ parameter is set to nil.
 If the function succeeds it returns True, if it fails it returns False. The latter
 case means that either the shell's memory allocator couldn't be retrieved or that
 the memory block wasn't allocated by the shell. Either case, the memory is not
-freed and the P parameter retains it's value.
+freed and the P parameter retains its value.
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -1085,7 +1086,7 @@ S_OK otherwise it returns an OLE error code.
 Count=3
 1=ShortCut:TShortCut=<REF Target"Types\TShortCut">TShortCut</REF> record with the details about the shortcut to create.
 2=Folder:Integer=The folder in which to create the shortcut. This must be set to one of the CSIDL_x constants.
-3=FileName:string=Filename for the new shortcut. This can include a folder but not drive indication.
+3=FileName:string=Filename for the new shortcut. This can include a folder but no drive indication.
 [Result]
 If the function succeeds the shortcut is created and the return value is S_OK. If
 the function fails the return value is an OLE error code.
@@ -1208,7 +1209,7 @@ function PidlToPath(IdList: PItemIdList): string;
 [ShortDescr]
 Converts an item identifier list to a path.
 [Description]
-PidlToPath converts the supplied item identifier list to it's path representation.
+PidlToPath converts the supplied item identifier list to its path representation.
 If the function succeeds the path representation is returned as the function
 result. On failure the function returns an empty string.
 [Parameters]
@@ -1269,11 +1270,11 @@ Count=2
 [Declaration]
 function PathToPidlBind(const FileName: string; out Folder: IShellFolder): PItemIdList;
 [ShortDescr]
-Converts a path to an item identifier list and binds to it's parent folder.
+Converts a path to an item identifier list and binds to its parent folder.
 [Description]
 PathToPidlBind converts the supplied path given by FileName to an item identifier
 list and binds to the parent folder of this item. The item identifier list is
-returned as the function result and the bound folder is returned in then Folder
+returned as the function result and the bound folder is returned in the Folder
 parameter. If the function fails both result and the Folder are set to nil.
 [Parameters]
 Count=2
@@ -1376,7 +1377,7 @@ PidlCompare compares the two supplied item identifier lists (pidl's). If they ar
 equal the result is True, otherwise the result is False. Note that if both pidl's
 are nil they considered equal. Equality is determined by directly comparing the
 memory block that the item identifier lists point to. This may lead to incorrect
-results because a namespace extension is free to implement a pidl any which way
+results because a namespace extension is free to implement a pidl in any way
 it likes. To compare pidl's in a reliable manner you must use the IShellFolder's
 CompareIDs method.
 [Parameters]
@@ -1434,14 +1435,14 @@ PidlFree frees the memory associated with the item identifier list given by IdLi
 If the memory was successfully freed the IdList is set to nil and the function
 returns True. If the memory could not be freed the result is False. This function
 assumes that the memory associated with the item identifier was allocated by the
-Shell's memory allocator and will fail if this is not so.
+Shell's memory allocator and will fail if this is not the case.
 [Parameters]
 Count=1
-1=IdList:PItemIdList=The item identifier list who's associated memory must be freed
+1=IdList:PItemIdList=The item identifier list whose associated memory shall be freed
 [Result]
 If the function succeeds the return value is True and IdList is set to nil. If
 the function fails the return value is False and the IdList parameter will retain
-it's value.
+its value.
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
@@ -1465,7 +1466,7 @@ Count=1
 1=Pidl:PItemIdList=The item identifier list for which to determine the depth.
 [Result]
 The depth of the item identifier list. If the supplied pidl is either unassigned
-or empty the function returns 0. If the pidl is invalid (depth is greater then
+or empty the function returns 0. If the pidl is invalid (depth is greater than
 MAX_PATH) the function returns -1.
 [Quick Info]
 BCB=3,4,5
@@ -1496,7 +1497,7 @@ Count=1
 [Result]
 The length, in bytes, of the item identifier list. If the supplied pidl is either
 unassigned or empty the result value is 0. If the pidl is invalid (depth greater
-then MAX_PATH) then function returns -1.
+than MAX_PATH) the function returns -1.
 [Quick Info]
 BCB=3,4,5
 Unit=JclShell
