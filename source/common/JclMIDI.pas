@@ -366,10 +366,15 @@ uses
 {$IFDEF MSWINDOWS}
   JclWinMIDI,
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
   //JclUnixMIDI,
-{$ENDIF LINUX}
+{$ENDIF UNIX}
   SysUtils;
+
+procedure ErrorNotImplemented;
+begin
+  raise EJclInternalError.Create('JclMidi: MIDI I/O for Unix not (yet) implemented');
+end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -379,10 +384,11 @@ begin
 {$IFDEF MSWINDOWS}
   Result := JclWinMIDI.MIDIOut(DeviceID);
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{ TODO -oRobert Rossmair : Linux MIDI Out }
+{$IFDEF UNIX}
+  { TODO -oRobert Rossmair : Unix MIDI Out }
   //Result := JclUnixMIDI.MidiOut(DeviceID);
-{$ENDIF LINUX}
+  ErrorNotImplemented;
+{$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -392,10 +398,11 @@ begin
 {$IFDEF MSWINDOWS}
   JclWinMIDI.GetMidiOutputs(List);
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{ TODO -oRobert Rossmair : Linux GetMIDIOutputs }
+{$IFDEF UNIX}
+{ TODO -oRobert Rossmair : Unix GetMIDIOutputs }
   //JclUnixMIDI.GetMidiOutputs(List);
-{$ENDIF LINUX}
+  ErrorNotImplemented;
+{$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -900,6 +907,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/07 04:27:07  rrossmair
+// "Not implemented" error for Unix added as placeholder.
+//
 // Revision 1.5  2004/05/05 00:09:59  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
