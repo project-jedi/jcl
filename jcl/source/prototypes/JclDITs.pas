@@ -23,6 +23,7 @@
 {                                                                                                  }
 {  Contributor(s):                                                                                 }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{    Robert Rossmair (rrossmair}                                                                   }
 {                                                                                                  }
 { Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
 { Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
@@ -68,6 +69,7 @@
 {                                                                              }
 {  Contributor(s):                                                             }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
+{    Robert Rossmair (rrossmair}                                               }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
 {  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
@@ -686,7 +688,11 @@ function ISOFloatToStr(const Value: Extended;
 var
   FloatRec: TFloatRec;
 begin
+  {$IFDEF FPC}
+  FloatToDecimal(FloatRec, Value, Precision, High(Integer) div 2);
+  {$ELSE}
   FloatToDecimal(FloatRec, Value, fvExtended, Precision, High(Integer) div 2);
+  {$ENDIF FPC}
   Result := ISOFloatRecToStr(FloatRec, DecimalSeparator);
 end;
 
@@ -773,6 +779,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.3  2004/05/05 05:28:00  rrossmair
+//   ISOFloatToStr changed for FPC compatibility
+//
 //   Revision 1.2  2004/05/05 00:36:15  mthoma
 //   Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
