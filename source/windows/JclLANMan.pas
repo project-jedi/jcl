@@ -91,7 +91,7 @@ function IsLocalAccount(const AccountName: string): Boolean;
 implementation
 
 uses
-  JclBase, JclStrings, JclWin32;
+  JclBase, JclStrings, JclSysInfo, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
 // User Management
@@ -466,17 +466,20 @@ end;
 function IsLocalAccount(const AccountName: string): Boolean;
 var
   Domain: string;
-  Username: string;
+  UserName: string;
   LocalServerName: string;
 begin
-  ServerName := GetLocalComputerName;
-  ParseAccountName(AccountName, Domain, Username);
+  LocalServerName := GetLocalComputerName;
+  ParseAccountName(AccountName, Domain, UserName);
   Result := (Domain = '') or (Domain = LocalServerName);
 end;
 
 // History:
 
 // $Log$
+// Revision 1.10  2005/02/06 07:45:42  marquardt
+// fixed non-compiling IsLocalAccount
+//
 // Revision 1.9  2005/02/06 03:36:50  mthoma
 // Added feature [Code Library 0000805]: IsLocalAccount does not work with names like serveruser.
 //
