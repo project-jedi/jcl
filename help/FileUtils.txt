@@ -893,10 +893,15 @@ Count=3
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function PathGetLongName(Path: string): string;
+function PathGetLongName2(Path: string): string;
 [ShortDescr]
 Returns the long name of a path.
 [Description]
-PathGetLongName returns the long name of a given path.
+PathGetLongName returns the long name of a given path. PathGetLongName uses
+the shell to discover the long path while PathGetLongName2 relies on the filesystem
+to discover the long path. Consequence of this is that while PathGetLongName2 is
+much faster than PathGetLongName, the latter can be used for shell paths which
+include GUIDs, while PathGetLongName2 cannot.
 [Parameters]
 Count=1
 1=Path:string=The path for which you want to know the long name. The path must
@@ -904,6 +909,9 @@ physically exist on the drive or the function fails.
 [Result]
 If the function succeeds it returns the long name of the supplied path. If the
 function fails the result is a copy of the supplied Path.
+[Notes]
+Count=1
+1=PathGetLongName2 was written by Petr Vones.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1187,8 +1195,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function PathCompactPath(DC: HDC; const Path: string; Width: Integer; CmpFmt: Boolean = True): string; overload;
-function PathCompactPath(Canvas: TCanvas; const Path: string; Width: Integer; CmpFmt: Boolean = True): string; overload;
+function PathCompactPath(DC: HDC; const Path: string; Width: Integer; CmpFmt: TCompactPath): string; overload;
+function PathCompactPath(Canvas: TCanvas; const Path: string; Width: Integer; CmpFmt: TCompactPath): string; overload;
 [ShortDescr]
 Compacts a path to fit within the given pixel width.
 [Description]
@@ -1204,9 +1212,12 @@ Count=4
 canvas on which you eventually intend to display the compacted path.
 2=Path:string=The path to compact or truncate.
 3=Width:Integer=Width, in pixels, that the path will be forced to fit within.
-4=CmpFmt:Boolean=Determines how the path is compacted. Specify True to replace
-characters at the end of the string, or False to replace characters in the middle
-of the string, with an ellipses.
+4=CmpFmt:TCompactPath=Determines which part of the string is replaced with
+ellipses. Valid values are:<br>
+  <table>
+    <tr><td>cpCenter</td><td>Replaces characters in the middle of the string with an ellipses</td></tr>
+    <tr><td>cpEnd</td><td>Replaces characters at the end of the string with an ellipses</td></tr>
+  </table>
 [Result]
 The compacted path or an empty string if the function fails.
 [Notes]
