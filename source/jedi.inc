@@ -1,46 +1,45 @@
-{**************************************************************************************************}
-{                                                                                                  }
-{ Project JEDI Code Library (JCL)                                                                  }
-{                                                                                                  }
-{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
-{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
-{ License at http://www.mozilla.org/MPL/                                                           }
-{                                                                                                  }
-{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
-{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
-{ and limitations under the License.                                                               }
-{                                                                                                  }
-{ The Original Code is jedi.inc                                                                    }
-{                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
-{                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ This file defines various generic compiler directives used in the JEDI Code Library (JCL) and    }
-{ JEDI Visual Component Library Library (J-VCL). The directives in this file are of generic nature }
-{ and consist mostly of mappings from the VERXXX directives defined by Delphi and C++ Builder to   }
-{ friendly names such as DELPHI5 and SUPPORTS_WIDESTRING. These friendly names are subsequently    }
-{ used in both libraries to test for compiler versions and/or whether the compiler supports        }
-{ certain features (such as widestrings or 64 bit integers. Both libraries provide an additional,  }
-{ library specific, include file. For the JCL this is jcl.inc. These files should be included in   }
-{ source files instead of this file (which is pulled in automatically).                            }
-{                                                                                                  }
-{ Maintainer: Marcel van Brakel                                                                    }
-{ Last modified: October 30, 2002                                                                  }
-{                                                                                                  }
-{**************************************************************************************************}
+{******************************************************************************}
+{                                                                              }
+{ The contents of this file are subject to the Mozilla Public License Version  }
+{ 1.1 (the "License"); you may not use this file except in compliance with the }
+{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
+{                                                                              }
+{ Software distributed under the License is distributed on an "AS IS" basis,   }
+{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
+{ the specific language governing rights and limitations under the License.    }
+{                                                                              }
+{ The Original Code is JEDI.INC.                                               }
+{                                                                              }
+{ The Initial Developer of the Original Code is Project JEDI                   }
+{ http://www.delphi-jedi.org                                                   }
+{                                                                              }
+{******************************************************************************}
+{                                                                              }
+{ This file defines various generic compiler directives used in the JEDI Code  }
+{ Library (JCL) and JEDI Visual Component Library Library (J-VCL). The         }
+{ directives in this file are of generic nature and consist mostly of mappings }
+{ from the VERXXX directives defined by Delphi and C++ Builder to friendly     }
+{ names such as DELPHI5 and SUPPORTS_WIDESTRING. These friendly names are      }
+{ subsequently used in both libraries to test for compiler versions and/or     }
+{ whether the compiler supports certain features (such as widestring's or 64   }
+{ bit integers. Both libraries provide an additional, library specific,        }
+{ include file. For the JCL this is JCL.INC. These files should be included in }
+{ source files instead of this file (which is pulled in automatically).        }
+{                                                                              }
+{ Maintainer: Marcel van Brakel                                                }
+{ Last modified: Nov  23, 2003                                                 }
+{                                                                              }
+{******************************************************************************}
 
 (*
 
 - Development environment directives
 
-  This file defines two driectives to indicate which development environment the
-  library is being compiled with. Currently this can either be Delphi or
-  C++ Builder (in the near future "Kylix" will be added).
+  This file defines two directives to indicate which development environment the
+  library is being compiled with.
 
   Directive    Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   DELPHI       Defined if compiled with Delphi
   BCB          Defined if compiled with C++ Builder
 
@@ -50,7 +49,7 @@
   by the compiler itself. They are listed here only for completeness.
 
   Directive    Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   MSWINDOWS    Defined when target platform is 32 bit Windows
   LINUX        Defined when target platform is Linux
 
@@ -61,7 +60,7 @@
   the compiler is Delphi (ie DELPHI is defined).
 
   Directive    Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   DELPHI1      Defined when compiling with Delphi 1
   DELPHI2      Defined when compiling with Delphi 2
   DELPHI3      Defined when compiling with Delphi 3
@@ -84,7 +83,7 @@
   the compiler is C++ Builder (ie BCB is defined).
 
   Directive    Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   BCB1         Defined when compiling with C++ Builder 1
   BCB3         Defined when compiling with C++ Builder 3
   BCB4         Defined when compiling with C++ Builder 4
@@ -107,7 +106,7 @@
   Delphi or C++ Builder.
 
   Directive    Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   COMPILER1    Defined when compiling with Delphi 1
   COMPILER2    Defined when compiling with Delphi 2 or C++ Builder 1
   COMPILER3    Defined when compiling with Delphi 3
@@ -133,7 +132,7 @@
   directives.
 
   Directive              Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   SUPPORTS_WIDESTRING    Compiler supports the WideString type (D3/BCB3 up)
   SUPPORTS_INTERFACE     Compiler supports interfaces (D3/BCB3)
   SUPPORTS_EXTSYM        Compiler supports the $EXTERNALSYM directive (D4/BCB3)
@@ -150,7 +149,7 @@
   compact and readible manner.
 
   Directive              Description
-  --------------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------
   ALIGN_ON               Compiling in the A+ state (no alignment)
   BOOLEVAL_ON            Compiling in the B+ state (complete boolean evaluation)
   ASSERTIONS_ON          Compiling in the C+ state (assertions on)
@@ -173,9 +172,9 @@
 
 *)
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Compiler settings
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFOPT A+} {$DEFINE ALIGN_ON} {$ENDIF}
 {$IFOPT B+} {$DEFINE BOOLEVAL_ON} {$ENDIF}
@@ -200,9 +199,9 @@
 //WARNINGS
 {$IFOPT X+} {$DEFINE EXTENDEDSYNTAX_ON} {$ENDIF}
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFDEF VER150}
   {$DEFINE COMPILER7}
@@ -279,9 +278,9 @@
   {$DEFINE DELPHI}
 {$ENDIF}
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // DELPHIX_UP from DELPHIX mappings
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFDEF DELPHI7}
   {$DEFINE DELPHI7_UP}
@@ -332,9 +331,9 @@
   {$DEFINE DELPHI1_UP}
 {$ENDIF}
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // BCBX_UP from BCBX mappings
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFDEF BCB7}
   {$DEFINE BCB7_UP}
@@ -375,9 +374,9 @@
   {$DEFINE BCB1_UP}
 {$ENDIF}
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFDEF COMPILER7}
   {$DEFINE COMPILER7_UP}
@@ -439,9 +438,9 @@
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Map COMPILERX_UP to friendly feature names
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFDEF COMPILER3_UP}
   {$DEFINE SUPPORTS_WIDESTRING}
@@ -471,9 +470,9 @@
   {$DEFINE HAS_UNIT_VARIANTS}
 {$ENDIF COMPILER6_UP}
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Cross-platform related defines
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 {$IFDEF WIN32}
   {$DEFINE MSWINDOWS}
@@ -495,4 +494,3 @@
 {$IFDEF VCL}
   {$DEFINE COMPLIB_VCL} // kept for backward compatibility, use VCL instead
 {$ENDIF}
-
