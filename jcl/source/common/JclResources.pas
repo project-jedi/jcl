@@ -948,9 +948,6 @@ resourcestring
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
 
-  RsStringsToMultiStringAssertion     = 'StringsToMultiString with empty item';
-  RsStringsToWideMultiStringAssertion = 'StringsToWideMultiString with empty item';
-
 //--------------------------------------------------------------------------------------------------
 // JclSynch
 //--------------------------------------------------------------------------------------------------
@@ -1108,6 +1105,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/11 08:13:03  marquardt
+// PH cleaning of JclStrings
+//
 // Revision 1.15  2004/09/30 13:11:27  marquardt
 // remove PH contributions
 //

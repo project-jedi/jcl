@@ -200,7 +200,6 @@ type
   TWideStringList = TWStringList;
   TWideStrings = TWStrings;
 
-
 // WideChar functions
 function CharToWideChar(Ch: AnsiChar): WideChar;
 function WideCharToChar(Ch: WideChar): AnsiChar;
@@ -221,6 +220,7 @@ function StrLenW(P: PWideChar): Integer;
 function StrScanW(P: PWideChar; Ch: WideChar): PWideChar;
 function StrEndW(P: PWideChar): PWideChar;
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
+function StrECopyW(Dest, Source: PWideChar): PWideChar;
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Integer): PWideChar;
 function StrCatW(Dest, Source: PWideChar): PWideChar;
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Integer): PWideChar;
@@ -488,6 +488,22 @@ begin
       end;
     Dest^ := #0;
   end;
+end;
+
+function StrECopyW(Dest, Source: PWideChar): PWideChar;
+begin
+  if Dest <> nil then
+  begin
+    if Source <> nil then
+      while Source^ <> #0 do
+      begin
+        Dest^ := Source^;
+        Inc(Source);
+        Inc(Dest);
+      end;
+    Dest^ := #0;
+  end;
+  Result := Dest;
 end;
 
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Integer): PWideChar;

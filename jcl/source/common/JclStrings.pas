@@ -56,7 +56,7 @@ interface
 
 uses
   Classes, SysUtils,
-  JclBase;
+  JclBase, JclWideStrings;
 
 // Character constants and sets
 
@@ -315,23 +315,23 @@ procedure FreePCharVector(var Dest: PCharVector);
 // MultiSz Routines
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiSz(var Dest: PChar; const Source: TStrings): PChar;
-procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
-procedure FreeMultiSz(var Dest: PChar);
+type
+  PMultiSz = PChar;
+  PWideMultiSz = PWideChar;
 
-function StringsToMultiString(const Value: array of AnsiString): AnsiString; overload;
-function StringsToMultiString(const Value: TDynStringArray): AnsiString; overload;
-function StringsToMultiString(const Value: TStrings): AnsiString; overload;
+function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
+procedure MultiSzToStrings(const Dest: TStrings; const Source: PMultiSz);
+function MultiSzLength(const Source: PMultiSz): Integer;
+procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
+procedure FreeMultiSz(var Dest: PMultiSz);
+function MultiSzDup(const Source: PMultiSz): PMultiSz;
 
-procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString); overload;
-procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString); overload;
-
-function StringsToMultiWideString(const Value: array of AnsiString): WideString; overload;
-function StringsToMultiWideString(const Value: TDynStringArray): WideString; overload;
-function StringsToMultiWideString(const Value: TStrings): WideString; overload;
-
-procedure MultiWideStringToStrings(out Dest: TDynStringArray; const Value: WideString); overload;
-procedure MultiWideStringToStrings(Dest: TStrings; const Value: WideString); overload;
+function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
+procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
+function WideMultiSzLength(const Source: PWideMultiSz): Integer;
+procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer);
+procedure FreeWideMultiSz(var Dest: PWideMultiSz);
+function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
 
 //--------------------------------------------------------------------------------------------------
 // TStrings Manipulation
@@ -678,28 +678,6 @@ asm
        REPNE   SCASW
        LEA     EAX, [EDI - 2]
        MOV     EDI, EDX
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function StrCopyE(Dest: PChar; const Source: PChar): PChar;
-begin
-  Result := StrCopy(Dest, Source) + StrLen(Source) + 1;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function WStrCopyE(Dest: PWideChar; Source: PWideChar): PWideChar;
-begin
-  while True do
-  begin
-    Dest^ := Source^;
-    Inc(Dest);
-    if Source^ = #0 then
-      Break;
-    Inc(Source);
-  end;
-  Result := Dest;
 end;
 
 //==================================================================================================
@@ -3436,36 +3414,39 @@ end;
 // MultiSz
 //==================================================================================================
 
-function StringsToMultiSz(var Dest: PChar; const Source: TStrings): PChar;
+function StringsToMultiSz(var Dest: PMultiSz; const Source: TStrings): PMultiSz;
 var
   I, TotalLength: Integer;
-  P: PChar;
+  P: PMultiSz;
 begin
   Assert(Source <> nil);
-  TotalLength := 0;
+  TotalLength := 1;
   for I := 0 to Source.Count - 1 do
-    Inc(TotalLength, Length(Source[I]) + SizeOf(AnsiChar));
-  Dest := AllocMem(TotalLength + SizeOf(AnsiChar));
+    if Source[I] = '' then
+      raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem)
+    else
+      Inc(TotalLength, StrLen(PChar(Source[I])) + 1);
+  AllocateMultiSz(Dest, TotalLength);
   P := Dest;
   for I := 0 to Source.Count - 1 do
   begin
     if Source[I] = '' then
     begin
-      FreeMem(Dest);
-      Dest := nil;
+      FreeMultiSz(Dest);
       raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem);
     end;
     P := StrECopy(P, PChar(Source[I]));
     Inc(P);
   end;
+  P^ := #0;
   Result := Dest;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
+procedure MultiSzToStrings(const Dest: TStrings; const Source: PMultiSz);
 var
-  P: PChar;
+  P: PMultiSz;
 begin
   Assert(Dest <> nil);
   Dest.BeginUpdate;
@@ -3488,7 +3469,33 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure FreeMultiSz(var Dest: PChar);
+function MultiSzLength(const Source: PMultiSz): Integer;
+var
+  P: PMultiSz;
+begin
+  Result := 0;
+  if Source <> nil then
+  begin
+    P := Source;
+    repeat
+      Inc(Result, StrLen(P) + 1);
+      P := StrEnd(P);
+      Inc(P);
+    until P^ = #0;
+    Inc(Result);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure AllocateMultiSz(var Dest: PMultiSz; Len: Integer);
+begin
+  GetMem(Dest, Len * SizeOf(Char));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure FreeMultiSz(var Dest: PMultiSz);
 begin
   if Dest <> nil then
     FreeMem(Dest);
@@ -3497,272 +3504,59 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiString(const Value: array of AnsiString): AnsiString;
+function MultiSzDup(const Source: PMultiSz): PMultiSz;
 var
-  LenSum, Len, I: Integer;
-  DstPtr: PAnsiChar;
-  S: AnsiString;
+  Len: Integer;
 begin
-  Result := '';
-  // calculate length
-  LenSum := 0;
-  for I := Low(Value) to High(Value) do
-  begin
-    Len := Length(Value[I]);
-    Assert(Len > 0, LoadResString(@RsStringsToMultiStringAssertion));
-    if Len > 0 then
-      Inc(LenSum, Len + 1);
-  end;
-  // Copy the contents
-  SetLength(Result, LenSum);
-  DstPtr := PAnsiChar(Result);
-  for I := Low(Value) to High(Value) do
-  begin
-    S := Value[I];
-    if S <> '' then
-      DstPtr := StrCopyE(DstPtr, PAnsiChar(S));
-  end;
+  Len := MultiSzLength(Source);
+  AllocateMultiSz(Result, Len);
+  Move(Source^, Result^, Len * SizeOf(Char));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiWideString(const Value: array of AnsiString): WideString;
+function WideStringsToWideMultiSz(var Dest: PWideMultiSz; const Source: TWideStrings): PWideMultiSz;
 var
-  LenSum, Len, I: Integer;
-  DstPtr: PWideChar;
-  S: WideString;
+  I, TotalLength: Integer;
+  P: PWideMultiSz;
 begin
-  Result := '';
-  // calculate length
-  LenSum := 0;
-  for I := Low(Value) to High(Value) do
+  Assert(Source <> nil);
+  TotalLength := 1;
+  for I := 0 to Source.Count - 1 do
+    if Source[I] = '' then
+      raise EJclStringError.CreateResRec(@RsInvalidEmptyStringItem)
+    else
+      Inc(TotalLength, StrLenW(PWideChar(Source[I])) + 1);
+  AllocateWideMultiSz(Dest, TotalLength);
+  P := Dest;
+  for I := 0 to Source.Count - 1 do
   begin
-    Len := Length(Value[I]);
-    Assert(Len > 0, LoadResString(@RsStringsToWideMultiStringAssertion));
-    if Len > 0 then
-      Inc(LenSum, Len + 1);
+    P := StrECopyW(P, PWideChar(Source[I]));
+    Inc(P);
   end;
-  // Copy the contents
-  SetLength(Result, LenSum);
-  DstPtr := PWideChar(Result);
-  for I := Low(Value) to High(Value) do
-  begin
-    S := Value[I];  { TODO : or other convert? }
-    if S <> '' then
-      DstPtr := WStrCopyE(DstPtr, PWideChar(S));
-  end;
+  P^:= #0;
+  Result := Dest;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StringsToMultiString(const Value: TDynStringArray): AnsiString;
+procedure WideMultiSzToWideStrings(const Dest: TWideStrings; const Source: PWideMultiSz);
 var
-  LenSum, Len, I: Integer;
-  DstPtr: PAnsiChar;
-  S: AnsiString;
+  P: PWideMultiSz;
 begin
-  Result := '';
-  // calculate length
-  LenSum := 0;
-  for I := Low(Value) to High(Value) do
-  begin
-    Len := Length(Value[I]);
-    Assert(Len > 0, LoadResString(@RsStringsToMultiStringAssertion));
-    if Len > 0 then
-      Inc(LenSum, Len + 1);
-  end;
-  // Copy the contents
-  SetLength(Result, LenSum);
-  DstPtr := PAnsiChar(Result);
-  for I := Low(Value) to High(Value) do
-  begin
-    S := Value[I];
-    if S <> '' then
-      DstPtr := StrCopyE(DstPtr, PAnsiChar(S));
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function StringsToMultiWideString(const Value: TDynStringArray): WideString;
-var
-  LenSum, Len, I: Integer;
-  DstPtr: PWideChar;
-  S: WideString;
-begin
-  Result := '';
-  // calculate length
-  LenSum := 0;
-  for I := Low(Value) to High(Value) do
-  begin
-    Len := Length(Value[I]);
-    Assert(Len > 0, LoadResString(@RsStringsToWideMultiStringAssertion));
-    if Len > 0 then
-      Inc(LenSum, Len + 1);
-  end;
-  // Copy the contents
-  SetLength(Result, LenSum);
-  DstPtr := PWideChar(Result);
-  for I := Low(Value) to High(Value) do
-  begin
-    S := Value[I];  { TODO : or other convert? }
-    if S <> '' then
-      DstPtr := WStrCopyE(DstPtr, PWideChar(S));
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function StringsToMultiString(const Value: TStrings): AnsiString;
-var
-  LenSum, Len, I: Integer;
-  DstPtr: PAnsiChar;
-  S: AnsiString;
-begin
-  Result := '';
-  if not Assigned(Value) then
-    Exit;
-  // calculate length
-  LenSum := 0;
-  for I := 0 to Value.Count - 1 do
-  begin
-    Len := Length(Value[I]);
-    Assert(Len > 0, LoadResString(@RsStringsToMultiStringAssertion));
-    if Len > 0 then
-      Inc(LenSum, Len + 1);
-  end;
-  // Copy the contents
-  SetLength(Result, LenSum);
-  DstPtr := PAnsiChar(Result);
-  for I := 0 to Value.Count - 1 do
-  begin
-    S := Value[I];
-    if S <> '' then
-      DstPtr := StrCopyE(DstPtr, PAnsiChar(S));
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function StringsToMultiWideString(const Value: TStrings): WideString;
-var
-  LenSum, Len, I: Integer;
-  DstPtr: PWideChar;
-  S: WideString;
-begin
-  Result := '';
-  if not Assigned(Value) then
-    Exit;
-  // calculate length
-  LenSum := 0;
-  for I := 0 to Value.Count - 1 do
-  begin
-    Len := Length(Value[I]);
-    Assert(Len > 0, LoadResString(@RsStringsToWideMultiStringAssertion));
-    if Len > 0 then
-      Inc(LenSum, Len + 1);
-  end;
-  // Copy the contents
-  SetLength(Result, LenSum);
-  DstPtr := PWideChar(Result);
-  for I := 0 to Value.Count - 1 do
-  begin
-    S := Value[I];  { TODO : or other convert? }
-    if S <> '' then
-      DstPtr := WStrCopyE(DstPtr, PWideChar(S));
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure MultiStringToStrings(out Dest: TDynStringArray; const Value: AnsiString);
-var
-  PtrValueEnd, PtrStart, PtrEnd: PAnsiChar;
-  Count, I: Integer;
-  S: AnsiString;
-begin
-  // get count
-  PtrStart := PAnsiChar(Value);
-  PtrValueEnd := PtrStart + Length(Value);
-  Count := 0;
-  while PtrStart^ <> #0 do
-  begin
-    PtrEnd := StrEnd(PtrStart);
-    Inc(Count);
-    // single string or missing the double null at end
-    if PtrEnd >= PtrValueEnd then
-      Break;
-    PtrStart := PtrEnd + 1;
-  end;
-  SetLength(Dest, Count);
-  // get items
-  PtrStart := PAnsiChar(Value);
-  for I := Low(Dest) to High(Dest) do
-  begin
-    PtrEnd := StrEnd(PtrStart);
-    SetString(S, PtrStart, PtrEnd - PtrStart);
-    Dest[I] := S;
-    PtrStart := PtrEnd + 1;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure MultiWideStringToStrings(out Dest: TDynStringArray; const Value: WideString);
-var
-  PtrValueEnd, PtrStart, PtrEnd: PWideChar;
-  Count, I: Integer;
-  S: WideString;
-begin
-  // get count
-  PtrStart := PWideChar(Value);
-  PtrValueEnd := PtrStart + Length(Value);
-  Count := 0;
-  while PtrStart^ <> #0 do
-  begin
-    PtrEnd := StrEndW(PtrStart);
-    Inc(Count);
-    // single string or missing the double null at end
-    if PtrEnd >= PtrValueEnd then
-      Break;
-    PtrStart := PtrEnd + 1;
-  end;
-  SetLength(Dest, Count);
-  // get items
-  PtrStart := PWideChar(Value);
-  for I := Low(Dest) to High(Dest) do
-  begin
-    PtrEnd := StrEndW(PtrStart);
-    SetString(S, PtrStart, PtrEnd - PtrStart);
-    Dest[I] := S;  { TODO : or other convert? }
-    PtrStart := PtrEnd + 1;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure MultiStringToStrings(Dest: TStrings; const Value: AnsiString);
-var
-  PtrValueEnd, PtrStart, PtrEnd: PAnsiChar;
-  S: AnsiString;
-begin
-  Assert(Assigned(Dest));
-  if not Assigned(Dest) then
-    Exit;    { TODO : Exception? }
+  Assert(Dest <> nil);
   Dest.BeginUpdate;
   try
     Dest.Clear;
-    PtrStart := PAnsiChar(Value);
-    PtrValueEnd := PtrStart + Length(Value);
-    while (PtrStart^ <> #0) do
+    if Source <> nil then
     begin
-      PtrEnd := StrEnd(PtrStart);
-      SetString(S, PtrStart, PtrEnd - PtrStart);
-      Dest.Add(S);
-      // single string or missing the double null at end
-      if PtrEnd >= PtrValueEnd then
-        Break;
-      PtrStart := PtrEnd + 1;
+      P := Source;
+      while P^ <> #0 do
+      begin
+        Dest.Add(P);
+        P := StrEndW(P);
+        Inc(P);
+      end;
     end;
   finally
     Dest.EndUpdate;
@@ -3771,32 +3565,48 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure MultiWideStringToStrings(Dest: TStrings; const Value: WideString);
+function WideMultiSzLength(const Source: PWideMultiSz): Integer;
 var
-  PtrValueEnd, PtrStart, PtrEnd: PWideChar;
-  S: WideString;
+  P: PWideMultiSz;
 begin
-  Assert(Assigned(Dest));
-  if not Assigned(Dest) then
-    Exit;    { TODO : Exception? }
-  Dest.BeginUpdate;
-  try
-    Dest.Clear;
-    PtrStart := PWideChar(Value);
-    PtrValueEnd := PtrStart + Length(Value);
-    while (PtrStart^ <> #0) do
-    begin
-      PtrEnd := StrEndW(PtrStart);
-      SetString(S, PtrStart, PtrEnd - PtrStart);
-      Dest.Add(S);  { TODO : or other convert? }
-      // single string or missing the double null at end
-      if PtrEnd >= PtrValueEnd then
-        Break;
-      PtrStart := PtrEnd + 1;
-    end;
-  finally
-    Dest.EndUpdate;
+  Result := 0;
+  if Source <> nil then
+  begin
+    P := Source;
+    repeat
+      Inc(Result, StrLenW(P) + 1);
+      P := StrEndW(P);
+      Inc(P);
+    until P^ = #0;
+    Inc(Result);
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure AllocateWideMultiSz(var Dest: PWideMultiSz; Len: Integer);
+begin
+  GetMem(Dest, Len * SizeOf(WideChar));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure FreeWideMultiSz(var Dest: PWideMultiSz);
+begin
+  if Dest <> nil then
+    FreeMem(Dest);
+  Dest := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WideMultiSzDup(const Source: PWideMultiSz): PWideMultiSz;
+var
+  Len: Integer;
+begin
+  Len := WideMultiSzLength(Source);
+  AllocateWideMultiSz(Result, Len);
+  Move(Source^, Result^, Len * SizeOf(WideChar));
 end;
 
 //==================================================================================================
@@ -4243,6 +4053,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.28  2004/10/11 08:13:03  marquardt
+// PH cleaning of JclStrings
+//
 // Revision 1.27  2004/10/10 12:52:12  marquardt
 // DestroyEnvironmentBlock introduced
 //
