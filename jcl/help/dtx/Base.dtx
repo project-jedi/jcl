@@ -90,6 +90,8 @@ Description:
 Parameters:
   ResStringRec - Pointer to a resource string. See the example above.
   Args - Array of value used to format the message string with. See the Format function for more information on how to use these parameters (internally Format is used to do the formatting so the semantics are identical).
+See also:
+  CreateResRec
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -112,6 +114,8 @@ Description:
     </p>
 Parameters:
   ResStringRec - Pointer to a resource string. See the example above.
+See also:
+  CreateResRecFmt
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -170,6 +174,10 @@ Description:
 Parameters:
   Msg - String containing format specifiers to be replaced with values from the Args array.
   Args - Array of constants which are formatted according to the format specifiers in the Msg parameter.
+See also:
+  Create
+  CreateRes
+  CreateResRec
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -188,6 +196,10 @@ Description:
   also available through the Message property.
 Parameters:
   Ident - Unique ID of a string resource.
+See also:
+  Create
+  CreateFmt
+  CreateResRec
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -205,6 +217,10 @@ Description:
   to a message which is loaded from the application's resource.
 Parameters:
   ResStringRec - ResStringRec is a pointer to a resource string.
+See also:
+  Create
+  CreateFmt
+  CreateRes
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -220,6 +236,8 @@ Summary:
 Description:
   The LastError property returns the error code retrieved by a call to GetLastError
   at the time the exception was raised.
+See also:
+  LastErrorMsg
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -235,6 +253,8 @@ Summary:
 Description:
   The LastErrorMsg property contains the error message string associated with the last
   error code.
+See also:
+  LastError
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -299,6 +319,10 @@ Summary:
   Int64 is used to simulate an unsigned 64-bit value in compilers which do not natively support this type. All supported compilers except Delphi 3 and C++ Builder 3 natively support Int64 in which case Int64 is not redefined. Various support routines have been defined to assist manipulating an Int64.
 Description:
   Int64 is used to simulate an unsigned 64-bit value in compilers which do not natively support this type. All supported compilers except Delphi 3 and C++ Builder 3 natively support Int64 in which case Int64 is not redefined. Various support routines have been defined to assist manipulating an Int64.
+See also:
+  I64Copy
+  I64Compare
+  I64Assign
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -322,6 +346,9 @@ Parameters:
   I - The Int64 to initialize
   Low - Low 32 bits for the Int64
   High - High 32 bits for the Int64
+See also:
+  I64Copy
+  I64Compare
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -338,6 +365,9 @@ Description:
 Parameters:
   Dest - Destination Int64
   Source - Source Int64
+See also:
+  I64Assign
+  I64Compare
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -358,6 +388,9 @@ Result:
   If I1 equals I2 the result is 0, if I1 is larger than I2 the result is greater than
   0 (specifically 1) and if I1 is smaller than I2 the result is smaller than 0
   (specifically -1).
+See also:
+  I64Assign
+  I64Copy
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -376,6 +409,8 @@ Parameters:
   I - The 64 bit value into which to pack the high and low parts.
   LowPart - Low 32 bits for the supplied Int64
   HighPart - High 32 bits for the supplied Int64
+See also:
+  I64ToCardinals
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -395,6 +430,8 @@ Parameters:
   I - The 64 bit value from which to extract the high and low parts.
   LowPart - Low 32 bits of the supplied Int64
   HighPart - High 32 bits of the supplied Int64
+See also:
+  CardinalsToI64
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -519,6 +556,12 @@ Parameters:
   A - The dynamic array for which you want to know the allocation size. This array <U>must</U> have been previously initialized with DynArrayInitialize or the result will be unpredictable.
 Result:
   The amount of dynamic memory, in bytes, reserved for the dynamic array.
+See also:
+  DynArrayLength
+  DynArrayElemSize
+  DynArrayInitialize
+  DynArrayFinalize
+  DynArraySetLength
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -539,6 +582,12 @@ Parameters:
   A - The dynamic array whose length you want.
 Result:
   The length of the supplied dynamic array in terms of number of elements.
+See also:
+  DynArrayAllocSize
+  DynArrayElemSize
+  DynArrayInitialize
+  DynArrayFinalize
+  DynArraySetLength
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -558,6 +607,12 @@ Parameters:
   A - The dynamic array you want to query for its element size.
 Result:
   The size of an individual element, in bytes.
+See also:
+  DynArrayAllocSize
+  DynArrayLength
+  DynArrayInitialize
+  DynArrayFinalize
+  DynArraySetLength
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -580,6 +635,12 @@ Parameters:
   A - The dynamic array variable to initialize;
   ElementSize - Size, in bytes, of the elements contained in the dynamic array. Always use the SizeOf operator for this parameter. For example, if A is declared as a TDynIntegerArray then use SizeOf(Integer) for this parameter.
   InitialLength - Initial size of the array. That is, the number of elements in the array. The function allocates enough memory to hold at least InitialLength number of elements and initializes them to 0. You can immediately start to use them without the need to call DynArraySetLength. You can pass 0 if you don't want to initialize the length of the array.
+See also:
+  DynArrayAllocSize
+  DynArrayLength
+  DynArrayElemSize
+  DynArrayFinalize
+  DynArraySetLength
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -598,6 +659,12 @@ Description:
   memory associated with the dynamic array.
 Parameters:
   A - The dynamic array variable to finalize.
+See also:
+  DynArrayAllocSize
+  DynArrayLength
+  DynArrayElemSize
+  DynArrayInitialize
+  DynArraySetLength
 Quick info:
   Unit: JclBase
   Category: Base Services
@@ -617,6 +684,12 @@ Description:
 Parameters:
   A - The dynamic array to resize.
   NewLength - The new length, in terms of number of elements, of the array. This value must be greater than or equal to 0. Note that setting the array's length to 0 does not release all of it's associated memory. You must call DynArrayFinalize when done using the dynamic array.
+See also:
+  DynArrayAllocSize
+  DynArrayLength
+  DynArrayElemSize
+  DynArrayInitialize
+  DynArrayFinalize
 Quick info:
   Unit: JclBase
   Category: Base Services
