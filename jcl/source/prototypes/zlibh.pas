@@ -67,22 +67,22 @@ interface
 uses
   Windows;
 {$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
 {$IFDEF HAS_UNIT_LIBC}
 uses
   Libc;
 {$ELSE ~HAS_UNIT_LIBC}
 type
+{$IFDEF UNIX}
   uLong = LongWord;
   {$EXTERNALSYM uLong}
-  uShort = Word;
-  {$EXTERNALSYM uShort}
   uInt = Cardinal;
   {$EXTERNALSYM uInt}
+{$ENDIF UNIX}
+  uShort = Word;
+  {$EXTERNALSYM uShort}
   size_t = Longint;
   {$EXTERNALSYM size_t}
 {$ENDIF ~HAS_UNIT_LIBC}
-{$ENDIF UNIX}
 
 //-----------------------------------------------------------------------------
 // START of the contents of the converted ZCONF.H
