@@ -289,9 +289,10 @@ type
   end;
 
 const
-  CPU_TYPE_INTEL = 1;
-  CPU_TYPE_CYRIX = 2;
-  CPU_TYPE_AMD   = 3;
+  CPU_TYPE_INTEL  = 1;
+  CPU_TYPE_CYRIX  = 2;
+  CPU_TYPE_AMD    = 3;
+  CPU_TYPE_CRUSOE = 4;
 
 // Constants to be used with Feature Flag set of a CPU
 // eg. IF (Features and FPU_FLAG = FPU_FLAG) THEN CPU has Floating-Point unit on
@@ -529,10 +530,25 @@ procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 // Keyboard Information
 //--------------------------------------------------------------------------------------------------
 
-function GetKeyState(const VirtualKey: Cardinal): boolean;
-function GetNumLockKeyState: boolean;
-function GetScrollLockKeyState: boolean;
-function GetCapsLockKeyState: boolean;
+function GetKeyState(const VirtualKey: Cardinal): Boolean;
+function GetNumLockKeyState: Boolean;
+function GetScrollLockKeyState: Boolean;
+function GetCapsLockKeyState: Boolean;
+
+//--------------------------------------------------------------------------------------------------
+// Windows 95/98/Me system resources information
+//--------------------------------------------------------------------------------------------------
+
+type
+  TFreeSysResKind = (rtSystem, rtGdi, rtUser);
+  TFreeSystemResources = record
+    SystemRes, GdiRes, UserRes: Integer;
+  end;
+
+function IsSystemResourcesMeterPresent: Boolean;
+
+function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer; overload;
+function GetFreeSystemResources: TFreeSystemResources; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Public global variables
@@ -1571,7 +1587,8 @@ begin
       ReallocMem(Buffer, Size);
       TextLen := GetWindowText(Wnd, Buffer, Size);
     until TextLen < Size - 1;
-    Result := Buffer;
+    if TextLen > 0 then
+      Result := Buffer;
   finally
     FreeMem(Buffer);
   end;
@@ -1719,7 +1736,7 @@ var
     WindowPid: DWORD;
   begin
     WindowPid := 0;
-    GetWindowThreadProcessId(Wnd, WindowPid);
+    GetWindowThreadProcessId(Wnd, @WindowPid);
     if (WindowPid = Res^.PID) and IsMainAppWindow(Wnd) then
     begin
       Res^.Wnd := Wnd;
@@ -1855,7 +1872,8 @@ begin
         Result := ptServer;
     end;
   end
-  else if IsWin2K then
+  else
+  if IsWin2K then
   begin
     if JclWin32.GetVersionEx(@VersionInfo) then
     begin
@@ -1865,16 +1883,19 @@ begin
         if (VersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
           Result := ptDatacenterServer
         { Changes by Scott Price on 11-Jan-2002 }
-        else if (VersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
+        else
+        if (VersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
           Result := ptAdvancedServer
         else
           result := ptServer;
       end
-      else if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
+      else
+      if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
         Result := ptProfessional;
     end;
   end
-  else if IsWinXP then
+  else
+  if IsWinXP then
   begin
     if JclWin32.GetVersionEx(@VersionInfo) then
     begin
@@ -2408,7 +2429,8 @@ begin
   with CpuInfo do
   begin
     Manufacturer := 'Transmeta';
-    CpuName := 'Crusoue';
+    CpuType := CPU_TYPE_CRUSOE;
+    CpuName := 'Crusoe';
   end;
 end;
   
@@ -2717,11 +2739,14 @@ begin
 
   if CPUInfo.VendorIDString = 'GenuineIntel' then
     IntelSpecific(CpuInfo)
-  else if CPUInfo.VendorIDString = 'CyrixInstead' then
+  else
+  if CPUInfo.VendorIDString = 'CyrixInstead' then
     CyrixSpecific(CpuInfo)
-  else if CPUInfo.VendorIDString = 'AuthenticAMD' then
+  else
+  if CPUInfo.VendorIDString = 'AuthenticAMD' then
     AMDSpecific(CpuInfo)
-  else if CPUInfo.VendorIDString = 'GenuineTMx86' then
+  else
+  if CPUInfo.VendorIDString = 'GenuineTMx86' then
     TransmetaSpecific(CpuInfo)
   else
   begin
@@ -3017,7 +3042,7 @@ end;
 // Keyboard Information
 //==================================================================================================
 
-function GetKeyState(const VirtualKey: Cardinal): boolean;
+function GetKeyState(const VirtualKey: Cardinal): Boolean;
 var
   Keys: TKeyboardState;
 begin
@@ -3027,23 +3052,95 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetNumLockKeyState: boolean;
+function GetNumLockKeyState: Boolean;
 begin
   Result := GetKeyState(VK_NUMLOCK);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetScrollLockKeyState: boolean;
+function GetScrollLockKeyState: Boolean;
 begin
   Result := GetKeyState(VK_SCROLL);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetCapsLockKeyState: boolean;
+function GetCapsLockKeyState: Boolean;
 begin
   Result := GetKeyState(VK_CAPITAL);
+end;
+
+//==================================================================================================
+// Windows 95/98/Me system resources information
+//==================================================================================================
+
+var
+  ResmeterLibHandle: THandle;
+  MyGetFreeSystemResources: function (ResType: UINT): UINT; stdcall;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure UnloadSystemResourcesMeterLib;
+begin
+  if ResmeterLibHandle <> 0 then
+  begin
+    FreeLibrary(ResmeterLibHandle);
+    ResmeterLibHandle := 0;
+    @MyGetFreeSystemResources := nil;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsSystemResourcesMeterPresent: Boolean;
+
+  procedure LoadResmeter;
+  var
+    OldErrorMode: UINT;
+  begin
+    OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
+    try
+      ResmeterLibHandle := LoadLibrary('rsrc32.dll');
+    finally
+      SetErrorMode(OldErrorMode);
+    end;
+    if ResmeterLibHandle <> 0 then
+    begin
+      @MyGetFreeSystemResources := GetProcAddress(ResmeterLibHandle, '_MyGetFreeSystemResources32@4');
+      if not Assigned(MyGetFreeSystemResources) then
+        UnloadSystemResourcesMeterLib;
+    end;    
+  end;
+
+begin
+  if not IsWinNT and (ResmeterLibHandle = 0) then
+    LoadResmeter;
+  Result := (ResmeterLibHandle <> 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetFreeSystemResources(const ResourceType: TFreeSysResKind): Integer;
+const
+  ParamValues: array [TFreeSysResKind] of UINT = (0, 1, 2);
+begin
+  if IsSystemResourcesMeterPresent then
+    Result := MyGetFreeSystemResources(ParamValues[ResourceType])
+  else
+    Result := -1;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetFreeSystemResources: TFreeSystemResources;
+begin
+  with Result do
+  begin
+    SystemRes := GetFreeSystemResources(rtSystem);
+    GdiRes := GetFreeSystemResources(rtGdi);
+    UserRes := GetFreeSystemResources(rtUser);
+  end;
 end;
 
 //==================================================================================================
@@ -3111,6 +3208,21 @@ begin
   end;
 end;
 
+//==================================================================================================
+// Finalization
+//==================================================================================================
+
+procedure FinalizeSysInfo;
+begin
+  UnloadSystemResourcesMeterLib;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 initialization
   InitSysInfo;
+
+finalization
+  FinalizeSysInfo;
+
 end.
