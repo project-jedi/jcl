@@ -364,7 +364,7 @@ end;
 //==============================================================================
 
 function _CombineReg(X, Y, W: TColor32): TColor32;
-asm
+{asm
   // combine RGBA channels of colors X and Y with the weight of X given in W
   // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
   // EAX <- X
@@ -386,7 +386,7 @@ asm
         SHR     EBX, 8          // EBX  <-  00 Xa 00 Xg
         IMUL    EBX, ECX        // EBX  <-  Pa ** Pg **
         ADD     EAX, bias
-        AND     EAX, $FF00FF00  // EAX  <-  Pa 00 Pg 00
+        AND     EAX, $FF00FF00  // EAX  <-  Pr 00 Pb 00
         SHR     EAX, 8          // EAX  <-  00 Pr 00 Pb
         ADD     EBX, bias
         AND     EBX, $FF00FF00  // EBX  <-  Pa 00 Pg 00
@@ -415,6 +415,30 @@ asm
 
 @1:     MOV     EAX, EDX
 @2:     RET
+end;}
+begin
+  // combine RGBA channels of colors X and Y with the weight of X given in W
+  // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
+
+  if W = 0 then Result := Y        //May be if W <= 0 ???
+  else if W = $FF then Result := X //May be if W >= $FF ??? Or if W > $FF ???
+  else begin
+    Result :=
+      (((((X shr 8 {00Xa00Xg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
+        bias) and $FF00FF00 {P100P200}) {Pa00Pg00} or
+      (((((X {00Xr00Xb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + bias) and
+        $FF00FF00 {P100P200}) shr 8 {00Pr00Pb}) {PaPrPgPb};
+
+    W := W xor $FF; // W := 1 - W;
+    //W := $100 - W; // May be so ???
+
+    Result := Result {PaPrPgPb} + (
+      (((((Y shr 8 {00Ya00Yg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
+        bias) and $FF00FF00 {P100P200}) {Qa00Qg00} or
+      (((((Y {00Yr00Yb} and $00FF00FF {00X100X2}) * W {P1**P2**}) + bias) and
+        $FF00FF00 {P100P200}) shr 8 {00Qr00Qb}) {QaQrQgQb}
+      ) {ZaZrZgZb};
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -424,56 +448,11 @@ procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32);
   // EAX <- F
   // [EDX] <- B
   // ECX <- W
-
-  // Check W
-        JCXZ    @1              // W = 0 ?  => write nothing
-        CMP     ECX, $FF        // W = 255? => write F
-        JZ      @2
-
-        PUSH    EBX
-        PUSH    ESI
-
-  // P = W * F
-        MOV     EBX, EAX        // EBX  <-  ** Fr Fg Fb
-        AND     EAX, $00FF00FF  // EAX  <-  00 Fr 00 Fb
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Fg 00
-        IMUL    EAX, ECX        // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8          // EBX  <-  00 00 00 Fg
-        IMUL    EBX, ECX        // EBX  <-  00 00 Pg **
-        ADD     EAX, bias
-        AND     EAX, $FF00FF00  // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8          // EAX  <-  00 Pr 00 Pb
-        ADD     EBX, bias
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Pg 00
-        OR      EAX, EBX        // EAX  <-  00 Pr Pg Pb
-
-  // W = 1 - W; Q = W * B
-        MOV     ESI, [EDX]
-        XOR     ECX, $000000FF  // ECX  <-  1 - ECX
-        MOV     EBX, ESI        // EBX  <-  00 Br Bg Bb
-        AND     ESI, $00FF00FF  // ESI  <-  00 Br 00 Bb
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Bg 00
-        IMUL    ESI, ECX        // ESI  <-  Qr ** Qb **
-        SHR     EBX, 8          // EBX  <-  00 00 00 Bg
-        IMUL    EBX, ECX        // EBX  <-  00 00 Qg **
-        ADD     ESI, bias
-        AND     ESI, $FF00FF00  // ESI  <-  Qr 00 Qb 00
-        SHR     ESI, 8          // ESI  <-  00 Qr ** Qb
-        ADD     EBX, bias
-        AND     EBX, $0000FF00  // EBX  <-  00 00 Qg 00
-        OR      EBX, ESI        // EBX  <-  00 Qr Qg Qb
-
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX        // EAX  <-  00 Zr Zg Zb
-
+        PUSH    EDX
+        MOV     EDX, [EDX]
+        CALL    _CombineReg
+        POP     EDX
         MOV     [EDX], EAX
-
-        POP     ESI
-        POP     EBX
-@1:     RET
-
-@2:     MOV     [EDX], EAX
-        RET
 end;}
 begin
   B := _CombineReg(F, B, W);
@@ -548,62 +527,11 @@ procedure _BlendMem(F: TColor32; var B: TColor32);
 {asm
   // EAX <- F
   // [EDX] <- B
-
-  // Test Fa = 0 ?
-        TEST    EAX, $FF000000  // Fa = 0 ?   => do not write
-        JZ      @2
-
-  // Get weight W = Fa * M
-        MOV     ECX, EAX        // ECX  <-  Fa Fr Fg Fb
-        SHR     ECX, 24         // ECX  <-  00 00 00 Fa
-
-  // Test Fa = 255 ?
-        CMP     ECX, $FF
-        JZ      @1
-
-        PUSH    EBX
-        PUSH    ESI
-
-  // P = W * F
-        MOV     EBX, EAX         // EBX  <-  Fa Fr Fg Fb
-        AND     EAX, $00FF00FF   // EAX  <-  00 Fr 00 Fb
-        AND     EBX, $FF00FF00   // EBX  <-  Fa 00 Fg 00
-        IMUL    EAX, ECX         // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8           // EBX  <-  00 Fa 00 Fg
-        IMUL    EBX, ECX         // EBX  <-  Pa ** Pg **
-        ADD     EAX, bias
-        AND     EAX, $FF00FF00   // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8           // EAX  <-  00 Pr ** Pb
-        ADD     EBX, bias
-        AND     EBX, $FF00FF00   // EBX  <-  Pa 00 Pg 00
-        OR      EAX, EBX         // EAX  <-  Pa Pr Pg Pb
-
-  // W = 1 - W; Q = W * B
-        MOV     ESI, [EDX]
-        XOR     ECX, $000000FF  // ECX  <-  1 - ECX
-        MOV     EBX, ESI        // EBX  <-  Ba Br Bg Bb
-        AND     ESI, $00FF00FF  // ESI  <-  00 Br 00 Bb
-        AND     EBX, $FF00FF00  // EBX  <-  Ba 00 Bg 00
-        IMUL    ESI, ECX        // ESI  <-  Qr ** Qb **
-        SHR     EBX, 8          // EBX  <-  00 Ba 00 Bg
-        IMUL    EBX, ECX        // EBX  <-  Qa ** Qg **
-        ADD     ESI, bias
-        AND     ESI, $FF00FF00  // ESI  <-  Qr 00 Qb 00
-        SHR     ESI, 8          // ESI  <-  00 Qr ** Qb
-        ADD     EBX, bias
-        AND     EBX, $FF00FF00  // EBX  <-  Qa 00 Qg 00
-        OR      EBX, ESI        // EBX  <-  Qa Qr Qg Qb
-
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX        // EAX  <-  Za Zr Zg Zb
+        PUSH    EDX
+        MOV     EDX, [EDX]
+        CALL    _BlendReg
+        POP     EDX
         MOV     [EDX], EAX
-
-        POP     ESI
-        POP     EBX
-        RET
-
-@1:     MOV     [EDX], EAX
-@2:     RET
 end;}
 begin
   B := _BlendReg(F, B);
@@ -680,60 +608,11 @@ procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
   // EAX <- F
   // [EDX] <- B
   // ECX <- M
-
-  // Check Fa > 0 ?
-        TEST    EAX, $FF000000  // Fa = 0? => write nothing
-        JZ      @2
-
-        PUSH    EBX
-
-  // Get weight W = Fa * M
-        MOV     EBX, EAX        // EBX  <-  Fa Fr Fg Fb
-        SHR     EBX, 24         // EBX  <-  00 00 00 Fa
-        IMUL    ECX, EBX        // ECX  <-  00 00  W **
-        SHR     ECX, 8          // ECX  <-  00 00 00  W
-        JZ      @1              // W = 0 ?  => write nothing
-
-        PUSH    ESI
-
-  // P = W * F
-        MOV     EBX, EAX         // EBX  <-  ** Fr Fg Fb
-        AND     EAX, $00FF00FF   // EAX  <-  00 Fr 00 Fb
-        AND     EBX, $0000FF00   // EBX  <-  00 00 Fg 00
-        IMUL    EAX, ECX         // EAX  <-  Pr ** Pb **
-        SHR     EBX, 8           // EBX  <-  00 00 00 Fg
-        IMUL    EBX, ECX         // EBX  <-  00 00 Pg **
-        ADD     EAX, bias
-        AND     EAX, $FF00FF00   // EAX  <-  Pr 00 Pb 00
-        SHR     EAX, 8           // EAX  <-  00 Pr ** Pb
-        ADD     EBX, bias
-        AND     EBX, $0000FF00   // EBX  <-  00 00 Pg 00
-        OR      EAX, EBX         // EAX  <-  00 Pr Pg Pb
-
-  // W = 1 - W; Q = W * B
-        MOV     ESI, [EDX]
-        XOR     ECX, $000000FF   // ECX  <-  1 - ECX
-        MOV     EBX, ESI         // EBX  <-  00 Br Bg Bb
-        AND     ESI, $00FF00FF   // ESI  <-  00 Br 00 Bb
-        AND     EBX, $0000FF00   // EBX  <-  00 00 Bg 00
-        IMUL    ESI, ECX         // ESI  <-  Qr ** Qb **
-        SHR     EBX, 8           // EBX  <-  00 00 00 Bg
-        IMUL    EBX, ECX         // EBX  <-  00 00 Qg **
-        ADD     ESI, bias
-        AND     ESI, $FF00FF00   // ESI  <-  Qr 00 Qb 00
-        SHR     ESI, 8           // ESI  <-  00 Qr ** Qb
-        ADD     EBX, bias
-        AND     EBX, $0000FF00   // EBX  <-  00 00 Qg 00
-        OR      EBX, ESI         // EBX  <-  00 Qr Qg Qb
-
-  // Z = P + Q (assuming no overflow at each byte)
-        ADD     EAX, EBX         // EAX  <-  00 Zr Zg Zb
-
+        PUSH    EDX
+        MOV     EDX, [EDX]
+        CALL    _BlendRegEx
+        POP     EDX
         MOV     [EDX], EAX
-        POP     ESI
-
-@1:     POP     EBX
-@2:     RET
 end;}
 begin
   B := _BlendRegEx(F, B, M);
@@ -920,30 +799,11 @@ procedure M_CombineMem(F: TColor32; var B: TColor32; W: TColor32);
   // [EDX] - Color Y
   // ECX - Weight of X [0..255]
   // Result := W * (X - Y) + Y
-
-        JCXZ      @1
-        CMP       ECX, $FF
-        JZ        @2
-
-        db $0F,$EF,$C0           /// PXOR      MM0,MM0
-        db $0F,$6E,$C8           /// MOVD      MM1,EAX
-        SHL       ECX, 3
-        db $0F,$6E,$12           /// MOVD      MM2,[EDX]
-        db $0F,$60,$C8           /// PUNPCKLBW MM1,MM0
-        db $0F,$60,$D0           /// PUNPCKLBW MM2,MM0
-        ADD       ECX, alpha_ptr
-        db $0F,$F9,$CA           /// PSUBW     MM1,MM2
-        db $0F,$D5,$09           /// PMULLW    MM1,[ECX]
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
-        MOV       ECX, bias_ptr
-        db $0F,$FD,$11           /// PADDW     MM2,[ECX]
-        db $0F,$FD,$CA           /// PADDW     MM1,MM2
-        db $0F,$71,$D1,$08       /// PSRLW     MM1,8
-        db $0F,$67,$C8           /// PACKUSWB  MM1,MM0
-        db $0F,$7E,$0A           /// MOVD      [EDX],MM1
-@1:     RET
-
-@2:     MOV       [EDX], EAX
+        PUSH    EDX
+        MOV     EDX, [EDX]
+        CALL    M_CombineReg
+        POP     EDX
+        MOV     [EDX], EAX
 end;}
 begin
   B := M_CombineReg(F, B, W);
@@ -984,32 +844,11 @@ procedure M_BlendMem(F: TColor32; var B: TColor32);
   // EAX - Color X
   // [EDX] - Color Y
   // Result := W * (X - Y) + Y
-
-        TEST      EAX, $FF000000
-        JZ        @1
-        CMP       EAX, $FF000000
-        JNC       @2
-
-        db $0F,$EF,$DB           /// PXOR      MM3,MM3
-        db $0F,$6E,$C0           /// MOVD      MM0,EAX
-        db $0F,$6E,$12           /// MOVD      MM2,[EDX]
-        db $0F,$60,$C3           /// PUNPCKLBW MM0,MM3
-        MOV       ECX, bias_ptr
-        db $0F,$60,$D3           /// PUNPCKLBW MM2,MM3
-        db $0F,$6F,$C8           /// MOVQ      MM1,MM0
-        db $0F,$69,$C9           /// PUNPCKHWD MM1,MM1
-        db $0F,$F9,$C2           /// PSUBW     MM0,MM2
-        db $0F,$6A,$C9           /// PUNPCKHDQ MM1,MM1
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
-        db $0F,$D5,$C1           /// PMULLW    MM0,MM1
-        db $0F,$FD,$11           /// PADDW     MM2,[ECX]
-        db $0F,$FD,$D0           /// PADDW     MM2,MM0
-        db $0F,$71,$D2,$08       /// PSRLW     MM2,8
-        db $0F,$67,$D3           /// PACKUSWB  MM2,MM3
-        db $0F,$7E,$12           /// MOVD      [EDX],MM2
-@1:     RET
-
-@2:     MOV       [EDX], EAX
+        PUSH    EDX
+        MOV     EDX, [EDX]
+        CALL    M_BlendReg
+        POP     EDX
+        MOV     [EDX], EAX
 end;}
 begin
   B := M_BlendReg(F, B);
@@ -1063,34 +902,11 @@ procedure M_BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
   // [EDX] <- B
   // ECX <- M
   // Result := M * Fa * (Frgb - Brgb) + Brgb
-        TEST      EAX, $FF000000
-        JZ        @2
-
-        PUSH      EBX
-        MOV       EBX, EAX
-        SHR       EBX, 24
-        IMUL      ECX, EBX
-        SHR       ECX, 8
-        JZ        @1
-
-        db $0F,$EF,$C0           /// PXOR      MM0,MM0
-        db $0F,$6E,$C8           /// MOVD      MM1,EAX
-        SHL       ECX, 3
-        db $0F,$6E,$12           /// MOVD      MM2,[EDX]
-        db $0F,$60,$C8           /// PUNPCKLBW MM1,MM0
-        db $0F,$60,$D0           /// PUNPCKLBW MM2,MM0
-        ADD       ECX, alpha_ptr
-        db $0F,$F9,$CA           /// PSUBW     MM1,MM2
-        db $0F,$D5,$09           /// PMULLW    MM1,[ECX]
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
-        MOV       ECX, bias_ptr
-        db $0F,$FD,$11           /// PADDW     MM2,[ECX]
-        db $0F,$FD,$CA           /// PADDW     MM1,MM2
-        db $0F,$71,$D1,$08       /// PSRLW     MM1,8
-        db $0F,$67,$C8           /// PACKUSWB  MM1,MM0
-        db $0F,$7E,$0A           /// MOVD      [EDX],MM1
-@1:     POP       EBX
-@2:
+        PUSH    EDX
+        MOV     EDX, [EDX]
+        CALL    M_BlendRegEx
+        POP     EDX
+        MOV     [EDX], EAX
 end;}
 begin
   B := M_BlendRegEx(F, B, M);
