@@ -186,6 +186,9 @@ function Min(const B1, B2: Int64): Int64; overload;
 implementation
 
 uses
+  {$IFDEF WIN32}
+  Windows, { for PByte }
+  {$ENDIF}
   JclBase, JclResources;
 
 //==============================================================================
