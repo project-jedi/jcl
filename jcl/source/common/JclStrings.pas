@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 09, 2000                                              }
+{ Last modified: November 14, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -161,6 +161,7 @@ const
 function StrIsAlpha(const S: AnsiString): Boolean;
 function StrIsAlphaNum(const S: AnsiString): Boolean;
 function StrIsAlphaNumUnderscore(const S: AnsiString): Boolean;
+function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
 function StrIsDigit(const S: AnsiString): Boolean;
 function StrIsNumber(const S: AnsiString): Boolean;
 function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolean;
@@ -615,6 +616,44 @@ begin
       Result := False;
       Exit;
     end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function StrContainsChars(const S: AnsiString; Chars: TSysCharSet; CheckAll: Boolean): Boolean;
+var
+  I: Integer;
+  C: Char;
+begin
+  Result := False;
+  if CheckAll then
+  begin
+    for I := 1 to Length(S) do
+    begin
+      C := S[I];
+      if C in Chars then
+      begin
+        Chars := Chars - [C];
+        if Chars = [] then Break;
+      end;
+    end;
+    Result := (Chars = []);
+  end
+  else
+  begin
+   {!CheckAll  TODO
+      S = '' Chars = [] => False Should return True
+      S = '' Chars <> [] => False
+      S <> '' Chars = [] => False Should return True
+      S <> '' Chars <> [] => False
+   }
+    for I := 1 to Length(S) do
+      if S[I] in Chars then
+      begin
+        Result := True;
+        Break;
+      end;
   end;
 end;
 
