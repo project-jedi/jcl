@@ -44,11 +44,15 @@ Count=1
 [Result]
 The TFileTime converted to TDateTime. On failure the function raises an exception.
 [Notes]
-Count=2
+Count=3
 1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 2=The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
+3=Please keep in mind that this routine is also defined in Windows.pas and
+to succesfully use it you must ensure that either JclDateTime is listed
+after Windows in the uses clause or you prefix the call with the unit name
+(JclDateTime.FileTimeToDosDateTime). Failure to do so may lead to a compiler error.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -77,9 +81,13 @@ Count=1
 [Result]
 The TFileTime converted to TSystemTime
 [Notes]
-Count=2
+Count=3
 1=This function performs the same operation as the procedure FileTimeToSystemTime from Windows.pas.
 2=The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
+3=Please keep in mind that this routine is also defined in Windows.pas and
+to succesfully use it you must ensure that either JclDateTime is listed
+after Windows in the uses clause or you prefix the call with the unit name
+(JclDateTime.FileTimeToSystemTime). Failure to do so may lead to a compiler error.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -202,9 +210,13 @@ Count=1
 [Result]
 The TSystemTime converted to TFileTime. On failure the function raises an exception.
 [Notes]
-Count=2
+Count=3
 1=This function performs the same operation as the procedure SystemTimeToFileTime from Windows.pas.
 2=The overloaded procedure is identical to the procedure in Windows and provided for compatibility.
+3=Please keep in mind that this routine is also defined in Windows.pas and
+to succesfully use it you must ensure that either JclDateTime is listed
+after Windows in the uses clause or you prefix the call with the unit name
+(JclDateTime.SystemTimeToFileTime). Failure to do so may lead to a compiler error.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -292,11 +304,15 @@ Count=1
 [Result]
 The TDosDateTime converted to TFileTime. On failure the function raises an exception.
 [Notes]
-Count=2
+Count=3
 1=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
-2=The overloaded procedure is identical to the procedure form Windows and provided for compatibility.
+2=The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
+3=Please keep in mind that this routine is also defined in Windows.pas and
+to succesfully use it you must ensure that either JclDateTime is listed
+after Windows in the uses clause or you prefix the call with the unit name
+(JclDateTime.DosDateTimeToFileTime). Failure to do so may lead to a compiler error.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
@@ -385,12 +401,16 @@ Count=1
 [Result]
 The TDateTime converted to TSystemTime.
 [Notes]
-Count=3
+Count=4
 1=DateTimeToSystemTime just calls the VCL procedure DateTimeToSystemTime
 2=The JCL DateTime conversion functions supplement routines found in the Delphi
 RTL and the Win32 API. If a conversion function is not included here it most likely
 can be found in either of those libraries.
 3=The overloaded procedure is identical to the procedure from SysUtils and provided for compatibility.
+4=Please keep in mind that this routine is also defined in SysUtils.pas and
+to succesfully use it you must ensure that either JclDateTime is listed
+after SysUtils in the uses clause or you prefix the call with the unit name
+(JclDateTime.DateTimeToSystemTime). Failure to do so may lead to a compiler error.
 [Quick Info]
 BCB=3,4,5
 Unit=JclDateTime
