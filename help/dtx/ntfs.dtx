@@ -521,38 +521,6 @@ Quick info:
   Windows 95/98: Unsupported.
   Requirements: NTFS version 5.0 or later.
 --------------------------------------------------------------------------------
-@@TReparseGuidDataBuffer
-<GROUP FilesandIO.FileSystems.NTFS>
-Summary:
-  TGenericReparseBuffer is a generic record type used for reparse point operations on an NTFS volume.
-Description:
-  TGenericReparseBuffer is a generic record type used for reparse point operations
-  on an NTFS volume.
-See also:
-  NtfsDeleteReparsePoint
-  NtfsSetReparsePoint
-  NtfsGetReparsePoint
-Quick info:
-  Unit: JclNTFS
-  Category: Files and IO
-  Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: Not applicable
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows 2000 or later.
-  Windows 95/98: Unsupported.
-  Requirements: NTFS version 5.0 or later.
-@@TReparseGuidDataBuffer.ReparseTag
-  Reparse tag. This member uniquely identifies the structure of the reparse data.
-@@TReparseGuidDataBuffer.ReparseDataLength
-  Size, in bytes, of the data in the GenericReparseBuffer member.
-@@TReparseGuidDataBuffer.Reserved
-  Reserved.
-@@TReparseGuidDataBuffer.ReparseGuid
-  GUID which uniquely identifies the kind of reparse tag.
-@@TReparseGuidDataBuffer.GenericReparseBuffer
-  User defined data for the reparse point.
---------------------------------------------------------------------------------
 @@NtfsSetReparsePoint
 <GROUP FilesandIO.FileSystems.NTFS>
 Summary:
@@ -1012,3 +980,42 @@ Quick info:
 @@TFileCompressionState.fcLZNT1Compression
   LZNT1 compression.
 --------------------------------------------------------------------------------
+@@_REPARSE_GUID_DATA_BUFFER
+<GROUP FilesandIO.FileSystems.NTFS>
+Summary:
+  TGenericReparseBuffer is a generic record type used for reparse point operations on an NTFS volume.
+Description:
+  TGenericReparseBuffer is a generic record type used for reparse point operations
+  on an NTFS volume.
+See also:
+  NtfsDeleteReparsePoint
+  NtfsSetReparsePoint
+  NtfsGetReparsePoint
+Quick info:
+  Unit: JclNTFS
+  Category: Files and IO
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: Not applicable
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows 2000 or later.
+  Windows 95/98: Unsupported.
+  Requirements: NTFS version 5.0 or later.
+@@_REPARSE_GUID_DATA_BUFFER.ReparseTag
+  Reparse tag. This member uniquely identifies the structure of the reparse data.
+@@_REPARSE_GUID_DATA_BUFFER.ReparseDataLength
+  Size, in bytes, of the data in the GenericReparseBuffer member.
+@@_REPARSE_GUID_DATA_BUFFER.Reserved
+  Reserved.
+@@_REPARSE_GUID_DATA_BUFFER.ReparseGuid
+  GUID which uniquely identifies the kind of reparse tag.
+@@_REPARSE_GUID_DATA_BUFFER.DataBuffer
+  User defined data for the reparse point.
+@@TReparseGuidDataBuffer
+<GROUP FilesandIO.FileSystems.NTFS>
+<COMBINE _REPARSE_GUID_DATA_BUFFER>
+@@PReparseGuidDataBuffer
+<GROUP FilesandIO.FileSystems.NTFS>
+<COMBINE _REPARSE_GUID_DATA_BUFFER>
+--------------------------------------------------------------------------------
+
