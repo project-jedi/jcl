@@ -192,11 +192,10 @@ type
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF COMPILER6_UP}
-  Variants, StrUtils,
-  {$ENDIF COMPILER6_UP}
-  JclResources;
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  JclStrings, JclResources;
 
 type
   TJclOpCodeInfoType = (itName, itFullName, itDescription);
@@ -570,10 +569,10 @@ begin
       Stream.Seek(0, soFromBeginning);
       while Stream.Position < Stream.Size do
       begin
-        OpCode := PByte(DWORD(Stream.Memory) + Stream.Position)^;
+        OpCode := PByte(Longint(Stream.Memory) + Stream.Position)^;
         if OpCode = STP1 then
         begin
-          OpCode := PByte(DWORD(Stream.Memory) + Stream.Position + 1)^;
+          OpCode := PByte(Longint(Stream.Memory) + Stream.Position + 1)^;
           Instruction := TJclInstruction.Create(Self, TJclOpCode(MaxByte + 1 + OpCode));
         end
         else
@@ -620,7 +619,7 @@ var
 
   function IndentStr: string;
   begin
-    Result := DupeString('  ', Indent);
+    Result := StrRepeat('  ', Indent);
   end;
 
 begin
@@ -937,7 +936,7 @@ begin
           CodeStr := IntToHex(STP1, 2);
 
         CodeStr := CodeStr + IntToHex(RealOpCode, 2);
-        CodeStr := CodeStr + DupeString(' ', 4 - Length(CodeStr));
+        CodeStr := CodeStr + StrRepeat(' ', 4 - Length(CodeStr));
 
         case ParamType of
           ptSOff, ptI1, ptU1:
@@ -955,7 +954,7 @@ begin
         else
           ParamStr := '';
         end;
-        ParamStr := ParamStr + DupeString(' ', 10 - Length(ParamStr));
+        ParamStr := ParamStr + StrRepeat(' ', 10 - Length(ParamStr));
         Result := CodeStr + ' | ' + ParamStr;
       end;
     doIL:
@@ -1015,8 +1014,8 @@ begin
         else
           Result := VarToStr(Param);
         end;
-        Result := GetName + DupeString(' ', 10 - Length(GetName)) + ' ' + Result;
-        Result := Result + DupeString(' ', 20 - Length(Result));
+        Result := GetName + StrRepeat(' ', 10 - Length(GetName)) + ' ' + Result;
+        Result := Result + StrRepeat(' ', 20 - Length(Result));
       end;
     doTokenValue:
       Result := ''; // do nothing
