@@ -1251,7 +1251,7 @@ constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer; const Nam
 begin
   if (MaxCount < 1) or (InitialCount > MaxCount) or (InitialCount < 0) or
     (Length(Name) > MAX_METSECT_NAMELEN) then
-    raise EJclMeteredSectionError.Create(RsMetSectInvalidParameter);
+    raise EJclMeteredSectionError.CreateRes(@RsMetSectInvalidParameter);
   FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
   if FMetSect <> nil then
   begin
@@ -1259,7 +1259,7 @@ begin
     begin
       CloseMeteredSection;
       FMetSect := nil;
-      raise EJclMeteredSectionError.Create(RsMetSectInitialize);
+      raise EJclMeteredSectionError.CreateRes(@RsMetSectInitialize);
     end;
   end;
 end;
@@ -1350,7 +1350,7 @@ begin
     finally
       ReleaseLock;
     end;
-    Result := MapSignalResult(WaitForSingleObject(FMetSect^.Event, TimeOut);
+    Result := MapSignalResult(WaitForSingleObject(FMetSect^.Event, TimeOut));
     if Result <> wrSignaled then
       Exit;
   end;
@@ -1413,14 +1413,14 @@ constructor TJclMeteredSection.Open(const Name: string);
 begin
   FMetSect := nil;
   if Name = '' then
-    raise EJclMeteredSectionError.Create(RsMetSectNameEmpty);
+    raise EJclMeteredSectionError.CreateRes(@RsMetSectNameEmpty);
   FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
   Assert(FMetSect <> nil);
   if not InitMeteredSection(0, 0, Name, True) then
   begin
     CloseMeteredSection;
     FMetSect := nil;
-    raise EJclMeteredSectionError.Create(RsMetSectInitialize);
+    raise EJclMeteredSectionError.CreateRes(@RsMetSectInitialize);
   end;
 end;
 
