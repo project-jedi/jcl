@@ -162,13 +162,13 @@ type
     function GetRegionType: TJclRegionKind;
   public
     constructor Create(RegionHandle: HRGN; OwnsHandle: Boolean = True);
-    constructor CreateElliptic(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
-    constructor CreateElliptic(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF}); overload;
+    constructor CreateElliptic(const ARect: TRect); overload;
+    constructor CreateElliptic(const Top, Left, Bottom, Right: Integer); overload;
     constructor CreatePoly(const Points: TDynPointArray; Count: Integer; FillMode: TPolyFillMode);
     constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
-    constructor CreateRect(const Top, Left, Bottom, Right: Integer); overload;
-    constructor CreateRect(const ARect: TRect); overload;
+    constructor CreateRect(const ARect: TRect; DummyForBCB: Boolean = False); overload;
+    constructor CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
     constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
@@ -224,7 +224,7 @@ type
   end;
 
   { TJclCustomMap }
-  { An ancestor for bitmaps and similar 2D distributions wich have width and
+  { An ancestor for bitmaps and similar 2D distributions which have width and
     height properties }
   TJclCustomMap = class(TJclThreadPersistent)
   private
@@ -2293,14 +2293,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateElliptic(const ARect: TRect {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
+constructor TJclRegion.CreateElliptic(const ARect: TRect);
 begin
   Create(CreateEllipticRgnIndirect(ARect), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateElliptic(const Top, Left, Bottom, Right: Integer {$IFDEF BCB}; dummyForBCB: Byte = 0 {$ENDIF});
+constructor TJclRegion.CreateElliptic(const Top, Left, Bottom, Right: Integer);
 begin
   Create(CreateEllipticRgn(Top, Left, Bottom, Right), True);
 end;
@@ -2333,16 +2333,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer);
+constructor TJclRegion.CreateRect(const ARect: TRect; DummyForBCB: Boolean = False);
 begin
-  Create(CreateRectRgn(Top, Left, Bottom, Right), True);
+  Create(CreateRectRgnIndirect(ARect), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TJclRegion.CreateRect(const ARect: TRect);
+constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0);
 begin
-  Create(CreateRectRgnIndirect(ARect), True);
+  Create(CreateRectRgn(Top, Left, Bottom, Right), True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2561,7 +2561,7 @@ end;
 
 function TJclRegion.Copy: TJclRegion;
 begin
-  Result := TJclRegion.CreateRect(0,0,0,0);
+  Result := TJclRegion.CreateRect(0, 0, 0, 0, 0); // (rom) call correct overloaded constructor for BCB
   CombineRgn(Result.Handle, FHandle, 0, RGN_COPY);
   Result.GetBox;
 end;
