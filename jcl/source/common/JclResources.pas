@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 12, 2002                                                                    }
+{ Last modified: May 17, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -677,15 +677,6 @@ resourcestring
   RsRTTIElType =            'Element type: ';
   RsRTTIElNeedCleanup =     'Elements need clean up: ';
   RsRTTIVarType =           'Variant type: ';
-
-//--------------------------------------------------------------------------------------------------
-// JclSscanf
-//--------------------------------------------------------------------------------------------------
-
-resourcestring
-  RsSscanfBadSet       = 'Bad set: ';
-  RsSscanfBadFormat    = 'Bad format string';
-  RsSscanfInsufficient = 'Insufficient pointers for format specifiers';
 
 //--------------------------------------------------------------------------------------------------
 // JclStrings
