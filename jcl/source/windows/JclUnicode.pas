@@ -13,18 +13,26 @@
 { The Original Code is JclUnicode.pas.                                         }
 {                                                                              }
 { The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
+{ help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: May 15, 2000                                                  }
+{ Last modified: December 03, 2000                                                  }
 {                                                                              }
 {******************************************************************************}
 
 unit JclUnicode;
 
-// Copyright (c) 1999, 2000 Mike Lischke (public@lischke-online.de)
-// Portions Copyright (c) 1999, 2000 Azret Botash (az)
+// Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
+// Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
+// 04-DEC-2000 ml:
+//   - improved binary string comparation with surrogate fixup (StrCompW, StrLCompW)
+// 02/03-DEC-2000 ml:
+//   - new Unicode data (*.res) file, fully working extractor tool available now
+//   - data handling and lookup routines improved
+//   - character categories unified
+// 19-NOV-2000 ml:
+//   bug fixes (CharSetFromLocale)
 // 12-JUN-2000 ml:
 //  adjustments to make the unit JCL compliant
 // 02-APR-2000 ml:
@@ -44,8 +52,8 @@ unit JclUnicode;
 //   - low level Unicode UCS4 data import and functions
 //   - helper functions
 //
-//  Version 2.2 beta
-//------------------------------------------------------------------------------
+//  Version 2.5
+//----------------------------------------------------------------------------------------------------------------------
 // This unit contains routines and classes to manage and work with Unicode/WideString strings.
 // You need Delphi 4 or higher to compile this code.
 //
@@ -64,12 +72,10 @@ unit JclUnicode;
 //
 // Publicly available low level functions are all preceded by "Unicode..." (e.g.
 // in UnicodeToUpper) while the high level functions use the Str... or Wide...
-// naming scheme (e.g. WideUpCase and WideUpperCase).
+// naming scheme (e.g. WideUpperCase and WideUpperCase).
 //
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Open issues:
-//   - Keep in mind that this unit is still in beta state. In particular the URE
-//     class does not yet work for all cases.
 //   - Yet to do things in the URE class are:
 //     - check all character classes if they match correctly
 //     - optimize rebuild of DFA (build only when pattern changes)
@@ -96,10 +102,10 @@ unit JclUnicode;
 interface
 
 uses
-  {$IFDEF WIN32}
-  Windows,
-  {$ENDIF}
-  Classes;
+  {$ifdef WIN32}
+    Windows,
+  {$endif}
+    Classes;
 
 const
   // definitions of often used characters:
@@ -107,7 +113,6 @@ const
   //       classes like white spaces as in Unicode are often many code points defined
   //       being in a certain class. Hence your best option is to use the various
   //       UnicodeIs* functions.
-
   WideNull = WideChar(#0);
   WideTabulator = WideChar(#9);
   WideSpace = WideChar(#32);
@@ -123,19 +128,16 @@ const
   WideLineSeparator = WideChar($2028);
   WideParagraphSeparator = WideChar($2029);
 
-  // byte order marks for strings
+  // byte order marks for Unicode files
   // Unicode text files should contain $FFFE as first character to identify such
   // a file clearly. Depending on the system where the file was created on this
   // appears either in big endian or little endian style.
-
   BOM_LSB_FIRST = WideChar($FEFF); // this is how the BOM appears on x86 systems
                                    // when written by a x86 system
   BOM_MSB_FIRST = WideChar($FFFE);
 
 type
-
   // Unicode transformation formats (UTF) data types
-
   PUTF7 = ^UTF7;
   UTF7 = Char;
   PUTF8 = ^UTF8;
@@ -146,11 +148,13 @@ type
   UTF32 = Cardinal;
 
   // UTF conversion schemes (UCS) data types
-
   PUCS4 = ^UCS4;
   UCS4 = Cardinal;
   PUCS2 = PWideChar;
   UCS2 = WideChar;
+
+  TUCS2Array = array of UCS2;
+  TUCS4Array = array of UCS4;
 
 const
   ReplacementCharacter: UCS4 = $0000FFFD;
@@ -164,6 +168,71 @@ const
   SurrogateLowEnd: UCS4 = $DFFF;
 
 type
+  // various predefined or otherwise useful character property categories
+  TCharacterCategory = (
+    // normative categories
+    ccLetterUppercase,
+    ccLetterLowercase,
+    ccLetterTitlecase,
+    ccMarkNonSpacing,
+    ccMarkSpacingCombining,
+    ccMarkEnclosing,
+    ccNumberDecimalDigit,
+    ccNumberLetter,
+    ccNumberOther,
+    ccSeparatorSpace,
+    ccSeparatorLine,
+    ccSeparatorParagraph,
+    ccOtherControl,
+    ccOtherFormat,
+    ccOtherSurrogate,
+    ccOtherPrivate,
+    ccOtherUnassigned,
+    // informative categories
+    ccLetterModifier,
+    ccLetterOther,
+    ccPunctuationConnector,
+    ccPunctuationDash,
+    ccPunctuationOpen,
+    ccPunctuationClose,
+    ccPunctuationInitialQuote,
+    ccPunctuationFinalQuote,
+    ccPunctuationOther,
+    ccSymbolMath,
+    ccSymbolCurrency,
+    ccSymbolModifier,
+    ccSymbolOther,
+    // bidirectional categories
+    ccleftToRight,
+    ccLeftToRightEmbedding,
+    ccLeftToRightOverride,
+    ccRightToLeft,
+    ccRightToLeftArabic,
+    ccRightToLeftEmbedding,
+    ccRightToLeftoverride,
+    ccPopDirectionalFormat,
+    ccEuropeanNumber,
+    ccEuropeanNumberSeparator,
+    ccEuropeanNumberTerminator,
+    ccArabicNumber,
+    ccCommonNumberSeparator,
+    ccBoundaryNeutral,
+    ccSegmentSeparator,      // this includes tab and vertical tab
+    ccWhiteSpace,
+    ccOtherNeutrals,
+    // self defined categories, they do not appear in the Unicode data file
+    ccComposed,              // can be decomposed
+    ccNonBreaking,
+    ccSymmetric,             // has left and right forms
+    ccHexDigit,
+    ccQuotationMark,
+    ccMirroring,
+    ccSpaceOther,
+    ccAssigned,              // means there is a definition in the Unicode standard
+    ccLetterUniqueUpper      // special form of upper case
+  );
+  TCharacterCategories = set of TCharacterCategory;
+
   TWideStrings = class;
 
   TSearchFlags = set of (
@@ -175,7 +244,6 @@ type
 
   // a generic search class defininition used for tuned Boyer-Moore and Unicode
   // regular expression searches
-
   TSearchEngine = class (TObject)
   private
     FResults: TList;      // 2 entries for each result (start and stop position)
@@ -209,7 +277,6 @@ type
   // words only.
 
   // single pattern character
-
   PUTBMChar = ^TUTBMChar;
   TUTBMChar = record
     LoCase,
@@ -240,9 +307,6 @@ type
     function GetSkipValue(TextStart, TextEnd: PUCS2): Cardinal;
     function Match(Text, Start, Stop: PUCS2; var MatchStart, MatchEnd: Cardinal): Boolean;
   public
-    constructor Create(AOwner: TWideStrings); override;
-    destructor Destroy; override;
-
     procedure Clear; override;
     procedure FindPrepare(const Pattern: WideString; Options: TSearchFlags); overload; override;
     procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; override;
@@ -308,51 +372,17 @@ type
   //
   //   Notes:
   //     o  Character property classes are \p or \P followed by a comma separated
-  //        list of integers between 1 and 32.  These integers are references to
-  //        the following character properties:
+  //        list of integers between 0 and the maximum entry index in TCharacterCategory.
+  //        These integers directly correspond to the TCharacterCategory enumeration entries.
+  //        Note: upper, lower and titel case classes need to have case sensitive search
+  //              be enabled to match correctly!
   //
-  //         N  Character Property
-  //         --------------------------
-  //         1  _URE_NONSPACING
-  //         2  _URE_COMBINING
-  //         3  _URE_NUMDIGIT
-  //         4  _URE_NUMOTHER
-  //         5  _URE_SPACESEP
-  //         6  _URE_LINESEP
-  //         7  _URE_PARASEP
-  //         8  _URE_CNTRL
-  //         9  _URE_PRIVATE
-  //         10 _URE_UPPER   (note: upper, lower and titel case classes need to have case
-  //         11 _URE_LOWER          sensitive search be enabled to match correctly!)
-  //         12 _URE_TITLE
-  //         13 _URE_MODIFIER
-  //         14 _URE_OTHERLETTER
-  //         15 _URE_DASHPUNCT
-  //         16 _URE_OPENPUNCT
-  //         17 _URE_CLOSEPUNCT
-  //         18 _URE_OTHERPUNCT
-  //         19 _URE_MATHSYM
-  //         20 _URE_CURRENCYSYM
-  //         21 _URE_OTHERSYM
-  //         22 _URE_LTR
-  //         23 _URE_RTL
-  //         24 _URE_EURONUM
-  //         25 _URE_EURONUMSEP
-  //         26 _URE_EURONUMTERM
-  //         27 _URE_ARABNUM
-  //         28 _URE_COMMONSEP
-  //         29 _URE_BLOCKSEP
-  //         30 _URE_SEGMENTSEP
-  //         31 _URE_WHITESPACE
-  //         32 _URE_OTHERNEUT
-  //
-  //     o  Character classes can contain literals, constants, and character
+  //     o  Character classes can contain literals, constants and character
   //        property classes. Example:
   //
-  //        [abc\U10A\p1,3,4]
+  //        [abc\U10A\p0,13,4]
 
   // structure used to handle a compacted range of characters
-
   PUcRange = ^TUcRange;
   TUcRange = record
     MinCode,
@@ -365,14 +395,12 @@ type
   end;
 
   // either a single character or a list of character classes
-
   TUcSymbol = record
     Chr: UCS4;
     CCL: TUcCClass;
   end;
 
   // this is a general element structure used for expressions and stack elements
-
   TUcElement = record
     OnStack: Boolean;
     AType,
@@ -381,7 +409,6 @@ type
   end;
 
   // this is a structure used to track a list or a stack of states
-
   PUcStateList = ^TUcStateList;
   TUcStateList = record
     List: array of Cardinal;
@@ -389,19 +416,17 @@ type
   end;
 
   // structure to track the list of unique states for a symbol during reduction
-
   PUcSymbolTableEntry = ^TUcSymbolTableEntry;
   TUcSymbolTableEntry = record
     ID,
     AType: Cardinal;
     Mods,
-    Props: Cardinal;
+    Categories: TCharacterCategories;
     Symbol: TUcSymbol;
     States: TUcStateList;
   end;
 
   // structure to hold a single State
-
   PUcState = ^TUcState;
   TUcState = record
     ID: Cardinal;
@@ -412,14 +437,12 @@ type
   end;
 
   // structure used for keeping lists of states
-
   TUcStateTable = record
     States: array of TUcState;
     StatesUsed: Integer;
   end;
 
   // structure to track pairs of DFA states when equivalent states are merged
-
   TUcEquivalent = record
     Left, Right: Cardinal;
   end;
@@ -440,7 +463,6 @@ type
   end;
 
   // structure used for constructing the NFA and reducing to a minimal DFA
-
   PUREBuffer = ^TUREBuffer;
   TUREBuffer = record
     Reducing: Boolean;
@@ -493,7 +515,6 @@ type
     function AddState(NewStates: array of Cardinal): Cardinal;
     procedure AddSymbolState(Symbol, State: Cardinal);
     function BuildCharacterClass(CP: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
-    procedure CCLSetup(Symbol: PUcSymbolTableEntry; Mask: Cardinal);
     procedure ClearUREBuffer;
     function CompileSymbol(S: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
     procedure CompileURE(RE: PWideChar; RELength: Cardinal; Casefold: Boolean);
@@ -501,25 +522,21 @@ type
     function ConvertRegExpToNFA(RE: PWideChar; RELength: Cardinal): Cardinal;
     function ExecuteURE(Flags: Cardinal; Text: PUCS2; TextLen: Cardinal; var MatchStart, MatchEnd: Cardinal): Boolean;
     procedure ClearDFA;
-    procedure HexDigitSetup(Symbol: PUcSymbolTableEntry; Mask: Cardinal);
+    procedure HexDigitSetup(Symbol: PUcSymbolTableEntry);
     function MakeExpression(AType, LHS, RHS: Cardinal): Cardinal;
     function MakeHexNumber(NP: PUCS2; Limit: Cardinal; var Number: Cardinal): Cardinal;
     function MakeSymbol(S: PUCS2; Limit: Cardinal; var Consumed: Cardinal): Cardinal;
-    function MatchesProperties(Props, C: Cardinal): Boolean;
     procedure MergeEquivalents;
-    function ParsePropertyList(Properties: PUCS2; Limit: Cardinal; var Mask: Cardinal): Cardinal;
+    function ParsePropertyList(Properties: PUCS2; Limit: Cardinal; var Categories: TCharacterCategories): Cardinal;
     function Peek: Cardinal;
     function Pop: Cardinal;
     function PosixCCL(CP: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
     function ProbeLowSurrogate(LeftState: PUCS2; Limit: Cardinal; var Code: UCS4): Cardinal;
     procedure Push(V: Cardinal);
     procedure Reduce(Start: Cardinal);
-    procedure SpaceSetup(Symbol: PUcSymbolTableEntry; Mask: Cardinal);
+    procedure SpaceSetup(Symbol: PUcSymbolTableEntry; Categories: TCharacterCategories);
     function SymbolsAreDifferent(A, B: PUcSymbolTableEntry): Boolean;
   public
-    constructor Create(AOwner: TWideStrings); override;
-    destructor Destroy; override;
-
     procedure Clear; override;
     procedure FindPrepare(const Pattern: WideString; Options: TSearchFlags); overload; override;
     procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; override;
@@ -534,7 +551,6 @@ type
   // ANSI block but the save type is ANSI. On triggering the event the application
   // can change the property SaveUnicode as needed. This property is again checked
   // after the callback returns.
-
   TConfirmConversionEvent = procedure (Sender: TWideStrings; var Allowed: Boolean) of object;
 
   TWideStrings = class (TPersistent)
@@ -613,7 +629,6 @@ type
   end;
 
   // TWideStringList class
-
   TWideStringItem = record
     FString: WideString;
     FObject: TObject;
@@ -665,18 +680,16 @@ type
   end;
 
   // result type for number retrieval functions
-
-  TUNumber = record
+  TUcNumber = record
     Numerator,
     Denominator: Integer;
   end;
 
   TFontCharSet = 0..255;
 
-// Functions involving Null-terminated strings
+// functions involving null-terminated strings
 // NOTE: PWideChars as well as WideStrings are NOT managed by reference counting under Win32.
 //       In Kylix this is different. WideStrings are reference counted there, just like ANSI strings.
-
 function StrLenW(Str: PWideChar): Cardinal;
 function StrEndW(Str: PWideChar): PWideChar;
 function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
@@ -706,39 +719,36 @@ function StrNewW(Str: PWideChar): PWideChar;
 procedure StrDisposeW(Str: PWideChar);
 procedure StrSwapByteOrder(Str: PWideChar);
 
-// Functions involving Delphi wide strings
-
+// functions involving Delphi wide strings
 function WideAdjustLineBreaks(const S: WideString): WideString;
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;  //az
 function WideCompose(const S: WideString): WideString;
 function WideComposeHangul(Source: WideString): WideString;
 function WideDecompose(const S: WideString): WideString;
-function WideLoCase(C: WideChar): WideChar;
-function WideLowerCase(const S: WideString): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
-function WideTitleCaseChar(C: WideChar): WideChar;
-function WideTitleCaseString(const S: WideString): WideString;
+function WideLowerCase(C: WideChar): WideString; overload;
+function WideLowerCase(const S: WideString): WideString; overload;
+function WideTitleCase(C: WideChar): WideString; overload;
+function WideTitleCase(const S: WideString): WideString; overload;
+function WideUpperCase(C: WideChar): WideString; overload;
+function WideUpperCase(const S: WideString): WideString; overload;
 function WideTrim(const S: WideString): WideString;
 function WideTrimLeft(const S: WideString): WideString;
 function WideTrimRight(const S: WideString): WideString;
-function WideUpCase(C: WideChar): WideChar;
-function WideUpperCase(const S: WideString): WideString;
 
 // Low level character routines
-
-function UnicodeGetDigit(Code: UCS4): Integer;
-function UnicodeGetNumber(Code: UCS4): TUNumber;
-function UnicodeToUpper(Code: UCS4): UCS4;
-function UnicodeToLower(Code: UCS4): UCS4;
-function UnicodeToTitle(Code: UCS4): UCS4;
+function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
+function UnicodeToUpper(Code: UCS4): TUCS4Array;
+function UnicodeToLower(Code: UCS4): TUCS4Array;
+function UnicodeToTitle(Code: UCS4): TUCS4Array;
 
 // Character test routines
-
 function UnicodeIsAlpha(C: UCS4): Boolean;
 function UnicodeIsDigit(C: UCS4): Boolean;
 function UnicodeIsAlphaNum(C: UCS4): Boolean;
+function UnicodeIsCased(C: UCS4): Boolean;
 function UnicodeIsControl(C: UCS4): Boolean;
 function UnicodeIsSpace(C: UCS4): Boolean;
 function UnicodeIsWhiteSpace(C: UCS4): Boolean;
@@ -762,14 +772,13 @@ function UnicodeIsClosePunctuation(C: UCS4): Boolean;
 function UnicodeIsInitialPunctuation(C: UCS4): Boolean;
 function UnicodeIsFinalPunctuation(C: UCS4): Boolean;
 
-function UnicodeIsComposite(C: UCS4): Boolean;
+function UnicodeIsComposed(C: UCS4): Boolean;
 function UnicodeIsQuotationMark(C: UCS4): Boolean;
 function UnicodeIsSymmetric(C: UCS4): Boolean;
 function UnicodeIsMirroring(C: UCS4): Boolean;
 function UnicodeIsNonBreaking(C: UCS4): Boolean;
 
 // Directionality functions
-
 function UnicodeIsRightToLeft(C: UCS4): Boolean;
 function UnicodeIsLeftToRight(C: UCS4): Boolean;
 function UnicodeIsStrong(C: UCS4): Boolean;
@@ -778,7 +787,6 @@ function UnicodeIsNeutral(C: UCS4): Boolean;
 function UnicodeIsSeparator(C: UCS4): Boolean;
 
 // Other character test functions
-
 function UnicodeIsMark(C: UCS4): Boolean;
 function UnicodeIsModifier(C: UCS4): Boolean;
 function UnicodeIsLetterNumber(C: UCS4): Boolean;
@@ -805,7 +813,6 @@ function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Utility functions
-
 function CharSetFromLocale(Language: LCID): TFontCharSet;
 function CodePageFromLocale(Language: LCID): Integer;
 function CodeBlockFromChar(const C: WideChar): Cardinal;
@@ -816,17 +823,19 @@ function TranslateString(const S: string; CP1, CP2: Word): string;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
 
 // WideString conversion routines
-
 function WideStringToUTF8(S: WideString): AnsiString;
 function UTF8ToWideString(S: AnsiString): WideString;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 implementation
 
-// ~67K Unicode data for case mapping, decomposition, numbers etc. This data is
+// Unicode data for case mapping, decomposition, numbers etc. This data is
 // loaded on demand which means only those parts will be put in memory which are
 // needed by one of the lookup functions.
+// Note: There is a little tool called UDExtract which creates a resouce script from
+//       the Unicode database file which can be compiled to the needed res file.
+//       This tool, including its source code can be downloaded from www.lischke-online.de/Unicode.html.
 
 {$R JclUnicode.res}
 
@@ -843,80 +852,36 @@ resourcestring
   RsURERepeatRangeOpen = 'Repeation range not closed, ''}'' is missing.';
   RsUREExpressionEmpty = 'Expression is empty.';
 
+const
+  // some predefined sets to shorten parameter lists below and ease repeative usage
+  ClassLetter = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccLetterModifier, ccLetterOther];
+  ClassSpace = [ccSeparatorSpace, ccSpaceOther];
+  ClassPunctuation = [ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
+    ccPunctuationOther, ccPunctuationInitialQuote, ccPunctuationFinalQuote, ccPunctuationOther];
+  ClassMark = [ccMarkNonSpacing, ccMarkSpacingCombining, ccMarkEnclosing];
+  ClassNumber = [ccNumberDecimalDigit, ccNumberLetter, ccNumberOther];
+  ClassSymbol = [ccSymbolMath, ccSymbolCurrency, ccSymbolModifier, ccSymbolOther];
+  ClassEuropeanNumber = [ccEuropeanNumber, ccEuropeanNumberSeparator, ccEuropeanNumberTerminator];
+
+  // used to negate a set of categories
+  ClassAll = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccMarkNonSpacing, ccMarkSpacingCombining,
+    ccMarkEnclosing, ccNumberDecimalDigit, ccNumberLetter, ccNumberOther, ccSeparatorSpace, ccSeparatorLine,
+    ccSeparatorParagraph, ccOtherControl, ccOtherFormat, ccOtherSurrogate, ccOtherPrivate, ccOtherUnassigned,
+    ccLetterModifier, ccLetterOther, ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
+    ccPunctuationInitialQuote, ccPunctuationFinalQuote, ccPunctuationOther, ccSymbolMath, ccSymbolCurrency,
+    ccSymbolModifier, ccSymbolOther, ccleftToRight, ccLeftToRightEmbedding, ccLeftToRightOverride, ccRightToLeft,
+    ccRightToLeftArabic, ccRightToLeftEmbedding, ccRightToLeftoverride, ccPopDirectionalFormat, ccEuropeanNumber,
+    ccEuropeanNumberSeparator, ccEuropeanNumberTerminator, ccArabicNumber, ccCommonNumberSeparator, ccBoundaryNeutral,
+    ccSegmentSeparator, ccWhiteSpace, ccOtherNeutrals, ccComposed, ccNonBreaking, ccSymmetric, ccHexDigit,
+    ccQuotationMark, ccMirroring, ccSpaceOther, ccAssigned];     
+
 type
   TCompareFunc = function (W1, W2: WideString; Locale: LCID): Integer;
 
 var
   WideCompareText: TCompareFunc;
 
-const
-
-  // Values that can appear in the Mask1 parameter of the IsProperty function.
-
-  UC_MN = $00000001; // Mark, Non-Spacing
-  UC_MC = $00000002; // Mark, Spacing Combining
-  UC_ME = $00000004; // Mark, Enclosing
-  UC_ND = $00000008; // Number, Decimal Digit
-  UC_NL = $00000010; // Number, Letter
-  UC_NO = $00000020; // Number, Other
-  UC_ZS = $00000040; // Separator, Space
-  UC_ZL = $00000080; // Separator, Line
-  UC_ZP = $00000100; // Separator, Paragraph
-  UC_CC = $00000200; // Other, Control
-  UC_CF = $00000400; // Other, Format
-  UC_OS = $00000800; // Other, Surrogate
-  UC_CO = $00001000; // Other, private use
-  UC_CN = $00002000; // Other, not assigned
-  UC_LU = $00004000; // Letter, Uppercase
-  UC_LL = $00008000; // Letter, Lowercase
-  UC_LT = $00010000; // Letter, Titlecase
-  UC_LM = $00020000; // Letter, Modifier
-  UC_LO = $00040000; // Letter, Other
-  UC_PC = $00080000; // Punctuation, Connector
-  UC_PD = $00100000; // Punctuation, Dash
-  UC_PS = $00200000; // Punctuation, Open
-  UC_PE = $00400000; // Punctuation, Close
-  UC_PO = $00800000; // Punctuation, Other
-  UC_SM = $01000000; // Symbol, Math
-  UC_SC = $02000000; // Symbol, Currency
-  UC_SK = $04000000; // Symbol, Modifier
-  UC_SO = $08000000; // Symbol, Other
-  UC_L  = $10000000; // Left-To-Right
-  UC_R  = $20000000; // Right-To-Left
-  UC_EN = $40000000; // European Number
-  UC_ES = $80000000; // European Number Separator
-
-  // Values that can appear in the Mask2 parameter of the IsProperty function
-
-  UC_ET = $00000001; // European Number Terminator
-  UC_AN = $00000002; // Arabic Number
-  UC_CS = $00000004; // Common Number Separator
-  UC_B  = $00000008; // Block Separator
-  UC_S  = $00000010; // Segment (unit) Separator (this includes tab and vertical tab)
-  UC_WS = $00000020; // Whitespace
-  UC_ON = $00000040; // Other Neutrals
-
-  // Implementation specific character properties.
-
-  UC_CM = $00000080; // Composite
-  UC_NB = $00000100; // Non-Breaking
-  UC_SY = $00000200; // Symmetric
-  UC_HD = $00000400; // Hex Digit
-  UC_QM = $00000800; // Quote Mark
-  UC_MR = $00001000; // Mirroring
-  UC_SS = $00002000; // Space, other
-
-  UC_CP = $00004000; // Defined
-
-  // Added for UnicodeData-2.1.3.
-
-  UC_PI = $00008000; // Punctuation, Initial
-  UC_PF = $00010000; // Punctuation, Final
-
-//==============================================================================
 // Loader routines and structure definitions for resource data
-//==============================================================================
-
 type
   TUHeader = record
     BOM: WideChar;
@@ -928,375 +893,292 @@ type
         Len: array [0..1] of Word);
   end;
 
-  TWordArray = array of Word;
-  TCardinalArray = array of Cardinal;
-
 var
   // As the global data can be accessed by several threads it should be guarded
   // while the data is loaded.
   LoadInProgress: TCriticalSection;
 
-//==============================================================================
+//----------------------------------------------------------------------------------------------------------------------
+
 // Internal support routines
-//==============================================================================
 
 function SwapCardinal(C: Cardinal): Cardinal;
+
 // swaps all bytes in C from MSB to LSB order
 // EAX contains both parameter as well as result
+
 asm
-        BSWAP   EAX
+         BSWAP EAX
 end;
 
-//==============================================================================
-// Support for character properties
-//==============================================================================
+//----------------- support for character categories -------------------------------------------------------------------
+
+type
+  // start and stop of a range of code points
+  TRange = record
+    Start,
+    Stop: Cardinal;
+  end;
+
+  TRangeArray = array of TRange;
 
 var
-  PropertyOffsets: TWordArray;
-  PropertyRanges: TCardinalArray;
+  // character category ranges
+  Categories: array[TCharacterCategory] of TRangeArray;
 
-procedure LoadUnicodeTypeData;
-// loads the character property data (as saved by the Unicode database extractor
-// into the ctype.dat file)
+//----------------------------------------------------------------------------------------------------------------------
+
+procedure LoadCharacterCategories;
+
+// Loads the character categories data (as saved by the Unicode database extractor, see also
+// the comments about JclUnicode.res above).
+
 var
-  I, Size: Integer;
-  Header: TUHeader;
+  Size: Integer;
   Stream: TResourceStream;
+  Category: TCharacterCategory;
+  
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
     LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
-
-  // Data already loaded?
-  if PropertyOffsets = nil then
-  begin
-    Stream := TResourceStream.Create(HInstance, 'TYPE', 'UNICODE');
-    Stream.Read(Header, SizeOf(Header));
-
-    if Header.BOM = BOM_MSB_FIRST then
+  try
+    // Data already loaded?
+    if Categories[ccAssigned] = nil then
     begin
-      Header.Count := Swap(Header.Count);
-      Header.Bytes := SwapCardinal(Header.Bytes);
+      Stream := TResourceStream.Create(HInstance, 'CATEGORIES', 'UNICODEDATA');
+      try
+        while Stream.Position < Stream.Size do
+        begin
+          // read which category is current in the stream
+          Stream.ReadBuffer(Category, 1);
+          // read the size of the ranges
+          Stream.ReadBuffer(Size, 4);
+          SetLength(Categories[Category], Size);
+          Stream.ReadBuffer(Categories[Category][0], Size * SizeOf(TRange));
+        end;
+      finally
+        Stream.Free;
+      end;
     end;
-
-    // Calculate the offset into the storage for the ranges.  The offsets
-    // array is on a 4-byte boundary and one larger than the value provided in
-    // the header count field. This means the offset to the ranges must be
-    // calculated after aligning the count to a 4-byte boundary.
-    Size := (Header.Count + 1) * SizeOf(Word);
-    if (Size and 3) <> 0 then
-      Inc(Size, 4 - (Size and 3));
-
-    // fill offsets array
-    SetLength(PropertyOffsets, Size div SizeOf(Word));
-    Stream.Read(PropertyOffsets[0], Size);
-
-    // Do an endian swap if necessary. Don't forget there is an extra node on
-    // the end with the final index.
-    if Header.BOM = BOM_MSB_FIRST then
-      for I := 0 to Header.Count do
-        PropertyOffsets[I] := Swap(PropertyOffsets[I]);
-
-    // Load the ranges.
-    // The number of elements is in the last array position of the offsets.
-    SetLength(PropertyRanges, PropertyOffsets[Header.Count]);
-    Stream.Read(PropertyRanges[0], PropertyOffsets[Header.Count] * SizeOf(Cardinal));
-
-    // Do an endian swap if necessary.
-    if Header.BOM = BOM_MSB_FIRST then
-    begin
-      for I := 0 to PropertyOffsets[Header.Count] - 1 do
-        PropertyRanges[I] := SwapCardinal(PropertyRanges[I]);
-    end;
-    Stream.Free;
+  finally
+    LoadInProgress.Leave;
   end;
-  LoadInProgress.Leave;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function PropertyLookup(Code, N: Cardinal): Boolean;
+function CategoryLookup(Code: Cardinal; Category: TCharacterCategory): Boolean; overload;
+
+// determines whether the Code is in the given category
+
 var
-  L, R, M: Integer;
+  L, R, M, C: Integer;
+
 begin
   // load property data if not already done
-  if PropertyOffsets = nil then
-    LoadUnicodeTypeData;
+  if Categories[ccAssigned] = nil then
+    LoadCharacterCategories;
 
-  Result := False;
-  // There is an extra node on the end of the offsets to allow this routine
-  // to work right. If the index is 0xffff, then there are no nodes for the
-  // property.
-  L := PropertyOffsets[N];
-  if L <> $FFFF then
+  // is there anything assigned in the given category
+  Result := Assigned(Categories[Category]);
+  if Result then
   begin
-    // Locate the next offset that is not 0xffff.  The sentinel at the end of
-    // the array is the max index value.
-    M := 1;
-    while ((Integer(N) + M) < High(PropertyOffsets)) and
-      (PropertyOffsets[Integer(N) + M] = $FFFF) do
-      Inc(M);
-
-    R := PropertyOffsets[Integer(N) + M] - 1;
-
+    Result := False;
+    // search through all ranges to find the code
+    L := 0;
+    R := High(Categories[Category]);
     while L <= R do
     begin
-      // Determine a "mid" point and adjust to make sure the mid point is at
-      // the beginning of a range pair.
       M := (L + R) shr 1;
-      Dec(M, M and 1);
-      if Code > PropertyRanges[M + 1] then
-        L := M + 2
+      C := Integer(Categories[Category][M].Start) - Integer(Code);
+      if C > 0 then
+        R := M - 1
       else
-      begin
-        if Code < PropertyRanges[M] then
-          R := M - 2
-        else
+        if (C = 0) or (Categories[Category][M].Stop >= Code) then
         begin
-          if (Code >= PropertyRanges[M]) and (Code <= PropertyRanges[M + 1]) then
-          begin
-            Result := True;
-            Break;
-          end;
-        end;
-      end;
+          Result := True;
+          Break;
+        end
+        else
+          L := M + 1;
     end;
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function IsProperty(Code, Mask1, Mask2: Cardinal): Boolean;
+function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; overload;
+
+// determines whether Code is in any of the given categories
+
 var
-  I: Cardinal;
-  Mask: Cardinal;
+  Category: TCharacterCategory;
+
 begin
   Result := False;
-  if Mask1 <> 0 then
+  if Cats <> [] then
   begin
-    Mask := 1;
-    for I := 0 to 31 do
-    begin
-      if ((Mask1 and Mask) <> 0) and PropertyLookup(Code, I) then
+    for Category := Low(TCharacterCategory) to High(TCharacterCategory) do
+      if Category in Cats then
       begin
-        Result := True;
-        Exit;
+        Result := CategoryLookup(Code, Category);
+        if Result then
+          Break;
       end;
-      Mask := Mask shl 1;
-    end;
-  end;
-
-  if Mask2 <> 0 then
-  begin
-    I := 32;
-    Mask := 1;
-    while I < Cardinal(High(PropertyOffsets)) do
-    begin
-      if ((Mask2 and Mask) <> 0) and PropertyLookup(Code, I) then
-      begin
-        Result := True;
-        Exit;
-      end;
-      Inc(I);
-      Mask := Mask shl 1;
-    end;
   end;
 end;
 
-//==============================================================================
-// Support for case mapping
-//==============================================================================
+//----------------- support for case mapping ---------------------------------------------------------------------------
+
+type
+  TCase = record
+    Code: Cardinal;
+    Lower,
+    Title,
+    Upper: TUCS4Array;
+  end;
 
 var
-  CaseMapSize: Cardinal;
-  CaseLengths: array [0..1] of Word;
-  CaseMap: TCardinalArray;
+  // array for all case mappings (including 1 to many casing if saved by the extraction program)
+  CaseMapping: array of TCase;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure LoadUnicodeCaseData;
+
 var
   Stream: TResourceStream;
-  I: Cardinal;
-  Header: TUHeader;
+  I, Size: Cardinal;
+
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
     LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
-  if CaseMap = nil then
+  if CaseMapping = nil then
   begin
-    Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODE');
-    Stream.Read(Header, SizeOf(Header));
-
-    if Header.BOM = BOM_MSB_FIRST then
-    begin
-      Header.Count := Swap(Header.Count);
-      Header.Len[0] := Swap(Header.Len[0]);
-      Header.Len[1] := Swap(Header.Len[1]);
+    Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODEDATA');
+    try
+      // the first entry in the stream is the number of entries in the case mapping array
+      Stream.ReadBuffer(Size, 4);
+      SetLength(CaseMapping, Size);
+      for I := 0 to Size - 1 do
+        with CaseMapping[I] do
+        begin
+          // a) read actual code point
+          Stream.ReadBuffer(Code, 4);
+          // b) read lower case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(Lower, Size);
+            Stream.ReadBuffer(Lower[0], Size * SizeOf(Cardinal));
+          end;
+          // c) read title case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(Title, Size);
+            Stream.ReadBuffer(Title[0], Size * SizeOf(Cardinal));
+          end;
+          // d) read upper case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(Upper, Size);
+            Stream.ReadBuffer(Upper[0], Size * SizeOf(Cardinal));
+          end;
+        end;
+    finally
+      Stream.Free;
     end;
-
-    // Set the node count and lengths of the upper and lower case mapping tables.
-    CaseMapSize := Header.Count * 3;
-    CaseLengths[0] := Header.Len[0] * 3;
-    CaseLengths[1] := Header.Len[1] * 3;
-
-    SetLength(CaseMap, CaseMapSize);
-
-    // Load the case mapping table.
-    Stream.Read(CaseMap[0], CaseMapSize * SizeOf(Cardinal));
-
-    // Do an endian swap if necessary.
-    if Header.BOM = BOM_MSB_FIRST then
-    begin
-      for I := 0 to CaseMapSize -1 do
-        CaseMap[I] := SwapCardinal(CaseMap[I]);
-    end;
-    Stream.Free;
   end;
   LoadInProgress.Leave;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function CaseLookup(Code: Cardinal; L, R, Field: Integer): Cardinal;
+function CaseLookup(Code: Cardinal; Mapping: Cardinal): TUCS4Array;
+
+// Performs a lookup of the given code and returns its case mapping if found.
+// Mapping must be 0 for lower case, 1 for title case and 2 for upper case, respectively.
+// If Code could not be found then the result is a mapping of length 1 with the Code itself.
+// Otherwise an array of code points is returned which represent the mapping
+// (e.g. title case for ß (german es-zed) is Ss (two characters)).
+
 var
-  M: Integer;
+  L, R, M: Integer;
+
 begin
   // load case mapping data if not already done
-  if CaseMap = nil then
+  if CaseMapping = nil then
     LoadUnicodeCaseData;
 
-  // Do the binary search.
+  L := 0;
+  R := High(CaseMapping);
   while L <= R do
   begin
-    // Determine a "mid" point and adjust to make sure the mid point is at
-    // the beginning of a case mapping triple.
     M := (L + R) shr 1;
-    Dec(M, M mod 3);
-    if Code > CaseMap[M] then
-      L := M + 3
+    if Code > CaseMapping[M].Code then
+      L := M + 1
     else
     begin
-      if Code < CaseMap[M] then
-        R := M - 3
+      if Code < CaseMapping[M].Code then
+        R := M - 1
       else
       begin
-        if Code = CaseMap[M] then
-        begin
-          Result := CaseMap[M + Field];
-          Exit;
+        case Mapping of
+          0:
+            Result := Copy(CaseMapping[M].Lower, 0, Length(CaseMapping[M].Lower));
+          1:
+            Result := Copy(CaseMapping[M].Title, 0, Length(CaseMapping[M].Title));
+          2:
+            Result := Copy(CaseMapping[M].Upper, 0, Length(CaseMapping[M].Upper));
         end;
+        if Assigned(Result) then
+          Exit
+        else
+          Break;
       end;
     end;
   end;
-
-  Result := Code;
+  // If we come here then the code was not found or there is no mapping, hence retuned the code as result.
+  SetLength(Result, 1);
+  Result[0] := Code;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeToUpper(Code: UCS4): UCS4;
-var
-  Field,
-  L, R: Integer;
+function UnicodeToUpper(Code: UCS4): TUCS4Array;
+
 begin
-  // load case mapping data if not already done
-  if CaseMap = nil then
-    LoadUnicodeCaseData;
+  Result := CaseLookup(Code, 2);
+end;                            
 
-  if UnicodeIsUpper(Code) then
-    Result := Code
-  else
-  begin
-    if UnicodeIsLower(Code) then
-    begin
-      Field := 2;
-      L := CaseLengths[0];
-      R := (L + CaseLengths[1]) - 3;
-    end
-    else
-    begin
-      Field := 1;
-      L := CaseLengths[0] + CaseLengths[1];
-      R := CaseMapSize - 3;
-    end;
-    Result := CaseLookup(Code, L, R, Field);
-  end;
-end;
+//----------------------------------------------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+function UnicodeToLower(Code: UCS4): TUCS4Array;
 
-function UnicodeToLower(Code: UCS4): UCS4;
-var
-  Field,
-  L, R: Integer;
 begin
-  // load case mapping data if not already done
-  if CaseMap = nil then
-    LoadUnicodeCaseData;
-
-  if UnicodeIsLower(Code) then
-    Result := Code
-  else
-  begin
-    if UnicodeIsUpper(Code) then
-    begin
-      Field := 1;
-      L := 0;
-      R := CaseLengths[0] - 3;
-    end
-    else
-    begin
-      Field := 2;
-      L := CaseLengths[0] + CaseLengths[1];
-      R := CaseMapSize - 3;
-    end;
-    Result := CaseLookup(Code, L, R, Field);
-  end;
+  Result := CaseLookup(Code, 0);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeToTitle(Code: UCS4): UCS4;
-var
-  Field,
-  L, R: Integer;
+function UnicodeToTitle(Code: UCS4): TUCS4Array;
+
 begin
-  // load case mapping data if not already done
-  if CaseMap = nil then
-    LoadUnicodeCaseData;
-
-  if UnicodeIsTitle(Code) then
-    Result := Code
-  else
-  begin
-    // The offset will always be the same for converting to title case.
-    Field := 2;
-
-    if UnicodeIsUpper(Code) then
-    begin
-      L := 0;
-      R := CaseLengths[0] - 3;
-    end
-    else
-    begin
-      L := CaseLengths[0];
-      R := (L + CaseLengths[1]) - 3;
-    end;
-    Result := CaseLookup(Code, L, R, Field);
-  end;
+  Result := CaseLookup(Code, 1);
 end;
 
-//==============================================================================
-//  Support for decomposition
-//==============================================================================
+//----------------- support for decomposition --------------------------------------------------------------------------
 
 const
-
-// Constants for hangul composition and decomposition (this is done
-// algorithmically saving so significant memory)
-
+  // constants for hangul composition and decomposition (this is done
+  // algorithmically saving so significant memory)
   SBase = $AC00;
   LBase = $1100;
   VBase = $1161;
@@ -1307,60 +1189,67 @@ const
   NCount = VCount * TCount;   // 588
   SCount = LCount * NCount;   // 11172
 
-var
-  DecompositionSize: Cardinal;
-  DecompositionNodes, Decompositions: TCardinalArray;
+type
+  TDecomposition = record
+    Code: Cardinal;
+    Decompositions: TUCS4Array;
+  end;
 
-//------------------------------------------------------------------------------
+var
+  // list of decomposition
+  Decompositions: array of TDecomposition;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure LoadUnicodeDecompositionData;
+
 var
   Stream: TResourceStream;
-  I: Cardinal;
-  Header: TUHeader;
+  I, Size: Integer;
+
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
     LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
-  if Decompositions = nil then
-  begin
-    Stream := TResourceStream.Create(HInstance, 'DECOMPOSE', 'UNICODE');
-    Stream.Read(Header, SizeOf(Header));
-
-    if Header.BOM = BOM_MSB_FIRST then
+  try
+    if Decompositions = nil then
     begin
-      Header.Count := Swap(Header.Count);
-      Header.Bytes := SwapCardinal(Header.Bytes);
+      Stream := TResourceStream.Create(HInstance, 'DECOMPOSITION', 'UNICODEDATA');
+      try
+        // determine how many decomposition entries we have
+        Stream.ReadBuffer(Size, 4);
+        SetLength(Decompositions, Size);
+        for I := 0 to High(Decompositions) do
+          with Decompositions[I] do
+          begin
+            Stream.ReadBuffer(Code, 4);
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
+            begin
+              SetLength(Decompositions, Size);
+              Stream.ReadBuffer(Decompositions[0], Size * 4);
+            end;
+          end;
+      finally
+        Stream.Free;
+      end;
     end;
-
-    DecompositionSize := Header.Count shl 1; // two values per node
-    SetLength(DecompositionNodes, DecompositionSize + 1); // one entry more (the sentinel)
-    Stream.Read(DecompositionNodes[0], (DecompositionSize + 1) * SizeOf(Cardinal));
-    SetLength(Decompositions, (Header.Bytes div SizeOf(Cardinal)) - DecompositionSize - 1);
-    Stream.Read(Decompositions[0], Length(Decompositions) * SizeOf(Cardinal));
-
-    // Do an endian swap if necessary.
-    if Header.BOM = BOM_MSB_FIRST then
-    begin
-      for I := 0 to High(DecompositionNodes) do
-        DecompositionNodes[I] := SwapCardinal(DecompositionNodes[I]);
-      for I := 0 to High(Decompositions) do
-        Decompositions[I] := SwapCardinal(Decompositions[I]);
-    end;
-    Stream.Free;
+  finally
+    LoadInProgress.Leave;
   end;
-
-  LoadInProgress.Leave;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeDecomposeHangul(Code: UCS4): TCardinalArray;
-// algorithmically decompose hangul character using some predefined contstants
+function UnicodeDecomposeHangul(Code: UCS4): TUCS4Array;
+
+// algorithmically decomposes hangul character
+
 var
   Rest: Integer;
+  
 begin
   if not UnicodeIsHangul(Code) then
     Result := nil
@@ -1379,17 +1268,19 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeDecompose(Code: UCS4): TCardinalArray;
+function UnicodeDecompose(Code: UCS4): TUCS4Array;
+
 var
   L, R, M: Integer;
+
 begin
   // load decomposition data if not already done
   if Decompositions = nil then
     LoadUnicodeDecompositionData;
 
-  if not UnicodeIsComposite(Code) then
+  if not UnicodeIsComposed(Code) then
   begin
     // return the code itself if it is not a composite
     SetLength(Result, 1);
@@ -1402,195 +1293,209 @@ begin
     if Result = nil then
     begin
       L := 0;
-      R := DecompositionNodes[DecompositionSize] - 1;
+      R := High(Decompositions);
 
       while L <= R do
       begin
-        // Determine a "mid" point and adjust to make sure the mid point is at
-        // the beginning of a code + offset pair.
         M := (L + R) shr 1;
-        Dec(M, M and 1);
-        if Code > DecompositionNodes[M] then
-          L := M + 2
+        if Code > Decompositions[M].Code then
+          L := M + 1
         else
-          if Code < DecompositionNodes[M] then
-            R := M - 2
+          if Code < Decompositions[M].Code then
+            R := M - 1
           else
-            if Code = DecompositionNodes[M] then
-            begin
-              // found a decomposition, return the codes
-              SetLength(Result, DecompositionNodes[M + 3] - DecompositionNodes[M + 1] - 1);
-              Move(Decompositions[DecompositionNodes[M + 1]], Result[0],
-                Length(Result) * SizeOf(Cardinal));
-              Break;
-            end;
+          begin
+            // found a decomposition, return the codes
+            with Decompositions[M] do
+              Result := Copy(Decompositions, 0, Length(Decompositions));
+            Break;
+          end;
       end;
     end;
   end;
 end;
 
-//==============================================================================
-// Support for combining classes
-//==============================================================================
+//----------------- support for combining classes ----------------------------------------------------------------------
 
 var
-  CCLSize: Cardinal;
-  CCLNodes: TCardinalArray;
+  // canonical combining classes
+  CCCsLoaded: Boolean;
+  CCCs: array[Byte] of TRangeArray;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure LoadUnicodeCombiningData;
+
 var
   Stream: TResourceStream;
-  I: Cardinal;
-  Header: TUHeader;
+  I, Size: Cardinal;
+
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
     LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
-  if CCLNodes = nil then
-  begin
-    Stream := TResourceStream.Create(HInstance, 'COMBINE', 'UNICODE');
-    Stream.Read(Header, SizeOf(Header));
-
-    if Header.BOM = BOM_MSB_FIRST then
+  try
+    if not CCCsLoaded then
     begin
-      Header.Count := Swap(Header.Count);
-      Header.Bytes := SwapCardinal(Header.Bytes);
-    end;
-
-    CCLSize := Header.Count * 3;
-    SetLength(CCLNodes, CCLSize);
-    Stream.Read(CCLNodes[0], CCLSize * SizeOf(Cardinal));
-
-    if Header.BOM = BOM_MSB_FIRST then
-      for I := 0 to CCLSize - 1 do
-        CCLNodes[I] := SwapCardinal(CCLNodes[I]);
-
-    Stream.Free;
-  end;
-  LoadInProgress.Leave;
-end;
-
-//------------------------------------------------------------------------------
-
-function UnicodeCanonicalClass(Code: Cardinal): Cardinal;
-var
-  L, R, M: Integer;
-begin
-  // load combination data if not already done
-  if CCLNodes = nil then
-    LoadUnicodeCombiningData;
-
-  Result := 0;
-  L := 0;
-  R := CCLSize - 1;
-
-  while L <= R do
-  begin
-    M := (L + R) shr 1;
-    Dec(M, M mod 3);
-    if Code > CCLNodes[M + 1] then
-      L := M + 3
-    else
-    begin
-      if Code < CCLNodes[M] then
-        R := M - 3
-      else
-      begin
-        if (Code >= CCLNodes[M]) and (Code <= CCLNodes[M + 1]) then
+      Stream := TResourceStream.Create(HInstance, 'COMBINING', 'UNICODEDATA');
+      try
+        while Stream.Position < Stream.Size do
         begin
-          Result := CCLNodes[M + 2];
-          Break;
+          // a) determine which class is stored here
+          Stream.ReadBuffer(I, 4);
+          // b) determine how many ranges are assigned to this class
+          Stream.ReadBuffer(Size, 4);
+          // c) read start and stop code of each range
+          if Size > 0 then
+          begin
+            SetLength(CCCs[I], Size);
+            Stream.ReadBuffer(CCCs[I][0], Size * SizeOf(TRange));
+          end;
         end;
+        CCCsLoaded := True;
+      finally
+        Stream.Free;
       end;
     end;
+  finally
+    LoadInProgress.Leave;
   end;
 end;
 
-//----------------- Support for numeric values ---------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 
 var
-  NumberSize: Cardinal;
-  NumberNodes: TCardinalArray;
-  NumberValues: TWordArray;
+  L, R,
+  M, C, I: Integer;
 
-//------------------------------------------------------------------------------
+begin
+  // load combining class data if not already done
+  if not CCCsLoaded then
+    LoadUnicodeCombiningData;
+
+  // only marks can have a combining class other than 0
+  Result := 0;
+  if CategoryLookup(Code, ClassMark) then
+  begin
+    // case 0 is already handled above
+    I := 1;
+    repeat
+      // go through all defined combining classes
+      if Assigned(CCCs[I]) and (CCCs[I][0].Start <= Code) and (CCCs[I][0].Stop >= Code) then
+      begin
+        L := 0;
+        R := High(CCCs[I]);
+
+        while L <= R do
+        begin
+          M := (L + R) shr 1;
+          C := Integer(CCCs[I][M].Start) - Integer(Code);
+          if C > 0 then
+            R := M - 1
+          else
+            if (C = 0) or (CCCs[I][M].Stop >= Code) then
+            begin
+              Result := I;
+              Exit;
+            end
+            else
+              L := M + 1;
+        end;
+      end;
+      Inc(I);
+    until I = 256;
+  end;
+end;
+
+//----------------- support for numeric values -------------------------------------------------------------------------
+
+type
+  // structures for handling numbers
+  TCodeIndex = record
+    Code,
+    Index: Cardinal;
+  end;
+
+var
+  // array to hold the number equivalents for specific codes
+  NumberCodes: array of TCodeIndex;
+  // array of numbers used in NumberCodes
+  Numbers: array of TUcNumber;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure LoadUnicodeNumberData;
+
 var
   Stream: TResourceStream;
-  I: Cardinal;
-  Header: TUHeader;
+  Size: Cardinal;
+
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
     LoadInProgress := TCriticalSection.Create;
   LoadInProgress.Enter;
 
-  if NumberNodes = nil then
-  begin
-    Stream := TResourceStream.Create(HInstance, 'NUMBERS', 'UNICODE');
-    Stream.Read(Header, SizeOf(Header));
-
-    if Header.BOM = BOM_MSB_FIRST then
+  try
+    if NumberCodes = nil then
     begin
-      Header.Count := Swap(Header.Count);
-      Header.Bytes := SwapCardinal(Header.Bytes);
-    end;
+      Stream := TResourceStream.Create(HInstance, 'NUMBERS', 'UNICODEDATA');
+      // Numbers are special (compared to other Unicode data) as they utilize two
+      // arrays, one containing all used numbers (in nominator-denominator format) and
+      // another one which maps a code point to one of the numbers in the first array.
 
-    NumberSize := Header.Count;
-    SetLength(NumberNodes, NumberSize);
-    Stream.Read(NumberNodes[0], NumberSize * SizeOf(Cardinal));
-    SetLength(NumberValues, (Header.Bytes - NumberSize * SizeOf(Cardinal)) div SizeOf(Word));
-    Stream.Read(NumberValues[0], Length(NumberValues) * SizeOf(Word));
-
-    if Header.BOM = BOM_MSB_FIRST then
-    begin
-      for I := 0 to High(NumberNodes) do
-        NumberNodes[I] := SwapCardinal(NumberNodes[I]);
-      for I := 0 to High(NumberValues) do
-        NumberValues[I] := Swap(NumberValues[I]);
+      // a) determine size of numbers array
+      Stream.ReadBuffer(Size, 4);
+      SetLength(Numbers, Size);
+      // b) read numbers data
+      Stream.ReadBuffer(Numbers[0], Size * SizeOf(TUcNumber));
+      // c) determine size of index array
+      Stream.ReadBuffer(Size, 4);
+      SetLength(NumberCodes, Size);
+      // d) read index data
+      Stream.ReadBuffer(NumberCodes[0], Size * SizeOf(TCodeIndex));
+      Stream.Free;
     end;
-    Stream.Free;
+  finally
+    LoadInProgress.Leave;
   end;
-  LoadInProgress.Leave;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeNumberLookup(Code: UCS4; var num: TUNumber): Boolean;
+function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
+
+// Searches for the given code and returns its number equivalent (if there is one).
+// Typical cases are: '1/6' (U+2159), '3/8' (U+215C), 'XII' (U+216B) etc.
+// Result is set to True if the code could be found.
+
 var
   L, R, M: Integer;
-  VP: PWord;
+
 begin
   // load number data if not already done
-  if NumberNodes = nil then
+  if NumberCodes = nil then
     LoadUnicodeNumberData;
 
   Result := False;
   L := 0;
-  R := NumberSize - 1;
+  R := High(NumberCodes);
   while L <= R do
   begin
-    // Determine a "mid" point and adjust to make sure the mid point is at
-    // the beginning of a code+offset pair.
     M := (L + R) shr 1;
-    Dec(M, M and 1);
-    if Code > NumberNodes[M] then
-      L := M + 2
+    if Code > NumberCodes[M].Code then
+      L := M + 1
     else
     begin
-      if Code < NumberNodes[M] then
-        R := M - 2
+      if Code < NumberCodes[M].Code then
+        R := M - 1
       else
       begin
-        VP := Pointer(Cardinal(@NumberValues[0]) + NumberNodes[M + 1]);
-        num.numerator := VP^;
-        Inc(VP);
-        num.denominator := VP^;
+        Number := Numbers[NumberCodes[M].Index];
         Result := True;
         Break;
       end;
@@ -1598,117 +1503,56 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-function UnicodeDigitLookup(Code: UCS4; var Digit: Integer): Boolean;
-var
-  L, R, M: Integer;
-  VP: PWord;
-begin
-  // load number data if not already done
-  if NumberNodes = nil then
-    LoadUnicodeNumberData;
-
-  Result := False;
-  L := 0;
-  R := NumberSize - 1;
-  while L <= R do
-  begin
-    // Determine a "mid" point and adjust to make sure the mid point is at
-    // the beginning of a code+offset pair.
-    M := (L + R) shr 1;
-    Dec(M, M and 1);
-    if Code > NumberNodes[M] then
-      L := M + 2
-    else
-    begin
-      if Code < NumberNodes[M] then
-        R := M - 2
-      else
-      begin
-        VP := Pointer(Cardinal(@NumberValues[0]) + NumberNodes[M + 1]);
-        M := VP^;
-        Inc(VP);
-        if M = VP^ then
-        begin
-          Digit := M;
-          Result := True;
-        end;
-        Break;
-      end;
-    end;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function UnicodeGetNumber(Code: UCS4): TUNumber;
-begin
-  // Initialize with some arbitrary value, because the caller simply cannot
-  // tell for sure if the code is a number without calling the ucisnumber()
-  // macro before calling this function.
-  Result.Numerator := -4711;
-  Result.Denominator := -4711;
-
-  UnicodeNumberLookup(Code, Result);
-end;
-
-//------------------------------------------------------------------------------
-
-function UnicodeGetDigit(Code: UCS4): Integer;
-begin
-  // Initialize with some arbitrary value, because the caller simply cannot
-  // tell for sure if the code is a number without calling the ucisdigit()
-  //  macro before calling this function.
-  Result := -4711;
-  UnicodeDigitLookup(Code, Result);
-end;
-
-//==============================================================================
-// TSearchEngine
-//==============================================================================
+//----------------- TSearchEngine --------------------------------------------------------------------------------------
 
 constructor TSearchEngine.Create(AOwner: TWideStrings);
+
 begin
   FOwner := AOwner;
   FResults := TList.Create;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 destructor TSearchEngine.Destroy;
+
 begin
   Clear;
   FResults.Free;
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TSearchEngine.AddResult(Start, Stop: Cardinal);
+
 begin
   FResults.Add(Pointer(Start));
   FResults.Add(Pointer(Stop));
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TSearchEngine.Clear;
+
 begin
   ClearResults;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TSearchEngine.ClearResults;
+
 begin
   FResults.Clear;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TSearchEngine.DeleteResult(Index: Cardinal);
+
 // explicitly deletes a search result
+
 begin
   with FResults do
   begin
@@ -1719,43 +1563,32 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TSearchEngine.GetCount: Integer;
+
 // returns the number of matches found
+
 begin
   Result := FResults.Count div 2;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TSearchEngine.GetResult(Index: Cardinal; var Start, Stop: Integer);
+
 // returns the start position of a match (end position can be determined by
 // adding the length of the pattern to the start position)
+
 begin
   Start := Cardinal(FResults[2 * Index]);
   Stop := Cardinal(FResults[2 * Index + 1]);
 end;
 
-//==============================================================================
-//  TUTBMSearch
-//==============================================================================
-
-constructor TUTBMSearch.Create(AOwner: TWideStrings);
-begin
-  inherited;
-end;
-
-//------------------------------------------------------------------------------
-
-destructor TUTBMSearch.Destroy;
-begin
-  inherited Destroy;
-end;
-
-//------------------------------------------------------------------------------
+//----------------- TUTBSearch -----------------------------------------------------------------------------------------
 
 procedure TUTBMSearch.ClearPattern;
+
 begin
   FreeMem(FPattern);
   FPattern := nil;
@@ -1769,14 +1602,18 @@ begin
   FMD4 := 0;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TUTBMSearch.GetSkipValue(TextStart, TextEnd: PUCS2): Cardinal;
+
 // looks up the SkipValues value for a character
+
 var
- I: Integer;
- C1, C2: UCS4;
- Sp: PUTBMSkip;
+  I: Integer;
+  C1,
+  C2: UCS4;
+  Sp: PUTBMSkip;
+
 begin
   Result := 0;
   if Cardinal(TextStart) < Cardinal(TextEnd) then
@@ -1809,9 +1646,10 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TUTBMSearch.Match(Text, Start, Stop: PUCS2; var MatchStart, MatchEnd: Cardinal): Boolean;
+
 // Checks once whether the text at position Start (which points to the end of the
 // current text part to be matched) matches.
 // Note: If whole words only are allowed then the left and right border tests are
@@ -1833,11 +1671,13 @@ function TUTBMSearch.Match(Text, Start, Stop: PUCS2; var MatchStart, MatchEnd: C
 //       the selection from an editor) it is still assumed that a pattern matching
 //       from the first position on (from the search string start) also matches
 //       when whole words only are allowed.
+
 var
   CheckSpace: Boolean;
   C1, C2: UCS4;
   Count: Integer;
   Cp: PUTBMChar;
+
 begin
   // be pessimistic
   Result := False;
@@ -1987,9 +1827,10 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TUTBMSearch.Compile(Pattern: PUCS2; PatternLength: Integer; Flags: TSearchFlags);
+
 var
   HaveSpace: Boolean;
   I, J, K,
@@ -1998,6 +1839,7 @@ var
   Sp: PUTBMSkip;
   C1, C2,
   Sentinel: UCS4;
+
 begin
   if (Pattern <> nil) and (Pattern^ <> #0) and (PatternLength > 0) then
   begin
@@ -2073,9 +1915,10 @@ begin
       // add the character
       if not (sfCaseSensitive in Flags) then
       begin
-        Cp.UpCase := UnicodeToUpper(C1);
-        Cp.LoCase := UnicodeToLower(C1);
-        Cp.TitleCase := UnicodeToTitle(C1);
+        // TODO: use the entire mapping, not only the first character
+        Cp.UpCase := UnicodeToUpper(C1)[0];
+        Cp.LoCase := UnicodeToLower(C1)[0];
+        Cp.TitleCase := UnicodeToTitle(C1)[0];
       end
       else
       begin
@@ -2151,15 +1994,17 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function TUTBMSearch.Find(Text: PUCS2; TextLen: Cardinal; var MatchStart,
-  MatchEnd: Cardinal): Boolean;
+function TUTBMSearch.Find(Text: PUCS2; TextLen: Cardinal; var MatchStart, MatchEnd: Cardinal): Boolean;
+
 // this is the main matching routine using a tuned Boyer-Moore algorithm
+
 var
   K: Cardinal;
   Start,
   Stop: PUCS2;
+
 begin
   Result := False;
   if (FPattern <> nil) and (FPatternUsed > 0) and (Text <> nil) and
@@ -2206,30 +2051,35 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TUTBMSearch.Clear;
+
 begin
   ClearPattern;
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TUTBMSearch.FindAll(const Text: WideString): Boolean;
+
 begin
   Result := FindAll(PWideChar(Text), Length(Text));
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TUTBMSearch.FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean;
+
 // Looks for all occurences of the pattern passed to FindPrepare and creates an
 // internal list of their positions.
+
 var
   Start, Stop: Cardinal;
   Run: PWideChar;
   RunLen: Cardinal;
+  
 begin
   ClearResults;
   Run := Text;
@@ -2246,13 +2096,15 @@ begin
   Result := Count > 0;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TUTBMSearch.FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean;
+
 // Looks for the first occurence of the pattern passed to FindPrepare in Text and
 // returns True if one could be found (in which case Start and Stop are set to
 // the according indices) otherwise False. This function is in particular of
 // interest if only one occurence needs to be found.
+
 begin
   ClearResults;
   Result := Find(PWideChar(Text), Length(Text), Start, Stop);
@@ -2260,11 +2112,12 @@ begin
     AddResult(Start, Stop);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function TUTBMSearch.FindFirst(const Text: PWideChar; TextLen: Cardinal;
-  var Start, Stop: Cardinal): Boolean;
+function TUTBMSearch.FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
+
 // Same as the WideString version of this method.
+
 begin
   ClearResults;
   Result := Find(Text, TextLen, Start, Stop);
@@ -2272,67 +2125,28 @@ begin
     AddResult(Start, Stop);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TUTBMSearch.FindPrepare(const Pattern: WideString; Options: TSearchFlags);
+
 begin
   FindPrepare(PWideChar(Pattern), Length(Pattern), Options);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-procedure TUTBMSearch.FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal;
-  Options: TSearchFlags);
-// prepare following search by compiling the given pattern into an internal structure
+procedure TUTBMSearch.FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
+
+// prepares following search by compiling the given pattern into an internal structure
+
 begin
   Compile(Pattern, PatternLength, Options);
 end;
 
-//==============================================================================
-// Unicode RE search core
-//==============================================================================
+//----------------- Unicode RE search core -----------------------------------------------------------------------------
 
 const
-  _URE_NONSPACING = $00000001;
-  _URE_COMBINING = $00000002;
-  _URE_NUMDIGIT = $00000004;
-  _URE_NUMOTHER = $00000008;
-  _URE_SPACESEP = $00000010;
-  _URE_LINESEP = $00000020;
-  _URE_PARASEP = $00000040;
-  _URE_CNTRL = $00000080;
-  _URE_PRIVATE = $00000100;
-
-  _URE_UPPER = $00000200;
-  _URE_LOWER = $00000400;
-  _URE_TITLE = $00000800;
-  _URE_MODIFIER = $00001000;
-  _URE_OTHERLETTER = $00002000;
-  _URE_DASHPUNCT = $00004000;
-  _URE_OPENPUNCT = $00008000;
-  _URE_CLOSEPUNCT = $00010000;
-  _URE_OTHERPUNCT = $00020000;
-  _URE_MATHSYM = $00040000;
-  _URE_CURRENCYSYM = $00080000;
-  _URE_OTHERSYM = $00100000;
-
-  _URE_LTR = $00200000;
-  _URE_RTL = $00400000;
-
-  _URE_EURONUM = $00800000;
-  _URE_EURONUMSEP = $01000000;
-  _URE_EURONUMTERM = $02000000;
-  _URE_ARABNUM = $04000000;
-  _URE_COMMONSEP = $08000000;
-
-  _URE_BLOCKSEP = $10000000;
-  _URE_SEGMENTSEP = $20000000;
-
-  _URE_WHITESPACE = $40000000;
-  _URE_OTHERNEUT = $80000000;
-
-  // Error codes
-
+  // error codes
   _URE_OK = 0;
   _URE_UNEXPECTED_EOS = -1;
   _URE_CCLASS_OPEN = -2;
@@ -2342,57 +2156,15 @@ const
   _URE_RANGE_OPEN = -6;
 
   // options that can be combined for searching
-
   URE_IGNORE_NONSPACING = $01;
   URE_DONT_MATCHES_SEPARATORS = $02;
 
 const
-
   // Flags used internally in the DFA
-
   _URE_DFA_CASEFOLD = $01;
   _URE_DFA_BLANKLINE = $02;
 
-  CClassFlags: array [0..32] of Cardinal = (
-    0,
-    _URE_NONSPACING,
-    _URE_COMBINING,
-    _URE_NUMDIGIT,
-    _URE_NUMOTHER,
-    _URE_SPACESEP,
-    _URE_LINESEP,
-    _URE_PARASEP,
-    _URE_CNTRL,
-    _URE_PRIVATE,
-    _URE_UPPER,
-    _URE_LOWER,
-    _URE_TITLE,
-    _URE_MODIFIER,
-    _URE_OTHERLETTER,
-    _URE_DASHPUNCT,
-    _URE_OPENPUNCT,
-    _URE_CLOSEPUNCT,
-    _URE_OTHERPUNCT,
-    _URE_MATHSYM,
-    _URE_CURRENCYSYM,
-    _URE_OTHERSYM,
-    _URE_LTR,
-    _URE_RTL,
-    _URE_EURONUM,
-    _URE_EURONUMSEP,
-    _URE_EURONUMTERM,
-    _URE_ARABNUM,
-    _URE_COMMONSEP,
-    _URE_BLOCKSEP,
-    _URE_SEGMENTSEP,
-    _URE_WHITESPACE,
-    _URE_OTHERNEUT
-  );
-
-const
-
   // symbol types for the DFA
-
   _URE_ANY_CHAR = 1;
   _URE_CHAR = 2;
   _URE_CCLASS = 3;
@@ -2401,7 +2173,6 @@ const
   _URE_EOL_ANCHOR = 6;
 
   // op codes for converting the NFA to a DFA
-
   _URE_SYMBOL = 10;
   _URE_PAREN = 11;
   _URE_QUEST = 12;
@@ -2413,37 +2184,20 @@ const
 
   _URE_NOOP = $FFFF;
 
-  _URE_REGSTART = $8000;
-  _URE_REGEND = $4000;
-
-//==============================================================================
-// TURESearch
-//==============================================================================
-
-constructor TURESearch.Create(AOwner: TWideStrings);
-begin
-  inherited;
-end;
-
-//------------------------------------------------------------------------------
-
-destructor TURESearch.Destroy;
-begin
-  inherited Destroy;
-end;
-
-//------------------------------------------------------------------------------
+//----------------- TURESearch -----------------------------------------------------------------------------------------
 
 procedure TURESearch.Clear;
+
 begin
   inherited;
   ClearUREBuffer;
   ClearDFA;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.Push(V: Cardinal);
+
 begin
   with FUREBuffer do
   begin
@@ -2463,9 +2217,10 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.Peek: Cardinal;
+
 begin
   if FUREBuffer.Stack.ListUsed = 0 then
     Result := _URE_NOOP
@@ -2473,9 +2228,10 @@ begin
     Result := FUREBuffer.Stack.List[FUREBuffer.Stack.ListUsed - 1];
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.Pop: Cardinal;
+
 begin
   if FUREBuffer.Stack.ListUsed = 0 then
     Result := _URE_NOOP
@@ -2488,38 +2244,40 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.ParsePropertyList(Properties: PUCS2; Limit: Cardinal;
-  var Mask: Cardinal): Cardinal;
+  var Categories: TCharacterCategories): Cardinal;
+
 // Parse a comma-separated list of integers that represent character properties.
-// Combine them into a mask that is returned in the 'mask' variable, and return
-// the number of characters consumed.
+// Combine them into a set of categories and return the number of characters consumed.
+
 var
-  M, N: Cardinal;
+  N: Cardinal;
   Run,
   ListEnd: PUCS2;
+
 begin
   Run := Properties;
   ListEnd := Run + Limit;
 
-  M := 0;
   N := 0;
+  Categories := [];
   while (FUREBuffer.Error = _URE_OK) and (Run < ListEnd) do
   begin
     if Run^ = ',' then
     begin
-      // Encountered a comma, so select the next character property flag and
+      // Encountered a comma, so take the number parsed so far as category and
       // reset the number.
-      M := M or CClassFlags[N];
+      Include(Categories, TCharacterCategory(N));
       N := 0;
     end
     else
     begin
       if (Run^ >= '0') and (Run^ <= '9') then
       begin
-        // Encountered a digit, so start or Continue building the cardinal that
-        // represents the character property flag.
+        // Encountered a digit, so start or continue building the cardinal that
+        // represents the character category.
         N := (N * 10) + Cardinal(Word(Run^) - Ord('0'));
       end
       else
@@ -2530,31 +2288,28 @@ begin
       end;
     end;
 
-    // If a property number greater than 32 occurs, then there is a problem.
+    // If the number is to large then there is a problem.
     // Most likely a missing comma separator.
-    if N > 32 then
+    if Integer(N) > Ord(High(TCharacterCategory)) then
       FUREBuffer.Error := _URE_INVALID_PROPERTY;
     Inc(Run);
   end;
-
-  if N in [1..32] then
-    M := M or CClassFlags[N];
-
-  // Set the mask that represents the group of character properties.
-  Mask := M;
 
   // Return the number of characters consumed.
   Result := Run - Properties;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.MakeHexNumber(NP: PUCS2; Limit: Cardinal; var Number: Cardinal): Cardinal;
+
 // Collect a hex number with 1 to 4 digits and return the number of characters used.
+
 var
   I: Integer;
   Run,
   ListEnd: PUCS2;
+  
 begin
   Run := np;
   ListEnd := Run + Limit;
@@ -2584,21 +2339,25 @@ begin
   Result := Run - NP;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.AddRange(var CCL: TUcCClass; Range: TUcRange);
+
 // Insert a Range into a character class, removing duplicates and ordering them
 // in increasing Range-start order.
+
 var
   I: Integer;
   Temp: UCS4;
+
 begin
   // If the `Casefold' flag is set, then make sure both endpoints of the Range
   // are converted to lower.
   if (FUREBuffer.Flags and _URE_DFA_CASEFOLD) <> 0 then
   begin
-    Range.MinCode := UnicodeToLower(Range.MinCode);
-    Range.MaxCode := UnicodeToLower(Range.MaxCode);
+    // TODO: use the entire mapping, not only the first character
+    Range.MinCode := UnicodeToLower(Range.MinCode)[0];
+    Range.MaxCode := UnicodeToLower(Range.MaxCode)[0];
   end;
 
   // Swap the Range endpoints if they are not in increasing order.
@@ -2629,17 +2388,7 @@ begin
   Inc(CCL.RangesUsed);
 end;
 
-//------------------------------------------------------------------------------
-
-const
-  _URE_ALPHA_MASK = _URE_UPPER or _URE_LOWER or _URE_OTHERLETTER or _URE_MODIFIER or
-                    _URE_TITLE or _URE_NONSPACING or _URE_COMBINING;
-  _URE_ALNUM_MASK = _URE_ALPHA_MASK or _URE_NUMDIGIT;
-  _URE_PUNCT_MASK = _URE_DASHPUNCT or _URE_OPENPUNCT or _URE_CLOSEPUNCT or _URE_OTHERPUNCT;
-  _URE_GRAPH_MASK = _URE_NUMDIGIT or _URE_NUMOTHER or _URE_ALPHA_MASK or _URE_MATHSYM or
-                    _URE_CURRENCYSYM or _URE_OTHERSYM;
-  _URE_PRINT_MASK = _URE_GRAPH_MASK or _URE_SPACESEP;
-  _URE_SPACE_MASK = _URE_SPACESEP or _URE_LINESEP or _URE_PARASEP;
+//----------------------------------------------------------------------------------------------------------------------
 
 type
   PTrie = ^TTrie;
@@ -2648,23 +2397,18 @@ type
     Len,
     Next: Cardinal;
     Setup: Integer;
-    Mask: Cardinal;
+    Categories: TCharacterCategories;
   end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-procedure TURESearch.CCLSetup(Symbol: PUcSymbolTableEntry; Mask: Cardinal);
-begin
-  Symbol.Props := Symbol.Props or Mask;
-end;
+procedure TURESearch.SpaceSetup(Symbol: PUcSymbolTableEntry; Categories: TCharacterCategories);
 
-//------------------------------------------------------------------------------
-
-procedure TURESearch.SpaceSetup(Symbol: PUcSymbolTableEntry; Mask: Cardinal);
 var
   Range: TUcRange;
+
 begin
-  Symbol.Props := Symbol.Props or Mask;
+  Symbol.Categories := Symbol.Categories + Categories;
 
   Range.MinCode := Word(WideTabulator);
   Range.MaxCode := Word(WideTabulator);
@@ -2683,11 +2427,13 @@ begin
   AddRange(Symbol.Symbol.CCL, Range);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-procedure TURESearch.HexDigitSetup(Symbol: PUcSymbolTableEntry; Mask: Cardinal);
+procedure TURESearch.HexDigitSetup(Symbol: PUcSymbolTableEntry);
+
 var
   Range: TUcRange;
+
 begin
   Range.MinCode := Word('0');
   Range.MaxCode := Word('9');
@@ -2700,87 +2446,92 @@ begin
   AddRange(Symbol.Symbol.CCL, Range);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 const
   CClassTrie: array [0..64] of TTrie = (
-    (Key: #$003A; Len: 1; Next:  1; Setup: 0; Mask: 0),
-    (Key: #$0061; Len: 9; Next: 10; Setup: 0; Mask: 0),
-    (Key: #$0063; Len: 8; Next: 19; Setup: 0; Mask: 0),
-    (Key: #$0064; Len: 7; Next: 24; Setup: 0; Mask: 0),
-    (Key: #$0067; Len: 6; Next: 29; Setup: 0; Mask: 0),
-    (Key: #$006C; Len: 5; Next: 34; Setup: 0; Mask: 0),
-    (Key: #$0070; Len: 4; Next: 39; Setup: 0; Mask: 0),
-    (Key: #$0073; Len: 3; Next: 49; Setup: 0; Mask: 0),
-    (Key: #$0075; Len: 2; Next: 54; Setup: 0; Mask: 0),
-    (Key: #$0078; Len: 1; Next: 59; Setup: 0; Mask: 0),
-    (Key: #$006C; Len: 1; Next: 11; Setup: 0; Mask: 0),
-    (Key: #$006E; Len: 2; Next: 13; Setup: 0; Mask: 0),
-    (Key: #$0070; Len: 1; Next: 16; Setup: 0; Mask: 0),
-    (Key: #$0075; Len: 1; Next: 14; Setup: 0; Mask: 0),
-    (Key: #$006D; Len: 1; Next: 15; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 16; Setup: 1; Mask: _URE_ALNUM_MASK),
-    (Key: #$0068; Len: 1; Next: 17; Setup: 0; Mask: 0),
-    (Key: #$0061; Len: 1; Next: 18; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 19; Setup: 1; Mask: _URE_ALPHA_MASK),
-    (Key: #$006E; Len: 1; Next: 20; Setup: 0; Mask: 0),
-    (Key: #$0074; Len: 1; Next: 21; Setup: 0; Mask: 0),
-    (Key: #$0072; Len: 1; Next: 22; Setup: 0; Mask: 0),
-    (Key: #$006C; Len: 1; Next: 23; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 24; Setup: 1; Mask: _URE_CNTRL),
-    (Key: #$0069; Len: 1; Next: 25; Setup: 0; Mask: 0),
-    (Key: #$0067; Len: 1; Next: 26; Setup: 0; Mask: 0),
-    (Key: #$0069; Len: 1; Next: 27; Setup: 0; Mask: 0),
-    (Key: #$0074; Len: 1; Next: 28; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 29; Setup: 1; Mask: _URE_NUMDIGIT),
-    (Key: #$0072; Len: 1; Next: 30; Setup: 0; Mask: 0),
-    (Key: #$0061; Len: 1; Next: 31; Setup: 0; Mask: 0),
-    (Key: #$0070; Len: 1; Next: 32; Setup: 0; Mask: 0),
-    (Key: #$0068; Len: 1; Next: 33; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 34; Setup: 1; Mask: _URE_GRAPH_MASK),
-    (Key: #$006F; Len: 1; Next: 35; Setup: 0; Mask: 0),
-    (Key: #$0077; Len: 1; Next: 36; Setup: 0; Mask: 0),
-    (Key: #$0065; Len: 1; Next: 37; Setup: 0; Mask: 0),
-    (Key: #$0072; Len: 1; Next: 38; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 39; Setup: 1; Mask: _URE_LOWER),
-    (Key: #$0072; Len: 2; Next: 41; Setup: 0; Mask: 0),
-    (Key: #$0075; Len: 1; Next: 45; Setup: 0; Mask: 0),
-    (Key: #$0069; Len: 1; Next: 42; Setup: 0; Mask: 0),
-    (Key: #$006E; Len: 1; Next: 43; Setup: 0; Mask: 0),
-    (Key: #$0074; Len: 1; Next: 44; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 45; Setup: 1; Mask: _URE_PRINT_MASK),
-    (Key: #$006E; Len: 1; Next: 46; Setup: 0; Mask: 0),
-    (Key: #$0063; Len: 1; Next: 47; Setup: 0; Mask: 0),
-    (Key: #$0074; Len: 1; Next: 48; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 49; Setup: 1; Mask: _URE_PUNCT_MASK),
-    (Key: #$0070; Len: 1; Next: 50; Setup: 0; Mask: 0),
-    (Key: #$0061; Len: 1; Next: 51; Setup: 0; Mask: 0),
-    (Key: #$0063; Len: 1; Next: 52; Setup: 0; Mask: 0),
-    (Key: #$0065; Len: 1; Next: 53; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 54; Setup: 2; Mask: _URE_SPACE_MASK),
-    (Key: #$0070; Len: 1; Next: 55; Setup: 0; Mask: 0),
-    (Key: #$0070; Len: 1; Next: 56; Setup: 0; Mask: 0),
-    (Key: #$0065; Len: 1; Next: 57; Setup: 0; Mask: 0),
-    (Key: #$0072; Len: 1; Next: 58; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 59; Setup: 1; Mask: _URE_UPPER),
-    (Key: #$0064; Len: 1; Next: 60; Setup: 0; Mask: 0),
-    (Key: #$0069; Len: 1; Next: 61; Setup: 0; Mask: 0),
-    (Key: #$0067; Len: 1; Next: 62; Setup: 0; Mask: 0),
-    (Key: #$0069; Len: 1; Next: 63; Setup: 0; Mask: 0),
-    (Key: #$0074; Len: 1; Next: 64; Setup: 0; Mask: 0),
-    (Key: #$003A; Len: 1; Next: 65; Setup: 3; Mask: 0)
+    (Key: #$003A; Len: 1; Next:  1; Setup: 0; Categories: []),
+    (Key: #$0061; Len: 9; Next: 10; Setup: 0; Categories: []),
+    (Key: #$0063; Len: 8; Next: 19; Setup: 0; Categories: []),
+    (Key: #$0064; Len: 7; Next: 24; Setup: 0; Categories: []),
+    (Key: #$0067; Len: 6; Next: 29; Setup: 0; Categories: []),
+    (Key: #$006C; Len: 5; Next: 34; Setup: 0; Categories: []),
+    (Key: #$0070; Len: 4; Next: 39; Setup: 0; Categories: []),
+    (Key: #$0073; Len: 3; Next: 49; Setup: 0; Categories: []),
+    (Key: #$0075; Len: 2; Next: 54; Setup: 0; Categories: []),
+    (Key: #$0078; Len: 1; Next: 59; Setup: 0; Categories: []),
+    (Key: #$006C; Len: 1; Next: 11; Setup: 0; Categories: []),
+    (Key: #$006E; Len: 2; Next: 13; Setup: 0; Categories: []),
+    (Key: #$0070; Len: 1; Next: 16; Setup: 0; Categories: []),
+    (Key: #$0075; Len: 1; Next: 14; Setup: 0; Categories: []),
+    (Key: #$006D; Len: 1; Next: 15; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 16; Setup: 1; Categories: ClassLetter + ClassNumber),
+    (Key: #$0068; Len: 1; Next: 17; Setup: 0; Categories: []),
+    (Key: #$0061; Len: 1; Next: 18; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 19; Setup: 1; Categories: ClassLetter),
+    (Key: #$006E; Len: 1; Next: 20; Setup: 0; Categories: []),
+    (Key: #$0074; Len: 1; Next: 21; Setup: 0; Categories: []),
+    (Key: #$0072; Len: 1; Next: 22; Setup: 0; Categories: []),
+    (Key: #$006C; Len: 1; Next: 23; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 24; Setup: 1; Categories: [ccOtherControl, ccOtherFormat]),
+    (Key: #$0069; Len: 1; Next: 25; Setup: 0; Categories: []),
+    (Key: #$0067; Len: 1; Next: 26; Setup: 0; Categories: []),
+    (Key: #$0069; Len: 1; Next: 27; Setup: 0; Categories: []),
+    (Key: #$0074; Len: 1; Next: 28; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 29; Setup: 1; Categories: ClassNumber),
+    (Key: #$0072; Len: 1; Next: 30; Setup: 0; Categories: []),
+    (Key: #$0061; Len: 1; Next: 31; Setup: 0; Categories: []),
+    (Key: #$0070; Len: 1; Next: 32; Setup: 0; Categories: []),
+    (Key: #$0068; Len: 1; Next: 33; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 34; Setup: 1; Categories: ClassMark + ClassNumber + ClassLetter + ClassPunctuation +
+      ClassSymbol),
+    (Key: #$006F; Len: 1; Next: 35; Setup: 0; Categories: []),
+    (Key: #$0077; Len: 1; Next: 36; Setup: 0; Categories: []),
+    (Key: #$0065; Len: 1; Next: 37; Setup: 0; Categories: []),
+    (Key: #$0072; Len: 1; Next: 38; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 39; Setup: 1; Categories: [ccLetterLowercase]),
+    (Key: #$0072; Len: 2; Next: 41; Setup: 0; Categories: []),
+    (Key: #$0075; Len: 1; Next: 45; Setup: 0; Categories: []),
+    (Key: #$0069; Len: 1; Next: 42; Setup: 0; Categories: []),
+    (Key: #$006E; Len: 1; Next: 43; Setup: 0; Categories: []),
+    (Key: #$0074; Len: 1; Next: 44; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 45; Setup: 1; Categories: ClassMark + ClassNumber + ClassLetter + ClassPunctuation +
+      ClassSymbol + [ccSeparatorSpace]),
+    (Key: #$006E; Len: 1; Next: 46; Setup: 0; Categories: []),
+    (Key: #$0063; Len: 1; Next: 47; Setup: 0; Categories: []),
+    (Key: #$0074; Len: 1; Next: 48; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 49; Setup: 1; Categories: ClassPunctuation),
+    (Key: #$0070; Len: 1; Next: 50; Setup: 0; Categories: []),
+    (Key: #$0061; Len: 1; Next: 51; Setup: 0; Categories: []),
+    (Key: #$0063; Len: 1; Next: 52; Setup: 0; Categories: []),
+    (Key: #$0065; Len: 1; Next: 53; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 54; Setup: 2; Categories: ClassSpace),
+    (Key: #$0070; Len: 1; Next: 55; Setup: 0; Categories: []),
+    (Key: #$0070; Len: 1; Next: 56; Setup: 0; Categories: []),
+    (Key: #$0065; Len: 1; Next: 57; Setup: 0; Categories: []),
+    (Key: #$0072; Len: 1; Next: 58; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 59; Setup: 1; Categories: [ccLetterUppercase]),
+    (Key: #$0064; Len: 1; Next: 60; Setup: 0; Categories: []),
+    (Key: #$0069; Len: 1; Next: 61; Setup: 0; Categories: []),
+    (Key: #$0067; Len: 1; Next: 62; Setup: 0; Categories: []),
+    (Key: #$0069; Len: 1; Next: 63; Setup: 0; Categories: []),
+    (Key: #$0074; Len: 1; Next: 64; Setup: 0; Categories: []),
+    (Key: #$003A; Len: 1; Next: 65; Setup: 3; Categories: [])
   );
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.PosixCCL(CP: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
+
 // Probe for one of the POSIX colon delimited character classes in the static trie.
+
 var
   I: Integer;
   N: Cardinal;
   TP: PTrie;
   Run,
   ListEnd: PUCS2;
+  
 begin
   Result := 0;
   // If the number of characters left is less than 7,
@@ -2820,22 +2571,23 @@ begin
     Result := Run - CP;
     case TP.Setup of
       1:
-        CCLSetup(Symbol, TP.Mask);
+        Symbol.Categories := Symbol.Categories + TP.Categories;
       2:
-        SpaceSetup(Symbol, TP.Mask);
+        SpaceSetup(Symbol, TP.Categories);
       3:
-        HexDigitSetup(Symbol, TP.Mask);
+        HexDigitSetup(Symbol);
     else
       Result := 0;
     end;
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function TURESearch.BuildCharacterClass(CP: PUCS2; Limit: Cardinal;
-  Symbol: PUcSymbolTableEntry): Cardinal;
+function TURESearch.BuildCharacterClass(CP: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
+
 // Construct a list of ranges and return the number of characters consumed.
+
 var
   RangeEnd: Integer;
   N: Cardinal;
@@ -2843,6 +2595,7 @@ var
   ListEnd: PUCS2;
   C, Last: UCS4;
   Range: TUcRange;
+
 begin
   Run := cp;
   ListEnd := Run + Limit;
@@ -2898,11 +2651,11 @@ begin
           C := $0b;
         'p', 'P':
           begin
-            Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Props));
+            Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Categories));
             // Invert the bit mask of the properties if this is a negated character class or if 'P' is used to specify
             // a list of character properties that should *not* match in a character class.
             if C = Ord('P') then
-              Symbol.Props := not Symbol.Props;
+              Symbol.Categories := ClassAll - Symbol.Categories;
             Continue;
           end;
         'x', 'X', 'u', 'U':
@@ -3007,15 +2760,17 @@ begin
   Result := Run - CP;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function TURESearch.ProbeLowSurrogate(LeftState: PUCS2; Limit: Cardinal;
-  var Code: UCS4): Cardinal;
-// Probe for a low surrogate hex code.
+function TURESearch.ProbeLowSurrogate(LeftState: PUCS2; Limit: Cardinal; var Code: UCS4): Cardinal;
+
+// probes for a low surrogate hex code
+
 var
   I: Integer;
   Run,
   ListEnd: PUCS2;
+  
 begin
   I := 0;
   Code := 0;
@@ -3047,13 +2802,15 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.CompileSymbol(S: PUCS2; Limit: Cardinal; Symbol: PUcSymbolTableEntry): Cardinal;
+
 var
   C: UCS4;
   Run,
   ListEnd: PUCS2;
+
 begin
   Run := S;
   ListEnd := S + Limit;
@@ -3081,7 +2838,7 @@ begin
             Symbol.AType :=_URE_CCLASS
           else
             Symbol.AType :=_URE_NCCLASS;
-          Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Props));
+          Inc(Run, ParsePropertyList(Run, ListEnd - Run, Symbol.Categories));
         end;
       'a':
         begin
@@ -3200,8 +2957,9 @@ begin
 
   // Last, make sure any _URE_CHAR type symbols are changed to lower if the
   // 'Casefold' flag is set.
+  // TODO: use the entire mapping, not only the first character
   if ((FUREBuffer.Flags and _URE_DFA_CASEFOLD) <> 0) and (Symbol.AType = _URE_CHAR) then
-    Symbol.Symbol.Chr := UnicodeToLower(Symbol.Symbol.Chr);
+    Symbol.Symbol.Chr := UnicodeToLower(Symbol.Symbol.Chr)[0];
 
   // If the symbol constructed is anything other than one of the anchors,
   // make sure the _URE_DFA_BLANKLINE flag is removed.
@@ -3212,12 +2970,13 @@ begin
   Result := Run - S;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.SymbolsAreDifferent(A, B: PUcSymbolTableEntry): Boolean;
+
 begin
   Result := False;
-  if (A.AType <> B.AType) or (A.Mods <> B.Mods) or (A.Props <> B.Props) then
+  if (A.AType <> B.AType) or (A.Mods <> B.Mods) or (A.Categories <> B.Categories) then
     Result := True
   else
   begin
@@ -3241,14 +3000,17 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.MakeSymbol(S: PUCS2; Limit: Cardinal; var Consumed: Cardinal): Cardinal;
-// Construct a symbol, but only keep unique symbols.
+
+// constructs a symbol, but only keep unique symbols
+
 var
   I: Integer;
   Start: PUcSymbolTableEntry;
   Symbol: TUcSymbolTableEntry;
+
 begin
   // Build the next symbol so we can test to see if it is already in the symbol table.
   FillChar(Symbol, SizeOf(TUcSymbolTableEntry), 0);
@@ -3284,11 +3046,13 @@ begin
   Result := Symbol.ID;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.MakeExpression(AType, LHS, RHS: Cardinal): Cardinal;
+
 var
   I: Integer;
+
 begin
   // Determine if the expression already exists or not.
   with FUREBuffer.ExpressionList do
@@ -3318,19 +3082,23 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function IsSpecial(C: Word): Boolean;
+
 begin
   Result := C in [Word('+'), Word('*'), Word('?'), Word('{'), Word('|'), Word(')')];
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.CollectPendingOperations(var State: Cardinal);
-// collect all pending AND and OR operations and make corresponding expressions
+
+// collects all pending AND and OR operations and make corresponding expressions
+
 var
   Operation: Cardinal;
+
 begin
   repeat
     Operation := Peek;
@@ -3342,11 +3110,13 @@ begin
   until False;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.ConvertRegExpToNFA(RE: PWideChar; RELength: Cardinal): Cardinal;
-// Convert the regular expression into an NFA in a form that will be easy to
+
+// Converts the regular expression into an NFA in a form that will be easy to
 // reduce to a DFA. The starting state for the reduction will be returned.
+
 var
   C: UCS2;
   Head, Tail: PUCS2;
@@ -3357,6 +3127,7 @@ var
   Used,
   M, N: Cardinal;
   I: Integer;
+
 begin
   State := _URE_NOOP;
 
@@ -3558,12 +3329,14 @@ begin
     Result := _URE_NOOP;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.AddSymbolState(Symbol, State: Cardinal);
+
 var
   I, J: Integer;
   Found: Boolean;
+
 begin
   // Locate the symbol in the symbol table so the state can be added.
   // If the symbol doesn't exist, then we are in serious trouble.
@@ -3604,12 +3377,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.AddState(NewStates: array of Cardinal): Cardinal;
+
 var
   I: Integer;
   Found: Boolean;
+
 begin
   Found := False;
   for I := 0 to FUREBuffer.States.StatesUsed - 1 do
@@ -3647,9 +3422,10 @@ begin
     Result := FUREBuffer.States.StatesUsed - 1;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.Reduce(Start: Cardinal);
+
 var
   I, J,
   Symbols: Integer;
@@ -3658,6 +3434,7 @@ var
   s1, s2,
   ns1, ns2: Cardinal;
   Evaluating: Boolean;
+
 begin
   FUREBuffer.Reducing := True;
 
@@ -3824,11 +3601,13 @@ begin
   FUREBuffer.Reducing := False;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.AddEquivalentPair(L, R: Cardinal);
+
 var
   I: Integer;
+
 begin
   L := FUREBuffer.States.States[L].ID;
   R := FUREBuffer.States.States[R].ID;
@@ -3863,16 +3642,20 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.MergeEquivalents;
+
 // merges the DFA states that are equivalent
+
 var
   I, J, K,
   Equal: Integer;
   Done: Boolean;
   State1, State2,
-  LeftState, RightState: PUcState;
+  LeftState,
+  RightState: PUcState;
+
 begin
   for I := 0 to FUREBuffer.States.StatesUsed - 1 do
   begin
@@ -3956,11 +3739,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.ClearUREBuffer;
+
 var
   I: Integer;
+
 begin
   with FUREBuffer do
   begin
@@ -3987,14 +3772,16 @@ begin
   FillChar(FUREBuffer, SizeOf(FUREBuffer), 0);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.CompileURE(RE: PWideChar; RELength: Cardinal; Casefold: Boolean);
+
 var
   I, J: Integer;
   State: Cardinal;
   Run: PUcState;
   TP: Integer;
+
 begin
   // be paranoid
   if (RE <> nil) and (RE^ <> WideNull) and (RELength > 0) then
@@ -4094,11 +3881,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.ClearDFA;
+
 var
   I: Integer;
+
 begin
   with FDFA do
   begin
@@ -4123,77 +3912,19 @@ begin
   FillChar(FDFA, SizeOf(FDFA), 0);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function IsSeparator(C: UCS4): Boolean;
+
 begin
   Result := (C = $D) or (C = $A) or (C = $2028) or (C = $2029);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-const
-  PropertyMap: array [0..31] of Cardinal = (
-    0, // class ID 1, corresponds to UC_MN
-    1, // class ID 2, UC_MC
-    3, // 3, UC_ND
-    5, // 4, UC_NO
-    6, // 5, UC_ZS
-    7, // 6, UC_ZL
-    8, // 7, UC_ZP
-    9, // 8, UC_CC
-    12, // 9, UC_CO
-    14, // 10, UC_LU
-    15, // 11, UC_LL
-    16, // 12, UC_LT
-    17, // 13, UC_LM
-    18, // 14, UC_LO
-    20, // 15, UC_PD
-    21, // 16, UC_PS
-    22, // 17, UC_PE
-    23, // 18, UC_PO
-    24, // 19, UC_SM
-    25, // 20, UC_SC
-    26, // 21, UC_SO
-    27, // 22, UC_L
-    28, // 23, UC_R
-    29, // 24, UC_EN
-    30, // 25, UC_ES
-    32, // 26, UC_ET
-    33, // 27, UC_AN
-    34, // 28, UC_CS
-    35, // 29, UC_B
-    36, // 30, UC_S
-    37, // 31, UC_WS
-    38  // 32, UC_ON
-    );
+function TURESearch.ExecuteURE(Flags: Cardinal; Text: PUCS2; TextLen: Cardinal; var MatchStart,
+  MatchEnd: Cardinal): Boolean;
 
-function TURESearch.MatchesProperties(Props, C: Cardinal): Boolean;
-// tries to match any of the given properties
-var
-  I: Integer;
-  Mask: Cardinal;
-begin
-  Result := False;
-  // We need only one match in order to tell the caller success,
-  // but unfortunately we cannot directly map the URE flags to the
-  // Unicode property flags. Hence we need to loop and explicitly remap them.
-  Mask := 1;
-  for I := 0 to 31 do
-  begin
-    if ((Props and Mask) <> 0) and PropertyLookup(C, PropertyMap[I]) then
-    begin
-      Result := True;
-      Exit;
-    end;
-    Mask := Mask shl 1;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function TURESearch.ExecuteURE(Flags: Cardinal; Text: PUCS2; TextLen: Cardinal;
-  var MatchStart, MatchEnd: Cardinal): Boolean;
 var
   I, J: Integer;
   Matched,
@@ -4204,6 +3935,7 @@ var
   LastState: PDFAState;
   Symbol: PUcSymbolTableEntry;
   Rp: PUcRange;
+
 begin
   Result := False;
   if Text <> nil then
@@ -4248,7 +3980,8 @@ begin
       end;
 
       if (FDFA.Flags and _URE_DFA_CASEFOLD) <> 0 then
-        C := UnicodeToLower(C);
+        // TODO: use the entire mapping, not only the first character
+        C := UnicodeToLower(C)[0];
 
       // See if one of the transitions matches.
       I := LastState.NumberTransitions - 1;
@@ -4295,8 +4028,8 @@ begin
           _URE_NCCLASS:
             with Symbol^ do
             begin
-              if Props <> 0 then
-                Matched := MatchesProperties(Props, C);
+              if Categories <> [] then
+                Matched := CategoryLookup(C, Categories);
               if Symbol.CCL.RangesUsed > 0 then
               begin
                 Rp := @Symbol.CCL.Ranges[0];
@@ -4330,9 +4063,9 @@ begin
           // already.
           if Symbol.AType = _URE_EOL_ANCHOR then
           begin
-            // skip the character that caused the match.
+            // skip the character that caused the match
             Inc(Run);
-            // Handle the infamous CRLF situation.
+            // handle the infamous CRLF situation
             if (Run < Tail) and (C = $D) and (Run^ = #$A) then
               Inc(Run);
           end;
@@ -4412,18 +4145,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.FindAll(const Text: WideString): Boolean;
+
 begin
   Result := FindAll(PWideChar(Text), Length(Text));
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean;
+
 // Looks for all occurences of the pattern passed to FindPrepare and creates an
 // internal list of their positions.
+
 var
   Start, Stop: Cardinal;
   Run: PWideChar;
@@ -4444,21 +4180,23 @@ begin
   Result := FResults.Count > 0;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TURESearch.FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean;
+
 begin
   Result := FindFirst(PWideChar(Text), Length(Text), Start, Stop);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function TURESearch.FindFirst(const Text: PWideChar; TextLen: Cardinal;
-  var Start, Stop: Cardinal): Boolean;
+function TURESearch.FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
+
 // Looks for the first occurence of the pattern passed to FindPrepare in Text and
 // returns True if one could be found (in which case Start and Stop are set to
 // the according indices) otherwise False. This function is in particular of
 // interest if only one occurence needs to be found.
+
 begin
   ClearResults;
   Result := ExecuteURE(0, PWideChar(Text), Length(Text), Start, Stop);
@@ -4466,77 +4204,84 @@ begin
     AddResult(Start, Stop);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-procedure TURESearch.FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal;
-  Options: TSearchFlags);
+procedure TURESearch.FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
+
 begin
   CompileURE(Pattern, PatternLength, not (sfCaseSensitive in Options));
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TURESearch.FindPrepare(const Pattern: WideString; Options: TSearchFlags);
+
 begin
   CompileURE(PWideChar(Pattern), Length(Pattern), not (sfCaseSensitive in Options));
 end;
 
-//==============================================================================
-// TWideStrings
-//==============================================================================
+//----------------- TWideStrings ---------------------------------------------------------------------------------------
 
 constructor TWideStrings.Create;
+
 begin
   inherited;
-  // there should seldom be the need to use a language other than the one of the
+  // there should seldomly be the need to use a language other than the one of the
   // system
   FLanguage := GetUserDefaultLCID;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 destructor TWideStrings.Destroy;
+
 begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetLanguage(Value: LCID);
+
 begin
   FLanguage := Value;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.Add(const S: WideString): Integer;
+
 begin
   Result := GetCount;
   Insert(Result, S);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.AddObject(const S: WideString; AObject: TObject): Integer;
+
 begin
   Result := Add(S);
   PutObject(Result, AObject);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Append(const S: WideString);
+
 begin
   Add(S);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.AddStrings(Strings: TStrings);
+
 var
   I: Integer;
   S: WideString;
   CP: Integer;
+  
 begin
   BeginUpdate;
   try
@@ -4551,14 +4296,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.AddStrings(Strings: TWideStrings);
+
 var
   I: Integer;
   SourceCP,
   TargetCP: Integer;
   S: WideString;
+
 begin
   BeginUpdate;
   try
@@ -4582,10 +4329,12 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Assign(Source: TPersistent);
+
 // usual assignment routine, but able to assign wide and small strings
+
 begin
   if Source is TWideStrings then
   begin
@@ -4614,15 +4363,18 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.AssignTo(Dest: TPersistent);
+
 // need to do also assignment to old style TStrings, but this class doesn't know
 // TWideStrings, so we need to do it from here
+
 var
   I: Integer;
   S: string;
   CP: Integer;
+  
 begin
   if Dest is TStrings then
   begin
@@ -4662,23 +4414,27 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.BeginUpdate;
+
 begin
   if FUpdateCount = 0 then
     SetUpdateState(True);
   Inc(FUpdateCount);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.DefineProperties(Filer: TFiler);
+
 // Defines a private property for the content of the list.
 // There's a bug in the handling of text DFMs in Classes.pas which prevents
 // WideStrings from loading under some circumstances. Zbysek Hlinka
 // (zhlinka@login.cz) brought this to my attention and supplied also a solution.
 // See ReadData and WriteData methods for implementation details.
+
+  //--------------- local function --------------------------------------------
 
   function DoWrite: Boolean;
   begin
@@ -4692,32 +4448,38 @@ procedure TWideStrings.DefineProperties(Filer: TFiler);
       Result := Count > 0;
   end;
 
+  //--------------- end local function ----------------------------------------
+
 begin
   Filer.DefineProperty('WideStrings', ReadData, WriteData, DoWrite);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.DoConfirmConversion(var Allowed: Boolean);
+
 begin
   if Assigned(FOnConfirmConversion) then
     FOnConfirmConversion(Self, Allowed);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.EndUpdate;
+
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
     SetUpdateState(False);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.Equals(Strings: TWideStrings): Boolean;
+
 var
   I, Count: Integer;
+
 begin
   Result := False;
   Count := GetCount;
@@ -4730,25 +4492,32 @@ begin
   Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Error(const Msg: string; Data: Integer);
 
+  //--------------- local function --------------------------------------------
+
   function ReturnAddr: Pointer;
+
   asm
-          MOV     EAX, [EBP + 4]
+            MOV EAX, [EBP + 4]
   end;
+
+  //--------------- end local function ----------------------------------------
 
 begin
   raise EStringListError.CreateFmt(Msg, [Data]) at ReturnAddr;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Exchange(Index1, Index2: Integer);
+
 var
   TempObject: TObject;
   TempString: WideString;
+
 begin
   BeginUpdate;
   try
@@ -4763,21 +4532,25 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetCapacity: Integer;
+
 // descendants may optionally override/replace this default implementation
+
 begin
   Result := Count;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetCommaText: WideString;
+
 var
   S: WideString;
   P: PWideChar;
   I, Count: Integer;
+  
 begin
   Count := GetCount;
   if (Count = 1) and (Get(0) = '') then
@@ -4799,11 +4572,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetName(Index: Integer): WideString;
+
 var
   P: Integer;
+
 begin
   Result := Get(Index);
   P := Pos('=', Result);
@@ -4813,17 +4588,20 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetObject(Index: Integer): TObject;
+
 begin
   Result := nil;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetSeparatedText(Separators: WideString): WideString;
+
 // same as GetText but with customizable separator characters
+
 var
   I, L,
   Size,
@@ -4831,6 +4609,7 @@ var
   SepSize: Integer;
   P: PWideChar;
   S: WideString;
+
 begin
   Count := GetCount;
   SepSize := Length(Separators);
@@ -4855,13 +4634,15 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetText: WideString;
+
 var
   I, L, Size, Count: Integer;
   P: PWideChar;
   S: WideString;
+
 begin
   Count := GetCount;
   Size := 0;
@@ -4885,11 +4666,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.GetValue(const Name: WideString): WideString;
+
 var
   I: Integer;
+  
 begin
   I := IndexOfName(Name);
   if I >= 0 then
@@ -4898,9 +4681,10 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.IndexOf(const S: WideString): Integer;
+
 begin
   for Result := 0 to GetCount - 1 do
     if WideCompareText(Get(Result), S, FLanguage) = 0 then
@@ -4908,12 +4692,14 @@ begin
   Result := -1;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.IndexOfName(const Name: WideString): Integer;
+
 var
   P: Integer;
   S: WideString;
+
 begin
   for Result := 0 to GetCount - 1 do
   begin
@@ -4925,9 +4711,10 @@ begin
   Result := -1;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStrings.IndexOfObject(AObject: TObject): Integer;
+
 begin
   for Result := 0 to GetCount - 1 do
     if GetObject(Result) = AObject then
@@ -4935,19 +4722,22 @@ begin
   Result := -1;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.InsertObject(Index: Integer; const S: WideString; AObject: TObject);
+
 begin
   Insert(Index, S);
   PutObject(Index, AObject);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.LoadFromFile(const FileName: string);
+
 var
   Stream: TStream;
+  
 begin
   try
     Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
@@ -4961,16 +4751,19 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.LoadFromStream(Stream: TStream);
+
 // usual loader routine, but enhanced to handle byte order marks in stream
+
 var
   Size,
   BytesRead: Integer;
   Order: WideChar;
   SW: WideString;
   SA: string;
+  
 begin
   BeginUpdate;
   try
@@ -5000,12 +4793,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Move(CurIndex, NewIndex: Integer);
+
 var
   TempObject: TObject;
   TempString: WideString;
+
 begin
   if CurIndex <> NewIndex then
   begin
@@ -5021,30 +4816,35 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.Put(Index: Integer; const S: WideString);
+
 var
   TempObject: TObject;
+
 begin
   TempObject := GetObject(Index);
   Delete(Index);
   InsertObject(Index, S, TempObject);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.PutObject(Index: Integer; AObject: TObject);
+
 begin
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.ReadData(Reader: TReader);
+
 var
   W: WideString;
   Len: Integer;
   Value: TValueType;
+
 begin
   Reader.Read(Value, SizeOf(Value));
   if Value <> vaWString then
@@ -5058,11 +4858,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SaveToFile(const FileName: string);
+
 var
   Stream: TStream;
+
 begin
   Stream := TFileStream.Create(FileName, fmCreate);
   try
@@ -5072,19 +4874,23 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SaveToStream(Stream: TStream);
+
 var
   SW, BOM: WideString;
   SA: string;
   Allowed: Boolean;
   Run: PWideChar;
+  
 begin
   // The application can decide in which format to save the content.
   // If FSaveUnicode is False then all strings are saved in standard ANSI format
   // which is also loadable by TStrings but you should be aware that all Unicode
   // strings are then converted to ANSI based on the current system locale.
+  // TODO: don't use implizit conversion to ANSI but the FLanguage member instead,
+  //       so the user can convert the string data to a specific language.
   // An extra event is supplied to ask the user about the potential loss of
   // information when converting Unicode to ANSI strings.
   SW := GetText;
@@ -5125,19 +4931,22 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetCapacity(NewCapacity: Integer);
+
 begin
   // do nothing - descendants may optionally implement this method
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetCommaText(const Value: WideString);
+
 var
   P, P1: PWideChar;
   S: WideString;
+
 begin
   BeginUpdate;
   try
@@ -5172,13 +4981,15 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetText(const Value: WideString);
+
 var
   Head,
   Tail: PWideChar;
   S: WideString;
+
 begin
   BeginUpdate;
   try
@@ -5206,17 +5017,20 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetUpdateState(Updating: Boolean);
+
 begin
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.SetValue(const Name, Value: WideString);
+
 var
   I : Integer;
+
 begin
   I := IndexOfName(Name);
   if Value <> '' then
@@ -5232,13 +5046,15 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStrings.WriteData(Writer: TWriter);
+
 var
   Len: Integer;
   W: WideString;
   Value: TValueType;
+  
 begin
   Value := vaWString;
   W := GetText;
@@ -5248,22 +5064,19 @@ begin
   Writer.Write(PWideChar(W)^, 2 * Len);
 end;
 
-//==============================================================================
-// TWideStringList
-//==============================================================================
+//----------------- TWideStringList ------------------------------------------------------------------------------------
 
 destructor TWideStringList.Destroy;
+
 begin
-  FOnChange := nil;
-  FOnChanging := nil;
-  FCount := 0;
-  FList := nil;
+  Clear;
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.Add(const S: WideString): Integer;
+
 begin
   if not Sorted then
     Result := FCount
@@ -5282,25 +5095,28 @@ begin
   InsertItem(Result, S);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Changed;
+
 begin
   if (FUpdateCount = 0) and Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Changing;
+
 begin
   if (FUpdateCount = 0) and Assigned(FOnChanging) then
     FOnChanging(Self);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Clear;
+
 begin
   if FCount <> 0 then
   begin
@@ -5313,9 +5129,10 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Delete(Index: Integer);
+
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
@@ -5327,9 +5144,10 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Exchange(Index1, Index2: Integer);
+
 begin
   if (Index1 < 0) or (Index1 >= FCount) then
     Error(SListIndexError, Index1);
@@ -5340,22 +5158,26 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.ExchangeItems(Index1, Index2: Integer);
+
 var
   Temp: TWideStringItem;
+
 begin
   Temp := FList[Index1];
   FList[Index1] := FList[Index2];
   FList[Index2] := Temp;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.Find(const S: WideString; var Index: Integer): Boolean;
+
 var
   L, H, I, C: Integer;
+
 begin
   Result := False;
   L := 0;
@@ -5380,44 +5202,50 @@ begin
   Index := L;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.Get(Index: Integer): WideString;
+
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
   Result := FList[Index].FString;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.GetCapacity: Integer;
+
 begin
   Result := Length(FList);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.GetCount: Integer;
+
 begin
   Result := FCount;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.GetObject(Index: Integer): TObject;
+
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
   Result := FList[Index].FObject;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Grow;
+
 var
   Delta,
   Len: Integer;
+
 begin
   Len := Length(FList);
   if Len > 64 then
@@ -5432,9 +5260,10 @@ begin
   SetCapacity(Len + Delta);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TWideStringList.IndexOf(const S: WideString): Integer;
+
 begin
   if not Sorted then
     Result := inherited IndexOf(S)
@@ -5443,9 +5272,10 @@ begin
     Result := -1;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Insert(Index: Integer; const S: WideString);
+
 begin
   if Sorted then
     Error(SSortedListError, 0);
@@ -5454,9 +5284,10 @@ begin
   InsertItem(Index, S);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.InsertItem(Index: Integer; const S: WideString);
+
 begin
   Changing;
   if FCount = Length(FList) then
@@ -5473,9 +5304,10 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Put(Index: Integer; const S: WideString);
+
 begin
   if Sorted then
     Error(SSortedListError, 0);
@@ -5486,9 +5318,10 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.PutObject(Index: Integer; AObject: TObject);
+
 begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
@@ -5497,12 +5330,14 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.QuickSort(L, R: Integer);
+
 var
   I, J: Integer;
   P: WideString;
+
 begin
   repeat
     I := L;
@@ -5526,18 +5361,20 @@ begin
   until I >= R;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetCapacity(NewCapacity: Integer);
+
 begin
   SetLength(FList, NewCapacity);
   if NewCapacity < FCount then
     FCount := NewCapacity;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetSorted(Value: Boolean);
+
 begin
   if FSorted <> Value then
   begin
@@ -5547,9 +5384,10 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetUpdateState(Updating: Boolean);
+
 begin
   if Updating then
     Changing
@@ -5557,9 +5395,10 @@ begin
     Changed;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.Sort;
+
 begin
   if not Sorted and (FCount > 1) then
   begin
@@ -5569,383 +5408,443 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure TWideStringList.SetLanguage(Value: LCID);
+
 begin
   inherited;
   if Sorted then
     Sort;
 end;
 
-//==============================================================================
-// Functions for null terminated wide strings
-//==============================================================================
+//----------------- functions for null terminated strings --------------------------------------------------------------
 
 function StrLenW(Str: PWideChar): Cardinal;
+
 // returns number of characters in a string excluding the null terminator
+
 asm
-        MOV     EDX, EDI
-        MOV     EDI, EAX
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        MOV     EAX, 0FFFFFFFEH
-        SUB     EAX, ECX
-        MOV     EDI, EDX
+         MOV EDX, EDI
+         MOV EDI, EAX
+         MOV ECX, 0FFFFFFFFH
+         XOR AX, AX
+         REPNE SCASW
+         MOV EAX, 0FFFFFFFEH
+         SUB EAX, ECX
+         MOV EDI, EDX
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrEndW(Str: PWideChar): PWideChar;
+
 // returns a pointer to the end of a null terminated string
+
 asm
-        MOV     EDX, EDI
-        MOV     EDI, EAX
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        LEA     EAX, [EDI - 2]
-        MOV     EDI, EDX
+         MOV EDX, EDI
+         MOV EDI, EAX
+         MOV ECX, 0FFFFFFFFH
+         XOR AX, AX
+         REPNE SCASW
+         LEA EAX, [EDI - 2]
+         MOV EDI, EDX
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
+
 // Copies the specified number of characters to the destination string and returns Dest
 // also as result. Dest must have enough room to store at least Count characters.
+
 asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI, EDX
-        MOV     EDI, EAX
-        MOV     EDX, ECX
-        CMP     EDI, ESI
-        JG      @@1
-        JE      @@2
-        SHR     ECX, 1
-        REP     MOVSD
-        MOV     ECX, EDX
-        AND     ECX, 1
-        REP     MOVSW
-        JMP     @@2
+         PUSH ESI
+         PUSH EDI
+         MOV ESI, EDX
+         MOV EDI, EAX
+         MOV EDX, ECX
+         CMP EDI, ESI
+         JG @@1
+         JE @@2
+         SHR ECX, 1
+         REP MOVSD
+         MOV ECX, EDX
+         AND ECX, 1
+         REP MOVSW
+         JMP @@2
+         
 @@1:
-        LEA     ESI, [ESI + 2 * ECX - 2]
-        LEA     EDI, [EDI + 2 * ECX - 2]
-        STD
-        AND     ECX, 1
-        REP     MOVSW
-        SUB     EDI, 2
-        SUB     ESI, 2
-        MOV     ECX, EDX
-        SHR     ECX, 1
-        REP     MOVSD
-        CLD
+         LEA ESI, [ESI + 2 * ECX - 2]
+         LEA EDI, [EDI + 2 * ECX - 2]
+         STD
+         AND ECX, 1
+         REP MOVSW
+         SUB EDI, 2
+         SUB ESI, 2
+         MOV ECX, EDX
+         SHR ECX, 1
+         REP MOVSD
+         CLD
 @@2:
-        POP     EDI
-        POP     ESI
+         POP EDI
+         POP ESI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
+
 // copies Source to Dest and returns Dest
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     ESI, EAX
-        MOV     EDI, EDX
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        NOT     ECX
-        MOV     EDI, ESI
-        MOV     ESI, EDX
-        MOV     EDX, ECX
-        MOV     EAX, EDI
-        SHR     ECX, 1
-        REP     MOVSD
-        MOV     ECX, EDX
-        AND     ECX, 1
-        REP     MOVSW
-        POP     ESI
-        POP     EDI
+         PUSH EDI
+         PUSH ESI
+         MOV ESI, EAX
+         MOV EDI, EDX
+         MOV ECX, 0FFFFFFFFH
+         XOR AX, AX
+         REPNE SCASW
+         NOT ECX
+         MOV EDI, ESI
+         MOV ESI, EDX
+         MOV EDX, ECX
+         MOV EAX, EDI
+         SHR ECX, 1
+         REP MOVSD
+         MOV ECX, EDX
+         AND ECX, 1
+         REP MOVSW
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
+
 // copies Source to Dest and returns a pointer to the null character ending the string
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     ESI, EAX
-        MOV     EDI, EDX
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        NOT     ECX
-        MOV     EDI, ESI
-        MOV     ESI, EDX
-        MOV     EDX, ECX
-        SHR     ECX, 1
-        REP     MOVSD
-        MOV     ECX, EDX
-        AND     ECX, 1
-        REP     MOVSW
-        LEA     EAX, [EDI - 2]
-        POP     ESI
-        POP     EDI
+         PUSH EDI
+         PUSH ESI
+         MOV ESI, EAX
+         MOV EDI, EDX
+         MOV ECX, 0FFFFFFFFH
+         XOR AX, AX
+         REPNE SCASW
+         NOT ECX
+         MOV EDI, ESI
+         MOV ESI, EDX
+         MOV EDX, ECX
+         SHR ECX, 1
+         REP MOVSD
+         MOV ECX, EDX
+         AND ECX, 1
+         REP MOVSW
+         LEA EAX, [EDI - 2]
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+
 // copies a specified maximum number of characters from Source to Dest
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        MOV     ESI, EAX
-        MOV     EDI, EDX
-        MOV     EBX, ECX
-        XOR     AX, AX
-        TEST    ECX, ECX
-        JZ      @@1
-        REPNE   SCASW
-        JNE     @@1
-        INC     ECX
+         PUSH EDI
+         PUSH ESI
+         PUSH EBX
+         MOV ESI, EAX
+         MOV EDI, EDX
+         MOV EBX, ECX
+         XOR AX, AX
+         TEST ECX, ECX
+         JZ @@1
+         REPNE SCASW
+         JNE @@1
+         INC ECX
 @@1:
-        SUB     EBX, ECX
-        MOV     EDI, ESI
-        MOV     ESI, EDX
-        MOV     EDX, EDI
-        MOV     ECX, EBX
-        SHR     ECX, 1
-        REP     MOVSD
-        MOV     ECX, EBX
-        AND     ECX, 1
-        REP     MOVSW
-        STOSW
-        MOV     EAX, EDX
-        POP     EBX
-        POP     ESI
-        POP     EDI
+         SUB EBX, ECX
+         MOV EDI, ESI
+         MOV ESI, EDX
+         MOV EDX, EDI
+         MOV ECX, EBX
+         SHR ECX, 1
+         REP MOVSD
+         MOV ECX, EBX
+         AND ECX, 1
+         REP MOVSW
+         STOSW
+         MOV EAX, EDX
+         POP EBX
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+
 // copies a Pascal-style string to a null-terminated wide string
+
 begin
   Result := StrPLCopyW(Dest, Source, Length(Source));
   Result[Length(Source)] := WideNull;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+
 // copies characters from a Pascal-style string into a null-terminated wide string
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     EDI, EAX
-        MOV     ESI, EDX
-        MOV     EDX, EAX
-        XOR     AX, AX
+         PUSH EDI
+         PUSH ESI
+         MOV EDI, EAX
+         MOV ESI, EDX
+         MOV EDX, EAX
+         XOR AX, AX
 @@1:
-        LODSB
-        STOSW
-        DEC     ECX
-        JNZ     @@1
-        MOV     EAX, EDX
-        POP     ESI
-        POP     EDI
+         LODSB
+         STOSW
+         DEC ECX
+         JNZ @@1
+         MOV EAX, EDX
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrCatW(Dest, Source: PWideChar): PWideChar;
+
 // appends a copy of Source to the end of Dest and returns the concatenated string
+
 begin
   StrCopyW(StrEndW(Dest), Source);
   Result := Dest;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
+
 // appends a specified maximum number of WideCharacters to string
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        MOV     EDI, Dest
-        MOV     ESI, Source
-        MOV     EBX, MaxLen
-        SHL     EBX, 1
-        CALL    StrEndW
-        MOV     ECX, EDI
-        ADD     ECX, EBX
-        SUB     ECX, EAX
-        JBE     @@1
-        MOV     EDX, ESI
-        SHR     ECX, 1
-        CALL    StrLCopyW
+         PUSH EDI
+         PUSH ESI
+         PUSH EBX
+         MOV EDI, Dest
+         MOV ESI, Source
+         MOV EBX, MaxLen
+         SHL EBX, 1
+         CALL StrEndW
+         MOV ECX, EDI
+         ADD ECX, EBX
+         SUB ECX, EAX
+         JBE @@1
+         MOV EDX, ESI
+         SHR ECX, 1
+         CALL StrLCopyW
 @@1:
-        MOV     EAX, EDI
-        POP     EBX
-        POP     ESI
-        POP     EDI
+         MOV EAX, EDI
+         POP EBX
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrCompW(Str1, Str2: PWideChar): Integer;
-// compares Str1 to Str2 (binary comparation)
-// Note: There's also an extended comparation function which uses a given language
-//       to compare unicode strings.
-asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     EDI, EDX
-        MOV     ESI, EAX
-        MOV     ECX, 0FFFFFFFFH
-        XOR     EAX, EAX
-        REPNE   SCASW
-        NOT     ECX
-        MOV     EDI, EDX
-        XOR     EDX, EDX
-        REPE    CMPSW
-        MOV     AX, [ESI - 2]
-        MOV     DX, [EDI - 2]
-        SUB     EAX, EDX
-        POP     ESI
-        POP     EDI
+
+// Binary comparation of Str1 and Str2 with surrogate fix-up.
+// Returns < 0 if Str1 is smaller in binary order than Str2, = 0 if both strings are
+// equal and > 0 if Str1 is larger than Str2. 
+//
+// This code is based on an idea of Markus W. Scherer (IBM).
+// Note: The surrogate fix-up is necessary because some single value code points have
+//       larger values than surrogates which are in UTF-32 actually larger.
+
+const
+  UTF16Fixup: array[0..31] of Word = (
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    $2000, $F800, $F800, $F800, $F800
+  );
+  
+var
+  C1, C2: Word;
+  Run1,
+  Run2: PWideChar;
+
+begin
+  Run1 := Str1;
+  Run2 := Str2;
+  repeat
+    C1 := Word(Run1^);
+    C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
+    C2 := Word(Run2^);
+    C2 := Word(C1 + UTF16Fixup[C2 shr 11]);
+
+    // now C1 and C2 are in UTF-32-compatible order
+    Result := Integer(C1) - Integer(C2);
+    if(Result <> 0) or (C1 = 0) or (C2 = 0) then
+      Break;
+    Inc(Run1);
+    Inc(Run2);
+  until False;
+
+  // If the strings have different lengths but the comparison returned equity so far
+  // then adjust the result so that the longer string is marked as the larger one.
+  if Result = 0 then
+    Result := (Run1 - Str1) - (Run2 - Str2);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrICompW(Str1, Str2: PWideChar): Integer;
+
 // compares Str1 to Str2 without case sensitivity (binary comparation),
 // Note: only ANSI characters are compared case insensitively
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        MOV     EDI, EDX
-        MOV     ESI, EAX
-        MOV     ECX, 0FFFFFFFFH
-        XOR     EAX, EAX
-        REPNE   SCASW
-        NOT     ECX
-        MOV     EDI, EDX
-        XOR     EDX, EDX
+         PUSH EDI
+         PUSH ESI
+         MOV EDI, EDX
+         MOV ESI, EAX
+         MOV ECX, 0FFFFFFFFH
+         XOR EAX, EAX
+         REPNE SCASW
+         NOT ECX
+         MOV EDI, EDX
+         XOR EDX, EDX
 @@1:
-        REPE    CMPSW
-        JE      @@4
-        MOV     AX, [ESI - 2]
-        CMP     AX, 'a'
-        JB      @@2
-        CMP     AX, 'z'
-        JA      @@2
-        SUB     AL, 20H
+         REPE CMPSW
+         JE @@4
+         MOV AX, [ESI - 2]
+         CMP AX, 'a'
+         JB @@2
+         CMP AX, 'z'
+         JA @@2
+         SUB AL, 20H
 @@2:
-        MOV     DX, [EDI - 2]
-        CMP     DX, 'a'
-        JB      @@3
-        CMP     DX, 'z'
-        JA      @@3
-        SUB     DX, 20H
+         MOV DX, [EDI - 2]
+         CMP DX, 'a'
+         JB @@3
+         CMP DX, 'z'
+         JA @@3
+         SUB DX, 20H
 @@3:
-        SUB     EAX, EDX
-        JE      @@1
+         SUB EAX, EDX
+         JE @@1
 @@4:
-        POP     ESI
-        POP     EDI
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-// compares a specified maximum number of charaters in two strings
-asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        MOV     EDI, EDX
-        MOV     ESI, EAX
-        MOV     EBX, ECX
-        XOR     EAX, EAX
-        OR      ECX, ECX
-        JE      @@1
-        REPNE   SCASW
-        SUB     EBX, ECX
-        MOV     ECX, EBX
-        MOV     EDI, EDX
-        XOR     EDX, EDX
-        REPE    CMPSW
-        MOV     AX, [ESI - 2]
-        MOV     DX, [EDI - 2]
-        SUB     EAX, EDX
-@@1:
-        POP     EBX
-        POP     ESI
-        POP     EDI
+
+// compares strings up to MaxLen code points
+// see also StrCompW
+
+const
+  UTF16Fixup: array[0..31] of Word = (
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    $2000, $F800, $F800, $F800, $F800
+  );
+
+var
+  C1, C2: Word;
+
+begin
+  if MaxLen > 0 then
+  begin
+    repeat
+      C1 := Word(Str1^);
+      C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
+      C2 := Word(Str2^);
+      C2 := Word(C1 + UTF16Fixup[C2 shr 11]);
+
+      // now C1 and C2 are in UTF-32-compatible order
+      // TODO: surrogates take up 2 words and are counted twice here, count them only once
+      Result := Integer(C1) - Integer(C2);
+      Dec(MaxLen);
+      if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
+        Break;
+      Inc(Str1);
+      Inc(Str2);
+    until False;
+  end
+  else
+    Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+
 // compares strings up to a specified maximum number of characters, not case sensitive
 // Note: only ANSI characters are compared case insensitively
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        MOV     EDI, EDX
-        MOV     ESI, EAX
-        MOV     EBX, ECX
-        XOR     EAX, EAX
-        OR      ECX, ECX
-        JE      @@4
-        REPNE   SCASW
-        SUB     EBX, ECX
-        MOV     ECX, EBX
-        MOV     EDI, EDX
-        XOR     EDX, EDX
+         PUSH EDI
+         PUSH ESI
+         PUSH EBX
+         MOV EDI, EDX
+         MOV ESI, EAX
+         MOV EBX, ECX
+         XOR EAX, EAX
+         OR ECX, ECX
+         JE @@4
+         REPNE SCASW
+         SUB EBX, ECX
+         MOV ECX, EBX
+         MOV EDI, EDX
+         XOR EDX, EDX
 @@1:
-        REPE    CMPSW
-        JE      @@4
-        MOV     AX, [ESI - 2]
-        CMP     AX, 'a'
-        JB      @@2
-        CMP     AX, 'z'
-        JA      @@2
-        SUB     AX, 20H
+        REPE CMPSW
+        JE @@4
+        MOV AX, [ESI - 2]
+        CMP AX, 'a'
+        JB @@2
+        CMP AX, 'z'
+        JA @@2
+        SUB AX, 20H
 @@2:
-        MOV     DX, [EDI - 2]
-        CMP     DX, 'a'
-        JB      @@3
-        CMP     DX, 'z'
-        JA      @@3
-        SUB     DX, 20H
+        MOV DX, [EDI - 2]
+        CMP DX, 'a'
+        JB @@3
+        CMP DX, 'z'
+        JA @@3
+        SUB DX, 20H
 @@3:
-        SUB     EAX, EDX
-        JE      @@1
+        SUB EAX, EDX
+        JE @@1
 @@4:
-        POP     EBX
-        POP     ESI
-        POP     EDI
+        POP EBX
+        POP ESI
+        POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrNScanW(S1, S2: PWideChar): Integer;
+
 // determines where (in S1) the first time one of the characters of S2 appear.
 // The result is the length of a string part of S1 where none of the characters of
 // S2 do appear (not counting the trailing #0 and starting with position 0 in S1).
+
 var
   Run: PWideChar;
+
 begin
   Result := -1;
   if (S1 <> nil) and (S2 <> nil) then
@@ -5961,15 +5860,18 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrRNScanW(S1, S2: PWideChar): Integer;
+
 // This function does the same as StrRNScanW but uses S1 in reverse order. This
 // means S1 points to the last character of a string, is traversed reversely
 // and terminates with a starting #0. This is useful for parsing strings stored
 // in reversed macro buffers etc.
+
 var
   Run: PWideChar;
+
 begin
   Result := -1;
   if (S1 <> nil) and (S2 <> nil) then
@@ -5985,32 +5887,35 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar;
+
 // returns a pointer to first occurrence of a specified character in a string
+
 asm
-        PUSH    EDI
-        PUSH    EAX
-        MOV     EDI, Str
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        NOT     ECX
-        POP     EDI
-        MOV     AX, Chr
-        REPNE   SCASW
-        MOV     EAX, 0
-        JNE     @@1
-        MOV     EAX, EDI
-        SUB     EAX, 2
+         PUSH EDI
+         PUSH EAX
+         MOV EDI, Str
+         MOV ECX, 0FFFFFFFFH
+         XOR AX, AX
+         REPNE SCASW
+         NOT ECX
+         POP EDI
+         MOV AX, Chr
+         REPNE SCASW
+         MOV EAX, 0
+         JNE @@1
+         MOV EAX, EDI
+         SUB EAX, 2
 @@1:
-        POP     EDI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
+
 // returns a pointer to first occurrence of a specified character in a string
 // or nil if not found
 // Note: this is just a binary search for the specified character and there's no
@@ -6019,100 +5924,108 @@ function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 //
 // on enter EAX contains Str, EDX contains Chr and ECX StrLen
 // on exit EAX contains result pointer or nil
+
 asm
-        TEST EAX, EAX
-        JZ @@Exit                 // get out if the string is nil or StrLen is 0
-        JCXZ @@Exit
+         TEST EAX, EAX
+         JZ @@Exit                // get out if the string is nil or StrLen is 0
+         JCXZ @@Exit
 @@Loop:
-        CMP [EAX], DX             // this unrolled loop is actually faster on modern processors
-        JE @@Exit                 // than REP SCASW
-        ADD EAX, 2
-        DEC ECX
-        JNZ @@Loop
-        XOR EAX, EAX
+         CMP [EAX], DX            // this unrolled loop is actually faster on modern processors
+         JE @@Exit                // than REP SCASW
+         ADD EAX, 2
+         DEC ECX
+         JNZ @@Loop
+         XOR EAX, EAX
 @@Exit:
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
+
 // returns a pointer to the last occurance of Chr in Str
+
 asm
-        PUSH    EDI
-        MOV     EDI, Str
-        MOV     ECX, 0FFFFFFFFH
-        XOR     AX, AX
-        REPNE   SCASW
-        NOT     ECX
-        STD
-        SUB     EDI, 2
-        MOV     AX, Chr
-        REPNE   SCASW
-        MOV     EAX, 0
-        JNE     @@1
-        MOV     EAX, EDI
-        ADD     EAX, 2
+         PUSH EDI
+         MOV EDI, Str
+         MOV ECX, 0FFFFFFFFH
+         XOR AX, AX
+         REPNE SCASW
+         NOT ECX
+         STD
+         SUB EDI, 2
+         MOV AX, Chr
+         REPNE SCASW
+         MOV EAX, 0
+         JNE @@1
+         MOV EAX, EDI
+         ADD EAX, 2
 @@1:
-        CLD
-        POP     EDI
+         CLD
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
+
 // returns a pointer to the first occurance of SubStr in Str
+
 asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        OR      EAX, EAX
-        JZ      @@2
-        OR      EDX, EDX
-        JZ      @@2
-        MOV     EBX, EAX
-        MOV     EDI, EDX
-        XOR     AX, AX
-        MOV     ECX, 0FFFFFFFFH
-        REPNE   SCASW
-        NOT     ECX
-        DEC     ECX
-        JZ      @@2
-        MOV     ESI, ECX
-        MOV     EDI, EBX
-        MOV     ECX, 0FFFFFFFFH
-        REPNE   SCASW
-        NOT     ECX
-        SUB     ECX, ESI
-        JBE     @@2
-        MOV     EDI, EBX
-        LEA     EBX, [ESI - 1] // Note: 2 would be wrong here, we are dealing
-                               // with numbers not an address
+         PUSH EDI
+         PUSH ESI
+         PUSH EBX
+         OR EAX, EAX
+         JZ @@2
+         OR EDX, EDX
+         JZ @@2
+         MOV EBX, EAX
+         MOV EDI, EDX
+         XOR AX, AX
+         MOV ECX, 0FFFFFFFFH
+         REPNE SCASW
+         NOT ECX
+         DEC ECX
+         JZ @@2
+         MOV ESI, ECX
+         MOV EDI, EBX
+         MOV ECX, 0FFFFFFFFH
+         REPNE SCASW
+         NOT ECX
+         SUB ECX, ESI
+         JBE @@2
+         MOV EDI, EBX
+         LEA EBX, [ESI - 1]  // Note: 2 would be wrong here, we are dealing
+                             // with numbers not an address
 @@1:
-        MOV     ESI, EDX
-        LODSW
-        REPNE   SCASW
-        JNE     @@2
-        MOV     EAX, ECX
-        PUSH    EDI
-        MOV     ECX, EBX
-        REPE    CMPSW
-        POP     EDI
-        MOV     ECX, EAX
-        JNE     @@1
-        LEA     EAX, [EDI - 2]
-        JMP     @@3
+         MOV ESI, EDX
+         LODSW
+         REPNE SCASW
+         JNE @@2
+         MOV EAX, ECX
+         PUSH EDI
+         MOV ECX, EBX
+         REPE CMPSW
+         POP EDI
+         MOV ECX, EAX
+         JNE @@1
+         LEA EAX, [EDI - 2]
+         JMP @@3
+
 @@2:
-        XOR     EAX, EAX
+         XOR EAX, EAX
 @@3:
-        POP     EBX
-        POP     ESI
-        POP     EDI
+         POP EBX
+         POP ESI
+         POP EDI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrUpperW(Str: PWideChar): PWideChar;
+
 // converts Str to upper case and returns it
+
 begin
   Result := Str;
   while Str^ <> WideNull do
@@ -6122,10 +6035,12 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrLowerW(Str: PWideChar): PWideChar;
+
 // converts Str to lower case and returns it
+
 begin
   Result := Str;
   while Str^ <> WideNull do
@@ -6135,10 +6050,12 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrTitleW(Str: PWideChar): PWideChar;
+
 // converts Str to title case and returns it
+
 begin
   Result := Str;
   while Str^ <> WideNull do
@@ -6148,11 +6065,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrAllocW(Size: Cardinal): PWideChar;
+
 // Allocates a buffer for a null-terminated wide string and returns a pointer
 // to the first character of the string.
+
 begin
   Size := SizeOf(WideChar) * Size + SizeOf(Cardinal);
   GetMem(Result, Size);
@@ -6161,22 +6080,26 @@ begin
   Inc(Result, SizeOf(Cardinal) div SizeOf(WideChar));
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrBufSizeW(Str: PWideChar): Cardinal;
+
 // Returns max number of wide characters that can be stored in a buffer
 // allocated by StrAllocW.
+
 begin
   Dec(Str, SizeOf(Cardinal) div SizeOf(WideChar));
   Result := (Cardinal(Pointer(Str)^) - SizeOf(Cardinal)) div 2;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StrNewW(Str: PWideChar): PWideChar;
+
 // Duplicates the given string (if not nil) and returns the address of the new string.
 var
   Size: Cardinal;
+
 begin
   if Str = nil then
     Result := nil
@@ -6187,10 +6110,12 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure StrDisposeW(Str: PWideChar);
-// releases a string allocated with StrNew.
+
+// releases a string allocated with StrNew
+
 begin
   if Str <> nil then
   begin
@@ -6199,38 +6124,43 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 procedure StrSwapByteOrder(Str: PWideChar);
+
 // exchanges in each character of the given string the low order and high order
 // byte to go from LSB to MSB and vice versa.
 // EAX contains address of string
+
 asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI, EAX
-        MOV     EDI, ESI
-        XOR     EAX, EAX  // clear high order byte to be able to use 32bit operand below
+         PUSH ESI
+         PUSH EDI
+         MOV ESI, EAX
+         MOV EDI, ESI
+         XOR EAX, EAX  // clear high order byte to be able to use 32bit operand below
 @@1:
-        LODSW
-        OR      EAX, EAX
-        JZ      @@2
-        XCHG    AL, AH
-        STOSW
-        JMP     @@1
+         LODSW
+         OR EAX, EAX
+         JZ @@2
+         XCHG AL, AH
+         STOSW
+         JMP @@1
+
 @@2:
-        POP     EDI
-        POP     ESI
+         POP EDI
+         POP ESI
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideAdjustLineBreaks(const S: WideString): WideString;
+
 var
   Source,
   SourceEnd,
   Dest: PWideChar;
   Extra: Integer;
+
 begin
   Source := Pointer(S);
   SourceEnd := Source + Length(S);
@@ -6277,14 +6207,17 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
+
 // works like QuotedStr from SysUtils.pas but can insert any quotation character
+
 var
   P, Src,
   Dest: PWideChar;
   AddCount: Integer;
+
 begin
   AddCount := 0;
   P := StrScanW(PWideChar(S), Quote);
@@ -6321,13 +6254,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
+
 // extracts a string enclosed in quote characters given by Quote
+
 var
   P, Dest: PWideChar;
   DropCount: Integer;
+
 begin
   Result := '';
   if (Src = nil) or (Src^ <> Quote) then
@@ -6377,28 +6313,32 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
+
 // returns a string of Count characters filled with C
+
 var
   I: Integer;
+
 begin
   SetLength(Result, Count);
   for I := 1 to Count do
     Result[I] := C;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideTrim(const S: WideString): WideString;
+
 var
   I, L: Integer;
+
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and
-        (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
+  while (I <= L) and (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
     Inc(I);
   if I > L then
     Result := ''
@@ -6410,11 +6350,13 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideTrimLeft(const S: WideString): WideString;
+
 var
   I, L: Integer;
+  
 begin
   L := Length(S);
   I := 1;
@@ -6424,11 +6366,13 @@ begin
   Result := Copy(S, I, Maxint);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideTrimRight(const S: WideString): WideString;
+
 var
   I: Integer;
+
 begin
   I := Length(S);
   while (I > 0) and
@@ -6437,57 +6381,62 @@ begin
   Result := Copy(S, 1, I);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
+
 // returns the index of character Ch in S, starts searching at index Index
 // Note: This is a quick memory search. No attempt is made to interpret either
 // the given charcter nor the string (ligatures, modifiers, surrogates etc.)
+
 asm
-              TEST    EAX,EAX           // make sure we are not null
-              JZ      @StrIsNil
-              DEC     ECX               // make index zero based
-              JL      @IdxIsSmall
-              PUSH    EBX
-              PUSH    EDI
-              MOV     EDI,EAX           // EDI := S
-              XOR     EAX,EAX
-              MOV     AX, DX            // AX := Ch
-              MOV     EDX,[EDI-4]       // EDX := Length(S) * 2
-              SHR     EDX,1             // EDX := EDX div 2
-              MOV     EBX,EDX           // save the length to calc. result
-              SUB     EDX,ECX           // EDX = EDX - Index = # of chars to scan
-              JLE     @IdxIsBig
-              SHL ECX, 1                // two bytes per char
-              ADD     EDI,ECX           // point to index'th char
-              MOV     ECX,EDX           // loop counter
-              REPNE   SCASW
-              JNE     @NoMatch
-              MOV     EAX,EBX           // result := saved length -
-              SUB     EAX,ECX           // loop counter value
-              POP     EDI
-              POP     EBX
-              RET
+         TEST EAX,EAX        // make sure we are not null
+         JZ @StrIsNil
+         DEC ECX             // make index zero based
+         JL @IdxIsSmall
+         PUSH EBX
+         PUSH EDI
+         MOV EDI,EAX         // EDI := S
+         XOR EAX,EAX
+         MOV AX, DX          // AX := Ch
+         MOV EDX,[EDI-4]     // EDX := Length(S) * 2
+         SHR EDX,1           // EDX := EDX div 2
+         MOV EBX,EDX         // save the length to calc. result
+         SUB EDX,ECX         // EDX = EDX - Index = # of chars to scan
+         JLE @IdxIsBig
+         SHL ECX, 1          // two bytes per char
+         ADD EDI,ECX         // point to index'th char
+         MOV ECX,EDX         // loop counter
+         REPNE SCASW
+         JNE @NoMatch
+         MOV EAX,EBX         // result := saved length -
+         SUB EAX,ECX         // loop counter value
+         POP EDI
+         POP EBX
+         RET
 
 @IdxIsBig:
 @NoMatch:
-              XOR     EAX,EAX
-              POP     EDI
-              POP     EBX
-              RET
+         XOR EAX,EAX
+         POP EDI
+         POP EBX
+         RET
 
 @IdxIsSmall:
-              XOR     EAX,EAX
+         XOR EAX,EAX
 @StrIsNil:
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideCompose(const S: WideString): WideString;
+
 // returns a string with all characters of S but if there is a possibility to
 // combine characters then they are composed
+
 var
   I: Integer;
+  
 begin
   for I := 1 to Length(S) do
   begin
@@ -6495,14 +6444,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideComposeHangul(Source: WideString): WideString;
+
 var
   Len: Integer;
   Ch, Last: WideChar;
   I, J: Integer;
-  LINdex, VIndex, SIndex, TIndex: Integer;
+  LIndex, VIndex, SIndex, TIndex: Integer;
+
 begin
   // copy first char
   Len := Length(Source);
@@ -6558,27 +6509,30 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideDecompose(const S: WideString): WideString;
+
 // returns a string with all characters of S but decomposed, e.g. Ê is returned
 // as E^ etc.
+
 var
   I, J, K: Integer;
   CClass: Cardinal;
-  Decomp: TCardinalArray;
+  Decomp: TUCS4Array;
+  
 begin
   Result := '';
   Decomp := nil;
   for I := 1 to Length(S) do
   begin
-    // no need to dive iteratively into decompositions as this is already done
-    // on creation of the data used to lookup the decomposition
-    Decomp := UnicodeDecompose(Word(S[I]));
+    // No need to dive iteratively into decompositions as this is already done
+    // on creation of the data in the Unicode data extractor.
+    Decomp := UnicodeDecompose(UCS4(S[I]));
     // We need to sort the returned values according to their canonical class.
     for J := 0 to High(Decomp) do
     begin
-      CClass := UnicodeCanonicalClass(Decomp[J]);
+      CClass := CanonicalCombiningClass(Decomp[J]);
       if CClass = 0 then
         Result := Result + WideChar(Decomp[J])
       else
@@ -6587,7 +6541,7 @@ begin
         // bubble-sort combining marks as necessary
         while K > 1 do
         begin
-          if UnicodeCanonicalClass(Word(Result[K])) <= CClass then
+          if CanonicalCombiningClass(Word(Result[K])) <= CClass then
             Break;
           Dec(K);
         end;
@@ -6597,558 +6551,716 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------- general purpose case mapping -----------------------------------------------------------------------
 
-function WideLoCase(C: WideChar): WideChar;
+// Note that most of the assigned code points don't have a case mapping and are therefor
+// returned as they are. Other code points, however, might be converted into several characters
+// like the german ß (es-zed) whose upper case mapping is SS.
+
+function WideLowerCase(C: WideChar): WideString;
+
+var
+  I: Integer;
+  Mapping: TUCS4Array;
+
 begin
-  Result := WideChar(UnicodeToLower(Word(C)));
+  Mapping := UnicodeToLower(UCS4(C));
+  SetLength(Result, Length(Mapping));
+  for I := 0 to High(Mapping) do
+    Result[I + 1] := WideChar(Mapping[I]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideLowerCase(const S: WideString): WideString;
+
 var
   I: Integer;
+
 begin
-  Result := S;
+  Result := '';
   for I := 1 to Length(S) do
-    Result[I] := WideChar(UnicodeToLower(Word(Result[I])));
+    Result := Result + WideLowerCase(S[I]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function WideTitleCaseChar(C: WideChar): WideChar;
-begin
-  Result := WideChar(UnicodeToTitle(Word(C)));
-end;
+function WideTitleCase(C: WideChar): WideString;
 
-//------------------------------------------------------------------------------
-
-function WideTitleCaseString(const S: WideString): WideString;
 var
   I: Integer;
+  Mapping: TUCS4Array;
+
 begin
-  Result := S;
+  Mapping := UnicodeToTitle(UCS4(C));
+  SetLength(Result, Length(Mapping));
+  for I := 0 to High(Mapping) do
+    Result[I + 1] := WideChar(Mapping[I]);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function WideTitleCase(const S: WideString): WideString;
+
+var
+  I: Integer;
+
+begin
+  Result := '';
   for I := 1 to Length(S) do
-    Result[I] := WideChar(UnicodeToTitle(Word(Result[I])));
+    Result := Result + WideTitleCase(S[I]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-function WideUpCase(C: WideChar): WideChar;
+function WideUpperCase(C: WideChar): WideString;
+
+var
+  I: Integer;
+  Mapping: TUCS4Array;
+
 begin
-  Result := WideChar(UnicodeToUpper(Word(C)));
+  Mapping := UnicodeToUpper(UCS4(C));
+  SetLength(Result, Length(Mapping));
+  for I := 0 to High(Mapping) do
+    Result[I + 1] := WideChar(Mapping[I]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideUpperCase(const S: WideString): WideString;
+
 var
   I: Integer;
+
 begin
-  Result := S;
+  Result := '';
   for I := 1 to Length(S) do
-    Result[I] := WideChar(UnicodeToUpper(Word(Result[I])));
+    Result := Result + WideUpperCase(S[I]);
 end;
 
-//==============================================================================
-// Character test routines
-//==============================================================================
+//----------------- character test routines ----------------------------------------------------------------------------
+
+function UnicodeIsAlpha(C: UCS4): Boolean;
 
 // Is the character alphabetic?
-function UnicodeIsAlpha(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_LU or UC_LL or UC_LM or UC_LO or UC_LT, 0);
+  Result := CategoryLookup(C, ClassLetter);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsDigit(C: UCS4): Boolean;
 
 // Is the character a digit?
-function UnicodeIsDigit(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ND, 0);
+  Result := CategoryLookup(C, ccNumberDecimalDigit);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsAlphaNum(C: UCS4): Boolean;
 
 // Is the character alphabetic or a number?
-function UnicodeIsAlphaNum(C: UCS4): Boolean;
+
 begin
-Result := IsProperty(C, UC_LU or UC_LL or UC_LM or UC_LO or UC_LT or UC_ND, 0);
+  Result := CategoryLookup(C, ClassLetter + [ccNumberDecimalDigit]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsCased(C: UCS4): Boolean;
+
+// Is the character a "cased" character, i.e. either lower case, title case, upper case or unique upper case.
+
+begin
+  Result := CategoryLookup(C, [ccLetterLowercase, ccLetterTitleCase, ccLetterUppercase, ccLetterUniqueUpper]);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsControl(C: UCS4): Boolean;
 
 // Is the character a control character?
-function UnicodeIsControl(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_CC or UC_CF, 0);
+  Result := CategoryLookup(C, [ccOtherControl, ccOtherFormat]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsSpace(C: UCS4): Boolean;
 
 // Is the character a spacing character?
-function UnicodeIsSpace(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ZS or UC_SS, 0);
+  Result := CategoryLookup(C, ClassSpace);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsWhiteSpace(C: UCS4): Boolean;
 
 // Is the character a white space character (same as UnicodeIsSpace plus
 // tabulator, new line etc.)?
-function UnicodeIsWhiteSpace(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ZS or UC_SS, UC_WS or UC_S);
+  Result := CategoryLookup(C, ClassSpace + [ccWhiteSpace, ccSegmentSeparator]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsBlank(C: UCS4): Boolean;
 
 // Is the character a space separator?
-function UnicodeIsBlank(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ZS, 0);
+  Result := CategoryLookup(C, ccSeparatorSpace);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsPunctuation(C: UCS4): Boolean;
 
 // Is the character a punctuation mark?
-function UnicodeIsPunctuation(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_PD or UC_PS or UC_PE or UC_PO, UC_PI or UC_PF);
+  Result := CategoryLookup(C, ClassPunctuation);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsGraph(C: UCS4): Boolean;
 
 // Is the character graphical?
-function UnicodeIsGraph(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_MN or UC_MC or UC_ME or UC_ND or UC_NL or UC_NO or
-                       UC_LU or UC_LL or UC_LT or UC_LM or UC_LO or UC_PC or UC_PD or
-                       UC_PS or UC_PE or UC_PO or UC_SM or UC_SM or UC_SC or UC_SK or
-                       UC_SO, UC_PI or UC_PF);
+  Result := CategoryLookup(C, ClassMark + ClassNumber + ClassLetter + ClassPunctuation + ClassSymbol);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsPrintable(C: UCS4): Boolean;
 
 // Is the character printable?
-function UnicodeIsPrintable(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_MN or UC_MC or UC_ME or UC_ND or UC_NL or UC_NO or
-                       UC_LU or UC_LL or UC_LT or UC_LM or UC_LO or UC_PC or UC_PD or
-                       UC_PS or UC_PE or UC_PO or UC_SM or UC_SM or UC_SC or UC_SK or
-                       UC_SO or UC_ZS, UC_PI or UC_PF);
+  Result := CategoryLookup(C, ClassMark + ClassNumber + ClassLetter + ClassPunctuation + ClassSymbol + [ccSeparatorSpace]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsUpper(C: UCS4): Boolean;
 
 // Is the character already upper case?
-function UnicodeIsUpper(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_LU, 0);
+  Result := CategoryLookup(C, ccLetterUppercase);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsLower(C: UCS4): Boolean;
 
 // Is the character already lower case?
-function UnicodeIsLower(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_LL, 0);
+  Result := CategoryLookup(C, ccLetterLowercase);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsTitle(C: UCS4): Boolean;
 
 // Is the character already title case?
-function UnicodeIsTitle(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_LT, 0);
+  Result := CategoryLookup(C, ccLetterTitlecase);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsHexDigit(C: UCS4): Boolean;
 
 // Is the character a hex digit?
-function UnicodeIsHexDigit(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_HD);
+  Result := CategoryLookup(C, ccHexDigit);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsIsoControl(C: UCS4): Boolean;
 
 // Is the character a C0 control character (< 32)?
-function UnicodeIsIsoControl(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_CC, 0);
+  Result := CategoryLookup(C, ccOtherControl);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsFormatControl(C: UCS4): Boolean;
 
 // Is the character a format control character?
-function UnicodeIsFormatControl(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_CF, 0);
+  Result := CategoryLookup(C, ccOtherFormat);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsSymbol(C: UCS4): Boolean;
 
 // Is the character a symbol?
-function UnicodeIsSymbol(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_SM or UC_SC or UC_SO or UC_SK, 0);
+  Result := CategoryLookup(C, ClassSymbol);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsNumber(C: UCS4): Boolean;
 
 // Is the character a number or digit?
-function UnicodeIsNumber(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ND or UC_NO or UC_NL, 0);
+  Result := CategoryLookup(C, ClassNumber);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsNonSpacing(C: UCS4): Boolean;
 
 // Is the character non-spacing?
-function UnicodeIsNonSpacing(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_MN, 0);
+  Result := CategoryLookup(C, ccMarkNonSpacing);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Is the character an open/left punctuation (i.e. '[')?
 function UnicodeIsOpenPunctuation(C: UCS4): Boolean;
+
+// Is the character an open/left punctuation (e.g. '[')?
+
 begin
-  Result := IsProperty(C, UC_PS, 0);
+  Result := CategoryLookup(C, ccPunctuationOpen);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Is the character an close/right punctuation (i.e. ']')?
 function UnicodeIsClosePunctuation(C: UCS4): Boolean;
+
+// Is the character an close/right punctuation (e.g. ']')?
+
 begin
-  Result := IsProperty(C, UC_PE, 0);
+  Result := CategoryLookup(C, ccPunctuationClose);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Is the character an initial punctuation (i.e. U+2018 LEFT SINGLE QUOTATION MARK)?
 function UnicodeIsInitialPunctuation(C: UCS4): Boolean;
+
+// Is the character an initial punctuation (e.g. U+2018 LEFT SINGLE QUOTATION MARK)?
+
 begin
-  Result := IsProperty(C, 0, UC_PI);
+  Result := CategoryLookup(C, ccPunctuationInitialQuote);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Is the character a final punctuation (i.e. U+2019 RIGHT SINGLE QUOTATION MARK)?
 function UnicodeIsFinalPunctuation(C: UCS4): Boolean;
+
+// Is the character a final punctuation (e.g. U+2019 RIGHT SINGLE QUOTATION MARK)?
+
 begin
-  Result := IsProperty(C, 0, UC_PF);
+  Result := CategoryLookup(C, ccPunctuationFinalQuote);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsComposed(C: UCS4): Boolean;
 
 // Can the character be decomposed into a set of other characters?
-function UnicodeIsComposite(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_CM);
+  Result := CategoryLookup(C, ccComposed);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsQuotationMark(C: UCS4): Boolean;
 
 // Is the character one of the many quotation marks?
-function UnicodeIsQuotationMark(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_QM);
+  Result := CategoryLookup(C, ccQuotationMark);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsSymmetric(C: UCS4): Boolean;
 
 // Is the character one that has an opposite form (i.e. <>)?
-function UnicodeIsSymmetric(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_SY);
+  Result := CategoryLookup(C, ccSymmetric);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsMirroring(C: UCS4): Boolean;
 
 // Is the character mirroring (superset of symmetric)?
-function UnicodeIsMirroring(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_MR);
+  Result := CategoryLookup(C, ccMirroring);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsNonBreaking(C: UCS4): Boolean;
 
 // Is the character non-breaking (i.e. non-breaking space)?
-function UnicodeIsNonBreaking(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_NB);
+  Result := CategoryLookup(C, ccNonBreaking);
 end;
 
-//==============================================================================
-// Directionality functions
-//==============================================================================
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsRightToLeft(C: UCS4): Boolean;
 
 // Does the character have strong right-to-left directionality (i.e. Arabic letters)?
-function UnicodeIsRightToLeft(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_R, 0);
+  Result := CategoryLookup(C, ccRightToLeft);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsLeftToRight(C: UCS4): Boolean;
 
 // Does the character have strong left-to-right directionality (i.e. Latin letters)?
-function UnicodeIsLeftToRight(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_L, 0);
+  Result := CategoryLookup(C, ccLeftToRight);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsStrong(C: UCS4): Boolean;
 
 // Does the character have strong directionality?
-function UnicodeIsStrong(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_L or UC_R, 0);
+  Result := CategoryLookup(C, [ccLeftToRight, ccRightToLeft]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsWeak(C: UCS4): Boolean;
 
 // Does the character have weak directionality (i.e. numbers)?
-function UnicodeIsWeak(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_EN or UC_ES, UC_ET or UC_AN or UC_CS);
+  Result := CategoryLookup(C, ClassEuropeanNumber + [ccArabicNumber, ccCommonNumberSeparator]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsNeutral(C: UCS4): Boolean;
 
 // Does the character have neutral directionality (i.e. whitespace)?
-function UnicodeIsNeutral(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_B or UC_S or UC_WS or UC_ON);
+  Result := CategoryLookup(C, [ccSeparatorParagraph, ccSegmentSeparator, ccWhiteSpace, ccOtherNeutrals]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsSeparator(C: UCS4): Boolean;
 
 // Is the character a block or segment separator?
-function UnicodeIsSeparator(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_B or UC_S);
+  Result := CategoryLookup(C, [ccSeparatorParagraph, ccSegmentSeparator]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Other functions inspired by John Cowan.
-// Is the character a mark of some kind?
 function UnicodeIsMark(C: UCS4): Boolean;
+
+// Is the character a mark of some kind?
+
 begin
-  Result := IsProperty(C, UC_MN or UC_MC or UC_ME, 0);
+  Result := CategoryLookup(C, ClassMark);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Is the character a modifier letter?
 function UnicodeIsModifier(C: UCS4): Boolean;
+
+// Is the character a letter modifier?
+
 begin
-  Result := IsProperty(C, UC_LM, 0);
+  Result := CategoryLookup(C, ccLetterModifier);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsLetterNumber(C: UCS4): Boolean;
 
 // Is the character a number represented by a letter?
-function UnicodeIsLetterNumber(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_NL, 0);
+  Result := CategoryLookup(C, ccNumberLetter);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsConnectionPunctuation(C: UCS4): Boolean;
 
 // Is the character connecting punctuation?
-function UnicodeIsConnectionPunctuation(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_PC, 0);
+  Result := CategoryLookup(C, ccPunctuationConnector);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsDash(C: UCS4): Boolean;
 
 // Is the character a dash punctuation?
-function UnicodeIsDash(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_PD, 0);
+  Result := CategoryLookup(C, ccPunctuationDash);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsMath(C: UCS4): Boolean;
 
 // Is the character a math character?
-function UnicodeIsMath(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_SM, 0);
+  Result := CategoryLookup(C, ccSymbolMath);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsCurrency(C: UCS4): Boolean;
 
 // Is the character a currency character?
-function UnicodeIsCurrency(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_SC, 0);
+  Result := CategoryLookup(C, ccSymbolCurrency);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsModifierSymbol(C: UCS4): Boolean;
 
 // Is the character a modifier symbol?
-function UnicodeIsModifierSymbol(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_SK, 0);
+  Result := CategoryLookup(C, ccSymbolModifier);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsNonSpacingMark(C: UCS4): Boolean;
 
 // Is the character a non-spacing mark?
-function UnicodeIsNonSpacingMark(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_MN, 0);
+  Result := CategoryLookup(C, ccMarkNonSpacing);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsSpacingMark(C: UCS4): Boolean;
 
 // Is the character a spacing mark?
-function UnicodeIsSpacingMark(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_MC, 0);
+  Result := CategoryLookup(C, ccMarkSpacingCombining);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsEnclosing(C: UCS4): Boolean;
 
 // Is the character enclosing (i.e. enclosing box)?
-function UnicodeIsEnclosing(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ME, 0);
+  Result := CategoryLookup(C, ccMarkEnclosing);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsPrivate(C: UCS4): Boolean;
 
 // Is the character from the Private Use Area?
-function UnicodeIsPrivate(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_CO, 0);
+  Result := CategoryLookup(C, ccOtherPrivate);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsSurrogate(C: UCS4): Boolean;
 
 // Is the character one of the surrogate codes?
-function UnicodeIsSurrogate(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_OS, 0);
+  Result := CategoryLookup(C, ccOtherSurrogate);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsLineSeparator(C: UCS4): Boolean;
 
 // Is the character a line separator?
-function UnicodeIsLineSeparator(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ZL, 0);
+  Result := CategoryLookup(C, ccSeparatorLine);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsParagraphSeparator(C: UCS4): Boolean;
 
 // Is th character a paragraph separator;
-function UnicodeIsParagraphSeparator(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_ZP, 0);
+  Result := CategoryLookup(C, ccSeparatorParagraph);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsIdentifierStart(C: UCS4): Boolean;
 
 // Can the character begin an identifier?
-function UnicodeIsIdentifierStart(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_LU or UC_LL or UC_LT or UC_LO or UC_NL, 0);
+  Result := CategoryLookup(C, ClassLetter + [ccNumberLetter]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsIdentifierPart(C: UCS4): Boolean;
 
 // Can the character appear in an identifier?
-function UnicodeIsIdentifierPart(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, UC_LU or UC_LL or UC_LT or UC_LO or UC_NL or UC_MN or
-                       UC_MC or UC_ND or UC_PC or UC_CF, 0);
+  Result := CategoryLookup(C, ClassLetter + [ccNumberLetter, ccMarkNonSpacing, ccMarkSpacingCombining,
+    ccNumberDecimalDigit, ccPunctuationConnector, ccOtherFormat]);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsDefined(C: UCS4): Boolean;
 
 // Is the character defined (appears in one of the data files)?
-function UnicodeIsDefined(C: UCS4): Boolean;
+
 begin
-  Result := IsProperty(C, 0, UC_CP);
+  Result := CategoryLookup(C, ccAssigned);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
-// Is the character not defined (non-Unicode)?
 function UnicodeIsUndefined(C: UCS4): Boolean;
+
+// Is the character undefined (not assigned in the Unicode database)?
+
 begin
-  Result := not IsProperty(C, 0, UC_CP);
+  Result := not CategoryLookup(C, ccAssigned);
 end;
 
-//==============================================================================
-// Other miscellaneous character property functions.
-//==============================================================================
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsHan(C: UCS4): Boolean;
 
 // Is the character a Han ideograph?
-function UnicodeIsHan(C: UCS4): Boolean;
+
 begin
   Result := ((C >= $4E00) and (C <= $9FFF))  or ((C >= $F900) and (C <= $FAFF));
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeIsHangul(C: UCS4): Boolean;
 
 // Is the character a pre-composed Hangul syllable?
-function UnicodeIsHangul(C: UCS4): Boolean;
+
 begin
   Result := (C >= $AC00) and (C <= $D7FF);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+
+// I need to fix a problem introduced by MS here. The first parameter can be a pointer
+// (and is so defined) or can be a normal DWORD, depending on the dwFlags parameter.
+// As usual, lpSrc has been translated to a var parameter. But this does not work in
+// our case, hence the redeclaration of the function with a pointer as first parameter. 
+function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
+  external 'gdi32.dll' name 'TranslateCharsetInfo';
 
 function CharSetFromLocale(Language: LCID): TFontCharSet;
+
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
+  
 begin
   CP:= CodePageFromLocale(Language);
-  TranslateCharsetInfo(CP, CSI, TCI_SRCCODEPAGE);
+  TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
   Result:= CSI.ciCharset;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function CodePageFromLocale(Language: LCID): Integer;
+
 // determines the code page for a given locale
+
 var
   Buf: array [0..6] of Char;
+
 begin
   GetLocaleInfo(Language, LOCALE_IDefaultAnsiCodePage, Buf, 6);
   Result := StrToIntDef(Buf, GetACP);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function KeyboardCodePage: Word;
+
 begin
   Result := CodePageFromLocale(GetKeyboardLayout(0) and $FFFF);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function KeyUnicode(C: Char): WideChar;
+
 // converts the given character (as it comes with a WM_CHAR message) into its
 // corresponding Unicode character depending on the active keyboard layout
+
 begin
   MultiByteToWideChar(KeyboardCodePage, MB_USEGLYPHCHARS, @C, 1, @Result, 1);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function CodeBlockFromChar(const C: WideChar): Cardinal;
+
 // returns the Unicode code block to which C belongs
+
 begin
   case C of
     #$0000..#$007F: // Basic Latin
@@ -7291,15 +7403,18 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function CompareTextWin95(W1, W2: WideString; Locale: LCID): Integer;
+
 // special comparation function for Win9x since there's no system defined
 // comparation function, returns -1 if W1 < W2, 0 if W1 = W2 or 1 if W1 > W2
+
 var
   S1, S2: string;
   CP: Integer;
   L1, L2: Integer;
+
 begin
   L1 := Length(W1);
   L2 := Length(W2);
@@ -7312,49 +7427,54 @@ begin
     PChar(S2), Length(S2)) - 2;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function CompareTextWinNT(W1, W2: WideString; Locale: LCID): Integer;
+
 // Wrapper function for WinNT since there's no system defined comparation function
 // in Win9x and we need a central comparation function for TWideStringList.
 // Returns -1 if W1 < W2, 0 if W1 = W2 or 1 if W1 > W2
+
 begin
   Result := CompareStringW(Locale, NORM_IGNORECASE, PWideChar(W1), Length(W1),
     PWideChar(W2), Length(W2)) - 2;
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function StringToWideStringEx(const S: string; CodePage: Word): WideString;
+
 var
   L: Integer;
+  
 begin
   L:= MultiByteToWideChar(CodePage, 0, PChar(S), -1, nil, 0);
   SetLength(Result, L - 1);
   MultiByteToWideChar(CodePage, 0, PChar(S), -1, PWideChar(Result), L - 1);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
+
 var
   L: Integer;
+
 begin
   L := WideCharToMultiByte(CodePage, 0, PWideChar(WS), -1, nil, 0, nil, nil);
   SetLength(Result, L - 1);
   WideCharToMultiByte(CodePage, 0, PWideChar(WS), -1, PChar(Result), L - 1, nil, nil);
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function TranslateString(const S: string; CP1, CP2: Word): string;
+
 begin
   Result:= WideStringToStringEx(StringToWideStringEx(S, CP1), CP2);
 end;
 
-//==============================================================================
-// Conversion routines
-//==============================================================================
+//----------------- conversion routines --------------------------------------------------------------------------------
 
 const
   halfShift: Integer = 10;
@@ -7377,15 +7497,17 @@ const
 
   firstByteMark: array [0..6] of Byte = ($00, $00, $C0, $E0, $F0, $F8, $FC);
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideStringToUTF8(S: WideString): AnsiString;
+
 var
   ch: UCS4;
   L, J, T,
-  bytesToWrite: Word;
+  bytesToWrite: Cardinal;
   byteMask: UCS4;
   byteMark: UCS4;
+
 begin
   if Length(S) = 0 then
   begin
@@ -7436,13 +7558,15 @@ begin
   SetLength(Result, T - 1); // assume worst case
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 function UTF8ToWideString(S: AnsiString): WideString;
+
 var
   L, J, T: Cardinal;
   ch: UCS4;
   extraBytesToWrite: Word;
+
 begin
   if Length(S) = 0 then
   begin
@@ -7492,7 +7616,7 @@ begin
   SetLength(Result, T - 1); // now fix up length
 end;
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
 initialization
   if (Win32Platform and VER_PLATFORM_WIN32_NT) <> 0 then
@@ -7502,3 +7626,4 @@ initialization
 finalization
   LoadInProgress.Free;
 end.
+
