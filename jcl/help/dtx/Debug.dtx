@@ -95,6 +95,10 @@ Parameters:
   Msg - The message to send to the debugger.
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
+See also:
+  TraceFmt
+  TraceLoc
+  TraceLocFmt
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -119,6 +123,10 @@ Parameters:
   Args - Arguments formatted under control of the Fmt string.
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
+See also:
+  Trace
+  TraceLoc
+  TraceLocFmt
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -145,6 +153,10 @@ Parameters:
   Msg - The message to send to the debugger.
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
+See also:
+  Trace
+  TraceFmt
+  TraceLocFmt
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -172,6 +184,10 @@ Parameters:
   Args - Arguments formatted under control of the Fmt string.
 Notes:
   If you are running your application under the control of the debugger you can view these messages using the event log dialog, 'View | Debug Windows | Event Log'. If the application is not running under the debugger the message is sent to the system debugger. If there is no system debugger active the function does nothing.
+See also:
+  Trace
+  TraceFmt
+  TraceLoc
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -443,6 +459,8 @@ Description:
   LinkerBug holds a flag to determine if the linker bug is found in the map file.
   The bug appears if a unit has >64K of data after the code and another unit
   follows. The solution is to move the data to a separate unit.
+See also:
+  LinkerBugUnit
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -458,6 +476,8 @@ Summary:
 Description:
   LinkerBugUnit holds the name of the unit containing the linker bug. If there's
   no linker bug present (ie. LinkerBug = False) LinkerBugUnit is empty.
+See also:
+  LinkerBug
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -635,6 +655,11 @@ Parameters:
   Addr - Address to get line number for.
 Result:
   The line number for the specified address.
+See also:
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -653,6 +678,11 @@ Parameters:
   Addr - Address to get unit name for.
 Result:
   The Delphi unit name for the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -672,6 +702,11 @@ Parameters:
   Addr - Address to get unit start for.
 Result:
   The starting address of the Delphi unit that contains the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -690,6 +725,11 @@ Parameters:
   Addr - Address to get procedure name for.
 Result:
   The procedure name for the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -708,6 +748,11 @@ Parameters:
   Addr - Address to get procedure name for.
 Result:
   The source file name for the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -908,6 +953,11 @@ Parameters:
   Addr - Address to get line number for.
 Result:
   The line number for the specified address.
+See also:
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -926,6 +976,11 @@ Parameters:
   Addr - Address to get unit name for.
 Result:
   The Delphi unit name for the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -945,6 +1000,11 @@ Parameters:
   Addr - Address to get unit start for.
 Result:
   The starting address of the Delphi unit that contains the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ProcNameFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -963,6 +1023,11 @@ Parameters:
   Addr - Address to get procedure name for.
 Result:
   The procedure name for the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  SourceNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -979,6 +1044,11 @@ Description:
   SourceNameFromAddr returns the source-file name for the specified address.
 Result:
   The source file name for the specified address.
+See also:
+  LineNumberFromAddr
+  ModuleNameFromAddr
+  ModuleStartFromAddr
+  ProcNameFromAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1454,6 +1524,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use FileByLevel instead.
+See also:
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1480,6 +1560,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ModuleByLevel instead.
+See also:
+  __FILE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1506,6 +1596,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ProcByLevel instead.
+See also:
+  __FILE__
+  __MODULE__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1532,6 +1632,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use LineByLevel instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1561,6 +1671,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use MapByLevel instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1585,6 +1705,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use FileOfAddr instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1609,6 +1739,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ModuleOfAddr instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1633,6 +1773,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use ProcOfAddr instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __LINE_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1657,6 +1807,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use LineOfAddr instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __MAP_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1686,6 +1846,16 @@ Result:
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
   This function is obsolete. Use MapOfAddr instead.
+See also:
+  __FILE__
+  __MODULE__
+  __PROC__
+  __LINE__
+  __MAP__
+  __FILE_OF_ADDR__
+  __MODULE_OF_ADDR__
+  __PROC_OF_ADDR__
+  __LINE_OF_ADDR__
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1711,6 +1881,16 @@ Result:
   Filename of the source file in which the routine specified by Level exists.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1736,6 +1916,16 @@ Result:
   Unit name in which the routine specified by Level exists.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1761,6 +1951,16 @@ Result:
   Name of the routine at the specified level.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1786,6 +1986,16 @@ Result:
   Line number of the routine specified by Level.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  MapByLevel
+  FileOFAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1814,6 +2024,16 @@ Result:
   Returns True if the information was found, otherwise False.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  FileOFAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1837,6 +2057,16 @@ Result:
   Name of the source code file in which the specified address is defined.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1860,6 +2090,16 @@ Result:
   Name of module in which the specified address is defined.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ProcOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1883,6 +2123,16 @@ Result:
   Name of the procedure in which Addr is defined.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  LineOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1906,6 +2156,16 @@ Result:
   Line number at which the address is defined.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  MapOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -1934,6 +2194,16 @@ Result:
   Returns True if the information was found, otherwise False.
 Notes:
   Usage of this function requires building the module with a detailed map file. Use the Linker tab in the Project Options dialog to enable creation of a map file.
+See also:
+  FileByLevel
+  ModuleByLevel
+  ProcByLevel
+  LineByLevel
+  MapByLevel
+  FileOfAddr
+  ModuleOfAddr
+  ProcOfAddr
+  LineOfAddr
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2265,7 +2535,7 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
-@@TJmpInstruction
+@@JmpInstruction
 <GROUP Debugging.Exceptframeinforoutines>
 Summary:
   Disected jump instruction
@@ -2282,9 +2552,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TJmpInstruction.OpCode
+@@JmpInstruction.opCode
   opCode for the JMP instruction.
-@@TJmpInstruction.Distance
+@@JmpInstruction.distance
   Offset in the JMP instruction.
 --------------------------------------------------------------------------------
 @@TExcDescEntry
@@ -2304,9 +2574,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TExcDescEntry.VTable
+@@TExcDescEntry.vTable
   Pointer to the Virtual Method table of an Exception class.
-@@TExcDescEntry.Handler
+@@TExcDescEntry.handler
   Pointer to the handler for the exception class.
 --------------------------------------------------------------------------------
 @@TExcDesc
@@ -2331,13 +2601,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TExcDesc.JMP
+@@TExcDesc.jmp
   Holds the JMP-instruction incase of Borland code
-@@TExcDesc.Instructions
+@@TExcDesc.instructions
   Handler instructions for non "except on..."-blocks
-@@TExcDesc.Cnt
+@@TExcDesc.cnt
   Number of exception classes defined in an "except on..."-block
-@@TExcDesc.ExcTab
+@@TExcDesc.excTab
   Table of on-definitions and there handlers in an "except on..."-block
 --------------------------------------------------------------------------------
 @@TExcFrame
@@ -2361,11 +2631,11 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
-@@TExcFrame.Next
+@@TExcFrame.next
   Link to next except frame or -1(!) if there is no next frame.
-@@TExcFrame.Desc
+@@TExcFrame.desc
   Pointer to handler (non-Borland modules) or frame descriptor (Borland modules)
-@@TExcFrame.HEBP
+@@TExcFrame.hEBP
   Value of the handlers EBP-frame
 @@TExcFrame.ConstructedObject
   Pointer to object being constructed. This is used by the compiler to allow for destruction of the object when an exception occured.
@@ -2552,6 +2822,8 @@ Summary:
   List of except frame item.
 Description:
   TJclExceptFrameList holds a list of except frame items.
+See also:
+  TJclExceptFrame
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2721,6 +2993,10 @@ Parameters:
   ExceptObj - Exception object
   ExceptAddr - Address where exception occured
   OSException - If the exception occured outside of any Borland module, this parameter is True, otherwise it is False.
+See also:
+  TJclExceptNotifyMethod
+  ExceptNotifyProc
+  ExceptNotifyMethod
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2741,6 +3017,10 @@ Parameters:
   ExceptObj - Exception object
   ExceptAddr - Address where exception occured
   OSException - If the exception occured outside of any Borland module, this parameter is True, otherwise it is False.
+See also:
+  TJclExceptNotifyProc
+  ExceptNotifyProc
+  ExceptNotifyMethod
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2763,6 +3043,12 @@ Description:
   and / or except frame tracking to occur automatically on any exception.
 Result:
   If the hook was succesful, the function returns True, otherwise it returns False.
+See also:
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2782,6 +3068,12 @@ Description:
 Result:
   If exceptions where hooked and the function succeeded in unhooking them, the
   function returns True, otherwise it returns False.
+See also:
+  JclHookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2800,6 +3092,12 @@ Description:
   JclExceptionsHooked determines if exceptions are currently hooked.
 Result:
   If exceptions are hooked, the function returns True, otherwise it returns False.
+See also:
+  JclHookExceptions
+  JclUnhookExceptions
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2818,6 +3116,12 @@ Description:
   ExceptNotifyProc is a procedural type variable pointing to a notifier routine
   which gets called when an exception occurs and exceptions are hooked through a
   previous call to JclHookExceptions.
+See also:
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyMethod
+  ExceptionFrameTrackingEnable
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2836,6 +3140,12 @@ Description:
   ExceptNotifyMethod is a procedural type variable pointing to a notifier method
   which gets called when an exception occurs and exceptions are hooked through a
   previous call to JclHookExceptions.
+See also:
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptionFrameTrackingEnable
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2853,6 +3163,12 @@ Summary:
 Description:
   StackTrackingEnable is a flag that enables or disables automatic stack tracking
   when exception hooking is on.
+See also:
+  ExceptionFrameTrackingEnable
+  RawStackTracking
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2870,6 +3186,11 @@ Summary:
 Description:
   RawStackTracking is a flag that enables or disables raw stack tracking
   when exception hooking is on and stack tracking is enabled.
+See also:
+  StackTrackingEnable
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
 Quick info:
   Unit: JclDebug
   Category: Debugging
@@ -2887,6 +3208,13 @@ Summary:
 Description:
   ExceptionFrameTrackingEnable is a flag that enables or disables exception frame
   tracking when exception hooking is on.
+See also:
+  JclHookExceptions
+  JclUnhookExceptions
+  JclExceptionsHooked
+  ExceptNotifyProc
+  ExceptNotifyMethod
+  StackTrackingEnable
 Quick info:
   Unit: JclDebug
   Category: Debugging
