@@ -295,7 +295,7 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF}
-  JclResources, JclSecurity, JclSysUtils, JclWin32;
+  JclResources, JclSecurity, JclSysUtils, JclWin32, JclStrings;
 
 { Some general notes. This unit redeclares some function from FileCtrl.pas to
   avoid a dependeny on that unit in the JCL. The problem is that FileCtrl.pas
@@ -932,8 +932,7 @@ begin
     Exit;
   {$IFDEF WIN32}
   Result := AnsiSameText(StrLeft(Path, L), Base);
-  {$ENDIF}
-  {$IFDEF}
+  {$ELSE}
   Result := AnsiSameStr(StrLeft(Path, L), Base);
   {$ENDIF}
 end;
@@ -1440,7 +1439,7 @@ begin
     if Handle <> INVALID_HANDLE_VALUE then
     try
       if not GetFileInformationByHandle(Handle, FileInfo) then
-        raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+        raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
       Result.dwFileAttributes := FileInfo.dwFileAttributes;
       Result.ftCreationTime := FileInfo.ftCreationTime;
       Result.ftLastAccessTime := FileInfo.ftLastAccessTime;
@@ -1451,12 +1450,12 @@ begin
       CloseHandle(Handle);
     end
     else
-      raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end
   else
   begin
     if not GetFileAttributesEx(PChar(FileName), GetFileExInfoStandard, @Result) then
-      raise EFileUtilsError.CreateResRecFmt(RsFileUtilsAttrUnavailable, [FileName]);
+      raise EJclFileUtilsError.CreateResRecFmt(@RsFileUtilsAttrUnavailable, [FileName]);
   end;
 end;
 
