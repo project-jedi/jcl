@@ -6,6 +6,7 @@
 *.dcu
 *.dpu
 *.ddp
+*.conf
 *.desk
 *.hpp
 template.*
@@ -23,6 +24,7 @@ jcl/dist
 jcl/dist-excludes
 jcl/docs/Contributors.txt
 jcl/docs/*.info
+jcl/help
 jcl/install/Makefile
 jcl/install/prototypes.mak
 jcl/install/BCB5-dcc32.cfg.mak
