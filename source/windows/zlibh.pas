@@ -74,14 +74,17 @@
 unit zlibh;
 
 
-  {$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-    {$WEAKPACKAGEUNIT ON}
-  {$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 uses
   Windows;
 
+{$HPPEMIT '#define ZEXPORT __fastcall'}
+{$HPPEMIT '#define ZEXPORTVA __cdecl'}
+{$HPPEMIT ''}
 {$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
 { zlib.h -- interface of the 'zlib' general purpose compression library
