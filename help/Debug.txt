@@ -186,7 +186,7 @@ Count=3
 3=TraceLoc
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclMapAddress = record
+TJclMapAddress = packed record
   Segment: Word;
   Offset: Integer;
 end;
@@ -788,6 +788,51 @@ Count=4
 4=ProcNameFromAddr
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+JclDbgDataSignature = $4742444A; // JDBG
+[ShortDescr]
+Signature of Jcl Binary Debug Data
+[Description]
+JclDbgDataSignature is the signature of the Jcl Binary Debug Data
+[Quick Info]
+Kind=Constant
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+JclDbgDataResName = 'JCLDEBUG';
+[ShortDescr]
+Resource name for binary debug data
+[Description]
+JclDbgDataResName is the resource name for Jcl Binary Debug Data.
+[Quick Info]
+Kind=Constant
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+JclDbgFileExtension = '.jdbg';
+[ShortDescr]
+File extension for a Jcl Binary Debug File
+[Description]
+JclDbgFileExtension is the extension for Jcl Binary Debug Data File.
+[Quick Info]
+Kind=Constant
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 TJclBinDebugGenerator = class (<REF Target"..\..\Map Parsers\TJclMapScanner\TJclMapScanner">TJclMapScanner</REF>)
 [ShortDescr]
 Generates a binary version of a map file.
@@ -847,6 +892,25 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function CalculateCheckSum: Boolean;
+[ShortDescr]
+Calculates the checksum of the binary data.
+[Description]
+CalculateChecksum calculates the checksum of the binary debug data.
+[Result]
+If the checksum could be calculated the function returns True, otherwise it returns
+False.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data\TJclBinDebugGenerator
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 property DataStream: TMemoryStream read FDataStream;
 [ShortDescr]
 A memory stream holding the translation result.
@@ -891,6 +955,28 @@ to check if the stream actually contains binary debug data.
 Count=2
 1=AStream:TCustomMemoryStream=Stream with binary debug data.
 2=CacheData:Boolean=If set to true, data read from the stream is internally cached.
+[Quick Info]
+Kind=Method
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsModuleNameValid(const Name: TFileName): Boolean;
+[ShortDescr]
+Checks if the given filename is a valid name for the module.
+[Description]
+IsModuleNameValid checks if the given filename is a valid name for the module.
+[Parameters]
+Count=1
+1=Name:TFileName=Filename to check
+[Result]
+If the specified filename belongs to this module the function returns True, 
+otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -1047,6 +1133,21 @@ BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
+[ShortDescr]
+Converts a text based MAP file to a Jcl binary debug file.
+[Description]
+ConvertMapFileToJdbgFile convert the specified text based map file to a Jcl binary
+debug file.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Binary Debug Data
 Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
@@ -2046,7 +2147,7 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure AddToStrings(Strings: TStrings);
+procedure AddToStrings(const Strings: TStrings);
 [ShortDescr]
 Adds all stack info items a list.
 [Description]
