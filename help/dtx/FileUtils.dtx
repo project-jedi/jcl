@@ -880,25 +880,32 @@ Quick info:
   Requirements: Shell32 Version 4.00 or later.
 --------------------------------------------------------------------------------
 @@PathGetLongName
-<GROUP FilesandIO.Pathmanipulation>
-Summary:
-  Returns the long name of a path.
-Description:
-  PathGetLongName returns the long name of a given path. PathGetLongName uses
-  the shell to discover the long path while PathGetLongName2 relies on the filesystem
-  to discover the long path. Consequence of this is that while PathGetLongName2 is
-  much faster than PathGetLongName, the latter can be used for shell paths which
-  include GUIDs, while PathGetLongName2 cannot.
-Parameters:
-  Path - The path for which you want to know the long name. The path must physically exist on the drive or the function fails.
-Result:
-  If the function succeeds it returns the long name of the supplied path. If the
-  function fails the result is a copy of the supplied Path.
-See also:
-  PathGetShortName
-  PathGetDisplayName
-Quick info:
-  Unit: JclFileUtils
+<GROUP $FilesandIO.Pathmanipulation>
+
+Description
+PathGetLongName returns the long name of a given path.
+PathGetLongName uses the shell to discover the long path
+while PathGetLongName2 relies on the filesystem to discover
+the long path. Consequence of this is that while
+PathGetLongName2 is much faster than PathGetLongName, the
+latter can be used for shell paths which include GUIDs, while
+PathGetLongName2 cannot.
+
+Summary
+\Returns the long name of a path.
+
+Parameters
+Path :   The path for which you want to know the long name. The
+         path must physically exist on the drive or the function
+         fails.
+
+Returns
+If the function succeeds it returns the long name of the
+supplied path. If the function fails the result is a copy of
+the supplied Path.
+
+QuickInfo
+ Unit: JclFileUtils
   Category: Files and IO
   Donator: Rudy Velthuis
   Delphi Versions: 4,5,6
@@ -907,7 +914,10 @@ Quick info:
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Requires Windows 95 or later.
   Requirements: Shell32 Version 4.00 or later.
---------------------------------------------------------------------------------
+
+See Also
+<LINK PathGetShortName, PathGetShortName>
+
 @@PathGetShortName
 <GROUP FilesandIO.Pathmanipulation>
 Summary:
@@ -2780,3 +2790,291 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+
+@@DeleteDirectory@string@Boolean
+Description
+Delete the specified file either permanently or moves it to
+recycle bin. The behaviour depends on the value of
+MoveToRecycleBin parameter.
+
+Summary
+Deletes specified file or moves it to recycle bin.
+
+
+
+Parameters
+DirectoryName :      Directory to be deleted
+MoveToRecycleBin :   If <B>True</B> the directory will be moved to
+                     the system Recycle Bin instead of being
+                     deleted.
+
+
+QuickInfo
+ Unit: JclFileUtils
+  Category: Files and IO
+  Donator: Anthony Steele
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 3.1 or later.
+  Windows 95/98: Requires Windows 95 or later.
+
+@@GetBackupFileName@string
+Description
+\Returns a file name that can be used for backup purposes.
+Basically it prepends the file extention with a tilde (<B>~</B>).
+If file does not contain extension, the function does
+nothing.
+
+
+
+Summary
+\Returns a file name that can be used for backup purposes.
+
+Parameters
+FileName :   File name that is used to construct file name of
+             backup file. 
+
+QuickInfo
+ Unit: JclFileUtils
+  Category: Files and IO
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+@@OSFileTypeToString@DWORD@DWORD
+Description
+Maps a file type as returned by TJclFileVersionInfo.FileType
+and TJclFileVersionInfo.FileSubType identifier to its string
+representation.
+
+Summary
+Maps a file type identifier to a string.
+
+Parameters
+OSFileSubType :   File subtype identifier. You can use a value returned
+                  by TJclFileVersionInfo.FileSubType member. Can be
+                  omitted. Default value is 0.
+OSFileType :      File type identifier. You can use a value returned by
+                  TJclFileVersionInfo.FileType member.
+
+Returns
+If there is no an appropriate value for FileType passed the
+function returns an empty string.
+
+
+
+QuickInfo
+ Unit: JclFileUtils
+  Category: Files and IO
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+@@PathExtractPathDepth@string@Integer
+Description
+\Returns first Depth parts of the path excluding drive letter
+and colon.
+
+
+
+Summary
+\Returns Depth parts of the path excluding drive.
+
+Parameters
+Depth :   Specify the depts of path's parts to return. 
+Path :    Path to extract parts from.
+
+QuickInfo
+Unit: JclFileUtils
+  Category: Files and IO
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+See Also
+<LINK PathGetDepth@string, PathGetDepth> 
+
+@@PathGetDepth@string
+Description
+Counts the depth of the path specified by Path parameter,
+i.e. counts subdirectories in the path.
+
+Summary
+Counts the depth of the path specified by Path parameter.
+
+Parameters
+Path :   Path to count the depth of.
+
+See Also
+\\\<LINK PathExtractPathDepth@string@Integer, PathExtractPathDepth\\\>
+
+
+
+QuickInfo
+Unit: JclFileUtils
+  Category: Files and IO
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+@@PathGetLongName2@string
+Summary
+\Returns the long name of a path.
+
+
+
+Description
+PathGetLongName2 returns the long name of a given path.
+PathGetLongName uses the file system to discover the long
+path while PathGetLongName relies on the shell to discover
+the long path. Consequence of this is that while
+PathGetLongName2 is much faster than PathGetLongName, the
+latter can be used for shell paths which include GUIDs, while
+PathGetLongName2 cannot.
+
+Parameters
+Path :   The path for which you want to know the long name. The
+         path must physically exist on the drive or the function
+         fails.
+
+
+Returns
+If the function succeeds it returns the long name of the
+supplied path. If the function fails the result is a copy of
+the supplied Path.
+
+QuickInfo
+  Category: Files and IO
+  Donator: Rudy Velthuis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4 or later.
+  Windows 95/98: Requires Windows 95 or later.
+  Requirements: Shell32 Version 4.00 or later.
+
+
+See Also
+<LINK PathGetLongName, PathGetLongName> 
+
+@@UnlockVolume@THandle
+Description
+Attempts to unlock the volume specified by the handle that
+was previously locked by <LINK LockVolume, LockVolume>
+function.
+
+Summary
+Tries to unlock the volume represented by the handle passed.
+
+
+
+Note
+This function calls Windows API DeviceIOControl function.
+Although Microsoft provides the way to call this function in
+Windows 95/98/ME environment, the implementation of
+UnlockVolume does not allow its usage under those operating
+systems.
+
+
+
+If the function succeedes the handle associated with the
+volume is getting freed and you should not use it again as
+its value will be <B>INVALID_HANDLE_VALUE</B>. However the
+handle remains valid if the function fails.
+
+Parameters
+Handle :   Handle of the volume to be unlocked previously obtained
+           calling <LINK LockVolume, LockVolume> function. Also this
+           handle can be obtained by calling CreateFile Windows API
+           function directly. 
+
+Returns
+\Returns <B>True </B>if the function succeeded, <B>False </B>otherwise.
+
+
+
+QuickInfo
+ Category: Files and IO
+  Donator: Rudy Velthuis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000: Requires Windows NT 4 or later.
+  Windows 95/98: Unsupported.
+
+@@
+Summary
+The <B>VersionFixedFileInfo </B>function retrieves the root
+block of version information resource from the file specified
+and returns it as <B>TVSFixedFileInfo </B>structure.
+
+
+
+
+
+Description
+This function retrieves the root block of version information
+resource from FileName file and returns it in out parameter
+FixedInfo.
+
+Parameters
+FileName :    File, which version information resource is to be
+              retrieved.
+FixedInfo :   \Output parameter. Receives the root block of version
+              information resource if function succeedes.
+
+
+Returns
+Function returns <B>True</B> if succeedes. In this case
+FixedInfo contains the root block of version information
+resource from the file specified in FileName parameter.
+Otherwise function returns <B>False </B>and FixedInfo remains
+unchanged.
+
+@@VersionFixedFileInfo@string@TVSFixedFileInfo
+Description
+The <B>VersionFixedFileInfo </B>function retrieves the root
+block of version information resource from the file specified
+by FileName parameter.The <B>VersionFixedFileInfo </B>function
+retrieves the root block of version information resource from
+the file specified by FileName parameter.
+
+Summary
+The <B>VersionFixedFileInfo</B> function retrieves the root
+block of version information resource from the file
+specified.
+
+
+
+Parameters
+FileName :    The fully qualified file name, the version information
+              resource of which should be retrieved.
+FixedInfo :   \Output parameter. Contains the root block of version
+              information resource if function succeedes.
+
+Returns
+Function returns <B>True</B> if version information resources
+was retrieved successfully, <B>False</B> otherwise.
+
+\Summary The <B>VersionFixedFileInfo</B> function retrieves
+the root block of version information resource from the file
+specified.
+
+
+
+QuickInfo
+Unit: JclFileUtils
+  Category: Files and IO
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
+
+See Also
+\<LINK VersionResourceAvailable, VersionResourceAvailable\>, <LINK TJclFileVersionInfo, TJclFileVersionInfo> 
