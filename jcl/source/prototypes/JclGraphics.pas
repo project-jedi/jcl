@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: April 4, 2002                                                                     }
+{ Last modified: June 2, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -505,7 +505,7 @@ procedure SetGamma(Gamma: Single = 0.7);
 implementation
 
 uses
-  ClipBrd, CommCtrl, Controls, Math, ShellApi,
+  TypInfo, ClipBrd, CommCtrl, Math, ShellApi,
   {$IFDEF COMPILER4_UP}
   ImgList, JPeg,
   {$ENDIF COMPILER4_UP}
@@ -2529,6 +2529,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomMap.SetSize(Source: TPersistent);
+var
+  WidthInfo, HeightInfo: PPropInfo;
 begin
   if Source is TJclCustomMap then
     SetSize(TJclCustomMap(Source).Width, TJclCustomMap(Source).Height)
@@ -2536,13 +2538,17 @@ begin
   if Source is TGraphic then
     SetSize(TGraphic(Source).Width, TGraphic(Source).Height)
   else
-  if Source is TControl then
-    SetSize(TControl(Source).Width, TControl(Source).Height)
-  else
   if Source = nil then
     SetSize(0, 0)
   else
-    raise EJclGraphicsError.CreateResRecFmt(@RsMapSizeFmt,[Source.ClassName]);
+  begin
+    WidthInfo := GetPropInfo(Source, 'Width', [tkInteger]);
+    HeightInfo := GetPropInfo(Source, 'Height', [tkInteger]);
+    if Assigned(WidthInfo) and Assigned(HeightInfo) then
+      SetSize(GetOrdProp(Source, WidthInfo), GetOrdProp(Source, HeightInfo))
+    else
+      raise EJclGraphicsError.CreateResRecFmt(@RsMapSizeFmt,[Source.ClassName]);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
