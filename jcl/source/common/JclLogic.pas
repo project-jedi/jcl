@@ -46,8 +46,12 @@ type
   TBitRange = Byte;
   TBooleanArray = array of Boolean;
 
+// TODOC TOTEST Added new overloads
+
 function BitsHighest(X: Byte): Integer; overload;
 function BitsHighest(X: Word): Integer; overload;
+function BitsHighest(X: SmallInt): Integer; overload;
+function BitsHighest(X: ShortInt): Integer; overload;
 function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Cardinal): Integer; assembler; overload;
 function BitsHighest(X: Int64): Integer; overload;
@@ -63,8 +67,12 @@ function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
 
-function CountBitsSet(X: Byte): Integer; overload;
-function CountBitsSet(X: Word): Integer; overload;
+// TODOC TOTEST Added new overloads
+
+function CountBitsSet(X: Byte): Integer; assembler; overload;
+function CountBitsSet(X: Word): Integer; assembler; overload;
+function CountBitsSet(X: Smallint): Integer; overload;
+function CountBitsSet(X: ShortInt): Integer; overload;
 function CountBitsSet(X: Integer): Integer; overload;
 function CountBitsSet(X: Cardinal): Integer; assembler; overload;
 function CountBitsSet(X: Int64): Integer; overload;
@@ -117,10 +125,10 @@ procedure BooleansToBits(var Dest: Word; const B: array of Boolean); overload;
 procedure BooleansToBits(var Dest: Integer; const B: array of Boolean); overload;
 procedure BooleansToBits(var Dest: Int64; const B: array of Boolean); overload;
 
-procedure BitsToBooleans(const Bits: Byte; B: TBooleanArray); overload;
-procedure BitsToBooleans(const Bits: Word; B: TBooleanArray); overload;
-procedure BitsToBooleans(const Bits: Integer; B: TBooleanArray); overload;
-procedure BitsToBooleans(const Bits: Int64; B: TBooleanArray); overload;
+procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
 
 function BitsNeeded(const X: Byte): Integer; overload;
 function BitsNeeded(const X: Word): Integer; overload;
@@ -322,6 +330,21 @@ end;
 
 //------------------------------------------------------------------------------
 
+function BitsHighest(X: SmallInt): Integer; overload;
+begin
+  Result := BitsHighest(Word(X));
+end;
+
+
+//------------------------------------------------------------------------------
+
+function BitsHighest(X: ShortInt): Integer; overload;
+begin
+  Result := BitsHighest(Cardinal(Byte(X)));
+end;
+
+//------------------------------------------------------------------------------
+
 function BitsHighest(X: Int64): Integer; overload;
 begin
   if TLargeInteger(X).HighPart = 0 then
@@ -423,16 +446,42 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Byte): Integer; overload;
-begin
-  Result := CountBitsSet(Cardinal(X) and $FF);
+function CountBitsSet(X: Byte): Integer; assembler; overload;
+asm
+        MOV     ECX, 8
+        XOR     EDX, EDX
+@CountBits:
+        SHR     AL, 1
+        ADC     DL, 0
+        LOOP    @CountBits
+        MOV     EAX, EDX
 end;
 
 //------------------------------------------------------------------------------
 
-function CountBitsSet(X: Word): Integer; overload;
+function CountBitsSet(X: Word): Integer; assembler; overload;
+asm
+        MOV     ECX, 16
+        XOR     EDX, EDX
+@CountBits:
+        SHR     AX, 1
+        ADC     DL, 0
+        LOOP    @CountBits
+        MOV     EAX, EDX
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsSet(X: Smallint): Integer; overload;
 begin
-  Result := CountBitsSet(Cardinal(X) and $FFFF);
+  Result := CountBitsSet(Word(X));
+end;
+
+//------------------------------------------------------------------------------
+
+function CountBitsSet(X: ShortInt): Integer; overload;
+begin
+  Result := CountBitsSet(Byte(X));
 end;
 
 //------------------------------------------------------------------------------
@@ -802,10 +851,11 @@ end;
 
 procedure BooleansToBits(var Dest: Byte; const B: array of Boolean);
 var
-  I: Integer;
+  I, H: Integer;
 begin
   Dest := 0;
-  for I := 0 to High(B) do
+  H := Min(Byte(7), High(B));
+  for I := 0 to H do
     if B[I] then
       SetBit(Dest, I);
 end;
@@ -814,10 +864,11 @@ end;
 
 procedure BooleansToBits(var Dest: Word; const B: array of Boolean);
 var
-  I: Integer;
+  I, H: Integer;
 begin
   Dest := 0;
-  for I := 0 to High(B) do
+  H := Min(Word(15), High(B));
+  for I := 0 to H do
     if B[I] then
       SetBit(Dest, I);
 end;
@@ -826,10 +877,11 @@ end;
 
 procedure BooleansToBits(var Dest: Integer; const B: array of Boolean);
 var
-  I: Integer;
+  I, H: Integer;
 begin
   Dest := 0;
-  for I := 0 to High(B) do
+  H := Min(Integer(31), High(B));
+  for I := 0 to H do
     if B[I] then
       SetBit(Dest, I);
 end;
@@ -838,56 +890,69 @@ end;
 
 procedure BooleansToBits(var Dest: Int64; const B: array of Boolean);
 var
-  I: Integer;
+  I, H: Integer;
 begin
   Dest := 0;
-  for I := 0 to High(B) do
+  H := Min(Int64(63), High(B));
+  for I := 0 to H do
     if B[I] then
       SetBit(Dest, I);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure BitsToBooleans(const Bits: Byte; B: TBooleanArray);
+procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
-  SetLength(B, BitsNeeded(Bits));
+  if AllBits then
+    SetLength(B, SizeOf(Bits) * 8)
+  else
+    SetLength(B, BitsNeeded(Bits));
   for I := 0 to High(B) do
-    B[I] := TestBit(Bits, I);
+    B[I] := TestBit(Bits, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
 
-procedure BitsToBooleans(const Bits: Word; B: TBooleanArray);
+procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
-  SetLength(B, BitsNeeded(Bits));
+  if AllBits then
+    SetLength(B, SizeOf(Bits) * 8)
+  else
+    SetLength(B, BitsNeeded(Bits));
   for I := 0 to High(B) do
-    B[I] := TestBit(Bits, I);
+    B[I] := TestBit(Bits, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
 
-procedure BitsToBooleans(const Bits: Integer; B: TBooleanArray);
+procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
-  SetLength(B, BitsNeeded(Bits));
+  if AllBits then
+    SetLength(B, SizeOf(Bits) * 8)
+  else
+    SetLength(B, BitsNeeded(Bits));
   for I := 0 to High(B) do
-    B[I] := TestBit(Bits, I);
+    B[I] := TestBit(Bits, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
 
-procedure BitsToBooleans(const Bits: Int64; B: TBooleanArray);
+procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray; AllBits: Boolean);
 var
   I: Integer;
 begin
-  SetLength(B, BitsNeeded(Bits));
+  if AllBits then
+    SetLength(B, SizeOf(Bits) * 8)
+  else
+    SetLength(B, BitsNeeded(Bits));
   for I := 0 to High(B) do
-    B[I] := TestBit(Bits, I);
+    B[I] := TestBit(Bits, TBitRange(I));
 end;
 
 //------------------------------------------------------------------------------
