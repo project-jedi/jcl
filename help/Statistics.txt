@@ -26,7 +26,9 @@ function BinomialCoeff(N, R: Cardinal): Float;
 Returns nCr, i.e. Combination of R objects from N.
 [Description]
 BinomialCoeff returns nCr, i.e. Combination of R objects from N, also known as the
-binomial coefficient. A Combination is the number of non-order specific ways you can organize R items taken from a pool of N items. For example, [Red, Blue, Green] is the same combination as [Green, Blue, Red].
+binomial coefficient. A Combination is the number of non-order specific ways you can 
+organize R items taken from a pool of N items. For example, [Red, Blue, Green] is the 
+same combination as [Green, Blue, Red].
 [Parameters]
 Count=2
 1=N:Cardinal=TODO description. N is the total number of possible items from which R items will be selected. 
@@ -104,8 +106,9 @@ Tests whether an array contains only positive elements.
 [Description]
 IsPositiveFloatArray tests whether or not the supplied array contains only
 elements with a value greater than 0. The comparison is based on the
-<REF Target"..\Variables\PrecisionTolerance">PrecisionTolerance</REF> global variable and an empty array is not allowed (an EMathError
-exception is raised if you don't comply).
+<REF Target"..\Variables\PrecisionTolerance">PrecisionTolerance</REF> global 
+variable and an empty array is not allowed (an EMathError exception is raised 
+if you don't comply).
 [Parameters]
 Count=1
 1=The array of floats to test.
@@ -169,7 +172,8 @@ Returns the median of an array of floats.
 [Description]
 Median returns the median (2nd quartiles) of an array of floats. The supplied
 array <U>must be sorted</U> and cannot be empty. The median of a set of values
-is the value which evenly separates the set of values so that one half of the set is greater than the median.
+is the value which evenly separates the set of values so that one half of the 
+set is greater than the median.
 [Parameters]
 Count=1
 1=X:TDynFloatArray=The array for which you want the median value.
@@ -380,12 +384,12 @@ function SumSquareFloatArray(const B: TDynFloatArray): Float;
 [ShortDescr]
 Returns the sum of the square of the elements.
 [Description]
-SumQuareFloatArray calculates the sum of the square of the elements.
+SumSquareFloatArray calculates the sum of the square of the elements.
 [Parameters]
 Count=1
 1=B:TDynFloatArray=The array for which to calculate the sum of the squares.
 [Result]
-The sum of the squares of the elements or 0 of the array is empty.
+The sum of the squares of the elements or 0 if the array is empty.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStatistics
