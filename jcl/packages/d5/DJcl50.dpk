@@ -83,6 +83,7 @@ contains
   Snmp in '..\..\Source\Windows\Snmp.pas',
   JclGraphUtils in '..\..\Source\VCL\JclGraphUtils.pas',
   JclGraphics in '..\..\Source\VCL\JclGraphics.pas',
-  JclPrint in '..\..\Source\Vcl\JclPrint.pas';
+  JclPrint in '..\..\Source\Vcl\JclPrint.pas',
+  JclDITs in '..\..\source\common\JclDITs.pas';
 
 end.

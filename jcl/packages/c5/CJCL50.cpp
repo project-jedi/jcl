@@ -38,6 +38,7 @@ USEUNIT("..\..\source\common\JclStrings.pas");
 USEUNIT("..\..\source\common\JclSysInfo.pas");
 USEUNIT("..\..\source\common\JclSysUtils.pas");
 USEUNIT("..\..\source\common\Jcl8087.pas");
+USEUNIT("..\..\source\common\JclDITs.pas");
 USEUNIT("..\..\source\windows\Snmp.pas");
 USEUNIT("..\..\source\windows\JclCOM.pas");
 USEUNIT("..\..\source\windows\JclConsole.pas");

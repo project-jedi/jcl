@@ -59,6 +59,7 @@
       ..\..\lib\c5\obj\JclPrint.obj
       ..\..\lib\c5\obj\JclGraphUtils.obj
       ..\..\lib\c5\obj\JclGraphics.obj
+      ..\..\lib\c5\obj\JclDITs.obj
     "/>
     <RESFILES value="CJcl50.res"/>
     <IDLFILES value=""/>
