@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 09, 2001                                              }
+{ Last modified: January 12, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -336,6 +336,23 @@ type
   public
     constructor Create(const Name: string; Protect: Cardinal;
       const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
+  end;
+
+//------------------------------------------------------------------------------
+// TJclFileMappingStream
+//------------------------------------------------------------------------------
+
+  TJclFileMappingStream = class (TCustomMemoryStream)
+  private
+    FFileHandle: THandle;
+    FMapping: THandle;
+  protected
+    procedure Close;
+  public
+    constructor Create(const FileName: string; FileMode: Word
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = fmOpenRead or fmShareDenyWrite {$ENDIF});
+    destructor Destroy; override;
+    function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
 //------------------------------------------------------------------------------
@@ -762,6 +779,93 @@ constructor TJclSwapFileMapping.Create(const Name: string; Protect: Cardinal;
 begin
   inherited Create;
   InternalCreate(INVALID_HANDLE_VALUE, Name, Protect, MaximumSize, SecAttr);
+end;
+
+//==============================================================================
+// TJclFileMappingStream
+//==============================================================================
+
+procedure TJclFileMappingStream.Close;
+begin
+  if Memory <> nil then
+  begin
+    UnMapViewOfFile(Memory);
+    SetPointer(nil, 0);
+  end;
+  if FMapping <> 0 then
+  begin
+    CloseHandle(FMapping);
+    FMapping := 0;
+  end;
+  if FFileHandle <> INVALID_HANDLE_VALUE then
+  begin
+    FileClose(FFileHandle);
+    FFileHandle := INVALID_HANDLE_VALUE;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclFileMappingStream.Create(const FileName: string; FileMode: Word);
+var
+  Protect, Access, Size: DWORD;
+  BaseAddress: Pointer;
+begin
+  inherited Create;
+  FFileHandle := FileOpen(FileName, FileMode);
+  if FFileHandle = INVALID_HANDLE_VALUE then
+    RaiseLastWin32Error;
+  if (FileMode and $0F) = fmOpenReadWrite then
+  begin
+    Protect := PAGE_WRITECOPY;
+    Access := FILE_MAP_COPY;
+  end
+  else
+  begin
+    Protect := PAGE_READONLY;
+    Access := FILE_MAP_READ;
+  end;
+  FMapping := CreateFileMapping(FFileHandle, nil, Protect, 0, 0, nil);
+  if FMapping = 0 then
+  begin
+    Close;
+    raise EJclFileMappingError.CreateResRec(@RsCreateFileMapping);
+  end;
+  BaseAddress := MapViewOfFile(FMapping, Access, 0, 0, 0);
+  if BaseAddress = nil then
+  begin
+    Close;
+    raise EJclFileMappingViewError.CreateResRec(@RsCreateFileMappingView);
+  end;
+  Size := GetFileSize(FFileHandle, nil);
+  if Size = DWORD(-1) then
+  begin
+    UnMapViewOfFile(BaseAddress);
+    Close;
+    raise EJclFileMappingViewError.CreateResRec(@RsFailedToObtainSize);
+  end;
+  SetPointer(BaseAddress, Size);
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclFileMappingStream.Destroy;
+begin
+  Close;
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileMappingStream.Write(const Buffer; Count: Integer): Longint;
+begin
+  Result := 0;
+  if (Size - Position) >= Count then
+  begin
+    System.Move(Buffer, Memory^, Count);
+    Position := Position + Count;
+    Result := Count;
+  end;
 end;
 
 //==============================================================================
