@@ -65,19 +65,23 @@ const
   PathUncPrefix    = '\\';
   {$ENDIF}
 
+type
+  TCompactPath = ({cpBegin, }cpCenter, cpEnd);
+
 function PathAddSeparator(const Path: string): string;
 function PathAddExtension(const Path, Extension: string): string;
 function PathAppend(const Path, Append: string): string;
 function PathBuildRoot(const Drive: Byte): string;
 function PathCommonPrefix(const Path1, Path2: string): Integer;
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
-  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
+  CmpFmt: TCompactPath): string; overload;
 function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
-  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
+  CmpFmt: TCompactPath): string; overload;
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
 function PathGetLongName(const Path: string): string;
+function PathGetLongName2(const Path: string): string;
 function PathGetShortName(const Path: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: AnsiString): Boolean;
@@ -137,7 +141,7 @@ function UnLockVolume(var Handle: THandle): Boolean;
 //------------------------------------------------------------------------------
 // TFileVersionInfo
 //
-// Class that enables reading the version information stored in an executable.
+// Class that enables reading the version information stored in a PE file.
 //------------------------------------------------------------------------------
 
 type
@@ -305,7 +309,41 @@ type
       const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
   end;
 
-{ Exceptions }
+//------------------------------------------------------------------------------
+// TJclFileMaskComparator
+//------------------------------------------------------------------------------
+
+// TODO UNTESTES/UNDOCUMENTED
+
+type
+  TJclFileMaskComparator = class(TObject)
+  private
+    FFileMask: string;
+    FExts: array of string;
+    FNames: array of string;
+    FWildChars: array of Byte;
+    FSeparator: Char;
+    procedure CreateMultiMasks;
+    function GetCount: Integer;
+    function GetExts(Index: Integer): string;
+    function GetMasks(Index: Integer): string;
+    function GetNames(Index: Integer): string;
+    procedure SetFileMask(const Value: string);
+    procedure SetSeparator(const Value: Char);
+  public
+    constructor Create;
+    function Compare(const NameExt: string): Boolean;
+    property Count: Integer read GetCount;
+    property Exts[Index: Integer]: string read GetExts;
+    property FileMask: string read FFileMask write SetFileMask;
+    property Masks[Index: Integer]: string read GetMasks;
+    property Names[Index: Integer]: string read GetNames;
+    property Separator: Char read FSeparator write SetSeparator;
+  end;
+
+//------------------------------------------------------------------------------
+// Exceptions
+//------------------------------------------------------------------------------
 
   EJclPathError = class (EJclError);
   EJclFileUtilsError = class (EJclError);
@@ -817,9 +855,9 @@ end;
 //------------------------------------------------------------------------------
 
 function PathCompactPath(const DC: HDC; const Path: string;
-  const Width: Integer; CmpFmt: Boolean): string;
+  const Width: Integer; CmpFmt: TCompactPath): string;
 const
-  Compacts: array [Boolean] of Cardinal = (DT_END_ELLIPSIS, DT_PATH_ELLIPSIS);
+  Compacts: array [TCompactPath] of Cardinal = (DT_PATH_ELLIPSIS, DT_END_ELLIPSIS);
 var
   TextRect: TRect;
   P: PChar;
@@ -847,8 +885,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
-  CmpFmt: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): string; overload;
+function PathCompactPath(const Canvas: TCanvas; const Path: string;
+  const Width: Integer; CmpFmt: TCompactPath): string; overload;
 begin
   Result := PathCompactPath(Canvas.Handle, Path, Width, CmpFmt);
 end;
@@ -912,6 +950,22 @@ begin
       end;
     end;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PathGetLongName2(const Path: string): string;
+var
+  SearchRec: TSearchRec;
+begin
+  Result := Path;
+  if FindFirst(Path, faAnyFile, SearchRec) = 0 then
+  begin
+    Result := PathAddSeparator(ExtractFilePath(Path)) + SearchRec.Name;
+    FindClose(SearchRec);
+  end
+  else
+    Result := Path;
 end;
 
 //------------------------------------------------------------------------------
@@ -2048,6 +2102,140 @@ begin
     FLanguageIndex := Value
   else
     raise EJclFileVersionInfoError.CreateResRec(@RsFileUtilsLanguageIndex);
+end;
+
+//==============================================================================
+// TJclFileMaskComparator
+//==============================================================================
+
+function TJclFileMaskComparator.Compare(const NameExt: string): Boolean;
+var
+  I: Integer;
+  NamePart, ExtPart: string;
+  NameWild, ExtWild: Boolean;
+begin
+  Result := False;
+  I := StrLastPos('.', NameExt);
+  if I = 0 then
+  begin
+    NamePart := NameExt;
+    ExtPart := '';
+  end else
+  begin
+    NamePart := Copy(NameExt, 1, I - 1);
+    ExtPart := Copy(NameExt, I + 1, Length(NameExt));
+  end;
+  for I := 0 to Length(FNames) - 1 do
+  begin
+    NameWild := FWildChars[I] and 1 = 1;
+    ExtWild := FWildChars[I] and 2 = 2;
+    if ( (not NameWild and StrSame(FNames[I], NamePart)) or
+      (NameWild and (StrMatch(FNames[I], NamePart) = 1)) ) and
+      ( (not ExtWild and StrSame(FExts[I], ExtPart)) or
+      (ExtWild and (StrMatch(FExts[I], ExtPart) = 1)) ) then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclFileMaskComparator.Create;
+begin
+  inherited;
+  FSeparator := ';';
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclFileMaskComparator.CreateMultiMasks;
+const
+  WildChars = ['*', '?'];
+var
+  List: TStrings;
+  I, N: Integer;
+  NS, ES: string;
+begin
+  FExts := nil;
+  FNames := nil;
+  FWildChars := nil;
+  List := TStringList.Create;
+  try
+    StrToStrings(FFileMask, FSeparator, List);
+    SetLength(FExts, List.Count);
+    SetLength(FNames, List.Count);
+    SetLength(FWildChars, List.Count);
+    for I := 0 to List.Count - 1 do
+    begin
+      N := StrLastPos('.', List[I]);
+      if N = 0 then
+      begin
+        NS := List[I];
+        ES := '';
+      end else
+      begin
+        NS := Copy(List[I], 1, N - 1);
+        ES := Copy(List[I], N + 1, 255);
+      end;
+      FNames[I] := NS;
+      FExts[I] := ES;
+      N := 0;
+      if StrContainsChars(NS, WildChars, False) then N := N or 1;
+      if StrContainsChars(ES, WildChars, False) then N := N or 2;
+      FWildChars[I] := N;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileMaskComparator.GetCount: Integer;
+begin
+  Result := Length(FWildChars);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileMaskComparator.GetExts(Index: Integer): string;
+begin
+  Result := FExts[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileMaskComparator.GetMasks(Index: Integer): string;
+begin
+  Result := FNames[Index] + '.' + FExts[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclFileMaskComparator.GetNames(Index: Integer): string;
+begin
+  Result := FNames[Index];
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclFileMaskComparator.SetFileMask(const Value: string);
+begin
+  FFileMask := Value;
+  CreateMultiMasks;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclFileMaskComparator.SetSeparator(const Value: Char);
+begin
+  if FSeparator <> Value then
+  begin
+    FSeparator := Value;
+    CreateMultiMasks;
+  end;
 end;
 
 end.
