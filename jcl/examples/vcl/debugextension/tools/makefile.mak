@@ -21,7 +21,7 @@ MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -q -r$(RES) -u$(LIB) -w $**
+DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -q -r$(RES) -u$(LIB) -w $<
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
@@ -29,13 +29,5 @@ default: \
   MapToJdbg.exe \
   TlbToMap.exe
 #---------------------------------------------------------------------------------------------------
-
-MakeJclDbg.exe: MakeJclDbg.dpr
+.dpr.exe:
   $(DCC)
-
-MapToJdbg.exe: MapToJdbg.dpr
-  $(DCC)
-
-TlbToMap.exe: TlbToMap.dpr
-  $(DCC)
-

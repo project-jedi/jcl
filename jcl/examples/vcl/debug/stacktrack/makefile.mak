@@ -15,7 +15,7 @@ JCL = ..\..\..\..
 #---------------------------------------------------------------------------------------------------
 VclExamples = $(JCL)\examples\vcl
 INC = $(JCL)\source
-SRC = $(JCL)\lib\d7;..\bin;vcl\peimage
+SRC = $(JCL)\lib\d7;$(JCL)\lib\d6;$(JCL)\lib\d5;..\bin;vcl\peimage
 BIN = $(JCL)\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
@@ -51,8 +51,6 @@ default: \
   del $(MAP)
   del $(DRC)
 
-$(BIN)\MakeJclDbg.exe: $(VclExamples)\debugextension\tools\MakeJclDbg.dpr
-
 $(BIN)\StackTrackExample.exe: StackTrackExample.dpr
   $(DCC) -gd $&
   $(MAKEJCLDBG) $(MAP)
@@ -64,10 +62,3 @@ $(BIN)\StackTrackDLLsExample.exe: StackTrackDLLsExample.dpr
   $(MAKEJCLDBG) $(MAP)
   del $(MAP)
   del $(DRC)
-
-$(BIN)\StackTrackDLLsStaticLibrary.dll: StackTrackDLLsStaticLibrary.dpr
-
-$(BIN)\StackTrackDLLsDynamicLibrary.dll: StackTrackDLLsDynamicLibrary.dpr
-
-$(BIN)\StackTrackDLLsComLibrary.dll: StackTrackDLLsComLibrary.dpr
-
