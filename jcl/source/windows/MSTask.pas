@@ -1,6 +1,6 @@
 (*****************************************************************************
   This IDL-file has been converted by "the fIDLer".
-  [written by -=Assarbad=- <oliver at assarbad dot net> -09-30] under MPL
+  [written by -=Assarbad=- <oliver at assarbad dot net> Sept-2004] under MPL
   Visit the fIDLer homepage at: http://assarbad.net/en/stuff/
   {The 3 above lines should be retained}
 
