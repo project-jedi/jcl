@@ -252,14 +252,26 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ELSE}
-  Windows, Consts,
+  {$IFDEF FPC}
+  rtlconst,     // nicht RTLConsts!
+  {$ELSE ~FPC}
+  Consts,
+  {$ENDIF ~FPC}
   {$ENDIF HAS_UNIT_RTLCONSTS}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   Math;
+
+{$IFDEF BORLAND}
+  {$IFNDEF RTL140_UP}
+    {$DEFINE RTL130_DOWN}
+  {$ENDIF ~RTL140_UP}
+{$ENDIF BORLAND}
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF FPC}
-{$IFNDEF RTL140_UP      // Delphi 5 Math unit has no Sign function }
+{$IFDEF RTL130_DOWN // Delphi 5 Math unit has no Sign function }
 function Sign(A: Integer): Integer;
 begin
   if A < 0 then
@@ -269,8 +281,7 @@ begin
   else
     Result := 0;
 end;
-{$ENDIF ~RTL140_UP}
-{$ENDIF ~FPC}
+{$ENDIF RTL130_DOWN}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -748,74 +759,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF RTL140_UP}
 
 function TrimW(const S: WideString): WideString;
+// available from Delphi 7 up
+{$IFDEF RTL150_UP}
 begin
   Result := Trim(S);
 end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TrimLeftW(const S: WideString): WideString;
-begin
-  Result := TrimLeft(S);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TrimRightW(const S: WideString): WideString;
-begin
-  Result := TrimRight(S);
-end;
-
-{$ELSE ~RTL140_UP}
-
-//--------------------------------------------------------------------------------------------------
-
-// missing function in Delphi 5
-
-function WideCompareText(const S1, S2: WideString): Integer;
-begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    Result := AnsiCompareText(string(S1), string(S2))
-  else
-    Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function WideCompareStr(const S1, S2: WideString): Integer;
-begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    Result := AnsiCompareStr(string(S1), string(S2))
-  else
-    Result := CompareStringW(LOCALE_USER_DEFAULT, 0,
-      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function WideUpperCase(const S: WideString): WideString;
-begin
-  Result := S;
-  if Result <> '' then
-    CharUpperBuffW(Pointer(Result), Length(Result));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function WideLowerCase(const S: WideString): WideString;
-begin
-  Result := S;
-  if Result <> '' then
-    CharLowerBuffW(Pointer(Result), Length(Result));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TrimW(const S: WideString): WideString;
+{$ELSE ~RTL150_UP}
 var
   I, L: Integer;
 begin
@@ -832,10 +783,17 @@ begin
     Result := Copy(S, I, L - I + 1);
   end;
 end;
+{$ENDIF ~RTL150_UP}
 
 //--------------------------------------------------------------------------------------------------
 
 function TrimLeftW(const S: WideString): WideString;
+// available from Delphi 7 up
+{$IFDEF RTL150_UP}
+begin
+  Result := TrimLeft(S);
+end;
+{$ELSE ~RTL150_UP}
 var
   I, L: Integer;
 begin
@@ -845,10 +803,17 @@ begin
     Inc(I);
   Result := Copy(S, I, Maxint);
 end;
+{$ENDIF ~RTL150_UP}
 
 //--------------------------------------------------------------------------------------------------
 
 function TrimRightW(const S: WideString): WideString;
+// available from Delphi 7 up
+{$IFDEF RTL150_UP}
+begin
+  Result := TrimRight(S);
+end;
+{$ELSE ~RTL150_UP}
 var
   I: Integer;
 begin
@@ -856,6 +821,70 @@ begin
   while (I > 0) and (S[I] <= ' ') do
     Dec(I);
   Result := Copy(S, 1, I);
+end;
+{$ENDIF ~RTL150_UP}
+
+//--------------------------------------------------------------------------------------------------
+
+// functions missing in Delphi 5 / FPC
+{$IFNDEF RTL140_UP}
+
+function WideCompareText(const S1, S2: WideString): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+    Result := AnsiCompareText(string(S1), string(S2))
+  else
+    Result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
+  {$ELSE ~MSWINDOWS}
+  { TODO : Don't cheat here }
+  Result := CompareText(S1, S2);
+  {$ENDIF MSWINDOWS}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WideCompareStr(const S1, S2: WideString): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+    Result := AnsiCompareStr(string(S1), string(S2))
+  else
+    Result := CompareStringW(LOCALE_USER_DEFAULT, 0,
+      PWideChar(S1), Length(S1), PWideChar(S2), Length(S2)) - 2;
+  {$ELSE ~MSWINDOWS}
+  { TODO : Don't cheat here }
+  Result := CompareString(S1, S2);
+  {$ENDIF ~MSWINDOWS}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WideUpperCase(const S: WideString): WideString;
+begin
+  Result := S;
+  if Result <> '' then
+    {$IFDEF MSWINDOWS}
+    CharUpperBuffW(Pointer(Result), Length(Result));
+    {$ELSE ~MSWINDOWS}
+    { TODO : Don't cheat here }
+    Result := UpperCase(Result);
+    {$ENDIF ~MSWINDOWS}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function WideLowerCase(const S: WideString): WideString;
+begin
+  Result := S;
+  if Result <> '' then
+    {$IFDEF MSWINDOWS}
+    CharLowerBuffW(Pointer(Result), Length(Result));
+    {$ELSE ~MSWINDOWS}
+    { TODO : Don't cheat here }
+    Result := LowerCase(Result);
+    {$ENDIF ~MSWINDOWS}
 end;
 
 {$ENDIF ~RTL140_UP}
@@ -1876,7 +1905,7 @@ end;
 
 function TWStringList.GetP(Index: Integer): PWideString;
 begin
-  Result := @GetItem(Index).FString;
+  Result := Addr(GetItem(Index).FString);
 end;
 
 //--------------------------------------------------------------------------------------------------
