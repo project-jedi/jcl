@@ -1,6 +1,6 @@
 {******************************************************************************}
 {                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
+{ Project JEDI Code Library (JCL) http://delphi-jedi.org                       }
 {                                                                              }
 { The contents of this file are subject to the Mozilla Public License Version  }
 { 1.0 (the "License"); you may not use this file except in compliance with the }
@@ -14,9 +14,20 @@
 {                                                                              }
 { The Initial Developer of the Original Code is documented in the accompanying }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
+{ 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: October 20, 2000                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains routines and classes for working with files, directories  }
+{ and path strings. Additionally it contains wrapper classes for file mapping  }
+{ objects and version resources. Generically speaking, everything that has to  }
+{ do with files and directories. Note that filesystem specific functionality   }
+{ has been extracted into external units, for example JclNTFS which contains   }
+{ NTFS specific utility routines, and that the JclShell unit contains some     }
+{ file related routines as well but they are specific to the Windows shell.    }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: November 02, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -37,6 +48,10 @@ uses
 
 //------------------------------------------------------------------------------
 // Path Manipulation
+//
+// Various support routines for working with path strings. For example, building
+// a path from elements or extracting the elements from a path, interpretation
+// of paths and transformations of paths.
 //------------------------------------------------------------------------------
 
 const
@@ -73,6 +88,10 @@ function PathRemoveExtension(const Path: string): string;
 
 //------------------------------------------------------------------------------
 // Files and Directories
+//
+// Routines for working with files and directories. Includes routines to extract
+// various file attributes or update them, volume locking and routines for
+// creating temporary files.
 //------------------------------------------------------------------------------
 
 type
@@ -117,6 +136,8 @@ function UnLockVolume(var Handle: THandle): Boolean;
 
 //------------------------------------------------------------------------------
 // TFileVersionInfo
+//
+// Class that enables reading the version information stored in an executable.
 //------------------------------------------------------------------------------
 
 type
@@ -182,6 +203,9 @@ function VersionResourceAvailable(const FileName: string): Boolean;
 
 //------------------------------------------------------------------------------
 // Streams
+//
+// TStream descendent classes for dealing with temporary files and for using
+// file mapping objects.
 //------------------------------------------------------------------------------
 
 { TTempFileStream }
@@ -297,12 +321,20 @@ uses
   {$ENDIF}
   JclResources, JclSecurity, JclSysUtils, JclWin32, JclStrings;
 
-{ Some general notes. This unit redeclares some function from FileCtrl.pas to
-  avoid a dependeny on that unit in the JCL. The problem is that FileCtrl.pas
-  uses some units (eg Forms.pas) which have ridiculous initialization requirements.
-  They add 4KB to the executable and roughly 1 second of startup. That
-  initialization is only necessary for GUI applications and is unacceptable for
-  services or console apps. }
+{ Some general notes:
+
+  This unit redeclares some functions from FileCtrl.pas to avoid a dependeny on
+  that unit in the JCL. The problem is that FileCtrl.pas uses some units (eg
+  Forms.pas) which have ridiculous initialization requirements. They add 4KB (!)
+  to the executable and roughly 1 second of startup. That initialization is only
+  necessary for GUI applications and is unacceptable for high performance
+  services or console apps.
+
+  The routines which query files or directories for there attributes
+  deliberately use FindFirst eventhough there may be easier ways to get at the
+  required information. This is because FindFirst is about the only routine
+  which doesn't cause the file's last modification/accessed time to be changed
+  which is usually an undesired side-effect. }
 
 //==============================================================================
 // TJclTempFileStream
@@ -494,6 +526,7 @@ function TJclCustomFileMapping.Add(const Access, Count: Cardinal; const Offset: 
 var
   View: TJclFileMappingView;
 begin
+  // The view adds itself to the FViews list
   View := TJclFileMappingView.Create(Self, Access, Count, Offset);
   Result := View.Index;
 end;
@@ -505,6 +538,7 @@ function TJclCustomFileMapping.AddAt(const Access, Count: Cardinal;
 var
   View: TJclFileMappingView;
 begin
+  // The view adds itself to the FViews list
   View := TJclFileMappingView.CreateAt(Self, Access, Count, Offset, Address);
   Result := View.Index;
 end;
@@ -634,6 +668,11 @@ begin
   if FileHandle = INVALID_HANDLE_VALUE then
     raise EJclFileMappingError.CreateResRec(@RsFileMappingInvalidHandle);
   InternalCreate(FileHandle, Name, Protect, MaximumSize, SecAttr);
+  // Duplicate the handle into FFileHandle as opposed to assigning it directly.
+  // This will cause FFileHandle to retrieve a unique copy which is independent
+  // of FileHandle. This makes the remainder of the class, especially the
+  // destructor, easier. The caller will have to close it's own copy of the
+  // handle explicitly.
   DuplicateHandle(GetCurrentProcess, FileHandle, GetCurrentProcess,
     @FFileHandle, 0, False, DUPLICATE_SAME_ACCESS);
 end;
@@ -707,7 +746,7 @@ begin
     begin
       // The following code may look a bit complex but al it does is add Append
       // to Path ensuring that there is one and only one path separator character
-      // separating them
+      // between them
       B1 := Path[PathLength] = PathSeparator;
       B2 := Append[1] = PathSeparator;
       if B1 and B2 then
@@ -910,8 +949,7 @@ begin
     I := 0;
     if PathIsUnc(Path) then
       I := Length(PathUncPrefix)
-    else
-    if PathIsDiskDevice(Path) then
+    else if PathIsDiskDevice(Path) then
       I := Length(PathDevicePrefix);
     Result := (Length(Path) > I + 2) and (Path[I + 1] in DriveLetters) and
       (Path[I + 2] = ':') and (Path[I + 3] = PathSeparator);
@@ -1054,15 +1092,15 @@ begin
   Result := True;
   Files := TStringList.Create;
   try
-    // TODO Path parameter used as local variable: bad practise   
+    // TODO Path parameter used as local variable: bad practise
+    // Setup enumeration of all files in the direcrory
     Path := PathRemoveSeparator(Path);
     BuildFileList(Path + '\*.*', faAnyFile, Files);
     for I := 0 to Files.Count - 1 do
     begin
       FileName := Path + '\' + Files[I];
       PartialResult := True;
-      //if IsDirectory(FileName) then
-      //  PartialResult := DelTreeEx(FileName, AbortOnFailure, Progress)
+      // If the current file is itself a directory then recursively delete it
       Attr := GetFileAttributes(PChar(FileName));
       if (Attr <> DWORD(-1)) and ((Attr and FILE_ATTRIBUTE_DIRECTORY) <> 0) then
         PartialResult := DelTreeEx(FileName, AbortOnFailure, Progress)
@@ -1072,6 +1110,7 @@ begin
           PartialResult := Progress(FileName, Attr);
         if PartialResult then
         begin
+          // Set attributes to normal in case it's a readonly file
           PartialResult := SetFileAttributes(PChar(FileName), FILE_ATTRIBUTE_NORMAL);
           if PartialResult then
             PartialResult := DeleteFile(FileName);
@@ -1089,6 +1128,7 @@ begin
   end;
   if Result then
   begin
+    // Finally remove the directory itself
     Result := SetFileAttributes(PChar(Path), FILE_ATTRIBUTE_NORMAL);
     if Result then
     begin
