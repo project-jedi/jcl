@@ -39,18 +39,18 @@ uses
 //------------------------------------------------------------------------------
 
 function RegCreateKey(const Key, Value: string): Longint;
-function RegDeleteEntry(RootKey: HKEY; const Key, Name: string): Boolean;
-function RegDeleteKey(RootKey: HKEY; const Key: string):Boolean;
+function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
+function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
 
-function RegReadBool(RootKey: HKEY; const Key, Name: string): Boolean;
-function RegReadBoolDef(RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
-function RegReadInteger(RootKey: HKEY; const Key, Name: string): Integer;
-function RegReadIntegerDef(RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
-function RegReadString(RootKey: HKEY; const Key, Name: string): string;
-function RegReadStringDef(RootKey: HKEY; const Key, Name, Def: string): string;
-procedure RegWriteBool(RootKey: HKEY; const Key, Name: string; Value: Boolean);
-procedure RegWriteInteger(RootKey: HKEY; const Key, Name: string; Value: Integer);
-procedure RegWriteString(RootKey: HKEY; const Key, Name, Value: string);
+function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
+function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
+function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
+function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
+function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
+function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
+procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
+procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
+procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
 
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
@@ -62,219 +62,35 @@ type
 
   EJclRegistryError = class (EJclError);
 
-function UnregisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
-function RegisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
+function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
+function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
 
 implementation
 
 uses
-  Registry, SysUtils,
+  SysUtils,
   JclResources, JclSysInfo;
 
-//==============================================================================
-// Registry
-//==============================================================================
+//------------------------------------------------------------------------------
+// (rom) local helpers
 
-// (rom) local helper
-
-procedure OpenKey(WinReg: TRegistry; const RootKey: HKEY;
-  const Key: string; const ForRead: Boolean);
+procedure ReadError(const Key: string);
 begin
-  WinReg.RootKey := RootKey;
-  if not WinReg.OpenKey(Key, False) then
-    if ForRead then
-      raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [Key])
-    else
-      raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyWrite, [Key]);
+  raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [Key]);
 end;
 
 //------------------------------------------------------------------------------
 
-function RegCreateKey(const Key, Value: string): Longint;
+procedure WriteError(const Key: string);
 begin
-  Result := RegSetValue(HKEY_CLASSES_ROOT, PChar(Key), REG_SZ, PChar(Value),
-    Length(Value));
+  raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyWrite, [Key]);
 end;
 
 //------------------------------------------------------------------------------
 
-function RegDeleteEntry(RootKey: HKEY; const Key, Name: string): Boolean;
-var
-  WinReg: TRegistry;
+procedure ValueError(const Key, Name: string);
 begin
-  Result := False;
-  WinReg := TRegistry.Create;
-  try
-    WinReg.RootKey := RootKey;
-    if WinReg.OpenKey(Key, False) then
-      Result := WinReg.DeleteValue(Name);
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegDeleteKey(RootKey: HKEY;const Key: string):Boolean;
-var
-  WinReg: TRegistry;
-begin
-  Result := False;
-  WinReg := TRegistry.Create;
-  try
-    WinReg.RootKey := RootKey;
-    if WinReg.KeyExists(Key) then
-    begin
-      WinReg.CloseKey;
-      Result := WinReg.Deletekey(Key);
-    end;
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegReadBool(RootKey: HKEY; const Key, Name: string): Boolean;
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    Result := WinReg.ReadBool(Name);
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegReadBoolDef(RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    WinReg.RootKey := RootKey;
-    if WinReg.OpenKey(Key, False) and WinReg.ValueExists(Name) then
-      Result := WinReg.ReadBool(Name)
-    else
-      Result := Def;
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegReadInteger(RootKey: HKEY; const Key, Name: string): Integer;
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    Result := WinReg.ReadInteger(Name);
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegReadIntegerDef(RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    WinReg.RootKey := RootKey;
-    if WinReg.OpenKey(Key, False) and WinReg.ValueExists(Name) then
-      Result := WinReg.ReadInteger(Name)
-    else
-      Result := Def;
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegReadString(RootKey: HKEY; const Key, Name: string): string;
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    Result := WinReg.ReadString(Name);
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function RegReadStringDef(RootKey: HKEY; const Key, Name, Def: string): string;
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    WinReg.RootKey := RootKey;
-    if WinReg.OpenKey(Key, False) and WinReg.ValueExists(Name) then
-      Result := WinReg.ReadString(Name)
-    else
-      Result := Def;
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure RegWriteBool(RootKey: HKEY; const Key, Name: string; Value: Boolean);
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, False);
-    WinReg.WriteBool(Name, Value);
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure RegWriteInteger(RootKey: HKEY; const Key, Name: string; Value: Integer);
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, False);
-    WinReg.WriteInteger(Name, Value);
-  finally
-    WinReg.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-procedure RegWriteString(RootKey: HKEY; const Key, Name, Value: string);
-var
-  WinReg: TRegistry;
-begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, False);
-    WinReg.WriteString(Name, Value);
-  finally
-    WinReg.Free;
-  end;
+  raise EJclRegistryError.CreateResRecFmt(@RsUnableToAccessValue, [Key, Name]);
 end;
 
 //------------------------------------------------------------------------------
@@ -297,30 +113,235 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//==============================================================================
+// Registry
+//==============================================================================
 
-function UnregisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
-var
-  Key: HKEY;
-  RegPath: string;
-  WinReg: TRegistry;
+
+function RegCreateKey(const Key, Value: string): Longint;
 begin
-  Result := False;
-  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
-    Exit;
-  GetKeyAndPath(ExecKind, Key, RegPath);
-  WinReg := TRegistry.Create;
-  WinReg.RootKey := Key;
-  OpenKey(WinReg, Key, RegPath, False);
-  if WinReg.ValueExists(ExtractFileName(Path)) then
-    Result := Winreg.DeleteValue(ExtractFileName(Path))
-  else
-    Result := True;
+  Result := RegSetValue(HKEY_CLASSES_ROOT, PChar(Key), REG_SZ, PChar(Value), Length(Value));
 end;
 
 //------------------------------------------------------------------------------
 
-function RegisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
+function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
+var
+  RegKey: HKEY;
+begin
+  Result := False;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS then
+  begin
+    Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
+    RegCloseKey(RegKey);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
+var
+  RegKey: HKEY;
+  I: DWORD;
+  Size: DWORD;
+  NumSubKeys: DWORD;
+  MaxSubKeyLen: DWORD;
+  KeyName: string;
+begin
+  Result := RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
+  if Result then
+  begin
+    RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil);
+    if NumSubKeys <> 0 then
+      for I := 0 to NumSubKeys-1 do
+      begin
+        Size := MaxSubKeyLen+1;
+        SetLength(KeyName, Size);
+        // always Key Index 0 because it will be deleted
+        RegEnumKeyEx(RegKey, 0, PChar(KeyName), Size, nil, nil, nil, nil);
+        SetLength(KeyName, StrLen(PChar(KeyName)));
+        Result := RegDeleteKeyTree(RootKey, Key + '\' + KeyName);
+        if not Result then
+          Break;
+      end;
+    RegCloseKey(RegKey);
+    if Result then
+      Result := Windows.RegDeleteKey(RootKey, PChar(Key)) = ERROR_SUCCESS;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
+begin
+  Result := RegReadInteger(RootKey, Key, Name) <> 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
+begin
+  Result := Boolean(RegReadIntegerDef(RootKey, Key, Name, Ord(Def)));
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  IntVal: Integer;
+  RegKind: DWORD;
+  Ret: Longint;
+begin
+  Result := 0;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := SizeOf(Integer);
+    Ret := RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @IntVal, @Size);
+    RegCloseKey(RegKey);
+    if Ret = ERROR_SUCCESS then
+    begin
+      if RegKind = REG_DWORD then
+        Result := IntVal
+      else
+        ValueError(Key, Name);
+    end
+    else
+      ReadError(Key);
+  end
+  else
+    ReadError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  IntVal: Integer;
+  RegKind: DWORD;
+begin
+  Result := Def;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := REG_DWORD;
+    Size := SizeOf(Integer);
+    if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @IntVal, @Size) = ERROR_SUCCESS then
+      if RegKind = REG_DWORD then
+        Result := IntVal;
+    RegCloseKey(RegKey);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  StrVal: string;
+  RegKind: DWORD;
+  Ret: Longint;
+begin
+  Result := '';
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := 0;
+    Ret := RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size);
+    if Ret = ERROR_SUCCESS then
+      if RegKind = REG_SZ then
+      begin
+        SetLength(StrVal, Size);
+        RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, PByte(StrVal), @Size);
+        SetLength(StrVal, StrLen(PChar(StrVal)));
+        Result := StrVal;
+      end;
+    RegCloseKey(RegKey);
+    if RegKind <> REG_SZ then
+      ValueError(Key, Name);
+  end
+  else
+    ReadError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
+var
+  RegKey: HKEY;
+  Size: DWORD;
+  StrVal: string;
+  RegKind: DWORD;
+begin
+  Result := Def;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegKind := 0;
+    Size := 0;
+    if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size) = ERROR_SUCCESS then
+      if RegKind = REG_SZ then
+      begin
+        SetLength(StrVal, Size);
+        if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, PByte(StrVal), @Size) = ERROR_SUCCESS then
+        begin
+          SetLength(StrVal, StrLen(PChar(StrVal)));
+          Result := StrVal;
+        end;
+      end;
+    RegCloseKey(RegKey);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
+begin
+  RegWriteInteger(RootKey, Key, Name, Ord(Value));
+end;
+
+//------------------------------------------------------------------------------
+
+procedure RegWriteInteger(const RootKey: HKEY; const Key, Name: string; Value: Integer);
+var
+  RegKey: HKEY;
+  Ret: Longint;
+begin
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  begin
+    Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_DWORD, @Value, SizeOf(Integer));
+    RegCloseKey(RegKey);
+    if Ret <> ERROR_SUCCESS then
+      WriteError(Key);
+  end
+  else
+    WriteError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
+var
+  RegKey: HKEY;
+  Ret: Longint;
+begin
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  begin
+    Ret := RegSetValueEx(RegKey, PChar(Name), 0, REG_SZ, PChar(Value), Length(Value));
+    RegCloseKey(RegKey);
+    if Ret <> ERROR_SUCCESS then
+      WriteError(Key);
+  end
+  else
+    WriteError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 var
   Key: HKEY;
   RegPath: string;
@@ -329,7 +350,21 @@ begin
   if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
     Exit;
   GetKeyAndPath(ExecKind, Key, RegPath);
-  RegWriteString(Key, RegPath, ExtractFileName(Path), Path);
+  Result := RegDeleteEntry(Key, RegPath, Name);
+end;
+
+//------------------------------------------------------------------------------
+
+function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
+var
+  Key: HKEY;
+  RegPath: string;
+begin
+  Result := False;
+  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
+    Exit;
+  GetKeyAndPath(ExecKind, Key, RegPath);
+  RegWriteString(Key, RegPath, Name, Cmdline);
   Result := True;
 end;
 
@@ -337,16 +372,31 @@ end;
 
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 var
-  WinReg: TRegistry;
+  RegKey: HKEY;
+  I: DWORD;
+  Size: DWORD;
+  NumSubKeys: DWORD;
+  NumSubValues: DWORD;
+  MaxSubValueLen: DWORD;
+  ValueName: string;
 begin
+  Result := False;
   List.Clear;
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    WinReg.GetValueNames(List);
-    Result := List.Count > 0;
-  finally
-    WinReg.Free;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
+    begin
+      SetLength(ValueName, MaxSubValueLen+1);
+      if NumSubValues <> 0 then
+        for I := 0 to NumSubValues-1 do
+        begin
+          Size := MaxSubValueLen+1;
+          RegEnumValue(RegKey, I, PChar(ValueName), Size, nil, nil, nil, nil);
+          List.Add(PChar(ValueName));
+        end;
+      Result := True;
+    end;
+    RegCloseKey(RegKey);
   end;
 end;
 
@@ -354,15 +404,30 @@ end;
 
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 var
-  WinReg: TRegistry;
+  RegKey: HKEY;
+  I: DWORD;
+  Size: DWORD;
+  NumSubKeys: DWORD;
+  MaxSubKeyLen: DWORD;
+  KeyName: string;
 begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    WinReg.GetKeyNames(List);
-    Result := List.Count > 0;
-  finally
-    WinReg.Free;
+  Result := False;
+  List.Clear;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
+    begin
+      SetLength(KeyName, MaxSubKeyLen+1);
+      if NumSubKeys <> 0 then
+        for I := 0 to NumSubKeys-1 do
+        begin
+          Size := MaxSubKeyLen+1;
+          RegEnumKeyEx(RegKey, I, PChar(KeyName), Size, nil, nil, nil, nil);
+          List.Add(PChar(KeyName));
+        end;
+      Result := True;
+    end;
+    RegCloseKey(RegKey);
   end;
 end;
 
@@ -370,14 +435,15 @@ end;
 
 function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
 var
-  WinReg: TRegistry;
+  RegKey: HKEY;
+  NumSubKeys: Integer;
 begin
-  WinReg := TRegistry.Create;
-  try
-    OpenKey(WinReg, RootKey, Key, True);
-    Result := WinReg.HasSubKeys;
-  finally
-    WinReg.Free;
+  Result := False;
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  begin
+    RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, nil, nil, nil, nil, nil);
+    Result := NumSubKeys <> 0;
+    RegCloseKey(RegKey);
   end;
 end;
 
