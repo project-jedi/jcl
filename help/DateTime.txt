@@ -750,7 +750,7 @@ The date of Easter Sunday in the specified year.
 BCB=3,4,5
 Unit=JclDateTime
 Category=Date and Time
-Author=Petr Vones;petr.v@mujmail.cz
+Author=Marc Convents;marc.convents@progen.be
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
