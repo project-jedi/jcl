@@ -196,7 +196,7 @@ uses
   Windows,
   {$ENDIF}
   SysUtils,
-  JclResources;
+  JclStrings, JclResources;
 
 //==============================================================================
 // Pointer manipulation
@@ -770,7 +770,7 @@ end;
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 begin
   Result := IntToStr(Value);
-  Result := StrFillChar('0', L - Length(Result) + Result;
+  Result := StrFillChar('0', Count - Length(Result)) + Result;
 end;
 
 end.
