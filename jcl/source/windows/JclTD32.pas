@@ -1055,7 +1055,8 @@ begin
     with Modules[I] do
       for J := 0 to SegmentCount - 1 do
       begin
-        Offset := AAddr - FSegments[J].Offset;
+        Offset := AAddr; // splitt in 2 lines to avoid EIntOverflow if AAddr < FSegments[J].Offset
+        Offset := Offset - FSegments[J].Offset;
         if (0 <= Offset) and (Offset <= Integer(Segment[J].Size)) then
         begin
           Result := True;
