@@ -56,14 +56,14 @@ type
   TArrayOfColor32 = array of TColor32;
 
   { Blending Function Prototypes }
-  TCombineReg  = function (X, Y, W: TColor32): TColor32;
-  TCombineMem  = procedure (F: TColor32; var B: TColor32; W: TColor32);
-  TBlendReg    = function (F, B: TColor32): TColor32;
-  TBlendMem    = procedure (F: TColor32; var B: TColor32);
-  TBlendRegEx  = function (F, B, M: TColor32): TColor32;
-  TBlendMemEx  = procedure (F: TColor32; var B: TColor32; M: TColor32);
-  TBlendLine   = procedure (Src, Dst: PColor32; Count: Integer);
-  TBlendLineEx = procedure (Src, Dst: PColor32; Count: Integer; M: TColor32);
+  TCombineReg  = function(X, Y, W: TColor32): TColor32;
+  TCombineMem  = procedure(F: TColor32; var B: TColor32; W: TColor32);
+  TBlendReg    = function(F, B: TColor32): TColor32;
+  TBlendMem    = procedure(F: TColor32; var B: TColor32);
+  TBlendRegEx  = function(F, B, M: TColor32): TColor32;
+  TBlendMemEx  = procedure(F: TColor32; var B: TColor32; M: TColor32);
+  TBlendLine   = procedure(Src, Dst: PColor32; Count: Integer);
+  TBlendLineEx = procedure(Src, Dst: PColor32; Count: Integer; M: TColor32);
 
   { Auxiliary structure to support TColor manipulation }
   TColorRec = packed record
@@ -120,12 +120,10 @@ procedure EMMS;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
-
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 function DialogUnitsToPixelsY(const DialogUnits: Word): Word;
 function PixelsToDialogUnitsX(const PixelUnits: Word): Word;
 function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
-
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
@@ -345,18 +343,18 @@ function ColorSwap(WinColor: TColor): TColor32;
 // this function swaps R and B bytes in ABGR and writes $FF into A component
 {asm
 // EAX = WinColor
-        MOV     ECX,EAX     // ECX = WinColor
-        MOV     EDX,EAX     // EDX = WinColor
+        MOV     ECX, EAX     // ECX = WinColor
+        MOV     EDX, EAX     // EDX = WinColor
 
-        AND     ECX,$FF0000 // B component
-        AND     EAX,$0000FF // R component
-        AND     EDX,$00FF00 // G component
+        AND     ECX, $FF0000 // B component
+        AND     EAX, $0000FF // R component
+        AND     EDX, $00FF00 // G component
 
-        OR      EAX,$00FF00 // write $FF into A component
-        SHR     ECX,16      // shift B
-        SHL     EAX,16      // shift AR
-        OR      ECX,EDX     // ECX = GB
-        OR      EAX,ECX     // set GB
+        OR      EAX, $00FF00 // write $FF into A component
+        SHR     ECX, 16      // shift B
+        SHL     EAX, 16      // shift AR
+        OR      ECX, EDX     // ECX = GB
+        OR      EAX, ECX     // set GB
 end;}
 begin
   Result := $FF000000 or                        // A component
@@ -426,9 +424,12 @@ begin
   // combine RGBA channels of colors X and Y with the weight of X given in W
   // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
 
-  if W = 0 then Result := Y        //May be if W <= 0 ???
-  else if W = $FF then Result := X //May be if W >= $FF ??? Or if W > $FF ???
-  else begin
+  if W = 0 then
+    Result := Y        //May be if W <= 0 ???
+  else
+  if W = $FF then Result := X //May be if W >= $FF ??? Or if W > $FF ???
+  else
+  begin
     Result :=
       (((((X shr 8 {00Xa00Xg}) and $00FF00FF {00X100X2}) * W {P1**P2**}) +
         bias) and $FF00FF00 {P100P200}) {Pa00Pg00} or
@@ -698,22 +699,22 @@ asm
   // ECX - Weight of X [0..255]
   // Result := W * (X - Y) + Y
 
-        db $0F,$EF,$C0           /// PXOR      MM0,MM0
-        db $0F,$6E,$C8           /// MOVD      MM1,EAX
+        db $0F, $EF, $C0           // PXOR      MM0, MM0
+        db $0F, $6E, $C8           // MOVD      MM1, EAX
         SHL       ECX, 3
-        db $0F,$6E,$D2           /// MOVD      MM2,EDX
-        db $0F,$60,$C8           /// PUNPCKLBW MM1,MM0
-        db $0F,$60,$D0           /// PUNPCKLBW MM2,MM0
+        db $0F, $6E, $D2           // MOVD      MM2, EDX
+        db $0F, $60, $C8           // PUNPCKLBW MM1, MM0
+        db $0F, $60, $D0           // PUNPCKLBW MM2, MM0
         ADD       ECX, alpha_ptr
-        db $0F,$F9,$CA           /// PSUBW     MM1,MM2
-        db $0F,$D5,$09           /// PMULLW    MM1,[ECX]
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
+        db $0F, $F9, $CA           // PSUBW     MM1, MM2
+        db $0F, $D5, $09           // PMULLW    MM1, [ECX]
+        db $0F, $71, $F2,$08       // PSLLW     MM2, 8
         MOV       ECX, bias_ptr
-        db $0F,$FD,$11           /// PADDW     MM2,[ECX]
-        db $0F,$FD,$CA           /// PADDW     MM1,MM2
-        db $0F,$71,$D1,$08       /// PSRLW     MM1,8
-        db $0F,$67,$C8           /// PACKUSWB  MM1,MM0
-        db $0F,$7E,$C8           /// MOVD      EAX,MM1
+        db $0F, $FD, $11           // PADDW     MM2, [ECX]
+        db $0F, $FD, $CA           // PADDW     MM1, MM2
+        db $0F, $71, $D1, $08      // PSRLW     MM1, 8
+        db $0F, $67, $C8           // PACKUSWB  MM1, MM0
+        db $0F, $7E, $C8           // MOVD      EAX, MM1
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -743,23 +744,23 @@ asm
   // EAX <- F
   // EDX <- B
   // Result := Fa * (Frgb - Brgb) + Brgb
-        db $0F,$EF,$DB           /// PXOR      MM3,MM3
-        db $0F,$6E,$C0           /// MOVD      MM0,EAX
-        db $0F,$6E,$D2           /// MOVD      MM2,EDX
-        db $0F,$60,$C3           /// PUNPCKLBW MM0,MM3
+        db $0F, $EF, $DB           // PXOR      MM3, MM3
+        db $0F, $6E, $C0           // MOVD      MM0, EAX
+        db $0F, $6E, $D2           // MOVD      MM2, EDX
+        db $0F, $60, $C3           // PUNPCKLBW MM0, MM3
         MOV     ECX, bias_ptr
-        db $0F,$60,$D3           /// PUNPCKLBW MM2,MM3
-        db $0F,$6F,$C8           /// MOVQ      MM1,MM0
-        db $0F,$69,$C9           /// PUNPCKHWD MM1,MM1
-        db $0F,$F9,$C2           /// PSUBW     MM0,MM2
-        db $0F,$6A,$C9           /// PUNPCKHDQ MM1,MM1
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
-        db $0F,$D5,$C1           /// PMULLW    MM0,MM1
-        db $0F,$FD,$11           /// PADDW     MM2,[ECX]
-        db $0F,$FD,$D0           /// PADDW     MM2,MM0
-        db $0F,$71,$D2,$08       /// PSRLW     MM2,8
-        db $0F,$67,$D3           /// PACKUSWB  MM2,MM3
-        db $0F,$7E,$D0           /// MOVD      EAX,MM2
+        db $0F, $60, $D3           // PUNPCKLBW MM2, MM3
+        db $0F, $6F, $C8           // MOVQ      MM1, MM0
+        db $0F, $69, $C9           // PUNPCKHWD MM1, MM1
+        db $0F, $F9, $C2           // PSUBW     MM0, MM2
+        db $0F, $6A, $C9           // PUNPCKHDQ MM1, MM1
+        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
+        db $0F, $D5, $C1           // PMULLW    MM0, MM1
+        db $0F, $FD, $11           // PADDW     MM2, [ECX]
+        db $0F, $FD, $D0           // PADDW     MM2, MM0
+        db $0F, $71, $D2, $08      // PSRLW     MM2, 8
+        db $0F, $67, $D3           // PACKUSWB  MM2, MM3
+        db $0F, $7E, $D0           // MOVD      EAX, MM2
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -796,22 +797,22 @@ asm
         SHR       ECX, 8
         JZ        @1
 
-        db $0F,$EF,$C0           /// PXOR      MM0,MM0
-        db $0F,$6E,$C8           /// MOVD      MM1,EAX
+        db $0F, $EF, $C0           // PXOR      MM0, MM0
+        db $0F, $6E, $C8           // MOVD      MM1, EAX
         SHL       ECX, 3
-        db $0F,$6E,$D2           /// MOVD      MM2,EDX
-        db $0F,$60,$C8           /// PUNPCKLBW MM1,MM0
-        db $0F,$60,$D0           /// PUNPCKLBW MM2,MM0
+        db $0F, $6E, $D2           // MOVD      MM2, EDX
+        db $0F, $60, $C8           // PUNPCKLBW MM1, MM0
+        db $0F, $60, $D0           // PUNPCKLBW MM2, MM0
         ADD       ECX, alpha_ptr
-        db $0F,$F9,$CA           /// PSUBW     MM1,MM2
-        db $0F,$D5,$09           /// PMULLW    MM1,[ECX]
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
+        db $0F, $F9, $CA           // PSUBW     MM1, MM2
+        db $0F, $D5, $09           // PMULLW    MM1, [ECX]
+        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
         MOV       ECX, bias_ptr
-        db $0F,$FD,$11           /// PADDW     MM2,[ECX]
-        db $0F,$FD,$CA           /// PADDW     MM1,MM2
-        db $0F,$71,$D1,$08       /// PSRLW     MM1,8
-        db $0F,$67,$C8           /// PACKUSWB  MM1,MM0
-        db $0F,$7E,$C8           /// MOVD      EAX,MM1
+        db $0F, $FD, $11           // PADDW     MM2, [ECX]
+        db $0F, $FD, $CA           // PADDW     MM1, MM2
+        db $0F, $71, $D1, $08      // PSRLW     MM1, 8
+        db $0F, $67, $C8           // PACKUSWB  MM1, MM0
+        db $0F, $7E, $C8           // MOVD      EAX, MM1
 
 @1:     MOV       EAX, EDX
         POP       EBX
@@ -863,23 +864,23 @@ asm
         JNC       @2              // opaque pixel, copy without blending
 
   // blend
-        db $0F,$EF,$DB           /// PXOR      MM3,MM3
-        db $0F,$6E,$C0           /// MOVD      MM0,EAX
-        db $0F,$6E,$17           /// MOVD      MM2,[EDI]
-        db $0F,$60,$C3           /// PUNPCKLBW MM0,MM3
+        db $0F, $EF, $DB           // PXOR      MM3, MM3
+        db $0F, $6E, $C0           // MOVD      MM0, EAX
+        db $0F, $6E, $17           // MOVD      MM2, [EDI]
+        db $0F, $60, $C3           // PUNPCKLBW MM0, MM3
         MOV       EAX, bias_ptr
-        db $0F,$60,$D3           /// PUNPCKLBW MM2,MM3
-        db $0F,$6F,$C8           /// MOVQ      MM1,MM0
-        db $0F,$69,$C9           /// PUNPCKHWD MM1,MM1
-        db $0F,$F9,$C2           /// PSUBW     MM0,MM2
-        db $0F,$6A,$C9           /// PUNPCKHDQ MM1,MM1
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
-        db $0F,$D5,$C1           /// PMULLW    MM0,MM1
-        db $0F,$FD,$10           /// PADDW     MM2,[EAX]
-        db $0F,$FD,$D0           /// PADDW     MM2,MM0
-        db $0F,$71,$D2,$08       /// PSRLW     MM2,8
-        db $0F,$67,$D3           /// PACKUSWB  MM2,MM3
-        db $0F,$7E,$D0           /// MOVD      EAX,MM2
+        db $0F, $60, $D3           // PUNPCKLBW MM2, MM3
+        db $0F, $6F, $C8           // MOVQ      MM1, MM0
+        db $0F, $69, $C9           // PUNPCKHWD MM1, MM1
+        db $0F, $F9, $C2           // PSUBW     MM0, MM2
+        db $0F, $6A, $C9           // PUNPCKHDQ MM1, MM1
+        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
+        db $0F, $D5, $C1           // PMULLW    MM0, MM1
+        db $0F, $FD, $10           // PADDW     MM2, [EAX]
+        db $0F, $FD, $D0           // PADDW     MM2, MM0
+        db $0F, $71, $D2, $08      // PSRLW     MM2, 8
+        db $0F, $67, $D3           // PACKUSWB  MM2, MM3
+        db $0F, $7E, $D0           // MOVD      EAX, MM2
 
 @2:     MOV       [EDI], EAX
 
@@ -927,22 +928,22 @@ asm
         JZ        @3              // complete transparency, proceed to next point
 
   // blend
-        db $0F,$EF,$C0           /// PXOR      MM0,MM0
-        db $0F,$6E,$C8           /// MOVD      MM1,EAX
+        db $0F, $EF, $C0           // PXOR      MM0, MM0
+        db $0F, $6E, $C8           // MOVD      MM1, EAX
         SHL       EBX, 3
-        db $0F,$6E,$17           /// MOVD      MM2,[EDI]
-        db $0F,$60,$C8           /// PUNPCKLBW MM1,MM0
-        db $0F,$60,$D0           /// PUNPCKLBW MM2,MM0
+        db $0F, $6E, $17           // MOVD      MM2, [EDI]
+        db $0F, $60, $C8           // PUNPCKLBW MM1, MM0
+        db $0F, $60, $D0           // PUNPCKLBW MM2, MM0
         ADD       EBX, alpha_ptr
-        db $0F,$F9,$CA           /// PSUBW     MM1,MM2
-        db $0F,$D5,$0B           /// PMULLW    MM1,[EBX]
-        db $0F,$71,$F2,$08       /// PSLLW     MM2,8
+        db $0F, $F9, $CA           // PSUBW     MM1, MM2
+        db $0F, $D5, $0B           // PMULLW    MM1, [EBX]
+        db $0F, $71, $F2, $08      // PSLLW     MM2, 8
         MOV       EBX, bias_ptr
-        db $0F,$FD,$13           /// PADDW     MM2,[EBX]
-        db $0F,$FD,$CA           /// PADDW     MM1,MM2
-        db $0F,$71,$D1,$08       /// PSRLW     MM1,8
-        db $0F,$67,$C8           /// PACKUSWB  MM1,MM0
-        db $0F,$7E,$C8           /// MOVD      EAX,MM1
+        db $0F, $FD, $13           // PADDW     MM2, [EBX]
+        db $0F, $FD, $CA           // PADDW     MM1, MM2
+        db $0F, $71, $D1, $08      // PSRLW     MM1, 8
+        db $0F, $67, $C8           // PACKUSWB  MM1, MM0
+        db $0F, $7E, $C8           // MOVD      EAX, MM1
 
 @2:     MOV       [EDI], EAX
 
@@ -1549,9 +1550,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CIED65ToCIED50(var X, Y, Z: Extended);
 // Converts values of the XYZ color space using the D65 white point to D50 white point.
 // The values were taken from www.srgb.com/hpsrgbprof/sld005.htm
+
+procedure CIED65ToCIED50(var X, Y, Z: Extended);
 var
   Xn, Yn, Zn: Extended;
 begin
@@ -1565,9 +1567,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure Gray16(const Source, Target: Pointer; Count: Cardinal);
 // converts each color component from a 16bits per sample to 8 bit used in Windows DIBs
 // Count is the number of entries in Source and Target
+
+procedure Gray16(const Source, Target: Pointer; Count: Cardinal);
 var
   SourceRun: PWord;
   TargetRun: PByte;
@@ -1604,12 +1607,12 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CMYKToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 // converts a stream of Count CMYK values to BGR
 // BitsPerSample : 8 or 16
 // CMYK is C,M,Y,K 4 byte record or 4 word record
 // Target is always 3 byte record B, R, G
 
+procedure CMYKToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 var
   R, G, B, K: Integer;
   I: Integer;
@@ -1658,13 +1661,15 @@ begin
           Inc(SourcePtr16);
         end;
       end;
+    // (rom) an exception for invalid BitsPerSample values should be added
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CMYKToBGR(const C, M, Y, K, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 // converts a stream of Count CMYK values to BGR
+
+procedure CMYKToBGR(const C, M, Y, K, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 var
   R, G, B: Integer;
   C8, M8, Y8, K8: PByte;
@@ -1723,14 +1728,16 @@ begin
           Inc(K16);
         end;
       end;
+    // (rom) an exception for invalid BitsPerSample values should be added
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CIELABToBGR(const Source, Target: Pointer; const Count: Cardinal); overload;
 // conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
 // first a conversion to CIE XYZ is performed and then from there to RGB
+
+procedure CIELABToBGR(const Source, Target: Pointer; const Count: Cardinal); overload;
 var
   FinalR,
   FinalG,
@@ -1801,10 +1808,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CIELABToBGR(LSource, aSource, bSource: PByte; const Target: Pointer; const Count: Cardinal); overload;
 // conversion of the CIE L*a*b color space to RGB using a two way approach assuming a D65 white point,
 // first a conversion to CIE XYZ is performed and then from there to RGB
-// The bitspersample are not used so why leave it here.
+// The BitsPerSample are not used so why leave it here.
+
+procedure CIELABToBGR(LSource, aSource, bSource: PByte; const Target: Pointer; const Count: Cardinal); overload;
 var
   FinalR,
   FinalG,
@@ -1873,8 +1881,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 // reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done
+
+procedure RGBToBGR(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 var
   SourceRun16: PRGBWord;
   SourceRun8: PRGB;
@@ -1911,13 +1920,15 @@ begin
           Dec(Count);
         end;
       end;
+    // (rom) an exception for invalid BitsPerSample values should be added
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RGBToBGR(const R, G, B, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 // reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done
+
+procedure RGBToBGR(const R, G, B, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal); overload;
 var
   R8, G8, B8: PByte;
   R16, G16, B16: PWord;
@@ -1966,14 +1977,16 @@ begin
           Dec(Count);
         end;
       end;
+    // (rom) an exception for invalid BitsPerSample values should be added
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RGBAToBGRA(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal);
 // reorders a stream of "Count" RGBA values to BGRA, additionally an eventual sample
 // size adjustment is done
+
+procedure RGBAToBGRA(const Source, Target: Pointer; const BitsPerSample: Byte; Count: Cardinal);
 var
   SourceRun16: PRGBAWord;
   SourceRun8: PRGBA;
@@ -2012,6 +2025,7 @@ begin
           Dec(Count);
         end;
       end;
+    // (rom) an exception for invalid BitsPerSample values should be added
   end;
 end;
 
@@ -2120,9 +2134,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function Intensity(const Color32: TColor32): Integer;
 // input:  RGB components
 // output: (R * 61 + G * 174 + B * 21) div 256
+
+function Intensity(const Color32: TColor32): Integer;
 begin
   Result := (Color32 and _B) * 21      // Blue
     + ((Color32 and _G) shr 8) * 174   // Green
@@ -2214,10 +2229,10 @@ begin
     if R = Cmax then
       H := (G - B) / D
     else
-      if G = Cmax then
-        H := 2 + (B - R) / D
-      else
-        H := 4 + (R - G) / D;
+    if G = Cmax then
+      H := 2 + (B - R) / D
+    else
+      H := 4 + (R - G) / D;
     H := H / 6;
     if H < 0 then
       H := H + 1;
@@ -2246,7 +2261,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF VCL}
-
 function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
 const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
@@ -2280,15 +2294,11 @@ begin
   DeleteObject(Bitmap);
   Result := True;
 end;
-
 {$ENDIF VCL}
 
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF VCL}
-
-function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
-  EllipsisWidth: Integer): WideString;
 
 // Adjusts the given string S so that it fits into the given width. EllipsisWidth gives the width of
 // the three points to be added to the shorted string. If this value is 0 then it will be determined implicitely.
@@ -2296,11 +2306,12 @@ function ShortenString(const DC: HDC; const S: WideString; const Width: Integer;
 // RTL determines if right-to-left reading is active, which is needed to put the ellipsisis on the correct side.
 // Note: It is assumed that the string really needs shortage. Check this in advance.
 
+function ShortenString(const DC: HDC; const S: WideString; const Width: Integer; const RTL: Boolean;
+  EllipsisWidth: Integer): WideString;
 var
   Size: TSize;
   Len: Integer;
   L, H, N, W: Integer;
-
 begin
   Len := Length(S);
   if (Len = 0) or (Width <= 0) then
