@@ -52,7 +52,7 @@ type
 
   TJppParser = class
   private
-    FLexer: TPppLexer;
+    FLexer: TJppLexer;
     FState: TPppState;
     FTriState: TTriState;
     FResult: string;
@@ -69,7 +69,7 @@ type
     procedure NextToken;
 
     procedure ParseText;
-    procedure ParseCondition(Token: TPppToken);
+    procedure ParseCondition(Token: TJppToken);
     function ParseInclude: string;
 
     procedure ParseDefine;
@@ -78,7 +78,7 @@ type
     // same as ParseText, but throws result away
     procedure Skip;
 
-    property Lexer: TPppLexer read FLexer;
+    property Lexer: TJppLexer read FLexer;
     property State: TPppState read FState;
   public
     constructor Create(AStream: TStream; APppState: TPppState);
@@ -90,7 +90,7 @@ implementation
 
 {$IFDEF MSWINDOWS}
 const
-  AnsiLineBreak = #13#10;
+  LineBreak = #13#10;
 
 type
   T2Char = array[0..1] of Char;
@@ -99,7 +99,7 @@ type
 
 {$IFDEF UNIX}
 const
-  AnsiLineBreak = #10;
+  LineBreak = #10;
 
 type
   PLineBreak = PChar;
@@ -111,7 +111,7 @@ var
 begin
   Result := True;
   for I := 1 to Length(P) do
-    if P^ in [#10, #13, ' '] then
+    if P^ in [#9, #10, #13, ' '] then
       Inc(P)
     else
     begin
@@ -127,7 +127,7 @@ begin
   Assert(AStream <> nil);
   Assert(APppState <> nil);
 
-  FLexer := TPppLexer.Create(AStream);
+  FLexer := TJppLexer.Create(AStream);
   FState := APppState;
   FTriState := ttDefined;
   FState.Undef('PROTOTYPE');
@@ -159,6 +159,7 @@ end;
 procedure TJppParser.NextToken;
 begin
   Lexer.NextTok;
+
   if FSkipLevel = 0 then
     RemoveOrphanedLineBreaks;
 end;
@@ -195,6 +196,7 @@ begin
     ptUndef,
     ptIfdef,
     ptIfndef,
+    ptIfopt,
     ptElse,
     ptEndif,
     ptInclude:
@@ -216,7 +218,7 @@ begin
   Result := FResult;
 end;
 
-procedure TJppParser.ParseCondition(Token: TPppToken);
+procedure TJppParser.ParseCondition(Token: TJppToken);
 var
   SavedTriState: TTriState;
 begin
@@ -296,7 +298,7 @@ end;
 
 function TJppParser.ParseInclude: string;
 var
-  oldLexer, newLexer: TPppLexer;
+  oldLexer, newLexer: TJppLexer;
   fsIn: TStream;
 begin
   Assert(Lexer.TokenAsString <> '');
@@ -316,9 +318,9 @@ begin
         on e: Exception do
           Lexer.Error(e.Message);
       end;
-      newLexer := TPppLexer.Create(fsIn);
+      newLexer := TJppLexer.Create(fsIn);
       FLexer := newLexer;
-      Result := Parse;
+      ParseText;
     finally
       FLexer := oldLexer;
       fsIn.Free;
@@ -352,7 +354,7 @@ begin
         NextToken;
       end;
 
-      ptDefine, ptUndef, ptIfdef, ptIfndef:
+      ptDefine, ptUndef, ptIfdef, ptIfndef, ptIfopt:
         if poProcessDefines in State.Options then
           case Lexer.CurrTok of
             ptDefine:
@@ -363,6 +365,8 @@ begin
               ParseCondition(ptIfdef);
             ptIfndef:
               ParseCondition(ptIfndef);
+            ptIfopt:
+              ParseCondition(ptIfopt);
           end
         else
           AddRawComment;
@@ -396,6 +400,12 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/21 00:14:14  rrossmair
+// - fixed ParseInclude
+// - eventually match $ELSE, $ENDIF to $IFOPT (otherwise not handled)
+// - renamed identifiers from JppLexer
+// - AllWhiteSpace handles tabulators now
+//
 // Revision 1.6  2004/06/20 03:24:48  rrossmair
 // - orphaned line breaks problem fixed.
 //
