@@ -1,33 +1,31 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclGraphics.pas.                                        }
-{                                                                              }
-{ The resampling algorithms and methods used in this library were adapted by   }
-{ Anders Melander from the article "General Filtered Image Rescaling" by Dale  }
-{ Schumacher which appeared in the book Graphics Gems III, published by        }
-{ Academic Press, Inc. Additional improvements were done by David Ullrich and  }
-{ Josha Beukema.                                                               }
-{                                                                              }
-{ (C)opyright 1997-1999 Anders Melander                                        }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{ Last modified: January 29, 2001                                              }
-{                by Roland for use under BCB5                                  }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclGraphics.pas.                                                            }
+{                                                                                                  }
+{ The resampling algorithms and methods used in this library were adapted by Anders Melander from  }
+{ the article "General Filtered Image Rescaling" by Dale Schumacher which appeared in the book     }
+{ Graphics Gems III, published by Academic Press, Inc. Additional improvements were done by David  }
+{ Ullrich and Josha Beukema.                                                                       }
+{                                                                                                  }
+{ (C)opyright 1997-1999 Anders Melander                                                            }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{ Last modified: January 29, 2001                                                                  }
+{                by Roland for use under BCB5                                                      }
+{                                                                                                  }
+{**************************************************************************************************}
 
 // (rom)   added ScreenShot() functions from Bernhard Berger
 
@@ -106,9 +104,9 @@ type
 var
   IdentityMatrix: TMatrix3d;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclDesktopCanvas = class (TCanvas)
@@ -325,16 +323,16 @@ type
     procedure DrawVertLineTS(X, Y1, Y2: Integer; Value: TColor32);
     procedure DrawVertLineTSP(X, Y1, Y2: Integer);
 
-    procedure DrawLine(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineT(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineTS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineA(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineAS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineF(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineFS(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineFP(X1, Y1, X2, Y2: Single; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
-    procedure DrawLineFSP(X1, Y1, X2, Y2: Single; L: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    procedure DrawLine(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineT(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineTS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineA(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineAS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean = False);
+    procedure DrawLineF(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean = False);
+    procedure DrawLineFS(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean = False);
+    procedure DrawLineFP(X1, Y1, X2, Y2: Single; L: Boolean = False);
+    procedure DrawLineFSP(X1, Y1, X2, Y2: Single; L: Boolean = False);
 
     procedure MoveTo(X, Y: Integer);
     procedure LineToS(X, Y: Integer);
@@ -437,9 +435,9 @@ type
     property Matrix: TMatrix3d read FMatrix write FMatrix;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Bitmap Functions
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Source, Target: TBitmap); overload;
@@ -471,12 +469,12 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 
-procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}); overload;
+procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = 0); overload;
 procedure ScreenShot(bm: TBitmap); overload;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // PolyLines and Polygons
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolyLineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 procedure PolyLineAS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
@@ -493,9 +491,9 @@ procedure PolyPolygonAS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArr
 procedure PolyPolygonFS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArrayF;
   Color: TColor32);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Filters
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure AlphaToGrayscale(Dst, Src: TJclBitmap32);
 procedure IntensityToAlpha(Dst, Src: TJclBitmap32);
@@ -503,7 +501,7 @@ procedure Invert(Dst, Src: TJclBitmap32);
 procedure InvertRGB(Dst, Src: TJclBitmap32);
 procedure ColorToGrayscale(Dst, Src: TJclBitmap32);
 procedure ApplyLUT(Dst, Src: TJclBitmap32; const LUT: TLUT8);
-procedure SetGamma(Gamma: Single {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0.7 {$ENDIF});
+procedure SetGamma(Gamma: Single = 0.7);
 
 implementation
 
@@ -565,16 +563,16 @@ threadvar
   CurrentLineG: array of Integer;
   CurrentLineB: array of Integer;
 
-//==============================================================================
+//==================================================================================================
 // Helper functions
-//==============================================================================
+//==================================================================================================
 
 function IntToByte(Value: Integer): Byte;
 begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure CheckBitmaps(Dst, Src: TJclBitmap32);
 begin
@@ -584,7 +582,7 @@ begin
     raise EJclGraphicsError.CreateResRec(@RsSourceBitmapEmpty);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CheckSrcRect(Src: TJclBitmap32; const SrcRect: TRect): Boolean;
 begin
@@ -597,9 +595,9 @@ begin
   Result := True;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Internal low level routines
-//==============================================================================
+//==================================================================================================
 
 procedure FillLongword(var X; Count: Integer; Value: LongWord);
 {asm
@@ -628,7 +626,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function Clamp(Value: Integer): TColor32;
 begin
@@ -641,7 +639,7 @@ begin
     Result := Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TestSwap(var A, B: Integer);
 {asm
@@ -670,7 +668,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TestClip(var A, B: Integer; Size: Integer): Boolean;
 begin
@@ -682,7 +680,7 @@ begin
   Result := B >= A;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function Constrain(Value, Lo, Hi: Integer): Integer;
 begin
@@ -695,9 +693,9 @@ begin
     Result := Value;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Filter functions for stretching of TBitmaps
-//==============================================================================
+//==================================================================================================
 
 // f(t) = 2|t|^3 - 3|t|^2 + 1, -1 <= t <= 1
 
@@ -711,7 +709,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function BitmapBoxFilter(Value: Single): Single;
 // This filter is also known as 'nearest neighbour' Filter.
@@ -722,7 +720,7 @@ begin
     Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // aka 'linear' or 'bilinear' filter
 
@@ -736,7 +734,7 @@ begin
     Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function BitmapBellFilter(Value: Single): Single;
 begin
@@ -754,7 +752,7 @@ begin
       Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // B-spline filter
 
@@ -779,7 +777,7 @@ begin
       Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function BitmapLanczos3Filter(Value: Single): Single;
 
@@ -803,7 +801,7 @@ begin
     Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function BitmapMitchellFilter(Value: Single): Single;
 const
@@ -835,7 +833,7 @@ begin
       Result := 0.0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   FilterList: array [TResamplingFilter] of TBitmapFilterFunction = (
@@ -848,7 +846,7 @@ const
     BitmapMitchellFilter
   );
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure FillLineCache(N, Delta: Integer; Line: Pointer);
 var
@@ -865,7 +863,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ApplyContributors(N: Integer; Contributors: TContributors): TBGR;
 var
@@ -906,7 +904,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // This is the actual scaling routine. Target must be allocated already with
 // sufficient size. Source must contain valid data, Radius must not be 0 and
@@ -1142,9 +1140,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Filter functions for TJclBitmap32
-//==============================================================================
+//==================================================================================================
 
 type
   TPointRec = record
@@ -1155,7 +1153,7 @@ type
   TMappingTable = array of TCluster;
   TFilterFunc = function (Value: Extended): Extended;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function NearestFilter(Value: Extended): Extended;
 begin
@@ -1165,7 +1163,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LinearFilter(Value: Extended): Extended;
 begin
@@ -1181,7 +1179,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SplineFilter(Value: Extended): Extended;
 var
@@ -1203,7 +1201,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function BuildMappingTable(
   DstWidth, SrcFrom, SrcWidth: Integer;
@@ -1289,9 +1287,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Bitmap Functions
-//==============================================================================
+//==================================================================================================
 
 // Scales the source bitmap to the given size (NewWidth, NewHeight) and stores the Result in Target.
 // Filter describes the filter function to be applied and Radius the size of the filter area.
@@ -1310,7 +1308,7 @@ begin
   DoStretch(FilterList[Filter], Radius, Source, Target);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
   Radius: Single; Source: TBitmap);
@@ -1332,7 +1330,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure StretchNearest(Dst: TJclBitmap32; DstRect: TRect;
   Src: TJclBitmap32; SrcRect: TRect; CombineOp: TDrawMode);
@@ -1430,7 +1428,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
@@ -1485,7 +1483,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
   StretchFilter: TStretchFilter; CombineOp: TDrawMode);
@@ -1594,7 +1592,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBitMap; X, Y, Width, Height: Integer);
 var
@@ -1608,7 +1606,7 @@ begin
   DeleteObject(MemDC);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 type
@@ -1647,7 +1645,7 @@ begin
   Result := Antialias;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF COMPILER4_UP}
 
@@ -1670,7 +1668,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure BitmapToJPeg(const FileName: string);
 var
@@ -1693,14 +1691,14 @@ end;
 
 {$ENDIF COMPILER4_UP}
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExtractIconCount(const FileName: string): Integer;
 begin
   Result := ExtractIcon(HInstance, PChar(FileName), $FFFFFFFF);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 var
@@ -1716,7 +1714,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IconToBitmap(Icon: HICON): HBITMAP;
 var
@@ -1726,7 +1724,7 @@ begin
   Result := IconInfo.hbmColor;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
   Transformation: TJclTransformation);
@@ -1828,7 +1826,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 var
@@ -1856,7 +1854,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
@@ -1944,7 +1942,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND); overload;
 var
@@ -1977,14 +1975,14 @@ begin
   ReleaseDC(0, WinDC);        // finally, relase the DC of the window
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ScreenShot(bm: TBitmap); overload;
 begin
   ScreenShot(bm, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean;
@@ -2035,9 +2033,9 @@ begin
   Result := True;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclDesktopCanvas
-//==============================================================================
+//==================================================================================================
 
 constructor TJclDesktopCanvas.Create;
 begin
@@ -2046,7 +2044,7 @@ begin
   Handle := FDesktop;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclDesktopCanvas.Destroy;
 begin
@@ -2055,9 +2053,9 @@ begin
   inherited Destroy;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclRegionInfo
-//==============================================================================
+//==================================================================================================
 
 constructor TJclRegionInfo.Create(Region: TJclRegion);
 begin
@@ -2070,7 +2068,7 @@ begin
   GetRegionData(Region.Handle, FDataSize, FData);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclRegionInfo.Destroy;
 begin
@@ -2079,7 +2077,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegionInfo.GetBox: TRect;
 begin
@@ -2087,14 +2085,14 @@ begin
     TRgnData(FData^).rdh.rcBound.Right, TRgnData(FData^).rdh.rcBound.Bottom);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegionInfo.GetCount: Integer;
 begin
   Result := TRgnData(FData^).rdh.nCount;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegionInfo.GetRect(Index: Integer): TRect;
 var RectP: PRect;
@@ -2105,9 +2103,9 @@ begin
   Result := RectAssign(RectP^.Left, RectP.Top, RectP^.Right, RectP^.Bottom);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclRegion
-//==============================================================================
+//==================================================================================================
 
 procedure TJclRegion.CheckHandle;
 begin
@@ -2115,7 +2113,7 @@ begin
     raise EJclWin32Error.CreateResRec(@RsRegionCouldNotCreated);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Combine(DestRegion, SrcRegion: TJclRegion;
   CombineOp: TJclRegionCombineOperator);
@@ -2132,7 +2130,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Combine(SrcRegion: TJclRegion; CombineOp: TJclRegionCombineOperator);
 begin
@@ -2148,14 +2146,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Clip(Canvas: TCanvas);
 begin
   FRegionType := SelectClipRgn(Canvas.Handle, FHandle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclRegion.Destroy;
 begin
@@ -2164,7 +2162,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.Create(RegionHandle: HRGN);
 begin
@@ -2175,7 +2173,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode);
@@ -2186,7 +2184,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateElliptic(const ARect: TRect);
 begin
@@ -2196,7 +2194,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateElliptic(Top, Left, Bottom, Right: Integer);
 begin
@@ -2206,7 +2204,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreatePoly(const Points: TDynPointArray; Count: Integer;
   FillMode: TPolyFillMode);
@@ -2222,7 +2220,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreatePolyPolygon(const Points: TDynPointArray;
   const Vertex: TDynIntegerArray; Count: Integer; FillMode: TPolyFillMode);
@@ -2238,7 +2236,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer);
 begin
@@ -2248,7 +2246,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRect(ARect: TRect);
 begin
@@ -2258,7 +2256,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRoundRect(const ARect: TRect; CornerWidth,
   CornerHeight: Integer);
@@ -2270,7 +2268,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRoundRect(Top, Left, Bottom, Right, CornerWidth,
   CornerHeight: Integer);
@@ -2281,7 +2279,7 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreatePath(Canvas: TCanvas);
 begin
@@ -2291,28 +2289,28 @@ begin
   GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.Equals(CompareRegion: TJclRegion): Boolean;
 begin
   Result := EqualRgn(CompareRegion.Handle, FHandle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.GetHandle: HRGN;
 begin
   Result := FHandle;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Fill(Canvas: TCanvas);
 begin
   FillRgn(Canvas.Handle, FHandle, Canvas.Brush.Handle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.FillGradient(Canvas: TCanvas; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection);
@@ -2321,14 +2319,14 @@ begin
   JclGraphics.FillGradient(Canvas.Handle, Box, ColorCount, StartColor, EndColor, ADirection);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Frame(Canvas: TCanvas; FrameWidth, FrameHeight: Integer);
 begin
   FrameRgn(Canvas.Handle, FHandle, Canvas.Brush.Handle, FrameWidth, FrameHeight);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.GetBox: TRect;
 begin
@@ -2336,7 +2334,7 @@ begin
   Result := FBoxRect;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.GetRegionType: TJclRegionKind;
 begin
@@ -2352,63 +2350,63 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Invert(Canvas: TCanvas);
 begin
   InvertRgn(Canvas.Handle, FHandle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Offset(X, Y: Integer);
 begin
   FRegionType := OffsetRgn(FHandle, X, Y);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.Paint(Canvas: TCanvas);
 begin
   PaintRgn(Canvas.Handle, FHandle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.PointIn(X, Y: Integer): Boolean;
 begin
   Result := PtInRegion(FHandle, X, Y);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.PointIn(const Point: TPoint): Boolean;
 begin
   Result := PtInRegion(FHandle, Point.X, Point.Y);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.RectIn(const ARect: TRect): Boolean;
 begin
   Result := RectInRegion(FHandle, ARect);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.RectIn(Top, Left, Bottom, Right: Integer): Boolean;
 begin
   Result := RectInRegion(FHandle, RectAssign(Left, Top, Right, Bottom));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclRegion.SetWindow(Window: HWND; Redraw: Boolean);
 begin
   SetWindowRgn(Window, FHandle, Redraw);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.Copy: TJclRegion;
 begin
@@ -2417,14 +2415,14 @@ begin
   Result.GetBox;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclRegion.GetRegionInfo: TJclRegionInfo;
 begin
   Result := TJclRegionInfo.Create(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclRegion.CreateRegionInfo(RegionInfo: TJclRegionInfo);
 begin
@@ -2436,16 +2434,16 @@ begin
   GetBox;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclThreadPersistent
-//==============================================================================
+//==================================================================================================
 
 constructor TJclThreadPersistent.Create;
 begin
   FLock := TJclCriticalSection.Create;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclThreadPersistent.Destroy;
 begin
@@ -2453,14 +2451,14 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.BeginUpdate;
 begin
   Inc(FUpdateCount);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.Changing;
 begin
@@ -2468,7 +2466,7 @@ begin
     FOnChanging(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.Changed;
 begin
@@ -2476,7 +2474,7 @@ begin
     FOnChange(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.EndUpdate;
 begin
@@ -2484,7 +2482,7 @@ begin
   Dec(FUpdateCount);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.Lock;
 begin
@@ -2492,7 +2490,7 @@ begin
   FLock.Enter;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.Unlock;
 begin
@@ -2500,30 +2498,30 @@ begin
   LockedDec(FLockCount);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclCustomMap
-//==============================================================================
+//==================================================================================================
 
 procedure TJclCustomMap.Delete;
 begin
   SetSize(0, 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclCustomMap.Empty: Boolean;
 begin
   Result := (Width = 0) or (Height = 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomMap.SetHeight(NewHeight: Integer);
 begin
   SetSize(Width, NewHeight);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomMap.SetSize(NewWidth, NewHeight: Integer);
 begin
@@ -2531,7 +2529,7 @@ begin
   FHeight := NewHeight;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomMap.SetSize(Source: TPersistent);
 begin
@@ -2550,16 +2548,16 @@ begin
     raise EJclGraphicsError.CreateResRecFmt(@RsMapSizeFmt,[Source.ClassName]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclCustomMap.SetWidth(NewWidth: Integer);
 begin
   SetSize(NewWidth, Height);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclBitmap32
-//==============================================================================
+//==================================================================================================
 
 constructor TJclBitmap32.Create;
 begin
@@ -2581,7 +2579,7 @@ begin
   FStippleStep := 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclBitmap32.Destroy;
 begin
@@ -2595,7 +2593,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetSize(NewWidth, NewHeight: Integer);
 begin
@@ -2655,21 +2653,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.Empty: Boolean;
 begin
   Result := (FHandle = 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Clear;
 begin
   Clear(clBlack32);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Clear(FillColor: TColor32);
 begin
@@ -2680,7 +2678,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Delete;
 begin
@@ -2689,7 +2687,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Assign(Source: TPersistent);
 var
@@ -2782,7 +2780,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.AssignTo(Dst: TPersistent);
 var
@@ -2826,14 +2824,14 @@ begin
     inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixel(X, Y: Integer; Value: TColor32);
 begin
   Bits[X + Y * Width] := Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixelS(X, Y: Integer; Value: TColor32);
 begin
@@ -2841,21 +2839,21 @@ begin
     Bits[X + Y * Width] := Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.GetScanLine(Y: Integer): PColor32Array;
 begin
   Result := @Bits[Y * FWidth];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.GetPixel(X, Y: Integer): TColor32;
 begin
   Result := Bits[X + Y * Width];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.GetPixelS(X, Y: Integer): TColor32;
 begin
@@ -2865,14 +2863,14 @@ begin
     Result := OuterColor;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.GetPixelPtr(X, Y: Integer): PColor32;
 begin
   Result := @Bits[X + Y * Width];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Draw(DstX, DstY: Integer; Src: TJclBitmap32);
 begin
@@ -2882,7 +2880,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Draw(DstRect, SrcRect: TRect; Src: TJclBitmap32);
 begin
@@ -2892,7 +2890,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.Draw(DstRect, SrcRect: TRect; hSrc: HDC);
 begin
@@ -2905,7 +2903,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawTo(Dst: TJclBitmap32);
 begin
@@ -2916,7 +2914,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawTo(Dst: TJclBitmap32; DstX, DstY: Integer);
 begin
@@ -2927,7 +2925,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawTo(Dst: TJclBitmap32; DstRect: TRect);
 begin
@@ -2938,7 +2936,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawTo(Dst: TJclBitmap32; DstRect, SrcRect: TRect);
 begin
@@ -2949,7 +2947,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawTo(hDst: HDC; DstX, DstY: Integer);
 begin
@@ -2958,7 +2956,7 @@ begin
   BitBlt(hDst, DstX, DstY, Width, Height, Handle, 0, 0, SRCCOPY);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawTo(hDst: HDC; DstRect, SrcRect: TRect);
 begin
@@ -2970,7 +2968,7 @@ begin
     Bits, FBitmapInfo, DIB_RGB_COLORS, SRCCOPY);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.ResetAlpha;
 var
@@ -2988,7 +2986,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.GetPixelB(X, Y: Integer): TColor32;
 begin
@@ -3006,7 +3004,7 @@ begin
   Result := Bits[X + Y * Width];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixelT(X, Y: Integer; Value: TColor32);
 begin
@@ -3014,7 +3012,7 @@ begin
   EMMS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixelT(var Ptr: PColor32; Value: TColor32);
 begin
@@ -3023,7 +3021,7 @@ begin
   Inc(Ptr);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixelTS(X, Y: Integer; Value: TColor32);
 begin
@@ -3034,7 +3032,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SET_T256(X, Y: Integer; C: TColor32);
 var
@@ -3066,7 +3064,7 @@ begin
   CombineMem(C, P^, celx * flry shr 16);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SET_TS256(X, Y: Integer; C: TColor32);
 var
@@ -3121,7 +3119,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixelF(X, Y: Single; Value: TColor32);
 begin
@@ -3129,7 +3127,7 @@ begin
   EMMS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetPixelFS(X, Y: Single; Value: TColor32);
 begin
@@ -3137,7 +3135,7 @@ begin
   EMMS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetStipple(NewStipple: TArrayOfColor32);
 begin
@@ -3145,7 +3143,7 @@ begin
   FStipplePattern := Copy(NewStipple, 0, Length(NewStipple));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetStipple(NewStipple: array of TColor32);
 var
@@ -3157,7 +3155,7 @@ begin
   Move(NewStipple[Low(NewStipple)], FStipplePattern[0], L * SizeOf(TColor32));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.GetStippleColor: TColor32;
 var
@@ -3196,28 +3194,28 @@ begin
   FStippleCounter := FStippleCounter + FStippleStep;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetStippleStep(Value: Single);
 begin
   FStippleStep := Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.ResetStippleCounter;
 begin
   FStippleCounter := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawHorzLine(X1, Y, X2: Integer; Value: TColor32);
 begin
   FillLongword(Bits[X1 + Y * Width], X2 - X1 + 1, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawHorzLineS(X1, Y, X2: Integer; Value: TColor32);
 begin
@@ -3225,7 +3223,7 @@ begin
     DrawHorzLine(X1, Y, X2, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawHorzLineT(X1, Y, X2: Integer; Value: TColor32);
 var
@@ -3243,7 +3241,7 @@ begin
   EMMS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawHorzLineTS(X1, Y, X2: Integer; Value: TColor32);
 begin
@@ -3251,7 +3249,7 @@ begin
     DrawHorzLineT(X1, Y, X2, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawHorzLineTSP(X1, Y, X2: Integer);
 var
@@ -3283,7 +3281,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawVertLine(X, Y1, Y2: Integer; Value: TColor32);
 var
@@ -3300,7 +3298,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawVertLineS(X, Y1, Y2: Integer; Value: TColor32);
 begin
@@ -3308,7 +3306,7 @@ begin
     DrawVertLine(X, Y1, Y2, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawVertLineT(X, Y1, Y2: Integer; Value: TColor32);
 var
@@ -3324,7 +3322,7 @@ begin
   EMMS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawVertLineTS(X, Y1, Y2: Integer; Value: TColor32);
 begin
@@ -3332,7 +3330,7 @@ begin
     DrawVertLineT(X, Y1, Y2, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawVertLineTSP(X, Y1, Y2: Integer);
 var
@@ -3364,7 +3362,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLine(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 var
@@ -3456,7 +3454,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.ClipLine(var X0, Y0, X1, Y1: Integer): Boolean;
 type
@@ -3536,7 +3534,7 @@ begin
   Result := Accept;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.ClipLineF(var X0, Y0, X1, Y1: Single;
   MinX, MaxX, MinY, MaxY: Single): Boolean;
@@ -3623,7 +3621,7 @@ begin
   Result := Accept;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 begin
@@ -3631,7 +3629,7 @@ begin
     DrawLine(X1, Y1, X2, Y2, Value, L);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineT(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 var
@@ -3726,7 +3724,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineTS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 begin
@@ -3734,7 +3732,7 @@ begin
     DrawLineT(X1, Y1, X2, Y2, Value, L);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineF(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean);
 var
@@ -3773,7 +3771,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineFS(X1, Y1, X2, Y2: Single; Value: TColor32; L: Boolean);
 var
@@ -3819,7 +3817,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineFP(X1, Y1, X2, Y2: Single; L: Boolean);
 var
@@ -3862,7 +3860,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineFSP(X1, Y1, X2, Y2: Single; L: Boolean);
 var
@@ -3911,7 +3909,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineA(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 var
@@ -3999,7 +3997,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DrawLineAS(X1, Y1, X2, Y2: Integer; Value: TColor32; L: Boolean);
 begin
@@ -4007,7 +4005,7 @@ begin
     DrawLineA(X1, Y1, X2, Y2, Value, L);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.MoveTo(X, Y: Integer);
 begin
@@ -4015,7 +4013,7 @@ begin
   RasterY := Y;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.LineToS(X, Y: Integer);
 begin
@@ -4024,7 +4022,7 @@ begin
   RasterY := Y;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.LineToTS(X, Y: Integer);
 begin
@@ -4033,7 +4031,7 @@ begin
   RasterY := Y;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.LineToAS(X, Y: Integer);
 begin
@@ -4042,7 +4040,7 @@ begin
   RasterY := Y;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.MoveToF(X, Y: Single);
 begin
@@ -4050,7 +4048,7 @@ begin
   RasterYF := Y;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.LineToFS(X, Y: Single);
 begin
@@ -4059,7 +4057,7 @@ begin
   RasterYF := Y;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FillRect(X1, Y1, X2, Y2: Integer; Value: TColor32);
 var
@@ -4075,7 +4073,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FillRectS(X1, Y1, X2, Y2: Integer; Value: TColor32);
 begin
@@ -4083,7 +4081,7 @@ begin
     FillRect(X1, Y1, X2, Y2, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FillRectT(X1, Y1, X2, Y2: Integer; Value: TColor32);
 var
@@ -4114,7 +4112,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FillRectTS(X1, Y1, X2, Y2: Integer; Value: TColor32);
 begin
@@ -4122,7 +4120,7 @@ begin
     FillRectT(X1, Y1, X2, Y2, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FrameRectS(X1, Y1, X2, Y2: Integer; Value: TColor32);
 begin
@@ -4141,7 +4139,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FrameRectTS(X1, Y1, X2, Y2: Integer; Value: TColor32);
 begin
@@ -4160,7 +4158,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FrameRectTSP(X1, Y1, X2, Y2: Integer);
 begin
@@ -4179,7 +4177,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.RaiseRectTS(X1, Y1, X2, Y2: Integer; Contrast: Integer);
 var
@@ -4215,7 +4213,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.LoadFromStream(Stream: TStream);
 var
@@ -4232,7 +4230,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SaveToStream(Stream: TStream);
 var
@@ -4247,7 +4245,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.DefineProperties(Filer: TFiler);
 
@@ -4263,7 +4261,7 @@ begin
   Filer.DefineBinaryProperty('Data', ReadData, WriteData, DoWrite);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.ReadData(Stream: TStream);
 var
@@ -4280,7 +4278,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.WriteData(Stream: TStream);
 begin
@@ -4289,7 +4287,7 @@ begin
   Stream.WriteBuffer(FBits[0], FWidth * FHeight * 4);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.LoadFromFile(const FileName: string);
 var
@@ -4304,7 +4302,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SaveToFile(const FileName: string);
 var
@@ -4319,7 +4317,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetFont(Value: TFont);
 begin
@@ -4327,7 +4325,7 @@ begin
   FontChanged(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.FontChanged(Sender: TObject);
 begin
@@ -4338,7 +4336,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.UpdateFont;
 begin
@@ -4350,7 +4348,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetDrawMode(Value: TDrawMode);
 begin
@@ -4362,7 +4360,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetMasterAlpha(Value: Byte);
 begin
@@ -4374,7 +4372,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.SetStretchFilter(Value: TStretchFilter);
 begin
@@ -4386,7 +4384,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.TextExtent(const Text: string): TSize;
 begin
@@ -4396,7 +4394,7 @@ begin
   Windows.GetTextExtentPoint32(Handle, PChar(Text), Length(Text), Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.TextOut(X, Y: Integer; const Text: string);
 begin
@@ -4406,7 +4404,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.TextOut(X, Y: Integer; const ClipRect: TRect;
   const Text: string);
@@ -4417,7 +4415,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.TextOut(ClipRect: TRect; const Flags: Cardinal;
   const Text: string);
@@ -4428,21 +4426,21 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.TextHeight(const Text: string): Integer;
 begin
   Result := TextExtent(Text).cY;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclBitmap32.TextWidth(const Text: string): Integer;
 begin
   Result := TextExtent(Text).cX;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclBitmap32.RenderText(X, Y: Integer; const Text: string; AALevel: Integer; Color: TColor32);
 var
@@ -4508,9 +4506,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclByteMap
-//==============================================================================
+//==================================================================================================
 
 procedure TJclByteMap.Assign(Source: TPersistent);
 begin
@@ -4521,12 +4519,7 @@ begin
     begin
       FWidth := TJclByteMap(Source).Width;
       FHeight := TJclByteMap(Source).Height;
-      {$IFDEF SUPPORTS_DYNAMICARRAYS}
       FBytes := Copy(TJclByteMap(Source).Bytes, 0, FWidth * FHeight);
-      {$ELSE}
-      // TODO implement
-      // FBytes := Copy(TJclByteMap(Source).Bytes, 0, FWidth * FHeight);
-      {$ENDIF SUPPORTS_DYNAMICARRAYS}
     end
     else
     if Source is TJclBitmap32 then
@@ -4539,7 +4532,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.AssignTo(Dst: TPersistent);
 begin
@@ -4549,7 +4542,7 @@ begin
     inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.Clear(FillValue: Byte);
 begin
@@ -4558,7 +4551,7 @@ begin
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclByteMap.Destroy;
 begin
@@ -4566,28 +4559,28 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclByteMap.Empty: Boolean;
 begin
   Result := Bytes = nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclByteMap.GetValPtr(X, Y: Integer): PByte;
 begin
   Result := @Bytes[X + Y * Width];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclByteMap.GetValue(X, Y: Integer): Byte;
 begin
   Result := Bytes[X + Y * Width];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.ReadFrom(Source: TJclBitmap32; Conversion: TConversionKind);
 var
@@ -4678,29 +4671,24 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.SetValue(X, Y: Integer; Value: Byte);
 begin
   Bytes[X + Y * Width] := Value;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.SetSize(NewWidth, NewHeight: Integer);
 begin
   Changing;
   inherited;
-  {$IFDEF SUPPORTS_DYNAMICARRAYS}
   SetLength(FBytes, Width * Height);
-  {$ELSE}
-  // TODO implement
-  // SetLength(FBytes, Width * Height);
-  {$ENDIF SUPPORTS_DYNAMICARRAYS}
   Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.WriteTo(Dest: TJclBitmap32; Conversion: TConversionKind);
 var
@@ -4777,7 +4765,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclByteMap.WriteTo(Dest: TJclBitmap32; const Palette: TPalette32);
 var
@@ -4810,16 +4798,16 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Matrices
-//==============================================================================
+//==================================================================================================
 { TODO -oWIMDC -cReplace : Insert JclMatrix support }
 function _DET(a1, a2, b1, b2: Extended): Extended; overload;
 begin
   Result := a1 * b2 - a2 * b1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function _DET(a1, a2, a3, b1, b2, b3, c1, c2, c3: Extended): Extended; overload;
 begin
@@ -4829,7 +4817,7 @@ begin
     c1 * (a2 * b3 - a3 * b2);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Adjoint(var M: TMatrix3d);
 var
@@ -4854,7 +4842,7 @@ begin
   M.A[2,2]:=  _DET(a1, a2, b1, b2);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function Determinant(const M: TMatrix3d): Extended;
 begin
@@ -4863,7 +4851,7 @@ begin
                  M.A[0,2], M.A[1,2], M.A[2,2]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Scale(var M: TMatrix3d; Factor: Extended);
 var
@@ -4874,7 +4862,7 @@ begin
       M.A[i,j] := M.A[i,j] * Factor;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure InvertMatrix(var M: TMatrix3d);
 var
@@ -4890,7 +4878,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function Mult(const M1, M2: TMatrix3d): TMatrix3d;
 var
@@ -4904,13 +4892,13 @@ begin
         M1.A[2, j] * M2.A[i, 2];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TVector3d = array [0..2] of Extended;
   TVector3i = array [0..2] of Integer;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function VectorTransform(const M: TMatrix3d; const V: TVector3d): TVector3d;
 begin
@@ -4919,23 +4907,23 @@ begin
   Result[2] := M.A[0,2] * V[0] + M.A[1,2] * V[1] + M.A[2,2] * V[2];
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclLinearTransformation
-//==============================================================================
+//==================================================================================================
 
 procedure TJclLinearTransformation.Clear;
 begin
   FMatrix := IdentityMatrix;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclLinearTransformation.Create;
 begin
   Clear;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclLinearTransformation.GetTransformedBounds(const Src: TRect): TRect;
 var
@@ -4955,7 +4943,7 @@ begin
   Result.Bottom := Round(Max(Max(V1[1], V2[1]), Max(V3[1], V4[1])) + 0.5);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.PrepareTransform;
 var
@@ -4969,7 +4957,7 @@ begin
   D := Round(M.A[0,1] * 4096); E := Round(M.A[1,1] * 4096); F := Round(M.A[2,1] * 4096);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Rotate(Cx, Cy, Alpha: Extended);
 var
@@ -4987,7 +4975,7 @@ begin
     Translate(Cx, Cy);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Scale(Sx, Sy: Extended);
 var
@@ -4999,7 +4987,7 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Skew(Fx, Fy: Extended);
 var
@@ -5011,7 +4999,7 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Transform(DstX, DstY: Integer;
   out SrcX, SrcY: Integer);
@@ -5020,7 +5008,7 @@ begin
   SrcY := Sar(DstX * D + DstY * E + F,12);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Transform256(DstX, DstY: Integer;
   out SrcX256, SrcY256: Integer);
@@ -5029,7 +5017,7 @@ begin
   SrcY256 := Sar(DstX * D + DstY * E + F,4);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclLinearTransformation.Translate(Dx, Dy: Extended);
 var
@@ -5041,9 +5029,9 @@ begin
   FMatrix := Mult(M, FMatrix);
 end;
 
-//==============================================================================
+//==================================================================================================
 // PolyLines and Polygons
-//==============================================================================
+//==================================================================================================
 
 procedure PolylineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
@@ -5073,7 +5061,7 @@ begin
   Bitmap.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolyLineAS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
@@ -5095,7 +5083,7 @@ begin
   Bitmap.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolylineFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF;
   Color: TColor32);
@@ -5117,7 +5105,7 @@ begin
   Bitmap.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
@@ -5145,7 +5133,7 @@ begin
   until I >= R;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure SortLine(const ALine: TScanLine);
 var
@@ -5160,7 +5148,7 @@ begin
     QSortLine(ALine, 0, L - 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure SortLines(const ScanLines: TScanLines);
 var
@@ -5170,7 +5158,7 @@ begin
     SortLine(ScanLines[I]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure AddPolygon(const Points: TDynPointArray; BaseY: Integer;
   MaxX, MaxY: Integer; var ScanLines: TScanLines; SubSampleX: Boolean);
@@ -5290,7 +5278,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure FillLines(Bitmap: TJclBitmap32; BaseY: Integer;
   const ScanLines: TScanLines; Color: TColor32);
@@ -5329,7 +5317,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure FillLines2(Bitmap: TJclBitmap32; BaseY: Integer;
   const ScanLines: TScanLines; Color: TColor32);
@@ -5435,7 +5423,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure GetMinMax(const Points: TDynPointArray; out MinY, MaxY: Integer);
 var
@@ -5453,7 +5441,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolygonTS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 var
@@ -5482,7 +5470,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolygonAS(Bitmap: TJclBitmap32; const Points: TDynPointArray; Color: TColor32);
 var
@@ -5518,7 +5506,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolygonFS(Bitmap: TJclBitmap32; const Points: TDynPointArrayF; Color: TColor32);
 var
@@ -5554,7 +5542,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolyPolygonTS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArray;
   Color: TColor32);
@@ -5594,7 +5582,7 @@ begin
   Bitmap.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolyPolygonAS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArray;
   Color: TColor32);
@@ -5642,7 +5630,7 @@ begin
   Bitmap.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PolyPolygonFS(Bitmap: TJclBitmap32; const Points: TDynDynPointArrayArrayF;
   Color: TColor32);
@@ -5690,9 +5678,9 @@ begin
   Bitmap.Changed;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Filters
-//==============================================================================
+//==================================================================================================
 
 procedure CheckParams(Dst, Src: TJclBitmap32);
 begin
@@ -5703,7 +5691,7 @@ begin
   Dst.SetSize(Src.Width, Src.Height);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure AlphaToGrayscale(Dst, Src: TJclBitmap32);
 var
@@ -5723,7 +5711,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure IntensityToAlpha(Dst, Src: TJclBitmap32);
 var
@@ -5743,7 +5731,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure Invert(Dst, Src: TJclBitmap32);
 var
@@ -5763,7 +5751,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure InvertRGB(Dst, Src: TJclBitmap32);
 var
@@ -5783,7 +5771,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ColorToGrayscale(Dst, Src: TJclBitmap32);
 var
@@ -5803,7 +5791,7 @@ begin
   Dst.Changed;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ApplyLUT(Dst, Src: TJclBitmap32; const LUT: TLUT8);
 var
@@ -5837,9 +5825,9 @@ begin
   Dst.Changed;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Gamma table support for opacities
-//==============================================================================
+//==================================================================================================
 
 procedure SetGamma(Gamma: Single);
 var
@@ -5860,9 +5848,9 @@ begin
   IdentityMatrix.A[2,0] := 0.0; IdentityMatrix.A[2,1] := 0.0; IdentityMatrix.A[2,2] := 1.0;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Initialization and Finalization
-//==============================================================================
+//==================================================================================================
 
 initialization
   SetIdentityMatrix;
