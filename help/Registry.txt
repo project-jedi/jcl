@@ -380,7 +380,7 @@ function RegisterAutoExec(ExecKind: TExecKind; const Path: string): Boolean;
 [ShortDescr]
 Registers the specified application for execution at logon.
 [Description]
-RegisterAutoExec register the file specified by Path in the system registry so
+RegisterAutoExec registers the file specified by Path in the system registry so
 that it will automatically be executed by the system at the next logon. The
 ExecKind parameter specifies the details about user vs. machine and once vs. always.
 You can have an application executed once at the next logon (ekMachineRunOnce,
@@ -438,3 +438,103 @@ Windows 95/98=Requires Windows 95 or later.
 Count=2
 1=UnregisterAutoExec
 2=RegisterAutoExec
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+[ShortDescr]
+Reads a list of value names from the registry.
+[Description]
+Use RegGetValueNames to obtain a list of values contained in the specified registry key. 
+If the function fails it raises an ERegistryException exception.
+[Parameters]
+Count=3
+1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
+2=Key:string=The key (path) where the desired value list is located, relative to RootKey.
+3=List:TStrings=This string list will contain the names of the values.
+[Result]
+If the function succeeds it returns TRUE. If it fails it returns FALSE.
+[Example]
+ValueNames := TStringList.Create;
+try
+  RegGetValueNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0\Compiling', ValueNames);
+  for I := 0 to SubKeys.Count - 1 do 
+    ShowMessage(ValueNames[I]);
+finally
+  ValueNames.Free;
+end;
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=RegGetKeyNames
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
+[ShortDescr]
+Reads a list of key names from the registry.
+[Description]
+RegGetKeyNames returns a list of the specified key's subkeys.
+[Parameters]
+Count=3
+1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
+2=Key:string=The key (path) where the desired value list is located, relative to RootKey.
+3=List:TStrings=On exit, this string list will contain the names of the values. The caller 
+is responsible for creating and destroying this list.
+[Result]
+If the function succeeds it returns TRUE. If it fails it returns FALSE.
+[Example]
+SubKeys := TStringList.Create;
+try
+  RegGetKeyNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0', SubKeys);
+  for I := 0 to SubKeys.Count - 1 do 
+    ShowMessage(SubKeys[I]);
+finally
+  SubKeys.Free;
+end;
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=2
+1=RegGetValueNames
+2=RegHasSubKeys
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegHasSubKeys(const RootKey: HKEY; const Key: string): Boolean;
+[ShortDescr]
+Checks whether the specified key has any children.
+[Description]
+RegHasSubKeys checks whether the subkey specified by Key has any subkeys. Use this 
+function when you want to browse the registry hierarchically.
+[Parameters]
+Count=2
+1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
+2=Key:string=The key (path) that is to be checked, relative to RootKey.
+[Result]
+If there are any children of the specified key, the function will return true. If 
+there  are no children, it will return false.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=RegGetKeyNamesNames
