@@ -198,6 +198,17 @@
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
 //------------------------------------------------------------------------------
 
+{$IFDEF VER150}
+  {$DEFINE COMPILER7}
+  {$IFDEF BCB}
+    {$DEFINE BCB7}
+    {$DEFINE BCB}
+  {$ELSE}
+    {$DEFINE DELPHI7}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
+
 {$IFDEF VER140}
   {$DEFINE COMPILER6}
   {$IFDEF BCB}
@@ -264,6 +275,16 @@
 //------------------------------------------------------------------------------
 // DELPHIX_UP from DELPHIX mappings
 //------------------------------------------------------------------------------
+
+{$IFDEF DELPHI7}
+  {$DEFINE DELPHI7_UP}
+  {$DEFINE DELPHI6_UP}
+  {$DEFINE DELPHI5_UP}
+  {$DEFINE DELPHI4_UP}
+  {$DEFINE DELPHI3_UP}
+  {$DEFINE DELPHI2_UP}
+  {$DEFINE DELPHI1_UP}
+{$ENDIF}
 
 {$IFDEF DELPHI6}
   {$DEFINE DELPHI6_UP}
@@ -341,6 +362,17 @@
 //------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
 //------------------------------------------------------------------------------
+
+{$IFDEF COMPILER7}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER6}
   {$DEFINE COMPILER6_UP}
