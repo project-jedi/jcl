@@ -37,12 +37,6 @@
 {.$DEFINE MATH_DOUBLE_PRECISION}
 {.$DEFINE MATH_SINGLE_PRECISION}
 
-// Math angle selection, mutually exclusive
-
-{.$DEFINE MATH_ANGLES_DEGREES}
-{.$DEFINE MATH_ANGLES_GRADS}
-{$DEFINE MATH_ANGLES_RADIANS}
-
 // Free Pascal specific
 
 {$DEFINE UseRegAsm}
