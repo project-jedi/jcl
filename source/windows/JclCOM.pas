@@ -295,7 +295,8 @@ begin
         Result := E_OUTOFMEMORY;
         Exit;
       end;
-    end;
+    end else
+      ResetIStreamToStart(stm);
 
     if stm <> Nil then
       { Same Machine, Different Process}
@@ -353,7 +354,8 @@ begin
         Result := E_OUTOFMEMORY;
         Exit;
       end;
-    end;
+    end else
+      ResetIStreamToStart(stm);
 
     if stm <> Nil then
       { Different Machine }
