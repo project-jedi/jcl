@@ -1930,12 +1930,7 @@ var
   J: Integer;
   R: Extended;
 begin
-  {$IFDEF SUPPORTS_DYNAMICARRAYS}
   SetLength(Result, 0);
-  {$ELSE}
-  // TODO implement
-  // SetLength(Result, 0);
-  {$ENDIF}
   if N < 0 then
     Result := PrimeFactors(-N)
   else
@@ -1953,12 +1948,7 @@ begin
       if ((I > PrimeCacheLimit) or PrimeSet.GetBit(I)) and (N mod I = 0) then
       begin // I is a prime factor
         Inc(L);
-        {$IFDEF SUPPORTS_DYNAMICARRAYS}
         SetLength(Result, L);
-        {$ELSE}
-        // TODO implement
-        // SetLength(Result, L);
-        {$ENDIF}
         Result[L - 1] := I;
 
         repeat
