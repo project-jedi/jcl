@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: July 8, 2000                                                  }
+{ Last modified: October 05, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -182,6 +182,12 @@ procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 function GetClassParent(AClass: TClass): TClass;
 
 function IsClass(Address: Pointer): Boolean;
+
+//------------------------------------------------------------------------------
+// Numeric formatting routines
+//------------------------------------------------------------------------------
+
+function IntToStrZeroPad(Value, Count: Integer): AnsiString; // TODOC Anthony
 
 implementation
 
@@ -755,6 +761,16 @@ asm
 @FALSE:
         MOV     Result, False
 @EXIT:
+end;
+
+//==============================================================================
+// Numeric formatting routines
+//==============================================================================
+
+function IntToStrZeroPad(Value, Count: Integer): AnsiString;
+begin
+  Result := IntToStr(Value);
+  Result := StrFillChar('0', L - Length(Result) + Result;
 end;
 
 end.
