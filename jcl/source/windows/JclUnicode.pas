@@ -96,9 +96,6 @@ unit JclUnicode;
 interface
 
 uses
-  {$IFDEF LINUX}
-  Libc, Types,
-  {$ENDIF}
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
