@@ -18,10 +18,13 @@
 {                                                                              }
 {******************************************************************************}
 {                                                                              }
-{ This unit contains various PE file classes and support routines              }
+{ This unit contains various classes and support routines to read the contents }
+{ of protable executable (PE) files. You can use these classes to, for example }
+{ examine the contents of the imports section of an executable. In addition    }
+{ the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 31, 2001                                              }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -834,8 +837,8 @@ type
   public
     function HookImport(Base: Pointer; const ModuleName, FunctionName: string;
       NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
-    class function IsWin9xDebugThunk(P: Pointer): Boolean; { TODO -cDOC : Hallvard Vassbotn }
-    class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean; { TODO -cDOC : Hallvard Vassbotn }
+    class function IsWin9xDebugThunk(P: Pointer): Boolean;
+    class function ReplaceImport(Base: Pointer; ModuleName: string; FromProc, ToProc: Pointer): Boolean;
     function UnhookByNewAddress(NewAddress: Pointer): Boolean;
     property Items[Index: Integer]: TJclPeMapImgHookItem read GetItems; default;
     property ItemFromOriginalAddress[OriginalAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromOriginalAddress;
