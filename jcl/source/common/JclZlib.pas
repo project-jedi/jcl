@@ -841,7 +841,7 @@ constructor TJclGZipStream.Create(const Stream: TStream);
 begin
   inherited Create;
   FStream := Stream;
-  FCRC32 := crc32(0, Pointer(Nil)^, 0);  // get crc32 initial value
+  FCRC32 := crc32(0, nil, 0);  // get crc32 initial value
   FUncompressedSize := 0;
 end;
 
@@ -984,7 +984,7 @@ begin
   // read bytes from stream
   Result := FZLibReader.Read(Buffer, Count);
   // calculate CRC and Size
-  FCRC32 := crc32(FCRC32, Buffer, Result);
+  FCRC32 := crc32(FCRC32, @Buffer, Result);
   FUncompressedSize := FUncompressedSize + LongWord(Result);
   // check end
   FEndOfStream := FZLibReader.EndOfStream;
@@ -1161,7 +1161,7 @@ begin
     p := @Buffer;
   Result := FZLibWriter.Write(p^, Count);
   // calculate CRC and Size
-  FCRC32 := crc32(FCRC32, p^, Result);
+  FCRC32 := crc32(FCRC32, p, Result);
   FUncompressedSize := FUncompressedSize + LongWord(Result);
 end;
 
@@ -1981,6 +1981,9 @@ end;
 //   - Bugfix: TJclGZipReader.Create: read multi-part number
 //
 //  $Log$
+//  Revision 1.2  2004/04/28 13:36:06  obones
+//  BCB compatibility prevention
+//
 //  Revision 1.1  2004/04/06 04:49:42  peterjhaas
 //  zlib, gzip, tar classes and functions
 //
