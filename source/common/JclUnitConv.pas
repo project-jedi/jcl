@@ -386,18 +386,20 @@ begin
   begin
     Phi := ArcTan(Abs(Y) / Abs(X));
     if Sgn(X) = 1 then
+    begin
       if Sgn(Y) = -1 then
         Phi := TwoPi - Phi
+    end
+    else
+    begin
+      if Sgn(Y) = 1 then
+       Phi := Pi - Phi
       else
-      begin
-        if Sgn(Y) = 1 then
-          Phi := Pi - Phi
-        else
-          Phi := Pi + Phi;
+       Phi := Pi + Phi;
       end;
-  end
-  else
-    Phi := Sgn(Y) * PiOn2;
+    end
+    else
+      Phi := Sgn(Y) * PiOn2;
 end;
 
 //--------------------------------------------------------------------------------------------------
