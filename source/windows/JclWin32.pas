@@ -35,7 +35,10 @@ unit JclWin32;
 interface
 
 uses
-  Windows, ActiveX, ImageHlp, WinSvc, AccCtrl, AclApi, ShlObj,
+  {$IFNDEF FPC}
+  ImageHlp, WinSvc, AccCtrl, AclApi, ShlObj,  
+  {$ENDIF FPC}
+  Windows, ActiveX,
   JclBase;
 
 {$HPPEMIT '#include <winnt.h>'}
@@ -466,14 +469,15 @@ type
   TTokenUser = TOKEN_USER;
   PTokenUser = ^TOKEN_USER;
 
+{$IFNDEF FPC}
 function SetNamedSecurityInfoW(pObjectName: PWideChar; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; ppsidOwner, ppsidGroup: PPSID; ppDacl,
   ppSacl: PACL): DWORD; stdcall; external 'advapi32.dll' name 'SetNamedSecurityInfoW';
-
+{$ENDIF FPC}
 function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   const NewState: TTokenPrivileges; BufferLength: DWORD;
   PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall;
-  external 'advapi32.dll' name 'AdjustTokenPrivileges'
+  external 'advapi32.dll' name 'AdjustTokenPrivileges';
 
 //==================================================================================================
 // NTFS related I/O control codes, types and constants from winnt.h, winioctl.h
@@ -992,6 +996,8 @@ const
 // Missing WinUser.h translations
 //--------------------------------------------------------------------------------------------------
 
+
+{$IFNDEF FPC}
 const
   RT_HTML     = MakeIntResource(23);
   RT_MANIFEST = MakeIntResource(24);
@@ -1001,6 +1007,7 @@ const
   ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID = MakeIntResource(3);
   MINIMUM_RESERVED_MANIFEST_RESOURCE_ID              = MakeIntResource(1);
   MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID              = MakeIntResource(16);
+{$ENDIF FPC}
 
 //--------------------------------------------------------------------------------------------------
 // CorHdr.h translations (part of CLR)
@@ -1013,6 +1020,7 @@ const
   COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;
   COMIMAGE_FLAGS_TRACKDEBUGDATA   = $00010000;
 
+{$IFNDEF FPC}
 type
   PImageCor20Header = ^TImageCor20Header;
   IMAGE_COR20_HEADER = record
@@ -1030,11 +1038,13 @@ type
     ManagedNativeHeader: TImageDataDirectory;
   end;
   TImageCor20Header = IMAGE_COR20_HEADER;
+{$ENDIF FPC}
 
 //--------------------------------------------------------------------------------------------------
 // Incorrect translations
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
 type
 {$IFNDEF COMPILER6_UP}
   // possibly Borland's header translation bug, fixed in Delphi 6
@@ -1052,6 +1062,7 @@ function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer;
 function BindImageEx(Flags: DWORD; ImageName, DllPath, SymbolPath: LPSTR;
   StatusRoutine: TImagehlpStatusRoutine): Bool; stdcall;
   external 'imagehlp.dll' name 'BindImageEx';
+{$ENDIF FPC}
 
 // wrong translation - last parameter is incorrect
 function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
