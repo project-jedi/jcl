@@ -16,15 +16,25 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: February 05, 2001                                             }
+{ Last modified: June 06, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
 unit JclUnicode;
 
+{$I JCL.INC}
+
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
-// Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
+// 06-JUN-2001:
+//   - small changes
+// 28-APR-2001:
+//   - bug fixes
+// 05-APR-2001:
+//   - bug fixes
+// 23-MAR-2001:
+//   - WideSameText
+//   - small changes
 // 10-FEB-2001:
 //   - bug fix in StringToWideStringEx and WideStringToStringEx
 // 05-FEB-2001:
@@ -137,8 +147,7 @@ const
   // Unicode text files (in UTF-16 format) should contain $FFFE as first character to
   // identify such a file clearly. Depending on the system where the file was created
   // on this appears either in big endian or little endian style.
-  BOM_LSB_FIRST = WideChar($FEFF); // this is how the BOM appears on x86 systems
-                                   // when written by a x86 system
+  BOM_LSB_FIRST = WideChar($FEFF); 
   BOM_MSB_FIRST = WideChar($FFFE);
 
 type
@@ -848,13 +857,14 @@ function WideCaseFolding(const S: WideString): WideString; overload;
 function WideLowerCase(C: WideChar): WideString; overload;
 function WideLowerCase(const S: WideString): WideString; overload;
 function WideNormalize(const S: WideString; Form: TNormalizationForm): WideString;
+function WideSameText(const Str1, Str2: WideString): Boolean;
 function WideTitleCase(C: WideChar): WideString; overload;
 function WideTitleCase(const S: WideString): WideString; overload;
-function WideUpperCase(C: WideChar): WideString; overload;
-function WideUpperCase(const S: WideString): WideString; overload;
 function WideTrim(const S: WideString): WideString;
 function WideTrimLeft(const S: WideString): WideString;
 function WideTrimRight(const S: WideString): WideString;
+function WideUpperCase(C: WideChar): WideString; overload;
+function WideUpperCase(const S: WideString): WideString; overload;
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
@@ -880,10 +890,8 @@ function UnicodeIsUpper(C: UCS4): Boolean;
 function UnicodeIsLower(C: UCS4): Boolean;
 function UnicodeIsTitle(C: UCS4): Boolean;
 function UnicodeIsHexDigit(C: UCS4): Boolean;
-
 function UnicodeIsIsoControl(C: UCS4): Boolean;
 function UnicodeIsFormatControl(C: UCS4): Boolean;
-
 function UnicodeIsSymbol(C: UCS4): Boolean;
 function UnicodeIsNumber(C: UCS4): Boolean;
 function UnicodeIsNonSpacing(C: UCS4): Boolean;
@@ -891,7 +899,6 @@ function UnicodeIsOpenPunctuation(C: UCS4): Boolean;
 function UnicodeIsClosePunctuation(C: UCS4): Boolean;
 function UnicodeIsInitialPunctuation(C: UCS4): Boolean;
 function UnicodeIsFinalPunctuation(C: UCS4): Boolean;
-
 function UnicodeIsComposed(C: UCS4): Boolean;
 function UnicodeIsQuotationMark(C: UCS4): Boolean;
 function UnicodeIsSymmetric(C: UCS4): Boolean;
@@ -922,13 +929,10 @@ function UnicodeIsPrivate(C: UCS4): Boolean;
 function UnicodeIsSurrogate(C: UCS4): Boolean;
 function UnicodeIsLineSeparator(C: UCS4): Boolean;
 function UnicodeIsParagraphSeparator(C: UCS4): Boolean;
-
 function UnicodeIsIdentifierStart(C: UCS4): Boolean;
 function UnicodeIsIdentifierPart(C: UCS4): Boolean;
-
 function UnicodeIsDefined(C: UCS4): Boolean;
 function UnicodeIsUndefined(C: UCS4): Boolean;
-
 function UnicodeIsHan(C: UCS4): Boolean;
 function UnicodeIsHangul(C: UCS4): Boolean;
 
@@ -967,8 +971,13 @@ implementation
 {$R JclUnicode.res}
 
 uses                                          
-  Consts, JclSynch, SysUtils, JclResources;
-
+  {$IFDEF DELPHI6_UP}
+  RtlConsts,
+  {$ELSE}
+  Consts,
+  {$ENDIF}
+  JclSynch, SysUtils, JclResources;
+  
 const
   // some predefined sets to shorten parameter lists below and ease repeative usage
   ClassLetter = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccLetterModifier, ccLetterOther];
@@ -997,6 +1006,7 @@ var
 // simultanously. In fact the opposite is true. Most application will use either Western Europe or Arabic or
 // Far East character data, but very rarely all together. Based on this fact is the implementation of virtual
 // memory using the systems paging file (aka file mapping) to load only into virtual memory what is used currently.
+// The implementation is not yet finished and needs a lot of improvements yet.
 
 type
   // start and stop of a range of code points
@@ -4715,7 +4725,7 @@ end;
 
 function TWideStrings.GetCapacity: Integer;
 
-// descendants may optionally override/replace this default implementation
+// Descendants may optionally override/replace this default implementation.
 
 begin
   Result := Count;
@@ -4745,7 +4755,7 @@ begin
         Inc(P);
       if (P^ <> WideNull) then
         S := WideQuotedStr(S, '"');
-      Result := Result + S + ', ';
+      Result := Result + S + ',';
     end;
     System.Delete(Result, Length(Result), 1);
   end;
@@ -4779,7 +4789,7 @@ end;
 
 function TWideStrings.GetSeparatedText(Separators: WideString): WideString;
 
-// same as GetText but with customizable separator characters
+// Same as GetText but with customizable separator characters.
 
 var
   I, L,
@@ -5061,7 +5071,7 @@ begin
     begin
       SA := WideStringToStringEx(SW, CodePageFromLocale(FLanguage));
       if Allowed then
-        Stream.WriteBuffer(PWideChar(SA)^, Length(SA));
+        Stream.WriteBuffer(PChar(SA)^, Length(SA));
     end;
     FSaved := True;
   end;
@@ -5283,10 +5293,14 @@ begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
   Changing;
+
   FList[Index].FString := '';
   Dec(FCount);
   if Index < FCount then
+  begin
     System.Move(FList[Index + 1], FList[Index], (FCount - Index) * SizeOf(TWideStringItem));
+    Pointer(FList[FCount].FString) := nil; // avoid freeing the string, the address is now used in another element
+  end;
   Changed;
 end;
 
@@ -6072,22 +6086,22 @@ function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 // returns a pointer to first occurrence of a specified character in a string
 
 asm
-       PUSH    EDI
-       PUSH    EAX
-       MOV     EDI, Str
-       MOV     ECX, 0FFFFFFFFH
-       XOR     AX, AX
-       REPNE   SCASW
-       NOT     ECX
-       POP     EDI
-       MOV     AX, Chr
-       REPNE   SCASW
-       MOV     EAX, 0
-       JNE     @@1
-       MOV     EAX, EDI
-       SUB     EAX, 2
+        PUSH    EDI
+        PUSH    EAX
+        MOV     EDI, Str
+        MOV     ECX, 0FFFFFFFFH
+        XOR     AX, AX
+        REPNE   SCASW
+        NOT     ECX
+        POP     EDI
+        MOV     AX, Chr
+        REPNE   SCASW
+        MOV     EAX, 0
+        JNE     @@1
+        MOV     EAX, EDI
+        SUB     EAX, 2
 @@1:
-       POP     EDI
+        POP     EDI
 
 end;
 
@@ -6523,6 +6537,7 @@ function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integ
 // returns the index of character Ch in S, starts searching at index Index
 // Note: This is a quick memory search. No attempt is made to interpret either
 // the given charcter nor the string (ligatures, modifiers, surrogates etc.)
+// Code from Azret Botash.
 
 asm
        TEST    EAX,EAX        // make sure we are not null
@@ -6851,6 +6866,18 @@ begin
     Temp := WideDecompose(S, Compatible);
     Result := WideCompose(Temp);
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function WideSameText(const Str1, Str2: WideString): Boolean;
+
+// Compares both strings case-insensitively and returns True if both are equal, otherwise False is returned.
+
+begin
+  Result := Length(Str1) = Length(Str2);
+  if Result then
+    Result := StrICompW(PWideChar(Str1), PWideChar(Str2)) = 0;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
