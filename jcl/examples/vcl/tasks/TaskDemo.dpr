@@ -2,6 +2,7 @@ program TaskDemo;
 
 uses
   Forms,
+  JclTask in '..\..\..\source\windows\JclTask.pas',
   TaskDemoMain in 'TaskDemoMain.pas' {frmMain},
   TaskDemoDataModule in 'TaskDemoDataModule.pas' {DM: TDataModule};
 
