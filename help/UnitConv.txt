@@ -1004,3 +1004,250 @@ SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function QrUsToKg(const nQr : Float) : Float;
+[ShortDescr]
+Converts a mass from quarter(US) to kilogram.
+[Description]
+The QrUsToKg routine converts the specified mass, in quarter, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nQr:Float=The mass, in quarter, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function QrUkToKg(const nQr : Float) : Float;
+[ShortDescr]
+Converts a mass from quarter(UK) to kilogram.
+[Description]
+The QrUkToKg routine converts the specified mass, in quarter, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nQr:Float=The mass, in quarter, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KaratToKg(const nKarat : Float) : Float;
+[ShortDescr]
+Converts a mass from karat to kilogram.
+[Description]
+The KaratToKg routine converts the specified mass, in karat, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nQr:Float=The mass, in karat, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CwtUsToKg(const nCwt: Float): Float;
+[ShortDescr]
+Converts a mass from centweight to kilogram.
+[Description]
+The CwtUsToKg routine converts the specified mass, in centweight, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nCwt:Float=The mass, in centweight, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CwtUkToKg(const nCwt: Float): Float;
+[ShortDescr]
+Converts a mass from centweight to kilogram.
+[Description]
+The CwtUkToKg routine converts the specified mass, in centweight, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nCwt:Float=The mass, in centweight, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StonToKg(const nSTon: Float): Float;
+[ShortDescr]
+Converts a mass from short ton to kilogram.
+[Description]
+The StonToKg routine converts the specified mass, in short ton, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nSTon:Float=The mass, in short ton, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LtonToKg(const nLTon: Float): Float;
+[ShortDescr]
+Converts a mass from long ton to kilogram.
+[Description]
+The LtonToKg routine converts the specified mass, in long ton, to the corresponding mass in kilogram.
+[Parameters]
+Count=1
+1=nLTon:Float=The mass, in long ton, to convert to kilogram.
+[Result]
+The mass after conversion to kilogram.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToCwtUs(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to centweight.
+[Description]
+The KgToCwtUs routine converts the specified mass, in kilogram, to the corresponding mass in centweight.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to centweight.
+[Result]
+The mass after conversion to centweight.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToCwtUk(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to centweight.
+[Description]
+The KgToCwtUk routine converts the specified mass, in kilogram, to the corresponding mass in centweight.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to centweight.
+[Result]
+The mass after conversion to centweight.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToQrUs(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to quarter.
+[Description]
+The KgToQrUs routine converts the specified mass, in kilogram, to the corresponding mass in quarter.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to quarter.
+[Result]
+The mass after conversion to quarter.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToQrUk(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to quarter.
+[Description]
+The KgToQrUk routine converts the specified mass, in kilogram, to the corresponding mass in quarter.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to quarter.
+[Result]
+The mass after conversion to quarter.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToSton(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to short ton.
+[Description]
+The KgToSton routine converts the specified mass, in kilogram, to the corresponding mass in short ton.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to short ton.
+[Result]
+The mass after conversion to short ton.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KgToLton(const nKg: Float): Float;
+[ShortDescr]
+Converts a mass from kilogram to long ton.
+[Description]
+The KgToLton routine converts the specified mass, in kilogram, to the corresponding mass in long ton.
+[Parameters]
+Count=1
+1=Kg:Float=The mass, in kilogram, to convert to long ton.
+[Result]
+The mass after conversion to long ton.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Mass Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
