@@ -22,7 +22,7 @@
 { directly call the registry API they do not suffer from the resource overhead as TRegistry does.  }
 {                                                                                                  }
 { Unit owner: Eric S.Fisher                                                                        }
-{ Last modified: January 30, 2001                                                                  }
+{ Last modified: February 21, 2001                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -116,6 +116,7 @@ uses
 
 const
   cItems = 'Items';
+  cRegBinKinds = [REG_BINARY, REG_MULTI_SZ];
 
 //==================================================================================================
 // Internal helper routines
@@ -376,7 +377,7 @@ begin
     Size := 0;
     Ret := RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size);
     if Ret = ERROR_SUCCESS then
-      if RegKind = REG_BINARY then
+      if RegKind in cRegBinKinds then
       begin
         if Size > ValueSize then
           Size := ValueSize;
@@ -384,7 +385,7 @@ begin
         Result := Size;
       end;
     RegCloseKey(RegKey);
-    if RegKind <> REG_BINARY then
+    if not (RegKind in cRegBinKinds) then
       ValueError(Key, Name);
   end
   else
@@ -408,7 +409,7 @@ begin
     RegKind := 0;
     Size := 0;
     if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, nil, @Size) = ERROR_SUCCESS then
-      if RegKind = REG_BINARY then
+      if RegKind in cRegBinKinds then
       begin
         if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, PByte(StrVal), @Size) = ERROR_SUCCESS then
         begin
