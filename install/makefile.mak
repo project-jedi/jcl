@@ -23,7 +23,7 @@ DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT)
 BRCC = $(ROOT)\bin\brcc32.exe $**
 jpp = ..\source\prototypes\jpp.exe
 #---------------------------------------------------------------------------------------------------
-default:	clean prototypes install
+default:	clean install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
@@ -33,11 +33,13 @@ default:	clean prototypes install
 	@if exist *.dcu del *.dcu
 
 $(BIN)\JediInstaller.exe: \
-		VclUnits \
+		JediInstallerMain.pas \
+		ProductFrames.pas \
 		JediInstaller.dpr
 
 $(BIN)\QJediInstaller.exe: \
-		ClxUnits \
+		QJediInstallerMain.pas \
+		QProductFrames.pas \
 		QJediInstaller.dpr
 
 install:        $(BIN)\JediInstaller.exe
@@ -55,16 +57,20 @@ qinstall:       $(BIN)\QJediInstaller.exe
 clean:
 	cd ..
 	@echo cleaning up first...
-	-@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o
+	-@for %f in (bin\*.exe) do @if not %f==bin\JediInstaller.exe and not %f==bin\QJediInstaller.exe (del %f)
+	-@del /f /s *.~* bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o
 	cd lib
 	-@del /f /s *.obj *.res
 	cd ..\install
 
-prototypes: VclUnits ClxUnits
+prototypes:	JediInstallerMain.pas \
+		ProductFrames.pas \
+		QJediInstallerMain.pas \
+		QProductFrames.pas
 
-VclUnits:
+JediInstallerMain.pas ProductFrames.pas:
 	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
 
-ClxUnits:
+QJediInstallerMain.pas QProductFrames.pas:
 	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
 
