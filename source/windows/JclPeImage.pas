@@ -24,7 +24,7 @@
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: February 19, 2001                                             }
+{ Last modified: April 1, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -398,7 +398,9 @@ type
   TJclPeRootResourceList = class (TJclPeResourceList)
   public
     function FindResource(ResourceType: TJclPeResourceKind;
-      const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem;
+      const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem; overload;
+    function FindResource(const ResourceType: PChar;
+      const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem; overload;
     function ListResourceNames(ResourceType: TJclPeResourceKind; const Strings: TStrings): Boolean;
   end;
 
@@ -821,6 +823,9 @@ function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
 
 function PeMapImgExportedVariables(const Module: HMODULE; const VariablesList: TStrings): Boolean;
 
+function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
+  const ResourceName: string): Pointer;
+
 type
   TJclPeSectionStream = class (TCustomMemoryStream)
   private
@@ -939,6 +944,16 @@ begin
       Text := Text + ', ';
     Text := Text + LoadResString(FlagText);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function CompareResourceType(T1, T2: PChar): Boolean;
+begin
+  if (LongRec(T1).Hi = 0) or (LongRec(T2).Hi = 0) then
+    Result := Word(T1) = Word(T2)
+  else
+    Result := (StrIComp(T1, T2) = 0);
 end;
 
 //==============================================================================
@@ -2472,7 +2487,6 @@ begin
     end;
   end;
   if TypeItem <> nil then
-  begin
     if ResourceName = '' then
       Result := TypeItem
     else
@@ -2483,7 +2497,35 @@ begin
             Result := Items[I];
             Break;
           end;
-  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeRootResourceList.FindResource(const ResourceType: PChar;
+  const ResourceName: string): TJclPeResourceItem;
+var
+  I: Integer;
+  TypeItem: TJclPeResourceItem;
+begin
+  Result := nil;
+  TypeItem := nil;
+  for I := 0 to Count - 1 do
+    if CompareResourceType(ResourceType, PChar(Items[I].Entry^.Name)) then
+    begin
+      TypeItem := Items[I];
+      Break;
+    end;
+  if TypeItem <> nil then
+    if ResourceName = '' then
+      Result := TypeItem
+    else
+      with TypeItem.List do
+        for I := 0 to Count - 1 do
+          if Items[I].Name = ResourceName then
+          begin
+            Result := Items[I];
+            Break;
+          end;
 end;
 
 //------------------------------------------------------------------------------
@@ -4622,6 +4664,28 @@ begin
           with Items[I] do
             if IsExportedVariable then
               VariablesList.AddObject(Name, MappedAddress);
+  finally
+    Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
+  const ResourceName: string): Pointer;
+var
+  ResItem: TJclPeResourceItem;
+begin
+  Result := nil;
+  with TJclPeImage.Create(True) do
+  try
+    AttachLoadedModule(Module);
+    if StatusOK then
+    begin
+      ResItem := ResourceList.FindResource(ResourceType, ResourceName);
+      if (ResItem <> nil) and ResItem.IsDirectory then
+        Result := ResItem.List[0].RawEntryData;
+    end;  
   finally
     Free;
   end;
