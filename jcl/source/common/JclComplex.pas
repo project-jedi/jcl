@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils,
-  JclBase, JclMath, JclResources, JclStrings, JclSysUtils;
+  JclBase, JclMath, JclResources, JclStrings;
 
 const
   TComplex_VERSION = 5.01;
