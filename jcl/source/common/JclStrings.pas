@@ -20,7 +20,7 @@
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: February 25, 2003                                                                 }
+{ Last modified: October 24, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -325,7 +325,7 @@ procedure FreeMultiSz(var Dest: PChar);
 
 procedure StrIToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 procedure StrToStrings(S, Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
-function StringsToStr(const List: TStrings; const Sep: AnsiString;const AllowEmptyString: Boolean = True): AnsiString;
+function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
 procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean = True );
 procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean = True);
 procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean = True );
@@ -346,7 +346,7 @@ function StrToFloatSafe(const S: AnsiString): Float;
 function StrToIntSafe(const S: AnsiString): Integer;
 procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: integer); overload;
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Backward compatibility
@@ -354,7 +354,7 @@ procedure StrNormIndex(const StrLen: integer; var Index: integer; var Count: int
 
 function AnsiSameText(const S1, S2: AnsiString): Boolean;
 
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Exceptions
@@ -2592,13 +2592,17 @@ var
 
 begin
   Result := False;
+
+  if (S='') or (SubStr='') then
+  begin
+    Result := (S = SubStr) or (SubStr = '*');
+    Exit;
+  end;
+
   StringPtr := PChar(@S[Index]);
   PatternPtr := PChar(SubStr);
   StringRes := nil;
   PatternRes := nil;
-
-  if (S='') or (SubStr='') then
-    Exit;
 
   repeat
     repeat
@@ -3716,7 +3720,7 @@ end;
 // Backward compatibility
 //==================================================================================================
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
 
 function AnsiSameText(const S1, S2: AnsiString): Boolean;
 begin
@@ -3724,7 +3728,7 @@ begin
     Length(S1), PChar(S2), Length(S2)) = 2;
 end;
 
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
 //==================================================================================================
 // Initialization
