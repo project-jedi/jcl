@@ -3389,7 +3389,7 @@ begin
     Folders.Add(RootDir);
 
     if Attr = faAnyFile then
-      LocAttr := faReadOnly + faHidden + faSysFile + faArchive
+      LocAttr := faReadOnly + faHidden + faSysFile + faArchive + FILE_ATTRIBUTE_NORMAL
     else
       LocAttr := Attr;
 
@@ -3406,7 +3406,7 @@ begin
     end;
   finally
     Folders.Free;
-  end;  
+  end;
   Result := True;
 end;
 
