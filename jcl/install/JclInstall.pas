@@ -206,6 +206,7 @@ const
   FID_JCL_ExpertFavorite   = FID_JCL + $00040103;
   FID_JCL_ExpertsThrNames  = FID_JCL + $00040104;
   FID_JCL_CopyHppFiles     = FID_JCL + $00050000;
+  FID_JCL_CopyPackagesHppFiles = FID_JCL + $00050100;
   FID_JCL_ExcDialog        = FID_JCL + $00060000;
   FID_JCL_ExcDialogVCL     = FID_JCL + $00060100;
   FID_JCL_ExcDialogVCLSnd  = FID_JCL + $00060200;
@@ -232,6 +233,7 @@ const
   RsIdeHelpHlp      = 'Add help file to IDE help system';
   RsIdeHelpChm      = 'Add HTML help to the Tools menu';
   RsCopyHppFiles    = 'Copy HPP files to %s';
+  RsCopyPackagesHppFiles = 'Output HPP files to %s';
 
   // Product specific features
   RsJCLExceptDlg    = 'Sample Exception Dialogs in the Object Reporitory';
@@ -783,10 +785,14 @@ begin
       SetEnvironmentVar('OBJDIR', LibObjDir);
       SetEnvironmentVar('BPILIBDIR', Tool.DcpPath(Installation));
       SetEnvironmentVar('BPLDIR', Tool.BplPath(Installation));
+      if Tool.FeatureChecked(FID_JCL_CopyPackagesHppFiles, Installation) then
+        SetEnvironmentVar('HPPDIR', (Installation as TJclBCBInstallation).VclIncludeDir);
       {$ELSE}
       Make.Options.Clear;
       Make.AddPathOption('DBPILIBDIR=', Tool.DcpPath(Installation));
       Make.AddPathOption('DBPLDIR=', Tool.BplPath(Installation));
+      if Tool.FeatureChecked(FID_JCL_CopyPackagesHppFiles, Installation) then
+        Make.AddPathOption('DHPPDIR=', (Installation as TJclBCBInstallation).VclIncludeDir);
       {$ENDIF}
       Result := Installation.InstallPackage(PackageFileName, Tool.BPLPath(Installation),
         Tool.DCPPath(Installation));
@@ -906,6 +912,8 @@ begin
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
       TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
+      if (Installation is TJclBCBInstallation) then
+        AddNode(TempNode, Format(RsCopyPackagesHppFiles, [(Installation as TJclBCBInstallation).VclIncludeDir]), FID_JCL_CopyPackagesHppFiles, False);
       if not (Installation is TJclBCBInstallation) then
       begin
         { TODO -orrossmair :
