@@ -3,55 +3,68 @@
 <TITLE Graphics>
 <TOPICORDER 700>
 --------------------------------------------------------------------------------
-@@$Graphics.Bitmap32
+@@$Graphics.Bitmaps
 <GROUP Graphics>
-<TITLE Bitmap32>
+<TITLE Bitmaps>
 <TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@$Graphics.Icons
+<GROUP Graphics>
+<TITLE Icons>
+<TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$Graphics.Clipping
 <GROUP Graphics>
 <TITLE Clipping>
-<TOPICORDER 200>
+<TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@$Graphics.Colors
 <GROUP Graphics>
 <TITLE Colors>
-<TOPICORDER 300>
+<TOPICORDER 400>
 --------------------------------------------------------------------------------
 @@$Graphics.Conversion
 <GROUP Graphics>
 <TITLE Conversion>
-<TOPICORDER 400>
+<TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@$Graphics.Points
 <GROUP Graphics>
 <TITLE Points>
-<TOPICORDER 500>
+<TOPICORDER 600>
 --------------------------------------------------------------------------------
 @@$Graphics.Rectangles
 <GROUP Graphics>
 <TITLE Rectangles>
-<TOPICORDER 600>
+<TOPICORDER 700>
 --------------------------------------------------------------------------------
 @@$Graphics.TJclDesktopCanvas
 <GROUP Graphics>
 <TITLE TJclDesktopCanvas>
-<TOPICORDER 700>
+<TOPICORDER 800>
 --------------------------------------------------------------------------------
 @@$Graphics.TJclRegion
 <GROUP Graphics>
 <TITLE TJclRegion>
-<TOPICORDER 800>
+<TOPICORDER 900>
 --------------------------------------------------------------------------------
 @@$Graphics.TJclRegionInfo
 <GROUP Graphics>
 <TITLE TJclRegionInfo>
-<TOPICORDER 900>
+<TOPICORDER 1000>
 --------------------------------------------------------------------------------
 @@$Graphics.Types
 <GROUP Graphics>
 <TITLE Types>
-<TOPICORDER 1000>
+<TOPICORDER 1100>
+--------------------------------------------------------------------------------
+@@JclGraphics.pas
+The resampling algorithms and methods used in this library
+were adapted by Anders Melander from the article "General
+Filtered Image Rescaling" by Dale Schumacher which appeared
+in the book Graphics Gems III, published by Academic Press,
+Inc. Additional improvements were done by David Ullrich,
+Josha Beukema and Mike Lischke.
 --------------------------------------------------------------------------------
 @@BrightColorChannel
 <GROUP Graphics.Colors>
@@ -1198,35 +1211,43 @@ Quick info:
   Windows NT/2000: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
-@@Stretch
-<GROUP Graphics>
-Summary:
-  Scales a graphic to a bitmap.
-Description:
-  Scales the source graphic to the given size (NewWidth, NewHeight) and stores the Result
-  in Target. Filter describes the filter function to be applied and Radius the size of
-  the filter area. If Radius = 0 then the recommended filter area will be used
-  (see DefaultFilterRadius). With the filters you can determine the quality and the speed
-  of the conversion, use a Box or Triangle filter for fast previews and a Lanczos3 or Bell
-  filter for better quality.
-Parameters:
-  NewWidth - The new width of the target bitmap.
-  NewHeight - The new height of the target bitmap.
-  Filter - The filter to be used.
-  Radius - The radius in pixels that will influence the current pixel. This can be a fractional to use partial pixels.
-  Source - The source graphic.
-  Target - The target bitmap.
-  Bitmap - The bitmap to scale.
-See also:
-  TResamplingFilter
-Quick info:
-  Unit: JclGraphics
+@@Stretch@Cardinal@Cardinal@TResamplingFilter@Single@TGraphic@TBitmap
+<GROUP $Graphics>
+
+Description
+Scales the source graphic to the given size (NewWidth,
+NewHeight) and stores the Result in Target. Filter describes
+the filter function to be applied and Radius the size of the
+filter area. If Radius = 0 then the recommended filter area
+will be used (see DefaultFilterRadius). With the filters you
+can determine the quality and the speed of the conversion,
+use a Box or Triangle filter for fast previews and a Lanczos3
+\or Bell filter for better quality.
+
+Summary
+Scales a graphic to a bitmap.
+
+Parameters
+Bitmap :      The bitmap to scale.
+Filter :      The filter to be used.
+NewHeight :   The new height of the target bitmap.
+NewWidth :    The new width of the target bitmap.
+Radius :      The radius in pixels that will influence the
+              current pixel. This can be a fractional to use
+              partial pixels.
+Source :      The source graphic.
+Target :      The target bitmap.
+
+QuickInfo
+Unit: JclGraphics
   Category: Graphics
   Donator: Mike Lischke
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
+  Contributor: Robert Rossmair
+  Platforms: VCL, VisualCLX
+
+See Also
+TResamplingFilter
+
 @@TResamplingFilter
 <GROUP Graphics>
 Summary:
@@ -1572,10 +1593,108 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@JclGraphics.pas
-The resampling algorithms and methods used in this library
-were adapted by Anders Melander from the article "General
-Filtered Image Rescaling" by Dale Schumacher which appeared
-in the book Graphics Gems III, published by Academic Press,
-Inc. Additional improvements were done by David Ullrich,
-Josha Beukema and Mike Lischke.
+@@GetIconFromBitmap
+<GROUP $Graphics.Conversion, $Graphics.Bitmaps, $Graphics.Icons>
+
+Description
+GetIconFromBitmap retrieves the specified Bitmap object as an
+icon.
+
+Summary
+Converts a bitmap to an icon
+
+Parameters
+Bitmap :   The TBitmap object that provides the icon image
+Icon :     The TIcon object that receives the bitmap image.
+
+QuickInfo
+Donator: Robert Rossmair
+Platform: VCL
+
+SeeAlso
+BitmapToIcon, WriteIcon@TStream@HBitmap@HBitmap@Boolean
+--------------------------------------------------------------------------------
+@@WriteIcon@TStream@HICON@Boolean
+<GROUP $Graphics.Icons>
+
+Description
+Use WriteIcon to write the icon image (specified by its
+handle) to a stream.
+
+In contrast to TIcon.SaveToStream, WriteIcon does not force
+the number of colors in the icon image down to 16.
+
+Summary
+Writes an icon to a stream.
+
+Parameters
+Icon :          Handle of the icon
+Stream :        the stream object that receives the memory image of
+                the icon
+WriteLength :   Determines whether a Longint containing the data size
+                is written to the stream prior to the icon data.
+
+QuickInfo
+  Category: Graphics
+  Donator: Robert Rossmair
+  Platform: Win32
+
+See Also
+WriteIcon@TStream@HBitmap@HBitmap@Boolean, SaveIconToFile
+--------------------------------------------------------------------------------
+@@WriteIcon@TStream@HBitmap@HBitmap@Boolean
+<GROUP $Graphics.Bitmaps, $Graphics.Icons, $Graphics.Conversion>
+
+Description
+Use WriteIcon to write the icon image (specified by its
+handle) to a stream.
+
+Summary
+Writes two bitmaps as an icon to a stream.
+
+Parameters
+ColorBitmap :   Handle of the bitmap that holds the image data for
+                the icon
+MaskBitmap :    Handle of the bitmap that holds the mask data for
+                the icon
+Stream :        the stream object that receives the memory image of
+                the icon
+WriteLength :   Determines whether a Longint containing the data
+                size is written to the stream prior to the icon
+                data.
+
+QuickInfo
+Category: Graphics
+  Donator: Robert Rossmair
+  Platform: Win32
+
+See Also
+WriteIcon@TStream@HICON@Boolean, BitmapToIcon
+--------------------------------------------------------------------------------
+@@SaveIconToFile
+<GROUP $Graphics.Icons>
+
+Description
+SaveIconToFile writes the icon to a file, specified by
+FileName.
+
+In contrast to TIcon.SaveToFile, WriteIcon does not force
+the number of colors in the icon image down to 16.
+
+Summary
+Writes an icon to a file.
+
+Parameters
+FileName :   The name of the file to which to write the icon
+             data.
+Icon :       The icon to save, specified by its handle.
+
+QuickInfo
+  Category: Graphics
+  Donator: Robert Rossmair
+  Platform: Win32
+
+See Also
+WriteIcon@TStream@HICON@Boolean
+--------------------------------------------------------------------------------
+
