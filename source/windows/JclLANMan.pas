@@ -238,9 +238,11 @@ begin
     wkrPowerUsers: Result := DOMAIN_ALIAS_RID_POWER_USERS;
     wkrBackupOPs: Result := DOMAIN_ALIAS_RID_BACKUP_OPS;
     wkrReplicator: Result := DOMAIN_ALIAS_RID_REPLICATOR;
-    wkrEveryone: Result := SECURITY_WORLD_RID;
+  else // (wkrEveryone)
+    Result := SECURITY_WORLD_RID;
   end;
 end;
+
 
 //------------------------------------------------------------------------------
 
@@ -253,7 +255,8 @@ begin
     DOMAIN_ALIAS_RID_POWER_USERS: Result := wkrPowerUsers;
     DOMAIN_ALIAS_RID_BACKUP_OPS: Result := wkrBackupOPs;
     DOMAIN_ALIAS_RID_REPLICATOR: Result := wkrReplicator;
-    SECURITY_WORLD_RID: Result := wkrEveryone;
+  else // (SECURITY_WORLD_RID)
+    Result := wkrEveryone;
   end;
 end;
 
