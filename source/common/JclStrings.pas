@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: April 29, 2000                                                }
+{ Last modified: August 22, 2000                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -48,6 +48,9 @@ unit JclStrings;
    o fixed:   StrLen  (Az)
    o added:   AnsiLineBreak (Robert Marquardt)
    o changed: #13, #10 to AnsiCarriageReturn, AnsiLineFeed (Robert Marquardt)
+   o improved: StrFind
+             StrFind now does not need the string to be null terminated you can use
+             it on any ansistring buffer.
 }
 
 interface
@@ -958,29 +961,46 @@ end;
 //------------------------------------------------------------------------------
 
 function StrFind(const Substr, Str: AnsiString; const Index: Integer): Integer; assembler;
+const
+   SearchChar: Byte = 0;
+   NumberOfChars: Integer = 0;
 asm
-        {       make sure that strings are not null}
+        {       if SubStr = '' then
+                begin
+                  Result := 0;
+                  Exit;
+                end;                            }
 
         TEST    EAX, EAX
         JZ      @@SubstrIsNull
 
+        {       if Str = '' then
+                begin
+                  Result := 0;
+                  Exit;
+                end;                            }
+
         TEST    EDX, EDX
         JZ      @@StrIsNull
 
-        {       limit index to satisfy 1 <= index, and dec it }
+        {       Index := Index - 1;
+                if Index < 0 then
+                beign
+                  Result := 0;
+                  Exit;
+                end;    }
 
         DEC     ECX
         JL      @@IndexIsSmall
 
         {       EBX will hold the case table, ESI pointer to Str, EDI pointer
-                to Substr and EBP # of chars in Substr to compare }
+                to Substr and - # of chars in Substr to compare }
 
         PUSH    EBX
         PUSH    ESI
         PUSH    EDI
-        PUSH    EBP
 
-        {       set the AnsiString pointers }
+        {       set the string pointers }
 
         MOV     ESI, EDX
         MOV     EDI, EAX
@@ -989,14 +1009,14 @@ asm
 
         MOV     EDX, ECX
 
-        {       save the address of Str to compute the result }
-
-        PUSH    ESI
-
         {      temporary get the length of Substr and Str }
 
         MOV     EBX, [EDI-AnsiStrRecSize].TAnsiStrRec.Length
         MOV     ECX, [ESI-AnsiStrRecSize].TAnsiStrRec.Length
+
+        {       save the address of Str to compute the result }
+
+        PUSH    ESI
 
         {       dec the length of Substr because the first char is brought
                 out of it }
@@ -1015,58 +1035,63 @@ asm
 
         {       # of chars in Substr to compare }
 
-        MOV     EBP, EBX
+        MOV     NumberOfChars, EBX
 
         {       point Str to Index'th char }
 
         ADD     ESI, EDX
 
-        {        load case map into EBX, and clear EAX & ECX }
+        {        load case map into EBX, and clear EAX  }
 
         LEA     EBX, AnsiCaseMap
         XOR     EAX, EAX
-        XOR     ECX, ECX
+        XOR     EDX, EDX
 
         {       bring the first char out of the Substr and point
                 Substr to the next char }
 
-        MOV     CL, [EDI]
+        MOV     DL, [EDI]
         INC     EDI
 
         {       lower case it   }
 
-        MOV     CL, [EBX+ECX]
+        MOV     DL, [EBX+EDX]
+        MOV     SearchChar, DL
+
+        JMP     @@Find
 
 @@FindNext:
 
-        {       get the current char from Str into al }
+        {       update the loop counter and check the end of AnsiString.
+                if we reached the end, Substr was not found. }
+
+        DEC     ECX
+        JL      @@NotFound
+
+@@Find:
+
+        {       get current char from the AnsiString, and
+                point Str to the next one. }
 
         MOV     AL, [ESI]
-
-        {       check the end of AnsiString }
-
-        TEST    AL, AL
-        JZ      @@NotFound
-
-        {       point Str to the next char }
-
         INC     ESI
 
-        {       lower case current char }
+
+        {       lower case current char     }
 
         MOV     AL, [EBX+EAX]
 
-        {       check if the current char matches the primary search char,
-                if not continue searching }
-
-        CMP     AL, CL
+        {       does current char match primary search char?
+                if not, go back to the main loop }
+        CMP     AL, SearchChar
         JNE     @@FindNext
+        
 
 @@Compare:
 
         {       # of chars in Substr to compare }
 
-        MOV     EDX, EBP
+        MOV     EDX, NumberOfChars
 
 @@CompareNext:
 
@@ -1101,7 +1126,6 @@ asm
         POP     ESI
         SUB     EAX, ESI
 
-        POP     EBP
         POP     EDI
         POP     ESI
         POP     EBX
@@ -1113,7 +1137,6 @@ asm
 
         XOR     EAX, EAX
         POP     ESI
-        POP     EBP
         POP     EDI
         POP     ESI
         POP     EBX
