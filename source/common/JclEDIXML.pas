@@ -2271,7 +2271,6 @@ begin
 
   AttributeString := FAttributes.CombineAttributes;
   if AttributeString <> '' then
-  begin
     FData := FDelimiters.BTD + XMLTag_InterchangeControl + FDelimiters.SpaceDelimiter +
       AttributeString + FDelimiters.ETD
   else
