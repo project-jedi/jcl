@@ -108,7 +108,7 @@ type
     function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED}deprecated;{$ENDIF}
     procedure GetBinSourceList(List: TStrings); overload; 
     function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED}deprecated;{$ENDIF}
-    procedure GetPaperList(List: TStrings); overload; 
+    procedure GetPaperList(List: TStrings); overload;
     procedure SetDeviceMode(Creating: Boolean);
     procedure UpdateDeviceMode;
     procedure SaveToDefaults;
@@ -154,6 +154,8 @@ function CharFitsWithinDots(const Text: string; const Dots: Integer): Integer;
 //procedure PrintTextRotation(X, Y: Integer; Rotation: Word; Text: string);
 procedure PrintMemo(const Memo: TMemo; const Rect: TRect);
 
+function GetDefaultPrinterName: AnsiString;
+
 // DPSetDefaultPrinter
 // Parameters:
 //   PrinterName: Valid name of existing printer to make default.
@@ -164,7 +166,7 @@ implementation
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,
-  JclWin32, JclResources;
+  JclWin32, JclSysInfo, JclResources;
 
 //==================================================================================================
 // Misc. functions
@@ -1107,6 +1109,60 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function GetDefaultPrinterName: AnsiString;
+const
+  BufferSize: Integer = 500;
+
+var
+  S: AnsiString;
+  Res: Integer;
+  Needed, Returned: Cardinal;
+  PrinterLV5Info: _PRINTER_INFO_5A;
+
+
+begin
+  // We have to differerntiate between
+  //
+  // * Win9x/ME series
+  // * Windows 2000 and higher
+  // * Windows NT4 and older
+
+  Result := '';
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then // Win2000 and higher
+  begin
+     // The easiest part. Simply use GetDefaultPrinter
+     Res := BufferSize;
+     SetLength(S,Res);
+     if not(RtdlGetDefaultPrinter(PAnsiChar(S), @Res)) then
+       Exit;
+
+     SetLength(S,Res);
+     Result := S;
+  end;
+
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion <= 4) then // WINNT4
+  begin
+    SetLength(S,BufferSize);
+    Res := GetProfileString('windows', 'device', '', PChar(S), BufferSize);
+    SetLength(S, BufferSize);
+    S := Copy(S,1,Pos(',',S)-1);
+    Result := S;
+  end
+  else
+  begin
+   // Windows 98/98/ME untested! Please report the results back to
+   // ma.thoma@gmx.de, our issuetracker (homepages.borland.com/jedi/issuetracker
+   // or to jedi.jcl at news.talkto.net. Thank you very much!
+   EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 5, nil, 0, Needed, Returned);
+   if Needed = 0 then exit;
+   if EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 5, @PrinterLV5Info, Needed, Needed, Returned) then
+      Result := PrinterLV5Info.pPrinterName;
+ end;
+end;
+
 { TODO -cHelp : DPSetDefaultPrinter, Author: Microsoft, Conversion: Peter J. Haas }
 // DPSetDefaultPrinter
 // Parameters:
@@ -1247,6 +1303,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2004/04/11 22:12:16  mthoma
+// Added a new function: GetDefaultPrinterName.
+//
 // Revision 1.3  2004/04/06 04:37:59  peterjhaas
 // DPSetDefaultPrinter
 //
