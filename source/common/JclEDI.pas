@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: October 14, 2003                                                                  }
+{ Last modified: October 22, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -126,8 +126,6 @@ type
 
   TEDIDataObjectDataState = (ediCreated, ediAssembled, ediDissassembled);
 
-  TEDIDataObjectArray = array of TEDIDataObject;
-
   TEDIDataObject = class(TEDIObject)
   private
     procedure SetDelimiters(const Delimiters: TEDIDelimiters);
@@ -145,10 +143,10 @@ type
     function GetData: string;
     procedure SetData(const Data: string);
   public
-    function Assemble: string; virtual; abstract;
-    procedure Disassemble; virtual; abstract;
     constructor Create(Parent: TEDIDataObject); reintroduce;
     destructor Destroy; override;
+    function Assemble: string; virtual; abstract;
+    procedure Disassemble; virtual; abstract;
     property SpecPointer: Pointer read FSpecPointer write FSpecPointer;
     property CustomData1: Pointer read FCustomData1 write FCustomData1;
     property CustomData2: Pointer read FCustomData2 write FCustomData2;
@@ -160,11 +158,11 @@ type
     property Delimiters: TEDIDelimiters read FDelimiters write SetDelimiters;
   end;
 
+  TEDIDataObjectArray = array of TEDIDataObject;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Data Object Group
 //--------------------------------------------------------------------------------------------------
-
-  TEDIDataObjectGroupArray = array of TEDIDataObjectGroup;
 
   TEDIDataObjectGroup = class(TEDIDataObject)
   protected
@@ -214,6 +212,8 @@ type
     property CreateObjectType: TEDIDataObjectType read FCreateObjectType;
     property EDIDataObjectCount: Integer read GetCount;
   end;
+
+  TEDIDataObjectGroupArray = array of TEDIDataObjectGroup;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Data Object Linked List Header and Item classes
