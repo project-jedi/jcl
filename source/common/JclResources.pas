@@ -297,6 +297,7 @@ resourcestring
 
   RsCannotCreateDir = 'Unable to create directory';
   RsDelTreePathIsEmpty = 'DelTree: Path is empty';
+  RsFileSearchAttrInconsistency := 'Some file search attributes are required AND rejected!');
 
   // TJclFileVersionInfo
 
