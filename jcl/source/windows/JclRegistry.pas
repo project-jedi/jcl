@@ -101,13 +101,13 @@ procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: String); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; Value: array of String); overload;
+procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: array of String); overload;
 { TODO -cHelp : Author: Peter J. Haas }
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; Value: TDynStringArray); overload;
+procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TStrings); overload;
 { TODO -cHelp : Contributer: Peter J. Haas }
-procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; Value : Pointer; const ValueSize: Cardinal);
+procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 
 function RegGetValueNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: HKEY; const Key: string; const List: TStrings): Boolean;
@@ -980,14 +980,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; Value: array of String);
+procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: array of String);
 begin
   RegWriteMultiString(RootKey, Key, Name, StringsToMultiString(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; Value: TDynStringArray); overload;
+procedure RegWriteMultiString(const RootKey: HKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 begin
   RegWriteMultiString(RootKey, Key, Name, StringsToMultiString(Value));
 end;
@@ -1001,7 +1001,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; Value : Pointer; const ValueSize: Cardinal);
+procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 begin
   InternalRegWrite(RootKey, Key, Name, REG_BINARY, Value, ValueSize);
 end;
@@ -1222,8 +1222,8 @@ end;
 // History:
 
 // $Log$
-// Revision 1.8  2004/04/07 13:55:34  obones
-// BCB fix
+// Revision 1.9  2004/04/08 10:34:58  rrossmair
+// revert to 1.7 (temporarily?)
 //
 // Revision 1.7  2004/04/06 05:56:10  rrossmair
 // fixed RegReadUInt64 & RegReadUInt64Def
