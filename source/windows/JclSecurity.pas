@@ -105,7 +105,7 @@ begin
   InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION);
   SetSecurityDescriptorDacl(Sd, True, nil, False);
   Sa.nLength := SizeOf(Sa);
-  Sa.lpSecurityDescriptor := @Sd;
+  Sa.lpSecurityDescriptor := Sd;
   Sa.bInheritHandle := Inheritable;
   Result := @Sa;
 end;
