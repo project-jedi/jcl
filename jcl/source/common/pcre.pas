@@ -260,10 +260,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows;
   {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF UNIX}
   {$IFDEF HAS_UNIT_LIBC}
   Libc;
   {$ELSE ~HAS_UNIT_LIBC}
@@ -398,6 +398,9 @@ procedure pcre_free; external libpcremodulename name 'pcre_free';
 // History
 
 // $Log$
+// Revision 1.3  2004/07/26 06:01:39  rrossmair
+// *** empty log message ***
+//
 // Revision 1.2  2004/07/26 05:13:52  rrossmair
 // made it compile under Kylix (no functional tests performed yet)
 //
