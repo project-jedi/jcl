@@ -24,7 +24,7 @@
 { and program execution.                                                       }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: January 29, 2001                                              }
+{ Last modified: April 29, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -141,6 +141,7 @@ function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
   const FileName: string): HRESULT;
+function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;  
 
 //------------------------------------------------------------------------------
 // Miscellanuous
@@ -179,7 +180,6 @@ function ShellExecAndWait(const FileName: string;
   const Verb: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   CmdShow: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = SW_SHOWNORMAL {$ENDIF}): Boolean;
 
-//TODOC
 function ShellOpenAs(const FileName: string): Boolean;
 function ShellRasDial(const EntryName: string): Boolean;
 function ShellRunControlPanel(const NameOrFileName: string;
@@ -1067,6 +1067,54 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
+function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
+var
+  LocExt: string;
+  Info: TSHFileInfo;
+begin
+  Result := False;
+  LocExt := LowerCase(ExtractFileExt(Link.IconLocation));
+  // 1. See if IconLocation specifies a valid icon file
+  if (LocExt = '.ico') and (FileExists(Link.IconLocation)) then
+  begin
+    Icon.LoadFromFile(Link.IconLocation);
+    Result := True;
+  end;
+  // 2. See if IconLocation specifies an executable
+  if not Result then
+  begin
+    if (LocExt = '.dll') or (LocExt = '.exe') then
+    begin
+      Icon.Handle := ExtractIcon(0, PChar(Link.IconLocation), Link.IconIndex);
+      Result := Icon.Handle <> 0;
+    end;
+  end;
+  // 3. See if target specifies a file
+  if not Result then
+  begin
+    if FileExists(Link.Target) then
+    begin
+      Icon.Handle := ExtractIcon(0, PChar(Link.Target), Link.IconIndex);
+      Result := Icon.Handle <> 0;
+    end;
+  end;
+  // 4. See if the target is an object
+  if not Result then
+  begin
+    if Link.IdList <> nil then
+    begin
+      FillChar(Info, SizeOf(Info), 0);
+      if SHGetFileInfo(PChar(Link.IdList), 0, Info, SizeOf(Info), SHGFI_PIDL or SHGFI_ICON) <> 0 then
+      begin
+        Icon.Handle := Info.hIcon;
+        Result := True;
+      end;
+    end;
+  end;
+end;
+
 //==============================================================================
 // Miscellanuous
 //==============================================================================
@@ -1240,24 +1288,62 @@ end;
 
 function ShellOpenAs(const FileName: string): Boolean;
 begin
-  Result := ShellExec('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]),'',SW_SHOWNORMAL);
+  Result := ShellExec('rundll32', Format('shell32.dll,OpenAs_RunDLL "%s"', [FileName]), '', SW_SHOWNORMAL);
 end;
 
 //------------------------------------------------------------------------------
 
-// You have to pass exact name of dial-up connection. It should work on Win9x
-// only but better to check it.
+type
+  PRasDialDlg = ^TRasDialDlg;
+  TRasDialDlg = packed record
+    dwSize: DWORD;
+    hwndOwner: HWND;
+    dwFlags: DWORD;
+    xDlg: Longint;
+    yDlg: Longint;
+    dwSubEntry: DWORD;
+    dwError: DWORD;
+    reserved: Longword;
+    reserved2: Longword;
+  end;
+
+type
+  TRasDialDlgA = function (lpszPhonebook, lpszEntry, lpszPhoneNumber: PAnsiChar; lpInfo: PRasDialDlg): BOOL; stdcall;
+
+// TODO Move declarations to JclWin32 and abstract the dynamic linking behind
+// a proper interface.
 
 function ShellRasDial(const EntryName: string): Boolean;
+var
+  Info: TRasDialDlg;
+  RasDlg: HModule;
+  RasDialDlgA: TRasDialDlgA;
 begin
-  Result := ShellExec('rundll32', Format('rnaui.dll,RnaDial "%s"',
-    [EntryName]),'',SW_SHOWNORMAL);
+  if IsWinNT then
+  begin
+    Result := False;
+    RasDlg := LoadLibrary(PChar('rasdlg.dll'));
+    if RasDlg <> 0 then
+    try
+      @RasDialDlgA := GetProcAddress(RasDlg, PChar('RasDialDlgA'));
+      if @RasDialDlgA <> nil then
+      begin
+        FillChar(Info, SizeOf(Info), 0);
+        Info.dwSize := SizeOf(Info);
+        Result := RasDialDlgA(nil, PChar(EntryName), nil, @Info);
+      end;
+    finally
+      FreeLibrary(RasDlg);
+    end;
+  end
+  else
+    Result := ShellExec('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]),'',SW_SHOWNORMAL);
 end;
 
 //------------------------------------------------------------------------------
 
 // You can pass simple name of standard system control panel (e.g. 'timedate')
-// or full qualified file name
+// or full qualified file name (Window 95 only? doesn't work on Win2K!)
 
 function ShellRunControlPanel(const NameOrFileName: string; AppletNumber: Integer): Boolean;
 var
@@ -1269,7 +1355,7 @@ begin
     FileName := NameOrFileName;
   if FileExists(FileName) then
     Result := ShellExec('rundll32', Format('shell32.dll,Control_RunDLL "%s", @%d',
-      [FileName, AppletNumber]),'',SW_SHOWNORMAL)
+      [FileName, AppletNumber]), '', SW_SHOWNORMAL)
   else
   begin
     Result := False;
@@ -1312,13 +1398,14 @@ begin
   Res := FindExecutable(PChar(FileName), PCharOrNil(DefaultDir), Buffer);
   if Res > 32 then
   begin
+    // FindExecutable replaces #32 with #0
     for I := Low(Buffer) to High(Buffer) - 1 do
-      if Buffer[I] = #0 then
-        Buffer[I] := #32; // FindExecutable replaces #32 with #0
+      if Buffer[I] = #0 then Buffer[I] := #32;
     Buffer[High(Buffer)] := #0;
     Result := Trim(Buffer);
   end
   else
     Result := '';
 end;
+
 end.
