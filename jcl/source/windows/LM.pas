@@ -2781,7 +2781,7 @@ const
 {$EXTERNALSYM NetQueryDisplayInformation}
 function NetQueryDisplayInformation(ServerName: LPCWSTR; Level: DWORD;
   Index: DWORD; EntriesRequested: DWORD; PreferredMaximumLength: DWORD;
-  var ReturnedEntryCount: DWORD; SortedBuffer: Pointer): NET_API_STATUS; stdcall;
+  var ReturnedEntryCount: DWORD; var SortedBuffer: Pointer): NET_API_STATUS; stdcall;
 
 {$EXTERNALSYM NetGetDisplayInformationIndex}
 function NetGetDisplayInformationIndex(ServerName: LPCWSTR; Level: DWORD;
