@@ -1,31 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclWin32.pas.                                           }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit defines various Win32 API declarations which are either missing or }
-{ incorrect in one or more of the supported Delphi versions. This unit is not  }
-{ intended for regular code, only API declarations.                            }
-{                                                                              }
-{ Unit owner: Peter Friese                                                     }
-{ Last modified: January 31, 2002                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclWin32.pas.                                                               }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit defines various Win32 API declarations which are either missing or incorrect in one or }
+{ more of the supported Delphi versions. This unit is not intended for regular code, only API      }
+{ declarations.                                                                                    }
+{                                                                                                  }
+{ Unit owner: Peter Friese                                                                         }
+{ Last modified: February 14, 2002                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclWin32;
 
@@ -42,9 +41,9 @@ uses
   {$ENDIF COMPILER5_UP}
   ShlObj;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Locales related
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LANGIDFROMLCID(const lcid: LCID): Word;
 function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
@@ -57,12 +56,12 @@ const
   KLF_SETFORPROCESS = $00000100;
   DATE_YEARMONTH = $00000008;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Various Base Services declarations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function InterlockedExchangePointer(var Target: Pointer; Value: Pointer): Pointer;
-  stdcall; external 'kernel32.dll' name 'InterlockedExchangePointer';
+  stdcall; external kernel32 name 'InterlockedExchangePointer';
 
 function SignalObjectAndWait(hObjectToSignal: THandle; hObjectToWaitOn: THandle;
   dwMilliseconds: DWORD; bAlertable: BOOL): DWORD; stdcall; external kernel32
@@ -110,9 +109,9 @@ function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD;
   lpName: PChar): THandle; stdcall; external kernel32 name 'CreateMutexA';
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Shell related declarations (missing/incorrect in different delphi versions)
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 {$IFNDEF COMPILER4_UP}
 {$IFDEF SUPPORTS_INTERFACE}
@@ -140,9 +139,9 @@ type
 {$ENDIF SUPPORTS_INTERFACE}
 {$ENDIF COMPILER4_UP}
 
-//==============================================================================
+//==================================================================================================
 // Miscellanuous (missing in delphi 3)
-//==============================================================================
+//==================================================================================================
 
 {$IFNDEF COMPILER4_UP}
 
@@ -154,18 +153,18 @@ const
 
 {$ENDIF COMPILER4_UP}
 
-//==============================================================================
+//==================================================================================================
 // COM related declarations
-//==============================================================================
+//==================================================================================================
 
 type
   TCoCreateInstanceExProc = function (const clsid: TGUID;
     unkOuter: IUnknown; dwClsCtx: Longint; ServerInfo: Pointer{PCoServerInfo};
     dwCount: Longint; rgmqResults: Pointer{PMultiQIArray}): HResult stdcall;
 
-//==============================================================================
+//==================================================================================================
 // Security related declarations from winnt.h
-//==============================================================================
+//==================================================================================================
 
 /////////////////////////////////////////////////////////////////////////////
 //                                                                         //
@@ -353,6 +352,13 @@ const
 type
   PPSID = ^PSID;
 
+  _TOKEN_USER = record
+    User: SID_AND_ATTRIBUTES;
+  end;
+  TOKEN_USER = _TOKEN_USER;
+  TTokenUser = TOKEN_USER;
+  PTokenUser = ^TOKEN_USER;
+
 function SetNamedSecurityInfoW(pObjectName: PWideChar; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; ppsidOwner, ppsidGroup: PPSID; ppDacl,
   ppSacl: PACL): DWORD; stdcall; external 'advapi32.dll' name 'SetNamedSecurityInfoW';
@@ -362,9 +368,9 @@ function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall;
   external 'advapi32.dll' name 'AdjustTokenPrivileges'
 
-//==============================================================================
+//==================================================================================================
 // NTFS related I/O control codes, types and constants from winnt.h, winioctl.h
-//==============================================================================
+//==================================================================================================
 
 type
   PFileAllocatedRangeBuffer = ^TFileAllocatedRangeBuffer;
@@ -500,9 +506,9 @@ function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolu
 function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL;
 function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // NTFS Reparse Points
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 //
 // The reparse structure is used by layered drivers to store data in a
@@ -562,65 +568,24 @@ type
 const
   FILE_FLAG_OPEN_REPARSE_POINT = $00200000;
 
-//==============================================================================
-// PSAPI (not included in delphi 3)
-//==============================================================================
-
-type
-  PModuleInfo = ^TModuleInfo;
-  _MODULEINFO = packed record
-    lpBaseOfDll: Pointer;
-    SizeOfImage: DWORD;
-    EntryPoint: Pointer;
-  end;
-  TModuleInfo = _MODULEINFO;
-
-procedure ExitPsapi;
-function InitPsapi: Boolean;
-function EnumProcesses(lpidProcess: LPDWORD; cb: DWORD; var cbNeeded: DWORD): BOOL;
-function EnumProcessModules(hProcess: THandle; lphModule: LPDWORD; cb: DWORD;
-  var lpcbNeeded: DWORD): BOOL;
-function GetModuleBaseNameA(hProcess: THandle; hModule: HMODULE;
-  lpBaseName: PAnsiChar; nSize: DWORD): DWORD;
-function GetModuleFileNameEx(hProcess: THandle; hModule: HMODULE; lpFilename: PChar;
-  nSize: DWORD): DWORD;
-function GetModuleInformation(hProcess: THandle; hModule: HMODULE; lpmodinfo: PModuleInfo;
-  cb: DWORD): BOOL;
-
-//==============================================================================
-// ToolHelp32 (static linkage in delphi 3)
-//==============================================================================
+//--------------------------------------------------------------------------------------------------
+// Junction Points
+//--------------------------------------------------------------------------------------------------
 
 const
-  MAX_MODULE_NAME32 = 255;
+  CP_THREAD_ACP = 3;           // current thread's ANSI code page
 
-type
-  tagMODULEENTRY32 = record
-    dwSize: DWORD;
-    th32ModuleID: DWORD;  // This module
-    th32ProcessID: DWORD; // owning process
-    GlblcntUsage: DWORD;  // Global usage count on the module
-    ProccntUsage: DWORD;  // Module usage count in th32ProcessID's context
-    modBaseAddr: PByte;   // Base address of module in th32ProcessID's context
-    modBaseSize: DWORD;   // Size in bytes of module starting at modBaseAddr
-    hModule: HMODULE;     // The hModule of this module in th32ProcessID's context
-    szModule: array [0..MAX_MODULE_NAME32] of Char;
-    szExePath: array [0..MAX_PATH - 1] of Char;
-  end;
-  TModuleEntry32 = tagMODULEENTRY32;
+//--------------------------------------------------------------------------------------------------
+// Streams
+//--------------------------------------------------------------------------------------------------
 
-const
-  TH32CS_SNAPMODULE   = $00000008;
+function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
+  var lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
+  external kernel32 name 'BackupSeek';
 
-procedure ExitTLHelp;
-function InitTLHelp: Boolean;
-function CreateToolhelp32Snapshot(dwFlags, th32ProcessID: DWORD): THandle;
-function Module32First(hSnapshot: THandle; var lpme: TModuleEntry32): BOOL;
-function Module32Next(hSnapshot: THandle; var lpme: TModuleEntry32): BOOL;
-
-//==============================================================================
+//==================================================================================================
 // Netbios (incorrect/inconvenient declarations in rtl)
-//==============================================================================
+//==================================================================================================
 
 const
   NCBNAMSZ    = 16;        // absolute length of a net name
@@ -681,13 +646,13 @@ procedure ExitNetbios;
 function InitNetbios: Boolean;
 function NetBios(P: PNCB): Byte;
 
-//==============================================================================
+//==================================================================================================
 // JclPeImage
-//==============================================================================
+//==================================================================================================
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Missing WinNT.h translations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT   = 13; // Delay load import descriptors
@@ -922,9 +887,9 @@ const
 
   IMAGE_DEBUG_TYPE_BORLAND = 9;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Missing WinUser.h translations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   RT_HTML     = MakeIntResource(23);
@@ -936,9 +901,9 @@ const
   MINIMUM_RESERVED_MANIFEST_RESOURCE_ID              = MakeIntResource(1);
   MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID              = MakeIntResource(16);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // CorHdr.h translations (part of CLR)
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   COMIMAGE_FLAGS_ILONLY           = $00000001;
@@ -965,9 +930,9 @@ type
   end;
   TImageCor20Header = IMAGE_COR20_HEADER;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Incorrect translations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
 {$IFNDEF DELPHI6_UP}
@@ -992,7 +957,22 @@ type
     CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
     external 'imagehlp.dll' name 'ImageEnumerateCertificates';
 
-//------------------------------------------------------------------------------
+//==================================================================================================
+// JclShell
+//==================================================================================================
+
+const
+  DLLVER_PLATFORM_WINDOWS = $00000001;
+  DLLVER_PLATFORM_NT      = $00000002;
+
+//==================================================================================================
+// JclSysInfo
+//==================================================================================================
+
+const
+  CSIDL_COMMON_APPDATA = $0023; { All Users\Application Data }
+
+//--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_EXTSYM}
 
@@ -1137,7 +1117,6 @@ type
 {$IFNDEF COMPILER5_UP}
 
   {$EXTERNALSYM SE_OBJECT_TYPE}
-  {$EXTERNALSYM PPSID}
 
 {$ENDIF COMPILER5_UP}
 
@@ -1148,6 +1127,10 @@ type
   {$EXTERNALSYM SECURITY_DESCRIPTOR_MIN_LENGTH}
 
 {$ENDIF COMPILER4_UP}
+
+{$EXTERNALSYM PPSID}
+{$EXTERNALSYM _TOKEN_USER}
+{$EXTERNALSYM TOKEN_USER}
 
 {$EXTERNALSYM SetNamedSecurityInfoW}
 {$EXTERNALSYM AdjustTokenPrivileges}
@@ -1211,12 +1194,6 @@ type
   {$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
   {$EXTERNALSYM SetVolumeMountPoint}
   {$EXTERNALSYM DeleteVolumeMountPoint}
-
-  {$EXTERNALSYM _MODULEINFO}
-
-  {$EXTERNALSYM MAX_MODULE_NAME32}
-  {$EXTERNALSYM tagMODULEENTRY32}
-  {$EXTERNALSYM TH32CS_SNAPMODULE}
 
   {$EXTERNALSYM NCBNAMSZ}
   {$EXTERNALSYM MAX_LANA}
@@ -1301,55 +1278,57 @@ type
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
 
+  {$EXTERNALSYM CSIDL_COMMON_APPDATA}
+
 {$ENDIF SUPPORTS_EXTSYM}
 
 implementation
 
-//==============================================================================
+//==================================================================================================
 // Locales related
-//==============================================================================
+//==================================================================================================
 
 function LANGIDFROMLCID(const lcid: LCID): Word;
 begin
   Result := Word(lcid);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MAKELANGID(const usPrimaryLanguage, usSubLanguage: Byte): Word;
 begin
   Result := usPrimaryLanguage or (usSubLanguage shl 10);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PRIMARYLANGID(const lgid: Word): Word;
 begin
   Result := (lgid and $03FF);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SUBLANGID(const lgid: Word): Word;
 begin
   Result := (lgid shr 10);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MAKELCID(const wLanguageID, wSortID: Word): LCID;
 begin
   Result := wLanguageID or (wSortID shl 16);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SORTIDFROMLCID(const lcid: LCID): Word;
 begin
   Result := (lcid shr 16) and $0F;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 var
   _GetVolumeNameForVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
@@ -1358,12 +1337,13 @@ var
 
 function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL;
 var
-  Kernel32: THandle;
+  Kernel32Handle: THandle;
 begin
   if not Assigned(_GetVolumeNameForVolumeMountPoint) then
   begin
-    Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32, PChar('GetVolumeNameForVolumeMountPointA'));
+    Kernel32Handle := GetModuleHandle(kernel32);
+    if Kernel32Handle <> 0 then
+      @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32Handle, PChar('GetVolumeNameForVolumeMountPointA'));
   end;
   if Assigned(_GetVolumeNameForVolumeMountPoint) then
     Result := _GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName, cchBufferLength)
@@ -1373,12 +1353,13 @@ end;
 
 function SetVolumeMountPoint(lpszVolumeMountPoint: LPCSTR; lpszVolumeName: LPCSTR): BOOL;
 var
-  Kernel32: THandle;
+  Kernel32Handle: THandle;
 begin
   if not Assigned(_SetVolumeMountPoint) then
   begin
-    Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then @_SetVolumeMountPoint := GetProcAddress(Kernel32, PChar('SetVolumeMountPointA'));
+    Kernel32Handle := GetModuleHandle(kernel32);
+    if Kernel32Handle <> 0 then
+      @_SetVolumeMountPoint := GetProcAddress(Kernel32Handle, PChar('SetVolumeMountPointA'));
   end;
   if Assigned(_SetVolumeMountPoint) then
     Result := _SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName)
@@ -1388,12 +1369,13 @@ end;
 
 function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL;
 var
-  Kernel32: THandle;
+  Kernel32Handle: THandle;
 begin
   if not Assigned(_DeleteVolumeMountPoint) then
   begin
-    Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then @_DeleteVolumeMountPoint := GetProcAddress(Kernel32, PChar('DeleteVolumeMountPointA'));
+    Kernel32Handle := GetModuleHandle(kernel32);
+    if Kernel32Handle <> 0 then
+      @_DeleteVolumeMountPoint := GetProcAddress(Kernel32Handle, PChar('DeleteVolumeMountPointA'));
   end;
   if Assigned(_DeleteVolumeMountPoint) then
     Result := _DeleteVolumeMountPoint(lpszVolumeMountPoint)
@@ -1403,9 +1385,9 @@ end;
 
 function GetVersionEx; external kernel32 name 'GetVersionExA';
 
-//==============================================================================
+//==================================================================================================
 // Netbios
-//==============================================================================
+//==================================================================================================
 
 type
   TNetBios = function (P: PNCB): Byte; stdcall;
@@ -1414,7 +1396,7 @@ var
   NetBiosLib: HINST = 0;
   _NetBios: TNetBios;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ExitNetbios;
 begin
@@ -1425,7 +1407,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function InitNetbios: Boolean;
 begin
@@ -1444,7 +1426,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function NetBios(P: PNCB): Byte;
 begin
@@ -1454,188 +1436,9 @@ begin
     Result := 1; // anything other than NRC_GOODRET will do
 end;
 
-//==============================================================================
-// PSAPI
-//==============================================================================
-
-type
-  TEnumProcesses = function (lpidProcess: LPDWORD; cb: DWORD;
-    var cbNeeded: DWORD): BOOL stdcall;
-  TEnumProcessModules = function (hProcess: THandle; lphModule: LPDWORD; cb: DWORD;
-    var lpcbNeeded: DWORD): BOOL; stdcall;
-  TGetModuleFileNameEx = function (hProcess: THandle; hModule: HMODULE;
-    lpFilename: PChar; nSize: DWORD): DWORD; stdcall;
-  TGetModuleInformation = function (hProcess: THandle; hModule: HMODULE;
-    lpmodinfo: PModuleInfo; cb: DWORD): BOOL; stdcall;
-  TGetModuleBaseNameA = function (hProcess: THandle; hModule: HMODULE;
-    lpBaseName: PAnsiChar; nSize: DWORD): DWORD; stdcall;
-
-var
-  PsapiLib: HINST = 0;
-  _EnumProcesses: TEnumProcesses;
-  _EnumProcessModules: TEnumProcessModules;
-  _GetModuleFileNameEx: TGetModuleFileNameEx;
-  _GetModuleInformation: TGetModuleInformation;
-  _GetModuleBaseNameA: TGetModuleBaseNameA;
-
-//------------------------------------------------------------------------------
-
-procedure ExitPsapi;
-begin
-  if PsapiLib <> 0 then
-  begin
-    FreeLibrary(PsapiLib);
-    PsapiLib := 0;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function InitPsapi: Boolean;
-begin
-  Result := True;
-  if PsapiLib = 0 then
-  begin
-    PsapiLib := LoadLibrary('PSAPI.dll');
-    Result := PsapiLib <> 0;
-    if Result then
-    begin
-      @_EnumProcesses := GetProcAddress(PsapiLib, PChar('EnumProcesses'));
-      @_EnumProcessModules := GetProcAddress(PsapiLib, PChar('EnumProcessModules'));
-      @_GetModuleFileNameEx := GetProcAddress(PsapiLib, PChar('GetModuleFileNameExA'));
-      @_GetModuleInformation := GetProcAddress(PsapiLib, PChar('GetModuleInformation'));
-      @_GetModuleBaseNameA := GetProcAddress(PsapiLib, PChar('GetModuleBaseNameA'));
-    end;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function EnumProcesses(lpidProcess: LPDWORD; cb: DWORD; var cbNeeded: DWORD): BOOL;
-begin
-  Result := InitPsapi;
-  if Result then
-    Result := _EnumProcesses(lpidProcess, cb, cbNeeded);
-end;
-
-//------------------------------------------------------------------------------
-
-function EnumProcessModules(hProcess: THandle; lphModule: LPDWORD; cb: DWORD;
-  var lpcbNeeded: DWORD): BOOL;
-begin
-  Result := InitPsapi;
-  if Result then
-    Result := _EnumProcessModules(hProcess, lphModule, cb, lpcbNeeded);
-end;
-
-//------------------------------------------------------------------------------
-
-function GetModuleBaseNameA(hProcess: THandle; hModule: HMODULE;
-  lpBaseName: PAnsiChar; nSize: DWORD): DWORD;
-begin
-  Result := 0;
-  if InitPsapi then
-    Result := _GetModuleBaseNameA(hProcess, hModule, lpBaseName, nSize);
-end;
-
-//------------------------------------------------------------------------------
-
-function GetModuleFileNameEx(hProcess: THandle; hModule: HMODULE; lpFilename: PChar;
-  nSize: DWORD): DWORD;
-begin
-  if InitPsapi then
-    Result := _GetModuleFileNameEx(hProcess, hModule, lpFileName, nSize)
-  else
-    Result := 0;
-end;
-
-//------------------------------------------------------------------------------
-
-function GetModuleInformation(hProcess: THandle; hModule: HMODULE; lpModInfo: PModuleInfo;
-  cb: DWORD): BOOL;
-begin
-  Result := InitPsapi;
-  if Result then
-    Result := _GetModuleInformation(hProcess, hModule, lpModInfo, cb);
-end;
-
-//==============================================================================
-// ToolHelp32
-//==============================================================================
-
-type
-  TCreateToolhelp32Snapshot = function (dwFlags, th32ProcessID: DWORD): THandle; stdcall;
-  TModule32First = function (hSnapshot: THandle; var lpme: TModuleEntry32): BOOL; stdcall;
-  TModule32Next = function (hSnapshot: THandle; var lpme: TModuleEntry32): BOOL; stdcall;
-
-var
-  TLHelpLib: HINST = 0;
-  _CreateToolhelp32Snapshot: TCreateToolhelp32Snapshot;
-  _Module32First: TModule32First;
-  _Module32Next: TModule32Next;
-
-//------------------------------------------------------------------------------
-
-procedure ExitTLHelp;
-begin
-  if TLHelpLib <> 0 then
-  begin
-    FreeLibrary(TLHelpLib);
-    TLHelpLib := 0;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function InitTLHelp: Boolean;
-begin
-  Result := True;
-  if TLHelpLib = 0 then
-  begin
-    TLHelpLib := GetModuleHandle('kernel32.dll');
-    Result := TLHelpLib <> 0;
-    if Result then
-    begin
-      @_CreateToolhelp32Snapshot := GetProcAddress(TLHelpLib, PChar('CreateToolhelp32Snapshot'));
-      @_Module32First := GetProcAddress(TLHelpLib, PChar('Module32First'));
-      @_Module32Next := GetProcAddress(TLHelpLib, PChar('Module32Next'));
-    end;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function CreateToolhelp32Snapshot(dwFlags, th32ProcessID: DWORD): THandle;
-begin
-  if InitTLHelp then
-    Result := _CreateToolhelp32Snapshot(dwFlags, th32ProcessID)
-  else
-    Result := 0;
-end;
-
-//------------------------------------------------------------------------------
-
-function Module32First(hSnapshot: THandle; var lpme: TModuleEntry32): BOOL;
-begin
-  if InitTLHelp then
-    Result := _Module32First(hSnapshot, lpme)
-  else
-    Result := False;
-end;
-
-//------------------------------------------------------------------------------
-
-function Module32Next(hSnapshot: THandle; var lpme: TModuleEntry32): BOOL;
-begin
-  if InitTLHelp then
-    Result := _Module32Next(hSnapshot, lpme)
-  else
-    Result := False;
-end;
-
-//==============================================================================
+//==================================================================================================
 // JclPeImage
-//==============================================================================
+//==================================================================================================
 
 function IMAGE_ORDINAL(Ordinal: DWORD): Word;
 begin
@@ -1644,4 +1447,3 @@ end;
 
 
 end.
-
