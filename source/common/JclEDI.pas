@@ -253,7 +253,8 @@ type
     property PriorItem: TEDIObjectListItem read FPriorItem write FPriorItem;
     property NextItem: TEDIObjectListItem read FNextItem write FNextItem;
     property EDIObject: TEDIObject read FEDIObject write FEDIObject;
-    property Name: string read FName write FName;    
+    property Name: string read FName write FName;
+    property Parent: TEDIObjectList read FParent write FParent;
   end;
 
   TEDIDataObjectListOptions = set of (loAutoUpdateIndexes);
@@ -275,10 +276,19 @@ type
   public
     constructor Create(OwnsObjects: Boolean = True);
     destructor Destroy; override;
-    procedure Add(EDIObject: TEDIObject; Name: string = '');
-    function Extract(EDIObject: TEDIObject): TEDIObject; virtual;
-    procedure Remove(EDIObject: TEDIObject);
-    function IndexOf(EDIObject: TEDIObject): Integer;
+    procedure Add(Item: TEDIObjectListItem; Name: string = ''); overload;
+    function Add(EDIObject: TEDIObject; Name: string = ''): TEDIObjectListItem; overload;
+    function Find(Item: TEDIObjectListItem): TEDIObjectListItem; overload;
+    function Find(EDIObject: TEDIObject): TEDIObjectListItem; overload;
+    function FindEDIObject(EDIObject: TEDIObject): TEDIObject;
+    function Extract(Item: TEDIObjectListItem): TEDIObjectListItem; overload; virtual;
+    function Extract(EDIObject: TEDIObject): TEDIObject; overload; virtual;
+    procedure Remove(Item: TEDIObjectListItem); overload;
+    procedure Remove(EDIObject: TEDIObject); overload;
+    function Insert(Item, BeforeItem: TEDIObjectListItem): TEDIObjectListItem; overload;
+    function Insert(EDIObject, BeforeEDIObject: TEDIObject): TEDIObjectListItem; overload;
+    function Insert(BeforeItem: TEDIObjectListItem): TEDIObjectListItem; overload;
+    function Insert(BeforeEDIObject: TEDIObject): TEDIObjectListItem; overload;
     procedure Clear;
     function First(Index: Integer = 0): TEDIObjectListItem; virtual;
     function Next: TEDIObjectListItem; virtual;
@@ -290,7 +300,10 @@ type
       StartItem: TEDIObjectListItem = nil): TEDIObjectListItem; virtual;
     function ReturnListItemsByName(Name: string): TEDIObjectList; virtual;
     // Dynamic Array Emulation
-    procedure Insert(InsertIndex: Integer; EDIObject: TEDIObject);
+    function IndexOf(Item: TEDIObjectListItem): Integer; overload;
+    function IndexOf(EDIObject: TEDIObject): Integer; overload;
+    function IndexIsValid(Index: Integer): Boolean;
+    procedure Insert(InsertIndex: Integer; EDIObject: TEDIObject); overload;
     procedure Delete(Index: Integer); overload;
     procedure Delete(EDIObject: TEDIObject); overload;
     procedure UpdateIndexes(StartItem: TEDIObjectListItem = nil);
@@ -911,11 +924,10 @@ end;
 
 function TEDIDataObjectGroup.IndexIsValid(Index: Integer): Boolean;
 begin
-  Result := False;
   {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
-  if (FEDIDataObjects.Count > 0) and (Index >= 0) and (Index <= FEDIDataObjects.Count - 1) then
-    Result := True;
+  Result := FEDIDataObjects.IndexIsValid(Index);
   {$ELSE}
+  Result := False;
   if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
     (Index <= High(FEDIDataObjects)) then Result := True;
   {$ENDIF}
@@ -1183,24 +1195,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TEDIObjectListItem.GetIndexPositionFromParent: Integer;
-var
-  I: Integer;
-  ListItem: TEDIObjectListItem;
 begin
-  Result := -1;
-  for I := 0 to FParent.Count - 1 do
-  begin
-    if I = 0 then
-      ListItem := FParent.First
-    else
-      ListItem := FParent.Next;
-    if Self = ListItem then
-    begin
-      Result := I;
-      Break;
-    end;
-  end;
-  FItemIndex := Result;
+  Result := FParent.IndexOf(Self);
 end;
 
 //==================================================================================================
@@ -1291,18 +1287,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIObjectList.Add(EDIObject: TEDIObject; Name: string);
-var
-  ListItem: TEDIObjectListItem;
+function TEDIObjectList.Add(EDIObject: TEDIObject; Name: string): TEDIObjectListItem;
 begin
-  ListItem := CreateListItem(FLastItem, EDIObject);
-  ListItem.Name := Name;
+  Result := CreateListItem(FLastItem, EDIObject);
+  Result.Name := Name;
   if FLastItem <> nil then
-    FLastItem.NextItem := ListItem;
+    FLastItem.NextItem := Result;
   if FFirstItem = nil then
-    FFirstItem := ListItem;
-  FLastItem := ListItem;
-  FCurrentItem := ListItem;
+    FFirstItem := Result;
+  FLastItem := Result;
+  FCurrentItem := Result;
   Inc(FCount);
 end;
 
@@ -1433,18 +1427,7 @@ begin
   ListItem := GetItem(Index);
   if ListItem <> nil then
   begin
-    // Remove the item and relink existing items.
-    if ListItem.NextItem <> nil then
-      ListItem.NextItem.PriorItem := ListItem.PriorItem;
-    if ListItem.PriorItem <> nil then
-      ListItem.PriorItem.NextItem := ListItem.NextItem;
-    if ListItem = FFirstItem then
-      FFirstItem := ListItem.NextItem;
-    if ListItem = FLastItem then
-      FLastItem := ListItem.PriorItem;
-    Dec(FCount);
-    FCurrentItem := ListItem.NextItem;
-    FreeAndNil(ListItem);
+    Remove(ListItem);
     // Update the indexes starting at the current item.
     if loAutoUpdateIndexes in FOptions then
       UpdateIndexes(FCurrentItem.PriorItem); //Pass nil to force update of all items
@@ -1507,26 +1490,13 @@ procedure TEDIObjectList.Remove(EDIObject: TEDIObject);
 var
   ListItem: TEDIObjectListItem;
 begin
-  ListItem := FFirstItem;
-  while ListItem <> nil do
+  ListItem := Find(EDIObject);
+  if ListItem <> nil then
   begin
-    if ListItem.EDIObject = EDIObject then
-    begin
-      // Remove the item and relink existing items.
-      if ListItem.NextItem <> nil then
-        ListItem.NextItem.PriorItem := ListItem.PriorItem;
-      if ListItem.PriorItem <> nil then
-        ListItem.PriorItem.NextItem := ListItem.NextItem;
-      if ListItem = FFirstItem then
-        FFirstItem := ListItem.NextItem;
-      if ListItem = FLastItem then
-        FLastItem := ListItem.PriorItem;
-      Dec(FCount);
-      FCurrentItem := ListItem.NextItem;
-      FreeAndNil(ListItem);
-      Break;
-    end;
-    ListItem := ListItem.NextItem;
+    // Remove the item from the list
+    ListItem := Extract(ListItem);
+    // Free the list item
+    FreeAndNil(ListItem);
   end;
 end;
 
@@ -1537,28 +1507,16 @@ var
   ListItem: TEDIObjectListItem;
 begin
   Result := nil;
-  ListItem := FFirstItem;
-  while ListItem <> nil do
+  ListItem := Find(EDIObject);
+  if ListItem <> nil then
   begin
-    if ListItem.EDIObject = EDIObject then
-    begin
-      // Set current item
-      if ListItem.NextItem <> nil then
-        FCurrentItem := ListItem.NextItem
-      else
-        FCurrentItem := ListItem.PriorItem;
-      // Remove the item from the list
-      ListItem.NextItem.PriorItem := ListItem.PriorItem;
-      ListItem.PriorItem.NextItem := ListItem.NextItem;
-      Dec(FCount);
-      // Extract the EDI Data Object
-      Result := ListItem.EDIObject;
-      ListItem.EDIObject := nil;
-      // Free the list item
-      FreeAndNil(ListItem);
-      Break;
-    end;
-    ListItem := ListItem.NextItem;
+    // Extract the EDI Data Object
+    Result := ListItem.EDIObject;
+    ListItem.EDIObject := nil;
+    // Remove the item from the list
+    ListItem := Extract(ListItem);
+    // Free the list item
+    FreeAndNil(ListItem);
   end;
 end;
 
@@ -1623,6 +1581,208 @@ begin
       Result.Add(ListItem.EDIObject, ListItem.Name);
     ListItem := Next;
   end; //while
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.IndexOf(Item: TEDIObjectListItem): Integer;
+var
+  I: Integer;
+  ListItem: TEDIObjectListItem;
+begin
+  Result := -1;
+  I := 0;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem = Item then
+    begin
+      FCurrentItem := ListItem;
+      FCurrentItem.ItemIndex := I;
+      Result := I;
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+    Inc(I);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Remove(Item: TEDIObjectListItem);
+begin
+  // Remove the item from the list
+  Item := Extract(Item);
+  // Free the list item
+  FreeAndNil(Item);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Extract(Item: TEDIObjectListItem): TEDIObjectListItem;
+begin
+  Result := Item;
+  // Set current item
+  if Item.NextItem <> nil then
+    FCurrentItem := Item.NextItem
+  else
+    FCurrentItem := Item.PriorItem;
+  // Extract the item and relink existing items.
+  if Item.NextItem <> nil then
+    Item.NextItem.PriorItem := Item.PriorItem;
+  if Item.PriorItem <> nil then
+    Item.PriorItem.NextItem := Item.NextItem;
+  if Item = FFirstItem then
+    FFirstItem := Item.NextItem;
+  if Item = FLastItem then
+    FLastItem := Item.PriorItem;
+  // Update the count
+  Dec(FCount);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIObjectList.Add(Item: TEDIObjectListItem; Name: string);
+begin
+  Item.Parent := Self;
+  Item.Name := Name;
+  Item.NextItem := nil;
+  Item.PriorItem := nil;
+  if FLastItem <> nil then
+  begin
+    Item.PriorItem := FLastItem;
+    FLastItem.NextItem := Item;
+  end;
+  if FFirstItem = nil then
+    FFirstItem := Item;
+  FLastItem := Item;
+  FCurrentItem := Item;
+  Inc(FCount);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.FindEDIObject(EDIObject: TEDIObject): TEDIObject;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem.EDIObject = EDIObject then
+    begin
+      FCurrentItem := ListItem;
+      Result := ListItem.EDIObject;
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Find(Item: TEDIObjectListItem): TEDIObjectListItem;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem = Item then
+    begin
+      FCurrentItem := ListItem;
+      Result := ListItem;
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Find(EDIObject: TEDIObject): TEDIObjectListItem;
+var
+  ListItem: TEDIObjectListItem;
+begin
+  Result := nil;
+  ListItem := FFirstItem;
+  while ListItem <> nil do
+  begin
+    if ListItem.EDIObject = EDIObject then
+    begin
+      FCurrentItem := ListItem;
+      Result := ListItem;
+      Break;
+    end;
+    ListItem := ListItem.NextItem;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.IndexIsValid(Index: Integer): Boolean;
+begin
+  Result := False;
+  if (FCount > 0) and (Index >= 0) and (Index <= FCount - 1) then
+    Result := True;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Insert(Item, BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
+begin
+  Result := Item;
+  if Result = nil then
+    Result := CreateListItem(BeforeItem, nil);
+  Result.Parent := Self;
+  Result.PriorItem := nil;
+  Result.NextItem := nil;
+  if BeforeItem <> nil then // Insert item
+  begin
+    Result.PriorItem := BeforeItem.PriorItem;
+    BeforeItem.PriorItem := Result;
+    if Result.PriorItem <> nil then
+      Result.PriorItem.NextItem := Result;
+    Result.NextItem := BeforeItem;
+  end
+  else if FFirstItem <> nil then  // Insert as first item
+  begin
+    FFirstItem.PriorItem := Result;
+    Result.NextItem := FFirstItem;
+    FFirstItem := Result;
+  end
+  else
+    Add(Result); // Add as first item
+  FCurrentItem := Result;
+  Inc(FCount);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Insert(EDIObject, BeforeEDIObject: TEDIObject): TEDIObjectListItem;
+var
+  BeforeItem: TEDIObjectListItem;
+begin
+  BeforeItem := Find(BeforeEDIObject);
+  Result := CreateListItem(BeforeItem, EDIObject);
+  Insert(Result, BeforeItem);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Insert(BeforeItem: TEDIObjectListItem): TEDIObjectListItem;
+begin
+  Result := CreateListItem(BeforeItem, nil);
+  Insert(Result, BeforeItem);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIObjectList.Insert(BeforeEDIObject: TEDIObject): TEDIObjectListItem;
+begin
+  Result := Insert(nil, BeforeEDIObject);
 end;
 
 //==================================================================================================
