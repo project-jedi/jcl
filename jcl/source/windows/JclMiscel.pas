@@ -156,7 +156,7 @@ begin
       if not GetExitCodeProcess(ProcessInfo.hProcess, Integer(Result)) then
       {$ELSE}
       if not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-      {$ENDIF}
+      {$ENDIF DELPHI3}
         Result := Cardinal($FFFFFFFF);
     end;
     CloseHandle(ProcessInfo.hThread);
