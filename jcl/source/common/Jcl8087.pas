@@ -16,7 +16,11 @@
 { Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel, ESB Consultancy, Robert Marquardt, Robert Rossmair, Matthias Thoma,         }
+{   Marcel van Brakel                                                                              }
+{   ESB Consultancy                                                                                }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
 {   Petr Vones                                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -258,13 +262,16 @@ end;
 //   "Need imported data reference ($G) to access Default8087CW".
 
 // $Log$
+// Revision 1.6  2004/10/17 20:02:05  mthoma
+// Clean. Fileheader update (contributors list).
+//
 // Revision 1.5  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //
 // Revision 1.4  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
-// Revision 1.3  2004/04/06 04:53:18  peterjhaas
+// Revision 1.3  2004/04/06 04:53:18
 // adapt compiler conditions, add log entry
 //
 
