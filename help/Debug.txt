@@ -2493,7 +2493,7 @@ TJclExceptFrameList = class(TObjectList)
 [ShortDescr]
 List of except frame item.
 [Description]
-TStackInfoItem holds stack information.
+TJclExceptFrameList holds a list of <REF Target"..\TJclExceptFrame\TJclExceptFrame">except frame items</REF>.
 [Quick Info]
 BCB=4,5
 Unit=JclDebug
@@ -2503,6 +2503,9 @@ Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=TJclExceptFrame;..\TJclExceptFrame\TJclExceptFrame
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AIgnoreLevels: Integer);
@@ -2615,8 +2618,10 @@ function JclLastExceptFrameList: TJclExceptFrameList;
 Retreives the last generated except frame list.
 [Description]
 JclLastExceptFrameList retreives the last generated except frame list by a call
-through <REF>JclCreateExceptFrameList</REF>. Note that JclCreateStackList also get's called when
-an exception occurs and the global variable ExceptionFrameTrackingEnable is set to True.
+through <REF>JclCreateExceptFrameList</REF>. Note that JclCreateExceptFrameList also 
+get's called when an exception occurs and the global variable 
+ <REF Target"Global Variables\ExceptionFrameTrackingEnable">ExceptionFrameTrackingEnable</REF> 
+is set to True.
 [Result]
 A reference to the last generated exception frame list.
 [Notes]
@@ -2654,6 +2659,11 @@ Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=TJclExceptNotifyMethod
+2=ExceptNotifyProc;Global Variables\ExceptNotifyProc
+3=ExceptNotifyMethod;Global Variables\ExceptNotifyMethod
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
@@ -2677,6 +2687,11 @@ Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=TJclExceptNotifyProc
+2=ExceptNotifyProc;Global Variables\ExceptNotifyProc
+3=ExceptNotifyMethod;Global Variables\ExceptNotifyMethod
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclHookExceptions: Boolean;
