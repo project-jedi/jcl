@@ -19,7 +19,6 @@
 
   Cosmetics and review by:
     2004-10-08 - Oliver Schneider <oliver at assarbad dot net>
-    2004-10-15 - OS: replaced "const" parameters of methods with "var"
  *****************************************************************************)
 
 unit MSTask;
@@ -352,7 +351,7 @@ type
   ITaskTrigger = interface(IUnknown)
     ['{148BD52B-A2AB-11CE-B11F-00AA00530503}']
 // Methods:
-    function SetTrigger(var pTrigger: TTaskTrigger): HRESULT; stdcall;
+    function SetTrigger(const pTrigger: TTaskTrigger): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} const PTASK_TRIGGER pTrigger |*)
     function GetTrigger(out pTrigger: TTaskTrigger): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} PTASK_TRIGGER pTrigger |*)
@@ -543,15 +542,15 @@ type
     (*| Parameter(s) was/were [CPP]: {out} LPWSTR * ppwszComputer |*)
     function Enum(out ppEnumWorkItems: IEnumWorkItems): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {out} IEnumWorkItems ** ppEnumWorkItems |*)
-    function Activate(pwszName: LPCWSTR; var riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
+    function Activate(pwszName: LPCWSTR; const riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid, {out} IUnknown ** ppUnk |*)
     function Delete(pwszName: LPCWSTR): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName |*)
-    function NewWorkItem(pwszTaskName: LPCWSTR; var rclsid: TCLSID; var riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
+    function NewWorkItem(pwszTaskName: LPCWSTR; const rclsid: TCLSID; const riid: TIID; out ppUnk: IUnknown): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszTaskName, {in} REFCLSID rclsid, {in} REFIID riid, {out} IUnknown ** ppUnk |*)
-    function AddWorkItem(pwszTaskName: LPCWSTR; var pWorkItem: IScheduledWorkItem): HRESULT; stdcall;
+    function AddWorkItem(pwszTaskName: LPCWSTR; const pWorkItem: IScheduledWorkItem): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszTaskName, {in} IScheduledWorkItem * pWorkItem |*)
-    function IsOfType(pwszName: LPCWSTR; var riid: TIID): HRESULT; stdcall;
+    function IsOfType(pwszName: LPCWSTR; const riid: TIID): HRESULT; stdcall;
     (*| Parameter(s) was/were [CPP]: {in} LPCWSTR pwszName, {in} REFIID riid |*)
   end;
 
