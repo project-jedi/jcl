@@ -63,7 +63,7 @@ function JclExceptionsHooked: Boolean;
 implementation
 
 uses
-  Classes, Windows,
+  Windows, Classes,
   JclBase, JclPeImage, JclSysUtils;
 
 type
@@ -172,7 +172,9 @@ begin
   Kernel32_RaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments, PDWORD(Arguments));
 end;
 
-{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
 
 //------------------------------------------------------------------------------
 
@@ -255,7 +257,8 @@ begin
       for I := 0 to Count - 1 do
       begin
         O := TNotifierItem(Items[I]);
-        if (TMethod(O.FNotifyMethod).Code = TMethod(NotifyMethod).Code) and (TMethod(O.FNotifyMethod).Data = TMethod(NotifyMethod).Data) then
+        if (TMethod(O.FNotifyMethod).Code = TMethod(NotifyMethod).Code) and
+          (TMethod(O.FNotifyMethod).Data = TMethod(NotifyMethod).Data) then
         begin
           O.Free;
           Items[I] := nil;
