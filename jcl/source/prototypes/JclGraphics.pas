@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: April 12, 2003                                                                    }
+{ Last modified: September 10, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -40,10 +40,10 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Graphics, JclSynch,
+  Graphics,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics,
+  Types, QGraphics, SyncObjs,
   {$ENDIF VisualCLX}
   JclBase, JclGraphUtils;
 
@@ -196,7 +196,11 @@ type
     TPersistent methods, it provides thread-safe locking and change notification }
   TJclThreadPersistent = class (TPersistent)
   private
-    FLock: TJclCriticalSection;
+    {$IFDEF VCL}
+    FLock: TRTLCriticalSection;
+    {$ELSE VCL}
+    FLock: TCriticalSection;
+    {$ENDIF VCL}
     FLockCount: Integer;
     FUpdateCount: Integer;
     FOnChanging: TNotifyEvent;
@@ -2620,14 +2624,22 @@ end;
 
 constructor TJclThreadPersistent.Create;
 begin
-  FLock := TJclCriticalSection.Create;
+  {$IFDEF VCL}
+  InitializeCriticalSection(FLock);
+  {$ELSE VCL}
+  FLock := TCriticalSection.Create;
+  {$ENDIF VCL}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TJclThreadPersistent.Destroy;
 begin
+  {$IFDEF VCL}
+  DeleteCriticalSection(FLock);
+  {$ELSE VCL}
   FLock.Free;
+  {$ENDIF VCL}
   inherited;
 end;
 
@@ -2666,16 +2678,24 @@ end;
 
 procedure TJclThreadPersistent.Lock;
 begin
-  LockedInc(FLockCount);
+  InterlockedIncrement(FLockCount);
+  {$IFDEF VCL}
+  EnterCriticalSection(FLock);
+  {$ELSE VCL}
   FLock.Enter;
+  {$ENDIF VCL}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.Unlock;
 begin
+  {$IFDEF VCL}
+  LeaveCriticalSection(FLock);
+  {$ELSE VCL}
   FLock.Leave;
-  LockedDec(FLockCount);
+  {$ENDIF VCL}
+  InterlockedDecrement(FLockCount);
 end;
 
 //==================================================================================================
@@ -2760,7 +2780,9 @@ begin
   FOuterColor := $00000000;  // by default as full transparency black
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
+  {$IFDEF VCL}
   FFont.OwnerCriticalSection := @FLock;
+  {$ENDIF VCL}
   FMasterAlpha := $FF;
   FPenColor := clWhite32;
   FStippleStep := 1;
