@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclSvcCtrl.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu att yahoo dott com dott cn>).  }
 { Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
 { Contributors:                                                                                    }
@@ -1452,6 +1452,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.18  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

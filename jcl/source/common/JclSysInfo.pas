@@ -1473,7 +1473,7 @@ end;
 {$IFDEF UNIX}
 const
   CommLen = 16;  // synchronize with size of comm in struct task_struct in
-		 //      /usr/include/linux/sched.h
+                 //     /usr/include/linux/sched.h
   SProcDirectory = '/proc';
 
 resourcestring
@@ -3960,6 +3960,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.22  2004/06/14 13:05:18  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.21  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //

@@ -531,7 +531,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 // Calculates and returns Easter Day for specified year.
-// Originally from Mark Lussier, AppVision <MLussier@best.com>.
+// Originally from Mark Lussier, AppVision <MLussier att best dott com>.
 // Corrected to prevent integer overflow if it is inadvertedly
 // passed a year of 6554 or greater.
 
@@ -1210,7 +1210,7 @@ end;
 //  added function FATDatesEqual                                                                  
                                                                                                
 // 2000-10-19, Michael Schnell                                                                       
-//  changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)                   
+//  changed EasterSunday to the code by Marc Convents (marc dott convents att progen dott be)                   
                                                                                                
 // 2001-02-10, Michael Schnell                                                                       
 //  added overload procedures for compatibility:                                                  
@@ -1218,6 +1218,9 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.8  2004/06/14 13:05:16  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.7  2004/05/31 01:54:38  rrossmair
 // $IFDEF LINUX replaced by $IFDEF HAS_UNIT_LIBC
 //

@@ -18,7 +18,8 @@
 {                                                                              }
 {  The Original Code is: zlib.h, released 2003-11-17.                          }
 {  The Initial Developer of the Original Code are Jean-loup Gailly             }
-{  (jloup@gzip.org) and Mark Adler (madler@alumni.cal­tech.edu). Portions      }
+{  (jloup att gzip dott org) and Mark Adler                                    }
+{  (madler att alumni dott cal­tech dott edu).                                 }
 {  Portions created by Jean-loup Gailly and Mark Adler are Copyright (C)       }
 {  1995-2003 Jean-loup Gailly and Mark Adler. All Rights Reserved.             }
 {                                                                              }
@@ -34,7 +35,7 @@
 {  of the Project ZLib, located at http://www.gzip.org/zlib/                   }
 {                                                                              }
 {  You may retrieve the latest version of this file at the homepage of         }
-{  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
+{  JEDI+ (jediplus att pjh2 dott de), located at http://jediplus.pjh2.de/      }
 {                                                                              }
 {------------------------------------------------------------------------------}
 {                                                                              }
@@ -46,7 +47,7 @@
 {------------------------------------------------------------------------------}
 {                                                                              }
 {  Contributor(s):                                                             }
-{    Matthias Thoma (mthoma), ma.thoma@gmx.de                                  }
+{    Matthias Thoma (mthoma), ma att thoma dott gmx dott de                    }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
 {  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
@@ -136,8 +137,8 @@ uses
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 
-  Jean-loup Gailly        Mark Adler
-  jloup@gzip.org          madler@alumni.caltech.edu
+  Jean-loup Gailly          Mark Adler
+  jloup att gzip dott org   madler att alumni dott caltech dott edu
 
 
   The data format used by the zlib library is described by RFCs (Request for

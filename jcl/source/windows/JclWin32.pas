@@ -1680,7 +1680,9 @@ const
 type
   // COM+ 2.0 header structure.
   { IMAGE_COR20_HEADER is already defined in BCB6 but not in BCB5 }
-  {$IFDEF COMPILER6_UP} {$EXTERNALSYM IMAGE_COR20_HEADER} {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  {$EXTERNALSYM IMAGE_COR20_HEADER}
+  {$ENDIF COMPILER6_UP}
   IMAGE_COR20_HEADER = packed record
     // Header versioning
     cb: DWORD;
@@ -4033,6 +4035,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.23  2004/06/14 13:05:22  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.22  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

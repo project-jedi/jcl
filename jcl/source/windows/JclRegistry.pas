@@ -131,7 +131,7 @@ function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
 {
-From: Jean-Fabien Connault [mailto:cycocrew@worldnet.fr]
+From: Jean-Fabien Connault [cycocrew att worldnet dott fr]
 Descr: Test whether a registry key exists as a subkey of RootKey
 Used test cases:
 procedure TForm1.Button1Click(Sender: TObject);
@@ -1373,6 +1373,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.16  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

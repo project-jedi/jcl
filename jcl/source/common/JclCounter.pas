@@ -109,7 +109,7 @@ begin
   begin
     // Determine overhead associated with calling of the Start and Stop methods.
     // This allows the Stop method to compensate for it and return a more
-    // accurate result. Thanks to John O'Harrow (john@elmcrest.demon.co.uk)
+    // accurate result. Thanks to John O'Harrow (john att elmcrest dott demon dott co dott uk)
     TmpOverhead := 0;
     for Count := 0 to Iterations do
     begin
@@ -222,6 +222,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/14 13:05:16  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.7  2004/06/14 11:05:50  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

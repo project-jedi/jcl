@@ -20,8 +20,8 @@
 {                                                                              }
 {  The Original Pascal code is: Snmp.pas, released 2001-10-05.                 }
 {  The Initial Developer of the Original Pascal code is Petr Vones             }
-{  (petr.v@mujmail.cz). Portions created by Petr Vones are Copyright (C) 2001  }
-{  Petr Vones. All Rights Reserved.                                            }
+{  (petrdott v att mujmail dott cz). Portions created by Petr Vones are        }
+{  Copyright (C) 2001  Petr Vones. All Rights Reserved.                        }
 {                                                                              }
 {  Obtained through:                                                           }
 {    Joint Endeavour of Delphi Innovators (Project JEDI)                       }
@@ -896,6 +896,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/14 13:05:22  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.5  2004/05/05 05:32:38  rrossmair
 // CVS key word typo corrected: $Data$ -> $Date$
 //

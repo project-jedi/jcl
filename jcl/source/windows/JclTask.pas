@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclSvcCtrl.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu att yahoo dott com dott cn>).  }
 { Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
 { Contributors:                                                                                    }
@@ -399,7 +399,7 @@ var
 begin
   Language := GetUserDefaultLCID;
   for Result := 0 to TaskCount-1 do
-    if {$IFNDEF RTL140_UP}JclUnicode.{$ENDIF}WideCompareText(Tasks[Result].TaskName, TaskName, Language) = 0 then
+    if {$IFNDEF RTL140_UP} JclUnicode.{$ENDIF}WideCompareText(Tasks[Result].TaskName, TaskName, Language) = 0 then
     begin
       Delete(Result);
       Exit;
@@ -1220,6 +1220,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.11  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

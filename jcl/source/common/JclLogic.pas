@@ -17,8 +17,8 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel Bestebroer (marcelb), Marcel van Brakel, ESB Consultancy,                               }
-{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Martin Kimmings, Robert Marquardt, Chris Morris,  }
-{   Michael Schnell, Matthias Thoma, Petr Vones                                                    }
+{   Peter J. Haas (PeterJHaas) jediplus att pjh2 dott de, Martin Kimmings, Robert Marquardt,       }
+{   Chris Morris,  Michael Schnell, Matthias Thoma, Petr Vones                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -2510,6 +2510,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/06/14 13:05:18  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.8  2004/06/14 11:05:51  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

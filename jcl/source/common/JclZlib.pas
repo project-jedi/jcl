@@ -23,7 +23,7 @@
 {  Reserved.                                                                   }
 {                                                                              }
 {  You may retrieve the latest version of the Original Code at the homepage    }
-{  of JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/            }
+{  of JEDI+ (jediplus att pjh2 dott de), located at http://jediplus.pjh2.de/   }
 {                                                                              }
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI, located at http://www.delphi-jedi.org/                                }
@@ -2121,6 +2121,9 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.10  2004/06/14 13:05:18  marquardt
+//  style cleaning ENDIF, Tabs
+//
 //  Revision 1.9  2004/06/14 11:05:51  marquardt
 //  symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

@@ -3023,7 +3023,7 @@ begin
   with Header.MetaData do
     Result := (VirtualAddress <> 0) and (PDWORD(FImage.RvaToVa(VirtualAddress))^ = METADATA_SIGNATURE);
 end;
-{ TODO -cDOC : "Flier Lu" <flier_lu@yahoo.com.cn> }
+{ TODO -cDOC : "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 
 //--------------------------------------------------------------------------------------------------
 
@@ -5852,6 +5852,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.8  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

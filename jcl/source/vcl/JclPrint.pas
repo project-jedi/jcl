@@ -21,7 +21,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (PeterJHaas), jediplus att pjh2 dott de                                          }
 {   Matthias Thoma (mthoma)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -1368,6 +1368,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/14 13:05:20  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.7  2004/06/14 11:05:52  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

@@ -28,7 +28,7 @@
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
 { Additional Info:                                                                                 }
-{   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
+{   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
@@ -2212,7 +2212,7 @@ begin
   FData := '';
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead	or fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);

@@ -43,12 +43,17 @@ interface
 uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   SysUtils,
-  {$IFDEF VCL}Graphics,{$ENDIF VCL}{$IFDEF VisualCLX}Qt, QGraphics,{$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QGraphics,
+  {$ENDIF VisualCLX}
   JclBase;
 
 type
@@ -90,9 +95,9 @@ type
 
   THLSValue = 0..240;
   THLSVector = record
-    Hue:	THLSValue;
-    Luminance:	THLSValue;
-    Saturation:	THLSValue;
+    Hue: THLSValue;
+    Luminance: THLSValue;
+    Saturation: THLSValue;
   end;
 
   {$IFDEF VCL}
@@ -306,7 +311,10 @@ var
 implementation
 
 uses
-  Math, {$IFDEF VCL} Classes, Consts, {$ENDIF}
+  {$IFDEF VCL}
+  Classes, Consts,
+  {$ENDIF VCL}
+  Math,
   JclResources, JclSysInfo, JclLogic;
 
 type
@@ -2370,10 +2378,10 @@ A point of reference for the algorithms is Foley and Van Dam, "Fundamentals of I
 There are potential round-off errors throughout this sample. ((0.5 + x)/y) without floating point is phrased ((x + (y/2))/y), yielding a very small round-off error. This makes many of the following divisions look strange. */ }
 
 const
-  HLSMAX = High(THLSValue);	// H,L, and S vary over 0-HLSMAX
-  RGBMAX = 255;			// R,G, and B vary over 0-RGBMAX
-				// HLSMAX BEST IF DIVISIBLE BY 6
-				// RGBMAX, HLSMAX must each fit in a byte.
+  HLSMAX = High(THLSValue);     // H,L, and S vary over 0-HLSMAX
+  RGBMAX = 255;                 // R,G, and B vary over 0-RGBMAX
+                                // HLSMAX BEST IF DIVISIBLE BY 6
+                                // RGBMAX, HLSMAX must each fit in a byte.
 
 // Hue is undefined if Saturation is 0 (grey-scale).
 // This value determines where the Hue value is initially set for achromatic colors.
@@ -2413,20 +2421,25 @@ begin
 
   // calculate lightness
   cMax := R;
-  if G > cMax then cMax := G;
-  if B > cMax then cMax := B;
+  if G > cMax then
+    cMax := G;
+  if B > cMax then
+    cMax := B;
 
   cMin := R;
-  if G < cMin then cMin := G;
-  if B < cMin then cMin := B;
+  if G < cMin then
+    cMin := G;
+  if B < cMin then
+    cMin := B;
 
   L := ( ((cMax+cMin)*HLSMAX) + RGBMAX ) div (2*RGBMAX);
 
   if (cMax = cMin) then           // r=g=b --> achromatic case
   begin
-    S := 0;	                  // saturation
-    H := UNDEFINED;              // hue
-  end else
+    S := 0;                       // saturation
+    H := UNDEFINED;               // hue
+  end
+  else
   begin                           // chromatic case
     // saturation
     if L <= (HLSMAX div 2) then
@@ -2516,7 +2529,7 @@ end;
 {$IFDEF VCL}
 function SetBitmapColors(Bmp: TBitmap; const Colors: array of TColor; StartIndex: Integer): Integer;
 type
-  TRGBQuadArray = array[Byte] of TRGBQuad;
+  TRGBQuadArray = array [Byte] of TRGBQuad;
   PRGBQuadArray = ^TRGBQuadArray;
 var
   i, RGB: Integer;
@@ -2529,11 +2542,11 @@ begin
     for i := 0 to Count-1 do
       with ColorTable^[i] do
       begin
-	RGB := ColorToRGB(Colors[i]);
-	rgbBlue		:= GetBValue(RGB);
-	rgbGreen	:= GetGValue(RGB);
-	rgbRed		:= GetRValue(RGB);
-	rgbReserved	:= 0;
+        RGB := ColorToRGB(Colors[i]);
+        rgbBlue := GetBValue(RGB);
+        rgbGreen := GetGValue(RGB);
+        rgbRed := GetRValue(RGB);
+        rgbReserved := 0;
       end;
     Bmp.HandleType := bmDIB;
     Result := GDICheck(SetDIBColorTable(Bmp.Canvas.Handle, StartIndex, Count, ColorTable^));
@@ -2866,6 +2879,9 @@ finalization
 //  - ShortenString included
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.9  2004/06/14 13:05:19  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.8  2004/05/05 22:14:51  rrossmair
 // bug fix in HSLToRGB(const H, S, L: Single; out R, G, B: Single); source code formatted
 // renamed Hue/Luminance/Saturation related routines from *HSL* to *HLS*, as far as possible; old identifiers kept as deprecated

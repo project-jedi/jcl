@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclUnicode.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Mike Lischke (public@lischke-online.de).           }
+{ The Initial Developer of the Original Code is Mike Lischke (public att lischke-online dott de).  }
 { Portions created by Mike Lischke are Copyright (C) 1999-2000 Mike Lischke. All Rights Reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
@@ -39,7 +39,7 @@ unit JclUnicode;
 
 {$I jcl.inc}
 
-// Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
+// Copyright (c) 1999-2000 Mike Lischke (public att lischke-online dott de)
 //
 
 // 19-SEP-2003: (changes by Andreas Hausladen)
@@ -430,7 +430,7 @@ type
   end;
 
   // The Unicode Tuned Boyer-Moore (UTBM) search implementation is an extended
-  // translation created from a free package written by Mark Leisher (mleisher@crl.nmsu.edu).
+  // translation created from a free package written by Mark Leisher (mleisher att crl dott nmsu dott edu).
   //
   // The code handles high and low surrogates as well as case (in)dependency,
   // can ignore non-spacing characters and allows optionally to return whole
@@ -478,8 +478,8 @@ type
 
   // Regular expression search engine for text in UCS2 form taking surrogates
   // into account. This implementation is an improved translation from the URE
-  // package written by Mark Leisher (mleisher@crl.nmsu.edu) who used a variation
-  // of the RE->DFA algorithm done by Mark Hopkins (markh@csd4.csd.uwm.edu).
+  // package written by Mark Leisher (mleisher att crl dott nmsu dott edu) who used a variation
+  // of the RE->DFA algorithm done by Mark Hopkins (markh att csd4 dott csd dott uwm dott edu).
   // Assumptions:
   //   o  Regular expression and text already normalized.
   //   o  Conversion to lower case assumes a 1-1 mapping.
@@ -3236,8 +3236,8 @@ begin
       else
       begin
         if (A.Symbol.CCL.RangesUsed > 0) and
-            not CompareMem(@A.Symbol.CCL.Ranges[0], @B.Symbol.CCL.Ranges[0],
-                           SizeOf(TUcRange) * A.Symbol.CCL.RangesUsed) then
+          not CompareMem(@A.Symbol.CCL.Ranges[0], @B.Symbol.CCL.Ranges[0],
+            SizeOf(TUcRange) * A.Symbol.CCL.RangesUsed) then
           Result := True;;
       end;
     end
@@ -4667,7 +4667,7 @@ procedure TWideStrings.DefineProperties(Filer: TFiler);
 // Defines a private property for the content of the list.
 // There's a bug in the handling of text DFMs in Classes.pas which prevents
 // WideStrings from loading under some circumstances. Zbysek Hlinka
-// (zhlinka@login.cz) brought this to my attention and supplied also a solution.
+// (zhlinka att login dott cz) brought this to my attention and supplied also a solution.
 // See ReadData and WriteData methods for implementation details.
 
   //--------------- local function --------------------------------------------
@@ -5720,7 +5720,6 @@ asm
        AND     ECX, 1
        REP     MOVSW
        JMP     @@2
-         
 @@1:
        LEA     ESI, [ESI + 2 * ECX - 2]
        LEA     EDI, [EDI + 2 * ECX - 2]
@@ -5736,7 +5735,6 @@ asm
 @@2:
        POP EDI
        POP ESI
-
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5832,7 +5830,6 @@ asm
        POP     EBX
        POP     ESI
        POP     EDI
-
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5867,7 +5864,6 @@ asm
        MOV     EAX, EDX
        POP     ESI
        POP     EDI
-
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5883,10 +5879,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
-
 // appends a specified maximum number of WideCharacters to string
 
+function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 asm
        PUSH    EDI
        PUSH    ESI
@@ -5908,7 +5903,6 @@ asm
        POP     EBX
        POP     ESI
        POP     EDI
-
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -6156,10 +6150,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar;
-
 // returns a pointer to first occurrence of a specified character in a string
 
+function StrScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 asm
         PUSH    EDI
         PUSH    EAX
@@ -6177,12 +6170,9 @@ asm
         SUB     EAX, 2
 @@1:
         POP     EDI
-
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 
 // Returns a pointer to first occurrence of a specified character in a string
 // or nil if not found.
@@ -6193,6 +6183,7 @@ function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 // on enter EAX contains Str, EDX contains Chr and ECX StrLen
 // on exit EAX contains result pointer or nil
 
+function StrScanW(Str: PWideChar; Chr: WideChar; StrLen: Cardinal): PWideChar;
 asm
        TEST    EAX, EAX
        JZ      @@Exit        // get out if the string is nil or StrLen is 0
@@ -6204,16 +6195,14 @@ asm
        DEC     ECX
        JNZ     @@Loop
        XOR     EAX, EAX
-
 @@Exit:
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
-
 // returns a pointer to the last occurance of Chr in Str
 
+function StrRScanW(Str: PWideChar; Chr: WideChar): PWideChar;
 asm
        PUSH    EDI
        MOV     EDI, Str
@@ -6232,15 +6221,13 @@ asm
 @@1:
        CLD
        POP     EDI
-
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function StrPosW(Str, SubStr: PWideChar): PWideChar;
-
 // returns a pointer to the first occurance of SubStr in Str
 
+function StrPosW(Str, SubStr: PWideChar): PWideChar;
 asm
        PUSH    EDI
        PUSH    ESI
@@ -6280,7 +6267,6 @@ asm
        JNE     @@1
        LEA     EAX, [EDI - 2]
        JMP     @@3
-
 @@2:
        XOR     EAX, EAX
 @@3:
@@ -6351,12 +6337,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure StrSwapByteOrder(Str: PWideChar);
-
 // exchanges in each character of the given string the low order and high order
 // byte to go from LSB to MSB and vice versa.
 // EAX contains address of string
 
+procedure StrSwapByteOrder(Str: PWideChar);
 asm
        PUSH    ESI
        PUSH    EDI
@@ -6370,8 +6355,6 @@ asm
        XCHG    AL, AH
        STOSW
        JMP     @@1
-
-
 @@2:
        POP     EDI
        POP     ESI
@@ -6595,13 +6578,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
-
 // returns the index of character Ch in S, starts searching at index Index
 // Note: This is a quick memory search. No attempt is made to interpret either
 // the given charcter nor the string (ligatures, modifiers, surrogates etc.)
 // Code from Azret Botash.
 
+function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
 asm
        TEST    EAX,EAX        // make sure we are not null
        JZ      @@StrIsNil
@@ -6627,31 +6609,26 @@ asm
        POP     EDI
        POP     EBX
        RET
-
 @@IdxIsBig:
 @@NoMatch:
        XOR     EAX,EAX
        POP     EDI
        POP     EBX
        RET
-
 @@IdxIsSmall:
        XOR     EAX, EAX
 @@StrIsNil:
-
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function WideComposeHangul(const Source: WideString): WideString;
-
 var
   Len: Integer;
   Ch, Last: WideChar;
   I: Integer;
   LIndex, VIndex,
   SIndex, TIndex: Integer;
-
 begin
   Result := '';
   Len := Length(Source);
@@ -6701,10 +6678,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function WideCompose(const S: WideString): WideString;
-
 // Returns canonical composition of characters in S.
 
+function WideCompose(const S: WideString): WideString;
 var
   StarterPos,
   CompPos,
@@ -6714,7 +6690,6 @@ var
   StarterChar: WideChar;
   LastClass,
   CurrentClass: Cardinal;
-
 begin
   // Set an arbitrary length for the result. This is automatically done when checking
   // for hangul composition.
@@ -7893,12 +7868,11 @@ end;
 
 //----------------- conversion routines ------------------------------------------------------------
 
-procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
-
 // Converts the given source ANSI string into a Unicode string by expanding each character
 // from one byte to two bytes.
 // EAX contains Source, EDX contains Target, ECX contains Count
 
+procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
 asm
        JECXZ   @@Finish           // go out if there is nothing to do
        PUSH    ESI
@@ -7923,11 +7897,12 @@ const
   HalfBase: UCS4 = $0010000;
   HalfMask: UCS4 = $3FF;
 
-  OffsetsFromUTF8: array[0..5] of UCS4 = ($00000000, $00003080, $000E2080,
-                                          $03C82080, $FA082080, $82082080);
+  OffsetsFromUTF8: array [0..5] of UCS4 =
+    ($00000000, $00003080, $000E2080,
+     $03C82080, $FA082080, $82082080);
 
-  BytesFromUTF8: array[0..255] of Byte = (
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  BytesFromUTF8: array [0..255] of Byte =
+   (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -7936,19 +7911,18 @@ const
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5);
 
-  FirstByteMark: array[0..6] of Byte = ($00, $00, $C0, $E0, $F0, $F8, $FC);
+  FirstByteMark: array [0..6] of Byte =
+    ($00, $00, $C0, $E0, $F0, $F8, $FC);
 
 //--------------------------------------------------------------------------------------------------
 
 function WideStringToUTF8(S: WideString): AnsiString;
-
 var
   Ch: UCS4;
   L, J, T,
   BytesToWrite: Cardinal;
   ByteMask: UCS4;
   ByteMark: UCS4;
-
 begin
   if Length(S) = 0 then
     Result := ''
@@ -8091,6 +8065,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.11  2004/06/14 13:05:22  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.10  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //
