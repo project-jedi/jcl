@@ -4155,7 +4155,7 @@ var
     TranslationIndex: Integer;
   begin
     GetHeader; // Var
-    if Key = 'Translation' then
+    if SameText(Key, 'Translation') then
     begin
       SetLength(FTranslations, ValueLen div SizeOf(TLangIdRec));
       for TranslationIndex := 0 to Length(FTranslations) - 1 do
@@ -4175,7 +4175,7 @@ begin
   Error := True;
   GetHeader;
   EndOfData := Data + Len - HeaderSize;
-  if (Key = 'VS_VERSION_INFO') and (ValueLen = SizeOf(TVSFixedFileInfo)) then
+  if SameText(Key, 'VS_VERSION_INFO') and (ValueLen = SizeOf(TVSFixedFileInfo)) then
   begin
     FFixedInfo := PVSFixedFileInfo(Data);
     Error := FFixedInfo.dwSignature <> $FEEF04BD;
@@ -4186,10 +4186,10 @@ begin
       GetHeader;
       Inc(Data, ValueLen); // some files (VREDIR.VXD 4.00.1111) has non zero value of ValueLen
       Dec(Len, HeaderSize + ValueLen);
-      if Key = 'StringFileInfo' then
+      if SameText(Key, 'StringFileInfo') then
         ProcessStringInfo(Len)
       else
-      if Key = 'VarFileInfo' then
+      if SameText(Key, 'VarFileInfo') then
         ProcessVarInfo(Len)
       else
         Break;
@@ -5763,6 +5763,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.28  2004/08/03 07:22:36  marquardt
+// resourcestring cleanup
+//
 // Revision 1.27  2004/08/02 06:34:59  marquardt
 // minor string literal improvements
 //

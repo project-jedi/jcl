@@ -364,19 +364,21 @@ function MIDINoteToStr(Note: TMIDINote): string;
 implementation
 
 uses
-  JclResources,
+  SysUtils,
   {$IFDEF MSWINDOWS}
   JclWinMIDI,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   //JclUnixMIDI,
   {$ENDIF UNIX}
-  SysUtils;
+  JclResources;
 
+{$IFDEF UNIX}
 procedure ErrorNotImplemented;
 begin
-  raise EJclInternalError.Create('JclMidi: MIDI I/O for Unix not (yet) implemented');
+  raise EJclInternalError.CreateResRec(@RsMidiNotImplemented);
 end;
+  {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -425,7 +427,7 @@ end;
 procedure CheckMIDIChannelNum(Channel: TMIDIChannel);
 begin
   if (Channel < Low(TMIDIChannel)) or (Channel > High(TMIDIChannel)) then
-    raise EJclMIDIError.CreateFmt(RsInvalidMidiChannelNum, [Channel]);
+    raise EJclMIDIError.CreateResRecFmt(@RsMidiInvalidChannelNum, [Channel]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -918,6 +920,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.8  2004/07/28 18:00:50  marquardt
 // various style cleanings, some minor fixes
 //

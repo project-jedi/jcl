@@ -1204,7 +1204,7 @@ begin
       {$IFDEF MATH_EXT_EXTREMEVALUES}
       Result := Infinity;
       {$ELSE}
-      raise EJclMathError.Create('Power function: Result is infinite');
+      raise EJclMathError.CreateResRec(@RsPowerInfinite);
       {$ENDIF MATH_EXT_EXTREMEVALUES}
   end
   else
@@ -1221,7 +1221,7 @@ begin
         Result := -Result;
     end
     else
-      raise EJclMathError.Create('Power function: Result is complex');
+      raise EJclMathError.CreateResRec(@RsPowerComplex);
   end;
 end;
 
@@ -3732,6 +3732,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.13  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.12  2004/08/02 15:30:16  marquardt
 // hunting down (rom) comments
 //

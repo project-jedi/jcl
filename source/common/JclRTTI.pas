@@ -453,7 +453,7 @@ begin
           TmpLines2.Text := WrapText(
             TmpLines[I],
             AnsiLineBreak + StringOfChar(' ', 2 * (IndentLevel+1)),
-            [#0 .. ' ', '-'],
+            [#0..' ', '-'],
             Wrap);
           TmpLines.Delete(I);
           TmpLines.Insert(I, Copy(TmpLines2.Text, 1,
@@ -600,18 +600,17 @@ end;
 
 procedure TJclTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
-  Dest.Writeln(RsRTTIName + Name);
-  Dest.Writeln(RsRTTITypeKind + JclEnumValueToIdent(System.TypeInfo(TTypeKind),
+  Dest.Writeln(LoadResString(@RsRTTIName) + Name);
+  Dest.Writeln(LoadResString(@RsRTTITypeKind) + JclEnumValueToIdent(System.TypeInfo(TTypeKind),
     TypeInfo.Kind));
-  Dest.Writeln(Format(RsRTTITypeInfoAt, [TypeInfo]));
+  Dest.Writeln(Format(LoadResString(@RsRTTITypeInfoAt), [TypeInfo]));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
-  { TODO : localize? }
-  Dest.Write('// Declaration for ''' + Name + ''' not supported.');
+  Dest.Write(Format(LoadResString(@RsDeclarationFormat), [Name]));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -640,7 +639,7 @@ end;
 procedure TJclOrdinalTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIOrdinalType + JclEnumValueToIdent(
+  Dest.Writeln(LoadResString(@RsRTTIOrdinalType) + JclEnumValueToIdent(
     System.TypeInfo(TOrdType), TypeData.OrdType));
 end;
 
@@ -687,30 +686,31 @@ end;
 procedure TJclOrdinalRangeTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIMinValue + IntToStr(MinValue));
-  Dest.Writeln(RsRTTIMaxValue + IntToStr(MaxValue));
+  Dest.Writeln(LoadResString(@RsRTTIMinValue) + IntToStr(MinValue));
+  Dest.Writeln(LoadResString(@RsRTTIMaxValue) + IntToStr(MaxValue));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclOrdinalRangeTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
+const
+  cRange = '..';
 begin
   Dest.Write(Name + ' = ');
   if TypeInfo.Kind in [tkChar, tkWChar] then
   begin
     if (MinValue < Ord(' ')) or (MinValue > Ord('~')) then
-      Dest.Write('#' + IntToStr(MinValue) + ' .. ')
+      Dest.Write('#' + IntToStr(MinValue) + cRange)
     else
-      Dest.Write('''' + Chr(Byte(MinValue)) + ''' .. ');
+      Dest.Write('''' + Chr(Byte(MinValue)) + '''' + cRange);
     if (MaxValue < Ord(' ')) or (MaxValue > Ord('~')) then
-      Dest.Write('#' + IntToStr(MaxValue) + '; // ')
+      Dest.Write('#' + IntToStr(MaxValue))
     else
-      Dest.Write('''' + Chr(Byte(MaxValue)) + '''; // ');
+      Dest.Write('''' + Chr(Byte(MaxValue)) + '''');
   end
   else
-    Dest.Write(IntToStr(MinValue) + ' .. ' + IntToStr(MaxValue) + '; // ');
-  Dest.Write(JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
-  Dest.Writeln('');
+    Dest.Write(IntToStr(MinValue) + '..' + IntToStr(MaxValue));
+  Dest.Writeln('; // ' + JclEnumValueToIdent(System.TypeInfo(TOrdType), TypeData.OrdType));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -813,9 +813,9 @@ var
 begin
   inherited WriteTo(Dest);
   {$IFDEF COMPILER6_UP}
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + UnitName);
   {$ENDIF COMPILER6_UP}
-  Dest.Write(RsRTTINameList);
+  Dest.Write(LoadResString(@RsRTTINameList));
   Prefix := '(';
   for Idx := MinValue to MaxValue do
   begin
@@ -1027,7 +1027,7 @@ end;
 procedure TJclSetTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIBasedOn);
+  Dest.Writeln(LoadResString(@RsRTTIBasedOn));
   Dest.Indent;
   try
     BaseType.WriteTo(Dest);
@@ -1052,7 +1052,7 @@ begin
     if Base.QueryInterface(IJclEnumerationTypeInfo, BaseEnum) = S_OK then
       BaseEnum.DeclarationTo(Dest)
     else
-      Dest.Write(RsRTTITypeError);
+      Dest.Write(LoadResString(@RsRTTITypeError));
   end
   else
     Dest.Write(Base.Name);
@@ -1090,8 +1090,8 @@ end;
 procedure TJclFloatTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIFloatType + JclEnumValueToIdent(
-    System.TypeInfo(TFloatType), TypeData.FloatType));
+  Dest.Writeln(LoadResString(@RsRTTIFloatType) +
+    JclEnumValueToIdent(System.TypeInfo(TFloatType), TypeData.FloatType));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1132,7 +1132,7 @@ end;
 procedure TJclStringTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIMaxLen + IntToStr(MaxLength));
+  Dest.Writeln(LoadResString(@RsRTTIMaxLen) + IntToStr(MaxLength));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1476,10 +1476,10 @@ var
   Prop: IJclPropInfo;
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIClassName + ClassRef.ClassName);
-  Dest.Writeln(RsRTTIParent + Parent.ClassRef.ClassName);
-  Dest.Writeln(RsRTTIUnitName + UnitName);
-  Dest.Writeln(RsRTTIPropCount + IntToStr(PropertyCount) + ' (' +
+  Dest.Writeln(LoadResString(@RsRTTIClassName) + ClassRef.ClassName);
+  Dest.Writeln(LoadResString(@RsRTTIParent) + Parent.ClassRef.ClassName);
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + UnitName);
+  Dest.Writeln(LoadResString(@RsRTTIPropCount) + IntToStr(PropertyCount) + ' (' +
     IntToStr(TotalPropertyCount) + ')');
   Dest.Indent;
   try
@@ -1490,56 +1490,56 @@ begin
       Dest.Indent;
       try
         if Prop.HasIndex then
-          Dest.Writeln(Format('[%s %d]', [RsRTTIIndex, Prop.Index]));
+          Dest.Writeln(Format('[%s %d]', [LoadResString(@RsRTTIIndex), Prop.Index]));
         if Prop.HasDefault then
-          Dest.Writeln(Format('[%s %d]', [RsRTTIDefault, Prop.Default]));
+          Dest.Writeln(Format('[%s %d]', [LoadResString(@RsRTTIDefault), Prop.Default]));
         case Prop.ReaderType of
           pskStaticMethod:
             Dest.Writeln(Format('[%s %s $%p]',
-              [RsRTTIPropRead, RsRTTIStaticMethod,
+              [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIStaticMethod),
                Pointer(Prop.ReaderValue)]));
           pskField:
             Dest.Writeln(Format('[%s %s $%p]',
-              [RsRTTIPropRead, RsRTTIField,
+              [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIField),
                Pointer(Prop.ReaderValue)]));
           pskVirtualMethod:
             Dest.Writeln(Format('[%s %s $%p]',
-              [RsRTTIPropRead, RsRTTIVirtualMethod,
+              [LoadResString(@RsRTTIPropRead), LoadResString(@RsRTTIVirtualMethod),
                Pointer(Prop.ReaderValue)]));
         end;
         case Prop.WriterType of
           pskStaticMethod:
             Dest.Writeln(Format('[%s %s $%p]',
-              [RsRTTIPropWrite, RsRTTIStaticMethod,
+              [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIStaticMethod),
                Pointer(Prop.WriterValue)]));
           pskField:
             Dest.Writeln(Format('[%s %s $%p]',
-              [RsRTTIPropWrite, RsRTTIField,
+              [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIField),
                Pointer(Prop.WriterValue)]));
           pskVirtualMethod:
             Dest.Writeln(Format('[%s %s $%p]',
-              [RsRTTIPropWrite, RsRTTIVirtualMethod,
+              [LoadResString(@RsRTTIPropWrite), LoadResString(@RsRTTIVirtualMethod),
                Pointer(Prop.WriterValue)]));
         end;
         case Prop.StoredType of
           pskConstant:
             if Boolean(Prop.StoredValue) then
               Dest.Writeln(Format('[%s=%s]',
-                [RsRTTIPropStored, RsRTTITrue]))
+                [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTITrue)]))
             else
               Dest.Writeln(Format('[%s=%s]',
-                [RsRTTIPropStored, RsRTTIFalse]));
+                [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIFalse)]));
           pskStaticMethod:
             Dest.Writeln(Format('[%s=%s $%p]',
-              [RsRTTIPropStored, RsRTTIStaticMethod,
+              [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIStaticMethod),
                Pointer(Prop.StoredValue)]));
           pskField:
             Dest.Writeln(Format('[%s=%s $%p]',
-              [RsRTTIPropStored, RsRTTIField,
+              [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIField),
                Pointer(Prop.StoredValue)]));
           pskVirtualMethod:
             Dest.Writeln(Format('[%s=%s $%p]',
-              [RsRTTIPropStored, RsRTTIVirtualMethod,
+              [LoadResString(@RsRTTIPropStored), LoadResString(@RsRTTIVirtualMethod),
                Pointer(Prop.StoredValue)]));
         end;
       finally
@@ -1746,8 +1746,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclEventTypeInfo.GetParameters(
-  const ParamIdx: Integer): IJclEventParamInfo;
+function TJclEventTypeInfo.GetParameters(const ParamIdx: Integer): IJclEventParamInfo;
 var
   I: Integer;
   Param: Pointer;
@@ -1794,9 +1793,9 @@ var
   ParamFlags: TParamFlags;
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIMethodKind + JclEnumValueToIdent(
-    System.TypeInfo(TMethodKind), TypeData.MethodKind));
-  Dest.Writeln(RsRTTIParamCount + IntToStr(ParameterCount));
+  Dest.Writeln(LoadResString(@RsRTTIMethodKind) +
+    JclEnumValueToIdent(System.TypeInfo(TMethodKind), TypeData.MethodKind));
+  Dest.Writeln(LoadResString(@RsRTTIParamCount) + IntToStr(ParameterCount));
   Dest.Indent;
   try
     for I := 0 to ParameterCount-1 do
@@ -1805,16 +1804,16 @@ begin
         Dest.Writeln('');
       Param := Parameters[I];
       ParamFlags := Param.Flags;
-      Dest.Writeln(RsRTTIName + Param.Name);
-      Dest.Writeln(RsRTTIType + Param.TypeName);
-      Dest.Writeln(RsRTTIFlags + JclSetToStr(System.TypeInfo(TParamFlags),
-        ParamFlags, True, False));
+      Dest.Writeln(LoadResString(@RsRTTIName) + Param.Name);
+      Dest.Writeln(LoadResString(@RsRTTIType) + Param.TypeName);
+      Dest.Writeln(LoadResString(@RsRTTIFlags) +
+        JclSetToStr(System.TypeInfo(TParamFlags), ParamFlags, True, False));
     end;
   finally
     Dest.Outdent;
   end;
   if MethodKind = mkFunction then
-    Dest.Writeln(RsRTTIReturnType + ResultTypeName);
+    Dest.Writeln(LoadResString(@RsRTTIReturnType) + ResultTypeName);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1837,21 +1836,21 @@ begin
     Prefix := '; ';
     Param := Parameters[I];
     if pfVar in Param.Flags then
-      Dest.Write(RsRTTIVar)
+      Dest.Write(LoadResString(@RsRTTIVar))
     else
     if pfConst in Param.Flags then
-      Dest.Write(RsRTTIConst)
+      Dest.Write(LoadResString(@RsRTTIConst))
     else
     if pfOut in Param.Flags then
-      Dest.Write(RsRTTIOut);
+      Dest.Write(LoadResString(@RsRTTIOut));
     Dest.Write(Param.Name);
     if Param.TypeName <> '' then
     begin
       Dest.Write(': ');
       if pfArray in Param.Flags then
-        Dest.Write(RsRTTIArrayOf);
+        Dest.Write(LoadResString(@RsRTTIArrayOf));
       if AnsiSameText(Param.TypeName, 'TVarRec') and (pfArray in Param.Flags) then
-        Dest.Write(TrimRight(RsRTTIConst))
+        Dest.Write(TrimRight(LoadResString(@RsRTTIConst)))
       else
         Dest.Write(Param.TypeName);
     end;
@@ -1947,15 +1946,15 @@ var
 begin
   inherited WriteTo(Dest);
   if ifHasGuid in Flags then
-    Dest.Writeln(RsRTTIGUID + JclGuidToString(GUID));
+    Dest.Writeln(LoadResString(@RsRTTIGUID) + JclGuidToString(GUID));
   IntfFlags := Flags;
-  Dest.Writeln(RsRTTIFlags + JclSetToStr(System.TypeInfo(TIntfFlagsBase),
+  Dest.Writeln(LoadResString(@RsRTTIFlags) + JclSetToStr(System.TypeInfo(TIntfFlagsBase),
     IntfFlags, True, False));
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + UnitName);
   if Parent <> nil then
-    Dest.Writeln(RsRTTIParent + Parent.Name);
+    Dest.Writeln(LoadResString(@RsRTTIParent) + Parent.Name);
   {$IFDEF COMPILER6_UP}
-  Dest.Writeln(RsRTTIPropCount + IntToStr(PropertyCount));
+  Dest.Writeln(LoadResString(@RsRTTIPropCount) + IntToStr(PropertyCount));
   {$ENDIF COMPILER6_UP}
 end;
 
@@ -2017,8 +2016,8 @@ end;
 procedure TJclInt64TypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIMinValue + IntToStr(MinValue));
-  Dest.Writeln(RsRTTIMaxValue + IntToStr(MaxValue));
+  Dest.Writeln(LoadResString(@RsRTTIMinValue) + IntToStr(MinValue));
+  Dest.Writeln(LoadResString(@RsRTTIMaxValue) + IntToStr(MaxValue));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2099,15 +2098,15 @@ end;
 procedure TJclDynArrayTypeInfo.WriteTo(const Dest: IJclInfoWriter);
 begin
   inherited WriteTo(Dest);
-  Dest.Writeln(RsRTTIElSize + IntToStr(ElementSize));
+  Dest.Writeln(LoadResString(@RsRTTIElSize) + IntToStr(ElementSize));
   if ElementType = nil then
-    Dest.Writeln(RsRTTIElType + RsRTTITypeError)
+    Dest.Writeln(LoadResString(@RsRTTIElType) + LoadResString(@RsRTTITypeError))
   else
   if ElementType.Name[1] <> '.' then
-    Dest.Writeln(RsRTTIElType + ElementType.Name)
+    Dest.Writeln(LoadResString(@RsRTTIElType) + ElementType.Name)
   else
   begin
-    Dest.Writeln(RsRTTIElType);
+    Dest.Writeln(LoadResString(@RsRTTIElType));
     Dest.Indent;
     try
       ElementType.WriteTo(Dest);
@@ -2115,13 +2114,13 @@ begin
       Dest.Outdent;
     end;
   end;
-  Dest.Write(RsRTTIElNeedCleanup);
+  Dest.Write(LoadResString(@RsRTTIElNeedCleanup));
   if ElementsNeedCleanup then
-    Dest.Writeln(RsRTTITrue)
+    Dest.Writeln(LoadResString(@RsRTTITrue))
   else
-    Dest.Writeln(RsRTTIFalse);
-  Dest.Writeln(RsRTTIVarType + IntToStr(VarType));
-  Dest.Writeln(RsRTTIUnitName + UnitName);
+    Dest.Writeln(LoadResString(@RsRTTIFalse));
+  Dest.Writeln(LoadResString(@RsRTTIVarType) + IntToStr(VarType));
+  Dest.Writeln(LoadResString(@RsRTTIUnitName) + UnitName);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2129,11 +2128,11 @@ end;
 procedure TJclDynArrayTypeInfo.DeclarationTo(const Dest: IJclInfoWriter);
 begin
   if Name[1] <> '.' then
-    Dest.Write(Name + ' = ' + RsRTTIArrayOf)
+    Dest.Write(Name + ' = ' + LoadResString(@RsRTTIArrayOf))
   else
-    Dest.Write(RsRTTIArrayOf);
+    Dest.Write(LoadResString(@RsRTTIArrayOf));
   if ElementType = nil then
-    Dest.Write(RsRTTITypeError)
+    Dest.Write(LoadResString(@RsRTTITypeError))
   else
   if ElementType.Name[1] = '.' then
     ElementType.DeclarationTo(Dest)
@@ -2849,6 +2848,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.14  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.13  2004/08/01 05:52:11  marquardt
 // move constructors/destructors
 //

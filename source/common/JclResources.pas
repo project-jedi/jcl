@@ -340,15 +340,6 @@ resourcestring
   RsExprEvalExprRefCountAssertion = 'Expression compiler error: expression refcount < 0';
 
 //--------------------------------------------------------------------------------------------------
-// JclStrHashMap
-//--------------------------------------------------------------------------------------------------
-
-resourcestring
-  RsStringHashMapMustBeEmpty = 'HashList: must be empty to set size to zero';
-  RsStringHashMapDuplicate = 'Duplicate hash list entry: %s';
-  RsStringHashMapInvalidNode = 'Tried to remove invalid node: %s';
-
-//--------------------------------------------------------------------------------------------------
 // JclFileUtils
 //--------------------------------------------------------------------------------------------------
 
@@ -537,6 +528,8 @@ resourcestring
   RsNoNaN              = 'NaN expected';
   RsNaNTagError        = 'NaN Tag value %d out of range';
   RsNaNSignal          = 'NaN signaling %d';
+  RsPowerInfinite      = 'Power function: Result is infinite';
+  RsPowerComplex       = 'Power function: Result is complex';
 
 //--------------------------------------------------------------------------------------------------
 // JclMetadata
@@ -551,7 +544,7 @@ resourcestring
   RsLocalVarSigOutOfRange   = 'LocalVarSig count %d is out of range [1..$$FFFE]';
 
 //--------------------------------------------------------------------------------------------------
-// JclMidi
+// JclMIDI
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
@@ -568,9 +561,10 @@ resourcestring
   RsOctaveASharp = 'A#';
   RsOctaveB      = 'B';
 
-  RsMidiInUnknownError    = 'Unknown MIDI-In error No. %d';
-  RsMidiOutUnknownError   = 'Unknown MIDI-Out error No. %d';
-  RsInvalidMidiChannelNum = 'Invalid MIDI channel number (%d)';
+  RsMidiInvalidChannelNum = 'Invalid MIDI channel number (%d)';
+  {$IFDEF UNIX}
+  RsMidiNotImplemented    = 'JclMidi: MIDI I/O for Unix not (yet) implemented';
+  {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
 // JclMiscel
@@ -911,6 +905,8 @@ resourcestring
   RsRTTIElNeedCleanup     = 'Elements need clean up: ';
   RsRTTIVarType           = 'Variant type: ';
 
+  RsDeclarationFormat     = '// Declaration for ''%s'' not supported.';
+
 //--------------------------------------------------------------------------------------------------
 // JclSchedule
 //--------------------------------------------------------------------------------------------------
@@ -925,7 +921,17 @@ resourcestring
   RsScheduleDayNotSupported = 'Property Day not supported for current IndexKind';
   RsScheduleDayInRange      = 'Day values should fall in the range 1 .. 31';
   RsScheduleMonthInRange    = 'Month values should fall in the range 1 .. 12';
-  
+
+//--------------------------------------------------------------------------------------------------
+// JclStrHashMap
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsStringHashMapMustBeEmpty = 'HashList: must be empty to set size to zero';
+  RsStringHashMapDuplicate   = 'Duplicate hash list entry: %s';
+  RsStringHashMapInvalidNode = 'Tried to remove invalid node: %s';
+  RsStringHashMapNoTraits    = 'HashList must have traits';
+
 //--------------------------------------------------------------------------------------------------
 // JclStrings
 //--------------------------------------------------------------------------------------------------
@@ -934,7 +940,10 @@ resourcestring
   RsBlankSearchString       = 'Search string cannot be blank';
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
-  
+
+  RsStringsToMultiStringAssertion     = 'StringsToMultiString with empty item';
+  RsStringsToWideMultiStringAssertion = 'StringsToWideMultiString with empty item';
+
 //--------------------------------------------------------------------------------------------------
 // JclSynch
 //--------------------------------------------------------------------------------------------------
@@ -1031,6 +1040,14 @@ resourcestring
   RsUREExpressionEmpty     = 'Expression is empty.';
 
 //--------------------------------------------------------------------------------------------------
+// JclWinMidi
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsMidiInUnknownError    = 'Unknown MIDI-In error No. %d';
+  RsMidiOutUnknownError   = 'Unknown MIDI-Out error No. %d';
+
+//--------------------------------------------------------------------------------------------------
 // JclZlib
 //--------------------------------------------------------------------------------------------------
 
@@ -1086,6 +1103,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.11  2004/08/03 07:22:37  marquardt
+// resourcestring cleanup
+//
 // Revision 1.10  2004/08/02 15:30:16  marquardt
 // hunting down (rom) comments
 //
