@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: June 1, 2002                                                                      }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -789,7 +789,7 @@ const
 
 type
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
   PImageExportDirectory = ^TImageExportDirectory;
   _IMAGE_EXPORT_DIRECTORY = packed record
     Characteristics: DWORD;
@@ -806,7 +806,7 @@ type
   end;
   TImageExportDirectory = _IMAGE_EXPORT_DIRECTORY;
   IMAGE_EXPORT_DIRECTORY = _IMAGE_EXPORT_DIRECTORY;
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
 { Non-COFF Object file header }
 
@@ -1060,10 +1060,10 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-{$IFNDEF DELPHI6_UP}
+{$IFNDEF COMPILER6_UP}
   // possibly Borland's header translation bug, fixed in Delphi 6
   TLoadedImage = LoadedImage;
-{$ENDIF DELPHI6_UP}
+{$ENDIF COMPILER6_UP}
 
   PPImageSectionHeader = ^PImageSectionHeader;
 
@@ -1082,13 +1082,13 @@ type
     CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
     external 'imagehlp.dll' name 'ImageEnumerateCertificates';
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
   // lpServiceConfig can be nil
   function QueryServiceConfig(hService: SC_HANDLE;
     lpServiceConfig: PQueryServiceConfig; cbBufSize: DWORD;
     var pcbBytesNeeded: DWORD): BOOL; stdcall;
     external advapi32 name 'QueryServiceConfigA';
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
 //==================================================================================================
 // JclShell
@@ -1497,10 +1497,10 @@ const
   {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_WDM_DRIVER}
   {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE}
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
   {$EXTERNALSYM _IMAGE_EXPORT_DIRECTORY}
   {$EXTERNALSYM IMAGE_EXPORT_DIRECTORY}
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
   {$EXTERNALSYM ANON_OBJECT_HEADER}
   {$EXTERNALSYM _IMAGE_IMPORT_BY_NAME}
   {$EXTERNALSYM IMAGE_IMPORT_BY_NAME}
@@ -1563,9 +1563,9 @@ const
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
 
-{$IFNDEF DELPHI5_UP}
+{$IFNDEF COMPILER5_UP}
   {$EXTERNALSYM QueryServiceConfig}
-{$ENDIF DELPHI5_UP}
+{$ENDIF COMPILER5_UP}
 
   {$EXTERNALSYM CSIDL_COMMON_APPDATA}
 
