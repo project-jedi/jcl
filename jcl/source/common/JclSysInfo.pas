@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January 19, 2001                                              }
+{ Last modified: January 21, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -119,7 +119,17 @@ function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
 function GetBIOSDate: TDateTime;
 
-function RunningProcessesList(const List: TStrings): Boolean;
+//------------------------------------------------------------------------------
+// Processes, Tasks and Modules
+//------------------------------------------------------------------------------
+
+function RunningProcessesList(const List: TStrings; FullPath: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
+function GetTasksList(const List: TStrings): Boolean;
+function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
+function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
+function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
+function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
@@ -135,7 +145,7 @@ type
 
 var
 
-  { in case of additions, don't forget to update initialization section!}
+  { in case of additions, don't forget to update initialization section! }
 
   IsWin95: Boolean = False;
   IsWin95OSR2: Boolean = False;
@@ -468,6 +478,9 @@ implementation
 
 uses
   SysUtils, TLHelp32, Winsock,
+  {$IFNDEF DELPHI5_UP}
+  JclSysUtils,
+  {$ENDIF DELPHI5_UP}
   JclFileUtils, JclRegistry, JclShell, JclStrings, JclWin32;
 
 //==============================================================================
@@ -1118,73 +1131,313 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//==============================================================================
+// Processes, Tasks and Modules
+//==============================================================================
 
-function RunningProcessesList(const List: TStrings): Boolean;
+// todo move to JclResources
+
+resourcestring
+  RsSystemProcess = 'System Process';
+  RsSystemIdleProcess = 'System Idle Process';
+  
+function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
+
+  function ProcessFileName(PID: DWORD): string;
+  var
+    Handle: THandle;
+  begin
+    Result := '';
+    Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PID);
+    if Handle <> 0 then
+    try
+      SetLength(Result, MAX_PATH);
+      if FullPath then
+      begin
+        if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+          StrResetLength(Result)
+        else
+          Result := '';
+      end
+      else
+      begin
+        if GetModuleBaseNameA(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+          StrResetLength(Result)
+        else
+          Result := '';
+      end;
+    finally
+      CloseHandle(Handle);
+    end;
+  end;
 
   function BuildListTH: Boolean;
   var
     SnapProcHandle: THandle;
     ProcEntry: TProcessEntry32;
     NextProc: Boolean;
+    FileName: string;
   begin
     SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    if SnapProcHandle <> INVALID_HANDLE_VALUE then
-    begin
-      Result := True;
+    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
+    if Result then
+    try
       ProcEntry.dwSize := SizeOf(ProcEntry);
       NextProc := Process32First(SnapProcHandle, ProcEntry);
       while NextProc do
       begin
-        List.AddObject(ProcEntry.szExeFile, Pointer(ProcEntry.th32ProcessID));
+        if ProcEntry.th32ProcessID = 0 then
+        begin
+          // PID 0 is always the "System Idle Process" but this name cannot be
+          // retrieved from the system and has to be fabricated.
+          FileName := RsSystemIdleProcess;
+        end
+        else
+        begin
+          if IsWin2k then
+          begin
+            FileName := ProcessFileName(ProcEntry.th32ProcessID);
+            if FileName = '' then FileName := ProcEntry.szExeFile;
+          end
+          else
+          begin
+            FileName := ProcEntry.szExeFile; 
+            if not FullPath then FileName := ExtractFileName(FileName);
+          end;
+        end;
+        List.AddObject(FileName, Pointer(ProcEntry.th32ProcessID));
         NextProc := Process32Next(SnapProcHandle, ProcEntry);
       end;
+    finally
       CloseHandle(SnapProcHandle);
-    end
-    else
-      Result := False;
+    end;
   end;
 
   function BuildListPS: Boolean;
   var
     PIDs: array [0..1024] of DWORD;
-    Handle: THandle;
     Needed: DWORD;
     I: Integer;
-    ModuleFileName: array [0..MAX_PATH] of Char;
+    FileName: string;
   begin
     Result := EnumProcesses(@PIDs, SizeOf(PIDs), Needed);
     if Result then
     begin
       for I := 0 to (Needed div SizeOf(DWORD)) - 1 do
       begin
-        if PIDs[I] <> 0 then
-        begin
-          Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PIDs[I]);
-          if Handle <> 0 then
-          begin
-            if GetModuleFileNameEx(Handle, 0, ModuleFileName, SizeOf(ModuleFileName)) = 0 then
-              List.AddObject('[System]', Pointer(INVALID_HANDLE_VALUE))
+        case PIDs[I] of
+          0:
+            // PID 0 is always the "System Idle Process" but this name cannot be
+            // retrieved from the system and has to be fabricated.
+            FileName := RsSystemIdleProcess;
+          2:
+            // On NT 4 PID 2 is the "System Process" but this name cannot be
+            // retrieved from the system and has to be fabricated.
+            if IsWinNT4 then
+              FileName := RsSystemProcess
             else
-              List.AddObject(ModuleFileName, Pointer(PIDs[I]));
-            CloseHandle(Handle);
-          end;
+              FileName := ProcessFileName(PIDs[I]);
+          8:
+            // On Win2K PID 8 is the "System Process" but this name cannot be
+            // retrieved from the system and has to be fabricated.
+            if IsWin2K then
+              FileName := RsSystemProcess
+            else
+              FileName := ProcessFileName(PIDs[I]);
+        else
+          FileName := ProcessFileName(PIDs[I]);
         end;
+        if FileName <> '' then List.AddObject(FileName, Pointer(PIDs[I]));
       end;
     end;
   end;
 
 begin
-  List.BeginUpdate;
-  try
-    List.Clear;
-    if IsWinNT then
-      Result := BuildListPS
-    else
-      Result := BuildListTH;
-  finally
-    List.EndUpdate;
+  if GetWindowsVersion in [wvWinNT3, wvWinNT4] then
+    Result := BuildListPS
+  else
+    Result := BuildListTH;
+end;
+
+//------------------------------------------------------------------------------
+
+function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
+
+  function EnumModulesPS: Boolean;
+  var
+    ProcessHandle: THandle;
+    Needed: DWORD;
+    Modules: array of THandle;
+    FileName: array [0..MAX_PATH] of Char;
+    ModuleInfo: TModuleInfo;
+    I, Cnt: Integer;
+  begin
+    Result := False;
+    ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, ProcessID);
+    if ProcessHandle <> 0 then
+    try
+      if EnumProcessModules(ProcessHandle, nil, 0, Needed) then
+      begin
+        Cnt := Needed div SizeOf(HMODULE);
+        SetLength(Modules, Cnt);
+        if EnumProcessModules(ProcessHandle, @Modules[0], Needed, Needed) then
+        begin
+          Result := True;
+          for I := 0 to Cnt - 1 do
+            if (GetModuleFileNameEx(ProcessHandle, Modules[I], Filename, SizeOf(Filename)) > 0) and
+               (GetModuleInformation(ProcessHandle, Modules[I], @ModuleInfo, SizeOf(ModuleInfo))) then
+              List.AddObject(FileName, Pointer(ModuleInfo.lpBaseOfDll));
+        end;
+      end;
+    finally
+      CloseHandle(ProcessHandle);
+    end;
   end;
+
+  function EnumModulesTH: Boolean;
+  var
+    SnapProcHandle: THandle;
+    Module: TModuleEntry32;
+    Next: Boolean;
+  begin
+    SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessID);
+    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
+    if Result then
+    try
+      FillChar(Module, SizeOf(Module), #0);
+      Module.dwSize := SizeOf(Module);
+      Next := Module32First(SnapProcHandle, Module);
+      while Next do
+      begin
+        List.AddObject(Module.szExePath, Pointer(Module.hModule));
+        Next := Module32Next(SnapProcHandle, Module);
+      end;
+    finally
+      CloseHandle(SnapProcHandle);
+    end;
+  end;
+
+begin
+  if IsWinNT then
+    Result := EnumModulesPS
+  else
+    Result := EnumModulesTH;
+end;
+
+//------------------------------------------------------------------------------
+
+// http://msdn.microsoft.com/library/periodic/period97/win321197.htm
+
+function GetTasksList(const List: TStrings): Boolean;
+
+  function EnumWindowsProc(Wnd: HWND; List: TStrings): Boolean; stdcall;
+  var
+    ParentWnd: HWND;
+    ExStyle: DWORD;
+    Caption: array [0..255] of Char;
+  begin
+    if IsWindowVisible(Wnd) then
+    begin
+      ParentWnd := GetWindowLong(Wnd, GWL_HWNDPARENT);
+      ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
+      if ((ParentWnd = 0) or (ParentWnd = GetDesktopWindow)) and
+        ((ExStyle and WS_EX_TOOLWINDOW = 0) or (ExStyle and WS_EX_APPWINDOW <> 0)) and
+        (GetWindowText(Wnd, Caption, SizeOf(Caption)) > 0) then
+          List.AddObject(Caption, Pointer(Wnd));
+    end;
+    Result := True;
+  end;
+
+begin
+  Result := EnumWindows(@EnumWindowsProc, Integer(List));
+end;
+
+//------------------------------------------------------------------------------
+
+function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
+var
+  Res: DWORD;
+begin
+  Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, Res) <> 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
+var
+  Width, Height: Integer;
+  TempIcon: HICON;
+  IconType: DWORD;
+begin
+  if LargeIcon then
+  begin
+    Width := GetSystemMetrics(SM_CXICON);
+    Height := GetSystemMetrics(SM_CYICON);
+    IconType := ICON_BIG;
+    TempIcon := GetClassLong(Wnd, GCL_HICON);
+  end
+  else
+  begin
+    Width := GetSystemMetrics(SM_CXSMICON);
+    Height := GetSystemMetrics(SM_CYSMICON);
+    IconType := ICON_SMALL;
+    TempIcon := GetClassLong(Wnd, GCL_HICONSM);
+  end;
+  if TempIcon = 0 then
+    TempIcon := SendMessage(Wnd, WM_GETICON, IconType, 0);
+  if (TempIcon = 0) and not LargeIcon then
+    TempIcon := SendMessage(Wnd, WM_GETICON, ICON_BIG, 0);
+  Result := CopyImage(TempIcon, IMAGE_ICON, Width, Height, 0);
+end;
+
+//------------------------------------------------------------------------------
+
+// Q178893
+
+function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
+var
+  ProcessHandle: THandle;
+
+  function EnumWindowsProc(Wnd: HWND; ProcessID: DWORD): Boolean; stdcall;
+  var
+    PID: DWORD;
+  begin
+    GetWindowThreadProcessId(Wnd, @PID);
+    if ProcessID = PID then
+      PostMessage(Wnd, WM_CLOSE, 0, 0);
+    Result := True;
+  end;
+
+begin
+  Result := taError;
+  if ProcessID <> GetCurrentProcessId then
+  begin
+    ProcessHandle := OpenProcess(SYNCHRONIZE or PROCESS_TERMINATE, False, ProcessID);
+    try
+      if ProcessHandle <> 0 then
+      begin
+        EnumWindows(@EnumWindowsProc, ProcessID);
+        if WaitForSingleObject(ProcessHandle, Timeout) = WAIT_OBJECT_0 then
+          Result := taClean
+        else if TerminateProcess(ProcessHandle, 0) then
+          Result := taKill;
+      end;
+    finally
+      CloseHandle(ProcessHandle);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
+var
+  PID: DWORD;
+begin
+  if GetWindowThreadProcessId(Wnd, @PID) <> 0 then
+    Result := TerminateApp(PID, Timeout)
+  else
+    Result := taError;  
 end;
 
 //------------------------------------------------------------------------------
@@ -1433,7 +1686,7 @@ asm
         MOV     [ECX+$04], EDX
         {$ELSE}
         DW      $310F
-        {$ENDIF}
+        {$ENDIF SUPPORTS_INT64}
 end;
 
 //------------------------------------------------------------------------------
