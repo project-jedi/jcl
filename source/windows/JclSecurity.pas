@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: April 21, 2000                                                }
+{ Last modified: August 9, 2000                                                }
 {                                                                              }
 {******************************************************************************}
 
@@ -54,6 +54,10 @@ function EnableThreadPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 function PrivilegeEnabled(const Privilege: string): Boolean;
 
+function GetPrivilegeDisplayName(const PrivilegeName: string): string;
+function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
+function GetUserObjectName(hUserObject: THandle): string;
+
 implementation
 
 uses
@@ -61,7 +65,7 @@ uses
   AccCtrl, AclApi,
   {$ENDIF}
   SysUtils,
-  JclWin32;
+  JclStrings, JclWin32;
 
 //==============================================================================
 // Access Control
@@ -233,6 +237,60 @@ begin
     Result := PrivilegeCheck(Token, TokenPriv, Res) and Res;
     CloseHandle(Token);
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetPrivilegeDisplayName(const PrivilegeName: string): string;
+var
+  Count: DWORD;
+  LangID: DWORD;
+begin
+  Count  := 0;
+  LangID := 0; // li := DWORD(MAKELANGID(LANG_DEFAULT, LANG_USER));
+
+  // have the the API function determine the required string length
+  if not LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
+    Count := 256;
+  SetLength(Result, Count + 1);
+
+  if LookupPrivilegeDisplayName(nil, PChar(PrivilegeName), PChar(Result), Count, LangID) then
+    StrResetLength(Result)
+  else
+    Result:= '';
+end;
+
+//------------------------------------------------------------------------------
+
+function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
+var
+  Sd: PSecurity_Descriptor;
+  Si: Security_Information;
+begin
+  Sd := PSecurity_Descriptor(LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH));
+  InitializeSecurityDescriptor(Sd, SECURITY_DESCRIPTOR_REVISION);
+  SetSecurityDescriptorDacl(Sd, True, nil, False);
+
+  Si := DACL_SECURITY_INFORMATION;
+  Result := SetUserObjectSecurity(hUserObject, Si, Sd);
+
+  LocalFree(HLOCAL(Sd));
+end;
+
+//------------------------------------------------------------------------------
+
+function GetUserObjectName(hUserObject: THandle): string;
+var
+  Count: DWORD;
+begin
+  // have the the API function determine the required string length
+  GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), 0, Count);
+  SetLength(Result, Count + 1);
+
+  if GetUserObjectInformation(hUserObject, UOI_NAME, PChar(Result), Count, Count) then
+    StrResetLength(Result)
+  else
+    Result := '';
 end;
 
 end.
