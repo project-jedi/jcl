@@ -38,28 +38,16 @@ function GetMDACVersion: string;
 implementation
 
 uses
-  {$IFDEF WIN32}
   Windows, ActiveX,
-  {$ENDIF WIN32}
   SysUtils,
   JclFileUtils, JclRegistry, JclSysUtils, JclWin32;
 
 function IsDCOMEnabled: Boolean;
 var
-  //Ole32: HModule;
-  //CoCreateInstanceEx: TCoCreateInstanceExProc;
   RegValue: string;
 begin
-  //Result := False;
-  //Ole32 := GetModuleHandle('ole32.dll');
-  //Win32Check(Ole32 <> 0);
-  //@CoCreateInstanceEx := GetProcAddress(Ole32, 'CoCreateInstanceEx');
-  //Result := @CoCreateInstanceEx <> nil;
-  //if Result then
-  //begin
   RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE\', 'EnableDCOM');
   Result := (RegValue = 'y') or (RegValue = 'Y');
-  //end;
 end;
 
 //------------------------------------------------------------------------------
