@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: October 13, 2002                                                                  }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,10 +35,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Classes, SysUtils, Contnrs,
   JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 //--------------------------------------------------------------------------------------------------
