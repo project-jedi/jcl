@@ -142,6 +142,7 @@
       <fileset dir="${basedir}\.." >
           <exclude name="${basedir}/dist/**" />
           <exclude name="${install.dir}/prototypes/**" />
+          <exclude name="${install.dir}/prototypes.mak" />
           <exclude name="${help.dir}/dtx/**" />
           <exclude name="${help.dir}/HIT/**" />
           <exclude name="${help.dir}/*.txt" />
@@ -160,9 +161,14 @@
           <exclude name="${basedir}/want.*" />
           <exclude name="${basedir}/devtools/**" />
 
+          <include name="${bin.dir}/JCL-install.ini" />
           <include name="${install.dir}/**/*.cfg" />
+          <include name="${install.dir}/**/*.conf" />
           <include name="${install.dir}/QJediInstaller.conf" />
           <include name="${doc.dir}/**" />
+          <include name="${lib.dir}/**/*.exc" />
+          <include name="${pack.dir}/**/*.bmk" />
+          <include name="${pack.dir}/**/*.gmk" />
           <include name="${basedir}/**/*.pas" />
           <include name="${basedir}/**/*.dfm" />
           <include name="${basedir}/**/*.xfm" />
@@ -174,6 +180,7 @@
           <include name="${basedir}/**/*.dpr" />
           <include name="${basedir}/**/*.dpk" />
           <include name="${basedir}/**/*.bpg" />
+          <include name="${basedir}/**/*.bpf" />
           <include name="${basedir}/**/*.bpk" />
           <include name="${basedir}/**/*.mak" />
 
@@ -181,8 +188,8 @@
           <include name="${basedir}/**/*.res" />
           <include name="${basedir}/**/*.ico" />
 
-          <!-- include name="${help.dir}/JCLHelp.hlp" / -->
-          <!-- include name="${help.dir}/JCLHelp.cnt" / -->
+          <include name="${help.dir}/JCLHelp.hlp" />
+          <include name="${help.dir}/JCLHelp.cnt" />
 
           <include name="${basedir}/**/*.tlb" />
 
@@ -190,8 +197,13 @@
           <include name="${basedir}/**/*.htm" />
           <include name="${basedir}/**/*.html" />
           <!-- include name="${basedir}/**/*.xml" / -->
-          <include name="${basedir}/install.bat" />
+          <include name="${basedir}/Install.bat" />
+          <include name="${basedir}/QInstall.bat" />
+          <include name="${basedir}/clean.bat" />
+          <include name="${basedir}/clean.sh" />
           <include name="${basedir}/install.sh" />
+          <include name="${samp.dir}/make.bat" />
+          <include name="${samp.dir}/pushd.bat" />
       </fileset>
     </zip>
   </target>
