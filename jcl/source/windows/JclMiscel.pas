@@ -20,7 +20,7 @@
 { Various miscellanuous routines that do not (yet) fit nicely into other units                     }
 {                                                                                                  }
 { Unit owner: Jeroen Speldekamp                                                                    }
-{ Last modified: April 6, 2003                                                                     }
+{ Last modified: January 6, 2004                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -416,9 +416,13 @@ begin
   end;
 
   // Step 5: create the child process
-  if not CreateProcessAsUser(hUserToken, nil, PChar(CommandLine),
-    nil, nil, False, CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP,
-    Environment, nil, StartUpInfo, ProcInfo) then
+  if not CreateProcessAsUser(hUserToken, nil, PChar(CommandLine), nil, nil,
+    False, CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, Environment, nil,
+    {$IFDEF FPC}
+    @StartUpInfo, @ProcInfo
+    {$ELSE}
+    StartUpInfo, ProcInfo
+    {$ENDIF}) then
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:
@@ -443,6 +447,6 @@ begin
   // (it shouldn't happen due to the use of exceptions in the above lines)
   CloseHandle(ProcInfo.hThread);
   CloseHandle(ProcInfo.hProcess);
-end;
+end;
 
 end.
