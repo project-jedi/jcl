@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 18, 2000                                            }
+{ Last modified: January 26, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -95,7 +95,7 @@ type
   end;
 
 var
-  AppInstances: TJclAppInstances = nil;
+  AppInstances: TJclAppInstances;
 
 //==============================================================================
 // TJclAppInstances
@@ -299,7 +299,7 @@ var
   Msg: TMessage;
 
   function EnumWinProc(Wnd: HWND; Message: PMessage): BOOL; stdcall;
-  begin // TODO : SendMessageTimeout would be better, it allows to check whether message was cachted by a window to stop enumerating
+  begin 
     with Message^ do
       SendNotifyMessage(Wnd, Msg, WParam, LParam);
     Result := True;
