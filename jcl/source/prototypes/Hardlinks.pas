@@ -460,7 +460,7 @@ type
 // -----------------------------------------------------------------
 // located at 0x7FFDF000
 
-  PEB = record
+  _PEB = record
     InheritedAddressSpace: Boolean;                      // 000
     ReadImageFileExecOptions: Boolean;                   // 001
     BeingDebugged: Boolean;                              // 002
@@ -472,7 +472,7 @@ type
     SubSystemData: DWORD;                                // 014
     ProcessHeap: Pointer;                                // 018  THandle
     FastPebLock: PCRITICAL_SECTION;                      // 01C
-    AcquireFastPebLock PPEBLOCKROUTINE;                  // 020  function
+    AcquireFastPebLock: PPEBLOCKROUTINE;                 // 020  function
     ReleaseFastPebLock: PPEBLOCKROUTINE;                 // 024  function
     EnvironmentUpdateCount: DWORD;                       // 028
     KernelCallbackTable: PFarProc;                       // 02C  function
@@ -522,6 +522,7 @@ type
     CSDVersion: PWord;                                   // 1E0
     d1E4: DWORD;                                         // 1E4
   end;
+  PEB = _PEB;
   PPEB = ^PEB;
   PPPEB = ^PPEB;
 
@@ -550,7 +551,7 @@ type
 // -----------------------------------------------------------------
 // located at 0x7FFDE000, 0x7FFDD000, ...
 
-  TEB = record
+  _TEB = record
     Tib: NT_TIB;                   // 000
     EnvironmentPointer: Pointer;   // 01C
     ClientId: CLIENT_ID;           // 020
@@ -559,6 +560,7 @@ type
     Peb: PPEB;                     // 030
     LastErrorValue: DWORD;         // 034
   end;
+  TEB = _TEB;
   PTEB = ^TEB;
   PPTEB = ^PTEB;
 
@@ -1086,6 +1088,9 @@ initialization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.4  2004/10/22 01:26:50  rrossmair
+// - fixed style cleaning collateral damage (as far as required to make it compile)
+//
 // Revision 1.3  2004/10/21 21:58:03  assarbad
 // - minimal changes in the prototype
 //   (change of the filename for the release version on assarbad.net
