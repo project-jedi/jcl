@@ -17,8 +17,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsDigit(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -37,8 +38,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsAlphaNum(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -58,8 +60,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsControl(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -79,8 +82,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsSpace(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -100,8 +104,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsWhiteSpace(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -122,8 +127,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsBlank(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -143,8 +149,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsPunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -164,8 +171,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsGraph(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -185,8 +193,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsPrintable(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -206,8 +215,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsUpper(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -227,8 +237,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsLower(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -248,8 +259,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsTitle(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -269,8 +281,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsHexDigit(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -289,8 +302,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsIsoControl(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -310,8 +324,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsFormatControl(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -331,8 +346,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsSymbol(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -352,8 +368,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsNumber(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -373,8 +390,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsNonSpacing(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -394,8 +412,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsOpenPunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -415,8 +434,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsClosePunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -436,8 +456,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsInitialPunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -457,8 +478,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsFinalPunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -478,8 +500,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsCased(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -499,8 +522,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsComposed(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -521,8 +545,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsQuotationMark(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -542,8 +567,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsSymmetric(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -564,8 +590,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsMirroring(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -585,8 +612,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsNonBreaking(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -606,8 +634,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsMark(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -627,8 +656,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsModifier(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -647,8 +677,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsLetterNumber(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -668,8 +699,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsConnectionPunctuation(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -689,8 +721,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsMath(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -710,8 +743,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsDash(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -731,8 +765,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsCurrency(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -752,8 +787,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsModifierSymbol(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -773,8 +809,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsNonSpacingMark(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -794,8 +831,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsSpacingMark(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -815,8 +853,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsEnclosing(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -836,8 +875,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsPrivate(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -857,8 +897,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsSurrogate(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -878,8 +919,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsLineSeparator(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -899,8 +941,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsParagraphSeparator(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -920,8 +963,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsIdentifierStart(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -946,8 +990,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsIdentifierPart(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -975,8 +1020,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsDefined(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -996,8 +1042,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsUndefined(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -1017,8 +1064,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsHan(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -1037,8 +1085,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeIsHangul(C: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -1058,8 +1107,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Character test routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeNumberLookup(Code: <REF TARGET"..\Types\PUCS4">UCS4</REF>; var Number: <REF TARGET"..\Types\TUcNumber">TUcNumber</REF>): Boolean;
@@ -1079,8 +1129,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Low level character routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=UnicodeToUpper
@@ -1103,8 +1154,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Low level character routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=UnicodeNumberLookup
@@ -1127,8 +1179,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Low level character routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=UnicodeNumberLookup
@@ -1151,8 +1204,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Low level character routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=UnicodeNumberLookup
@@ -1178,8 +1232,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Directionality
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=UnicodeIsLeftToRight
@@ -1207,8 +1262,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Directionality
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=UnicodeIsRightToLeft
@@ -1238,8 +1294,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Directionality
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=UnicodeIsRightToLeft
@@ -1268,8 +1325,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Directionality
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=UnicodeIsRightToLeft
@@ -1297,8 +1355,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Directionality
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=UnicodeIsRightToLeft
@@ -1326,8 +1385,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Directionality
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=UnicodeIsRightToLeft
@@ -1353,8 +1413,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
@@ -1374,8 +1435,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
@@ -1402,8 +1464,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideTrim(const S: WideString): WideString;
@@ -1423,8 +1486,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=WideTrimLeft
@@ -1448,8 +1512,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=WideTrimLeft
@@ -1473,8 +1538,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=WideTrim
@@ -1498,8 +1564,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideUpperCase(C: WideChar): WideString;
@@ -1519,8 +1586,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideTitleCaseString(C: WideChar): WideString;
@@ -1540,8 +1608,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideDecompose(const S: WideString; Compatible: Boolean): WideString;
@@ -1563,8 +1632,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideCompose(const S: WideString): WideString;
@@ -1584,8 +1654,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideCharPos(const S: WideString; const Ch: WideChar; const Index: Integer): Integer;
@@ -1610,8 +1681,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideAdjustLineBreaks(const S: WideString): WideString;
@@ -1634,8 +1706,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrRNScanW(S1, S2: PWideChar): Integer;
@@ -1662,8 +1735,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrNScan
@@ -1688,8 +1762,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrRNScan
@@ -1711,8 +1786,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure StrDisposeW(Str: PWideChar);
@@ -1729,8 +1805,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrNewW(Str: PWideChar): PWideChar;
@@ -1751,8 +1828,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrAllocW(Size: Cardinal): PWideChar;
@@ -1782,8 +1860,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrBufSizeW(Str: PWideChar): Cardinal;
@@ -1801,8 +1880,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrPosW(Str, SubStr: PWideChar): PWideChar;
@@ -1822,8 +1902,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrRScanW
@@ -1847,8 +1928,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrPosW
@@ -1879,8 +1961,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrPosW
@@ -1918,8 +2001,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
@@ -1950,8 +2034,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrICompW(Str1, Str2: PWideChar): Integer;
@@ -1981,8 +2066,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrCompW(Str1, Str2: PWideChar): Integer;
@@ -2012,8 +2098,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
@@ -2036,8 +2123,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrCatW
@@ -2061,8 +2149,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrLCatW
@@ -2087,8 +2176,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrPCopyW
@@ -2111,8 +2201,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrPLCopyW
@@ -2137,8 +2228,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
@@ -2159,8 +2251,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrCopyW
@@ -2187,8 +2280,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StrMoveW
@@ -2213,8 +2307,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StrCopyW
@@ -2236,8 +2331,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function StrLenW(Str: PWideChar): Cardinal;
@@ -2256,8 +2352,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Null terminated strings
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharSetFromLocale(Language: LCID): TFontCharSet;
@@ -2281,8 +2378,9 @@ SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CodePageFromLocale
@@ -2308,8 +2406,9 @@ SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CodeBlockFromChar(const C: UCS4): <REF Target"..\Types\TUnicodeBlock">TUnicodeBlock</REF>;
@@ -2333,8 +2432,9 @@ SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function KeyboardCodePage: Word;
@@ -2352,8 +2452,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=CodePageFromLocale
@@ -2375,8 +2476,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=KeyboardCodePage
@@ -2413,8 +2515,9 @@ SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=WideStringToStringEx
@@ -2441,8 +2544,9 @@ SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function WideStringToStringEx(const WS: WideString; CodePage: Word): String;
@@ -2474,8 +2578,9 @@ SubCat=Utility functions
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StringToWideStringEx
@@ -2497,8 +2602,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString conversion routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=UTF8ToWideString
@@ -2519,8 +2625,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString conversion routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=WideStringToUTF8
@@ -2545,8 +2652,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TSearchEngine;..\TSearchEngine
@@ -2636,8 +2744,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TSearchEngine = class (TObject)
@@ -2651,8 +2760,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AOwner: TWideStrings); virtual;
@@ -2677,8 +2787,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -2693,8 +2804,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetCount: Integer; virtual;
@@ -2711,8 +2823,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure AddResult(Start, Stop: Cardinal); virtual;
@@ -2727,8 +2840,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Clear; virtual;
@@ -2744,8 +2858,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ClearResults; virtual;
@@ -2760,8 +2875,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure DeleteResult(Index: Cardinal); virtual;
@@ -2779,8 +2895,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure FindPrepare(const Pattern: WideString; Options: <REF Target"..\Types\TSearchFlags">TSearchFlags</REF>); overload; virtual; abstract;
@@ -2803,8 +2920,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
@@ -2834,8 +2952,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FindAll
@@ -2862,8 +2981,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=FindFirst
@@ -2887,8 +3007,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=FindAll
@@ -2909,8 +3030,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TUTBMSearch = class (<REF TARGET"..\TSearchEngine\TSearchEngine">TSearchEngine</REF>)
@@ -2929,8 +3051,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ClearPattern;
@@ -2945,8 +3068,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Compile(Pattern: <REF TARGET"..\Types\PUCS2">PUCS2</REF>; PatternLength: Integer; Flags: <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>);
@@ -2968,8 +3092,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Find(Text: <REF TARGET"..\Types\PUCS2">PUCS2</REF>; TextLen: Cardinal; var MatchStart, MatchEnd: Cardinal): Boolean;
@@ -2994,8 +3119,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Match(Text, Start, Stop: <REF TARGET"..\Types\PUCS2">PUCS2</REF>; var MatchStart, MatchEnd: Cardinal): Boolean;
@@ -3039,8 +3165,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetSkipValue(TextStart, TextEnd: <REF TARGET"..\Types\PUCS2">PUCS2</REF>): Cardinal;
@@ -3063,8 +3190,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Clear; override;
@@ -3080,8 +3208,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure FindPrepare(const Pattern: WideString; Options: <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>); overload; override; abstract;
@@ -3104,8 +3233,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; override; abstract;
@@ -3135,8 +3265,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FindAll
@@ -3163,8 +3294,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TUTBMSearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=FindFirst
@@ -3238,8 +3370,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TURESearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure FindPrepare(const Pattern: WideString; Options: <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>); overload; override; abstract;
@@ -3262,8 +3395,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TURESearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; override; abstract;
@@ -3293,8 +3427,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TURESearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FindAll
@@ -3321,8 +3456,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=TURESearch
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=FindFirst
@@ -3340,8 +3476,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PUTF8 = ^UTF8;
@@ -3355,8 +3492,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PUTF16 = ^UTF16;
@@ -3370,8 +3508,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PUTF32 = ^UTF32;
@@ -3385,8 +3524,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PUCS4 = ^UCS4;
@@ -3401,8 +3541,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PUCS2 = PWideChar;
@@ -3417,8 +3558,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TUcNumber = record
@@ -3439,8 +3581,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=UnicodeNumberLookup;..\Low level character routines\UnicodeNumberLookup
@@ -3463,8 +3606,9 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=WideNormalize;..\WideString routines\WideNormalize
@@ -3486,8 +3630,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
@@ -3507,8 +3652,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=WideString routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnicodeComposePair(First, Second: <REF TARGET"..\Types\PUCS4">UCS4</REF>; var Composite: <REF TARGET"..\Types\PUCS4">UCS4</REF>): Boolean;
@@ -3529,8 +3675,9 @@ Unit=JclUnicode
 Category=Unicode
 SubCat=Low level character routines
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TUnicodeBlock = (ubUndefined, ubBasicLatin, ubLatin1Supplement,
@@ -3573,5 +3720,6 @@ Kind=Type
 Unit=JclUnicode
 Category=Unicode
 Author=Mike Lischke;public@lischke-online.de
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
