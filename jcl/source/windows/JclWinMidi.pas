@@ -20,7 +20,7 @@
 { MIDI functions for MS Windows platform                                                           }
 {                                                                                                  }
 { Unit owner: Robert Rossmair                                                                      }
-{ Last modified: April 7, 2002                                                                     }
+{ Last modified: April 8, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,6 +35,10 @@ uses
 
 type
   TStereoChannel = (scLeft, scRight);
+  
+//--------------------------------------------------------------------------------------------------
+// MIDI Out
+//--------------------------------------------------------------------------------------------------
 
   IJclWinMidiOut = interface (IJclMidiOut)
     ['{F3FCE71C-B924-462C-BA0D-8C2DC118DADB}']
@@ -48,10 +52,15 @@ type
     property Volume: Word read GetVolume write SetVolume;
   end;
 
-procedure MidiInCheck(Code: MMResult);
-procedure MidiOutCheck(Code: MMResult);
 function MidiOut(DeviceID: UINT): IJclWinMidiOut;
 function MidiOutputs: TStrings;
+procedure MidiOutCheck(Code: MMResult);
+
+//--------------------------------------------------------------------------------------------------
+// MIDI In
+//--------------------------------------------------------------------------------------------------
+
+procedure MidiInCheck(Code: MMResult);
 
 implementation
 
@@ -122,7 +131,7 @@ begin
 end;
 
 //==================================================================================================
-// IJclWinMidiOut implementation
+// MidiOut implementation
 //==================================================================================================
 
 type
