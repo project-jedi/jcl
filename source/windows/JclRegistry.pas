@@ -86,7 +86,7 @@ implementation
 
 uses
   SysUtils,
-  JclResources, JclSysInfo;
+  JclResources;
 
 //==============================================================================
 // Internal helper routines
@@ -116,7 +116,7 @@ end;
 function GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; var RegPath: string): Boolean;
 begin
   Result := False;
-  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
+  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Exit;
   Key := HKEY_CURRENT_USER;
   if ExecKind in [ekMachineRun, ekMachineRunOnce, ekServiceRun, ekServiceRunOnce] then
