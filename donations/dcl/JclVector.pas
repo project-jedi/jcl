@@ -62,8 +62,8 @@ type
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
     { IIntfList }
-    procedure Add(Index: Integer; AObject: IInterface); overload;
-    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
+    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AObject: IInterface): Integer;
     function LastIndexOf(AObject: IInterface): Integer;
@@ -113,8 +113,8 @@ type
     procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
     { IStrList }
-    procedure Add(Index: Integer; const AString: string); overload;
-    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
+    procedure Insert(Index: Integer; const AString: string); overload;
+    function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -154,8 +154,8 @@ type
     function RetainAll(ACollection: ICollection): Boolean;
     function Size: Integer;
     { IList }
-    procedure Add(Index: Integer; AObject: TObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    procedure Insert(Index: Integer; AObject: TObject); overload;
+    function InsertAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -539,8 +539,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfVector.Add(Index: Integer; AObject: IInterface);
+procedure TJclIntfVector.Insert(Index: Integer; AObject: IInterface);
 begin
+  if (Index < 0) or (Index > FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(Items);
@@ -557,16 +559,16 @@ begin
   Result := True;
 end;
 
-function TJclIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   Size: Integer;
 begin
   Result := False;
-  if ACollection = nil then
-    Exit;
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if ACollection = nil then
+    Exit;
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size], Size * SizeOf(IInterface));
   It := ACollection.First;
@@ -825,8 +827,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclStrVector.Add(Index: Integer; const AString: string);
+procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
+  if (Index < 0) or (Index > FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1], (FCount - Index) * SizeOf(string));
   FCapacity := Length(Items);
   Items[Index] := AString;
@@ -855,16 +859,16 @@ begin
   Result := True;
 end;
 
-function TJclStrVector.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrVector.InsertAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   Size: Integer;
 begin
   Result := False;
-  if ACollection = nil then
-    Exit;
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if ACollection = nil then
+    Exit;
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size], Size * SizeOf(string));
   It := ACollection.First;
@@ -1111,8 +1115,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclVector.Add(Index: Integer; AObject: TObject);
+procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
+  if (Index < 0) or (Index > FCount) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(TObject));
   FCapacity := Length(Items);
@@ -1129,16 +1135,16 @@ begin
   Result := True;
 end;
 
-function TJclVector.AddAll(Index: Integer; ACollection: ICollection): Boolean;
+function TJclVector.InsertAll(Index: Integer; ACollection: ICollection): Boolean;
 var
   It: IIterator;
   Size: Integer;
 begin
   Result := False;
-  if ACollection = nil then
-    Exit;
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
+  if ACollection = nil then
+    Exit;
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size], Size * SizeOf(IInterface));
   It := ACollection.First;

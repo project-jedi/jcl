@@ -153,9 +153,8 @@ type
 
   IIntfList = interface(IIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
-    procedure Add(Index: Integer; AObject: IInterface); overload;
-    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
-      overload;
+    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AObject: IInterface): Integer;
     function LastIndexOf(AObject: IInterface): Integer;
@@ -166,9 +165,8 @@ type
 
   IStrList = interface(IStrCollection)
     ['{07DD7644-EAC6-4059-99FC-BEB7FBB73186}']
-    procedure Add(Index: Integer; const AString: string); overload;
-    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
-      overload;
+    procedure Insert(Index: Integer; const AString: string); overload;
+    function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -181,9 +179,8 @@ type
 
   IList = interface(ICollection)
     ['{8ABC70AC-5C06-43EA-AFE0-D066379BCC28}']
-    procedure Add(Index: Integer; AObject: TObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean;
-      overload;
+    procedure Insert(Index: Integer; AObject: TObject); overload;
+    function InsertAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;

@@ -76,8 +76,8 @@ type
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
     { IIntfList }
-    procedure Add(Index: Integer; AObject: IInterface); overload;
-    function AddAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
+    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
     function IndexOf(AObject: IInterface): Integer;
     function LastIndexOf(AObject: IInterface): Integer;
@@ -122,8 +122,8 @@ type
     procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
     procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
     { IIntfList }
-    procedure Add(Index: Integer; const AString: string); overload;
-    function AddAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
+    procedure Insert(Index: Integer; const AString: string); overload;
+    function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
     function GetString(Index: Integer): string;
     function IndexOf(const AString: string): Integer;
     function LastIndexOf(const AString: string): Integer;
@@ -161,8 +161,8 @@ type
     function RetainAll(ACollection: ICollection): Boolean;
     function Size: Integer;
     { IList }
-    procedure Add(Index: Integer; AObject: TObject); overload;
-    function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
+    procedure Insert(Index: Integer; AObject: TObject); overload;
+    function InsertAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TObject;
     function IndexOf(AObject: TObject): Integer;
     function LastIndexOf(AObject: TObject): Integer;
@@ -693,7 +693,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfLinkedList.Add(Index: Integer; AObject: IInterface);
+procedure TJclIntfLinkedList.Insert(Index: Integer; AObject: IInterface);
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
@@ -705,6 +705,8 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
+  if (Index < 0) or (Index > FSize) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -712,8 +714,6 @@ begin
     AddFirst(AObject);
     Exit;
   end;
-  if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   New(NewItem);
   NewItem.Obj := AObject;
   if Index = 0 then
@@ -779,7 +779,7 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
-function TJclIntfLinkedList.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean;
 var
   I: Integer;
   It: IIntfIterator;
@@ -793,16 +793,17 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
+  // (rom) is this a bug? Only one element added.
   if (FStart = nil) and It.HasNext then
   begin
     AddFirst(It.Next);
     Exit;
   end;
-  if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Current := FStart;
   I := 0;
   while (Current <> nil) and (I <> Index) do
@@ -1222,7 +1223,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclStrLinkedList.Add(Index: Integer; const AString: string);
+procedure TJclStrLinkedList.Insert(Index: Integer; const AString: string);
 var
   I: Integer;
   Current: PJclStrLinkedListItem;
@@ -1234,6 +1235,8 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
+  if (Index < 0) or (Index > FSize) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   if AString = '' then
     Exit;
   if FStart = nil then
@@ -1241,8 +1244,6 @@ begin
     AddFirst(AString);
     Exit;
   end;
-  if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   New(NewItem);
   NewItem.Str := AString;
   if Index = 0 then
@@ -1308,7 +1309,7 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
-function TJclStrLinkedList.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.InsertAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   I: Integer;
   It: IStrIterator;
@@ -1325,13 +1326,12 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
+  // (rom) is this a bug? Only one element added.
   if (FStart = nil) and It.HasNext then
   begin
     AddFirst(It.Next);
     Exit;
   end;
-  if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Current := FStart;
   I := 0;
   while (Current <> nil) and (I <> Index) do
@@ -1752,7 +1752,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclLinkedList.Add(Index: Integer; AObject: TObject);
+procedure TJclLinkedList.Insert(Index: Integer; AObject: TObject);
 var
   I: Integer;
   Current: PJclLinkedListItem;
@@ -1764,6 +1764,8 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
+  if (Index < 0) or (Index > FSize) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   if AObject = nil then
     Exit;
   if FStart = nil then
@@ -1771,8 +1773,6 @@ begin
     AddFirst(AObject);
     Exit;
   end;
-  if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   New(NewItem);
   NewItem.Obj := AObject;
   if Index = 0 then
@@ -1838,7 +1838,7 @@ begin
   Result := True;
 end;
 
-function TJclLinkedList.AddAll(Index: Integer; ACollection: ICollection): Boolean;
+function TJclLinkedList.InsertAll(Index: Integer; ACollection: ICollection): Boolean;
 var
   I: Integer;
   It: IIterator;
@@ -1852,16 +1852,17 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
+  if (Index < 0) or (Index > FSize) then
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   It := ACollection.First;
+  // (rom) is this a bug? Only one element added.
   if (FStart = nil) and It.HasNext then
   begin
     AddFirst(It.Next);
     Exit;
   end;
-  if (Index < 0) or (Index > FSize) then
-    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Current := FStart;
   I := 0;
   while (Current <> nil) and (I <> Index) do

@@ -44,7 +44,7 @@ type
 
   TMyObjectList = class(TJclArrayList, IMyObjectList)
   protected
-  { ICollection }
+    { ICollection }
     function Add(AObject: TMyObject): Boolean; overload;
     function AddAll(ACollection: ICollection): Boolean; overload;
     procedure IMyObjectList.Clear = Clear;
@@ -59,7 +59,7 @@ type
     function IMyObjectList.RetainAll = RetainAll;
     function IMyObjectList.Size = Size;
   protected
-  { IList }
+    { IList }
     procedure Add(Index: Integer; AObject: TMyObject); overload;
     function AddAll(Index: Integer; ACollection: ICollection): Boolean; overload;
     function GetObject(Index: Integer): TMyObject;
@@ -76,7 +76,7 @@ implementation
 
 procedure TMyObjectList.Add(Index: Integer; AObject: TMyObject);
 begin
-  inherited Add(Index, AObject);
+  inherited Insert(Index, AObject);
 end;
 
 function TMyObjectList.Add(AObject: TMyObject): Boolean;
@@ -92,12 +92,12 @@ end;
 function TMyObjectList.AddAll(Index: Integer;
   ACollection: ICollection): Boolean;
 begin
-  Result := inherited AddAll(Index, ACollection);
+  Result := inherited InsertAll(Index, ACollection);
 end;
 
 function TMyObjectList.Contains(AObject: TMyObject): Boolean;
 begin
-Result := inherited contains(AObject);
+Result := inherited Contains(AObject);
 end;
 
 function TMyObjectList.GetObject(Index: Integer): TMyObject;
