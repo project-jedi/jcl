@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: October 22, 2003                                                                  }
+{ Last modified: October 28, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -620,7 +620,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
   TEDIFileOptions = set of (foVariableDelimiterDetection, foUseAltDelimiterDetection, foRemoveCrLf,
-    foRemoveCr, foRemoveLf);
+    foRemoveCr, foRemoveLf, foIgnoreGarbageAtEndOfFile);
 
   TEDIFile = class(TEDIDataObjectGroup)
   private
@@ -2162,7 +2162,12 @@ begin
     end
     else
     if (StartPos + Length(ICHSegmentId)) < Length(FData) then
-      raise EJclEDIError.CreateResRec(@RsEDIError018);
+    begin
+      if foIgnoreGarbageAtEndOfFile in FEDIFileOptions then
+        Break
+      else
+        raise EJclEDIError.CreateResRec(@RsEDIError018);
+    end;
   end;
   FData := '';
   FState := ediDissassembled;
