@@ -1469,6 +1469,12 @@ var
   C, Wt, Cr, Cg, Cb, Ca: Integer;
   MstrAlpha: TColor32;
 begin
+  // make compiler happy
+  MapX := nil;
+  MapY := nil;
+  ClusterX := nil;
+  ClusterY := nil;
+
   if StretchFilter = sfNearest then
   begin
     StretchNearest(Dst, DstRect, Src, SrcRect, CombineOp);
