@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: March 11, 2002                                                                    }
+{ Last modified: March 31, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -562,7 +562,7 @@ var
 implementation
 
 uses
-  Messages, SysUtils, TLHelp32, PsApi, Winsock,
+  Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp,
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
@@ -2007,62 +2007,148 @@ end;
 // Helper function for GetMacAddress()
 // Converts the adapter_address array to a string
 
-function AdapterToString(Adapter: TAdapterStatus): string;
+function AdapterToString(Adapter: PByteArray): string;
 begin
-  with Adapter do
-    Result := Format('%2.2x-%2.2x-%2.2x-%2.2x-%2.2x-%2.2x', [
-      Integer(adapter_address[0]), Integer(adapter_address[1]),
-      Integer(adapter_address[2]), Integer(adapter_address[3]),
-      Integer(adapter_address[4]), Integer(adapter_address[5])]);
+  Result := Format('%2.2x-%2.2x-%2.2x-%2.2x-%2.2x-%2.2x', [
+    Integer(Adapter[0]), Integer(Adapter[1]),
+    Integer(Adapter[2]), Integer(Adapter[3]),
+    Integer(Adapter[4]), Integer(Adapter[5])]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
-var
-  NCB: TNCB;
-  Enum: TLanaEnum;
-  I, L, NameLen: Integer;
-  Adapter: ASTAT;
-  MachineName: string;
-begin
-  Result := -1;
-  Addresses.Clear;
-  MachineName := UpperCase(Machine);
-  if MachineName = '' then
-    MachineName := '*';
-  NameLen := Length(MachineName);
-  L := NCBNAMSZ - NameLen;
-  if L > 0 then
+
+  procedure GetMacAddressesNetBios;
+  var
+    NCB: TNCB;
+    Enum: TLanaEnum;
+    I, L, NameLen: Integer;
+    Adapter: ASTAT;
+    MachineName: string;
   begin
-    SetLength(MachineName, NCBNAMSZ);
-    FillChar(MachineName[NameLen + 1], L, ' ');
-  end;
-  FillChar(NCB, SizeOf(NCB), #0);
-  NCB.ncb_command := NCBENUM;
-  NCB.ncb_buffer := Pointer(@Enum);
-  NCB.ncb_length := SizeOf(Enum);
-  if NetBios(@NCB) = NRC_GOODRET then
-  begin
-    Result := Enum.Length;
-    for I := 0 to Ord(Enum.Length) - 1 do
+    MachineName := UpperCase(Machine);
+    if MachineName = '' then
+      MachineName := '*';
+    NameLen := Length(MachineName);
+    L := NCBNAMSZ - NameLen;
+    if L > 0 then
     begin
-      FillChar(NCB, SizeOf(NCB), #0);
-      NCB.ncb_command := NCBRESET;
-      NCB.ncb_lana_num := Enum.lana[I];
-      if NetBios(@NCB) = NRC_GOODRET then
+      SetLength(MachineName, NCBNAMSZ);
+      FillChar(MachineName[NameLen + 1], L, ' ');
+    end;
+    FillChar(NCB, SizeOf(NCB), #0);
+    NCB.ncb_command := NCBENUM;
+    NCB.ncb_buffer := Pointer(@Enum);
+    NCB.ncb_length := SizeOf(Enum);
+    if NetBios(@NCB) = NRC_GOODRET then
+    begin
+      Result := Enum.Length;
+      for I := 0 to Ord(Enum.Length) - 1 do
       begin
         FillChar(NCB, SizeOf(NCB), #0);
-        NCB.ncb_command := NCBASTAT;
+        NCB.ncb_command := NCBRESET;
         NCB.ncb_lana_num := Enum.lana[I];
-        Move(MachineName[1], NCB.ncb_callname, SizeOf(NCB.ncb_callname));
-        NCB.ncb_buffer := PChar(@Adapter);
-        NCB.ncb_length := SizeOf(Adapter);
         if NetBios(@NCB) = NRC_GOODRET then
-          Addresses.Add(AdapterToString(Adapter.adapt));
+        begin
+          FillChar(NCB, SizeOf(NCB), #0);
+          NCB.ncb_command := NCBASTAT;
+          NCB.ncb_lana_num := Enum.lana[I];
+          Move(MachineName[1], NCB.ncb_callname, SizeOf(NCB.ncb_callname));
+          NCB.ncb_buffer := PChar(@Adapter);
+          NCB.ncb_length := SizeOf(Adapter);
+          if NetBios(@NCB) = NRC_GOODRET then
+            Addresses.Add(AdapterToString(@Adapter.adapt));
+        end;
       end;
     end;
   end;
+
+  procedure GetMacAddressesSnmp;
+  const
+    InetMib1 = 'inetmib1.dll';
+    DunAdapterAddress: array[0..4] of Byte = ($44, $45, $53, $54, $00);
+    NullAdapterAddress: array[0..5] of Byte = ($00, $00, $00, $00, $00, $00);
+    OID_ipMACEntAddr: array[0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 6);
+    OID_ifEntryType: array [0..9] of UINT = (1, 3, 6, 1, 2, 1, 2, 2, 1, 3);
+    OID_ifEntryNum: array [0..7] of UINT = (1, 3, 6, 1, 2, 1, 2, 1);
+  var
+    PollForTrapEvent: THandle;
+    SupportedView: PAsnObjectIdentifier;
+    MIB_ifMACEntAddr: TAsnObjectIdentifier;
+    MIB_ifEntryType: TAsnObjectIdentifier;
+    MIB_ifEntryNum: TAsnObjectIdentifier;
+    varBindList: TSnmpVarBindList;
+    varBind: array[0..1] of TSnmpVarBind;
+    ErrorStatus, ErrorIndex: TAsnInteger32;
+    Dtmp: Integer;
+    Ret: Boolean;
+    MAC: PByteArray;
+  begin
+    if LoadSnmp then
+    try
+      if LoadSnmpExtension(InetMib1) then
+      try
+        MIB_ifMACEntAddr.idLength := Length(OID_ipMACEntAddr);
+        MIB_ifMACEntAddr.ids := @OID_ipMACEntAddr;
+        MIB_ifEntryType.idLength := Length(OID_ifEntryType);
+        MIB_ifEntryType.ids := @OID_ifEntryType;
+        MIB_ifEntryNum.idLength := Length(OID_ifEntryNum);
+        MIB_ifEntryNum.ids := @OID_ifEntryNum;
+        if SnmpExtensionInit(GetTickCount, PollForTrapEvent, SupportedView) then
+        begin
+          varBindList.list := @varBind[0];
+          varBind[0].name := DEFINE_NULLOID;
+          varBind[1].name := DEFINE_NULLOID;
+          varBindList.len := 1;      
+          SnmpUtilOidCpy(@varBind[0].name, @MIB_ifEntryNum);
+          Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, varBindList, ErrorStatus, ErrorIndex);
+          if Ret then
+          begin
+            Result := varBind[0].value.number;
+            varBindList.len := 2;
+            SnmpUtilOidCpy(@varBind[0].name, @MIB_ifEntryType);
+            SnmpUtilOidCpy(@varBind[1].name, @MIB_ifMACEntAddr);
+            while Ret do
+            begin
+              Ret := SnmpExtensionQuery(SNMP_PDU_GETNEXT, varBindList, ErrorStatus, ErrorIndex);
+              if Ret then
+              begin
+                Ret := SnmpUtilOidNCmp(@varBind[0].name, @MIB_ifEntryType, MIB_ifEntryType.idLength) = SNMP_ERRORSTATUS_NOERROR;
+                if Ret then
+                begin
+                  Dtmp := varBind[0].value.number;
+                  if Dtmp = 6 then
+                  begin
+                    Ret := SnmpUtilOidNCmp(@varBind[1].name, @MIB_ifMACEntAddr, MIB_ifMACEntAddr.idLength) = SNMP_ERRORSTATUS_NOERROR;
+                    if Ret and (varBind[1].value.address.stream <> nil) then
+                    begin
+                      MAC := PByteArray(varBind[1].value.address.stream);
+                      if not CompareMem(MAC, @NullAdapterAddress, SizeOf(NullAdapterAddress)) then
+                        Addresses.Add(AdapterToString(MAC));
+                    end;
+                  end;
+                end;
+              end;
+            end;
+          end;
+          SnmpUtilVarBindFree(@varBind[0]);
+          SnmpUtilVarBindFree(@varBind[1]);
+        end;
+      finally
+        UnloadSnmpExtension;
+      end;
+    finally
+      UnloadSnmp;
+    end;
+  end;
+
+begin
+  Result := -1;
+  Addresses.Clear;
+  GetMacAddressesNetBios;
+  if (Result = -1) and (Machine = '') then
+    GetMacAddressesSnmp;
 end;
 
 //--------------------------------------------------------------------------------------------------
