@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 7, 2000                                             }
+{ Last modified: September 18, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -30,7 +30,7 @@ uses
   Windows, ActiveX, Classes, ImageHlp, SysUtils, TypInfo,
   {$IFDEF DELPHI5_UP}
   Contnrs,
-  {$ENDIF}
+  {$ENDIF DELPHI5_UP}
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSynch, JclSysInfo;
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ type
   end;
   TImageExportDirectory = _IMAGE_EXPORT_DIRECTORY;
   IMAGE_EXPORT_DIRECTORY = _IMAGE_EXPORT_DIRECTORY;
-{$ENDIF}
+{$ENDIF DELPHI5_UP}
 
 { Non-COFF Object file header }
 
@@ -457,7 +457,8 @@ type
   TJclPeExportFuncItem = class (TObject)
   private
     FAddress: DWORD;
-    FForwardedName, FForwardedDotPos: PChar;
+    FForwardedName: PChar;
+    FForwardedDotPos: PChar;
     FHint: Word;
     FName: PChar;
     FOrdinal: DWORD;
@@ -806,7 +807,7 @@ type
     class function ShortSectionInfo(Characteristics: DWORD): string;
     {$IFDEF SUPPORTS_INT64}
     class function StampToDateTime(TimeDateStamp: DWORD): TDateTime;
-    {$ENDIF}
+    {$ENDIF SUPPORTS_INT64}
     property DebugList: TJclPeDebugList read GetDebugList;
     property Description: string read GetDescription;
     property Directories[Directory: Word]: TImageDataDirectory read GetDirectories;
@@ -895,7 +896,7 @@ function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 {$IFDEF SUPPORTS_DYNAMICARRAYS}
 type
   TJclStringArray = array of string;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
@@ -919,7 +920,7 @@ function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings;
 function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
   FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
@@ -928,12 +929,12 @@ function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
 function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeExportedFunctions(const FileName: TFileName; FunctionsList: TStrings): Boolean;
 {$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
 
@@ -1007,7 +1008,7 @@ function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
 {$IFNDEF DELPHI5_UP}
   {$EXTERNALSYM _IMAGE_EXPORT_DIRECTORY}
   {$EXTERNALSYM IMAGE_EXPORT_DIRECTORY}
-{$ENDIF}
+{$ENDIF DELPHI5_UP}
   {$EXTERNALSYM ANON_OBJECT_HEADER}
   {$EXTERNALSYM _IMAGE_IMPORT_BY_NAME}
   {$EXTERNALSYM IMAGE_IMPORT_BY_NAME}
@@ -1054,7 +1055,7 @@ function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
   {$EXTERNALSYM ImageRvaToVa}
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
-{$ENDIF}
+{$ENDIF SUPPORTS_EXTSYM}
 
 implementation
 
@@ -1161,7 +1162,8 @@ begin
         Result := StrSame(S, ComparedName)
       else
         Result := (S = ComparedName);
-    end else
+    end
+    else
       Result := False;
   end;
 end;
@@ -1603,7 +1605,8 @@ begin
         begin
           LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.FirstThunk));
           FLinkerProducer := lrBorland;
-        end else
+        end
+        else
         begin
           LibItem.FThunk := PImageThunkData(RvaToVa(ImportDesc^.Characteristics));
           FLinkerProducer := lrMicrosoft;
@@ -2645,7 +2648,8 @@ begin
     begin
       FormatCount := DebugImageDir.Size;
       DebugDir := RvaToVa(Header^.VirtualAddress);
-    end else
+    end
+    else
     begin
       if not GetSectionHeader('.rdata', Header) then
         Exit;
@@ -2759,21 +2763,36 @@ end;
 class function TJclPeImage.DirectoryNames(Directory: Word): string;
 begin
   case Directory of
-    IMAGE_DIRECTORY_ENTRY_EXPORT: Result := RsPeImg_00;
-    IMAGE_DIRECTORY_ENTRY_IMPORT: Result := RsPeImg_01;
-    IMAGE_DIRECTORY_ENTRY_RESOURCE: Result := RsPeImg_02;
-    IMAGE_DIRECTORY_ENTRY_EXCEPTION: Result := RsPeImg_03;
-    IMAGE_DIRECTORY_ENTRY_SECURITY: Result := RsPeImg_04;
-    IMAGE_DIRECTORY_ENTRY_BASERELOC: Result := RsPeImg_05;
-    IMAGE_DIRECTORY_ENTRY_DEBUG: Result := RsPeImg_06;
-    IMAGE_DIRECTORY_ENTRY_COPYRIGHT: Result := RsPeImg_07;
-    IMAGE_DIRECTORY_ENTRY_GLOBALPTR: Result := RsPeImg_08;
-    IMAGE_DIRECTORY_ENTRY_TLS: Result := RsPeImg_09;
-    IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG: Result := RsPeImg_10;
-    IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT: Result := RsPeImg_11;
-    IMAGE_DIRECTORY_ENTRY_IAT: Result := RsPeImg_12;
-    IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT: Result := RsPeImg_13;
-    IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR: Result := RsPeImg_14;
+    IMAGE_DIRECTORY_ENTRY_EXPORT:
+      Result := RsPeImg_00;
+    IMAGE_DIRECTORY_ENTRY_IMPORT:
+      Result := RsPeImg_01;
+    IMAGE_DIRECTORY_ENTRY_RESOURCE:
+      Result := RsPeImg_02;
+    IMAGE_DIRECTORY_ENTRY_EXCEPTION:
+      Result := RsPeImg_03;
+    IMAGE_DIRECTORY_ENTRY_SECURITY:
+      Result := RsPeImg_04;
+    IMAGE_DIRECTORY_ENTRY_BASERELOC:
+      Result := RsPeImg_05;
+    IMAGE_DIRECTORY_ENTRY_DEBUG:
+      Result := RsPeImg_06;
+    IMAGE_DIRECTORY_ENTRY_COPYRIGHT:
+      Result := RsPeImg_07;
+    IMAGE_DIRECTORY_ENTRY_GLOBALPTR:
+      Result := RsPeImg_08;
+    IMAGE_DIRECTORY_ENTRY_TLS:
+      Result := RsPeImg_09;
+    IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG:
+      Result := RsPeImg_10;
+    IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT:
+      Result := RsPeImg_11;
+    IMAGE_DIRECTORY_ENTRY_IAT:
+      Result := RsPeImg_12;
+    IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT:
+      Result := RsPeImg_13;
+    IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR:
+      Result := RsPeImg_14;
   else
     Result := Format('reserved [%.2d]', [Directory]);
   end;
@@ -3299,7 +3318,7 @@ begin
   Result := '';
   for I := Low(Info) to High(Info) do
     with Info[I] do
-      if Characteristics and Mask = Mask then
+      if (Characteristics and Mask) = Mask then
         Result := Result + InfoChar;
 end;
 
@@ -3331,7 +3350,7 @@ begin
     Result := FileTimeToDateTime(TFileTime(FT));
   end;
 end;
-{$ENDIF}
+{$ENDIF SUPPORTS_INT64}
 
 //------------------------------------------------------------------------------
 
@@ -3792,7 +3811,7 @@ begin
     GlobalCritSection.Leave;
   end;
 end;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
@@ -3860,7 +3879,7 @@ begin
     GlobalCritSection.Leave;
   end;
 end;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
@@ -3903,7 +3922,7 @@ begin
     GlobalCritSection.Leave;
   end;
 end;
-{$ENDIF}
+{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
@@ -3917,7 +3936,8 @@ begin
   Result := False;
   FillChar(NtHeaders, SizeOf(NtHeaders), 0);
   FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
-  if FileHandle = INVALID_HANDLE_VALUE then Exit;
+  if FileHandle = INVALID_HANDLE_VALUE then
+    Exit;
   try
     Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
     try
@@ -3968,9 +3988,11 @@ end;
 function PeMapImgNtHeaders(BaseAddress: Pointer): PImageNtHeaders;
 begin
   Result := nil;
-  if IsBadReadPtr(BaseAddress, SizeOf(TImageDosHeader)) then Exit;
+  if IsBadReadPtr(BaseAddress, SizeOf(TImageDosHeader)) then
+    Exit;
   if (PImageDosHeader(BaseAddress)^.e_magic <> IMAGE_DOS_SIGNATURE) or
-    (PImageDosHeader(BaseAddress)^._lfanew = 0) then Exit;
+    (PImageDosHeader(BaseAddress)^._lfanew = 0) then
+    Exit;
   Result := PImageNtHeaders(DWORD(BaseAddress) + DWORD(PImageDosHeader(BaseAddress)^._lfanew));
   if IsBadReadPtr(Result, SizeOf(TImageNtHeaders)) or
     (Result^.Signature <> IMAGE_NT_SIGNATURE) then
@@ -3987,11 +4009,14 @@ var
 begin
   Result := '';
   NtHeaders := PeMapImgNtHeaders(BaseAddress);
-  if NtHeaders = nil then Exit;
+  if NtHeaders = nil then
+    Exit;
   DataDir := NtHeaders^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
-  if DataDir.Size = 0 then Exit;
+  if DataDir.Size = 0 then
+    Exit;
   ExportDir := PImageExportDirectory(DWORD(BaseAddress) + DataDir.VirtualAddress);
-  if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then Exit;
+  if IsBadReadPtr(ExportDir, SizeOf(TImageExportDirectory)) or (ExportDir^.Name = 0) then
+    Exit;
   Result := PChar(DWORD(BaseAddress) + ExportDir^.Name);
 end;
 
@@ -4115,7 +4140,8 @@ begin
     Item.FNewAddress := NewAddress;
     Item.FList := Self;
     Add(Item);
-  end else
+  end
+  else
     SetLastError(ERROR_INVALID_PARAMETER);
 end;
 
@@ -4145,9 +4171,11 @@ begin
   FromProcDebugThunk := PWin9xDebugThunk(FromProc);
   IsThunked := not IsWinNT and IsWin9xDebugThunk(FromProcDebugThunk);
   NtHeader := PeMapImgNtHeaders(Base);
-  if NtHeader = nil then Exit;
+  if NtHeader = nil then
+    Exit;
   ImportDir := NtHeader.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
-  if ImportDir.VirtualAddress = 0 then Exit;
+  if ImportDir.VirtualAddress = 0 then
+    Exit;
   ImportDesc := PImageImportDescriptor(DWORD(Base) + ImportDir.VirtualAddress);
   while ImportDesc^.Name <> 0 do
   begin
@@ -4164,7 +4192,8 @@ begin
         begin
           ImportThunk := PWin9xDebugThunk(ImportEntry^.Function_);
           FoundProc := IsWin9xDebugThunk(ImportThunk) and (ImportThunk^.Addr = FromProcDebugThunk^.Addr);
-        end else
+        end
+        else
           FoundProc := Pointer(ImportEntry^.Function_) = FromProc;
         if FoundProc and not IsBadStringPtr(Pointer(ImportEntry^.Function_), 4) then
         begin
@@ -4210,8 +4239,10 @@ begin
   Result := False;
   FillChar(NtHeaders, SizeOf(NtHeaders), 0);
   FillChar(DosHeader, SizeOf(DosHeader), 0);
-  if not InternalReadProcMem(ProcessHandle, DWORD(BaseAddress), @DosHeader, SizeOf(DosHeader)) then Exit;
-  if DosHeader.e_magic <> IMAGE_DOS_SIGNATURE then Exit;
+  if not InternalReadProcMem(ProcessHandle, DWORD(BaseAddress), @DosHeader, SizeOf(DosHeader)) then
+    Exit;
+  if DosHeader.e_magic <> IMAGE_DOS_SIGNATURE then
+    Exit;
   Result := InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + DWORD(DosHeader._lfanew),
     @NtHeaders, SizeOf(TImageNtHeaders));
 end;
@@ -4227,12 +4258,16 @@ var
 begin
   Name := '';
   Result := PeDbgImgNtHeaders(ProcessHandle, BaseAddress, NtHeaders);
-  if not Result then Exit;
+  if not Result then
+    Exit;
   DataDir := NtHeaders.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
-  if DataDir.Size = 0 then Exit;
+  if DataDir.Size = 0 then
+    Exit;
   if not InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + DataDir.VirtualAddress,
-    @ExportDir, SizeOf(ExportDir)) then Exit;
-  if ExportDir.Name = 0 then Exit;
+    @ExportDir, SizeOf(ExportDir)) then
+    Exit;
+  if ExportDir.Name = 0 then
+    Exit;
   SetLength(Name, MAX_PATH);
   if InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + ExportDir.Name, PChar(Name), MAX_PATH) then
     StrResetLength(Name)
