@@ -189,6 +189,74 @@ resourcestring
                   'in segment [%s] at index [%s] in transaction set.';
 
 //--------------------------------------------------------------------------------------------------
+// JclEDIXML
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  EDIXMLError001 = 'Could not open edi file.  File not specified.';
+  EDIXMLError002 = 'Could not save edi file.  File name and path not specified.';
+  EDIXMLError003 = 'Could not assign delimiters to edi file.  Disassemble cancelled.';
+  EDIXMLError004 = 'Could not assign delimiters to edi file.  Assemble cancelled.';
+  EDIXMLError005 = 'Could not assign delimiters to interchange control.  Disassemble cancelled.';
+  EDIXMLError006 = 'Could not assign delimiters to interchange control.  Assemble cancelled.';
+  EDIXMLError007 = 'Could not find interchange control end tag.';
+  EDIXMLError008 = 'Could not find interchange control end tag delimiter.';
+  EDIXMLError009 = 'Could not find interchange control header.';
+  EDIXMLError010 = 'Could not find interchange control header end tag.';
+  EDIXMLError011 = 'Could not find interchange control header end tag delimiter.';
+  EDIXMLError012 = 'Could not find interchange control trailer.';
+  EDIXMLError013 = 'Could not find interchange control trailer end tag.';
+  EDIXMLError014 = 'Could not find interchange control trailer end tag delimiter.';
+  EDIXMLError015 = 'Could not assign delimiters to functional group.  Disassemble cancelled.';
+  EDIXMLError016 = 'Could not assign delimiters to functional group.  Assemble cancelled.';
+  EDIXMLError017 = 'Could not find functional group end tag.';
+  EDIXMLError018 = 'Could not find functional group end tag delimiter.';
+  EDIXMLError019 = 'Could not find functional group header.';
+  EDIXMLError020 = 'Could not find functional group header end tag.';
+  EDIXMLError021 = 'Could not find functional group header end tag delimiter.';
+  EDIXMLError022 = 'Could not find functional group trailer.';
+  EDIXMLError023 = 'Could not find functional group trailer end tag.';
+  EDIXMLError024 = 'Could not find functional group trailer end tag delimiter.';
+  EDIXMLError025 = 'Could not assign delimiters to transactoin set.  Disassemble cancelled.';
+  EDIXMLError026 = 'Could not assign delimiters to transactoin set.  Assemble cancelled.';
+  EDIXMLError027 = 'Could not find transaction set end tag.';
+  EDIXMLError028 = 'Could not find transaction set end tag delimiter.';
+  EDIXMLError029 = 'Could not assign delimiters to transactoin set loop.  Disassemble cancelled.';
+  EDIXMLError030 = 'Could not assign delimiters to transactoin set loop.  Assemble cancelled.';
+  EDIXMLError031 = 'Could not find loop end tag';
+  EDIXMLError032 = 'Could not find loop end tag delimiter';
+  EDIXMLError033 = 'Could not set data object at index [%s].';
+  EDIXMLError034 = 'Could not set data object at index [%s], Index too low.';
+  EDIXMLError035 = 'Could not set data object at index [%s], Index too high.';
+  EDIXMLError036 = 'Could not get data object at index [%s], There was no data object to get.';
+  EDIXMLError037 = 'Could not get data object at index [%s], Index too low.';
+  EDIXMLError038 = 'Could not get data object at index [%s], Index too high.';
+  EDIXMLError039 = 'Could not get data object at index [%s], Data object does not exist.';
+  EDIXMLError040 = 'Could not delete EDI data object';
+  EDIXMLError041 = 'Could not assign delimiters to segment.  Disassemble cancelled.';
+  EDIXMLError042 = 'Could not assign delimiters to segment.  Assemble cancelled.';
+  EDIXMLError043 = 'Could not find segment begin tag';
+  EDIXMLError044 = 'Could not find segment end tag';
+  EDIXMLError045 = 'Could not find segment end tag delimiter';
+  EDIXMLError046 = 'Could not assign delimiters to element.  Disassemble cancelled.';
+  EDIXMLError047 = 'Could not assign delimiters to element.  Assemble cancelled.';
+  EDIXMLError048 = 'Could not find element tag';
+  EDIXMLError049 = 'Could not find element end tag';
+  EDIXMLError050 = 'Could not find element end tag delimiter';
+  EDIXMLError051 = 'Could not set element at index [%s].';
+  EDIXMLError052 = 'Could not set element at index [%s], Index too low.';
+  EDIXMLError053 = 'Could not set element at index [%s], Index too high.';
+  EDIXMLError054 = 'Could not get element at index [%s], There was no element to get.';
+  EDIXMLError055 = 'Could not get element at index [%s], Index too low.';
+  EDIXMLError056 = 'Could not get element at index [%s], Index too high.';
+  EDIXMLError057 = 'Could not get element at index [%s], Element does not exist.';
+  EDIXMLError058 = 'Could not delete element at index [%s].';
+  EDIXMLError059 = 'Could not find transaction set header.';
+  EDIXMLError060 = 'Could not find transaction set trailer.';
+  EDIXMLError061 = 'Could not find transaction set header and trailer.';
+  EDIXMLError062 = 'TEDIXMLANSIX12FormatTranslator: Unexpected object [%s] found.';
+
+//--------------------------------------------------------------------------------------------------
 // JclExprEval
 //--------------------------------------------------------------------------------------------------
 
