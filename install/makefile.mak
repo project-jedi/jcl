@@ -62,15 +62,9 @@ clean:
 
 prototypes: VclUnits ClxUnits
 
-VclUnits: JediInstall.pas JclInstall.pas
+VclUnits:
 	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
 
-ClxUnits: JediInstall.pas JclInstall.pas
+ClxUnits:
 	@if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak ClxUnits
-
-JediInstall.pas: prototypes\JediInstallIntf.pas
-        copy prototypes\JediInstallIntf.pas JediInstall.pas
-
-JclInstall.pas: prototypes\JclInstall.pas
-        copy prototypes\JclInstall.pas JclInstall.pas
 
