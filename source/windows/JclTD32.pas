@@ -19,7 +19,8 @@
 {                                                                                                  }
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
-{ Last modified: February 27, 2002                                                                 }
+{ Unit owner: Flier Lu                                                                             }
+{ Last modified: March 10, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -42,10 +43,6 @@ uses
   JclBase, JclFileUtils, JclPeImage;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
-
-{ TODO -cDesign : Move TJclIndex define to JclBase? }
-type
-  TJclIndex = Cardinal;
 
 //--------------------------------------------------------------------------------------------------
 // TD32 constants and structures
@@ -531,14 +528,14 @@ type
   private
     FNameIndex: DWORD;
     FSegments: PSegmentInfoArray;
-    FSegmentCount: TJclIndex;
-    function GetSegment(const Idx: TJclIndex): TSegmentInfo;
+    FSegmentCount: Integer;
+    function GetSegment(const Idx: Integer): TSegmentInfo;
   protected
     constructor Create(const pModInfo: PModuleInfo);
   public
     property NameIndex: DWORD read FNameIndex;
-    property SegmentCount: TJclIndex read FSegmentCount;//GetSegmentCount;
-    property Segment[const Idx: TJclIndex]: TSegmentInfo read GetSegment; default;
+    property SegmentCount: Integer read FSegmentCount;//GetSegmentCount;
+    property Segment[const Idx: Integer]: TSegmentInfo read GetSegment; default;
   end;
 
   TJclLineInfo = class (TObject)
@@ -556,21 +553,21 @@ type
   private
     FLines: TObjectList;
     FSegments: POffsetPairArray;
-    FSegmentCount: TJclIndex;
+    FSegmentCount: Integer;
     FNameIndex: DWORD;
-    function GetLine(const Idx: TJclIndex): TJclLineInfo;
-    function GetLineCount: TJclIndex;
-    function GetSegment(const Idx: TJclIndex): TOffsetPair;
+    function GetLine(const Idx: Integer): TJclLineInfo;
+    function GetLineCount: Integer;
+    function GetSegment(const Idx: Integer): TOffsetPair;
   protected
     constructor Create(const pSrcFile: PSourceFileEntry; Base: DWORD);
   public
     destructor Destroy; override;
     function FindLine(const AAddr: DWORD; var ALine: TJclLineInfo): Boolean;
     property NameIndex: DWORD read FNameIndex;
-    property LineCount: TJclIndex read GetLineCount;
-    property Line[const Idx: TJclIndex]: TJclLineInfo read GetLine; default;
-    property SegmentCount: TJclIndex read FSegmentCount;//GetSegmentCount;
-    property Segment[const Idx: TJclIndex]: TOffsetPair read GetSegment;
+    property LineCount: Integer read GetLineCount;
+    property Line[const Idx: Integer]: TJclLineInfo read GetLine; default;
+    property SegmentCount: Integer read FSegmentCount;//GetSegmentCount;
+    property Segment[const Idx: Integer]: TOffsetPair read GetSegment;
   end;
 
   TJclSymbolInfo = class (TObject)
@@ -610,14 +607,14 @@ type
     FSourceModules: TObjectList;
     FSymbols: TObjectList;
     FValidData: Boolean;
-    function GetName(const Idx: TJclIndex): string;
-    function GetNameCount: TJclIndex;
-    function GetSymbol(const Idx: TJclIndex): TJclSymbolInfo;
-    function GetSymbolCount: TJclIndex;
-    function GetModule(const Idx: TJclIndex): TJclModuleInfo;
-    function GetModuleCount: TJclIndex;
-    function GetSourceModule(const Idx: TJclIndex): TJclSourceModuleInfo;
-    function GetSourceModuleCount: TJclIndex;
+    function GetName(const Idx: Integer): string;
+    function GetNameCount: Integer;
+    function GetSymbol(const Idx: Integer): TJclSymbolInfo;
+    function GetSymbolCount: Integer;
+    function GetModule(const Idx: Integer): TJclModuleInfo;
+    function GetModuleCount: Integer;
+    function GetSourceModule(const Idx: Integer): TJclSourceModuleInfo;
+    function GetSourceModuleCount: Integer;
   protected
     procedure Analyse;
     procedure AnalyseNames(const pSubsection: Pointer; const Size: DWORD); virtual;
@@ -635,14 +632,14 @@ type
     class function IsTD32Sign(const Sign: TJclTD32FileSignature): Boolean;
     class function IsTD32DebugInfoValid(const DebugData: Pointer; const DebugDataSize: LongWord): Boolean;
     property Data: TCustomMemoryStream read FData;
-    property Names[const Idx: TJclIndex]: string read GetName;
-    property NameCount: TJclIndex read GetNameCount;
-    property Symbols[const Idx: TJclIndex]: TJclSymbolInfo read GetSymbol;
-    property SymbolCount: TJclIndex read GetSymbolCount;
-    property Modules[const Idx: TJclIndex]: TJclModuleInfo read GetModule;
-    property ModuleCount: TJclIndex read GetModuleCount;
-    property SourceModules[const Idx: TJclIndex]: TJclSourceModuleInfo read GetSourceModule;
-    property SourceModuleCount: TJclIndex read GetSourceModuleCount;
+    property Names[const Idx: Integer]: string read GetName;
+    property NameCount: Integer read GetNameCount;
+    property Symbols[const Idx: Integer]: TJclSymbolInfo read GetSymbol;
+    property SymbolCount: Integer read GetSymbolCount;
+    property Modules[const Idx: Integer]: TJclModuleInfo read GetModule;
+    property ModuleCount: Integer read GetModuleCount;
+    property SourceModules[const Idx: Integer]: TJclSourceModuleInfo read GetSourceModule;
+    property SourceModuleCount: Integer read GetSourceModuleCount;
     property ValidData: Boolean read FValidData;
   end;
 
@@ -700,13 +697,13 @@ const
 type
   TReferenceMemoryStream = class (TCustomMemoryStream)
   public
-    constructor Create(const Ptr: Pointer; Size: Longint);
+    constructor Create(const Ptr: Pointer; const Size: Longint);
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
+constructor TReferenceMemoryStream.Create(const Ptr: Pointer; const Size: Longint);
 begin
   Assert(not IsBadReadPtr(Ptr, Size));
   inherited Create;
@@ -735,9 +732,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclModuleInfo.GetSegment(const Idx: TJclIndex): TSegmentInfo;
+function TJclModuleInfo.GetSegment(const Idx: Integer): TSegmentInfo;
 begin
-  Assert(Idx < FSegmentCount);
+  Assert((0 <= Idx) and (Idx < FSegmentCount));
   Result := FSegments[Idx];
 end;
 
@@ -791,23 +788,23 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSourceModuleInfo.GetLine(const Idx: TJclIndex): TJclLineInfo;
+function TJclSourceModuleInfo.GetLine(const Idx: Integer): TJclLineInfo;
 begin
   Result := TJclLineInfo(FLines.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSourceModuleInfo.GetLineCount: TJclIndex;
+function TJclSourceModuleInfo.GetLineCount: Integer;
 begin
   Result := FLines.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSourceModuleInfo.GetSegment(const Idx: TJclIndex): TOffsetPair;
+function TJclSourceModuleInfo.GetSegment(const Idx: Integer): TOffsetPair;
 begin
-  Assert(Idx < FSegmentCount);
+  Assert((0 <= Idx) and (Idx < FSegmentCount));
   Result := FSegments[Idx];
 end;
 
@@ -1010,57 +1007,56 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetModule(const Idx: TJclIndex): TJclModuleInfo;
+function TJclTD32InfoParser.GetModule(const Idx: Integer): TJclModuleInfo;
 begin
   Result := TJclModuleInfo(FModules.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetModuleCount: TJclIndex;
+function TJclTD32InfoParser.GetModuleCount: Integer;
 begin
   Result := FModules.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetName(const Idx: TJclIndex): string;
+function TJclTD32InfoParser.GetName(const Idx: Integer): string;
 begin
-  Assert(Idx < GetNameCount);
-  Result := PChar(FNames[Idx]);
+  Result := PChar(FNames.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetNameCount: TJclIndex;
+function TJclTD32InfoParser.GetNameCount: Integer;
 begin
   Result := FNames.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSourceModule(const Idx: TJclIndex): TJclSourceModuleInfo;
+function TJclTD32InfoParser.GetSourceModule(const Idx: Integer): TJclSourceModuleInfo;
 begin
   Result := TJclSourceModuleInfo(FSourceModules.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSourceModuleCount: TJclIndex;
+function TJclTD32InfoParser.GetSourceModuleCount: Integer;
 begin
   Result := FSourceModules.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSymbol(const Idx: TJclIndex): TJclSymbolInfo;
+function TJclTD32InfoParser.GetSymbol(const Idx: Integer): TJclSymbolInfo;
 begin
   Result := TJclSymbolInfo(FSymbols.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclTD32InfoParser.GetSymbolCount: TJclIndex;
+function TJclTD32InfoParser.GetSymbolCount: Integer;
 begin
   Result := FSymbols.Count;
 end;
