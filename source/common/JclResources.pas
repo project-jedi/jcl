@@ -308,7 +308,7 @@ resourcestring
   RsCreateProcPrivilegesMissing       = 'This account does not have on (or more) of ' +
     'the following privileges: ' + '"%s"(%s)' + #13 + '"%s"(%s)' + #13;
   RsCreateProcCommandNotFound         = 'Command or filename not found: "%s"';
-  RsCreateProcFailed                  = 'CreateProcessAsUser failed';                                  
+  RsCreateProcFailed                  = 'CreateProcessAsUser failed';
 
 //------------------------------------------------------------------------------
 // JclMultimedia
