@@ -39,8 +39,8 @@ interface
 uses
   Windows, SysUtils;
 
-// Exception hooking notifiers routines
 type
+  // Exception hooking notifiers routines
   TJclExceptNotifyProc = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
   TJclExceptNotifyMethod = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
 
@@ -139,7 +139,8 @@ threadvar
   Recursive: Boolean;
   NewResultExc: Exception;
 
-// Helper routines
+//=== Helper routines ========================================================
+
 function RaiseExceptionAddress: Pointer;
 begin
   Result := GetProcAddress(GetModuleHandle(kernel32), 'RaiseException');
@@ -160,7 +161,8 @@ begin
   FreeAndNil(Notifiers);
 end;
 
-// TNotifierItem
+//=== { TNotifierItem } ======================================================
+
 constructor TNotifierItem.Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority);
 begin
   inherited Create;
@@ -246,6 +248,7 @@ end;
 {$ENDIF ~STACKFRAMES_ON}
 
 // Do not change ordering of HookedRaiseException, HookedExceptObjProc and JclBelongsHookedCode routines
+
 function JclBelongsHookedCode(Addr: Pointer): Boolean;
 begin
   Result := (Cardinal(@HookedRaiseException) < Cardinal(@JclBelongsHookedCode)) and
@@ -388,6 +391,7 @@ begin
 end;
 
 // Exceptions hooking in libraries
+
 procedure JclHookExceptDebugHookProc(Module: HMODULE; Hook: Boolean); stdcall;
 begin
   if Hook then
@@ -445,7 +449,8 @@ begin
     CallExportedHookExceptProc(SystemTObjectInstance, False);
 end;
 
-// TJclHookExceptModuleList
+//=== { TJclHookExceptModuleList } ===========================================
+
 constructor TJclHookExceptModuleList.Create;
 begin
   inherited Create;
@@ -542,6 +547,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.9  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

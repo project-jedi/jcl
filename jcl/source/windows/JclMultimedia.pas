@@ -54,7 +54,7 @@ type
   TMCI_Open_Parms = MCI_OPEN_PARMS;
   {$ENDIF FPC}
 
-// Multimedia timer
+  // Multimedia timer
   TMmTimerKind = (tkOneShot, tkPeriodic);
   TMmNotificationKind = (nkCallback, nkSetEvent, nkPulseEvent);
 
@@ -91,13 +91,11 @@ type
     property Period: Cardinal read FPeriod write SetPeriod;
   end;
 
-type
   EJclMmTimerError = class(EJclError);
 
-// Audio Mixer
-{ TODO -cDoc : mixer API wrapper code. Author: Petr Vones }
+  // Audio Mixer
+  { TODO -cDoc : mixer API wrapper code. Author: Petr Vones }
 
-type
   EJclMixerError = class(EJclError);
 
   TJclMixerDevice = class;
@@ -265,8 +263,8 @@ type
 
   function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
 
-// MCI Error checking
 type
+  // MCI Error checking
   EJclMciError = class(EJclError)
   private
     FMciErrorNo: DWORD;
@@ -336,7 +334,8 @@ function mixerSetControlDetails(hmxobj: HMIXEROBJ; pmxcd: PMixerControlDetails; 
   external mmsyst name 'mixerSetControlDetails';
 {$ENDIF FPC}
 
-// TJclMultimediaTimer
+//=== { TJclMultimediaTimer } ================================================
+
 constructor TJclMultimediaTimer.Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
 begin
   FKind := Kind;
@@ -488,7 +487,8 @@ begin
     Result := FEvent.WaitFor(TimeOut);
 end;
 
-// Audio Mixer
+//=== { TJclMixerLineControl } ===============================================
+
 function MixerLeftRightToArray(Left, Right: Cardinal): TDynCardinalArray;
 begin
   SetLength(Result, 2);
@@ -496,7 +496,6 @@ begin
   Result[1] := Right;
 end;
 
-// TJclMixerLineControl
 constructor TJclMixerLineControl.Create(AMixerLine: TJclMixerLine; const AControlInfo: TMixerControl);
 begin
   FControlInfo := AControlInfo;
@@ -664,7 +663,8 @@ begin
   MMCheck(mixerSetControlDetails(MixerLine.MixerDevice.Handle, @ControlDetails, MIXER_GETCONTROLDETAILSF_VALUE));
 end;
 
-// TJclMixerLine
+//=== { TJclMixerLine } ======================================================
+
 function MixerLineCompareID(Item1, Item2: Pointer): Integer;
 begin
   Result := Integer(TJclMixerLine(Item1).ID) - Integer(TJclMixerLine(Item2).ID);
@@ -804,7 +804,8 @@ begin
   Result := FLineInfo.szName;
 end;
 
-// TJclMixerSource
+//=== { TJclMixerSource } ====================================================
+
 constructor TJclMixerSource.Create(AMixerDestination: TJclMixerDestination; ASourceIndex: Cardinal);
 begin
   inherited Create(AMixerDestination.MixerDevice);
@@ -815,7 +816,8 @@ begin
   MMCheck(mixerGetLineInfo(FMixerDestination.MixerDevice.Handle, @FLineInfo, MIXER_GETLINEINFOF_SOURCE));
 end;
 
-// TJclMixerDestination
+//=== { TJclMixerDestination } ===============================================
+
 constructor TJclMixerDestination.Create(AMixerDevice: TJclMixerDevice; ADestinationIndex: Cardinal);
 begin
   inherited Create(AMixerDevice);
@@ -858,7 +860,8 @@ begin
   Result := TJclMixerSource(FSources[Index]);
 end;
 
-// TJclMixerDevice
+//=== { TJclMixerDevice } ====================================================
+
 constructor TJclMixerDevice.Create(ADeviceIndex: Cardinal; ACallBackWnd: HWND);
 begin
   FDeviceIndex := ADeviceIndex;
@@ -1032,7 +1035,8 @@ begin
       [TJclMixerLine.ComponentTypeToString(ComponentType), ControlType]);
 end;
 
-// TJclMixer
+//=== { TJclMixer } ==========================================================
+
 constructor TJclMixer.Create(ACallBackWnd: HWND);
 begin
   FDeviceList := TObjectList.Create;
@@ -1131,7 +1135,8 @@ begin
   FirstDevice.LineUniformValue[Cardinal(ComponentType), MIXERCONTROL_CONTROLTYPE_VOLUME] := Value;
 end;
 
-// EJclMciError
+//=== { EJclMciError } =======================================================
+
 constructor EJclMciError.Create(MciErrNo: MCIERROR; const Msg: string);
 begin
   FMciErrorNo := MciErrNo;
@@ -1171,7 +1176,8 @@ begin
   Result := MciError;
 end;
 
-// CD Drive MCI Routines
+//=== CD Drive MCI Routines ==================================================
+
 function OpenCdMciDevice(var OpenParams: TMCI_Open_Parms; Drive: Char): MCIERROR;
 var
   OpenParam: DWORD;
@@ -1195,7 +1201,8 @@ begin
     FillChar(OpenParams, SizeOf(OpenParams), 0);
 end;
 
-// CD Drive specific routines
+//=== CD Drive specific routines =============================================
+
 procedure OpenCloseCdDrive(OpenMode: Boolean; Drive: Char);
 const
   OpenCmd: array [Boolean] of DWORD =
@@ -1338,6 +1345,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.15  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -790,7 +790,7 @@ begin
   FSymbolType := pSymInfo.SymbolType;
 end;
 
-//=== { TJclProcSymbolInfo 0 =================================================
+//=== { TJclProcSymbolInfo } =================================================
 
 constructor TJclProcSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
@@ -1251,6 +1251,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.11  2005/02/24 16:34:53  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -90,7 +90,6 @@ implementation
 uses
   JclBase, JclStrings, JclSysInfo, JclWin32;
 
-// User Management
 function CreateAccount(const Server, Username, Fullname, Password, Description,
   Homedir, Script: string; const PasswordNeverExpires: Boolean): Boolean;
 var
@@ -437,6 +436,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.11  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

@@ -211,7 +211,7 @@ type
     procedure UpdateStatus(const SvcStatus: TServiceStatus);
     procedure UpdateConfig(const SvcConfig: TQueryServiceConfig);
     procedure CommitConfig(var SvcConfig: TQueryServiceConfig);
-    procedure SetStartType( aStartType:TJclServiceStartType );
+    procedure SetStartType(AStartType: TJclServiceStartType);
   public
     destructor Destroy; override;
     procedure Refresh;
@@ -437,12 +437,11 @@ begin
   end;
 end;
 
-
-procedure TJclNtService.SetStartType( aStartType:TJclServiceStartType );
+procedure TJclNtService.SetStartType(AStartType: TJclServiceStartType);
 begin
-  if aStartType <> FStartType then
+  if AStartType <> FStartType then
   begin
-    FStartType := aStartType;
+    FStartType := AStartType;
     FCommitNeeded := True;
   end;
 end;
@@ -596,9 +595,9 @@ procedure TJclNtService.CommitConfig(var SvcConfig: TQueryServiceConfig);
 begin
   with SvcConfig do
   begin
-    StrCopy( lpBinaryPathName, PChar(FFileName));
-    dwStartType      := Ord(FStartType);    {TJclServiceStartType}
-    dwErrorControl   := Ord(FErrorControlType);  {TJclServiceErrorControlType}
+    StrCopy(lpBinaryPathName, PChar(FileName));
+    dwStartType := Ord(StartType);    {TJclServiceStartType}
+    dwErrorControl := Ord(ErrorControlType);  {TJclServiceErrorControlType}
     //UpdateLoadOrderGroup;
     //UpdateDependencies;
   end;
@@ -655,8 +654,9 @@ var
   BytesNeeded: DWORD;
   PQrySvcCnfg: PQueryServiceConfig;
 begin
- if not FCommitNeeded then exit;
- FCommitNeeded := false;
+ if not FCommitNeeded then
+   Exit;
+ FCommitNeeded := False;
 
   Open(SERVICE_CHANGE_CONFIG or SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
   try
@@ -672,18 +672,17 @@ begin
       Win32Check(Ret);
 
       CommitConfig(PQrySvcCnfg^);
-      Win32Check(ChangeServiceConfig( Handle,
-                 PQrySvcCnfg^.dwServiceType,
-                 PQrySvcCnfg^.dwStartType,
-                 PQrySvcCnfg^.dwErrorControl,
-                 nil,{PQrySvcCnfg^.lpBinaryPathName,}
-                 nil,{PQrySvcCnfg^.lpLoadOrderGroup,}
-                 nil,{PQrySvcCnfg^.dwTagId,}
-                 nil,{PQrySvcCnfg^.lpDependencies,}
-                 nil, {PQrySvcCnfg^.lpServiceStartName,}
-                 nil,{password-write only-not readable}
-                 PQrySvcCnfg^.lpDisplayName
-                 ));
+      Win32Check(ChangeServiceConfig(Handle,
+        PQrySvcCnfg^.dwServiceType,
+        PQrySvcCnfg^.dwStartType,
+        PQrySvcCnfg^.dwErrorControl,
+        nil, {PQrySvcCnfg^.lpBinaryPathName,}
+        nil, {PQrySvcCnfg^.lpLoadOrderGroup,}
+        nil, {PQrySvcCnfg^.dwTagId,}
+        nil, {PQrySvcCnfg^.lpDependencies,}
+        nil, {PQrySvcCnfg^.lpServiceStartName,}
+        nil, {password-write only-not readable}
+        PQrySvcCnfg^.lpDisplayName));
     finally
       FreeMem(PQrySvcCnfg);
     end;
@@ -691,7 +690,6 @@ begin
     Close;
   end;
 end;
-
 
 procedure TJclNtService.Delete;
 {$IFDEF FPC}
@@ -816,8 +814,8 @@ end;
 
 //=== { TJclServiceGroup } ===================================================
 
-constructor TJclServiceGroup.Create(const ASCManager: TJclSCManager; const AName: string;
-  const AOrder: Integer);
+constructor TJclServiceGroup.Create(const ASCManager: TJclSCManager;
+  const AName: string; const AOrder: Integer);
 begin
   Assert(Assigned(ASCManager));
   inherited Create;
@@ -858,8 +856,8 @@ end;
 
 //=== { TJclSCManager } ======================================================
 
-constructor TJclSCManager.Create(const AMachineName: string; const ADesiredAccess: DWORD;
-  const ADatabaseName: string);
+constructor TJclSCManager.Create(const AMachineName: string;
+  const ADesiredAccess: DWORD; const ADatabaseName: string);
 begin
   Assert((ADesiredAccess and (not SC_MANAGER_ALL_ACCESS)) = 0);
   inherited Create;
@@ -1441,6 +1439,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.31  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

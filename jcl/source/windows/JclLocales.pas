@@ -36,6 +36,7 @@
 // For history see end of file
 
 unit JclLocales;
+
 {$I jcl.inc}
 {$I windowsonly.inc}
 
@@ -48,8 +49,8 @@ uses
   Windows, Classes, SysUtils, Contnrs,
   JclBase, JclWin32;
 
-// System locales
 type
+  // System locales
   TJclLocalesDays = 1..7;
   TJclLocalesMonths = 1..13;
   TJclLocaleDateFormats = (ldShort, ldLong, ldYearMonth);
@@ -216,8 +217,7 @@ type
     property Kind: TJclLocalesKind read FKind;
   end;
 
-// Keyboard layouts
-type
+  // Keyboard layouts
   TJclKeybLayoutFlag = (klReorder, klUnloadPrevious, klSetForProcess,
     klActivate, klNotEllShell, klReplaceLang, klSubstituteOK);
 
@@ -342,7 +342,8 @@ threadvar
   ProcessedLocaleInfoList: TStrings;
   ProcessedLocalesList: TJclLocalesList;
 
-// TJclLocaleInfo
+//=== { TJclLocaleInfo } =====================================================
+
 constructor TJclLocaleInfo.Create(ALocaleID: LCID);
 begin
   inherited Create;
@@ -665,7 +666,8 @@ begin
   end;
 end;
 
-// TJclLocalesList
+//=== { TJclLocalesList } ====================================================
+
 constructor TJclLocalesList.Create(AKind: TJclLocalesKind);
 begin
   inherited Create(True);
@@ -773,7 +775,8 @@ begin
   Result := TJclLocaleInfo(inherited Items[Index]);
 end;
 
-// TJclAvailableKeybLayout
+//=== { TJclAvailableKeybLayout } ============================================
+
 function TJclAvailableKeybLayout.GetIdentifierName: string;
 begin
   Result := Format('%.8x', [FIdentifier]);
@@ -789,7 +792,8 @@ begin
   Result := FOwner.LoadLayout(IdentifierName, LoadFlags);
 end;
 
-// TJclKeyboardLayout
+//=== { TJclKeyboardLayout } =================================================
+
 constructor TJclKeyboardLayout.Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
 begin
   inherited Create;
@@ -859,7 +863,8 @@ begin
     FOwner.Refresh;
 end;
 
-// TJclKeyboardLayoutList
+//=== { TJclKeyboardLayoutList } =============================================
+
 constructor TJclKeyboardLayoutList.Create;
 begin
   inherited Create;
@@ -1012,7 +1017,8 @@ end;
 // Microsoft Knowledge Base Article - 174543
 // http://support.microsoft.com/default.aspx?scid=kb;en-us;174543
 
-// Various routines
+//=== Various routines =======================================================
+
 procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer);
 begin
   with TJclLocalesList.Create(lkInstalled) do
@@ -1026,6 +1032,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.14  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

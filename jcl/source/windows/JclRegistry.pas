@@ -217,7 +217,8 @@ const
   cItems = 'Items';
   cRegBinKinds = [REG_SZ..REG_QWORD];  // all types
 
-// Internal helper routines
+//=== Internal helper routines ===============================================
+
 procedure ReadError(const Key: string);
 begin
   raise EJclRegistryError.CreateResRecFmt(@RsUnableToOpenKeyRead, [Key]);
@@ -480,7 +481,8 @@ begin
     WriteError(Key);
 end;
 
-// Registry
+//=== Registry ===============================================================
+
 function RegCreateKey(const RootKey: DelphiHKEY; const Key: string): Longint;
 var
   RegKey: HKEY;
@@ -1392,6 +1394,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.35  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.34  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

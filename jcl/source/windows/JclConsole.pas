@@ -118,7 +118,7 @@ type
   TJclScreenCursor = class;
   TJclScreenWindow = class;
 
-// Console screen buffer
+  // Console screen buffer
   TJclScreenBufferBeforeResizeEvent = procedure(Sender: TObject; const NewSize: TCoord; var CanResize: Boolean) of object;
   TJclScreenBufferAfterResizeEvent = procedure(Sender: TObject) of object;
 
@@ -183,7 +183,7 @@ type
     property OnAfterResize: TJclScreenBufferAfterResizeEvent read FOnAfterResize write FOnAfterResize;
   end;
 
-// Console screen text attributes
+  // Console screen text attributes
   TJclScreenFontColor = (fclBlack, fclBlue, fclGreen, fclRed, fclCyan, fclMagenta, fclYellow, fclWhite);
   TJclScreenBackColor = (bclBlack, bclBlue, bclGreen, bclRed, bclCyan, bclMagenta, bclYellow, bclWhite);
   TJclScreenFontStyle = (fsLeadingByte, fsTrailingByte, fsGridHorizontal, fsGridLeftVertical, fsGridRightVertical, fsReverseVideo, fsUnderscore, fsSbcsDbcs);
@@ -307,7 +307,7 @@ type
     property Visible: Boolean read GetVisible write SetVisible;
   end;
 
-// Console screen window
+  // Console screen window
   TJclScreenWindow = class(TObject)
   private
     FScreenBuffer: TJclScreenBuffer;
@@ -349,7 +349,7 @@ type
     property Height: Smallint read GetHeight write SetHeight;
   end;
 
-// Console input buffer
+  // Console input buffer
   TJclInputCtrlEvent = ( ceCtrlC, ceCtrlBreak, ceCtrlClose, ceCtrlLogOff, ceCtrlShutdown );
 
   TJclInputRecordArray = array of TInputRecord;
@@ -481,7 +481,8 @@ begin
   end;
 end;
 
-// TJclConsole
+//=== { TJclConsole } ========================================================
+
 constructor TJclConsole.Create;
 begin
   inherited Create;
@@ -641,7 +642,8 @@ begin
   Win32Check(GetNumberOfConsoleMouseButtons(Result));
 end;
 
-// TJclScreenBuffer
+//=== { TJclScreenBuffer } ===================================================
+
 constructor TJclScreenBuffer.Create;
 begin
   inherited Create;
@@ -924,7 +926,8 @@ begin
   Fill(' ', TJclScreenTextAttribute.Create(fclWhite, bclBlack, False, False, []));
 end;
 
-// TJclScreenCustomTextAttribute
+//=== { TJclScreenCustomTextAttribute } ======================================
+
 constructor TJclScreenCustomTextAttribute.Create(const Attr: TJclScreenCustomTextAttribute);
 begin
   inherited Create;
@@ -1017,7 +1020,8 @@ begin
   TextAttribute := FontColorMapping[fclWhite] or BackColorMapping[bclBlack];
 end;
 
-// TJclScreenFont
+//=== { TJclScreenFont } =====================================================
+
 constructor TJclScreenFont.Create(const AScrBuf: TJclScreenBuffer);
 begin
   inherited Create;
@@ -1034,7 +1038,8 @@ begin
   Win32Check(SetConsoleTextAttribute(ScreenBuffer.Handle, Value));
 end;
 
-// TJclScreenTextAttribute
+//=== { TJclScreenTextAttribute 0 ============================================
+
 constructor TJclScreenTextAttribute.Create(const Attribute: Word);
 begin
   inherited Create;
@@ -1063,7 +1068,8 @@ begin
   FAttribute := Value;
 end;
 
-// TJclScreenCharacter
+//=== { TJclScreenCharacter } ================================================
+
 constructor TJclScreenCharacter.Create(const CharInfo: TCharInfo);
 begin
   inherited Create;
@@ -1090,7 +1096,8 @@ begin
   FCharInfo.Attributes := Value;
 end;
 
-// TJclScreenCursor
+//=== { TJclScreenCursor } ===================================================
+
 constructor TJclScreenCursor.Create(const AScrBuf: TJclScreenBuffer);
 begin
   inherited Create;
@@ -1179,7 +1186,8 @@ begin
   MoveTo(DestPos);
 end;
 
-// TJclScreenWindow
+//=== { TJclScreenWindow } ===================================================
+
 constructor TJclScreenWindow.Create(const AScrBuf: TJclScreenBuffer);
 begin
   inherited Create;
@@ -1322,7 +1330,8 @@ begin
   DoResize(Delta, False);
 end;
 
-// TJclInputBuffer
+//=== { TJclInputBuffer } ====================================================
+
 constructor TJclInputBuffer.Create(const AConsole: TJclConsole);
 begin
   inherited Create;
@@ -1442,6 +1451,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.13  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

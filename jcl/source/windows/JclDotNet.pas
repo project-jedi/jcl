@@ -286,6 +286,8 @@ function CallFunctionShim; external mscoree_dll;
 function GetRealProcAddress; external mscoree_dll;
 procedure CorExitProcess; external mscoree_dll;
 
+//=== { TJclClrHost } ========================================================
+
 const
   CLR_MAJOR_VERSION = 1;
   CLR_MINOR_VERSION = 0;
@@ -299,7 +301,6 @@ const
   STARTUP_LOADER_SAFEMODE                       = $10;
   STARTUP_LOADER_SETPREFERENCE                  = $100;
 
-// TJclClrHost
 constructor TJclClrHost.Create(const ClrVer: WideString; const Flavor: TJclClrHostFlavor;
   const ConcurrentGC: Boolean; const LoaderFlags: TJclClrHostLoaderFlags);
 const
@@ -484,7 +485,8 @@ begin
   EnumAppDomains;
 end;
 
-// TJclClrAppDomain
+//=== { TJclClrAppDomain } ===================================================
+
 constructor TJclClrAppDomain.Create(const AHost: TJclClrHost;
   const spAppDomain: IJclClrAppDomain);
 begin
@@ -600,7 +602,8 @@ begin
     FHost.RemoveAppDomain(Self);
 end;
 
-// TJclClrObject
+//=== { TJclClrObject } ======================================================
+
 constructor TJclClrObject.Create(const AssemblyName, NamespaceName, ClassName: WideString;
   const Parameters: array of const);
 begin
@@ -631,7 +634,8 @@ begin
   Result := nil;
 end;
 
-// TJclClrAppDomainSetup
+//=== { TJclClrAppDomainSetup } ==============================================
+
 constructor TJclClrAppDomainSetup.Create(Intf: IAppDomainSetup);
 begin
   Assert(Assigned(Intf));
@@ -739,7 +743,8 @@ begin
   OleCheck(FDefaultInterface.Set_ShadowCopyFiles(Value));
 end;
 
-// TJclClrAssembly
+//=== { TJclClrAssembly } ====================================================
+
 constructor TJclClrAssembly.Create(Intf: IJclClrAssembly);
 begin
   Assert(Assigned(Intf));
@@ -750,6 +755,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2005/02/25 07:20:15  marquardt
+// add section lines
+//
 // Revision 1.11  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //

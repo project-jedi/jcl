@@ -169,7 +169,8 @@ uses
   SysUtils, Hardlinks,
   JclFileUtils, JclSysInfo, JclResources, JclSecurity;
 
-// NTFS - Compression
+//=== NTFS - Compression =====================================================
+
 // Helper consts, helper types, helper routines
 
 const
@@ -358,7 +359,8 @@ begin
     RaiseLastOSError;
 end;
 
-// NTFS - Sparse Files
+//=== NTFS - Sparse Files ====================================================
+
 function NtfsSetSparse(const FileName: string): Boolean;
 var
   Handle: THandle;
@@ -497,7 +499,8 @@ begin
     end;
 end;
 
-// NTFS - Reparse Points
+//=== NTFS - Reparse Points ==================================================
+
 function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
 var
   SearchRec: TSearchRec;
@@ -595,7 +598,8 @@ begin
     end;
 end;
 
-// NTFS - Volume Mount Points
+//=== NTFS - Volume Mount Points =============================================
+
 function NtfsIsFolderMountPoint(const Path: string): Boolean;
 var
   Tag: DWORD;
@@ -648,8 +652,10 @@ begin
   end;
 end;
 
-// NTFS - Change Journal
-// NTFS - Opportunistic Locks
+//=== NTFS - Change Journal ==================================================
+
+//=== NTFS - Opportunistic Locks =============================================
+
 function NtfsOpLockAckClosePending(Handle: THandle; Overlapped: TOverlapped): Boolean;
 var
   BytesReturned: Cardinal;
@@ -695,7 +701,8 @@ begin
   Result := Result or (GetLastError = ERROR_IO_PENDING);
 end;
 
-// Junction Points
+//=== Junction Points ========================================================
+
 type
   TReparseDataBufferOverlay = record
   case Boolean of
@@ -788,7 +795,8 @@ begin
   end;
 end;
 
-// Streams
+//=== Streams ================================================================
+
 // FindStream is an internal helper routine for NtfsFindFirstStream and
 // NtfsFindNextStream. It uses the backup API to enumerate the streams in an
 // NTFS file and returns when it either finds a stream that matches the filter
@@ -937,7 +945,7 @@ begin
   SetLastError(LastError);
 end;
 
-// Hard links
+//=== Hard links =============================================================
 (*
    Implementation of CreateHardLink completely swapped to the unit Hardlink.pas
 
@@ -952,16 +960,16 @@ end;
 (* ANSI implementation of the function - calling UNICODE anyway ;-) *)
 function NtfsCreateHardLinkA(const LinkFileName, ExistingFileName: AnsiString): Boolean;
 begin
-// Invoke either (homegrown vs. API) function and supply NIL for security attributes
-  result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
+  // Invoke either (homegrown vs. API) function and supply NIL for security attributes
+  Result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
 end;
 
 // For a description see: NtfsCreateHardLink()
 (* UNICODE implementation of the function - we are on NT, aren't we ;-) *)
 function NtfsCreateHardLinkW(const LinkFileName, ExistingFileName: WideString): Boolean;
 begin
-// Invoke either (homegrown vs. API) function and supply NIL for security attributes
-  result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName), nil);
+  // Invoke either (homegrown vs. API) function and supply NIL for security attributes
+  Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName), nil);
 end;
 
 // NtfsCreateHardLink
@@ -1000,11 +1008,11 @@ end;
 function NtfsCreateHardLink(const LinkFileName, ExistingFileName: String): Boolean;
 {$DEFINE ANSI} // TODO: review for possible existing compatible DEFINES in the JCL
 begin
-{$IFDEF ANSI}
+  {$IFDEF ANSI}
   Result := CreateHardLinkA(PAnsiChar(LinkFileName), PAnsiChar(ExistingFileName), nil);
-{$ELSE}
+  {$ELSE}
   Result := CreateHardLinkW(PWideChar(LinkFileName), PWideChar(ExistingFileName));
-{$ENDIF}
+  {$ENDIF ANSI}
 end;
 
 function NtfsGetHardLinkInfo(const FileName: string; var Info: TNtfsHardLinkInfo): Boolean;
@@ -1136,10 +1144,8 @@ begin
         end;
       end
       else
-      begin
         // there are no hard links, just delete the file
         Result := DeleteFile(FullPathName);
-      end;
     finally
       Files.Free;
     end;
@@ -1149,6 +1155,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2005/02/25 07:20:16  marquardt
+// add section lines
+//
 // Revision 1.21  2005/02/24 16:34:52  marquardt
 // remove divider lines, add section lines (unfinished)
 //
