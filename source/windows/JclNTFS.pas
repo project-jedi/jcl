@@ -1224,33 +1224,37 @@ begin
   R := FindFirst(Path + '\*.*', faAnyFile, SearchRec);
   Result := (R = 0);
   if Result then
-  try
-    while R = 0 do
-    begin
-      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+  begin
+    List.BeginUpdate;
+    try
+      while R = 0 do
       begin
-        if (SearchRec.Attr and faDirectory) = faDirectory then
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
         begin
-          // recurse into subdirectory
-          Result := NtfsFindHardLinks(Path + '\' + SearchRec.Name, FileIndexHigh, FileIndexLow, List);
-          if not Result then
-            Break;
-        end
-        else
-        begin
-          // found a file, is it a hard link?
-          if NtfsGetHardLinkInfo(Path + '\' + SearchRec.Name, Info) then
+          if (SearchRec.Attr and faDirectory) = faDirectory then
           begin
-            if (Info.FileIndexHigh = FileIndexHigh) and (Info.FileIndexLow = FileIndexLow) then
-              List.Add(Path + '\' + SearchRec.Name);
+            // recurse into subdirectory
+            Result := NtfsFindHardLinks(Path + '\' + SearchRec.Name, FileIndexHigh, FileIndexLow, List);
+            if not Result then
+              Break;
+          end
+          else
+          begin
+            // found a file, is it a hard link?
+            if NtfsGetHardLinkInfo(Path + '\' + SearchRec.Name, Info) then
+            begin
+              if (Info.FileIndexHigh = FileIndexHigh) and (Info.FileIndexLow = FileIndexLow) then
+                List.Add(Path + '\' + SearchRec.Name);
+            end;
           end;
         end;
+        R := FindNext(SearchRec);
       end;
-      R := FindNext(SearchRec);
+      Result := R = ERROR_NO_MORE_FILES;
+    finally
+      SysUtils.FindClose(SearchRec);
+      List.EndUpdate;
     end;
-    Result := R = ERROR_NO_MORE_FILES;
-  finally
-    SysUtils.FindClose(SearchRec);
   end;
   if R = ERROR_ACCESS_DENIED then
     Result := True;
@@ -1262,7 +1266,7 @@ function NtfsDeleteHardLinks(const FileName: string): Boolean;
 var
   FullPathName: string;
   FilePart: PChar;
-  Files: TStrings;
+  Files: TStringList;
   I: Integer;
   Info: TNtfsHardLinkInfo;
 begin
@@ -1335,6 +1339,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.13  2004/07/29 07:58:21  marquardt
 // inc files updated
 //

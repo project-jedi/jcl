@@ -3011,6 +3011,7 @@ begin
     0, INVALID_HANDLE_VALUE: ;
   else
     FreeLibrary(LibHandle);
+    LibHandle := 0;
   end;
 end;
 
@@ -4035,6 +4036,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.25  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.24  2004/07/28 18:00:55  marquardt
 // various style cleanings, some minor fixes
 //

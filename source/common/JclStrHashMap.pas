@@ -219,7 +219,7 @@ end;
 
 function StrHash(const s: string): Cardinal;
 var
-  i: Integer;
+  I: Integer;
   p: PChar;
 const
   C_LongBits = 32;
@@ -233,14 +233,14 @@ begin
   Result := 0;
   p := PChar(s);
 
-  i := Length(s);
-  while i > 0 do
+  I := Length(s);
+  while I > 0 do
   begin
     Result := (Result shl C_OneEight) + Ord(p^);
     temp := Result and C_HighBits;
     if temp <> 0 then
       Result := (Result xor (temp shr C_ThreeFourths)) and (not C_HighBits);
-    Dec(i);
+    Dec(I);
     Inc(p);
   end;
 end;
@@ -249,7 +249,7 @@ end;
 
 function TextHash(const s: string): Cardinal;
 var
-  i: Integer;
+  I: Integer;
   p: PChar;
 const
   C_LongBits = 32;
@@ -263,14 +263,14 @@ begin
   Result := 0;
   p := PChar(s);
 
-  i := Length(s);
-  while i > 0 do
+  I := Length(s);
+  while I > 0 do
   begin
     Result := (Result shl C_OneEight) + Ord(UpCase(p^));
     temp := Result and C_HighBits;
     if temp <> 0 then
       Result := (Result xor (temp shr C_ThreeFourths)) and (not C_HighBits);
-    Dec(i);
+    Dec(I);
     Inc(p);
   end;
 end;
@@ -356,11 +356,11 @@ var
 
   procedure CollectNodes;
   var
-    i: Integer;
+    I: Integer;
   begin
     collect_list := nil;
-    for i := 0 to FHashSize - 1 do
-      NodeIterate(@FList^[i], @collect_list, NodeIterate_CollectNodes);
+    for I := 0 to FHashSize - 1 do
+      NodeIterate(@FList^[I], @collect_list, NodeIterate_CollectNodes);
   end;
 
   procedure InsertNodes;
@@ -420,14 +420,14 @@ end;
 
 function TStringHashMap.FindNode(const s: string): PPHashNode;
 var
-  i: Cardinal;
+  I: Cardinal;
   r: Integer;
   ppn: PPHashNode;
 begin
   { we start at the node offset by s in the hash list }
-  i := FTraits.Hash(s) mod FHashSize;
+  I := FTraits.Hash(s) mod FHashSize;
 
-  ppn := @FList^[i];
+  ppn := @FList^[I];
 
   if ppn^ <> nil then
     while True do
@@ -705,14 +705,14 @@ end;
 procedure TStringHashMap.RemoveData(const p{: Pointer});
 var
   dp: TDataParam;
-  i: Integer;
+  I: Integer;
   n, t: PListNode;
 begin
   dp.Data := Pointer(p);
   dp.Head := nil;
 
-  for i := 0 to FHashSize - 1 do
-    NodeIterate(@FList^[i], @dp, NodeIterate_BuildDataList);
+  for I := 0 to FHashSize - 1 do
+    NodeIterate(@FList^[I], @dp, NodeIterate_BuildDataList);
 
   n := dp.Head;
   while n <> nil do
@@ -746,10 +746,10 @@ end;
 procedure TStringHashMap.IterateMethod(AUserData: Pointer;
   AIterateMethod: TIterateMethod);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FHashSize - 1 do
-    if not IterateMethodNode(FList^[i], AUserData, AIterateMethod) then
+  for I := 0 to FHashSize - 1 do
+    if not IterateMethodNode(FList^[I], AUserData, AIterateMethod) then
       Break;
 end;
 
@@ -757,10 +757,10 @@ end;
 
 procedure TStringHashMap.Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FHashSize - 1 do
-    if not IterateNode(FList^[i], AUserData, AIterateFunc) then
+  for I := 0 to FHashSize - 1 do
+    if not IterateNode(FList^[I], AUserData, AIterateFunc) then
       Break;
 end;
 
@@ -831,31 +831,30 @@ end;
 
 procedure TStringHashMap.Clear;
 var
-  i: Integer;
+  I: Integer;
   ppn: PPHashNode;
 begin
-  for i := 0 to FHashSize - 1 do
+  for I := 0 to FHashSize - 1 do
   begin
-    ppn := @FList^[i];
+    ppn := @FList^[I];
     if ppn^ <> nil then
       DeleteNodes(ppn^);
   end;
   FCount := 0;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 initialization
-finalization
-  if @_CaseInsensitiveTraits <> nil then
-    _CaseInsensitiveTraits.Free;
 
-  if @_CaseSensitiveTraits <> nil then
-    _CaseSensitiveTraits.Free;
+finalization
+  FreeAndNil(_CaseInsensitiveTraits);
+  FreeAndNil(_CaseSensitiveTraits);
 
 // History:
 
 // $Log$
+// Revision 1.7  2004/07/31 06:21:01  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.6  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //

@@ -8032,7 +8032,7 @@ end;
 procedure FreeUnicodeData;
 // Frees all data which has been allocated and which is not automatically freed by Delphi.
 begin
-  LoadInProgress.Free;
+  FreeAndNil(LoadInProgress);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -8048,6 +8048,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.14  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.13  2004/07/28 18:00:54  marquardt
 // various style cleanings, some minor fixes
 //

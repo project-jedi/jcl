@@ -116,7 +116,7 @@ type
     FIsList: Boolean;
     FIsMultiple: Boolean;
     FIsUniform: Boolean;
-    FListText: TStrings;
+    FListText: TStringList;
     FMixerLine: TJclMixerLine;
     function GetIsDisabled: Boolean;
     function GetID: DWORD;
@@ -1508,25 +1508,30 @@ var
   S: string;
 begin
   TotalTime := GetCDAudioTrackList(Tracks, Drive);
-  for I := Low(Tracks) to High(Tracks) do
-    with Tracks[I] do
-    begin
-      if IncludeTrackType then
+  TrackList.BeginUpdate;
+  try
+    for I := Low(Tracks) to High(Tracks) do
+      with Tracks[I] do
       begin
-        case TrackType of
-          ttAudio:
-            S := RsMMTrackAudio;
-          ttOther:
-            S := RsMMTrackOther;
-        end;
-        S := Format('[%s]', [S]); 
-      end
-      else
-        S := '';
-      S := Format(RsMmCdTrackNo, [I + 1]) + ' ' + S;
-      S := S + ' ' + Format(RsMMCdTimeFormat, [I + 1, Minute, Second]);
-      TrackList.Add(S);
-    end;  
+        if IncludeTrackType then
+        begin
+          case TrackType of
+            ttAudio:
+              S := RsMMTrackAudio;
+            ttOther:
+              S := RsMMTrackOther;
+          end;
+          S := Format('[%s]', [S]);
+        end
+        else
+          S := '';
+        S := Format(RsMmCdTrackNo, [I + 1]) + ' ' + S;
+        S := S + ' ' + Format(RsMMCdTimeFormat, [I + 1, Minute, Second]);
+        TrackList.Add(S);
+      end;
+  finally
+    TrackList.EndUpdate;
+  end;
   Result := Format(RsMMCdTimeFormat, [TotalTime.Minute, TotalTime.Second]);
 end;
 
@@ -1535,6 +1540,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.11  2004/07/28 18:00:53  marquardt
 // various style cleanings, some minor fixes
 //

@@ -1971,7 +1971,12 @@ procedure GetFileList(RootDir: string; List: TStrings);
 
 begin
   RootDir := {$IFDEF XPLATFORM_RTL} IncludeTrailingPathDelimiter {$ELSE} IncludeTrailingBackslash{$ENDIF}(RootDir);
-  ScanDir('');
+  List.BeginUpdate;
+  try
+    ScanDir('');
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1980,8 +1985,13 @@ procedure ArrayToList(const Filenames: array of string; List: TStrings);
 var
   I: Integer;
 begin
-  for I := Low(Filenames) to High(Filenames) do
-    List.Add(Filenames[I]);
+  List.BeginUpdate;
+  try
+    for I := Low(Filenames) to High(Filenames) do
+      List.Add(Filenames[I]);
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2121,6 +2131,9 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.13  2004/07/31 06:21:01  marquardt
+//  fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 //  Revision 1.12  2004/07/28 18:00:52  marquardt
 //  various style cleanings, some minor fixes
 //

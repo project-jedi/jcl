@@ -199,19 +199,20 @@ type
 
   TJclLocalesList = class(TObjectList)
   private
-    FCodePages: TStrings;
+    FCodePages: TStringList;
     FKind: TJclLocalesKind;
     function GetItemFromLangID(LangID: LANGID): TJclLocaleInfo;
     function GetItemFromLangIDPrimary(LangIDPrimary: Word): TJclLocaleInfo;
     function GetItemFromLocaleID(LocaleID: LCID): TJclLocaleInfo;
     function GetItems(Index: Integer): TJclLocaleInfo;
+    function GetCodePages: TStrings;
   protected
     procedure CreateList;
   public
     constructor Create(AKind: TJclLocalesKind = lkInstalled);
     destructor Destroy; override;
     procedure FillStrings(Strings: TStrings; InfoType: Integer);
-    property CodePages: TStrings read FCodePages;
+    property CodePages: TStrings read GetCodePages;
     property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
     property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
     property ItemFromLocaleID[LocaleID: LCID]: TJclLocaleInfo read GetItemFromLocaleID;
@@ -755,7 +756,7 @@ const
 
   function EnumCodePagesProc(lpCodePageString: LPSTR): BOOL; stdcall;
   begin
-    ProcessedLocalesList.FCodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
+    ProcessedLocalesList.CodePages.AddObject(lpCodePageString, Pointer(StrToIntDef(lpCodePageString, 0)));
     DWORD(Result) := 1;
   end;
 
@@ -783,9 +784,21 @@ procedure TJclLocalesList.FillStrings(Strings: TStrings; InfoType: Integer);
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
-    with Items[I] do
-      Strings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
+  Strings.BeginUpdate;
+  try
+    for I := 0 to Count - 1 do
+      with Items[I] do
+        Strings.AddObject(StringInfo[InfoType], Pointer(LocaleId));
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclLocalesList.GetCodePages: TStrings;
+begin
+  Result := FCodePages;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1154,6 +1167,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.9  2004/07/29 07:58:21  marquardt
 // inc files updated
 //

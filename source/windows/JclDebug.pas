@@ -3490,9 +3490,14 @@ procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, I
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do
-    Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
-      IncludeStartProcLineOffset, IncludeVAdress));
+  Strings.BeginUpdate;
+  try
+    for I := 0 to Count - 1 do
+      Strings.Add(GetLocationInfoStr(Items[I].CallerAdr, IncludeModuleName, IncludeAddressOffset,
+        IncludeStartProcLineOffset, IncludeVAdress));
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4366,6 +4371,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.8  2004/06/16 07:30:30  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

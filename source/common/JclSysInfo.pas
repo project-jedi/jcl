@@ -705,13 +705,18 @@ function GetEnvironmentVars(const Vars: TStrings): Boolean;
 var
   P: PPChar;
 begin
-  Vars.Clear;
-  P := System.envp;
-  Result := P <> nil;
-  while (P <> nil) and (P^ <> nil) do
-  begin
-    Vars.Add(P^);
-    Inc(P);
+  Vars.BeginUpdate;
+  try
+    Vars.Clear;
+    P := System.envp;
+    Result := P <> nil;
+    while (P <> nil) and (P^ <> nil) do
+    begin
+      Vars.Add(P^);
+      Inc(P);
+    end;
+  finally
+    Vars.EndUpdate;
   end;
 end;
 {$ENDIF KYLIX}
@@ -733,22 +738,27 @@ var
   Expanded: string;
   I: Integer;
 begin
-  Vars.Clear;
-  Raw := GetEnvironmentStrings;
+  Vars.BeginUpdate;
   try
-    MultiSzToStrings(Vars, Raw);
-    Result := True;
-  finally
-    FreeEnvironmentStrings(Raw);
-  end;
-  if Expand then
-  begin
-    for I := 0 to Vars.Count - 1 do
-    begin
-      Expanded := Vars[I];
-      if ExpandEnvironmentVar(Expanded) then
-        Vars[I] := Expanded;
+    Vars.Clear;
+    Raw := GetEnvironmentStrings;
+    try
+      MultiSzToStrings(Vars, Raw);
+      Result := True;
+    finally
+      FreeEnvironmentStrings(Raw);
     end;
+    if Expand then
+    begin
+      for I := 0 to Vars.Count - 1 do
+      begin
+        Expanded := Vars[I];
+        if ExpandEnvironmentVar(Expanded) then
+          Vars[I] := Expanded;
+      end;
+    end;
+  finally
+    Vars.EndUpdate;
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -1662,10 +1672,15 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
 begin
   { TODO : safer solution? }
-  if GetWindowsVersion in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
-    Result := BuildListPS
-  else
-    Result := BuildListTH;
+  List.BeginUpdate;
+  try
+    if GetWindowsVersion in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
+      Result := BuildListPS
+    else
+      Result := BuildListTH;
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1782,10 +1797,15 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
   end;
 
 begin
-  if IsWinNT then
-    Result := EnumModulesPS
-  else
-    Result := EnumModulesTH;
+  List.BeginUpdate;
+  try
+    if IsWinNT then
+      Result := EnumModulesPS
+    else
+      Result := EnumModulesTH;
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1802,7 +1822,12 @@ function GetTasksList(const List: TStrings): Boolean;
   end;
 
 begin
-  Result := EnumWindows(@EnumWindowsProc, Integer(List));
+  List.BeginUpdate;
+  try
+    Result := EnumWindows(@EnumWindowsProc, Integer(List));
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2640,10 +2665,15 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
 
 begin
   Result := -1;
-  Addresses.Clear;
-  GetMacAddressesNetBios;
-  if (Result <= 0) and (Machine = '') then
-    GetMacAddressesSnmp;
+  Addresses.BeginUpdate;
+  try
+    Addresses.Clear;
+    GetMacAddressesNetBios;
+    if (Result <= 0) and (Machine = '') then
+      GetMacAddressesSnmp;
+  finally
+    Addresses.EndUpdate;
+  end;
 end;
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
@@ -3958,11 +3988,15 @@ initialization
 
 finalization
   FinalizeSysInfo;
+
 {$ENDIF MSWINDOWS}
 
 // History:
 
 // $Log$
+// Revision 1.26  2004/07/31 06:21:01  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.25  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //

@@ -1233,25 +1233,30 @@ var
   ValueName: string;
 begin
   Result := False;
-  List.Clear;
-  if RegOpenKeyEx(RootKey, RelativeKeyA(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
-  begin
-    if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
+  List.BeginUpdate;
+  try
+    List.Clear;
+    if RegOpenKeyEx(RootKey, RelativeKeyA(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
-      SetLength(ValueName, MaxSubValueLen + 1);
-      if NumSubValues <> 0 then
-        for I := 0 to NumSubValues - 1 do
-        begin
-          Size := MaxSubValueLen + 1;
-          RegEnumValue(RegKey, I, PChar(ValueName), Size, nil, nil, nil, nil);
-          List.Add(PChar(ValueName));
-        end;
-      Result := True;
-    end;
-    RegCloseKey(RegKey);
-  end
-  else
-    ReadError(Key);
+      if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
+      begin
+        SetLength(ValueName, MaxSubValueLen + 1);
+        if NumSubValues <> 0 then
+          for I := 0 to NumSubValues - 1 do
+          begin
+            Size := MaxSubValueLen + 1;
+            RegEnumValue(RegKey, I, PChar(ValueName), Size, nil, nil, nil, nil);
+            List.Add(PChar(ValueName));
+          end;
+        Result := True;
+      end;
+      RegCloseKey(RegKey);
+    end
+    else
+      ReadError(Key);
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1266,25 +1271,30 @@ var
   KeyName: string;
 begin
   Result := False;
-  List.Clear;
-  if RegOpenKeyEx(RootKey, RelativeKeyA(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
-  begin
-    if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
+  List.BeginUpdate;
+  try
+    List.Clear;
+    if RegOpenKeyEx(RootKey, RelativeKeyA(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
-      SetLength(KeyName, MaxSubKeyLen+1);
-      if NumSubKeys <> 0 then
-        for I := 0 to NumSubKeys-1 do
-        begin
-          Size := MaxSubKeyLen+1;
-          RegEnumKeyEx(RegKey, I, PChar(KeyName), Size, nil, nil, nil, nil);
-          List.Add(PChar(KeyName));
-        end;
-      Result := True;
-    end;
-    RegCloseKey(RegKey);
-  end
-  else
-    ReadError(Key);
+      if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
+      begin
+        SetLength(KeyName, MaxSubKeyLen+1);
+        if NumSubKeys <> 0 then
+          for I := 0 to NumSubKeys-1 do
+          begin
+            Size := MaxSubKeyLen+1;
+            RegEnumKeyEx(RegKey, I, PChar(KeyName), Size, nil, nil, nil, nil);
+            List.Add(PChar(KeyName));
+          end;
+        Result := True;
+      end;
+      RegCloseKey(RegKey);
+    end
+    else
+      ReadError(Key);
+  finally
+    List.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1343,12 +1353,17 @@ var
   I, N: Integer;
   Subkey: string;
 begin
-  SaveTo.Clear;
-  Subkey := Key + '\' + ListName;
-  N := RegReadInteger(RootKey, Subkey, CItems);
-  for I := 1 to N do
-    SaveTo.Add(RegReadString(RootKey, Subkey, IntToStr(I)));
-  Result := N > 0;
+  SaveTo.BeginUpdate;
+  try
+    SaveTo.Clear;
+    Subkey := Key + '\' + ListName;
+    N := RegReadInteger(RootKey, Subkey, CItems);
+    for I := 1 to N do
+      SaveTo.Add(RegReadString(RootKey, Subkey, IntToStr(I)));
+    Result := N > 0;
+  finally
+    SaveTo.EndUpdate;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1373,6 +1388,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2004/07/31 06:21:03  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.18  2004/07/28 18:00:53  marquardt
 // various style cleanings, some minor fixes
 //

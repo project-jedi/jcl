@@ -926,25 +926,30 @@ begin
   LastBit := BaseInfo.MaxValue - (BaseInfo.MinValue - FirstBit);
   Bit := FirstBit;
   StartBit := -1;
-  while Bit <= LastBit do
-  begin
-    if TestBitBuffer(Value, Bit) then
+  Strings.BeginUpdate;
+  try
+    while Bit <= LastBit do
     begin
-      if StartBit = -1 then
-        StartBit := Bit;
-    end
-    else
-    begin
-      if StartBit <> -1 then
+      if TestBitBuffer(Value, Bit) then
       begin
-        AddRange;
-        StartBit := -1;
+        if StartBit = -1 then
+          StartBit := Bit;
+      end
+      else
+      begin
+        if StartBit <> -1 then
+        begin
+          AddRange;
+          StartBit := -1;
+        end;
       end;
+      Inc(Bit);
     end;
-    Inc(Bit);
+    if StartBit <> -1 then
+      AddRange;
+  finally
+    Strings.EndUpdate;
   end;
-  if StartBit <> -1 then
-    AddRange;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -977,38 +982,43 @@ begin
   BaseInfo := BaseType as IJclOrdinalRangeTypeInfo;
   FirstBit := BaseInfo.MinValue mod 8;
   ClearValue;
-  for I := 0 to Strings.Count-1 do
-  begin
-    if Trim(Strings[I]) <> '' then
+  Strings.BeginUpdate;
+  try
+  for I := 0 to Strings.Count - 1 do
     begin
-      FirstIdent := Trim(Strings[I]);
-      RangePos := Pos('..', FirstIdent);
-      if RangePos > 0 then
+      if Trim(Strings[I]) <> '' then
       begin
-        LastIdent := Trim(StrRestOf(FirstIdent, RangePos + 2));
-        FirstIdent := Trim(Copy(FirstIdent, 1, RangePos - 1));
-      end
-      else
-        LastIdent := FirstIdent;
-      if BaseInfo.TypeKind = tkEnumeration then
-      begin
-        FirstOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(FirstIdent);
-        LastOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(LastIdent);
-        if FirstOrd = -1 then
-          raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
-        if LastOrd = -1 then
-          raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
-      end
-      else
-      begin
-        FirstOrd := StrToInt(FirstIdent);
-        LastOrd := StrToInt(LastIdent);
+        FirstIdent := Trim(Strings[I]);
+        RangePos := Pos('..', FirstIdent);
+        if RangePos > 0 then
+        begin
+          LastIdent := Trim(StrRestOf(FirstIdent, RangePos + 2));
+          FirstIdent := Trim(Copy(FirstIdent, 1, RangePos - 1));
+        end
+        else
+          LastIdent := FirstIdent;
+        if BaseInfo.TypeKind = tkEnumeration then
+        begin
+          FirstOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(FirstIdent);
+          LastOrd := (BaseInfo as IJclEnumerationTypeInfo).IndexOfName(LastIdent);
+          if FirstOrd = -1 then
+            raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [FirstIdent]);
+          if LastOrd = -1 then
+            raise EJclRTTI.CreateResRecFmt(@RsRTTIUnknownIdentifier, [LastIdent]);
+        end
+        else
+        begin
+          FirstOrd := StrToInt(FirstIdent);
+          LastOrd := StrToInt(LastIdent);
+        end;
+        Dec(FirstOrd, BaseInfo.MinValue);
+        Dec(LastOrd, BaseInfo.MinValue);
+        for CurOrd := FirstOrd to LastOrd do
+          SetBitBuffer(Value, CurOrd + FirstBit);
       end;
-      Dec(FirstOrd, BaseInfo.MinValue);
-      Dec(LastOrd, BaseInfo.MinValue);
-      for CurOrd := FirstOrd to LastOrd do
-        SetBitBuffer(Value, CurOrd + FirstBit);
     end;
+  finally
+    Strings.EndUpdate;
   end;
 end;
 
@@ -2558,7 +2568,7 @@ begin
   Result := '';
   SetType := JclTypeInfo(TypeInfo) as IJclSetTypeInfo;
   SetType.GetAsList(Value, WantRanges, Strings);
-  for I := I to Strings.Count-1 do
+  for I := I to Strings.Count - 1 do
   begin
     if Result <> '' then
       Result := Result + ', ' + Strings[I]
@@ -2578,8 +2588,7 @@ var
 begin
   Dummy := TStringList.Create;
   try
-    Result := JclSetToList(TypeInfo, Value, WantBrackets, WantRanges,
-      Dummy);
+    Result := JclSetToList(TypeInfo, Value, WantBrackets, WantRanges, Dummy);
   finally
     Dummy.Free;
   end;
@@ -2587,11 +2596,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure JclStrToSet(TypeInfo: PTypeInfo; var SetVar;
-  const Value: string);
+procedure JclStrToSet(TypeInfo: PTypeInfo; var SetVar; const Value: string);
 var
   SetInfo: IJclSetTypeInfo;
-  S: TStrings;
+  S: TStringList;
 begin
   SetInfo := JclTypeInfo(TypeInfo) as IJclSetTypeInfo;
   S := TStringList.Create;
@@ -2841,6 +2849,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2004/07/31 06:21:01  marquardt
+// fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
+//
 // Revision 1.11  2004/07/28 18:00:51  marquardt
 // various style cleanings, some minor fixes
 //
