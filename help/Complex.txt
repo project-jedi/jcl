@@ -7,12 +7,12 @@ TJclComplex implements various operations with complex numbers.
 TJclComplex is designated to provide complex numbers computations for your
 applications. It supports both rectangular and polar number representations.
 All the operations are divided into groups as follow:
-  - basic arithmetics;
-  - natural logarithmic and exponential functions;
-  - trigonometric functions;
-  - hyperbolic trigonometric functions;
-  - complex Bessel functions;
-  - various miscellaneous routines.
+  <li>basic arithmetics;
+  <li>natural logarithmic and exponential functions;
+  <li>trigonometric functions;
+  <li>hyperbolic trigonometric functions;
+  <li>complex Bessel functions;
+  <li>various miscellaneous routines.<br>
 All the methods could be used in two ways. Firstly you can use the methods 
 with the prefix "C", like CAdd or CLn to perform the operation over the
 object itself, i.e. after using such methods the value of the object itself
@@ -34,7 +34,7 @@ Author=Alexei Koudinov;kudinov@vlink.ru
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TComplexType = (crRectangular, crPolar)
+TComplexKind = (crRectangular, crPolar)
 [ShortDescr]
 Enumeration specifies the way of representing a complex numer using either
 rectangular representation or polar coordinates.
@@ -64,11 +64,11 @@ the format of the floating-point value when it is displayed using properties <RE
 not the actual floating-point
 value that is stored in the complex number structures.
 The default value of FracLength is 8 decimal places.<br>
- <TABLE CELLSPACING=0 BORDER=0 CELLPADDING=0 WIDTH="100%"><tr>
- <td><strong>Note:</strong></td><td>FracLength must be greater less or equal to 18.
+[Notes]
+Count=1
+1=FracLength must be greater less or equal to 18.
 Trying to set FracLength to a value greater than 18 changes the value of
-FracLength to 18.</td>
- </tr></table>
+FracLength to 18.
 [Quick Info]
 Kind=Property
 Visibility=Public
@@ -80,7 +80,7 @@ Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create;
-constructor Create(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]);
+constructor Create(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]);
 [ShortDescr]
 Creates a new TComplex object.
 [Description]
@@ -90,7 +90,7 @@ filled with the values provided in X and Y parameters.
 Count=3
 1=X:Float=The real part in the rectangular representation or radius in polar coordinates.
 2=Y:Float=The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
-3=ComplexType:TComplexType=<I>Optional.</I> Represents the type of the complex number to be create.
+3=ComplexType:TComplexKind=<I>Optional.</I> Represents the type of the complex number to be create.
 [Notes]
 Count=2
 1=All the calculations with complex numbers are performed with their rectangular
@@ -109,7 +109,7 @@ Author=Alexei Koudinov;kudinov@vlink.ru
 Delphi=4,5
 [SeeAlso]
 Count=1
-1=TComplexType;..\..\Types\TComplexType
+1=TComplexKind;..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property RealPart: Float;
@@ -267,7 +267,7 @@ Count=2
 2=FracLength;..\Properties\FracLength
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function Assign(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>): TJclComplex;
+function Assign(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Assign the value of (X;Y) to the complex number object using ComplexType
 representation.
@@ -279,7 +279,7 @@ or (r;theta) pair of values.
 Count=3
 1=X:Float=The real part in the rectangular representation or radius in polar coordinates.
 2=Y:Float=The imaginary part in the rectangular representation or angle (in grads) in polar coordinates.
-3=ComplexType:TComplexType=<I>Optional.</I> Represents the type the floating-point parameters above.
+3=ComplexType:TComplexKind=<I>Optional.</I> Represents the type the floating-point parameters above.
 [Result]
 Method Assing returns complex number object itself.
 [Notes]
@@ -296,7 +296,7 @@ Author=Alexei Koudinov;kudinov@vlink.ru
 Delphi=4,5
 [SeeAlso]
 Count=3
-1=TComplexType;..\..\Types\TComplexType
+1=TComplexKind;..\..\Types\TComplexKind
 2=AssignZero
 3=AssignOne
 <DECL>--------------------------------------------------------------------------
@@ -323,7 +323,7 @@ Author=Alexei Koudinov;kudinov@vlink.ru
 Delphi=4,5
 [SeeAlso]
 Count=3
-1=TComplexType;..\..\Types\TComplexType
+1=TComplexKind;..\..\Types\TComplexKind
 2=Assign
 3=AssignZero
 <DECL>--------------------------------------------------------------------------
@@ -353,7 +353,7 @@ Delphi=4,5
 [SeeAlso]
 Count=4
 1=Create
-2=TComplexType;..\..\Types\TComplexType
+2=TComplexKind;..\..\Types\TComplexKind
 3=Assign
 4=AssignOne
 <DECL>--------------------------------------------------------------------------
@@ -377,7 +377,7 @@ Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CAdd(AddValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CAdd(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CAdd(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Adds the value given by AddValue or X and Y parameters to the value
 of the current complex number object.
@@ -391,7 +391,7 @@ of the object.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that should be added to the value
 of the object.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CAdd method to add the value of the complex number provided to the
@@ -411,17 +411,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CNewAdd
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CDiv(DivValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Divide the value of the current complex number object by the value given by
 DivValue or X and Y parameters.
@@ -432,7 +432,7 @@ Count=4
 polar coordinates of the complex number that is the denominator for the operation.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that is the denominator for the operation.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CDiv method to perform a division operation where the cureent complex
@@ -457,17 +457,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CNewDiv
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CMul(MulValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Multiply the value of the current complex number object by the value given by
 MulValue or X and Y parameters.
@@ -478,7 +478,7 @@ Count=4
 polar coordinates of the complex number that is the second multiplier.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that is the second multiplier.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CMul method to perform a multiplication operation where the cureent complex
@@ -505,17 +505,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CNewMul
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CSub(SubValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Subtract the value given by MulValue or X and Y parameters from the value of
 the current complex number object.
@@ -526,7 +526,7 @@ Count=4
 polar coordinates of the complex number that is the subtrahend.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that is the subtrahend.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CSub method to perform a subtraction operation where the cureent complex
@@ -548,17 +548,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CNewSub
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CNewAdd(AddValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CNewAdd(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CNewAdd(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Adds the value given by AddValue or X and Y parameters to the value
 of the current complex number object and creates a new resulting object of TJclComplex type.
@@ -572,7 +572,7 @@ of the object.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that should be added to the value
 of the object.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CNewAdd method to add the value of the complex number provided to the
@@ -594,17 +594,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CAdd
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CNewDiv(DivValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CNewDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CNewDiv(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Divide the value of the current complex number object by the value given by
 DivValue or X and Y parameters and creates a new resulting object of TJclComplex type.
@@ -615,7 +615,7 @@ Count=4
 polar coordinates of the complex number that is the denominator for the operation.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that is the denominator for the operation.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CDiv method to perform a division operation where the cureent complex
@@ -642,17 +642,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CDiv
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CNewMul(MulValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CNewMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CNewMul(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Multiply the value of the current complex number object by the value given by
 MulValue or X and Y parameters and creates a new resulting object of TJclComplex type.
@@ -663,7 +663,7 @@ Count=4
 polar coordinates of the complex number that is the second multiplier.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that is the second multiplier.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CMul method to perform a multiplication operation where the cureent complex
@@ -691,17 +691,17 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CMul
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CNewSub(SubValue: <REF Target"..\TJclComplex">TJclComplex</REF>): TJclComplex;
-function CNewSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexType">TComplexType</REF>]): TJclComplex;
+function CNewSub(X, Y: Float; [ComplexType: <REF Target"..\..\Types\TComplexKind">TComplexKind</REF>]): TJclComplex;
 [ShortDescr]
 Subtract the value given by MulValue or X and Y parameters from the value of
 the current complex number object and creates a new resulting object of TJclComplex type.
@@ -712,7 +712,7 @@ Count=4
 polar coordinates of the complex number that is the subtrahend.
 3=Y:Float=The imaginary part in the rectangular representation or angle in
 polar coordinates of the complex number that is the subtrahend.
-4=ComplexType:TComplexType=<I>Optional.</I> Defines whether X and Y parameters
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
 are stated in rectangular representation or in polar coordinates.
 [Description]
 Use CSub method to perform a subtraction operation where the cureent complex
@@ -735,10 +735,1418 @@ Visibility=Public
 Unit=JclComplex
 Category=Math Routines
 SubCat=Complex numbers\TJclComplex
-Author=Earl F. Glynn, Alexei Koudinov;EarlGlynn@WorldNet.att.net, kudinov@vlink.ru
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
 Delphi=4,5
 [SeeAlso]
 Count=3
 1=CSub
 2=TJclComplex; ..\TJclComplex
-3=TCompexType; ..\..\Types\TComplexType
+3=TCompexType; ..\..\Types\TComplexKind
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNeg: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Multiply the current value of the complex number object by a complex negative one.
+[Description]
+Use CNeg method to perform a negative transformation of the value of the current complex
+number object i.e. to multiply it by a complex negative one. The method changes
+the value of the current object, returning its reference.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewNeg</REF> method.
+[Result]
+Method CNeg returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=CNewNeg
+2=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewNeg: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Multiply the current value of the complex number object by a complex negative one
+and creates a new resulting complex number object.
+[Description]
+Use CNewNeg method to perform a negative transformation of the value of the current complex
+number object i.e. to multiply it by a complex negative one and create a new resulting
+object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling complex number object instead of creating
+a new one use <REF>CNeg</REF> method.
+[Result]
+Method CNewNeg returns a newly created object of TJclComplex type that contains
+the value of the negation.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=CNeg
+2=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CConjugate: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Transform the value of the calling object of TJclComplex type into a conjugated
+complex number value.
+[Description]
+Use CConjugate method to obtain a conjugate to the current value of the complex number object
+complex number. The method changes the value of the current object, returning its reference.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewConjugate</REF> method.
+[Result]
+Method CConjugate returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=CNewConjugate
+2=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewConjugate: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Transform the value of the calling object of TJclComplex type into a conjugated
+complex number value and creates a new resulting complex number object.
+[Description]
+Use CNewConjugate method to obtain a conjugate to the current value of the complex number object
+complex number.
+[Notes]
+Count=1
+1=For changing the value of the calling complex number object instead of creating
+a new one use <REF>CNewConjugate</REF> method.
+[Result]
+Method CNewConjugate returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=2
+1=CConjugate
+2=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CLn: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the natural logarithm of the value of the current complex number object.
+[Description]
+Use CLn method to evaluate the natural logarithm of the value of the current
+complex number object and change the value of the object accordingly.
+[Notes]
+Count=2
+1=Complex number natural logarithm is evaluated according to the following
+formula: <I>Ln(Z) = (Ln(r); theta)</I>, where Z = (r; theta). Please note
+that the calculation is performed using polar coordinates and all the
+transformations between rectangular and polar coordinates are performed
+automatically.
+2=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewLn</REF> method.
+[Result]
+Method CLn returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewLn
+2=CExp
+3=CPwr
+4=CIntPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewLn: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the natural logarithm of the value of the current complex number
+object and creates a new resulting complex number object.
+[Description]
+Use CLn method to evaluate the natural logarithm of the value of the current
+complex number object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=2
+1=Complex number natural logarithm is evaluated according to the following
+formula: <I>Ln(Z) = (Ln(r); theta)</I>, where Z = (r; theta). Please note
+that the calculation is performed using polar coordinates and all the
+transformations between rectangular and polar coordinates are performed
+automatically.
+2=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CLn</REF> method.
+[Result]
+Method CNewLn returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CLn
+2=CExp
+3=CPwr
+4=CIntPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CExp: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the exponential curve for the value of the current complex number object.
+[Description]
+Use CExp method to evaluate the exponential curve for the value of the current
+complex number object and change the value of the object accordingly.
+[Notes]
+Count=2
+1=Complex number exponential curve is evaluated according to the following
+formula: <I>Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)]</I>, where Z = (x; y).
+2=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewExp</REF> method.
+[Result]
+Method CExp returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewExp
+2=CLn
+3=CPwr
+4=CIntPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewExp: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the exponential curve for the value of the current complex number
+object and creates a new resulting complex number object.
+[Description]
+Use CExp method to evaluate the exponential curve for the value of the current
+complex number object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=2
+1=Complex number exponential curve is evaluated according to the following
+formula: <I>Exp(Z) = [Exp(x)*Cos(y); Exp(x)*Sin(y)]</I>, where Z = (x; y).
+2=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CExp</REF> method.
+[Result]
+Method CNewExp returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewExp
+2=CLn
+3=CPwr
+4=CIntPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CPwr(PwrValue: TJclComplex): <REF Target"..\TJclComplex">TJclComplex</REF>;
+function CPwr(X, Y: Float; [ComplexType: <REF Target="..\..\Types\TComplexKind">TComplexKind</REF>]): <REF Target="..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Raise the value of the current complex number object to the PwrValue power.
+[Description]
+Use CPwr method to raise the value of the current complex number object to the
+PwrValue power and change the value of the object accordingly. The complex number
+that is the exponent for the operation is set either as an object of TJclComplex
+type or as a pair of its values (X;Y).
+[Parameters]
+Count=4
+1=PwrValue:TJclComplex=The complex number that is the exponent for the operation.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the exponent for the operation.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the exponent for the operation.
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewPwr</REF> method.
+[Result]
+Method CPwr returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewPwr
+2=CLn
+3=CExp
+4=CIntPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewPwr(PwrValue: TJclComplex): <REF Target"..\TJclComplex">TJclComplex</REF>;
+function CNewPwr(X, Y: Float; [ComplexType: <REF Target="..\..\Types\TComplexKind">TComplexKind</REF>]): <REF Target="..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Raise the value of the current complex number object to the PwrValue power
+and creates a new resulting complex number object.
+[Description]
+Use CNewPwr method to raise the value of the current complex number object to the
+PwrValue power and get a new resulting object of TJclComplex type. The complex number
+that is the exponent for the operation is set either as an object of TJclComplex
+type or as a pair of its values (X;Y).
+[Parameters]
+Count=4
+1=PwrValue:TJclComplex=The complex number that is the exponent for the operation.
+2=X:Float=The real part in the rectangular representation or radius in
+polar coordinates of the complex number that is the exponent for the operation.
+3=Y:Float=The imaginary part in the rectangular representation or angle in
+polar coordinates of the complex number that is the exponent for the operation.
+4=ComplexType:TComplexKind=<I>Optional.</I> Defines whether X and Y parameters
+are stated in rectangular representation or in polar coordinates.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CPwr</REF> method.
+[Result]
+Method CNewPwr returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CPwr
+2=CLn
+3=CExp
+4=CIntPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CIntPwr(Pwr: Integer): <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Raise the value of the current complex number object to the Pwr power that is
+represented by an integer value.
+[Description]
+Use CIntPwr method to raise the value of the current complex number object to the
+Pwr power that is represented by an integer value and change the value of the
+calling object accordingly.
+[Parameters]
+Count=1
+1=Pwr:Integer=The exponent, that the value of the calling object should be raised to.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewIntPwr</REF> method.
+[Result]
+Method CIntPwr returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewIntPwr
+2=CLn
+3=CExp
+4=CPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewIntPwr(Pwr: Integer): <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Raise the value of the current complex number object to the Pwr power that is
+represented by an integer value and creates a new resulting complex number object.
+[Description]
+Use CNewIntPwr method to raise the value of the current complex number object to the
+Pwr power that is represented by an integer value and get a new resulting object
+of TJclComplex type.
+[Parameters]
+Count=1
+1=Pwr:Integer=The exponent, that the value of the calling object should be raised to.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CIntPwr</REF> method.
+[Result]
+Method CNewIntPwr returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CIntPwr
+2=CLn
+3=CExp
+4=CPwr
+5=CRealPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CRealPwr(Pwr: Float): <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Raise the value of the current complex number object to the Pwr power that is
+represented by a floating-point value.
+[Description]
+Use CRealPwr method to raise the value of the current complex number object to the
+Pwr power that is represented by a floating-point value and change the value of the
+calling object accordingly.
+[Parameters]
+Count=1
+1=Pwr:Float=The exponent, that the value of the calling object should be raised to.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewRealPwr</REF> method.
+[Result]
+Method CRealPwr returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewRealPwr
+2=CLn
+3=CExp
+4=CPwr
+5=CIntPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewRealPwr(Pwr: Float): <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Raise the value of the current complex number object to the Pwr power that is
+represented by a floating-point value and creates a new resulting complex number object.
+[Description]
+Use CNewRealPwr method to raise the value of the current complex number object to the
+Pwr power that is represented by a floating-point value and get a new resulting object
+of TJclComplex type.
+[Parameters]
+Count=1
+1=Pwr:Float=The exponent, that the value of the calling object should be raised to.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CRealPwr</REF> method.
+[Result]
+Method CNewRealPwr returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CRealPwr
+2=CLn
+3=CExp
+4=CPwr
+5=CIntPwr
+6=CRoot
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CRoot(K, N: Word): <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Extracts the N-th root and returns the K-th root of the extraction where K is
+varying from 0 to N-1.
+[Description]
+Use CRoot method to extract the N-th root from the value of the calling complex
+number object, get the K-th root of the extraction, where K varies from 0 to
+N-1 and change the value of the calling object accordingly.
+[Parameters]
+Count=2
+1=K:Word=The number of the root to be returned.
+2=N:Word=The value of the root to be extracted.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewRoot</REF> method.
+[Result]
+Method CRoot returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewRoot
+2=CLn
+3=CExp
+4=CPwr
+5=CIntPwr
+6=CRealPwr
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewRoot(K, N: Word): <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Extracts the N-th root and returns the K-th root of the extraction where K is
+varying from 0 to N-1 and creates a new resulting complex number object.
+[Description]
+Use CNewRoot method to extract the N-th root from the value of the calling complex
+number object, get the K-th root of the extraction, where K varies from 0 to
+N-1 and get a new resulting object of TJclComplex type.
+[Parameters]
+Count=2
+1=K:Word=The number of the root to be returned.
+2=N:Word=The value of the root to be extracted.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CRoot</REF> method.
+[Result]
+Method CNewRoot returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CRoot
+2=CLn
+3=CExp
+4=CPwr
+5=CIntPwr
+6=CRealPwr
+7=CSqrt
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CSqrt: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Extracts the second root from the value of the calling complex number object.
+[Description]
+Use CSqrt method to extract the second root from the value of the calling complex
+number object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CSqrt</REF> method.
+[Result]
+Method CSqrt returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CNewSqrt
+2=CLn
+3=CExp
+4=CPwr
+5=CIntPwr
+6=CRealPwr
+7=CRoot
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewSqrt: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Extracts the second root from the value of the calling complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewSqrt method to extract the second root from the value of the calling complex
+number object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CSqrt</REF> method.
+[Result]
+Method CNewSqrt returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=8
+1=CSqrt
+2=CLn
+3=CExp
+4=CPwr
+5=CIntPwr
+6=CRealPwr
+7=CRoot
+8=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CCos: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the cosine of the value of the current complex number object.
+[Description]
+Use CCos method to evaluate the cosine of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewCos</REF> method.
+[Result]
+Method CCos returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewCos
+2=CSin
+3=CTan
+4=CCot
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewCos: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the cosine of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewCos method to evaluate the cosine of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CCos</REF> method.
+[Result]
+Method CNewCos returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CCos
+2=CSin
+3=CTan
+4=CCot
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CSin: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the sine of the value of the current complex number object.
+[Description]
+Use CSin method to evaluate the sine of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewSin</REF> method.
+[Result]
+Method CSin returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewSin
+2=CCos
+3=CTan
+4=CCot
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewSin: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the sine of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewSin method to evaluate the sine of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CSin</REF> method.
+[Result]
+Method CNewSin returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CSin
+2=CCos
+3=CTan
+4=CCot
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CTan: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the tangent of the value of the current complex number object.
+[Description]
+Use CTan method to evaluate the tangent of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewTan</REF> method.
+[Result]
+Method CTan returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewTan
+2=CSin
+3=CCos
+4=CCot
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewTan: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the tangent of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewTan method to evaluate the tangent of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CTan</REF> method.
+[Result]
+Method CNewTan returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CTan
+2=CSin
+3=CCos
+4=CCot
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CCot: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the cotangent of the value of the current complex number object.
+[Description]
+Use CCot method to evaluate the cotangent of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewCot</REF> method.
+[Result]
+Method CCot returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewCot
+2=CSin
+3=CTan
+4=CCos
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewCot: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the cotangent of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewCot method to evaluate the cotangent of the value of the calling complex
+number object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CCot</REF> method.
+[Result]
+Method CNewCot returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CCot
+2=CSin
+3=CTan
+4=CCos
+5=CSec
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CSec: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the secant of the value of the current complex number object.
+[Description]
+Use CSec method to evaluate the secant of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewSec</REF> method.
+[Result]
+Method CSec returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewSec
+2=CSin
+3=CTan
+4=CCot
+5=CCos
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewSec: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the secant of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewSec method to evaluate the secant of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CSec</REF> method.
+[Result]
+Method CNewSec returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CSec
+2=CSin
+3=CTan
+4=CCot
+5=CCos
+6=CCsc
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CCsc: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the cosecant of the value of the current complex number object.
+[Description]
+Use CCsc method to evaluate the cosecant of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewCsc</REF> method.
+[Result]
+Method CCsc returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewCsc
+2=CSin
+3=CTan
+4=CCot
+5=CSec
+6=CCos
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewScs: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the cosecant of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewCsc method to evaluate the cosecant of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CCsc</REF> method.
+[Result]
+Method CNewCsc returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CCsc
+2=CSin
+3=CTan
+4=CCot
+5=CCos
+6=CSec
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CCosH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic cosine of the value of the current complex number object.
+[Description]
+Use CCosH method to evaluate the hyperbolic cosine of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewCosH</REF> method.
+[Result]
+Method CCosH returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewCosH
+2=CSinH
+3=CTanH
+4=CCotH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewCosH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic cosine of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewCosH method to evaluate the hyperbolic cosine of the value of the
+calling complex number object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CCosH</REF> method.
+[Result]
+Method CNewCosH returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CCosH
+2=CSinH
+3=CTanH
+4=CCotH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CSinH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic sine of the value of the current complex number object.
+[Description]
+Use CSinH method to evaluate the hyperbolic sine of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewSinH</REF> method.
+[Result]
+Method CSinH returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewSinH
+2=CCosH
+3=CTanH
+4=CCotH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewSinH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic sine of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewSinH method to evaluate the hyperbolic sine of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CSinH</REF> method.
+[Result]
+Method CNewSinH returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CSinH
+2=CCosH
+3=CTanH
+4=CCotH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CTanH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic tangent of the value of the current complex number object.
+[Description]
+Use CTanH method to evaluate the hyperbolic tangent of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewTanH</REF> method.
+[Result]
+Method CTanH returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewTanH
+2=CSinH
+3=CCosH
+4=CCotH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewTanH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic tangent of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewTanH method to evaluate the hyperbolic tangent of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CTanH</REF> method.
+[Result]
+Method CNewTanH returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CTanH
+2=CSinH
+3=CCosH
+4=CCotH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CCotH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic cotangent of the value of the current complex number object.
+[Description]
+Use CCotH method to hyperbolic evaluate the cotangent of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewCotH</REF> method.
+[Result]
+Method CCotH returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewCotH
+2=CSinH
+3=CTanH
+4=CCosH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewCotH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic cotangent of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewCotH method to hyperbolic evaluate the cotangent of the value of the calling complex
+number object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CCotH</REF> method.
+[Result]
+Method CNewCotH returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CCotH
+2=CSinH
+3=CTanH
+4=CCosH
+5=CSecH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CSecH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic secant of the value of the current complex number object.
+[Description]
+Use CSecH method to evaluate the hyperbolic secant of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewSecH</REF> method.
+[Result]
+Method CSecH returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewSecH
+2=CSinH
+3=CTanH
+4=CCotH
+5=CCosH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewSecH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic secant of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewSecH method to evaluate the hyperbolic secant of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CSecH</REF> method.
+[Result]
+Method CNewSecH returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CSecH
+2=CSinH
+3=CTanH
+4=CCotH
+5=CCosH
+6=CCscH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CCscH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic cosecant of the value of the current complex number object.
+[Description]
+Use CCscH method to evaluate the hyperbolic cosecant of the value of the calling complex number
+object and change the value of the calling object accordingly.
+[Notes]
+Count=1
+1=For creating a new resulting complex number object instead of changing the value
+of the current one use <REF>CNewCscH</REF> method.
+[Result]
+Method CCscH returns the calling object with the changed value.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CNewCscH
+2=CSinH
+3=CTanH
+4=CCotH
+5=CSecH
+6=CCosH
+7=TJclComplex; ..\TJclComplex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CNewScsH: <REF Target"..\TJclComplex">TJclComplex</REF>;
+[ShortDescr]
+Evaluates the hyperbolic cosecant of the value of the current complex number object
+and creates a new resulting complex number object.
+[Description]
+Use CNewCscH method to evaluate the hyperbolic cosecant of the value of the calling complex number
+object and get a new resulting object of TJclComplex type.
+[Notes]
+Count=1
+1=For changing the value of the calling object instead of creating a new
+resulting object use <REF>CCscH</REF> method.
+[Result]
+Method CNewCscH returns a newly created object of TJclComplex type that contains
+the value computed.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclComplex
+Category=Math Routines
+SubCat=Complex numbers\TJclComplex
+Author=Earl F. Glynn;EarlGlynn@WorldNet.att.net
+Delphi=4,5
+[SeeAlso]
+Count=7
+1=CCscH
+2=CSinH
+3=CTanH
+4=CCotH
+5=CCosH
+6=CSecH
+7=TJclComplex; ..\TJclComplex
