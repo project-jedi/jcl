@@ -66,7 +66,6 @@ contains
   JclSysUtils in '..\Source\JclSysUtils.pas',
   JclUnicode in '..\Source\JclUnicode.pas',
   JclUnitConv in '..\Source\JclUnitConv.pas',
-  Jcl8087 in '..\Source\Jcl8087.pas',
-  JclExprEval in '..\source\JclExprEval.pas';
+  Jcl8087 in '..\Source\Jcl8087.pas';
 
 end.
