@@ -23,16 +23,22 @@
 { ability to add new operators and more.                                       }
 {                                                                              }
 { Unit owner: Marcel Bestebroer                                                }
-{ Last modified: April 17, 2001                                                }
+{ Last modified: April 18, 2001                                                }
 {                                                                              }
 {******************************************************************************}
 
 unit JclExprEval;
 
+{$I JCL.INC}
+
 interface
 
 uses
-  Classes, SysUtils, Contnrs, JclBase;
+  Classes, SysUtils,
+  {$IFDEF DELPHI5_UP}
+  Contnrs,
+  {$ENDIF DELPHI5_UP}
+  JclBase;
 
 type
 //------------------------------------------------------------------------------
@@ -601,7 +607,8 @@ function Functions: TJclExprFunctions;
 implementation
 
 uses
-  Consts, JclLogic, Math, JclResources;
+  Consts, Math,
+  JclLogic, JclResources, JclStrings;
 
 //------------------------------------------------------------------------------
 // TJclExprList
@@ -699,7 +706,7 @@ begin
   I := Pred(Functions.Count);
   while not Result and (I >= 0) do
   begin
-    Result := SameText(Copy(S, SP, Length(Functions[I].Name)),
+    Result := StrSame(Copy(S, SP, Length(Functions[I].Name)),
       Functions[I].Name);
     EP := SP + Pred(Length(Functions[I].Name));
     if Result then
@@ -811,7 +818,7 @@ end;
 function TJclExprList.GetItems(I: Integer): TJclExprItem;
 begin
   if (I < 0) or (I >= Count) then
-    raise EListError.CreateFmt(SListIndexError, [I]);
+    raise EJclExpression.CreateResRecFmt(@RsExprEvalListError, [I]);
   Result := FList[I];
 end;
 
@@ -904,7 +911,7 @@ end;
 function TJclExprList.New(const Index: Integer): PJclExprItem;
 begin
   if (Index < 0) or (Index > Count) then
-    raise EListError.CreateFmt(SListIndexError, [Index]);
+    raise EJclExpression.CreateResRecFmt(@RsExprEvalListError, [Index]);
   SetLength(FList, Succ(Count));
   if Index < Pred(Count) then
     Move(FList[Index], FList[Index + 1], (Pred(Count) - Index) *
@@ -2799,7 +2806,7 @@ end;
 function TJclExprVars.IndexOf(const AName: string): Integer;
 begin
   Result := Pred(Count);
-  while (Result >= 0) and not SameText(AName, Items[Result].Name) do
+  while (Result >= 0) and not StrSame(AName, Items[Result].Name) do
     Dec(Result);
 end;
 
@@ -2916,7 +2923,7 @@ end;
 function TJclExprFunctions.IndexOf(const Name: string): Integer;
 begin
   Result := Pred(Count);
-  while (Result >= 0) and not SameText(Name, Items[Result].Name) do
+  while (Result >= 0) and not StrSame(Name, Items[Result].Name) do
     Dec(Result);
 end;
 
@@ -2946,7 +2953,7 @@ begin
   if Index = 0 then
     Result := eakOperand
   else
-    raise EListError.CreateResFmt(@SListIndexError, [Index]);
+    raise EJclExpression.CreateResRecFmt(@RsExprEvalListError, [Index]);
 end;
 
 //------------------------------------------------------------------------------
@@ -2961,13 +2968,13 @@ end;
 class function TJclExprFunction.Name: string;
 begin
   Result := ClassName;
-  if SameText(Copy(Result, 1, Length('TJclExprFunc')), 'TJclExprFunc') then
+  if StrSame(Copy(Result, 1, Length('TJclExprFunc')), 'TJclExprFunc') then
     System.Delete(Result, 1, Length('TJclExprFunc'))
-  else if SameText(Copy(Result, 1, Length('TJclEF')), 'TJclEF') then
+  else if StrSame(Copy(Result, 1, Length('TJclEF')), 'TJclEF') then
     System.Delete(Result, 1, Length('TJclEF'))
-  else if SameText(Copy(Result, 1, Length('TEF')), 'TEF') then
+  else if StrSame(Copy(Result, 1, Length('TEF')), 'TEF') then
     System.Delete(Result, 1, Length('TEF'))
-  else if SameText(Copy(Result, 1, Length('T')), 'T') then
+  else if StrSame(Copy(Result, 1, Length('T')), 'T') then
     System.Delete(Result, 1, Length('T'));
 end;
 
@@ -3000,7 +3007,7 @@ begin
   if Index = 0 then
     Result := eakOperandArray
   else
-    raise EListError.CreateResFmt(@SListIndexError, [Index]);
+    raise EJclExpression.CreateResRecFmt(@RsExprEvalListError, [Index]);
 end;
 
 //------------------------------------------------------------------------------
@@ -3075,7 +3082,8 @@ begin
   case Index of
     0:    Result := eakOperand;
     1, 2: Result := eakExpression;
-    else  raise EListError.CreateResFmt(@SListIndexError, [Index]);
+  else
+    raise EJclExpression.CreateResRecFmt(@RsExprEvalListError, [Index]);
   end;
 end;
 
@@ -3113,7 +3121,7 @@ begin
   if Index = 0 then
     Result := eakOperandArray
   else
-    raise EListError.CreateResFmt(@SListIndexError, [Index]);
+    raise EJclExpression.CreateResRecFmt(@RsExprEvalListError, [Index]);
 end;
 
 //------------------------------------------------------------------------------
