@@ -1,4 +1,4 @@
-JEDI Code Library v 1.90 Installation
+JEDI Code Library v 1.91 Installation
 
 Supported development tools versions:
 
@@ -7,7 +7,7 @@ Supported development tools versions:
 - Borland Delphi 5 Update Pack #1
 - Borland Delphi 6 Update Pack #2 (including Personal Edition)
 - Borland Delphi 7
-- Borland Kylix 3 for Delphi
+- Borland Kylix 3
 
 For more detailed information, see docs\Readme.html.
 
@@ -32,8 +32,7 @@ C++Builder: http://info.borland.com/devsupport/bcppbuilder/
 JEDI INSTALLER
 ==============
 
-Helps you to integrate JCL with Delphi IDE (BCB is not yet supported and
-requires manual installation). Currently it assists with:
+Helps you to integrate JCL with Delphi/BCB IDE. Currently it assists with:
 
 - Compiling library units (release and debug versions)
 - Compiling packages and installing design-time packages to the IDE
@@ -44,7 +43,7 @@ requires manual installation). Currently it assists with:
 
 To execute for
 
-1) Delphi/Win32
+1) Win32
 - click on "Install.bat" file in the JCL root directory.
 
   Note:	If you have Delphi 8 for Microsoft .NET installed, you probably will have 
@@ -53,27 +52,12 @@ To execute for
 
 	>install "C:\Program Files\Borland\Delphi5\Bin\make.exe"
 
-2) Kylix 3 for Delphi
+2) Kylix 3
 - open a shell window
 - cd into JCL root directory
 - at the command prompt, type "sh ./install.sh", then press "Enter".
   You'll also need to do a "source kylixpath" first (see the README of your 
   Kylix 3 installation) in case your system is not set up to do that at startup.
 
-NOTE:
-======
-We know of one case where there was a problem when running install.bat:
-
-Undeclared identifier: "TObjectList"
-Unable to compile file: snmp.pas
-
-The solution was to move the D7/D7.Net paths to the end of Environement Vars.
-
-To do so, on NT/XP right-click My Computer,Properties,Advanced, Environment
-Variables, Find the PATH variable in the System variables list, click the Edit
-button and change the value (move D7 paths to the end).
-
-
-
 --------------------------------
-Document last updated 2004-04-05
+Document last updated 2004-05-20

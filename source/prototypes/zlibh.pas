@@ -1630,6 +1630,10 @@ end;
 //  History:
 {$IFDEF PROTOTYPE}
 //   $Log$
+//   Revision 1.9  2004/06/06 01:57:03  rrossmair
+//   check-in in preparation of build #1558 release
+//
+{$ENDIF PROTOTYPE}
 //   Revision 1.8  2004/05/31 22:38:51  rrossmair
 //   added PJH disclaimer; resolved $IFDEF JCL
 //
@@ -1637,7 +1641,6 @@ end;
 //   - old history in reverse order like CVS log
 //   - change interface adler32 and crc32 to avoid FPC compatibility problems
 //
-{$ENDIF PROTOTYPE}
 //   Revision 1.6  2004/05/08 08:44:18  rrossmair
 //   introduced & applied symbol HAS_UNIT_LIBC
 //
