@@ -33,7 +33,7 @@ uses
   JclBase, JclGraphUtils, JclSynch;
 
 type
-  EJclGraphicsError = EJclError;
+  EJclGraphicsError = class (EJclError);
 
   TDynDynIntegerArrayArray = array of TDynIntegerArray;
   TDynPointArray = array of TPoint;
