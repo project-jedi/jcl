@@ -45,7 +45,7 @@ CFLAG1 = !CFLAG1!
 IDLCFLAGS = !IDLCFLAGS!
 
 ifneq "$(BPILIBDIR)" ""
-N0BPILIBDIR = -N0$(BPILIBDIR)
+N0BPILIBDIR = -N0"$(BPILIBDIR)"
 else
 N0BPILIBDIR =
 endif
@@ -56,9 +56,9 @@ PROJECT = $(BPLDIR)/!PROJECT!
 endif
 
 ifneq "$(OBJDIR)" ""
-N2OBJDIR = -N2$(OBJDIR)
+N2OBJDIR = -N2"$(OBJDIR)"
 else
-N0OBJDIR =
+N2OBJDIR =
 endif
 
 PFLAGS = -I../../source $(N0BPILIBDIR) $(N2OBJDIR) -P -$$$$Y- -$$$$L- -$$$$D- -$$$$A8 -v -JPHNE -M
@@ -67,13 +67,13 @@ AFLAGS = !AFLAGS!
 
 ifneq "$(BPILIBDIR)" ""
 LIBPATH = $(BPILIBDIR):!LIBPATH!
-lBPILIBDIR = -l$(BPILIBDIR)
+lBPILIBDIR = -l"$(BPILIBDIR)"
 else
 lBPILIBDIR =
 endif
 
 ifneq "$(OBJDIR)" ""
-IOBJDIR = -I$(OBJDIR)
+IOBJDIR = -I"$(OBJDIR)"
 else
 IOBJDIR =
 endif
@@ -165,11 +165,14 @@ endif
 # This section of the project file is not used by the BCB IDE.  It is for
 # the benefit of building from the command-line using the MAKE utility.
 # ---------------------------------------------------------------------------
-$(PROJECT): $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
+"$(PROJECT)": $(OTHERFILES) $(IDLGENFILES) $(OBJFILES) $(RESDEPEN) $(DEFFILE)
+	echo ALLLIB = $(ALLLIB)
+	echo ALLOBJ = $(ALLOBJ)
+	echo ALLRES = $(ALLRES)
 	$(LINKER) \
-	$(LFLAGS) -L$(LIBPATH) \
+	$(LFLAGS) -L"$(LIBPATH)" \
 	$(ALLOBJ), \
-	$(PROJECT),, \
+	"$(PROJECT)",, \
 	$(ALLLIB), \
 	$(DEFFILE), \
 	$(ALLRES)
