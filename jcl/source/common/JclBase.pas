@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: July 2, 2000                                                  }
+{ Last modified: September 5, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -331,11 +331,14 @@ end;
 // FreePascal support
 //==============================================================================
 
+{$IFDEF FPC}
+
 function SysErrorMessage(ErrNo : Integer) : string;  // TODO: Better Implementation
 begin
-  Result := 'Win32 Error'; 
+  Result := 'Win32 Error';
 end;
 
+{$ENDIF}
 
 //==============================================================================
 // EJclWin32Error
