@@ -1653,7 +1653,11 @@ end;
 procedure TJclNumericFormat.GetMantissaExp(const Value: Float;
   out Mantissa: string; out Exponent: Integer);
 const
+  {$IFDEF FPC}
+  InfMantissa: array[Boolean] of string[4] = ('inf', '-inf');
+  {$ElSE}
   InfMantissa: array[Boolean] of string = ('inf', '-inf');
+  {$ENDIF}
 var
   BlockDigits: TDigitCount;
   IntDigits, FracDigits: Integer;
