@@ -1,5 +1,5 @@
 [Project File Info]
-Version=200
+Version=201
 
 [General]
 Title=JEDI Code Library
@@ -53,7 +53,7 @@ File37=..\source\JclWin32.pas
 Count=0
 
 [Description Files]
-Count=35
+Count=36
 File0=dtx\8087.dtx
 File1=dtx\AppInst.dtx
 File2=dtx\Base.dtx
@@ -89,6 +89,7 @@ File31=dtx\SysUtils.dtx
 File32=dtx\Unicode.dtx
 File33=dtx\UnitConv.dtx
 File34=dtx\WideStrings.dtx
+File35=dtx\win32.dtx
 
 [Description Include Directories]
 Count=0
