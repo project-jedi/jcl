@@ -38,7 +38,7 @@ uses
   {$ELSE}
   ComCtrls, Dialogs, JediInstallIntf,
   {$ENDIF}
-  JclBorRADToolInst;
+  JclBorlandTools;
 
 const
   Prefixes: array[TJclBorRadToolKind] of Char = ('D', 'C');
@@ -71,6 +71,7 @@ type
     {$ENDIF MSWINDOWS}
     procedure CleanupRepository(Installation: TJclBorRADToolInstallation);
     function CompileLibraryUnits(Installation: TJclBorRADToolInstallation; const SubDir: string; Debug: Boolean): Boolean;
+    function DocFileName(const BaseFileName: string): string;
     procedure InstallFailedOn(const InstallObj: string);
     function InstallPackage(Installation: TJclBorRADToolInstallation; const Name: string): Boolean;
     function InstallRunTimePackage(Installation: TJclBorRADToolInstallation; const BaseName: string): Boolean;
@@ -78,10 +79,12 @@ type
     procedure MakeUnits(Installation: TJclBorRADToolInstallation; Debug: Boolean);
     property LibObjDir: string read FJclLibObjDir write FJclLibObjDir;
   public
+    function FeatureInfoFileName(FeatureID: Cardinal): string;
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
     function InstallFor(Installation: TJclBorRADToolInstallation): Boolean;
     function PopulateTreeView(Installation: TJclBorRADToolInstallation; Nodes: TTreeNodes): Boolean;
+    function ReadmeFileName: string;
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);
@@ -149,14 +152,14 @@ const
   FID_JCL_EnvBrowsingPath  = FID_JCL + $00010200;
   FID_JCL_EnvDebugDCUPath  = FID_JCL + $00010300;
   FID_JCL_Make             = FID_JCL + $00020000;
-  FID_JCL_MakeRelease      = FID_JCL + $00020100 + FID_StandaloneParent;
-  FID_JCL_MakeDebug        = FID_JCL + $00020200 + FID_StandaloneParent;
+  FID_JCL_MakeRelease      = FID_JCL + $00020100;
+  FID_JCL_MakeDebug        = FID_JCL + $00020200;
   FID_JCL_Vcl              = $00000001;
   FID_JCL_VClx             = $00000002;
   FID_JCL_Help             = FID_JCL + $00030000;
   FID_JCL_HelpHlp          = FID_JCL + $00030100;
   FID_JCL_HelpChm          = FID_JCL + $00030200;
-  FID_JCL_Packages         = FID_JCL + $00040000 + FID_StandaloneParent;
+  FID_JCL_Packages         = FID_JCL + $00040000;
   FID_JCL_Experts          = FID_JCL + $00040100;
   FID_JCL_ExpertDebug      = FID_JCL + $00040101;
   FID_JCL_ExpertAnalyzer   = FID_JCL + $00040102;
@@ -388,6 +391,16 @@ begin
     InstallFailedOn(LibDescriptor);
 end;
 
+function TJclInstall.DocFileName(const BaseFileName: string): string;
+begin
+  Result := Format('%s' + PathSeparator + 'docs' + PathSeparator + '%s', [FJclPath, BaseFileName]);
+end;
+
+function TJclInstall.FeatureInfoFileName(FeatureID: Cardinal): string;
+begin
+  Result := DocFileName(Format('%.7x.info', [FeatureID]));
+end;
+
 function TJclInstall.InitInformation(const ApplicationFileName: string): Boolean;
 var
   I: Integer;
@@ -431,7 +444,7 @@ begin
   {$IFDEF MSWINDOWS}
     and FileExists(FVclDialogFileName)  and FileExists(FVclDialogIconFileName)
   {$ENDIF MSWINDOWS};
-  FJclReadmeFileName := PathAddSeparator(FJclPath) + 'docs' + PathSeparator + RsReadmeFileName;
+  FJclReadmeFileName := DocFileName(RsReadmeFileName);
   if FileExists(FJclReadmeFileName) then
   begin
     ReadmeText := FileToString(FJclReadmeFileName);
@@ -610,7 +623,9 @@ var
   procedure AddMakeNodes(Parent: TTreeNode; DebugSettings: Boolean);
   const
     Caption: array[Boolean] of string = (RsMakeRelease, RsMakeDebug);
-    Feature: array[Boolean] of Cardinal = (FID_JCL_MakeRelease, FID_JCL_MakeDebug);
+    Feature: array[Boolean] of Cardinal = (
+      FID_JCL_MakeRelease + FID_StandaloneParent,
+      FID_JCL_MakeDebug + FID_StandaloneParent);
   var
     Node: TTreeNode;
   begin
@@ -647,7 +662,7 @@ begin
       AddMakeNodes(MakeNode, True);
 
       {$IFDEF KYLIX}
-      AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
+      AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
       {$ELSE MSWINDOWS}
       if (FJclHlpHelpFileName <> '') or (FJclChmHelpFileName <> '') then
       begin
@@ -663,7 +678,7 @@ begin
       AddNode(TempNode, RsJCLDialogVCLSnd, FID_JCL_ExcDialogVCLSnd);
       if Installation.SupportsVisualCLX then
         AddNode(TempNode, RsJCLDialogCLX, FID_JCL_ExcDialogCLX);
-      TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages);
+      TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
       if not (Installation is TJclBCBInstallation) then
       begin
         TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts);
@@ -682,6 +697,11 @@ begin
   finally
     Nodes.EndUpdate;
   end;
+end;
+
+function TJclInstall.ReadmeFileName: string;
+begin
+  Result := FJclReadmeFileName;
 end;
 
 procedure TJclInstall.SelectedNodeChanged(Node: TTreeNode);

@@ -27,11 +27,11 @@ interface
 
 uses
   {$IFDEF VisualCLX}QComCtrls, QDialogs,{$ELSE}ComCtrls, Dialogs,{$ENDIF}
-  JclBorRADToolInst;
+  JclBorlandTools;
 
 const
   // Feature masks
-  FID_Product              = $1F000000;
+  FID_Product              = $0F000000;
   FID_IsProduct            = $00FFFFFF;
   FID_Category             = $00FF0000;
   FID_IsCategory           = $0000FFFF;
@@ -41,7 +41,7 @@ const
   FID_Expandable           = $20000000;
   FID_StandaloneParent     = $40000000; // do not auto-uncheck when all child nodes are unchecked
   FID_Checked              = $80000000;
-  FID_NumberMask           = $7FFFFFFF;
+  FID_NumberMask           = $0FFFFFFF;
 
   // Icon indexes
   IcoProduct               = 0;
@@ -66,10 +66,12 @@ type
 
   IJediInstall = interface
     ['{BE0A7968-9003-40DD-99F0-250CAC8B2D85}']
+    function FeatureInfoFileName(FeatureID: Cardinal): string;
     function InitInformation(const ApplicationFileName: string): Boolean;
     function Install: Boolean;
     function InstallFor(Installation: TJclBorRADToolInstallation): Boolean;
     function PopulateTreeView(Installation: TJclBorRADToolInstallation; Nodes: TTreeNodes): Boolean;
+    function ReadmeFileName: string;
     function SelectedNodeCollapsing(Node: TTreeNode): Boolean;
     procedure SelectedNodeChanged(Node: TTreeNode);
     procedure SetTool(const Value: IJediInstallTool);

@@ -20,6 +20,7 @@ object MainForm: TMainForm
   Position = poScreenCenter
   Scaled = False
   ShowHint = True
+  WindowState = wsMaximized
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
