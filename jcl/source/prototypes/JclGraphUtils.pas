@@ -363,7 +363,7 @@ end;
 // Blending routines
 //==============================================================================
 
-function _CombineReg(X, Y, W: TColor32): TColor32; assembler;
+function _CombineReg(X, Y, W: TColor32): TColor32;
 asm
   // combine RGBA channels of colors X and Y with the weight of X given in W
   // Result Z = W * X + (1 - W) * Y (all channels are combined, including alpha)
@@ -373,7 +373,7 @@ asm
 
   // W = 0 or $FF?
         JCXZ    @1              // CX = 0 ?  => Result := EDX
-        CMP     ECX, $FF        // CX = $FF ?  => Result := EDX
+        CMP     ECX, $FF        // CX = $FF ?  => Result := EAX
         JE      @2
 
         PUSH    EBX
@@ -419,8 +419,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32); assembler;
-asm
+procedure _CombineMem(F: TColor32; var B: TColor32; W: TColor32);
+{asm
   // EAX <- F
   // [EDX] <- B
   // ECX <- W
@@ -474,6 +474,9 @@ asm
 
 @2:     MOV     [EDX], EAX
         RET
+end;}
+begin
+  B := _CombineReg(F, B, W);
 end;
 
 //------------------------------------------------------------------------------
