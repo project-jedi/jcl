@@ -24,7 +24,7 @@
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: April 1, 2001                                                 }
+{ Last modified: July 2, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -629,6 +629,7 @@ type
 
   TJclPePackageInfo = class (TObject)
   private
+    FAvailable: Boolean;
     FContains: TStrings;
     FRequires: TStrings;
     FFlags: Integer;
@@ -647,6 +648,7 @@ type
     class function PackageOptionsToString(Flags: Integer): string;
     class function ProducerToString(Flags: Integer): string;
     class function UnitInfoFlagsToString(UnitFlags: Byte): string;
+    property Available: Boolean read FAvailable;
     property Contains: TStrings read FContains;
     property ContainsCount: Integer read GetContainsCount;
     property ContainsNames[Index: Integer]: string read GetContainsNames;
@@ -701,9 +703,9 @@ type
     property Forms[Index: Integer]: TJclPeBorForm read GetForms;
     property FormCount: Integer read GetFormCount;
     property FormFromName[const FormClassName: string]: TJclPeBorForm read GetFormFromName; 
-    property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
     property IsBorlandImage: Boolean read FIsBorlandImage;
     property IsPackage: Boolean read FIsPackage;
+    property IsTD32DebugPresent: Boolean read GetIsTD32DebugPresent;
     property LibHandle: THandle read GetLibHandle;
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
   end;
@@ -3719,9 +3721,13 @@ var
   DescrResInfo: HRSRC;
   DescrResData: HGLOBAL;
 begin
-  GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
-  TStringList(FContains).Sort;
-  TStringList(FRequires).Sort;
+  FAvailable := FindResource(ALibHandle, 'PACKAGEINFO', RT_RCDATA) <> 0;
+  if FAvailable then
+  begin
+    GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
+    TStringList(FContains).Sort;
+    TStringList(FRequires).Sort;
+  end;  
   DescrResInfo := FindResource(ALibHandle, 'DESCRIPTION', RT_RCDATA);
   if DescrResInfo <> 0 then
   begin
