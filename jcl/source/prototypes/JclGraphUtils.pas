@@ -2337,21 +2337,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Intensity(const Color32: TColor32): Integer; assembler;
-asm
+function Intensity(const Color32: TColor32): Integer;
 // input:  RGB components
-// outut: R * 61 + G * 174 + B * 20
-        MOV     ECX, EAX
-        AND     EAX, $00FF00FF      // EAX <-   0 R 0 B
-        IMUL    EAX, $003D0014
-        AND     ECX, $0000FF00      // ECX <-   0 0 G 0
-        IMUL    ECX, $0000AE00
-        MOV     EDX, EAX
-        SHR     ECX, 8
-        SHR     EDX, 16
-        ADD     EAX, ECX
-        ADD     EAX, EDX
-        SHR     EAX, 8
+// output: (R * 61 + G * 174 + B * 21) div 256
+begin
+  Result := (Color32 and $FF) * 21      // Blue
+    + ((Color32 shr 8) and $FF) * 174   // Green
+    + ((Color32 shr 16) and $FF) * 61); // Red
+  Result := Result shr 8;
 end;
 
 //------------------------------------------------------------------------------
@@ -2471,7 +2464,7 @@ end;
 
 {$IFDEF COMPLIB_VCL}
 
-function DottedLineTo(Canvas: TCanvas; X, Y: Integer): Boolean;
+function DottedLineTo(const Canvas: TCanvas; const X, Y: Integer): Boolean;
 const
   DotBits: array [0..7] of Word = ($AA, $55, $AA, $55, $AA, $55, $AA, $55);
 var
