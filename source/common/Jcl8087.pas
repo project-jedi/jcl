@@ -143,15 +143,7 @@ end;
 //------------------------------------------------------------------------------
 
 function Set8087ControlWord(const Control: Word): Word; assembler;
-//var
-//CW: Word;
 asm
-//      FSTCW   [CW]         // get current control word
-//      MOV     CX, [CW]
-//      MOV     [CW], AX
-//      FNCLEX               // supress exceptions due to change in flags
-//      FLDCW   [CW]         // set control word
-//      MOV     AX, CX       // return old control word
         FNCLEX
         FSTCW   Default8087CW
         XCHG    Default8087CW, AX
@@ -171,38 +163,38 @@ end;
 
 function GetPending8087Exceptions: T8087Exceptions;
 asm
-        FNSTSW AX
-        AND    AX, X87ExceptBits
+        FNSTSW  AX
+        AND     AX, X87ExceptBits
 end;
 
 //------------------------------------------------------------------------------
 
 function GetMasked8087Exceptions: T8087Exceptions;
 asm
-        SUB    ESP, TYPE Word
-        FSTCW  [ESP]
+        SUB     ESP, TYPE Word
+        FSTCW   [ESP]
         FWAIT
-        POP    AX
-        AND    AX, X87ExceptBits
+        POP     AX
+        AND     AX, X87ExceptBits
 end;
 
 //------------------------------------------------------------------------------
 
 function SetMasked8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean): T8087Exceptions;
 asm
-        TEST   DL, DL             // if ClearBefore then
-        JZ     @1
-        FNCLEX                    // clear pending exceptions
+        TEST    DL, DL             // if ClearBefore then
+        JZ      @1
+        FNCLEX                     // clear pending exceptions
 @1:
-        FSTCW  Default8087CW
+        FSTCW   Default8087CW
         FWAIT
-        AND    AX, X87ExceptBits  // mask exception mask bits 0..5
-        MOV    DX, Default8087CW
-        AND    Default8087CW, NOT X87ExceptBits
-        OR     Default8087CW, AX
-        FLDCW  Default8087CW
-        MOV    AX, DX
-        AND    AX, X87ExceptBits
+        AND     AX, X87ExceptBits  // mask exception mask bits 0..5
+        MOV     DX, Default8087CW
+        AND     Default8087CW, NOT X87ExceptBits
+        OR      Default8087CW, AX
+        FLDCW   Default8087CW
+        MOV     AX, DX
+        AND     AX, X87ExceptBits
 end;
 
 //------------------------------------------------------------------------------
