@@ -16,7 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: July 2, 2000                                                  }
+{******************************************************************************}
+{                                                                              }
+{ Contains a high performance timer based on the MultiMedia API and a routine  }
+{ to open or close the CD-ROM drive.                                           }
+{                                                                              }
+{ Unit owner: Jan Jacobs                                                       }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -271,22 +277,19 @@ end;
 
 procedure OpenCloseCdDrive(const OpenMode: Boolean);
 var
-  mci: TMCI_Open_Parms;
-  mciResult: MCIERROR;
+  Mci: TMCI_Open_Parms;
+  MciResult: MCIERROR;
 begin
-  FillChar(mci, SizeOf(mci), #0);
-  mci.lpstrDeviceType := 'cdaudio';
-
-  mciResult := mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE, Cardinal(@mci));
+  FillChar(Mci, SizeOf(Mci), #0);
+  Mci.lpstrDeviceType := 'cdaudio';
+  MciResult := MciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE, Cardinal(@Mci));
   if mciResult <> 0 then
-    raise EJclMciError.Create(mciResult, RsMmNoCdAudio);
-
+    raise EJclMciError.Create(MciResult, RsMmNoCdAudio);
   if OpenMode then
-    mciSendCommand(mci.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, 0)
+    MciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, 0)
   else
-    mciSendCommand(mci.wDeviceID, MCI_SET, MCI_SET_DOOR_CLOSED, 0);
-
-  mciSendCommand(mci.wDeviceID, MCI_CLOSE, 0, 0);
+    MciSendCommand(Mci.wDeviceID, MCI_SET, MCI_SET_DOOR_CLOSED, 0);
+  MciSendCommand(Mci.wDeviceID, MCI_CLOSE, 0, 0);
 end;
 
 //------------------------------------------------------------------------------
