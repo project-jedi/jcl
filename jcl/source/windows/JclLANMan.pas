@@ -64,7 +64,7 @@ function DeleteLocalGroup(const Server, Groupname: string): Boolean;
 function GetLocalGroups(const Server: string; const Groups: TStrings): boolean;
 function GetGlobalGroups(const Server: string; const Groups: TStrings): boolean;
 function LocalGroupExists(const Group: string): boolean;
-function GlobalGroupExists(const Group: string): boolean;
+function GlobalGroupExists(const Server, Group: string): boolean;
 
 function AddAccountToLocalGroup(const Accountname, Groupname: string): Boolean;
 function LookupGroupName(const Server: string; const RID: TNetWellKnownRID): string;
@@ -274,14 +274,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GlobalGroupExists(const Group: string): boolean;
+function GlobalGroupExists(const Server, Group: string): boolean;
 var
   groups: TStrings;
 begin
   Result := false;
   groups := TStringList.Create;
   try
-    GetGlobalGroups('\\NTSHAMANDCT01', groups);
+    GetGlobalGroups(Server, groups);
     Result := (groups.IndexOf(Group) >= 0);
   finally
     groups.Free;
