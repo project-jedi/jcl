@@ -57,7 +57,8 @@ function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boole
 Reads a boolean key from the registry.
 [Description]
 RegReadBool reads a single boolean value from the registry. If the function fails
-it returns the value specified by Def.
+it returns the value specified by Def. The function only accepts key values
+of type REG_DWORD.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -76,9 +77,10 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=2
+Count=3
 1=RegReadIntegerDef
 2=RegReadStringDef
+3=RegReadBinaryDef
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: Integer): Integer;
@@ -86,7 +88,8 @@ function RegReadIntegerDef(const RootKey: HKEY; const Key, Name: string; Def: In
 Reads an integer key from the registry.
 [Description]
 RegReadInteger reads a single integer value from the registry. If the function fails
-it returns the specified default value.
+it returns the specified default value. The function accepts only key values of type
+REG_DWORD.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -105,9 +108,10 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=2
+Count=3
 1=RegReadBoolDef
 2=RegReadStringDef
+3=RegReadBinaryDef
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): string;
@@ -115,7 +119,8 @@ function RegReadStringDef(const RootKey: HKEY; const Key, Name, Def: string): st
 Reads a string key from the registry.
 [Description]
 RegReadStringDef reads a single string value from the registry. If the function fails
-it returns the value specified by Def.
+it returns the value specified by Def. The function accepts only key values of type
+REG_SZ.
 [Parameters]
 Count=4
 1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
@@ -134,10 +139,46 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=2
-1=RegReadBool
+Count=3
+1=RegReadBoolDef
 2=RegReadIntegerDef
-3=RegWriteBoolDef
+3=RegReadBinaryDef
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegReadBinaryDef(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal;
+[ShortDescr]
+Reads binary data from the registry.
+[Description]
+RegReadBinaryDef reads binary data from the registry. If the function fails
+it fills all ValueSize bytes of Value with the specified default value.
+Value is untyped to allow to hand in a variable of any type. ValueSize should
+give the size of Value in bytes. The function accepts only key values of type
+REG_BINARY.
+[Parameters]
+Count=6
+1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
+2=Key:string=The key (path) where the desired value is located, relative to RootKey.
+3=Name:string=Name of the value to read.
+4=Value=Destination for the data of any type.
+5=ValueSize:Cardinal=Size of Value in bytes.
+6=Def:Byte=Value to fill value with in case of failure.
+[Result]
+The return value is not the data itself but the amount of data read.
+The value is never bigger than ValueSize.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Stephane Fillon;sfillon@ifrance.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=RegReadBoolDef
+2=RegReadIntegerDef
+3=RegReadStringDef
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
@@ -188,12 +229,10 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=5
-1=RegReadBool
-2=RegReadInteger
-3=RegReadString
-4=RegWriteInteger
-5=RegWriteString
+Count=3
+1=RegWriteInteger
+2=RegWriteString
+3=RegWriteBinary
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RegWriteInteger(const RootKey; HKEY; const Name: string; Value: Integer);
@@ -218,12 +257,10 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=5
-1=RegReadBool
-2=RegReadInteger
-3=RegReadString
-4=RegWriteBool
-5=RegWriteString
+Count=3
+1=RegWriteBool
+2=RegWriteString
+3=RegWriteBinary
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RegWriteString(const RootKey: HKEY; const Key, Name, Value: string);
@@ -248,12 +285,39 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
+Count=3
+1=RegWriteBool
+2=RegWriteInteger
+3=RegWriteBinary
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure RegWriteBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
+[ShortDescr]
+Writes binary data to the registry.
+[Description]
+RegWriteBinary writes binary data to the registry. If the function fails
+it raises an EJclRegistryError exception. The specified Key must already exist.
+[Parameters]
 Count=5
-1=RegReadBool
-2=RegReadInteger
-3=RegReadString
-4=RegWriteBool
-5=RegWriteInteger
+1=RootKey:HKEY=The rootkey which to write to, one of the HKEY_XXX constants.
+2=Key:string=The key (path) where the desired value is located, relative to RootKey.
+3=Name:string=Name of the value to write.
+4=Value=Value of any type to write.
+5=ValueSize:Cardinal=Size of data to write.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Stephane Fillon;sfillon@ifrance.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=RegWriteBool
+2=RegWriteInteger
+3=RegWriteString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegReadBool(const RootKey: HKEY; const Key, Name: string): Boolean;
@@ -279,12 +343,10 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=5
+Count=3
 1=RegReadInteger
 2=RegReadString
-3=RegWriteBool
-4=RegWriteInteger
-5=RegWriteString
+3=RegReadBinary
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegReadInteger(const RootKey: HKEY; const Key, Name: string): Integer;
@@ -310,12 +372,10 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=5
+Count=3
 1=RegReadBool
 2=RegReadString
-3=RegWriteBool
-4=RegWriteInteger
-5=RegWriteString
+3=RegReadBinary
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegReadString(const RootKey: HKEY; const Key, Name: string): string;
@@ -341,12 +401,44 @@ Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
-Count=5
+Count=3
 1=RegReadBool
 2=RegReadInteger
-3=RegWriteBool
-4=RegWriteInteger
-5=RegWriteString
+3=RegReadBinary
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RegReadBinary(const RootKey: HKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal;
+[ShortDescr]
+Reads binary data from the registry.
+[Description]
+RegReadBinary reads binary data from the registry. 
+Value is untyped to allow to hand in a variable of any type. ValueSize should
+give the size of Value in bytes. The function accepts only key values of type
+REG_BINARY. If the function fails it raises an EJclRegistryError exception.
+[Parameters]
+Count=5
+1=RootKey:HKEY=The rootkey from which to read, one of the HKEY_XXX constants.
+2=Key:string=The key (path) where the desired value is located, relative to RootKey.
+3=Name:string=Name of the value to read.
+4=Value=Destination for the data of any type.
+5=ValueSize:Cardinal=Size of Value in bytes.
+[Result]
+The return value is not the data itself but the amount of data read.
+The value is never bigger than ValueSize.
+[Quick Info]
+BCB=3,4,5
+Unit=JclRegistry
+Category=Registry and Ini files
+SubCat=Registry
+Author=Stephane Fillon;sfillon@ifrance.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=RegReadBool
+2=RegReadInteger
+3=RegReadString
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
