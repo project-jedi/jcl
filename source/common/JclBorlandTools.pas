@@ -15,7 +15,7 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform & BCB support)                                    }
+{ Contributor(s): Robert Rossmair (rrossmair) - crossplatform & BCB support                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Date$
 
 unit JclBorlandTools;
 
@@ -457,9 +457,9 @@ type
 
 const
   {$IFDEF MSWINDOWS}
-  {$IFNDEF COMPILER6_UP}
+  {$IFNDEF RTL140_UP}
   PathSep = ';';
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF RTL140_UP}
 
   MSHelpSystemKeyName        = 'Software\Microsoft\Windows\Help';
 
@@ -501,13 +501,13 @@ const
   PaletteHiddenTag           = '.Hidden';
 
   {$IFDEF MSWINDOWS}
-  DelphiIdeFileName          = 'Bin\delphi32.exe';
-  BCBIdeFileName             = 'Bin\bcb.exe';
+  DelphiIdeExeName           = 'delphi32.exe';
+  BCBIdeExeName              = 'bcb.exe';
   MakeExeName                = 'make.exe';
   Bpr2MakExeName             = 'bpr2mak.exe';
+  DCCExeName                 = 'dcc32.exe';
   DelphiOptionsFileExtension = '.dof';
-  BorRADToolRepositoryFileName   = 'Bin\delphi32.dro';
-  DCCFileName                = 'Bin\dcc32.exe';
+  BorRADToolRepositoryFileName = 'delphi32.dro';
   HelpContentFileName        = '%s\Help\%s%d.ohc';
   HelpIndexFileName          = '%s\Help\%s%d.ohi';
   HelpLinkFileName           = '%s\Help\%s%d.ohl';
@@ -518,15 +518,15 @@ const
   {$IFDEF KYLIX}
   IDs: array[1..3] of Integer = (60, 65, 69);
 
-  DelphiIdeFileName          = 'bin/delphi';
-  BCBIdeFileName             = 'bin/bcblin';
+  DelphiIdeExeName           = 'delphi';
+  BCBIdeExeName              = 'bcblin';
   MakeExeName                = 'make';
   Bpr2MakExeName             = 'bpr2mak';
   DelphiOptionsFileExtension = '.kof';
 
   LibSuffixes: array[TKylixVersion] of string[3] = ('6.0', '6.5', '6.9');
 
-  DCCFileName              = 'bin/dcc';
+  DCCExeName                 = 'dcc';
   KylixHelpNamePart          = 'k%d';
   {$ENDIF KYLIX}
 
@@ -1033,15 +1033,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorlandCommandLineTool.Execute(const CommandLine: string): Boolean;
-const
-  {$IFDEF MSWINDOWS}
-  S = '"%s" %s';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  S = '%s %s';
-  {$ENDIF UNIX}
 begin
-  Result := ExecAndRedirectOutput(Format(S, [FileName, CommandLine]), FOutput) = 0;
+  Result := ExecAndRedirectOutput(Format('%s %s', [FileName, CommandLine]), FOutput) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1059,6 +1052,8 @@ end;
 function TJclBorlandCommandLineTool.GetFileName: string;
 begin
   Result := Installation.BinFolderName + GetExeName;
+  if Pos(' ', Result) > 0 then
+    Result := AnsiQuotedStr(Result, '"');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1098,12 +1093,7 @@ end;
 
 function TJclDCC.GetExeName: string;
 begin
-  {$IFDEF MSWINDOWS}
-  Result := 'dcc32.exe';
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  Result := 'dcc';
-  {$ENDIF UNIX}
+  Result := DCCExeName;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1117,15 +1107,14 @@ const
   LibSuffixOption       = '{$LIBSUFFIX ''';
   RunOnlyOption         = '{$RUNONLY}';
 var
-  SaveDir, PackagePath, Description, LibSuffix, BPLFileName, S: string;
+  SaveDir, Description, LibSuffix, BPLFileName, S: string;
   RunOnly: Boolean;
   OptionsFile: TIniFile;
   DPKFile: TStringList;
   I: Integer;
 begin
-  PackagePath := PathRemoveSeparator(ExtractFilePath(PackageName));
   SaveDir := GetCurrentDir;
-  SetCurrentDir(PackagePath);
+  SetCurrentDir(ExtractFilePath(PackageName) + '.');
   try
     OptionsFile := TIniFile.Create(ChangeFileExt(PackageName, DelphiOptionsFileExtension));
     try
@@ -1395,7 +1384,7 @@ begin
   {$IFDEF KYLIX}
   FFileName := AInstallation.ConfigFileName('dro');
   {$ELSE}
-  FFileName := PathAddSeparator(Installation.RootDir) + BorRADToolRepositoryFileName;
+  FFileName := AInstallation.BinFolderName + BorRADToolRepositoryFileName;
   {$ENDIF}
   FPages := TStringList.Create;
   IniFile.ReadSection(BorRADToolRepositoryPagesSection, FPages);
@@ -1856,7 +1845,7 @@ const
   BinDir = 'Bin\';
   {$ENDIF}
   UpdateKeyName = 'Update #';
-  IdeFileNames: array[TJclBorRADToolKind] of string = (DelphiIdeFileName, BCBIdeFileName);
+  IdeFileNames: array[TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName);
 var
   KeyLen, I: Integer;
   Key: string;
@@ -1878,7 +1867,7 @@ begin
   {$ENDIF KYLIX}
 
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
-  FIdeExeFileName := PathAddSeparator(RootDir) + IdeFileNames[RADToolKind];
+  FIdeExeFileName := FBinFolderName + IdeFileNames[RADToolKind];
 
   Key := Globals.Values[VersionValueName];
   for Ed := Low(Ed) to High(Ed) do
@@ -2305,5 +2294,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+// History:
+
+// $Log$
+// Revision 1.7  2004/04/18 05:15:07  rrossmair
+// code clean-up
+//
 
 end.
