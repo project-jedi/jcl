@@ -29,9 +29,7 @@ unit JclSecurity;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -63,7 +61,7 @@ implementation
 uses
   {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
-  {$ENDIF}
+  {$ENDIF COMPILER5_UP}
   SysUtils,
   JclStrings, JclWin32;
 
