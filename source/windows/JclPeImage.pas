@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 19, 2002                                                                 }
+{ Last modified: March 11, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -830,18 +830,30 @@ type
     NewImageBase: DWORD;
   end;
 
+{ Image validity }
+
 function IsValidPeFile(const FileName: TFileName): Boolean;
+
+function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+
+{ Image modifications }
 
 function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 
 function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp: DWORD = 0;
   MaxNewSize: DWORD = 0): TJclRebaseImageInfo;
 
+{ Image Checksum }
+
+function PeVerifyCheckSum(const FileName: TFileName): Boolean;
+function PeClearCheckSum(const FileName: TFileName): Boolean;
 function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 
 //--------------------------------------------------------------------------------------------------
-// Various simple PE Image functions
+// Various simple PE Image searching and listing routines
 //--------------------------------------------------------------------------------------------------
+
+{ Exports searching }
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions = []): Boolean;
@@ -851,11 +863,15 @@ function PeIsExportFunctionForwardedEx(const FileName: TFileName; const Function
 function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions = []): Boolean;
 
+{ Imports searching }
+
 function PeDoesImportFunction(const FileName: TFileName; const FunctionName: string;
   const LibraryName: string = ''; Options: TJclSmartCompOptions = []): Boolean;
 
 function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
   Recursive: Boolean = False): Boolean;
+
+{ Imports listing }
 
 function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
   Recursive: Boolean = False; FullPathName: Boolean = False): Boolean;
@@ -863,21 +879,32 @@ function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TSt
 function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
   const LibraryName: string = ''; IncludeLibNames: Boolean = False): Boolean;
 
+{ Exports listing }
+
 function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 function PeExportedNames(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 function PeExportedVariables(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 
-function PeResourceKindNames(const FileName: TFileName;
-  ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
+{ Resources listing }
+
+function PeResourceKindNames(const FileName: TFileName; ResourceType: TJclPeResourceKind;
+  const NamesList: TStrings): Boolean;
+
+{ Borland packages specific }
 
 function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
 
 function PeBorDependedPackages(const FileName: TFileName; PackagesList: TStrings;
   FullPathName, Descriptions: Boolean): Boolean;
 
-function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+//--------------------------------------------------------------------------------------------------
+// Missing imports checking routines
+//--------------------------------------------------------------------------------------------------
 
-function PeVerifyCheckSum(const FileName: TFileName): Boolean;
+function PeFindMissingImports(const FileName: TFileName; MissingImportsList: TStrings): Boolean; overload;
+function PeFindMissingImports(RequiredImportsList, MissingImportsList: TStrings): Boolean; overload;
+
+function PeCreateRequiredImportList(const FileName: TFileName; RequiredImportsList: TStrings): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Mapped or loaded image related routines
@@ -1010,15 +1037,7 @@ const
 // Helper routines
 //==================================================================================================
 
-function FormatVersionString(HiV, LoV: Word): string;
-begin
-  Result := Format('%u.%.2u', [HiV, LoV]);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function AddFlagTextRes(var Text: string; const FlagText: PResStringRec;
-  const Value, Mask: Integer): Boolean;
+function AddFlagTextRes(var Text: string; const FlagText: PResStringRec; const Value, Mask: Integer): Boolean;
 begin
   Result := (Value and Mask <> 0);
   if Result then
@@ -1037,6 +1056,14 @@ begin
     Result := Word(T1) = Word(T2)
   else
     Result := (StrIComp(T1, T2) = 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function CreatePeImage(const FileName: TFileName): TJclPeImage;
+begin
+  Result := TJclPeImage.Create(True);
+  Result.FileName := FileName;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1477,7 +1504,7 @@ end;
 
 function TJclPeImportLibItem.GetItems(Index: Integer): TJclPeImportFuncItem;
 begin
-  Result := TJclPeImportFuncItem(inherited Items[Index]);
+  Result := TJclPeImportFuncItem(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1669,7 +1696,7 @@ end;
 
 function TJclPeImportList.GetItems(Index: Integer): TJclPeImportLibItem;
 begin
-  Result := TJclPeImportLibItem(inherited Items[Index]);
+  Result := TJclPeImportLibItem(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2306,7 +2333,7 @@ end;
 
 function TJclPeExportFuncList.GetItems(Index: Integer): TJclPeExportFuncItem;
 begin
-  Result := TJclPeExportFuncItem(inherited Items[Index]);
+  Result := TJclPeExportFuncItem(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2627,7 +2654,7 @@ end;
 
 function TJclPeResourceList.GetItems(Index: Integer): TJclPeResourceItem;
 begin
-  Result := TJclPeResourceItem(inherited Items[Index]);
+  Result := TJclPeResourceItem(Get(Index));
 end;
 
 //==================================================================================================
@@ -2835,7 +2862,7 @@ end;
 
 function TJclPeRelocList.GetItems(Index: Integer): TJclPeRelocEntry;
 begin
-  Result := TJclPeRelocEntry(inherited Items[Index]);
+  Result := TJclPeRelocEntry(Get(Index));
 end;
 
 //==================================================================================================
@@ -2891,7 +2918,7 @@ end;
 
 function TJclPeDebugList.GetItems(Index: Integer): TImageDebugDirectory;
 begin
-  Result := PImageDebugDirectory(inherited Items[Index])^;
+  Result := PImageDebugDirectory(Get(Index))^;
 end;
 
 //==================================================================================================
@@ -2932,7 +2959,7 @@ end;
 
 function TJclPeCertificateList.GetItems(Index: Integer): TJclPeCertificate;
 begin
-  Result := TJclPeCertificate(inherited Items[Index]);
+  Result := TJclPeCertificate(Get(Index));
 end;
 
 //==================================================================================================
@@ -4511,6 +4538,41 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+var
+  FileHandle: THandle;
+  Mapping: TJclFileMapping;
+  View: TJclFileMappingView;
+  HeadersPtr: PImageNtHeaders;
+begin
+  Result := False;
+  FillChar(NtHeaders, SizeOf(NtHeaders), #0);
+  FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
+  if FileHandle = INVALID_HANDLE_VALUE then
+    Exit;
+  try
+    if GetSizeOfFile(FileHandle) >= SizeOf(TImageDosHeader) then
+    begin
+      Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
+      try
+        View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
+        HeadersPtr := PeMapImgNtHeaders(View.Memory);
+        if HeadersPtr <> nil then
+        begin
+          Result := True;
+          NtHeaders := HeadersPtr^;
+        end;
+      finally
+        Mapping.Free;
+      end;
+    end;
+  finally
+    FileClose(FileHandle);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 var
   PeImage, ExportsImage: TJclPeImage;
@@ -4594,6 +4656,38 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function PeVerifyCheckSum(const FileName: TFileName): Boolean;
+begin
+  with CreatePeImage(FileName) do
+  try
+    Result := VerifyCheckSum;
+  finally
+    Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PeClearCheckSum(const FileName: TFileName): Boolean;
+var
+  Mapping: TJclFileMapping;
+  View: TJclFileMappingView;
+  Headers: PImageNtHeaders;
+begin
+  Mapping := TJclFileMapping.Create(FileName, fmOpenReadWrite, '', PAGE_READWRITE, 0, nil);
+  try
+    View := TJclFileMappingView.Create(Mapping, FILE_MAP_WRITE, 0, 0);
+    Headers := PeMapImgNtHeaders(View.Memory);
+    Result := (Headers <> nil);
+    if Result then
+      Headers^.OptionalHeader.CheckSum := 0;
+  finally
+    Mapping.Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 var
   LI: TLoadedImage;
@@ -4604,16 +4698,8 @@ begin
 end;
 
 //==================================================================================================
-// Various simple PE Image functions
+// Various simple PE Image searching and listing routines
 //==================================================================================================
-
-function CreatePeImage(const FileName: TFileName): TJclPeImage;
-begin
-  Result := TJclPeImage.Create(True);
-  Result.FileName := FileName;
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
@@ -4822,8 +4908,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PeResourceKindNames(const FileName: TFileName;
-  ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
+function PeResourceKindNames(const FileName: TFileName; ResourceType: TJclPeResourceKind;
+  const NamesList: TStrings): Boolean;
 begin
   with CreatePeImage(FileName) do
   try
@@ -4872,51 +4958,98 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
+// Missing imports checking routines
+//==================================================================================================
 
-function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
+function PeFindMissingImports(const FileName: TFileName; MissingImportsList: TStrings): Boolean;
 var
-  FileHandle: THandle;
-  Mapping: TJclFileMapping;
-  View: TJclFileMappingView;
-  HeadersPtr: PImageNtHeaders;
+  Cache: TJclPeImagesCache;
+  FileImage, LibImage: TJclPeImage;
+  L, I: Integer;
+  LibItem: TJclPeImportLibItem;
+  List: TStringList;
 begin
   Result := False;
-  FillChar(NtHeaders, SizeOf(NtHeaders), #0);
-  FileHandle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
-  if FileHandle = INVALID_HANDLE_VALUE then
-    Exit;
+  List := nil;
+  Cache := TJclPeImagesCache.Create;
   try
-    if GetSizeOfFile(FileHandle) >= SizeOf(TImageDosHeader) then
+    List := TStringList.Create;
+    List.Duplicates := dupIgnore;
+    List.Sorted := True;
+    FileImage := Cache[FileName];
+    if FileImage.StatusOK then
     begin
-      Mapping := TJclFileMapping.Create(FileHandle, '', PAGE_READONLY, 0, nil);
-      try
-        View := TJclFileMappingView.Create(Mapping, FILE_MAP_READ, 0, 0);
-        HeadersPtr := PeMapImgNtHeaders(View.Memory);
-        if HeadersPtr <> nil then
+      for L := 0 to FileImage.ImportList.Count - 1 do
+      begin
+        LibItem := FileImage.ImportList[L];
+        LibImage := Cache[LibItem.FileName];
+        if LibImage.StatusOK then
         begin
-          Result := True;
-          NtHeaders := HeadersPtr^;
-        end;
-      finally
-        Mapping.Free;
+          LibImage.ExportList.PrepareForFastNameSearch;
+          for I := 0 to LibItem.Count - 1 do
+            if LibImage.ExportList.ItemFromName[LibItem[I].Name] = nil then
+              List.Add(LibItem.Name + '=' + LibItem[I].Name);
+        end
+        else
+          List.Add(LibItem.Name + '=');
       end;
+      MissingImportsList.Assign(List);
+      Result := List.Count > 0;
     end;
   finally
-    FileClose(FileHandle);
+    List.Free;
+    Cache.Free;
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PeVerifyCheckSum(const FileName: TFileName): Boolean;
+function PeFindMissingImports(RequiredImportsList, MissingImportsList: TStrings): Boolean;
+var
+  Cache: TJclPeImagesCache;
+  LibImage: TJclPeImage;
+  I, SepPos: Integer;
+  List: TStringList;
+  S, LibName, ImportName: string;
 begin
-  with CreatePeImage(FileName) do
+  List := nil;
+  Cache := TJclPeImagesCache.Create;
   try
-    Result := VerifyCheckSum;
+    List := TStringList.Create;
+    List.Duplicates := dupIgnore;
+    List.Sorted := True;
+    for I := 0 to RequiredImportsList.Count - 1 do
+    begin
+      S := RequiredImportsList[I];
+      SepPos := Pos('=', S);
+      if SepPos = 0 then
+        Continue;
+      LibName := StrLeft(S, SepPos - 1);
+      LibImage := Cache[LibName];
+      if LibImage.StatusOK then
+      begin
+        LibImage.ExportList.PrepareForFastNameSearch;
+        ImportName := StrRestOf(S, SepPos + 1);
+        if LibImage.ExportList.ItemFromName[ImportName] = nil then
+          List.Add(LibName + '=' + ImportName);
+      end
+      else
+        List.Add(LibName + '=');
+    end;
+    MissingImportsList.Assign(List);
+    Result := List.Count > 0;
   finally
-    Free;
+    List.Free;
+    Cache.Free;
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PeCreateRequiredImportList(const FileName: TFileName; RequiredImportsList: TStrings): Boolean;
+begin
+  Result := PeImportedFunctions(FileName, RequiredImportsList, '', True);
 end;
 
 //==================================================================================================
@@ -5152,7 +5285,7 @@ end;
 
 function TJclPeMapImgHooks.GetItems(Index: Integer): TJclPeMapImgHookItem;
 begin
-  Result := TJclPeMapImgHookItem(inherited Items[Index]);
+  Result := TJclPeMapImgHookItem(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5570,5 +5703,7 @@ begin
   if Result = umNotMangled then
     Unmangled := Name;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
