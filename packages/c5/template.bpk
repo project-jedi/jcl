@@ -65,7 +65,7 @@
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;JEDI Code Library RTL package&quot; -aa -Tpp
+    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;%DESCRIPTION% for C++Builder 5&quot; -aa -Tpp
       -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
