@@ -20,7 +20,7 @@
 { This unit contains classes and routines to support windows Character-Mode Applications           }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: July 9, 2002                                                                      }
+{ Last modified: July 11, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 unit JclConsole;
@@ -162,7 +162,7 @@ type
 
     function Write(const Text: string;
       const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
-    function WriteLn(const Text: string;
+    function WriteLn(const Text: string = '';
       const ATextAttribute: IJclScreenTextAttribute = nil): DWORD; overload;
 
     function Write(const Text: string; const X: Smallint; const Y: Smallint;
@@ -432,7 +432,7 @@ type
 implementation
 
 uses
-  Math, JclFileUtils;
+  Math, TypInfo, JclFileUtils, JclResources;
 
 const
   COMMON_LVB_LEADING_BYTE    = $0100; // Leading Byte of DBCS
@@ -489,10 +489,6 @@ const
 
   OutputModeMapping: array[TJclConsoleOutputMode] of DWORD =
     (ENABLE_PROCESSED_OUTPUT, ENABLE_WRAP_AT_EOL_OUTPUT);
-
-{ TODO : Move to JclResource unit }
-resourcestring
-  SCannotRaiseSignal = 'Cannot raise signal.';
 
 var
   g_DefaultConsole: TJclConsole = nil;
@@ -860,27 +856,33 @@ var
   Pos: TCoord;
   Attrs: array of Word;
 begin
-  if (X = -1) or (Y = -1) then
+  if Length(Text) > 0 then
   begin
-    Pos := Cursor.Position;
+    if (X = -1) or (Y = -1) then
+    begin
+      Pos := Cursor.Position;
+    end
+    else
+    begin
+      Pos.X := X;
+      Pos.Y := Y;
+    end;
+
+    if Assigned(ATextAttribute) then
+    begin
+      SetLength(Attrs, Length(Text));
+      for I:=0 to Length(Text)-1 do
+        Attrs[I] := ATextAttribute.TextAttribute;
+      Result := Write(Text, X, Y, @Attrs[0]);
+    end
+    else
+      Win32Check(WriteConsoleOutputCharacter(Handle, PChar(Text), Length(Text), Pos, Result));
   end
   else
-  begin
-    Pos.X := X;
-    Pos.Y := Y;
-  end;
-
-  if Assigned(ATextAttribute) then
-  begin
-    SetLength(Attrs, Length(Text));
-    for I:=0 to Length(Text)-1 do
-      Attrs[I] := ATextAttribute.TextAttribute;
-    Win32Check(WriteConsoleOutputAttribute(Handle, Attrs, Length(Text), Pos, Result));
-  end;
-  Win32Check(WriteConsoleOutputCharacter(Handle, PChar(Text), Length(Text), Pos, Result));
+    Result := 0;
 end;
 
-function TJclScreenBuffer.Write(const Text: string; const X, Y: Smallint;  
+function TJclScreenBuffer.Write(const Text: string; const X, Y: Smallint;
   const pAttrs: PWORD): DWORD;
 var
   Pos: TCoord;
@@ -1446,7 +1448,8 @@ begin
   if AEvent in [ceCtrlC, ceCtrlBreak] then
     Win32Check(GenerateConsoleCtrlEvent(CtrlEventMapping[AEvent], ProcessGroupId))
   else
-    raise EJclError.CreateResRec(@SCannotRaiseSignal);
+    raise EJclError.CreateResRecFmt(@RsCannotRaiseSignal,
+      [GetEnumName(TypeInfo(TJclInputCtrlEvent), Integer(AEvent))]);
 end;
 
 function TJclInputBuffer.GetEventCount: DWORD;
