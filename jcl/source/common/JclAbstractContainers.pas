@@ -36,12 +36,12 @@ unit JclAbstractContainers;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF MSWINDOWS}
-{$IFDEF HAS_UNIT_LIBC}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_LIBC}
   Libc,
-{$ENDIF HAS_UNIT_LIBC}
+  {$ENDIF HAS_UNIT_LIBC}
   SysUtils, Classes, JclBase, JclContainerIntf;
 
 type
@@ -58,7 +58,7 @@ type
   end;
 
   TJclAbstractContainer = class(TInterfacedObject)
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   private
     FCriticalSection: TJclIntfCriticalSection;
   protected
@@ -66,7 +66,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   end;
 
   TJclStrCollection = class(TJclAbstractContainer, IJclStrCollection)
@@ -153,7 +153,7 @@ end;
 
 {$ENDIF THREADSAFE}
 
-{ TJclStrCollection }
+//=== { TJclStrCollection } ==================================================
 
 procedure TJclStrCollection.AppendDelimited(AString, Separator: string);
 var
@@ -181,7 +181,6 @@ begin
   end
   else //There isnt a Separator in AString
     Add(AString);
-
 end;
 
 procedure TJclStrCollection.AppendFromStrings(Strings: TStrings);
@@ -250,6 +249,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/03/03 08:02:56  marquardt
+// various style cleanings, bugfixes and improvements
+//
 // Revision 1.3  2005/03/02 17:48:54  rrossmair
 // - replaced $IFDEF UNIX by $IFDEF HAS_UNIT_LIBC, fixed header
 //

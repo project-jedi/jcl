@@ -94,7 +94,8 @@ function ObjectCompare(Obj1, Obj2: TObject): Integer;
 begin
   if Cardinal(Obj1) < Cardinal(Obj2) then
     Result := -1
-  else if Cardinal(Obj1) > Cardinal(Obj2) then
+  else
+  if Cardinal(Obj1) > Cardinal(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -104,7 +105,8 @@ function InterfaceCompare(Obj1, Obj2: IInterface): Integer;
 begin
   if Cardinal(Obj1) < Cardinal(Obj2) then
     Result := -1
-  else if Cardinal(Obj1) > Cardinal(Obj2) then
+  else
+  if Cardinal(Obj1) > Cardinal(Obj2) then
     Result := 1
   else
     Result := 0;
@@ -128,13 +130,13 @@ end;
 function TJclIntfArraySet.AddAll(ACollection: IJclIntfCollection): Boolean;
 var
   It: IJclIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -156,7 +158,8 @@ begin
     Comp := InterfaceCompare(GetObject(CompPos), AInterface);
     if Comp < 0 then
       LoPos := CompPos + 1
-    else if Comp > 0 then
+    else
+    if Comp > 0 then
       HiPos := CompPos - 1
     else
     begin
@@ -217,13 +220,13 @@ end;
 function TJclStrArraySet.AddAll(ACollection: IJclStrCollection): Boolean;
 var
   It: IJclStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -245,7 +248,8 @@ begin
     Comp := CompareStr(GetString(CompPos), AString);
     if Comp < 0 then
       LoPos := CompPos + 1
-    else if Comp > 0 then
+    else
+    if Comp > 0 then
       HiPos := CompPos - 1
     else
     begin
@@ -306,13 +310,13 @@ end;
 function TJclArraySet.AddAll(ACollection: IJclCollection): Boolean;
 var
   It: IJclIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF THREADSAFE}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -334,7 +338,8 @@ begin
     Comp := ObjectCompare(GetObject(CompPos), AObject);
     if Comp < 0 then
       LoPos := CompPos + 1
-    else if Comp > 0 then
+    else
+    if Comp > 0 then
       HiPos := CompPos - 1
     else
     begin
@@ -380,6 +385,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2005/03/03 08:02:56  marquardt
+// various style cleanings, bugfixes and improvements
+//
 // Revision 1.4  2005/03/02 09:59:30  dade2004
 // Added
 //  -TJclStrCollection in JclContainerIntf

@@ -41,12 +41,12 @@ type
   private
     FCount: Integer;
     FCapacity: Integer;
+    FItems: TDynIInterfaceArray;
   protected
     procedure Grow; virtual;
     { IJclCloneable }
     function Clone: IInterface;
   public
-    Items: TDynIInterfaceArray;
     { IJclIntfCollection }
     function Add(AInterface: IInterface): Boolean; overload;
     function AddAll(ACollection: IJclIntfCollection): Boolean; overload;
@@ -76,6 +76,7 @@ type
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    property Items: TDynIInterfaceArray read FItems;
   end;
 
   //Daniele Teti 02/03/2005
@@ -83,12 +84,12 @@ type
   private
     FCount: Integer;
     FCapacity: Integer;
+    FItems: TDynStringArray;
   protected
     procedure Grow; virtual;
     { IJclCloneable }
     function Clone: TObject;
   public
-    Items: TDynStringArray;
     { IJclStrCollection }
     function Add(const AString: string): Boolean; overload; override;
     function AddAll(ACollection: IJclStrCollection): Boolean; overload; override;
@@ -118,6 +119,7 @@ type
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    property Items: TDynStringArray read FItems;
   end;
 
   TJclVector = class(TJclAbstractContainer, IJclCollection, IJclList, IJclArray,
@@ -126,11 +128,11 @@ type
     FCount: Integer;
     FCapacity: Integer;
     FOwnsObjects: Boolean;
+    FItems: TDynObjectArray;
   protected
     procedure Grow; virtual;
     procedure FreeObject(var AObject: TObject);
   public
-    Items: TDynObjectArray;
     { IJclCollection }
     function Add(AObject: TObject): Boolean; overload;
     function AddAll(ACollection: IJclCollection): Boolean; overload;
@@ -162,6 +164,7 @@ type
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
     procedure BeforeDestruction; override;
+    property Items: TDynObjectArray read FItems;
     property OwnsObjects: Boolean read FOwnsObjects;
   end;
 
@@ -169,6 +172,8 @@ implementation
 
 uses
   JclResources;
+
+//=== { TIntfItr } ===========================================================
 
 type
   TIntfItr = class(TJclAbstractContainer, IJclIntfIterator)
@@ -194,54 +199,6 @@ type
     destructor Destroy; override;
   end;
 
-  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
-  private
-    FCursor: Integer;
-    FOwnList: TJclStrVector;
-    FLastRet: Integer;
-    FSize: Integer;
-  protected
-    { IJclStrIterator}
-    procedure Add(const AString: string);
-    function GetString: string;
-    function HasNext: Boolean;
-    function HasPrevious: Boolean;
-    function Next: string;
-    function NextIndex: Integer;
-    function Previous: string;
-    function PreviousIndex: Integer;
-    procedure Remove;
-    procedure SetString(const AString: string);
-  public
-    constructor Create(OwnList: TJclStrVector);
-    destructor Destroy; override;
-  end;
-
-  TItr = class(TJclAbstractContainer, IJclIterator)
-  private
-    FCursor: Integer;
-    FOwnList: TJclVector;
-    FLastRet: Integer;
-    FSize: Integer;
-  protected
-    { IJclIterator}
-    procedure Add(AObject: TObject);
-    function GetObject: TObject;
-    function HasNext: Boolean;
-    function HasPrevious: Boolean;
-    function Next: TObject;
-    function NextIndex: Integer;
-    function Previous: TObject;
-    function PreviousIndex: Integer;
-    procedure Remove;
-    procedure SetObject(AObject: TObject);
-  public
-    constructor Create(OwnList: TJclVector);
-    destructor Destroy; override;
-  end;
-
-//=== { TIntfItr } ===========================================================
-
 constructor TIntfItr.Create(OwnList: TJclIntfVector);
 begin
   inherited Create;
@@ -262,10 +219,10 @@ procedure TIntfItr.Add(AInterface: IInterface);
 begin
   with FOwnList do
   begin
-    System.Move(Items[FCursor], Items[FCursor + 1],
+    System.Move(FItems[FCursor], FItems[FCursor + 1],
       (FCount - FCursor) * SizeOf(TObject));
-    FCapacity := Length(Items);
-    Items[FCursor] := AInterface;
+    FCapacity := Length(FItems);
+    FItems[FCursor] := AInterface;
     Inc(FCount);
   end;
   Inc(FSize);
@@ -316,8 +273,8 @@ procedure TIntfItr.Remove;
 begin
   with FOwnList do
   begin
-    Items[FCursor] := nil; // Force Release
-    System.Move(Items[FCursor + 1], Items[FCursor],
+    FItems[FCursor] := nil; // Force Release
+    System.Move(FItems[FCursor + 1], FItems[FCursor],
       (FSize - FCursor) * SizeOf(IInterface));
   end;
   Dec(FOwnList.FCount);
@@ -330,6 +287,30 @@ begin
 end;
 
 //=== { TStrItr } ============================================================
+
+type
+  TStrItr = class(TJclAbstractContainer, IJclStrIterator)
+  private
+    FCursor: Integer;
+    FOwnList: TJclStrVector;
+    FLastRet: Integer;
+    FSize: Integer;
+  protected
+    { IJclStrIterator}
+    procedure Add(const AString: string);
+    function GetString: string;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Next: string;
+    function NextIndex: Integer;
+    function Previous: string;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetString(const AString: string);
+  public
+    constructor Create(OwnList: TJclStrVector);
+    destructor Destroy; override;
+  end;
 
 constructor TStrItr.Create(OwnList: TJclStrVector);
 begin
@@ -351,10 +332,10 @@ procedure TStrItr.Add(const AString: string);
 begin
   with FOwnList do
   begin
-    System.Move(Items[FCursor], Items[FCursor + 1],
+    System.Move(FItems[FCursor], FItems[FCursor + 1],
       (FOwnList.FCount - FCursor) * SizeOf(string));
-    FCapacity := Length(Items);
-    Items[FCursor] := AString;
+    FCapacity := Length(FItems);
+    FItems[FCursor] := AString;
     Inc(FOwnList.FCount);
   end;
   Inc(FSize);
@@ -405,8 +386,8 @@ procedure TStrItr.Remove;
 begin
   with FOwnList do
   begin
-    Items[FCursor] := ''; // Force Release
-    System.Move(Items[FCursor + 1], Items[FCursor],
+    FItems[FCursor] := ''; // Force Release
+    System.Move(FItems[FCursor + 1], FItems[FCursor],
       (FSize - FCursor) * SizeOf(string));
   end;
   Dec(FOwnList.FCount);
@@ -423,6 +404,30 @@ begin
 end;
 
 //=== { TItr } ===============================================================
+
+type
+  TItr = class(TJclAbstractContainer, IJclIterator)
+  private
+    FCursor: Integer;
+    FOwnList: TJclVector;
+    FLastRet: Integer;
+    FSize: Integer;
+  protected
+    { IJclIterator}
+    procedure Add(AObject: TObject);
+    function GetObject: TObject;
+    function HasNext: Boolean;
+    function HasPrevious: Boolean;
+    function Next: TObject;
+    function NextIndex: Integer;
+    function Previous: TObject;
+    function PreviousIndex: Integer;
+    procedure Remove;
+    procedure SetObject(AObject: TObject);
+  public
+    constructor Create(OwnList: TJclVector);
+    destructor Destroy; override;
+  end;
 
 constructor TItr.Create(OwnList: TJclVector);
 begin
@@ -444,10 +449,10 @@ procedure TItr.Add(AObject: TObject);
 begin
   with FOwnList do
   begin
-    System.Move(Items[FCursor], Items[FCursor + 1],
+    System.Move(FItems[FCursor], FItems[FCursor + 1],
       (FCount - FCursor) * SizeOf(TObject));
-    FCapacity := Length(Items);
-    Items[FCursor] := AObject;
+    FCapacity := Length(FItems);
+    FItems[FCursor] := AObject;
     Inc(FCount);
   end;
   Inc(FSize);
@@ -498,8 +503,8 @@ procedure TItr.Remove;
 begin
   with FOwnList do
   begin
-    FreeObject(Items[FCursor]);
-    System.Move(Items[FCursor + 1], Items[FCursor],
+    FreeObject(FItems[FCursor]);
+    System.Move(FItems[FCursor + 1], FItems[FCursor],
       (FSize - FCursor) * SizeOf(TObject));
   end;
   Dec(FOwnList.FCount);
@@ -525,7 +530,7 @@ begin
     FCapacity := 0
   else
     FCapacity := ACapacity;
-  SetLength(Items, FCapacity);
+  SetLength(FItems, FCapacity);
 end;
 
 destructor TJclIntfVector.Destroy;
@@ -538,10 +543,10 @@ procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  System.Move(Items[Index], Items[Index - 1],
+  System.Move(FItems[Index], FItems[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
-  FCapacity := Length(Items);
-  Items[Index] := AInterface;
+  FCapacity := Length(FItems);
+  FItems[Index] := AInterface;
   Inc(FCount);
 end;
 
@@ -549,7 +554,7 @@ function TJclIntfVector.Add(AInterface: IInterface): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
-  Items[FCount] := AInterface;
+  FItems[FCount] := AInterface;
   Inc(FCount);
   Result := True;
 end;
@@ -565,11 +570,11 @@ begin
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
-  System.Move(Items[Index], Items[Index + Size], Size * SizeOf(IInterface));
+  System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(IInterface));
   It := ACollection.First;
   while It.HasNext do
   begin
-    Items[Index] := It.Next;
+    FItems[Index] := It.Next;
     Inc(Index);
   end;
   Result := True;
@@ -593,7 +598,7 @@ var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    Items[I] := nil;
+    FItems[I] := nil;
   FCount := 0;
 end;
 
@@ -629,12 +634,8 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclIntfVector.Equals(ACollection: IJclIntfCollection): Boolean;
@@ -669,8 +670,11 @@ begin
   if FCapacity > 64 then
     FCapacity := FCapacity + FCapacity div 4
   else
+  if FCapacity = 0 then
+    FCapacity := 64
+  else
     FCapacity := FCapacity * 4;
-  SetLength(Items, FCapacity);
+  SetLength(FItems, FCapacity);
 end;
 
 function TJclIntfVector.IndexOf(AInterface: IInterface): Integer;
@@ -727,9 +731,9 @@ function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  Result := Items[Index];
-  Items[Index] := nil;
-  System.Move(Items[Index + 1], Items[Index],
+  Result := FItems[Index];
+  FItems[Index] := nil;
+  System.Move(FItems[Index + 1], FItems[Index],
     (FCount - Index) * SizeOf(IInterface));
   Dec(FCount);
 end;
@@ -742,10 +746,10 @@ begin
   if AInterface = nil then
     Exit;
   for I := FCount - 1 downto 0 do
-    if Items[I] = AInterface then // Removes all AInterface
+    if FItems[I] = AInterface then // Removes all AInterface
     begin
-      Items[I] := nil; // Force Release
-      System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(IInterface));
+      FItems[I] := nil; // Force Release
+      System.Move(FItems[I + 1], FItems[I], (FCount - I) * SizeOf(IInterface));
       Dec(FCount);
       Result := True;
     end;
@@ -779,7 +783,7 @@ procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  Items[Index] := AInterface;
+  FItems[Index] := AInterface;
 end;
 
 function TJclIntfVector.Size: Integer;
@@ -818,7 +822,7 @@ begin
     FCapacity := 0
   else
     FCapacity := ACapacity;
-  SetLength(Items, FCapacity);
+  SetLength(FItems, FCapacity);
 end;
 
 destructor TJclStrVector.Destroy;
@@ -831,9 +835,9 @@ procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  System.Move(Items[Index], Items[Index - 1], (FCount - Index) * SizeOf(string));
-  FCapacity := Length(Items);
-  Items[Index] := AString;
+  System.Move(FItems[Index], FItems[Index - 1], (FCount - Index) * SizeOf(string));
+  FCapacity := Length(FItems);
+  FItems[Index] := AString;
   Inc(FCount);
 end;
 
@@ -841,7 +845,7 @@ function TJclStrVector.Add(const AString: string): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
-  Items[FCount] := AString;
+  FItems[FCount] := AString;
   Inc(FCount);
   Result := True;
 end;
@@ -870,11 +874,11 @@ begin
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
-  System.Move(Items[Index], Items[Index + Size], Size * SizeOf(string));
+  System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(string));
   It := ACollection.First;
   while It.HasNext do
   begin
-    Items[Index] := It.Next;
+    FItems[Index] := It.Next;
     Inc(Index);
   end;
   Result := True;
@@ -893,7 +897,7 @@ var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    Items[I] := '';
+    FItems[I] := '';
   FCount := 0;
 end;
 
@@ -929,12 +933,8 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclStrVector.Equals(ACollection: IJclStrCollection): Boolean;
@@ -966,7 +966,7 @@ begin
     Result := '';
     Exit;
   end;
-  Result := Items[Index];
+  Result := FItems[Index];
 end;
 
 procedure TJclStrVector.Grow;
@@ -974,8 +974,11 @@ begin
   if FCapacity > 64 then
     FCapacity := FCapacity + FCapacity div 4
   else
+  if FCapacity = 0 then
+    FCapacity := 64
+  else
     FCapacity := FCapacity * 4;
-  SetLength(Items, FCapacity);
+  SetLength(FItems, FCapacity);
 end;
 
 function TJclStrVector.IndexOf(const AString: string): Integer;
@@ -1031,10 +1034,10 @@ begin
   if AString = '' then
     Exit;
   for I := FCount - 1 downto 0 do
-    if Items[I] = AString then // Removes all AString
+    if FItems[I] = AString then // Removes all AString
     begin
-      Items[I] := ''; // Force Release
-      System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(string));
+      FItems[I] := ''; // Force Release
+      System.Move(FItems[I + 1], FItems[I], (FCount - I) * SizeOf(string));
       Dec(FCount);
       Result := True;
     end;
@@ -1044,10 +1047,9 @@ function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  Result := Items[Index];
-  Items[Index] := '';
-  System.Move(Items[Index + 1], Items[Index],
-    (FCount - Index) * SizeOf(string));
+  Result := FItems[Index];
+  FItems[Index] := '';
+  System.Move(FItems[Index + 1], FItems[Index], (FCount - Index) * SizeOf(string));
   Dec(FCount);
 end;
 
@@ -1079,7 +1081,7 @@ procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  Items[Index] := AString;
+  FItems[Index] := AString;
 end;
 
 function TJclStrVector.Size: Integer;
@@ -1112,7 +1114,7 @@ begin
     FCapacity := 0
   else
     FCapacity := ACapacity;
-  SetLength(Items, FCapacity);
+  SetLength(FItems, FCapacity);
 end;
 
 destructor TJclVector.Destroy;
@@ -1125,10 +1127,10 @@ procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  System.Move(Items[Index], Items[Index - 1],
+  System.Move(FItems[Index], FItems[Index - 1],
     (FCount - Index) * SizeOf(TObject));
-  FCapacity := Length(Items);
-  Items[Index] := AObject;
+  FCapacity := Length(FItems);
+  FItems[Index] := AObject;
   Inc(FCount);
 end;
 
@@ -1136,7 +1138,7 @@ function TJclVector.Add(AObject: TObject): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
-  Items[FCount] := AObject;
+  FItems[FCount] := AObject;
   Inc(FCount);
   Result := True;
 end;
@@ -1152,11 +1154,11 @@ begin
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
-  System.Move(Items[Index], Items[Index + Size], Size * SizeOf(IInterface));
+  System.Move(FItems[Index], FItems[Index + Size], Size * SizeOf(IInterface));
   It := ACollection.First;
   while It.HasNext do
   begin
-    Items[Index] := It.Next;
+    FItems[Index] := It.Next;
     Inc(Index);
   end;
   Result := True;
@@ -1180,7 +1182,7 @@ var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    FreeObject(Items[I]);
+    FreeObject(FItems[I]);
   FCount := 0;
 end;
 
@@ -1216,12 +1218,8 @@ begin
   if ACollection = nil then
     Exit;
   It := ACollection.First;
-  while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  while Result and It.HasNext do
+    Result := Contains(It.Next);
 end;
 
 function TJclVector.Equals(ACollection: IJclCollection): Boolean;
@@ -1265,8 +1263,11 @@ begin
   if FCapacity > 64 then
     FCapacity := FCapacity + FCapacity div 4
   else
+  if FCapacity = 0 then
+    FCapacity := 64
+  else
     FCapacity := FCapacity * 4;
-  SetLength(Items, FCapacity);
+  SetLength(FItems, FCapacity);
 end;
 
 function TJclVector.IndexOf(AObject: TObject): Integer;
@@ -1327,10 +1328,10 @@ begin
   if AObject = nil then
     Exit;
   for I := FCount - 1 downto 0 do
-    if Items[I] = AObject then // Removes all AObject
+    if FItems[I] = AObject then // Removes all AObject
     begin
-      FreeObject(Items[I]);
-      System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(TObject));
+      FreeObject(FItems[I]);
+      System.Move(FItems[I + 1], FItems[I], (FCount - I) * SizeOf(TObject));
       Dec(FCount);
       Result := True;
     end;
@@ -1340,9 +1341,9 @@ function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  Result := Items[Index];
-  FreeObject(Items[Index]);
-  System.Move(Items[Index + 1], Items[Index], (FCount - Index) * SizeOf(TObject));
+  Result := FItems[Index];
+  FreeObject(FItems[Index]);
+  System.Move(FItems[Index + 1], FItems[Index], (FCount - Index) * SizeOf(TObject));
   Dec(FCount);
 end;
 
@@ -1374,7 +1375,7 @@ procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
-  Items[Index] := AObject;
+  FItems[Index] := AObject;
 end;
 
 function TJclVector.Size: Integer;
@@ -1406,6 +1407,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/03/03 08:02:57  marquardt
+// various style cleanings, bugfixes and improvements
+//
 // Revision 1.6  2005/03/02 17:51:24  rrossmair
 // - removed DCLAppendDelimited from JclAlgorithms, changed uses clauses accordingly
 //
