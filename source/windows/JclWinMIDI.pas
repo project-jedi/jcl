@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclWinMidi.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Robert Rossmair                                    }
+{ Portions created by Robert Rossmair are Copyright (C) Robert Rossmair. All Rights Reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Robert Rossmair                                                                                }
@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclWinMidi;
@@ -322,6 +322,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.5  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

@@ -12,11 +12,14 @@
 {                                                                                                  }
 { The Original Code is JclTD32.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Flier Lu                                                                                       }
+{ Contributors:                                                                                    }
+{   Flier Lu (flier)                                                                               }
+{   Olivier Sannier (obones)                                                                       }
+{   Petr Vones (pvones)                                                                            }
+{   Heinz Zastrau (heinzz)                                                                         }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -26,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclTD32;
@@ -1353,6 +1356,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.7  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

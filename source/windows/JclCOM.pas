@@ -12,11 +12,16 @@
 {                                                                                                  }
 { The Original Code is JclCOM.pas.                                                                 }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Kevin S. Gallagher. Portions created by Kevin S.   }
+{ Gallagher are Copyright (C) Kevin S. Gallagher. All Rights Reserved.                             }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Scott Price (scottprice)                                                                       }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -24,7 +29,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclCOM;
@@ -702,6 +707,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.6  2004/04/06 04:55:17  peterjhaas
 // adapt compiler conditions, add log entry
 //

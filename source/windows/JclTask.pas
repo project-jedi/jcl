@@ -12,12 +12,14 @@
 {                                                                                                  }
 { The Original Code is JclSvcCtrl.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Flier Lu                                                                                       }
+{ Contributors:                                                                                    }
+{   Flier Lu (flier)                                                                                      }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1216,6 +1218,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.7  2004/04/26 04:28:16  peterjhaas
 // - add TaskSchedulerServiceControl
 // - some bugfixes for Win9x

@@ -12,11 +12,19 @@
 {                                                                                                  }
 { The Original Code is JclShell.pas.                                                               }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Marcel van Brakel and Petr Vones.                }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{ All Rights Reserved.                                                                             }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
+{   Peter J. Haas (peterjhaas)                                                                     }
+{   Aleksej Kudinov                                                                                }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1437,6 +1445,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.9  2004/04/09 20:46:30  mthoma
 // Fixed 0000923 (ShellRunControlPanel). Changed $data$ to date.
 //
