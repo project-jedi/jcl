@@ -24,7 +24,7 @@
 {   into JclBorlandTools.pas.                                                                      }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: June 14, 2004                                                                     }
+{ Last modified: December 28, 2004                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -37,8 +37,8 @@ Todo:
 - IFDEF OS specific compiler switches and defines
 *almost done*- get settings from .cfg or .dof
 
-- move ExecAndCapture to a unit where it fit's more
-  (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)  
+*done*- move ExecAndCapture to a unit where it fit's more
+   (the same should be considered for JclBorlandTools.ExecAndRedirectOutput)  
 }
 
 unit JclBorlandToolsExtensions;
@@ -54,7 +54,10 @@ uses
   {$IFDEF LINUX}
   Libc, Types,
   {$ENDIF LINUX}
-  SysUtils, Classes, IniFiles, Contnrs;
+  {$IFNDEF RTL140_UP}
+  JclBase,
+  {$ENDIF ~RTL140_UP}
+  SysUtils, Classes, IniFiles, Contnrs, JclSysUtils;
 
 type
   TJclDCCMessageKind = (mkUnknown, mkHint, mkWarning, mkError, mkFatal);
@@ -93,7 +96,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    //(usc) Assign
+    procedure Assign(ACustomConfig: TJclCustomDCCConfig);
 
     property BPLOutputDirectory: string read FBPLOutputDirectory write FBPLOutputDirectory;
     property BuildAllUnits: Boolean read FBuildAllUnits write FBuildAllUnits;
@@ -185,13 +188,13 @@ type
     FQuietCompile: Boolean;
     FOnMessage: TNotifyEvent;
     FConfig: TJclCustomDCCConfig;
-    procedure CaptureLine(const Line: string; var Aborted: Boolean);
+    procedure CaptureLine(const Line: string);
     procedure ClearValues;
   public
     constructor Create;
     destructor Destroy; override;
 
-    function Compile: Boolean;
+    function Compile(AbortPtr: PBoolean = nil): Boolean;
 
     property QuietCompile: Boolean read FQuietCompile write FQuietCompile;
     property ExeName: string read FExeName write FExeName;
@@ -245,6 +248,34 @@ end;
 destructor TJclCustomDCCConfig.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TJclCustomDCCConfig.Assign(ACustomConfig: TJclCustomDCCConfig);
+begin
+  FBPLOutputDirectory := ACustomConfig.BPLOutputDirectory;
+  FBuildAllUnits := ACustomConfig.BuildAllUnits;
+  FCompilerSwitches := ACustomConfig.CompilerSwitches;
+  FCompileWithPackages := ACustomConfig.CompileWithPackages;
+  FConditionalDefines := ACustomConfig.ConditionalDefines;
+  FConsoleApplication := ACustomConfig.ConsoleApplication;
+  FDCPOutputDirectory := ACustomConfig.DCPOutputDirectory;
+  FDCUOutputDir := ACustomConfig.DCUOutputDirectory;
+  FEXEOutputDir := ACustomConfig.EXEOutputDirectory;
+  FImageBaseAddr := ACustomConfig.ImageBaseAddr;
+  FIncludeDirectories := ACustomConfig.IncludeDirectories;
+  FMapFileLevel := ACustomConfig.MapFileLevel;
+  FMaxStackSize := ACustomConfig.MaxStackSize;
+  FMinStackSize := ACustomConfig.MinStackSize;
+  FObjectDirectories := ACustomConfig.ObjectDirectories;
+  FOutputHints := ACustomConfig.OutputHints;
+  FOutputWarnings := ACustomConfig.OutputWarnings;
+  FPackages := ACustomConfig.Packages;
+  FRemoteDebugSymbols := ACustomConfig.RemoteDebugSymbols;
+  FResourceDirectories := ACustomConfig.ResourceDirectories;
+  FSearchPaths := ACustomConfig.SearchPaths;
+  FTD32DebugInfo := ACustomConfig.TD32DebugInfo;
+  FUnitAliases := ACustomConfig.UnitAliases;
+  FUnitDirectories := ACustomConfig.UnitDirectories;
 end;
 
 procedure TJclCustomDCCConfig.SetSearchPaths(ASearchPaths: string);
@@ -460,130 +491,6 @@ begin
 end;
 
 type
-  TCaptureLine = procedure(const ALine: string; var Aborted: Boolean) of object;
-
-{$IFDEF MSWINDOWS}
-//(usc) this is a modified version of JclMiscel.WinExec32AndRedirectOutput
-//(usc) TCaptureLine Aborted is not support so far
-function WinExec32AndCapture(const ACommandLine: string; ACaptureLine: TCaptureLine): Cardinal;
-const
-  BufferSize = 1024;
-var
-  Buffer: array [0..BufferSize] of Char;
-  StartupInfo: TStartupInfo;
-  ProcessInfo: TProcessInformation;
-  SecurityAttr: TSecurityAttributes;
-  PipeRead, PipeWrite: THandle;
-  PipeBytesRead: Cardinal;
-  TempOutput, LineOut: string;
-  I: Integer;
-  Aborted: Boolean;
-begin
-  Result := $FFFFFFFF;
-  TempOutput := '';
-  SecurityAttr.nLength := SizeOf(SecurityAttr);
-  SecurityAttr.lpSecurityDescriptor := nil;
-  SecurityAttr.bInheritHandle := True;
-  if not CreatePipe(PipeRead, PipeWrite, @SecurityAttr, 0) then
-  begin
-    Result := GetLastError;
-    Exit;
-  end;
-  FillChar(StartupInfo, SizeOf(TStartupInfo), #0);
-  StartupInfo.cb := SizeOf(TStartupInfo);
-  StartupInfo.dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-  StartupInfo.wShowWindow := SW_HIDE;
-  StartupInfo.hStdInput := GetStdHandle(STD_INPUT_HANDLE);
-  StartupInfo.hStdOutput := PipeWrite;
-  StartupInfo.hStdError := PipeWrite;
-  if CreateProcess(nil, PChar(ACommandLine), nil, nil, True, NORMAL_PRIORITY_CLASS, nil, nil, StartupInfo,
-    ProcessInfo) then
-  begin
-    CloseHandle(PipeWrite);
-    LineOut := '';
-    while ReadFile(PipeRead, Buffer, BufferSize, PipeBytesRead, nil) and (PipeBytesRead > 0) do
-    begin
-      Buffer[PipeBytesRead] := #0;
-      TempOutput := AdjustLineBreaks(Buffer);
-      for I := 1 to Length(TempOutput) do
-      begin
-        if TempOutput[I] = #13 then
-        begin
-          ACaptureLine(LineOut, Aborted);
-          LineOut := '';
-        end
-        else
-        if TempOutput[I] <> #10 then
-          LineOut := LineOut + TempOutput[I];
-      end;
-    end;
-    if LineOut <> '' then
-      ACaptureLine(LineOut, Aborted);
-    if (WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0) and
-      not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-        Result := $FFFFFFFF;
-    CloseHandle(ProcessInfo.hThread);
-    CloseHandle(ProcessInfo.hProcess);
-  end
-  else
-    CloseHandle(PipeWrite);
-  CloseHandle(PipeRead);
-end;
-{$ENDIF MSWINDOWS}
-
-{$IFDEF LINUX}
-//(usc) this is a modified version of JclBorlandTools.ExecAndRedirectOutput
-//(usc) TCaptureLine Aborted is not support so far
-function UnixExecAndCapture(const ACommandLine: string; ACaptureLine: TCaptureLine): Integer;
-var
-  Pipe: PIOFile;
-  Count: Integer;
-  Buffer: array [Byte] of Char;
-  Cmd, TempOutput: string;
-  I: Integer;
-  LineOut: string;
-  Aborted: Boolean;
-begin
-  Cmd := Format('%s 2>&1', [ACommandLine]);
-  Pipe := Libc.popen(PChar(Cmd), 'r');
-  repeat
-    Count := fread_unlocked(@Buffer, 1, Length(Buffer) - 1, Pipe);
-    if Count > 0 then
-    begin
-      Buffer[Count] := #0;
-      TempOutput := AdjustLineBreaks(Buffer);
-      for I := 1 to Length(TempOutput) do
-      begin
-        if TempOutput[I] = #10 then
-        begin
-          ACaptureLine(LineOut, Aborted);
-          LineOut := '';
-        end
-        else
-        if TempOutput[I] <> #13 then
-          LineOut := LineOut + TempOutput[I];
-      end;
-    end;
-  until Count < Length(Buffer) - 1;
-  if LineOut <> '' then
-    ACaptureLine(LineOut, Aborted);
-
-  Result := pclose(Pipe);
-  wait(nil);
-end;
-{$ENDIF LINUX}
-
-function ExecAndCapture(const ACommandLine: string; ACaptureLine: TCaptureLine): Integer;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := WinExec32AndCapture(ACommandLine, ACaptureLine);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  Result := UnixExecAndCapture(ACommandLine, ACaptureLine);
-  {$ENDIF LINUX}
-end;
-
-type
   TJclMessageConversionRec = record
     MessageString: string;
     MessageKind: TJclDCCMessageKind;
@@ -746,7 +653,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclDCCEx.CaptureLine(const Line: string; var Aborted: Boolean);
+procedure TJclDCCEx.CaptureLine(const Line: string);
 var
   p1, p2: Integer;
   S: string;
@@ -793,9 +700,10 @@ begin
   FMessages.Clear;
 end;
 
-function TJclDCCEx.Compile: Boolean;
+function TJclDCCEx.Compile(AbortPtr: PBoolean = nil): Boolean;
 var
   Arguments: string;
+  DCCExitCode: Integer;
 begin
 {
  open arguments
@@ -858,8 +766,8 @@ begin
     if FQuietCompile then
       Arguments := Arguments + ' -Q';
 
-    Result := (ExecAndCapture(FExeName + ' ' + Arguments, CaptureLine) = 0) and
-      (FMessages.ErrorCount = 0) and (FMessages.FatalCount = 0);
+    DCCExitCode := JclSysUtils.Execute(FExeName + ' ' + Arguments, CaptureLine, True, AbortPtr);
+    Result := (DCCExitCode = 0) and (FMessages.ErrorCount = 0) and (FMessages.FatalCount = 0);
   end;
 end;
 
