@@ -1,0 +1,62 @@
+package DJcl;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS ON}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JEDI Code Library RTL package for Kylix 3'}
+{$LIBSUFFIX 'K3'}
+{$LIBVERSION '0.1'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  visualclx;
+
+contains
+  Jcl8087 in '../../Source/Common/Jcl8087.pas',
+  JclBase in '../../Source/Common/JclBase.pas',
+  JclComplex in '../../Source/Common/JclComplex.pas',
+  JclCounter in '../../Source/Common/JclCounter.pas',
+  JclDateTime in '../../Source/Common/JclDateTime.pas',
+  JclExprEval in '../../Source/Common/JclExprEval.pas',
+  JclFileUtils in '../../Source/Common/JclFileUtils.pas',
+  JclIniFiles in '../../Source/Common/JclIniFiles.pas',
+  JclLogic in '../../Source/Common/JclLogic.pas',
+  JclMath in '../../Source/Common/JclMath.pas',
+  JclMime in '../../Source/Common/JclMime.pas',
+  JclResources in '../../Source/Common/JclResources.pas',
+  JclSchedule in '../../Source/Common/JclSchedule.pas',
+  JclStatistics in '../../Source/Common/JclStatistics.pas',
+  JclStrHashMap in '../../Source/Common/JclStrHashMap.pas',
+  JclStrings in '../../Source/Common/JclStrings.pas',
+  JclSysInfo in '../../Source/Common/JclSysInfo.pas',
+  JclSysUtils in '../../Source/Common/JclSysUtils.pas',
+  JclUnitConv in '../../Source/Common/JclUnitConv.pas',
+  JclEDI in '../../source/Common/JclEDI.pas',
+  JclEDISEF in '../../source/Common/JclEDISEF.pas',
+  JclEDITranslators in '../../source/Common/JclEDITranslators.pas',
+  JclEDIXML in '../../source/Common/JclEDIXML.pas',
+  JclEDI_ANSIX12 in '../../source/Common/JclEDI_ANSIX12.pas',
+  JclEDI_UNEDIFACT in '../../source/Common/JclEDI_UNEDIFACT.pas';
+
+end.
