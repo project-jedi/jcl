@@ -71,8 +71,13 @@ const
   PathDevicePrefix = '\\.\';
   PathSeparator    = '\';
   PathUncPrefix    = '\\';
+  faNormalFile = $00000080;
+  faDefault = faReadOnly + faArchive;
   {$ENDIF MSWINDOWS}
-
+  {$IFDEF LINUX}
+  faDefault = faReadOnly + faSymLink;
+  {$ENDIF}
+  
 type
   TCompactPath = ({cpBegin, }cpCenter, cpEnd);
 
@@ -129,10 +134,10 @@ type
 
 function BuildFileList(const Path: string; const Attr: Integer; const List: TStrings): Boolean;
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
-  const AttributeMatch: TJclAttributeMatch = amSubsetOf; const Options: TFileListOptions = [];
+  const AttributeMatch: TJclAttributeMatch = amSuperSetOf; const Options: TFileListOptions = [];
   const SubfoldersMask: string = ''; const FileMatchFunc: TFileMatchFunc = nil): Boolean;
 procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
-  const Attributes: Integer = faAnyFile; const AttributeMatch: TJclAttributeMatch = amSuperSetOf;
+  const Attributes: Integer = faDefault; const AttributeMatch: TJclAttributeMatch = amSuperSetOf;
   const Abort: PBoolean = nil);
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
@@ -214,7 +219,7 @@ function Win32RestoreFile(const FileName: string): Boolean;
 
 type
   TFileEnumeratorSyncMode = (smPerDirectory, smPerFile);
-  
+
   // for internal use by TJclFileEnumerator only
   TEnumFileThread = class (TThread)
   private
@@ -275,7 +280,7 @@ type
     property Directory: string read FDirectory write FDirectory;
     property SubDirectoryMask: string read FSubDirectoryMask write FSubDirectoryMask;
     property Attributes: Integer read FAttributes write FAttributes
-      default faAnyFile;
+      default faDefault;
     property AttributeMatch: TJclAttributeMatch read FAttributeMatch write FAttributeMatch
       default amSuperSetOf;
     property IncludeSubDirectories: Boolean read FIncludeSubDirectories write FIncludeSubDirectories
@@ -3747,21 +3752,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function AttributesMatch(FileAttributes, AttributeMask: Integer;
-  const AttributeMatch: TJclAttributeMatch): Boolean;
-begin
-  case AttributeMatch of
-    amAny: Result := (AttributeMask and FileAttributes) <> 0;
-    amExact: Result := AttributeMask = FileAttributes;
-    amSubSetOf: Result := (AttributeMask and FileAttributes) = AttributeMask;
-    amSuperSetOf: Result := (AttributeMask and FileAttributes) = FileAttributes;
-  else
-    Result := True;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function AdvBuildFileList(const Path: string; const Attr: Integer; const Files: TStrings;
   const AttributeMatch: TJclAttributeMatch; const Options: TFileListOptions;
   const SubfoldersMask: string; const FileMatchFunc: TFileMatchFunc): Boolean;
@@ -3874,21 +3864,37 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function AttributesMatch(FileAttributes, AttributeMask: Integer;
+  const AttributeMatch: TJclAttributeMatch): Boolean;
+begin
+  case AttributeMatch of
+    amAny: Result := (AttributeMask and FileAttributes) <> 0;
+    amExact: Result := AttributeMask = FileAttributes;
+    amSubSetOf: Result := (AttributeMask and FileAttributes) = AttributeMask;
+    amSuperSetOf: Result := (AttributeMask and FileAttributes) = FileAttributes;
+  else
+    Result := True;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
-  const Attributes: Integer = faAnyFile; const AttributeMatch: TJclAttributeMatch = amSuperSetOf;
+  const Attributes: Integer = faDefault; const AttributeMatch: TJclAttributeMatch = amSuperSetOf;
   const Abort: PBoolean = nil);
 var
   Directory: string;
   FileInfo: TSearchRec;
   Attr: Integer;
   Found: Boolean;
+  Matches: Boolean;
 begin
   Assert(Assigned(HandleFile));
 
   Directory := ExtractFilePath(Path);
 
-  if Attributes = faAnyFile then
-    Attr := faReadOnly + faHidden + faSysFile + faArchive
+  if AttributeMatch in [amAny, amSubSetOf] then
+    Attr := faAnyFile
   else
     Attr := Attributes;
 
@@ -3898,7 +3904,17 @@ begin
     begin
       if (Abort <> nil) and Abort^ then
         Exit;
-      if AttributesMatch(FileInfo.Attr, Attr, AttributeMatch) then
+      Matches := True;
+      if Attributes <> faAnyFile then
+      begin
+        case AttributeMatch of
+          amAny: Matches := (Attributes and FileInfo.Attr) <> 0;
+          amExact: Matches := Attributes = FileInfo.Attr;
+          amSubSetOf: Matches := (Attributes and FileInfo.Attr) = Attributes;
+          amSuperSetOf: Matches := (Attributes and FileInfo.Attr) = FileInfo.Attr and not faNormalFile;
+        end;
+      end;
+      if Matches then
         HandleFile(Directory, FileInfo);
       Found := FindNext(FileInfo) = 0;
     end;
@@ -4120,7 +4136,7 @@ begin
   FDirectory := PathSeparator;
   {$ENDIF UNIX}
   FFileMask := '*';
-  FAttributes := faAnyFile;
+  FAttributes := faDefault;
   FAttributeMatch := amSuperSetOf;
   FSubDirectoryMask := '*';
   FIncludeSubDirectories := True;
