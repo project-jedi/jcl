@@ -37,9 +37,7 @@ unit JclShell;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows, ShlObj,
-  {$ENDIF}
   SysUtils,
   JclBase;
 
@@ -197,9 +195,7 @@ function ShellFindExecutable(const FileName, DefaultDir: string): string;
 implementation
 
 uses
-  {$IFDEF WIN32}
   ActiveX, CommCtrl, ComObj, Messages, ShellApi,
-  {$ENDIF}
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 //==============================================================================
