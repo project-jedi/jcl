@@ -416,8 +416,10 @@ var
   I: Integer;
   TmpLines2: TStringList;
   EndedInCRLF: Boolean;
+  LineBreakLength: integer;
 begin
-  EndedInCRLF := Copy(CurLine, Length(CurLine) - 1, 2) = AnsiCrLf;
+  LineBreakLength := Length(AnsiLineBreak);
+  EndedInCRLF := Copy(CurLine, Length(CurLine) - LineBreakLength + 1, LineBreakLength) = AnsiLineBreak;
   TmpLines := TStringList.Create;
   try
     TmpLines.Text := CurLine;
@@ -433,7 +435,7 @@ begin
         begin
           TmpLines2.Text := WrapText(
             TmpLines[I],
-            AnsiCrLf + StringOfChar(' ', 2 * (IndentLevel+1)),
+            AnsiLineBreak + StringOfChar(' ', 2 * (IndentLevel+1)),
             [#0 .. ' ', '-'],
             Wrap);
           TmpLines.Delete(I);
@@ -444,7 +446,7 @@ begin
       end;
       CurLine := TmpLines.Text;
       if not EndedInCRLF then
-        Delete(FCurLine, Length(FCurLine) - 1, 2);
+        Delete(FCurLine, Length(FCurLine) - LineBreakLength + 1, LineBreakLength);
     finally
       TmpLines2.Free;
     end;
@@ -459,7 +461,7 @@ procedure TJclInfoWriter.DoWriteCompleteLines;
 var
   CRLFPos: Integer;
 begin
-  CRLFPos := StrLastPos(AnsiCrLf, CurLine);
+  CRLFPos := StrLastPos(AnsiLineBreak, CurLine);
   if CRLFPos > 0 then
   begin
     PrimWrite(Copy(CurLine, 1, CRLFPos-1));
@@ -511,7 +513,7 @@ end;
 
 procedure TJclInfoWriter.Writeln(const S: string);
 begin
-  Write(S + AnsiCrLf);
+  Write(S + AnsiLineBreak);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2839,6 +2841,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2004/06/11 14:08:51  twm
+// Bugfix: now uses AnsiLineBreak rather than AnsiCrLf so it will work with unix systems
+//
 // Revision 1.8  2004/05/05 00:09:59  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
