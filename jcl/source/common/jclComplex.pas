@@ -68,7 +68,7 @@ type
     function NormalizeAngle(Value: Float): Float;
   protected
     function Assign(const Coord: TCoords; const ComplexType: TComplexKind
-                    {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CoreAdd(const First, Second: TRectCoord): TRectCoord;
     function CoreDiv(const First, Second: TRectCoord): TRectCoord;
     function CoreMul(const First, Second: TRectCoord): TRectCoord;
@@ -102,7 +102,7 @@ type
     //----------- constructors
     constructor Create; overload;
     constructor Create(const X, Y: Float; const ComplexType: TComplexKind
-                       {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}); overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}); overload;
 
     //----------- getting different parts of the number
     property RealPart: Float read FCoord.x;
@@ -116,7 +116,7 @@ type
 
     //----------- complex numbers assignment routines
     function Assign(const X, Y: Float; const ComplexType: TComplexKind
-                    {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function AssignZero: TJclComplex;
     function AssignOne: TJclComplex;
     function Duplicate: TJclComplex;
@@ -124,32 +124,32 @@ type
     //----------- arithmetics -- modify the object itself
     function CAdd(const AddValue: TJclComplex): TJclComplex; overload;
     function CAdd(const X, Y: Float; const ComplexType: TComplexKind
-                  {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CDiv(const DivValue: TJclComplex): TJclComplex; overload;
     function CDiv(const X, Y: Float; const ComplexType: TComplexKind
-                  {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CMul(const MulValue: TJclComplex): TJclComplex; overload;
     function CMul(const X, Y: Float; const ComplexType: TComplexKind
-                  {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CSub(const SubValue: TJclComplex): TJclComplex; overload;
     function CSub(const X, Y: Float; const ComplexType: TComplexKind
-                  {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CNeg: TJclComplex;
     function CConjugate: TJclComplex;
 
     //----------- arithmetics -- creates new resulting object
     function CNewAdd(const AddValue: TJclComplex): TJclComplex; overload;
     function CNewAdd(const X, Y: Float; const ComplexType: TComplexKind
-                     {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CNewDiv(const DivValue: TJclComplex): TJclComplex; overload;
     function CNewDiv(const X, Y: Float; const ComplexType: TComplexKind
-                     {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CNewMul(const MulValue: TJclComplex): TJclComplex; overload;
     function CNewMul(const X, Y: Float; const ComplexType: TComplexKind
-                     {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CNewSub(const SubValue: TJclComplex): TJclComplex; overload;
     function CNewSub(const X, Y: Float; const ComplexType: TComplexKind
-                     {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CNewNeg: TJclComplex;
     function CNewConjugate: TJclComplex;
 
@@ -160,10 +160,10 @@ type
     function CNewExp: TJclComplex;
     function CPwr(const PwrValue: TJclComplex): TJclComplex; overload;
     function CPwr(const X, Y: Float; const ComplexType: TComplexKind
-                  {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CNewPwr(PwrValue: TJclComplex): TJclComplex; overload;
     function CNewPwr(const X, Y: Float; const ComplexType: TComplexKind
-                     {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
+      {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TJclComplex; overload;
     function CIntPwr(const Pwr: Integer): TJclComplex; overload;
     function CNewIntPwr(const Pwr: Integer): TJclComplex; overload;
     function CRealPwr(const Pwr: Float): TJclComplex; overload;
