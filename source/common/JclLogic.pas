@@ -29,7 +29,7 @@
 unit JclLogic;
 
 {$I jcl.inc}
-{$R-}
+{$RANGECHECKS OFF}
 {$WEAKPACKAGEUNIT ON}
 
 interface
@@ -1906,7 +1906,5 @@ begin
   else
     Result := B2;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 end.
