@@ -4,8 +4,7 @@
   <MACROS>
     <VERSION value="BCB.06.10"/>
     <PROJECT value="bplCJclK3.so.1.95.1"/>
-    <OBJFILES value="
-      ../../lib/k3/obj/Jcl8087.obj
+    <OBJFILES value="../../lib/k3/obj/Jcl8087.obj
       ../../lib/k3/obj/JclAbstractContainers.obj
       ../../lib/k3/obj/JclAlgorithms.obj
       ../../lib/k3/obj/JclArrayLists.obj
