@@ -574,7 +574,7 @@ implementation
 
 uses
   Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp, 
-  JclBase, JclFileUtils, JclIniFiles, JclRegistry, JclShell, JclStrings, JclWin32;
+  JclBase, Jcl8087, JclFileUtils, JclIniFiles, JclRegistry, JclShell, JclStrings, JclWin32;
 
 //==================================================================================================
 // Environment
@@ -2063,7 +2063,7 @@ begin
   { To call for the version information string we must first have an active
     context established for use.  We can, of course, close this after use }
 
-  Save8087CW := Get8087CW;
+  Save8087CW := Get8087ControlWord;
   try
     Set8087CW($133F);
     hGLContext := 0;
