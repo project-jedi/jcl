@@ -848,9 +848,9 @@ Kylix=1
 FPC=1.x
 [SeeAlso]
 Count=3
-1=Guard
-2=GuardGetMem
-3=GuardAllocMem
+1=..\Guard;Guard
+2=..\GuardGetMem;GuardGetMem
+3=..\GuardAllocMem;GuardAllocMem
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ReleaseItem: Pointer;
@@ -962,7 +962,7 @@ how the function terminates, the safeguard ensures that the TStrings object is
 destroyed. Usually you will simply store the returned safeguard interface pointer
 in a variable at the appropriate scope and forget about it. However, the ISafeGuard
 interface does provide some additional functionality which may be useful at times.
-See the <REF>ISafeGuard</REF> interface for more information.
+See the <REF Target"ISafeGuard\ISafeGuard">ISafeGuard</REF> interface for more information.
 [Parameters]
 Count=2
 1=Mem:Pointer=The pointer (or object in the case of the overloaded Guard function)
@@ -982,7 +982,7 @@ FPC=1.x
 Count=3
 1=GuardGetMem
 2=GuardAllocMem
-3=ISafeGuard
+3=ISafeGuard\ISafeGuard
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
@@ -1014,7 +1014,7 @@ FPC=1.x
 Count=3
 1=Guard
 2=GuardAllocMem
-3=ISafeGuard
+3=ISafeGuard\ISafeQuard
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
@@ -1048,7 +1048,7 @@ FPC=1.x
 Count=3
 1=Guard
 2=GuardGetMem
-3=ISafeGuard
+3=ISafeGuard\ISafeGuard
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ClearObjectList(List: TList);
