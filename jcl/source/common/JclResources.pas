@@ -37,6 +37,20 @@ resourcestring
   RsDynArrayError = 'DynArrayInitialize: ElementSize out of bounds';
 
 //------------------------------------------------------------------------------
+// JclUnicode
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsUREBaseString = 'Error in regular expression: %s' + #13;
+  RsUREUnexpectedEOS = 'Unexpected end of pattern.';
+  RsURECharacterClassOpen = 'Character class not closed, '']'' is missing.';
+  RsUREUnbalancedGroup = 'Unbalanced group expression, '')'' is missing.';
+  RsUREInvalidCharProperty = 'A character property is invalid';
+  RsUREInvalidRepeatRange = 'Invalid repeation range.';
+  RsURERepeatRangeOpen = 'Repeation range not closed, ''}'' is missing.';
+  RsUREExpressionEmpty = 'Expression is empty.';
+
+//------------------------------------------------------------------------------
 // JclClasses
 //------------------------------------------------------------------------------
 
