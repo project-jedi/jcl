@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 21, 2001                                              }
+{ Last modified: January 22, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -52,21 +52,21 @@ type
     Valid: Boolean;
   end;
 
-  TJclMapiClientType = (ctAutomatic, ctMapi, ctDirect);
+  TJclMapiClientConnect = (ctAutomatic, ctMapi, ctDirect);
 
   TJclSimpleMapi = class (TObject)
   private
     FAnyClientInstalled: Boolean;
+    FBeforeUnloadClient: TNotifyEvent;
     FClients: array of TJclMapiClient;
+    FClientConnectKind: TJclMapiClientConnect;
     FClientLibHandle: THandle;
+    FDefaultClientIndex: Integer;
     FFunctions: array of ^Pointer;
     FMapiInstalled: Boolean;
     FMapiVersion: string;
-    FSimpleMapiInstalled: Boolean;
-    FDefaultClientIndex: Integer;
     FSelectedClientIndex: Integer;
-    FSelectedClientType: TJclMapiClientType;
-    FBeforeUnloadClient: TNotifyEvent;
+    FSimpleMapiInstalled: Boolean;
     FMapiAddress: TFNMapiAddress;
     FMapiDeleteMail: TFNMapiDeleteMail;
     FMapiDetails: TFNMapiDetails;
@@ -81,10 +81,10 @@ type
     FMapiSendMail: TFNMapiSendMail;
     function GetClientCount: Integer;
     function GetClients(Index: Integer): TJclMapiClient;
-    procedure SetSelectedClientIndex(const Value: Integer);
-    procedure SetSelectedClientType(const Value: TJclMapiClientType);
-    function UseMapi: Boolean;
     function GetCurrentClientName: string;
+    procedure SetSelectedClientIndex(const Value: Integer);
+    procedure SetClientConnectKind(const Value: TJclMapiClientConnect);
+    function UseMapi: Boolean;
   protected
     procedure BeforeUnloadClientLib; dynamic;
     procedure CheckListIndex(I: Integer);
@@ -97,6 +97,7 @@ type
     procedure LoadClientLib;
     procedure UnloadClientLib;
     property AnyClientInstalled: Boolean read FAnyClientInstalled;
+    property ClientConnectKind: TJclMapiClientConnect read FClientConnectKind write SetClientConnectKind;
     property ClientCount: Integer read GetClientCount;
     property Clients[Index: Integer]: TJclMapiClient read GetClients; default;
     property CurrentClientName: string read GetCurrentClientName;
@@ -104,7 +105,6 @@ type
     property MapiInstalled: Boolean read FMapiInstalled;
     property MapiVersion: string read FMapiVersion;
     property SelectedClientIndex: Integer read FSelectedClientIndex write SetSelectedClientIndex;
-    property SelectedClientType: TJclMapiClientType read FSelectedClientType write SetSelectedClientType;
     property SimpleMapiInstalled: Boolean read FSimpleMapiInstalled;
     property BeforeUnloadClient: TNotifyEvent read FBeforeUnloadClient write FBeforeUnloadClient;
     // Simple MAPI functions
@@ -386,7 +386,7 @@ begin
   FFunctions[10] := @@FMapiSendDocuments;
   FFunctions[11] := @@FMapiSendMail;
   FDefaultClientIndex := -1;
-  FSelectedClientType := ctAutomatic;
+  FClientConnectKind := ctAutomatic;
   FSelectedClientIndex := -1;
   ReadMapiSettings;
 end;
@@ -539,23 +539,23 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclSimpleMapi.SetSelectedClientIndex(const Value: Integer);
+procedure TJclSimpleMapi.SetClientConnectKind(const Value: TJclMapiClientConnect);
 begin
-  CheckListIndex(Value);
-  if FSelectedClientIndex <> Value then
+  if FClientConnectKind <> Value then
   begin
-    FSelectedClientIndex := Value;
+    FClientConnectKind := Value;
     UnloadClientLib;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclSimpleMapi.SetSelectedClientType(const Value: TJclMapiClientType);
+procedure TJclSimpleMapi.SetSelectedClientIndex(const Value: Integer);
 begin
-  if FSelectedClientType <> Value then
+  CheckListIndex(Value);
+  if FSelectedClientIndex <> Value then
   begin
-    FSelectedClientType := Value;
+    FSelectedClientIndex := Value;
     UnloadClientLib;
   end;
 end;
@@ -580,7 +580,7 @@ end;
 
 function TJclSimpleMapi.UseMapi: Boolean;
 begin
-  case FSelectedClientType of
+  case FClientConnectKind of
     ctAutomatic:
       UseMapi := FSimpleMapiInstalled;
     ctMapi:
