@@ -65,14 +65,14 @@ function PeSmartFunctionNameSame(const ComparedName, FunctionName: string;
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclPeImageError = class (EJclError);
+  EJclPeImageError = class(EJclError);
 
   TJclPeImage = class;
   TJclPeBorImage = class;
 
   TJclPeImageClass = class of TJclPeImage;
 
-  TJclPeImageBaseList = class (TObjectList)
+  TJclPeImageBaseList = class(TObjectList)
   private
     FImage: TJclPeImage;
   public
@@ -84,7 +84,7 @@ type
 // Images cache
 //--------------------------------------------------------------------------------------------------
 
-  TJclPeImagesCache = class (TObject)
+  TJclPeImagesCache = class(TObject)
   private
     FList: TStringList;
     function GetCount: Integer;
@@ -99,7 +99,7 @@ type
     property Count: Integer read GetCount;
   end;
 
-  TJclPeBorImagesCache = class (TJclPeImagesCache)
+  TJclPeBorImagesCache = class(TJclPeImagesCache)
   private
     function GetImages(const FileName: TFileName): TJclPeBorImage;
   protected
@@ -122,7 +122,7 @@ type
 
   TJclPeImportLibItem = class;
 
-  TJclPeImportFuncItem = class (TObject)
+  TJclPeImportFuncItem = class(TObject)
   private
     FOrdinal: Word;
     FHint: Word;
@@ -145,7 +145,7 @@ type
     property ResolveCheck: TJclPeResolveCheck read FResolveCheck;
   end;
 
-  TJclPeImportLibItem = class (TJclPeImageBaseList)
+  TJclPeImportLibItem = class(TJclPeImageBaseList)
   private
     FImportDescriptor: Pointer;
     FImportDirectoryIndex: Integer;
@@ -180,7 +180,7 @@ type
     property TotalResolveCheck: TJclPeResolveCheck read FTotalResolveCheck;
   end;
 
-  TJclPeImportList = class (TJclPeImageBaseList)
+  TJclPeImportList = class(TJclPeImageBaseList)
   private
     FAllItemsList: TList;
     FFilterModuleName: string;
@@ -228,7 +228,7 @@ type
 
   TJclPeExportFuncList = class;
 
-  TJclPeExportFuncItem = class (TObject)
+  TJclPeExportFuncItem = class(TObject)
   private
     FAddress: DWORD;
     FExportList: TJclPeExportFuncList;
@@ -267,7 +267,7 @@ type
     property SectionName: string read GetSectionName;
   end;
 
-  TJclPeExportFuncList = class (TJclPeImageBaseList)
+  TJclPeExportFuncList = class(TJclPeImageBaseList)
   private
     FAnyForwards: Boolean;
     FBase: DWORD;
@@ -347,13 +347,13 @@ type
   TJclPeResourceList = class;
   TJclPeResourceItem = class;
 
-  TJclPeResourceRawStream = class (TCustomMemoryStream)
+  TJclPeResourceRawStream = class(TCustomMemoryStream)
   public
     constructor Create(AResourceItem: TJclPeResourceItem);
     function Write(const Buffer; Count: Longint): Longint; override;
   end;
 
-  TJclPeResourceItem = class (TObject)
+  TJclPeResourceItem = class(TObject)
   private
     FEntry: PImageResourceDirectoryEntry;
     FImage: TJclPeImage;
@@ -398,7 +398,7 @@ type
     property ResourceTypeStr: string read GetResourceTypeStr;
   end;
 
-  TJclPeResourceList = class (TJclPeImageBaseList)
+  TJclPeResourceList = class(TJclPeImageBaseList)
   private
     FDirectory: PImageResourceDirectory;
     FParentItem: TJclPeResourceItem;
@@ -414,7 +414,7 @@ type
     property ParentItem: TJclPeResourceItem read FParentItem;
   end;
 
-  TJclPeRootResourceList = class (TJclPeResourceList)
+  TJclPeRootResourceList = class(TJclPeResourceList)
   private
     FManifestContent: TStrings;
     function GetManifestContent: TStrings;
@@ -438,7 +438,7 @@ type
     VirtualAddress: DWORD;
   end;
 
-  TJclPeRelocEntry = class (TObject)
+  TJclPeRelocEntry = class(TObject)
   private
     FChunk: PImageBaseRelocation;
     FCount: Integer;
@@ -452,7 +452,7 @@ type
     property VirtualAddress: DWORD read GetVirtualAddress;
   end;
 
-  TJclPeRelocList = class (TJclPeImageBaseList)
+  TJclPeRelocList = class(TJclPeImageBaseList)
   private
     FAllItemCount: Integer;
     function GetItems(Index: Integer): TJclPeRelocEntry;
@@ -470,7 +470,7 @@ type
 // Debug section related classes
 //--------------------------------------------------------------------------------------------------
 
-  TJclPeDebugList = class (TJclPeImageBaseList)
+  TJclPeDebugList = class(TJclPeImageBaseList)
   private
     function GetItems(Index: Integer): TImageDebugDirectory;
   protected
@@ -484,7 +484,7 @@ type
 // Certificates section related classes
 //--------------------------------------------------------------------------------------------------
 
-  TJclPeCertificate = class (TObject)
+  TJclPeCertificate = class(TObject)
   private
     FData: Pointer;
     FHeader: TWinCertificate;
@@ -493,7 +493,7 @@ type
     property Header: TWinCertificate read FHeader;
   end;
 
-  TJclPeCertificateList = class (TJclPeImageBaseList)
+  TJclPeCertificateList = class(TJclPeImageBaseList)
   private
     function GetItems(Index: Integer): TJclPeCertificate;
   protected
@@ -507,7 +507,7 @@ type
 // Common Language Runtime section related classes
 //--------------------------------------------------------------------------------------------------
 
-  TJclPeCLRHeader = class (TObject)
+  TJclPeCLRHeader = class(TObject)
   private
     FHeader: TImageCor20Header;
     FImage: TJclPeImage;
@@ -593,7 +593,7 @@ type
 
   TJclPeImageStatus = (stNotLoaded, stOk, stNotPE, stNotFound, stError);
 
-  TJclPeImage = class (TObject)
+  TJclPeImage = class(TObject)
   private
     FAttachedImage: Boolean;
     FCertificateList: TJclPeCertificateList;
@@ -704,7 +704,7 @@ type
 // Borland Delphi PE Image specific information
 //--------------------------------------------------------------------------------------------------
 
-  TJclPePackageInfo = class (TObject)
+  TJclPePackageInfo = class(TObject)
   private
     FAvailable: Boolean;
     FContains: TStrings;
@@ -741,7 +741,7 @@ type
     property RequiresNames[Index: Integer]: string read GetRequiresNames;
   end;
 
-  TJclPeBorForm = class (TObject)
+  TJclPeBorForm = class(TObject)
   private
     FFormFlags: TFilerFlags;
     FFormClassName: string;
@@ -760,7 +760,7 @@ type
     property ResItem: TJclPeResourceItem read FResItem;
   end;
 
-  TJclPeBorImage = class (TJclPeImage)
+  TJclPeBorImage = class(TJclPeImage)
   private
     FForms: TObjectList;
     FIsPackage: Boolean;
@@ -805,7 +805,7 @@ type
   TJclPeNameSearchFoundEvent = procedure (Sender: TObject; const FileName: TFileName;
     const FunctionName: string; Option: TJclPeNameSearchOption) of object;
 
-  TJclPeNameSearch = class (TThread)
+  TJclPeNameSearch = class(TThread)
   private
     F_FileName: TFileName;
     F_FunctionName: string;
@@ -941,7 +941,7 @@ function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
   const ResourceName: string): Pointer;
 
 type
-  TJclPeSectionStream = class (TCustomMemoryStream)
+  TJclPeSectionStream = class(TCustomMemoryStream)
   private
     FInstance: HMODULE;
     FSectionHeader: TImageSectionHeader;
@@ -958,7 +958,7 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclPeMapImgHookItem = class (TObject)
+  TJclPeMapImgHookItem = class(TObject)
   private
     FBaseAddress: Pointer;
     FFunctionName: string;
@@ -978,7 +978,7 @@ type
     property OriginalAddress: Pointer read FOriginalAddress;
   end;
 
-  TJclPeMapImgHooks = class (TObjectList)
+  TJclPeMapImgHooks = class(TObjectList)
   private
     function GetItems(Index: Integer): TJclPeMapImgHookItem;
     function GetItemFromOriginalAddress(OriginalAddress: Pointer): TJclPeMapImgHookItem;
@@ -4254,7 +4254,7 @@ var
 
   procedure ProcessListItem(DfmResItem: TJclPeResourceItem);
   const
-    FilerSignature: array[1..4] of Char = 'TPF0';
+    FilerSignature: array [1..4] of Char = 'TPF0';
   var
     SourceStream: TJclPeResourceRawStream;
     DfmItem: TJclPeBorForm;
@@ -5852,6 +5852,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/07/28 18:00:53  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.10  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

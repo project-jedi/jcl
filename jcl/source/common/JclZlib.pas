@@ -257,7 +257,7 @@ type
       const TimeStamp: TJclUnixTime32 = 0;
       const Comment: string = '';
       const TextMode: Boolean = False;
-      const ExtraField: Pointer = Nil;
+      const ExtraField: Pointer = nil;
       const ExtraFieldSize: Integer = 0);
 
     destructor Destroy; override;
@@ -294,50 +294,50 @@ type
 
 type
   PSparse = ^TSparse;
-  TSparse = packed record                // offset
-    Offset: array[0..11] of AnsiChar;    //  $00
-    NumBytes: array[0..11] of AnsiChar;  //  $0C
-  end;                                   //  $18
+  TSparse = packed record                 // offset
+    Offset: array [0..11] of AnsiChar;    //  $00
+    NumBytes: array [0..11] of AnsiChar;  //  $0C
+  end;                                    //  $18
 
   PTarHeader = ^TTarHeader;
   TTarHeader = packed record       // offset
   case Integer of
-    0: (Buffer: array[0..TarBlockSize - 1] of Byte);
+    0: (Buffer: array [0..TarBlockSize - 1] of Byte);
     1: (
       // Old UNIX TAR format
-      Name: array[0..99] of AnsiChar;          //  $000     Char + #0   / mit 0 gefüllt
-      Mode: array[0..7] of AnsiChar;           //  $064     Octal + ' '#0   9 + 3 bits              20 34 30 37 35 35 20 00
-      UID: array[0..7] of AnsiChar;            //  $06C     Octal + ' '#0   ignore on DOS           20 20 31 37 35 36 20 00
-      GID: array[0..7] of AnsiChar;            //  $074     Octal + ' '#0   ignore on DOS           20 20 20 31 34 34 20 00
-      Size: array[0..11] of AnsiChar;          //  $07C     Octal + ' '     size in bytes           20 20 20 20 20 20 20 20 20 20 30 20
-      MTime: array[0..11] of AnsiChar;         //  $088     Octal + ' '     last modify Unix        20 36 37 32 32 34 34 36 31 30 37 20
-      Chksum: array[0..7] of AnsiChar;         //  $094     Octal + ' '#0   >= 17 bit, init 0, add  20 20 37 35 37 32 00 20
-      TypeFlag: AnsiChar;                      //  $09C     Octal           + ' '#0 ??              35
-      Linkname: array[0..99] of AnsiChar;      //  $09D     Char + #0
+      Name: array [0..99] of AnsiChar;          //  $000     Char + #0   / mit 0 gefüllt
+      Mode: array [0..7] of AnsiChar;           //  $064     Octal + ' '#0   9 + 3 bits              20 34 30 37 35 35 20 00
+      UID: array [0..7] of AnsiChar;            //  $06C     Octal + ' '#0   ignore on DOS           20 20 31 37 35 36 20 00
+      GID: array [0..7] of AnsiChar;            //  $074     Octal + ' '#0   ignore on DOS           20 20 20 31 34 34 20 00
+      Size: array [0..11] of AnsiChar;          //  $07C     Octal + ' '     size in bytes           20 20 20 20 20 20 20 20 20 20 30 20
+      MTime: array [0..11] of AnsiChar;         //  $088     Octal + ' '     last modify Unix        20 36 37 32 32 34 34 36 31 30 37 20
+      Chksum: array [0..7] of AnsiChar;         //  $094     Octal + ' '#0   >= 17 bit, init 0, add  20 20 37 35 37 32 00 20
+      TypeFlag: AnsiChar;                       //  $09C     Octal           + ' '#0 ??              35
+      Linkname: array [0..99] of AnsiChar;      //  $09D     Char + #0
       // Extension of POSIX P1003.1
-      Magic: array[0..5] of AnsiChar;          //  $101     Char + #0                               75 73 74 61 72 20
-      Version: array[0..1] of AnsiChar;        //  $107     Octal + ' '                             20 00
-      UName: array[0..31] of AnsiChar;         //  $109     Char + #0                               72 63 64 00 ...
-      GName: array[0..31] of AnsiChar;         //  $129     Char + #0                               75 73 65 72 73 00 ...
-      DevMajor: array[0..7] of AnsiChar;       //  $149     Octal + ' '#0
-      DevMinor: array[0..7] of AnsiChar;       //  $151     Octal + ' '#0
+      Magic: array [0..5] of AnsiChar;          //  $101     Char + #0                               75 73 74 61 72 20
+      Version: array [0..1] of AnsiChar;        //  $107     Octal + ' '                             20 00
+      UName: array [0..31] of AnsiChar;         //  $109     Char + #0                               72 63 64 00 ...
+      GName: array [0..31] of AnsiChar;         //  $129     Char + #0                               75 73 65 72 73 00 ...
+      DevMajor: array [0..7] of AnsiChar;       //  $149     Octal + ' '#0
+      DevMinor: array [0..7] of AnsiChar;       //  $151     Octal + ' '#0
     case TTarArchiveFormat of
       tafV7Format: (
-        FillV7: array[0..166] of AnsiChar);    //  $159
+        FillV7: array [0..166] of AnsiChar);    //  $159
       tafPosixFormat: (
-        Prefix: array[0..154] of AnsiChar;     //  $159         Prefix for name
-        FillPosix: array[0..11] of AnsiChar);  //  $1F4
+        Prefix: array [0..154] of AnsiChar;     //  $159         Prefix for name
+        FillPosix: array [0..11] of AnsiChar);  //  $1F4
       tafOldGnuFormat: (
-        ATime: array[0..11] of AnsiChar;       //  $159
-        CTime: array[0..11] of AnsiChar;       //  $165
-        Offset: array[0..11] of AnsiChar;      //  $171
-        Longnames: array[0..3] of AnsiChar;    //  $17D
-        Pad: AnsiChar;                         //  $181
-        Sparses: array[0..3] of TSparse;       //  $182
-        IsExtended: AnsiChar;                  //  $1E2
-        RealSize: array[0..11] of AnsiChar;    //  $1E3
-        FillGnu: array[0..16] of AnsiChar));   //  $1EF
-  end;                                         //  $200
+        ATime: array [0..11] of AnsiChar;       //  $159
+        CTime: array [0..11] of AnsiChar;       //  $165
+        Offset: array [0..11] of AnsiChar;      //  $171
+        Longnames: array [0..3] of AnsiChar;    //  $17D
+        Pad: AnsiChar;                          //  $181
+        Sparses: array [0..3] of TSparse;       //  $182
+        IsExtended: AnsiChar;                   //  $1E2
+        RealSize: array [0..11] of AnsiChar;    //  $1E3
+        FillGnu: array [0..16] of AnsiChar));   //  $1EF
+  end;                                          //  $200
 
 // ModeFlag Flags
 type
@@ -566,7 +566,7 @@ end;
 procedure TJclZLibReader.SyncZLibStream;
 var
   Err: Integer;
-  Buf: array[0..255] of Byte;
+  Buf: array [0..255] of Byte;
 begin
   // Skips leaving compressed data
   while not FEndOfStream do
@@ -691,7 +691,7 @@ procedure TJclZLibWriter.FlushZLibStream(const Flush: Integer);
 var
   Err: Integer;
 begin
-  FZLibStream.next_in := Nil;
+  FZLibStream.next_in := nil;
   FZLibStream.avail_in := 0;
   repeat
     if FZLibStream.avail_out = 0 then
@@ -773,7 +773,7 @@ var
 
 begin
   Result := False;
-  Dst := Nil;
+  Dst := nil;
   DstLen := 0;
   DstCapacity := 0;
   if (SrcLen = 0) or (not Assigned(Src)) then
@@ -814,7 +814,7 @@ begin
     Result := True;
   except
     FreeMem(Dst);
-    Dst := Nil;
+    Dst := nil;
     DstLen := 0;
     DstCapacity := 0;
     raise;
@@ -846,7 +846,7 @@ var
 begin
   Result := False;
   DstLen := 0;
-  Dst := Nil;
+  Dst := nil;
   if (SrcLen = 0) or (not Assigned(Src)) then
     Exit;
 
@@ -887,7 +887,7 @@ begin
     Result := True;
   except
     FreeMem(Dst);
-    Dst := Nil;
+    Dst := nil;
     DstLen := 0;
     DstCapacity := 0;
     raise;
@@ -902,7 +902,7 @@ constructor TJclGZipStream.Create(const Stream: TStream);
 begin
   inherited Create;
   FStream := Stream;
-  FCRC32 := crc32(0, Nil, 0);  // get crc32 initial value
+  FCRC32 := crc32(0, nil, 0);  // get crc32 initial value
   FUncompressedSize := 0;
 end;
 
@@ -948,7 +948,7 @@ var
   c: AnsiChar;
   w: Word;
   Flags: Byte;
-  EncryptionHeader: array[0..11] of Byte;  // placeholder
+  EncryptionHeader: array [0..11] of Byte;  // placeholder
 begin
   inherited Create(Stream);
                                         
@@ -1131,7 +1131,7 @@ constructor TJclGZipWriter.Create(const Stream: TStream;
   const TimeStamp: TJclUnixTime32 = 0;
   const Comment: string = '';
   const TextMode: Boolean = False;
-  const ExtraField: Pointer = Nil;
+  const ExtraField: Pointer = nil;
   const ExtraFieldSize: Integer = 0);
 var
   b: Byte;
@@ -1313,7 +1313,7 @@ begin
     Dst := TFileStream.Create(DstFilename, fmCreate);
     try
       gzip := TJclGZipWriter.Create(Dst, JclZLibStreamDefaultBufferSize,
-        Level, Z_DEFAULT_STRATEGY, SrcFilename, GZipTime, '', False, Nil, 0);
+        Level, Z_DEFAULT_STRATEGY, SrcFilename, GZipTime, '', False, nil, 0);
       try
         if BufferSize > 0 then
         begin
@@ -1565,7 +1565,8 @@ begin
   // get archive format
   if StrLComp(FHeader.Magic, TarOldGnuMagic, SizeOf(TarOldGnuMagic)) = 0 then
     FArchiveFormat := tafOldGnuFormat
-  else if StrLComp(FHeader.Magic, TarPosixMagic, SizeOf(TarPosixMagic)) = 0 then
+  else
+  if StrLComp(FHeader.Magic, TarPosixMagic, SizeOf(TarPosixMagic)) = 0 then
     FArchiveFormat := tafPosixFormat  // or tafGnuFormat
   else
     FArchiveFormat := tafV7Format;
@@ -1607,7 +1608,7 @@ end;
 procedure TJclTarReader.CopyToStream(const FileStream: TStream;
   CanSeek: Boolean = False);
 var
-  Buffer: array[0..TarBlockSize - 1] of Byte;
+  Buffer: array [0..TarBlockSize - 1] of Byte;
   Blocks, I: Integer;
   ReadedBytes: Integer;
   RestBytes: Integer;
@@ -1660,7 +1661,7 @@ begin
     CopyToStream(FileStream, False);
     {$IFDEF MSWINDOWS}
     FileTime := UnixTimeToFileTime(UnixFileTime);
-    SetFileTime(FileStream.Handle, Nil, Nil, @FileTime);  // without error handling
+    SetFileTime(FileStream.Handle, nil, nil, @FileTime);  // without error handling
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     TimeInfo.actime := UnixFileTime;
@@ -1676,14 +1677,14 @@ end;
 
 procedure TJclTarReader.SkipFile;
 begin
-  CopyToStream(Nil, False);
+  CopyToStream(nil, False);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclTarReader.SkipFileSeek;
 begin
-  CopyToStream(Nil, True);
+  CopyToStream(nil, True);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1803,7 +1804,8 @@ begin
   Delta := Length(Field) - Length(V);
   if Delta < 0 then
     raise EJclTarError.CreateRes(@RsTarSetOctalOutOfRange)
-  else if Delta > 1 then
+  else
+  if Delta > 1 then
   begin
     // fill with 0
     for I := 2 to Delta do
@@ -1886,7 +1888,7 @@ end;
 
 procedure TJclTarWriter.AddEof;
 var
-  Buffer: array[0..TarBlockSize - 1] of Byte;
+  Buffer: array [0..TarBlockSize - 1] of Byte;
 begin
   FillChar(Buffer, SizeOf(Buffer), 0);
   FTarStream.WriteBuffer(Buffer, SizeOf(Buffer));
@@ -1999,12 +2001,10 @@ begin
       begin
         Filename := List[I];
         if Filename <> '' then
-        begin
-          if Filename[Length(Filename)] = PathDelim then 
+          if Filename[Length(Filename)] = PathDelim then
             TarWriter.AddDirectory(Filename)
           else
             TarWriter.AddFile(FileRoot, Filename);
-        end;
       end;
     finally
       TarWriter.Free;
@@ -2121,6 +2121,9 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.12  2004/07/28 18:00:52  marquardt
+//  various style cleanings, some minor fixes
+//
 //  Revision 1.11  2004/06/16 07:30:28  marquardt
 //  added tilde to all IFNDEF ENDIFs, inherited qualified
 //

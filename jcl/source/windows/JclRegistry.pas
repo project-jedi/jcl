@@ -120,7 +120,7 @@ procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: 
 procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name, Value: WideString);
 
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: string); overload;
-procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: array of String); overload;
+procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: array of string); overload;
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings); overload;
 
@@ -162,7 +162,7 @@ type
   TExecKind = (ekMachineRun, ekMachineRunOnce, ekUserRun, ekUserRunOnce,
     ekServiceRun, ekServiceRunOnce);
 
-  EJclRegistryError = class (EJclError);
+  EJclRegistryError = class(EJclError);
 
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
@@ -375,13 +375,13 @@ end;
 // RaiseException:
 //   If RaiseException is True, the function raise a exception in case of error.
 // DataPtr:
-//   The data buffer. If DataPtr = Nil, InternalRegRead allocate memory (GetMem)
+//   The data buffer. If DataPtr = nil, InternalRegRead allocate memory (GetMem)
 //   and return the pointer to this buffer. In such a case the calling function
 //   need to release the memory, if InternalRegRead return True.
 // DataSize:
-//   The size of the data buffer. If DataSize = 0 and DataPtr = Nil the function
+//   The size of the data buffer. If DataSize = 0 and DataPtr = nil the function
 //   detect the needed size and allocate the buffer.
-// DataPtr <> Nil and DataSize = 0 is a invalid combination and raise a internal
+// DataPtr <> nil and DataSize = 0 is a invalid combination and raise a internal
 // exception.
 function InternalRegReadA(const RootKey: DelphiHKEY; const Key, Name: AnsiString;
   RegKinds: TRegKinds; RaiseException: Boolean; var DataPtr: Pointer;
@@ -640,7 +640,7 @@ var
   DataSize: DWord;
 begin
   Value := '';
-  DataPtr := Nil;
+  DataPtr := nil;
   DataSize := 0;
   Result := InternalRegReadA(RootKey, Key, Name, RegKinds, RaiseException, DataPtr, DataSize);
   if Result then
@@ -661,7 +661,7 @@ var
   DataSize: DWord;
 begin
   Value := '';
-  DataPtr := Nil;
+  DataPtr := nil;
   DataSize := 0;
   Result := InternalRegReadW(RootKey, Key, Name, RegKinds, RaiseException, DataPtr, DataSize);
   if Result then
@@ -742,7 +742,7 @@ end;
 
 procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray);
 var
-  S: String;
+  S: string;
 begin
   S := RegReadMultiString(RootKey, Key, Name);
   MultiStringToStrings(Value, S);
@@ -752,7 +752,7 @@ end;
 
 procedure RegReadMultiString(const RootKey: DelphiHKEY; const Key, Name: string; Value: TStrings);
 var
-  S: String;
+  S: string;
 begin
   S := RegReadMultiString(RootKey, Key, Name);
   MultiStringToStrings(Value, S);
@@ -845,7 +845,7 @@ end;
 function InternalRegReadBinaryA(const RootKey: DelphiHKEY; const Key, Name: AnsiString;
   RaiseException: Boolean; out DataPtr: Pointer; out DataSize: DWord): Boolean;
 begin
-  DataPtr := Nil;
+  DataPtr := nil;
   DataSize := 0;
   Result := InternalRegReadA(RootKey, Key, Name, CRegBinKinds, RaiseException,
     DataPtr, DataSize);
@@ -858,7 +858,7 @@ end;
 function InternalRegReadBinaryW(const RootKey: DelphiHKEY; const Key, Name: WideString;
   RaiseException: Boolean; out DataPtr: Pointer; out DataSize: DWord): Boolean;
 begin
-  DataPtr := Nil;
+  DataPtr := nil;
   DataSize := 0;
   Result := InternalRegReadW(RootKey, Key, Name, CRegBinKinds, RaiseException,
     DataPtr, DataSize);
@@ -1161,7 +1161,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string;
-  const Value: array of String);
+  const Value: array of string);
 begin
   RegWriteMultiAnsiString(RootKey, Key, Name, StringsToMultiString(Value));
 end;
@@ -1373,6 +1373,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/07/28 18:00:53  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.17  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

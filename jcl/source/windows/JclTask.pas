@@ -1038,8 +1038,8 @@ function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
       FillChar(StartupInfo, SizeOf(StartupInfo), 0);
       StartupInfo.cb := SizeOf(StartupInfo);
       // CreateProcess search for mstask.exe, see Platform-SDK for details
-      if CreateProcess(Nil, SCHED_SERVICE_APP_NAME, Nil, Nil, False,
-          CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, Nil, Nil,
+      if CreateProcess(nil, SCHED_SERVICE_APP_NAME, nil, nil, False,
+          CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, nil, nil,
           StartupInfo, ProcessInfo) then
       begin
         CloseHandle(ProcessInfo.hProcess);
@@ -1132,7 +1132,7 @@ function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
   begin
     Result := 0;
     // get service handle
-    ServiceManagerHandle := OpenSCManager(Nil, Nil, SC_MANAGER_CONNECT);
+    ServiceManagerHandle := OpenSCManager(nil, nil, SC_MANAGER_CONNECT);
     if ServiceManagerHandle = 0 then
       RaiseLastOSError;
     ServiceHandle := OpenService(ServiceManagerHandle, SCHED_SERVICE_NAME,
@@ -1157,7 +1157,7 @@ function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
               Result := GetServiceStatus(ServiceHandle);
               if Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING] then
               begin
-                if not StartService(ServiceHandle, 0, PPChar(Nil)^) then
+                if not StartService(ServiceHandle, 0, PPChar(nil)^) then
                   RaiseLastOSError;
               end;
               Result := GetServiceStatusWaitingIfPending(ServiceHandle);
@@ -1186,7 +1186,7 @@ function TaskSchedulerServiceControl(Func: TTSServiceControlFunction): Integer;
               if Result in [SERVICE_STOPPED, SERVICE_STOP_PENDING] then
               begin
                 // start, if stopped
-                if not StartService(ServiceHandle, 0, PPChar(Nil)^) then
+                if not StartService(ServiceHandle, 0, PPChar(nil)^) then
                   RaiseLastOSError;
                 Result := GetServiceStatusWaitingIfPending(ServiceHandle);
               end;
@@ -1220,6 +1220,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.13  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

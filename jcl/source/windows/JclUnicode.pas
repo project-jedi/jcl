@@ -402,7 +402,7 @@ type
 
   // a generic search class defininition used for tuned Boyer-Moore and Unicode
   // regular expression searches
-  TSearchEngine = class (TObject)
+  TSearchEngine = class(TObject)
   private
     FResults: TList;      // 2 entries for each result (start and stop position)
     FOwner: TWideStrings; // at the moment unused, perhaps later to access strings faster
@@ -448,12 +448,12 @@ type
     SkipValues: Integer;
   end;
 
-  TUTBMSearch = class (TSearchEngine)
+  TUTBMSearch = class(TSearchEngine)
   private
     FFlags: TSearchFlags;
     FPattern: PUTBMChar;
-    FPatternUsed,
-    FPatternSize,
+    FPatternUsed: Cardinal;
+    FPatternSize: Cardinal;
     FPatternLength: Cardinal;
     FSkipValues: PUTBMSkip;
     FSkipsUsed: Integer;
@@ -664,7 +664,7 @@ type
     TransitionList: TUcTransitions;
   end;
 
-  TURESearch = class (TSearchEngine)
+  TURESearch = class(TSearchEngine)
   private
     FUREBuffer: TUREBuffer;
     FDFA: TDFA;
@@ -712,11 +712,11 @@ type
   // after the callback returns.
   TConfirmConversionEvent = procedure (Sender: TWideStrings; var Allowed: Boolean) of object;
 
-  TWideStrings = class (TPersistent)
+  TWideStrings = class(TPersistent)
   private
     FUpdateCount: Integer;
     FLanguage: LCID;        // language can usually left alone, the system's default is used
-    FSaved,                 // set in SaveToStream, True in case saving was successfull otherwise False
+    FSaved: Boolean;        // set in SaveToStream, True in case saving was successfull otherwise False
     FSaveUnicode: Boolean;  // flag set on loading to keep track in which format to save
                             // (can be set explicitely, but expect losses if there's true Unicode content
                             // and this flag is set to False)
@@ -792,17 +792,17 @@ type
   //----- TWideStringList class
   TDynWideCharArray = array of WideChar;
   TWideStringItem = record
-{$IFDEF OWN_WIDESTRING_MEMMGR}
+    {$IFDEF OWN_WIDESTRING_MEMMGR}
     FString: PWideChar; // "array of WideChar";
-{$ELSE}
+    {$ELSE}
     FString: WideString;
-{$ENDIF OWN_WIDESTRING_MEMMGR}
+    {$ENDIF OWN_WIDESTRING_MEMMGR}
     FObject: TObject;
   end;
 
   TWideStringItemList = array of TWideStringItem;
 
-  TWideStringList = class (TWideStrings)
+  TWideStringList = class(TWideStrings)
   private
     FList: TWideStringItemList;
     FCount: Integer;
@@ -815,9 +815,9 @@ type
     procedure QuickSort(L, R: Integer);
     procedure InsertItem(Index: Integer; const S: WideString);
     procedure SetSorted(Value: Boolean);
-{$IFDEF OWN_WIDESTRING_MEMMGR}
+    {$IFDEF OWN_WIDESTRING_MEMMGR}
     procedure SetListString(Index: Integer; const S: WideString);
-{$ENDIF OWN_WIDESTRING_MEMMGR}
+    {$ENDIF OWN_WIDESTRING_MEMMGR}
   protected
     procedure Changed; virtual;
     procedure Changing; virtual;
@@ -1085,7 +1085,7 @@ type
 var
   // character categories, stored in the system's swap file and mapped on demand
   CategoriesLoaded: Boolean;
-  Categories: array[Byte] of TCategoriesArray;
+  Categories: array [Byte] of TCategoriesArray;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1173,7 +1173,7 @@ end;
 //----------------- support for case mapping -------------------------------------------------------
 
 type
-  TCase = array[0..3] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
+  TCase = array [0..3] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
   TCaseArray = array of TCase;
 
 var
@@ -1181,7 +1181,7 @@ var
   // The organization is a sparse, two stage matrix.
   // SingletonMapping is to quickly return a single default mapping.
   CaseDataLoaded: Boolean;
-  CaseMapping: array[Byte] of TCaseArray;
+  CaseMapping: array [Byte] of TCaseArray;
   SingletonMapping: TUCS4Array;
 
 //--------------------------------------------------------------------------------------------------
@@ -1342,7 +1342,7 @@ const
 
 type
   TDecompositions = array of TUCS4Array;
-  TDecompositionsArray = array[Byte] of TDecompositions;
+  TDecompositionsArray = array [Byte] of TDecompositions;
   
 var
   // list of decompositions, organized (again) as two stage matrix
@@ -1498,7 +1498,7 @@ type
 var
   // canonical combining classes, again as two stage matrix
   CCCsLoaded: Boolean;
-  CCCs: array[Byte] of TClassArray;
+  CCCs: array [Byte] of TClassArray;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2689,7 +2689,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 const
-  CClassTrie: array[0..64] of TTrie = (
+  CClassTrie: array [0..64] of TTrie = (
     (Key: #$003A; Len: 1; Next:  1; Setup: 0; Categories: []),
     (Key: #$0061; Len: 9; Next: 10; Setup: 0; Categories: []),
     (Key: #$0063; Len: 8; Next: 19; Setup: 0; Categories: []),
@@ -5310,11 +5310,11 @@ begin
     Error(SListIndexError, Index);
   Changing;
 
-{$IFDEF OWN_WIDESTRING_MEMMGR}
+  {$IFDEF OWN_WIDESTRING_MEMMGR}
   SetListString(Index, '');
-{$ELSE}
+  {$ELSE}
   FList[Index].FString := '';
-{$ENDIF OWN_WIDESTRING_MEMMGR}
+  {$ENDIF OWN_WIDESTRING_MEMMGR}
   Dec(FCount);
   if Index < FCount then
   begin
@@ -5393,7 +5393,7 @@ var
 begin
   if Cardinal(Index) >= Cardinal(FCount) then
     Error(SListIndexError, Index);
-{$IFDEF OWN_WIDESTRING_MEMMGR}
+  {$IFDEF OWN_WIDESTRING_MEMMGR}
   with FList[Index] do
   begin
     Len := Length(TDynWideCharArray(FString));
@@ -5406,9 +5406,9 @@ begin
     else
       Result := '';
   end;
-{$ELSE}
+  {$ELSE}
   Result := FList[Index].FString;
-{$ENDIF OWN_WIDESTRING_MEMMGR}
+  {$ENDIF OWN_WIDESTRING_MEMMGR}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5519,15 +5519,15 @@ begin
     Pointer(FString) := nil; // avoid freeing the string, the address is now used in another element
     FObject := nil;
     if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
-{$IFDEF OWN_WIDESTRING_MEMMGR}
+    {$IFDEF OWN_WIDESTRING_MEMMGR}
       SetListString(Index, WideNormalize(S, FNormalizationForm))
     else
       SetListString(Index, S);
-{$ELSE}
+    {$ELSE}
       FString := WideNormalize(S, FNormalizationForm)
     else
       FString := S;
-{$ENDIF OWN_WIDESTRING_MEMMGR}
+    {$ENDIF OWN_WIDESTRING_MEMMGR}
   end;
   Inc(FCount);
   Changed;
@@ -5544,15 +5544,15 @@ begin
   Changing;
 
   if (FNormalizationForm <> nfNone) and (Length(S) > 0) then
-{$IFDEF OWN_WIDESTRING_MEMMGR}
+  {$IFDEF OWN_WIDESTRING_MEMMGR}
     SetListString(Index, WideNormalize(S, FNormalizationForm))
   else
     SetListString(Index, S);
-{$ELSE}
+  {$ELSE}
     FList[Index].FString := WideNormalize(S, FNormalizationForm)
   else
     FList[Index].FString := S;
-{$ENDIF OWN_WIDESTRING_MEMMGR}
+  {$ENDIF OWN_WIDESTRING_MEMMGR}
   Changed;
 end;
 
@@ -5894,7 +5894,7 @@ end;
 
 const
   // data used to bring UTF-16 coded strings into correct UTF-32 order for correct comparation
-  UTF16Fixup: array[0..31] of Word = (
+  UTF16Fixup: array [0..31] of Word = (
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     $2000, $F800, $F800, $F800, $F800
@@ -7504,9 +7504,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function UnicodeIsHangul(C: UCS4): Boolean;
-
 // Is the character a pre-composed Hangul syllable?
-
 begin
   Result := (C >= $AC00) and (C <= $D7FF);
 end;
@@ -7540,7 +7538,7 @@ function CodePageFromLocale(Language: LCID): Integer;
 // determines the code page for a given locale
 
 var
-  Buf: array[0..6] of Char;
+  Buf: array [0..6] of Char;
 
 begin
   GetLocaleInfo(Language, LOCALE_IDefaultAnsiCodePage, Buf, 6);
@@ -8050,6 +8048,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.13  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.12  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

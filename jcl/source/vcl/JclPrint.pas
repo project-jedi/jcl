@@ -50,9 +50,9 @@ type
   TWordArray = array [0..255] of Word;
 
 type
-  EJclPrinterError = class (EJclError);
+  EJclPrinterError = class(EJclError);
 
-  TJclPrintSet = class (TObject)
+  TJclPrintSet = class(TObject)
   private
     FDevice: PChar;  { TODO : change to string }
     FDriver: PChar;
@@ -162,19 +162,35 @@ function GetDefaultPrinterName: AnsiString;
 // Parameters:
 //   PrinterName: Return the printer name.
 // Returns: True for success, False for failure.
-function DPGetDefaultPrinter(out PrinterName: String): Boolean;
+function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 
 // DPSetDefaultPrinter
 // Parameters:
 //   PrinterName: Valid name of existing printer to make default.
 // Returns: True for success, False for failure.
-function DPSetDefaultPrinter(const PrinterName: String): Boolean;
+function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
 implementation
 
 uses
   Graphics, IniFiles, Messages, Printers, WinSpool,
   JclWin32, JclSysInfo, JclResources;
+
+const
+  PrintIniPrinterName   = 'PrinterName';
+  PrintIniPrinterPort   = 'PrinterPort';
+  PrintIniOrientation   = 'Orientation';
+  PrintIniPaperSize     = 'PaperSize';
+  PrintIniPaperLength   = 'PaperLength';
+  PrintIniPaperWidth    = 'PaperWidth';
+  PrintIniScale         = 'Scale';
+  PrintIniCopies        = 'Copies';
+  PrintIniDefaultSource = 'DefaultSource';
+  PrintIniPrintQuality  = 'PrintQuality';
+  PrintIniColor         = 'Color';
+  PrintIniDuplex        = 'Duplex';
+  PrintIniYResolution   = 'YResolution';
+  PrintIniTTOption      = 'TTOption';
 
 //==================================================================================================
 // Misc. functions
@@ -750,20 +766,20 @@ begin
   PrIniFile := TIniFile.Create(IniFileName);
   CurrentName := Printer.Printers[Printer.PrinterIndex];
   { TODO : why resourcestrings? }
-  PrIniFile.WriteString(Section, RsPrintIniPrinterName, CurrentName);
-  PrIniFile.WriteString(Section, RsPrintIniPrinterPort, PrinterPort);
-  PrIniFile.WriteInteger(Section, RsPrintIniOrientation, Orientation);
-  PrIniFile.WriteInteger(Section, RsPrintIniPaperSize, PaperSize);
-  PrIniFile.WriteInteger(Section, RsPrintIniPaperLength, PaperLength);
-  PrIniFile.WriteInteger(Section, RsPrintIniPaperWidth, PaperWidth);
-  PrIniFile.WriteInteger(Section, RsPrintIniScale, Scale);
-  PrIniFile.WriteInteger(Section, RsPrintIniCopies, Copies);
-  PrIniFile.WriteInteger(Section, RsPrintIniDefaultSource, DefaultSource);
-  PrIniFile.WriteInteger(Section, RsPrintIniPrintQuality, PrintQuality);
-  PrIniFile.WriteInteger(Section, RsPrintIniColor, Color);
-  PrIniFile.WriteInteger(Section, RsPrintIniDuplex, Duplex);
-  PrIniFile.WriteInteger(Section, RsPrintIniYResolution, YResolution);
-  PrIniFile.WriteInteger(Section, RsPrintIniTTOption, TrueTypeOption);
+  PrIniFile.WriteString(Section, PrintIniPrinterName, CurrentName);
+  PrIniFile.WriteString(Section, PrintIniPrinterPort, PrinterPort);
+  PrIniFile.WriteInteger(Section, PrintIniOrientation, Orientation);
+  PrIniFile.WriteInteger(Section, PrintIniPaperSize, PaperSize);
+  PrIniFile.WriteInteger(Section, PrintIniPaperLength, PaperLength);
+  PrIniFile.WriteInteger(Section, PrintIniPaperWidth, PaperWidth);
+  PrIniFile.WriteInteger(Section, PrintIniScale, Scale);
+  PrIniFile.WriteInteger(Section, PrintIniCopies, Copies);
+  PrIniFile.WriteInteger(Section, PrintIniDefaultSource, DefaultSource);
+  PrIniFile.WriteInteger(Section, PrintIniPrintQuality, PrintQuality);
+  PrIniFile.WriteInteger(Section, PrintIniColor, Color);
+  PrIniFile.WriteInteger(Section, PrintIniDuplex, Duplex);
+  PrIniFile.WriteInteger(Section, PrintIniYResolution, YResolution);
+  PrIniFile.WriteInteger(Section, PrintIniTTOption, TrueTypeOption);
   PrIniFile.Free;
 end;
 
@@ -777,7 +793,7 @@ var
 begin
   Result := False;
   PrIniFile := TIniFile.Create(IniFileName);
-  SavedName := PrIniFile.ReadString(Section, RsPrintIniPrinterName, PrinterName);
+  SavedName := PrIniFile.ReadString(Section, PrintIniPrinterName, PrinterName);
   if PrinterName <> SavedName then
   begin
     NewIndex := Printer.Printers.IndexOf(SavedName);
@@ -786,19 +802,19 @@ begin
       Result := True;
       Printer.PrinterIndex := NewIndex;
       { TODO : why resourcestrings? }
-      PrinterPort := PrIniFile.ReadString(Section, RsPrintIniPrinterPort, PrinterPort);
-      Orientation := PrIniFile.ReadInteger(Section, RsPrintIniOrientation, Orientation);
-      PaperSize := PrIniFile.ReadInteger(Section, RsPrintIniPaperSize, PaperSize);
-      PaperLength := PrIniFile.ReadInteger(Section, RsPrintIniPaperLength, PaperLength);
-      PaperWidth := PrIniFile.ReadInteger(Section, RsPrintIniPaperWidth, PaperWidth);
-      Scale := PrIniFile.ReadInteger(Section, RsPrintIniScale, Scale);
-      Copies := PrIniFile.ReadInteger(Section, RsPrintIniCopies, Copies);
-      DefaultSource := PrIniFile.ReadInteger(Section, RsPrintIniDefaultSource, DefaultSource);
-      PrintQuality := PrIniFile.ReadInteger(Section, RsPrintIniPrintQuality, PrintQuality);
-      Color := PrIniFile.ReadInteger(Section, RsPrintIniColor, Color);
-      Duplex := PrIniFile.ReadInteger(Section, RsPrintIniDuplex, Duplex);
-      YResolution := PrIniFile.ReadInteger(Section, RsPrintIniYResolution, YResolution);
-      TrueTypeOption := PrIniFile.ReadInteger(Section, RsPrintIniTTOption, TrueTypeOption);
+      PrinterPort := PrIniFile.ReadString(Section, PrintIniPrinterPort, PrinterPort);
+      Orientation := PrIniFile.ReadInteger(Section, PrintIniOrientation, Orientation);
+      PaperSize := PrIniFile.ReadInteger(Section, PrintIniPaperSize, PaperSize);
+      PaperLength := PrIniFile.ReadInteger(Section, PrintIniPaperLength, PaperLength);
+      PaperWidth := PrIniFile.ReadInteger(Section, PrintIniPaperWidth, PaperWidth);
+      Scale := PrIniFile.ReadInteger(Section, PrintIniScale, Scale);
+      Copies := PrIniFile.ReadInteger(Section, PrintIniCopies, Copies);
+      DefaultSource := PrIniFile.ReadInteger(Section, PrintIniDefaultSource, DefaultSource);
+      PrintQuality := PrIniFile.ReadInteger(Section, PrintIniPrintQuality, PrintQuality);
+      Color := PrIniFile.ReadInteger(Section, PrintIniColor, Color);
+      Duplex := PrIniFile.ReadInteger(Section, PrintIniDuplex, Duplex);
+      YResolution := PrIniFile.ReadInteger(Section, PrintIniYResolution, YResolution);
+      TrueTypeOption := PrIniFile.ReadInteger(Section, PrintIniTTOption, TrueTypeOption);
     end
     else
       Result := False;
@@ -1135,9 +1151,9 @@ end;
 
 // Source of the original code: Microsoft Knowledge Base Article - 246772
 //   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
-function DPGetDefaultPrinter(out PrinterName: String): Boolean;
+function DPGetDefaultPrinter(out PrinterName: string): Boolean;
 
-function GetDefaultPrinter9x(var PrinterName: String): Boolean;
+function GetDefaultPrinter9x(var PrinterName: string): Boolean;
 var
   NeededSize, ReturnedCount: DWord;
   Info2Ptr: PPrinterInfo2;
@@ -1150,14 +1166,14 @@ begin
   NeededSize := 0;
   ReturnedCount := 0;
   SetLastError(0);
-  EnumPrinters(PRINTER_ENUM_DEFAULT, Nil, 2, Nil, 0, NeededSize, ReturnedCount);
+  EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0, NeededSize, ReturnedCount);
   if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
     Exit;
   // Allocate enough space for PRINTER_INFO_2.
   GetMem(Info2Ptr, NeededSize);
   try
     // The second EnumPrinters() will fill in all the current information.
-    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, Nil, 2, Info2Ptr, NeededSize,
+    Result := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, Info2Ptr, NeededSize,
       NeededSize, ReturnedCount);
     if Result then
       // Copy printer name into passed-in buffer.
@@ -1168,29 +1184,30 @@ begin
   end;
 end;
 
-function GetDefaultPrinter2k(var PrinterName: String): Boolean;
+function GetDefaultPrinter2k(var PrinterName: string): Boolean;
 var
   Len: DWord;
-  PrinterNameBuffer: array[0..249] of Char;
+  PrinterNameBuffer: array [0..249] of Char;
 begin
   Len := Length(PrinterNameBuffer);
   Result := RtdlGetDefaultPrinter(PrinterNameBuffer, @Len);
   if Result then
     SetString(PrinterName, PrinterNameBuffer, Len - 1)
-  else if (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
+  else
+  if GetLastError = ERROR_INSUFFICIENT_BUFFER then
   begin
     SetLength(PrinterName, Len - 1);
     Result := RtdlGetDefaultPrinter(Pointer(PrinterName), @Len);
   end;
 end;
 
-function GetDefaultPrinterNT(var PrinterName: String): Boolean;
+function GetDefaultPrinterNT(var PrinterName: string): Boolean;
 var
   Len, I: Integer;
-  PrinterNameBuffer: array[0..249] of Char;
+  PrinterNameBuffer: array [0..249] of Char;
 begin
   // Retrieve the default string from Win.ini (the registry).
-  // String will be in form "printername,drivername,portname".
+  // string will be in form "printername,drivername,portname".
   Len := GetProfileString('windows', 'device', ',', PrinterNameBuffer,
     Length(PrinterNameBuffer));
   // Printer name precedes first "," character.
@@ -1217,7 +1234,8 @@ begin
   end
   // If Windows NT, use the GetDefaultPrinter API for Windows 2000,
   // or GetProfileString for version 4.0 and earlier.
-  else if Win32Platform = VER_PLATFORM_WIN32_NT then
+  else
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
     if Win32MajorVersion >= 5 then  // Windows 2000 or later (use explicit call)
       Result := GetDefaultPrinter2k(PrinterName)
@@ -1236,9 +1254,9 @@ end;
 
 // Source of the original code: Microsoft Knowledge Base Article - 246772
 //   http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
-function DPSetDefaultPrinter(const PrinterName: String): Boolean;
+function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
-function SetDefaultPrinter9x(const PrinterName: String): Boolean;
+function SetDefaultPrinter9x(const PrinterName: string): Boolean;
 const
   WindowsIdent = 'windows';
 var
@@ -1248,7 +1266,7 @@ var
 begin
   Result := False;
   // Open this printer so you can get information about it.
-  if not OpenPrinter(PChar(PrinterName), PrinterHandle, Nil) then
+  if not OpenPrinter(PChar(PrinterName), PrinterHandle, nil) then
     Exit;
   if PrinterHandle = 0 then
     Exit;
@@ -1258,7 +1276,7 @@ begin
     // typically return FALSE. This only means that the buffer (the 3rd
     // parameter) was not filled in. You do not want it filled in here.
     SetLastError(0);
-    if not GetPrinter(PrinterHandle, 2, Nil, 0, @NeededSize) then
+    if not GetPrinter(PrinterHandle, 2, nil, 0, @NeededSize) then
     begin
       if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
         Exit;
@@ -1277,7 +1295,7 @@ begin
       // Tell all open programs that this change occurred.
       // Allow each program 1 second to handle this message.
       SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
-        LParam(PChar(WindowsIdent)), SMTO_NORMAL, 1000, PDWord(Nil)^);
+        LParam(PChar(WindowsIdent)), SMTO_NORMAL, 1000, PDWord(nil)^);
     finally
       FreeMem(Info2Ptr);
     end;
@@ -1286,16 +1304,16 @@ begin
   end;
 end;
 
-function SetDefaultPrinterNT(const PrinterName: String): Boolean;
+function SetDefaultPrinterNT(const PrinterName: string): Boolean;
 var
   PrinterHandle: THandle;
   NeededSize: DWord;
   Info2Ptr: PPrinterInfo2;
-  S: String;
+  S: string;
 begin
   Result := False;
   // Open this printer so you can get information about it.
-  if not OpenPrinter(PChar(PrinterName), PrinterHandle, Nil) then
+  if not OpenPrinter(PChar(PrinterName), PrinterHandle, nil) then
     Exit;
   if PrinterHandle = 0 then
     Exit;
@@ -1305,7 +1323,7 @@ begin
     // typically return FALSE. This only means that the buffer (the 3rd
     // parameter) was not filled in. You do not want it filled in here.
     SetLastError(0);
-    if not GetPrinter(PrinterHandle, 2, Nil, 0, @NeededSize) then
+    if not GetPrinter(PrinterHandle, 2, nil, 0, @NeededSize) then
     begin
       if (GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (NeededSize = 0) then
         Exit;
@@ -1316,10 +1334,10 @@ begin
       // The second GetPrinter() fills in all the current information.
       if not GetPrinter(PrinterHandle, 2, Info2Ptr, NeededSize, @NeededSize) then
         Exit;
-      if (Info2Ptr^.pDriverName = Nil) or (Info2Ptr^.pPortName = Nil) then
+      if (Info2Ptr^.pDriverName = nil) or (Info2Ptr^.pPortName = nil) then
         Exit;
       // Allocate buffer big enough for concatenated string.
-      // String will be in form "printername,drivername,portname".
+      // string will be in form "printername,drivername,portname".
       // Build string in form "printername,drivername,portname".
       S := Format('%s,%s,%s', [PrinterName, Info2Ptr^.pDriverName, Info2Ptr^.pPortName]);
       // Set the default printer in Win.ini and registry.
@@ -1333,7 +1351,7 @@ begin
   end;
 end;
 
-function SetDefaultPrinter2k(const PrinterName: String): Boolean;
+function SetDefaultPrinter2k(const PrinterName: string): Boolean;
 begin
   // You are explicitly linking to SetDefaultPrinter because implicitly
   // linking on Windows 95/98 or NT4 results in a runtime error.
@@ -1351,7 +1369,8 @@ begin
   end
   // If Windows NT, use the SetDefaultPrinter API for Windows 2000,
   // or WriteProfileString for version 4.0 and earlier.
-  else if Win32Platform = VER_PLATFORM_WIN32_NT then
+  else
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
     if Win32MajorVersion >= 5 then  // Windows 2000 or later (use explicit call)
       Result := SetDefaultPrinter2k(PrinterName)
@@ -1361,13 +1380,16 @@ begin
       // Tell all open programs that this change occurred.
       // Allow each app 1 second to handle this message.
       SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 0, SMTO_NORMAL,
-        1000, PDWord(Nil)^);
+        1000, PDWord(nil)^);
   end;
 end;
 
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:52  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/14 13:05:20  marquardt
 // style cleaning ENDIF, Tabs
 //

@@ -146,7 +146,7 @@ end;
 //==================================================================================================
 
 type
-  TMidiOut = class (TJclMidiOut, IJclWinMidiOut)
+  TMidiOut = class(TJclMidiOut, IJclWinMidiOut)
   private
     FHandle: HMIDIOUT;
     FDeviceID: Cardinal;
@@ -322,6 +322,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:55  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

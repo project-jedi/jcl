@@ -65,7 +65,7 @@ const
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclAppInstances = class (TObject)
+  TJclAppInstances = class(TObject)
   private
     FCPID: DWORD;
     FMapping: TJclSwapFileMapping;
@@ -640,6 +640,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:52  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/16 07:30:30  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

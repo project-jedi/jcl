@@ -61,7 +61,7 @@ uses
 
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
-function PCharOrNil(const S: String): PChar;
+function PCharOrNil(const S: string): PChar;
 function PAnsiCharOrNil(const S: AnsiString): PAnsiChar;
 {$IFDEF SUPPORTS_WIDESTRING}
 function PWideCharOrNil(const W: WideString): PWideChar;
@@ -172,7 +172,7 @@ procedure FreeObjectList(var List: TList);
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclReferenceMemoryStream = class (TCustomMemoryStream)
+  TJclReferenceMemoryStream = class(TCustomMemoryStream)
   public
     constructor Create(const Ptr: Pointer; Size: Longint);
     function Write(const Buffer; Count: Longint): Longint; override;
@@ -203,7 +203,7 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Vari
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclVMTError = class (EJclError);
+  EJclVMTError = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
 // Virtual Methods
@@ -318,7 +318,7 @@ type
     FExpDivision: Integer;
     FDigitBlockSize: TDigitCount;
     FWidth: TDigitCount;
-    FSignChars: array[Boolean] of Char;
+    FSignChars: array [Boolean] of Char;
     FBase: TNumericSystemBase;
     FFractionalPartSeparator: Char;
     FDigitBlockSeparator: Char;
@@ -404,7 +404,7 @@ function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; 
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclConversionError = class (EJclError);
+  EJclConversionError = class(EJclError);
 
 function StrToBoolean(const S: string): Boolean;
 function IntToBool(I: Integer): Boolean;
@@ -458,7 +458,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PCharOrNil(const S: String): PChar;
+function PCharOrNil(const S: string): PChar;
 begin
   Result := Pointer(S);
 end;
@@ -619,7 +619,7 @@ end;
 //==================================================================================================
 
 type
-  TSafeGuard = class (TInterfacedObject, ISafeGuard)
+  TSafeGuard = class(TInterfacedObject, ISafeGuard)
   private
     FItem: Pointer;
   public
@@ -630,13 +630,13 @@ type
     procedure FreeItem; virtual;
   end;
 
-  TObjSafeGuard = class (TSafeGuard, ISafeGuard)
+  TObjSafeGuard = class(TSafeGuard, ISafeGuard)
   public
     constructor Create(Obj: TObject);
     procedure FreeItem; override;
   end;
 
-  TMultiSafeGuard = class (TInterfacedObject, IMultiSafeGuard)
+  TMultiSafeGuard = class(TInterfacedObject, IMultiSafeGuard)
   private
     FItems: TList;
   public
@@ -649,7 +649,7 @@ type
     function ReleaseItem(Index: Integer): Pointer;
   end;
 
-  TObjMultiSafeGuard = class (TMultiSafeGuard, IMultiSafeGuard)
+  TObjMultiSafeGuard = class(TMultiSafeGuard, IMultiSafeGuard)
   public
     procedure FreeItem(Index: Integer); override;
   end;
@@ -2105,10 +2105,10 @@ end;
 
 function ExtendToInt64(const Value: Int64; ValidBytes: Integer): Int64;
 const
-  SignMasks: array[1..7] of Int64 = (
+  SignMasks: array [1..7] of Int64 = (
     $0000000000000080, $0000000000008000, $0000000000800000, $0000000080000000,
     $0000008000000000, $0000800000000000, $0080000000000000);
-  ExtendMasks: array[1..7] of Int64 = (
+  ExtendMasks: array [1..7] of Int64 = (
     $FFFFFFFFFFFFFF80, $FFFFFFFFFFFF8000, $FFFFFFFFFF800000, $FFFFFFFF80000000,
     $FFFFFF8000000000, $FFFF800000000000, $FF80000000000000);
 begin
@@ -2117,12 +2117,10 @@ begin
     0:
       Result := 0;
     1..7:
-      begin
-        if (Result and SignMasks[ValidBytes]) = 0 then
-          Result := Result and not ExtendMasks[ValidBytes]  // extend positive
-        else
-          Result := Result or ExtendMasks[ValidBytes];      // extend negative
-      end;
+      if (Result and SignMasks[ValidBytes]) = 0 then
+        Result := Result and not ExtendMasks[ValidBytes]  // extend positive
+      else
+        Result := Result or ExtendMasks[ValidBytes];      // extend negative
   end;
 end;
 
@@ -2144,6 +2142,7 @@ begin
     Module := dlopen(PChar(FileName), RTLD_NOW);
   Result := Module <> INVALID_MODULEHANDLE_VALUE;
 end;
+
 {$ENDIF UNIX}
 
 //--------------------------------------------------------------------------------------------------
@@ -2258,11 +2257,11 @@ end;
 }
 
 const
-  DefaultTrueBoolStr   = 'True';  // DO NOT LOCALIZE
-  DefaultFalseBoolStr  = 'False'; // DO NOT LOCALIZE
+  DefaultTrueBoolStr  = 'True';  // DO NOT LOCALIZE
+  DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
-  DefaultYesBoolStr    = 'Yes';   // DO NOT LOCALIZE
-  DefaultNoBoolStr     = 'No';    // DO NOT LOCALIZE
+  DefaultYesBoolStr   = 'Yes';   // DO NOT LOCALIZE
+  DefaultNoBoolStr    = 'No';    // DO NOT LOCALIZE
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2270,7 +2269,7 @@ function StrToBoolean(const S: string): Boolean;
 var
   LowerCasedText: string;
 begin
-  { TODO : Possibilitiy to add localized strings, like in Delphi 7 }
+  { TODO : Possibility to add localized strings, like in Delphi 7 }
   { TODO : Lower case constants }
   LowerCasedText := LowerCase(S);
   Result := ((S = '1') or
@@ -2323,6 +2322,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.21  2004/07/28 18:00:52  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.20  2004/06/14 11:05:51  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

@@ -40,8 +40,8 @@
 // For history see end of file
 
 // in Help:
-//  We do all conversions (but thoses provided by Delphi anyway)  between
-//  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus
+//  We do all conversions (but thoses provided by Delphi anyway) between
+//  TDateTime, TDosDateTime, TFileTime and TSystemTime plus
 //  TDatetime, TDosDateTime, TFileTime, TSystemTime to string
 
 unit JclDateTime;
@@ -157,7 +157,7 @@ function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 {$ENDIF MSWINDOWS}
 
 type
-  TJclUnixTime32 = LongWord;
+  TJclUnixTime32 = Longword;
 
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 
@@ -1089,7 +1089,7 @@ const
   // 1970-01-01T00:00:00 in TDateTime
   UnixTimeStart = 25569;
 
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   // 1 second in FileTime resolution
   FileTimeSecond = 1000 * 1000 * 10;
   // 1 day in FileTime resolution: 24 * 60 * 60 * 1000 * 1000 * 10;
@@ -1099,7 +1099,7 @@ const
   FileTimeStart = -109205;
   // Time between 1601-01-01 and 1970-01-01 in FileTime resolution
   FileTimeUnixStart = (UnixTimeStart - FileTimeStart) * FileTimeDay;
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // Conversion Unix time <--> TDateTime
@@ -1115,6 +1115,7 @@ end;
 //==================================================================================================
 
 {$IFDEF MSWINDOWS}
+
 function FileTimeToUnixTime(const FileTime: TFileTime): TJclUnixTime32;
 begin
   Result := (Int64(FileTime) - FileTimeUnixStart) div FileTimeSecond;
@@ -1126,9 +1127,8 @@ function UnixTimeToFileTime(const UnixTime: TJclUnixTime32): TFileTime;
 begin
   Int64(Result) := Int64(UnixTime) * FileTimeSecond + FileTimeUnixStart;
 end;
-{$ENDIF MSWINDOWS}
 
-//--------------------------------------------------------------------------------------------------
+{$ENDIF MSWINDOWS}
 
 // History:
 
@@ -1218,6 +1218,9 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.9  2004/07/28 18:00:49  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.8  2004/06/14 13:05:16  marquardt
 // style cleaning ENDIF, Tabs
 //

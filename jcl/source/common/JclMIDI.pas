@@ -197,7 +197,7 @@ type
       (DWord: LongWord);
   end;
 
-  EJclMIDIError = class (EJclError);
+  EJclMIDIError = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
 // MIDI Out
@@ -279,11 +279,11 @@ type
   end;
 
   // Abstract MIDI Out device class
-  TJclMIDIOut = class (TInterfacedObject, IJclMIDIOut)
+  TJclMIDIOut = class(TInterfacedObject, IJclMIDIOut)
   private
     FMIDIStatus: TMIDIStatusByte;
     FRunningStatusEnabled: Boolean;
-    FActiveNotes: array[TMIDIChannel] of TMIDINotes;
+    FActiveNotes: array [TMIDIChannel] of TMIDINotes;
   protected
     function GetActiveNotes(Channel: TMIDIChannel): TMIDINotes;
     function GetName: string; virtual; abstract;
@@ -918,6 +918,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/07/28 18:00:50  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.7  2004/06/16 07:30:27  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

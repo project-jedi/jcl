@@ -2918,7 +2918,7 @@ end;
 { TODO : UNC Version }
 function GetDriveTypeStr(const Drive: Char): string;
 const
-  DriveTypeIdents: array[DRIVE_REMOVABLE..DRIVE_RAMDISK] of String = (
+  DriveTypeIdents: array [DRIVE_REMOVABLE..DRIVE_RAMDISK] of string = (
     RsRemovableDrive, RsHardDisk, RsRemoteDrive, RsCDRomDrive, RsRamDisk);
 var
   DriveType: Integer;
@@ -4099,7 +4099,7 @@ var
       EndStringPtr := Data + Len - HeaderSize;
       while not Error and (Data < EndStringPtr) do
       begin
-        GetHeader; // String
+        GetHeader; // string
         case DataType of
           0:
             if ValueLen in [1..4] then
@@ -4541,7 +4541,7 @@ var
   var
     FindInfo: TSearchRec;
     Rslt: Integer;
-    CurrentFolder: String;
+    CurrentFolder: string;
     Matches: Boolean;
   begin
     CurrentFolder := Folders[CurrentCounter];
@@ -4653,18 +4653,13 @@ function FileAttributesStr(const FileInfo: TSearchRec): string;
 {$IFDEF MSWINDOWS}
 const
   SAllAttrSet = 'rahs'; // readonly, archive, hidden, system
-  Attributes: array[1..4] of Integer =
-    (
-      faReadOnly,
-      faArchive,
-      faHidden,
-      faSysFile
-    );
+  Attributes: array [1..4] of Integer =
+    (faReadOnly, faArchive, faHidden, faSysFile);
 var
   I: Integer;
 begin
   Result := SAllAttrSet;
-  for I := 1 to 4 do
+  for I := Low(Attributes) to High(Attributes) do
     if (FileInfo.Attr and Attributes[I]) = 0 then
       Result[I] := '-';
 end;
@@ -5726,6 +5721,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2004/07/28 18:00:50  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.22  2004/06/16 07:30:27  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //

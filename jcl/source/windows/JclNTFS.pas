@@ -56,7 +56,7 @@ uses
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJclNtfsError = class (EJclWin32Error);
+  EJclNtfsError = class(EJclWin32Error);
 
 //--------------------------------------------------------------------------------------------------
 // NTFS - Compression
@@ -217,7 +217,7 @@ type
     CallerAddress: DWord;
   end;
 
-  EJclInvalidArgument = class (EJclError);
+  EJclInvalidArgument = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1334,6 +1334,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/07/28 18:00:53  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.11  2004/07/14 03:00:34  rrossmair
 // fixed bug #1962 ( NtfsCreateJunctionPoint fails if a \\??\\ path is used)
 //

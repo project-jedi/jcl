@@ -470,10 +470,10 @@ begin
   end;
   if not B then
   begin
-    if Buffer <> Nil then
+    if Buffer <> nil then
     begin
       FreeMem(Buffer);
-      Buffer := Nil;
+      Buffer := nil;
     end;
     SetLastError(LastError);
     RaiseLastOSError;
@@ -516,6 +516,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/07/28 18:00:54  marquardt
+// various style cleanings, some minor fixes
+//
 // Revision 1.11  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //
