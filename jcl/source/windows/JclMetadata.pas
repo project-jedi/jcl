@@ -967,6 +967,31 @@ type
     property Rows[const Idx: Integer]: TJclClrTableMethodSemanticsRow read GetRow; default;
   end;
 
+  TJclClrTableMethodSpecRow = class(TJclClrTableRow)
+  private
+    FMethodIdx: DWORD;
+    FInstantiationOffset: DWORD;
+    function GetInstantiation: TJclClrBlobRecord;
+    function GetMethod: TJclClrTableRow;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+  public
+    property MethodIdx: DWORD read FMethodIdx;
+    property InstantiationOffset: DWORD read FInstantiationOffset;
+
+    property Method: TJclClrTableRow read GetMethod;
+    property Instantiation: TJclClrBlobRecord read GetInstantiation;
+  end;
+
+  TJclClrTableMethodSpec = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableMethodSpecRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableMethodSpecRow read GetRow; default;
+  end;
+
   TJclClrTableNestedClassRow = class(TJclClrTableRow)
   private
     FEnclosingClassIdx: DWORD;
@@ -1233,6 +1258,43 @@ type
     class function TableRowClass: TJclClrTableRowClass; override;
   public
     property Rows[const Idx: Integer]: TJclClrTableTypeSpecRow read GetRow; default;
+  end;
+
+  TJclClrTableENCMapRow = class(TJclClrTableRow)
+  private
+    FToken: DWORD;
+    FFuncCode: DWORD;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+
+    property FuncCode: DWORD read FFuncCode;
+  end;
+
+  TJclClrTableENCMap = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableENCMapRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableENCMapRow read GetRow; default;
+  end;
+
+  TJclClrTableENCLogRow = class(TJclClrTableENCMapRow)
+  private
+    FFuncCode: DWORD;
+  protected
+    constructor Create(const ATable: TJclClrTable); override;
+
+    property FuncCode: DWORD read FFuncCode;
+  end;
+
+  TJclClrTableENCLog = class(TJclClrTable)
+  private
+    function GetRow(const Idx: Integer): TJclClrTableENCLogRow;
+  protected
+    class function TableRowClass: TJclClrTableRowClass; override;
+  public
+    property Rows[const Idx: Integer]: TJclClrTableENCLogRow read GetRow; default;
   end;
 
 implementation
@@ -3120,6 +3182,40 @@ begin
   Result := TJclClrTableMethodSemanticsRow;
 end;
 
+{ TJclClrTableMethodSpecRow }
+
+constructor TJclClrTableMethodSpecRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FMethodIdx           := Table.ReadIndex([ttMethodDef, ttMemberRef]);
+  FInstantiationOffset := Table.ReadIndex(hkBlob);
+end;
+
+function TJclClrTableMethodSpecRow.GetMethod: TJclClrTableRow;
+const
+  MethodDefOrRefEncodedTag: array[0..1] of TJclClrTableKind = (ttMethodDef, ttMemberRef);
+begin
+  Result := Table.Stream.Metadata.Tables[MethodDefOrRefEncodedTag[FMethodIdx and 1]].Rows[FMethodIdx shr 1];
+end;
+
+function TJclClrTableMethodSpecRow.GetInstantiation: TJclClrBlobRecord;
+begin
+  Result := Table.Stream.Metadata.BlobAt(FInstantiationOffset);
+end;
+
+{ TJclClrTableMethodSpec }
+
+function TJclClrTableMethodSpec.GetRow(const Idx: Integer): TJclClrTableMethodSpecRow;
+begin
+  Result := TJclClrTableMethodSpecRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableMethodSpec.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableMethodSpecRow;
+end;
+
 { TJclClrTableNestedClassRow }
 
 constructor TJclClrTableNestedClassRow.Create(const ATable: TJclClrTable);
@@ -3692,6 +3788,48 @@ end;
 class function TJclClrTableTypeSpec.TableRowClass: TJclClrTableRowClass;
 begin
   Result := TJclClrTableTypeSpecRow;
+end;
+
+{ TJclClrTableENCMapRow }
+
+constructor TJclClrTableENCMapRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FToken := Table.ReadDWord;
+end;
+
+{ TJclClrTableENCMap }
+
+function TJclClrTableENCMap.GetRow(const Idx: Integer): TJclClrTableENCMapRow;
+begin
+  Result := TJclClrTableENCMapRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableENCMap.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableENCMapRow;
+end;
+
+{ TJclClrTableENCLogRow }
+
+constructor TJclClrTableENCLogRow.Create(const ATable: TJclClrTable);
+begin
+  inherited;
+
+  FFuncCode := Table.ReadDWord;
+end;
+
+{ TJclClrTableENCLog }
+
+function TJclClrTableENCLog.GetRow(const Idx: Integer): TJclClrTableENCLogRow;
+begin
+  Result := TJclClrTableENCLogRow(inherited GetRow(Idx));
+end;
+
+class function TJclClrTableENCLog.TableRowClass: TJclClrTableRowClass;
+begin
+  Result := TJclClrTableENCLogRow;
 end;
 
 end.
