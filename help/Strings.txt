@@ -1116,6 +1116,91 @@ Count=1
 1=StrSearch
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function StrHasPrefix(const S: string; const Prefixes: array of string): Boolean;
+[ShortDescr]
+Returns whether a string is prefixed by one of the supplied strings.
+[Description]
+StrHasPrefix returns whether the string is prefixed with at least one of the strings
+supplied in the Prefixes array. In other words, for each string in the Prefixes
+array it determined if the supplied string starts with that prefix. Note that
+the routine exits as soon as a match is found.
+[Parameters]
+Count=2
+1=S:string=The string to test.
+2=Prefixes:array of string=Array of prefixes to test for.
+[Result]
+If the supplied string is prefixed with one of the supplied prefixes the routine
+returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrPrefixIndex
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrIndex(const S: string; const List: array of string): Integer;
+[ShortDescr]
+Returns the index of a string in an array of strings.
+[Description]
+StrIndex returns the index into the List array at which S is positioned. This is
+particularly usefull to create a case statement based on string labels. For example:
+  <PRE class=syntax>
+  case StrIndex(S, 'zero', 'one', 'two') of
+    0: // handle case where S = 'zero'
+    1: // handle case where S = 'one'
+    2: // handle case where S = 'two'
+  else
+    //
+  end;
+  </PRE>
+[Parameters]
+Count=2
+1=S:string=The string to test.
+2=List:array of string=Array of strings to search in.
+[Result]
+If the supplied string exists in the List array the zero based index of the position
+at which it appears is returned. If the string doesn't exist in the array -1 is
+returned. Note that the string comparison is case insensitive but is base on the
+current locale (ie it uses AnsiSameText).
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrILastPos(const SubStr, S: AnsiString): Integer;
+[ShortDescr]
+Returns the index of the last occurrence of SubStr in S.
+[Description]
+StrLastPos scans the supplied string and returns the index of the first character
+of the last occurrence of the supplied sub-string. The comparison is case-insensitive.
+[Parameters]
+Count=2
+1=SubStr:AnsiString=The substring to find the last occurrence of.
+2=S:AnsiString=The string in which to search.
+[Result]
+The index of the last occurrence of SubStr in S. If the sub-string does not exist
+at all the result is 0.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrLastPos
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function StrLastPos(const SubStr, S: AnsiString): Integer;
 [ShortDescr]
 Returns the index of the last occurrence of SubStr in S.
@@ -1135,6 +1220,52 @@ Unit=JclStrings
 Category=String manipulation
 SubCat=String Search and Replace Routines
 Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrILastPos
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrIPos(const SubStr, S: AnsiString): Integer;
+[ShortDescr]
+Returns the index of the first occurrence of SubStr in S.
+[Description]
+StrIPos scans the supplied string and returns the index of the first character
+of the first occurrence of the supplied sub-string. The comparison is case-insensitive.
+[Parameters]
+Count=2
+1=SubStr:AnsiString=The substring to find the last occurrence of.
+2=S:AnsiString=The string in which to search.
+[Result]
+The index of the first occurrence of SubStr in S. If the sub-string does not exist
+at all the result is 0.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StrIsOneOf(const S: AnsiString; const List: array of AnsiString): Boolean;
+[ShortDescr]
+Tests whether the supplied string exists in the list of strings.
+[Description]
+StrIsOneOf tests whether the supplied string exists in the list of strings. Note
+that the comparison is case insensitive.
+[Parameters]
+Count=2
+1=S:AnsiString=The string to test.
+2=List:array of AnsiString=The list of string in which to search.
+[Result]
+If the string exists in the supplied list the result is True, otherwise it's False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=Anthony Steele;asteele@iafrica.com
 Delphi=3,4,5
 <DECL>-------------------------------------------------------------------------
 [Declaration]
@@ -1168,6 +1299,32 @@ Delphi=3,4,5
 [SeeAlso]
 Count=1
 1=StrSearch
+<DECL>-------------------------------------------------------------------------
+[Declaration]
+function StrPrefixIndex(const S: string; const Prefixes: array of AnsiString): Integer;
+[ShortDescr]
+Returns the index at which a string appears which is used as a prefix.
+[Description]
+StrPrefixIndex returns the index into the prefixes array at which a string appears
+with which the supplied string is prefixed. For example,
+StrPrefixIndex('banana', ['call', 'ban', 'bana']) will return 1. Note that as
+can be seen from the example, as soon as a prefix is found the routine stops and
+doesn't attempt to find a better (longer) match.
+[Parameters]
+Count=2
+1=S:string=The string to test.
+2=Prefixes:array of AnsiString=The list of prefixes.
+[Result]
+The zero based index into Prefixes at which the first string appears that is used
+as a prefix in the supplied string. If none of the Prefixes array strings qualifies
+the result is -1.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function StrSearch(const Substr, Str: string; const Index: Integer = 1): Integer;
@@ -1390,6 +1547,28 @@ Count=1
 1=StrLeft
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function CharEqualNoCase(const C1, C2: AnsiChar): Boolean;
+[ShortDescr]
+Test whether two characters are equal except possibly for case.
+[Description]
+CharEqualNoCase determines whether two characters are equal except possibly for
+case differences. For example, 'a' and 'a' are obviously equal but so are 'a' and 'A'.
+[Parameters]
+Count=1
+1=C1:AnsiChar=The first character to test.
+1=C1:AnsiChar=The second character to test.
+[Result]
+If the supplied characters are equal except for case, the result is True, otherwise
+the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function CharIsAlpha(const C: AnsiChar): Boolean;
 [ShortDescr]
 Tests whether C is an alpha character.
@@ -1440,6 +1619,25 @@ Count=3
 3=CharIsDigit
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function CharIsBlank(const C: AnsiChar): Boolean;
+[ShortDescr]
+Test whether C is a blank character.
+[Description]
+CharIsBlank returns whether or not C is a blank character.
+[Parameters]
+Count=1
+1=C:AnsiChar=The character to test.
+[Result]
+If C is a blank character the return value is True, otherwise the return value is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function CharIsControl(const C: AnsiChar): Boolean;
 [ShortDescr]
 Tests whether C is a control character.
@@ -1451,6 +1649,26 @@ Count=1
 1=C:AnsiChar=Character to test.
 [Result]
 If C is a control character the result is True, otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CharIsDelete(const C: AnsiChar): Boolean;
+[ShortDescr]
+Tests whether C is a delete character.
+[Description]
+CharIsDelete tests whether C is a delete character. That is, if it has an
+ordinal value of 8.
+[Parameters]
+Count=1
+1=C:AnsiChar=Character to test.
+[Result]
+If C is a delete character the result is True, otherwise the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -1485,6 +1703,25 @@ Count=3
 3=CharIsAlphaNum
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function CharIsLower(const C: AnsiChar): Boolean;
+[ShortDescr]
+Tests whether a character is lowercase.
+[Description]
+CharIsLower returns whether the specified character is lowercase.
+[Parameters]
+Count=1
+1=C:AnsiChar=The character to test.
+[Result]
+If C is lowercase the return value is True, otherwise the return value is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function CharIsNumber(const C: AnsiChar): Boolean;
 [ShortDescr]
 Tests whether C is a number.
@@ -1512,6 +1749,48 @@ Count=3
 1=CharIsAlpha
 2=CharIsAlphaNum
 3=CharIsDigit
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CharIsPrintable(const C: AnsiChar): Boolean;
+[ShortDescr]
+Tests whether a character is printable.
+[Description]
+CharIsPrintable returns whether the specified character is printable. A printable
+character is any character which is not a control character and as such has an
+ordinal value larger than 32.
+[Parameters]
+Count=1
+1=C:AnsiChar=The character to test.
+[Result]
+If C is printable the return value is True, otherwise the return value is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CharIsPunctuation(const C: AnsiChar): Boolean;
+[ShortDescr]
+Tests whether a character is a punctuation character.
+[Description]
+CharIsPunctuation returns whether the specified character is a punctuation character.
+An example would be '.'.
+[Parameters]
+Count=1
+1=C:AnsiChar=The character to test.
+[Result]
+If C is a punctuation character the return value is True, otherwise the return
+value is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CharIsReturn(const C: AnsiChar): Boolean;
@@ -1559,6 +1838,25 @@ Count=1
 1=CharIsWhiteSpace
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function CharIsUpper(const C: AnsiChar): Boolean;
+[ShortDescr]
+Tests whether a character is uppercase.
+[Description]
+CharIsUpper returns whether the specified character is uppercase.
+[Parameters]
+Count=1
+1=C:AnsiChar=The character to test.
+[Result]
+If C is uppercase the return value is True, otherwise the return value is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function CharIsWhiteSpace(const C: AnsiChar): Boolean;
 [ShortDescr]
 Tests whether C represents space.
@@ -1582,6 +1880,51 @@ Delphi=3,4,5
 [SeeAlso]
 Count=1
 1=CharIsSpace
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CharType(const C: AnsiChar): Word;
+[ShortDescr]
+Returns character type information.
+[Description]
+The CharType function returns character type information about the specified
+character. This routine returns the same information as routines such as IsCharControl.
+For further information about character type information see the documentation for
+the GetStringTypeEx routine in the Platform SDK.
+[Parameters]
+Count=1
+1=C:AnsiChar=The character for which to retriev type information.
+[Result]
+The type of the character, this can be one of the following values.
+  <TABLE>
+  <TR VALIGN="top">
+  <TH align=left width=20%>Name</TH><TH align=left width=14%>Value</TH><TH align=left width=66%>Meaning</TH>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_UPPER</TD><TD width=14%>0x0001</TD><TD width=66%>Uppercase </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_LOWER</TD><TD width=14%>0x0002</TD><TD width=66%>Lowercase </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_DIGIT</TD><TD width=14%>0x0004</TD><TD width=66%>Decimal digits </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_SPACE</TD><TD width=14%>0x0008</TD><TD width=66%>Space characters </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_PUNCT</TD><TD width=14%>0x0010</TD><TD width=66%>Punctuation </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_CNTRL</TD><TD width=14%>0x0020</TD><TD width=66%>Control characters </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_BLANK</TD><TD width=14%>0x0040</TD><TD width=66%>Blank characters </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_XDIGIT</TD><TD width=14%>0x0080</TD><TD width=66%>Hexadecimal digits </TD>
+  </TR>
+  <TR VALIGN="top"><TD width=20%>C1_ALPHA</TD><TD width=14%>0x0100</TD><TD width=66%>Any linguistic character: alphabetic, syllabary, or ideographic </TD>
+  </TR>
+  </TABLE>
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=Character Test Routines
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
 <DECL>-------------------------------------------------------------------------
 [Declaration]
 function CharHex(const C: AnsiChar): Byte;
