@@ -1,35 +1,35 @@
-@@$Shell
+@@$Windows.Shell
 <GROUP $Windows>
 <TITLE Shell>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
-@@$Shell.FilesandFolders
-<GROUP $Shell>
+@@$Windows.Shell.FilesandFolders
+<GROUP $Windows.Shell>
 <TITLE Files and Folders>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
-@@$Shell.MemoryManagement
-<GROUP $Shell>
+@@$Windows.Shell.MemoryManagement
+<GROUP $Windows.Shell>
 <TITLE Memory Management>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
-@@$Shell.Miscellaneous
-<GROUP $Shell>
+@@$Windows.Shell.Miscellaneous
+<GROUP $Windows.Shell>
 <TITLE Miscellaneous>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
-@@$Shell.PathsandPIDLs
-<GROUP $Shell>
+@@$Windows.Shell.PathsandPIDLs
+<GROUP $Windows.Shell>
 <TITLE Paths and PIDLs>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
-@@$Shell.Shortcuts
-<GROUP $Shell>
+@@$Windows.Shell.Shortcuts
+<GROUP $Windows.Shell>
 <TITLE Shortcuts>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@OpenFolder
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Opens a folder in Explorer.
 Description:
@@ -47,7 +47,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OpenSpecialFolder
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Opens a special folder in Explorer,.
 Description:
@@ -64,7 +64,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@SHDeleteFolder
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Deletes the specified folder.
 Description:
@@ -85,7 +85,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHDeleteFiles
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Deletes one or more files.
 Description:
@@ -107,7 +107,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHRenameFile
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Renames a file.
 Description:
@@ -129,7 +129,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TSHRenameOption
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Enumeration used by SHRenameFile to specify the rename options.
 Description:
@@ -143,11 +143,11 @@ Quick info:
 @@TSHRenameOption.roRenameOnCollision
   If renaming causes a naming conflict (ie the file already exists) then automatically rename the destination file. This will usually result in a name like 'Copy of ...'. If not specified the renaming fails in case of a conflict.
 @@TSHRenameOptions
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 <COMBINE TSHRenameOption>
 --------------------------------------------------------------------------------
 @@TSHDeleteOption
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Enumeration used by SHDeleteFiles and SHDeleteFolder to specify the deletion options.
 Description:
@@ -164,11 +164,11 @@ Quick info:
 @@TSHDeleteOption.doFilesOnly
   If a wildcard expression is specified, only delete files, not folders.
 @@TSHDeleteOptions
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 <COMBINE TSHDeleteOption>
 --------------------------------------------------------------------------------
 @@TEnumFolderRec
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   The TEnumFolderRec is used to return information about an item that was found during the enumeration of a folder using the SHEnumFolderFirst and SHEnumFolderNext functions. It also holds data needed to perform the enumeration. Because of this you must always call SHEnumFolderClose to release these resources if SHEnumFolderFirst returned True.
 Description:
@@ -193,7 +193,7 @@ Quick info:
   IShellFolder interface of the folder we are enumerating.
 --------------------------------------------------------------------------------
 @@TEnumFolderFlag
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Enumeration used by SHEnumFolderFirst to specify the type of items to include in the enumeration.
 Description:
@@ -211,11 +211,11 @@ Quick info:
 @@TEnumFolderFlag.efIncludeHidden
   include hidden items in the enumeration
 @@TEnumFolderFlags
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 <COMBINE TEnumFolderFlag>
 --------------------------------------------------------------------------------
 @@SHEnumFolderFirst
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Begins the enumeration of the items in a folder
 Description:
@@ -253,7 +253,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHEnumFolderClose
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Closes an enumeration sequence started by SHEnumFolderFirst.
 Description:
@@ -269,7 +269,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHEnumFolderNext
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Retrieves the next item in the enumeration matching the attributes specified by a previous call to SHEnumFolderFirst.
 Description:
@@ -291,7 +291,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DisplayPropDialog
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Displays the properties sheet of a shell item.
 Description:
@@ -309,7 +309,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DisplayContextMenuPidl
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Displays the context menu of a shell item.
 Description:
@@ -331,7 +331,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DisplayContextMenu
-<GROUP $Shell.FilesandFolders>
+<GROUP $Windows.Shell.FilesandFolders>
 Summary:
   Displays the context menu of a shell item.
 Description:
@@ -351,7 +351,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OverlayIcon
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Overlays Icon with OverlayIcon.
 Description:
@@ -375,7 +375,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OverlayIconShortCut
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Overlays an icon with the system 'shortcut' icon.
 Description:
@@ -394,7 +394,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OverlayIconShared
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Overlays an icon with the system 'shared' icon.
 Description:
@@ -413,7 +413,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetSystemIcon
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Retrieves the icon at the specified index from the system imagelist.
 Description:
@@ -439,7 +439,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHDllGetVersion
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Reads version information from the specified file.
 Description:
@@ -462,7 +462,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellExec
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Performs an action on a file.
 Description:
@@ -485,7 +485,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@ShellExecAndWait
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Performs an action on a file.
 Description:
@@ -511,7 +511,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@ShellOpenAs
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Invokes the shell's "Open With..." dialog for the specified file.
 Description:
@@ -532,7 +532,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@ShellRasDial
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Invokes the RAS Connect dialog.
 Description:
@@ -548,7 +548,7 @@ Quick info:
   Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@ShellRunControlPanel
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Executes a control panel application.
 Description:
@@ -566,7 +566,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@TJclFileExeType
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Enumeration use by GetFileExeType representing a type of executable file.
 Description:
@@ -585,7 +585,7 @@ Quick info:
   32 bit Windows console executable.
 --------------------------------------------------------------------------------
 @@GetFileExeType
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Returns the type of executable file.
 Description:
@@ -599,7 +599,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@ShellFindExecutable
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Returns the executable associated with a file.
 Description:
@@ -616,7 +616,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@SHReallocMem
-<GROUP $Shell.MemoryManagement>
+<GROUP $Windows.Shell.MemoryManagement>
 Summary:
   Reallocates (changes the size) a block of memory in the shell's memory space. The contents of the block prior to reallocation are reserved but there is no guarantee that the pointer will retain its value. The newly allocated block may be on a different address if there is not enough room to expand it in place. Also the actual size of the allocated block maybe slightly larger then the requested size because of additional maintenance data (not accessible).
 Description:
@@ -637,7 +637,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHGetMem
-<GROUP $Shell.MemoryManagement>
+<GROUP $Windows.Shell.MemoryManagement>
 Summary:
   Allocates memory using the Shell's memory allocator.
 Description:
@@ -659,7 +659,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHAllocMem
-<GROUP $Shell.MemoryManagement>
+<GROUP $Windows.Shell.MemoryManagement>
 Summary:
   Allocates memory using the Shell's memory allocator.
 Description:
@@ -680,7 +680,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHFreeMem
-<GROUP $Shell.MemoryManagement>
+<GROUP $Windows.Shell.MemoryManagement>
 Summary:
   Frees the memory pointed to by P.
 Description:
@@ -702,7 +702,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TShellLink
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 Summary:
   The TShellLink record is used when creating or resolving shortcuts with the ShellLinkCreate , ShellLinkCreateSystem and ShellLinkResolve functions.
 Description:
@@ -736,11 +736,11 @@ Quick info:
 @@TShellLink.HotKey
   Hotkey that activates the shell link. Modifiers, such as CTRL, ALT and SHIFT can be assigned as the high byte of the hotkey field (used 1, 2 and 4 for shift, control and alt respectively).
 @@PShellLink
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 <COMBINE TShellLink>
 --------------------------------------------------------------------------------
 @@ShellLinkFree
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 Summary:
   Releases resources held by the ShellLink record.
 Description:
@@ -758,7 +758,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkResolve
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 Summary:
   Resolves a shortcut.
 Description:
@@ -781,7 +781,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkCreate
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 Summary:
   Creates a new shortcut.
 Description:
@@ -806,7 +806,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkCreateSystem
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 Summary:
   Creates a new shortcut in the specified system folder.
 Description:
@@ -832,7 +832,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ShellLinkGetIcon
-<GROUP $Shell.Shortcuts>
+<GROUP $Windows.Shell.Shortcuts>
 Summary:
   Returns the icon associate with a shell link.
 Description:
@@ -848,7 +848,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@SHGetItemInfoTip
-<GROUP $Shell.Miscellaneous>
+<GROUP $Windows.Shell.Miscellaneous>
 Summary:
   Returns the item's info tip.
 Description:
@@ -867,7 +867,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrRetFreeMem
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Frees the memory associated with the StrRet record.
 Description:
@@ -885,7 +885,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@StrRetToString
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Converts a TStrRet record to a string.
 Description:
@@ -909,7 +909,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlToPath
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Converts an item identifier list to a path.
 Description:
@@ -928,7 +928,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathToPidl
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Converts a path to an item identifier list.
 Description:
@@ -951,7 +951,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathToPidlBind
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Converts a path to an item identifier list and binds to its parent folder.
 Description:
@@ -977,7 +977,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DriveToPidlBind
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Converts a drive to an item identifier list and binds to the CSIDL_DRIVES folder.
 Description:
@@ -999,7 +999,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlBindToParent
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Binds the Folder to the parent folder of the specified item identifier.
 Description:
@@ -1020,7 +1020,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlCompare
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Compares two item identifier lists.
 Description:
@@ -1041,7 +1041,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlCopy
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Copies the item identifier list from source into destination.
 Description:
@@ -1059,7 +1059,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlFree
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Frees the given item identifier list.
 Description:
@@ -1078,7 +1078,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlGetDepth
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Returns the depth of the given item identifier list.
 Description:
@@ -1096,7 +1096,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlGetLength
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Returns the length of the given item identifier list.
 Description:
@@ -1116,7 +1116,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PidlGetNext
-<GROUP $Shell.PathsandPIDLs>
+<GROUP $Windows.Shell.PathsandPIDLs>
 Summary:
   Returns the next item identifier in the supplied item identifier list.
 Description:
