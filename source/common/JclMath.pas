@@ -137,16 +137,16 @@ function ArcSec(X: Float): Float;
 function ArcSin(X: Float): Float;
 function ArcTan(X: Float): Float;
 function ArcTan2(Y, X: Float): Float;
-function Cos(X: Float): Float;
-function Cot(X: Float): Float;
+function Cos(X: Float): Float; overload;
+function Cot(X: Float): Float; overload;
 function Coversine(X: Float): Float;
-function Csc(X: Float): Float;
+function Csc(X: Float): Float; overload;
 function Exsecans(X: Float): Float;
 function Haversine(X: Float): Float;
-function Sec(X: Float): Float;
-function Sin(X: Float): Float;
+function Sec(X: Float): Float; overload;
+function Sin(X: Float): Float; overload;
 procedure SinCos(X: Float; var Sin, Cos: Float);
-function Tan(X: Float): Float;
+function Tan(X: Float): Float; overload;
 function Versine(X: Float): Float;
 
 { Hyperbolic }
@@ -157,12 +157,12 @@ function ArcCscH(X: Float): Float;
 function ArcSecH(X: Float): Float;
 function ArcSinH(X: Float): Float;
 function ArcTanH(X: Float): Float;
-function CosH(X: Float): Float;
-function CotH(X: Float): Float;
-function CscH(X: Float): Float;
-function SecH(X: Float): Float;
-function SinH(X: Float): Float;
-function TanH(X: Float): Float;
+function CosH(X: Float): Float; overload;
+function CotH(X: Float): Float; overload;
+function CscH(X: Float): Float; overload;
+function SecH(X: Float): Float; overload;
+function SinH(X: Float): Float; overload;
+function TanH(X: Float): Float; overload;
 
 { Coordinate conversion }
 
@@ -171,14 +171,14 @@ procedure FloatToDegMinSec(const X: Float; var Degs, Mins, Secs: Float); // obso
 
 { Exponential }
 
-function Exp(const X: Float): Float;
-function Power(const Base, Exponent: Float): Float;
-function PowerInt(const X: Float; N: Integer): Float;
+function Exp(const X: Float): Float; overload;
+function Power(const Base, Exponent: Float): Float; overload;
+function PowerInt(const X: Float; N: Integer): Float; overload;
 function TenToY(const Y: Float): Float;
 function TruncPower(const Base, Exponent: Float): Float;
 function TwoToY(const Y: Float): Float;
 
-{ Floating point support routines }
+{ Floating point numbers support routines }
 
 function IsFloatZero(const X: Float): Boolean;
 function FloatsEqual(const X, Y: Float): Boolean;
@@ -444,6 +444,71 @@ function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 procedure InitCrc32(Polynom, Start: Cardinal);
 procedure InitCrc16(Polynom, Start: Word);
 {$ENDIF CRCINIT}
+
+{ Complex numbers }
+
+type
+  TRectComplex = record
+    Re: Float;
+    Im: Float
+  end;
+
+  TPolarComplex = record
+    Radius: Float;
+    Angle: Float
+  end;
+
+function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex; overload;
+function RectComplex(const Z: TPolarComplex): TRectComplex; overload;
+function PolarComplex(const Radius: Float; const Angle: Float = 0): TPolarComplex; overload;
+function PolarComplex(const Z: TRectComplex): TPolarComplex; overload;
+
+function Equal(const Z1, Z2: TRectComplex): Boolean; overload;
+function Equal(const Z1, Z2: TPolarComplex): Boolean; overload;
+
+function IsZero(const Z: TRectComplex): Boolean; overload;
+function IsZero(const Z: TPolarComplex): Boolean; overload;
+function IsInfinite(const Z: TRectComplex): Boolean; overload;
+function IsInfinite(const Z: TPolarComplex): Boolean; overload;
+
+function Norm(const Z: TRectComplex): Float; overload;
+function Norm(const Z: TPolarComplex): Float; overload;
+function AbsSqr(const Z: TRectComplex): Float; overload;
+function AbsSqr(const Z: TPolarComplex): Float; overload;
+function Conjugate(const Z: TRectComplex): TRectComplex; overload;
+function Conjugate(const Z: TPolarComplex): TPolarComplex; overload;
+function Inv(const Z: TRectComplex): TRectComplex; overload;
+function Inv(const Z: TPolarComplex): TPolarComplex; overload;
+function Neg(const Z: TRectComplex): TRectComplex; overload;
+function Neg(const Z: TPolarComplex): TPolarComplex; overload;
+
+function Sum(const Z1, Z2: TRectComplex): TRectComplex; overload;
+function Sum(const Z: array of TRectComplex): TRectComplex; overload;
+function Diff(const Z1, Z2: TRectComplex): TRectComplex;
+function Product(const Z1, Z2: TRectComplex): TRectComplex; overload;
+function Product(const Z1, Z2: TPolarComplex): TPolarComplex; overload;
+function Quotient(const Z1, Z2: TRectComplex): TRectComplex;
+
+function Ln(const Z: TPolarComplex): TRectComplex;
+function Exp(const Z: TRectComplex): TPolarComplex; overload;
+function Power(const Z: TPolarComplex; const Exponent: TRectComplex): TPolarComplex; overload;
+function Power(const Z: TPolarComplex; const Exponent: Float): TPolarComplex; overload;
+function PowerInt(const Z: TPolarComplex; const Exponent: Integer): TPolarComplex; overload;
+function Root(const Z: TPolarComplex; const K, N: Cardinal): TPolarComplex;
+
+function Cos(const Z: TRectComplex): TRectComplex; overload;
+function Sin(const Z: TRectComplex): TRectComplex; overload;
+function Tan(const Z: TRectComplex): TRectComplex; overload;
+function Cot(const Z: TRectComplex): TRectComplex; overload;
+function Sec(const Z: TRectComplex): TRectComplex; overload;
+function Csc(const Z: TRectComplex): TRectComplex; overload;
+
+function CosH(const Z: TRectComplex): TRectComplex; overload;
+function SinH(const Z: TRectComplex): TRectComplex; overload;
+function TanH(const Z: TRectComplex): TRectComplex; overload;
+function CotH(const Z: TRectComplex): TRectComplex; overload;
+function SecH(const Z: TRectComplex): TRectComplex; overload;
+function CscH(const Z: TRectComplex): TRectComplex; overload;
 
 implementation
 
@@ -951,7 +1016,7 @@ end;
 function ArcCotH(X: Float): Float;
 begin
   DomainCheck(Abs(X) = 1.0);
-  Result := 0.5 * Ln((X + 1.0) / (X - 1.0));
+  Result := 0.5 * System.Ln((X + 1.0) / (X - 1.0));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -959,7 +1024,7 @@ end;
 function ArcCscH(X: Float): Float;
 begin
   DomainCheck(X = 0);
-  Result := Ln((Sgn(X) * Sqrt(Sqr(X) + 1.0) + 1.0) / X);
+  Result := System.Ln((Sgn(X) * Sqrt(Sqr(X) + 1.0) + 1.0) / X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -967,7 +1032,7 @@ end;
 function ArcSecH(X: Float): Float;
 begin
   DomainCheck(Abs(X) > 1.0);
-  Result := Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
+  Result := System.Ln((Sqrt(1.0 - Sqr(X)) + 1.0) / X);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1209,13 +1274,13 @@ begin
   end
   else
   if Base > 0.0 then
-    Result := Exp(Exponent * Ln(Base))
+    Result := Exp(Exponent * System.Ln(Base))
   else
   begin
     IsAnInteger := (Frac(Exponent) = 0.0);
     if IsAnInteger then
     begin
-      Result := Exp(Exponent * Ln(Abs(Base)));
+      Result := Exp(Exponent * System.Ln(Abs(Base)));
       IsOdd := Abs(Round(ModFloat(Exponent, 2))) = 1;
       if IsOdd then
         Result := -Result;
@@ -3696,6 +3761,379 @@ end;
 
 {$ENDIF CRCINIT}
 
+//==================================================================================================
+// complex numbers support
+//==================================================================================================
+
+const
+  RectOne: TRectComplex = (Re: 1.0; Im: 0.0);
+  RectZero: TRectComplex = (Re: 0.0; Im: 0.0);
+  RectInfinity: TRectComplex = (Re: Infinity; Im: Infinity);
+
+//--------------------------------------------------------------------------------------------------
+
+function RectComplex(const Re: Float; const Im: Float = 0): TRectComplex;
+begin
+  Result.Re := Re;
+  Result.Im := Im;
+end;
+
+function RectComplex(const Z: TPolarComplex): TRectComplex;
+var
+  ASin, ACos: Float;
+begin
+  SinCos(Z.Angle, ASin, ACos);
+  Result.Re := Z.Radius * ACos;
+  Result.Im := Z.Radius * ASin;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PolarComplex(const Radius: Float; const Angle: Float = 0): TPolarComplex;
+begin
+  Result.Radius := Radius;
+  Result.Angle := Angle;
+end;
+
+function PolarComplex(const Z: TRectComplex): TPolarComplex;
+begin
+  Result.Radius := Sqrt(Sqr(Z.Re) + Sqr(Z.Im));
+  Result.Angle := ArcTan2(Z.Im, Z.Re);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Equal(const Z1, Z2: TRectComplex): Boolean;
+begin
+  Result := (Z1.Re = Z2.Re) and (Z1.Im = Z2.Im);
+end;
+
+function Equal(const Z1, Z2: TPolarComplex): Boolean;
+begin
+  Result := (Z1.Radius = Z2.Radius) and IsFloatZero(NormalizeAngle(Z1.Angle - Z2.Angle));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsZero(const Z: TRectComplex): Boolean;
+begin
+  Result := IsFloatZero(Z.Re) and IsFloatZero(Z.Im);
+end;
+
+function IsZero(const Z: TPolarComplex): Boolean;
+begin
+  Result := IsFloatZero(Z.Radius);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsInfinite(const Z: TRectComplex): Boolean;
+begin
+  Result := IsInfinite(Z.Re) or IsInfinite(Z.Im); 
+end;
+
+function IsInfinite(const Z: TPolarComplex): Boolean;
+begin
+  Result := IsInfinite(Z.Radius);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Norm(const Z: TRectComplex): Float;
+begin
+  Result := Sqrt(Sqr(Z.Re) + Sqr(Z.Im));
+end;
+
+function Norm(const Z: TPolarComplex): Float;
+begin
+  Result := Z.Radius;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function AbsSqr(const Z: TRectComplex): Float;
+begin
+  Result := Sqr(Z.Re) + Sqr(Z.Im);
+end;
+
+function AbsSqr(const Z: TPolarComplex): Float;
+begin
+  Result := Sqr(Z.Radius);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Conjugate(const Z: TRectComplex): TRectComplex; overload;
+begin
+  Result.Re :=  Z.Re;
+  Result.Im := -Z.Im;
+end;
+
+function Conjugate(const Z: TPolarComplex): TPolarComplex; overload;
+begin
+  Result.Radius :=  Z.Radius;
+  Result.Angle := -Z.Angle;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Inv(const Z: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+begin
+  Denom := Sqr(Z.Re) + Sqr(Z.Im);
+  Result.Re :=  Z.Re / Denom;
+  Result.Im := -Z.Im / Denom;
+end;
+
+function Inv(const Z: TPolarComplex): TPolarComplex;
+begin
+  Result.Radius := 1 / Z.Radius;
+  Result.Angle := - Z.Angle;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Neg(const Z: TRectComplex): TRectComplex; overload;
+begin
+  Result.Re := -Z.Re;
+  Result.Im := -Z.Im;
+end;
+
+function Neg(const Z: TPolarComplex): TPolarComplex; overload;
+begin
+  Result.Radius := Z.Radius;
+  Result.Angle := NormalizeAngle(Z.Angle + Pi);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Sum(const Z1, Z2: TRectComplex): TRectComplex;
+begin
+  Result.Re := Z1.Re + Z2.Re;
+  Result.Im := Z1.Im + Z2.Im;
+end;
+
+function Sum(const Z: array of TRectComplex): TRectComplex;
+var
+  I: Integer;
+begin
+  Result := RectZero;
+  for I := Low(Z) to High(Z) do
+  begin
+    Result.Re := Result.Re + Z[I].Re;
+    Result.Im := Result.Im + Z[I].Im;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Diff(const Z1, Z2: TRectComplex): TRectComplex;
+begin
+  Result.Re := Z1.Re - Z2.Re;
+  Result.Im := Z1.Im - Z2.Im;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Product(const Z1, Z2: TRectComplex): TRectComplex;
+begin
+  Result.Re := Z1.Re * Z2.Re - Z1.Im * Z2.Im;
+  Result.Im := Z1.Re * Z2.Im + Z1.Im * Z2.Re;
+end;
+
+function Product(const Z1, Z2: TPolarComplex): TPolarComplex;
+begin
+  Result.Radius := Z1.Radius * Z2.Radius;
+  Result.Angle := Z1.Angle + Z2.Angle;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Quotient(const Z1, Z2: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+begin
+  Denom := Sqr(Z2.Re) + Sqr(Z2.Im);
+  Result.Re := (Z1.Re * Z2.Re + Z1.Im * Z2.Im) / Denom;
+  Result.Im := (Z1.Im * Z2.Re - Z1.Re * Z2.Im) / Denom;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Ln(const Z: TPolarComplex): TRectComplex;
+begin
+  Result.Re := System.Ln(Z.Radius);
+  Result.Im := NormalizeAngle(Z.Angle);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Exp(const Z: TRectComplex): TPolarComplex;
+begin
+  Result.Radius := System.Exp(Z.Re);
+  Result.Angle := Z.Im;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Power(const Z: TPolarComplex; const Exponent: Float): TPolarComplex;
+begin
+  Result.Radius := Power(Z.Radius, Exponent);
+  Result.Angle := NormalizeAngle(Exponent * Z.Angle);
+end;
+
+function Power(const Z: TPolarComplex; const Exponent: TRectComplex): TPolarComplex;
+begin
+  Result := Exp(Product(Exponent, Ln(Z)));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PowerInt(const Z: TPolarComplex; const Exponent: Integer): TPolarComplex;
+begin
+  Result.Radius := PowerInt(Z.Radius, Exponent);
+  Result.Angle := NormalizeAngle(Exponent * Z.Angle);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Root(const Z: TPolarComplex; const K, N: Cardinal): TPolarComplex;
+begin
+  Result.Radius := Power(Z.Radius, 1.0 / N);
+  Result.Angle := NormalizeAngle((Z.Angle + K * TwoPi) / N);
+end;
+
+//--------------------------------------------------------------------------------------------------
+// complex trigonometric functions
+//--------------------------------------------------------------------------------------------------
+
+function Cos(const Z: TRectComplex): TRectComplex;
+var
+  ACos, ASin: Float;
+begin
+  SinCos(Z.Re, ASin, ACos);
+  Result.Re :=  ACos * CosH(Z.Im);
+  Result.Im := -ASin * SinH(Z.Im);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Sin(const Z: TRectComplex): TRectComplex;
+var
+  ACos, ASin: Float;
+begin
+  SinCos(Z.Re, ASin, ACos);
+  Result.Re := ASin * CosH(Z.Im);
+  Result.Im := ACos * SinH(Z.Im);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Tan(const Z: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+  ACos, ASin: Float;
+begin
+  SinCos(2.0 * Z.Re, ASin, ACos);
+  Denom := ACos + CosH(2.0 * Z.Im);
+  Result.Re := ASin / Denom;
+  Result.Im := SinH(2.0 * Z.Im) / Denom;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Cot(const Z: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+  ACos, ASin: Float;
+begin
+  SinCos(2.0 * Z.Re, ASin, ACos);
+  Denom := CosH(2.0 * Z.Im) - ACos;
+  Result.Re := ASin / Denom;
+  Result.Im := -SinH(2.0 * Z.Im) / Denom;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Sec(const Z: TRectComplex): TRectComplex;
+begin
+  Result := Quotient(RectOne, Cos(Z));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Csc(const Z: TRectComplex): TRectComplex;
+begin
+  Result := Quotient(RectOne, Sin(Z));
+end;
+
+//--------------------------------------------------------------------------------------------------
+// complex hyperbolic functions
+//--------------------------------------------------------------------------------------------------
+
+function CosH(const Z: TRectComplex): TRectComplex;
+var
+  ACos, ASin: Float;
+begin
+  SinCos(Z.Im, ASin, ACos);
+  Result.Re := CosH(Z.Re) * ACos;
+  Result.Im := SinH(Z.Re) * ASin;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SinH(const Z: TRectComplex): TRectComplex;
+var
+  ACos, ASin: Float;
+begin
+  SinCos(Z.Im, ASin, ACos);
+  Result.Re := SinH(Z.Re) * ACos;
+  Result.Im := CosH(Z.Re) * ASin;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TanH(const Z: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+  ACos, ASin: Float;
+begin
+  SinCos(2.0 * Z.Im, ASin, ACos);
+  Denom := CosH(2.0 * Z.Re) + ACos;
+  Result.Re := SinH(2.0 * Z.Re) / Denom;
+  Result.Im := ASin / Denom;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function CotH(const Z: TRectComplex): TRectComplex;
+var
+  Denom: Float;
+  ACos, ASin: Float;
+begin
+  SinCos(2.0 * Z.Im, ASin, ACos);
+  Denom := CosH(2.0 * Z.Re) - ACos;
+  Result.Re := SinH(2.0 * Z.Re) / Denom;
+  Result.Im := -ASin / Denom;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function SecH(const Z: TRectComplex): TRectComplex;
+begin
+  Result := Quotient(RectOne, CosH(Z));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function CscH(const Z: TRectComplex): TRectComplex;
+begin
+  Result := Quotient(RectOne, SinH(Z));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 // History:
 
 // ????-??-??:
@@ -3732,6 +4170,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.17  2004/10/12 17:23:50  rrossmair
+// - added complex number support (procedural)
+//
 // Revision 1.16  2004/10/01 06:50:13  marquardt
 // IsNan use to IsNaN
 //
