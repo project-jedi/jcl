@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 30, 2001                                              }
+{ Last modified: February 07, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -532,6 +532,9 @@ uses
 {$IFOPT W+}
   {$DEFINE StackFramesWasOn}
 {$ENDIF W+}
+
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
 
 //==============================================================================
 // Diagnostics
