@@ -66,6 +66,12 @@ type
 function UnregisterAutoExec(ExecKind: TExecKind; const Name: string): Boolean;
 function RegisterAutoExec(ExecKind: TExecKind; const Name, Cmdline: string): Boolean;
 
+function RegSaveList(const RootKey: HKEY; const Key: string; const ListName: string;
+  const Items: TStrings): Boolean;
+function RegLoadList(const RootKey: HKEY; const Key: string; const ListName: string;
+  const SaveTo: TStrings): Boolean;
+function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+
 implementation
 
 uses
@@ -137,11 +143,10 @@ begin
   Result := False;
   if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
-    result := RegDeleteValue(Regkey, PChar(Name)) = ERROR_SUCCESS;
-    if result then
-      RegCloseKey(RegKey)
-    else
-      ValueError(Key,Name);
+    Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
+    RegCloseKey(RegKey);
+    if not Result then
+      ValueError(Key, Name);
   end
   else
     WriteError(Key);
@@ -405,7 +410,7 @@ begin
     RegCloseKey(RegKey);
   end
   else
-    ReadError(key);
+    ReadError(Key);
 end;
 
 //------------------------------------------------------------------------------
@@ -438,7 +443,7 @@ begin
     RegCloseKey(RegKey);
   end
   else
-    ReadError(key);
+    ReadError(Key);
 end;
 
 //------------------------------------------------------------------------------
@@ -456,7 +461,63 @@ begin
     RegCloseKey(RegKey);
   end
   else
-    ReadError(key);
+    ReadError(Key);
+end;
+
+//------------------------------------------------------------------------------
+
+function RegSaveList(const RootKey: HKEY; const Key: string;
+  const ListName: string; const Items: TStrings): Boolean;
+var
+  I: Integer;
+  Subkey: string;
+begin
+  Result := False;
+  Subkey := Key + '\' + ListName;
+  if RegCreateKey(RootKey, Subkey, '') = ERROR_SUCCESS then
+  begin
+    // Save Number of strings
+    RegWriteInteger(RootKey, Subkey, 'Items', Items.Count);
+    for I := 1 to Items.Count do
+      RegWriteString(RootKey, Subkey, IntToStr(I), Items[I-1]);
+    Result := True;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegLoadList(const RootKey: HKEY; const Key: string;
+  const ListName: string; const SaveTo: TStrings): Boolean;
+var
+  I, N: Integer;
+  Subkey: string;
+begin
+  SaveTo.Clear;
+  Subkey := Key + '\' + ListName;
+  N := RegReadInteger(RootKey, Subkey, 'Items');
+  for I := 1 to N do
+    SaveTo.Add(RegReadString(RootKey, Subkey, IntToStr(I)));
+  Result := N > 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function RegDelList(const RootKey: HKEY; const Key: string; const ListName: string): Boolean;
+var
+  I, N: Integer;
+  Subkey: string;
+begin
+  Result := False;
+  Subkey := Key + '\' + ListName;
+  N := RegReadIntegerDef(RootKey, Subkey, 'Items', -1);
+  if N > 0 then
+    if RegDeleteEntry(RootKey, Subkey, 'Items') then
+      for I := 1 to N do
+      begin
+        Result := RegDeleteEntry(RootKey, Subkey, IntToStr(I));
+        if not Result then
+          Break;
+      end;
 end;
 
 end.
