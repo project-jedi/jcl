@@ -138,7 +138,7 @@ type
 
   PUTF7 = ^UTF7;
   UTF7 = Char;
-  PUTF8 = ^PUTF8;
+  PUTF8 = ^UTF8;
   UTF8 = Char;
   PUTF16 = ^UTF16;
   UTF16 = WideChar;
