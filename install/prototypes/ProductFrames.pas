@@ -26,6 +26,7 @@
 interface
 
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 uses
   SysUtils, Classes,
