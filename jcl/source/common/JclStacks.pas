@@ -49,7 +49,7 @@ type
     procedure Push(AInterface: IInterface);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
   TJclStrStack = class(TJclAbstractContainer, IJclStrStack)
@@ -66,7 +66,7 @@ type
     procedure Push(const AString: string);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
   TJclStack = class(TJclAbstractContainer, IJclStack)
@@ -83,18 +83,21 @@ type
     procedure Push(AObject: TObject);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
 implementation
 
 //=== { TJclIntfStack } ======================================================
 
-constructor TJclIntfStack.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfStack.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
 
@@ -126,7 +129,10 @@ end;
 
 procedure TJclIntfStack.Grow;
 begin
-  FCapacity := FCapacity + FCapacity div 4;
+  if FCapacity > 64 then
+    FCapacity := FCapacity + FCapacity div 4
+  else
+    FCapacity := FCapacity * 4;
   SetLength(FElements, FCapacity);
 end;
 
@@ -169,11 +175,14 @@ end;
 
 //=== { TJclStrStack } =======================================================
 
-constructor TJclStrStack.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStrStack.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
 
@@ -205,7 +214,10 @@ end;
 
 procedure TJclStrStack.Grow;
 begin
-  FCapacity := FCapacity + FCapacity div 4;
+  if FCapacity > 64 then
+    FCapacity := FCapacity + FCapacity div 4
+  else
+    FCapacity := FCapacity * 4;
   SetLength(FElements, FCapacity);
 end;
 
@@ -248,11 +260,14 @@ end;
 
 //=== { TJclStack } ==========================================================
 
-constructor TJclStack.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStack.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
 
@@ -284,7 +299,10 @@ end;
 
 procedure TJclStack.Grow;
 begin
-  FCapacity := FCapacity + FCapacity div 4;
+  if FCapacity > 64 then
+    FCapacity := FCapacity + FCapacity div 4
+  else
+    FCapacity := FCapacity * 4;
   SetLength(FElements, FCapacity);
 end;
 
@@ -329,6 +347,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.2  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

@@ -116,6 +116,7 @@ resourcestring
   RsEOperationNotSupported = 'Operation not supported';
   RsEValueNotFound = 'Value %s not found';
   RsENoCollection = 'Collection = nil';
+  RsEIllegalQueueCapacity = 'Illegal queue capacity';
 
 //=== JclCounter =============================================================
 resourcestring
@@ -1040,6 +1041,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.28  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.27  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

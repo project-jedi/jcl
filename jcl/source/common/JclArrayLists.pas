@@ -666,8 +666,11 @@ constructor TJclIntfArrayList.Create(ACapacity: Integer = DefaultContainerCapaci
 begin
   inherited Create;
   FSize := 0;
-  FCapacity := ACapacity;
-  SetLength(FElementData, ACapacity);
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
+  SetLength(FElementData, FCapacity);
 end;
 
 constructor TJclIntfArrayList.Create(ACollection: IJclIntfCollection);
@@ -675,7 +678,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EJclIllegalArgumentError.Create(RsENoCollection);
+    raise EJclIllegalArgumentError.CreateResRec(@RsENoCollection);
   Create(ACollection.Size);
   AddAll(ACollection);
 end;
@@ -696,7 +699,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if FSize = Capacity then
     Grow;
   if FSize <> Index then
@@ -721,7 +724,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -893,12 +896,15 @@ begin
     FCapacity := ACapacity;
   end
   else
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
 end;
 
 procedure TJclIntfArrayList.Grow;
 begin
-  Capacity := Capacity + Capacity div 4;
+  if Capacity > 64 then
+    Capacity := Capacity + Capacity div 4
+  else
+    Capacity := Capacity * 4;
 end;
 
 function TJclIntfArrayList.IndexOf(AInterface: IInterface): Integer;
@@ -998,7 +1004,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := FElementData[Index];
   FElementData[Index] := nil;
   if FSize <> Index then
@@ -1053,7 +1059,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   FElementData[Index] := AInterface;
 end;
 
@@ -1087,8 +1093,11 @@ constructor TJclStrArrayList.Create(ACapacity: Integer = DefaultContainerCapacit
 begin
   inherited Create;
   FSize := 0;
-  FCapacity := ACapacity;
-  SetLength(FElementData, ACapacity);
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
+  SetLength(FElementData, FCapacity);
 end;
 
 constructor TJclStrArrayList.Create(ACollection: IJclStrCollection);
@@ -1096,7 +1105,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EJclIllegalArgumentError.Create(RsENoCollection);
+    raise EJclIllegalArgumentError.CreateResRec(@RsENoCollection);
   Create(ACollection.Size);
   AddAll(ACollection);
 end;
@@ -1117,7 +1126,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if FSize = Capacity then
     Grow;
   if FSize <> Index then
@@ -1142,7 +1151,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1320,12 +1329,15 @@ begin
     FCapacity := ACapacity;
   end
   else
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
 end;
 
 procedure TJclStrArrayList.Grow;
 begin
-  Capacity := Capacity + Capacity div 4;
+  if Capacity > 64 then
+    Capacity := Capacity + Capacity div 4
+  else
+    Capacity := Capacity * 4;
 end;
 
 function TJclStrArrayList.IndexOf(const AString: string): Integer;
@@ -1420,7 +1432,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := FElementData[Index];
   FElementData[Index] := '';
   if FSize <> Index then
@@ -1475,7 +1487,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   FElementData[Index] := AString
 end;
 
@@ -1510,9 +1522,12 @@ constructor TJclArrayList.Create(ACapacity: Integer = DefaultContainerCapacity;
 begin
   inherited Create;
   FSize := 0;
-  FCapacity := ACapacity;
   FOwnsObjects := AOwnsObjects;
-  SetLength(FElementData, ACapacity);
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
+  SetLength(FElementData, FCapacity);
 end;
 
 constructor TJclArrayList.Create(ACollection: IJclCollection; AOwnsObjects: Boolean = True);
@@ -1520,7 +1535,7 @@ begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
-    raise EJclIllegalArgumentError.Create(RsENoCollection);
+    raise EJclIllegalArgumentError.CreateResRec(@RsENoCollection);
   Create(ACollection.Size, AOwnsObjects);
   AddAll(ACollection);
 end;
@@ -1541,7 +1556,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if FSize = Capacity then
     Grow;
   if FSize <> Index then
@@ -1564,7 +1579,7 @@ begin
   {$ENDIF THREADSAFE}
   Result := False;
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1741,12 +1756,15 @@ begin
     FCapacity := ACapacity;
   end
   else
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
 end;
 
 procedure TJclArrayList.Grow;
 begin
-  Capacity := Capacity + Capacity div 4;
+  if Capacity > 64 then
+    Capacity := Capacity + Capacity div 4
+  else
+    Capacity := Capacity * 4;
 end;
 
 function TJclArrayList.IndexOf(AObject: TObject): Integer;
@@ -1846,7 +1864,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := nil;
   FreeObject(FElementData[Index]);
   if FSize <> Index then
@@ -1901,7 +1919,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index >= FSize) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   FElementData[Index] := AObject;
 end;
 
@@ -1995,6 +2013,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/02/27 11:36:19  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

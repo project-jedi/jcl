@@ -185,7 +185,7 @@ end;
 
 procedure TJclIntfArraySet.Insert(Index: Integer; AInterface: IInterface);
 begin
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TJclIntfArraySet.Intersect(ACollection: IJclIntfCollection);
@@ -275,7 +275,7 @@ end;
 
 procedure TJclStrArraySet.Insert(Index: Integer; const AString: string);
 begin
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TJclStrArraySet.Intersect(ACollection: IJclStrCollection);
@@ -365,7 +365,7 @@ end;
 
 procedure TJclArraySet.Insert(Index: Integer; AObject: TObject);
 begin
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TJclArraySet.Intersect(ACollection: IJclCollection);
@@ -386,6 +386,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.2  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //
