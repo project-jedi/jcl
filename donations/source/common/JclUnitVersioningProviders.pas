@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclUnitVersioningProviders.pas.                                              }
+{ The Original Code is JclUnitVersioningProviders.pas.                                             }
 {                                                                                                  }
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
@@ -23,14 +23,14 @@
 {   This is a preview - class and function names might be changed                                  }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: January 31, 2005                                                                  }
+{ Last modified: February 12, 2005                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
 {
 Todo
 - store compressed?
-- make crossplatform compatible
+*done*- make crossplatform compatible
 }
 
 unit JclUnitVersioningProviders;
@@ -40,9 +40,13 @@ unit JclUnitVersioningProviders;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Contnrs,
-  JclPeImage, JclMiscExtensions, JclUnitVersioning;
+  {$IFDEF MSWINDOWS}
+  Windows, JclPeImage, JclMiscExtensions,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Types,
+  {$ENDIF LINUX}
+  SysUtils, Classes, Contnrs, JclUnitVersioning;
 
 type
   TJclUnitVersioningList = class(TObject)
@@ -59,7 +63,9 @@ type
     function Load(AModule: HMODULE): Boolean;
     function LoadFromStream(AStream: TStream): Boolean;
     function LoadFromDefaultResource(AModule: HMODULE): Boolean;
+    {$IFDEF MSWINDOWS}
     function LoadFromDefaultSection(AModule: HMODULE): Boolean;
+    {$ENDIF MSWINDOWS}
     procedure SaveToFile(AFileName: string);
     procedure SaveToStream(AStream: TStream);
 
@@ -89,8 +95,10 @@ type
     procedure ReleaseModuleUnitVersioningInfo(Instance: THandle); override;
   end;
 
+{$IFDEF MSWINDOWS}
 function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
   AUnitList: TJclUnitVersioningList): Boolean;
+{$ENDIF MSWINDOWS}
 
 implementation
 
@@ -220,8 +228,10 @@ end;
 function TJclUnitVersioningList.Load(AModule: HMODULE): Boolean;
 begin
   Result := LoadFromDefaultResource(AModule);
+  {$IFDEF MSWINDOWS}
   if not Result then
     Result := LoadFromDefaultSection(AModule);
+  {$ENDIF MSWINDOWS}    
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -244,6 +254,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function TJclUnitVersioningList.LoadFromDefaultSection(AModule: HMODULE): Boolean;
 var
   PeSectionStream: TJclPeSectionStream;
@@ -259,6 +270,7 @@ begin
     end;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -328,6 +340,7 @@ end;
 { TJclUnitVersioningProviderModule }
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function InsertUnitVersioningSection(const ExecutableFileName: TFileName;
   AUnitList: TJclUnitVersioningList): Boolean;
 var
@@ -346,6 +359,7 @@ begin
     SectionStream.Free;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
