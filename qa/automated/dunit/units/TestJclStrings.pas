@@ -3,8 +3,8 @@
 { Project JEDI Code Library (JCL)                                                                  }
 { DUnit Test Unit                                                                                  }
 {                                                                                                  }
-{ Covers:      JclStrings                                                                                  }
-{ Last Update: 19-Jan-2002                                                                         }
+{ Covers:      JclStrings                                                                          }
+{ Last Update: $Date$                                                        }
 {                                                                                                  }
 { The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
 { you may not use this file except in compliance with the License. You may obtain a copy of the    }
@@ -21,9 +21,11 @@ unit TestJclStrings;
 interface
 uses
   TestFramework,
-  //Windows,
-  //Dialogs,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ELSE}
   Types,
+  {$ENDIF}
   Classes,
   SysUtils,
   JclStrings;
@@ -2128,4 +2130,12 @@ initialization
   RegisterTest('JCLStrings', TJclStringSearchandReplace.Suite);
   RegisterTest('JCLStrings', TJclStringCharacterTestRoutines.Suite);
   RegisterTest('JCLStrings', TJclStringExtraction.Suite);
+
+// History:
+//
+// $Log$
+// Revision 1.3  2004/12/05 15:55:32  rrossmair
+// - restored D5 compatibility
+//
+
 end.
