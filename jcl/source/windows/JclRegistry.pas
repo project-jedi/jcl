@@ -91,6 +91,12 @@ function RegReadInt64(const RootKey: DelphiHKEY; const Key, Name: string): Int64
 function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
 function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
+function RegReadSingle(const RootKey: DelphiHKEY; const Key, Name: string): Single;
+function RegReadSingleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Single): Single;
+function RegReadDouble(const RootKey: DelphiHKEY; const Key, Name: string): Double;
+function RegReadDoubleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Double): Double;
+function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Extended;
+function RegReadExtendedDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Extended): Extended;
 
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: string): string;
@@ -125,6 +131,12 @@ procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Valu
 procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Int64); overload;
 procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: UInt64); overload;
 procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: UInt64); overload;
+procedure RegWriteSingle(const RootKey: DelphiHKEY; const Key, Name: string; Value: Single); overload;
+procedure RegWriteSingle(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Single); overload;
+procedure RegWriteDouble(const RootKey: DelphiHKEY; const Key, Name: string; Value: Double); overload;
+procedure RegWriteDouble(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Double); overload;
+procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; Value: Extended); overload;
+procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Extended); overload;
 
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string); overload;
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: string); overload;
@@ -698,6 +710,102 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function RegReadSingle(const RootKey: DelphiHKEY; const Key, Name: string): Single;
+var
+  DataType, DataSize: DWORD;
+  OldSep: Char;
+begin
+  RegGetDataType(RootKey, Key, Name, DataType);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    try
+      OldSep := DecimalSeparator;
+      DecimalSeparator := '.';
+      Result := StrToFloat(RegReadString(RootKey, Key, Name));
+    finally
+      DecimalSeparator := OldSep;
+    end
+  else
+    InternalGetData(RootKey, Key, Name, [REG_BINARY],
+      SizeOf(Result), DataType, @Result, DataSize);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RegReadSingleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Single): Single;
+begin
+  try
+    Result := RegReadSingle(RootKey, Key, Name);
+  except
+    Result := Def;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RegReadDouble(const RootKey: DelphiHKEY; const Key, Name: string): Double;
+var
+  DataType, DataSize: DWORD;
+  OldSep: Char;
+begin
+  RegGetDataType(RootKey, Key, Name, DataType);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    try
+      OldSep := DecimalSeparator;
+      DecimalSeparator := '.';
+      Result := StrToFloat(RegReadString(RootKey, Key, Name));
+    finally
+      DecimalSeparator := OldSep;
+    end
+  else
+    InternalGetData(RootKey, Key, Name, [REG_BINARY],
+      SizeOf(Result), DataType, @Result, DataSize);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RegReadDoubleDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Double): Double;
+begin
+  try
+    Result := RegReadDouble(RootKey, Key, Name);
+  except
+    Result := Def;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RegReadExtended(const RootKey: DelphiHKEY; const Key, Name: string): Extended;
+var
+  DataType, DataSize: DWORD;
+  OldSep: Char;
+begin
+  RegGetDataType(RootKey, Key, Name, DataType);
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    try
+      OldSep := DecimalSeparator;
+      DecimalSeparator := '.';
+      Result := StrToFloat(RegReadString(RootKey, Key, Name));
+    finally
+      DecimalSeparator := OldSep;
+    end
+  else
+    InternalGetData(RootKey, Key, Name, [REG_BINARY],
+      SizeOf(Result), DataType, @Result, DataSize);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RegReadExtendedDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Extended): Extended;
+begin
+  try
+    Result := RegReadExtended(RootKey, Key, Name);
+  except
+    Result := Def;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
 begin
   Result := RegReadAnsiString(RootKey, Key, Name);
@@ -979,6 +1087,66 @@ begin
     RegWriteString(RootKey, Key, Name, DataType, Format('%u', [Value]))
   else
   if DataType in [REG_QWORD, REG_BINARY] then
+    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+  else
+    DataError(Key, Name);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteSingle(const RootKey: DelphiHKEY; const Key, Name: string; Value: Single);
+begin
+  RegWriteSingle(RootKey, Key, Name, REG_BINARY, Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteSingle(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Single);
+begin
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%g', [Value]))
+  else
+  if DataType in [REG_BINARY] then
+    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+  else
+    DataError(Key, Name);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteDouble(const RootKey: DelphiHKEY; const Key, Name: string; Value: Double);
+begin
+  RegWriteDouble(RootKey, Key, Name, REG_BINARY, Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteDouble(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Double);
+begin
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%g', [Value]))
+  else
+  if DataType in [REG_BINARY] then
+    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+  else
+    DataError(Key, Name);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; Value: Extended);
+begin
+  RegWriteExtended(RootKey, Key, Name, REG_BINARY, Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure RegWriteExtended(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: Extended);
+begin
+  if DataType in [REG_SZ, REG_EXPAND_SZ] then
+    RegWriteString(RootKey, Key, Name, DataType, Format('%g', [Value]))
+  else
+  if DataType in [REG_BINARY] then
     InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
   else
     DataError(Key, Name);
@@ -1328,6 +1496,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.28  2004/10/22 15:47:15  marquardt
+// add functions for Single, Double, Extended
+//
 // Revision 1.27  2004/10/21 06:38:53  marquardt
 // style clenaing, bugfixes, improvements
 //
