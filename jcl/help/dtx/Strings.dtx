@@ -12,6 +12,9 @@ Result:
   If S contains only alpha characters the result is True, otherwise the result is False.
 Notes:
   If S is an empty string the result is False.
+See also:
+  StrIsNumber
+  StrIsAlphaNum
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -34,6 +37,10 @@ Result:
   If S contains only alpha-numerical characters the result is True, otherwise the result is False.
 Notes:
   If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrIsNumber
+  StrIsAlphaNumUnderscore
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -57,6 +64,9 @@ Result:
   otherwise the result is False.
 Notes:
   If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrIsNumber
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -103,6 +113,10 @@ Result:
   If S contains only numerical characters the result is True, otherwise the result is False.
 Notes:
   If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrIsAlphaNum
+  StrIsNumber
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -126,6 +140,10 @@ Result:
   If S contains only numerical characters the result is True, otherwise the result is False.
 Notes:
   If S is an empty string the result is False.
+See also:
+  StrIsAlpha
+  StrIsAlphaNum
+  StrIsDigit
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -170,6 +188,8 @@ Parameters:
 Result:
   If the two strings are identical the return value is True, if they are not the
   return value is False.
+See also:
+  StrCompare
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -212,6 +232,9 @@ Parameters:
   S - The string to encapsulate in quotes. Even an empty string.
 Result:
   The double-quoted version of the string.
+See also:
+  StrSingleQuote
+  StrTrimQuotes
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -233,6 +256,8 @@ Parameters:
   Text - The string which must be forced to have a prefix
 Result:
   The function result is a copy of the supplied Text, prefixed with Prefix.
+See also:
+  StrEnsureSuffix
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -254,6 +279,8 @@ Parameters:
   Text - The string which must be forced to have a suffix
 Result:
   The function result is a copy of the supplied Text, with the suffix.
+See also:
+  StrEnsurePrefix
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -293,6 +320,8 @@ Parameters:
   S - The "escaped" string to convert to a "normal" string.
 Result:
   The string with all escape characters replaced with their string counterparts.
+See also:
+  StrStringToEscaped
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -309,6 +338,12 @@ Description:
   StrLower returns a copy of the string, converted to lowercase. That is, if you pass in 'Project JEDI' you'll get 'project jedi'.
 Parameters:
   S - String to convert to lowercase.
+See also:
+  StrLowerInPLace
+  StrLowerBuff
+  StrUpper
+  StrUpperInPlace
+  StrUpperBuff
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -325,6 +360,12 @@ Description:
   StrLower converts all characters in the supplied string to lowercase.
 Parameters:
   S - String to convert to lowercase.
+See also:
+  StrLower
+  StrLowerBuff
+  StrUpper
+  StrUpperInPlace
+  StrUpperBuff
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -341,6 +382,12 @@ Description:
   StrLowerBuff converts all characters in the supplied string to lowercase.
 Parameters:
   P - String to convert to lowercase.
+See also:
+  StrLower
+  StrLowerInPlace
+  StrUpper
+  StrUpperInPlace
+  StrUpperBuff
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -386,6 +433,9 @@ Parameters:
   C - The character to pad the string with.
 Result:
   The string left padded with the specified character.
+See also:
+  StrPadRight
+  StrCenter
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -408,6 +458,9 @@ Parameters:
   C - The character to pad the string with.
 Result:
   The string right padded with the specified character.
+See also:
+  StrPadLeft
+  StrCenter
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -530,6 +583,8 @@ Parameters:
   S - The string to reverse
 Result:
   A reversed copy of the supplied string.
+See also:
+  StrReverseInPlace
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -548,6 +603,8 @@ Description:
   string then use the StrReverse function instead.
 Parameters:
   S - The string to reverse.
+See also:
+  StrReverse
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -567,6 +624,9 @@ Parameters:
   S - The string to encapsulate in quotes. Even an empty string.
 Result:
   The single-quoted version of the string.
+See also:
+  StrDoubleQuote
+  StrTrimQuotes
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -634,6 +694,8 @@ Parameters:
   S - The string to convert to an escaped string.
 Result:
   The "escaped" string.
+See also:
+  StrEscapedToString
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -677,6 +739,9 @@ Parameters:
   S - The string to unquote.
 Result:
   The unquoted string.
+See also:
+  StrSingleQuote
+  StrDoubleQuote
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -719,6 +784,8 @@ Parameters:
   C - The character to remove
 Result:
   The function returns the source string S without any leading characters C.
+See also:
+  StrTrimCharRight
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -739,6 +806,8 @@ Parameters:
   C - The character to remove
 Result:
   The function returns the source string S without any trailing characters C.
+See also:
+  StrTrimCharLeft
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -755,6 +824,12 @@ Description:
   StrUpper returns a copy of the string, converted to uppercase. That is, if you pass in 'Project JEDI' you'll get 'PROJECT JEDI'.
 Parameters:
   S - String to convert to uppercase.
+See also:
+  StrUpperInPlace
+  StrUpperBuff
+  StrLower
+  StrLowerInPlace
+  StrLowerBuff
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -771,6 +846,12 @@ Description:
   StrUpper converts all characters in the supplied string to uppercase.
 Parameters:
   S - String to convert to uppercase.
+See also:
+  StrUpper
+  StrUpperBuff
+  StrLower
+  StrLowerInPlace
+  StrLowerBuff
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -787,6 +868,12 @@ Description:
   StrUpper converts all characters in the supplied string to uppercase.
 Parameters:
   S - String to convert to uppercase.
+See also:
+  StrUpper
+  StrUpperInPlace
+  StrLower
+  StrLowerInPlace
+  StrLowerBuff
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -808,6 +895,8 @@ Description:
   reference count becomes 1.
 Parameters:
   S - The long string whose reference count to increment.
+See also:
+  StrDecRef
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -838,6 +927,8 @@ Result:
   above. Note that, at least in Delphi 5, the result will always be a multiple of 4.
 Notes:
   This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
+See also:
+  StrRefCount
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -857,6 +948,8 @@ Description:
   inaccessible after calling this routine.
 Parameters:
   S - The long string whose reference count to increment. Upon return the string may have been freed.
+See also:
+  StrDecRef
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -899,6 +992,9 @@ Result:
   The length of the string in characters.
 Notes:
   This function relies on pseudo undocumented knowledge.
+See also:
+  StrAllocSize
+  StrRefCount
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -923,6 +1019,8 @@ Result:
   string constant.
 Notes:
   This function relies on pseudo-undocumented knowledge and should only be used for debugging purposes.
+See also:
+  StrAllocSize
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1029,6 +1127,8 @@ Parameters:
 Result:
   StrCompareRange returns 0 if the two strings match or the number of different characters
   in case of a mismatch.
+See also:
+  StrCompare
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1071,6 +1171,8 @@ Parameters:
 Result:
   One-based index of the first character of SubStr in Str or 0 if SubStr does not
   occur in the supplied string.
+See also:
+  StrSearch
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1094,6 +1196,8 @@ Parameters:
 Result:
   If the supplied string is prefixed with one of the supplied prefixes the routine
   returns True, otherwise it returns False.
+See also:
+  StrPrefixIndex
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1147,6 +1251,8 @@ Parameters:
 Result:
   The index of the last occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
+See also:
+  StrLastPos
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1168,6 +1274,8 @@ Parameters:
 Result:
   The index of the last occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
+See also:
+  StrILastPos
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1234,6 +1342,8 @@ Result:
   than N occurences in S the result is 0.
 Notes:
   This function was inspired by code submitted by George Tasker
+See also:
+  StrNIPos
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1259,6 +1369,8 @@ Result:
   than N occurences in S the result is 0.
 Notes:
   This function was inspired by code submitted by George Tasker
+See also:
+  StrNPos
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1286,6 +1398,8 @@ Result:
   occur in the supplied string.
 Notes:
   The '*' wildcard currently doesn't work correctly, it produces the same result as '?'.
+See also:
+  StrSearch
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1333,6 +1447,8 @@ Parameters:
 Result:
   One-based index of the first character of SubStr in Str or 0 if SubStr does not
   occur in the supplied string.
+See also:
+  StrFind
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1355,6 +1471,8 @@ Parameters:
 Result:
   The portion of the string after the specified sub-string. If the sub-string does
   not appear in the source string the result is an empty string.
+See also:
+  StrBefore
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1377,6 +1495,8 @@ Parameters:
 Result:
   The portion of the string before the specified sub-string. If the sub-string does
   not appear in the source string the result is the source string.
+See also:
+  StrAfter
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1446,6 +1566,8 @@ Parameters:
   Count - The number of characters to copy.
 Result:
   The Count leftmost characters from S.
+See also:
+  StrRight
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1509,6 +1631,8 @@ Parameters:
   Count - The number of characters to copy.
 Result:
   The Count of rightmost characters from S.
+See also:
+  StrLeft
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1549,6 +1673,10 @@ Parameters:
   C - The character to test
 Result:
   If C is an alpha character the return value is True, otherwise the return value is False.
+See also:
+  CharIsDigit
+  CharIsNumber
+  CharIsAlphaNum
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1568,6 +1696,10 @@ Parameters:
   C - The character to test.
 Result:
   If C is an alphanumerical character the return value is True, otherwise the return value is False.
+See also:
+  CharIsAlpha
+  CharIsNumber
+  CharIsDigit
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1643,6 +1775,10 @@ Parameters:
   C - The character to test.
 Result:
   If C is a digit the return value is True, otherwise the return value is False.
+See also:
+  CharIsAlpha
+  CharIsNumber
+  CharIsAlphaNum
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1681,6 +1817,10 @@ Parameters:
   C - Character to test.
 Result:
   If C is a number the result is True, otherwise the result is False.
+See also:
+  CharIsAlpha
+  CharIsAlphaNum
+  CharIsDigit
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1764,6 +1904,8 @@ Parameters:
   C - Character to test.
 Result:
   If the character represents a space the result is True, otherwise the result is False.
+See also:
+  CharIsWhiteSpace
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1803,6 +1945,8 @@ Parameters:
   C - Character to test.
 Result:
   If the character represents a space the result is True, otherwise the result is False.
+See also:
+  CharIsSpace
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1878,6 +2022,9 @@ Parameters:
   C - Character to convert to lowercase.
 Result:
   Copy of character converted to lowercase.
+See also:
+  CharUpper
+  CharToggleCase
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -1897,6 +2044,9 @@ Parameters:
   C - The character to convert to upper case.
 Result:
   Copy of the character converted to uppercase.
+See also:
+  CharLower
+  CharToggleCase
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2004,6 +2154,10 @@ Parameters:
   Source - String list to convert to a PCharVector.
 Result:
   The value placed in Dest to allow using the function on parameter position.
+See also:
+  PCharVectorToStrings
+  PCharVectorCount
+  FreePCharVector
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2023,6 +2177,10 @@ Parameters:
    - The PCharVector to count the elements in.
 Result:
   The number of elements in the PCharVector excluding the NULL terminator.
+See also:
+  PCharVectorToStrings
+  StringsToPCharVector
+  FreePCharVector
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2044,6 +2202,10 @@ Description:
 Parameters:
   Dest - List which recieves the elements in the PCharVector.
   Source - PCharVector from which to retrieve the elements.
+See also:
+  PCharVectorCount
+  StringsToPCharVector
+  FreePCharVector
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2062,6 +2224,10 @@ Description:
   Freeing a PCharVector allocated by a Windows API function will crash your program.
 Parameters:
   Dest - The PCharVector whose memory to free.
+See also:
+  PCharVectorCount
+  StringsToPCharVector
+  PCharVectorToStrings
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2086,6 +2252,9 @@ Result:
   On success the function returns the value of Dest. If the function fails to allocate
   memory for the result string it (implicitly) raises an EOutOfMemory exception. The
   caller is responsible for releasing the memory pointed to by Dest.
+See also:
+  MultiSzToStrings
+  FreeMultiSz
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2109,6 +2278,9 @@ Parameters:
   Source - The source string to extract the items from.
 Notes:
   This function does not release the memory associated with Source.
+See also:
+  StringsToMultiSz
+  FreeMultiSz
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2127,6 +2299,9 @@ Description:
   character.
 Parameters:
   Dest - The memory to free. Is set to nil before return.
+See also:
+  StringsToMultiSz
+  MultiSzToStrings
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2153,6 +2328,8 @@ Parameters:
   List - A TStrings derivative that receives the individual elements
 Notes:
   The list will be cleared by this function before adding the elements.
+See also:
+  StringsToStr
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2172,6 +2349,8 @@ Description:
 Parameters:
   List - Stringlist which contains the strings to concatenate.
   Sep - String to separate the individual strings with.
+See also:
+  StrToStrings
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2192,6 +2371,9 @@ Description:
 Parameters:
   List - The stringlist whose contents to trim.
   DeleteIfEmpty - If True and a list entry is empty, or trimming it results in an empty string, the entry is deleted from the list.
+See also:
+  TrimStringsRight
+  TrimStringsLeft
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2212,6 +2394,9 @@ Description:
 Parameters:
   List - The stringlist whose contents to right trim.
   DeleteIfEmpty - If True and a list entry is empty, or trimming it results in an empty string, the entry is deleted from the list.
+See also:
+  TrimStrings
+  TrimStringsLeft
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2232,6 +2417,9 @@ Description:
 Parameters:
   List - The stringlist whose contents to left trim.
   DeleteIfEmpty - If True and a list entry is empty, or trimming it results in an empty string, the entry is deleted from the list.
+See also:
+  TrimStrings
+  TrimStringsRight
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2275,6 +2463,8 @@ Parameters:
   S - A string which contains one or more Separators (see List parameter).
   Separator - Any character you want to use to separate S.
   List - Returns separated parts or the entire string if no separator occurs.
+See also:
+  StrToken
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2301,6 +2491,8 @@ Result:
   was not located in S.
   S returns the remaining portion of the string after (but not including) Separator.
   If Separator was not found, S is an empty string.
+See also:
+  StrTokenToStrings
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2361,6 +2553,8 @@ Result:
   null terminating characters, the string will contain the entire contents but
   for example displaying the string will only show the part of the string up to
   the first null terminator.
+See also:
+  StringToFile
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2380,6 +2574,8 @@ Description:
 Parameters:
   FileName - Fully qualified name of the file.
   Contents - The string whose contents to write to the file.
+See also:
+  FileToString
 Quick info:
   Unit: JclStrings
   Category: String manipulation
