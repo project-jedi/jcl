@@ -12,7 +12,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is want.xml.                                                             	}
+{ The Original Code is want.xml.                                                             	   }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -22,7 +22,7 @@
 { This unit contains want script for build JCl.                                                    }
 {                                                                                                  }
 { Unit owner: Flier Lu                                                                             }
-{ Last modified: April 15, 2003                                                                    }
+{ Last modified: October 8, 2003 (Robert Rossmair)                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 -->
@@ -36,17 +36,21 @@
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="90"/>
+  <property name="version.minor"    value="90-test1"/>
   <property name="version"          value="${version.major}.${version.minor}"/>
 
-  <regexp property="ver.dir" pattern="\.0" subst="." text="D%{delphi.version}" />
+  <!-- why won't the following line work with subst=""? -->
+  <regexp property="ver.dir" pattern="\.0" subst=" " text="D%{delphi.version}" />
+  <property name="bpl.dir"          value="%{delphi.dir}/Projects/Bpl"/>
   <property name="bin.dir"          value="${basedir}/bin"/>
   <property name="lib.dir"          value="${basedir}/lib/${ver.dir}"/>
   <property name="dist.dir"         value="${basedir}/dist"/>
   <property name="qa.dir"           value="${basedir}/qa"/>
   <property name="samp.dir"         value="${basedir}/examples"/>
+  <property name="doc.dir"          value="${basedir}/docs"/>
   <property name="help.dir"         value="${basedir}/help"/>
-  <property name="pack.dir"         value="${basedir}/packages/${ver.dir}"/>
+  <property name="pack.dir"         value="${basedir}/packages"/>
+  <property name="pack.ver.dir"     value="${pack.dir}/${ver.dir}"/>
   <property name="src.dir"          value="${basedir}/source"/>
 
   <property name="zipname"          value="JCL${version.major}_${version.minor}.zip" />
@@ -61,6 +65,11 @@
   <patternset id="src.dirs" >
     <include  name="${src.dir}/**" />
     <exclude  name="${src.dir}/Prototypes" />
+  </patternset>
+
+  <patternset id="unit.dirs" >
+    <include  name="${lib.dir}" />
+    <patternset refid="src.dirs" />
   </patternset>
 
   <patternset id="samp.dirs" >
@@ -103,13 +112,15 @@
   <target name="compile" depends="clean,prepare,versioninfo" description="${compile.hint}" >
     <echo message="compile the source files..." />
     <brcc file="${src.dir}/Windows/JclUnicode.rc" output="${src.dir}/Windows/JclUnicode.res" />
-    <dcc basedir="${pack.dir}" source="${pack.dir}/*.dpk" >
+    <dcc basedir="${pack.ver.dir}" source="${pack.ver.dir}/*.dpk" >
       <dcuoutput path="${lib.dir}" />
       <exeoutput path="${bin.dir}" />
+      <bploutput path="${bpl.dir}" />
+      <dcpoutput path="${lib.dir}" />
       <debug value="true" />
       <build value="true" />
 
-      <unitpath     refid="src.dirs" />
+      <unitpath refid="unit.dirs" />        
       <includepath>
         <include    name="${src.dir}/Common" />
       </includepath>
@@ -118,21 +129,26 @@
       </resourcepath>
     </dcc>
 
-    <!-- compiling examples gives AV when executing dcc32?
+    <!-- compiling examples gives AV when executing D7 dcc32
     <echo message="" />
     <echo message="compile the sample files..." />
 
     <dcc basedir="${samp.dir}" source="${samp.dir}/**/*.dpr" >
       <dcuoutput path="${lib.dir}" />
       <exeoutput path="${bin.dir}" />
+      <bploutput path="${bpl.dir}" />
+      <dcpoutput path="${bpl.dir}" />
       <debug value="true" />
       <build value="true" />
 
-      <unitpath     refid="samp.dirs" />
+      <unitpath>
+        <patternset refid="samp.dirs" />        
+        <include    name="${lib.dir}" />
+      </unitpath>
       <includepath  refid="samp.dirs" />
-      <resourcepath  refid="samp.dirs" />
+      <resourcepath refid="samp.dirs" />
     </dcc>
-    -->
+    <!-- -->
   </target>
 
   <target name="dist" description="${dist.hint}" >
@@ -140,13 +156,21 @@
     <delete file="${zipfile}" />
     <zip zipfile="${zipfile}" >
       <exclude name="${dist.dir}/**" />
-      <exclude name="${help.dir}/**" />
       <exclude name="${qa.dir}/**" />
+      <exclude name="${help.dir}/dtx/**" />
+      <exclude name="${help.dir}/HIT/**" />
+      <exclude name="${help.dir}/*.txt" />
+      <exclude name="${basedir}/packages/*.dev/**" />
+      <exclude name="${basedir}/packages/JclDevPackages*.bpg" />
+      <exclude name="${src.dir}/Prototypes/**" />
+      <exclude name="${src.dir}/Unix/ProcessInfo.pas" />
 
+      <include name="${doc.dir}/**" />
       <include name="**/*.pas" />
       <include name="**/*.dfm" />
       <include name="**/*.xfm" />
       <include name="**/*.dof" />
+      <include name="**/*.kof" />
       <include name="**/*.inc" />
       <include name="**/*.cpp" />
 
@@ -166,9 +190,11 @@
       <include name="**/*.tlb" />
 
       <include name="**/*.txt" />
+      <include name="**/*.htm" />
       <include name="**/*.html" />
       <include name="**/*.xml" />
       <include name="**/*.bat" />
+      <include name="${src.dir}/Prototypes/jpp.exe" />
       <include name="want.exe" />
     </zip>
   </target>
