@@ -166,9 +166,9 @@ type
     constructor CreatePolyPolygon(const Points: TDynPointArray; const Vertex: TDynIntegerArray;
       Count: Integer; FillMode: TPolyFillMode);
     constructor CreateRect(const ARect: TRect; DummyForBCB: Boolean = False); overload;
-    constructor CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0); overload;
+    constructor CreateRect(const Left, Top, Right, Bottom: Integer; DummyForBCB: Byte = 0); overload;
     constructor CreateRoundRect(const ARect: TRect; CornerWidth, CornerHeight: Integer); overload;
-    constructor CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth, CornerHeight: Integer); overload;
+    constructor CreateRoundRect(const Left, Top, Right, Bottom, CornerWidth, CornerHeight: Integer); overload;
     constructor CreateBitmap(Bitmap: TBitmap; RegionColor: TColor; RegionBitmapMode: TJclRegionBitmapMode);
     constructor CreatePath(Canvas: TCanvas);
     constructor CreateRegionInfo(RegionInfo: TJclRegionInfo);
@@ -2226,22 +2226,22 @@ begin
   Create(CreateRectRgnIndirect(ARect), True);
 end;
 
-constructor TJclRegion.CreateRect(const Top, Left, Bottom, Right: Integer; DummyForBCB: Byte = 0);
+constructor TJclRegion.CreateRect(const Left, Top, Right, Bottom: Integer; DummyForBCB: Byte = 0);
 begin
-  Create(CreateRectRgn(Top, Left, Bottom, Right), True);
+  Create(CreateRectRgn(Left, Top, Right, Bottom), True);
 end;
 
 constructor TJclRegion.CreateRoundRect(const ARect: TRect; CornerWidth,
   CornerHeight: Integer);
 begin
-  Create(CreateRoundRectRgn(ARect.Top, ARect.Left, ARect.Bottom, ARect.Right,
+  Create(CreateRoundRectRgn(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
     CornerWidth, CornerHeight), True);
 end;
 
-constructor TJclRegion.CreateRoundRect(const Top, Left, Bottom, Right, CornerWidth,
+constructor TJclRegion.CreateRoundRect(const Left, Top, Right, Bottom, CornerWidth,
   CornerHeight: Integer);
 begin
-  Create(CreateRoundRectRgn(Top, Left, Bottom, Right, CornerWidth, CornerHeight), True);
+  Create(CreateRoundRectRgn(Left, Top, Right, Bottom, CornerWidth, CornerHeight), True);
 end;
 
 constructor TJclRegion.CreatePath(Canvas: TCanvas);
