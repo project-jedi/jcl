@@ -3031,3 +3031,261 @@ SubCat=TSearchEngine
 Author=Mike Lischke;public@lischke-online.de
 Delphi=4,5
 BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TUTBMSearch = class (<REF TARGET"..\TSearchEngine\TSearchEngine">TSearchEngine</REF>)
+[ShortDescr]
+Unicode Tuned Boyer-Moore Search class.
+[Description]
+TUTBMSearch is a Unicode Tuned Boyer-Moore (UTBM) search implementation. The class
+handles low and high surrogates, case-(in)sensitivity, can ignore non-spacing
+characters and optionally returns whole words only.
+[Notes]
+Count=1
+1=This implementation is an extended translation from a free package written by
+Mark Leisher (mleisher@crl.nmsu.edu).
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure ClearPattern;
+[ShortDescr]
+Deletes the search pattern.
+[Description]
+ClearPattern deletes the current search pattern. Gets called by <REF>Clear</REF>.
+[Quick Info]
+Kind=Method
+Visibility=Protected
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Compile(Pattern: PUCS2; PatternLength: Integer; Flags: <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>);
+[ShortDescr]
+Compiles the pattern.
+[Description]
+Compile converts the pattern to an optimized internal structure. Compile gets
+called by <REF>FindPrepare</REF>.
+[Parameters]
+Count=3
+1=Pattern:PUSC2=Pattern to find
+2=PatternLength:Integer=ength of pattern to find
+3=Flags:TSearchFlags=Search options. See <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>
+for more information on this parameter.
+[Quick Info]
+Kind=Method
+Visibility=Protected
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Find(Text: PUCS2; TextLen: Cardinal; var MatchStart, MatchEnd: Cardinal): Boolean;
+[ShortDescr]
+Main matching routine using a tuned Boyer-Moore algorithm.
+[Description]
+Find is the main matching routine that implements a tunes Boyer-Moore algoritm.
+Find gets called by <REF>FindFirst</REF> and <REF>FindAll</REF>.
+[Parameters]
+Count=4
+1=Text:PUSC2=Text to search in.
+2=TextLen:Cardinal=Length of text to search in.
+3=MatchStart:Cardinal=Start of the match or undefined if no match.
+4=MatchEnd:Cardinal=End of the match or undefined if no match.
+[Result]
+If the pattern can be found in Text the function returns True (in that case
+MatchStart and MatchEnd point to the match) otherwise it returns False. 
+[Quick Info]
+Kind=Method
+Visibility=Protected
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Match(Text, Start, Stop: PUCS2; var MatchStart, MatchEnd: Cardinal): Boolean;
+[ShortDescr]
+Checks wether the Text at Start matches the pattern.
+[Description]
+Match checks wether the text at Start matches the Pattern. It will also check the
+borders if whole words are required.
+[Parameters]
+Count=5
+1=Text:PUSC2=Complete Text to search in.
+2=Start:PUSC2=First character to check.
+3=Stop:PUSC2=Last character to check.
+4=MatchStart:Cardinal=Start of the match or undefined if no match.
+5=MatchEnd:Cardinal=End of the match or undefined if no match.
+[Result]
+If the Text at Start matches the pattern the function returns True (in that case
+MatchStart and MatchEnd point to the match) otherwise it returns False.
+[Notes]
+Count=2
+1=If whole words only are allowed then the left and right border tests are done
+here too. The keypoint for the right border is that the next character after the
+search string is either the text end or a space character. For the left side
+this is similar, but there is nothing like a string start marker (like the
+string end marker #0).</P><P>
+2=It seems not obvious, but we still can use the passed Text pointer to do the
+left check. Although this pointer might not point to the real string start (e.g.
+in TUTBMSearch.FindAll Text is incremented as needed) it is still a valid check
+mark. The reason is that Text either points to the real string start or a
+previous match (happened already, keep in mind the search options do not change
+in the FindAll loop) and the character just before Text is a space character.
+This fact implies, though, that strings passed to Find (or FindFirst, FindAll in
+TUTBMSearch) always really start at the given address. Although this might not
+be the case in some circumstances (e.g. if you pass only the selection from an
+editor) it is still assumed that a pattern matching from the first position on
+(from the search string start) also matches when whole words only are allowed.
+[Quick Info]
+Kind=Method
+Visibility=Protected
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetSkipValue(TextStart, TextEnd: PUCS2): Cardinal;
+[ShortDescr]
+Gets the skip value to use.
+[Description]
+GetSkipValue determines the skip value to use to advance to the next possible
+match.
+[Parameters]
+Count=2
+1=TextStart:PUSC2=Start of text to search
+2=TextEnd:PUSC2=End of text to search
+[Result]
+Number of bytes to skip to restart matching. If this result is 0 (zero), we can
+end the search algorithm.
+[Quick Info]
+Kind=Method
+Visibility=Protected
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Clear; override;
+[ShortDescr]
+Resets the search engine.
+[Description]
+Clear resets the search engine by calling ClearPattern and then
+calling the inherited Clear method.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure FindPrepare(const Pattern: WideString; Options: <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>); overload; override; abstract;
+procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: <REF Target"..\..\TSearchEngine\Types\TSearchFlags">TSearchFlags</REF>); overload; override; abstract;
+[ShortDescr]
+Prepares the engine for a pattern search.
+[Description]
+FindPrepare prepares the engine for pattern search. There are 2 versions of
+FindPrepare a WideString and a PWideChar version. 
+[Parameters]
+Count=3
+1=Pattern:Type=Search pattern
+2=PatternLength:Cardinal=Length of pattern (available only in the PWideChar version)
+3=Options:TSearchFlags=Search options. See <REF Target"..\..\TSearchEngine\Types\TSearchFlags">
+TSearchFlags</REF> for more information on this parameter.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; override; abstract;
+function FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; override; abstract;
+[ShortDescr]
+Finds the first occurence of a search pattern.
+[Description]
+FindFirst finds the first occurence of the pattern passed to <REF>FindPrepare</REF>
+in Text and returns True if one could be found (in which case Start and Stop are
+set to the according indices) otherwise False. This function is in particular of
+interest if only one occurence needs to be found.
+[Parameters]
+Count=4
+1=Text:Type=Text to be searched
+2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
+3=Start:Cardinal=Start index of match if the function returned true, otherwise
+undefined.
+4=Stop:Cardinal=End index of match if the function returned true, otherwise
+undefined.
+[Result]
+True if the pattern provided in FindPrepare was found in the Text parameter,
+False otherwise
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+[SeeAlso]
+Count=1
+1=FindAll
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindAll(const Text: WideString): Boolean; overload; overload; abstract;
+function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
+[ShortDescr]
+Finds all occurences of a search pattern.
+[Description]
+FindAll finds all occurences of the pattern passed to <REF>FindPrepare</REF>
+in Text and returns True if any could be found otherwise False. 
+[Parameters]
+Count=2
+1=Text:Type=Text to be searched
+2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
+[Result]
+True is the pattern provided in FindPrepare was found in the Text parameter,
+False otherwise
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TUTBMSearch
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+[SeeAlso]
+Count=2
+1=FindFirst
+2=GetResult;..\..\TSearchEngine\Methods\GetResult
