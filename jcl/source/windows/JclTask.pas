@@ -41,10 +41,7 @@ interface
 uses
   Windows, Messages, Classes, SysUtils, Contnrs,
   MSTask, MSTaskError,
-  {$IFNDEF RTL140_UP}
-  JclUnicode,
-  {$ENDIF ~RTL140_UP}
-  JclBase, JclSysUtils, JclSysInfo;
+  JclBase, JclSysUtils, JclSysInfo, JclWideStrings;
 
 type
   TDateTimeArray = array of TDateTime;
@@ -394,12 +391,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclTaskSchedule.Remove(const TaskName: WideString): Integer;
-var
-  Language: LCID;
 begin
-  Language := GetUserDefaultLCID;
   for Result := 0 to TaskCount-1 do
-    if {$IFNDEF RTL140_UP} JclUnicode.{$ENDIF}WideCompareText(Tasks[Result].TaskName, TaskName, Language) = 0 then
+    if WideCompareText(Tasks[Result].TaskName, TaskName) = 0 then
     begin
       Delete(Result);
       Exit;
@@ -1220,6 +1214,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/10/08 20:13:03  rrossmair
+// replaced JclUnicode routines by JclWideStrings equivalents
+//
 // Revision 1.14  2004/07/28 18:00:54  marquardt
 // various style cleanings, some minor fixes
 //
