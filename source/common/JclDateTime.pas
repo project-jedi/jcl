@@ -79,13 +79,17 @@
 { 000809:                                                                      }
 { added functions                                                              }
 { CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile }
+{                                                                              }
+{ 000828:                                                                      }
+{ added function MakeYear4Digit                                                }
+
 
 
 { TODO:                                                                        }
 
 
 
-{ Add in Help:                                                                 }
+{ in Help:                                                                     }
 {  Type TDosDateTime is used by Delphi as "FileDate"                           }
 {                                                                              }
 {  We do all conversions (but thoses provided by Delphi anyway)  between       }
@@ -106,7 +110,6 @@
 
 unit JclDateTime;
 
-{$I JCL.INC}
 
 interface
 
