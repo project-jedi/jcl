@@ -16,7 +16,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 12, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains various routine for manipulating the math coprocessor.    }
+{ This includes such things as querying and setting the rounding precision of  }
+{ floating point operations and retrieving the coprocessor's status word.      }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
