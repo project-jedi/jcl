@@ -429,6 +429,11 @@ procedure DomainCheck(Err: Boolean);
 
 { Checksums }
 
+{$IFNDEF COMPILER6_UP}
+type
+  PByte = ^Byte;
+{$ENDIF !COMPILER_6UP}
+
 function GetParity(Buffer: PByte; Len: Integer): Boolean;
 
 { CRC }
@@ -4242,6 +4247,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.21  2005/02/14 19:18:16  obones
+// Added PByte definition for D5/BCB5
+//
 // Revision 1.20  2005/02/13 09:40:24  mthoma
 // Added Parity checksum functionality.
 //
