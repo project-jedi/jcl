@@ -275,6 +275,8 @@ begin
   Result := (I + 2) div 3 * 4;
 end;
 
+//------------------------------------------------------------------------------
+
 function MimeDecodedSize(const I: Cardinal): Cardinal;
 begin
   Result := (I + 3) div 4 * 3;
@@ -435,4 +437,3 @@ begin
 end;
 
 end.
-
