@@ -1328,6 +1328,66 @@ Author=Anthony Steele;asteele@iafrica.com
 Delphi=3,4,5
 <DECL>-------------------------------------------------------------------------
 [Declaration]
+function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
+[ShortDescr]
+Returns the position of the N-th occurence of a substring within a string.
+[Description]
+StrNPos returns the index into S of the N-th occurence of the specified sub-string.
+This function is case-sensitive and does not work with multibyte character sets.
+If the specified sub-string does not have N occurence in S the function returns 0.
+[Parameters]
+Count=3
+1=S:AnsiString=The string in which to search for N occurences of SubStr.
+2=SubStr:AnsiString=The sub-string to search for.
+3=Index:Integer=The number of occurences of sub-string in S.
+[Result]
+Index into S where the N-th occurence of SubStr is located. If SubStr has less
+than N occurences in S the result is 0.
+[Notes]
+Count=1
+1=This function was inspired by code submitted by George Tasker
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=JCL Team;jcl@delphi-jedi.org
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrNIPos
+<DECL>-------------------------------------------------------------------------
+[Declaration]
+function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
+[ShortDescr]
+Returns the position of the N-th occurence of a substring within a string.
+[Description]
+StrNPos returns the index into S of the N-th occurence of the specified sub-string.
+This function is case-insensitive and does not work with multibyte character sets.
+If the specified sub-string does not have N occurence in S the function returns 0.
+[Parameters]
+Count=3
+1=S:AnsiString=The string in which to search for N occurences of SubStr.
+2=SubStr:AnsiString=The sub-string to search for.
+3=Index:Integer=The number of occurences of sub-string in S.
+[Result]
+Index into S where the N-th occurence of SubStr is located. If SubStr has less
+than N occurences in S the result is 0.
+[Notes]
+Count=1
+1=This function was inspired by code submitted by George Tasker
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Search and Replace Routines
+Author=JCL Team;jcl@delphi-jedi.org
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrNPos
+<DECL>-------------------------------------------------------------------------
+[Declaration]
 function StrMatch(const Substr, Str: AnsiString; const Index: Integer = 1): Integer;
 [ShortDescr]
 Returns the index of the first character in a specified substring that occurs in a given string.
