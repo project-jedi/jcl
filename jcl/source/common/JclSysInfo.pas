@@ -2272,7 +2272,7 @@ begin
     end;
   end
   else
-  if IsWin2K then
+  if IsWin2K or IsWin2003 then
   begin
     if GetVersionEx(VersionInfo) then
     begin
@@ -2379,7 +2379,7 @@ var
   VersionInfo: TOSVersionInfoEx;
 begin
   Result := 0;
-  if IsWin2K or IsWinXP then
+  if IsWin2K or IsWinXP or IsWin2003 then
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
@@ -3995,6 +3995,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.39  2005/03/03 15:35:59  rikbarker
+// Windows 2003 Fix for NTProductType and GetWindowsServicePackVersion
+//
 // Revision 1.38  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
