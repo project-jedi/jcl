@@ -463,5 +463,13 @@ object DM: TDM
       OnExecute = actTaskStopExecute
       OnUpdate = actTaskStopUpdate
     end
+    object actFileExit: TAction
+      Category = 'File'
+      Caption = 'E&xit'
+      Hint = 'Exit|Quits the application'
+      ImageIndex = 0
+      ShortCut = 32883
+      OnExecute = actFileExitExecute
+    end
   end
 end
