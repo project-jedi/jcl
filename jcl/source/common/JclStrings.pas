@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: August 22, 2000                                               }
+{ Last modified: September 01, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -33,8 +33,8 @@ unit JclStrings;
    o AnsiOctDigits and AnsiHexDigits changed to sets (Robert Marquardt)
 
    o StrTokens (Azret)
-   o StrWord: tokenizes the string. Returns True if end of string is reached.
-            see StrTokens for an example.
+     StrWord: tokenizes the string. Returns True if end of string is reached.
+              see StrTokens for an example.
 
    o StrReplace  (Robert Lee)
    o StrLen (Robert Lee)
@@ -44,14 +44,48 @@ unit JclStrings;
                  Az: renamed to StrRepeat,
                  Az: Re-implemented to use move proc. instead of Result + Result
 
-   o fixes:   StrCompareRange, (Az)
-   o fixed:   StrLen  (Az)
+   o fixes:   StrCompareRange, (Azret)
+   o fixed:   StrLen  (Azret)
    o added:   AnsiLineBreak (Robert Marquardt)
    o changed: #13, #10 to AnsiCarriageReturn, AnsiLineFeed (Robert Marquardt)
-   o improved: StrFind
-             StrFind now does not need the string to be null terminated you can use
-             it on any ansistring buffer.
-}
+   o improved: StrFind (Azret)
+               StrFind now does not need the string to be null terminated you can use
+               it on any ansistring buffer.
+
+   o added: StrProper, StrProperBuff functions (Azret)
+           lowercases the string and then upercases the first char
+
+           TEST STRING->Test string
+           
+   o added: CharHex, StrToHex
+
+            CharHex:  converts a given character hex char to a byte, Returns $FF on error
+
+            example:    CharHex('0') = $00;
+                        CharHex('1') = $01;
+                        CharHex('9') = $09;
+                        CharHex('A') = $0F;
+                        CharHex('F') = $0F;
+                        CharHex('Z') = $FF;  error
+
+            StrToHex: converts a given hex string to byte array and retruns that array in
+                      a string buffer. Size of the buffer is the length of
+                      the returned string.
+
+            example:    StrHex('ABCD') = $ABCD
+                        StrHex('ABCD') = $ABCD
+                        StrHex('DFGF') = ''   error
+
+                        var
+                          Data: string;
+                          Stream: TStream;
+                        begin
+                          ......
+                          Data := StrHex('00FFAADFCE24'); // 6 bytes
+                          Stream.WriteBuffer(Pointer(Data)^, Length(Data));
+                          ......
+                        end;
+ }
 
 interface
 
@@ -66,6 +100,9 @@ type
   end;
 
 const
+
+  { Misc. chars }
+
   AnsiNull           = AnsiChar(#0);
   AnsiBell           = AnsiChar(#7);
   AnsiBackspace      = AnsiChar(#8);
@@ -86,13 +123,32 @@ const
   AnsiLineBreak      = AnsiCrLf;
   {$ENDIF}
 
+  { Misc. sets }
+
   AnsiSigns          = ['-','+'];
   AnsiWhiteSpace     = [AnsiTab, AnsiLineFeed, AnsiVerticalTab, AnsiFormFeed,
                         AnsiCarriageReturn, AnsiSpace];
-
   AnsiDecDigits      = ['0'..'9'];
   AnsiOctDigits      = ['0'..'7'];
   AnsiHexDigits      = ['0'..'9', 'A'..'F', 'a'..'f'];
+
+{$IFDEF WIN32}
+
+const
+
+  { CharType return values }
+
+  C1_UPPER  = $0001; // Uppercase
+  C1_LOWER  = $0002; // Lowercase
+  C1_DIGIT  = $0004; // Decimal digits
+  C1_SPACE  = $0008; // Space characters
+  C1_PUNCT  = $0010; // Punctuation
+  C1_CNTRL  = $0020; // Control characters
+  C1_BLANK  = $0040; // Blank characters
+  C1_XDIGIT = $0080; // Hexadecimal digits
+  C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
+
+{$ENDIF}
 
 { String Routines }
 
@@ -105,6 +161,7 @@ function StrDoubleQuote(const S: AnsiString): AnsiString;
 function StrEnsureSuffix(const Suffix, Text: AnsiString): AnsiString;
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 function StrFind(const Substr, Str: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
+function StrToHex(const S: AnsiString): AnsiString;
 function StrIsAlpha(const S: AnsiString): Boolean;
 function StrIsAlphaNum(const S: AnsiString): Boolean;
 function StrIsNumber(const S: AnsiString): Boolean;
@@ -121,6 +178,8 @@ procedure StrMove(var Dest: AnsiString; const Source: AnsiString; const ToIndex,
   FromIndex, Count: Integer);
 function StrPadLeft(const S: AnsiString; Len: Integer; C: AnsiChar {$IFDEF SUPPORTS_DEFAULTPARAMS} = AnsiSpace {$ENDIF}): AnsiString;
 function StrPadRight(const S: AnsiString; Len: Integer; C: AnsiChar {$IFDEF SUPPORTS_DEFAULTPARAMS} = AnsiSpace {$ENDIF}): AnsiString;
+function StrProper(const S: AnsiString): AnsiString;
+procedure StrProperBuff(S: PAnsiChar);
 function StrSearch(const Substr, Str: AnsiString; const Index: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer;
 function StrRefCount(const S: AnsiString): Longint;
 function StrRemoveChars(const S: AnsiString; Chars: TSysCharSet): AnsiString;
@@ -147,19 +206,6 @@ function BooleanToStr(B: Boolean): string;
 
 { Character Routines }
 
-{$IFDEF WIN32}
-const
-  C1_UPPER  = $0001; // Uppercase
-  C1_LOWER  = $0002; // Lowercase
-  C1_DIGIT  = $0004; // Decimal digits
-  C1_SPACE  = $0008; // Space characters
-  C1_PUNCT  = $0010; // Punctuation
-  C1_CNTRL  = $0020; // Control characters
-  C1_BLANK  = $0040; // Blank characters
-  C1_XDIGIT = $0080; // Hexadecimal digits
-  C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
-{$ENDIF}
-
 function CharType(const C: AnsiChar): Word;
 function CharIsAlpha(const C: AnsiChar): Boolean;
 function CharIsUpper(const C: AnsiChar): Boolean;
@@ -174,6 +220,7 @@ function CharIsNumber(const C: AnsiChar): Boolean;
 function CharIsReturn(const C: AnsiChar): Boolean;
 function CharIsSpace(const C: AnsiChar): Boolean;
 function CharIsWhiteSpace(const C: AnsiChar): Boolean;
+function CharHex(const C: AnsiChar): Byte;
 function CharLower(const C: AnsiChar): AnsiChar;
 function CharUpper(const C: AnsiChar): AnsiChar;
 function CharPos(const S: AnsiString; const C: AnsiChar;
@@ -272,7 +319,7 @@ begin
       Windows.CharLowerBuff(@LoCaseChar, 1);
       Windows.CharUpperBuff(@UpCaseChar, 1);
 
-      if CharIsUpper(CurrChar) then      // Az
+      if CharIsUpper(CurrChar) then
         ReCaseChar := LoCaseChar
       else
       if CharIsLower(CurrChar) then
@@ -592,7 +639,7 @@ asm
         JS      @@StrNull
 
         PUSH    EBX
-        PUSH    ESI      {Az May 4, push esi was after push edi}
+        PUSH    ESI
         PUSH    EDI
 
         MOV     EBX, Count
@@ -630,9 +677,9 @@ asm
 
 @@Loop:
         MOV     AL, [ESI]
-        INC     ESI      {Az: May 4}
+        INC     ESI
         MOV     DL, [EDI]
-        INC     EDI      {Az: May 4}
+        INC     EDI
 
         CMP     AL, DL
         JNE     @@MisMatch
@@ -853,30 +900,18 @@ const
    SearchChar: Byte = 0;
    NumberOfChars: Integer = 0;
 asm
-        {       if SubStr = '' then
-                begin
-                  Result := 0;
-                  Exit;
-                end;                            }
+        {       if SubStr = '' then  Return := 0; }
 
         TEST    EAX, EAX
         JZ      @@SubstrIsNull
 
-        {       if Str = '' then
-                begin
-                  Result := 0;
-                  Exit;
-                end;                            }
+        {       if Str = '' then  Return := 0; }
 
         TEST    EDX, EDX
         JZ      @@StrIsNull
 
         {       Index := Index - 1;
-                if Index < 0 then
-                beign
-                  Result := 0;
-                  Exit;
-                end;    }
+                if Index < 0 then Return := 0;   }
 
         DEC     ECX
         JL      @@IndexIsSmall
@@ -1232,7 +1267,7 @@ var
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
-    if not CharIsAlpha(S[I]) then   // Az
+    if not CharIsAlpha(S[I]) then
     begin
       Result := False;
       Exit;
@@ -1558,6 +1593,36 @@ begin
     Result := S + StringOfChar(C, Len - L)
   else
     Result := S;
+end;
+
+//------------------------------------------------------------------------------
+
+function StrProper(const S: AnsiString): AnsiString;
+var
+  P: PChar;
+begin
+  Result := '';
+  if Length(S) > 0 then
+  begin
+    Pointer(Result) := Pointer(S); { let the StrLower call UniqueString }
+    StrLower(Result);
+    P := Pointer(Result);
+    P^ := CharUpper(P^);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure StrProperBuff(S: PAnsiChar);
+begin
+  if S = nil then     { make sure that the pointer OK }
+     Exit;
+
+  if S^ = #0 then     { make sure that the length is > 0 }
+     Exit;
+
+  StrLowerBuff(S);
+  S^ := CharUpper(S^);
 end;
 
 //------------------------------------------------------------------------------
@@ -2007,6 +2072,62 @@ end;
 
 //------------------------------------------------------------------------------
 
+function StrToHex(const S: AnsiString): AnsiString;
+var
+  P: PChar;
+  I, L, N, C: Integer;
+  bL, bH: Byte;
+begin
+  Result := '';
+
+  if S = '' then
+     Exit;
+
+  L := Length(S);
+
+  if L = 1 then
+  begin
+    bL := CharHex(S[1]);
+    if bL = $FF then
+       Exit;
+
+    SetLength(Result, 1);
+    Byte(Result[1]) := bL;
+    Exit;
+  end;
+
+  P := Pointer(S);
+
+  I := L div 2;
+  SetLength(Result, I);
+
+  C := 1;
+  N := 1;
+  while C <= L do
+  begin
+    bH := CharHex(P^);
+    Inc(C);
+    bL := CharHex((P+1)^);
+    if C > L then
+       bL := 0;
+    Inc(C);
+
+    if (bH = $FF) or (bL = $FF) then
+    begin
+      Result := '';
+      Exit;
+    end;
+
+    bH := (bH shl 4) + bL;
+    Byte(Result[N]) := bH;
+
+    Inc(P, 2);
+    Inc(N);
+  end;         
+end;
+
+//------------------------------------------------------------------------------
+
 procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; List: TStrings);
 var
   Token: AnsiString;
@@ -2220,6 +2341,20 @@ end;
 function CharIsWhiteSpace(const C: AnsiChar): Boolean;
 begin
   Result := C in AnsiWhiteSpace;
+end;
+
+//------------------------------------------------------------------------------
+
+function CharHex(const C: AnsiChar): Byte;
+begin
+  Result := $FF;
+
+  if C in AnsiDecDigits then
+  begin
+    Result := Ord(CharUpper(C)) - 48;
+  end
+  else if C in AnsiHexDigits then
+     Result := Ord(CharUpper(C)) - 55;
 end;
 
 //------------------------------------------------------------------------------
@@ -2447,7 +2582,7 @@ var
   I, TotalLength: Integer;
   P: PChar;
 begin
-  if Source = nil then   {Az}
+  if Source = nil then
   begin
     Result := nil;
     Exit;
@@ -2472,7 +2607,7 @@ procedure MultiSzToStrings(const Dest: TStrings; const Source: PChar);
 var
   P: PChar;
 begin
-  if (Source = nil) or (Dest = nil) then   {Az}
+  if (Source = nil) or (Dest = nil) then
     Exit;
 
   Dest.Clear;
@@ -2528,7 +2663,7 @@ var
 begin
   Result := 0;
 
-  if Source = nil then   {Az}
+  if Source = nil then
      Exit;
 
   P := Source^;
@@ -2546,7 +2681,7 @@ var
   I, Count: Integer;
   List: array of PChar;
 begin
-  if (Source = nil) or (Dest = nil) then  {Az}
+  if (Source = nil) or (Dest = nil) then
      Exit;
 
   Count := PCharVectorCount(Source);
@@ -2564,7 +2699,7 @@ var
   I, Count: Integer;
   List: array of PChar;
 begin
-  if Dest = nil then     {Az}
+  if Dest = nil then
      Exit;
 
   Count := PCharVectorCount(Dest);
