@@ -24,7 +24,7 @@
 { the unit contains support for API hooking and name unmangling.               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: October 14, 2001                                              }
+{ Last modified: January 22, 2002                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -64,6 +64,9 @@ type
   EJclPeImageError = class (EJclError);
 
   TJclPeImage = class;
+  TJclPeBorImage = class;
+
+  TJclPeImageClass = class of TJclPeImage;
 
   TJclPeImageBaseList = class (TObjectList)
   private
@@ -82,12 +85,23 @@ type
     FList: TStringList;
     function GetCount: Integer;
     function GetImages(const FileName: TFileName): TJclPeImage;
+  protected
+    function GetPeImageClass: TJclPeImageClass; virtual;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     property Images[const FileName: TFileName]: TJclPeImage read GetImages; default;
     property Count: Integer read GetCount;
+  end;
+
+  TJclPeBorImagesCache = class (TJclPeImagesCache)
+  private
+    function GetImages(const FileName: TFileName): TJclPeBorImage;
+  protected
+    function GetPeImageClass: TJclPeImageClass; override;
+  public
+    property Images[const FileName: TFileName]: TJclPeBorImage read GetImages; default;
   end;
 
 //------------------------------------------------------------------------------
@@ -326,6 +340,7 @@ type
     rtAniCursor,
     rtAniIcon,
     rtHmtl,
+    rtManifest,
     rtUserDefined);
 
   TJclPeResourceList = class;
@@ -457,6 +472,24 @@ type
   end;
 
 //------------------------------------------------------------------------------
+// Common Language Runtime section related classes
+//------------------------------------------------------------------------------
+
+  TJclPeCLRHeader = class (TObject)
+  private
+    FHeader: TImageCor20Header;
+    FImage: TJclPeImage;
+    function GetVersionString: string;
+  protected
+    procedure ReadHeader;
+  public
+    constructor Create(AImage: TJclPeImage);
+    property Header: TImageCor20Header read FHeader;
+    property VersionString: string read GetVersionString;
+    property Image: TJclPeImage read FImage;
+  end;
+
+//------------------------------------------------------------------------------
 // PE Image
 //------------------------------------------------------------------------------
 
@@ -529,6 +562,7 @@ type
   TJclPeImage = class (TObject)
   private
     FAttachedImage: Boolean;
+    FCLRHeader: TJclPeCLRHeader;
     FDebugList: TJclPeDebugList;
     FFileName: TFileName;
     FImageSections: TStrings;
@@ -542,6 +576,7 @@ type
     FResourceVA: DWORD;
     FStatus: TJclPeImageStatus;
     FVersionInfo: TJclFileVersionInfo;
+    function GetCLRHeader: TJclPeCLRHeader;
     function GetDebugList: TJclPeDebugList;
     function GetDescription: string;
     function GetDirectories(Directory: Word): TImageDataDirectory;
@@ -576,13 +611,14 @@ type
       AParentItem: TJclPeResourceItem): TJclPeResourceList; virtual;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
   public
-    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); virtual;
     destructor Destroy; override;
     procedure AttachLoadedModule(const Handle: HMODULE);
     function CalculateCheckSum: DWORD;
     function DirectoryEntryToData(Directory: Word): Pointer;
     function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
     function GetSectionName(const Header: PImageSectionHeader): string;
+    function IsCLR: Boolean;
     function IsSystemImage: Boolean;
     function RawToVa(Raw: DWORD): Pointer;
     function RvaToSection(Rva: DWORD): PImageSectionHeader;
@@ -598,6 +634,7 @@ type
     class function ShortSectionInfo(Characteristics: DWORD): string;
     class function StampToDateTime(TimeDateStamp: DWORD): TDateTime;
     property AttachedImage: Boolean read FAttachedImage;
+    property CLRHeader: TJclPeCLRHeader read GetCLRHeader;
     property DebugList: TJclPeDebugList read GetDebugList;
     property Description: string read GetDescription;
     property Directories[Directory: Word]: TImageDataDirectory read GetDirectories;
@@ -634,6 +671,7 @@ type
     FRequires: TStrings;
     FFlags: Integer;
     FDescription: string;
+    FEnsureExtension: Boolean;
     function GetContainsCount: Integer;
     function GetContainsFlags(Index: Integer): Byte;
     function GetContainsNames(Index: Integer): string;
@@ -654,6 +692,7 @@ type
     property ContainsNames[Index: Integer]: string read GetContainsNames;
     property ContainsFlags[Index: Integer]: Byte read GetContainsFlags;
     property Description: string read FDescription;
+    property EnsureExtension: Boolean read FEnsureExtension write FEnsureExtension;
     property Flags: Integer read FFlags;
     property Requires: TStrings read FRequires;
     property RequiresCount: Integer read GetRequiresCount;
@@ -699,8 +738,9 @@ type
     procedure Clear; override;
     procedure CreateFormsList;
   public
-    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); override;
     destructor Destroy; override;
+    function DependedPackages(List: TStrings; FullPathName, Descriptions: Boolean): Boolean;
     function FreeLibHandle: Boolean;
     property Forms[Index: Integer]: TJclPeBorForm read GetForms;
     property FormCount: Integer read GetFormCount;
@@ -808,6 +848,9 @@ function PeResourceKindNames(const FileName: TFileName;
   ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
 
 function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
+
+function PeBorDependedPackages(const FileName: TFileName; PackagesList: TStrings;
+  FullPathName, Descriptions: Boolean): Boolean;
 
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
 
@@ -928,11 +971,22 @@ uses
   Consts,
   JclLogic, JclResources, JclSysUtils;
 
+const
+  BPLExtension = '.BPL';
+
+  PackageInfoResName = 'PACKAGEINFO';
+  DescriptionResName = 'DESCRIPTION';
+  PackageOptionsResName = 'PACKAGEOPTIONS';
+  DVclAlResName = 'DVCLAL';
+
+  DebugSectionName = '.debug';
+  ReadOnlySectionName = '.rdata';
+
 //==============================================================================
 // Helper routines
 //==============================================================================
 
-function GetVersionString(HiV, LoV: Word): string;
+function FormatVersionString(HiV, LoV: Word): string;
 begin
   Result := Format('%u.%.2u', [HiV, LoV]);
 end;
@@ -959,6 +1013,57 @@ begin
     Result := Word(T1) = Word(T2)
   else
     Result := (StrIComp(T1, T2) = 0);
+end;
+
+//------------------------------------------------------------------------------
+
+function InternalImportedLibraries(const FileName: TFileName;
+  Recursive, FullPathName: Boolean; ExternalCache: TJclPeImagesCache): TStringList;
+var
+  Cache: TJclPeImagesCache;
+
+  procedure ProcessLibraries(const AFileName: TFileName);
+  var
+    I: Integer;
+    S: string;
+    ImportLib: TJclPeImportLibItem;
+  begin
+    with Cache[AFileName].ImportList do
+      for I := 0 to Count - 1 do
+      begin
+        ImportLib := Items[I];
+        if FullPathName then
+          S := ImportLib.FileName
+        else
+          S := ImportLib.Name;
+        if Result.IndexOf(S) = -1 then
+        begin
+          Result.Add(S);
+          if Recursive then
+            ProcessLibraries(ImportLib.FileName);
+        end;
+      end;
+  end;
+
+begin
+  if ExternalCache = nil then
+    Cache := TJclPeImagesCache.Create
+  else
+    Cache := ExternalCache;
+  try
+    Result := TStringList.Create;
+    try
+      Result.Sorted := True;
+      Result.Duplicates := dupIgnore;
+      ProcessLibraries(FileName);
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    if ExternalCache = nil then
+      Cache.Free;
+  end;
 end;
 
 //==============================================================================
@@ -1051,12 +1156,35 @@ begin
   I := FList.IndexOf(FileName);
   if I = -1 then
   begin
-    Result := TJclPeImage.Create(True);
+    Result := GetPeImageClass.Create(True);
     Result.FileName := FileName;
     FList.AddObject(FileName, Result);
   end
   else
     Result := TJclPeImage(FList.Objects[I]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImagesCache.GetPeImageClass: TJclPeImageClass;
+begin
+  Result := TJclPeImage;
+end;
+
+//==============================================================================
+// TJclPeBorImagesCache
+//==============================================================================
+
+function TJclPeBorImagesCache.GetImages(const FileName: TFileName): TJclPeBorImage;
+begin
+  Result := TJclPeBorImage(inherited Images[FileName]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImagesCache.GetPeImageClass: TJclPeImageClass;
+begin
+  Result := TJclPeBorImage;
 end;
 
 //==============================================================================
@@ -2374,7 +2502,7 @@ function TJclPeResourceItem.GetResourceType: TJclPeResourceKind;
 begin
   with Level1Item do
   begin
-    if FEntry^.Name <= 23 then
+    if FEntry^.Name < Cardinal(High(TJclPeResourceKind)) then
       Result := TJclPeResourceKind(FEntry^.Name)
     else
       Result := rtUserDefined
@@ -2387,7 +2515,7 @@ function TJclPeResourceItem.GetResourceTypeStr: string;
 begin
   with Level1Item do
   begin
-    if FEntry^.Name <= 23 then
+    if FEntry^.Name < Cardinal(High(TJclPeResourceKind)) then
       Result := Copy(GetEnumName(TypeInfo(TJclPeResourceKind), Ord(FEntry^.Name)), 3, 30)
     else
       Result := Name;
@@ -2667,7 +2795,7 @@ begin
     DebugImageDir := Directories[IMAGE_DIRECTORY_ENTRY_DEBUG];
     if DebugImageDir.VirtualAddress = 0 then
       Exit;
-    if GetSectionHeader('.debug', Header) and
+    if GetSectionHeader(DebugSectionName, Header) and
       (Header^.VirtualAddress = DebugImageDir.VirtualAddress) then
     begin
       FormatCount := DebugImageDir.Size;
@@ -2675,7 +2803,7 @@ begin
     end
     else
     begin
-      if not GetSectionHeader('.rdata', Header) then
+      if not GetSectionHeader(ReadOnlySectionName, Header) then
         Exit;
       FormatCount := DebugImageDir.Size div SizeOf(TImageDebugDirectory);
       DebugDir := Pointer(MappedAddress + DebugImageDir.VirtualAddress -
@@ -2694,6 +2822,34 @@ end;
 function TJclPeDebugList.GetItems(Index: Integer): TImageDebugDirectory;
 begin
   Result := PImageDebugDirectory(inherited Items[Index])^;
+end;
+
+//==============================================================================
+// TJclPeCLRHeader
+//==============================================================================
+
+constructor TJclPeCLRHeader.Create(AImage: TJclPeImage);
+begin
+  FImage := AImage;
+  ReadHeader;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeCLRHeader.GetVersionString: string;
+begin
+  Result := FormatVersionString(Header.MajorRuntimeVersion, Header.MinorRuntimeVersion);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclPeCLRHeader.ReadHeader;
+var
+  HeaderPtr: PImageCor20Header;
+begin
+  HeaderPtr := Image.DirectoryEntryToData(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR);
+  if (HeaderPtr <> nil) and (HeaderPtr^.cb >= SizeOf(TImageCor20Header)) then
+    FHeader := HeaderPtr^;
 end;
 
 //==============================================================================
@@ -2768,6 +2924,7 @@ end;
 procedure TJclPeImage.Clear;
 begin
   FImageSections.Clear;
+  FreeAndNil(FCLRHeader);
   FreeAndNil(FDebugList);
   FreeAndNil(FImportList);
   FreeAndNil(FExportList);
@@ -2897,6 +3054,15 @@ end;
 function TJclPeImage.ExpandModuleName(const ModuleName: string): TFileName;
 begin
   Result := ExpandBySearchPath(ModuleName, ExtractFilePath(FFileName));
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.GetCLRHeader: TJclPeCLRHeader;
+begin
+  if FCLRHeader = nil then
+    FCLRHeader := TJclPeCLRHeader.Create(Self);
+  Result := FCLRHeader;  
 end;
 
 //------------------------------------------------------------------------------
@@ -3034,7 +3200,7 @@ begin
         JclPeHeader_Magic:
           Result := IntToHex(OptionalHeader.Magic, 4);
         JclPeHeader_LinkerVersion:
-          Result := GetVersionString(OptionalHeader.MajorLinkerVersion, OptionalHeader.MinorLinkerVersion);
+          Result := FormatVersionString(OptionalHeader.MajorLinkerVersion, OptionalHeader.MinorLinkerVersion);
         JclPeHeader_SizeOfCode:
           Result := IntToHex(OptionalHeader.SizeOfCode, 8);
         JclPeHeader_SizeOfInitializedData:
@@ -3054,11 +3220,11 @@ begin
         JclPeHeader_FileAlignment:
           Result := IntToHex(OptionalHeader.FileAlignment, 8);
         JclPeHeader_OperatingSystemVersion:
-          Result := GetVersionString(OptionalHeader.MajorOperatingSystemVersion, OptionalHeader.MinorOperatingSystemVersion);
+          Result := FormatVersionString(OptionalHeader.MajorOperatingSystemVersion, OptionalHeader.MinorOperatingSystemVersion);
         JclPeHeader_ImageVersion:
-          Result := GetVersionString(OptionalHeader.MajorImageVersion, OptionalHeader.MinorImageVersion);
+          Result := FormatVersionString(OptionalHeader.MajorImageVersion, OptionalHeader.MinorImageVersion);
         JclPeHeader_SubsystemVersion:
-          Result := GetVersionString(OptionalHeader.MajorSubsystemVersion, OptionalHeader.MinorSubsystemVersion);
+          Result := FormatVersionString(OptionalHeader.MajorSubsystemVersion, OptionalHeader.MinorSubsystemVersion);
         JclPeHeader_Win32VersionValue:
           Result := IntToHex(OptionalHeader.Win32VersionValue, 8);
         JclPeHeader_SizeOfImage:
@@ -3143,7 +3309,7 @@ begin
         JclLoadConfig_TimeDateStamp:
           Result := IntToHex(TimeDateStamp, 8);
         JclLoadConfig_Version:
-          Result := GetVersionString(MajorVersion, MinorVersion);
+          Result := FormatVersionString(MajorVersion, MinorVersion);
         JclLoadConfig_GlobalFlagsClear:
           Result := IntToHex(GlobalFlagsClear, 8);
         JclLoadConfig_GlobalFlagsSet:
@@ -3360,6 +3526,13 @@ begin
   else
     Result := '';
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeImage.IsCLR: Boolean;
+begin
+  Result := DirectoryExists[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
 end;
 
 //------------------------------------------------------------------------------
@@ -3614,6 +3787,7 @@ constructor TJclPePackageInfo.Create(ALibHandle: THandle);
 begin
   FContains := TStringList.Create;
   FRequires := TStringList.Create;
+  FEnsureExtension := True;
   ReadPackageInfo(ALibHandle);
 end;
 
@@ -3659,6 +3833,8 @@ end;
 function TJclPePackageInfo.GetRequiresNames(Index: Integer): string;
 begin
   Result := FRequires[Index];
+  if FEnsureExtension then
+    StrEnsureSuffix(BPLExtension, Result);
 end;
 
 //------------------------------------------------------------------------------
@@ -3682,10 +3858,10 @@ end;
 class function TJclPePackageInfo.PackageOptionsToString(Flags: Integer): string;
 begin
   Result := '';
-  AddFlagTextRes(Result, @RsPePkgNeverBuild, Flags, $00000001);
-  AddFlagTextRes(Result, @RsPePkgDesignOnly, Flags, $00000002);
-  AddFlagTextRes(Result, @RsPePkgRunOnly, Flags, $00000004);
-  AddFlagTextRes(Result, @RsPePkgIgnoreDupUnits, Flags, $00000008);
+  AddFlagTextRes(Result, @RsPePkgNeverBuild, Flags, pfNeverBuild);
+  AddFlagTextRes(Result, @RsPePkgDesignOnly, Flags, pfDesignOnly);
+  AddFlagTextRes(Result, @RsPePkgRunOnly, Flags, pfRunOnly);
+  AddFlagTextRes(Result, @RsPePkgIgnoreDupUnits, Flags, pfIgnoreDupUnits);
 end;
 
 //------------------------------------------------------------------------------
@@ -3715,7 +3891,7 @@ begin
       ntContainsUnit:
         FContains.AddObject(Name, Pointer(AFlags));
       ntRequiresPackage:
-        FRequires.AddObject(Name, Pointer(AFlags));
+        FRequires.Add(Name);
     end;
 end;
 
@@ -3724,14 +3900,14 @@ var
   DescrResInfo: HRSRC;
   DescrResData: HGLOBAL;
 begin
-  FAvailable := FindResource(ALibHandle, 'PACKAGEINFO', RT_RCDATA) <> 0;
+  FAvailable := FindResource(ALibHandle, PackageInfoResName, RT_RCDATA) <> 0;
   if FAvailable then
   begin
     GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
     TStringList(FContains).Sort;
     TStringList(FRequires).Sort;
-  end;  
-  DescrResInfo := FindResource(ALibHandle, 'DESCRIPTION', RT_RCDATA);
+  end;
+  DescrResInfo := FindResource(ALibHandle, DescriptionResName, RT_RCDATA);
   if DescrResInfo <> 0 then
   begin
     DescrResData := LoadResource(ALibHandle, DescrResInfo);
@@ -3740,7 +3916,7 @@ begin
       FDescription := WideCharLenToString(LockResource(DescrResData),
         SizeofResource(ALibHandle, DescrResInfo));
       StrResetLength(FDescription);
-    end;  
+    end;
   end;
 end;
 
@@ -3749,11 +3925,11 @@ end;
 class function TJclPePackageInfo.UnitInfoFlagsToString(UnitFlags: Byte): string;
 begin
   Result := '';
-  AddFlagTextRes(Result, @RsPePkgMain, UnitFlags, $01);
-  AddFlagTextRes(Result, @RsPePkgPackage, UnitFlags, $02);
-  AddFlagTextRes(Result, @RsPePkgWeak, UnitFlags, $04);
-  AddFlagTextRes(Result, @RsPePkgOrgWeak, UnitFlags, $08);
-  AddFlagTextRes(Result, @RsPePkgImplicit, UnitFlags, $10);
+  AddFlagTextRes(Result, @RsPePkgMain, UnitFlags, ufMainUnit);
+  AddFlagTextRes(Result, @RsPePkgPackage, UnitFlags, ufPackageUnit);
+  AddFlagTextRes(Result, @RsPePkgWeak, UnitFlags, ufWeakUnit);
+  AddFlagTextRes(Result, @RsPePkgOrgWeak, UnitFlags, ufOrgWeakUnit);
+  AddFlagTextRes(Result, @RsPePkgImplicit, UnitFlags, ufImplicitUnit);
 end;
 
 //==============================================================================
@@ -3811,9 +3987,9 @@ begin
   if StatusOK then
     with ResourceList do
     begin
-      HasDVCLAL := (FindResource(rtRCData, 'DVCLAL') <> nil);
-      HasPACKAGEINFO := (FindResource(rtRCData, 'PACKAGEINFO') <> nil);
-      HasPACKAGEOPTIONS := (FindResource(rtRCData, 'PACKAGEOPTIONS') <> nil);
+      HasDVCLAL := (FindResource(rtRCData, DVclAlResName) <> nil);
+      HasPACKAGEINFO := (FindResource(rtRCData, PackageInfoResName) <> nil);
+      HasPACKAGEOPTIONS := (FindResource(rtRCData, PackageOptionsResName) <> nil);
       FIsPackage := HasPACKAGEINFO and HasPACKAGEOPTIONS;
       FIsBorlandImage := HasDVCLAL or FIsPackage;
     end;
@@ -3888,6 +4064,35 @@ begin
           for I := 0 to Count - 1 do
             ProcessListItem(Items[I].List[0]);
     end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclPeBorImage.DependedPackages(List: TStrings; FullPathName, Descriptions: Boolean): Boolean;
+var
+  ImportList: TStringList;
+  I: Integer;
+  Name: string;
+begin
+  Result := IsBorlandImage;
+  if not Result then
+    Exit;
+  ImportList := InternalImportedLibraries(FileName, True, FullPathName, nil);
+  try
+    for I := 0 to ImportList.Count - 1 do
+    begin
+      Name := ImportList[I];
+      if StrSame(ExtractFileExt(Name), BPLExtension) then
+      begin
+        if Descriptions then
+          List.Add(Name + '=' + GetPackageDescription(PChar(Name)))
+        else
+          List.Add(Name);
+      end;
+    end;
+  finally
+    ImportList.Free;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -3985,7 +4190,7 @@ var
   begin
     Result := False;
     ImportName := AnsiUpperCase(ImportName);
-    if ExtractFileExt(ImportName) = '.BPL' then
+    if ExtractFileExt(ImportName) = BPLExtension then
     begin
       ImportName := PathExtractFileNameNoExt(ImportName);
       if (Length(ImportName) = 5) and
@@ -4291,52 +4496,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-function InternalImportedLibraries(const FileName: TFileName;
-  Recursive, FullPathName: Boolean): TStringList;
-var
-  Cache: TJclPeImagesCache;
-
-  procedure ProcessLibraries(const AFileName: TFileName);
-  var
-    I: Integer;
-    S: string;
-    ImportLib: TJclPeImportLibItem;
-  begin
-    with Cache[AFileName].ImportList do
-      for I := 0 to Count - 1 do
-      begin
-        ImportLib := Items[I];
-        if FullPathName then
-          S := ImportLib.FileName
-        else
-          S := ImportLib.Name;
-        if Result.IndexOf(S) = -1 then
-        begin
-          Result.Add(S);
-          if Recursive then
-            ProcessLibraries(ImportLib.FileName);
-        end;
-      end;
-  end;
-
-begin
-  Cache := TJclPeImagesCache.Create;
-  try
-    Result := TStringList.Create;
-    try
-      Result.Sorted := True;
-      Result.Duplicates := dupIgnore;
-      ProcessLibraries(FileName);
-    except
-      FreeAndNil(Result);
-    end;
-  finally
-    Cache.Free;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
 begin
@@ -4418,7 +4577,7 @@ begin
     Result := StatusOK;
     if Result then
     begin
-      SL := InternalImportedLibraries(FileName, Recursive, False);
+      SL := InternalImportedLibraries(FileName, Recursive, False, nil);
       try
         Result := SL.IndexOf(LibraryName) > -1;
       finally
@@ -4442,7 +4601,7 @@ begin
     Result := StatusOK;
     if Result then
     begin
-      SL := InternalImportedLibraries(FileName, Recursive, FullPathName);
+      SL := InternalImportedLibraries(FileName, Recursive, FullPathName, nil);
       try
         LibrariesList.Assign(SL);
       finally
@@ -4572,7 +4731,23 @@ begin
       begin
         BorForm := BorImage.Forms[I];
         NamesList.AddObject(BorForm.DisplayName, Pointer(BorForm.ResItem.RawEntryDataSize));
-      end;  
+      end;
+  finally
+    BorImage.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function PeBorDependedPackages(const FileName: TFileName; PackagesList: TStrings;
+  FullPathName, Descriptions: Boolean): Boolean;
+var
+  BorImage: TJclPeBorImage;
+begin
+  BorImage := TJclPeBorImage.Create(True);
+  try
+    BorImage.FileName := FileName;
+    Result := BorImage.DependedPackages(PackagesList, FullPathName, Descriptions);
   finally
     BorImage.Free;
   end;
