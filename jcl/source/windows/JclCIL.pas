@@ -10,13 +10,17 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclClr.pas.                                                                }
+{ The Original Code is JclCIL.pas.                                                                 }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ Portions created by Flier Lu are Copyright (C) Flier Lu. All Rights Reserved.                    }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Flier Lu                                                                                       }
+{ Contributors:                                                                                    }
+{   Flier Lu (flier)                                                                               }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -26,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclCIL;
@@ -1050,6 +1054,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.5  2004/04/06 04:55:17  peterjhaas
 // adapt compiler conditions, add log entry
 //

@@ -12,11 +12,17 @@
 {                                                                                                  }
 { The Original Code is JclMiscel.pas.                                                              }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Members of Team JCL. Portions created by these   }
+{ individuals are Copyright (C) of these individuals. All Rights Reserved                          }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Jeroen Speldekamp                                                                              }
+{   Peter Friese                                                                                   }
+{   Marcel van Brakel                                                                              }
+{   Robert Marquardt (marquardt)                                                                   }
+{   John C Molyneux                                                                                }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -24,7 +30,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclMiscel;
@@ -455,6 +461,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.5  2004/04/06 04:55:17  peterjhaas
 // adapt compiler conditions, add log entry
 //

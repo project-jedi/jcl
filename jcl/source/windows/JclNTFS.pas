@@ -12,12 +12,15 @@
 {                                                                                                  }
 { The Original Code is JclNTFS.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel. Portions created by Marcel van  }
+{ Brakel are Copyright (C) Marcel van Brakel. All Rights Reserved.                                 }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -28,14 +31,14 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 
 // Comments to Win9x compatibility of the functions used in this unit
 
-// The following function exist at last since Win95C, but return always
-// the error ERROR_CALL_NOT_IMPLEMENTED
+// The following functions exist at least since Win95C, but invariably returns
+// ERROR_CALL_NOT_IMPLEMENTED:
 //   BackupSeek, BackupRead, BackupWrite
 
 unit JclNTFS;
@@ -1390,6 +1393,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.5  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

@@ -12,11 +12,19 @@
 {                                                                                                  }
 { The Original Code is JclUnicode.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Mike Lischke (public@lischke-online.de).           }
+{ Portions created by Mike Lischke are Copyright (C) 1999-2000 Mike Lischke. All Rights Reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Andreas Hausladen (ahuser)                                                                     }
 {   Mike Lischke                                                                                   }
+{   Flier Lu (flier)                                                                               }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -24,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclUnicode;
@@ -8083,6 +8091,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.9  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.8  2004/04/06 04:55:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

@@ -12,11 +12,16 @@
 {                                                                                                  }
 { The Original Code is JclMultimedia.pas.                                                          }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Marcel van Brakel and Bernhard Berger.           }
+{ Portions created by these individuals are Copyright (C) of these individuals.                    }
+{ All Rights Reserved.                                                                             }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Jan Jacobs                                                                                     }
+{   Marcel van Brakel                                                                              }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -95,6 +100,8 @@ type
 //--------------------------------------------------------------------------------------------------
 // Audio Mixer
 //--------------------------------------------------------------------------------------------------
+
+{ TODO -cDoc : mixer API wrapper code. Author: Petr Vones }
 
 type
   EJclMixerError = class (EJclError);
@@ -1528,6 +1535,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.7  2004/04/08 16:59:17  mthoma
 // Fixed #1115. Changed $Data$ to $Date$
 //

@@ -12,12 +12,22 @@
 {                                                                                                  }
 { The Original Code is JclRegistry.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are John C Molyneux, Marcel van Brakel and           }
+{ Charlie Calvert. Portions created by these individuals are Copyright (C) of these individuals.   }
+{ All Rights Reserved.                                                                             }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
+{   Marcel van Brakel                                                                              }
+{   Stephane Fillon                                                                                }
 {   Eric S.Fisher                                                                                  }
+{   Peter Friese                                                                                   }
 {   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Andreas Hausladen (ahuser)                                                                     }
+{   Manlio Laschena (manlio)                                                                       }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Olivier Sannier (obones)                                                                       }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -60,9 +70,7 @@ function RegGetDataType(const RootKey: DelphiHKEY; const Key, Name: string;
   out DataType: Cardinal): Boolean;
 function RegReadBool(const RootKey: DelphiHKEY; const Key, Name: string): Boolean;
 function RegReadBoolDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Boolean): Boolean;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function RegReadInteger(const RootKey: DelphiHKEY; const Key, Name: string): Integer;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function RegReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Integer): Integer;
 { TODO -cHelp : Author: Peter J. Haas }
 function RegReadCardinal(const RootKey: DelphiHKEY; const Key, Name: string): Cardinal;
@@ -76,17 +84,15 @@ function RegReadInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def
 function RegReadUInt64(const RootKey: DelphiHKEY; const Key, Name: string): UInt64;
 { TODO -cHelp : Author: Peter J. Haas }
 function RegReadUInt64Def(const RootKey: DelphiHKEY; const Key, Name: string; Def: UInt64): UInt64;
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 function RegReadAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 function RegReadWideString(const RootKey: DelphiHKEY; const Key, Name: WideString): WideString;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function RegReadString(const RootKey: DelphiHKEY; const Key, Name: string): string;
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 function RegReadAnsiStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: AnsiString): AnsiString;
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 function RegReadWideStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: WideString): WideString;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function RegReadStringDef(const RootKey: DelphiHKEY; const Key, Name, Def: string): string;
 { TODO -cHelp : Author: Peter J. Haas }
 function RegReadMultiAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString): AnsiString;
@@ -108,11 +114,9 @@ function RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: strin
 procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynStringArray; const Def: TDynStringArray); overload;
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadMultiStringDef(const RootKey: DelphiHKEY; const Key, Name: string; Value, Def: TStrings); overload;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal): Cardinal; overload;
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegReadBinary(const RootKey: DelphiHKEY; const Key, Name: string; out Value: TDynByteArray); overload;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 function RegReadBinaryDef(const RootKey: DelphiHKEY; const Key, Name: string;
   var Value; const ValueSize: Cardinal; const Def: Byte): Cardinal; overload;
 { TODO -cHelp : Author: Peter J. Haas }
@@ -130,7 +134,6 @@ function RegReadBinaryAsWideStringDef(const RootKey: DelphiHKEY; const Key, Name
   const Def: WideString): WideString;
 
 procedure RegWriteBool(const RootKey: DelphiHKEY; const Key, Name: string; Value: Boolean);
-{ TODO -cHelp : Contributer: Peter J. Haas }
 procedure RegWriteInteger(const RootKey: DelphiHKEY; const Key, Name: string; Value: Integer);
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; Value: Cardinal);
@@ -138,11 +141,11 @@ procedure RegWriteCardinal(const RootKey: DelphiHKEY; const Key, Name: string; V
 procedure RegWriteInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: Int64);
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteUInt64(const RootKey: DelphiHKEY; const Key, Name: string; Value: UInt64);
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name, Value: AnsiString);
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name, Value: WideString);
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 procedure RegWriteString(const RootKey: DelphiHKEY; const Key, Name, Value: string);
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: string); overload;
@@ -152,7 +155,6 @@ procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 { TODO -cHelp : Author: Peter J. Haas }
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings); overload;
-{ TODO -cHelp : Contributer: Peter J. Haas }
 procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 
 function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
@@ -208,11 +210,11 @@ function RegDelList(const RootKey: DelphiHKEY; const Key: string; const ListName
 //--------------------------------------------------------------------------------------------------
 
 // This function create / read invalid 8 byte REG_DWORD values.
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 { TODO -cHelp : Obsolete, this function read invalid 8 byte REG_DWORD values.
                 Use RegReadInt64 instead. }
 function RegReadDWORD(const RootKey: DelphiHKEY; const Key, Name: string): Int64;
-{ TODO -cHelp : Contributer: Peter J. Haas }
+{ TODO -cHelp : Contributor: Peter J. Haas }
 { TODO -cHelp : Obsolete, this function read invalid 8 byte REG_DWORD values.
                 Use RegReadInt64 instead. }
 function RegReadDWORDDef(const RootKey: DelphiHKEY; const Key, Name: string; Def: Int64): Int64;
@@ -223,7 +225,12 @@ procedure RegWriteDWORD(const RootKey: DelphiHKEY; const Key, Name: string; Valu
 implementation
 
 uses
-  SysUtils, RegStr,
+  SysUtils,
+  {$IFDEF FPC}
+  JwaRegStr,
+  {$ELSE}
+  RegStr,
+  {$ENDIF}
   JclWin32, JclSysUtils, JclStrings, JclResources;
 
 type
@@ -1396,6 +1403,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.11  2004/04/12 22:02:53  peterjhaas
 // Bugfix RegReadBinary for @Value = Nil or ValueSize = 0,
 // add some WideString support, add RegGetDataSize, RegGetDataType, add alternative RegReadBinary function

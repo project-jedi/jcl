@@ -12,11 +12,14 @@
 {                                                                                                  }
 { The Original Code is JclLocales.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Petr Vones.                                        }
+{ Portions created by Petr Vones are Copyright (C) Petr Vones. All Rights Reserved.                }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Petr Vones                                                                                     }
+{ Contributors:                                                                                    }
+{   Marcel van Brakel                                                                              }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -28,7 +31,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclLocales;
@@ -1143,6 +1146,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/05/05 07:33:49  rrossmair
+// header updated according to new policy: initial developers & contributors listed
+//
 // Revision 1.4  2004/04/06 04:55:17  peterjhaas
 // adapt compiler conditions, add log entry
 //
