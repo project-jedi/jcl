@@ -136,7 +136,7 @@ function StrSmartCase(const S: AnsiString; Delimiters: TSysCharSet): AnsiString;
 function StrToken(var S: AnsiString; Separator: AnsiChar): AnsiString;
 procedure StrTokens(const S: AnsiString; List: TStrings);
 procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; List: TStrings);
-procedure StrToStrings(S: AnsiString; Sep: AnsiString; var List: TStrings);
+procedure StrToStrings(S: AnsiString; Sep: AnsiString; List: TStrings);
 function StringsToStr(List: TStrings; Sep: AnsiString): AnsiString;
 function StrTrimQuotes(const S: AnsiString): AnsiString;
 function StrQuote(const S: AnsiString; C: Char): AnsiString;
@@ -147,6 +147,23 @@ function BooleanToStr(B: Boolean): string;
 
 { Character Routines }
 
+{$IFDEF LINUX}
+const
+  C1_UPPER  = $0100; // Uppercase
+  C1_LOWER  = $0200; // Lowercase
+  C1_DIGIT  = $0800; // Decimal digits
+  C1_SPACE  = $2000; // Space characters
+  C1_PUNCT  = $0004; // Punctuation
+  C1_CNTRL  = $0002; // Control characters
+  C1_BLANK  = $0001; // Blank characters
+  C1_XDIGIT = $1000; // Hexadecimal digits
+  C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
+
+  C1_PRINT  = $4000;
+  C1_GRAPH  = $8000;
+  C1_ALNUM  = $0010;
+{$ENDIF}
+{$IFDEF WIN32}
 const
   C1_UPPER  = $0001; // Uppercase
   C1_LOWER  = $0002; // Lowercase
@@ -157,6 +174,7 @@ const
   C1_BLANK  = $0040; // Blank characters
   C1_XDIGIT = $0080; // Hexadecimal digits
   C1_ALPHA  = $0100; // Any linguistic character: alphabetic, syllabary, or ideographic
+{$ENDIF}
 
 function CharType(const C: AnsiChar): Word;
 function CharIsAlpha(const C: AnsiChar): Boolean;
@@ -211,7 +229,7 @@ implementation
 
 uses
   {$IFDEF LINUX}
-  Types;
+  Types, Libc;
   {$ENDIF}
   {$IFDEF WIN32}
   Windows;
@@ -242,35 +260,46 @@ var
 
 {$IFDEF LINUX}
 
-function DefLoCaseChar(const C: AnsiChar): AnsiChar;
+procedure LoadCharTypes;
+var
+  CurrChar: AnsiChar;
+  ip: PWord;
+  lib: Pointer;
+  sym: Pointer;
 begin
-  Result := C;
-  // TODO implement Linux version
-end;
-
-//------------------------------------------------------------------------------
-
-function DefUpCaseChar(const C: AnsiChar): AnsiChar;
-begin
-  Result := C;
-  // TODO implement Linux version
+  // same as LoadLibrary
+  lib := dlopen(libcmodulename,RTLD_NOW);
+  if lib <> nil then
+  begin
+    // the same as GetProcAddress
+    sym := dlsym(lib,'__ctype_b');
+    if sym <> nil then
+    begin
+      // this extra indirection is the secret
+      ip := PPointer(sym)^;
+      for CurrChar := Low(AnsiChar) to High(AnsiChar) do
+      begin
+        AnsiCharTypes[CurrChar] := ip^;
+        Inc(ip);
+      end;
+    end;
+    dlclose(lib);
+  end;
 end;
 
 {$ENDIF}
 {$IFDEF WIN32}
 
-function DefLoCaseChar(const C: AnsiChar): AnsiChar;
+procedure LoadCharTypes;
+var
+  CurrChar: AnsiChar;
+  CurrType: Word;
 begin
-  Result := C;
-  Windows.CharLowerBuff(@Result, 1);
-end;
-
-//------------------------------------------------------------------------------
-
-function DefUpCaseChar(const C: AnsiChar): AnsiChar;
-begin
-  Result := C;
-  Windows.CharUpperBuff(@Result, 1);
+  for CurrChar := Low(AnsiChar) to High(AnsiChar) do
+  begin
+     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, SizeOf(AnsiChar), CurrType);
+     AnsiCharTypes[CurrChar] := CurrType;
+  end;
 end;
 
 {$ENDIF}
@@ -279,31 +308,65 @@ end;
 
 {$IFDEF LINUX}
 
-procedure LoadCharTypes;
-begin
-  // TODO Locale is not ready as of Kylix FT2
-end;
-
-{$ENDIF}
-{$IFDEF WIN32}
-
-procedure LoadCharTypes;
-const
-  CharSize = SizeOf(AnsiChar);
+procedure LoadCaseMap;
 var
-  CurrChar: AnsiChar;
-  CurrType: Word;
+  CurrChar, ReCaseChar: AnsiChar;
+  ip: PInteger;
+  lib: Pointer;
+  sym: Pointer;
 begin
-  for CurrChar := Low(AnsiChar) to High(AnsiChar) do
+  if not AnsiCaseMapReady then
   begin
-     GetStringTypeExA(LOCALE_USER_DEFAULT, CT_CTYPE1, @CurrChar, CharSize, CurrType);
-     AnsiCharTypes[CurrChar] := CurrType;
+    // same as LoadLibrary
+    lib := dlopen(libcmodulename,RTLD_NOW);
+    if lib <> nil then
+    begin
+      // the same as GetProcAddress
+      sym := dlsym(lib,'__ctype_tolower');
+      if sym <> nil then
+      begin
+        // this extra indirection is the secret
+        ip := PPointer(sym)^;
+        for CurrChar := Low(AnsiChar) to High(AnsiChar) do
+        begin
+          AnsiCaseMap[Ord(CurrChar) + AnsiLoOffset] := Char(ip^);
+          Inc(ip);
+        end;
+      end;
+      sym := dlsym(lib,'__ctype_toupper');
+      if sym <> nil then
+      begin
+        // this extra indirection is the secret
+        ip := PPointer(sym)^;
+        for CurrChar := Low(AnsiChar) to High(AnsiChar) do
+        begin
+          AnsiCaseMap[Ord(CurrChar) + AnsiUpOffset] := Char(ip^);
+          Inc(ip);
+        end;
+      end;
+      for CurrChar := Low(AnsiChar) to High(AnsiChar) do
+      begin
+        if CharIsUpper(CurrChar) then      // Az
+          ReCaseChar := AnsiCaseMap[Ord(CurrChar) + AnsiLoOffset]
+        else
+        if CharIsLower(CurrChar) then
+          ReCaseChar := AnsiCaseMap[Ord(CurrChar) + AnsiUpOffset]
+        else
+          ReCaseChar := CurrChar;
+        AnsiCaseMap[Ord(CurrChar) + AnsiReOffset] := ReCaseChar;
+      end;
+      dlclose(lib);
+    end;
+
+    AnsiCaseMapReady := True;
   end;
 end;
 
 {$ENDIF}
 
 //------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
 
 procedure LoadCaseMap;
 var
@@ -313,19 +376,10 @@ begin
   begin
     for CurrChar := Low(AnsiChar) to High(AnsiChar) do
     begin
-      LoCaseChar := DefLoCaseChar(CurrChar);
-      UpCaseChar := DefUpCaseChar(CurrChar);
-
-   //   ReCaseChar := CurrChar;
-
-      {if LoCaseChar <> UpCaseChar then
-      begin
-        if LoCaseChar = CurrChar then
-          ReCaseChar := UpCaseChar
-        else
-        if UpCaseChar = CurrChar then
-          ReCaseChar := LoCaseChar;
-      end;}
+      LoCaseChar := CurrChar;
+      UpCaseChar := CurrChar;
+      Windows.CharLowerBuff(@LoCaseChar, 1);
+      Windows.CharUpperBuff(@UpCaseChar, 1);
 
       if CharIsUpper(CurrChar) then      // Az
         ReCaseChar := LoCaseChar
@@ -343,6 +397,8 @@ begin
     AnsiCaseMapReady := True;
   end;
 end;
+
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2055,7 +2111,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure StrToStrings(S: AnsiString; Sep: AnsiString; var List: TStrings);
+procedure StrToStrings(S: AnsiString; Sep: AnsiString; List: TStrings);
 var
   I, L: Integer;
   Left: AnsiString;
@@ -2177,11 +2233,26 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$IFDEF LINUX}
+
+function CharIsAlphaNum(const C: AnsiChar): Boolean;
+begin
+  Result := (AnsiCharTypes[C] and C1_ALNUM) <> 0;
+end;
+
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+
 function CharIsAlphaNum(const C: AnsiChar): Boolean;
 begin
   Result := ((AnsiCharTypes[C] and C1_ALPHA) <> 0) or
             ((AnsiCharTypes[C] and C1_DIGIT) <> 0);
 end;
+
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2199,10 +2270,25 @@ end;
 
 //------------------------------------------------------------------------------
 
+{$IFDEF LINUX}
+
+function CharIsPrint(const C: AnsiChar): Boolean;
+begin
+  Result := ((AnsiCharTypes[C] and C1_PRINT) <> 0);
+end;
+
+{$ENDIF}
+
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+
 function CharIsPrint(const C: AnsiChar): Boolean;
 begin
   Result := not CharIsControl(C);
 end;
+
+{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -2773,7 +2859,7 @@ begin
 end;
 
 initialization
-  LoadCharTypes;  {1!!}
-  LoadCaseMap;    {2!!}
+  LoadCharTypes;  // this table first
+  LoadCaseMap;    // or this function does not work
 
 end.
