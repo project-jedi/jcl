@@ -665,7 +665,8 @@ begin
   end
   else
   begin
-    Result := 0;
+    // type cast required to circumvent internal error in D7
+    Result := UInt64(0);
     InternalGetData(RootKey, Key, Name, [REG_BINARY, REG_DWORD, REG_QWORD],
       SizeOf(Result), DataType, @Result, DataSize);
   end;
@@ -1314,6 +1315,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.25  2004/10/20 16:57:32  rrossmair
+// - RegReadUInt64: D7 internal error C1118 workaround
+//
 // Revision 1.24  2004/10/19 06:27:03  marquardt
 // JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
 //
