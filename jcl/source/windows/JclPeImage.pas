@@ -30,7 +30,7 @@
 
 unit JclPeImage;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
@@ -5276,7 +5276,5 @@ begin
   if Result = umNotMangled then
     Unmangled := Name;
 end;
-
-//------------------------------------------------------------------------------
 
 end.
