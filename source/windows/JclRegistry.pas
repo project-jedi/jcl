@@ -317,26 +317,70 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function InternalRegOpenKeyEx(Key: HKEY; SubKey: PChar;
+  ulOptions: DWORD; samDesired: REGSAM; var RegKey: HKEY): Longint;
+var
+  WideKey: WideString;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    WideKey := RelativeKey(Key, SubKey);
+    Result := RegOpenKeyExW(Key, PWideChar(WideKey), ulOptions, samDesired, RegKey);
+  end
+  else
+    Result := RegOpenKeyExA(Key, RelativeKey(Key, SubKey), ulOptions, samDesired, RegKey);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function InternalRegQueryValueEx(Key: HKEY; ValueName: PChar;
+  lpReserved: Pointer; lpType: PDWORD; lpData: PByte; lpcbData: PDWORD): Longint;
+var
+  WideName: WideString;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    WideName := ValueName;
+    Result := RegQueryValueExW(Key, PWideChar(WideName), lpReserved, lpType, lpData, lpcbData);
+  end
+  else
+    Result := RegQueryValueExA(Key, ValueName, lpReserved, lpType, lpData, lpcbData);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function InternalRegSetValueEx(Key: HKEY; ValueName: PChar;
+  Reserved: DWORD; dwType: DWORD; lpData: Pointer; cbData: DWORD): Longint; stdcall;
+var
+  WideName: WideString;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    WideName := ValueName;
+    Result := RegSetValueExW(Key, PWideChar(WideName), Reserved, dwType, lpData, cbData);
+  end
+  else
+    Result := RegSetValueExA(Key, PChar(ValueName), Reserved, dwType, lpData, cbData);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure InternalGetData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKinds: TRegKinds; ExpectedSize: DWORD;
   out DataType: DWORD; Data: Pointer; out DataSize: DWORD);
 var
   RegKey: HKEY;
-  WideKey, WideName: WideString;
 begin
   DataType := REG_NONE;
   DataSize := 0;
-  WideKey := RelativeKey(RootKey, PChar(Key));
-  WideName := Name;
-  // using Unicode functions to avoid REG_SZ transformations
-  if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     try
-      if RegQueryValueExW(RegKey, PWideChar(WideName), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
+      if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
         if not (DataType in RegKinds) or (DataSize > ExpectedSize) then
           DataError(Key, Name);
-        if RegQueryValueExW(RegKey, PWideChar(WideName), nil, nil, Data, @DataSize) <> ERROR_SUCCESS then
+        if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Data, @DataSize) <> ERROR_SUCCESS then
           ValueError(Key, Name);
       end
       else
@@ -394,18 +438,15 @@ function InternalGetWideString(const RootKey: DelphiHKEY; const Key, Name: strin
 var
   RegKey: HKEY;
   DataType, DataSize: DWORD;
-  WideKey, WideName: WideString;
   RegKinds: TRegKinds;
 begin
   DataType := REG_NONE;
   DataSize := 0;
-  WideKey := RelativeKey(RootKey, PChar(Key));
-  WideName := Name;
   Result := '';
-  if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if InternalRegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     try
-      if RegQueryValueExW(RegKey, PWideChar(WideName), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
+      if InternalRegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
       begin
         if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
           RegKinds := [REG_BINARY]
@@ -417,7 +458,7 @@ begin
         if not (DataType in RegKinds) then
           DataError(Key, Name);
         SetLength(Result, DataSize div SizeOf(WideChar) + 1);
-        if RegQueryValueExW(RegKey, PWideChar(WideName), nil, nil, Pointer(Result), @DataSize) <> ERROR_SUCCESS then
+        if InternalRegQueryValueEx(RegKey, PChar(Name), nil, nil, Pointer(Result), @DataSize) <> ERROR_SUCCESS then
         begin
           Result := '';
           ValueError(Key, Name);
@@ -436,7 +477,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure InternalRegSetData(const RootKey: DelphiHKEY; const Key, Name: string;
+procedure InternalSetData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
 var
   RegKey: HKEY;
@@ -456,20 +497,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure InternalRegSetWideData(const RootKey: DelphiHKEY; const Key, Name: string;
+procedure InternalSetWideData(const RootKey: DelphiHKEY; const Key, Name: string;
   RegKind: TRegKind; Value: Pointer; ValueSize: Cardinal);
 var
   RegKey: HKEY;
-  WideKey, WideName: WideString;
 begin
   if not RegKeyExists(RootKey, Key) then
     RegCreateKey(RootKey, Key);
-  WideName := Name;
-  WideKey := RelativeKey(RootKey, PChar(Key));
-  if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
+  if InternalRegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
     try
-      if RegSetValueExW(RegKey, PWideChar(WideName), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
-      WriteError(Key);
+      if InternalRegSetValueEx(RegKey, PChar(Name), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
+        WriteError(Key);
     finally
       RegCloseKey(RegKey);
     end
@@ -1035,7 +1073,7 @@ begin
       Size := SizeOf(Int64)
     else
       Size := SizeOf(Value);
-    InternalRegSetData(RootKey, Key, Name, DataType, @Val, Size);
+    InternalSetData(RootKey, Key, Name, DataType, @Val, Size);
   end
   else
     DataError(Key, Name);
@@ -1066,7 +1104,7 @@ begin
       Size := SizeOf(Int64)
     else
       Size := SizeOf(Value);
-    InternalRegSetData(RootKey, Key, Name, DataType, @Val, Size);
+    InternalSetData(RootKey, Key, Name, DataType, @Val, Size);
   end
   else
     DataError(Key, Name);
@@ -1118,7 +1156,7 @@ begin
     RegWriteString(RootKey, Key, Name, DataType, Format('%u', [Value]))
   else
   if DataType in [REG_QWORD, REG_BINARY] then
-    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+    InternalSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
   else
     DataError(Key, Name);
 end;
@@ -1138,7 +1176,7 @@ begin
     RegWriteString(RootKey, Key, Name, DataType, Format('%g', [Value]))
   else
   if DataType in [REG_BINARY] then
-    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+    InternalSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
   else
     DataError(Key, Name);
 end;
@@ -1158,7 +1196,7 @@ begin
     RegWriteString(RootKey, Key, Name, DataType, Format('%g', [Value]))
   else
   if DataType in [REG_BINARY] then
-    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+    InternalSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
   else
     DataError(Key, Name);
 end;
@@ -1178,7 +1216,7 @@ begin
     RegWriteString(RootKey, Key, Name, DataType, Format('%g', [Value]))
   else
   if DataType in [REG_BINARY] then
-    InternalRegSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
+    InternalSetData(RootKey, Key, Name, DataType, @Value, SizeOf(Value))
   else
     DataError(Key, Name);
 end;
@@ -1209,7 +1247,7 @@ end;
 procedure RegWriteAnsiString(const RootKey: DelphiHKEY; const Key, Name: AnsiString; DataType: Cardinal; Value: AnsiString);
 begin
   if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
-    InternalRegSetData(RootKey, Key, Name, DataType, PChar(Value),
+    InternalSetData(RootKey, Key, Name, DataType, PChar(Value),
       (Length(Value) + 1) * SizeOf(AnsiChar))
   else
     DataError(Key, Name);
@@ -1226,13 +1264,13 @@ end;
 
 procedure RegWriteWideString(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: WideString);
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-    InternalRegSetWideData(RootKey, Key, Name, REG_BINARY, PWideChar(Value),
-      (Length(Value) + 1) * SizeOf(WideChar))
-  else
   if DataType in [REG_BINARY, REG_SZ, REG_EXPAND_SZ] then
-    InternalRegSetWideData(RootKey, Key, Name, DataType, PWideChar(Value),
-      (Length(Value) + 1) * SizeOf(WideChar))
+    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+      InternalSetWideData(RootKey, Key, Name, REG_BINARY, PWideChar(Value),
+        (Length(Value) + 1) * SizeOf(WideChar))
+    else
+      InternalSetWideData(RootKey, Key, Name, DataType, PWideChar(Value),
+        (Length(Value) + 1) * SizeOf(WideChar))
   else
     DataError(Key, Name);
 end;
@@ -1249,7 +1287,7 @@ end;
 procedure RegWriteMultiSz(const RootKey: DelphiHKEY; const Key, Name: string; DataType: Cardinal; Value: PMultiSz);
 begin
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
-    InternalRegSetData(RootKey, Key, Name, DataType, Value,
+    InternalSetData(RootKey, Key, Name, DataType, Value,
       MultiSzLength(Value) * SizeOf(Char))
   else
     DataError(Key, Name);
@@ -1295,7 +1333,7 @@ begin
   if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
     DataType := REG_BINARY;
   if DataType in [REG_BINARY, REG_MULTI_SZ] then
-    InternalRegSetWideData(RootKey, Key, Name, DataType, Value,
+    InternalSetWideData(RootKey, Key, Name, DataType, Value,
       WideMultiSzLength(Value) * SizeOf(WideChar))
   else
     DataError(Key, Name);
@@ -1331,7 +1369,7 @@ end;
 
 procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
 begin
-  InternalRegSetData(RootKey, Key, Name, REG_BINARY, @Value, ValueSize);
+  InternalSetData(RootKey, Key, Name, REG_BINARY, @Value, ValueSize);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1556,6 +1594,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.32  2005/02/20 13:09:52  marquardt
+// Win 9x bugfixes
+//
 // Revision 1.31  2004/11/06 02:13:31  mthoma
 // history cleaning.
 //
