@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: February 27, 2002                                                                 }
+{ Last modified: March 11, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -130,16 +130,25 @@ type
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
+function GetTasksList(const List: TStrings): Boolean;
+
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 function IsSystemModule(const Module: HMODULE): Boolean;
-function GetTasksList(const List: TStrings): Boolean;
+
+function IsMainAppWindow(Wnd: HWND): Boolean;
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
+
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
+function GetWindowCaption(Wnd: HWND): string;
+
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
+
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
+function GetMainAppWndFromPid(PID: DWORD): HWND;
+
 function GetShellProcessName: string;
 function GetShellProcessHandle: THandle;
 
@@ -1437,6 +1446,23 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function GetTasksList(const List: TStrings): Boolean;
+
+  function EnumWindowsProc(Wnd: HWND; List: TStrings): Boolean; stdcall;
+  var
+    Caption: array [0..1024] of Char;
+  begin
+    if IsMainAppWindow(Wnd) and (GetWindowText(Wnd, Caption, SizeOf(Caption)) > 0) then
+      List.AddObject(Caption, Pointer(Wnd));
+    Result := True;
+  end;
+
+begin
+  Result := EnumWindows(@EnumWindowsProc, Integer(List));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
 var
   MI: TMemoryBasicInformation;
@@ -1473,29 +1499,20 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 // Refernce: http://msdn.microsoft.com/library/periodic/period97/win321197.htm
-
-function GetTasksList(const List: TStrings): Boolean;
-
-  function EnumWindowsProc(Wnd: HWND; List: TStrings): Boolean; stdcall;
-  var
-    ParentWnd: HWND;
-    ExStyle: DWORD;
-    Caption: array [0..1024] of Char;
-  begin
-    if IsWindowVisible(Wnd) then
-    begin
-      ParentWnd := GetWindowLong(Wnd, GWL_HWNDPARENT);
-      ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
-      if ((ParentWnd = 0) or (ParentWnd = GetDesktopWindow)) and
-        ((ExStyle and WS_EX_TOOLWINDOW = 0) or (ExStyle and WS_EX_APPWINDOW <> 0)) and
-        (GetWindowText(Wnd, Caption, SizeOf(Caption)) > 0) then
-          List.AddObject(Caption, Pointer(Wnd));
-    end;
-    Result := True;
-  end;
-
+function IsMainAppWindow(Wnd: HWND): Boolean;
+var
+  ParentWnd: HWND;
+  ExStyle: DWORD;
 begin
-  Result := EnumWindows(@EnumWindowsProc, Integer(List));
+  if IsWindowVisible(Wnd) then
+  begin
+    ParentWnd := GetWindowLong(Wnd, GWL_HWNDPARENT);
+    ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
+    Result := ((ParentWnd = 0) or (ParentWnd = GetDesktopWindow)) and
+      ((ExStyle and WS_EX_TOOLWINDOW = 0) or (ExStyle and WS_EX_APPWINDOW <> 0));
+  end
+  else
+    Result := False;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1534,6 +1551,30 @@ begin
   if (TempIcon = 0) and not LargeIcon then
     TempIcon := SendMessage(Wnd, WM_GETICON, ICON_BIG, 0);
   Result := CopyImage(TempIcon, IMAGE_ICON, Width, Height, 0);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetWindowCaption(Wnd: HWND): string;
+const
+  BufferAllocStep = 256;
+var
+  Buffer: PChar;
+  Size, TextLen: Integer;
+begin
+  Result := '';
+  Buffer := nil;
+  try
+    Size := GetWindowTextLength(Wnd) + 2 - BufferAllocStep;
+    repeat
+      Inc(Size, BufferAllocStep);
+      ReallocMem(Buffer, Size);
+      TextLen := GetWindowText(Wnd, Buffer, Size);
+    until TextLen < Size - 1;
+    Result := Buffer;
+  finally
+    FreeMem(Buffer);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1659,6 +1700,40 @@ begin
   finally
     List.Free;
   end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetMainAppWndFromPid(PID: DWORD): HWND;
+type
+  PSearch = ^TSearch;
+  TSearch = record
+    PID: DWORD;
+    Wnd: HWND;
+  end;
+var
+  SearchRec: TSearch;
+
+  function EnumWindowsProc(Wnd: HWND; Res: PSearch): Boolean; stdcall;
+  var
+    WindowPid: DWORD;
+  begin
+    WindowPid := 0;
+    GetWindowThreadProcessId(Wnd, WindowPid);
+    if (WindowPid = Res^.PID) and IsMainAppWindow(Wnd) then
+    begin
+      Res^.Wnd := Wnd;
+      Result := False;
+    end
+    else
+      Result := True;
+  end;
+
+begin
+  SearchRec.PID := PID;
+  SearchRec.Wnd := 0;
+  EnumWindows(@EnumWindowsProc, Integer(@SearchRec));
+  Result := SearchRec.Wnd;
 end;
 
 //--------------------------------------------------------------------------------------------------
