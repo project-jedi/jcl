@@ -27,14 +27,14 @@
 
 unit JclBinaryTree;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 {.DEFINE RECURSIVE}
 
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclAlgorithms, JclAbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclAlgorithms, JclAbstractContainer, JclStrings, JclBase, Classes;
 
 type
   TJclTreeColor = (tcBlack, tcRed);
@@ -123,6 +123,15 @@ type
     function RemoveAll(ACollection: IStrCollection): Boolean;
     function RetainAll(ACollection: IStrCollection): Boolean;
     function Size: Integer;
+    //Daniele Teti 27/12/2004
+    procedure LoadFromStrings(Strings: TStrings);
+    procedure SaveToStrings(Strings: TStrings);
+    procedure AppendToStrings(Strings: TStrings);
+    procedure AppendFromStrings(Strings: TStrings);
+    function GetAsStrings: TStringList;
+    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
     { IStrTree }
     function GetTraverseOrder: TTraverseOrder;
     procedure SetTraverseOrder(Value: TTraverseOrder);
@@ -298,7 +307,7 @@ type
     function Previous: TObject; override;
   end;
 
-{ TIntfItr }
+  { TIntfItr }
 
 procedure TIntfItr.Add(AObject: IInterface);
 {$IFDEF THREADSAFE}
@@ -306,9 +315,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.Add(AObject);
 end;
 
@@ -333,9 +342,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
 end;
 
@@ -375,9 +384,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.Remove(Next);
 end;
 
@@ -387,9 +396,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FCursor.Obj := AObject;
 end;
 
@@ -401,15 +410,14 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   if FCursor.Left <> nil then
     FCursor := FCursor.Left
-  else
-  if FCursor.Right <> nil then
+  else if FCursor.Right <> nil then
     FCursor := FCursor.Right
   else
   begin
@@ -436,9 +444,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   FCursor := FCursor.Parent;
@@ -463,9 +471,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if FCursor.Left <> FLastRet then
     while FCursor.Left <> nil do
       FCursor := FCursor.Left;
@@ -490,9 +498,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   if (FCursor.Left <> nil) then
@@ -523,9 +531,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (FCursor.Left <> FLastRet) and (FCursor.Right <> FLastRet) then
     while FCursor.Left <> nil do
       FCursor := FCursor.Left;
@@ -548,9 +556,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
@@ -577,9 +585,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.Add(AString);
 end;
 
@@ -604,9 +612,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Str;
 end;
 
@@ -646,9 +654,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.Remove(Next);
 end;
 
@@ -658,9 +666,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FCursor.Str := AString;
 end;
 
@@ -672,15 +680,14 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Str;
   FLastRet := FCursor;
   if FCursor.Left <> nil then
     FCursor := FCursor.Left
-  else
-  if FCursor.Right <> nil then
+  else if FCursor.Right <> nil then
     FCursor := FCursor.Right
   else
   begin
@@ -707,9 +714,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Str;
   FLastRet := FCursor;
   FCursor := FCursor.Parent;
@@ -734,9 +741,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if FCursor.Left <> FLastRet then
     while FCursor.Left <> nil do
       FCursor := FCursor.Left;
@@ -761,9 +768,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Str;
   FLastRet := FCursor;
   if (FCursor.Left <> nil) then
@@ -794,9 +801,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (FCursor.Left <> FLastRet) and (FCursor.Right <> FLastRet) then
     while FCursor.Left <> nil do
       FCursor := FCursor.Left;
@@ -819,9 +826,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Str;
   FLastRet := FCursor;
   if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
@@ -848,9 +855,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.Add(AObject);
 end;
 
@@ -875,9 +882,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
 end;
 
@@ -919,9 +926,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FOwnList.Remove(Next);
 end;
 
@@ -931,9 +938,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   FCursor.Obj := AObject;
 end;
 
@@ -945,15 +952,14 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   if FCursor.Left <> nil then
     FCursor := FCursor.Left
-  else
-  if FCursor.Right <> nil then
+  else if FCursor.Right <> nil then
     FCursor := FCursor.Right
   else
   begin
@@ -980,9 +986,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   FCursor := FCursor.Parent;
@@ -1007,9 +1013,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if FCursor.Left <> FLastRet then
     while FCursor.Left <> nil do
       FCursor := FCursor.Left;
@@ -1034,9 +1040,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   if (FCursor.Left <> nil) then
@@ -1067,9 +1073,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   if (FCursor.Left <> FLastRet) and (FCursor.Right <> FLastRet) then
     while FCursor.Left <> nil do
       FCursor := FCursor.Left;
@@ -1092,9 +1098,9 @@ var
   CS: IInterface;
 {$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := FCursor.Obj;
   FLastRet := FCursor;
   if (FCursor.Right <> nil) and (FCursor.Right <> FLastRet) then
@@ -1119,13 +1125,13 @@ function TJclIntfBinaryTree.Add(AObject: IInterface): Boolean;
 var
   NewNode: PJclIntfBinaryNode;
   Current, Save: PJclIntfBinaryNode;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -1146,8 +1152,7 @@ begin
   NewNode.Parent := Save;
   if Save = nil then
     FRoot := NewNode
-  else
-  if FComparator(NewNode.Obj, Save.Obj) < 0 then
+  else if FComparator(NewNode.Obj, Save.Obj) < 0 then
     Save.Left := NewNode
   else
     Save.Right := NewNode;
@@ -1212,13 +1217,13 @@ end;
 function TJclIntfBinaryTree.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1249,25 +1254,24 @@ var
   Save: PJclIntfBinaryNode;
 {$ENDIF RECURSIVE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  {$IFDEF RECURSIVE}
- // recursive version
+{$ENDIF THREADSAFE}
+{$IFDEF RECURSIVE}
+  // recursive version
   if FRoot <> nil then
   begin
     DisposeChild(FRoot);
     FRoot := nil;
   end;
-  {$ELSE}
+{$ELSE}
   // iterative version
   Current := FRoot;
   while Current <> nil do
   begin
     if Current.Left <> nil then
       Current := Current.Left
-    else
-    if Current.Right <> nil then
+    else if Current.Right <> nil then
       Current := Current.Right
     else
     begin
@@ -1295,7 +1299,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF RECURSIVE}
+{$ENDIF RECURSIVE}
   FCount := 0;
 end;
 
@@ -1342,11 +1346,9 @@ var
       Result := True;
       Exit;
     end
-    else
-    if FComparator(Node.Obj, AObject) > 0 then
+    else if FComparator(Node.Obj, AObject) > 0 then
       Result := ContainsChild(Node.Left)
-    else
-    if FComparator(Node.Obj, AObject) < 0 then
+    else if FComparator(Node.Obj, AObject) < 0 then
       Result := ContainsChild(Node.Right)
   end;
 {$ELSE}
@@ -1354,16 +1356,16 @@ var
   Current: PJclIntfBinaryNode;
 {$ENDIF RECURSIVE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
-  {$IFDEF RECURSIVE}
+{$IFDEF RECURSIVE}
   // recursive version
   Result := ContainsChild(FRoot);
-  {$ELSE}
+{$ELSE}
   // iterative version
   Current := FRoot;
   while Current <> nil do
@@ -1373,36 +1375,34 @@ begin
       Result := True;
       Exit;
     end
-    else
-    if FComparator(Current.Obj, AObject) > 0 then
+    else if FComparator(Current.Obj, AObject) > 0 then
       Current := Current.Left
-    else
-    if FComparator(Current.Obj, AObject) < 0 then
+    else if FComparator(Current.Obj, AObject) < 0 then
       Current := Current.Right;
   end;
-  {$ENDIF RECURSIVE}
+{$ENDIF RECURSIVE}
 end;
 
 function TJclIntfBinaryTree.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 constructor TJclIntfBinaryTree.Create;
@@ -1425,13 +1425,13 @@ end;
 function TJclIntfBinaryTree.Equals(ACollection: IIntfCollection): Boolean;
 var
   It, ItSelf: IIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1498,15 +1498,14 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Right;
-//  if TempNode = nil then	Exit;
+  //  if TempNode = nil then	Exit;
   Node.Right := TempNode.Left;
   if TempNode.Left <> nil then
     TempNode.Left.Parent := Node;
   TempNode.Parent := Node.Parent;
   if Node.Parent = nil then
     FRoot := TempNode
-  else
-  if Node.Parent.Left = Node then
+  else if Node.Parent.Left = Node then
     Node.Parent.Left := TempNode
   else
     Node.Parent.Right := TempNode;
@@ -1521,15 +1520,14 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Left;
-//  if TempNode = nil then 	Exit;
+  //  if TempNode = nil then 	Exit;
   Node.Left := TempNode.Right;
   if TempNode.Right <> nil then
     TempNode.Right.Parent := Node;
   TempNode.Parent := Node.Parent;
   if Node.Parent = nil then
     FRoot := TempNode
-  else
-  if Node.Parent.Right = Node then
+  else if Node.Parent.Right = Node then
     Node.Parent.Right := TempNode
   else
     Node.Parent.Left := TempNode;
@@ -1542,9 +1540,9 @@ var
   Current: PJclIntfBinaryNode;
   Node: PJclIntfBinaryNode;
   Save: PJclIntfBinaryNode;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 
   procedure Correction(Node: PJclIntfBinaryNode);
   var
@@ -1632,9 +1630,9 @@ var
   end;
 
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -1681,16 +1679,14 @@ begin
     Node.Parent := Save.Parent;
     if Save.Parent = nil then
       FRoot := Node
-    else
-    if Save = Save.Parent.Left then
+    else if Save = Save.Parent.Left then
       Save.Parent.Left := Node
     else
       Save.Parent.Right := Node;
     if Save.Color = tcBlack then
       Correction(Node);
   end
-  else
-  if Save.Parent = nil then
+  else if Save.Parent = nil then
     FRoot := nil
   else
   begin
@@ -1699,8 +1695,7 @@ begin
     if Save.Parent <> nil then
       if Save = Save.Parent.Left then
         Save.Parent.Left := nil
-      else
-      if Save = Save.Parent.Right then
+      else if Save = Save.Parent.Right then
         Save.Parent.Right := nil
   end;
   Dispose(Save);
@@ -1710,13 +1705,13 @@ end;
 function TJclIntfBinaryTree.RemoveAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -1728,13 +1723,13 @@ end;
 function TJclIntfBinaryTree.RetainAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -1760,13 +1755,13 @@ function TJclStrBinaryTree.Add(const AString: string): Boolean;
 var
   NewNode: PJclStrBinaryNode;
   Current, Save: PJclStrBinaryNode;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
@@ -1787,8 +1782,7 @@ begin
   NewNode.Parent := Save;
   if Save = nil then
     FRoot := NewNode
-  else
-  if FComparator(NewNode.Str, Save.Str) < 0 then
+  else if FComparator(NewNode.Str, Save.Str) < 0 then
     Save.Left := NewNode
   else
     Save.Right := NewNode;
@@ -1853,19 +1847,103 @@ end;
 function TJclStrBinaryTree.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
     Result := Result or Add(It.Next);
+end;
+
+function TJclStrBinaryTree.GetAsStrings: TStringList;
+begin
+  Result := TStringList.Create;
+  try
+    AppendToStrings(Result);
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TJclStrBinaryTree.LoadFromStrings(Strings: TStrings);
+begin
+  Clear;
+  AppendFromStrings(Strings);
+end;
+
+procedure TJclStrBinaryTree.AppendToStrings(Strings: TStrings);
+var
+  It: IStrIterator;
+begin
+  It := First;
+  Strings.BeginUpdate;
+  try
+    while It.HasNext do
+      Strings.Add(It.Next);
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+
+procedure TJclStrBinaryTree.SaveToStrings(Strings: TStrings);
+begin
+  Strings.Clear;
+  AppendToStrings(Strings);
+end;
+
+procedure TJclStrBinaryTree.AppendFromStrings(Strings: TStrings);
+var
+  I: Cardinal;
+begin
+  if Strings.Count > 0 then
+    for I := 0 to Strings.Count - 1 do
+      Add(Strings[I]);
+end;
+
+function TJclStrBinaryTree.GetAsDelimited(Separator: string): string;
+var
+  It: IStrIterator;
+begin
+  It := First;
+  Result := '';
+  if It.HasNext then
+    Result := It.Next;
+  while It.HasNext do
+    Result := Result + Separator + It.Next;
+end;
+
+procedure TJclStrBinaryTree.LoadDelimited(AString, Separator: string);
+begin
+  Clear;
+  AppendDelimited(AString, Separator);
+end;
+
+procedure TJclStrBinaryTree.AppendDelimited(AString, Separator: string);
+var
+  Item: string;
+  SepLen: Integer;
+begin
+  if Pos(Separator, AString) > 0 then
+  begin
+    SepLen := Length(Separator);
+    repeat
+      Item := StrBefore(Separator, AString);
+      Add(Item);
+      Delete(AString, 1, Length(Item) + SepLen);
+    until Pos(Separator, AString) = 0;
+    if Length(AString) > 0 then //ex. hello#world
+      Add(AString);
+  end
+  else //There isnt a Separator in AString
+    Add(AString);
 end;
 
 procedure TJclStrBinaryTree.Clear;
@@ -1890,25 +1968,24 @@ var
   Save: PJclStrBinaryNode;
 {$ENDIF RECURSIVE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  {$IFDEF RECURSIVE}
- // recursive version
+{$ENDIF THREADSAFE}
+{$IFDEF RECURSIVE}
+  // recursive version
   if FRoot <> nil then
   begin
     DisposeChild(FRoot);
     FRoot := nil;
   end;
-  {$ELSE}
+{$ELSE}
   // iterative version
   Current := FRoot;
   while Current <> nil do
   begin
     if Current.Left <> nil then
       Current := Current.Left
-    else
-    if Current.Right <> nil then
+    else if Current.Right <> nil then
       Current := Current.Right
     else
     begin
@@ -1936,7 +2013,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF RECURSIVE}
+{$ENDIF RECURSIVE}
   FCount := 0;
 end;
 
@@ -1983,11 +2060,9 @@ var
       Result := True;
       Exit;
     end
-    else
-    if FComparator(Node.Obj, AObject) > 0 then
+    else if FComparator(Node.Obj, AObject) > 0 then
       Result := ContainsChild(Node.Left)
-    else
-    if FComparator(Node.Obj, AObject) < 0 then
+    else if FComparator(Node.Obj, AObject) < 0 then
       Result := ContainsChild(Node.Right)
   end;
 {$ELSE}
@@ -1995,16 +2070,16 @@ var
   Current: PJclStrBinaryNode;
 {$ENDIF RECURSIVE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
-  {$IFDEF RECURSIVE}
+{$IFDEF RECURSIVE}
   // recursive version
   Result := ContainsChild(FRoot);
-  {$ELSE}
+{$ELSE}
   // iterative version
   Current := FRoot;
   while Current <> nil do
@@ -2014,36 +2089,34 @@ begin
       Result := True;
       Exit;
     end
-    else
-    if FComparator(Current.Str, AString) > 0 then
+    else if FComparator(Current.Str, AString) > 0 then
       Current := Current.Left
-    else
-    if FComparator(Current.Str, AString) < 0 then
+    else if FComparator(Current.Str, AString) < 0 then
       Current := Current.Right;
   end;
-  {$ENDIF RECURSIVE}
+{$ENDIF RECURSIVE}
 end;
 
 function TJclStrBinaryTree.ContainsAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 constructor TJclStrBinaryTree.Create;
@@ -2066,13 +2139,13 @@ end;
 function TJclStrBinaryTree.Equals(ACollection: IStrCollection): Boolean;
 var
   It, ItSelf: IStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2137,9 +2210,9 @@ var
   Current: PJclStrBinaryNode;
   Node: PJclStrBinaryNode;
   Save: PJclStrBinaryNode;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 
   procedure Correction(Node: PJclStrBinaryNode);
   var
@@ -2227,13 +2300,13 @@ var
   end;
 
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AString = '' then
     Exit;
- // locate AObject in the tree
+  // locate AObject in the tree
   Current := FRoot;
   while Current <> nil do
   begin
@@ -2276,16 +2349,14 @@ begin
     Node.Parent := Save.Parent;
     if Save.Parent = nil then
       FRoot := Node
-    else
-    if Save = Save.Parent.Left then
+    else if Save = Save.Parent.Left then
       Save.Parent.Left := Node
     else
       Save.Parent.Right := Node;
     if Save.Color = tcBlack then // Correction
       Correction(Node);
   end
-  else
-  if Save.Parent = nil then
+  else if Save.Parent = nil then
     FRoot := nil
   else
   begin
@@ -2294,8 +2365,7 @@ begin
     if Save.Parent <> nil then
       if Save = Save.Parent.Left then
         Save.Parent.Left := nil
-      else
-      if Save = Save.Parent.Right then
+      else if Save = Save.Parent.Right then
         Save.Parent.Right := nil
   end;
   Dispose(Save);
@@ -2305,13 +2375,13 @@ end;
 function TJclStrBinaryTree.RemoveAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -2323,13 +2393,13 @@ end;
 function TJclStrBinaryTree.RetainAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2346,15 +2416,14 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Right;
-//  if TempNode = nil then	Exit;
+  //  if TempNode = nil then	Exit;
   Node.Right := TempNode.Left;
   if TempNode.Left <> nil then
     TempNode.Left.Parent := Node;
   TempNode.Parent := Node.Parent;
   if Node.Parent = nil then
     FRoot := TempNode
-  else
-  if Node.Parent.Left = Node then
+  else if Node.Parent.Left = Node then
     Node.Parent.Left := TempNode
   else
     Node.Parent.Right := TempNode;
@@ -2369,15 +2438,14 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Left;
-//  if TempNode = nil then 	Exit;
+  //  if TempNode = nil then 	Exit;
   Node.Left := TempNode.Right;
   if TempNode.Right <> nil then
     TempNode.Right.Parent := Node;
   TempNode.Parent := Node.Parent;
   if Node.Parent = nil then
     FRoot := TempNode
-  else
-  if Node.Parent.Right = Node then
+  else if Node.Parent.Right = Node then
     Node.Parent.Right := TempNode
   else
     Node.Parent.Left := TempNode;
@@ -2401,13 +2469,13 @@ function TJclBinaryTree.Add(AObject: TObject): Boolean;
 var
   NewNode: PJclBinaryNode;
   Current, Save: PJclBinaryNode;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
@@ -2428,8 +2496,7 @@ begin
   NewNode.Parent := Save;
   if Save = nil then
     FRoot := NewNode
-  else
-  if FComparator(NewNode.Obj, Save.Obj) < 0 then
+  else if FComparator(NewNode.Obj, Save.Obj) < 0 then
     Save.Left := NewNode
   else
     Save.Right := NewNode;
@@ -2494,13 +2561,13 @@ end;
 function TJclBinaryTree.AddAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2531,17 +2598,17 @@ var
   Save: PJclBinaryNode;
 {$ENDIF RECURSIVE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  {$IFDEF RECURSIVE}
- // recursive version
+{$ENDIF THREADSAFE}
+{$IFDEF RECURSIVE}
+  // recursive version
   if FRoot <> nil then
   begin
     DisposeChild(FRoot);
     FRoot := nil;
   end;
-  {$ELSE}
+{$ELSE}
   // iterative version
   Current := FRoot;
   while Current <> nil do
@@ -2550,8 +2617,7 @@ begin
     begin
       Current := Current.Left;
     end
-    else
-    if Current.Right <> nil then
+    else if Current.Right <> nil then
     begin
       Current := Current.Right;
     end
@@ -2581,7 +2647,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF RECURSIVE}
+{$ENDIF RECURSIVE}
   FCount := 0;
 end;
 
@@ -2628,11 +2694,9 @@ var
       Result := True;
       Exit;
     end
-    else
-    if FComparator(Node.Obj, AObject) > 0 then
+    else if FComparator(Node.Obj, AObject) > 0 then
       Result := ContainsChild(Node.Left)
-    else
-    if FComparator(Node.Obj, AObject) < 0 then
+    else if FComparator(Node.Obj, AObject) < 0 then
       Result := ContainsChild(Node.Right)
   end;
 {$ELSE}
@@ -2640,16 +2704,16 @@ var
   Current: PJclBinaryNode;
 {$ENDIF RECURSIVE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
-  {$IFDEF RECURSIVE}
+{$IFDEF RECURSIVE}
   // recursive version
   Result := ContainsChild(FRoot);
-  {$ELSE}
+{$ELSE}
   // iterative version
   Current := FRoot;
   while Current <> nil do
@@ -2659,36 +2723,34 @@ begin
       Result := True;
       Exit;
     end
-    else
-    if FComparator(Current.Obj, AObject) > 0 then
+    else if FComparator(Current.Obj, AObject) > 0 then
       Current := Current.Left
-    else
-    if FComparator(Current.Obj, AObject) < 0 then
+    else if FComparator(Current.Obj, AObject) < 0 then
       Current := Current.Right;
   end;
-  {$ENDIF RECURSIVE}
+{$ENDIF RECURSIVE}
 end;
 
 function TJclBinaryTree.ContainsAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    if not Contains(It.Next) then
-    begin
-      Result := False;
-      Break;
-    end;
+  if not contains(It.Next) then
+  begin
+    Result := False;
+    Break;
+  end;
 end;
 
 constructor TJclBinaryTree.Create;
@@ -2711,13 +2773,13 @@ end;
 function TJclBinaryTree.Equals(ACollection: ICollection): Boolean;
 var
   It, ItSelf: IIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2867,17 +2929,17 @@ var
   Current: PJclBinaryNode;
   Node: PJclBinaryNode;
   Save: PJclBinaryNode;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if AObject = nil then
     Exit;
- // locate AObject in the tree
+  // locate AObject in the tree
   Current := FRoot;
   while Current <> nil do
   begin
@@ -2920,16 +2982,14 @@ begin
     Node.Parent := Save.Parent;
     if Save.Parent = nil then
       FRoot := Node
-    else
-    if Save = Save.Parent.Left then
+    else if Save = Save.Parent.Left then
       Save.Parent.Left := Node
     else
       Save.Parent.Right := Node;
     if Save.Color = tcBlack then // Correction
       Correction(Node);
   end
-  else
-  if Save.Parent = nil then
+  else if Save.Parent = nil then
     FRoot := nil
   else
   begin
@@ -2938,8 +2998,7 @@ begin
     if Save.Parent <> nil then
       if Save = Save.Parent.Left then
         Save.Parent.Left := nil
-      else
-      if Save = Save.Parent.Right then
+      else if Save = Save.Parent.Right then
         Save.Parent.Right := nil
   end;
   Dispose(Save);
@@ -2949,13 +3008,13 @@ end;
 function TJclBinaryTree.RemoveAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := True;
   if ACollection = nil then
     Exit;
@@ -2967,13 +3026,13 @@ end;
 function TJclBinaryTree.RetainAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS: IInterface;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
 begin
-  {$IFDEF THREADSAFE}
+{$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
+{$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -2990,15 +3049,14 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Right;
-//  if TempNode = nil then	Exit;
+  //  if TempNode = nil then	Exit;
   Node.Right := TempNode.Left;
   if TempNode.Left <> nil then
     TempNode.Left.Parent := Node;
   TempNode.Parent := Node.Parent;
   if Node.Parent = nil then
     FRoot := TempNode
-  else
-  if Node.Parent.Left = Node then
+  else if Node.Parent.Left = Node then
     Node.Parent.Left := TempNode
   else
     Node.Parent.Right := TempNode;
@@ -3013,15 +3071,14 @@ begin
   if Node = nil then
     Exit;
   TempNode := Node.Left;
-//  if TempNode = nil then 	Exit;
+  //  if TempNode = nil then 	Exit;
   Node.Left := TempNode.Right;
   if TempNode.Right <> nil then
     TempNode.Right.Parent := Node;
   TempNode.Parent := Node.Parent;
   if Node.Parent = nil then
     FRoot := TempNode
-  else
-  if Node.Parent.Right = Node then
+  else if Node.Parent.Right = Node then
     Node.Parent.Right := TempNode
   else
     Node.Parent.Left := TempNode;

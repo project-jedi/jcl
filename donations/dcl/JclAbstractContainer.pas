@@ -27,7 +27,7 @@
 
 unit JclAbstractContainer;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 interface
 
@@ -38,7 +38,7 @@ uses
   {$IFDEF UNIX}
   Libc,
   {$ENDIF UNIX}
-  JclDCL_Intf, JclDCLUtil;
+  JclDCL_Intf, JclDCLUtil,   JclStrings,   JclBase;
 
 type
   TJclIntfCriticalSection = class(TObject, IInterface)

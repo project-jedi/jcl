@@ -27,13 +27,13 @@
 
 unit JclLinkedList;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 interface
 
 uses
   Classes,
-  JclDCL_intf, JclAbstractContainer;
+  JclDCL_intf, JclAbstractContainer,   JclStrings,   JclBase;
 
 type
   PJclIntfLinkedListItem = ^TJclIntfLinkedListItem;
@@ -118,9 +118,9 @@ type
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStringList;
-    function GetAsDelimited(Separator: string = sLineBreak): string;
-    procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
-    procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
+    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
     { IIntfList }
     procedure Insert(Index: Integer; const AString: string); overload;
     function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
@@ -181,7 +181,7 @@ implementation
 
 uses
   SysUtils,
-  JclDCLUtil, JclStrings;
+  JclDCLUtil;
 
 type
   TIntfItr = class(TJclAbstractContainer, IIntfIterator)

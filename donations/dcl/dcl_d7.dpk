@@ -26,13 +26,13 @@ package DCL_D7;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl;
+  rtl,
+  DJcl;
 
 contains
   JclVector in 'JclVector.pas',
   JclAbstractContainer in 'JclAbstractContainer.pas',
   JclAlgorithms in 'JclAlgorithms.pas',
-  JclArrayList in 'vArrayList.pas',
   JclArraySet in 'JclArraySet.pas',
   JclDCL_intf in 'JclDCL_intf.pas',
   JclDCLUtil in 'JclDCLUtil.pas',
@@ -41,6 +41,7 @@ contains
   JclLinkedList in 'JclLinkedList.pas',
   JclQueue in 'JclQueue.pas',
   JclStack in 'JclStack.pas',
-  JclBinaryTree in 'JclBinaryTree.pas';
+  JclBinaryTree in 'JclBinaryTree.pas',
+  JclArrayList in 'JclArrayList.pas';
 
 end.

@@ -27,12 +27,12 @@
 
 unit JclArraySet;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer, JclArrayList;
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer, JclArrayList,   JclStrings,   JclBase;
 
 type
   TJclIntfArraySet = class(TJclIntfArrayList, IIntfCollection, IIntfSet, IIntfCloneable)

@@ -27,7 +27,7 @@ object Form1: TForm1
     Left = 230
     Top = 0
     Width = 232
-    Height = 215
+    Height = 208
     Align = alRight
     ScrollBars = ssVertical
     TabOrder = 2

@@ -1,5 +1,3 @@
-[FileVersion]
-Version=6.0
 [Compiler]
 A=8
 B=0
@@ -53,9 +51,6 @@ UsePackages=0
 [Parameters]
 RunParams=
 HostApplication=
-Launcher=
-UseLauncher=0
-DebugCWD=
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0

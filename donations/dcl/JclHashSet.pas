@@ -27,13 +27,13 @@
 
 unit JclHashSet;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 interface
 
 uses
   Classes,
-  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer,   JclStrings,   JclBase;
 
 type
   TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
@@ -89,9 +89,9 @@ type
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStringList;
-    function GetAsDelimited(Separator: string = sLineBreak): string;
-    procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
-    procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
+    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
     { IIntfSet }
     procedure Intersect(ACollection: IStrCollection);
     procedure Subtract(ACollection: IStrCollection);
@@ -133,9 +133,6 @@ type
   end;
 
 implementation
-
-uses
-  JclStrings;
 
 const
   // (rom) this needs an explanation

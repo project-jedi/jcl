@@ -27,12 +27,12 @@
 
 unit JclAlgorithms;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 interface
 
 uses
-  JclDCL_intf;
+  JclDCL_intf,   JclStrings,   JclBase;
 
 // function pointer types
 type

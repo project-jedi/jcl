@@ -27,13 +27,13 @@
 
 unit JclArrayList;
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 interface
 
 uses
   Classes,
-  JclDCL_intf, JclDCLUtil, JclAbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer,   JclStrings,   JclBase;
 
 type
   TJclIntfArrayList = class(TJclAbstractContainer, IIntfCollection, IIntfList,
@@ -103,9 +103,9 @@ type
     procedure AppendToStrings(Strings: TStrings);
     procedure AppendFromStrings(Strings: TStrings);
     function GetAsStrings: TStringList;
-    function GetAsDelimited(Separator: string = sLineBreak): string;
-    procedure AppendDelimited(AString: string; Separator: string = sLineBreak);
-    procedure LoadDelimited(AString: string; Separator: string = sLineBreak);
+    function GetAsDelimited(Separator: string = AnsiLineBreak): string;
+    procedure AppendDelimited(AString: string; Separator: string = AnsiLineBreak);
+    procedure LoadDelimited(AString: string; Separator: string = AnsiLineBreak);
     { IStrList }
     procedure Insert(Index: Integer; const AString: string); overload;
     function InsertAll(Index: Integer; ACollection: IStrCollection): Boolean; overload;
@@ -169,8 +169,7 @@ type
 implementation
 
 uses
-  SysUtils,
-  JclStrings;
+  SysUtils;
 
 //=== { TIntfItr } ===========================================================
 

@@ -73,7 +73,7 @@ var
 
 implementation
 
-{$I dcl.inc}
+{$I jcl.inc}
 
 {$R *.dfm}
 
