@@ -401,24 +401,24 @@ var
             begin
               M := AllocMem(SizeOf(TModule));
               FModules.Add(M);
-              with M^ do
-              begin
-                Handle := Modules^[Index];
-                BaseAddress := ModuleInfo.lpBaseOfDll;
-                Size := ModuleInfo.SizeOfImage;
-                Filename := Filename;
-                {$IFDEF JCL_DEBUG_EXTENSION}
-                if CheckJclDebugInfo(Filename, Handle) then
-                  Map := TJclMap.Create(ChangeFileExt(Filename, RsDebugMapFileExtension), Handle)
-                else
-                  Map := nil;
-                {$ELSE}
-                if FileExists(ChangeFileExt(Filename, RsDebugMapFileExtension)) then
-                  Map := TJclMap.Create(ChangeFileExt(Filename, RsDebugMapFileExtension), 0)
-                else
-                  Map := nil;
-                {$ENDIF}
-              end;
+              //with M^ do
+              //begin
+              M^.Handle := Modules^[Index];
+              M^.BaseAddress := ModuleInfo.lpBaseOfDll;
+              M^.Size := ModuleInfo.SizeOfImage;
+              M^.Filename := Filename;
+              {$IFDEF JCL_DEBUG_EXTENSION}
+              if CheckJclDebugInfo(Filename, Handle) then
+                M^.Map := TJclMap.Create(ChangeFileExt(Filename, RsDebugMapFileExtension), Handle)
+              else
+                M^.Map := nil;
+              {$ELSE}
+              if FileExists(ChangeFileExt(Filename, RsDebugMapFileExtension)) then
+                M^.Map := TJclMap.Create(ChangeFileExt(Filename, RsDebugMapFileExtension), 0)
+              else
+                M^.Map := nil;
+              {$ENDIF}
+              //end;
             end;
             Inc(Index);
           end;
@@ -449,24 +449,24 @@ var
         //with FModules[Length(FModules) - 1] do
         M := AllocMem(SizeOf(TModule));
         FModules.Add(M);
-        with M^ do
-        begin
-          Handle := Module32.hModule;
-          BaseAddress := Module32.modBaseAddr;
-          Size := Module32.modBaseSize;
-          FileName := Module32.szExePath;
-          {$IFDEF JCL_DEBUG_EXTENSION}
-          if CheckJclDebugInfo(FileName, Handle) then
-            Map := TJclMap.Create(ChangeFileExt(FileName, RsDebugMapFileExtension), Handle)
-          else
-            Map := nil;
-          {$ELSE}
-          if FileExists(ChangeFileExt(FileName, RsDebugMapFileExtension)) then
-            Map := TJclMap.Create(ChangeFileExt(FileName, RsDebugMapFileExtension), 0)
-          else
-            Map := nil;
-          {$ENDIF}
-        end;
+        //with M^ do
+        //begin
+        M^.Handle := Module32.hModule;
+        M^.BaseAddress := Module32.modBaseAddr;
+        M^.Size := Module32.modBaseSize;
+        M^.FileName := Module32.szExePath;
+        {$IFDEF JCL_DEBUG_EXTENSION}
+        if CheckJclDebugInfo(M^.FileName, Handle) then
+          M^.Map := TJclMap.Create(ChangeFileExt(M^.FileName, RsDebugMapFileExtension), Handle)
+        else
+          M^.Map := nil;
+        {$ELSE}
+        if FileExists(ChangeFileExt(M^.FileName, RsDebugMapFileExtension)) then
+          M^.Map := TJclMap.Create(ChangeFileExt(M^.FileName, RsDebugMapFileExtension), 0)
+        else
+          M^.Map := nil;
+        {$ENDIF}
+        //end;
         GotEntry := Module32Next(Snapshot, Module32);
       end;
     finally
