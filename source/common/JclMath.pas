@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclMath.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are Clayton Collie, ESB Consultancy, J. Debord,      }
+{ The Initial Developers of the Original Code are Clayton Collie, ESB Consultancy, Jean Debord,    }
 { Marcel van Brakel and Michael Schnell.                                                           }
 { Portions created by these individuals are Copyright (C) of these individuals.                    }
 { All Rights Reserved.                                                                             }
@@ -20,12 +20,12 @@
 { Contributors:                                                                                    }
 {   Ernesto Benestante                                                                             }
 {   Marcel van Brakel                                                                              }
-{   IDK                                                                                            }
 {   Aleksei Koudinov                                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Mark Vaughan                                                                                   }
+{   unknown                                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -3760,6 +3760,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.6  2004/05/13 07:31:15  rrossmair
+// updated Header (IDK ("I don't know") -> unknown; J. Debord -> Jean Debord
+//
 // Revision 1.5  2004/05/09 11:15:42  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
