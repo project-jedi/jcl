@@ -35,7 +35,7 @@ unit JclShell;
 interface
 
 uses
-  Windows, Graphics, ShlObj, SysUtils,
+  Windows, ShlObj, SysUtils,
   JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
@@ -139,8 +139,6 @@ procedure ShellLinkFree(var Link: TShellLink);
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
-function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean; overload;
-function ShellLinkGetIcon(const FileName: string; const Icon: TIcon): Boolean; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Miscellanuous
@@ -1043,68 +1041,6 @@ begin
         ShellLink.GetIDList(Link.IdList);
       end;
     end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
-var
-  LocExt: string;
-  Info: TSHFileInfo;
-begin
-  Result := False;
-  LocExt := LowerCase(ExtractFileExt(Link.IconLocation));
-  // 1. See if IconLocation specifies a valid icon file
-  if (LocExt = '.ico') and (FileExists(Link.IconLocation)) then
-  begin
-    Icon.LoadFromFile(Link.IconLocation);
-    Result := True;
-  end;
-  // 2. See if IconLocation specifies an executable
-  if not Result then
-  begin
-    if (LocExt = '.dll') or (LocExt = '.exe') then
-    begin
-      Icon.Handle := ExtractIcon(0, PChar(Link.IconLocation), Link.IconIndex);
-      Result := Icon.Handle <> 0;
-    end;
-  end;
-  // 3. See if target specifies a file
-  if not Result then
-  begin
-    if FileExists(Link.Target) then
-    begin
-      Icon.Handle := ExtractIcon(0, PChar(Link.Target), Link.IconIndex);
-      Result := Icon.Handle <> 0;
-    end;
-  end;
-  // 4. See if the target is an object
-  if not Result then
-  begin
-    if Link.IdList <> nil then
-    begin
-      FillChar(Info, SizeOf(Info), 0);
-      if SHGetFileInfo(PChar(Link.IdList), 0, Info, SizeOf(Info), SHGFI_PIDL or SHGFI_ICON) <> 0 then
-      begin
-        Icon.Handle := Info.hIcon;
-        Result := True;
-      end;
-    end;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function ShellLinkGetIcon(const FileName: string; const Icon: TIcon): Boolean;
-var
-  Link: TShellLink;
-begin
-  Result := Succeeded(ShellLinkResolve(FileName, Link));
-  if Result then
-  begin
-    Result := ShellLinkGetIcon(Link, Icon);
-    ShellLinkFree(Link);
   end;
 end;
 
