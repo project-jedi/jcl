@@ -36,7 +36,6 @@
 // For history see end of file
 
 unit JclLocales;
-
 {$I jcl.inc}
 {$I windowsonly.inc}
 
@@ -422,21 +421,22 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+
+function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
+begin
+  ProcessedLocaleInfoList.AddObject(lpCalendarInfoString, Pointer(Calendar));
+  Result := True;
+end;
+
+function EnumCalendarInfoProcName(lpCalendarInfoString: PChar): BOOL; stdcall;
+begin
+  ProcessedLocaleInfoList.Add(lpCalendarInfoString);
+  Result := True;
+end;
+
 function TJclLocaleInfo.GetCalendars: TStrings;
 var
   C: CALTYPE;
-
-  function EnumCalendarInfoProcEx(lpCalendarInfoString: PChar; Calendar: CALID): BOOL; stdcall;
-  begin
-    ProcessedLocaleInfoList.AddObject(lpCalendarInfoString, Pointer(Calendar));
-    Result := True;
-  end;
-
-  function EnumCalendarInfoProcName(lpCalendarInfoString: PChar): BOOL; stdcall;
-  begin
-    ProcessedLocaleInfoList.Add(lpCalendarInfoString);
-    Result := True;
-  end;
 
 begin
   if not FValidCalendars then
@@ -448,7 +448,7 @@ begin
     ProcessedLocaleInfoList := FCalendars;
     try
       C := CAL_SCALNAME or LocaleUseAcp[FUseSystemACP];
-      if not JclWin32.RtdlEnumCalendarInfoExA(@EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
+      if not JclWin32.RtdlEnumCalendarInfoExA(EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
         Windows.EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
       FValidCalendars := True;
     finally
@@ -1166,6 +1166,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2005/02/06 03:37:52  mthoma
+// Fixed [Code Library 0002479]: Wrong parameter count in callback function
+//
 // Revision 1.12  2004/10/17 21:00:15  mthoma
 // cleaning
 //
