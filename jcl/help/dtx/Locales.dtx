@@ -3,7 +3,6 @@
 Summary:
   TJclLocaleInfo represents an installed or supported locale.
 Description:
-
   TJclLocaleInfo represents an installed or supported locale. You can use it to
   easily access information about the locale.
 Quick info:
@@ -21,7 +20,6 @@ Quick info:
 Summary:
   Creates an instance of TJclLocaleInfo for a specific locale.
 Description:
-
   Creates and initializes an instance of the TJclLocaleInfo class. You normally don't
   explicitly create such an instance but instead retrieve them using the TJclLocalesList.
 Parameters:
@@ -37,11 +35,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.CharInfo
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Retrieves character typed locale information.
 Description:
-
   The CharInfo property lets you read character typed locale information directly.
   The InfoType is an Integer which specifies the locale information type which you
   want to retrieve. You can specify any LOCALE_* information types as documented
@@ -61,11 +57,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.IntegerInfo
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Retrieves Integer typed locale information.
 Description:
-
   The IntegerInfo property lets you read Integer typed locale information directly.
   The InfoType is an Integer which specifies the locale information type which you
   want to retrieve. You can specify any LOCALE_* information types as documented
@@ -84,11 +78,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.StringInfo
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Retrieves string typed locale information.
 Description:
-
   The StringInfo property lets you read string typed locale information directly.
   The InfoType is an Integer which specifies the locale information type which you
   want to retrieve. You can specify any LOCALE_* information types as documented
@@ -107,11 +99,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.FontCharset
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the font character set associated with the locale.
 Description:
-
   FontCharSet returns the font character set associated with the locale. The table
   below defines the possible return values, if the character set couldn't be found
   the property reads DEFAULT_CHARSET.
@@ -142,11 +132,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LangID
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the language identifier.
 Description:
-
   LangId returns the language identifier for this locale.
 Quick info:
   Unit: JclLocales
@@ -160,11 +148,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LocaleID
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the locale identifier.
 Description:
-
   Returns the locale identifier for which this instance contains information.
 Quick info:
   Unit: JclLocales
@@ -178,11 +164,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LangIDPrimary
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the primary language identifier.
 Description:
-
   Extracts the primary language identifier from the language identifier this locale
   information object represents. The return value can be one of the following values:
     <TABLE>
@@ -236,11 +220,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LangIDSub
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the sublanguage identifier.
 Description:
-
   Extracts the sublanguage identifier from the language identifier this locale
   information object represents. The return value can be one of the following values:
     <TABLE>
@@ -259,11 +241,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.SortID
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the sort identifier.
 Description:
-
   Extracts the sort identifier from the locale identifier this object represents.
   This property returns one of the following values:
     <TABLE>
@@ -295,11 +275,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.UseSystemACP
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Determines whether the system ACP is used for string translation.
 Description:
-
   Determines whether the class uses the system ANSI code page (ACP) for string
   translation instead of the locale's code page. This property is True by default,
   assign False to turn off usage of the system ACP instead.
@@ -315,11 +293,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.AbbreviatedCountryName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Abbreviated name of the country/region, mostly based on the ISO Standard 3166.
 Description:
-
   Abbreviated name of the country/region, mostly based on the ISO Standard 3166.
 Quick info:
   Unit: JclLocales
@@ -333,11 +309,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.AbbreviatedDayNames
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns a list of native abbreviated names for the days in a week.
 Description:
-
   AbbreviatedDayNames contains a list of abbreviated names, one for each day of the
   week. The list is indexed with a 1-based index which indicates the day for which
   to retrieve the abbreviated name. For example, 1 is monday, 2 is tuesday and so forth.
@@ -353,11 +327,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.AbbreviatedLangName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Abbreviated name of the language.
 Description:
-
   Abbreviated name of the language. In most cases it is created by taking the
   two-letter language abbreviation from the ISO Standard 639 and adding a third
   letter, as appropriate, to indicate the sublanguage.
@@ -373,11 +345,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.AbbreviatedMonthNames
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns a list of native abbreviated names for the months in a year.
 Description:
-
   AbbreviatedMonthNames contains a list of abbreviated names, one for each month of the
   year. The list is indexed with a 1-based index which indicates the month for which
   to retrieve the abbreviated name. For example, 1 is january, 2 is february and so forth.
@@ -393,11 +363,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.CodePageANSI
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   ANSI code page associated with this locale.
 Description:
-
   American National Standards Institute (ANSI) code page associated with this locale.
   If the locale does not use an ANSI code page, the value is 0. The maximum number
   of characters allowed for this string is six.
@@ -413,11 +381,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.CodePageMAC
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Default Macintosh code page associated with the locale.
 Description:
-
   Default Macintosh code page associated with the locale. If the locale does not
   use a Macintosh code page, the value is 2. The maximum number of characters
   allowed for this string is six.
@@ -433,11 +399,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.CodePageOEM
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Original equipment manufacturer (OEM) code page associated with the country/region.
 Description:
-
   Original equipment manufacturer (OEM) code page associated with the country/region.
   If the locale does not use an OEM code page, the value is 1.The maximum number of
   characters allowed for this string is six.
@@ -453,11 +417,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.CountryCode
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Code for the principal country/region in this locale.
 Description:
-
   Code for the principal country/region in this locale. This is provided so that
   partially specified locales can be completed with default values. The maximum
   number of characters allowed for this string is six.
@@ -473,11 +435,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.DateFormats
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   List of date formats that are available for this locale.
 Description:
-
   List of date formats that are available for this locale. The list is indexed by
   a TJclLocaleDateFormats which is defined as:
     TJclLocaleDateFormats = (ldShort, ldLong, ldYearMonth);
@@ -495,11 +455,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.DecimalSeparator
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Character(s) used as the decimal separator.
 Description:
-
   Character(s) used as the decimal separator. The maximum number of characters
   allowed for this string is four.
 Quick info:
@@ -514,11 +472,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.EnglishCountryName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Full English name of the country/region.
 Description:
-
   Full English name of the country/region. This is always restricted to characters
   that can be mapped into the ASCII 127-character subset.
 Quick info:
@@ -533,11 +489,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.EnglishLangName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Full English name of the language from the ISO standard 639.
 Description:
-
   Full English name of the language from the International Organization for
   Standardization (ISO) Standard 639. This is always restricted to characters that
   can be mapped into the ASCII 127-character subset. This is not always equivalent
@@ -554,11 +508,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LangIdStr
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Language identifier.
 Description:
-
   Language identifier. The maximum number of characters allowed for this string is five.
 Quick info:
   Unit: JclLocales
@@ -572,11 +524,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.ListItemSeparator
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Character(s) used to separate list items.
 Description:
-
   Character(s) used to separate list items. For example, a ',' is used in many
   locales. The maximum number of characters allowed for this string is four.
 Quick info:
@@ -591,11 +541,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LocalizedCountryName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Full localized name of the country/region.
 Description:
-
   Full localized name of the country/region. This is based on the localization of
   the product, thus it changes for each localized version.
 Quick info:
@@ -610,11 +558,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LocalizedLangName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Full localized name of the language.
 Description:
-
   Full localized name of the language. This name is based on the localization of
   the product, thus the value changes for each localized version.
 Quick info:
@@ -629,11 +575,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LongDayNames
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the native long name for the specified day.
 Description:
-
   List of native long names for the days in a week. The index into this list is
   a 1 based index of the day for which to retrieve the long name. For example, 1
   is monday, 2 is tuesday and so forth.
@@ -649,11 +593,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.LongMonthNames
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the native long name for the specified month.
 Description:
-
   List of native long names for the months in a year. The index into this list is
   a 1 based index of the month for which to retrieve the long name. For example, 1
   is january, 2 is february and so forth. The highest possible index is 13 which
@@ -670,11 +612,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.MonetarySymbolIntl
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Three characters of the international monetary symbol specified in ISO 4217 followed by the character separating this string from the amount.
 Description:
-
   Three characters of the international monetary symbol specified in ISO 4217
   followed by the character separating this string from the amount.
 Quick info:
@@ -689,11 +629,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.MonetarySymbolLocal
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   String used as the local monetary symbol. The maximum number of characters allowed for this string is six.
 Description:
-
   String used as the local monetary symbol. The maximum number of characters allowed
   for this string is six.
 Quick info:
@@ -708,11 +646,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.NativeCountryName
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Native name of the country/region.
 Description:
-
   Native name of the country/region.
 Quick info:
   Unit: JclLocales
@@ -726,9 +662,7 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.NegativeNumber
-<GROUP Internationalisation.NationalLanguageSupport>
 Description:
-
   Negative number mode, that is, the format for a negative number. The maximum number
   of characters allowed for this string is two. The mode can be one of these values.
    <TABLE>
@@ -753,11 +687,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.TimeFormats
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Formats that are available for this locale.
 Description:
-
   Formats that are available for this locale.
 Quick info:
   Unit: JclLocales
@@ -771,11 +703,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocaleInfo.ThousandSeparator
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Character(s) used to separate groups of digits to the left of the decimal.
 Description:
-
   Character(s) used to separate groups of digits to the left of the decimal. The
   maximum number of characters allowed for this string is four.
 Quick info:
@@ -794,7 +724,6 @@ Quick info:
 Summary:
   TJclLocalesKind is used by the TJclLocalesList class to specify whether the list contains elements for all supported or all installed locales and codepages.
 Description:
-
   TJclLocalesKind is used by the TJclLocalesList class to specify whether the list
   contains elements for all supported or all installed locales and codepages.
 Quick info:
@@ -816,7 +745,6 @@ Quick info:
 Summary:
   Maintains information about supported locales and codepages.
 Description:
-
   TJclLocalesList maintains a list of elements containing information about locales
   and codepages. The list contains either information about all supported locales
   and codepages or all installed locales and codepages depending on how it is
@@ -832,11 +760,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.Create
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Creates and initialises an instance of TJclLocalesList.
 Description:
-
   The Create constructor creates an instance of TJclLocalesList and initialises it
   according to the specified parameter.
 Parameters:
@@ -853,11 +779,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.CodePages
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   List of supported or installed codepages.
 Description:
-
   The CodePages property contains a list of all supported or installed codepages
   on the system depending on the Kind property. Each item contains the string
   representation of a code page identifier while the associated Objects item contains
@@ -875,11 +799,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.ItemFromLangID
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the TJclLocaleInfo object given a language identifier.
 Description:
-
   The ItemFromLangID provides the same list of locale information objects as the
   Items property does except that it allows indexing by language ID instead of a
   zero based index. This allows you to directly retrieve information about a specific
@@ -897,11 +819,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.ItemFromLangIDPrimary
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the TJclLocaleInfo object given a primary language ID.
 Description:
-
   The ItemFromLangIDPrimary provides the same list of locale information objects as the
   Items property does except that it allows indexing by primary language ID instead of
   a zero based index. This allows you to directly retrieve information about a specific
@@ -919,11 +839,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.ItemFromLocaleID
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the TJclLocaleInfo object given a locale identifier.
 Description:
-
   The ItemFromLocaleID provides the same list of locale information objects as the
   Items property does except that it allows indexing by Locale ID instead of a
   zero based index. This allows you to directly retrieve information about a specific
@@ -941,11 +859,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.Items
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   List of locale information items.
 Description:
-
   The Items property contains a list of TJclLocaleInfo objects each of which supplies
   information about a single locale installed or supported (depending on the Kind
   property) on the system.
@@ -961,11 +877,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclLocalesList.Kind
-<GROUP Internationalisation.NationalLanguageSupport>
 Summary:
   Returns the Kind of elements contained in the list.
 Description:
-
   Kind specifies the kind of elements this list contains. It is a direct copy of
   the AKind parameter of the TJclLocalesList constructor. See TJclLocalesKind
   for more information.
@@ -985,7 +899,6 @@ Quick info:
 Summary:
   Maintains a list of input locale identifiers.
 Description:
-
   The TJclKeyboardLayoutList class maintains a list of input locale identifiers (formerly
   called keyboard layout handles) corresponding to the current set of input locales
   in the system. Note that unlike keyboard layouts, an input locale can also encompass
@@ -1001,18 +914,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.ActivatePrevLayout
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Activates the previous input locale identifier.
 Description:
-
   The system maintains a circular list of all loaded input locale identifiers. Calling
   this method will result in the input locale identifier that preceeds the currently
   active input locale to be activated.
 Parameters:
   ActivateFlags - Set of flags that determine how the input locale is to be activated. See TjclKeybLayoutFlags for a detailed description of the possible flags.
 Result:
-
   If the function succeeds it returns True otherwise it returns False.
 Quick info:
   Unit: JclLocales
@@ -1026,18 +936,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.ActivateNextLayout
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Activates the next input locale identifier.
 Description:
-
   The system maintains a circular list of all loaded input locale identifiers. Calling
   this method will result in the input locale identifier that succeeds the currently
   active input locale to be activated.
 Parameters:
   ActivateFlags - Set of flags that determine how the input locale is to be activated. See TjclKeybLayoutFlags for a detailed description of the possible flags.
 Result:
-
   If the function succeeds it returns True otherwise it returns False.
 Quick info:
   Unit: JclLocales
@@ -1051,11 +958,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.LoadLayout
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Loads a new input locale identifier.
 Description:
-
   The LoadLayout method loads a new input locale identifier into the system. Note
   that many input locale identifiers can be loaded at the same time, but only can
   be active at any moment. This method only loads the input locale identifier but
@@ -1065,7 +970,6 @@ Parameters:
   LayoutName - Name of the input locale identifier to load. The name is composed of the hexadecimal value of the language identifier (low word) and a devide identifier (high word).
   LoadFlags - Set of flags that determine how the input locale identifier is loaded. See TJclKeybLayoutFlags for an explanantion of the possible flags.
 Result:
-
   If the function succeeds it returns True and automatically refreshes the list. If
   the funcion fails it returns False and the list remains unchanged.
 Quick info:
@@ -1080,11 +984,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.Refresh
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Refreshes the list of input locales and fires the OnRefresh event.
 Description:
-
   Refreshes the list of input locales and fires the OnRefresh event.
 Quick info:
   Unit: JclLocales
@@ -1098,11 +1000,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.ActiveLayout
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the currently active input locale identifier for the calling thread.
 Description:
-
   Returns the currently active input locale identifier for the calling thread.
 Quick info:
   Unit: JclLocales
@@ -1116,9 +1016,7 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.AvailableLayouts
-<GROUP Internationalisation.KeyboardInput>
 Description:
-
   A list of TJclAvailableKeybLayout items representing the available keyboard layouts.
   The AvailableLayoutCount property contains the number of elements in this list and
   as such the valid indices range from 0 to AvailableLayoutCount - 1.
@@ -1134,11 +1032,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.AvailableLayoutCount
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the number of elements in the AvailableLayouts list.
 Description:
-
   Returns the number of elements in the AvailableLayouts list.
 Quick info:
   Unit: JclLocales
@@ -1152,11 +1048,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.Count
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   The number of elements in the list.
 Description:
-
   Count returns the number of elements in the Items list. Note that the Items list
   is zero based and therefore valid indices range from 0 to Count - 1.
 Quick info:
@@ -1171,11 +1065,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.ItemFromHKL
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the TJclKeyboardLayout class for a specified input locale identifier.
 Description:
-
   ItemFromHKL returns the TJclKeyboardLayout item from the list of loaded input
   locale identifiers with the specified identifier. If the specified input identifier
   does not exist in the list (it is not loaded) the property reads nil.
@@ -1191,11 +1083,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.Items
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   The list of loaded input locale identifiers.
 Description:
-
   Items contains the list of loaded input locale identifiers. Each entry contains
   a TJclKeyboardLayout class which you can use to read information about the input
   locale identifier or manipulate it (such as activation).
@@ -1211,11 +1101,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.LayoutFromLocaleID
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the TJclKeyboardLayout class for a specified locale identifier.
 Description:
-
   LayoutFromLocaleID returns the TJclKeyboardLayout item from the list of loaded input
   locale identifiers with the specified locale identifier. If the specified input
   identifier does not exist in the list (it is not loaded) the property reads nil.
@@ -1231,11 +1119,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayoutList.OnRefresh
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   The event is fired whenever the list is refreshed, either implicitly or explicitly.
 Description:
-
   The event is fired whenever the list is refreshed, either implicitly or explicitly.
 Quick info:
   Unit: JclLocales
@@ -1253,7 +1139,6 @@ Quick info:
 Summary:
   Wrapper for a loaded input locale identifier.
 Description:
-
   TJclKeyboardLayout is a wrapper for an input locale identifier which is loaded in
   the system. You can use it to retrieve information about the input locale identifier
   and manipulate it, for example, unload or activate it. You normally don't create
@@ -1270,11 +1155,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.Create
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Creates an instance of TJclKeyboardLayout which represents an input locale identifier.
 Description:
-
   Creates an instance of TJclKeyboardLayout which represents an input locale identifier.
   Note that you normally don't construct instances of this class explicitly but instead
   use the TJclKeyboardLayoutList to maintain a list of TJclKeyboardLayout objects. You
@@ -1294,16 +1177,13 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.Activate
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Activates the input locale identifier represented by this object.
 Description:
-
   Activates the input locale identifier represented by this object.
 Parameters:
   ActivateFlags - Set of flags that determine how the input locale identifier is activated. See TJclKeybLayoutFlags for a detailed description of the possible flags.
 Result:
-
   If the function succeeds it returns True otherwise it returns False.
 Quick info:
   Unit: JclLocales
@@ -1317,18 +1197,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.Unload
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Unloads the input locale identifier.
 Description:
-
   Unloads the input locale identifier represented by this object. After calling this
   method the input locale identifier is no longer available until it is explicitly
   loaded again. If this object is connected to a TJclKeyboardLayoutList through the
   AOwner parameter of it's constructor, that list is automatically updated to reflect
   the change.
 Result:
-
   If the function succeeds it returns True and update the AOwner list, if present.
   If the function fails it returns False and the AOwner list remains unchanged.
 Quick info:
@@ -1343,11 +1220,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.DisplayName
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the (localized) display name for this keyboard layout.
 Description:
-
   Returns the (localized) display name for this keyboard layout.
 Quick info:
   Unit: JclLocales
@@ -1361,11 +1236,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.DeviceHandle
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Extracts the device identifier part from the input locale identifier that this object represents.
 Description:
-
   Extracts the device identifier part from the input locale identifier that this object represents.
 Quick info:
   Unit: JclLocales
@@ -1379,11 +1252,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.Layout
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the input locale identifier that this object represents.
 Description:
-
   Returns the input locale identifier that this object represents.
 Quick info:
   Unit: JclLocales
@@ -1397,11 +1268,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.LocaleID
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Extracts the locale identifier from the input locale identifier.
 Description:
-
   Extracts the locale identifier from the input locale identifier that this object
   represents. Note that the Locale Identifier is referred to as the language
   identifier in the Microsoft documentation.
@@ -1417,11 +1286,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.LocaleInfo
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Provides access to the locale information for this input locale identifier.
 Description:
-
   Returns a TJclLocaleInfo object which provides access to information about the
   locale identifier associated with this input locale identifier. The object remains
   owned by this class so you don't have to free it.
@@ -1437,11 +1304,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclKeyboardLayout.VariationName
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns the variation name for this keyboard layout.
 Description:
-
   Returns the variation name for this keyboard layout.
 Quick info:
   Unit: JclLocales
@@ -1459,7 +1324,6 @@ Quick info:
 Summary:
   Set of flags which describe how to load, unload or activate an input locale identifier.[Description]
 Description:
-
   Set of flags which describe how to load, unload or activate an input locale identifier.
   It is used by the TJclKeyboardLayout and TJclKeyboardLayoutList classes.
 Quick info:
@@ -1491,7 +1355,6 @@ Quick info:
 Summary:
   Describes an available keyboard layout.
 Description:
-
   Describes an available keyboard layout.
 Quick info:
   Unit: JclLocales
@@ -1504,11 +1367,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.Load
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Loads the keyboard layout.
 Description:
-
   Loads the keyboard layout. This method is implemented by calling the
   TJclAvailableKeybLayout.Load method. See the description of that method for more
   information.
@@ -1524,11 +1385,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.Identifier
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   The Windows keyboard layout code.
 Description:
-
   An 8-digit hexadecimal Windows keyboard layout code. The first four digits
   of the codes indicate whether the keyboard layout or IME is the default layout
   for the language (as indicated by all zeros), or a variation of the
@@ -1547,11 +1406,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.IdentifierName
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   String representation (8-digit hexadecimal value) of the keybaord layout code.
 Description:
-
   String representation (8-digit hexadecimal value) of the keybaord layout code.
   The string is formed on demand using the Idenitifier property.
 Quick info:
@@ -1566,11 +1423,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.LayoutID
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Specifies the ID number of an alternate keyboard layout or Input Method Editor (IME).
 Description:
-
   Specifies the ID number of an alternate keyboard layout or Input Method Editor (IME).
 Quick info:
   Unit: JclLocales
@@ -1584,11 +1439,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.LayoutFile
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Specifies the DLL for the keyboard layout or Input Method Editor (IME).
 Description:
-
   Specifies the DLL for the keyboard layout or Input Method Editor (IME).
 Quick info:
   Unit: JclLocales
@@ -1602,11 +1455,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.LayoutFileExists
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Returns whether the file specified by the LayoutFile property exists in the filesystem.
 Description:
-
   Returns whether the file specified by the LayoutFile property exists in the filesystem.
 Quick info:
   Unit: JclLocales
@@ -1620,11 +1471,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclAvailableKeybLayout.Name
-<GROUP Internationalisation.KeyboardInput>
 Summary:
   Name of the keybaord layout or Input Method Editor.
 Description:
-
   Specifies the name used to represent the keyboard layout or Input Method
   Editor (IME) on the Input Locales tab of Regional Options in Control Panel.
 Quick info:
