@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January 27, 2001                                              }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -1260,32 +1260,63 @@ end;
 
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
 
+  procedure AddToList(ProcessHandle: THandle; Module: HMODULE);
+  var
+    FileName: array [0..MAX_PATH] of Char;
+    ModuleInfo: TModuleInfo;
+  begin
+    if (GetModuleFileNameEx(ProcessHandle, Module, Filename, SizeOf(Filename)) > 0) and
+       (GetModuleInformation(ProcessHandle, Module, @ModuleInfo, SizeOf(ModuleInfo))) then
+      List.AddObject(FileName, Pointer(ModuleInfo.lpBaseOfDll));
+  end;
+
+  function EnumModulesVQ(ProcessHandle: THandle): Boolean;
+  var
+    MemInfo: TMemoryBasicInformation;
+    Base: PChar;
+    LastAllocBase: Pointer;
+    Res: DWORD;
+  begin
+    Base := nil;
+    LastAllocBase := nil;
+    FillChar(MemInfo, SizeOf(MemInfo), #0);
+    Res := VirtualQueryEx(ProcessHandle, Base, MemInfo, SizeOf(MemInfo));
+    Result := (Res = SizeOf(MemInfo));
+    while Res = SizeOf(MemInfo) do
+    begin
+      if MemInfo.AllocationBase <> LastAllocBase then
+      begin
+        if MemInfo.Type_9 = MEM_IMAGE then
+          AddToList(ProcessHandle, HMODULE(MemInfo.AllocationBase));
+        LastAllocBase := MemInfo.AllocationBase;
+      end;
+      Inc(Base, MemInfo.RegionSize);
+      Res := VirtualQueryEx(ProcessHandle, Base, MemInfo, SizeOf(MemInfo));
+    end;
+  end;
+
   function EnumModulesPS: Boolean;
   var
     ProcessHandle: THandle;
     Needed: DWORD;
     Modules: array of THandle;
-    FileName: array [0..MAX_PATH] of Char;
-    ModuleInfo: TModuleInfo;
     I, Cnt: Integer;
   begin
     Result := False;
     ProcessHandle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, ProcessID);
     if ProcessHandle <> 0 then
     try
-      if EnumProcessModules(ProcessHandle, nil, 0, Needed) then
+      Result := EnumProcessModules(ProcessHandle, nil, 0, Needed);
+      if Result then
       begin
         Cnt := Needed div SizeOf(HMODULE);
         SetLength(Modules, Cnt);
         if EnumProcessModules(ProcessHandle, @Modules[0], Needed, Needed) then
-        begin
-          Result := True;
           for I := 0 to Cnt - 1 do
-            if (GetModuleFileNameEx(ProcessHandle, Modules[I], Filename, SizeOf(Filename)) > 0) and
-               (GetModuleInformation(ProcessHandle, Modules[I], @ModuleInfo, SizeOf(ModuleInfo))) then
-              List.AddObject(FileName, Pointer(ModuleInfo.lpBaseOfDll));
-        end;
-      end;
+            AddToList(ProcessHandle, Modules[I]);
+      end
+      else
+        Result := EnumModulesVQ(ProcessHandle);
     finally
       CloseHandle(ProcessHandle);
     end;
