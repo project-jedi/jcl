@@ -15,7 +15,7 @@ UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -x..\unix\\
 ZlibOptions	= -uPLATFORM_SPECIFIC_COMMENT -uZLIB_WIN32DLL
 
 
-release:	VCL VisualCLX zlib
+release:	VCL VisualCLX Windows Unix
 
 VCL:    	..\vcl\JclGraphics.pas \
 		..\vcl\JclGraphUtils.pas
@@ -23,7 +23,8 @@ VCL:    	..\vcl\JclGraphics.pas \
 VisualCLX:    	..\visclx\JclQGraphics.pas \
 		..\visclx\JclQGraphUtils.pas
 
-Windows:	..\windows\zlibh.pas
+Windows:        ..\windows\Hardlinks.pas \
+                ..\windows\zlibh.pas
 
 Unix:		..\unix\zlibh.pas
 
