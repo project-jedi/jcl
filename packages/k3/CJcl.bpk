@@ -80,7 +80,6 @@
       <FILE FILENAME="../../source/common/JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/common/JclDITs.pas" FORMNAME="" UNITNAME="JclDITs" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI_ANSIX12_Ext.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12_Ext" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="../../source/common/JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
