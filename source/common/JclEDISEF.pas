@@ -33,6 +33,10 @@
 
 unit JclEDISEF;
 
+{$I jcl.inc}
+
+{$WEAKPACKAGEUNIT ON}
+
 interface
 
 uses
@@ -643,7 +647,11 @@ begin
     begin
       Temp.Text := FData;    
       FId := Temp.Names[0];
+      {$IFDEF DELPHI7_UP}
       Temp.CommaText := Temp.ValueFromIndex[0];
+      {$ELSE DELPHI7_UP}
+      Temp.CommaText := Temp.Values[FId];
+      {$ENDIF DELPHI7_UP}
       if Temp.Count >= 1 then FElementType := Temp[0];
       if Temp.Count >= 2 then FMinimumLength := StrToInt(Temp[1]);
       if Temp.Count >= 3 then FMaximumLength := StrToInt(Temp[2]);
