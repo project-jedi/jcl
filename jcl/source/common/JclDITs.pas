@@ -1,0 +1,589 @@
+{******************************************************************************}
+{                                                                              }
+{  WARNING: This file is generated automatically by preprocessor.              }
+{                                                                              }
+{  Manual modifications will be lost on next release. Please modify the        }
+{  original source file.                                                       }
+{                                                                              }
+{******************************************************************************}
+
+{******************************************************************************}
+{                                                                              }
+{  Project JEDI Code Library (JCL)                                             }
+{                                                                              }
+{  The contents of this file are subject to the Mozilla Public License         }
+{  Version 1.1 (the "License"); you may not use this file except in            }
+{  compliance with the License. You may obtain a copy of the License at        }
+{  http://www.mozilla.org/MPL/                                                 }
+{                                                                              }
+{  Software distributed under the License is distributed on an "AS IS" basis,  }
+{  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License    }
+{  for the specific language governing rights and limitations under the        }
+{  License.                                                                    }
+{                                                                              }
+{  The Original Code is: DITs.pas.                                             }
+{  The Initial Developer of the Original Code is Peter J. Haas. Portions       }
+{  created by Peter J. Haas are Copyright (C) 2001 Peter J. Haas. All Rights   }
+{  Reserved.                                                                   }
+{                                                                              }
+{  The Original Code Version 2.0 is: JclDITs.pas.                              }
+{  The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions  }
+{  created by Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights   }
+{  Reserved.                                                                   }
+{                                                                              }
+{  You may retrieve the latest version of the Original Code at the homepage    }
+{  of Peter J. Haas (delphi@pjh2.de), located at http://delphi.pjh2.de/        }
+{                                                                              }
+{  You may retrieve the latest version of this file at the homepage of         }
+{  JEDI, located at http://www.delphi-jedi.org/                                }
+{                                                                              }
+{  Contributor(s):                                                             }
+{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
+{                                                                              }
+{  Alternatively, the contents of this file may be used under the terms of     }
+{  the GNU Lesser General Public License (the  "LGPL License"), in which case  }
+{  the provisions of the LGPL License are applicable instead of those above.   }
+{  If you wish to allow use of your version of this file only under the terms  }
+{  of the LGPL License and not to allow others to use your version of this     }
+{  file under the MPL, indicate your decision by deleting the provisions       }
+{  above and replace them with the notice and other provisions required by     }
+{  the LGPL License. If you do not delete the provisions above, a recipient    }
+{  may use your version of this file under either the MPL or the LGPL License. }
+{                                                                              }
+{  For more information about the LGPL:                                        }
+{  http://www.gnu.org/copyleft/lesser.html                                     }
+{                                                                              }
+{******************************************************************************}
+{                                                                              }
+{  $Id$                                                                        }
+{                                                                              }
+{  For a history take a look to the end of this file                           }
+{                                                                              }
+{******************************************************************************}
+
+{$I jcl.inc}
+
+unit JclDITs;
+
+interface
+uses
+  SysUtils;
+
+// ***********  Date and Time Data Interchange (ISO 8601)  **********
+
+type
+  TISODateTimeOption = (dtoDate, dtoTime, dtoMilliseconds, dtoBasic);
+  TISODateTimeOptions = set of TISODateTimeOption;
+  TISODateTimeSeparator = (dtsT, dtsSpace);
+  TISOFloatDecimalSeparator = (fdsComma, fdsPoint);
+
+const
+  // basic formats
+  ISOBasicDateFormat = 'YYYYMMDD';
+  ISOBasicTimeFormat = 'hhnnss';
+  // extended formats
+  ISODateFormat = 'YYYY"-"MM"-"DD';
+  ISOTimeFormat = 'hh":"nn":"ss';
+  // milliseconds
+  ISOTimeMSec = '","zzz';
+  // date time separator
+  ISODateTimeSeparatorT = 'T';
+  ISODateTimeSeparatorSpace = ' ';
+  ISODateTimeSeparators: array[TISODateTimeSeparator] of Char =
+    (ISODateTimeSeparatorT, ISODateTimeSeparatorSpace);
+  // date time format
+  ISOBasicDateTimeFormat = ISOBasicDateFormat + ISODateTimeSeparatorT + ISOBasicTimeFormat;
+  ISODateTimeFormat = ISODateFormat + ISODateTimeSeparatorT + ISOTimeFormat;
+  // float decimal separator
+  ISOFloatDecimalSeparatorComma = ',';
+  ISOFloatDecimalSeparatorPoint = '.';
+  ISOFloatDecimalSeparators: array[TISOFloatDecimalSeparator] of Char =
+    (ISOFloatDecimalSeparatorComma, ISOFloatDecimalSeparatorPoint);
+
+// Convert TDateTime to string
+function ISODateTimeToStrCustom(const Value: TDateTime;
+  Options: TISODateTimeOptions;
+  DateTimeSeparator: TISODateTimeSeparator = dtsT): String;
+
+// Convert TDateTime to date string 'YYYY-MM-DD'
+function ISODateToStr(const Value: TDateTime): String;
+
+// Convert TDateTime to time string 'hh:mm:ss'
+function ISOTimeToStr(const Value: TDateTime): String;
+
+// Convert TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
+function ISODateTimeToStr(const Value: TDateTime): String;
+
+// Convert TDateTime to date string 'YYYYMMDD'
+function ISOBasicDateToStr(const Value: TDateTime): String;
+
+// Convert TDateTime to time string 'hhmmss'
+function ISOBasicTimeToStr(const Value: TDateTime): String;
+
+// Convert TDateTime to date time string 'YYYYMMDDThhmmss'
+function ISOBasicDateTimeToStr(const Value: TDateTime): String;
+
+// Convert a ISO date string to TDateTime and replace the date part of Date
+// Valid strings:
+//   'YYYY-MM-DD' and 'YYYYMMDD'
+function TryISOStrToDate(const Value: String; var Date: TDateTime): Boolean;
+
+// Convert a ISO time string to TDateTime and replace the time part of Time
+// Valid strings:
+//   'hh:mm:ss,zzz', 'hh:mm:ss.zzz', 'hhmmss,zzz', 'hhmmss.zzz',
+//   'hh:mm:ss', 'hhmmss', 'hh:mm' and 'hhmm'
+function TryISOStrToTime(const Value: String; var Time: TDateTime): Boolean;
+
+// Convert a ISO time stamp to a TDateTime,
+// date and time are separated with 'T' or ' '
+function TryISOStrToDateTime(const Value: String; out DateTime: TDateTime): Boolean;
+
+// Convert a ISO date string to TDateTime
+// Valid strings:
+//   'YYYY-MM-DD' and 'YYYYMMDD'
+function ISOStrToDate(const Value: String): TDateTime;
+function ISOStrToDateDef(const Value: String; const Default: TDateTime): TDateTime;
+
+// Convert a ISO time string to TDateTime
+// Valid strings:
+//   'hh:mm:ss,zzz', 'hh:mm:ss.zzz', 'hhmmss,zzz', 'hhmmss.zzz',
+//   'hh:mm:ss', 'hhmmss', 'hh:mm' and 'hhmm'
+function ISOStrToTime(const Value: String): TDateTime;
+function ISOStrToTimeDef(const Value: String; const Default: TDateTime): TDateTime;
+
+// Convert a ISO time stamp to a TDateTime,
+// date and time are separated with 'T' or ' '
+function ISOStrToDateTime(const Value: String): TDateTime;
+function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
+
+
+// ***********  Float Data Interchange (ISO 31-0)  ******************
+
+// Convert a float value to string
+// with DecimalSeparator as decimal separator and without thousand separator
+// Value: the value
+// Precision: precision of the result, 1..18, default: 15 digits
+// DecimalSeparator: used separator
+// if Abs(Value) < 10^-4 or >= 10^15 the function return a string in the
+// 'Scientific' format
+// if Value is NAN, INF or -INF the function return 'NAN', 'INF' or '-INF'
+function ISOFloatToStr(const Value: Extended;
+  Precision: Integer = 15 ;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma ): String;
+
+// Convert a string to a float value
+// Decimal separator ',' or '.'
+// Thousands separator ' '
+// The string can be a number in the 'Scientific' format
+// 'NAN', 'INF', '-INF' are allowed
+function ISOTextToFloat(Value: String; out Float: Extended): Boolean;
+
+// Convert a string to a float value
+// Decimal separator ',' or '.'
+// Thousands separator ' ' or ''
+// The string can be a number in the 'Scientific' format
+// 'NAN', 'INF', '-INF' are allowed
+function ISOStrToFloat(const Value: String): Extended;
+function ISOStrToFloatDef(const Value: String; const Default: Extended): Extended;
+
+implementation
+uses
+  JclResources;
+
+// ***********  Date and Time Data Interchange (ISO 8601)  **********
+
+// Convert TDateTime to string
+function ISODateTimeToStrCustom(const Value: TDateTime;
+  Options: TISODateTimeOptions;
+  DateTimeSeparator: TISODateTimeSeparator = dtsT): String;
+var
+  DTFormat: String;
+begin
+  // Parameter check
+  if Options = [] then
+    Options := [dtoDate, dtoTime]
+  else if Options = [dtoBasic] then
+    Options := [dtoDate, dtoTime, dtoBasic]
+  else if dtoMilliseconds in Options then
+    Include(Options, dtoTime);
+  // Build format string
+  if dtoDate in Options then
+  begin
+    if dtoBasic in Options then
+      DTFormat := ISOBasicDateFormat
+    else
+      DTFormat := ISODateFormat;
+    if dtoTime in Options then
+      DTFormat := DTFormat + '"' + ISODateTimeSeparators[DateTimeSeparator] + '"';
+  end
+  else
+    DTFormat := '';
+  if dtoTime in Options then
+  begin
+    if dtoBasic in Options then
+      DTFormat := DTFormat + ISOBasicTimeFormat
+    else
+      DTFormat := DTFormat + ISOTimeFormat;
+    if dtoMilliseconds in Options then
+      DTFormat := DTFormat + ISOTimeMSec;
+  end;
+  // convert
+  Result := FormatDateTime(DTFormat, Value);
+end;
+
+// Convert TDateTime to date string 'YYYY-MM-DD'
+function ISODateToStr(const Value: TDateTime): String;
+begin
+  Result := FormatDateTime(ISODateFormat, Value);
+end;
+
+// Convert TDateTime to time string 'hh:mm:ss'
+function ISOTimeToStr(const Value: TDateTime): String;
+begin
+  Result := FormatDateTime(ISOTimeFormat, Value);
+end;
+
+// Convert TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
+function ISODateTimeToStr(const Value: TDateTime): String;
+begin
+  Result := FormatDateTime(ISODateTimeFormat, Value);
+end;
+
+// Convert TDateTime to date string 'YYYYMMDD'
+function ISOBasicDateToStr(const Value: TDateTime): String;
+begin
+  Result := FormatDateTime(ISOBasicDateFormat, Value);
+end;
+
+// Convert TDateTime to time string 'hhmmss'
+function ISOBasicTimeToStr(const Value: TDateTime): String;
+begin
+  Result := FormatDateTime(ISOBasicTimeFormat, Value);
+end;
+
+// Convert TDateTime to date time string 'YYYYMMDDThhmmss'
+function ISOBasicDateTimeToStr(const Value: TDateTime): String;
+begin
+  Result := FormatDateTime(ISOBasicDateTimeFormat, Value);
+end;
+
+function CheckDateTimeFormat(const Value, DTFormat: String): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  if Length(Value) <> Length(DTFormat) then
+    Exit;
+  for I := 1 to Length(Value) do
+  begin
+    if DTFormat[I] = '9' then    // Digit
+    begin
+      if not (Value[I] in ['0'..'9']) then
+        Exit;
+    end
+    else
+    begin
+      if DTFormat[I] <> Value[I] then
+        Exit;
+    end;
+  end;
+  Result := True;
+end;
+
+// Convert a ISO date string to TDateTime and replace the date part of Date
+function TryISOStrToDate(const Value: String; var Date: TDateTime): Boolean;
+var
+  Offset: Integer;
+  Year, Month, Day: Word;
+begin
+  Result := False;
+  if CheckDateTimeFormat(Value, '9999-99-99') then
+    Offset := 1
+  else if CheckDateTimeFormat(Value, '99999999') then
+    Offset := 0
+  else
+    Exit;
+  Year  := StrToIntDef(Copy(Value, 1, 4), 0);
+  Month := StrToIntDef(Copy(Value, 5 + 1 * Offset, 2), 0);
+  Day   := StrToIntDef(Copy(Value, 7 + 2 * Offset, 2), 0);
+  try
+    Date := EncodeDate(Year, Month, Day) + Frac(Date);
+    Result := True;
+  except
+    on EConvertError do;
+  end;
+end;
+
+// Convert a ISO time string to TDateTime and replace the time part of Time
+function TryISOStrToTime(const Value: String; var Time: TDateTime): Boolean;
+var
+  s, ms: String;
+  i: Integer;
+  Hours, Minutes, Seconds, Milliseconds: Word;
+  Offset: Integer;
+  WithSeconds: Boolean;
+begin
+  Result := False;
+  // Milliseconds part
+  i := Pos(ISOFloatDecimalSeparatorComma, Value);    // ','
+  if i = 0 then
+    i := Pos(ISOFloatDecimalSeparatorPoint, Value);  // '.'
+  if i = 0 then
+  begin
+    s := Value;
+    ms := '';
+  end
+  else
+  begin
+    s := Copy(Value, 1, i - 1);
+    ms := Copy(Value, i + 1, MaxInt);
+  end;
+  if CheckDateTimeFormat(s, '99:99:99') then
+  begin
+    Offset := 1;
+    WithSeconds := True;
+  end
+  else if CheckDateTimeFormat(s, '999999') then
+  begin
+    Offset := 0;
+    WithSeconds := True;
+  end
+  else if CheckDateTimeFormat(s, '99:99') then
+  begin
+    Offset := 1;
+    WithSeconds := False;
+  end
+  else if CheckDateTimeFormat(s, '9999') then
+  begin
+    Offset := 0;
+    WithSeconds := False;
+  end
+  else
+    Exit;
+
+  Hours   := StrToIntDef(Copy(Value, 1, 2), 100);
+  Minutes := StrToIntDef(Copy(Value, 3 + 1 * Offset, 2), 100);
+
+  if WithSeconds then
+  begin
+    Seconds := StrToIntDef(Copy(Value, 5 + 2 * Offset, 2), 100);
+  end
+  else
+  begin
+    Seconds := 0;
+    if Length(ms) > 0 then  // Milliseconds without seconds -> error
+      Exit;
+  end;
+
+  case Length(ms) of
+    0: Milliseconds := 0;
+    3: Milliseconds := StrToIntDef(ms, 10000);
+  else
+    Exit;
+  end;
+
+  try
+    Time := EncodeTime(Hours, Minutes, Seconds, Milliseconds) + Int(Time);
+    Result := True;
+  except
+    on EConvertError do;
+  end;
+end;
+
+// Convert a ISO time stamp to a TDateTime,
+// date and time are separated with 'T' or ' '
+function TryISOStrToDateTime(const Value: String; out DateTime: TDateTime): Boolean;
+var
+  DatePart, TimePart : String;
+  i : Integer;
+begin
+  Result := False;
+  DateTime := 0;
+  i := Pos('T', Value);
+  if i = 0 then
+    i := Pos(' ', Value);
+  if i > 0 then
+  begin
+    DatePart := Copy(Value, 1, i-1);
+    TimePart := Copy(Value, i+1, MaxInt);
+    Result := TryISOStrToDate(DatePart, DateTime) and TryISOStrToTime(TimePart, DateTime);
+  end;
+end;
+
+// Convert a ISO date string to TDateTime
+// Valid strings:
+//   'CCYY-MM-DD' and 'CCYYMMDD'
+function ISOStrToDate(const Value: String): TDateTime;
+begin
+  Result := 0;
+  if not TryISOStrToDate(Value, Result) then
+    raise EConvertError.CreateResFmt(@RsDITInvalidISODate, [Value]);
+end;
+
+function ISOStrToDateDef(const Value: String; const Default: TDateTime): TDateTime;
+begin
+  Result := 0;
+  if not TryISOStrToDate(Value, Result) then
+    Result := Default;
+end;
+
+// Convert a ISO time string to TDateTime
+// Valid strings:
+//   'hh:mm:ss,zzz', 'hh:mm:ss.zzz', 'hhmmss,zzz', 'hhmmss.zzz',
+//   'hh:mm:ss', 'hhmmss', 'hh:mm' and 'hhmm'
+function ISOStrToTime(const Value: String): TDateTime;
+begin
+  Result := 0;
+  if not TryISOStrToTime(Value, Result) then
+    raise EConvertError.CreateResFmt(@RsDITInvalidISOTime, [Value]);
+end;
+
+function ISOStrToTimeDef(const Value: String; const Default: TDateTime): TDateTime;
+begin
+  Result := 0;
+  if not TryISOStrToTime(Value, Result) then
+    Result := Default;
+end;
+
+// Convert a ISO time stamp to a TDateTime,
+// date and time are separated with 'T' or ' '
+function ISOStrToDateTime(const Value: String): TDateTime;
+begin
+  if not TryISOStrToDateTime(Value, Result) then
+    raise EConvertError.CreateResFmt(@RsDITInvalidISODateTime, [Value]);
+end;
+
+function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
+begin
+  if not TryISOStrToDateTime(Value, Result) then
+    Result := Default;
+end;
+
+// ***********  Float Data Interchange (ISO 31-0)  ******************
+
+function ISOFloatRecToStr(const Rec: TFloatRec;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma ): String;
+var
+  DecimalSeparatorPos: Integer;
+  I: Integer;
+begin
+  case Rec.Exponent of
+    Low(Rec.Exponent):
+      Result := 'NAN';
+    High(Rec.Exponent):
+      begin
+        if Rec.Negative then
+          Result := '-INF'
+        else
+          Result := 'INF';
+      end;
+    Low(Rec.Exponent)+1..-4, 16..High(Rec.Exponent)-1:
+      begin
+        Result := Rec.Digits[0];
+        if Rec.Digits[1] <> #0 then
+          Result := Result + ISOFloatDecimalSeparators[DecimalSeparator] + PChar(@Rec.Digits[1]);
+        if Rec.Exponent <> 1 then
+          Result := Result + 'E' + IntToStr(Rec.Exponent - 1);
+        if Rec.Negative then
+          Result := '-' + Result;
+      end;
+  else
+    Result := Rec.Digits;
+    DecimalSeparatorPos := Rec.Exponent + 1;
+    for I := DecimalSeparatorPos to 1 do   // Nullen vor dem Ergebnis
+      Result := '0' + Result;
+    if DecimalSeparatorPos < 2 then
+      DecimalSeparatorPos := 2;
+    for I := DecimalSeparatorPos - Length(Result) - 2 downto 0 do
+      Result := Result + '0';
+    if DecimalSeparatorPos <= Length(Result) then
+      Insert(ISOFloatDecimalSeparators[DecimalSeparator], Result, DecimalSeparatorPos);
+    if Rec.Negative then
+      Result := '-' + Result;
+  end;
+end;
+
+// Convert a float value to string
+// with DecimalSeparator as decimal separator and without thousand separator
+function ISOFloatToStr(const Value: Extended;
+  Precision: Integer = 15 ;
+  DecimalSeparator: TISOFloatDecimalSeparator = fdsComma ): String;
+var
+  FloatRec: TFloatRec;
+begin
+  FloatToDecimal(FloatRec, Value, fvExtended, Precision, High(Integer) div 2);
+  Result := ISOFloatRecToStr(FloatRec, DecimalSeparator);
+end;
+
+// Convert a string to a float value
+// Decimal separator ',' or '.'
+// Thousands separator ' '
+function ISOTextToFloat(Value: String; out Float: Extended): Boolean;
+var
+  I: Integer;
+begin
+  // replace ',' by '.'
+  for I := 1 to Length(Value) do
+    if Value[I] = ',' then
+      Value[I] := '.';
+  // delete spaces
+  repeat
+    I := Pos(' ', Value);
+    if I > 0 then
+      Delete(Value, I, 1);
+  until I <= 0;
+  // convert
+  Val(Value, Float, I);
+  Result := I = 0;
+  if not Result then
+  begin
+    Result := Length(Value) > 0;
+    if Result then
+    begin
+      if Value[1] = '+' then
+        Delete(Value, 1, 1);
+      Value := UpperCase(Value);
+      if Value = 'NAN' then
+        Float := 0/0
+      else if Value = 'INF' then
+        Float := 1/0
+      else if Value = '-INF' then
+        Float := -1/0
+      else
+        Result := False;
+    end;
+  end;
+end;
+
+function ISOStrToFloat(const Value: String): Extended;
+begin
+  if not ISOTextToFloat(Value, Result) then
+    raise EConvertError.CreateResFmt(@RsDITInvalidISOFloat, [Value]);
+end;
+
+function ISOStrToFloatDef(const Value: String; const Default: Extended): Extended;
+begin
+  if not ISOTextToFloat(Value, Result) then
+    Result := Default;
+end;
+
+// ****************************************************************************
+
+//  History:
+//   2001-09-10  Version 1.0
+//
+//   2001-09-27  Version 1.01
+//    - ISOStrToDateTime accept now a space as date/time separator
+//    - ISOStrToFloat accept now spaces as thousands separator
+//
+//   2004-03-20  Version 2.0
+//    - add ISOBasicDateToStr, ISOBasicTimeToStr, ISOBasicDateTimeToStr
+//    - introduce TISODateTimeSeparator and TISOFloatDecimalSeparator
+//      instead of arbitrary characters.
+//
+//   $Log$
+//   Revision 1.1  2004/04/06 05:03:20  peterjhaas
+//   functions for Data Interchange per Text (ISO)
+//
+
+end.
