@@ -54,6 +54,11 @@ uses
   Classes, SysUtils,
   JclBase;
 
+{$IFDEF FPC}
+type
+  PBoolean = System.PBoolean;
+{$ENDIF FPC}
+
 //--------------------------------------------------------------------------------------------------
 // replacements for defective Libc.pas declarations
 //--------------------------------------------------------------------------------------------------
@@ -897,7 +902,7 @@ uses
   {$IFDEF MSWINDOWS}
   ShellApi,
   {$IFNDEF FPC}
-  ActiveX, ShlObj, JclShell, 
+  ActiveX, ShlObj, JclShell,
   {$ENDIF}
   JclWin32, JclDateTime, JclSecurity, JclSysInfo,
   {$ENDIF MSWINDOWS}
@@ -2115,7 +2120,7 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+{$ENDIF ~FPC}
 //--------------------------------------------------------------------------------------------------
 
 function PathGetShortName(const Path: string): string;
@@ -2502,7 +2507,7 @@ begin
     Result := DelTree(DirectoryName);
 end;
 
-{$ENDIF}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2943,9 +2948,9 @@ begin
     Windows.FindClose(Handle);
     {$IFDEF FPC}
     Result := CompareFileTime(@FindData.ftCreationTime, @FindData.ftLastWriteTime) <= 0;
-    {$ELSE}
+    {$ELSE ~FPC}
     Result := CompareFileTime(FindData.ftCreationTime, FindData.ftLastWriteTime) <= 0;
-    {$ENDIF FPC}
+    {$ENDIF ~FPC}
   end;
 end;
 
@@ -3648,7 +3653,7 @@ begin
     Result := Windows.DeleteFile(PChar(FileName));
 end;
 
-{$ENDIF FPC}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -5730,6 +5735,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/05/08 19:56:55  rrossmair
+// FPC-related improvements
+//
 // Revision 1.14  2004/05/08 08:44:17  rrossmair
 // introduced & applied symbol HAS_UNIT_LIBC
 //
