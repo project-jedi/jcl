@@ -2961,7 +2961,7 @@ begin
   if (FT = 1) or (FN = 1) or (FT = 0) then
     Exit;
 
-  I := GCD(FT, FN);
+  I := GCD(System.Abs(FT), FN);
   FT := FT div I;
   FN := FN div I;
 end;
