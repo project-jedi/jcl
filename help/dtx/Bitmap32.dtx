@@ -441,6 +441,9 @@ QuickInfo
   Donator: Alex Denissov
 SeeAlso
   OuterColor, SetPixel, TColor32
+
+@@TJclBitmap32.PixelS
+<COMBINE TJclBitmap32.Pixel>
 --------------------------------------------------------------------------------
 @@TJclBitmap32.PixelPtr
 Summary
@@ -455,6 +458,11 @@ QuickInfo
   Donator: Alex Denissov
 SeeAlso
   Bits, Pixel, ScanLine, TBitmap32, TColor32
+--------------------------------------------------------------------------------
+@@TJclBitmap32.ResetStippleCounter
+Resets the StippleCounter
+See Also
+  Line Patterns
 --------------------------------------------------------------------------------
 @@TJclBitmap32.ScanLine
 Summary
@@ -632,7 +640,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  FrameRect, Naming Conventions, TColor32
+  FrameRect, Graphics_Naming_Conventions, TColor32
 @@TJclBitmap32.FillRectS
 <COMBINE TJclBitmap32.FillRect>
 @@TJclBitmap32.FillRectT
@@ -654,7 +662,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  FillRect, LineTo, Naming Conventions, TColor32
+  FillRect, LineTo, Graphics_Naming_Conventions, TColor32
 
 @@TJclBitmap32.FrameRectS
 <COMBINE TJclBitmap32.FrameRect>
@@ -681,7 +689,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  DrawLine, Line Patterns, Naming Conventions, TColor32, DrawVertLine
+  DrawLine, Line Patterns, Graphics_Naming_Conventions, TColor32, DrawVertLine
 
 @@TJclBitmap32.DrawHorzLineS
 <COMBINE TJclBitmap32.DrawHorzLine>
@@ -711,7 +719,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  DrawLine, Line Patterns, Naming Conventions, TColor32, DrawHorzLine
+  DrawLine, Line Patterns, Graphics_Naming_Conventions, TColor32, DrawHorzLine
 
 @@TJclBitmap32.DrawVertLineS
 <COMBINE TJclBitmap32.DrawVertLine>
@@ -750,7 +758,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  LineTo, MoveTo, Naming Conventions, TColor32, DrawHorzLine, DrawVertLine
+  LineTo, MoveTo, Graphics_Naming_Conventions, TColor32, DrawHorzLine, DrawVertLine
 
 @@TJclBitmap32.DrawLineS
 <COMBINE TJclBitmap32.DrawLine>
@@ -802,7 +810,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  DrawLine, Line Patterns, MoveTo, Naming Conventions, PenColor, TFixed
+  DrawLine, Line Patterns, MoveTo, Graphics_Naming_Conventions, PenColor, TFixed
 
 @@TJclBitmap32.LineToS
 <COMBINE TJclBitmap32.LineTo>
@@ -827,7 +835,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  ImgView and Layers Example, LoadFromStream, SaveToFile
+  LoadFromStream, SaveToFile
 --------------------------------------------------------------------------------
 @@TJclBitmap32.LoadFromStream
 Summary
@@ -864,7 +872,7 @@ Parameters
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  DrawLine, LineTo, Naming Conventions, TFixed
+  DrawLine, LineTo, Graphics_Naming_Conventions, TFixed
 
 @@TJclBitmap32.MoveToF
 <COMBINE TJclBitmap32.MoveTo>
@@ -890,7 +898,7 @@ QuickInfo
   Donator: Alex Denissov
 
 SeeAlso
-  FrameRect, Naming Conventions
+  FrameRect, Graphics_Naming_Conventions
 --------------------------------------------------------------------------------
 @@TJclBitmap32.RenderText
 Summary
@@ -918,7 +926,7 @@ QuickInfo
   Donator: Alex Denissov
 
 SeeAlso
-  Font, RenderText Example, TColor32, TextExtent, TextOut
+  Font, TColor32, TextExtent, TextOut
 --------------------------------------------------------------------------------
 @@TJclBitmap32.GetStippleColor
 Summary
@@ -1011,7 +1019,7 @@ QuickInfo
   Donator: Alex Denissov
 
 SeeAlso
-  Naming Conventions, Pixel, TColor32, TFixed
+  Graphics_Naming_Conventions, Pixel, TColor32, TFixed
 
 @@TJclBitmap32.SetPixelT
 <COMBINE TJclBitmap32.SetPixel>
@@ -1162,13 +1170,13 @@ QuickInfo
   Donator: Alex Denissov
 
 SeeAlso
-  DrawMode, PixelCombine Example, TColor32, TPixelCombineEvent
+  DrawMode, TColor32, TPixelCombineEvent
 --------------------------------------------------------------------------------
-@@Bitmap32_Naming_Conventions
-<TITLE Naming conventions>
+@@Graphics_Naming_Conventions
+<TITLE Function naming conventions>
 <GROUP Graphics.Bitmaps>
 
-Graphics32 introduces several routines (as well as some class
+JclGraphics introduces several routines (as well as some class
 properties and methods) which have similar action but may
 have different arguments or other realization details.
 
@@ -1203,7 +1211,7 @@ Line Patterns
 @@Line Patterns
 <GROUP Graphics.Bitmaps>
 
-Graphics32 defines several functions to support non-uniform
+JclGraphics defines several functions to support non-uniform
 lines. This includes gradient lines, dashed lines etc.
 
 The idea is pretty simple: TJclBitmap32 holds a dynamic array of colors, and a
@@ -1234,9 +1242,8 @@ threads accessing the bitmap. Additional care should be taken
 when multiple threads draw stippled lines in the same bitmap.
 
 See Also
-  TJclBitmap32.GetStippleColor, GradLines Example, LineStippling Example,
-  Bitmap32_Naming_Conventions, TJclBitmap32.StippleCounter, TJclBitmap32.StippleStep,
-  TJclBitmap32
+  Graphics_Naming_Conventions, TJclBitmap32, TJclBitmap32.GetStippleColor,
+  TJclBitmap32.StippleCounter, TJclBitmap32.StippleStep
 --------------------------------------------------------------------------------
 @@TDrawMode
 Summary
@@ -1292,7 +1299,7 @@ Description
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  ByteMaps Example, TJclBitmap32, TJclCustomMap
+  TJclBitmap32, TJclCustomMap
 --------------------------------------------------------------------------------
 @@TJclByteMap.Bytes
 Summary
@@ -1500,7 +1507,6 @@ QuickInfo
 --------------------------------------------------------------------------------
 @@TJclLinearTransformation
 <GROUP Graphics.Bitmaps>
-Summary
 Description
   The transformation is defined by a 3x3 homogeneous matrix.
   <IMAGE TJclLinearTransformation>
@@ -1596,5 +1602,348 @@ QuickInfo
 
 SeeAlso
   Translate, Rotate, Scale, Skew
+--------------------------------------------------------------------------------
+@@AlphaToGrayscale
+<GROUP Graphics.Bitmaps>
+Description
+  This function transforms an alpha channel from Src bitmap into grayscale (R=A,
+  G=A, B=A) color in Dst bitmap. If necessary, Dst bitmap is resized to fit Src
+  dimesions.
+
+  It writes only RGB components into Dst. The alpha channel (A) remains intact,
+  provided that dimensions of Dst and Src match before AlphaToGrayScale call.
+
+  This function is useful when it is necessary to visualize the alpha channel, or
+  when you want to store it as standard bitmap into a file.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  IntensityToAlpha, TJclBitmap32
+--------------------------------------------------------------------------------
+@@ApplyLUT
+<GROUP Graphics.Bitmaps>
+Description
+  Converts color from Src to Dst using a look-up table (LUT parameter) to map
+  the color components. The alpha channel of the result is automatically set to
+  $FF:
+
+  RDST = LUT[RSRC];
+
+  GDST = LUT[GSRC];
+
+  BDST = LUT[BSRC];
+
+  ADST = $FF;
+
+  This function supports in-place operation, that is Dst may be the same as Src.
+
+QuickInfo
+  Donator: Alex Denissov
+SeeAlso
+  TJclBitmap32, TLUT8
+--------------------------------------------------------------------------------
+@@BlockTransfer
+<GROUP Graphics.Bitmaps>
+Description
+  BlockTransfer is similar to the BitBlt function from Windows GDI. It
+  performs copying of a bitmap fragment specified by SrcRect into location
+  (DstX, DstY) with optional alpha blending or using user-specified combining
+  function.
+
+  If CombineOp=dmOpaque, the fragment simply replaces destination pixels. In
+  dmBlend mode it is blended to destination using its alpha channel and
+  MasterAlpha property. In dmCusom mode, the function calls CombineCallBack
+  function for pixel combining.
+
+  It is not required for DstRect and SrcRect to lie entirely inside the
+  corresponding bitmap, since the function provides necessary clipping.
+
+  The result is not specified when transferring data inside the same bitmap
+  (Src=Dst) and if in the same time SrcRect intersects with DstRect. In this
+  case it is recommended to use a temporary bitmap buffer.
+
+  Neither Src nor Dst bitmaps may be equal to nil. In this case, function will
+  generate an exception. They may be empty however, in this case no
+  transformation will be performed.
+
+  This routine is used in TJclBitmap32.Draw and TJclBitmap32.DrawTo methods.
+QuickInfo
+  Donator: Alex Denissov
+SeeAlso
+  TJclBitmap32.Draw, TJclBitmap32.DrawTo, TJclBitmap32.MasterAlpha, StretchTransfer, TJclBitmap32,
+  TDrawMode, TPixelCombineEvent, TRect
+--------------------------------------------------------------------------------
+@@ColorToGrayscale
+<GROUP Graphics.Bitmaps>
+Description
+  Calculates color intensity from Src and writes it as a grayscale image into
+  Dst. The alpha channel in Dst will be set to $FF.
+
+  This function supports in-place operation, that is Dst may be the same as Src.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  AlphaToGrayscale, TJclBitmap32
+--------------------------------------------------------------------------------
+@@IntensityToAlpha
+<GROUP Graphics.Bitmaps>
+Description
+  This function transforms the color intensity, stored in RGB channels of Src
+  bitmap into the alpha channel in Dst. If necessary, the Dst bitmap is resized
+  to fit Src dimesions.
+
+  The intensity is calculated using the Intensity function.
+
+  The function writes only the alpha component into Dst. Other channels remain
+  intact (provided dimensions of Dst and Src match before IntensityToAlpha call).
+
+  IntensityToAlpha is useful when it is necessary to load an alpha channel stored
+  in as an image.
+
+  The in-place operation is fully supported, that is Dst may be the same as Src.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  AlphaToGrayscale, Intensity, TJclBitmap32
+--------------------------------------------------------------------------------
+@@Invert
+<GROUP Graphics.Bitmaps>
+Description
+  Inverts all color channels, including the alpha channel.
+
+  This function supports in-place operation, that is Dst may be the same as Src.
+
+QuickInfo
+  Donator: Alex Denissov
+SeeAlso
+  InvertRGB, TJclBitmap32
+--------------------------------------------------------------------------------
+@@InvertRGB
+<GROUP Graphics.Bitmaps>
+Description
+  Inverts RGB color channels, and copies the alpha channel without inversion. If
+  necessary, the Dst bitmap is resized to fit Src dimensions.
+
+  This function supports in-place operation, that is Dst may be the same as Src.
+
+QuickInfo
+  Donator: Alex Denissov
+SeeAlso
+  Invert, TJclBitmap32
+--------------------------------------------------------------------------------
+@@Polygon
+<GROUP Graphics.Bitmaps>
+Description
+  Fills the shape defined by the Points parameter with specified color. Unlike
+  GDI polygons, this function allows for transparency and optional antialiasing.
+
+  PolygonTS draws a non-antialiased polygon with optional transparency. When
+  drawing, fixed-point coordinates of vertixes are rounded.
+
+  PolygonAS draws an antialiased polygon, fixed-point coordinates of vertexes
+  are rounded.
+
+  PolygonFS provides full antialiasing and does not perform rounding of vertex
+  coordinates.
+  
+  All functions perform clipping.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  Graphics_Naming_Conventions, TJclBitmap32, TColor32, TPolyFillMode
+
+@@PolygonAS
+<COMBINE Polygon>
+
+@@PolygonFS
+<COMBINE Polygon>
+
+@@PolygonTS
+<COMBINE Polygon>
+--------------------------------------------------------------------------------
+@@PolyLine
+<GROUP Graphics.Bitmaps>
+Description
+  Draws a series of lines, connecting points passed in. If Closed is True, the
+  polygon is closed automatically by drawing a line from the last vertex to the
+  first.
+
+  PolyLineTS draws a non-antialiased line with optional transparency. When
+  drawing, fixed-point coordinates of vertixes are rounded.
+
+  PolyLineAS draws an antialiased line, fixed-point coordinates of vertexes are
+  rounded.
+
+  PolyLineFS provides full antialiasing and does not perform rounding of vertexes'
+  coordinates.
+
+  All functions perform clipping.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  Graphics_Naming_Conventions, TJclBitmap32, TColor32
+
+@@PolyLineAS
+<COMBINE PolyLine>
+
+@@PolyLineFS
+<COMBINE PolyLine>
+
+@@PolyLineTS
+<COMBINE PolyLine>
+--------------------------------------------------------------------------------
+@@PolyPolygon
+<GROUP Graphics.Bitmaps>
+Description
+  Fills the shape similar to that done by Polygon function. The shape is
+  constructed from several contours, which are specified in Points parameter.
+  The filling is performed according to Mode parameter.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  Graphics_Naming_Conventions, Polygon, PolyPolyline, TJclBitmap32, TColor32,
+  TPolyFillMode
+
+@@PolyPolygonAS
+<COMBINE Polygon>
+
+@@PolyPolygonFS
+<COMBINE Polygon>
+
+@@PolyPolygonTS
+<COMBINE Polygon>
+--------------------------------------------------------------------------------
+@@PolyPolyLine
+<GROUP Graphics.Bitmaps>
+Description
+  PolyPolyline is the same as Polyline, but takes array of polylines as
+  parameter. The Closed parameter influences all polylines in the array.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  Graphics_Naming_Conventions, Polyline, PolyPolygon, TJclBitmap32, TColor32
+
+@@PolyPolyLineAS
+<COMBINE PolyPolyLine>
+
+@@PolyPolyLineFS
+<COMBINE PolyPolyLine>
+
+@@PolyPolyLineTS
+<COMBINE PolyPolyLine>
+--------------------------------------------------------------------------------
+@@SetBorderTransparent
+<GROUP Graphics.Bitmaps>
+Description
+  This is an auxiliary function that sets the alpha channel along the edges of
+  specified rectangle to zero. It may be used on a bitmap before passing it to
+  Transform function as a workarownd to the edge antialiasing problem.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  TJclBitmap32, Transform, TRect
+--------------------------------------------------------------------------------
+@@SetGamma
+<GROUP Graphics.Bitmaps>
+Description
+  Updates gamma/shape correction table.
+
+  Pixel and line antialiasing produces much better results with correction of
+  opacities for partially covered pixels. This accounts both for monitor gamma
+  and for pixel shape correction.
+
+  Use this function to update the internal gamma-correction table which is used
+  in pixel and line rasterization.
+
+  The default value of 0.7 works fine in most cases.
+
+QuickInfo
+  Donator: Alex Denissov
+--------------------------------------------------------------------------------
+@@StretchTransfer
+<GROUP Graphics.Bitmaps>
+Description
+  StretchTransfer is similar to StretchBlt or StretchDIBits functions from
+  Windows GDI. This procedure performs copying and, if necessary, stretching of
+  the bitmap fragment specified by SrcRect into location in Dst specified by
+  DstRect.
+
+  StretchFilter defines a color interpolation method for image stretching.
+
+  sfNearest is the fastest fileter, although the quality of the stretched image
+  is fair;
+
+  sfLinear is several times slower, but it produces more decent results in most
+  cases;
+
+  sfSpline is an approximation of spline interpolation.
+
+  Unlike in BlockTransfer function, SrcRect must lie inside the Src bitmap
+  boundaries, otherwise function will generate an exception. The result is not
+  specified when transferring data inside the same bitmap (Src=Dst) and if in
+  the same time SrcRect intersects with DstRect. In this case it is recommended
+  to use a temporary bitmap buffer.
+
+  This routine is used in TJclBitmap32.Draw and TJclBitmap32.DrawTo methods.
+
+QuickInfo
+  Donator: Alex Denissov
+
+SeeAlso
+  BlockTransfer, TJclBitmap32, TDrawMode, TPixelCombineEvent, TRect, TStretchFilter
+--------------------------------------------------------------------------------
+@@Transform
+<GROUP Graphics.Bitmaps>
+Description
+  Transform is responsible for arbitrary geometrical transformations of bitmaps
+  or their fragments. The current version supports only linear transformations.
+
+  The Transformation parameter is a reference to a descendant of an abstract
+  TTransformation class. It specifies all necessary transformation parameters.
+
+  When Src.StretchFilter is different from sfNearest, Transform uses bilinear
+  interpolation for magnification (along any axis) as for minification, it is not
+  as accurate as StretchTransfer function. If you need better quality when
+  minimizing the bitmaps, transform them into the temporary buffer so that there
+  is no minification involved, then StretchTransfer to a final bitmap.
+
+  The function does not support spline interpolation, if Src.StretchFilter is
+  sfSpline, Transform operates as if it were sfLinear.
+
+  There is an issue with antialiasing and edges. How to make them antialiased
+  and still keep the performance? The solution implemented in JclGraphics is
+  similar to the one used in OpenGL. You just have to provide the source bitmap
+  (or its region) with transparent edges. In the original image, you’ll have to
+  force the alpha channel on its edges to zeroes, for example, using the
+  SetBorderTransparent method.
+
+  Remember, that color is interpolated as well, it means that for nice fadeout
+  the color on the border should match the color of pixels lying next to the
+  border.
+
+  In case the bitmap is transformed in dmOpaque mode, it might be better to keep
+  the color on the edge close to the color of the background.
+
+QuickInfo
+  Donator: Alex Denissov
+SeeAlso
+  SetBorderTransparent, TJclBitmap32.StretchFilter, StretchTransfer,
+  TJclLinearTransformation
 --------------------------------------------------------------------------------
 
