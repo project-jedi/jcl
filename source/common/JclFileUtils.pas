@@ -96,10 +96,13 @@ function GetModulePath(const Module: HMODULE): string;
 function IsDirectory(const FileName: string): Boolean;
 function LockVolume(const Volume: string; var Handle: THandle): Boolean;
 function OpenVolume(const Drive: Char): DWORD; // TODO DOC MASSIMO
-procedure ShredFile(const FileName: string; Times: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF});
+function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
+function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
 function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): Boolean;
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
+procedure ShredFile(const FileName: string; Times: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF});
 function UnLockVolume(var Handle: THandle): Boolean;
 
 { TFileVersionInfo }
@@ -248,9 +251,12 @@ type
   private
     FFileHandle: THandle;
   public
+    constructor Create(const FileName: string; FileMode: Cardinal;
+      const Name: string; Protect: Cardinal; const MaximumSize: Int64;
+      const SecAttr: PSecurityAttributes); overload;
     constructor Create(const FileHandle: THandle; const Name: string;
       Protect: Cardinal; const MaximumSize: Int64;
-      const SecAttr: PSecurityAttributes);
+      const SecAttr: PSecurityAttributes); overload;
     destructor Destroy; override;
     property FileHandle: THandle read FFileHandle;
   end;
@@ -276,7 +282,7 @@ uses
   ActiveX, ShellApi, ShlObj,
   {$ENDIF}
   SysUtils,
-  JclResources, JclSysUtils, JclWin32;
+  JclResources, JclSecurity, JclSysUtils, JclWin32;
 
 //==============================================================================
 // TJclTempFileStream
@@ -567,6 +573,23 @@ end;
 //==============================================================================
 // TJclFileMapping
 //==============================================================================
+
+constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
+  const Name: string; Protect: Cardinal; const MaximumSize: Int64;
+  const SecAttr: PSecurityAttributes);
+var
+  Handle: THandle;
+begin
+  inherited Create;
+  Handle := FileOpen(FileName, FileMode);
+  if Handle = INVALID_HANDLE_VALUE then
+    raise EJclFileMappingError.CreateResRec(@RsFileMappingOpenFile);
+  InternalCreate(Handle, Name, Protect, MaximumSize, SecAttr);
+  DuplicateHandle(GetCurrentProcess, FileHandle, GetCurrentProcess,
+    @FFileHandle, 0, False, DUPLICATE_SAME_ACCESS);
+end;
+
+//------------------------------------------------------------------------------
 
 constructor TJclFileMapping.Create(const FileHandle: THandle; const Name: string;
   Protect: Cardinal; const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
@@ -1298,14 +1321,10 @@ var
   Handle: THandle;
   FileTime: TFileTime;
   SystemTime: TSystemTime;
-  Attr: Cardinal;
 begin
   Result := False;
-  Attr := 0;
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Attr := FILE_FLAG_BACKUP_SEMANTICS;
   Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, Attr, 0);
+    OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   begin
     DateTimeToSystemTime(DateTime, SystemTime);
@@ -1317,19 +1336,35 @@ end;
 
 //------------------------------------------------------------------------------
 
+function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
+var
+  Handle: THandle;
+  FileTime: TFileTime;
+  SystemTime: TSystemTime;
+begin
+  Result := False;
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
+    OPEN_EXISTING, 0, 0);
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
+    DateTimeToSystemTime(DateTime, SystemTime);
+    SystemTimeToFileTime(SystemTime, FileTime);
+    Result := SetFileTime(Handle, nil, nil, @FileTime);
+    CloseHandle(Handle);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 var
   Handle: THandle;
   FileTime: TFileTime;
   SystemTime: TSystemTime;
-  Attr: Cardinal;
 begin
   Result := False;
-  Attr := 0;
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Attr := FILE_FLAG_BACKUP_SEMANTICS;
   Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, Attr, 0);
+    OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   begin
     DateTimeToSystemTime(DateTime, SystemTime);
@@ -1341,25 +1376,79 @@ end;
 
 //------------------------------------------------------------------------------
 
-function SetFileLastWrite(const FileName: string; const DateTime: TDateTime): Boolean;
+// utility function for SetDir...
+
+function BackupPrivilegesEnabled: Boolean;
+begin
+  Result := PrivilegeEnabled(SE_BACKUP_NAME) and PrivilegeEnabled(SE_RESTORE_NAME);
+end;
+
+//------------------------------------------------------------------------------
+
+function SetDirLastWrite(const DirName: string; const DateTime: TDateTime): Boolean;
 var
   Handle: THandle;
   FileTime: TFileTime;
   SystemTime: TSystemTime;
-  Attr: Cardinal;
 begin
   Result := False;
-  Attr := 0;
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Attr := FILE_FLAG_BACKUP_SEMANTICS;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, Attr, 0);
-  if Handle <> INVALID_HANDLE_VALUE then
+  if IsDirectory(DirName) and BackupPrivilegesEnabled then
   begin
-    DateTimeToSystemTime(DateTime, SystemTime);
-    SystemTimeToFileTime(SystemTime, FileTime);
-    Result := SetFileTime(Handle, nil, nil, @FileTime);
-    CloseHandle(Handle);
+    Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    begin
+      DateTimeToSystemTime(DateTime, SystemTime);
+      SystemTimeToFileTime(SystemTime, FileTime);
+      Result := SetFileTime(Handle, nil, nil, @FileTime);
+      CloseHandle(Handle);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function SetDirLastAccess(const DirName: string; const DateTime: TDateTime): Boolean;
+var
+  Handle: THandle;
+  FileTime: TFileTime;
+  SystemTime: TSystemTime;
+begin
+  Result := False;
+  if IsDirectory(DirName) and BackupPrivilegesEnabled then
+  begin
+    Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    begin
+      DateTimeToSystemTime(DateTime, SystemTime);
+      SystemTimeToFileTime(SystemTime, FileTime);
+      Result := SetFileTime(Handle, nil, @FileTime, nil);
+      CloseHandle(Handle);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function SetDirCreation(const DirName: string; const DateTime: TDateTime): Boolean;
+var
+  Handle: THandle;
+  FileTime: TFileTime;
+  SystemTime: TSystemTime;
+begin
+  Result := False;
+  if IsDirectory(DirName) and BackupPrivilegesEnabled then
+  begin
+    Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    begin
+      DateTimeToSystemTime(DateTime, SystemTime);
+      SystemTimeToFileTime(SystemTime, FileTime);
+      Result := SetFileTime(Handle, @FileTime, nil, nil);
+      CloseHandle(Handle);
+    end;
   end;
 end;
 
