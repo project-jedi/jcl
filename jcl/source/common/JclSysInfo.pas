@@ -484,7 +484,7 @@ uses
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
-  JclFileUtils, JclRegistry, JclResources, JclShell, JclStrings, JclWin32;
+  JclBase, JclFileUtils, JclRegistry, JclResources, JclShell, JclStrings, JclWin32;
 
 //==============================================================================
 // Environment
@@ -2402,7 +2402,7 @@ var
 begin
   Result := alsUnknown;
   if not GetSystemPowerStatus(SystemPowerStatus) then
-    RaiseLastWin32Error
+    RaiseLastOSError
   else
   begin
     case SystemPowerStatus.ACLineStatus  of
@@ -2424,7 +2424,7 @@ var
 begin
   Result := abfUnknown;
   if not GetSystemPowerStatus(SystemPowerStatus) then
-    RaiseLastWin32Error
+    RaiseLastOSError
   else
   begin
     case SystemPowerStatus.BatteryFlag of
@@ -2452,7 +2452,7 @@ var
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
-    RaiseLastWin32Error
+    RaiseLastOSError
   else
     Result := SystemPowerStatus.BatteryLifePercent;
 end;
@@ -2465,7 +2465,7 @@ var
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
-    RaiseLastWin32Error
+    RaiseLastOSError
   else
     Result := SystemPowerStatus.BatteryLifeTime;
 end;
@@ -2478,7 +2478,7 @@ var
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
-    RaiseLastWin32Error
+    RaiseLastOSError
   else
     Result := SystemPowerStatus.BatteryFullLifeTime;
 end;
@@ -2707,3 +2707,6 @@ end;
 initialization
   InitSysInfo;
 end.
+
+
+
