@@ -68,7 +68,13 @@
   {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
 
+// To exclude obsolete code from compilation, remove the point from the line below
+{.$DEFINE DROP_OBSOLETE_CODE}
+
 // $Log$
+// Revision 1.6  2004/06/02 03:17:02  rrossmair
+// added DROP_OBSOLETE_CODE comment
+//
 // Revision 1.5  2004/05/31 22:28:39  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
