@@ -33,7 +33,7 @@
 
 unit JclGraphics;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 interface
 
@@ -68,7 +68,7 @@ type
   { Matrix declaration for transformation }
   //  modify Jan 28, 2001 for use under BCB5
   //         the compiler show error 245 "language feature ist not available"
-  //         wie must take a record and under this we can use the static array
+  //         we must take a record and under this we can use the static array
   //  Note:  the sourcecode modify general from M[] to M.A[] !!!!!
   //  TMatrix3d = array [0..2, 0..2] of Extended;  // 3x3 double precision
 
@@ -133,7 +133,7 @@ type
     constructor Create(Region: TJclRegion);
     destructor Destroy; override;
     property Box: TRect read GetBox;
-    property Rectangles[index: Integer]: TRect read GetRect;
+    property Rectangles[Index: Integer]: TRect read GetRect;
     property Count: Integer read GetCount;
   end;
 
@@ -405,7 +405,7 @@ type
     property Value[X, Y: Integer]: Byte read GetValue write SetValue; default;
   end;
 
-  TJclTransFormation = class (TObject)
+  TJclTransformation = class (TObject)
   public
     function  GetTransformedBounds(const Src: TRect): TRect; virtual; abstract;
     procedure PrepareTransform; virtual; abstract;
@@ -413,7 +413,7 @@ type
     procedure Transform256(DstX, DstY: Integer; out SrcX256, SrcY256: Integer); virtual; abstract;
   end;
 
-  TJclLinearTransformation = class (TJclTransFormation)
+  TJclLinearTransformation = class (TJclTransformation)
   private
     FMatrix: TMatrix3d;
   protected
@@ -464,7 +464,7 @@ procedure BlockTransfer( Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: T
 procedure StretchTransfer( Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
   StretchFilter: TStretchFilter; CombineOp: TDrawMode);
 
-procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransFormation);
+procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
@@ -1210,7 +1210,7 @@ begin
   SetLength(Result, DstWidth);
   Scale := (DstWidth - 1) / (SrcWidth - 1);
 
-  if (Scale < 1) then
+  if Scale < 1 then
   begin
     OldScale := Scale;
     Scale := 1 / Scale;
@@ -1639,7 +1639,7 @@ begin
     JPeg.LoadFromFile(FileName);
     Bitmap := TBitmap.Create;
     Bitmap.Assign(JPeg);
-    Bitmap.SaveToFile(ChangeFileExt(FileName, '.bmp'));
+    Bitmap.SaveToFile(ChangeFileExt(FileName, RsBitmapExtension));
   finally
     FreeAndNil(Bitmap);
     FreeAndNil(JPeg);
@@ -1660,7 +1660,7 @@ begin
     Bitmap.LoadFromFile(FileName);
     JPeg := TJPegImage.Create;
     JPeg.Assign(Bitmap);
-    JPeg.SaveToFile(ChangeFileExt(FileName, '.jpg'));
+    JPeg.SaveToFile(ChangeFileExt(FileName, RsJpegExtension));
   finally
     FreeAndNil(Bitmap);
     FreeAndNil(JPeg);
@@ -1705,7 +1705,7 @@ end;
 //------------------------------------------------------------------------------
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
-  Transformation: TJclTransFormation);
+  Transformation: TJclTransformation);
 var
   SrcBlend: Boolean;
   C, SrcAlpha: TColor32;
@@ -1844,7 +1844,7 @@ var
 begin
   Result := 0;
 
-  if (Bitmap = nil) then
+  if Bitmap = nil then
     EJclGraphicsError.CreateResRec(@RsNoBitmapForRegion);
 
   if (Bitmap.Width = 0) or (Bitmap.Height = 0) then
@@ -1943,7 +1943,7 @@ begin
 
     // grab the system palette entries...
     Pal.palNumEntries := GetSystemPaletteEntries(WinDC, 0, 256, Pal.palPalEntry);
-    if (Pal.PalNumEntries <> 0) then
+    if Pal.PalNumEntries <> 0 then
       bm.Palette := CreatePalette(PLogPalette(@Pal)^);
   end;
 
@@ -2072,7 +2072,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclRegionInfo.GetRect(index: Integer): TRect;
+function TJclRegionInfo.GetRect(Index: Integer): TRect;
 var RectP: PRect;
 begin
   if (Index < 0) or (DWORD(Index) >= TRgnData(FData^).rdh.nCount) then
