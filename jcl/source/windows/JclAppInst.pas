@@ -22,7 +22,7 @@
 { simple interprocess communication between these instance including a notification mechanism.     }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: March 03, 2002                                                                    }
+{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -114,6 +114,16 @@ implementation
 uses
   SysUtils,
   JclStrings, JclSysUtils;
+
+{$IFDEF FPC}  // missing declaration from unit Messages
+type
+  TWMCopyData = packed record
+    Msg: Cardinal;
+    From: HWND;
+    CopyDataStruct: PCopyDataStruct;
+    Result: Longint;
+  end;
+{$ENDIF}
 
 const
   { strings to form a unique name for file mapping and optex objects }

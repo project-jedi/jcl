@@ -21,7 +21,7 @@
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
 { Unit owner: Jan Jacobs                                                                           }
-{ Last modified: May 12, 2003                                                                     }
+{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -38,6 +38,15 @@ uses
   JclBase, JclSynch, JclStrings;
 
 type
+  {$IFDEF FPC}
+  // declarations missing from mmsystem.pp
+  // see also implementation section
+  TTimeCaps = TIMECAPS;
+  TMixerControl = MIXERCONTROL;
+  TMixerCaps = MIXERCAPS;
+  TMixerLine = MIXERLINE;
+  TMCI_Open_Parms = MCI_OPEN_PARMS;
+  {$ENDIF FPC}
 
 //--------------------------------------------------------------------------------------------------
 // Multimedia timer
@@ -310,6 +319,28 @@ implementation
 uses
   SysUtils,
   JclResources, JclSysUtils;
+
+{$IFDEF FPC}
+// declarations missing from mmsystem.pp
+const
+  mmsyst = 'winmm.dll';
+
+type
+  TFNTimeCallBack = procedure(uTimerID, uMessage: UINT;
+    dwUser, dw1, dw2: DWORD) stdcall;
+
+  PMixerControlDetailsListText = ^TMixerControlDetailsListText;
+  TMixerControlDetailsListText = MIXERCONTROLDETAILS_LISTTEXTA;
+
+  TMixerLineControlsA          = MIXERLINECONTROLSA;
+  TMixerLineControls           = TMixerLineControlsA;
+  TMCI_Status_Parms            = MCI_STATUS_PARMS;
+  TMCI_Info_Parms              = MCI_INFO_PARMS;
+  TMCI_Set_Parms               = MCI_SET_PARMS;
+  
+function mixerSetControlDetails(hmxobj: HMIXEROBJ; pmxcd: PMixerControlDetails; fdwDetails: DWORD): MMRESULT; stdcall;
+  external mmsyst name 'mixerSetControlDetails';
+{$ENDIF FPC}
 
 //==================================================================================================
 // TJclMultimediaTimer

@@ -20,7 +20,7 @@
 { Various Unicode related routines                                                                 }
 {                                                                                                  }
 { Unit owner: Mike Lischke                                                                         }
-{ Last modified: September 19, 2003                                                                }
+{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1021,17 +1021,24 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
   {$ELSE}
+  {$IFNDEF FPC}
   Consts,
-  {$ENDIF}
+  {$ENDIF not FPC}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   SysUtils,
   JclBase, JclResources, JclSynch;
 
 const
+  {$IFDEF FPC} // declarations from unit [Rtl]Consts
+  SDuplicateString = 'String list does not allow duplicates';
+  SListIndexError = 'List index out of bounds (%d)';
+  SSortedListError = 'Operation not allowed on sorted string list';
+  {$ENDIF FPC}
   // some predefined sets to shorten parameter lists below and ease repeative usage
   ClassLetter = [ccLetterUppercase, ccLetterLowercase, ccLetterTitlecase, ccLetterModifier, ccLetterOther];
   ClassSpace = [ccSeparatorSpace, ccSpaceOther];
   ClassPunctuation = [ccPunctuationConnector, ccPunctuationDash, ccPunctuationOpen, ccPunctuationClose,
-    ccPunctuationOther, ccPunctuationInitialQuote, ccPunctuationFinalQuote, ccPunctuationOther];
+    ccPunctuationOther, ccPunctuationInitialQuote, ccPunctuationFinalQuote];
   ClassMark = [ccMarkNonSpacing, ccMarkSpacingCombining, ccMarkEnclosing];
   ClassNumber = [ccNumberDecimalDigit, ccNumberLetter, ccNumberOther];
   ClassSymbol = [ccSymbolMath, ccSymbolCurrency, ccSymbolModifier, ccSymbolOther];
@@ -1148,7 +1155,7 @@ begin
 
   First := (Code shr 8) and $FF;
   Second := Code and $FF;
-  if Assigned(Categories[First]) then
+  if Categories[First] <> nil then
     Result := Categories[First, Second] * Cats <> []
   else
     Result := False;
@@ -1557,7 +1564,7 @@ begin
 
   First := (Code shr 8) and $FF;
   Second := Code and $FF;
-  if Assigned(CCCs[First]) then
+  if CCCs[First] <> nil then
     Result := CCCs[First, Second]
   else
     Result := 0;

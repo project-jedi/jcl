@@ -23,7 +23,7 @@
 { higher!                                                                                          }
 {                                                                                                  }
 { Unit Owner: Marcel van Brakel                                                                    }
-{ Last modified: June 1, 2002                                                                      }
+{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -513,8 +513,8 @@ begin
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     if Result then
     begin
-      ZeroDataInfo.FileOffset.QuadPart := First;
-      ZeroDataInfo.BeyondFinalZero.QuadPart := Last;
+      ZeroDataInfo.FileOffset := First;
+      ZeroDataInfo.BeyondFinalZero := Last;
       Result := DeviceIoControl(Handle, FSCTL_SET_ZERO_DATA, @ZeroDataInfo,
         SizeOf(ZeroDataInfo), nil, 0, BytesReturned, nil);
     end;
@@ -558,8 +558,8 @@ var
   SearchRange: TFileAllocatedRangeBuffer;
   BufferSize: Cardinal;
 begin
-  SearchRange.FileOffset.QuadPart := Offset;
-  SearchRange.Length.QuadPart := Count;
+  SearchRange.FileOffset := Offset;
+  SearchRange.Length := Count;
   BufferSize := 4 * 64 * SizeOf(TFileAllocatedRangeBuffer);
   Ranges := AllocMem(BufferSize);
   Result := DeviceIoControl(Handle, FSCTL_QUERY_ALLOCATED_RANGES, @SearchRange,
@@ -989,7 +989,7 @@ function FindStream(var Data: TFindStreamData): Boolean;
 var
   Header: TWin32StreamId;
   BytesToRead, BytesRead: DWORD;
-  BytesToSeek: TLargeInteger;
+  BytesToSeek: TULargeInteger;
   Hi, Lo: DWORD;
   FoundStream: Boolean;
   StreamName: PWideChar;
@@ -1037,7 +1037,11 @@ begin
       (TStreamId(Header.dwStreamId) in Data.Internal.StreamIds) then
     begin
       FoundStream := True;
+      {$IFDEF FPC}
+      Data.Size := Header.Size.QuadPart;
+      {$ELSE}
       Data.Size := Header.Size;
+      {$ENDIF FPC}
       Data.Name := StreamName;
       Data.Attributes := Header.dwStreamAttributes;
       Data.StreamId := TStreamId(Header.dwStreamId);
@@ -1046,9 +1050,15 @@ begin
     if Header.dwStreamNameSize > 0 then
       HeapFree(GetProcessHeap, 0, StreamName);
     // Move past data part to beginning of next stream (or EOF)
+    {$IFDEF FPC}
+    BytesToSeek.QuadPart := Header.Size.QuadPart;
+    if (Header.Size.QuadPart <> 0) and (not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
+      BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
+    {$ELSE}
     BytesToSeek.QuadPart := Header.Size;
     if (Header.Size <> 0) and (not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
       BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context)) then
+    {$ENDIF FPC}
     begin
       SetLastError(ERROR_READ_FAULT);
       Exit;
@@ -1166,15 +1176,24 @@ begin
       // initialize and write the stream header
       FillChar(StreamId, SizeOf(StreamId), 0);
       StreamId.dwStreamId := BACKUP_LINK;
+      {$IFDEF FPC}
+      StreamId.Size.QuadPart := (Length(HardLinkName) + 1) * SizeOf(WideChar);
+      {$ELSE}
       StreamId.Size := (Length(HardLinkName) + 1) * SizeOf(WideChar);
+      {$ENDIF}
       BytesToWrite := DWORD(@StreamId.cStreamName[0]) - DWORD(@StreamId.dwStreamId);
       Context := nil;
       Win32Check(BackupWrite(HardLink, @StreamId, BytesToWrite, BytesWritten, False, False, @Context));
       if BytesToWrite <> BytesWritten then
         RaiseLastOSError;
       // now write the hard link name
+      {$IFDEF FPC}
+      Win32Check(BackupWrite(HardLink, @HardLinkName[1], StreamId.Size.QuadPart, BytesWritten, False, False, @Context));
+      if BytesWritten <> StreamId.Size.QuadPart then
+      {$ELSE}
       Win32Check(BackupWrite(HardLink, @HardLinkName[1], StreamId.Size, BytesWritten, False, False, @Context));
       if BytesWritten <> StreamId.Size then
+      {$ENDIF}
         RaiseLastOSError;
       // and finally release the context
       BackupWrite(HardLink, nil, 0, BytesWritten, True, False, @Context);
