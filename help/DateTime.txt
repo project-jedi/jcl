@@ -1,0 +1,942 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileTimeToLocalDateTime(const FileTime: TFileTime): TDateTime;
+[ShortDescr]
+Converts a UTC based TFileTime to a local TDateTime.
+[Description]
+FileTimeToLocalDateTime converts the supplied, UTC based TFileTime to a local
+TDateTime.
+[Parameters]
+Count=1
+1=FileTime:TFileTime=The UTC based TFileTime to convert.
+[Result]
+The TFileTime converted to local TDateTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=5
+1=DosDateTimeToSystemTime
+2=SystemTimeToDosDateTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+5=FileTimeToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileTimeToDosDateTime(const FileTime: TFileTime): TDosDateTime; overload;
+[ShortDescr]
+Converts a UTC based TFileTime to a TDateTime.
+[Description]
+FileTimeToDosDateTime converts the supplied, UTC based TFileTime to a TDateTime.
+[Parameters]
+Count=1
+1=FileTime:TFileTime=The UTC based TFileTime to convert.
+[Result]
+The TFileTime converted to TDateTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=5
+1=DosDateTimeToSystemTime
+2=SystemTimeToDosDateTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+5=FileTimeToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileTimeToSystemTime(const FileTime: TFileTime): TSystemTime; overload;
+[ShortDescr]
+Converts a UTC based TFileTime to a TSystemTime.
+[Description]
+FileTimeToSystemTime converts the supplied, UTC based TFileTime to a TSystemTime.
+[Parameters]
+Count=1
+1=FileTime:TFileTime=The UTC based TFileTime to convert.
+[Result]
+The TFileTime converted to TSystemTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=This function performs the same operation as FileTimeToSystemTime from Windows.pas.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=5
+1=DosDateTimeToSystemTime
+2=SystemTimeToDosDateTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+5=FileTimeToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
+[ShortDescr]
+Converts a TFileTime to a TDateTime.
+[Description]
+FileTimeToDateTime converts the supplied TFileTime to a TDateTime, ignoring whether
+the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=FileTime:TFileTime=The TFileTime to convert.
+[Result]
+The TFileTime converted to TDateTime.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=5
+1=DosDateTimeToSystemTime
+2=SystemTimeToDosDateTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+5=FileTimeToLocalDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DosDateTimeToSystemTime(const DosTime: TDosDateTime): TSystemTime;
+[ShortDescr]
+Converts a TDoaDateTime to a TSystemTime.
+[Description]
+DosDateTimeToSystemTime converts the supplied TDosDateTime to a TSystemTime,
+ignoring whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=DosTime:TDosDateTime=The TDosDateTime to convert.
+[Result]
+The TDosDateTime converted to TSystemTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=SystemTimeToDosDateTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SystemTimeToDosDateTime(const SystemTime: TSystemTime): TDosDateTime;
+[ShortDescr]
+Converts a TSystemTime to a TDosDateTime.
+[Description]
+SystemTimeToDosDateTime converts the supplied TSystemTime to a TDosDateTime,
+ignoring whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=SystemTime:TSystemTime=The TSystemTime to convert.
+[Result]
+The TSystemTime converted to TDosDateTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SystemTimeToFileTime(const SystemTime: TSystemTime): TFileTime; overload;
+[ShortDescr]
+Converts a TSystemTime to a TFileTime.
+[Description]
+SystemTimeToFileTime converts the supplied TSystemTime to a TFileTime.
+[Parameters]
+Count=1
+1=SystemTime:TSystemTime=The TSystemTime to convert.
+[Result]
+The TSystemTime converted to TFileTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=This function performs the same operation as SystemTimeToFileTime from Windows.pas.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SystemTimeToStr(const SystemTime: TSystemTime): string;
+[ShortDescr]
+Converts a TSystemTime to a string.
+[Description]
+SystemTimeToFileTime converts the supplied TSystemTime to a string.
+[Parameters]
+Count=1
+1=SystemTime:TSystemTime=The TSystemTime to convert.
+[Result]
+String representation of the supplied SystemTime.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=DosDateTimeToDateTime
+4=DateTimeToDosDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
+[ShortDescr]
+Converts a TDosDateTime to a TDateTime.
+[Description]
+DosDateTimeToDateTime converts the supplied TDosDateTime to a TDateTime, ignoring
+whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=DosTime:TDosDateTime=The TDosDateTime to convert.
+[Result]
+The TDosDateTime converted to TDateTime.
+[Notes]
+Count=1
+1=This function performs the same operation as DateTimeToFileDate from SysUtils.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=SystemTimeToDosDateTime
+4=DateTimeToDosDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DosDateTimeToFileTime(DosTime: TDosDateTime): TFileTime; overload;
+[ShortDescr]
+Converts a TDosDateTime to a TFileTime.
+[Description]
+DosDateTimeToFileTime converts the supplied TDosDateTime to a TFileTime, ignoring
+whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=DosTime:TDosDateTime=The TDosDateTime to convert.
+[Result]
+The TDosDateTime converted to TFileTime. On failure the function raises an exception.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=SystemTimeToDosDateTime
+4=DateTimeToDosDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
+[ShortDescr]
+Converts a TDateTime to a TDosDateTime.
+[Description]
+DateTimeToDosDateTime converts the supplied TDateTime to a TDosDateTime, ignoring
+whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The TDateTime to convert.
+[Result]
+The TDateTime converted to TDosDateTime.
+[Notes]
+Count=1
+1=This function performs the same operation as DateTimeToFileDate from SysUtils.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=SystemTimeToDosDateTime
+4=DosDateTimeToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
+[ShortDescr]
+Converts a TDateTime to a TFileTime.
+[Description]
+DateTimeToFileTime converts the supplied TDateTime to a TFileTime, ignoring
+whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The TDateTime to convert.
+[Result]
+The TDateTime converted to TFileTime.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=SystemTimeToDosDateTime
+4=DosDateTimeToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime; overload;
+[ShortDescr]
+Converts a TDateTime to a TSystemTime.
+[Description]
+DateTimeToSystemTime converts the supplied TDateTime to a TSystemTime, ignoring
+whether the supplied datetime is UNC based or local.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The TDateTime to convert.
+[Result]
+The TDateTime converted to TSystemTime.
+[Notes]
+Count=1
+1=The JCL datetime conversion routines supplement routines found in the Delphi
+RTL and the Win32 API. If a conversion routine is not included here it most likely
+can be found in either of those libraries.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=FileTimeToDateTime
+2=DosDateTimeToSystemTime
+3=SystemTimeToDosDateTime
+4=DosDateTimeToDateTime
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
+[ShortDescr]
+Converts a local TDateTime to a UNC based TDateTime
+[Description]
+LocalDateTimeToDateTime converts a local TDateTime to a UNC (coordinated universal
+time) based TDateTime. The function uses the settings for the time zone and daylight
+saving time.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The local TDateTime to convert to UNC based time.
+[Result]
+The UNC based TDateTime. If the function fails it raises an EJclDateTimeError exception.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+SubCat=Conversion
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
+[ShortDescr]
+Converts a local TDateTime to a UNC based TFileTime
+[Description]
+LocalDateTimeToFileTime converts a local TDateTime to a UNC (coordinated universal
+time) based TFileTime. The function uses the settings for the time zone and daylight
+saving time.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The local TDateTime to convert to UNC based file time.
+[Result]
+The UNC based TFileTime. If the function fails it raises an EJclDateTimeError exception.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+SubCat=Conversion
+Category=Date and Time
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
+[ShortDescr]
+Converts a UNC based TDateTime to a local TDateTime
+[Description]
+DateTimeToLocalDateTime converts a UNC (coordinated universal time) based TDateTime
+to a local TDateTime. The function uses the settings for the time zone and daylight
+saving time.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The UNC based TDateTime to convert to local time.
+[Result]
+The local TDateTime. If the function fails it raises an EJclDateTimeError exception.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FileTimeToStr(const FileTime: TFileTime): string;
+[ShortDescr]
+Converts a TFileTime to a string.
+[Description]
+FileTimeToStr converts the TFileTime to a string.
+[Parameters]
+Count=1
+1=FileTime:TFileTime=The TFileTime to convert.
+[Result]
+The string representation of FileTime, or an empty string if the function fails.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+SubCat=Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DosDateTimeToStr(DateTime: Integer): string;
+[ShortDescr]
+Converts a DOS datetime to a string.
+[Description]
+Converts a DOS datetime to a string.
+[Parameters]
+Count=1
+1=DateTime:Integer=The DOS datetime to convert.
+[Result]
+String representation of the DOS datetime or an empty string on failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
+[ShortDescr]
+Returns the number of seconds in a datetime.
+[Description]
+Returns the number of seconds in a datetime. Basically it extracts the hour, minutes
+and seconds from the date time and returns the result of the formula
+(3600 * Hours) + (60 * Minutes) + Seconds.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The DateTime for which you want to know the number of seconds.
+[Result]
+The number of seconds in the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Heri Bender;hbender@ergonomics.ch
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
+[ShortDescr]
+Returns the number of milliseconds in a datetime.
+[Description]
+Returns the number of milliseconds in a datetime. Basically it extracts the hour, minutes
+and seconds from the date time and returns the result of the formula
+(3600 * Hours) + (60 * Minutes) + (1000 * Seconds).
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The DateTime for which you want to know the number of milliseconds.
+[Result]
+The number of milliseconds in the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function HoursToMSecs(Hours: Integer): Integer;
+[ShortDescr]
+Converts hours to milliseconds.
+[Description]
+HoursToMSecs converts hours to milliseconds. The maximum value of Hours is asserted
+to Hours smaller than MaxInt / 60 / 60 / 1000.
+[Parameters]
+Count=1
+1=Hours:Integer=The number of hours to convert to milliseconds.
+[Result]
+The number of milliseconds corresponding with Hours.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Charlie Calvert;ccalvert@inprise.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MinutesToMSecs(Minutes: Integer): Integer;
+[ShortDescr]
+Converts minutes to milliseconds.
+[Description]
+MinutesToMSecs converts Minutes to milliseconds. The maximum value of Minutes is
+asserted to Minutes smaller than MaxInt / 60 / 100
+[Parameters]
+Count=1
+1=Minutes:Integer=The number of minutes to convert to milliseconds.
+[Result]
+The number of milliseconds corresponding with Minutes.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Charlie Calvert;ccalvert@inprise.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SecondsToMSecs(Seconds: Integer): Integer;
+[ShortDescr]
+Converts seconds to milliseconds.
+[Description]
+SecondsToMSecs converts Minutes to milliseconds. The maximum value of Seconds is
+asserted to Seconds smaller than MaxInt / 100
+[Parameters]
+Count=1
+1=Seconds:Integer=The number of seconds to convert to milliseconds.
+[Result]
+The number of milliseconds corresponding with Seconds.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+SubCat=Conversion
+Author=Charlie Calvert;ccalvert@inprise.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ISOWeekNumber(DateTime: TDateTime; var YearOfWeekNumber: Integer): Integer;
+[ShortDescr]
+Returns the year and week number of a given date.
+[Description]
+ISOWeekNumber returns the year and week number of the specified date according to
+the ISO 8601 specification. In ISO 8601 weeks start with Monday and the first
+week of a year is the one which includes the first Thursday. The function returns
+the weeknumber as the function result and the year through the var parameter.
+[Parameters]
+Count=2
+1=DateTime:TDateTime=The datetime for which to retrieve the year and week number.
+2=YearOfWeekNumber:Integer=The year the returned week belong to.
+[Result]
+The function returns the weeknumber of the specified datetime. The year this
+week belongs to is returned through the var parameter.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Aubrey Dean;aubs@completeg.freeserve.co.uk
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function EasterSunday(Year: Integer): TDateTime;
+[ShortDescr]
+Returns the date of Easter Sunday for a given year.
+[Description]
+EasterSunday returns the date of Easter Sunday for the specified year. The year
+must be specified with 4 digits - for example 1999.
+[Parameters]
+Count=1
+1=Year:Integer=The year for which you want to know the date of Ester Sunday.
+[Result]
+The date of Easter Sunday in the specified year.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CenturyOfDate(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the century from a datetime.
+[Description]
+CenturyOfDate returns the century of the specified datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then CenturyOfDate(D) returns 2000
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the century.
+[Result]
+The century of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Anthony Steele;asteele@iafrica.com
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=CenturyBaseYear
+2=DayOfDate
+3=MonthOfDate
+4=YearOfDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CenturyBaseYear(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the century from a datetime.
+[Description]
+CenturyBaseYear returns the century of the specified datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then CenturyBaseYear(D) returns 21.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the century.
+[Result]
+The century of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=CenturyOfDate
+2=DayOfDate
+3=MonthOfDate
+4=YearOfDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function YearOfDate(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the year from a datetime.
+[Description]
+YearOfDate returns the year of the specified datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then YearOfDate(D) returns 2000.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the year.
+[Result]
+The year of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=CenturyOfDate
+2=CenturyBaseYear
+3=DayOfDate
+4=MonthOfDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MonthOfDate(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the month from a datetime.
+[Description]
+Extracts the month from a datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then MonthOfDate(D) returns 2.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the month.
+[Result]
+The month of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=CenturyOfDate
+2=CenturyBaseYear
+3=DayOfDate
+4=YearOfDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DayOfDate(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the day from a datetime.
+[Description]
+Extracts the day from a datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then DayOfDate(D) returns 17.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the day.
+[Result]
+The day of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=CenturyOfDate
+2=CenturyBaseYear
+3=MonthOfDate
+4=YearOfDate
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function HourOfTime(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the hour from a datetime.
+[Description]
+Extracts the hour from a datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then HourOfTime(D) returns 12.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the hour.
+[Result]
+The hour of the specified datetime.
+[Notes]
+Count=2
+1=The specified datetime is assumed to be valid.
+2=12:00:00 AM evaluates to 0.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MinuteOfTime(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the minutes from a datetime.
+[Description]
+Extracts the minutes from a datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then MinuteOfTime(D) returns 37.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the minutes.
+[Result]
+The minutes of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SecondOfTime(DateTime: TDateTime): Integer;
+[ShortDescr]
+Extracts the seconds from a datetime.
+[Description]
+Extracts the seconds from a datetime.
+For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
+then SecondOfTime(D) returns 21.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The datetime from which to extract the seconds.
+[Result]
+The seconds of the specified datetime.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsLeapYear(Year: Integer): Boolean; overload;
+function IsLeapYear(DateTime: TDateTime): Boolean; overload;
+[ShortDescr]
+Tests whether DateTime represents a leap year.
+[Description]
+Tests whether the specified Year or DateTime represents a leap year.
+[Parameters]
+Count=1
+1=DateTime:TDateTime=The year or DateTime to test.
+[Result]
+True if DateTime is a leap year or False if it's not.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DaysInMonth(DateTime: TDateTime): Integer;
+[ShortDescr]
+Returns the number of days in the month represent by a datetime.
+[Description]
+[Parameters]
+Count=1
+1=DateTime:TDateTime=DateTime that determines the month for which you want to know
+the number of days.
+[Result]
+The number of days in the month in which DateTime lies.
+[Notes]
+Count=1
+1=The specified datetime is assumed to be valid.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Make4DigitYear(Year, Pivot: Integer): Integer;
+[ShortDescr]
+Converts a 2 digit year into a 4 digit year.
+[Description]
+Make4DigitYear converts a two digit year into a 4 digit year using Pivot as the
+base of a 100 year window. If Year is smaller the Pivot then the result will be
+2000 + year, if the Year is greater or equal to Pivot the result is 1900 + Year.
+[Parameters]
+Count=2
+1=Year:Integer=The 2 digit year to convert. Is asserted to be in the range 0..100
+2=Pivot:Integer=The base of the 100 year window. Is asserted to be in the range 0..100
+[Result]
+The 4 digit year.
+[Notes]
+Count=1
+1=If year or pivot is 100 they are converted to 0 first.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDateTime
+Category=Date and Time
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
