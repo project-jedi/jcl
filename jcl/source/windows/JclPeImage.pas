@@ -5472,7 +5472,7 @@ var
   CurrName: PChar;
   ImportEntry: PImageThunkData;
   FoundProc: Boolean;
-  BW: DWORD;
+  LastProtect: Cardinal;
 begin
   Result := False;
   FromProcDebugThunk := PWin9xDebugThunk(FromProc);
@@ -5499,9 +5499,18 @@ begin
         end
         else
           FoundProc := Pointer(ImportEntry^.Function_) = FromProc;
-        if FoundProc and WriteProcessMemory(GetCurrentProcess, Pointer(@ImportEntry^.Function_),
-          @ToProc, SizeOf(ToProc), BW) and (BW = SizeOf(ToProc)) then
-            Result := True;
+          if FoundProc then
+          begin
+            if VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc),
+              PAGE_READWRITE, @LastProtect) then
+            begin
+              ImportEntry^.Function_ := Cardinal(ToProc);
+
+              VirtualProtect(@ImportEntry^.Function_, SizeOf(ToProc),
+                LastProtect, nil);
+              Result := True;
+            end;
+          end;
         Inc(ImportEntry);
       end;
     end;
