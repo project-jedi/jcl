@@ -22,7 +22,7 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: September 30, 2002                                                                      }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -462,10 +462,8 @@ procedure Stretch(NewWidth, NewHeight: Cardinal; Filter: TResamplingFilter;
 {$IFDEF MSWINDOWS}
 procedure DrawBitmap(DC: HDC; Bitmap: HBitMap; X, Y, Width, Height: Integer);
 
-{$IFDEF COMPILER4_UP}
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
-{$ENDIF COMPILER4_UP}
 
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
@@ -538,10 +536,7 @@ implementation
 uses
   TypInfo, Math,
   {$IFDEF MSWINDOWS}
-  ClipBrd, CommCtrl, ShellApi,
-  {$IFDEF COMPILER4_UP}
-  ImgList, JPeg,
-  {$ENDIF COMPILER4_UP}
+  ClipBrd, CommCtrl, ShellApi, ImgList, JPeg,
   {$ENDIF MSWINDOWS}
   JclLogic, JclResources, JclSysUtils;
 
@@ -1704,7 +1699,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF MSWINDOWS}
-{$IFDEF COMPILER4_UP}
 
 procedure JPegToBitmap(const FileName: string);
 var
@@ -1745,8 +1739,6 @@ begin
     FreeAndNil(JPeg);
   end;
 end;
-
-{$ENDIF COMPILER4_UP}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2622,13 +2614,8 @@ begin
     SetSize(0, 0)
   else
   begin
-    {$IFDEF COMPILER4}
-    WidthInfo := GetPropInfo(PTypeInfo(Source.ClassType.ClassInfo), 'Width');
-    HeightInfo := GetPropInfo(PTypeInfo(Source.ClassType.ClassInfo), 'Height');
-    {$ELSE COMPILER4}
     WidthInfo := GetPropInfo(Source, 'Width', [tkInteger]);
     HeightInfo := GetPropInfo(Source, 'Height', [tkInteger]);
-    {$ENDIF COMPILER4}
     if Assigned(WidthInfo) and Assigned(HeightInfo) then
       SetSize(GetOrdProp(Source, WidthInfo), GetOrdProp(Source, HeightInfo))
     else
