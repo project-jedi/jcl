@@ -37,9 +37,7 @@ unit JclNTFS;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
   JclBase, JclWin32;
 
 //------------------------------------------------------------------------------
