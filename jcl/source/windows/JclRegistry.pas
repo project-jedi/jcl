@@ -16,11 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 12, 2000                                             }
+{ Last modified: January 23, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
 //  JclRegistry created from JclRegIni by ESF  2000/06/05
+//  complete reimplementation without TRegistry (rom) 2001/01/23
 
 unit JclRegistry;
 
@@ -38,7 +39,7 @@ uses
 // Registry
 //------------------------------------------------------------------------------
 
-function RegCreateKey(const Key, Value: string): Longint;
+function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
 function RegDeleteEntry(const RootKey: HKEY; const Key, Name: string): Boolean;
 function RegDeleteKeyTree(const RootKey: HKEY; const Key: string): Boolean;
 
@@ -95,8 +96,11 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; var RegPath: string);
+function GetKeyAndPath(ExecKind: TExecKind; var Key: HKEY; var RegPath: string): Boolean;
 begin
+  Result := False;
+  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
+    Exit;
   Key := HKEY_CURRENT_USER;
   if ExecKind in [ekMachineRun, ekMachineRunOnce, ekServiceRun, ekServiceRunOnce] then
     Key := HKEY_LOCAL_MACHINE;
@@ -111,6 +115,7 @@ begin
     ekServiceRunOnce:
       RegPath := RegPath + 'RunServicesOnce';
   end;
+  Result := True;
 end;
 
 //==============================================================================
@@ -118,9 +123,9 @@ end;
 //==============================================================================
 
 
-function RegCreateKey(const Key, Value: string): Longint;
+function RegCreateKey(const RootKey: HKEY; const Key, Value: string): Longint;
 begin
-  Result := RegSetValue(HKEY_CLASSES_ROOT, PChar(Key), REG_SZ, PChar(Value), Length(Value));
+  Result := RegSetValue(RootKey, PChar(Key), REG_SZ, PChar(Value), Length(Value));
 end;
 
 //------------------------------------------------------------------------------
@@ -130,7 +135,7 @@ var
   RegKey: HKEY;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
     RegCloseKey(RegKey);
@@ -153,12 +158,11 @@ begin
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil);
     if NumSubKeys <> 0 then
-      for I := 0 to NumSubKeys-1 do
+      for I := NumSubKeys-1 downto 0 do
       begin
         Size := MaxSubKeyLen+1;
         SetLength(KeyName, Size);
-        // always Key Index 0 because it will be deleted
-        RegEnumKeyEx(RegKey, 0, PChar(KeyName), Size, nil, nil, nil, nil);
+        RegEnumKeyEx(RegKey, I, PChar(KeyName), Size, nil, nil, nil, nil);
         SetLength(KeyName, StrLen(PChar(KeyName)));
         Result := RegDeleteKeyTree(RootKey, Key + '\' + KeyName);
         if not Result then
@@ -209,7 +213,7 @@ begin
         ValueError(Key, Name);
     end
     else
-      ReadError(Key);
+      ValueError(Key, Name);
   end
   else
     ReadError(Key);
@@ -227,7 +231,7 @@ begin
   Result := Def;
   if RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
-    RegKind := REG_DWORD;
+    RegKind := 0;
     Size := SizeOf(Integer);
     if RegQueryValueEx(RegKey, PChar(Name), nil, @RegKind, @IntVal, @Size) = ERROR_SUCCESS then
       if RegKind = REG_DWORD then
@@ -346,11 +350,9 @@ var
   Key: HKEY;
   RegPath: string;
 begin
-  Result := False;
-  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
-    Exit;
-  GetKeyAndPath(ExecKind, Key, RegPath);
-  Result := RegDeleteEntry(Key, RegPath, Name);
+  Result := GetKeyAndPath(ExecKind, Key, RegPath);
+  if Result then
+    Result := RegDeleteEntry(Key, RegPath, Name);
 end;
 
 //------------------------------------------------------------------------------
@@ -360,12 +362,9 @@ var
   Key: HKEY;
   RegPath: string;
 begin
-  Result := False;
-  if (ExecKind in [ekServiceRun, ekServiceRunOnce]) and IsWinNT then
-    Exit;
-  GetKeyAndPath(ExecKind, Key, RegPath);
-  RegWriteString(Key, RegPath, Name, Cmdline);
-  Result := True;
+  Result := GetKeyAndPath(ExecKind, Key, RegPath);
+  if Result then
+     RegWriteString(Key, RegPath, Name, Cmdline);
 end;
 
 //------------------------------------------------------------------------------
