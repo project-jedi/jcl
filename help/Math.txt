@@ -13,12 +13,13 @@ Count=1
 [Result]
 The integral part of the square root of the argument.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ModFloat(const X, Y: Float): Float;
@@ -34,12 +35,13 @@ Count=2
 [Result]
 Modulus of the two floating point numbers.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RemainderFloat
@@ -58,12 +60,13 @@ Count=2
 [Result]
 The remainder of the two floating point numbers.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ModFloat
@@ -83,12 +86,13 @@ Count=3
 [Result]
 Degrees, Minutes and Seconds converted to a float.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Conversion
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FloatToDegMinSec
@@ -106,12 +110,13 @@ Count=4
 3=Min:Float=Receives the minutes.
 4=Sec:Float=Receives the seconds.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Conversion
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=DegMinSecToFloat
@@ -132,12 +137,13 @@ If the supplied floating point value equals zero within the precision as defined
 by the <REF Target"..\Variables\PrecisionTolerance">PrecisionTolerance</REF>
 global variable, the function returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FloatsEqual
@@ -160,12 +166,13 @@ If the two supplied values are equal within the precision defined by
 the <REF Target"..\Variables\PrecisionTolerance">PrecisionTolerance</REF>
 global variable, the function returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=FloatIsZero
@@ -182,12 +189,13 @@ Count=2
 1=X:Float=First float
 2=Y:Float=Second float
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Pythagoras(X, Y: Float): Float;
@@ -202,12 +210,13 @@ Count=2
 [Result]
 Sqrt(X^2 + Y^2)
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=J. Debord;debord@alpha1.unilim.fr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function NormalizeAngle(const Angle: Float): Float;
@@ -222,12 +231,13 @@ Count=1
 [Result]
 The normalized angle.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=J. Debord;debord@alpha1.unilim.fr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TenToY(const Y: Float): Float;
@@ -241,12 +251,13 @@ Count=1
 [Result]
 10 to the power Y.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Exponential
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Power
@@ -265,12 +276,13 @@ Count=1
 [Result]
 2 to the power Y.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Exponential
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Power
@@ -293,12 +305,13 @@ Count=2
 [Result]
 X to the power N
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Exponential
 Author=J. Debord;debord@alpha1.unilim.fr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Power
@@ -321,12 +334,13 @@ Count=2
 If the two numbers are relatively prime the result is True, otherwise the result is
 False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GCD
@@ -346,12 +360,13 @@ Count=2
 [Result]
 The least common multiple of X and Y.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=GCD
@@ -372,12 +387,13 @@ Count=2
 [Result]
 The greatest common divisor of X and Y.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LCM
@@ -395,12 +411,13 @@ Count=1
 [Result]
 The angle in cycles.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DegToGrad(const Degrees: Float): Float;
@@ -414,12 +431,13 @@ Count=1
 [Result]
 The angle in grads.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GradToCycle(const Grads: Float): Float;
@@ -433,12 +451,13 @@ Count=1
 [Result]
 The angle in cycles.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GradToDeg(const Grads: Float): Float;
@@ -452,12 +471,13 @@ Count=1
 [Result]
 The angle in degrees.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LogBaseN(Base, X: Float): Float;
@@ -473,12 +493,13 @@ an exception is raised.
 [Result]
 Log base N of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Logarithmic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LogBase2
@@ -496,12 +517,13 @@ Count=1
 [Result]
 Log base 2 of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Logarithmic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LogBase10
@@ -519,12 +541,13 @@ Count=1
 [Result]
 Log base 10 of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Logarithmic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=LogBase2
@@ -544,12 +567,13 @@ must be smaller than 1.0.
 [Result]
 The inverse cosine of X in radians.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcCosH(X: Float): Float;
@@ -565,12 +589,13 @@ greater than or equal to 1.0.
 [Result]
 The inverse hyperbolic cosine of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcCot(X: Float): Float;
@@ -585,12 +610,13 @@ Count=1
 [Result]
 The angle whose cotangent equals X in radians.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcCotH(X: Float): Float;
@@ -606,12 +632,13 @@ to 1.0.
 [Result]
 ArcCoth of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcCsc(X: Float): Float;
@@ -626,12 +653,13 @@ Count=1
 [Result]
 The angle, in radians, whose cosecant equals X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcCscH(X: Float): Float;
@@ -646,12 +674,13 @@ Count=1
 [Result]
 ArcCscH of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcSec(X: Float): Float;
@@ -666,12 +695,13 @@ Count=1
 [Result]
 ArcSec of X in radians.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcSecH(X: Float): Float;
@@ -686,12 +716,13 @@ Count=1
 [Result]
 Inverse hyperbolic secant of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcSin(X: Float): Float;
@@ -706,12 +737,13 @@ Count=1
 [Result]
 ArcSin of X in radians.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcSinH(X: Float): Float;
@@ -726,12 +758,13 @@ Count=1
 [Result]
 ArcSinH of X
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcTan(X: Float): Float;
@@ -746,12 +779,13 @@ Count=1
 [Result]
 Inverse tangent of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Arctan2(Y, X: Float): Float;
@@ -767,12 +801,13 @@ Count=2
 [Result]
 The inverse tangent of Y / X in radians.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ArcTanH(X: Float): Float;
@@ -786,12 +821,13 @@ Count=1
 [Result]
 Inverse hyperbolic tangent of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Cos(X: Float): Float;
@@ -805,12 +841,13 @@ Count=1
 [Result]
 Cosine of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CosH(X: Float): Float;
@@ -824,12 +861,13 @@ Count=1
 [Result]
 Hyperbolic cosine of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Cot(X: Float): Float;
@@ -843,12 +881,13 @@ Count=1
 [Result]
 Cotangent of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CotH(X: Float): Float;
@@ -862,12 +901,13 @@ Count=1
 [Result]
 TODO
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Csc(X: Float): Float;
@@ -881,12 +921,13 @@ Count=1
 [Result]
 Cosecant of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CscH(X: Float): Float;
@@ -900,12 +941,13 @@ Count=1
 [Result]
 Hyperbolic cosecant of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Sec(X: Float): Float;
@@ -919,12 +961,13 @@ Count=1
 [Result]
 Secant of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SecH(X: Float): Float;
@@ -938,12 +981,13 @@ Count=1
 [Result]
 Hyperbolic secant of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Sin(X: Float): Float;
@@ -957,12 +1001,13 @@ Count=1
 [Result]
 Sine of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SinCos(X: Float; var Sin, Cos: Float);
@@ -977,12 +1022,13 @@ Count=3
 2=Sin:Float=Sine of X.
 3=Cos:Float=Cosine of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SinH(X: Float): Float;
@@ -996,12 +1042,13 @@ Count=1
 [Result]
 Hyperbolic sine of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Tan(X: Float): Float;
@@ -1015,12 +1062,13 @@ Count=1
 [Result]
 Tangent of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Transcendental
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TanH(X: Float): Float;
@@ -1035,12 +1083,13 @@ Count=1
 [Result]
 Hyperbolic tangent of X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Hyperbolic
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Power(const Base, Exponent: Float): Float;
@@ -1057,12 +1106,13 @@ Count=2
 [Result]
 Base to the power Exponent.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Exponential
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=PowerInt
@@ -1081,12 +1131,13 @@ Count=1
 [Result]
 Nearest integer value above X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Floor(const X: Float): Float;
@@ -1100,12 +1151,13 @@ Count=1
 [Result]
 Nearest integer value below X.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Factorial(N: Integer): Longint;
@@ -1121,12 +1173,13 @@ Count=1
 [Result]
 Factorial of N.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MinFloat(const X, Y: Float): Float;
@@ -1142,12 +1195,13 @@ Count=2
 [Result]
 The smaller of the two arguments.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function MaxFloat(const X, Y: Float): Float;
@@ -1163,12 +1217,13 @@ Count=2
 [Result]
 The larger of the two arguments.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Sgn(const X: Float): Shortint;
@@ -1183,12 +1238,13 @@ Count=1
 [Result]
 Sign of X expressed as -1, 0 or +1.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Signe(const X, Y: Float): Float;
@@ -1203,12 +1259,13 @@ Count=2
 [Result]
 The value of X with the sign (positive or negative) of Y.
 [Quick Info]
-BCB=3,4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Miscellaneous
 Author=Clayton Collie;ccollie@cau.edu
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ...CRC...;
@@ -1235,7 +1292,9 @@ Unit=JCLMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
@@ -1262,12 +1321,13 @@ with CheckCrC32_P this is a pointer to the first byte of the array of bytes.
  <LI>-1 Uncorrectable error (more than one false bit).
  </UL>
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=...CRC...
@@ -1308,12 +1368,13 @@ otherwise the function
   returns the residuum for the correction function.
  </UL>
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=...CRC...
@@ -1345,12 +1406,13 @@ Count=1
 So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, 
 which temporarily sets {$J+} for the CRC functions.
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=...CRC...
@@ -1383,12 +1445,13 @@ with CheckCrC16_P this is a pointer to the first byte of the array of bytes.
  <LI>-1 Uncorrectable error (more than one false bit).
  </UL>
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=...CRC...
@@ -1429,12 +1492,13 @@ otherwise the function
   returns the residuum for the correction function.
  </UL>
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=...CRC...
@@ -1465,12 +1529,13 @@ Count=1
 So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, 
 which temporarily sets {$J+} for the CRC functions.
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
 Author=Michael Schnell;MSchnell@bschnell.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=...CRC...
@@ -1537,13 +1602,14 @@ Count=6
 5=fpNaN=not a number
 6=fpInvalid=unsupported floating point format
 [Quick Info]
-BCB=4,5
 Kind=Type
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=FloatingPointClass;..\FloatingPointClass
@@ -1564,12 +1630,13 @@ Count=1
 [Result]
 The result is the <REF Target"Types\TFloatingPointClass">class</REF> to which <I>Value</I> belongs.
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TFloatingPointClass;Types\TFloatingPointClass
@@ -1588,12 +1655,13 @@ Count=1
 [Result]
 The result is True when <I>Value</I> is infinite, False otherwise.
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TFloatingPointClass;Types\TFloatingPointClass
@@ -1613,12 +1681,13 @@ Count=1
 [Result]
 The result is True when <I>Value</I> is a NaN, False otherwise.
 [Quick Info]
-BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=Float support
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TFloatingPointClass;Types\TFloatingPointClass
