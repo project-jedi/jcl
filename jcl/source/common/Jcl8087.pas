@@ -13,7 +13,7 @@
 { The Original Code is Jcl8087.pas.                                                                }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }                                                                           }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
