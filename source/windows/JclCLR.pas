@@ -164,7 +164,7 @@ type
     function GetData: Pointer;
   protected
     constructor Create(const AMetadata: TJclPeMetadata;
-      const AHeader: PClrStreamHeader); virtual;
+      AHeader: PClrStreamHeader); virtual;
   public
     property Metadata: TJclPeMetadata read FMetadata;
     property Header: PClrStreamHeader read FHeader;
@@ -182,7 +182,7 @@ type
     function GetStringCount: Integer;
   protected
     constructor Create(const AMetadata: TJclPeMetadata;
-      const AHeader: PClrStreamHeader); override;
+      AHeader: PClrStreamHeader); override;
   public
     destructor Destroy; override;
     function At(const Offset: DWORD): WideString;
@@ -198,7 +198,7 @@ type
     function GetGuidCount: Integer;
   protected
     constructor Create(const AMetadata: TJclPeMetadata;
-      const AHeader: PClrStreamHeader); override;
+      AHeader: PClrStreamHeader); override;
   public
     property Guids[const Idx: Integer]: TGUID read GetGuid; default;
     property GuidCount: Integer read GetGuidCount;
@@ -210,7 +210,7 @@ type
     FOffset: DWORD;
     function GetData: PByteArray;
   protected
-    constructor Create(const AStream: TJclClrStream; const APtr: PByteArray);
+    constructor Create(const AStream: TJclClrStream; APtr: PByteArray);
   public
     function Dump(Indent: string): string;
     property Ptr: PByteArray read FPtr;
@@ -225,7 +225,7 @@ type
     function GetBlobCount: Integer;
   protected
     constructor Create(const AMetadata: TJclPeMetadata;
-      const AHeader: PClrStreamHeader); override;
+      AHeader: PClrStreamHeader); override;
   public
     destructor Destroy; override;
     function At(const Offset: DWORD): TJclClrBlobRecord;
@@ -330,7 +330,7 @@ type
     function GetBigHeap(const AHeapKind: TJclClrHeapKind): Boolean;
   protected
     constructor Create(const AMetadata: TJclPeMetadata;
-      const AHeader: PClrStreamHeader); override;
+      AHeader: PClrStreamHeader); override;
   public
     destructor Destroy; override;
     procedure Update; virtual;
@@ -428,7 +428,7 @@ type
     function GetKinds: TJclClrVTableKinds;
     function GetRVA: DWORD;
   protected
-    constructor Create(const AData: PImageCorVTableFixup);
+    constructor Create(AData: PImageCorVTableFixup);
     class function VTableKinds(const Kinds: TJclClrVTableKinds): DWORD; overload;
     class function VTableKinds(const Kinds: DWORD): TJclClrVTableKinds; overload;
   public
@@ -563,7 +563,7 @@ const
 //==================================================================================================
 
 constructor TJclClrStream.Create(const AMetadata: TJclPeMetadata;
-  const AHeader: PClrStreamHeader);
+  AHeader: PClrStreamHeader);
 begin
   inherited Create;
   FMetadata := AMetadata;
@@ -603,7 +603,7 @@ end;
 //==================================================================================================
 
 constructor TJclClrStringsStream.Create(const AMetadata: TJclPeMetadata;
-  const AHeader: PClrStreamHeader);
+  AHeader: PClrStreamHeader);
 var
   pch: PChar;
   off: DWORD;
@@ -668,7 +668,7 @@ end;
 //==================================================================================================
 
 constructor TJclClrGuidStream.Create(
-  const AMetadata: TJclPeMetadata; const AHeader: PClrStreamHeader);
+  const AMetadata: TJclPeMetadata; AHeader: PClrStreamHeader);
 var
   I: Integer;
   pg: PGUID;
@@ -702,7 +702,7 @@ end;
 // TJclClrBlobRecord
 //==================================================================================================
 
-constructor TJclClrBlobRecord.Create(const AStream: TJclClrStream; const APtr: PByteArray);
+constructor TJclClrBlobRecord.Create(const AStream: TJclClrStream; APtr: PByteArray);
 var
   b: Byte;
   AData: Pointer;
@@ -797,7 +797,7 @@ end;
 //==================================================================================================
 
 constructor TJclClrBlobStream.Create(
-  const AMetadata: TJclPeMetadata; const AHeader: PClrStreamHeader);
+  const AMetadata: TJclPeMetadata; AHeader: PClrStreamHeader);
 var
   ABlob: TJclClrBlobRecord;
 begin
@@ -1206,7 +1206,7 @@ end;
 //==================================================================================================
 
 constructor TJclClrTableStream.Create(const AMetadata: TJclPeMetadata;
-  const AHeader: PClrStreamHeader);
+  AHeader: PClrStreamHeader);
 
   function BitCount(const Value: Int64): Integer;
   var
@@ -1696,7 +1696,7 @@ end;
 //==================================================================================================
 
 constructor TJclClrVTableFixupRecord.Create(
-  const AData: PImageCorVTableFixup);
+  AData: PImageCorVTableFixup);
 begin
   inherited Create;
   FData := AData;

@@ -408,11 +408,11 @@ type
     procedure ClearResults; virtual;
     procedure DeleteResult(Index: Cardinal); virtual;
     procedure FindPrepare(const Pattern: WideString; Options: TSearchFlags); overload; virtual; abstract;
-    procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; virtual; abstract;
+    procedure FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; virtual; abstract;
     function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
-    function FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
+    function FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
     function FindAll(const Text: WideString): Boolean; overload; virtual; abstract;
-    function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
+    function FindAll(Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
     procedure GetResult(Index: Cardinal; var Start, Stop: Integer); virtual;
 
     property Count: Integer read GetCount;
@@ -458,11 +458,11 @@ type
   public
     procedure Clear; override;
     procedure FindPrepare(const Pattern: WideString; Options: TSearchFlags); overload; override;
-    procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; override;
+    procedure FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; override;
     function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; override;
-    function FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; override;
+    function FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; override;
     function FindAll(const Text: WideString): Boolean; overload; override;
-    function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; override;
+    function FindAll(Text: PWideChar; TextLen: Cardinal): Boolean; overload; override;
   end;
 
   // Regular expression search engine for text in UCS2 form taking surrogates
@@ -689,11 +689,11 @@ type
   public
     procedure Clear; override;
     procedure FindPrepare(const Pattern: WideString; Options: TSearchFlags); overload; override;
-    procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; override;
+    procedure FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags); overload; override;
     function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; override;
-    function FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; override;
+    function FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; override;
     function FindAll(const Text: WideString): Boolean; overload; override;
-    function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; override;
+    function FindAll(Text: PWideChar; TextLen: Cardinal): Boolean; overload; override;
   end;
 
   // Event used to give the application a chance to switch the way of how to save
@@ -2306,7 +2306,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TUTBMSearch.FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean;
+function TUTBMSearch.FindAll(Text: PWideChar; TextLen: Cardinal): Boolean;
 
 // Looks for all occurences of the pattern passed to FindPrepare and creates an
 // internal list of their positions.
@@ -2350,7 +2350,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TUTBMSearch.FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
+function TUTBMSearch.FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
 
 // Same as the WideString version of this method.
 
@@ -2371,7 +2371,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TUTBMSearch.FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
+procedure TUTBMSearch.FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
 
 // prepares following search by compiling the given pattern into an internal structure
 
@@ -4393,7 +4393,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TURESearch.FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean;
+function TURESearch.FindAll(Text: PWideChar; TextLen: Cardinal): Boolean;
 
 // Looks for all occurences of the pattern passed to FindPrepare and creates an
 // internal list of their positions.
@@ -4429,7 +4429,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TURESearch.FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
+function TURESearch.FindFirst(Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean;
 
 // Looks for the first occurence of the pattern passed to FindPrepare in Text and
 // returns True if one could be found (in which case Start and Stop are set to
@@ -4446,7 +4446,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TURESearch.FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
+procedure TURESearch.FindPrepare(Pattern: PWideChar; PatternLength: Cardinal; Options: TSearchFlags);
 
 begin
   CompileURE(Pattern, PatternLength, not (sfCaseSensitive in Options));

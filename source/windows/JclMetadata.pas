@@ -980,17 +980,17 @@ type
 
     function Inc(var pData: PByteArray; Step: Integer = 1): PByte;
 
-    function UncompressedDataSize(const pData: PByteArray): Integer;
-    function UncompressData(const pData: PByteArray; var Value: DWord): Integer;
-    function UncompressToken(const pData: PByteArray; var Token: TJclClrToken): Integer;
+    function UncompressedDataSize(pData: PByteArray): Integer;
+    function UncompressData(pData: PByteArray; var Value: DWord): Integer;
+    function UncompressToken(pData: PByteArray; var Token: TJclClrToken): Integer;
 
-    function UncompressCallingConv(const pData: PByteArray): Byte;
+    function UncompressCallingConv(pData: PByteArray): Byte;
 
-    function UncompressSignedInt(const pData: PByteArray; var Value: Integer): Integer;
+    function UncompressSignedInt(pData: PByteArray; var Value: Integer): Integer;
 
-    function UncompressElementType(const pData: PByteArray): TJclClrElementType;
+    function UncompressElementType(pData: PByteArray): TJclClrElementType;
 
-    function UncompressTypeSignature(const pData: PByteArray): string;
+    function UncompressTypeSignature(pData: PByteArray): string;
   public
     constructor Create(const ABlob: TJclClrBlobRecord);
 
@@ -2042,7 +2042,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressedDataSize(const pData: PByteArray): Integer;
+function TJclClrSignature.UncompressedDataSize(pData: PByteArray): Integer;
 begin
   if (pData[0] and $80) = 0 then
     Result := 1
@@ -2055,7 +2055,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressData(const pData: PByteArray; var Value: DWord): Integer;
+function TJclClrSignature.UncompressData(pData: PByteArray; var Value: DWord): Integer;
 begin
   if (pData[0] and $80) = 0 then // 0??? ????
   begin
@@ -2081,7 +2081,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressToken(const pData: PByteArray; var Token: TJclClrToken): Integer;
+function TJclClrSignature.UncompressToken(pData: PByteArray; var Token: TJclClrToken): Integer;
 const
   TableMapping: array [0..3] of TJclClrTableKind = (ttTypeDef, ttTypeRef, ttTypeSpec, TJclClrTableKind(0));
 begin
@@ -2091,14 +2091,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressCallingConv(const pData: PByteArray): Byte;
+function TJclClrSignature.UncompressCallingConv(pData: PByteArray): Byte;
 begin
   Result := pData[0];
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressSignedInt(const pData: PByteArray; var Value: Integer): Integer;
+function TJclClrSignature.UncompressSignedInt(pData: PByteArray; var Value: Integer): Integer;
 var
   Data: DWord;
 begin
@@ -2119,7 +2119,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressElementType(const pData: PByteArray): TJclClrElementType;
+function TJclClrSignature.UncompressElementType(pData: PByteArray): TJclClrElementType;
 begin
   for Result := Low(TJclClrElementType) to High(TJclClrElementType) do
     if ClrElementTypeMapping[Result] = (pData[0] and $7F) then
@@ -2141,7 +2141,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclClrSignature.UncompressTypeSignature(const pData: PByteArray): string;
+function TJclClrSignature.UncompressTypeSignature(pData: PByteArray): string;
 const
   SimpleTypeName: array [etVoid..etString] of PChar =
    ('void', 'bool', 'char',

@@ -157,10 +157,10 @@ function IsFileNameMatch(FileName: string; const Mask: string;
   const CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
 procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
   RejectedAttributes: Integer = faRejectedByDefault; RequiredAttributes: Integer = 0;
-  const Abort: PBoolean = nil);
+  Abort: PBoolean = nil);
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean = False; const SubDirectoriesMask: string = '';
-  const Abort: PBoolean = nil {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF});
+  Abort: PBoolean = nil {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF});
 {$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
@@ -720,7 +720,7 @@ type
   protected
     procedure ClearViews;
     procedure InternalCreate(const FileHandle: THandle; const Name: string;
-      const Protect: Cardinal; MaximumSize: Int64; const SecAttr: PSecurityAttributes);
+      const Protect: Cardinal; MaximumSize: Int64; SecAttr: PSecurityAttributes);
     procedure InternalOpen(const Name: string; const InheritHandle: Boolean;
       const DesiredAccess: Cardinal);
     constructor Create;
@@ -745,10 +745,10 @@ type
   public
     constructor Create(const FileName: string; FileMode: Cardinal;
       const Name: string; Protect: Cardinal; const MaximumSize: Int64;
-      const SecAttr: PSecurityAttributes); overload;
+      SecAttr: PSecurityAttributes); overload;
     constructor Create(const FileHandle: THandle; const Name: string;
       Protect: Cardinal; const MaximumSize: Int64;
-      const SecAttr: PSecurityAttributes); overload;
+      SecAttr: PSecurityAttributes); overload;
     destructor Destroy; override;
     property FileHandle: THandle read FFileHandle;
   end;
@@ -756,7 +756,7 @@ type
   TJclSwapFileMapping = class(TJclCustomFileMapping)
   public
     constructor Create(const Name: string; Protect: Cardinal;
-      const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
+      const MaximumSize: Int64; SecAttr: PSecurityAttributes);
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1231,7 +1231,7 @@ end;
 
 procedure TJclCustomFileMapping.InternalCreate(const FileHandle: THandle;
   const Name: string; const Protect: Cardinal; MaximumSize: Int64;
-  const SecAttr: PSecurityAttributes);
+  SecAttr: PSecurityAttributes);
 var
   MaximumSizeLow, MaximumSizeHigh: Cardinal;
 begin
@@ -1262,7 +1262,7 @@ end;
 
 constructor TJclFileMapping.Create(const FileName: string; FileMode: Cardinal;
   const Name: string; Protect: Cardinal; const MaximumSize: Int64;
-  const SecAttr: PSecurityAttributes);
+  SecAttr: PSecurityAttributes);
 begin
   FFileHandle := INVALID_HANDLE_VALUE;
   inherited Create;
@@ -1275,7 +1275,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 constructor TJclFileMapping.Create(const FileHandle: THandle; const Name: string;
-  Protect: Cardinal; const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
+  Protect: Cardinal; const MaximumSize: Int64; SecAttr: PSecurityAttributes);
 begin
   FFileHandle := INVALID_HANDLE_VALUE;
   inherited Create;
@@ -1304,7 +1304,7 @@ end;
 //==================================================================================================
 
 constructor TJclSwapFileMapping.Create(const Name: string; Protect: Cardinal;
-  const MaximumSize: Int64; const SecAttr: PSecurityAttributes);
+  const MaximumSize: Int64; SecAttr: PSecurityAttributes);
 begin
   inherited Create;
   InternalCreate(INVALID_HANDLE_VALUE, Name, Protect, MaximumSize, SecAttr);
@@ -4692,7 +4692,7 @@ end;
 
 procedure EnumFiles(const Path: string; HandleFile: TFileHandlerEx;
   RejectedAttributes: Integer = faRejectedByDefault; RequiredAttributes: Integer = 0;
-  const Abort: PBoolean = nil);
+  Abort: PBoolean = nil);
 var
   Directory: string;
   FileInfo: TSearchRec;
@@ -4728,7 +4728,7 @@ end;
 
 procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandler;
   const IncludeHiddenDirectories: Boolean; const SubDirectoriesMask: string;
-  const Abort: PBoolean{$IFDEF UNIX}; ResolveSymLinks: Boolean{$ENDIF});
+  Abort: PBoolean{$IFDEF UNIX}; ResolveSymLinks: Boolean{$ENDIF});
 var
   RootDir: string;
   Attr: Integer;

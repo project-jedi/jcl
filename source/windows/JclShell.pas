@@ -82,7 +82,7 @@ function SHEnumFolderNext(var F: TEnumFolderRec): Boolean;
 function GetSpecialFolderLocation(const Folder: Integer): string;
 
 function DisplayPropDialog(const Handle: HWND; const FileName: string): Boolean; overload;
-function DisplayPropDialog(const Handle: HWND; const Item: PItemIdList): Boolean; overload;
+function DisplayPropDialog(const Handle: HWND; Item: PItemIdList): Boolean; overload;
 
 function DisplayContextMenuPidl(const Handle: HWND; const Folder: IShellFolder;
   Item: PItemIdList; Pos: TPoint): Boolean;
@@ -108,13 +108,13 @@ function SHFreeMem(var P: Pointer): Boolean;
 function DriveToPidlBind(const DriveName: string; out Folder: IShellFolder): PItemIdList;
 function PathToPidl(const Path: string; Folder: IShellFolder): PItemIdList;
 function PathToPidlBind(const FileName: string; out Folder: IShellFolder): PItemIdList;
-function PidlBindToParent(const IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
-function PidlCompare(const Pidl1, Pidl2: PItemIdList): Boolean;
-function PidlCopy(const Source: PItemIdList; out Dest: PItemIdList): Boolean;
+function PidlBindToParent(IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
+function PidlCompare(Pidl1, Pidl2: PItemIdList): Boolean;
+function PidlCopy(Source: PItemIdList; out Dest: PItemIdList): Boolean;
 function PidlFree(var IdList: PItemIdList): Boolean;
-function PidlGetDepth(const Pidl: PItemIdList): Integer;
-function PidlGetLength(const Pidl: PItemIdList): Integer;
-function PidlGetNext(const Pidl: PItemIdList): PItemIdList;
+function PidlGetDepth(Pidl: PItemIdList): Integer;
+function PidlGetLength(Pidl: PItemIdList): Integer;
+function PidlGetNext(Pidl: PItemIdList): PItemIdList;
 function PidlToPath(IdList: PItemIdList): string;
 
 function StrRetFreeMem(StrRet: TStrRet): Boolean;
@@ -451,7 +451,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function DisplayPropDialog(const Handle: HWND; const Item: PItemIdList): Boolean;
+function DisplayPropDialog(const Handle: HWND; Item: PItemIdList): Boolean;
 var
   Info: TShellExecuteInfo;
 begin
@@ -802,7 +802,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PidlBindToParent(const IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
+function PidlBindToParent(IdList: PItemIdList; out Folder: IShellFolder; out Last: PItemIdList): Boolean;
 var
   Path: string;
 begin
@@ -816,7 +816,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PidlCompare(const Pidl1, Pidl2: PItemIdList): Boolean;
+function PidlCompare(Pidl1, Pidl2: PItemIdList): Boolean;
 var
   L: Integer;
 begin
@@ -828,7 +828,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PidlCopy(const Source: PItemIdList; out Dest: PItemIdList): Boolean;
+function PidlCopy(Source: PItemIdList; out Dest: PItemIdList): Boolean;
 var
   L: Integer;
 begin
@@ -867,7 +867,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PidlGetDepth(const Pidl: PItemIdList): Integer;
+function PidlGetDepth(Pidl: PItemIdList): Integer;
 var
   P: PItemIdList;
 begin
@@ -887,7 +887,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PidlGetLength(const Pidl: PItemIdList): Integer;
+function PidlGetLength(Pidl: PItemIdList): Integer;
 var
   P: PItemIdList;
   I: Integer;
@@ -910,7 +910,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PidlGetNext(const Pidl: PItemIdList): PItemIdList;
+function PidlGetNext(Pidl: PItemIdList): PItemIdList;
 begin
   Result := nil;
   if (Pidl <> nil) and (Pidl^.mkid.cb <> 0) then

@@ -530,7 +530,7 @@ type
     FSegmentCount: Integer;
     function GetSegment(const Idx: Integer): TSegmentInfo;
   protected
-    constructor Create(const pModInfo: PModuleInfo);
+    constructor Create(pModInfo: PModuleInfo);
   public
     property NameIndex: DWORD read FNameIndex;
     property SegmentCount: Integer read FSegmentCount; //GetSegmentCount;
@@ -558,7 +558,7 @@ type
     function GetLineCount: Integer;
     function GetSegment(const Idx: Integer): TOffsetPair;
   protected
-    constructor Create(const pSrcFile: PSourceFileEntry; Base: DWORD);
+    constructor Create(pSrcFile: PSourceFileEntry; Base: DWORD);
   public
     destructor Destroy; override;
     function FindLine(const AAddr: DWORD; var ALine: TJclLineInfo): Boolean;
@@ -573,7 +573,7 @@ type
   private
     FSymbolType: Word;
   protected
-    constructor Create(const pSymInfo: PSymbolInfo); virtual;
+    constructor Create(pSymInfo: PSymbolInfo); virtual;
     property SymbolType: Word read FSymbolType;
   end;
 
@@ -583,7 +583,7 @@ type
     FOffset: DWORD;
     FSize: DWORD;
   protected
-    constructor Create(const pSymInfo: PSymbolInfo); override;
+    constructor Create(pSymInfo: PSymbolInfo); override;
   public
     property NameIndex: DWORD read FNameIndex;
     property Offset: DWORD read FOffset;
@@ -617,9 +617,9 @@ type
   protected
     procedure Analyse;
     procedure AnalyseNames(const pSubsection: Pointer; const Size: DWORD); virtual;
-    procedure AnalyseAlignSymbols(const pSymbols: PSymbolInfos; const Size: DWORD); virtual;
-    procedure AnalyseModules(const pModInfo: PModuleInfo; const Size: DWORD); virtual;
-    procedure AnalyseSourceModules(const pSrcModInfo: PSourceModuleInfo; const Size: DWORD); virtual;
+    procedure AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD); virtual;
+    procedure AnalyseModules(pModInfo: PModuleInfo; const Size: DWORD); virtual;
+    procedure AnalyseSourceModules(pSrcModInfo: PSourceModuleInfo; const Size: DWORD); virtual;
     procedure AnalyseUnknownSubSection(const pSubsection: Pointer; const Size: DWORD); virtual;
     function LfaToVa(Lfa: DWORD): Pointer;
   public
@@ -691,7 +691,7 @@ const
 // TJclModuleInfo
 //==================================================================================================
 
-constructor TJclModuleInfo.Create(const pModInfo: PModuleInfo);
+constructor TJclModuleInfo.Create(pModInfo: PModuleInfo);
 begin
   Assert(Assigned(pModInfo));
   inherited Create;
@@ -723,7 +723,7 @@ end;
 // TJclSourceModuleInfo
 //==================================================================================================
 
-constructor TJclSourceModuleInfo.Create(const pSrcFile: PSourceFileEntry; Base: DWORD);
+constructor TJclSourceModuleInfo.Create(pSrcFile: PSourceFileEntry; Base: DWORD);
 type
   PArrayOfWord = ^TArrayOfWord;
   TArrayOfWord = array [0..0] of Word;
@@ -813,7 +813,7 @@ end;
 // TJclSymbolInfo
 //==================================================================================================
 
-constructor TJclSymbolInfo.Create(const pSymInfo: PSymbolInfo);
+constructor TJclSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create;
@@ -824,7 +824,7 @@ end;
 // TJclProcSymbolInfo
 //==================================================================================================
 
-constructor TJclProcSymbolInfo.Create(const pSymInfo: PSymbolInfo);
+constructor TJclProcSymbolInfo.Create(pSymInfo: PSymbolInfo);
 begin
   Assert(Assigned(pSymInfo));
   inherited Create(pSymInfo);
@@ -930,7 +930,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseAlignSymbols(const pSymbols: PSymbolInfos; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseAlignSymbols(pSymbols: PSymbolInfos; const Size: DWORD);
 var
   Offset: DWORD;
   pInfo: PSymbolInfo;
@@ -956,14 +956,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseModules(const pModInfo: PModuleInfo; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseModules(pModInfo: PModuleInfo; const Size: DWORD);
 begin
   FModules.Add(TJclModuleInfo.Create(pModInfo));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTD32InfoParser.AnalyseSourceModules(const pSrcModInfo: PSourceModuleInfo; const Size: DWORD);
+procedure TJclTD32InfoParser.AnalyseSourceModules(pSrcModInfo: PSourceModuleInfo; const Size: DWORD);
 var
   I: Integer;
   pSrcFile: PSourceFileEntry;

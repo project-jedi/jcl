@@ -645,7 +645,7 @@ type
     function CalculateCheckSum: DWORD;
     function DirectoryEntryToData(Directory: Word): Pointer;
     function GetSectionHeader(const SectionName: string; var Header: PImageSectionHeader): Boolean;
-    function GetSectionName(const Header: PImageSectionHeader): string;
+    function GetSectionName(Header: PImageSectionHeader): string;
     function IsBrokenFormat: Boolean;
     function IsCLR: Boolean;
     function IsSystemImage: Boolean;
@@ -920,9 +920,9 @@ function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 
 function PeMapImgLibraryName(const BaseAddress: Pointer): string;
 
-function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
+function PeMapImgSections(NtHeaders: PImageNtHeaders): PImageSectionHeader;
 
-function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
+function PeMapImgFindSection(NtHeaders: PImageNtHeaders;
   const SectionName: string): PImageSectionHeader;
 
 function PeMapImgExportedVariables(const Module: HMODULE; const VariablesList: TStrings): Boolean;
@@ -3602,7 +3602,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclPeImage.GetSectionName(const Header: PImageSectionHeader): string;
+function TJclPeImage.GetSectionName(Header: PImageSectionHeader): string;
 var
   I: Integer;
 begin
@@ -5188,7 +5188,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
+function PeMapImgSections(NtHeaders: PImageNtHeaders): PImageSectionHeader;
 begin
   if NtHeaders = nil then
     Result := nil
@@ -5199,7 +5199,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
+function PeMapImgFindSection(NtHeaders: PImageNtHeaders;
   const SectionName: string): PImageSectionHeader;
 var
   Header: PImageSectionHeader;
