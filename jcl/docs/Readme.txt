@@ -4,8 +4,8 @@
   Jedi Code Library
 
 Release 1.90
-Build 1492
-31-Mar-2004
+Build 1497
+05-Apr-2004
 
 ------------------------------------------------------------------------
 
@@ -52,18 +52,17 @@ docs                          - Readme (this file) and other documents
 examples                      - JCL example applications
 examples\make.bat             - Builds selected examples and tools
 examples\vcl                  - JCL example applications
-examples\visclx               - JCL example applications
-examples\windows              - JCL example applications
 examples\vcl\debugextension   - JCL Debug IDE expert for using JclDebug unit
                  \dialog      - Application exception dialog replacement
                  \threadnames - IDE expert showing class names for debugged threads
                  \tools       - Tools for creating files with JCL debug information
-examples\delphitools          - Collection of system tools using JCL
-examples\projectanalyzer      - Project Analyzer IDE expert
+examples\vcl\delphitools      - Collection of system tools using JCL
+examples\vcl\projectanalyzer  - Project Analyzer IDE expert
+examples\visclx               - JCL example applications
+examples\windows              - JCL example applications
 help                          - Help file
 install                       - Installer source code
-packages                      - JCL runtime package and project group containing all
-                                available design-time packages
+packages                      - JCL runtime packages and project groups
 source                        - JCL source code
 
 

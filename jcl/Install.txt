@@ -9,6 +9,8 @@ Supported development tools versions:
 - Borland Delphi 7
 - Borland Kylix 3 for Delphi
 
+For more detailed information, see docs\Readme.html.
+
 Please make sure you have installed latest update packs. You can download them
 from Borland Support web page: 
   
@@ -54,7 +56,9 @@ To execute for
 2) Kylix 3 for Delphi
 - open a shell window
 - cd into JCL root directory
-- at the command prompt, type "sh ./install.sh", then press "Enter"
+- at the command prompt, type "sh ./install.sh", then press "Enter".
+  You'll also need to do a "source kylixpath" first (see the README of your 
+  Kylix 3 installation) in case your system is not set up to do that at startup.
 
 NOTE:
 ======
@@ -72,4 +76,4 @@ button and change the value (move D7 paths to the end).
 
 
 --------------------------------
-Document last updated 2004-02-19
+Document last updated 2004-04-05
