@@ -166,7 +166,7 @@ function TwoToY(const Y: Float): Float;
 { Floating point support routines }
 
 function IsFloatZero(const X: Float): Boolean;
-function FloatsEqual(const X1, X2: Float): Boolean;
+function FloatsEqual(const X, Y: Float): Boolean;
 function MaxFloat(const X, Y: Float): Float;
 function MinFloat(const X, Y: Float): Float;
 function ModFloat(const X, Y: Float): Float;
