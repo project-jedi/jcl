@@ -1,5 +1,7 @@
 unit JclUsesWizard;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -14,7 +16,7 @@ type
     LineNumber: Integer;
     Identifier: array [0..MAX_PATH - 1] of Char;
     // resolved by wizard
-    UsesName: array[0..MAX_PATH - 1] of Char; // unit name to be added to uses clause
+    UsesName: array [0..MAX_PATH - 1] of Char; // unit name to be added to uses clause
   end;
 
 const
@@ -38,8 +40,8 @@ procedure SettingsChanged;
 implementation
 
 uses
-  ToolsApi, Messages, Forms, Controls, Dialogs, ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
-  JclOptionsFrame, JclParseUses, JclUsesDialog;
+  ToolsAPI, Messages, Forms, Controls, Dialogs, ActnList, StdCtrls, ExtCtrls, ComCtrls, IniFiles,
+  JclOptionsFrame, JclParseUses, JclUsesDialog, JclFileUtils;
 
 const
   SJCLUsesWizardID = 'JEDI.JCLUsesWizard'; // wizard ID
@@ -243,7 +245,7 @@ var
   Reader: IOTAEditReader;
   Stream: TStringStream;
   ReaderPos, Read: Integer;
-  Buf: array[0..BufSize] of Char;
+  Buf: array [0..BufSize] of Char;
 begin
   Result := '';
   if Buffer = nil then
@@ -307,7 +309,7 @@ var
 begin
   if IsCodeInsight or Succeeded then
     Exit;
-    
+
   Messages := TStringList.Create;
   try
     GetCompilerMessages(Messages);
@@ -371,7 +373,7 @@ begin
       JCLOptionsTab.PageControl := PropSheetControl1;
       JCLOptionsTab.Caption := 'JEDI Options';
 
-      TFrameJCLOptions.Create(JCLOptionsTab);
+      TFrameJclOptions.Create(JCLOptionsTab);
     except
       JCLOptionsTab.Free;
       raise;
@@ -459,13 +461,13 @@ var
 
   procedure LoadDcc32Strings;
   const
-    {$IFDEF VER140}
-     SErrorID = 4147; // 'Error'
-     SUndeclaredIdentID = 47; // 'Undeclared identifier: ''%s'''
+    {$IFDEF COMPILER6}
+    SErrorID = 4147; // 'Error'
+    SUndeclaredIdentID = 47; // 'Undeclared identifier: ''%s'''
     {$ELSE}
-     SErrorID = 4200;
-     SUndeclaredIdentID = 2;
-    {$ENDIF}
+    SErrorID = 4200;
+    SUndeclaredIdentID = 2;
+    {$ENDIF COMPILER6}
   var
     Registry: TRegistry;
     Dcc32FileName: string;
@@ -480,14 +482,16 @@ var
     // try to retrieve and prepend Delphi bin path
     Registry := TRegistry.Create(KEY_READ);
     try
+      {$IFDEF COMPILER6_UP}
       Registry.RootKey := HKEY_CURRENT_USER;
       if Registry.OpenKeyReadOnly((BorlandIDEServices as IOTAServices).GetBaseRegistryKey) then
-        Dcc32FileName := IncludeTrailingPathDelimiter(Registry.ReadString('RootDir')) + 'Bin\' + Dcc32FileName
+        Dcc32FileName := PathAddSeparator(Registry.ReadString('RootDir')) + 'Bin\' + Dcc32FileName
       else
+      {$ENDIF COMPILER6_UP}
       begin
         Registry.RootKey := HKEY_LOCAL_MACHINE;
         if Registry.OpenKeyReadOnly((BorlandIDEServices as IOTAServices).GetBaseRegistryKey) then
-          Dcc32FileName := IncludeTrailingPathDelimiter(Registry.ReadString('RootDir')) + 'Bin\' + Dcc32FileName;
+          Dcc32FileName := PathAddSeparator(Registry.ReadString('RootDir')) + 'Bin\' + Dcc32FileName;
       end;
     finally
       Registry.Free;

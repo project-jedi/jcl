@@ -1,5 +1,7 @@
 unit JclParseUses;
 
+{$I jcl.inc}
+
 interface
 
 uses
@@ -77,7 +79,11 @@ function CreateGoal(Text: PChar): TCustomGoal;
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts;
+  {$ELSE}
+  Consts;
+  {$ENDIF HAS_UNIT_RTLCONSTS}
 
 const
   Blanks: TSysCharSet = [#9, #10, #13, ' '];

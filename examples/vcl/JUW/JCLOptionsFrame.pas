@@ -1,5 +1,8 @@
 unit JclOptionsFrame;
 
+{$I jcl.inc}
+{$I windowsonly.inc}
+
 interface
 
 uses
@@ -26,10 +29,6 @@ type
   end;
 
 implementation
-
-{$IFDEF VER140}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
 
 uses
   Registry, FileCtrl, ToolsAPI,
