@@ -1,7 +1,3 @@
-JclCIL.pas
-JclCLR.pas
 JclDotNet.pas
-JclMetadata.pas
-JclTask.pas
 mscoree_TLB.pas
 mscorlib_TLB.pas
