@@ -56,6 +56,8 @@ type
   TPppState = class
   protected
     function GetOptions: TPppOptions; virtual; abstract;
+    function GetTriState(const ASymbol: string): TTriState; virtual; abstract;
+    procedure SetTriState(const ASymbol: string; const Value: TTriState); virtual; abstract;
   public
     { PushState is called at the start of every unit, and PopState at the
       end. This means that any declarations like $DEFINE will be file-local
@@ -63,7 +65,6 @@ type
     procedure PushState; virtual; abstract;
     procedure PopState; virtual; abstract;
 
-    function TriState(const ASymbol: string): TTriState; virtual; abstract;
     function IsDefined(const ASymbol: string): Boolean; virtual; abstract;
     procedure Define(const ASymbol: string); virtual; abstract;
     procedure Undef(const ASymbol: string); virtual; abstract;
@@ -71,6 +72,7 @@ type
     function FindFile(const AName: string): TStream; virtual; abstract;
 
     property Options: TPppOptions read GetOptions;
+    property TriState[const ASymbol: string]: TTriState read GetTriState write SetTriState;
   end;
 
   TSimplePppState = class(TPppState)
@@ -106,8 +108,9 @@ type
   end;
 
   TJppState = class(TSimplePppState)
-  public
-    function TriState(const ASymbol: string): TTriState; override;
+  protected
+    function GetTriState(const ASymbol: string): TTriState; override;
+    procedure SetTriState(const ASymbol: string; const Value: TTriState); override;
   end;
 
 implementation
@@ -121,6 +124,8 @@ const
 {$ELSE}
   PathDelim = '\';
 {$ENDIF}
+
+{ TSimplePppState }
 
 constructor TSimplePppState.Create(AHashSize: Cardinal);
 begin
@@ -191,39 +196,18 @@ begin
 end;
 
 function TSimplePppState.IsDefined(const ASymbol: string): Boolean;
-var
-  i, value: Integer;
 begin
-  { Because of stack semantics, this function is slightly complex.
-    We keep seaching from the top down, until we find the symbol;
-    then we check its value, to see if it is a local override of
-    a globally defined symbol. }
-  Result := False;
-  for i := FDefineHashStack.Count - 1 downto 0 do
-    if TStringHashMap(FDefineHashStack[i]).Find(ASymbol, value) then
-    begin
-      Result := value = 1;
-      Break;
-    end;
+  Result := TriState[ASymbol] = ttDefined;
 end;
 
 procedure TSimplePppState.Define(const ASymbol: string);
-var
-  One: Integer;
 begin
-  One := 1;
-  StackTop[ASymbol] := Pointer(One);
+  SetTriState(ASymbol, ttDefined);
 end;
 
 procedure TSimplePppState.Undef(const ASymbol: string);
-var
-  Zero: Integer;
 begin
-  Zero := 0;
-  if StackTop.Has(ASymbol) then
-    StackTop.Remove(ASymbol)
-  else
-    StackTop.Add(ASymbol, Zero);
+  SetTriState(ASymbol, ttUndef);
 end;
 
 function TSimplePppState.StackTop: TStringHashMap;
@@ -232,7 +216,9 @@ begin
   Result := TStringHashMap(FDefineHashStack[FDefineHashStack.Count - 1]);
 end;
 
-function TJppState.TriState(const ASymbol: string): TTriState;
+{ TJppState }
+
+function TJppState.GetTriState(const ASymbol: string): TTriState;
 var
   i, value: Integer;
 begin
@@ -244,12 +230,15 @@ begin
   for i := FDefineHashStack.Count - 1 downto 0 do
     if TStringHashMap(FDefineHashStack[i]).Find(ASymbol, value) then
     begin
-      if value = 0 then
-        Result := ttUndef
-      else
-        Result := ttDefined;
+      Result := TTriState(value);
       Break;
     end;
+end;
+
+procedure TJppState.SetTriState(const ASymbol: string;
+  const Value: TTriState);
+begin
+  StackTop[ASymbol] := Pointer(Value);
 end;
 
 end.
