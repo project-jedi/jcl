@@ -160,9 +160,32 @@ function GetAPMBatteryFullLifeTime: DWORD;
 // Identification
 //--------------------------------------------------------------------------------------------------
 
+type
+  TFileSystemFlag =
+  (
+    fsCaseSensitive,            // The file system supports case-sensitive file names.
+    fsCasePreservedNames,       // The file system preserves the case of file names when it places a name on disk.
+    fsSupportsUnicodeOnDisk,    // The file system supports Unicode in file names as they appear on disk.
+    fsPersistentACLs,           // The file system preserves and enforces ACLs. For example, NTFS preserves and enforces ACLs, and FAT does not.
+    fsSupportsFileCompression,  // The file system supports file-based compression.
+    fsSupportsVolumeQuotas,     // The file system supports disk quotas.
+    fsSupportsSparseFiles,      // The file system supports sparse files.
+    fsSupportsReparsePoints,    // The file system supports reparse points.
+    fsSupportsRemoteStorage,    // ?
+    fsVolumeIsCompressed,       // The specified volume is a compressed volume; for example, a DoubleSpace volume.
+    fsSupportsObjectIds,        // The file system supports object identifiers.
+    fsSupportsEncryption,       // The file system supports the Encrypted File System (EFS).
+    fsSupportsNamedStreams,     // The file system supports named streams.
+    fsVolumeIsReadOnly          // The specified volume is read-only.
+                                //   Windows 2000/NT and Windows Me/98/95:  This value is not supported.
+  );
+
+  TFileSystemFlags = set of TFileSystemFlag;
+
 function GetVolumeName(const Drive: string): string;
 function GetVolumeSerialNumber(const Drive: string): string;
 function GetVolumeFileSystem(const Drive: string): string;
+function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
 function GetIPAddress(const HostName: string): string;
 {$ENDIF MSWINDOWS}
 function GetLocalComputerName: string;
@@ -1266,6 +1289,23 @@ end;
 function GetVolumeFileSystem(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikFileSystem);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : Donator (incl. TFileSystemFlag[s]): Robert Rossmair }
+
+function GetVolumeFileSystemFlags(const Volume: string): TFileSystemFlags;
+var
+  MaximumComponentLength, Flags: Cardinal;
+  Flag: TFileSystemFlag;
+begin
+  Win32Check(GetVolumeInformation(PChar(PathAddSeparator(Volume)), nil, 0, nil,
+    MaximumComponentLength, Flags, nil, 0));
+  Result := [];
+  for Flag := Low(TFileSystemFlag) to High(TFileSystemFlag) do
+    if (Flags and Ord(Flag)) <> 0 then
+      Include(Result, Flag);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4082,6 +4122,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.34  2004/12/07 02:40:07  rrossmair
+// - added GetVolumeFileSystemFlags function
+//
 // Revision 1.33  2004/10/21 08:40:10  marquardt
 // style cleaning
 //
