@@ -50,7 +50,8 @@ unit JclEDI;
 interface
 
 uses
-  SysUtils, Classes, JclBase, JclStrings{, Dialogs};
+  SysUtils, Classes,
+  JclBase, JclStrings;
 
 const
   NA_LoopId = 'N/A'; //Constant used for loop id comparison
@@ -63,7 +64,6 @@ var
 {$ENDIF}
 
 type
-
   TEDIObject = class(TObject); //Base EDI Object
   TEDIObjectArray = array of TEDIObject;
 
@@ -86,7 +86,7 @@ type
   private
     FSegmentDelimiter: string;
     FElementDelimiter: string;
-    FSubElementSeperator: string; //Also known as: Component Data Seperator
+    FSubElementSeperator: string; // Also known as: Component Data Seperator
     FSegmentDelimiterLength: Integer;
     FElementDelimiterLength: Integer;
     FSubelementSeperatorLength: Integer;
@@ -109,8 +109,10 @@ type
 //  EDI Data Object
 //--------------------------------------------------------------------------------------------------
 
-  TEDIDataObjectType = (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
-    ediTransactionSet, ediMessage, ediFunctionalGroup, ediInterchangeControl, ediFile, ediCustom);
+  TEDIDataObjectType =
+   (ediUnknown, ediElement, ediCompositeElement, ediSegment, ediLoop,
+    ediTransactionSet, ediMessage, ediFunctionalGroup,
+    ediInterchangeControl, ediFile, ediCustom);
 
   TEDIDataObjectDataState = (ediCreated, ediAssembled, ediDissassembled);
 
@@ -155,7 +157,6 @@ type
   TEDIDataObjectGroupArray = array of TEDIDataObjectGroup;
 
   TEDIDataObjectGroup = class(TEDIDataObject)
-  private
   protected
     FEDIDataObjects: TEDIDataObjectArray;
     FCreateObjectType: TEDIDataObjectType;
@@ -256,14 +257,13 @@ uses
 // TEDIDelimiters
 //==================================================================================================
 
-{ TEDIDelimiters }
-
 constructor TEDIDelimiters.Create;
 begin
   inherited Create;
   SetSD('~');
   SetED('*');
   SetSS('>');
+  // (rom) alternatively implement as Create('~', '*', '>');
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -304,8 +304,6 @@ end;
 // TEDIDataObject
 //==================================================================================================
 
-{ TEDIDataObject }
-
 constructor TEDIDataObject.Create(Parent: TEDIDataObject);
 begin
   inherited Create;
@@ -318,32 +316,26 @@ begin
     FParent := Parent;
   end
   else
-  begin
     FParent := nil;
-  end;
   FDelimiters := nil;
   FSpecPointer := nil;
   FCustomData1 := nil;
   FCustomData2 := nil;
-{$IFDEF ENABLE_EDI_DEBUGGING}
+  {$IFDEF ENABLE_EDI_DEBUGGING}
   Inc(Debug_EDIDataObjectsCreated);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TEDIDataObject.Destroy;
 begin
-{$IFDEF ENABLE_EDI_DEBUGGING}
+  {$IFDEF ENABLE_EDI_DEBUGGING}
   Inc(Debug_EDIDataObjectsDestroyed);
-{$ENDIF}
+  {$ENDIF}
   if not Assigned(FParent) then
-  begin
     if Assigned(FDelimiters) then
-    begin
       FDelimiters.Free;
-    end;
-  end;
   FDelimiters := nil;
   FSpecPointer := nil;
   FCustomData1 := nil;
@@ -371,13 +363,11 @@ end;
 procedure TEDIDataObject.SetDelimiters(const Delimiters: TEDIDelimiters);
 begin
   if not Assigned(FParent) then
-  begin
     if Assigned(FDelimiters) then
     begin
       FDelimiters.Free;
       FDelimiters := nil;
     end;
-  end;
   FDelimiters := Delimiters;
 end;
 
@@ -385,21 +375,17 @@ end;
 // TEDIDataObjectGroup
 //==================================================================================================
 
-{ TEDIDataObjectGroup }
-
 function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
 var
   I, J: Integer;
 begin
   I := Length(FEDIDataObjects);
-  Result := I; //Return position of 1st
-  //Resize
+  Result := I; // Return position of 1st
+  // Resize
   SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-  //Add
+  // Add
   for J := I to High(FEDIDataObjects) do
-  begin
     FEDIDataObjects[J]:= InternalCreateEDIDataObject;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -408,7 +394,7 @@ function TEDIDataObjectGroup.AddEDIDataObject: Integer;
 begin
   SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
   FEDIDataObjects[High(FEDIDataObjects)] := InternalCreateEDIDataObject;
-  Result := High(FEDIDataObjects); //Return position
+  Result := High(FEDIDataObjects); // Return position
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -418,7 +404,7 @@ begin
   SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
   FEDIDataObjects[High(FEDIDataObjects)] := EDIDataObject;
   EDIDataObject.Parent := Self;
-  Result := High(FEDIDataObjects); //Return position
+  Result := High(FEDIDataObjects); // Return position
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -429,10 +415,10 @@ var
 begin
   I := 0;
   J := Length(FEDIDataObjects);
-  Result := J; //Return position of 1st
-  //Resize
+  Result := J; // Return position of 1st
+  // Resize
   SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Length(EDIDataObjectArray));
-  //Append
+  // Append
   for K := J to High(EDIDataObjectArray) do
   begin
     FEDIDataObjects[K] := EDIDataObjectArray[I];
@@ -446,19 +432,13 @@ end;
 constructor TEDIDataObjectGroup.Create(Parent: TEDIDataObject; EDIDataObjectCount: Integer);
 begin
   if Assigned(Parent) then
-  begin
-    inherited Create(Parent);
-  end
+    inherited Create(Parent)
   else
-  begin
     inherited Create(nil);
-  end;
   FCreateObjectType := ediUnknown;
   SetLength(FEDIDataObjects, 0);
   if EDIDataObjectCount > 0 then
-  begin
     AddEDIDataObjects(EDIDataObjectCount);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -468,12 +448,8 @@ var
   I: Integer;
 begin
   for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-  begin
     if FEDIDataObjects[I] = EDIDataObject then
-    begin
       DeleteEDIDataObject(I);
-    end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -485,21 +461,18 @@ begin
   if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
     (Index <= High(FEDIDataObjects)) then
   begin
-    //Delete
+    // Delete
     FEDIDataObjects[Index].Free;
     FEDIDataObjects[Index] := nil;
-    //Shift
+    // (rom) please replace with a call to Move() throughout the file
+    // Shift
     for I := Index + 1 to High(FEDIDataObjects) do
-    begin
       FEDIDataObjects[I-1] := FEDIDataObjects[I];
-    end;
-    //Resize
+    // Resize
     SetLength(FEDIDataObjects, High(FEDIDataObjects));
   end
   else
-  begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError010, [Self.ClassName, IntToStr(Index)]);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -509,15 +482,13 @@ var
   I: Integer;
 begin
   for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-  begin
     if Assigned(FEDIDataObjects[I]) then
     begin
-      //Delete
+      // Delete
       FEDIDataObjects[I].Free;
       FEDIDataObjects[I] := nil;
     end;
-  end;
-  //Resize
+  // Resize
   SetLength(FEDIDataObjects, 0);
 end;
 
@@ -530,28 +501,24 @@ begin
   if (Length(FEDIDataObjects) > 0) and (Index >= Low(FEDIDataObjects)) and
     (Index <= High(FEDIDataObjects)) then
   begin
-    //Delete
+    // Delete
     for I := Index to (Index + Count) - 1 do
-    begin
       if Assigned(FEDIDataObjects[I]) then
       begin
         FEDIDataObjects[I].Free;
         FEDIDataObjects[I] := nil;
       end;
-    end;
-    //Shift
+    // Shift
     for I := (Index + Count) to High(FEDIDataObjects) do
     begin
       FEDIDataObjects[I-Count] := FEDIDataObjects[I];
       FEDIDataObjects[I] := nil;
     end;
-    //Resize
+    // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) - Count);
   end
   else
-  begin
     raise EJclEDIError.CreateResRecFmt(@RsEDIError011, [IntToStr(Index)]);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -566,14 +533,12 @@ end;
 
 function TEDIDataObjectGroup.GetEDIDataObject(Index: Integer): TEDIDataObject;
 begin
-  if (Length(FEDIDataObjects) > 0) then
-    if (Index >= Low(FEDIDataObjects)) then
-      if (Index <= High(FEDIDataObjects)) then
+  if Length(FEDIDataObjects) > 0 then
+    if Index >= Low(FEDIDataObjects) then
+      if Index <= High(FEDIDataObjects) then
       begin
         if not Assigned(FEDIDataObjects[Index]) then
-        begin
           raise EJclEDIError.CreateResRecFmt(@RsEDIError006, [Self.ClassName, IntToStr(Index)]);
-        end;
         Result := FEDIDataObjects[Index];
       end
       else
@@ -594,21 +559,17 @@ begin
   if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
     (InsertIndex <= High(FEDIDataObjects)) then
   begin
-    //Resize
+    // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    //Shift
+    // Shift
     for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-    begin
       FEDIDataObjects[I] := FEDIDataObjects[I-1];
-    end;
-    //Insert
+    // Insert
     FEDIDataObjects[InsertIndex] := nil;
     FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
   end
   else
-  begin
     Result := AddEDIDataObject;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -622,22 +583,18 @@ begin
   if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
     (InsertIndex <= High(FEDIDataObjects)) then
   begin
-    //Resize
+    // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
-    //Shift
+    // Shift
     for I := High(FEDIDataObjects) downto InsertIndex + 1 do
-    begin
       FEDIDataObjects[I] := FEDIDataObjects[I-1];
-    end;
-    //Insert
+    // Insert
     FEDIDataObjects[InsertIndex] := nil;
     FEDIDataObjects[InsertIndex] := EDIDataObject;
     FEDIDataObjects[InsertIndex].Parent := Self;
   end
   else
-  begin
     Result := AppendEDIDataObject(EDIDataObject);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -652,15 +609,15 @@ begin
   if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
     (InsertIndex <= High(FEDIDataObjects)) then
   begin
-    //Resize
+    // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + I);
-    //Shift
+    // Shift
     for J := High(FEDIDataObjects) downto InsertIndex + I do
     begin
       FEDIDataObjects[J] := FEDIDataObjects[J-I];
       FEDIDataObjects[J-I] := nil;
     end;
-    //Insert
+    // Insert
     K := 0;
     for J := InsertIndex to (InsertIndex + I) - 1 do
     begin
@@ -670,9 +627,7 @@ begin
     end;
   end
   else
-  begin
     Result := AppendEDIDataObjects(EDIDataObjectArray);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -685,33 +640,29 @@ begin
   if (Length(FEDIDataObjects) > 0) and (InsertIndex >= Low(FEDIDataObjects)) and
     (InsertIndex <= High(FEDIDataObjects)) then
   begin
-    //Resize
+    // Resize
     SetLength(FEDIDataObjects, Length(FEDIDataObjects) + Count);
-    //Shift
+    // Shift
     for I := High(FEDIDataObjects) downto InsertIndex + Count do
     begin
       FEDIDataObjects[I] := FEDIDataObjects[I-Count];
       FEDIDataObjects[I-Count] := nil;
     end;
-    //Insert
+    // Insert
     for I := InsertIndex to (InsertIndex + Count) - 1 do
-    begin
       FEDIDataObjects[I] := InternalCreateEDIDataObject;
-    end;
   end
   else
-  begin
     Result := AddEDIDataObjects(Count);
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectGroup.SetEDIDataObject(Index: Integer; EDIDataObject: TEDIDataObject);
 begin
-  if (Length(FEDIDataObjects) > 0) then
-    if (Index >= Low(FEDIDataObjects)) then
-      if (Index <= High(FEDIDataObjects)) then
+  if Length(FEDIDataObjects) > 0 then
+    if Index >= Low(FEDIDataObjects) then
+      if Index <= High(FEDIDataObjects) then
       begin
         if Assigned(FEDIDataObjects[Index]) then
         begin
@@ -736,17 +687,13 @@ var
 begin
   Result := -1;
   if Assigned(Parent) and (Parent is TEDIDataObjectGroup) then
-  begin
     for I := Low(TEDIDataObjectGroup(Parent).EDIDataObjects) to
-             High(TEDIDataObjectGroup(Parent).EDIDataObjects) do
-    begin
+       High(TEDIDataObjectGroup(Parent).EDIDataObjects) do
       if TEDIDataObjectGroup(Parent).EDIDataObjects[I] = Self then
       begin
         Result := I;
         Break;
       end;
-    end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -759,8 +706,6 @@ end;
 //==================================================================================================
 // TEDIDataObjectLinkedListItem
 //==================================================================================================
-
-{ TEDIDataObjectLinkedListItem }
 
 constructor TEDIDataObjectLinkedListItem.Create(Parent: TEDIDataObjectLinkedListHeader;
   PriorItem: TEDIDataObjectLinkedListItem);
@@ -778,13 +723,11 @@ destructor TEDIDataObjectLinkedListItem.Destroy;
 begin
   FPriorItem := nil;
   FNextItem := nil;
-  if (lhFreeDataObject in FOptions) and (FEDIDataObject <> nil) then
-  begin
+  if lhFreeDataObject in FOptions then
     FEDIDataObject.Free;
-  end;
   FEDIDataObject := nil;
   FParent := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -806,14 +749,30 @@ begin
       Result := I;
       Break;
     end;
-  end; //for I
+  end;
 end;
 
 //==================================================================================================
 // TEDIDataObjectLinkedListHeader
 //==================================================================================================
 
-{ TEDIDataObjectLinkedListHeader }
+constructor TEDIDataObjectLinkedListHeader.Create;
+begin
+  inherited Create;
+  FFirstItem := nil;
+  FLastItem := nil;
+  FCurrentItem := nil;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIDataObjectLinkedListHeader.Destroy;
+begin
+  DeleteEDIDataObjects;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TEDIDataObjectLinkedListHeader.AppendEDIDataObject(EDIDataObject: TEDIDataObject);
 var
@@ -822,25 +781,11 @@ begin
   ListItem := TEDIDataObjectLinkedListItem.Create(Self, FLastItem);
   ListItem.EDIDataObject := EDIDataObject;
   if FLastItem <> nil then
-  begin
     FLastItem.NextItem := ListItem;
-  end;
   if FFirstItem = nil then
-  begin
     FFirstItem := ListItem;
-  end;
   FLastItem := ListItem;
   FCurrentItem := ListItem;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TEDIDataObjectLinkedListHeader.Create;
-begin
-  inherited Create;
-  FFirstItem := nil;
-  FLastItem := nil;
-  FCurrentItem := nil;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -854,9 +799,7 @@ begin
   while ListItem <> nil do
   begin
     if FreeReferences and (ListItem.EDIDataObject <> nil) then
-    begin
       ListItem.EDIDataObject.Free;
-    end;
     ListItem.EDIDataObject := nil;
     PriorItem := ListItem;
     ListItem := ListItem.NextItem;
@@ -865,14 +808,6 @@ begin
   FFirstItem := nil;
   FLastItem := nil;
   FCurrentItem := nil;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TEDIDataObjectLinkedListHeader.Destroy;
-begin
-  DeleteEDIDataObjects;
-  inherited;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -937,7 +872,8 @@ begin
   begin
     Result := AnsiUpperCase(S);
     SearchPattern := AnsiUpperCase(Pattern);
-  end else
+  end
+  else
   begin
     Result := S;
     SearchPattern := Pattern;
@@ -954,23 +890,23 @@ begin
       while Result[I] = SearchPattern[1] do
       begin
         Offset := Offset + SearchPatternLength;
-        if not (rfReplaceAll in Flags) then Break;
+        if not (rfReplaceAll in Flags) then
+          Break;
         Inc(I);
       end;
     end
-    else //PattLen > 1
+    else // SearchPatternLength > 1
     begin
       while Copy(Result, Offset, SearchPatternLength) = SearchPattern do
       begin
         Offset := Offset + SearchPatternLength;
-        if not (rfReplaceAll in Flags) then Break;
+        if not (rfReplaceAll in Flags) then
+          Break;
       end;
     end;
 
     if Offset <= Length(Result) then
-    begin
-      Result[I] := S[Offset];
-    end
+      Result[I] := S[Offset]
     else
     begin
       Result[I] := #0;
@@ -978,11 +914,12 @@ begin
       Break;
     end;
 
-    if not (rfReplaceAll in Flags) then Break;
+    if not (rfReplaceAll in Flags) then
+      Break;
 
     Inc(I);
     Inc(Offset);
-  end; //while
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -995,7 +932,7 @@ var
   SearchResult, ReplaceCount: Integer;
 begin
   Result := '';
-  //Handle Case Sensitivity
+  // Handle Case Sensitivity
   if rfIgnoreCase in Flags then
   begin
     SearchString := AnsiUpperCase(S);
@@ -1008,7 +945,7 @@ begin
   end;
   SearchPatternLength := Length(OldPattern);
   ReplacePatternLength := Length(NewPattern);
-  //Calculate length of result string
+  // Calculate length of result string
   ReplaceCount := 0;
   SearchResult := StrSearch(SearchPattern, SearchString, 1);
   while SearchResult <> 0 do
@@ -1018,7 +955,7 @@ begin
     SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
   end;
   SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
-  //Shift the characters
+  // Shift the characters
   ReplaceCount := 0;
   ReplaceIndex := 1;
   SearchIndex := 1;
@@ -1028,31 +965,30 @@ begin
     begin
       while Copy(SearchString, SearchIndex, SearchPatternLength) = SearchPattern do
       begin
-        //Move forward in the search string
+        // Move forward in the search string
         SearchIndex := SearchIndex + Length(SearchPattern);
-        //Replace old pattern
+        // Replace old pattern
         I := 1;
         while (ReplaceIndex <= Length(Result)) and (I <= ReplacePatternLength) do
         begin
           Result[ReplaceIndex] := NewPattern[I];
           Inc(I);
           Inc(ReplaceIndex);
-        end; //while
+        end;
         Inc(ReplaceCount);
         if not (rfReplaceAll in Flags) then Break;
-      end; //while
-    end; //if (rfReplaceAll in Flags) or ((not (rfReplaceAll in Flags)) and (ReplaceCount = 0)) then
-
-    if (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) then
-    begin
-      Result[ReplaceIndex] := S[SearchIndex];
+      end;
     end;
 
-    if not (rfReplaceAll in Flags) then Break;
+    if (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) then
+      Result[ReplaceIndex] := S[SearchIndex];
+
+    if not (rfReplaceAll in Flags) then
+      Break;
 
     Inc(SearchIndex);
     Inc(ReplaceIndex);
-  end; //while
+  end;
 end;
 
 end.
