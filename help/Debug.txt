@@ -1,5 +1,49 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function IsHandleValid(Handle: THandle): Boolean;
+[ShortDescr]
+Tests whether a handle is valid.
+[Description]
+The IsHandleValid determines whether a handle is valid. The handle can point to
+any kind of Win32 object such as a file, mutex or console screen buffer. Note that
+the result of this function is only an indication of whether the handle points
+to a valid object. Since handles are reused by Win32 it is possible that the
+handle actually points to a different object than you thought. More reason to
+always set handles to 0 or INVALID_HANDLE_VALUE immediately after you close it.
+[Parameters]
+Count=1
+1=Handle:THandle=The handle to test for validity.
+[Result]
+If the specified handle is valid the function returns True. If the specified
+handle is invalid the function returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Miscellanuous
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsDebuggerAttached: Boolean;
+[ShortDescr]
+Determines whether the calling process is running under the context of a debugger.
+[Description]
+The IsDebuggerAttached function determines whether the calling process is running
+under the context of a debugger. Unlike the IsDebuggerPresent API function, this
+one also functions correctly under Windows 95.
+[Result]
+If the current process is running in the context of a debugger, the return value is True.
+If the current process is not running in the context of a debugger, the return value is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Miscellanuous
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
 [ShortDescr]
 Enables manually crashing Windows.
@@ -19,7 +63,7 @@ If the function succeeds it returns True, otherwise it returns False.
 BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
-SubCat=Crash
+SubCat=Miscellanuous
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 2000 or later.
