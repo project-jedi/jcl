@@ -342,11 +342,7 @@ begin
   FId := '';
   FData := '';
   FLength := 0;
-  // (rom) this is ridiculous! No if needed!
-  if Assigned(Parent) then
-    FParent := Parent
-  else
-    FParent := nil;
+  FParent := Parent;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -393,7 +389,7 @@ destructor TEDISEFDataObjectListItem.Destroy;
 begin
   FPriorItem := nil;
   FNextItem := nil;
-  if (lhFreeDataObject in FOptions) and (FEDISEFDataObject <> nil) then
+  if lhFreeDataObject in FOptions then
     FEDISEFDataObject.Free;
   FEDISEFDataObject := nil;
   FParent := nil;
@@ -470,7 +466,7 @@ begin
   ListItem := FFirstItem;
   while ListItem <> nil do
   begin
-    if FreeReferences and (ListItem.EDISEFDataObject <> nil) then
+    if FreeReferences then
       ListItem.EDISEFDataObject.Free;
     ListItem.EDISEFDataObject := nil;
     PriorItem := ListItem;
