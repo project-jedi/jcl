@@ -113,81 +113,72 @@ uses
 {$I win32api\DelayImp.int}
 
 const
-  RtdlSetNamedSecurityInfoW: function (pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
+  RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
     SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
-    pDacl, pSacl: PACL): DWORD;
-    stdcall = SetNamedSecurityInfoW;
+    pDacl, pSacl: PACL): DWORD; stdcall = SetNamedSecurityInfoW;
 
-  RtdlSetWaitableTimer: function (hTimer: THandle; var lpDueTime: TLargeInteger;
+  RtdlSetWaitableTimer: function(hTimer: THandle; var lpDueTime: TLargeInteger;
     lPeriod: Longint; pfnCompletionRoutine: TFNTimerAPCRoutine;
-    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL;
-    stdcall = SetWaitableTimer;
+    lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall = SetWaitableTimer;
 
-  RtdlNetUserAdd: function (servername: LPCWSTR; level: DWORD;
-    buf: PByte; parm_err: PDWord): NET_API_STATUS;
-    stdcall = NetUserAdd;
+  RtdlNetUserAdd: function(servername: LPCWSTR; level: DWORD;
+    buf: PByte; parm_err: PDWord): NET_API_STATUS; stdcall = NetUserAdd;
 
-  RtdlNetUserDel: function (servername: LPCWSTR; username: LPCWSTR): NET_API_STATUS;
-    stdcall = NetUserDel;
+  RtdlNetUserDel: function(servername: LPCWSTR;
+    username: LPCWSTR): NET_API_STATUS; stdcall = NetUserDel;
 
-  RtdlNetGroupAdd: function (servername: LPCWSTR; level: DWORD; buf: PByte;
-    parm_err: PDWord): NET_API_STATUS;
-    stdcall = NetGroupAdd;
+  RtdlNetGroupAdd: function(servername: LPCWSTR; level: DWORD; buf: PByte;
+    parm_err: PDWord): NET_API_STATUS; stdcall = NetGroupAdd;
 
-  RtdlNetGroupEnum: function (servername: LPCWSTR; level: DWORD;
+  RtdlNetGroupEnum: function(servername: LPCWSTR; level: DWORD;
     out bufptr: PByte; prefmaxlen: DWORD; out entriesread, totalentries: DWORD;
-    resume_handle: PDWORD_PTR): NET_API_STATUS;
-    stdcall = NetGroupEnum;
+    resume_handle: PDWORD_PTR): NET_API_STATUS; stdcall = NetGroupEnum;
 
-  RtdlNetGroupDel: function (servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS;
-    stdcall = NetGroupDel;
+  RtdlNetGroupDel: function(servername: LPCWSTR;
+    groupname: LPCWSTR): NET_API_STATUS; stdcall = NetGroupDel;
 
-  RtdlNetLocalGroupAdd: function (servername: LPCWSTR; level: DWORD;
-    buf: PByte; parm_err: PDWord): NET_API_STATUS;
-    stdcall = NetLocalGroupAdd;
+  RtdlNetLocalGroupAdd: function(servername: LPCWSTR; level: DWORD;
+    buf: PByte; parm_err: PDWord): NET_API_STATUS; stdcall = NetLocalGroupAdd;
 
-  RtdlNetLocalGroupEnum: function (servername: LPCWSTR; level: DWORD;
+  RtdlNetLocalGroupEnum: function(servername: LPCWSTR; level: DWORD;
     out bufptr: PByte; prefmaxlen: DWORD; out entriesread, totalentries: DWORD;
-    resumehandle: PDWORD_PTR): NET_API_STATUS;
-    stdcall = NetLocalGroupEnum;
+    resumehandle: PDWORD_PTR): NET_API_STATUS; stdcall = NetLocalGroupEnum;
 
-  RtdlNetLocalGroupDel: function (servername: LPCWSTR; groupname: LPCWSTR): NET_API_STATUS;
-    stdcall = NetLocalGroupDel;
+  RtdlNetLocalGroupDel: function(servername: LPCWSTR;
+    groupname: LPCWSTR): NET_API_STATUS; stdcall = NetLocalGroupDel;
 
-  RtdlNetLocalGroupAddMembers: function (servername: LPCWSTR; groupname: LPCWSTR;
-    level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS;
-    stdcall = NetLocalGroupAddMembers;
+  RtdlNetLocalGroupAddMembers: function(servername: LPCWSTR; groupname: LPCWSTR;
+    level: DWORD; buf: PByte;
+    totalentries: DWORD): NET_API_STATUS; stdcall = NetLocalGroupAddMembers;
 
-  RtdlNetApiBufferFree: function (Buffer: Pointer): NET_API_STATUS;
-    stdcall = NetApiBufferFree;
+  RtdlNetApiBufferFree: function(Buffer: Pointer): NET_API_STATUS; stdcall = NetApiBufferFree;
 
-  RtdlGetCalendarInfoA: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE;
-    lpCalData: PAnsiChar; cchData: Integer; lpValue: PDWORD): Integer;
-    stdcall = GetCalendarInfoA;
+  RtdlGetCalendarInfoA: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+    lpCalData: PAnsiChar; cchData: Integer;
+    lpValue: PDWORD): Integer; stdcall = GetCalendarInfoA;
 
-  RtdlGetCalendarInfoW: function (Locale: LCID; Calendar: CALID; CalType: CALTYPE;
-    lpCalData: PWideChar; cchData: Integer; lpValue: PDWORD): Integer;
-    stdcall = GetCalendarInfoW;
-    
-  RtdlEnumCalendarInfoExA: function (lpCalInfoEnumProc: TCalInfoEnumProcExA;
-    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL;
-    stdcall = EnumCalendarInfoExA;
+  RtdlGetCalendarInfoW: function(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
+    lpCalData: PWideChar; cchData: Integer;
+    lpValue: PDWORD): Integer; stdcall = GetCalendarInfoW;
 
-  RtdlGetVolumeNameForVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL;
-    stdcall = GetVolumeNameForVolumeMountPoint;
+  RtdlEnumCalendarInfoExA: function(lpCalInfoEnumProc: TCalInfoEnumProcExA;
+    Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall = EnumCalendarInfoExA;
 
-  RtdlSetVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR;
-    lpszVolumeName: LPCSTR): BOOL;
-    stdcall = SetVolumeMountPoint;
+  RtdlGetVolumeNameForVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
+    lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall = GetVolumeNameForVolumeMountPoint;
 
-  RtdlDeleteVolumeMountPoint: function (lpszVolumeMountPoint: LPCSTR): BOOL;
+  RtdlSetVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR;
+    lpszVolumeName: LPCSTR): BOOL; stdcall = SetVolumeMountPoint;
+
+  RtdlDeleteVolumeMountPoint: function(lpszVolumeMountPoint: LPCSTR): BOOL;
     stdcall = DeleteVolumeMountPoint;
 
-  RtdlNetBios: function (P: PNCB): UCHAR;
-    stdcall = NetBios;
+  RtdlNetBios: function(P: PNCB): UCHAR; stdcall = NetBios;
 
 implementation
+
+uses
+  JclResources;
 
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
@@ -199,12 +190,12 @@ begin
     if ModuleHandle = 0 then
     begin
       ModuleHandle := LoadLibrary(PChar(ModuleName));
-      if ModuleHandle = 0 then raise
-        EJclError.Create('Library not found: ' + ModuleName);
+      if ModuleHandle = 0 then
+        raise EJclError.CreateResRecFmt(@RsELibraryNotFound, [ModuleName]);
     end;
     P := GetProcAddress(ModuleHandle, PChar(ProcName));
-    if not Assigned(P) then raise
-      EJclError.Create('Function not found: ' + ModuleName + '.' + ProcName);
+    if not Assigned(P) then
+      raise EJclError.CreateResRecFmt(@RsEFunctionNotFound, [ModuleName, ProcName]);
   end;
 end;
 
@@ -220,6 +211,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2004/10/21 08:40:11  marquardt
+// style cleaning
+//
 // Revision 1.29  2004/10/19 21:28:41  rrossmair
 // - rewrite from scratch, cannibalizing MvB's Win32API distribution
 //

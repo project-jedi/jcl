@@ -191,7 +191,7 @@ function IsDCOMEnabled: Boolean;
 var
   RegValue: string;
 begin
-  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'Software\Microsoft\OLE', 'EnableDCOM');
+  RegValue := RegReadString(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\OLE', 'EnableDCOM');
   Result := (RegValue = 'y') or (RegValue = 'Y');
 end;
 
@@ -707,6 +707,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/21 08:40:10  marquardt
+// style cleaning
+//
 // Revision 1.9  2004/10/17 21:00:14  mthoma
 // cleaning
 //

@@ -4286,7 +4286,7 @@ end;
 
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
 const
-  CrashCtrlScrollKey = 'System\CurrentControlSet\Services\i8042prt\Parameters';
+  CrashCtrlScrollKey = 'SYSTEM\CurrentControlSet\Services\i8042prt\Parameters';
   CrashCtrlScrollName = 'CrashOnCtrlScroll';
 var
   Enabled: Integer;
@@ -4369,6 +4369,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.12  2004/10/21 08:40:10  marquardt
+// style cleaning
+//
 // Revision 1.11  2004/10/17 21:00:14  mthoma
 // cleaning
 //
