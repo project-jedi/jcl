@@ -18,7 +18,7 @@
 { Academic Press, Inc. Additional improvements were done by David Ullrich and  }
 { Josha Beukema.                                                               }
 {                                                                              }
-{ (C)opyright 1997-1999 Anders Melander                                        }             
+{ (C)opyright 1997-1999 Anders Melander                                        }
 {                                                                              }
 { The Initial Developer of the Original Code is documented in the accompanying }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
@@ -601,8 +601,8 @@ end;
 // Internal low level routines
 //==============================================================================
 
-procedure FillLongword(var X; Count: Integer; Value: LongWord); assembler;
-asm
+procedure FillLongword(var X; Count: Integer; Value: LongWord);
+{asm
 // EAX = X
 // EDX = Count
 // ECX = Value
@@ -617,6 +617,16 @@ asm
         REP     STOSD    // Fill count dwords
 @@EXIT:
         POP     EDI
+end;}
+var
+  P: PLongWord;
+begin
+  P := @X;
+  while Count > 0 do begin
+    P^ := Value;
+    inc(P);
+    dec(Count);
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -634,8 +644,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TestSwap(var A, B: Integer); assembler;
-asm
+procedure TestSwap(var A, B: Integer);
+{asm
 // EAX = [A]
 // EDX = [B]
         MOV     ECX, [EAX]     // ECX := [A]
@@ -644,6 +654,15 @@ asm
         XCHG    ECX, [EDX]     // ECX <-> [B];
         MOV     [EAX], ECX     // [A] := ECX
 @@EXIT:
+end;}
+var
+  X: integer;
+begin
+  if A > B then begin
+    X := A;
+    A := B;   
+    B := X;
+  end;
 end;
 
 //------------------------------------------------------------------------------
