@@ -593,3 +593,35 @@ download the package from our API library.
 <ALIAS IMAGE_BASE_RELOCATION>
 
 
+
+@@_FILE_ALLOCATED_RANGE_BUFFER
+Description
+The <B>FILE_ALLOCATED_RANGE_BUFFER</B> structure is used with
+the <U><COLOR Blue>FSCTL_QUERY_ALLOCATED_RANGES</U></COLOR>
+control code to indicate a range of bytes in a file. On input
+to the <B>FSCTL_QUERY_ALLOCATED_RANGES</B> control code, the
+structure indicates the range of the file to search. On
+\output, the operation retrieves an array of <B>FILE_ALLOCATED_RANGE_BUFFER</B>
+structures to indicate the allocated ranges within the search
+range.
+
+
+
+Summary
+The <B>FILE_ALLOCATED_RANGE_BUFFER </B>structure is used to
+indicate a range of bytes in a file.
+
+
+
+QuickInfo
+ Unit: JclWin32
+  Category: Windows
+  Donator: Marcel van Brakel
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+  Windows NT/2000/XP: Included in Windows 2000 and later.
+  Windows 95/98/ME: Unsupported.
+
+@@_FILE_ALLOCATED_RANGE_BUFFER.Length
+Size, in bytes, of the range. 
