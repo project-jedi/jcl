@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: January 6, 2001                                             }
+{ Last modified: January 7, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -25,37 +25,24 @@ unit JclUnicode;
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
-// 28-DEC-2000 rom, ml:
-//   - JEDIfied it a bit
-// 15..17-DEC-2000 ml:
-//   - normalization conformance tests
+// 07-JAN-2001 ml:
+//   optimized character property, combining class etc. access
+// 06-JAN-2001 ml:
+//   TWideStrings and TWideStringList improved
+// APR-DEC 2000 ml: versions 2.1 - 2.6
+//   - preparation for public rlease
+//   - additional conversion routines
+//   - JCL compliance
+//   - character properties unified
+//   - character properties data and lookup improvements
+//   - reworked Unicode data resource file
+//   - improved simple string comparation routines (StrCompW, StrLCompW etc., include surrogate fix)
+//   - special case folding data for language neutral case insensitive comparations included
+//   - optimized decomposition
+//   - composition and normalization support
+//   - normalization conformance tests applied
 //   - bug fixes
-// 14-DEC-2000 ml:
-//   - bug fixes
-//   - normalization support
-// 12-DEC-2000 ml:
-//   composition support
-// 10-DEC-2000 ml:
-//   optimized decomposition
-// 09-DEC-2000 ml:
-//   - bug fixes
-//   - special case folding data included into the *.res file and load routines adjusted
-//   - correct binary string comparation with surrogate fixup (StrICompW, StrLICompW)
-// 04-DEC-2000 ml:
-//   - improved binary string comparation with surrogate fixup (StrCompW, StrLCompW)
-// 02/03-DEC-2000 ml:
-//   - new Unicode data (*.res) file, fully working extractor tool available now
-//   - data handling and lookup routines improved
-//   - character categories unified
-// 19-NOV-2000 ml:
-//   bug fixes (CharSetFromLocale)
-// 12-JUN-2000 ml:
-//  adjustments to make the unit JCL compliant
-// 02-APR-2000 ml:
-//   additional widestring conversion routines
-// 01-APR-2000 ml:
-//   preparation for public release
-// FEB-MAR 2000 version 2.0 beta
+// FEB-MAR 2000 ml: version 2.0
 //   - Unicode regular expressions (URE) search class (TURESearch)
 //   - generic search engine base class for both the Boyer-Moore and the RE search class
 //   - whole word only search in UTBM, bug fixes in UTBM
@@ -68,7 +55,7 @@ unit JclUnicode;
 //   - low level Unicode UCS4 data import and functions
 //   - helper functions
 //
-//  Version 2.6
+//  Version 2.7
 //----------------------------------------------------------------------------------------------------------------------
 // This unit contains routines and classes to manage and work with Unicode/WideString strings.
 // You need Delphi 4 or higher to compile this code.
@@ -98,8 +85,7 @@ unit JclUnicode;
 //     there are limitations like maximum text lengths). Under Win9x conversions
 //     from and to MBCS are necessary which are bound to a particular locale and
 //     so very limited in general use. These comparisons should be changed so that
-//     the code in this unit is used. This requires, though, a working composition
-//     implementation.
+//     the code in this unit is used. 
 
 interface
 
@@ -573,12 +559,14 @@ type
     FSaveUnicode: Boolean;  // flag set on loading to keep track in which format to save
                             // (can be set explicitely, but expect losses if there's true Unicode content
                             // and this flag is set to False)
+    FNormalizationForm: TNormalizationForm; // determines in which form Unicode strings should be stored
     FOnConfirmConversion: TConfirmConversionEvent;
     function GetCommaText: WideString;
     function GetName(Index: Integer): WideString;
     function GetValue(const Name: WideString): WideString;
     procedure ReadData(Reader: TReader);
     procedure SetCommaText(const Value: WideString);
+    procedure SetNormalizationForm(const Value: TNormalizationForm);
     procedure SetValue(const Name, Value: WideString);
     procedure WriteData(Writer: TWriter);
   protected
@@ -590,8 +578,8 @@ type
     function GetCount: Integer; virtual; abstract;
     function GetObject(Index: Integer): TObject; virtual;
     function GetText: WideString; virtual;
-    procedure Put(Index: Integer; const S: WideString); virtual;
-    procedure PutObject(Index: Integer; AObject: TObject); virtual;
+    procedure Put(Index: Integer; const S: WideString); virtual; abstract;
+    procedure PutObject(Index: Integer; AObject: TObject); virtual; abstract;
     procedure SetCapacity(NewCapacity: Integer); virtual;
     procedure SetUpdateState(Updating: Boolean); virtual;
     procedure SetLanguage(Value: LCID); virtual;
@@ -622,7 +610,7 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
     procedure SaveToFile(const FileName: string); virtual;
-    procedure SaveToStream(Stream: TStream); virtual;
+    procedure SaveToStream(Stream: TStream; WithBOM: Boolean = True); virtual;
     procedure SetText(const Value: WideString); virtual;
 
     property Capacity: Integer read GetCapacity write SetCapacity;
@@ -630,6 +618,7 @@ type
     property Count: Integer read GetCount;
     property Language: LCID read FLanguage write SetLanguage;
     property Names[Index: Integer]: WideString read GetName;
+    property NormalizationForm: TNormalizationForm read FNormalizationForm write SetNormalizationForm default nfC;
     property Objects[Index: Integer]: TObject read GetObject write PutObject;
     property Values[const Name: WideString]: WideString read GetValue write SetValue;
     property Saved: Boolean read FSaved;
@@ -640,7 +629,7 @@ type
     property OnConfirmConversion: TConfirmConversionEvent read FOnConfirmConversion write FOnConfirmConversion;
   end;
 
-  // TWideStringList class
+  //----- TWideStringList class
   TWideStringItem = record
     FString: WideString;
     FObject: TObject;
@@ -892,10 +881,12 @@ type
   end;
 
   TRangeArray = array of TRange;
+  TCategoriesArray = array of TCharacterCategories;
 
 var
-  // character category ranges
-  Categories: array[TCharacterCategory] of TRangeArray;
+  // character categories, in form of a sparse, two stage matrix
+  CategoriesLoaded: Boolean;
+  Categories: array[Byte] of TCategoriesArray;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -908,74 +899,52 @@ var
   Size: Integer;
   Stream: TResourceStream;
   Category: TCharacterCategory;
+  Buffer: TRangeArray;
+  First,
+  Second: Byte;
+  J, K: Integer;
   
 begin
-  // make sure no other code is currently modifying the global data area
-  if LoadInProgress = nil then
-    LoadInProgress := TCriticalSection.Create;
-  LoadInProgress.Enter;
-  try
-    // Data already loaded?
-    if Categories[ccAssigned] = nil then
-    begin
+  // Data already loaded?
+  if not CategoriesLoaded then
+  begin
+    // make sure no other code is currently modifying the global data area
+    if LoadInProgress = nil then
+      LoadInProgress := TCriticalSection.Create;
+    LoadInProgress.Enter;
+    try
+      CategoriesLoaded := True;
       Stream := TResourceStream.Create(HInstance, 'CATEGORIES', 'UNICODEDATA');
       try
         while Stream.Position < Stream.Size do
         begin
-          // read which category is current in the stream
+          // a) read which category is current in the stream
           Stream.ReadBuffer(Category, 1);
-          // read the size of the ranges
+          // b) read the size of the ranges and the ranges themself
           Stream.ReadBuffer(Size, 4);
-          SetLength(Categories[Category], Size);
-          Stream.ReadBuffer(Categories[Category][0], Size * SizeOf(TRange));
+          if Size > 0 then
+          begin
+            SetLength(Buffer, Size);
+            Stream.ReadBuffer(Buffer[0], Size * SizeOf(TRange));
+
+            // c) go through every range and add the current category to each code point
+            for J := 0 to Size - 1 do
+              for K := Buffer[J].Start to Buffer[J].Stop do
+              begin
+                First := (K shr 8) and $FF;
+                Second := K and $FF;
+                // add second step array if not yet done
+                if Categories[First] = nil then
+                  SetLength(Categories[First], 256);
+                Include(Categories[First, Second], Category);
+              end;
+          end;
         end;
       finally
         Stream.Free;
       end;
-    end;
-  finally
-    LoadInProgress.Leave;
-  end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function CategoryLookup(Code: Cardinal; Category: TCharacterCategory): Boolean; overload;
-
-// determines whether the Code is in the given category
-
-var
-  L, R, M, C: Integer;
-  Ranges: TRangeArray;
-
-begin
-  // load property data if not already done
-  if Categories[ccAssigned] = nil then
-    LoadCharacterCategories;
-
-  // is there anything assigned in the given category
-  Ranges := Categories[Category];
-  Result := Assigned(Ranges);
-  if Result then
-  begin
-    Result := False;
-    // search through all ranges to find the code
-    L := 0;
-    R := High(Ranges);
-    while L <= R do
-    begin
-      M := (L + R) shr 1;
-      C := Integer(Ranges[M].Start) - Integer(Code);
-      if C > 0 then
-        R := M - 1
-      else
-        if (C = 0) or (Ranges[M].Stop >= Code) then
-        begin
-          Result := True;
-          Break;
-        end
-        else
-          L := M + 1;
+    finally
+      LoadInProgress.Leave;
     end;
   end;
 end;
@@ -984,39 +953,38 @@ end;
 
 function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; overload;
 
-// determines whether Code is in any of the given categories
+// determines whether the Code is in the given category
 
 var
-  Category: TCharacterCategory;
-
+  First,
+  Second: Byte;
+  
 begin
-  Result := False;
-  if Cats <> [] then
-  begin
-    for Category := Low(TCharacterCategory) to High(TCharacterCategory) do
-      if Category in Cats then
-      begin
-        Result := CategoryLookup(Code, Category);
-        if Result then
-          Break;
-      end;
-  end;
+  // load property data if not already done
+  if not CategoriesLoaded then
+    LoadCharacterCategories;
+
+  First := (Code shr 8) and $FF;
+  Second := Code and $FF;
+  if Assigned(Categories[First]) then
+    Result := Categories[First, Second] * Cats <> []
+  else
+    Result := False;
 end;
 
 //----------------- support for case mapping ---------------------------------------------------------------------------
 
 type
-  TCase = record
-    Code: Cardinal;
-    Fold,               // normalized case for case independent string comparison (e.g. for "ß" this is "ss")
-    Lower,              // lower case (e.g. for "ß" it is "ß")
-    Title,              // tile case (used mainly for compatiblity, ligatures etc., e.g. for "ß" this is "Ss")
-    Upper: TUCS4Array;  // upper cae (e.g. for "ß" it is "SS")
-  end;
+  TCase = array[0..3] of TUCS4Array; // mapping for case fold, lower, title and upper in this order
+  TCaseArray = array of TCase;
 
 var
-  // array for all case mappings (including 1 to many casing if saved by the extraction program)
-  CaseMapping: array of TCase;
+  // An array for all case mappings (including 1 to many casing if saved by the extraction program).
+  // The organization is a sparse, two stage matrix.
+  // SingletonMapping is to quickly return a single default mapping.
+  CaseDataLoaded: Boolean;
+  CaseMapping: array[Byte] of TCaseArray;
+  SingletonMapping: TUCS4Array;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1024,118 +992,104 @@ procedure LoadUnicodeCaseData;
 
 var
   Stream: TResourceStream;
-  I, Size: Cardinal;
+  I, Code,
+  Size: Cardinal;
+  First,
+  Second: Byte;
 
 begin
-  // make sure no other code is currently modifying the global data area
-  if LoadInProgress = nil then
-    LoadInProgress := TCriticalSection.Create;
-  LoadInProgress.Enter;
-
-  if CaseMapping = nil then
+  if not CaseDataLoaded then
   begin
-    Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODEDATA');
+    // make sure no other code is currently modifying the global data area
+    if LoadInProgress = nil then
+      LoadInProgress := TCriticalSection.Create;
+    LoadInProgress.Enter;
+
     try
-      // the first entry in the stream is the number of entries in the case mapping array
-      Stream.ReadBuffer(Size, 4);
-      SetLength(CaseMapping, Size);
-      for I := 0 to Size - 1 do
-        with CaseMapping[I] do
+      SetLength(SingletonMapping, 1);
+      CaseDataLoaded := True;
+      Stream := TResourceStream.Create(HInstance, 'CASE', 'UNICODEDATA');
+      try
+        // the first entry in the stream is the number of entries in the case mapping table
+        Stream.ReadBuffer(Size, 4);
+        for I := 0 to Size - 1 do
         begin
           // a) read actual code point
           Stream.ReadBuffer(Code, 4);
+          // if there is no high byte entry in the first stage table then create one
+          First := (Code shr 8) and $FF;
+          Second := Code and $FF;
+          if CaseMapping[First] = nil then
+            SetLength(CaseMapping[First], 256);
+
           // b) read fold case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(Fold, Size);
-            Stream.ReadBuffer(Fold[0], Size * SizeOf(Cardinal));
+            SetLength(CaseMapping[First, Second, 0], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 0, 0], Size * SizeOf(UCS4));
           end;
           // c) read lower case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(Lower, Size);
-            Stream.ReadBuffer(Lower[0], Size * SizeOf(Cardinal));
+            SetLength(CaseMapping[First, Second, 1], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 1, 0], Size * SizeOf(UCS4));
           end;
           // d) read title case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(Title, Size);
-            Stream.ReadBuffer(Title[0], Size * SizeOf(Cardinal));
+            SetLength(CaseMapping[First, Second, 2], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 2, 0], Size * SizeOf(UCS4));
           end;
           // e) read upper case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
-            SetLength(Upper, Size);
-            Stream.ReadBuffer(Upper[0], Size * SizeOf(Cardinal));
+            SetLength(CaseMapping[First, Second, 3], Size);
+            Stream.ReadBuffer(CaseMapping[First, Second, 3, 0], Size * SizeOf(UCS4));
           end;
         end;
+
+      finally
+        Stream.Free;
+      end;
     finally
-      Stream.Free;
+      LoadInProgress.Leave;
     end;
   end;
-  LoadInProgress.Leave;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function CaseLookup(Code: Cardinal; Mapping: Cardinal): TUCS4Array;
+function CaseLookup(Code: Cardinal; CaseType: Cardinal): TUCS4Array;
 
 // Performs a lookup of the given code and returns its case mapping if found.
-// Mapping must be 0 for case folding, 1 for lower case, 2 for title case and 3 for upper case, respectively.
-// If Code could not be found then the result is a mapping of length 1 with the code itself.
-// Otherwise an array of code points is returned which represent the mapping
-// (e.g. title case for ß (german es-zed) is Ss (two characters)).
+// CaseType must be 0 for case folding, 1 for lower case, 2 for title case and 3 for upper case, respectively.
+// If Code could not be found (or there is no case mapping) then the result is a mapping of length 1 with the
+// code itself. Otherwise an array of code points is returned which represent the mapping.
 
 var
-  L, R, M: Integer;
+  First,
+  Second: Byte;
 
 begin
   // load case mapping data if not already done
-  if CaseMapping = nil then
+  if not CaseDataLoaded then
     LoadUnicodeCaseData;
 
-  L := 0;
-  R := High(CaseMapping);
-  while L <= R do
+  First := (Code shr 8) and $FF;
+  Second := Code and $FF;
+  // Check first stage table whether there is a mapping for a particular block and
+  // (if so) then whether there is a mapping or not.
+  if (CaseMapping[First] = nil) or (CaseMapping[First, Second, CaseType] = nil) then
   begin
-    M := (L + R) shr 1;
-    if Code > CaseMapping[M].Code then
-      L := M + 1
-    else
-    begin
-      if Code < CaseMapping[M].Code then
-        R := M - 1
-      else
-      begin
-        // no need to copy the dynamic array, it is reference counted
-        case Mapping of
-          0:
-            begin
-              Result := CaseMapping[M].Fold;
-              if Result = nil then
-                Result := CaseMapping[M].Lower;
-            end;
-          1:
-            Result := CaseMapping[M].Lower;
-          2:
-            Result := CaseMapping[M].Title;
-          3:
-            Result := CaseMapping[M].Upper;
-        end;
-        if Assigned(Result) then
-          Exit
-        else
-          Break;
-      end;
-    end;
-  end;
-  // If we come here then the code was not found or there is no mapping, hence retuned the code as result.
-  SetLength(Result, 1);
-  Result[0] := Code;
+    SingletonMapping[0] := Code;
+    Result := SingletonMapping;
+  end
+  else
+    Result := CaseMapping[First, Second, CaseType];
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1177,12 +1131,11 @@ end;
 //----------------- support for decomposition --------------------------------------------------------------------------
 
 const
-  // constants for hangul composition and decomposition (this is done
-  // algorithmically saving so significant memory)
-  SBase = $AC00;
-  LBase = $1100;
+  // constants for hangul composition and hangul-to-jamo decomposition
+  SBase = $AC00;             // hangul syllables start code point
+  LBase = $1100;             // leading syllable
   VBase = $1161;
-  TBase = $11A7;
+  TBase = $11A7;             // trailing syllable
   LCount = 19;
   VCount = 21;
   TCount = 28;
@@ -1190,14 +1143,16 @@ const
   SCount = LCount * NCount;   // 11172
 
 type
-  TDecomposition = record
-    Code: Cardinal;
-    Decompositions: TUCS4Array;
-  end;
-
+  TDecompositions = array of TUCS4Array;
+  TDecompositionsArray = array[Byte] of TDecompositions;
+  
 var
-  // list of decomposition
-  Decompositions: array of TDecomposition;
+  // list of decompositions, organized (again) as two stage matrix
+  // Note: there are two tables, one for canonical decompositions and the other one
+  //       for compatibility decompositions.
+  DecompositionsLoaded: Boolean;
+  CanonicalDecompositions,
+  CompatibleDecompositions: TDecompositionsArray;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -1205,39 +1160,65 @@ procedure LoadUnicodeDecompositionData;
 
 var
   Stream: TResourceStream;
-  I, Size: Integer;
+  I, Code,
+  Size: Cardinal;
+  First,
+  Second: Byte;
 
 begin
-  // make sure no other code is currently modifying the global data area
-  if LoadInProgress = nil then
-    LoadInProgress := TCriticalSection.Create;
-  LoadInProgress.Enter;
+  if not DecompositionsLoaded then
+  begin
+    // make sure no other code is currently modifying the global data area
+    if LoadInProgress = nil then
+      LoadInProgress := TCriticalSection.Create;
+    LoadInProgress.Enter;
 
-  try
-    if Decompositions = nil then
-    begin
+    try
+      DecompositionsLoaded := True;
       Stream := TResourceStream.Create(HInstance, 'DECOMPOSITION', 'UNICODEDATA');
       try
         // determine how many decomposition entries we have
         Stream.ReadBuffer(Size, 4);
-        SetLength(Decompositions, Size);
-        for I := 0 to High(Decompositions) do
-          with Decompositions[I] do
+        for I := 0 to Size - 1 do
+        begin
+          Stream.ReadBuffer(Code, 4);
+          // if there is no high byte entry in the first stage table then create one
+          First := (Code shr 8) and $FF;
+          Second := Code and $FF;
+
+          // insert into the correct table depending on bit 30
+          // (if set then it is a compatibility decomposition)
+          if Code and $40000000 <> 0 then
           begin
-            Stream.ReadBuffer(Code, 4);
+            if CompatibleDecompositions[First] = nil then
+              SetLength(CompatibleDecompositions[First], 256);
+
             Stream.ReadBuffer(Size, 4);
             if Size > 0 then
             begin
-              SetLength(Decompositions, Size);
-              Stream.ReadBuffer(Decompositions[0], Size * 4);
+              SetLength(CompatibleDecompositions[First, Second], Size);
+              Stream.ReadBuffer(CompatibleDecompositions[First, Second, 0], Size * SizeOf(UCS4));
+            end;
+          end
+          else
+          begin
+            if CanonicalDecompositions[First] = nil then
+              SetLength(CanonicalDecompositions[First], 256);
+
+            Stream.ReadBuffer(Size, 4);
+            if Size > 0 then
+            begin
+              SetLength(CanonicalDecompositions[First, Second], Size);
+              Stream.ReadBuffer(CanonicalDecompositions[First, Second, 0], Size * SizeOf(UCS4));
             end;
           end;
+        end;
       finally
         Stream.Free;
       end;
+    finally
+      LoadInProgress.Leave;
     end;
-  finally
-    LoadInProgress.Leave;
   end;
 end;
 
@@ -1249,7 +1230,7 @@ function UnicodeDecomposeHangul(Code: UCS4): TUCS4Array;
 
 var
   Rest: Integer;
-  
+
 begin
   Dec(Code, SBase);
   Rest := Code mod TCount;
@@ -1268,12 +1249,12 @@ end;
 function UnicodeDecompose(Code: UCS4; Compatible: Boolean): TUCS4Array;
 
 var
-  L, R,
-  M, C: Integer;
+  First,
+  Second: Byte;
 
 begin
   // load decomposition data if not already done
-  if Decompositions = nil then
+  if not DecompositionsLoaded then
     LoadUnicodeDecompositionData;
 
   Result := nil;
@@ -1283,47 +1264,55 @@ begin
     Result := UnicodeDecomposeHangul(Code)
   else
   begin
-    L := 0;
-    R := High(Decompositions);
-
-    // Compatibility decompositions are marked by a set second MSB in Code.
-    // The codes in the list are sorted without taking the flag into account.
-    while L <= R do
+    First := (Code shr 8) and $FF;
+    Second := Code and $FF;
+    if Compatible then
     begin
-      M := (L + R) shr 1;
-      C := Integer(Decompositions[M].Code and not $40000000) - Integer(Code);
-      if C < 0 then
-        L := M + 1
-      else
-        if C > 0 then
-          R := M - 1
+      // Check first stage table whether there is a particular block and
+      // (if so) then whether there is a decomposition or not.
+      if (CompatibleDecompositions[First] = nil) or (CompatibleDecompositions[First, Second] = nil) then
+      begin
+        // if there is no compatibility decompositions try canonical
+        if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil) then
+          Result := nil
         else
-        begin
-          // found a decomposition, return the codes if types correspond
-          if Compatible or ((Decompositions[M].Code and $40000000) = 0) then
-            with Decompositions[M] do
-              Result := Decompositions;
-          Break;
-        end;
+          Result := CanonicalDecompositions[First, Second];
+      end
+      else
+        Result := CompatibleDecompositions[First, Second];
+    end
+    else
+    begin
+      if (CanonicalDecompositions[First] = nil) or (CanonicalDecompositions[First, Second] = nil) then
+        Result := nil
+      else
+        Result := CanonicalDecompositions[First, Second];
     end;
   end;
 end;
 
 //----------------- support for combining classes ----------------------------------------------------------------------
 
+type
+  TClassArray = array of Byte;
+
 var
-  // canonical combining classes
+  // canonical combining classes, again as two stage matrix
   CCCsLoaded: Boolean;
-  CCCs: array[Byte] of TRangeArray;
+  CCCs: array[Byte] of TClassArray;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure LoadUnicodeCombiningData;
+procedure LoadUnicodeCombiningClasses;
 
 var
   Stream: TResourceStream;
-  I, Size: Cardinal;
-
+  I, J, K,
+  Size: Cardinal;
+  Buffer: TRangeArray;
+  First,
+  Second: Byte;
+  
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
@@ -1345,8 +1334,20 @@ begin
           // c) read start and stop code of each range
           if Size > 0 then
           begin
-            SetLength(CCCs[I], Size);
-            Stream.ReadBuffer(CCCs[I][0], Size * SizeOf(TRange));
+            SetLength(Buffer, Size);
+            Stream.ReadBuffer(Buffer[0], Size * SizeOf(TRange));
+
+            // d) put this class in every of the code points just loaded
+            for J := 0 to Size - 1 do
+              for K := Buffer[J].Start to Buffer[J].Stop do
+              begin
+                First := (K shr 8) and $FF;
+                Second := K and $FF;
+                // add second step array if not yet done
+                if CCCs[First] = nil then
+                  SetLength(CCCs[First], 256);
+                CCCs[First, Second] := I;
+              end;
           end;
         end;
       finally
@@ -1363,45 +1364,20 @@ end;
 function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 
 var
-  L, R,
-  M, C, I: Integer;
-
+  First,
+  Second: Byte;
+  
 begin
   // load combining class data if not already done
   if not CCCsLoaded then
-    LoadUnicodeCombiningData;
+    LoadUnicodeCombiningClasses;
 
-  // only marks can have a combining class other than 0
-  Result := 0;
-  if CategoryLookup(Code, ClassMark) then
-  begin
-    // case 0 is already handled above
-    for I := 255 downto 1 do
-    begin
-      // go through all defined combining classes
-      if Assigned(CCCs[I]) and (CCCs[I][0].Start <= Code) and (CCCs[I][High(CCCs[I])].Stop >= Code) then
-      begin
-        L := 0;
-        R := High(CCCs[I]);
-
-        while L <= R do
-        begin
-          M := (L + R) shr 1;
-          C := Integer(CCCs[I][M].Start) - Integer(Code);
-          if C > 0 then
-            R := M - 1
-          else
-            if (C = 0) or (CCCs[I][M].Stop >= Code) then
-            begin
-              Result := I;
-              Exit;
-            end
-            else
-              L := M + 1;
-        end;
-      end;
-    end;
-  end;
+  First := (Code shr 8) and $FF;
+  Second := Code and $FF;
+  if Assigned(CCCs[First]) then
+    Result := CCCs[First, Second]
+  else
+    Result := 0;
 end;
 
 //----------------- support for numeric values -------------------------------------------------------------------------
@@ -1694,9 +1670,9 @@ begin
   Result := 0;
   if Cardinal(TextStart) < Cardinal(TextEnd) then
   begin
-    C1 := Word(TextStart^);
+    C1 := UCS4(TextStart^);
     if (TextStart + 1) < TextEnd then
-      C2 := Word((TextStart + 1)^)
+      C2 := UCS4((TextStart + 1)^)
     else
       C2 := $FFFFFFFF;
     if (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) and
@@ -1761,9 +1737,9 @@ begin
   // set the potential match endpoint first
   MatchEnd := (Start - Text) + 1;
 
-  C1 := Word(Start^);
+  C1 := UCS4(Start^);
   if (Start + 1) < Stop then
-    C2 := Word((Start + 1)^)
+    C2 := UCS4((Start + 1)^)
   else
     C2 := $FFFFFFFF;
   if (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) and
@@ -1786,7 +1762,7 @@ begin
   // in the search string is neither the string end nor a space character.
   if (sfWholeWordOnly in FFlags) and
      not ((Start + 1)^ = WideNull) and
-     not UnicodeIsWhiteSpace(Word((Start + 1)^)) then
+     not UnicodeIsWhiteSpace(UCS4((Start + 1)^)) then
     Exit;
 
   // compare backward
@@ -1802,9 +1778,9 @@ begin
       while (Start > Text) and UnicodeIsNonSpacing(C1) do
       begin
         Dec(Start);
-        C2 := Word(Start^);
+        C2 := UCS4(Start^);
         if (Start - 1) > Text then
-          C1 := Word((Start - 1)^)
+          C1 := UCS4((Start - 1)^)
         else
           C1 := $FFFFFFFF;
         if (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) and
@@ -1826,9 +1802,9 @@ begin
       begin
         CheckSpace := UnicodeIsWhiteSpace(C1);
         Dec(Start);
-        C2 := Word(Start^);
+        C2 := UCS4(Start^);
         if (Start - 1) > Text then
-          C1 := Word((Start - 1)^)
+          C1 := UCS4((Start - 1)^)
         else
           C1 := $FFFFFFFF;
         if (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) and
@@ -1873,9 +1849,9 @@ begin
       if Start > Text then
       begin
         Dec(Start);
-        C2 := Word(Start^);
+        C2 := UCS4(Start^);
         if (Start - 1) > Text then
-          C1 := Word((Start - 1)^)
+          C1 := UCS4((Start - 1)^)
         else
           C1 := $FFFFFFFF;
         if (SurrogateLowStart <= C2) and (C2 <= SurrogateLowEnd) and
@@ -1894,7 +1870,7 @@ begin
   // if whole word only are allowed.
   if not (sfWholeWordOnly in FFlags) or
      (Start <= Text) or
-     UnicodeIsWhiteSpace(Word((Start - 1)^)) then
+     UnicodeIsWhiteSpace(UCS4((Start - 1)^)) then
   begin
     // set the match start position
     MatchStart := Start - Text;
@@ -1936,9 +1912,9 @@ begin
     HaveSpace := False;
     while I < PatternLength do
     begin
-      C1 := Word(Pattern[I]);
+      C1 := UCS4(Pattern[I]);
       if (I + 1) < PatternLength then
-        C2 := Word(Pattern[I + 1])
+        C2 := UCS4(Pattern[I + 1])
       else
         C2 := $FFFFFFFF;
       if (SurrogateHighStart <= C1) and (C1 <= SurrogateHighEnd) and
@@ -2486,17 +2462,17 @@ var
 begin
   Symbol.Categories := Symbol.Categories + Categories;
 
-  Range.MinCode := Word(WideTabulator);
-  Range.MaxCode := Word(WideTabulator);
+  Range.MinCode := UCS4(WideTabulator);
+  Range.MaxCode := UCS4(WideTabulator);
   AddRange(Symbol.Symbol.CCL, Range);
-  Range.MinCode := Word(WideCarriageReturn);
-  Range.MaxCode := Word(WideCarriageReturn);
+  Range.MinCode := UCS4(WideCarriageReturn);
+  Range.MaxCode := UCS4(WideCarriageReturn);
   AddRange(Symbol.Symbol.CCL, Range);
-  Range.MinCode := Word(WideLineFeed);
-  Range.MaxCode := Word(WideLineFeed);
+  Range.MinCode := UCS4(WideLineFeed);
+  Range.MaxCode := UCS4(WideLineFeed);
   AddRange(Symbol.Symbol.CCL, Range);
-  Range.MinCode := Word(WideFormFeed);
-  Range.MaxCode := Word(WideFormFeed);
+  Range.MinCode := UCS4(WideFormFeed);
+  Range.MaxCode := UCS4(WideFormFeed);
   AddRange(Symbol.Symbol.CCL, Range);
   Range.MinCode := $FEFF;
   Range.MaxCode := $FEFF;
@@ -2511,14 +2487,14 @@ var
   Range: TUcRange;
 
 begin
-  Range.MinCode := Word('0');
-  Range.MaxCode := Word('9');
+  Range.MinCode := UCS4('0');
+  Range.MaxCode := UCS4('9');
   AddRange(Symbol.Symbol.CCL, Range);
-  Range.MinCode := Word('A');
-  Range.MaxCode := Word('F');
+  Range.MinCode := UCS4('A');
+  Range.MaxCode := UCS4('F');
   AddRange(Symbol.Symbol.CCL, Range);
-  Range.MinCode := Word('a');
-  Range.MaxCode := Word('f');
+  Range.MinCode := UCS4('a');
+  Range.MaxCode := UCS4('f');
   AddRange(Symbol.Symbol.CCL, Range);
 end;
 
@@ -2891,7 +2867,7 @@ begin
   Run := S;
   ListEnd := S + Limit;
 
-  C := Word(Run^);
+  C := UCS4(Run^);
   Inc(Run);
   if C = Ord('\') then
   begin
@@ -2905,7 +2881,7 @@ begin
       Exit;
     end;
 
-    C := Word(Run^);
+    C := UCS4(Run^);
     Inc(Run);
     case UCS2(C) of
       'p', 'P':
@@ -3012,7 +2988,7 @@ begin
     if (SurrogateLowStart <= UCS4(Run^)) and
        (UCS4(Run^) <= SurrogateLowEnd) then
     begin
-      Symbol.Symbol.Chr := $10000 + (((Symbol.Symbol.Chr and $03FF) shl 10) or (Word(Run^) and $03FF));
+      Symbol.Symbol.Chr := $10000 + (((Symbol.Symbol.Chr and $03FF) shl 10) or (UCS4(Run^) and $03FF));
       Inc(Run);
     end
     else
@@ -3246,7 +3222,7 @@ begin
           M := 0;
           N := 0;
           // get first number
-          while UnicodeIsWhiteSpace(Word(Head^)) do
+          while UnicodeIsWhiteSpace(UCS4(Head^)) do
             Inc(Head);
           S := '';
           while Head^ in [WideChar('0')..WideChar('9')] do
@@ -3257,7 +3233,7 @@ begin
           if S <> '' then
             M := StrToInt(S);
 
-          while UnicodeIsWhiteSpace(Word(Head^)) do
+          while UnicodeIsWhiteSpace(UCS4(Head^)) do
             Inc(Head);
           if (Head^ <> ',') and (Head^ <> '}') then
           begin
@@ -3270,7 +3246,7 @@ begin
           begin
             Inc(Head);
             // get second number
-            while UnicodeIsWhiteSpace(Word(Head^)) do
+            while UnicodeIsWhiteSpace(UCS4(Head^)) do
               Inc(Head);
             S := '';
             while Head^ in [WideChar('0')..WideChar('9')] do
@@ -4306,8 +4282,8 @@ constructor TWideStrings.Create;
 begin
   inherited;
 
-  // there should seldomly be the need to use a language other than the one of the system
   FLanguage := GetUserDefaultLCID;
+  FNormalizationForm := nfC;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -4717,32 +4693,8 @@ end;
 
 function TWideStrings.GetText: WideString;
 
-var
-  I, L, Size, Count: Integer;
-  P: PWideChar;
-  S: WideString;
-
 begin
-  Count := GetCount;
-  Size := 0;
-  for I := 0 to Count - 1 do
-    Inc(Size, Length(Get(I)) + 2);
-  SetLength(Result, Size);
-  P := Pointer(Result);
-  for I := 0 to Count - 1 do
-  begin
-    S := Get(I);
-    L := Length(S);
-    if L <> 0 then
-    begin
-      System.Move(Pointer(S)^, P^, 2 * L);
-      Inc(P, L);
-    end;
-    P^ := WideCarriageReturn;
-    Inc(P);
-    P^ := WideLineFeed;
-    Inc(P);
-  end;
+  Result := GetSeparatedText(WideLineSeparator);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -4864,7 +4816,6 @@ begin
       Stream.Seek(-BytesRead, soFromCurrent);
       SetLength(SA, Size);
       Stream.Read(PChar(SA)^, Size);
-      // TODO IsTextUnicode - ml: does not work, this function is only available on WinNT
       SetText(SA);
     end;
   finally
@@ -4893,27 +4844,6 @@ begin
       EndUpdate;
     end;
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TWideStrings.Put(Index: Integer; const S: WideString);
-
-var
-  TempObject: TObject;
-
-begin
-  TempObject := GetObject(Index);
-  Delete(Index);
-  InsertObject(Index, S, TempObject);
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TWideStrings.PutObject(Index: Integer; AObject: TObject);
-
-begin
-  // do nothing - descendants may optionally implement this method
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -4956,7 +4886,10 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TWideStrings.SaveToStream(Stream: TStream);
+procedure TWideStrings.SaveToStream(Stream: TStream; WithBOM: Boolean = True);
+
+// Saves the currently loaded text into the given stream. WithBOM determines whether to write a
+// byte order mark or not. Note: when saved as ANSI text there will never be a BOM. 
 
 var
   SW, BOM: WideString;
@@ -4969,15 +4902,13 @@ begin
   // If FSaveUnicode is False then all strings are saved in standard ANSI format
   // which is also loadable by TStrings but you should be aware that all Unicode
   // strings are then converted to ANSI based on the current system locale.
-  // TODO: don't use implicit conversion to ANSI but the FLanguage member instead,
-  //       so the user can convert the string data to a specific language.
   // An extra event is supplied to ask the user about the potential loss of
   // information when converting Unicode to ANSI strings.
   SW := GetText;
   Allowed := True;
   FSaved := False; // be pessimistic
-  // check for potential information loss makes only sense if the application has
-  // set an event to be used as call back to ask about the conversion
+  // A check for potential information loss makes only sense if the application has
+  // set an event to be used as call back to ask about the conversion.
   if not FSaveUnicode and Assigned(FOnConfirmConversion) then
   begin
     // application requests to save only ANSI characters, so check the text and
@@ -5106,6 +5037,23 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+procedure TWideStrings.SetNormalizationForm(const Value: TNormalizationForm);
+
+var
+  I: Integer;
+  
+begin
+  if FNormalizationForm <> Value then
+  begin
+    FNormalizationForm := Value;
+    // renormalize all strings according to the new form
+    for I := 0 to GetCount - 1 do
+      Put(I, WideNormalize(Get(I), FNormalizationForm));
+  end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 procedure TWideStrings.SetValue(const Name, Value: WideString);
 
 var
@@ -5150,7 +5098,8 @@ destructor TWideStringList.Destroy;
 
 begin
   Clear;
-  inherited Destroy;
+  
+  inherited;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5257,9 +5206,11 @@ function TWideStringList.Find(const S: WideString; var Index: Integer): Boolean;
 
 var
   L, H, I, C: Integer;
+  NormString: WideString;
 
 begin
   Result := False;
+  NormString := WideNormalize(S, FNormalizationForm);
   L := 0;
   H := FCount - 1;
   while L <= H do
@@ -5348,8 +5299,8 @@ begin
   if not Sorted then
     Result := inherited IndexOf(S)
   else
-  if not Find(S, Result) then
-    Result := -1;
+    if not Find(S, Result) then
+      Result := -1;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5376,9 +5327,10 @@ begin
     System.Move(FList[Index], FList[Index + 1], (FCount - Index) * SizeOf(TWideStringItem));
   with FList[Index] do
   begin
-    Pointer(FString) := nil;
+    Pointer(FString) := nil; // avoid freeing the string, the address is now used in another element
     FObject := nil;
-    FString := S;
+    if Length(S) > 0 then
+      FString := WideNormalize(S, FNormalizationForm);
   end;
   Inc(FCount);
   Changed;
@@ -5394,7 +5346,7 @@ begin
   if (Index < 0) or (Index >= FCount) then
     Error(SListIndexError, Index);
   Changing;
-  FList[Index].FString := S;
+  FList[Index].FString := WideNormalize(S, FNormalizationForm);
   Changed;
 end;
 
@@ -5494,6 +5446,7 @@ procedure TWideStringList.SetLanguage(Value: LCID);
 
 begin
   inherited;
+
   if Sorted then
     Sort;
 end;
@@ -6136,7 +6089,7 @@ begin
   Result := Str;
   while Str^ <> WideNull do
   begin
-    Str^ := WideChar(UnicodeToUpper(Word(Str^)));
+    Str^ := WideChar(UnicodeToUpper(UCS4(Str^)));
     Inc(Str);
   end;
 end;
@@ -6151,7 +6104,7 @@ begin
   Result := Str;
   while Str^ <> WideNull do
   begin
-    Str^ := WideChar(UnicodeToLower(Word(Str^)));
+    Str^ := WideChar(UnicodeToLower(UCS4(Str^)));
     Inc(Str);
   end;
 end;
@@ -6166,7 +6119,7 @@ begin
   Result := Str;
   while Str^ <> WideNull do
   begin
-    Str^ := WideChar(UnicodeToTitle(Word(Str^)));
+    Str^ := WideChar(UnicodeToTitle(UCS4(Str^)));
     Inc(Str);
   end;
 end;
@@ -6446,13 +6399,13 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
+  while (I <= L) and (UnicodeIsWhiteSpace(UCS4(S[I])) or UnicodeIsControl(UCS4(S[I]))) do
     Inc(I);
   if I > L then
     Result := ''
   else
   begin
-    while UnicodeIsWhiteSpace(Word(S[L])) or UnicodeIsControl(Word(S[L])) do
+    while UnicodeIsWhiteSpace(UCS4(S[L])) or UnicodeIsControl(UCS4(S[L])) do
       Dec(L);
     Result := Copy(S, I, L - I + 1);
   end;
@@ -6468,7 +6421,7 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
+  while (I <= L) and (UnicodeIsWhiteSpace(UCS4(S[I])) or UnicodeIsControl(UCS4(S[I]))) do
     Inc(I);
   Result := Copy(S, I, Maxint);
 end;
@@ -6482,8 +6435,7 @@ var
 
 begin
   I := Length(S);
-  while (I > 0) and
-        (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
+  while (I > 0) and (UnicodeIsWhiteSpace(UCS4(S[I])) or UnicodeIsControl(UCS4(S[I]))) do
     Dec(I);
   Result := Copy(S, 1, I);
 end;
@@ -6543,7 +6495,8 @@ var
   Len: Integer;
   Ch, Last: WideChar;
   I: Integer;
-  LIndex, VIndex, SIndex, TIndex: Integer;
+  LIndex, VIndex,
+  SIndex, TIndex: Integer;
 
 begin
   Result := '';
@@ -6623,8 +6576,8 @@ begin
   for DecompPos := 2 to Length(Result) do
   begin
     Ch := Result[DecompPos];
-    CurrentClass := CanonicalCombiningClass(Word(Ch));
-    if UnicodeComposePair(Word(StarterChar), Word(Ch), Composite) and
+    CurrentClass := CanonicalCombiningClass(UCS4(Ch));
+    if UnicodeComposePair(UCS4(StarterChar), UCS4(Ch), Composite) and
       ((LastClass < CurrentClass) or (LastClass = 0)) then
     begin
       Result[StarterPos] := UCS2(Composite);
@@ -6662,11 +6615,11 @@ begin
   I := Length(S);
   if I > 1 then
   begin
-    CurrentClass := CanonicalCombiningClass(Word(S[I]));
+    CurrentClass := CanonicalCombiningClass(UCS4(S[I]));
     repeat
       Dec(I);
       LastClass := CurrentClass;
-      CurrentClass := CanonicalCombiningClass(Word(S[I]));
+      CurrentClass := CanonicalCombiningClass(UCS4(S[I]));
 
       // A swap is presumed to be rare (and a double-swap very rare),
       // so don't worry about efficiency here.
@@ -6681,7 +6634,7 @@ begin
         if I < Length(S) - 1 then
           Inc(I, 2);
         // reset type, since we swapped.
-        CurrentClass := CanonicalCombiningClass(Word(S[I]));
+        CurrentClass := CanonicalCombiningClass(UCS4(S[I]));
       end;
     until I = 1;
   end;
@@ -6722,7 +6675,7 @@ var
   I, J: Integer;
   Decomp: TUCS4Array;
 
-begin
+begin  
   Result := '';
   Decomp := nil;
 
@@ -6737,7 +6690,7 @@ begin
       for J := 0 to High(Decomp) do
         Result := Result + WideChar(Decomp[J]);
   end;
-  
+
   // combining marks must be sorted according to their canonical combining class
   FixCanonical(Result);
 end;
@@ -6897,7 +6850,7 @@ function UnicodeIsDigit(C: UCS4): Boolean;
 // Is the character a digit?
 
 begin
-  Result := CategoryLookup(C, ccNumberDecimalDigit);
+  Result := CategoryLookup(C, [ccNumberDecimalDigit]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6958,7 +6911,7 @@ function UnicodeIsBlank(C: UCS4): Boolean;
 // Is the character a space separator?
 
 begin
-  Result := CategoryLookup(C, ccSeparatorSpace);
+  Result := CategoryLookup(C, [ccSeparatorSpace]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6998,7 +6951,7 @@ function UnicodeIsUpper(C: UCS4): Boolean;
 // Is the character already upper case?
 
 begin
-  Result := CategoryLookup(C, ccLetterUppercase);
+  Result := CategoryLookup(C, [ccLetterUppercase]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7008,7 +6961,7 @@ function UnicodeIsLower(C: UCS4): Boolean;
 // Is the character already lower case?
 
 begin
-  Result := CategoryLookup(C, ccLetterLowercase);
+  Result := CategoryLookup(C, [ccLetterLowercase]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7018,7 +6971,7 @@ function UnicodeIsTitle(C: UCS4): Boolean;
 // Is the character already title case?
 
 begin
-  Result := CategoryLookup(C, ccLetterTitlecase);
+  Result := CategoryLookup(C, [ccLetterTitlecase]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7028,7 +6981,7 @@ function UnicodeIsHexDigit(C: UCS4): Boolean;
 // Is the character a hex digit?
 
 begin
-  Result := CategoryLookup(C, ccHexDigit);
+  Result := CategoryLookup(C, [ccHexDigit]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7038,7 +6991,7 @@ function UnicodeIsIsoControl(C: UCS4): Boolean;
 // Is the character a C0 control character (< 32)?
 
 begin
-  Result := CategoryLookup(C, ccOtherControl);
+  Result := CategoryLookup(C, [ccOtherControl]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7048,7 +7001,7 @@ function UnicodeIsFormatControl(C: UCS4): Boolean;
 // Is the character a format control character?
 
 begin
-  Result := CategoryLookup(C, ccOtherFormat);
+  Result := CategoryLookup(C, [ccOtherFormat]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7078,7 +7031,7 @@ function UnicodeIsNonSpacing(C: UCS4): Boolean;
 // Is the character non-spacing?
 
 begin
-  Result := CategoryLookup(C, ccMarkNonSpacing);
+  Result := CategoryLookup(C, [ccMarkNonSpacing]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7088,7 +7041,7 @@ function UnicodeIsOpenPunctuation(C: UCS4): Boolean;
 // Is the character an open/left punctuation (e.g. '[')?
 
 begin
-  Result := CategoryLookup(C, ccPunctuationOpen);
+  Result := CategoryLookup(C, [ccPunctuationOpen]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7098,7 +7051,7 @@ function UnicodeIsClosePunctuation(C: UCS4): Boolean;
 // Is the character an close/right punctuation (e.g. ']')?
 
 begin
-  Result := CategoryLookup(C, ccPunctuationClose);
+  Result := CategoryLookup(C, [ccPunctuationClose]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7108,7 +7061,7 @@ function UnicodeIsInitialPunctuation(C: UCS4): Boolean;
 // Is the character an initial punctuation (e.g. U+2018 LEFT SINGLE QUOTATION MARK)?
 
 begin
-  Result := CategoryLookup(C, ccPunctuationInitialQuote);
+  Result := CategoryLookup(C, [ccPunctuationInitialQuote]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7118,7 +7071,7 @@ function UnicodeIsFinalPunctuation(C: UCS4): Boolean;
 // Is the character a final punctuation (e.g. U+2019 RIGHT SINGLE QUOTATION MARK)?
 
 begin
-  Result := CategoryLookup(C, ccPunctuationFinalQuote);
+  Result := CategoryLookup(C, [ccPunctuationFinalQuote]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7128,7 +7081,7 @@ function UnicodeIsComposed(C: UCS4): Boolean;
 // Can the character be decomposed into a set of other characters?
 
 begin
-  Result := CategoryLookup(C, ccComposed);
+  Result := CategoryLookup(C, [ccComposed]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7138,7 +7091,7 @@ function UnicodeIsQuotationMark(C: UCS4): Boolean;
 // Is the character one of the many quotation marks?
 
 begin
-  Result := CategoryLookup(C, ccQuotationMark);
+  Result := CategoryLookup(C, [ccQuotationMark]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7148,7 +7101,7 @@ function UnicodeIsSymmetric(C: UCS4): Boolean;
 // Is the character one that has an opposite form (i.e. <>)?
 
 begin
-  Result := CategoryLookup(C, ccSymmetric);
+  Result := CategoryLookup(C, [ccSymmetric]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7158,7 +7111,7 @@ function UnicodeIsMirroring(C: UCS4): Boolean;
 // Is the character mirroring (superset of symmetric)?
 
 begin
-  Result := CategoryLookup(C, ccMirroring);
+  Result := CategoryLookup(C, [ccMirroring]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7168,7 +7121,7 @@ function UnicodeIsNonBreaking(C: UCS4): Boolean;
 // Is the character non-breaking (i.e. non-breaking space)?
 
 begin
-  Result := CategoryLookup(C, ccNonBreaking);
+  Result := CategoryLookup(C, [ccNonBreaking]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7178,7 +7131,7 @@ function UnicodeIsRightToLeft(C: UCS4): Boolean;
 // Does the character have strong right-to-left directionality (i.e. Arabic letters)?
 
 begin
-  Result := CategoryLookup(C, ccRightToLeft);
+  Result := CategoryLookup(C, [ccRightToLeft]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7188,7 +7141,7 @@ function UnicodeIsLeftToRight(C: UCS4): Boolean;
 // Does the character have strong left-to-right directionality (i.e. Latin letters)?
 
 begin
-  Result := CategoryLookup(C, ccLeftToRight);
+  Result := CategoryLookup(C, [ccLeftToRight]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7248,7 +7201,7 @@ function UnicodeIsModifier(C: UCS4): Boolean;
 // Is the character a letter modifier?
 
 begin
-  Result := CategoryLookup(C, ccLetterModifier);
+  Result := CategoryLookup(C, [ccLetterModifier]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7258,7 +7211,7 @@ function UnicodeIsLetterNumber(C: UCS4): Boolean;
 // Is the character a number represented by a letter?
 
 begin
-  Result := CategoryLookup(C, ccNumberLetter);
+  Result := CategoryLookup(C, [ccNumberLetter]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7268,7 +7221,7 @@ function UnicodeIsConnectionPunctuation(C: UCS4): Boolean;
 // Is the character connecting punctuation?
 
 begin
-  Result := CategoryLookup(C, ccPunctuationConnector);
+  Result := CategoryLookup(C, [ccPunctuationConnector]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7278,7 +7231,7 @@ function UnicodeIsDash(C: UCS4): Boolean;
 // Is the character a dash punctuation?
 
 begin
-  Result := CategoryLookup(C, ccPunctuationDash);
+  Result := CategoryLookup(C, [ccPunctuationDash]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7288,7 +7241,7 @@ function UnicodeIsMath(C: UCS4): Boolean;
 // Is the character a math character?
 
 begin
-  Result := CategoryLookup(C, ccSymbolMath);
+  Result := CategoryLookup(C, [ccSymbolMath]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7298,7 +7251,7 @@ function UnicodeIsCurrency(C: UCS4): Boolean;
 // Is the character a currency character?
 
 begin
-  Result := CategoryLookup(C, ccSymbolCurrency);
+  Result := CategoryLookup(C, [ccSymbolCurrency]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7308,7 +7261,7 @@ function UnicodeIsModifierSymbol(C: UCS4): Boolean;
 // Is the character a modifier symbol?
 
 begin
-  Result := CategoryLookup(C, ccSymbolModifier);
+  Result := CategoryLookup(C, [ccSymbolModifier]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7318,7 +7271,7 @@ function UnicodeIsNonSpacingMark(C: UCS4): Boolean;
 // Is the character a non-spacing mark?
 
 begin
-  Result := CategoryLookup(C, ccMarkNonSpacing);
+  Result := CategoryLookup(C, [ccMarkNonSpacing]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7328,7 +7281,7 @@ function UnicodeIsSpacingMark(C: UCS4): Boolean;
 // Is the character a spacing mark?
 
 begin
-  Result := CategoryLookup(C, ccMarkSpacingCombining);
+  Result := CategoryLookup(C, [ccMarkSpacingCombining]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7338,7 +7291,7 @@ function UnicodeIsEnclosing(C: UCS4): Boolean;
 // Is the character enclosing (i.e. enclosing box)?
 
 begin
-  Result := CategoryLookup(C, ccMarkEnclosing);
+  Result := CategoryLookup(C, [ccMarkEnclosing]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7348,7 +7301,7 @@ function UnicodeIsPrivate(C: UCS4): Boolean;
 // Is the character from the Private Use Area?
 
 begin
-  Result := CategoryLookup(C, ccOtherPrivate);
+  Result := CategoryLookup(C, [ccOtherPrivate]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7358,7 +7311,7 @@ function UnicodeIsSurrogate(C: UCS4): Boolean;
 // Is the character one of the surrogate codes?
 
 begin
-  Result := CategoryLookup(C, ccOtherSurrogate);
+  Result := CategoryLookup(C, [ccOtherSurrogate]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7368,7 +7321,7 @@ function UnicodeIsLineSeparator(C: UCS4): Boolean;
 // Is the character a line separator?
 
 begin
-  Result := CategoryLookup(C, ccSeparatorLine);
+  Result := CategoryLookup(C, [ccSeparatorLine]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7378,7 +7331,7 @@ function UnicodeIsParagraphSeparator(C: UCS4): Boolean;
 // Is th character a paragraph separator;
 
 begin
-  Result := CategoryLookup(C, ccSeparatorParagraph);
+  Result := CategoryLookup(C, [ccSeparatorParagraph]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7409,7 +7362,7 @@ function UnicodeIsDefined(C: UCS4): Boolean;
 // Is the character defined (appears in one of the data files)?
 
 begin
-  Result := CategoryLookup(C, ccAssigned);
+  Result := CategoryLookup(C, [ccAssigned]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7419,7 +7372,7 @@ function UnicodeIsUndefined(C: UCS4): Boolean;
 // Is the character undefined (not assigned in the Unicode database)?
 
 begin
-  Result := not CategoryLookup(C, ccAssigned);
+  Result := not CategoryLookup(C, [ccAssigned]);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
