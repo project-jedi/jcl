@@ -32,7 +32,7 @@
 
 unit JclSysUtils;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
