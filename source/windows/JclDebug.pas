@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 19, 2001                                              }
+{ Last modified: January 20, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -161,6 +161,7 @@ type
     constructor Create(const MapFileName: TFileName); override;
     function LineNumberFromAddr(Addr: DWORD): Integer;
     function ModuleNameFromAddr(Addr: DWORD): string;
+    function ModuleStartFromAddr(Addr: DWORD): DWORD;
     function ProcNameFromAddr(Addr: DWORD): string;
     function SourceNameFromAddr(Addr: DWORD): string;
   end;
@@ -197,7 +198,7 @@ type
   end;
 
   TJclBinDbgNameCache = record
-    Addr: Integer;
+    Addr: DWORD;
     FirstWord: Integer;
     SecondWord: Integer;
   end;
@@ -218,10 +219,11 @@ type
     function ReadValue(var P: Pointer; var Value: Integer): Boolean;
   public
     constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
-    function LineNumberFromAddr(Addr: Integer): Integer;
-    function ProcNameFromAddr(Addr: Integer): string;
-    function ModuleNameFromAddr(Addr: Integer): string;
-    function SourceNameFromAddr(Addr: Integer): string;
+    function LineNumberFromAddr(Addr: DWORD): Integer;
+    function ProcNameFromAddr(Addr: DWORD): string;
+    function ModuleNameFromAddr(Addr: DWORD): string;
+    function ModuleStartFromAddr(Addr: DWORD): DWORD;
+    function SourceNameFromAddr(Addr: DWORD): string;
     property ValidFormat: Boolean read FValidFormat;
   end;
 
@@ -386,7 +388,7 @@ function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: P
 function JclLastExceptStackList: TJclStackInfoList;
 
 //------------------------------------------------------------------------------
-// Stack frame info routines
+// Exception frame info routines
 //------------------------------------------------------------------------------
 
 { TODO -cDOC : Marcel Bestebroer }
@@ -601,7 +603,8 @@ begin
     P := MapString;
     while not (P^ in [AnsiCarriageReturn, ')']) do
       Inc(P);
-  end else
+  end
+  else
   begin
     P := MapString;
     while not (P^ in [AnsiSpace, AnsiCarriageReturn, '(']) do
@@ -706,7 +709,8 @@ var
     begin
       Inc(CurrPos);
       Result.Offset := ReadHexValue;
-    end else
+    end
+    else
       Result.Offset := 0;
   end;
 
@@ -910,12 +914,15 @@ end;
 function TJclMapScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
   I: Integer;
+  ModuleStartAddr: DWORD;
 begin
+  ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := 0;
   for I := Length(FLineNumbers) - 1 downto 0 do
     if FLineNumbers[I].Addr <= Addr then
     begin
-      Result := FLineNumbers[I].LineNumber;
+      if FLineNumbers[I].Addr >= ModuleStartAddr then
+        Result := FLineNumbers[I].LineNumber;
       Break;
     end;
 end;
@@ -966,15 +973,33 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
+function TJclMapScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
 var
   I: Integer;
 begin
+  Result := DWORD(-1);
+  for I := Length(FSegments) - 1 downto 0 do
+    if (FSegments[I].StartAddr <= Addr) and (FSegments[I].EndAddr >= Addr) then
+    begin
+      Result := FSegments[I].StartAddr;
+      Break;
+    end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMapScanner.ProcNameFromAddr(Addr: DWORD): string;
+var
+  I: Integer;
+  ModuleStartAddr: DWORD;
+begin
+  ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
   for I := Length(FProcNames) - 1 downto 0 do
     if FProcNames[I].Addr <= Addr then
     begin
-      Result := MapStringToStr(FProcNames[I].ProcName);
+      if FProcNames[I].Addr >= ModuleStartAddr then
+        Result := MapStringToStr(FProcNames[I].ProcName);
       Break;
     end;
 end;
@@ -1032,12 +1057,15 @@ end;
 function TJclMapScanner.SourceNameFromAddr(Addr: DWORD): string;
 var
   I: Integer;
+  ModuleStartAddr: DWORD;
 begin
+  ModuleStartAddr := ModuleStartFromAddr(Addr);
   Result := '';
   for I := Length(FSourceNames) - 1 downto 0 do
     if FSourceNames[I].Addr <= Addr then
     begin
-      Result := MapStringToStr(FSourceNames[I].ProcName);
+      if FSourceNames[I].Addr >= ModuleStartAddr then
+        Result := MapStringToStr(FSourceNames[I].ProcName);
       Break;
     end;
 end;
@@ -1215,7 +1243,8 @@ var
       E := EncodeNameString(S);
       WordStream.WriteBuffer(Pointer(E)^, Length(E));
       WordList.AddObject(S, TObject(Result));
-    end else
+    end
+    else
       Result := DWORD(WordList.Objects[N]);
     Inc(Result);
   end;
@@ -1289,12 +1318,14 @@ begin
       begin
         FirstWord := 0;
         SecondWord := 0;
-      end else
+      end
+      else
       if D = 0 then
       begin
         FirstWord := AddWord(S);
         SecondWord := 0;
-      end else
+      end
+      else
       begin
         FirstWord := AddWord(Copy(S, 1, D - 1));
         SecondWord := AddWord(Copy(S, D + 1, Length(S)));
@@ -1339,7 +1370,8 @@ end;
 procedure TJclBinDebugScanner.CacheLineNumbers;
 var
   P: Pointer;
-  Value, LineNumber, CurrAddr, C: Integer;
+  Value, LineNumber, C: Integer;
+  CurrAddr: DWORD;
 begin
   if FLineNumbers = nil then
   begin
@@ -1365,7 +1397,8 @@ end;
 procedure TJclBinDebugScanner.CacheProcNames;
 var
   P: Pointer;
-  CurrAddr, Value, FirstWord, SecondWord, C: Integer;
+  Value, FirstWord, SecondWord, C: Integer;
+  CurrAddr: DWORD;
 begin
   if FProcNames = nil then
   begin
@@ -1428,19 +1461,22 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclBinDebugScanner.LineNumberFromAddr(Addr: Integer): Integer;
+function TJclBinDebugScanner.LineNumberFromAddr(Addr: DWORD): Integer;
 var
   P: Pointer;
-  Value, LineNumber, CurrAddr: Integer;
+  Value, LineNumber: Integer;
+  CurrAddr, ModuleStartAddr, ItemAddr: DWORD;
 begin
+  ModuleStartAddr := ModuleStartFromAddr(Addr);
   LineNumber := 0;
   if FCacheData then
   begin
     CacheLineNumbers;
     for Value := Length(FLineNumbers) - 1 downto 0 do
-      if Integer(FLineNumbers[Value].Addr) <= Addr then
+      if FLineNumbers[Value].Addr <= Addr then
       begin
-        LineNumber := FLineNumbers[Value].LineNumber;
+        if FLineNumbers[Value].Addr >= ModuleStartAddr then
+          LineNumber := FLineNumbers[Value].LineNumber;
         Break;
       end;
   end
@@ -1448,13 +1484,19 @@ begin
   begin
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.LineNumbers);
     CurrAddr := 0;
+    ItemAddr := 0;
     while ReadValue(P, Value) do
     begin
       Inc(CurrAddr, Value);
       if Addr < CurrAddr then
-        Break
+      begin
+        if ItemAddr < ModuleStartAddr then
+          LineNumber := 0;
+        Break;
+      end
       else
       begin
+        ItemAddr := CurrAddr;
         ReadValue(P, Value);
         Inc(LineNumber, Value);
       end;
@@ -1472,9 +1514,10 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclBinDebugScanner.ModuleNameFromAddr(Addr: Integer): string;
+function TJclBinDebugScanner.ModuleNameFromAddr(Addr: DWORD): string;
 var
-  Value, Name, StartAddr: Integer;
+  Value, Name: Integer;
+  StartAddr: DWORD;
   P: Pointer;
 begin
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
@@ -1496,11 +1539,38 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclBinDebugScanner.ProcNameFromAddr(Addr: Integer): string;
+function TJclBinDebugScanner.ModuleStartFromAddr(Addr: DWORD): DWORD;
+var
+  Value: Integer;
+  StartAddr, ModuleStartAddr: DWORD;
+  P: Pointer;
+begin
+  P := MakePtr(PJclDbgHeader(FStream.Memory)^.Units);
+  StartAddr := 0;
+  ModuleStartAddr := DWORD(-1);
+  while ReadValue(P, Value) do
+  begin
+    Inc(StartAddr, Value);
+    if Addr < StartAddr then
+      Break
+    else
+    begin
+      ReadValue(P, Value);
+      ModuleStartAddr := StartAddr;
+    end;
+  end;
+  Result := ModuleStartAddr;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclBinDebugScanner.ProcNameFromAddr(Addr: DWORD): string;
 var
   P: Pointer;
-  CurrAddr, Value, FirstWord, SecondWord: Integer;
+  Value, FirstWord, SecondWord: Integer;
+  CurrAddr, ModuleStartAddr, ItemAddr: DWORD;
 begin
+  ModuleStartAddr := ModuleStartFromAddr(Addr);
   FirstWord := 0;
   SecondWord := 0;
   if FCacheData then
@@ -1509,21 +1579,34 @@ begin
     for Value := Length(FProcNames) - 1 downto 0 do
       if FProcNames[Value].Addr <= Addr then
       begin
-        FirstWord := FProcNames[Value].FirstWord;
-        SecondWord := FProcNames[Value].SecondWord;
+        if FProcNames[Value].Addr >= ModuleStartAddr then
+        begin
+          FirstWord := FProcNames[Value].FirstWord;
+          SecondWord := FProcNames[Value].SecondWord;
+        end;
         Break;
       end;
-  end else
+  end
+  else
   begin
     P := MakePtr(PJclDbgHeader(FStream.Memory)^.Symbols);
     CurrAddr := 0;
+    ItemAddr := 0;
     while ReadValue(P, Value) do
     begin
       Inc(CurrAddr, Value);
       if Addr < CurrAddr then
-        Break
+      begin
+        if ItemAddr < ModuleStartAddr then
+        begin
+          FirstWord := 0;
+          SecondWord := 0;
+        end;  
+        Break;
+      end
       else
       begin
+        ItemAddr := CurrAddr;
         ReadValue(P, Value);
         Inc(FirstWord, Value);
         ReadValue(P, Value);
@@ -1536,7 +1619,8 @@ begin
     Result := DataToStr(FirstWord);
     if SecondWord <> 0 then
       Result := Result + '.' + DataToStr(SecondWord)
-  end else
+  end
+  else
     Result := '';
 end;
 
@@ -1562,21 +1646,29 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclBinDebugScanner.SourceNameFromAddr(Addr: Integer): string;
+function TJclBinDebugScanner.SourceNameFromAddr(Addr: DWORD): string;
 var
-  Value, Name, StartAddr: Integer;
+  Value, Name: Integer;
+  StartAddr, ModuleStartAddr, ItemAddr: DWORD;
   P: Pointer;
 begin
+  ModuleStartAddr := ModuleStartFromAddr(Addr);
   P := MakePtr(PJclDbgHeader(FStream.Memory)^.SourceNames);
   Name := 0;
   StartAddr := 0;
+  ItemAddr := 0;
   while ReadValue(P, Value) do
   begin
     Inc(StartAddr, Value);
     if Addr < StartAddr then
-      Break
+    begin
+      if ItemAddr < ModuleStartAddr then
+        Name := 0;
+      Break;
+    end
     else
     begin
+      ItemAddr := StartAddr;
       ReadValue(P, Value);
       Inc(Name, Value);
     end;
@@ -1816,7 +1908,8 @@ begin
         begin
           Info.ProcedureName := Items[I].Name;
           Result := True;
-        end else
+        end
+        else
         begin
           case PeBorUnmangleName(Items[I].Name, Unmangled, Desc, BasePos) of
             urOk:
@@ -1927,8 +2020,16 @@ begin
   NeedDebugInfoList;
   if DebugInfoList.GetLocationInfo(Addr, Info) then
     with Info do
-      Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, UnitName,
-        ProcedureName, LineNumber, SourceName])
+    begin
+      if LineNumber > 0 then
+        Result := Format('[%p] %s.%s (Line %u, "%s")', [Addr, UnitName,
+          ProcedureName, LineNumber, SourceName])
+      else
+      if UnitName <> '' then
+        Result := Format('[%p] %s.%s', [Addr, UnitName, ProcedureName])
+      else
+        Result := Format('[%p] %s', [Addr, ProcedureName]);
+    end    
   else
     Result := Format('[%p]', [Addr]);
 end;
@@ -2101,7 +2202,8 @@ end;
 function ValidCodeAddr(CodeAddr: DWORD): Boolean;
 begin
 //!  Result := (BaseOfCode < CodeAddr) and (CodeAddr < TopOfCode);
-  Result := IsSystemModule(FindHInstance(Pointer(CodeAddr)));
+  Result := IsSystemModule(ModuleFromAddr(Pointer(CodeAddr)));
+//!  Result := FindHInstance(Pointer(CodeAddr)) <> 0;
 end;
 
 //------------------------------------------------------------------------------
@@ -2361,7 +2463,7 @@ end;
 {$ENDIF}
 
 //==============================================================================
-// Stack frame info routines
+// Exception frame info routines
 //==============================================================================
 
 function GetFS: Pointer;
@@ -2638,7 +2740,8 @@ begin
     @Kernel32_RaiseException := nil;
     Result := True;
     ExceptionsHooked := False;
-  end else
+  end
+  else
     Result := False;
 end;
 
