@@ -255,6 +255,49 @@ Count=2
 2=GetPidFromProcessName
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function GetShellProcessName: string;
+[ShortDescr]
+Returns the name of the shell process.
+[Description]
+GetShellProcessName returns the name of the shell process as defined in the registry.
+If the registry does not explicitly specify a shell process "explorer.exe" is returned
+as a default.
+[Result]
+The name of the shell process executable.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=4,5,6
+FPC=1.x
+[SeeAlso]
+Count=1
+1=GetShellProcessHandle
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetShellProcessHandle: THandle;
+[ShortDescr]
+Returns a handle to the shell process.
+[Description]
+GetShellProcessHandle returns a handle to the shell process, if any. The handle is
+opened with full access (PROCESS_ALL_ACCESS) and must be closed by the caller using
+the CloseHandle Windows API function.
+[Result]
+If the function succeeds it returns a handle to the shell process. Upon failure the
+function raises an exception (EOSError).
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Processes, Tasks and Modules
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=4,5,6
+FPC=1.x
+[SeeAlso]
+Count=1
+1=GetShellProcessName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 [ShortDescr]
 Returns the process identifier (PID) for the process identified by processname.
