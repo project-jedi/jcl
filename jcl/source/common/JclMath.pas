@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: July 23, 2000                                                 }
+{ Last modified: December 10, 2000                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -60,8 +60,9 @@ const
   LogPi: Float   = 0.4971498726941338543512682882909;  // Log10(PI)
   LogE: Float    = 0.43429448190325182765112891891661; // Log10(E)
   E: Float       = 2.7182818284590452353602874713527;  // Natural constant
-  TwoToPower63: Float = 9223372036854775808.0;
-  hLn2PI: Float  = 0.91893853320467274178032973640562; // Ln(2*PI)/2
+  hLn2Pi: Float  = 0.91893853320467274178032973640562; // Ln(2*PI)/2
+  inv2Pi: Float  = 0.159154943091895;                  // 0.5 / Pi
+  TwoToPower63: Float = 9223372036854775808.0;         // 2^63
 
 const
   NaNSignalingBits: Int64 = $7FF0000000000001;
@@ -265,11 +266,14 @@ function PrimeFactors(const N: Integer): TDynIntegerArray;
 
 { NaN and INF support }
 
-function NaN: Double;
-function Infinity: Double;
+const
+  Infinity = 1/0; // tricky
+  NaN      = 0/0; // tricky
+
 function NegativeInfinity: Double;
 function IsNaN(const d: Double): Boolean;
 function IsInfinity(const d: Double): Boolean;
+function IsIndeterminate(const d: Double): Boolean;
 
 { Rational numbers }
 
@@ -1367,11 +1371,16 @@ begin
   {$IFDEF MATH_ANGLE_GRADS}
   Result := GradToRad(Result);
   {$ENDIF}
-  while Result > PI do
-    Result := Result - TwoPi;
 
-  while Result <= -PI do
-    Result := Result + TwoPi;
+  Result := Frac(Result * Inv2Pi);
+  if Result < -0.5 then
+    Result := Result + 1 else
+
+  if Result >= 0.5 then
+     Result := Result - 1;
+
+  Result := Result * TwoPi;
+
   {$IFDEF MATH_ANGLE_DEGREES}
   Result := RadToDeg(Result);
   {$ENDIF}
@@ -2122,7 +2131,7 @@ const
 
 var
   dNANQuiet: Double absolute NANQuietBits;
-  dPositiveInfinity: Double absolute PositiveInfinityBits;
+  dPositiveInfinity: Double = 1/0;
   dNegativeInfinity: Double absolute NegativeInfinityBits;
 
 //------------------------------------------------------------------------------
@@ -2141,21 +2150,16 @@ function IsInfinity(const d: Double): Boolean;
 var
   Overlay: Int64 absolute d;
 begin
-  Result := (Overlay and $7FF0000000000000) = $7FF0000000000000
+  Result := (Overlay and $7FF0000000000000) = $7FF0000000000000;
 end;
 
 //------------------------------------------------------------------------------
 
-function NaN: Double;
+function IsIndeterminate(const d: Double): Boolean;
+var
+  Overlay: Int64 absolute d;
 begin
-  Result := dNANQuiet
-end;
-
-//------------------------------------------------------------------------------
-
-function Infinity: Double;
-begin
-  Result := dPositiveInfinity
+  Result := (Overlay and $FFF8000000000000) = $FFF8000000000000;
 end;
 
 //------------------------------------------------------------------------------
@@ -2168,7 +2172,6 @@ end;
 //==============================================================================
 // Rational Numbers
 //==============================================================================
-
 
 constructor TJclRational.Create(const Numerator: Integer; const Denominator: Integer);
 begin
