@@ -62,7 +62,7 @@ type
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
   end;
 
@@ -101,7 +101,7 @@ type
     { IJclIntfCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
   end;
 
@@ -130,7 +130,7 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObject: Boolean = False);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObject: Boolean = False);
     destructor Destroy; override;
   end;
 
@@ -148,10 +148,10 @@ var
 
 //=== { TJclIntfHashSet } ====================================================
 
-constructor TJclIntfHashSet.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfHashSet.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
-  FMap := TJclIntfIntfHashMap.Create(Capacity);
+  FMap := TJclIntfIntfHashMap.Create(ACapacity);
   if IRefUnique = nil then
     IRefUnique := TInterfacedObject.Create;
 end;
@@ -302,10 +302,10 @@ end;
 
 //=== { TJclStrHashSet } =====================================================
 
-constructor TJclStrHashSet.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStrHashSet.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
-  FMap := TJclStrHashMap.Create(Capacity, False);
+  FMap := TJclStrHashMap.Create(ACapacity, False);
 end;
 
 destructor TJclStrHashSet.Destroy;
@@ -458,11 +458,11 @@ end;
 
 //=== { TJclHashSet } ========================================================
 
-constructor TJclHashSet.Create(Capacity: Integer = DefaultContainerCapacity;
+constructor TJclHashSet.Create(ACapacity: Integer = DefaultContainerCapacity;
   AOwnsObject: Boolean = False);
 begin
   inherited Create;
-  FMap := TJclHashMap.Create(Capacity, AOwnsObject);
+  FMap := TJclHashMap.Create(ACapacity, AOwnsObject);
 end;
 
 destructor TJclHashSet.Destroy;
@@ -680,6 +680,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

@@ -71,7 +71,7 @@ type
     procedure SetObject(Index: Integer; AInterface: IInterface);
     function SubList(First, Count: Integer): IJclIntfList;
 
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
@@ -122,7 +122,7 @@ type
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IJclStrList;
 
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
@@ -166,7 +166,7 @@ type
     { IJclCloneable }
     function Clone: TObject;
 
-    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity; AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     procedure AfterConstruction; override;
     // Do not decrement RefCount because iterator inc/dec it.
@@ -526,11 +526,14 @@ end;
 
 //=== { TJclIntfVector } =====================================================
 
-constructor TJclIntfVector.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfVector.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(Items, FCapacity);
 end;
 
@@ -543,7 +546,7 @@ end;
 procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(Items);
@@ -567,7 +570,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -672,7 +675,10 @@ end;
 
 procedure TJclIntfVector.Grow;
 begin
-  FCapacity := FCapacity + FCapacity div 4;
+  if FCapacity > 64 then
+    FCapacity := FCapacity + FCapacity div 4
+  else
+    FCapacity := FCapacity * 4;
   SetLength(Items, FCapacity);
 end;
 
@@ -729,7 +735,7 @@ end;
 function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := nil;
   System.Move(Items[Index + 1], Items[Index],
@@ -781,7 +787,7 @@ end;
 procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Items[Index] := AInterface;
 end;
 
@@ -813,11 +819,14 @@ end;
 
 //=== { TJclStrVector } ======================================================
 
-constructor TJclStrVector.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStrVector.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FCount := 0;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(Items, FCapacity);
 end;
 
@@ -830,7 +839,7 @@ end;
 procedure TJclStrVector.Insert(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1], (FCount - Index) * SizeOf(string));
   FCapacity := Length(Items);
   Items[Index] := AString;
@@ -866,7 +875,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -971,7 +980,10 @@ end;
 
 procedure TJclStrVector.Grow;
 begin
-  FCapacity := FCapacity + FCapacity div 4;
+  if FCapacity > 64 then
+    FCapacity := FCapacity + FCapacity div 4
+  else
+    FCapacity := FCapacity * 4;
   SetLength(Items, FCapacity);
 end;
 
@@ -1040,7 +1052,7 @@ end;
 function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := '';
   System.Move(Items[Index + 1], Items[Index],
@@ -1075,7 +1087,7 @@ end;
 procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Items[Index] := AString;
 end;
 
@@ -1099,13 +1111,16 @@ end;
 
 //=== { TJclVector } =========================================================
 
-constructor TJclVector.Create(Capacity: Integer = DefaultContainerCapacity;
+constructor TJclVector.Create(ACapacity: Integer = DefaultContainerCapacity;
   AOwnsObjects: Boolean = True);
 begin
   inherited Create;
   FCount := 0;
-  FCapacity := Capacity;
   FOwnsObjects := AOwnsObjects;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(Items, FCapacity);
 end;
 
@@ -1118,7 +1133,7 @@ end;
 procedure TJclVector.Insert(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index > FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(TObject));
   FCapacity := Length(Items);
@@ -1142,7 +1157,7 @@ var
 begin
   Result := False;
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   if ACollection = nil then
     Exit;
   Size := ACollection.Size;
@@ -1256,7 +1271,10 @@ end;
 
 procedure TJclVector.Grow;
 begin
-  FCapacity := FCapacity + FCapacity div 4;
+  if FCapacity > 64 then
+    FCapacity := FCapacity + FCapacity div 4
+  else
+    FCapacity := FCapacity * 4;
   SetLength(Items, FCapacity);
 end;
 
@@ -1330,7 +1348,7 @@ end;
 function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Result := Items[Index];
   FreeObject(Items[Index]);
   System.Move(Items[Index + 1], Items[Index], (FCount - Index) * SizeOf(TObject));
@@ -1364,7 +1382,7 @@ end;
 procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
-    raise EJclOutOfBoundsError.Create(RsEOutOfBounds);
+    raise EJclOutOfBoundsError.CreateResRec(@RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
@@ -1465,6 +1483,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

@@ -49,7 +49,7 @@ type
     procedure Enqueue(AInterface: IInterface);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
   TJclStrQueue = class(TJclAbstractContainer, IJclStrQueue)
@@ -66,7 +66,7 @@ type
     procedure Enqueue(const AString: string);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
   TJclQueue = class(TJclAbstractContainer, IJclQueue)
@@ -83,19 +83,24 @@ type
     procedure Enqueue(AObject: TObject);
     function Size: Integer;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
   end;
 
 implementation
 
+uses
+  JclResources;
+
 //=== { TJclIntfQueue } ======================================================
 
-constructor TJclIntfQueue.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfQueue.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FHead := 0;
   FTail := 0;
-  FCapacity := Capacity;
+  if ACapacity < 1 then
+    raise EJclIllegalArgumentError.CreateResRec(@RsEIllegalQueueCapacity);
+  FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
 
@@ -168,12 +173,14 @@ end;
 
 //=== { TJclStrQueue } =======================================================
 
-constructor TJclStrQueue.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStrQueue.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
   FHead := 0;
   FTail := 0;
-  FCapacity := Capacity;
+  if ACapacity < 1 then
+    raise EJclIllegalArgumentError.CreateResRec(@RsEIllegalQueueCapacity);
+  FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
 
@@ -246,10 +253,12 @@ end;
 
 //=== { TJclQueue } ==========================================================
 
-constructor TJclQueue.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclQueue.Create(ACapacity: Integer = DefaultContainerCapacity);
 begin
   inherited Create;
-  FCapacity := Capacity;
+  if ACapacity < 1 then
+    raise EJclIllegalArgumentError.CreateResRec(@RsEIllegalQueueCapacity);
+  FCapacity := ACapacity;
   SetLength(FElements, FCapacity);
 end;
 
@@ -323,6 +332,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.2  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

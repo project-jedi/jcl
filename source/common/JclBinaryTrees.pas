@@ -268,7 +268,7 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
@@ -278,7 +278,7 @@ end;
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -585,7 +585,7 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
@@ -595,7 +595,7 @@ end;
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -903,7 +903,7 @@ end;
 function TItr.NextIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
@@ -914,7 +914,7 @@ end;
 function TItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EJclOperationNotSupportedError.Create(RsEOperationNotSupported);
+  raise EJclOperationNotSupportedError.CreateResRec(@RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -3147,6 +3147,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.4  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.3  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //

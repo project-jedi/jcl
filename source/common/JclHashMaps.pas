@@ -131,7 +131,7 @@ type
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
@@ -163,7 +163,7 @@ type
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
@@ -197,7 +197,7 @@ type
     { IJclIntfCloneable }
     function Clone: IInterface;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
@@ -231,8 +231,8 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObjects:
-      Boolean = True);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity;
+      AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     property HashFunction: TJclHashFunction read FHashFunction write
       FHashFunction;
@@ -253,8 +253,8 @@ type
     { IJclCloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DefaultContainerCapacity; AOwnsObjects:
-      Boolean = True);
+    constructor Create(ACapacity: Integer = DefaultContainerCapacity;
+      AOwnsObjects: Boolean = True);
     destructor Destroy; override;
     { IJclMap }
     procedure Clear;
@@ -281,12 +281,15 @@ uses
 
 //=== { TJclIntfIntfHashMap } ================================================
 
-constructor TJclIntfIntfHashMap.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclIntfIntfHashMap.Create(ACapacity: Integer = DefaultContainerCapacity);
 var
   I: Integer;
 begin
   inherited Create;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FBuckets, FCapacity);
   for I := 0 to FCapacity - 1 do
     SetLength(FBuckets[I].Entries, 1);
@@ -597,12 +600,15 @@ end;
 
 //=== { TJclStrIntfHashMap } =================================================
 
-constructor TJclStrIntfHashMap.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStrIntfHashMap.Create(ACapacity: Integer = DefaultContainerCapacity);
 var
   I: Integer;
 begin
   inherited Create;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FBuckets, FCapacity);
   for I := 0 to FCapacity - 1 do
     SetLength(FBuckets[I].Entries, 1);
@@ -930,12 +936,15 @@ end;
 
 //=== { TJclStrStrHashMap } ==================================================
 
-constructor TJclStrStrHashMap.Create(Capacity: Integer = DefaultContainerCapacity);
+constructor TJclStrStrHashMap.Create(ACapacity: Integer = DefaultContainerCapacity);
 var
   I: Integer;
 begin
   inherited Create;
-  FCapacity := Capacity;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FBuckets, FCapacity);
   for I := 0 to FCapacity - 1 do
     SetLength(FBuckets[I].Entries, 1);
@@ -1287,14 +1296,17 @@ end;
 
 //=== { TJclStrHashMap } =====================================================
 
-constructor TJclStrHashMap.Create(Capacity: Integer = DefaultContainerCapacity;
+constructor TJclStrHashMap.Create(ACapacity: Integer = DefaultContainerCapacity;
   AOwnsObjects: Boolean = True);
 var
   I: Integer;
 begin
   inherited Create;
-  FCapacity := Capacity;
   FOwnsObjects := AOwnsObjects;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FBuckets, FCapacity);
   for I := 0 to FCapacity - 1 do
     SetLength(FBuckets[I].Entries, 1);
@@ -1635,14 +1647,17 @@ end;
 
 //=== { TJclHashMap } ========================================================
 
-constructor TJclHashMap.Create(Capacity: Integer = DefaultContainerCapacity;
+constructor TJclHashMap.Create(ACapacity: Integer = DefaultContainerCapacity;
   AOwnsObjects: Boolean = True);
 var
   I: Integer;
 begin
   inherited Create;
-  FCapacity := Capacity;
   FOwnsObjects := AOwnsObjects;
+  if ACapacity < 0 then
+    FCapacity := 0
+  else
+    FCapacity := ACapacity;
   SetLength(FBuckets, FCapacity);
   for I := 0 to FCapacity - 1 do
     SetLength(FBuckets[I].Entries, 64);
@@ -1822,13 +1837,12 @@ end;
 procedure TJclHashMap.GrowEntries(BucketIndex: Integer);
 var
   Capacity: Integer;
-  OldCapacity: Integer;
 begin
-  OldCapacity := Length(FBuckets[BucketIndex].Entries);
-  if OldCapacity > 64 then
-    Capacity := OldCapacity + OldCapacity div 4
+  Capacity := Length(FBuckets[BucketIndex].Entries);
+  if Capacity > 64 then
+    Capacity := Capacity + Capacity div 4
   else
-    Capacity := OldCapacity * 4;
+    Capacity := Capacity * 4;
   SetLength(FBuckets[BucketIndex].Entries, Capacity);
 end;
 
@@ -1970,6 +1984,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2005/02/27 11:36:20  marquardt
+// fixed and secured Capacity/Grow mechanism, raise exceptions with efficient CreateResRec
+//
 // Revision 1.2  2005/02/27 07:27:47  marquardt
 // changed interface names from I to IJcl, moved resourcestrings to JclResource.pas
 //
