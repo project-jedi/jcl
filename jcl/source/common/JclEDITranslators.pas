@@ -33,6 +33,8 @@
 
 unit JclEDITranslators;
 
+{$I jcl.inc}
+
 interface
 
 uses
