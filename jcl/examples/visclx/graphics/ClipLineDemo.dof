@@ -1,0 +1,4 @@
+[Directories]
+OutputDir=../../../bin
+Conditionals=VisualCLX;MATH_SINGLE_PRECISION
+
