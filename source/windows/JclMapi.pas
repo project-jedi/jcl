@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: August 21, 2002                                                                   }
+{ Last modified: October 28, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -257,14 +257,17 @@ type
 // Simple email send function
 //--------------------------------------------------------------------------------------------------
 
-function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName = ''; ShowDialog: Boolean = True; AParentWND: HWND = 0): Boolean;
+function JclSimpleSendMail(const Recipient, Name, Subject, Body: string;
+  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: HWND = 0;
+  const ProfileName: string = ''; const Password: string = ''): Boolean;
 
-function JclSimpleSendFax(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName = ''; ShowDialog: Boolean = True; AParentWND: HWND = 0): Boolean;
+function JclSimpleSendFax(const Recipient, Name, Subject, Body: string;
+  const Attachment: string = ''; ShowDialog: Boolean = True; ParentWND: HWND = 0;
+  const ProfileName: string = ''; const Password: string = ''): Boolean;
 
-function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
-  const AAttachment: TFileName = ''; AParentWND: HWND = 0): Boolean;
+function JclSimpleBringUpSendMailDialog(const Subject, Body: string;
+  const Attachment: string = ''; ParentWND: HWND = 0;
+  const ProfileName: string = ''; const Password: string = ''): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // MAPI Errors
@@ -1321,19 +1324,22 @@ end;
 // Simple email send function
 //==================================================================================================
 
-function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName; ShowDialog: Boolean; AParentWND: HWND): Boolean;
+function SimpleSendHelper(const ARecipient, AName, ASubject, ABody: string; const AAttachment: string;
+  AShowDialog: Boolean; AParentWND: HWND; const AProfileName, APassword, AAddressType: string): Boolean;
 begin
   with TJclEmail.Create do
   try
     if AParentWND <> 0 then
       ParentWnd := AParentWND;
-    Recipients.Add(ARecipient, AName, rkTO, MapiAddressTypeSMTP);
+    if ARecipient <> '' then
+      Recipients.Add(ARecipient, AName, rkTO, AAddressType);
     Subject := ASubject;
     Body := ABody;
     if AAttachment <> '' then
       Attachments.Add(AAttachment);
-    Result := Send(ShowDialog);
+    if AProfileName <> '' then
+      LogOn(AProfileName, APassword);
+    Result := Send(AShowDialog);
   finally
     Free;
   end;
@@ -1341,41 +1347,32 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclSimpleSendFax(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName; ShowDialog: Boolean; AParentWND: HWND): Boolean;
+function JclSimpleSendMail(const Recipient, Name, Subject, Body: string;
+  const Attachment: string; ShowDialog: Boolean; ParentWND: HWND;
+  const ProfileName: string; const Password: string): Boolean;
 begin
-  with TJclEmail.Create do
-  try
-    if AParentWND <> 0 then
-      ParentWnd := AParentWND;
-    Recipients.Add(ARecipient, AName, rkTO, MapiAddressTypeFAX);
-    Subject := ASubject;
-    Body := ABody;
-    if AAttachment <> '' then
-      Attachments.Add(AAttachment);
-    Result := Send(ShowDialog);
-  finally
-    Free;
-  end;
+  Result := SimpleSendHelper(Recipient, Name, Subject, Body, Attachment, ShowDialog, ParentWND,
+    ProfileName, Password, MapiAddressTypeSMTP);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
-  const AAttachment: TFileName; AParentWND: HWND): Boolean;
+function JclSimpleSendFax(const Recipient, Name, Subject, Body: string;
+  const Attachment: string; ShowDialog: Boolean; ParentWND: HWND;
+  const ProfileName: string; const Password: string): Boolean;
 begin
-  with TJclEmail.Create do
-  try
-    if AParentWND <> 0 then
-      ParentWnd := AParentWND;
-    Subject := ASubject;
-    Body := ABody;
-    if AAttachment <> '' then
-      Attachments.Add(AAttachment);
-    Result := Send(True);
-  finally
-    Free;
-  end;
+  Result := SimpleSendHelper(Recipient, Name, Subject, Body, Attachment, ShowDialog, ParentWND,
+    ProfileName, Password, MapiAddressTypeFAX);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclSimpleBringUpSendMailDialog(const Subject, Body: string;
+  const Attachment: string; ParentWND: HWND;
+  const ProfileName: string; const Password: string): Boolean;
+begin
+  Result := SimpleSendHelper('', '', Subject, Body, Attachment, True, ParentWND,
+    ProfileName, Password, MapiAddressTypeSMTP);
 end;
 
 //--------------------------------------------------------------------------------------------------
