@@ -22,7 +22,7 @@
 { through shell interfaces, shortcut's and program execution.                                      }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: May 26, 2002                                                                      }
+{ Last modified: October 30, 2002                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -139,7 +139,8 @@ procedure ShellLinkFree(var Link: TShellLink);
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer; const FileName: string): HRESULT;
-function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean;
+function ShellLinkGetIcon(const Link: TShellLink; const Icon: TIcon): Boolean; overload;
+function ShellLinkGetIcon(const FileName: string; const Icon: TIcon): Boolean; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Miscellanuous
@@ -1093,6 +1094,20 @@ begin
   end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function ShellLinkGetIcon(const FileName: string; const Icon: TIcon): Boolean;
+var
+  Link: TShellLink;
+begin
+  Result := Succeeded(ShellLinkResolve(FileName, Link));
+  if Result then
+  begin
+    Result := ShellLinkGetIcon(Link, Icon);
+    ShellLinkFree(Link);
+  end;
+end;
+
 //==================================================================================================
 // Miscellanuous
 //==================================================================================================
@@ -1317,7 +1332,7 @@ begin
     end;
   end
   else
-    Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]),'',SW_SHOWNORMAL);
+    Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1406,5 +1421,7 @@ begin
   else
     Result := 0;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
