@@ -1,18 +1,12 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
-
 program JediInstaller;
 
 uses
-  
   Forms,
   JclInstall in 'JclInstall.pas',
   JediInstallIntf in 'JediInstallIntf.pas',
   JediInstallerMain in 'JediInstallerMain.pas' {MainForm},
   ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
-  
-  JclBorRADToolInst in '..\source\common\JclBorRADToolInst.pas';
+  JclBorlandTools in '..\source\common\JclBorlandTools.pas';
 
 {$R *.res}
 
