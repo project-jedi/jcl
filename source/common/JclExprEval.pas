@@ -160,9 +160,6 @@ type
     etUser16, etUser17, etUser18, etUser19, etUser20, etUser21, etUser22, etUser23,
     etUser24, etUser25, etUser26, etUser27, etUser28, etUser29, etUser30, etUser31,
 
-    etAnd,
-    etOr,
-
     // compound tokens
     etNotEqual, // <>
     etLessEqual, // <=
@@ -1354,7 +1351,6 @@ begin
       begin
         Result := Lexer.TokenAsNumber;
         Lexer.NextTok;
-      //  b := true;
       end;
     else
       raise EJclExprEvalError.CreateResRec(@RsExprEvalFactorExpected);
@@ -3993,6 +3989,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2005/02/26 23:27:25  mthoma
+// Fixed #150 - a valid expression followed by Rubbish doesn't throw an exception => Now it does.
+//
 // Revision 1.13  2005/02/26 23:18:46  mthoma
 // *** empty log message ***
 //
