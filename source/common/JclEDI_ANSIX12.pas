@@ -1086,15 +1086,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-destructor TEDITransactionSet.Destroy;
-begin
-  FSESegment.Free;
-  FSTSegment.Free;
-  inherited Destroy;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 function TEDIInterchangeControlSegment.InternalAssignDelimiters: TEDIDelimiters;
 begin
   Result := nil;
@@ -1117,6 +1108,15 @@ begin
     inherited Create(nil, SegmentCount);
   FEDIDOT := ediTransactionSet;
   InternalCreateHeaderTrailerSegments;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDITransactionSet.Destroy;
+begin
+  FSESegment.Free;
+  FSTSegment.Free;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
