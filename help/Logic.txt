@@ -23,12 +23,13 @@ to the number of bits in the supplied value and each character in the string
 represents a single bit. The highest bit is placed in Result[1] and the lowest
 bit in Result[Length(Result)].
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function BitsHighest(X: Byte): Integer; overload;
@@ -50,12 +51,13 @@ Count=1
 [Result]
 The index of the highest bit set, or -1 if no bits are set.
 [Quick Info]
-BCB=4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=BitsLowest
@@ -81,12 +83,13 @@ Count=1
 [Result]
 The index of the lowest bit set, or -1 if no bits are set.
 [Quick Info]
-BCB=4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=BitsHighest
@@ -115,12 +118,13 @@ if Value is a Byte, then Bit position is interpreted as Bit mod 8.
 [Result]
 Copy of Value with the bit at position Bit cleared.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TestBit
@@ -149,12 +153,13 @@ Count=1
 [Result]
 The number of set bits or 0 if no bits are set.
 [Quick Info]
-BCB=4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=BitsLowest
@@ -182,12 +187,13 @@ This can be an Integer, Cardinal, Byte, Word or Int64.
 [Result]
 The number of cleared bits or 0 if no bits are cleared.
 [Quick Info]
-BCB=4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=BitsLowest
@@ -210,12 +216,13 @@ Count=2
 [Result]
 The resulting integer after the rotation is performed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RRot
@@ -259,12 +266,13 @@ Copy of Value with it's bits reversed.
 Count=1
 1=Reversing is not the same as toggling. To toggle bits use the <REF>ToggleBit</REF> function.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Team JCL;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
@@ -282,12 +290,13 @@ Count=2
 [Result]
 The resulting integer after the rotation is performed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=LRot
@@ -309,12 +318,13 @@ Count=2
 [Result]
 A copy of value after the arithmetic right shift operation.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SetBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
@@ -338,12 +348,13 @@ if Value is a Byte, then Bit position is interpreted as Bit mod 8.
 [Result]
 Copy of Value with the bit at position Bit set.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 Author=Marcel van Brakel;brakelm@bart.nl
 SubCat=Bit Manipulation
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TestBit
@@ -378,12 +389,13 @@ is a known problem in the compiler, not an error in the JCL.
 [Result]
 True if the bit at the specified position is set, False if it is cleared.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TestBits
@@ -411,12 +423,13 @@ Count=2
 [Result]
 If all the bits in the Mask are also set in Value the result is True, otherwise it's False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TestBit
@@ -447,12 +460,13 @@ if Value is a Byte then Bit position is interpreted as Bit mod 8.
 [Result]
 Copy of Value with the bit at position Bit toggled.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 Author=Marcel van Brakel;brakelm@bart.nl
 SubCat=Bit Manipulation
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TestBit
@@ -482,12 +496,13 @@ Count=2
 the upper bound of this array must not be larger then the size of the Dest parameters,
 in bits. Thus, for the Byte variant this array must not be larger then 8 elements.
 [Quick Info]
-BCB=4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=BitsToBooleans
@@ -519,12 +534,13 @@ equals the number of bits in the Bits parameter (ie 8 for Byte, 16 for Word, etc
 If False the number of elements in the resulting array equals the position of the
 highest set bit.
 [Quick Info]
-BCB=4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=BooleansToBits
@@ -544,12 +560,13 @@ Count=1
 [Result]
 The number of bits needed to represent the value.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Digits
@@ -566,12 +583,13 @@ Count=1
 [Result]
 The number of digits in the specified value.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=BitsNeeded
@@ -603,12 +621,13 @@ in as it's argument, iow it's not a newly allocated buffer.
 [Result]
 Copy of Value with it's bits reversed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Team JCL;jcl@delphi-jedi.org
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Max(const B1, B2: Byte): Byte; overload;
@@ -628,12 +647,13 @@ Count=2
 [Result]
 The larger of the two values.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Min
@@ -656,12 +676,13 @@ Count=2
 [Result]
 The smaller of the two values.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Max
@@ -690,12 +711,13 @@ Count=3
 B contains the decremented value if within limit, otherwise it contains the original value.
 This same value is returned as the function result.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IncLimit
@@ -726,12 +748,13 @@ Count=3
 B contains the incremented value if within limit, otherwise it contains the original value.
 This same value is returned as the function result.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=ESB Consultancy;glenn@esbconsult.com.au
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=DecLimit
@@ -767,12 +790,13 @@ Count=1
 1=If upon entry the B variable is already smaller than the limit the variable is
 set to Limit.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=IncLimit
@@ -808,12 +832,13 @@ Count=1
 1=If upon entry the B variable is already larger than the limit the variable is
 set to Limit.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=DecLimit
@@ -842,12 +867,13 @@ Count=2
 [Result]
 At the end of this routine I will contain the original value of J and J will contain the original value of I.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Arithmetic
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
@@ -866,12 +892,13 @@ Count=2
 [Result]
 The resulting integer after the rotate is performed.
 [Quick Info]
-BCB=3,4,5
 Unit=JclLogic
 Category=Ordinal Math and Logic
 SubCat=Bit Manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RRot
