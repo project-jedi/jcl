@@ -16,11 +16,12 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 6, 2000                                                  }
+{******************************************************************************}
+{                                                                              }
+{ Unit owner: Eric S. Fisher                                                   }
+{ Last modified: January, 30 2001                                              }
 {                                                                              }
 {******************************************************************************}
-
-//  Created from JclRegIni by ESF  2000/06/05
 
 unit JclIniFiles;
 
