@@ -91,40 +91,27 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
+  RsExprEvalRParenExpected = 'Parse error: '')'' expected';
+  RsExprEvalFactorExpected = 'Parse error: Factor expected';
+  RsExprEvalUnknownSymbol = 'Parse error: Unknown symbol: ''%s''';
 
-  RsExprEvalListError               = 'List index out of bounds (%d)';
+  RsExprEvalFirstArg = 'Parse error: ''('' and function''s first parameter expected';
+  RsExprEvalNextArg = 'Parse error: '','' and another parameter expected';
+  RsExprEvalEndArgs = 'Parse error: '')'' to close function''s parameters expected';
 
-  // Stacks
-  RsExprEvalStackEmpty              = 'Stack is empty';
-  RsExprEvalStackTopNotAnExpression = 'Item on stack is not an expression';
-  RsExprEvalStackTopNotAnOpOrVar    = 'Item on stack is not an operand or a ' +
-    'variable';
-  RsExprEvalStackBadItem            = 'Item on stack is of an unexpected type';
+  RsExprEvalExprNotFound = 'Expression compiler error: Expression ''%s'' not found';
+  RsExprEvalExprPtrNotFound = 'Expression compiler error: Expression pointer not found';
 
-  // Evaluation / parsing
-  RsExprEvalOperandExpected         = 'Operand expected';
-  RsExprEvalOperatorExpected        = 'Operator expected';
-  RsExprEvalToomanyOperands         = 'Too many operands';
-  RsExprEvalInvalidChar             = 'Invalid character at position %d';
-  RsExprEvalMissingLeftParenthesis  = 'Missing left parenthesis';
-  RsExprEvalMissingRightParenthesis = 'Missing right parenthesis';
-  RsExprEvalMissingRightBracket     = 'Missing right bracket';
-  RsExprEvalLeftParenthesis         = 'Cannot evaluate left parenthesis';
-  RsExprEvalRightParenthesis        = 'Cannot evaluate right parenthesis';
 
-  // Expression list
-  RsExprEvalExprUnexpectedItem      = 'Unexpected expression item';
+//------------------------------------------------------------------------------
+// JclStrHashMap
+//------------------------------------------------------------------------------
 
-  // Variables
-  RsExprEvalUnknownVariable         = 'Variable ''%s'' not found';
-  RsExprEvalDuplicateVariable       = 'Variable ''%s'' already exists';
+resourcestring
+  RsStringHashMapMustBeEmpty = 'HashList: must be empty to set size to zero';
+  RsStringHashMapDuplicate = 'Duplicate hash list entry: %s';
+  RsStringHashMapInvalidNode = 'Tried to remove invalid node: %s';
 
-  // Functions
-  RsExprEvalWrongArgumentCount      = 'Too many arguments for function ''%s''';
-  RsExprEvalUnknownFunction         = 'Function ''%s'' not found';
-  RsExprEvalInvalidArgument         = 'Invalid argument to function ''%s''';
-  RsExprEvalInvalidArrayCount       = 'Invalid array count (%d) to function '+
-    '''%s''';
 
 //------------------------------------------------------------------------------
 // JclFileUtils
