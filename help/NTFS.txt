@@ -25,6 +25,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TFindStreamData = record
@@ -74,6 +76,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds; var Data: TFindStreamData): Boolean;
@@ -116,6 +120,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsFindNextStream
@@ -151,6 +157,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsFindFirstStream
@@ -186,6 +194,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsFindFirstStream
@@ -224,6 +234,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsDeleteJunctionPoint
@@ -253,6 +265,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsCreateJunctionPoint
@@ -282,6 +296,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsCreateJunctionPoint
@@ -313,6 +329,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=NtfsZeroDataByHandle
@@ -343,6 +361,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=NtfsZeroDataByName
@@ -369,6 +389,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TNtfsAllocRanges = record
@@ -399,6 +421,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsGetAllocRangeEntry;..\NtfsGetAllocRangeEntry
@@ -432,6 +456,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsSetSparse
@@ -479,6 +505,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsSetSparse
@@ -512,6 +540,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=NtfsSetSparse
@@ -543,6 +573,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsGetSparse
@@ -572,6 +604,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=NtfsSetReparsePoint
@@ -611,6 +645,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=NtfsDeleteReparsePoint
@@ -640,6 +676,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsDeleteReparsePoint
@@ -675,6 +713,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsDeleteReparsePoint
@@ -707,6 +747,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsReparsePointsSupported
@@ -736,6 +778,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsGetReparseTag
@@ -767,6 +811,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsGetReparseTag
@@ -794,6 +840,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsMountDeviceAsDrive
@@ -844,6 +892,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsIsFolderMountPoint
@@ -874,6 +924,8 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=NtfsIsFolderMountPoint
@@ -919,6 +971,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=NtfsGetCompression
@@ -955,6 +1009,8 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TFileCompressionState;Types\TFileCompressionState
@@ -991,6 +1047,8 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TFileCompressionState;Types\TFileCompressionState
@@ -1030,6 +1088,8 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=TFileCompressionState;Types\TFileCompressionState
@@ -1076,6 +1136,8 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=TFileCompressionState;Types\TFileCompressionState
@@ -1104,6 +1166,8 @@ Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=NtfsGetCompression;..\NtfsGetCompression
