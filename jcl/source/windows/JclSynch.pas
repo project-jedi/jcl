@@ -16,7 +16,16 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: September 20, 2000                                            }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains various classes and support routines for implementing     }
+{ synchronisation in multithreaded applications. This ranges from interlocked  }
+{ access to simple typed variables to wrapper classes for synchronisation      }
+{ primitives provided by the operating system (critical section, semaphore,    }
+{ mutex etc). It also includes three user defined classes to complement these. }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: November 02, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -36,6 +45,8 @@ uses
 
 //------------------------------------------------------------------------------
 // Locked Integer manipulation
+//
+// Routines to manipulate simple typed variables in a thread safe manner 
 //------------------------------------------------------------------------------
 
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
@@ -51,6 +62,8 @@ function LockedSub(var Target: Integer; Value: Integer): Integer;
 
 //------------------------------------------------------------------------------
 // TJclDispatcherObject
+//
+// Base class for operating system provided synchronisation primitives
 //------------------------------------------------------------------------------
 
 type
@@ -78,6 +91,9 @@ type
 
 //------------------------------------------------------------------------------
 // Wait functions
+//
+// Object enabled Wait functions (takes TJclDispaycher objects as parameter as
+// opposed to handles) mostly for convenience
 //------------------------------------------------------------------------------
 
 function WaitForMultipleObjects(const Objects: array of TJclDispatcherObject;
@@ -292,11 +308,11 @@ type
 
 //------------------------------------------------------------------------------
 // Debugging
-//------------------------------------------------------------------------------
-
+//
 // Note that the following function and structure declarations are all offically
 // undocumented and, except for QueryCriticalSection, require Windows NT since
 // it is all part of the Windows NT Native API.
+//------------------------------------------------------------------------------
 
 type
   TEventInfo = record
@@ -893,15 +909,21 @@ begin
   ThreadId := GetCurrentThreadId;
   if InterlockedIncrement(FSharedInfo^.LockCount) = 1 then
   begin
+    // Optex was unowned
     FSharedInfo^.ThreadId := ThreadId;
     FSharedInfo^.RecursionCount := 1;
   end
   else
   begin
     if FSharedInfo^.ThreadId = ThreadId then
+    begin
+      // We already owned it, increase ownership count
       Inc(FSharedInfo^.RecursionCount)
+    end
     else
     begin
+      // Optex is owner by someone else, wait for it to be released and then
+      // immediately take ownership
       FEvent.WaitForever;
       FSharedInfo^.ThreadId := ThreadId;
       FSharedInfo^.RecursionCount := 1;
@@ -965,6 +987,7 @@ begin
     ThreadOwnsOptex := LockedCompareExchange(FSharedInfo^.LockCount, 1, 0) = 0;
     if ThreadOwnsOptex then
     begin
+      // Optex was unowned
       FSharedInfo^.ThreadId := ThreadId;
       FSharedInfo^.RecursionCount := 1;
     end
@@ -972,6 +995,7 @@ begin
     begin
       if FSharedInfo^.ThreadId = ThreadId then
       begin
+        // We already owned the Optex
         InterlockedIncrement(FSharedInfo^.LockCount);
         Inc(FSharedInfo^.RecursionCount);
         ThreadOwnsOptex := True;
