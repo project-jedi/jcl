@@ -35,11 +35,7 @@ unit JclWin32;
 interface
 
 uses
-  Windows, ActiveX, ImageHlp, WinSvc,
-  {$IFDEF COMPILER5_UP}
-  AccCtrl, AclApi,
-  {$ENDIF COMPILER5_UP}
-  ShlObj,
+  Windows, ActiveX, ImageHlp, WinSvc, AccCtrl, AclApi, ShlObj,
   JclBase;
 
 {$HPPEMIT '#include <winnt.h>'}
@@ -457,26 +453,6 @@ const
   SE_SYNC_AGENT_NAME          = 'SeSyncAgentPrivilege';
   SE_ENABLE_DELEGATION_NAME   = 'SeEnableDelegationPrivilege';
 
-{$IFNDEF COMPILER5_UP}
-
-type
-  SE_OBJECT_TYPE = (
-    SE_UNKNOWN_OBJECT_TYPE,
-    SE_FILE_OBJECT,
-    SE_SERVICE,
-    SE_PRINTER,
-    SE_REGISTRY_KEY,
-    SE_LMSHARE,
-    SE_KERNEL_OBJECT,
-    SE_WINDOW_OBJECT,
-    SE_DS_OBJECT,
-    SE_DS_OBJECT_ALL,
-    SE_PROVIDER_DEFINED_OBJECT,
-    SE_WMIGUID_OBJECT
-  );
-
-{$ENDIF COMPILER5_UP}
-
 // TODO SetNamedSecurityInfo is incorrectly declared, at least for Windows 2000
 // it is. D5 unit tries to import from aclapi.dll but it is located in advapi3.dll
 // Have to check whether this is also true for Windows NT 4.
@@ -809,25 +785,6 @@ const
 
 type
 
-{$IFNDEF COMPILER5_UP}
-  PImageExportDirectory = ^TImageExportDirectory;
-  _IMAGE_EXPORT_DIRECTORY = packed record
-    Characteristics: DWORD;
-    TimeDateStamp: DWORD;
-    MajorVersion: Word;
-    MinorVersion: Word;
-    Name: DWORD;
-    Base: DWORD;
-    NumberOfFunctions: DWORD;
-    NumberOfNames: DWORD;
-    AddressOfFunctions: DWORD;    // RVA from base of image
-    AddressOfNames: DWORD;        // RVA from base of image
-    AddressOfNameOrdinals: DWORD; // RVA from base of image
-  end;
-  TImageExportDirectory = _IMAGE_EXPORT_DIRECTORY;
-  IMAGE_EXPORT_DIRECTORY = _IMAGE_EXPORT_DIRECTORY;
-{$ENDIF COMPILER5_UP}
-
 { Non-COFF Object file header }
 
   PANonObjectHeader = ^TANonObjectHeader;
@@ -1101,14 +1058,6 @@ type
   function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
     CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall;
     external 'imagehlp.dll' name 'ImageEnumerateCertificates';
-
-{$IFNDEF COMPILER5_UP}
-  // lpServiceConfig can be nil
-  function QueryServiceConfig(hService: SC_HANDLE;
-    lpServiceConfig: PQueryServiceConfig; cbBufSize: DWORD;
-    var pcbBytesNeeded: DWORD): BOOL; stdcall;
-    external advapi32 name 'QueryServiceConfigA';
-{$ENDIF COMPILER5_UP}
 
 //==================================================================================================
 // JclShell
@@ -1442,12 +1391,6 @@ const
   {$EXTERNALSYM SE_SYNC_AGENT_NAME}
   {$EXTERNALSYM SE_ENABLE_DELEGATION_NAME}
 
-{$IFNDEF COMPILER5_UP}
-
-  {$EXTERNALSYM SE_OBJECT_TYPE}
-
-{$ENDIF COMPILER5_UP}
-
 {$EXTERNALSYM PPSID}
 {$EXTERNALSYM _TOKEN_USER}
 {$EXTERNALSYM TOKEN_USER}
@@ -1535,10 +1478,6 @@ const
   {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_WDM_DRIVER}
   {$EXTERNALSYM IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE}
 
-{$IFNDEF COMPILER5_UP}
-  {$EXTERNALSYM _IMAGE_EXPORT_DIRECTORY}
-  {$EXTERNALSYM IMAGE_EXPORT_DIRECTORY}
-{$ENDIF COMPILER5_UP}
   {$EXTERNALSYM ANON_OBJECT_HEADER}
   {$EXTERNALSYM _IMAGE_IMPORT_BY_NAME}
   {$EXTERNALSYM IMAGE_IMPORT_BY_NAME}
@@ -1600,10 +1539,6 @@ const
   {$EXTERNALSYM ImageRvaToVa}
   {$EXTERNALSYM BindImageEx}
   {$EXTERNALSYM ImageEnumerateCertificates}
-
-{$IFNDEF COMPILER5_UP}
-  {$EXTERNALSYM QueryServiceConfig}
-{$ENDIF COMPILER5_UP}
 
   {$EXTERNALSYM CSIDL_COMMON_APPDATA}
 
