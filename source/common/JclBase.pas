@@ -26,7 +26,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclBase;
@@ -184,19 +184,21 @@ type
 
 type
   TDynByteArray     = array of Byte;
-  TDynShortintArray = array of Shortint;
-  TDynSmallintArray = array of Smallint;
+  TDynShortIntArray = array of ShortInt;
   TDynWordArray     = array of Word;
-  TDynIntegerArray  = array of Integer;
-  TDynLongintArray  = array of Longint;
-  TDynCardinalArray = array of Cardinal;
+  TDynSmallIntArray = array of SmallInt;
+  TDynLongWordArray = array of LongWord;
+  TDynLongIntArray  = array of LongInt;
   TDynInt64Array    = array of Int64;
+  TDynCardinalArray = array of Cardinal;
+  TDynIntegerArray  = array of Integer;
   TDynExtendedArray = array of Extended;
   TDynDoubleArray   = array of Double;
   TDynSingleArray   = array of Single;
   TDynFloatArray    = array of Float;
   TDynPointerArray  = array of Pointer;
   TDynStringArray   = array of string;
+  TDynBooleanArray  = array of Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Cross-Platform Compatibility
@@ -392,6 +394,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/04/14 23:04:09  peterjhaas
+// add TDynLongWordArray, TDynBooleanArray
+//
 // Revision 1.8  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
