@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: October 3, 2003                                                                   }
+{ Last modified: January 22, 2004                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -897,6 +897,7 @@ resourcestring
 //--------------------------------------------------------------------------------------------------
 
 resourcestring
+  RsBlankSearchString = 'Search string cannot be blank';
   RsInvalidEmptyStringItem  = 'String list passed to StringsToMultiSz cannot contain empty strings.';
   RsNumericConstantTooLarge = 'Numeric constant too large.';
   
