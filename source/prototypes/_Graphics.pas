@@ -215,7 +215,11 @@ type
     TPersistent methods, it provides thread-safe locking and change notification }
   TJclThreadPersistent = class(TPersistent)
   private
-    {$IFDEF VCL}FLock: TRTLCriticalSection;{$ELSE VCL}FLock: TCriticalSection;{$ENDIF VCL}
+    {$IFDEF VCL}
+    FLock: TRTLCriticalSection;
+    {$ELSE VCL}
+    FLock: TCriticalSection;
+    {$ENDIF VCL}
     FLockCount: Integer;
     FUpdateCount: Integer;
     FOnChanging: TNotifyEvent;
@@ -481,6 +485,7 @@ function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
 {$ENDIF MSWINDOWS}
+
 {$IFDEF VCL}
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
@@ -493,6 +498,7 @@ procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 {$ENDIF VCL}
+
 {$IFDEF Bitmap32}
 procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
@@ -503,16 +509,19 @@ procedure StretchTransfer( Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32;
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
 {$ENDIF Bitmap32}
+
 {$IFDEF MSWINDOWS}
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 {$ENDIF MSWINDOWS}
+
 {$IFDEF VCL}
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
 {$ENDIF VCL}
+
 {$IFDEF Bitmap32}
 //--------------------------------------------------------------------------------------------------
 // PolyLines and Polygons
@@ -644,6 +653,7 @@ begin
   Result := True;
 end;
 {$ENDIF Bitmap32}
+
 //==================================================================================================
 // Internal low level routines
 //==================================================================================================
@@ -1652,6 +1662,7 @@ begin
   end;
 end;
 {$ENDIF Bitmap32}
+
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1667,6 +1678,7 @@ begin
   DeleteObject(MemDC);
 end;
 {$ENDIF MSWINDOWS}
+
 {$IFDEF VCL}
 //--------------------------------------------------------------------------------------------------
 
@@ -1751,6 +1763,7 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1789,6 +1802,7 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+
 {$IFDEF VCL}
 //--------------------------------------------------------------------------------------------------
 
@@ -1925,6 +1939,7 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
 {$IFDEF Bitmap32}
 //--------------------------------------------------------------------------------------------------
 
@@ -2056,6 +2071,7 @@ begin
   end;
 end;
 {$ENDIF Bitmap32}
+
 {$IFDEF VCL}
 //--------------------------------------------------------------------------------------------------
 
@@ -2196,6 +2212,7 @@ begin
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 {$ENDIF VCL}
+
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -2248,6 +2265,7 @@ begin
   Result := True;
 end;
 {$ENDIF MSWINDOWS}
+
 {$IFDEF VCL}
 //==================================================================================================
 // TJclDesktopCanvas
@@ -2633,7 +2651,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF Bitmap32}
-
 //==================================================================================================
 // TJclThreadPersistent
 //==================================================================================================
@@ -2643,9 +2660,9 @@ begin
   inherited Create;
   {$IFDEF VCL}
   InitializeCriticalSection(FLock);
-  {$ELSE}
+  {$ELSE ~VCL}
   FLock := TCriticalSection.Create;
-  {$ENDIF VCL}
+  {$ENDIF ~VCL}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2654,9 +2671,9 @@ destructor TJclThreadPersistent.Destroy;
 begin
   {$IFDEF VCL}
   DeleteCriticalSection(FLock);
-  {$ELSE}
+  {$ELSE ~VCL}
   FLock.Free;
-  {$ENDIF VCL}
+  {$ENDIF ~VCL}
   inherited Destroy;
 end;
 
@@ -2698,9 +2715,9 @@ begin
   InterlockedIncrement(FLockCount);
   {$IFDEF VCL}
   EnterCriticalSection(FLock);
-  {$ELSE}
+  {$ELSE ~VCL}
   FLock.Enter;
-  {$ENDIF VCL}
+  {$ENDIF ~VCL}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2709,9 +2726,9 @@ procedure TJclThreadPersistent.Unlock;
 begin
   {$IFDEF VCL}
   LeaveCriticalSection(FLock);
-  {$ELSE}
+  {$ELSE ~VCL}
   FLock.Leave;
-  {$ENDIF VCL}
+  {$ENDIF ~VCL}
   InterlockedDecrement(FLockCount);
 end;
 
@@ -5038,6 +5055,7 @@ begin
   end;
 end;
 {$ENDIF Bitmap32}
+
 //==================================================================================================
 // Matrices
 //==================================================================================================
@@ -5301,6 +5319,7 @@ end;
 //==================================================================================================
 // PolyLines and Polygons
 //==================================================================================================
+
 {$IFDEF Bitmap32}
 procedure PolylineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
@@ -5373,8 +5392,9 @@ begin
   Bitmap.EndUpdate;
   Bitmap.Changed;
 end;
-//--------------------------------------------------------------------------------------------------
 {$ENDIF Bitmap32}
+
+//--------------------------------------------------------------------------------------------------
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
@@ -5549,6 +5569,7 @@ begin
   end;
 end;
 {$IFDEF Bitmap32}
+
 //--------------------------------------------------------------------------------------------------
 
 procedure FillLines(Bitmap: TJclBitmap32; BaseY: Integer;
@@ -6097,6 +6118,7 @@ begin
   Dst.Changed;
 end;
 {$ENDIF Bitmap32}
+
 //==================================================================================================
 // Gamma table support for opacities
 //==================================================================================================
@@ -6137,6 +6159,10 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.18  2004/11/14 06:05:05  rrossmair
+// - some source formatting
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.17  2004/11/06 02:19:45  mthoma
 // history cleaning.
 //
@@ -6152,7 +6178,6 @@ initialization
 // Revision 1.13  2004/07/15 05:15:41  rrossmair
 // TJclRegion: Handle ownership management added, some refactoring
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.12  2004/07/12 02:54:33  rrossmair
 // TJclRegion.Create fixed
 //

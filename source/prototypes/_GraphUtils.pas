@@ -1077,7 +1077,6 @@ end;
 //==================================================================================================
 
 {$IFDEF MSWINDOWS}
-
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 begin
   Result := (DialogUnits * LoWord(GetDialogBaseUnits)) div 4;
@@ -1103,7 +1102,6 @@ function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
 begin
   Result := PixelUnits * 8 div HiWord(GetDialogBaseUnits);
 end;
-
 {$ENDIF MSWINDOWS}
 
 //==================================================================================================
@@ -1219,13 +1217,13 @@ begin
   {$IFDEF MSWINDOWS}
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-  {$ELSE}
+  {$ELSE ~MSWINDOWS}
   {$IFDEF VisualCLX}
   { TODO : Find a Qt-independent solution }
   X := QWidget_width(QApplication_desktop);
   Y := QWidget_height(QApplication_desktop);
   {$ENDIF VisualCLX}
-  {$ENDIF MSWINDOWS}
+  {$ENDIF ~MSWINDOWS}
   with R do
   begin
     if Right > X then
@@ -2880,6 +2878,10 @@ finalization
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.16  2004/11/14 06:05:05  rrossmair
+// - some source formatting
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.15  2004/10/18 16:22:14  marquardt
 // corrected typo
 //
@@ -2892,7 +2894,6 @@ finalization
 // Revision 1.12  2004/07/16 03:58:14  rrossmair
 // some style cleaning
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.11  2004/06/27 23:28:51  rrossmair
 // some style cleaning (case, spaces)
 //
