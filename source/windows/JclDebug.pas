@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: March 26, 2001                                                }
+{ Last modified: April 1, 2001                                                 }
 {                                                                              }
 {******************************************************************************}
 
@@ -340,7 +340,7 @@ function IsSystemModule(const Module: HMODULE): Boolean;
 function Caller(Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Pointer;
 
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo;
-function GetLocationInfoStr(const Addr: Pointer): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): string;
 procedure ClearLocationData;
 
 function FileByLevel(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string;
@@ -355,6 +355,9 @@ function ProcOfAddr(const Addr: Pointer): string;
 function LineOfAddr(const Addr: Pointer): Integer;
 function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
+
+function ExtractClassName(const ProcedureName: string): string;
+function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
@@ -426,7 +429,7 @@ type
     function GetItems(Index: Integer): TJclStackInfoItem;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
-    procedure AddToStrings(const Strings: TStrings);
+    procedure AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
@@ -2378,7 +2381,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetLocationInfoStr(const Addr: Pointer): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean): string;
 var
   Info: TJclLocationInfo;
   LocFound: Boolean;
@@ -2404,6 +2407,8 @@ begin
     end
   else
     Result := Format('[%p]', [Addr]);
+  if IncludeModuleName then
+    Insert(Format('{%-12s}', [ExtractFileName(GetModulePath(ModuleFromAddr(Addr)))]), Result, 11);
 end;
 
 //------------------------------------------------------------------------------
@@ -2455,6 +2460,26 @@ function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean;
 begin
   Result := MapOfAddr(Caller(Level + 1), _File, _Module, _Proc, _Line);
+end;
+
+//------------------------------------------------------------------------------
+
+function ExtractClassName(const ProcedureName: string): string;
+var
+  D: Integer;
+begin
+  D := Pos('.', ProcedureName);
+  if D < 2 then
+    Result := ''
+  else
+    Result := Copy(ProcedureName, 1, D - 1);
+end;
+
+//------------------------------------------------------------------------------
+
+function ExtractMethodName(const ProcedureName: string): string;
+begin
+  Result := Copy(ProcedureName, Pos('.', ProcedureName) + 1, Length(ProcedureName));
 end;
 
 //------------------------------------------------------------------------------
@@ -2908,12 +2933,12 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TJclStackInfoList.AddToStrings(const Strings: TStrings);
+procedure TJclStackInfoList.AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr)));
+    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName));
 end;
 
 //------------------------------------------------------------------------------
