@@ -1,29 +1,28 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclMiscel.pas.                                          }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ 2000 of these individuals.                                                   }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Various miscellanuous routines that do not (yet) fit nicely into other units }
-{                                                                              }
-{ Unit owner: Jeroen Speldekamp                                                }
-{ Last modified: January 29, 2000                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclMiscel.pas.                                                              }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Various miscellanuous routines that do not (yet) fit nicely into other units                     }
+{                                                                                                  }
+{ Unit owner: Jeroen Speldekamp                                                                    }
+{ Last modified: January 29, 2000                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclMiscel;
 
@@ -37,9 +36,9 @@ uses
   Windows,
   JclBase;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // StrLstLoadSave
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 const
   HKCR: HKEY = HKEY_CLASSES_ROOT;
@@ -55,9 +54,9 @@ function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: st
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // CreateProcAsUser
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   EJclCreateProcessError = class (EJclWin32Error);
@@ -72,7 +71,7 @@ uses
   SysUtils,
   JclResources, JclSecurity, JclWin32;
 
-//==============================================================================
+//==================================================================================================
 
 function CreateDOSProcessRedirected(const CommandLine, InputFile, OutputFile: string): Boolean;
 var
@@ -112,7 +111,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function WinExec32(const Cmd: string; const CmdShow: Integer): Boolean;
 var
@@ -133,7 +132,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function WinExec32AndWait(const Cmd: string; const CmdShow: Integer): Cardinal;
 var
@@ -151,11 +150,7 @@ begin
     WaitForInputIdle(ProcessInfo.hProcess, INFINITE);
     if WaitForSingleObject(ProcessInfo.hProcess, INFINITE) = WAIT_OBJECT_0 then
     begin
-      {$IFDEF DELPHI3}
-      if not GetExitCodeProcess(ProcessInfo.hProcess, Integer(Result)) then
-      {$ELSE}
       if not GetExitCodeProcess(ProcessInfo.hProcess, Result) then
-      {$ENDIF DELPHI3}
         Result := Cardinal($FFFFFFFF);
     end;
     CloseHandle(ProcessInfo.hThread);
@@ -163,7 +158,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 var
@@ -181,7 +176,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure CheckOSVersion;
 begin
@@ -191,14 +186,14 @@ begin
     raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure CreateProcAsUser(const UserDomain, UserName, PassWord, CommandLine: string);
 begin
   CreateProcAsUserEx(UserDomain, UserName, Password, CommandLine, nil);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: string;
   const Environment: PChar);
