@@ -1,37 +1,60 @@
+{******************************************************************************}
+{                                                                              }
+{ Project JEDI Code Library (JCL)                                              }
+{                                                                              }
+{ The contents of this file are subject to the Mozilla Public License Version  }
+{ 1.0 (the "License"); you may not use this file except in compliance with the }
+{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
+{                                                                              }
+{ Software distributed under the License is distributed on an "AS IS" basis,   }
+{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
+{ the specific language governing rights and limitations under the License.    }
+{                                                                              }
+{ The Original Code is JclComplex.pas.                                         }
+{                                                                              }
+{ The Initial Developer of the Original Code is documented in the accompanying }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
+{ of these individuals.                                                        }
+{                                                                              }
+{ Last modified: July 23, 2000                                                 }
+{                                                                              }
+{******************************************************************************}
+
 unit jclComplex;
 
 {$I JCL.INC}
 
 interface
 
-  uses SysUtils, JclBase, JclMath, JclSysUtils, JclStrings;
+uses SysUtils,
+  JclBase, JclMath, JclSysUtils, JclStrings;
 
 resourcestring
-  RsCplxInvalidString  = 'Can not create a complex number from the string provided';
+  RsCplxInvalidString = 'Can not create a complex number from the string provided';
 
-var
-  ComplexPrecision: Extended = 1E-14;
+const
+  TComplex_VERSION = 5.01;
 
 type
   TComplexType = (crRectangular, crPolar);
 
   TCoords = record
-    x: Extended;       // rectangular real
-    y: Extended;       // rectangular imaginary
-    r: Extended;       // polar 1
-    theta: Extended;   // polar 2
+    x: Float; // rectangular real
+    y: Float; // rectangular imaginary
+    r: Float; // polar 1
+    theta: Float; // polar 2
   end;
 
   TRectCoord = record
-    x: Extended;
-    y: Extended;
+    x: Float;
+    y: Float;
   end;
 
   TComplex = class
-  private              {z = x + yi}
+  private {z = x + yi}
     fCoord: TCoords;
     fFracLen: Byte;
-    function MiscalcSingle(X: Extended): Extended;
+    function MiscalcSingle(X: Float): Float;
     procedure MiscalcComplex; // eliminates miscalculation
     procedure FillCoords(CompexType: TComplexType);
     function GetRectangularString: string;
@@ -39,11 +62,11 @@ type
     procedure SetRectangularString(StrToParse: string);
     procedure SetPolarString(StrToParse: string);
     procedure SetFracLen(X: Byte);
-    function GetRadius: Extended;
-    function GetAngle: Extended;
-    function NormalizeAngle(Value: Extended): Extended;
+    function GetRadius: Float;
+    function GetAngle: Float;
+    function NormalizeAngle(Value: Float): Float;
   protected
-    function Assign(Coord: TCoords; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function Assign(Coord: TCoords; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CoreAdd(First, Second: TRectCoord): TRectCoord;
     function CoreDiv(First, Second: TRectCoord): TRectCoord;
     function CoreMul(First, Second: TRectCoord): TRectCoord;
@@ -52,8 +75,8 @@ type
     function CoreExp(ExpValue: TRectCoord): TRectCoord;
     function CorePwr(First, Second, Polar: TRectCoord): TRectCoord;
     function CoreIntPwr(First, Polar: TRectCoord; Pwr: Integer): TRectCoord;
-    function CoreRealPwr(First, Polar: TRectCoord; Pwr: Extended): TRectCoord;
-    function CoreRoot(First, Polar: TRectCoord; K,N: Word): TRectCoord;
+    function CoreRealPwr(First, Polar: TRectCoord; Pwr: Float): TRectCoord;
+    function CoreRoot(First, Polar: TRectCoord; K, N: Word): TRectCoord;
     function CoreCos(Value: TRectCoord): TRectCoord;
     function CoreSin(Value: TRectCoord): TRectCoord;
     function CoreTan(Value: TRectCoord): TRectCoord;
@@ -72,71 +95,71 @@ type
     function CoreLnGamma(Value: TRectCoord): TRectCoord;
     function CoreGamma(Value: TRectCoord): TRectCoord;
   public
-    property FracLength: Byte read fFracLen Write SetFracLen default 8;
+    property FracLength: Byte read fFracLen write SetFracLen default 8;
 
-    // constructors
+    //----------- constructors
     constructor Create; overload;
-    constructor Create(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}); overload;
+    constructor Create(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}); overload;
 
-    // getting different parts of the number
-    property RealPart: Extended read fCoord.x;
-    property ImaginaryPart: Extended read fCoord.y;
-    property Radius: Extended read GetRadius;
-    property Angle: Extended read GetAngle;
+    //----------- getting different parts of the number
+    property RealPart: Float read fCoord.x;
+    property ImaginaryPart: Float read fCoord.y;
+    property Radius: Float read GetRadius;
+    property Angle: Float read GetAngle;
 
-    // format output
-    property AsString: string read GetRectangularString Write SetRectangularString;
-    property AsPolarString: string read GetPolarString Write SetPolarString;
+    //----------- format output
+    property AsString: string read GetRectangularString write SetRectangularString;
+    property AsPolarString: string read GetPolarString write SetPolarString;
 
-    // complex numbers assignment routines
-    function Assign(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    //----------- complex numbers assignment routines
+    function Assign(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function AssignZero: TComplex;
     function AssignOne: TComplex;
     function Duplicate: TComplex;
 
-    // arithmetics -- modify the object itself
+    //----------- arithmetics -- modify the object itself
     function CAdd(AddValue: TComplex): TComplex; overload;
-    function CAdd(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CAdd(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CDiv(DivValue: TComplex): TComplex; overload;
-    function CDiv(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CDiv(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CMul(MulValue: TComplex): TComplex; overload;
-    function CMul(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CMul(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CSub(SubValue: TComplex): TComplex; overload;
-    function CSub(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CSub(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CNeg: TComplex;
     function CConjugate: TComplex;
 
-    // arithmetics -- creates new resulting object
+    //----------- arithmetics -- creates new resulting object
     function CNewAdd(AddValue: TComplex): TComplex; overload;
-    function CNewAdd(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CNewAdd(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CNewDiv(DivValue: TComplex): TComplex; overload;
-    function CNewDiv(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CNewDiv(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CNewMul(MulValue: TComplex): TComplex; overload;
-    function CNewMul(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CNewMul(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CNewSub(SubValue: TComplex): TComplex; overload;
-    function CNewSub(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CNewSub(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CNewNeg: TComplex;
     function CNewConjugate: TComplex;
 
-    // natural log and exponential functions
+    //----------- natural log and exponential functions
     function CLn: TComplex;
     function CNewLn: TComplex;
     function CExp: TComplex;
     function CNewExp: TComplex;
     function CPwr(PwrValue: TComplex): TComplex; overload;
-    function CPwr(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CPwr(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CNewPwr(PwrValue: TComplex): TComplex; overload;
-    function CNewPwr(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex; overload;
+    function CNewPwr(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex; overload;
     function CIntPwr(Pwr: Integer): TComplex; overload;
     function CNewIntPwr(Pwr: Integer): TComplex; overload;
-    function CRealPwr(Pwr: Extended): TComplex; overload;
-    function CNewRealPwr(Pwr: Extended): TComplex; overload;
+    function CRealPwr(Pwr: Float): TComplex; overload;
+    function CNewRealPwr(Pwr: Float): TComplex; overload;
     function CRoot(K, N: Word): TComplex; overload;
     function CNewRoot(K, N: Word): TComplex; overload;
     function CSqrt: TComplex; overload;
     function CNewSqrt: TComplex; overload;
 
-    // trigonometric functions
+    //----------- trigonometric functions
     function CCos: TComplex;
     function CNewCos: TComplex;
     function CSin: TComplex;
@@ -150,7 +173,7 @@ type
     function CCsc: TComplex;
     function CNewCsc: TComplex;
 
-    // complex hyperbolic functions
+    //----------- complex hyperbolic functions
     function CCosH: TComplex;
     function CNewCosH: TComplex;
     function CSinH: TComplex;
@@ -164,7 +187,7 @@ type
     function CCscH: TComplex;
     function CNewCscH: TComplex;
 
-    // complex Bessel functions of order zero
+    //----------- complex Bessel functions of order zero
     function CI0: TComplex;
     function CNewI0: TComplex;
     function CJ0: TComplex;
@@ -177,27 +200,31 @@ type
     function CGamma: TComplex;
     function CNewGamma: TComplex;
 
-    // miscellaneous
-    function AbsoluteValue: Extended; overload;
-    function AbsoluteValue(Coord: TRectCoord): Extended; overload;
-    function AbsoluteValueSqr: Extended; overload;
-    function AbsoluteValueSqr(Coord: TRectCoord): Extended; overload;
-    function FormatExtended(X: Extended): string;
+    //----------- miscellaneous routines
+    function AbsoluteValue: Float; overload;
+    function AbsoluteValue(Coord: TRectCoord): Float; overload;
+    function AbsoluteValueSqr: Float; overload;
+    function AbsoluteValueSqr(Coord: TRectCoord): Float; overload;
+    function FormatExtended(X: Float): string;
   end;
 
 var
   RectZero,
-  RectOne,
-  RectInfinity: TRectCoord;
-  hLn2PI: Extended;
+    RectOne,
+    RectInfinity: TRectCoord;
+
+var
+  ComplexPrecision: Float = 1E-14;
 
 const
   MaxTerm: Byte = 35;
-  EpsilonSqr: Extended = 1E-20;
+  EpsilonSqr: Float = 1E-20;
 
 implementation
 
-Function Coordinates(cX, cY: Extended; CoordType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TCoords;
+//------------------------------------------------------------------------------
+
+function Coordinates(cX, cY: Float; CoordType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TCoords;
 begin
   case CoordType of
     crRectangular:
@@ -217,17 +244,23 @@ begin
   end;
 end;
 
-function RectCoord(X, Y: Extended): TRectCoord; overload;
+//------------------------------------------------------------------------------
+
+function RectCoord(X, Y: Float): TRectCoord; overload;
 begin
   Result.x := X;
   Result.y := Y;
 end;
+
+//------------------------------------------------------------------------------
 
 function RectCoord(Value: TComplex): TRectCoord; overload;
 begin
   Result.x := Value.fCoord.x;
   Result.y := Value.fCoord.y;
 end;
+
+//------------------------------------------------------------------------------
 
 constructor TComplex.Create;
 begin
@@ -236,12 +269,16 @@ begin
   fFracLen := 18;
 end;
 
-constructor TComplex.Create(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF});
+//------------------------------------------------------------------------------
+
+constructor TComplex.Create(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF});
 begin
   inherited Create;
   Assign(X, Y, ComplexType);
   fFracLen := 18;
 end;
+
+//------------------------------------------------------------------------------
 
 procedure TComplex.FillCoords(CompexType: TComplexType);
 begin
@@ -254,26 +291,33 @@ begin
       end;
     crRectangular:
       begin
-        if fCoord.x = 0 then begin
-          fCoord.r     := Abs(fCoord.y);
+        if fCoord.x = 0 then
+        begin
+          fCoord.r := Abs(fCoord.y);
           fCoord.theta := PiOn2 * Sgn(fCoord.y);
-        end else begin
-          fCoord.r     := AbsoluteValue;
-          fCoord.theta := System.ArcTan(fCoord.y/fCoord.x);
+        end
+        else
+        begin
+          fCoord.r := AbsoluteValue;
+          fCoord.theta := System.ArcTan(fCoord.y / fCoord.x);
           if fCoord.x < 0 then
-            fCoord.theta := fCoord.theta + Pi*Sgn(fCoord.y);
+            fCoord.theta := fCoord.theta + Pi * Sgn(fCoord.y);
         end;
       end;
   end;
   MiscalcComplex;
 end;
 
-function TComplex.MiscalcSingle(X: Extended): Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.MiscalcSingle(X: Float): Float;
 begin
   Result := X;
   if Abs(Result) < ComplexPrecision then
     Result := 0;
 end;
+
+//------------------------------------------------------------------------------
 
 procedure TComplex.MiscalcComplex; // eliminates miscalculation
 begin
@@ -286,12 +330,16 @@ begin
     fCoord.theta := MiscalcSingle(fCoord.theta);
 end;
 
-function TComplex.Assign(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.Assign(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 begin
   Result := Assign(Coordinates(X, Y, ComplexType), ComplexType);
 end;
 
-function TComplex.Assign(Coord: TCoords; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.Assign(Coord: TCoords; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 begin
   fCoord := Coord;
   FillCoords(ComplexType);
@@ -299,15 +347,21 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.AssignZero: TComplex;
 begin
   Result := Assign(0, 0, crRectangular);
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.AssignOne: TComplex;
 begin
   Result := Assign(1, 0, crRectangular);
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.GetRectangularString: string;
 begin
@@ -315,17 +369,22 @@ begin
   if (fCoord.x = 0) and (fCoord.y = 0) then
     Result := '0'
   else
-    if fCoord.x <> 0 then begin
+    if fCoord.x <> 0 then
+    begin
       Result := FormatExtended(fCoord.x);
       if fCoord.y > 0 then
         Result := Result + '+'
-      else if fCoord.y < 0 then
-        Result := Result + '-';
+      else
+        if fCoord.y < 0 then
+          Result := Result + '-';
       if fCoord.y <> 0 then
         Result := Result + FormatExtended(Abs(fCoord.y)) + 'i';
-    end else
+    end
+    else
       Result := FormatExtended(fCoord.y) + 'i';
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.GetPolarString: string;
 begin
@@ -333,35 +392,43 @@ begin
   Result := FormatExtended(fCoord.r) + '*CIS(' + FormatExtended(fCoord.theta) + ')';
 end;
 
+//------------------------------------------------------------------------------
+
 procedure TComplex.SetRectangularString(StrToParse: string);
 var
   SignPos: Integer;
-  RealPart, ImagPart: Extended;
+  RealPart, ImagPart: Float;
 begin
   StrToParse := StrRemoveChars(StrToParse, [' ']);
   SignPos := StrFind('+', StrToParse, 2);
   if SignPos = 0 then
     SignPos := StrFind('-', StrToParse, 2);
-  if SignPos > 0 then begin
+  if SignPos > 0 then
+  begin
     try
       RealPart := StrToFloat(Copy(StrToParse, 1, SignPos - 1));
     except
       raise EJclMathError.CreateResRec(@RsCplxInvalidString);
     end;
     try
-      ImagPart := StrToFloat(Copy(StrToParse, SignPos, Length(StrToParse)-SignPos));
+      ImagPart := StrToFloat(Copy(StrToParse, SignPos, Length(StrToParse) - SignPos));
     except
       raise EJclMathError.CreateResRec(@RsCplxInvalidString);
     end;
-  end else begin
-    if (StrRight(StrToParse, 1) = 'i') or (StrRight(StrToParse, 1) = 'I') then begin
+  end
+  else
+  begin
+    if (StrRight(StrToParse, 1) = 'i') or (StrRight(StrToParse, 1) = 'I') then
+    begin
       RealPart := 0;
       try
-        ImagPart := StrToFloat(Copy(StrToParse, 1, Length(StrToParse)-1));
+        ImagPart := StrToFloat(Copy(StrToParse, 1, Length(StrToParse) - 1));
       except
         raise EJclMathError.CreateResRec(@RsCplxInvalidString);
       end;
-    end else begin
+    end
+    else
+    begin
       try
         RealPart := StrToFloat(StrToParse);
       except
@@ -373,10 +440,12 @@ begin
   Assign(RealPart, ImagPart);
 end;
 
+//------------------------------------------------------------------------------
+
 procedure TComplex.SetPolarString(StrToParse: string);
 var
   AstPos: Integer;
-  Radius, Angle: Extended;
+  Radius, Angle: Float;
 begin
   StrToParse := AnsiUpperCase(StrRemoveChars(StrToParse, [' ']));
   AstPos := Pos('*', StrToParse);
@@ -391,12 +460,14 @@ begin
   if AstPos = 0 then
     raise EJclMathError.CreateResRec(@RsCplxInvalidString);
   try
-    Angle := StrToFloat(Copy(StrToParse, AstPos + 1, Length(StrToParse)-AstPos-1));
+    Angle := StrToFloat(Copy(StrToParse, AstPos + 1, Length(StrToParse) - AstPos - 1));
   except
     raise EJclMathError.CreateResRec(@RsCplxInvalidString);
   end;
   Assign(Radius, Angle, crPolar);
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.Duplicate: TComplex;
 begin
@@ -404,7 +475,10 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//==============================================================================
 // arithmetics
+//==============================================================================
+
 function TComplex.CoreAdd(First, Second: TRectCoord): TRectCoord;
 begin
   Result.x := First.x + Second.x;
@@ -421,7 +495,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CAdd(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CAdd(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -433,6 +509,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewAdd(AddValue: TComplex): TComplex;
 var
   ResCoord: TRectCoord;
@@ -442,7 +520,9 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CNewAdd(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewAdd(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -454,14 +534,18 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreDiv(First, Second: TRectCoord): TRectCoord;
 var
-  Denom: Extended;
+  Denom: Float;
 begin
   Denom := SQR(Second.x) + SQR(Second.y);
-  Result.x := (First.x*Second.x+First.y*Second.y)/Denom;
-  Result.y := (First.y*Second.x-First.x*Second.y)/Denom;
+  Result.x := (First.x * Second.x + First.y * Second.y) / Denom;
+  Result.y := (First.y * Second.x - First.x * Second.y) / Denom;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CDiv(DivValue: TComplex): TComplex;
 var
@@ -473,7 +557,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CDiv(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CDiv(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -485,6 +571,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewDiv(DivValue: TComplex): TComplex;
 var
   ResCoord: TRectCoord;
@@ -494,7 +582,9 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CNewDiv(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewDiv(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -506,11 +596,15 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreMul(First, Second: TRectCoord): TRectCoord;
 begin
-  Result.x := First.x*Second.x-First.y*Second.y;
-  Result.y := First.x*Second.y+First.y*Second.x;
+  Result.x := First.x * Second.x - First.y * Second.y;
+  Result.y := First.x * Second.y + First.y * Second.x;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CMul(MulValue: TComplex): TComplex;
 var
@@ -522,7 +616,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CMul(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CMul(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -534,6 +630,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewMul(MulValue: TComplex): TComplex;
 var
   ResCoord: TRectCoord;
@@ -543,7 +641,9 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CNewMul(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewMul(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -555,11 +655,15 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreSub(First, Second: TRectCoord): TRectCoord;
 begin
-  Result.x := First.x-Second.x;
-  Result.y := First.y-Second.y;
+  Result.x := First.x - Second.x;
+  Result.y := First.y - Second.y;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CSub(SubValue: TComplex): TComplex;
 var
@@ -571,7 +675,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CSub(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CSub(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -583,6 +689,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewSub(SubValue: TComplex): TComplex;
 var
   ResValue: TRectCoord;
@@ -592,7 +700,9 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CNewSub(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewSub(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -604,6 +714,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNeg;
 begin
   fCoord.x := -fCoord.x;
@@ -611,11 +723,15 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewNeg;
 begin
   Result := TComplex.Create(-fCoord.x, -fCoord.y);
   Result.fFracLen := fFracLen;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CConjugate;
 begin
@@ -623,18 +739,25 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewConjugate;
 begin
   Result := TComplex.Create(fCoord.x, -fCoord.y);
   Result.fFracLen := fFracLen;
 end;
 
+//==============================================================================
 // natural log and exponential functions
+//==============================================================================
+
 function TComplex.CoreLn(LnValue: TRectCoord): TRectCoord;
 begin
   Result.x := Ln(LnValue.x);
   Result.y := NormalizeAngle(LnValue.y);
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CLn: TComplex;
 var
@@ -647,6 +770,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewLn: TComplex;
 var
   ResCoord: TRectCoord;
@@ -657,14 +782,18 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreExp(ExpValue: TRectCoord): TRectCoord;
 var
-  ExpX: Extended;
+  ExpX: Float;
 begin
   ExpX := Exp(ExpValue.x);
   Result.x := ExpX * Cos(ExpValue.y);
   Result.y := ExpX * Sin(ExpValue.y);
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CExp: TComplex;
 var
@@ -676,6 +805,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewExp: TComplex;
 var
   ResCoord: TRectCoord;
@@ -684,6 +815,8 @@ begin
   Result := TComplex.Create(ResCoord.x, ResCoord.y);
   Result.fFracLen := fFracLen;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CorePwr(First, Second, Polar: TRectCoord): TRectCoord;
 begin
@@ -696,10 +829,13 @@ begin
       Result := RectOne
     else
       Result := RectZero
-  else begin
+  else
+  begin
     Result := CoreExp(CoreMul(Second, CoreLn(Polar)));
   end;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CPwr(PwrValue: TComplex): TComplex;
 var
@@ -712,7 +848,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CPwr(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CPwr(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -724,6 +862,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewPwr(PwrValue: TComplex): TComplex;
 var
   ResValue: TRectCoord;
@@ -734,7 +874,9 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CNewPwr(X, Y: Extended; ComplexType: TComplexType {$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular {$ENDIF}): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewPwr(X, Y: Float; ComplexType: TComplexType{$IFDEF SUPPORTS_DEFAULTPARAMS} = crRectangular{$ENDIF}): TComplex;
 var
   NewComplex: TComplex;
 begin
@@ -746,6 +888,8 @@ begin
   end;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreIntPwr(First, Polar: TRectCoord; Pwr: Integer): TRectCoord;
 begin
   MiscalcSingle(First.x);
@@ -756,8 +900,10 @@ begin
     else
       Result := RectZero
   else
-    Result := RectCoord(PowerInt(Polar.x, Pwr), NormalizeAngle(Pwr*Polar.y));
+    Result := RectCoord(PowerInt(Polar.x, Pwr), NormalizeAngle(Pwr * Polar.y));
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CIntPwr(Pwr: Integer): TComplex;
 var
@@ -771,6 +917,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewIntPwr(Pwr: Integer): TComplex;
 var
   ResValue: TRectCoord;
@@ -781,7 +929,9 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CoreRealPwr(First, Polar: TRectCoord; Pwr: Extended): TRectCoord;
+//------------------------------------------------------------------------------
+
+function TComplex.CoreRealPwr(First, Polar: TRectCoord; Pwr: Float): TRectCoord;
 begin
   MiscalcSingle(First.x);
   MiscalcSingle(First.y);
@@ -791,10 +941,12 @@ begin
     else
       Result := RectZero
   else
-    Result := RectCoord(Power(Polar.x, Pwr), NormalizeAngle(Pwr*Polar.y));
+    Result := RectCoord(Power(Polar.x, Pwr), NormalizeAngle(Pwr * Polar.y));
 end;
 
-function TComplex.CRealPwr(Pwr: Extended): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CRealPwr(Pwr: Float): TComplex;
 var
   ResValue: TRectCoord;
 begin
@@ -806,7 +958,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CNewRealPwr(Pwr: Extended): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewRealPwr(Pwr: Float): TComplex;
 var
   ResValue: TRectCoord;
 begin
@@ -816,17 +970,21 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
-function TComplex.CoreRoot(First, Polar: TRectCoord; K,N: Word): TRectCoord;
+//------------------------------------------------------------------------------
+
+function TComplex.CoreRoot(First, Polar: TRectCoord; K, N: Word): TRectCoord;
 begin
   MiscalcSingle(First.x);
   MiscalcSingle(First.y);
   if AbsoluteValue(First) = 0 then
     Result := RectZero
   else
-    Result := RectCoord(Power(Polar.x, 1/N), NormalizeAngle((Polar.y+K*TwoPi)/N));
+    Result := RectCoord(Power(Polar.x, 1 / N), NormalizeAngle((Polar.y + K * TwoPi) / N));
 end;
 
-function TComplex.CRoot(K,N: Word): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CRoot(K, N: Word): TComplex;
 var
   ResValue: TRectCoord;
 begin
@@ -838,7 +996,9 @@ begin
   Result := Self;
 end;
 
-function TComplex.CNewRoot(K,N: Word): TComplex;
+//------------------------------------------------------------------------------
+
+function TComplex.CNewRoot(K, N: Word): TComplex;
 var
   ResValue: TRectCoord;
 begin
@@ -848,21 +1008,30 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CSqrt: TComplex;
 begin
   Result := CRoot(0, 2);
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CNewSqrt: TComplex;
 begin
   Result := CNewRoot(0, 2);
 end;
 
+//------------------------------------------------------------------------------
 // trigonometric functions
+//------------------------------------------------------------------------------
+
 function TComplex.CoreCos(Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(Cos(fCoord.x)*CosH(fCoord.y), -Sin(fCoord.x)*SinH(fCoord.y));
+  Result := RectCoord(Cos(fCoord.x) * CosH(fCoord.y), -Sin(fCoord.x) * SinH(fCoord.y));
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CCos: TComplex;
 var
@@ -874,6 +1043,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewCos: TComplex;
 var
   ResValue: TRectCoord;
@@ -883,10 +1054,14 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreSin(Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(Sin(fCoord.x)*CosH(fCoord.y), Cos(fCoord.x)*SinH(fCoord.y));
+  Result := RectCoord(Sin(fCoord.x) * CosH(fCoord.y), Cos(fCoord.x) * SinH(fCoord.y));
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CSin: TComplex;
 var
@@ -898,6 +1073,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewSin: TComplex;
 var
   ResValue: TRectCoord;
@@ -907,16 +1084,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreTan(Value: TRectCoord): TRectCoord;
 var
-  TempValue: Extended;
+  TempValue: Float;
 begin
-  TempValue := Cos(2*Value.x) + CosH(2*Value.y);
-  if MiscalcSingle(TempValue) <> 0 then begin
-    Result := RectCoord(Sin(2*Value.x)/TempValue, SinH(2*Value.y)/TempValue);
-  end else
+  TempValue := Cos(2 * Value.x) + CosH(2 * Value.y);
+  if MiscalcSingle(TempValue) <> 0 then
+  begin
+    Result := RectCoord(Sin(2 * Value.x) / TempValue, SinH(2 * Value.y) / TempValue);
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CTan: TComplex;
 var
@@ -928,6 +1111,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewTan: TComplex;
 var
   ResValue: TRectCoord;
@@ -937,16 +1122,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreCot(Value: TRectCoord): TRectCoord;
 var
-  TempValue: Extended;
+  TempValue: Float;
 begin
-  TempValue := Cosh(2*Value.y) - Cos(2*Value.x);
-  if MiscalcSingle(TempValue) <> 0 then begin
-    Result := RectCoord(Sin(2*Value.x)/TempValue, -SinH(2*Value.y)/TempValue);
-  end else
+  TempValue := Cosh(2 * Value.y) - Cos(2 * Value.x);
+  if MiscalcSingle(TempValue) <> 0 then
+  begin
+    Result := RectCoord(Sin(2 * Value.x) / TempValue, -SinH(2 * Value.y) / TempValue);
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CCot: TComplex;
 var
@@ -958,6 +1149,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewCot: TComplex;
 var
   ResValue: TRectCoord;
@@ -967,16 +1160,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreSec(Value: TRectCoord): TRectCoord;
 var
   TempValue: TRectCoord;
 begin
   TempValue := CoreCos(Value);
-  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then begin
+  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then
+  begin
     Result := CoreDiv(RectOne, TempValue);
-  end else
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CSec: TComplex;
 var
@@ -988,6 +1187,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewSec: TComplex;
 var
   ResValue: TRectCoord;
@@ -997,16 +1198,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreCsc(Value: TRectCoord): TRectCoord;
 var
   TempValue: TRectCoord;
 begin
   TempValue := CoreSin(Value);
-  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then begin
+  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then
+  begin
     Result := CoreDiv(RectOne, TempValue);
-  end else
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CCsc: TComplex;
 var
@@ -1018,6 +1225,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewCsc: TComplex;
 var
   ResValue: TRectCoord;
@@ -1027,11 +1236,16 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//==============================================================================
 // hyperbolic functions
+//==============================================================================
+
 function TComplex.CoreCosH(Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(CosH(fCoord.x)*Cos(fCoord.y), SinH(fCoord.x)*Sin(fCoord.y));
+  Result := RectCoord(CosH(fCoord.x) * Cos(fCoord.y), SinH(fCoord.x) * Sin(fCoord.y));
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CCosH: TComplex;
 var
@@ -1043,6 +1257,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewCosH: TComplex;
 var
   ResValue: TRectCoord;
@@ -1052,10 +1268,14 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreSinH(Value: TRectCoord): TRectCoord;
 begin
-  Result := RectCoord(SinH(fCoord.x)*Cos(fCoord.y), CosH(fCoord.x)*Sin(fCoord.y));
+  Result := RectCoord(SinH(fCoord.x) * Cos(fCoord.y), CosH(fCoord.x) * Sin(fCoord.y));
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CSinH: TComplex;
 var
@@ -1067,6 +1287,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewSinH: TComplex;
 var
   ResValue: TRectCoord;
@@ -1076,16 +1298,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreTanH(Value: TRectCoord): TRectCoord;
 var
-  TempValue: Extended;
+  TempValue: Float;
 begin
-  TempValue := CosH(2*Value.x) + Cos(2*Value.y);
-  if MiscalcSingle(TempValue) <> 0 then begin
-    Result := RectCoord(SinH(2*Value.x)/TempValue, Sin(2*Value.y)/TempValue);
-  end else
+  TempValue := CosH(2 * Value.x) + Cos(2 * Value.y);
+  if MiscalcSingle(TempValue) <> 0 then
+  begin
+    Result := RectCoord(SinH(2 * Value.x) / TempValue, Sin(2 * Value.y) / TempValue);
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CTanH: TComplex;
 var
@@ -1097,6 +1325,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewTanH: TComplex;
 var
   ResValue: TRectCoord;
@@ -1106,16 +1336,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreCotH(Value: TRectCoord): TRectCoord;
 var
-  TempValue: Extended;
+  TempValue: Float;
 begin
-  TempValue := Cosh(2*Value.x) - Cos(2*Value.y);
-  if MiscalcSingle(TempValue) <> 0 then begin
-    Result := RectCoord(SinH(2*Value.x)/TempValue, -Sin(2*Value.y)/TempValue);
-  end else
+  TempValue := Cosh(2 * Value.x) - Cos(2 * Value.y);
+  if MiscalcSingle(TempValue) <> 0 then
+  begin
+    Result := RectCoord(SinH(2 * Value.x) / TempValue, -Sin(2 * Value.y) / TempValue);
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CCotH: TComplex;
 var
@@ -1127,6 +1363,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewCotH: TComplex;
 var
   ResValue: TRectCoord;
@@ -1136,16 +1374,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreSecH(Value: TRectCoord): TRectCoord;
 var
   TempValue: TRectCoord;
 begin
   TempValue := CoreCosH(Value);
-  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then begin
+  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then
+  begin
     Result := CoreDiv(RectOne, TempValue);
-  end else
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CSecH: TComplex;
 var
@@ -1157,6 +1401,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewSecH: TComplex;
 var
   ResValue: TRectCoord;
@@ -1166,16 +1412,22 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreCscH(Value: TRectCoord): TRectCoord;
 var
   TempValue: TRectCoord;
 begin
   TempValue := CoreSinH(Value);
-  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then begin
+  if MiscalcSingle(AbsoluteValue(TempValue)) <> 0 then
+  begin
     Result := CoreDiv(RectOne, TempValue);
-  end else
+  end
+  else
     Result := RectInfinity;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CCscH: TComplex;
 var
@@ -1187,6 +1439,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewCscH: TComplex;
 var
   ResValue: TRectCoord;
@@ -1196,27 +1450,32 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//==============================================================================
 // complex Bessel functions of order zero
+//==============================================================================
+
 function TComplex.CoreI0(Value: TRectCoord): TRectCoord;
 var
   zSQR25, term: TRectCoord;
   i: Integer;
-  SizeSqr: Extended;
+  SizeSqr: Float;
 begin
   Result := RectOne;
   zSQR25 := CoreMul(Value, Value);
-  zSQR25 := RectCoord(0.25*zSQR25.x, 0.25*zSQR25.y);
+  zSQR25 := RectCoord(0.25 * zSQR25.x, 0.25 * zSQR25.y);
   term := zSQR25;
   Result := CoreAdd(Result, zSQR25);
   i := 1;
   repeat
-     term := CoreMul(zSQR25, term);
-     Inc(i);
-     term := RectCoord(term.x/SQR(i), term.y/SQR(i));
-     Result := CoreAdd(Result, term);
-     SizeSqr := Sqr(term.x) + Sqr(term.y);
+    term := CoreMul(zSQR25, term);
+    Inc(i);
+    term := RectCoord(term.x / SQR(i), term.y / SQR(i));
+    Result := CoreAdd(Result, term);
+    SizeSqr := Sqr(term.x) + Sqr(term.y);
   until (i > MaxTerm) or (SizeSqr < EpsilonSqr)
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CI0: TComplex;
 var
@@ -1228,6 +1487,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewI0: TComplex;
 var
   ResValue: TRectCoord;
@@ -1237,32 +1498,36 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreJ0(Value: TRectCoord): TRectCoord;
 var
   zSQR25, term: TRectCoord;
   i: Integer;
-  SizeSqr: Extended;
+  SizeSqr: Float;
   addFlag: Boolean;
 begin
   Result := RectOne;
   zSQR25 := CoreMul(Value, Value);
-  zSQR25 := RectCoord(0.25*zSQR25.x, 0.25*zSQR25.y);
+  zSQR25 := RectCoord(0.25 * zSQR25.x, 0.25 * zSQR25.y);
   term := zSQR25;
   Result := CoreSub(Result, zSQR25);
   addFlag := False;
   i := 1;
   repeat
-     term := CoreMul(zSQR25, term);
-     Inc(i);
-     addFlag := not addFlag;
-     term := RectCoord(term.x/SQR(i), term.y/SQR(i));
-     if addFlag then
-       Result := CoreAdd(Result, term)
-     else
-       Result := CoreSub(Result, term);
-     SizeSqr := Sqr(term.x) + Sqr(term.y);
+    term := CoreMul(zSQR25, term);
+    Inc(i);
+    addFlag := not addFlag;
+    term := RectCoord(term.x / SQR(i), term.y / SQR(i));
+    if addFlag then
+      Result := CoreAdd(Result, term)
+    else
+      Result := CoreSub(Result, term);
+    SizeSqr := Sqr(term.x) + Sqr(term.y);
   until (i > MaxTerm) or (SizeSqr < EpsilonSqr)
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CJ0: TComplex;
 var
@@ -1274,6 +1539,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewJ0: TComplex;
 var
   ResValue: TRectCoord;
@@ -1283,17 +1550,19 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreApproxLnGamma(Value: TRectCoord): TRectCoord;
 const
-  c: array[1..8] of Extended =
-    (1/12, -1/360, 1/1260, -1/1680, 1/1188, -691/360360, 1/156, -3617/122400);
+  c: array[1..8] of Float =
+  (1 / 12, -1 / 360, 1 / 1260, -1 / 1680, 1 / 1188, -691 / 360360, 1 / 156, -3617 / 122400);
 var
   i: Integer;
   Powers: array[1..8] of TRectCoord;
   temp1, temp2: TRectCoord;
 begin
   temp1 := CoreLn(Value);
-  temp2 := RectCoord(Value.x-0.5, Value.y);
+  temp2 := RectCoord(Value.x - 0.5, Value.y);
   Result := CoreAdd(temp1, temp2);
   Result := CoreSub(Result, Value);
   Result.x := Result.x + hLn2PI;
@@ -1302,12 +1571,15 @@ begin
   Powers[1] := CoreDiv(temp1, Value);
   temp2 := CoreMul(powers[1], powers[1]);
   for i := 2 to 8 do
-    Powers[i] := CoreMul(powers[i-1], temp2);
-  for i := 8 downto 1 do begin
-    temp1 := RectCoord(c[i]*Powers[i].x, c[i]*Powers[i].y);
+    Powers[i] := CoreMul(powers[i - 1], temp2);
+  for i := 8 downto 1 do
+  begin
+    temp1 := RectCoord(c[i] * Powers[i].x, c[i] * Powers[i].y);
     Result := CoreAdd(Result, temp1);
   end;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CApproxLnGamma: TComplex;
 var
@@ -1319,6 +1591,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewApproxLnGamma: TComplex;
 var
   ResValue: TRectCoord;
@@ -1328,30 +1602,40 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CoreLnGamma(Value: TRectCoord): TRectCoord;
 var
   lna, temp: TRectCoord;
 begin
   if (Value.x <= 0) and (MiscalcSingle(Value.y) = 0) then
-    if MiscalcSingle(Int(Value.x-1E-8) - Value.x) = 0 then begin
+    if MiscalcSingle(Int(Value.x - 1E-8) - Value.x) = 0 then
+    begin
       Result := RectInfinity;
       Exit;
     end;
 
-  if Value.y < 0 then begin
+  if Value.y < 0 then
+  begin
     Value := RectCoord(Value.x, -Value.y);
     Result := CoreLnGamma(Value);
     Result := RectCoord(Result.x, -Result.y);
-  end else begin
-    if Value.x < 9.0 then begin
+  end
+  else
+  begin
+    if Value.x < 9.0 then
+    begin
       lna := CoreLn(Value);
-      Value := RectCoord(Value.x+1, Value.y);
+      Value := RectCoord(Value.x + 1, Value.y);
       temp := CoreLnGamma(Value);
       Result := CoreSub(temp, lna);
-    end else
+    end
+    else
       CoreApproxLnGamma(Value);
   end;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CLnGamma: TComplex;
 var
@@ -1363,6 +1647,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewLnGamma: TComplex;
 var
   ResValue: TRectCoord;
@@ -1371,6 +1657,8 @@ begin
   Result := TComplex.Create(ResValue.X, ResValue.y);
   Result.fFracLen := fFracLen;
 end;
+
+//------------------------------------------------------------------------------
 
 function TComplex.CoreGamma(Value: TRectCoord): TRectCoord;
 var
@@ -1386,6 +1674,8 @@ begin
       Result := CoreExp(lnz);
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CGamma: TComplex;
 var
   ResValue: TRectCoord;
@@ -1396,6 +1686,8 @@ begin
   Result := Self;
 end;
 
+//------------------------------------------------------------------------------
+
 function TComplex.CNewGamma: TComplex;
 var
   ResValue: TRectCoord;
@@ -1405,31 +1697,44 @@ begin
   Result.fFracLen := fFracLen;
 end;
 
+//==============================================================================
 // miscellaneous
-function TComplex.AbsoluteValue: Extended;
+//==============================================================================
+
+function TComplex.AbsoluteValue: Float;
 begin
   Result := Sqrt(Sqr(fCoord.x) + Sqr(fCoord.y));
 end;
 
-function TComplex.AbsoluteValue(Coord: TRectCoord): Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.AbsoluteValue(Coord: TRectCoord): Float;
 begin
   Result := Sqrt(Sqr(Coord.x) + Sqr(Coord.y));
 end;
 
-function TComplex.AbsoluteValueSqr: Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.AbsoluteValueSqr: Float;
 begin
   Result := Sqr(fCoord.x) + Sqr(fCoord.y);
 end;
 
-function TComplex.AbsoluteValueSqr(Coord: TRectCoord): Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.AbsoluteValueSqr(Coord: TRectCoord): Float;
 begin
   Result := Sqr(Coord.x) + Sqr(Coord.y);
 end;
 
-function TComplex.FormatExtended(X: Extended): string;
+//------------------------------------------------------------------------------
+
+function TComplex.FormatExtended(X: Float): string;
 begin
   Result := FloatToStrF(X, ffFixed, fFracLen, fFracLen);
 end;
+
+//------------------------------------------------------------------------------
 
 procedure TComplex.SetFracLen(X: Byte);
 begin
@@ -1439,19 +1744,25 @@ begin
     fFracLen := X;
 end;
 
-function TComplex.GetRadius: Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.GetRadius: Float;
 begin
   FillCoords(crRectangular);
   Result := fCoord.r;
 end;
 
-function TComplex.GetAngle: Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.GetAngle: Float;
 begin
   FillCoords(crRectangular);
   Result := fCoord.theta;
 end;
 
-function TComplex.NormalizeAngle(Value: Extended): Extended;
+//------------------------------------------------------------------------------
+
+function TComplex.NormalizeAngle(Value: Float): Float;
 begin
   FillCoords(crRectangular);
   while Value > Pi do
@@ -1464,8 +1775,8 @@ end;
 
 initialization
   RectZero := RectCoord(0, 0);
-  RectOne  := RectCoord(1, 0);
+  RectOne := RectCoord(1, 0);
   RectInfinity := RectCoord(Infinity, Infinity);
-  hLn2PI := 0.5*Ln(TwoPi);
 
 end.
+
