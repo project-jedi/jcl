@@ -3,7 +3,6 @@
 Summary:
   Returns information about a critical section object.
 Description:
-
   QueryCriticalSection returns information about the critical section object specified
   by CS. The function returns a TRTLCriticalSection record which is defined in
   Windows.pas.
@@ -11,11 +10,9 @@ Parameters:
   CS - The critical section object about which to return information.
   Info - Receives information about the critical section. See Windows.pas for the declaration of this record, most fields are self-explanatory.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
 Notes:
-
   This function relies on undocumented information.
 Quick info:
   Unit: JclSynch
@@ -32,7 +29,6 @@ Quick info:
 Summary:
   Returns information about an event object.
 Description:
-
   QueryEvent returns information about the event object specified by Handle. The
   information is returned in a TEventInfo record and contains members to indicate
   the kind of event and whether it is signaled.
@@ -40,11 +36,9 @@ Parameters:
   Handle - Handle of the event object for which you want information.
   Info - Received information about the event. TEventInfo is defined as:   <PRE class=syntax>   TEventInfo = <B>record</B>     EventType: Longint;     Signaled: LongBool;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>EventType</TD>   <TD width=25%>Longint</TD>   <TD width=50%>If the event is a manual-reset event this member is 0. If the event is an auto-reset event this member is non-zero.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Signaled</TD>   <TD width=25%>LongBool</TD>   <TD width=50%>True if the event is in the signaled state, False if its in the non-signaled state</TD>   </TR>   </TABLE>
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
 Notes:
-
   This function relies on undocumented information and uses an undocumented API call.
 Quick info:
   Unit: JclSynch
@@ -61,7 +55,6 @@ Quick info:
 Summary:
   Returns information about a timer object.
 Description:
-
   QueryTimer returns information about the timer object specified by Handle. The
   information is returned in a TTimerInfo record and contains members to indicate
   whether the timer is signaled or how much time remains until the timer becomes
@@ -70,11 +63,9 @@ Parameters:
   Handle - Handle of the timer object for which you want information.
   Info - Received information about the timer. TTimerInfo is defined as:   <PRE class=syntax>   TTimerInfo = <B>record</B>     Remaining: TLargeInteger;     Signaled: LongBool;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>Remaining</TD>   <TD width=25%>TLargeInteger</TD>   <TD width=50%>The time, in 100 ns intervals, until the timer becomes signaled.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Signaled</TD>   <TD width=25%>LongBool</TD>   <TD width=50%>True if the timer is currently signaled.</TD>   </TR>   </TABLE>
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
 Notes:
-
   This function relies on undocumented information and uses an undocumented API call.
 Quick info:
   Unit: JclSynch
@@ -91,7 +82,6 @@ Quick info:
 Summary:
   Returns information about a semaphore object.
 Description:
-
   QuerySemaphore returns information about the semaphore object specified by Handle. The
   information is returned in a TSemaphoreInfo record and contains members to indicate
   the semaphores' current and maximum count.
@@ -99,11 +89,9 @@ Parameters:
   Handle - Handle of the semaphore object for which you want information.
   Info - Received information about the event. TSemaphoreInfo is defined as:   <PRE class=syntax>   TSemaphoreCounts = <B>record</B>     CurrentCount: Longint;     MaximumCount: Longint;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>CurrentCount</TD>   <TD width=25%>Longint</TD>   <TD width=50%>The current count of the semaphore object.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>MaximumCount</TD>   <TD width=25%>Longint</TD>   <TD width=50%>The maximum count of the semaphore object as specified when it was constructed.</TD>   </TR>   </TABLE>
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
 Notes:
-
   This function relies on undocumented information and uses an undocumented API call.
 Quick info:
   Unit: JclSynch
@@ -120,7 +108,6 @@ Quick info:
 Summary:
   Returns information about a mutex object.
 Description:
-
   QueryMutex returns information about the mutex object specified by Handle. The
   information is returned in a TMutexInfo record and contains members to indicate
   whether the mutex is signaled and owned.
@@ -128,11 +115,9 @@ Parameters:
   Handle - Handle of the mutex object for which you want information.
   Info - Received information about the mutex. TMutexInfo is defined as:   <PRE class=syntax>   TMutexInfo = <B>record</B>     SignalState: Longint;     Owned: Boolean;     Abandoned: Boolean;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>SignalState</TD>   <TD width=25%>Longint</TD>   <TD width=50%>Indicates the state of the mutex. If this member is greater than                 0 the mutex is signaled. A value smaller than 0 indicates the                 number of times the mutex was recursively acquired.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Owned</TD>   <TD width=25%>Boolean</TD>   <TD width=50%>True if the mutex is currently owned by a thread.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Abandoned</TD>   <TD width=25%>Boolean</TD>   <TD width=50%>True if the mutex was abandoned (thread exited while owning the mutex).</TD>   </TR>   </TABLE>
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
 Notes:
-
   This function relies on undocumented information and uses an undocumented API call.
 Quick info:
   Unit: JclSynch
@@ -145,11 +130,10 @@ Quick info:
   Windows 95/98: Unsupported
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclMultiReadExclusiveWrite>
 Summary:
   Allows multiple readers but only one writer.
 Description:
-
   TJclMultiReadExclusiveWrite is a synchronization object similar to a critical section.
   It protects some resource by controlling access to it. Unlike a critical section
   however, a TJclMultiReadExclusiveWrite allows multiple threads access to the
@@ -182,11 +166,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of TJclMultiReadExclusiveWrite.
 Description:
-
   Creates an instance of TJclMultiReadExclusiveWrite.
 Parameters:
   Preferred - Denotes whether the class should favor readers over writers, vice versa or treat them equally. See TMrewPreferred for more information.
@@ -202,11 +184,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.Destroy
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Destroys the instance of TJclMultiReadExclusiveWrite.
 Description:
-
   Destroys the instance of TJclMultiReadExclusiveWrite.
 Quick info:
   Unit: JclSynch
@@ -220,11 +200,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.BeginRead
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Allows a thread read-access to the protected resource, blocking until the access can be granted.
 Description:
-
   BeginRead allows a thread to gain read-access to the protected resource. This
   method will block the calling thread until read-access can be granted. After the
   thread has been granted access other threads may request, and be granted, read-access
@@ -252,11 +230,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.BeginWrite
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Allows a thread write-access to the protected resource, blocking until the access can be granted.
 Description:
-
   BeginWrite allows a thread to gain write-access to the protected resource. This
   method will block the calling thread until write-access can be granted. After a
   thread has been granted write-access, all other threads requesting access, either
@@ -269,7 +245,6 @@ Description:
   BeginWrite multiple times you must also call EndWrite multiple times.
   That is, the calls to BeginWrite and EndWrite must be balanced.
 Notes:
-
   <B>Warning</B>Calling BeginWrite while the thread already owns a read lock causes the thread to temporarily give up it's read lock altogether. Therefore it is not safe to assume that the resource is unchanged when you "promote" a read lock to a write lock. This is necessary to prevent a dead lock situation where two threads both attempt to promote a read lock.
 Quick info:
   Unit: JclSynch
@@ -283,11 +258,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.EndRead
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Signals that the thread has finished reading from the resource.
 Description:
-
   EndRead signals that the thread holding read-access to the protected resource has
   finished reading from the resource. You must call EndRead once for each time you
   called BeginRead. Even though it is safe to call EndRead while not
@@ -308,11 +281,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.EndWrite
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Signals that the thread has finished writing to the resource.
 Description:
-
   EndWrite signals that the thread holding write-access to the protected resource has
   finished writing to the resource. You must call EndWrite once for each time you
   called BeginWrite. Even though it is safe to call EndWrite while not
@@ -333,11 +304,10 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclOptex>
 Summary:
   Optimized Mutex
 Description:
-
   Optex stands for Optimized Mutex. It's a synchronization object which holds middle
   ground between a Win32 Mutex and a Critical Section. It provides the speed and
   functionality similar to a critical section but has the additional property
@@ -359,11 +329,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.Existed
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Returns whether the optex existed.
 Description:
-
   The Existed property returns whether the Optex was newly created (Existed is False)
   or already existed during construction (Existed is True). In this latter case the
   Optex was already created by another process. This tells you only that the Optex
@@ -381,11 +349,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.Name
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Name of the object.
 Description:
-
   The Name property returns the name of the Optex as specified in the constructor.
 Quick info:
   Unit: JclSynch
@@ -399,11 +365,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.SpinCount
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Sets the spincount.
 Description:
-
   The SpinCount property allows you to query the current value of the spincount of
   the optex or to set a new value. Note that the spincount value is shared between
   all processes that use the same optex. This is not True for distinct optex objects.
@@ -419,11 +383,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.UniProcess
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Returns whether the optex can be shared between processes.
 Description:
-
   Returns whether the optex can be used in the process only or can be shared
   between processes. This is directly related to whether or not you specified a
   name for the optex during construction. If you specified a name, the optex can
@@ -442,11 +404,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of the Optex class.
 Description:
-
   The Create constructor creates an instance of the Optex class. If you intend to
   use the optex in the current process only you should specify an empty string for
   the name parameter. If you want to share it between processes you must give the
@@ -466,11 +426,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.Destroy
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Destroys the Optex instance.
 Description:
-
   The Destroy destructor destroys the Optex instance for which it is called. If the
   Optex is shared between multiple processes only this instance is destroyed and
   other processes can continue to use the Optex.
@@ -486,11 +444,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.Enter
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Enters the Optex.
 Description:
-
   Enter attempts to get access to the optex, this is referred to as
   acquiring ownership of the optex. Only one thread can own the optex
   at any time. If the optex is currently owned by a different
@@ -517,11 +473,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.Leave
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Releases ownership of the optex.
 Description:
-
   The Release method releases ownership of the optex previously acquired
   by a call to the Enter method. After a call to Release the optex
   is free to be acquired by a different thread. If you called Enter multiple
@@ -539,16 +493,13 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclOptex.TryEnter
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Attempts to Enter the critical section.
 Description:
-
   TryEnter attempts to acquire ownership of the optex object. However, unlike
   the Enter method, this method immediately returns if the optex cannot
   be acquired the first time around.
 Result:
-
   If ownership of the optex object is acquired the function returns
   True. If ownership could not be acquired because the optex was already
   owned by a different thread the function returns False. In this latter case you
@@ -565,11 +516,10 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclWaitableTimer>
 Summary:
   Wrapper for a Win32 Waitable Timer object.
 Description:
-
   TJclWaitableTimer is a wrapper for a Win32 Waitable Timer object.
 Quick info:
   Unit: JclSynch
@@ -583,17 +533,14 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Cancel
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Deactivates the waitable timer.
 Description:
-
   The Cancel method stops the timer before it can be set to the signaled state and
   cancels any outstanding APC's. Threads that are waiting on the timer remain waiting
   until the timer is reactivated with SetTimer. If the Timer is already
   in the signaled state it remains signaled.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case you can call GetLastError to get extended error information.
 Quick info:
@@ -609,11 +556,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.SetTimer
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Activates the timer.
 Description:
-
   The SetTimer method activates the timer. When the DueTime arrives the timer is
   set to the signaled state and threads waiting for the timer using one of the
   WaitXxx functions become eligible for execution. If the timer was already active
@@ -624,7 +569,6 @@ Parameters:
   Period - Period of the timer in milliseconds. A 0 period causes the timer to become signaled only once while a value greater than 0 causes the timer to periodically become signaled. Note that a periodic manual-reset timer remains in the signaled state until it is explicitly reset.
   Resume - Specifies whether to restore a system in suspended power conservation mode when the timer state is set to signaled.
 Result:
-
   If the function succeeds the result is True, otherwise it is False. In the latter
   case you can call GetLastError to get extended error information. Note that if
   you set Resume to True on a platform which doesn't support this, the method
@@ -642,11 +586,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.SetTimerApc
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Activates the timer.
 Description:
-
   The SetTimerApc method activates the timer. When the DueTime arrives the timer is
   set to the signaled state and threads waiting for the timer using one of the
   WaitXxx functions become eligible for execution. Additionally the specified Apc
@@ -668,7 +610,6 @@ Description:
   when the timer becomes signaled.
   5=Arg:Pointer=Application defined value which is passed to the completion routine.
 Result:
-
   If the function succeeds the result is True, otherwise it is False. In the latter
   case you can call GetLastError to get extended error information. Note that if
   you set Resume to True on a platform which doesn't support this, the method
@@ -690,7 +631,6 @@ Quick info:
 Summary:
   Timer callback routine.
 Description:
-
   TFNTimerAPCRoutine is used as the callback routine for waitable timers. The procedure
   is executed when the waitable timer becomes signaled in the context of the thread
   that activated the timer using the SetTimer or SetTimerApc method. However, that
@@ -710,11 +650,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclWaitableTimer object and the underlying Win32 waitable timer object.
 Description:
-
   Creates an instance of a TJclWaitableTimer object and the underlying Win32 waitable timer object.
 Parameters:
   SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new waitable timer object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the waitable timer receives a default security descriptor.
@@ -733,11 +671,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Open
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   The Open constructor attempts to open the existing named waitable timer specified with Name.
 Description:
-
   Opens an existing, named waitable timer. If the waitable timer object does not exist, or the calling
   thread does not have sufficient access to open the waitable timer object, the constructor
   fails by raising an EJclWaitableTimerError exception.
@@ -758,11 +694,10 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclSemaphore
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclSemaphore>
 Summary:
   Wrapper for a Win32 Semaphore object.
 Description:
-
   TJclSemaphore is a wrapper for a Win32 Semaphore object.
 Quick info:
   Unit: JclSynch
@@ -776,17 +711,14 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclSemaphore.Release
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Increases the semaphore's count.
 Description:
-
   The Release method increases the count of the semaphore object by the specified
   amount, but never increases past the maximum count as specified during construction.
 Parameters:
   ReleaseCount - The amount by which the semaphore's count should be increased. The value must be greater than 0. If the increase would cause the count to exceed the maximum the method fails (returns False) and the current count remains unchanged.
 Result:
-
   If the function succeeds the result is True, otherwise the result is False. In
   the latter case you can call GetLastError to get extended error information.
 Quick info:
@@ -802,18 +734,15 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclSemaphore.ReleasePrev
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Increases the semaphore's count.
 Description:
-
   The Release method increases the count of the semaphore object by the specified
   amount, but never increases past the maximum count as specified during construction.
 Parameters:
   ReleaseCount - The amount by which the semaphore's count should be increased. The value must be greater than 0. If the increase would cause the count to exceed the maximum the method fails (returns False) and the current count remains unchanged.
   PrevCount - Receives the previous count of the semaphore, before the increase. If the function fails the value of this parameter is undefined.
 Result:
-
   If the function succeeds the result is True, otherwise the result is False. In
   the latter case you can call GetLastError to get extended error information.
 Quick info:
@@ -829,11 +758,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclSemaphore.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclSemaphore object and the underlying Win32 semaphore object.
 Description:
-
   Creates an instance of a TJclSemaphore object and the underlying Win32 semaphore object.
 Parameters:
   SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new semaphore object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the semaphore receives a default security descriptor.
@@ -853,11 +780,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclSemaphore.Open
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   The Open constructor attempts to open the existing named semaphore specified with Name.
 Description:
-
   Opens an existing, named semaphore. If the semaphore object does not exist, or the calling
   thread does not have sufficient access to open the semaphore object, the constructor
   fails by raising an EJclSemaphoreError exception.
@@ -878,11 +803,10 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclMutex
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclMutex>
 Summary:
   Wrapper for a Win32 Mutex object.
 Description:
-
   TJclMutex is a wrapper for a Win32 Mutex object.
 Quick info:
   Unit: JclSynch
@@ -896,11 +820,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclMutex.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclMutex object and the underlying Win32 mutex object.
 Description:
-
   Creates an instance of a TJclMutex object and the underlying Win32 mutex object.
 Parameters:
   SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new Mutex object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the Mutex receives a default security descriptor.
@@ -919,11 +841,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclMutex.Open
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   The Open constructor attempts to open the existing named mutex specified with Name.
 Description:
-
   Opens an existing, named mutex. If the mutex object does not exist, or the calling
   thread does not have sufficient access to open the mutex object, the constructor
   fails by raising an EJclMutexError exception.
@@ -944,18 +864,15 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclMutex.Release
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Releases ownership of the mutex.
 Description:
-
   The Release method release ownership of the mutex which was previously obtained
   by using one of the WaitXxx methods. Note that although only one thread can own
   a mutex at any time, a single thread can own the mutex multiple times by calling
   one of the WaitXxx methods multiple times. You must balance the calls to WaitXxx
   and Release, meaning you must call Release once for each time you call WaitXxx.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case, which is usually a result of not owning the mutex, you can call GetLastError
   to get extended error information.
@@ -972,11 +889,10 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclCriticalSectionEx>
 Summary:
   Wrapper for a Win32 critical section object
 Description:
-
   TJclCriticalSection is a wrapper for a Win32 critical section object which surfaces
   all functionality, including functionality not available in Windows 95. To use
   TJclCriticalSectionEx the target system must be running Windows NT 4 with service
@@ -994,11 +910,9 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.CreateEx
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclCriticalSectionEx object.
 Description:
-
   The CreateEx constructor creates an instance of a TJclCriticalSection object
   and initializes the underlying Win32 critical section object. The parameters
   allow you to specify a spincount for the critical section and you can specify
@@ -1021,17 +935,14 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.TryEnter
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Attempts to Enter the critical section.
 Description:
-
   TryEnter attempts to acquire ownership of the critical section object. However,
   unlike the Enter method,
   this method immediately returns if the critical section cannot be acquired.  Note this
   method is not supported on Windows 98.
 Result:
-
   If ownership of the critical section object is acquired the function returns
   True. If ownership could not be acquired because the critical section was already
   owned by a different thread the function returns False. In this latter case you
@@ -1049,16 +960,13 @@ Quick info:
   Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.GetSpinTimeOut
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Returns the system setting of the critical section timeout.
 Description:
-
   GetSpinTimeOut returns the system's global critical section timeout value. This
   value determines after which interval an attempt to enter a critical section
   times out. The default setting is about 30 days.
 Result:
-
   The systems critical section timeout interval in seconds.
 Quick info:
   Unit: JclSynch
@@ -1073,11 +981,9 @@ Quick info:
   Windows 95/98: Unsupported
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.SetSpinTimeOut
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Sets the system's critical section timeout value.
 Description:
-
   SetSpinTimeOut sets the system's global critical section timeout value. This
   value determines after which interval an attempt to enter a critical section
   times out. The default setting is about 30 days. Note that this value affects
@@ -1099,11 +1005,9 @@ Quick info:
   Windows 95/98: Unsupported
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.SpinCount
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Sets the spincount for the critical section.
 Description:
-
   SpinCount allows you to query or set the critical section's spincount value.
 Quick info:
   Unit: JclSynch
@@ -1118,11 +1022,10 @@ Quick info:
   Windows 95/98: Requires Windows 98 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSection
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclCriticalSection>
 Summary:
   Wrapper for a Win32 critical section object
 Description:
-
   TJclCriticalSection is a wrapper for a Win32 critical section object which surfaces
   only functionality common to all Win32 implementations. Windows 98 and Windows NT
   introduced some additional functionality which is only available in the
@@ -1139,11 +1042,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclCriticalSection object.
 Description:
-
   The create constructor creates an instance of a TJclCriticalSection object and
   initializes the underlying Win32 critical section object.
 Quick info:
@@ -1159,11 +1060,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.CreateAndEnter
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclCriticalSection object and enters it.
 Description:
-
   The CreateAndEnter class method creates an instance of TJclCriticalSection and
   Enters it in an atomic, and therefor thread safe, manner. The newly created
   critical section is then assigned to the CS parameter. The method does not return
@@ -1186,11 +1085,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Destroy
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Destroys the TJclCriticalSection object.
 Description:
-
   The Destroy destructor releases the underlying Win32 critical section object and
   destroys the TJclCriticalSection object.
 Quick info:
@@ -1206,11 +1103,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Enter
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Enters the critical section.
 Description:
-
   Enter attempts to get access to the critical section, this is referred to as
   acquiring ownership of the critical section. Only one thread can own the critical
   section at any time. If the critical section is currently owned by a different
@@ -1221,7 +1116,6 @@ Description:
   more than once. This means you can call Enter multiple times. However, calls to Enter
   and Leave must be balanced: you must call Leave for each time you call Enter.
 Notes:
-
   In extremely low-memory situations a call to Enter may fail by raising an exception. If you cannot tolerate a failure of Enter you should use TJclCriticalSectionEx instead.
 Quick info:
   Unit: JclSynch
@@ -1236,18 +1130,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Leave
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Releases ownership of the critical section.
 Description:
-
   The Release method releases ownership of the critical section previously acquired
   by a call to the Enter method. After a call to Release the critical
   section is free to be acquired by a different thread. If you called Enter multiple
   times the critical section will not be released until the last, balancing call
   to Release.
 Notes:
-
   If you call Release while you don't currently own the critical section, the state of the critical section object becomes corrupted and threads waiting for ownership may be blocked forever.
 Quick info:
   Unit: JclSynch
@@ -1262,11 +1153,10 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclEvent
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclEvent>
 Summary:
   Wrapper for the Win32 Event object.
 Description:
-
   TJclEvent is a wrapper for a Win32 Event object.
 Quick info:
   Unit: JclSynch
@@ -1279,18 +1169,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclEvent.Pulse
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Pulses the Event object.
 Description:
-
   Pulse sets the Event to the signaled state and back to nonsignaled in one single
   operation releasing the appropriate waiting threads in between. For a manual-reset
   event, all waiting threads are released before returning the Event to the nonsignaled
   state. For an auto-reset event, only one waiting thread is released. If no threads
   are waiting the function merely resets the Event to the nonsignaled state.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case you can call GetLastError to get extended error information.
 Quick info:
@@ -1306,17 +1193,14 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclEvent.ResetEvent
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Resets the Event to the nonsignaled state.
 Description:
-
   ResetEvent resets the Event to the nonsignaled state thereby blocking all waiting
   threads. This is only useful for a manual-reset event which has to be explicitly
   set or reset. Auto-reset events are automatically reset to the nonsignaled state
   whenever a thread successfully waited on it.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case you can call GetLastError to get extended error information.
 Quick info:
@@ -1332,18 +1216,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclEvent.SetEvent
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Sets the Event to the signaled state.
 Description:
-
   SetEvent sets the Event to the signaled state. Manual-reset events remain in the
   signaled state until explicitly reset by using ResetEvent. All threads
   subsequently calling one of the wait functions are released immediately. For
   auto-reset events the state remains signaled until one thread is released from
   waiting on this event.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case you can call GetLastError to get extended error information.
 Quick info:
@@ -1359,11 +1240,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclEvent.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclEvent object.
 Description:
-
   Create creates an instance of a TJclEvent object.
 Parameters:
   SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new Event object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the Event receives a default security descriptor.
@@ -1383,11 +1262,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclEvent.Open
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   The Open constructor attempts to open the existing named event specified with Name.
 Description:
-
   Opens an existing, named event. If the Event object does not exist, or the calling
   thread does not have sufficient access to open the Event object, the constructor
   fails by raising an EJclEventError exception.
@@ -1408,18 +1285,16 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclDispatcherObject>
 Summary:
   Base class for kernel synchronization objects.
 Description:
-
   TJclDispatcherObject is the base class for all kernel synchronization objects,
   which are also known as dispatcher objects, hence the name. It has provisions
   for the storage of a handle to the object and automatically releases the handle
   when the object is destructed. Additionally it provides methods to wait on the
   object which are common to all dispatcher object derivatives.
 Notes:
-
   There are several non-kernel synchronization objects that do not derive from TJclDispatcherObject. Examples are the TJclCriticalSection and TJclOptex.
 Quick info:
   Unit: JclSynch
@@ -1432,11 +1307,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Existed
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Indicates whether the object existed.
 Description:
-
   The Existed property denotes whether the dispatcher object already existed when
   it was created. This property is True if:
     
@@ -1458,11 +1331,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Handle
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Handle to the dispatcher object being wrapped.
 Description:
-
   The handle property contains the handle to the underlying dispatcher object. You
   could use this in a call to WaitForMultipleObjects or to duplicate the Handle. Never
   manually close the handle by calling CloseHandle, the class does this automatically
@@ -1479,11 +1350,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Name
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   The name of the object.
 Description:
-
   Name contains the name of the object as specified in the constructor.
 Quick info:
   Unit: JclSynch
@@ -1523,11 +1392,9 @@ Quick info:
   The timeout interval expired. This is not a successful wait.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.SignalAndWait
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Signals another object and then blocks until the object becomes signaled or the timeout expires.
 Description:
-
   SignalAndWait signals the specified object (Obj) and checks the state of the object this
   method belongs to, if it is non-signaled the calling thread enters an alertable
   wait-state until one of the following occurs:
@@ -1548,7 +1415,6 @@ Parameters:
   TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns.
   Alertable - If False the method blocks until either the object becomes signaled or the timeout expires. If True the calling thread enters an alertable wait-state until one of the aforementioned events occur or an I/O Completion routine or APC is queued for the thread.
 Result:
-
   The result indicates success or failure and is of
   type TJclWaitResult. This method can
   return any of the members of the enumeration. See TJclWaitResult for the details.
@@ -1565,11 +1431,9 @@ Quick info:
   Windows 95/98: Unsupported
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitAlertable
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   WaitAlertable blocks until the object becomes signaled or the timeout expires.
 Description:
-
   WaitAlertable checks the state of the object, if it is non-signaled the calling
   thread enters an alertable wait-state until one of the following occurs:
    
@@ -1587,7 +1451,6 @@ Description:
 Parameters:
   TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns.
 Result:
-
   The result indicates success or failure and is of
   type TJclWaitResult. This method can
   return any of the members of the enumeration. See TJclWaitResult for the details.
@@ -1604,11 +1467,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitFor
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Blocks until the object becomes signaled or the timeout expires.
 Description:
-
   WaitFor checks the state of the object, if it is non-signaled the calling thread
   enters a wait state until one of the following occurs:
     
@@ -1624,14 +1485,12 @@ Description:
 Parameters:
   TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns. If you specify a 0 timeout the method tests the state of the object and immediately returns. You can specify INFINITE to wait forever or use WaitForever instead.
 Result:
-
   The result indicates success or failure and is of
   type TJclWaitResult. This type is shared
   between all WaitXxx functions and as such not all members of this enumeration can
   be returned from this method. Valid ones are wrError, wrAbandoned, wrTimeOut and
   wrSignaled. See TJclWaitResult for the details.
 Notes:
-
   This method results in non-alertable wait state while the object is not signaled. Use WaitAlertable to enter an alertable wait state.
 Quick info:
   Unit: JclSynch
@@ -1646,11 +1505,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitForever
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Blocks until the object becomes signaled.
 Description:
-
   WaitForever checks the state of the object, if it is non-signaled the calling
   thread enters a wait state until the object becomes signaled. If the object is
   signaled, or becomes signaled, the function returns and the thread is allowed to
@@ -1660,7 +1517,6 @@ Description:
   is decreased by one before the method returns. See the individual synchronization
   classes and the Platform SDK for details.
 Result:
-
   The result indicates success or failure and is of
   type TJclWaitResult. This type is shared
   between all WaitXxx functions and as such not all members of this enumeration can
@@ -1679,11 +1535,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Attach
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Attaches to an existing dispatcher object.
 Description:
-
   The Attach constructor attaches to the existing dispatcher object specified by
   Handle. This is particularly useful when passing handles between a parent and
   child process using handle inheritance.
@@ -1702,11 +1556,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Destroy
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Disposes of the object instance.
 Description:
-
   Destroy closes the handle to the dispatcher object and disposes of the object
   instance. After this call the object instance, as well as the dispatcher object
   wrapped by the class, are no longer valid. The state of any threads waiting on
@@ -1730,7 +1582,6 @@ Quick info:
 Summary:
   Thread safe compare and exchange.
 Description:
-
   LockedCompareExchange compares Comp with Target. If they are equal the value of
   Exch is moved into Target, otherwise Target retains its value. All this is
   performed in a locked, thread-safe manner. The LockedXxx functions allow for a
@@ -1741,11 +1592,9 @@ Parameters:
   Exch - The value which is moved into Target if Comp and Target are equal.
   Comp - The comperand which Target is compared against.
 Result:
-
   The value of Target on procedure entry. Depending on the comparison, Target may
   have been updated or have retained its value.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1761,7 +1610,6 @@ Quick info:
 Summary:
   Thread safe addition.
 Description:
-
   LockedExchangeAdd implements threadsafe addition for integers. The function adds
   Value to Target and returns the previous value of Target. The LockedXxx functions
   allow for a simple and efficient way for applications to synchronize access to
@@ -1770,10 +1618,8 @@ Parameters:
   Target - The target variable to add Value to.
   Value - The value to add to Target
 Result:
-
   The value of Target before the addition.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1788,7 +1634,6 @@ Quick info:
 Summary:
   Thread safe addition.
 Description:
-
   LockedAdd implements threadsafe addition for integers. The function adds Value
   to Target and returns the new value of Target. The LockedXxx functions allow for
   a simple and efficient way for applications to synchronize access to and
@@ -1797,11 +1642,9 @@ Parameters:
   Target - The target variable to add Value to.
   Value - The value to add to Target
 Result:
-
   The resulting value of Target after the addition. Note that the actual value of
   the variable may have already changed.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1816,7 +1659,6 @@ Quick info:
 Summary:
   Thread safe subtraction.
 Description:
-
   LockedExchangeSub implements threadsafe subtraction for integers. The function
   subtracts Value from Target and returns the old value of Target. The LockedXxx
   functions allow for a simple and efficient way for applications to synchronize
@@ -1825,10 +1667,8 @@ Parameters:
   Target - The Target variable to manipulate.
   Value - The value to subtract from Target.
 Result:
-
   The value of Target before the subtraction.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1843,7 +1683,6 @@ Quick info:
 Summary:
   Thread safe subtraction.
 Description:
-
   LockedSub implements threadsafe subtraction for integers. The function subtracts
   Value from Target and returns the new value of Target. The LockedXxx functions
   allow for a simple and efficient way for applications to synchronize access to,
@@ -1852,11 +1691,9 @@ Parameters:
   Target - The Target variable to manipulate.
   Value - The value to subtract from Target.
 Result:
-
   The resulting value of Target after the subtraction. Note that the actual value
   of the variable may have already changed!
 Notes:
-
   The Win32 API provides similar functions. Lookup InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1871,7 +1708,6 @@ Quick info:
 Summary:
   Thread safe exchange.
 Description:
-
   LockedExchange implements a thread safe exchange of two integer values. The function
   exchanges the values of Target and Value and returns the previous value of
   Target. The LockedXxx functions allow for a simple and efficient way for applications
@@ -1881,10 +1717,8 @@ Parameters:
   Target - The Target variable.
   Value - The value to move into Target.
 Result:
-
   The value of Target before the exchange.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1899,7 +1733,6 @@ Quick info:
 Summary:
   Thread safe increment.
 Description:
-
   LockedExchangeInc increments the specified Integer in an atomic, thread-safe manner.
   The LockedXxx functions allow for a simple and efficient way for applications to
   synchronize access to and manipulate integer variables which are shared by
@@ -1907,10 +1740,8 @@ Description:
 Parameters:
   Target - The variable to increment.
 Result:
-
   The value of Target before the increment.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1925,7 +1756,6 @@ Quick info:
 Summary:
   Thread safe increment.
 Description:
-
   LockedInc increments the specified Integer in an atomic, thread-safe manner. The
   LockedXxx functions allow for a simple and efficient way for applications to
   synchronize access to and manipulate integer variables which are shared by
@@ -1933,11 +1763,9 @@ Description:
 Parameters:
   Target - The variable to increment.
 Result:
-
   The resulting value of Target after the increment. Note that the actual value of the
   variable may have already changed!
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1952,7 +1780,6 @@ Quick info:
 Summary:
   Thread safe decrement.
 Description:
-
   LockedExchangeDec decrements the specified Integer in an atomic, thread-safe manner.
   The LockedXxx functions allow for a simple and efficient way for applications to
   synchronize access to and manipulate integer variables which are shared by
@@ -1960,10 +1787,8 @@ Description:
 Parameters:
   Target - The variable to decrement.
 Result:
-
   The value of Target before being decremented.
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -1978,7 +1803,6 @@ Quick info:
 Summary:
   Thread safe decrement.
 Description:
-
   LockedDec decrements the specified Integer in an atomic, thread-safe manner. The
   LockedXxx functions allow for a simple and efficient way for applications to
   synchronize access to and manipulate integer variables which are shared by
@@ -1986,11 +1810,9 @@ Description:
 Parameters:
   Target - The variable to decrement.
 Result:
-
   The value of Target after being decremented. Note that the actual value of the
   variable may have already changed!
 Notes:
-
   The Win32 API provides similar functions. Look up InterlockedXxx in the Platform SDK.
 Quick info:
   Unit: JclSynch
@@ -2001,11 +1823,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMeteredSection
-<GROUP LibrariesProcessesandThreads.Synchronization>
+<GROUP LibrariesProcessesandThreads.Synchronization.TJclMeteredSection>
 Summary:
   Provides a fast alternative to the semaphore kernel object.
 Description:
-
   TJclMeteredSection is basically nothing more than a semaphore kernel object except
   that it is much faster. Its speed comes from the fact that unless the calling
   thread has to enter a wait state, all code is executed in user mode. This in
@@ -2025,11 +1846,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Enter
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Enters the metered section.
 Description:
-
   The Enter method decreases the count of the metered section object thereby granting
   access to the protected resource to a single thread. The method does not return
   until either access was granted, the specified timeout elapses or an error
@@ -2037,13 +1856,11 @@ Description:
 Parameters:
   TimeOut - Specifies the time-out interval, in milliseconds. The function returns if the interval elapses, even if the metered section does not have an open slot. If Milliseconds is zero, the function tests the metered section's state a and returns immediately. If Milliseconds is INFINITE, the function's time-out interval never elapses.
 Result:
-
   If access was granted the result is wrSignaled, if the specified TimeOut elapsed
   the result is wrTimeOut and if an error occured the result is wrError. Although
   TJclWaitResult includes other values, these should never be encountered as the
   function result.
 Notes:
-
   The EnterMeteredSection function checks for an available slot in the metered section. If the metered section does not have an available slot, the calling thread enters an efficient wait state. The thread consumes very little processor time while waiting for a slot to become free.
 Quick info:
   Unit: JclSynch
@@ -2058,11 +1875,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Leave
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Increases the MeteredSection's count.
 Description:
-
   The LeaveMeteredSection function increases the number of available slots of a metered
   section by a specified amount but never increases past the maximum count as specified
   during construction. As a result of incrementing the count one or more waiting threads
@@ -2072,7 +1887,6 @@ Parameters:
   ReleaseCount - Specifies the number of the metered section's slots to release. The value must be greater than zero. If the specified amount would cause the metered section's count to exceed the maximum number of available slots specified during creation of the metered section, the number of available slots is not changed and the function returns False.
   PrevCount - 32-bit Longint which receives the previous metered section open slot count.
 Result:
-
   If the function succeeds the result is True, otherwise the result is False.
 Quick info:
   Unit: JclSynch
@@ -2087,11 +1901,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Create
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   Creates an instance of a TJclMeteredSection object.
 Description:
-
   Creates a named or unnamed instance of a TJclMeteredSection object.
 Parameters:
   InitialCount - Specifies an initial count of open slots for the metered section. This value must be greater than or equal to zero and less than or equal to MaxCount. A slot is available when the count is greater than zero and none is available when it is zero. The count is decreased by one whenever the EnterMeteredSection function releases a thread that was waiting for the metered section. The count is increased by a specified amount by calling the LeaveMeteredSection function.
@@ -2110,11 +1922,9 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Open
-<GROUP LibrariesProcessesandThreads.Synchronization>
 Summary:
   The Open constructor attempts to open the existing named MeteredSection specified with Name.
 Description:
-
   Opens an existing, named MeteredSection. If the MeteredSection object does not exist, or the calling
   thread does not have sufficient access to open the MeteredSection object, the constructor
   fails by raising an EJclMeteredSectionError exception.
