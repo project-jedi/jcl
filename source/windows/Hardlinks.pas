@@ -750,59 +750,6 @@ initialization
 
 // History:
 
-{$IFDEF PROTOTYPE}
-// $Log$
-// Revision 1.7  2005/03/03 13:50:38  assarbad
-// - Reflect changes of the prototype unit.
-//
-// Revision 1.10  2005/03/03 13:47:04  assarbad
-// - Dividing lines now enclosed by a preprocessor statement to still show in the author's version.
-// - Removed PEB/TEB/TIB declarations and renamed one function (see author's version comments for details v1.13)
-// - Any OSI-approved license qualifies now for licensing of this module.
-//
-// Revision 1.9  2005/02/24 16:34:41  marquardt
-// - remove divider lines, add section lines (unfinished)
-//
-// Revision 1.8  2004/10/29 05:46:36  marquardt
-// - style cleaning
-//
-// Revision 1.7  2004/10/26 14:23:48  assarbad
-// - Implementation of Robert Marquardts proposals for the sake of brevity
-//   in the CreateHardLinkW() implementation - C-like returns
-// - Removal of potential bug in CreateHardLinkA() implementation
-// - Removal of two unused function prototypes
-// - Some more comments and corrections and indentations
-// - Perl script to create "my" version from JCL prototype
-// - Compiles fine on Delphi 4 (minor changes would be necessary for D3)
-//
-// Revision 1.6  2004/10/26 00:05:45  assarbad
-// - Removed some superfluous records/structs and constants
-// - Replaced literals by symbolic names (constants) to make the source more meaningful
-// - Checked with Delphi 4 after preprocessing by JPP - works
-// - Will not yet check in the preprocessed version - still discussing in the egroup about it
-//
-// Revision 1.5  2004/10/25 15:05:12  marquardt
-// - remove strange round braces in Hardlinks.pas, bugfix JclRegistry.pas
-//
-// Revision 1.4  2004/10/22 01:26:50  rrossmair
-// - fixed style cleaning collateral damage (as far as required to make it compile)
-//
-// Revision 1.3  2004/10/21 21:58:03  assarbad
-// - minimal changes in the prototype
-//   (change of the filename for the release version on assarbad.net
-//    Hardlink.pas -> Hardlinks.pas
-//    The JCL prototype is now reference for "my" release version)
-// - creation of new unit from style-cleaned prototype
-//
-// Revision 1.2  2004/10/21 17:53:03  marquardt
-// - style cleaning
-//
-// Revision 1.1  2004/10/20 19:49:00  rrossmair
-// - added prototype unit Hardlinks (formerly known as Hardlink)
-// - modified makefile accordingly
-//
-{$ENDIF PROTOTYPE}
-
 {
    Version 1.13 - 2005-03-03
    + NtMyGetProcessHeap() renamed to NtpGetProcessHeap()
