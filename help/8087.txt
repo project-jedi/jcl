@@ -3,7 +3,9 @@
 T8087Exceptions = set of T8087Exception;
 T8087Exception = (emInvalidOp, emDenormalizedOperand, emZeroDivide, emOverflow, emUnderflow, emPrecision);
 [ShortDescr]
-Enumeration which describes the set of available FPU exception masks. Note that
+An enumeration describing the set of available FPU exception masks.
+[Description]
+An enumeration which describes the set of available FPU exception masks. Note that
 you can use the All8087Exceptions constant whenever you need a set which includes
 all exception flags.
 [Enumeration]
@@ -29,7 +31,7 @@ All8087Exceptions = [Low(T8087Exception)..High(T8087Exception)];
 [ShortDescr]
 A set containing all FPU exception flags.
 [Description]
-The All8087Exceptions is a pre-initialized set which contains all of the
+All8087Exceptions is a pre-initialized set which contains all of the
 available FPU exception flags (from the T8087Exception enumeration).
 [Quick Info]
 Kind=Constant
@@ -46,7 +48,7 @@ function ClearPending8087Exceptions: T8087Exceptions;
 [ShortDescr]
 Clears all pending FPU exceptions.
 [Description]
-The ClearPending8087Exceptions clears all pending FPU exceptions.
+The ClearPending8087Exceptions function clears all pending FPU exceptions.
 [Result]
 The result is the set of exception flags that were set before the entire mask
 was cleared.
@@ -93,7 +95,7 @@ function GetMasked8087Exceptions: T8087Exceptions;
 Returns the set of masked FPU exceptions.
 [Description]
 GetMasked8087Exceptions returns a set of flags representing the FPU exceptions
-that are currently masked (ie the exceptions ignored by the FPU).
+that are currently masked (i.e. the exceptions ignored by the FPU).
 [Result]
 The result is the set of masked FPU exceptions.
 [Quick Info]
@@ -119,14 +121,14 @@ Sets the FPU exception mask.
 The SetMasked8087Exceptions routine sets the masked exception flags of the FPU's
 control word. In effect this means that afterwards the FPU no longer raises an
 exception of the kind included in the Exceptions parameter, instead it ignores
-the error situation. Note that exceptions previously masked are cleared if they
+the error situation. Note that by default exceptions previously masked are cleared if they
 do not appear in the Exception parameter.
 [Parameters]
 Count=2
 1=Exceptions:<REF Target"Types\T8087Exceptions">T8087Exceptions</REF>=Set of exceptions to mask.
 2=ClearBefore:Boolean=If set to True the routine clears pending exceptions, if any,
-before modifying the exception mask. If set to False the routine does not clear
-pending exceptions.
+before modifying the exception mask. This is the default behavior.  If set to False 
+the routine does not clear pending exceptions.
 [Result]
 The result is the exception mask before it was modified.
 [Quick Info]
@@ -151,8 +153,8 @@ Masks additional exceptions.
 [Description]
 Mask8087Exceptions masks the exceptions specified by the Exceptions parameter.
 Unlike <REF>SetMasked8087Exceptions</REF> the original exception mask is left
-intact. Thus if for example the current exception mask equals [emInvalidOp, emDenormalizedOperand]
-and you call Mask8087Exceptions([emZeroDivide]) then upon return the exception
+intact. For example, if the current exception mask equals [emInvalidOp, emDenormalizedOperand],
+and you call Mask8087Exceptions([emZeroDivide]), then upon return the exception
 mask equals [emInvalidOp, emDenormalizedOperand, emZeroDivide].
 [Parameters]
 Count=1
@@ -191,7 +193,8 @@ Count=2
 2=ClearBefore:Boolean=If set to True any pending exceptions are cleared before
 the routine returns, if set to False pending exceptions are not cleared.
 [Result]
-The result is the set of exceptions that were masked upon routine entry. 
+The set of exceptions that were masked upon routine entry. Upon exit the set of
+masked exceptions equals Result - Exceptions.
 [Quick Info]
 Unit=Jcl8087
 Category=Math Routines
@@ -211,6 +214,8 @@ Count=4
 T8087Precision = (pcSingle, pcReserved, pcDouble, pcExtended);
 [ShortDescr]
 Used for retrieving and setting the FPU precision control.
+[Description]
+T8087Precision is an enumeration used to set and retrieve the FPU precision control.
 [Enumeration]
 Count=4
 1=pcSingle=Single precision (short)
@@ -231,6 +236,8 @@ FPC=1.x
 T8087Rounding = (rcNearestOrEven, rcDownInfinity, rcUpInfinity, rcChopOrTruncate);
 [ShortDescr]
 Enumeration used for retrieving and setting the FPU rounding control.
+[Description]
+T8087Rounding is an enumeration used to set and retrieve the FPU rounding control.
 [Enumeration]
 Count=4
 1=rcNearestOrEven=Rounds to the nearest or even
@@ -254,7 +261,9 @@ Count=2
 [Declaration]
 T8087Infinity = (icProjective, icAffine);
 [ShortDescr]
-Enumeration used for retrieving and setting the FPU precision control.
+Enumeration used for retrieving and setting the FPU infinity control.
+[Description]
+T8087Infinity is an enumeration used to set and retrieve the FPU infinity control.
 [Enumeration]
 Count=2
 1=icProjective=Infinity is always assumed to be unsigned.
@@ -270,8 +279,8 @@ Kylix=1
 FPC=1.x
 [SeeAlso]
 Count=1
-1=Set8087Precision;..\Set8087Precision
-2=Get8087Precision;..\Get8087Precision
+1=Set8087Precision;..\Set8087Infinity
+2=Get8087Precision;..\Get8087Infinity
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Set8087Infinity(const Infinity: T8087Infinity): T8087Infinity;
@@ -467,7 +476,7 @@ Count=1
 [Result]
 Previous value of the control word.
 [Quick Info]
-Unit=JclMath
+Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=ESB Consultancy;glenn@esbconsult.com.au
@@ -487,9 +496,7 @@ Returns the 80x87 control word.
 Get8087ControlWord returns the 80x87 control word (register). This is the FPU's
 register that controls how the FPU operates with regard to things such as precision,
 rounding and infinity control. See the table below for the meaning of the individual
-bits. Note that although this routine might be handy at times, you should prefer
-the usage of the Get8087Inifinity, Get8087Precision and Get8087Rounding instead
-as they shield you from the low level bit manipulation. 
+bits. Note that although this routine might be handy at times, the Get8087Infinity, Get8087Precision and Get8087Rounding functions are preferred as they shield you from the low level bit manipulation. 
  <TABLE>
  <TR VALIGN="top">
  <TH align=left width=20%>Bit(s)</TH>
@@ -542,13 +549,18 @@ as they shield you from the low level bit manipulation.
  </TR>
  <TR VALIGN="top">
  <TD width=20%>12 (IC)</TD>
- <TD width=80%>Infinity control, <UL><LI>0 projective <LI>1 affine</UL></TD>
+ <TD width=80%>Infinity control<BR>
+   <UL>
+      <LI>0 projective 
+      <LI>1 affine
+   </UL>
+ </TD>
  </TR>
  </TABLE>
 [Result]
 The 80x87 control word.
 [Quick Info]
-Unit=JclMath
+Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 SubCat=Hardware
@@ -632,7 +644,7 @@ The contents of the 80x87 status word.<BR>
  </TR>
  </TABLE>
 [Quick Info]
-Unit=JclMath
+Unit=Jcl8087
 Category=Math Routines
 SubCat=Hardware
 Author=Marcel van Brakel;brakelm@bart.nl
