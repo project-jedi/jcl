@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: September 29, 2003                                                                      }
+{ Last modified: October 6, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -138,6 +138,7 @@ function GetBIOSName: string;
 function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
 function GetBIOSDate: TDateTime;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Processes, Tasks and Modules
@@ -147,6 +148,7 @@ type
   TJclTerminateAppResult = (taError, taClean, taKill);
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
+{$IFDEF MSWINDOWS}
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
 function GetTasksList(const List: TStrings): Boolean;
 
@@ -544,15 +546,18 @@ function TestFDIVInstruction: Boolean;
 {$IFDEF MSWINDOWS}
 function GetMaxAppAddress: Integer;
 function GetMinAppAddress: Integer;
+{$ENDIF MSWINDOWS}
 function GetMemoryLoad: Byte;
 function GetSwapFileSize: Integer;
 function GetSwapFileUsage: Integer;
 function GetTotalPhysicalMemory: Integer;
 function GetFreePhysicalMemory: Integer;
+{$IFDEF MSWINDOWS}
 function GetTotalPageFileMemory: Integer;
 function GetFreePageFileMemory: Integer;
 function GetTotalVirtualMemory: Integer;
 function GetFreeVirtualMemory: Integer;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 // Alloc granularity
@@ -561,6 +566,7 @@ function GetFreeVirtualMemory: Integer;
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 
+{$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 // Keyboard Information
 //--------------------------------------------------------------------------------------------------
@@ -709,7 +715,6 @@ function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 begin
   Result := GetEnvironmentVars(Vars); // Expand is there just for x-platform compatibility
 end;
-
 {$ENDIF LINUX}
 {$IFDEF MSWINDOWS}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
@@ -856,10 +861,12 @@ end;
 function GetCurrentFolder: string;
 {$IFDEF UNIX}
 { TODOc Author: Robert Rossmair }
+const
+  InitialSize = 64;
 var
   Size: Integer;
 begin
-  Size := 64;
+  Size := InitialSize;
   while True do
   begin
     SetLength(Result, Size);
@@ -1439,11 +1446,79 @@ begin
   end;
   {$ENDIF COMPILER7_UP}
 end;
+{$ENDIF MSWINDOWS}
 
 //==================================================================================================
 // Processes, Tasks and Modules
 //==================================================================================================
 
+{$IFDEF UNIX}
+const
+  CommLen = 16;  // synchronize with size of comm in struct task_struct in
+		 //      /usr/include/linux/sched.h
+  SProcDirectory = '/proc';
+
+resourcestring
+  RsInvalidProcessID = 'Invalid process id %d';
+
+function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
+var
+  ProcDir: PDirectoryStream;
+  PtrDirEnt: PDirEnt;
+  Scratch: TDirEnt;
+  ProcID: __pid_t;
+  E: Integer;
+  FileName: string;
+  F: PIOFile;
+begin
+  Result := False;
+  ProcDir := opendir(SProcDirectory);
+  if ProcDir <> nil then
+  begin
+    PtrDirEnt := nil;
+    if readdir_r(ProcDir, @Scratch, PtrDirEnt) <> 0 then
+      Exit;
+    List.BeginUpdate;
+    try
+      while PtrDirEnt <> nil do
+      begin
+        Val(PtrDirEnt^.d_name, ProcID, E);
+        if E = 0 then // name was process id
+        begin
+          FileName := '';
+
+          if FullPath then
+            FileName := ResolveSymLink(Format('/proc/%s/exe', [PtrDirEnt^.d_name]));
+
+          if FileName = '' then // usually due to insufficient access rights
+          begin
+            // read stat
+            FileName := Format('/proc/%s/stat', [PtrDirEnt^.d_name]);
+            F := fopen(PChar(FileName), 'r');
+            if F = nil then
+              raise EJclError.CreateResFmt(@RsInvalidProcessID, [ProcID]);
+            try
+              SetLength(FileName, CommLen);
+              if fscanf(F, PChar(Format('%%*d (%%%d[^)])', [CommLen])), PChar(FileName)) <> 1 then
+                RaiseLastOSError;
+              StrResetLength(FileName);
+            finally
+              fclose(F);
+            end;
+          end;
+
+          List.AddObject(FileName, Pointer(ProcID));
+        end;
+        if readdir_r(ProcDir, @Scratch, PtrDirEnt) <> 0 then
+          Break;
+      end;
+    finally
+      List.EndUpdate;
+    end;
+  end;
+end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
   function ProcessFileName(PID: DWORD): string;
@@ -2591,7 +2666,6 @@ end;
 
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 {$IFDEF LINUX}
-{ TODOc Author: André Snepvangers }
 begin
   Result := False;
 end;
