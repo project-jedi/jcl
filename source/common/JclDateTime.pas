@@ -16,105 +16,13 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
+{******************************************************************************}
+{                                                                              }
+{ Routines for working with dates and times. Mostly conversion between the     }
+{ different formats but also some date testing routines (is leap year? etc)    }
+{                                                                              }
+{ Unit Owner: Michael Schnell                                                  }
 { Last modified: June 18, 2000                                                 }
-{                                                                              }
-{******************************************************************************}
-
-{******************************************************************************}
-{                                                                              }
-{ Modifications by MSchnell:                                                   }
-{ 000622:                                                                      }
-{                                                                              }
-{ Name changed GetCenturyOfDate -> CenturyOfDate                               }
-{                                                                              }
-{ Name changed GetCenturyBaseYear -> CenturyBaseYear                           }
-{                                                                              }
-{ function GetWeekNumber(Today: TDateTime): string;  ->                        }
-{ function ISOWeekNumber(DateTime: TDateTime;                                  }
-{   var YearOfWeekDay: Integer): Integer;                                      }
-{                                                                              }
-{ Added overload function IsLeapYear(Year: Integer): Boolean;                  }
-{ to avoid wrong results if the user thinks he calls SysUtils.IsLeapYear       }
-{ IsLeapYear is now using SysUtils.IsLeapYear                                  }
-{                                                                              }
-{ Changed function DateTimeToSeconds(DateTime: TDateTime): extended; ->        }
-{ function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;              }
-{ now not calling DecodeTime any more                                          }
-{                                                                              }
-{ Added function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer           }
-{                                                                              }
-{ 000624:                                                                      }
-{ DateTimeToDosDateTime performs the same action as SysUtils.DateTimeToFileDate}
-{  so let's have Delphi do the work here                                       }
-{ DosDateTimeToDateTime performs the same action as SysUtils.FileDateToDateTime}
-{  so let's have Delphi do the work here                                       }
-{                                                                              }
-{ DosDateTimeToStr does not use FileTime any more                              }
-{                                                                              }
-{ Added function DateTimeToFileTime                                            }
-{ Added function LocalDateTimeToFileTime                                       }
-{ Changed function  FileTimeToDateTime                                         }
-{           not using TSystemDate and avoid systemcalls                        }
-{ Changed function  FileTimeToLocalDateTime                                    }
-{           not using TSystemDate and avoid systemcalls                        }
-{                                                                              }
-{ 000625:                                                                      }
-{ Added function SystemTimeToFileTime                                          }
-{ Added function FieTimeToSystemTime                                           }
-{ Added function Datetimetosystemtime                                          }
-{ Added function DosDateTimeToFileTime                                         }
-{ Added function FileTimeToDosDateTime                                         }
-{ Added function SystemTimeToStr                                               }
-{                                                                              }
-{ 000706:                                                                      }
-{ Formatted according to style rules                                           }
-{                                                                              }
-{ 000708:                                                                      }
-{ Swapped function names CenturyOfDate and CenturyBaseYear                     }
-{ those were obviously called wrong before                                     }
-{ Attention: must be done in the Help, too                                     }
-{                                                                              }
-{ 000716:                                                                      }
-{ Support for negative dates and Year >= 10000 added for                       }
-{ DecodeDate and EncodeDate                                                    }
-{                                                                              }
-{ 000809:                                                                      }
-{ added functions                                                              }
-{ CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile }
-{                                                                              }
-{ 000828:                                                                      }
-{ added function MakeYear4Digit                                                }
-{                                                                              }
-{ 000907:                                                                      }
-{ added ISOWeekNumber with 1 and 3 parameters                                  }
-{                                                                              }
-{ 000912:                                                                      }
-{ more elegant code for ISOWeekNumber                                          }
-{ added ISOWeekToDateTime                                                      }
-{ added overload for ISOWeekNumber with three integer parameters               }
-{                                                                              }
-{ 000914                                                                       }
-{ added functions DayOfTheYear and DayOfTheYearToDateTime                      }
-{                                                                              }
-{ 000918                                                                       }
-{ added function FormatDateTime                                                }
-{                                                                              }
-{ 001015                                                                       }
-{ avoiding "absolute" (in locations where stated)                              }
-{ extended functionality for MakeYear4Digit: can pass Result unchanged         }
-{ if appropriate                                                               }
-{ added function FATDatesEqual                                                 }
-{                                                                              }
-{ 001019                                                                       }
-{ changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)  }
-{                                                                              }
-{ TODO:                                                                        }
-{ Help for FATDatesEqual                                                       }
-{                                                                              }
-{ in Help:                                                                     }
-{  We do all conversions (but thoses provided by Delphi anyway) between        }
-{  TDateTime, TDosDateTime, TFileTime and TSystemTime         plus             }
-{  TDateTime, TDosDateTime, TFileTime, TSystemTime to string                   }
 {                                                                              }
 {******************************************************************************}
 
@@ -209,20 +117,19 @@ type
 implementation
 
 const
-  DaysInMonths: array [1..12] of Integer =
-    (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+  DaysInMonths: array [1..12] of Integer = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
-  MinutesPerDay  = 60 * 24;
-  SecondsPerDay  = MinutesPerDay * 60;
-  MsecsPerMinute = 60 * 1000;
-  MsecsPerHour   = 60 * MsecsPerMinute;
-  DaysPerYear    = 365.2422454;          // Solar Year
-  DaysPerMonth   = DaysPerYear / 12;
-  DateTimeBaseDay= -693593;              //  1/1/0001
+  MinutesPerDay     = 60 * 24;
+  SecondsPerDay     = MinutesPerDay * 60;
+  MsecsPerMinute    = 60 * 1000;
+  MsecsPerHour      = 60 * MsecsPerMinute;
+  DaysPerYear       = 365.2422454;          // Solar Year
+  DaysPerMonth      = DaysPerYear / 12;
+  DateTimeBaseDay   = -693593;              //  1/1/0001
   EncodeDateMaxYear = 9999;
-  SolarDifference = 1.7882454;           //  Difference of Juliab Calendar to Solar Calendar at 1/1/10000
-  DateTimeMaxDay = 2958466;              //  12/31/EncodeDateMaxYear + 1;
-  FileTimeBase = -109205.0;
+  SolarDifference   = 1.7882454;            //  Difference of Juliab Calendar to Solar Calendar at 1/1/10000
+  DateTimeMaxDay    = 2958466;              //  12/31/EncodeDateMaxYear + 1;
+  FileTimeBase      = -109205.0;
   FileTimeStep: Extended = 24.0 * 60.0 * 60.0 * 1000.0 * 1000.0 * 10.0; // 100 nSek per Day
 
   // Weekday to start the week
@@ -259,14 +166,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); overload;
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word);
 begin
   SysUtils.DecodeDate(Date, Year, Month, Day);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer); overload;
+procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Integer);
 var
   WMonth, WDay: Word;
 begin
@@ -277,7 +184,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word); overload;
+procedure DecodeDate(Date: TDateTime; var Year: Integer; var Month, Day: Word); 
 var
   WYear: Word;
   RDays, RMonths: TDateTime;
@@ -296,7 +203,7 @@ begin
               // the last day of year -1 (-693594) to the first days of year 1
     else                                      // Year >= 10000
       Date := Date - SolarDifference;         // guarantee a smooth transition at 1/1/10000
-    RDays   := Date - DateTimeBaseDay;        // Days relative to 1/1/0001
+    RDays := Date - DateTimeBaseDay;        // Days relative to 1/1/0001
     RMonths := RDays / DaysPerMonth;          // "Months" relative to 1/1/0001
     RMonths := RMonths - Year * 12.0;         // 12 "Months" per Year
     if RMonths < 0 then                       // possible truncation glitches
@@ -304,14 +211,14 @@ begin
       RMonths := 11;
       Year := Year - 1;
     end;
-    Month   := Trunc(RMonths);
+    Month := Trunc(RMonths);
     Rmonths := Month;
-    Month   := Month + 1;
-    RDays   := RDays - Year * DaysPerYear;    // subtract Base Day ot the year
-    RDays   := RDays - RMonths * DaysPerMonth;// subtract Base Day of the month
-    Day     := Trunc (RDays)+ 1;
+    Month := Month + 1;
+    RDays := RDays - Year * DaysPerYear;    // subtract Base Day ot the year
+    RDays := RDays - RMonths * DaysPerMonth;// subtract Base Day of the month
+    Day := Trunc (RDays)+ 1;
     if Year > 0 then                          // Year >= 10000
-       Year := Year + 1;                      // BaseDate is 1/1/1
+      Year := Year + 1;                      // BaseDate is 1/1/1
   end;
 end;
 
@@ -331,8 +238,7 @@ var
 begin
   Y := YearOfDate(DateTime);
   Result := (Y div 100) * 100;
-  if Y > 0 then
-  else
+  if Y <= 0 then
     Result := Result - 100;
 end;
 
@@ -377,7 +283,7 @@ function YearOfDate(const DateTime: TDateTime): Integer;
 var
   M, D: Word;
 begin
- DecodeDate(DateTime, Result, M, D);
+  DecodeDate(DateTime, Result, M, D);
 end;
 
 //------------------------------------------------------------------------------
@@ -576,44 +482,44 @@ end;
 
 function EasterSunday(const Year: Integer): TDateTime;
 var
-  nMonth, nDay, nMoon, nEpact, nSunday,
-  nGold, nCent, nCorx, nCorz: Integer;
+  Month, Day, Moon, Epact, Sunday,
+  Gold, Cent, Corx, Corz: Integer;
 begin
   { The Golden Number of the year in the 19 year Metonic Cycle: }
-  nGold := (Year mod 19) + 1;
+  Gold := (Year mod 19) + 1;
   { Calculate the Century: }
-  nCent := (Year div 100) + 1;
+  Cent := (Year div 100) + 1;
   { Number of years in which leap year was dropped in order... }
   { to keep in step with the sun: }
-  nCorx := (3 * nCent) div 4 - 12;
+  Corx := (3 * Cent) div 4 - 12;
   { Special correction to syncronize Easter with moon's orbit: }
-  nCorz := (8 * nCent + 5) div 25 - 5;
+  Corz := (8 * Cent + 5) div 25 - 5;
   { Find Sunday: }
-  nSunday := (Longint(5) * Year) div 4 - nCorx - 10;
+  Sunday := (Longint(5) * Year) div 4 - Corx - 10;
               { ^ To prevent overflow at year 6554}
   { Set Epact - specifies occurrence of full moon: }
-  nEpact := (11 * nGold + 20 + nCorz - nCorx) mod 30;
-  if nEpact < 0 then
-    nEpact := nEpact + 30;
-  if ((nEpact = 25) and (nGold > 11)) or (nEpact = 24) then
-    nEpact := nEpact + 1;
+  Epact := (11 * Gold + 20 + Corz - Corx) mod 30;
+  if Epact < 0 then
+    Epact := Epact + 30;
+  if ((Epact = 25) and (Gold > 11)) or (Epact = 24) then
+    Epact := Epact + 1;
   { Find Full Moon: }
-  nMoon := 44 - nEpact;
-  if nMoon < 21 then
-    nMoon := nMoon + 30;
+  Moon := 44 - Epact;
+  if Moon < 21 then
+    Moon := Moon + 30;
   { Advance to Sunday: }
-  nMoon := nMoon + 7 - ((nSunday + nMoon) mod 7);
-  if nMoon > 31 then
+  Moon := Moon + 7 - ((Sunday + Moon) mod 7);
+  if Moon > 31 then
   begin
-    nMonth := 4;
-    nDay   := nMoon - 31;
+    Month := 4;
+    Day := Moon - 31;
   end
   else
   begin
-    nMonth := 3;
-    nDay   := nMoon;
+    Month := 3;
+    Day := Moon;
   end;
-  Result := EncodeDate(Year, nMonth, nDay);
+  Result := EncodeDate(Year, Month, Day);
 end;
 
 //==============================================================================
@@ -881,16 +787,16 @@ end;
 
 function FormatDateTime(Form: string; DateTime: TDateTime): string;
 var
-  n: Integer;
-  ISODay, ISOWeek, ISOYear, DayOfYear, yy: Integer;
+  N: Integer;
+  ISODay, ISOWeek, ISOYear, DayOfYear, YY: Integer;
 
   procedure Digest;
   begin
-    if n > 1 then
+    if N > 1 then
     begin
-      Result := Result + Copy(Form, 1, n-1);
-      Delete(Form, 1, n-1);
-      n := 1;
+      Result := Result + Copy(Form, 1, N - 1);
+      System.Delete(Form, 1, N - 1);
+      N := 1;
     end;
   end;
 
@@ -898,147 +804,147 @@ begin
   ISOWeek := 0;
   DayOfYear := 0;
   Result := '';
-  n := 1;
-  while n <= Length(Form) do
+  N := 1;
+  while N <= Length(Form) do
   begin
-    case Form[n] of
+    case Form[N] of
       '"':
-      begin
-        Inc(n);
-        Digest;
-        n := Pos('"', Form);
-        if n = 0 then
         begin
-          Result := Result + Form;
-          Form := '';
-          n := 1;
-        end
-        else
-        begin
-          Inc(n);
+          Inc(N);
           Digest;
-        end;
-      end;
-      '''':
-      begin
-        Inc(n);
-        Digest;
-        n := Pos('''', Form);
-        if n = 0 then
-        begin
-          Result := Result + Form;
-          Form := '';
-          n := 1;
-        end
-        else
-        begin
-          Inc(n);
-          Digest;
-        end;
-      end;
-      'i', 'I':             //ISO Week Year
-      begin
-        Digest;
-        if ISOWeek = 0 then
-          ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
-        if (Length(Form) > 1) and ((Form[2] = 'i') or (Form[2] = 'I')) then
-        begin              // <ii>
-          if (Length(Form) > 2) and ((Form[3] = 'i') or (Form[3] = 'I')) then
+          N := Pos('"', Form);
+          if N = 0 then
           begin
-            if (Length(Form) > 3) and ((Form[4] = 'i') or (Form[4] = 'I')) then
-            begin        // <iiii>
-              Delete(Form, 1, 4);
-              Result := Result + '"' + IntToStr(ISOYear) + '"';
+            Result := Result + Form;
+            Form := '';
+            N := 1;
+          end
+          else
+          begin
+            Inc(N);
+            Digest;
+          end;
+        end;
+      '''':
+        begin
+          Inc(N);
+          Digest;
+          N := Pos('''', Form);
+          if N = 0 then
+          begin
+            Result := Result + Form;
+            Form := '';
+            N := 1;
+          end
+          else
+          begin
+            Inc(N);
+            Digest;
+          end;
+        end;
+      'i', 'I':             //ISO Week Year
+        begin
+          Digest;
+          if ISOWeek = 0 then
+            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
+          if (Length(Form) > 1) and ((Form[2] = 'i') or (Form[2] = 'I')) then
+          begin              // <ii>
+            if (Length(Form) > 2) and ((Form[3] = 'i') or (Form[3] = 'I')) then
+            begin
+              if (Length(Form) > 3) and ((Form[4] = 'i') or (Form[4] = 'I')) then
+              begin        // <iiii>
+                Delete(Form, 1, 4);
+                Result := Result + '"' + IntToStr(ISOYear) + '"';
+              end
+              else
+              begin        // <iii>
+                Delete(Form, 1, 3);
+                Result := Result + '"' + IntToStr(ISOYear) + '"';
+              end;
             end
             else
-            begin        // <iii>
-              Delete(Form, 1, 3);
-              Result := Result + '"' + IntToStr(ISOYear) + '"';
+            begin           // <ii>
+              Delete(Form, 1, 2);
+              Result := Result + '"';
+              if ISOYear < 10 then
+                Result := Result + '0';
+              YY := ISOYear mod 100;
+              if YY < 10 then
+                Result := Result + '0';
+              Result := Result + IntToStr(YY) + '"';
             end;
           end
           else
-          begin           // <ii>
+          begin               // <i>
+            Delete(Form, 1, 1);
+            Result := Result + '"' + IntToStr(ISOYear) + '"';
+          end;
+        end;
+      'w', 'W':              // ISO Week
+        begin
+          Digest;
+          if ISOWeek = 0 then
+            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
+          if (Length(Form) > 1) and ((Form[2] = 'w') or (Form[2] = 'W')) then
+          begin               // <ww>
             Delete(Form, 1, 2);
             Result := Result + '"';
-            if ISOYear < 10 then
+            if ISOWeek < 10 then
               Result := Result + '0';
-            yy := ISOYear mod 100;
-            if yy < 10 then
-              Result := Result + '0';
-            Result := Result + IntToStr(yy) + '"';
-          end;
-        end
-        else
-        begin               // <i>
-          Delete(Form, 1, 1);
-          Result := Result + '"' + IntToStr(ISOYear) + '"';
-        end;
-      end;
-      'w', 'W':              // ISO Week
-      begin
-        Digest;
-        if ISOWeek = 0 then
-          ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
-        if (Length(Form) > 1) and ((Form[2] = 'w') or (Form[2] = 'W')) then
-        begin               // <ww>
-          Delete(Form, 1, 2);
-          Result := Result + '"';
-          if ISOWeek < 10 then
-            Result := Result + '0';
-          Result := Result + IntToStr(ISOWeek) + '"';
-        end
-        else
-        begin               // <w>
-          Delete(Form, 1, 1);
-          Result := Result + '"' + IntToStr(ISOWeek) + '"';
-        end;
-      end;
-      'e', 'E':   // ISO Week Day
-      begin
-        Digest;
-        if ISOWeek = 0 then
-          ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISODay);
-        Delete(Form, 1, 1);
-        Result := Result + '"' + IntToStr(ISODay) + '"';
-      end;
-      'f', 'F':   // Day of the Year
-      begin
-        Digest;
-        if DayOfYear = 0 then
-          DayOfYear := DayOfTheYear(DateTime);
-        if (Length(Form) > 1) and ((Form[2] = 'f') or (Form[2] = 'F')) then
-        begin
-          if (Length(Form) > 2) and ((Form[3] = 'f') or (Form[3] = 'F')) then
-          begin            // <fff>
-            Delete(Form, 1, 3);
-            Result := Result + '"';
-            if DayOfYear < 10 then
-              Result := Result + '0';
-            if DayOfYear < 100 then
-              Result := Result + '0';
-            Result := Result + IntToStr(DayOfYear) + '"';
+            Result := Result + IntToStr(ISOWeek) + '"';
           end
           else
-          begin            // <ff>
-            Delete(Form, 1, 2);
-            Result := Result + '"';
-            if DayOfYear < 10 then
-              Result := Result + '0';
-            Result := Result + IntToStr(DayOfYear) + '"';
+          begin               // <w>
+            Delete(Form, 1, 1);
+            Result := Result + '"' + IntToStr(ISOWeek) + '"';
           end;
-        end
-        else
-        begin               // <f>
+        end;
+      'e', 'E':   // ISO Week Day
+        begin
+          Digest;
+          if ISOWeek = 0 then
+            ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISODay);
           Delete(Form, 1, 1);
-          Result := Result + '"' + IntToStr(DayOfYear) + '"';
-        end
-      end;
-      else
+          Result := Result + '"' + IntToStr(ISODay) + '"';
+        end;
+      'f', 'F':   // Day of the Year
+        begin
+          Digest;
+          if DayOfYear = 0 then
+            DayOfYear := DayOfTheYear(DateTime);
+          if (Length(Form) > 1) and ((Form[2] = 'f') or (Form[2] = 'F')) then
+          begin
+            if (Length(Form) > 2) and ((Form[3] = 'f') or (Form[3] = 'F')) then
+            begin            // <fff>
+              Delete(Form, 1, 3);
+              Result := Result + '"';
+              if DayOfYear < 10 then
+                Result := Result + '0';
+              if DayOfYear < 100 then
+                Result := Result + '0';
+              Result := Result + IntToStr(DayOfYear) + '"';
+            end
+            else
+            begin            // <ff>
+              Delete(Form, 1, 2);
+              Result := Result + '"';
+              if DayOfYear < 10 then
+                Result := Result + '0';
+              Result := Result + IntToStr(DayOfYear) + '"';
+            end;
+          end
+          else
+          begin               // <f>
+            Delete(Form, 1, 1);
+            Result := Result + '"' + IntToStr(DayOfYear) + '"';
+          end
+        end;
+    else
       begin
-        Inc(n);
+        Inc(N);
       end;
-    end;
-  end;
+    end; { case }
+  end; {while }
   Result := SysUtils.FormatDateTime(Result + Form, DateTime);
 end;
 
@@ -1051,7 +957,7 @@ function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean;
 const
   ALLOWED_FAT_FILE_TIME_VARIATION = 20;
 begin
-  Result := Abs(FileTime1-FileTime2) <= ALLOWED_FAT_FILE_TIME_VARIATION;
+  Result := Abs(FileTime1 - FileTime2) <= ALLOWED_FAT_FILE_TIME_VARIATION;
 end;
 
 //------------------------------------------------------------------------------
