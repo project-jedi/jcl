@@ -1772,3 +1772,232 @@ Count=9
 7=__MODULE_OF_ADDR__
 8=__PROC_OF_ADDR__
 9=__LINE_OF_ADDR__
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+PStackFrame = ^TStackFrame;
+TStackFrame = record
+  CallersEBP: DWORD;
+  CallerAdr: DWORD;
+end;
+[ShortDescr]
+Stack frame information
+[Description]
+TStackFrame holds stack frame information.
+[RecordFields]
+Count=2
+1=CallersEBP:DWORD=Callers EBP register
+2=CallerAdr:DWORD=Address of caller
+[Quick Info]
+Kind=Type
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TStackInfo = record
+  CallerAdr: DWORD;
+  Level: DWORD;
+  CallersEBP: DWORD;
+  DumpSize: DWORD;
+  ParamSize: DWORD;
+  ParamPtr: PDWORDArray;
+  case Integer of
+    0: (StackFrame: <REF>PStackFrame</REF>);
+    1: (DumpPtr: PByteArray);
+end;
+[ShortDescr]
+Stack information
+[Description]
+TStackInfo holds stack information.
+[RecordFields]
+Count=8
+1=CallerAdr:DWORD=Return address  (the address of the caller)
+2=Level:DWORD=Caller level
+3=CallersEBP:DWORD=EBP register of caller (only filled if the trace was not a raw stack trace)
+4=DumpSize:DWORD=Length of memory block between callers frame and this frame (only filled if the trace was not a raw stack trace)
+5=ParamSize:DWORD=Number of DWORD parameters (only filled if the trace was not a raw stack trace)
+6=ParamPtr:PDWORDArray=Points to the parameters (only filled if the trace was not a raw stack trace)
+7=StackFrame:PStackFrame=Current stack frame (only filled if the trace was not a raw stack trace)
+8=DumpPtr:PByteArray=Points to the memory block of the stack frame (only filled if the trace was not a raw stack trace)
+[Quick Info]
+Kind=Type
+BCB=4,5
+Kind=Type
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclStackInfoItem = class (TObject)
+[ShortDescr]
+Stack information item
+[Description]
+TStackInfoItem holds stack information.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoItem
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LogicalAddress: DWORD read GetLogicalAddress;
+[ShortDescr]
+Retreives the logical address for the caller
+[Description]
+LogicalAddress retreives teh logical address for the caller. It does so by 
+subtracting the caller's module base address from the caller's address.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoItem
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property StackInfo: TStackInfo read FStackInfo;
+[ShortDescr]
+Stack information.
+[Description]
+StackInfo holds the actual stack information.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoItem
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclStackInfoList = class (TObjectList)
+[ShortDescr]
+Stack information list
+[Description]
+TStackInfoList holds a list of stack information items (<REF Target"..\TJclStackInfoItem\TJclStackInfoItem"TJclStackInfoItem</REF>).
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
+[ShortDescr]
+Instantiates a stack list.
+[Description]
+Create instantiates a stack list and immediately executes the trace.
+[Parameters]
+Count=3
+1=Raw:Boolean=When set to False, the stack is traced by means of the EBP frame, 
+when set to True, all DWORDs are checked for valid caller addresses.
+2=AIgnoreLevels:DWORD=Number of callers to ignore upon tracing.
+3=FirstCaller:Pointer=If not nil, an explicit TJclStackInfoItem is added to the
+list, pointing to the FirstCaller.
+[Quick Info]
+BCB=4,5
+Kind=Method
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure AddToStrings(Strings: TStrings);
+[ShortDescr]
+Adds all stack info items a list.
+[Description]
+AddToStrings adds all stack info items to a TStrings descendant. For each stack
+info item it stores the result of the call GetLocationInfoStr(CallerAddress).
+[Parameters]
+Count=1
+1=String:TStrings=TStrings descendant to retreive the stack trace in.
+[Quick Info]
+BCB=4,5
+Kind=Method
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
+[ShortDescr]
+List of stack info items
+[Description]
+Items is a reference to all stack info items obtained during the trace.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property IgnoreLevels: DWORD read FIgnoreLevels;
+[ShortDescr]
+Number of levels ignored in the trace
+[Description]
+IgnoreLevels is the number of levels that were ignored when the trace started. This 
+number was given upon creation of the list.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ThreadID: DWORD read FThreadID;
+[ShortDescr]
+ID of thread that made the trace.
+[Description]
+ThreadID is ID of the thread that executed the trace.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property TimeStamp: TDateTime read FTimeStamp;
+[ShortDescr]
+Time stamp of list creation
+[Description]
+TimeStamp holds the date and time of creation of the list.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Stack info routines\TJclStackInfoList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
