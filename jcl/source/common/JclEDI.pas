@@ -51,70 +51,8 @@ interface
 uses
   SysUtils, Classes, JclBase, JclStrings{, Dialogs};
 
-//These resource strings replace all those in JclResources.pas
-resourcestring
-  RsEDIError001 = 'Could not open edi file.  File not specified.';
-  RsEDIError002 = 'Could not save edi file.  File name and path not specified.';
-  RsEDIError003 = 'Could not get data object from %s at index [%s],';
-  RsEDIError004 = 'Could not get data object from %s at index [%s], Index too low.';
-  RsEDIError005 = 'Could not get data object from %s at index [%s], Index too high.';
-  RsEDIError006 = 'Could not get data object from %s at index [%s], There was no data object assigned.';
-  RsEDIError007 = 'Could not set data object from %s at index [%s].';
-  RsEDIError008 = 'Could not set data object from %s at index [%s], Index too low.';
-  RsEDIError009 = 'Could not set data object from %s at index [%s], Index too high.';
-  RsEDIError010 = 'Could not delete data object from %s at index [%s]';
-  RsEDIError011 = 'Could not delete data objects from %s at index [%s]';
-  RsEDIError012 = 'Delimiters have not been assigned to interchange.  Dissassemble cancelled.';
-  RsEDIError013 = 'Delimiters have not been assigned to interchange.  Assemble cancelled.';
-  RsEDIError014 = 'Could not find interchange control header segment terminator.';
-  RsEDIError015 = 'Could not find interchange control header.';
-  RsEDIError016 = 'Could not find interchange control trailer segment terminator.';
-  RsEDIError017 = 'Could not find interchange control trailer.';
-  RsEDIError018 = 'Could not find interchange control trailer or garbage at end of file.';
-  RsEDIError019 = 'Could not assign delimiters to functional group.  Dissassemble cancelled.';
-  RsEDIError020 = 'Could not assign delimiters to functional group.  Assemble cancelled.';
-  RsEDIError021 = 'Could not find functional group header segment terminator.';
-  RsEDIError022 = 'Could not find functional group header.'; //conditional for UN/EDIFACT
-  RsEDIError023 = 'Could not find functional group trailer segment terminator.';
-  RsEDIError024 = 'Could not find functional group trailer.';
-  RsEDIError025 = 'Could not assign delimiters to transaction set.  Dissassemble cancelled.';
-  RsEDIError026 = 'Could not assign delimiters to transaction set.  Assemble cancelled.';
-  RsEDIError027 = 'Could not find transaction set header.';
-  RsEDIError028 = 'Could not find transaction set trailer segment terminator.';
-  RsEDIError029 = 'Could not find transaction set trailer.';
-  RsEDIError030 = 'Could not assign delimiters to message.  Dissassemble cancelled.';
-  RsEDIError031 = 'Could not assign delimiters to message.  Assemble cancelled.';
-  RsEDIError032 = 'Could not find message header.';
-  RsEDIError033 = 'Could not find message trailer segment terminator.';
-  RsEDIError034 = 'Could not find message trailer.';
-  RsEDIError035 = 'Could not assign delimiters to segment.  Dissassemble cancelled.';
-  RsEDIError036 = 'Could not assign delimiters to segment.  Assemble cancelled.';
-  RsEDIError037 = 'Could not assign delimiters to composite element.  Dissassemble cancelled.';
-  RsEDIError038 = 'Could not assign delimiters to composite element.  Assemble cancelled.';
-  RsEDIError039 = 'Could not get data object in transaction set loop at index [%s], Data object does not exist.';
-  RsEDIError040 = 'Could not get data object in transaction set loop at index [%s], Index too high.';
-  RsEDIError041 = 'Could not get data object in transaction set loop at index [%s], Index too low.';
-  RsEDIError042 = 'Could not get data object in transaction set loop at index [%s].';
-  RsEDIError043 = 'Could not set data object in transaction set loop at index [%s], Index too high.';
-  RsEDIError044 = 'Could not set data object in transaction set loop at index [%s], Index too low.';
-  RsEDIError045 = 'Could not set data object in transaction set loop at index [%s].';
-  RsEDIError046 = 'Could not get data object in message loop at index [%s], Data object does not exist.';
-  RsEDIError047 = 'Could not get data object in message loop at index [%s], Index too high.';
-  RsEDIError048 = 'Could not get data object in message loop at index [%s], Index too low.';
-  RsEDIError049 = 'Could not get data object in message loop at index [%s].';
-  RsEDIError050 = 'Could not set data object in message loop at index [%s], Index too high.';
-  RsEDIError051 = 'Could not set data object in message loop at index [%s], Index too low.';
-  RsEDIError052 = 'Could not set data object in message loop at index [%s].';
-  RsEDIError053 = 'Loop in loop stack record at index [%s] does not exist.';
-  RsEDIError054 = 'Could not get loop stack record at index [%s], Index too high.';
-  RsEDIError055 = 'Could not get loop stack record at index [%s], Index too low.';
-  RsEDIError056 = 'Could not get loop stack record at index [%s].';
-  RsEDIError057 = 'Could not get safe loop stack index [%s].';
-  RsEDIError058 = 'Could not assign element specification to element at index [%s]' +
-                   ' in segment [%s] at index [%s] in transaction set.';
-
 const
-  NA_LoopId = 'N/A';    //Constant used for loop id comparison
+  NA_LoopId = 'N/A'; //Constant used for loop id comparison
   ElementSpecId_Reserved = 'Reserved';
 
 type
