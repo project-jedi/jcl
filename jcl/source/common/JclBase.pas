@@ -64,6 +64,7 @@ function SysErrorMessage(ErrNo: Integer): string;
 
 {$IFDEF MSWINDOWS}
 procedure RaiseLastWin32Error;
+function Win32Check(RetVal: BOOL): BOOL;
 
 procedure QueryPerformanceCounter(var C: Int64);
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
@@ -280,6 +281,14 @@ var
 begin
   Windows.QueryPerformanceCounter(@T);
   CardinalsToI64(C, T.LowPart, T.HighPart);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function Win32Check(RetVal: BOOL): BOOL;
+begin
+  if not RetVal then RaiseLastOSError;
+  Result := RetVal;
 end;
 
 {$ELSE MSWINDOWS}
