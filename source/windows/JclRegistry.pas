@@ -88,6 +88,9 @@ uses
   SysUtils,
   JclResources;
 
+const
+  cItems = 'Items';
+
 //==============================================================================
 // Internal helper routines
 //==============================================================================
@@ -576,7 +579,7 @@ begin
   if RegCreateKey(RootKey, Subkey, '') = ERROR_SUCCESS then
   begin
     // Save Number of strings
-    RegWriteInteger(RootKey, Subkey, 'Items', Items.Count);
+    RegWriteInteger(RootKey, Subkey, cItems, Items.Count);
     for I := 1 to Items.Count do
       RegWriteString(RootKey, Subkey, IntToStr(I), Items[I-1]);
     Result := True;
@@ -593,7 +596,7 @@ var
 begin
   SaveTo.Clear;
   Subkey := Key + '\' + ListName;
-  N := RegReadInteger(RootKey, Subkey, 'Items');
+  N := RegReadInteger(RootKey, Subkey, cItems);
   for I := 1 to N do
     SaveTo.Add(RegReadString(RootKey, Subkey, IntToStr(I)));
   Result := N > 0;
@@ -608,8 +611,8 @@ var
 begin
   Result := False;
   Subkey := Key + '\' + ListName;
-  N := RegReadIntegerDef(RootKey, Subkey, 'Items', -1);
-  if (N > 0) and RegDeleteEntry(RootKey, Subkey, 'Items') then
+  N := RegReadIntegerDef(RootKey, Subkey, cItems, -1);
+  if (N > 0) and RegDeleteEntry(RootKey, Subkey, cItems) then
     for I := 1 to N do
     begin
       Result := RegDeleteEntry(RootKey, Subkey, IntToStr(I));
