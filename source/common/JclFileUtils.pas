@@ -1635,24 +1635,33 @@ function GetDirectorySize(const Path: string): Int64;
     Result := 0;
     R := SysUtils.FindFirst(Path + '*.*', faAnyFile, F);
     if R = 0 then
-    begin
+    try
       while R = 0 do
       begin
         if (F.Name <> '.') and (F.Name <> '..') then
         begin
           if (F.Attr and faDirectory) = faDirectory then
-            Inc(Result, RecurseFolder(Path + F.Name + PathSeparator))
+            Inc(Result, RecurseFolder(Path + F.Name + '\'))
           else
             Result := Result + (F.FindData.nFileSizeHigh shl 32) + F.FindData.nFileSizeLow;
         end;
         R := SysUtils.FindNext(F);
       end;
+      if R <> ERROR_NO_MORE_FILES then Abort;
+    finally
       SysUtils.FindClose(F);
     end;
   end;
 
 begin
-  Result := RecurseFolder(PathAddSeparator(Path));
+  if not DirectoryExists(PathRemoveSeparator(Path)) then
+    Result := -1
+  else
+  try
+    Result := RecurseFolder(PathAddSeparator(Path))
+  except
+    Result := -1;
+  end;
 end;
 
 //------------------------------------------------------------------------------
