@@ -798,13 +798,13 @@ type
 // ImageHlp related declarations (WinNT.h)
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF DELPHI}
+{$IFNDEF FPC}
 type
   {$EXTERNALSYM PIMAGE_NT_HEADERS}
   PIMAGE_NT_HEADERS = PImageNtHeaders;
   {$EXTERNALSYM PIMAGE_SECTION_HEADER}
   PIMAGE_SECTION_HEADER = PImageSectionHeader;
-{$ENDIF DELPHI}
+{$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
 // Registry related declarations (WinNT.h)
@@ -1884,10 +1884,11 @@ const
 // from WinBase.h
 //==================================================================================================
 
-{$IFDEF DELPHI}
+{$IFNDEF FPC}
 type
+  {$EXTERNALSYM LPSECURITY_ATTRIBUTES}
   LPSECURITY_ATTRIBUTES = PSecurityAttributes;
-{$ENDIF DELPHI}
+{$ENDIF ~FPC}
 
 {$EXTERNALSYM InterlockedExchangePointer}
 function InterlockedExchangePointer(var Target: Pointer; Value: Pointer): Pointer;  // Macro
@@ -3783,6 +3784,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.11  2004/04/06 22:41:26  peterjhaas
+// Bugfix the in Delphi missing pointer declarations for BCB
+//
 // Revision 1.10  2004/04/06 17:13:03  peterjhaas
 // Delete overload statements to solve the linker problem
 //
