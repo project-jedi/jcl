@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: July 8, 2003                                                                      }
+{ Last modified: December 27, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -36,7 +36,7 @@ interface
 
 uses
   {$IFNDEF FPC}
-  ImageHlp, WinSvc, AccCtrl, AclApi, ShlObj,  
+  ImageHlp, WinSvc, AccCtrl, AclApi, ShlObj,
   {$ENDIF FPC}
   Windows, ActiveX,
   JclBase;
@@ -48,6 +48,164 @@ uses
 {$HPPEMIT '#include <winioctl.h>'}
 {$HPPEMIT '#include <delayimp.h>'}
 {$HPPEMIT '#include <nb30.h>'}
+
+//==================================================================================================
+// FPC compatibility
+//==================================================================================================
+
+{$IFDEF FPC}
+
+// from unit Windows
+const
+  FILE_ATTRIBUTE_OFFLINE              = $00001000;
+
+  HKEY_CLASSES_ROOT     = DWORD($80000000);
+  HKEY_CURRENT_USER     = DWORD($80000001);
+  HKEY_LOCAL_MACHINE    = DWORD($80000002);
+  HKEY_USERS            = DWORD($80000003);
+  HKEY_PERFORMANCE_DATA = DWORD($80000004);
+  HKEY_CURRENT_CONFIG   = DWORD($80000005);
+  HKEY_DYN_DATA         = DWORD($80000006);
+
+  VOS__BASE = 0;
+  VOS__WINDOWS16 = 1;
+  VOS__PM16 = 2;
+  VOS__PM32 = 3;
+  VOS__WINDOWS32 = 4;
+
+{ VS_VERSION.dwFileSubtype for VFT_WINDOWS_DRV }
+
+  VFT2_UNKNOWN = 0;
+  VFT2_DRV_PRINTER = 1;
+  VFT2_DRV_KEYBOARD = 2;
+  VFT2_DRV_LANGUAGE = 3;
+  VFT2_DRV_DISPLAY = 4;
+  VFT2_DRV_MOUSE = 5;
+  VFT2_DRV_NETWORK = 6;
+  VFT2_DRV_SYSTEM = 7;
+  VFT2_DRV_INSTALLABLE = 8;
+  VFT2_DRV_SOUND = 9;
+  VFT2_DRV_COMM = 10;
+type
+  _GET_FILEEX_INFO_LEVELS = (GetFileExInfoStandard, GetFileExMaxInfoLevel);
+  TGetFileExInfoLevels = _GET_FILEEX_INFO_LEVELS;
+  GET_FILEEX_INFO_LEVELS = _GET_FILEEX_INFO_LEVELS;
+
+function GetFileAttributesEx(lpFileName: PChar;
+  fInfoLevelId: TGetFileExInfoLevels; lpFileInformation: Pointer): BOOL; stdcall;
+
+// from unit AccCtrl
+type
+  SE_OBJECT_TYPE = (
+    SE_UNKNOWN_OBJECT_TYPE,
+    SE_FILE_OBJECT,
+    SE_SERVICE,
+    SE_PRINTER,
+    SE_REGISTRY_KEY,
+    SE_LMSHARE,
+    SE_KERNEL_OBJECT,
+    SE_WINDOW_OBJECT,
+    SE_DS_OBJECT,
+    SE_DS_OBJECT_ALL,
+    SE_PROVIDER_DEFINED_OBJECT,
+    SE_WMIGUID_OBJECT
+  );
+
+// from ActiveX
+const
+  DROPEFFECT_NONE   = 0;
+  DROPEFFECT_COPY   = 1;
+  DROPEFFECT_MOVE   = 2;
+  DROPEFFECT_LINK   = 4;
+  DROPEFFECT_SCROLL = DWORD($80000000);
+
+// from unit ShlObj
+type
+  IEnumIDList = interface(IUnknown)
+    ['{000214F2-0000-0000-C000-000000000046}']
+    function Next(celt: ULONG; out rgelt: PItemIDList;
+      var pceltFetched: ULONG): HResult; stdcall;
+    function Skip(celt: ULONG): HResult; stdcall;
+    function Reset: HResult; stdcall;
+    function Clone(out ppenum: IEnumIDList): HResult; stdcall;
+  end;
+
+{ IShellFolder interface }
+
+const
+{ IShellFolder.GetDisplayNameOf/SetNameOf uFlags }
+
+  SHGDN_NORMAL           = 0;         { default (display purpose) }
+  SHGDN_INFOLDER         = 1;         { displayed under a folder (relative) }
+
+  SHGDN_FOREDITING       = $1000;     { for in-place editing text }
+  SHGDN_INCLUDE_NONFILESYS = $2000;   { if not set, display names for shell
+                                        name space items that are not in the
+                                        file system will fail. }
+  SHGDN_FORADDRESSBAR      = $4000;     { for displaying in the address (drives dropdown) bar }
+  SHGDN_FORPARSING         = $8000;     { for ParseDisplayName or path }
+
+{ IShellFolder.EnumObjects }
+
+  SHCONTF_FOLDERS         = 32;       { for shell browser }
+  SHCONTF_NONFOLDERS      = 64;       { for default view }
+  SHCONTF_INCLUDEHIDDEN   = 128;      { for hidden/system objects }
+
+{ IShellFolder.GetAttributesOf flags }
+
+  SFGAO_CANCOPY           = DROPEFFECT_COPY; { Objects can be copied }
+  SFGAO_CANMOVE           = DROPEFFECT_MOVE; { Objects can be moved }
+  SFGAO_CANLINK           = DROPEFFECT_LINK; { Objects can be linked }
+  SFGAO_CANRENAME         = $00000010;       { Objects can be renamed }
+  SFGAO_CANDELETE         = $00000020;       { Objects can be deleted }
+  SFGAO_HASPROPSHEET      = $00000040;       { Objects have property sheets }
+  SFGAO_DROPTARGET        = $00000100;       { Objects are drop target }
+  SFGAO_CAPABILITYMASK    = $00000177;
+  SFGAO_LINK              = $00010000;       { Shortcut (link) }
+  SFGAO_SHARE             = $00020000;       { shared }
+  SFGAO_READONLY          = $00040000;       { read-only }
+  SFGAO_GHOSTED           = $00080000;       { ghosted icon }
+  SFGAO_HIDDEN            = $00080000;       { hidden object }
+  SFGAO_DISPLAYATTRMASK   = $000F0000;
+  SFGAO_FILESYSANCESTOR   = $10000000;       { It contains file system folder }
+  SFGAO_FOLDER            = $20000000;       { It's a folder. }
+  SFGAO_FILESYSTEM        = $40000000;       { is a file system thing (file/folder/root) }
+  SFGAO_HASSUBFOLDER      = $80000000;       { Expandable in the map pane }
+  SFGAO_CONTENTSMASK      = $80000000;
+  SFGAO_VALIDATE          = $01000000;       { invalidate cached information }
+  SFGAO_REMOVABLE         = $02000000;       { is this removeable media? }
+  SFGAO_COMPRESSED        = $04000000;       { Object is compressed (use alt color) }
+  SFGAO_BROWSABLE         = $08000000;       { is in-place browsable }
+  SFGAO_NONENUMERATED     = $00100000;       { is a non-enumerated object }
+  SFGAO_NEWCONTENT        = $00200000;       { should show bold in explorer tree }
+
+type
+  IShellFolder = interface(IUnknown)
+    ['{000214E6-0000-0000-C000-000000000046}']
+    function ParseDisplayName(hwndOwner: HWND;
+      pbcReserved: Pointer; lpszDisplayName: POLESTR; out pchEaten: ULONG;
+      out ppidl: PItemIDList; var dwAttributes: ULONG): HResult; stdcall;
+    function EnumObjects(hwndOwner: HWND; grfFlags: DWORD;
+      out EnumIDList: IEnumIDList): HResult; stdcall;
+    function BindToObject(pidl: PItemIDList; pbcReserved: Pointer;
+      const riid: TIID; out ppvOut): HResult; stdcall;
+    function BindToStorage(pidl: PItemIDList; pbcReserved: Pointer;
+      const riid: TIID; out ppvObj): HResult; stdcall;
+    function CompareIDs(lParam: LPARAM;
+      pidl1, pidl2: PItemIDList): HResult; stdcall;
+    function CreateViewObject(hwndOwner: HWND; const riid: TIID;
+      out ppvOut): HResult; stdcall;
+    function GetAttributesOf(cidl: UINT; var apidl: PItemIDList;
+      var rgfInOut: UINT): HResult; stdcall;
+    function GetUIObjectOf(hwndOwner: HWND; cidl: UINT; var apidl: PItemIDList;
+      const riid: TIID; prgfInOut: Pointer; out ppvOut): HResult; stdcall;
+    function GetDisplayNameOf(pidl: PItemIDList; uFlags: DWORD;
+      var lpName: TStrRet): HResult; stdcall;
+    function SetNameOf(hwndOwner: HWND; pidl: PItemIDList; lpszName: POLEStr;
+      uFlags: DWORD; var ppidlOut: PItemIDList): HResult; stdcall;
+  end;
+
+{$ENDIF FPC}
 
 //--------------------------------------------------------------------------------------------------
 // Locales related
@@ -469,11 +627,11 @@ type
   TTokenUser = TOKEN_USER;
   PTokenUser = ^TOKEN_USER;
 
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
 function SetNamedSecurityInfoW(pObjectName: PWideChar; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; ppsidOwner, ppsidGroup: PPSID; ppDacl,
   ppSacl: PACL): DWORD; stdcall; external 'advapi32.dll' name 'SetNamedSecurityInfoW';
-{$ENDIF FPC}
+{.$ENDIF FPC}
 function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   const NewState: TTokenPrivileges; BufferLength: DWORD;
   PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall;
@@ -1855,5 +2013,14 @@ begin
   Result := Ordinal and $FFFF;
 end;
 
+//==================================================================================================
+// FPC compatibility
+//==================================================================================================
+
+{$IFDEF FPC}
+
+function GetFileAttributesEx; external kernel32 name 'GetFileAttributesExA';
+
+{$ENDIF FPC}
 
 end.

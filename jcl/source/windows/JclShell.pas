@@ -22,7 +22,7 @@
 { through shell interfaces, shortcut's and program execution.                                      }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: October 30, 2002                                                                  }
+{ Last modified: December 27, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,7 +35,10 @@ unit JclShell;
 interface
 
 uses
-  Windows, ShlObj, SysUtils,
+  Windows, SysUtils,
+  {$IFNDEF FPC}
+  ShlObj,
+  {$ENDIF}
   JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
