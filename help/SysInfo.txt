@@ -1,0 +1,1297 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RunningProcessesList(List: TStrings): Boolean;
+[ShortDescr]
+Returns a list of all running processes.
+[Description]
+RunningProcessesList fills the List parameter with a list of all running processes.
+[Parameters]
+Count=1
+1=List:TStrings=The list which is filled with the names of all running processes.
+Note that if this function is executed NT 3 or NT 4 the Objects property of the
+list contains INVALID_HANDLE_VALUE, on all other systems the Objects property is
+filled with the ToolHelp Process ID which you can use to further investigate the
+process. Note that upon entry the function immediately clears the list so all
+contents are lost.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the latter
+case the contents of the list is undefined.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
+procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
+[ShortDescr]
+Rounds an address to an allocation boundary.
+[Description]
+Some Win32 API routines that take pointer parameters require that the specified
+address is a multiple of the allocation granularity. On current Intel platforms
+ (x86) this is 64K. RoundToAllocGranularityPtr rounds the given 32 bit address
+to a system defined allocation granularity boundary. You can have the function
+round upwards or downwards by specifying True or False for the Up parameter
+respectively. This function also exists for 64 bit pointers.
+[Parameters]
+Count=2
+1=Value:Pointer=The address to adjust.
+2=Up:Boolean=If True the function rounds the address up to the next multiple of
+the allocation granularity, if False it rounds the address down to the previous
+multiple of the allocation granularity.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+Author=Wim De Cleen;jones-jr@skynet.be
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+ProcessorCount: Cardinal;
+[ShortDescr]
+Number of processors.
+[Description]
+ProcessorCount contains the number of processors in the system. Initialized during
+unit initialization.
+[Quick Info]
+Kind=Variable
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+AllocGranularity: Cardinal;
+[ShortDescr]
+Systems memory allocation granularity.
+[Description]
+AllocGranularity contains the systems virtual memory allocation granularity.
+[Quick Info]
+Kind=Variable
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCurrentFolder: string;
+[ShortDescr]
+Returns the current directory.
+[Description]
+GetCurrentFolder returns the current directory (folder) for the calling process.
+[Result]
+The current directory for the calling process or an empty string on failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DelEnvironmentVar(const Name: string): Boolean;
+[ShortDescr]
+Deletes a environment variable.
+[Description]
+DelEnvironmentVar deletes the environment variable specified by Name in the calling
+process's environment block.
+[Parameters]
+Count=1
+1=Name:string=Name of the environment variable to delete.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=ExpandEnvironmentVar
+2=GetEnvironmentVar
+3=GetEnvironmentVars
+4=SetEnvironmentVar
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ExpandEnvironmentVar(var Value: string): Boolean;
+[ShortDescr]
+Expands the environment variable.
+[Description]
+ExpandEnvironmentVar expands an environment variable. If the variable contains
+environment variable strings, for example %systemroot%, then these are replaced
+by the system defined values for that specific variable. If the variable does
+not exist it is left intact.
+[Parameters]
+Count=1
+1=Value:string=On input the string which may contain environment variable strings
+that you want to expand. On exit a copy of the input with environment variables
+replaced by their system defined value, if they exist.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. In the latter
+case the content of Value is undefined.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=DelEnvironmentVar
+2=GetEnvironmentVar
+3=GetEnvironmentVars
+4=SetEnvironmentVar
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
+[ShortDescr]
+Retrieves the value of an environment variable.
+[Description]
+GetEnvironmentVar retrieves the value of the specified environment variable from
+the process environment block. Depending on the value of the Expand parameter,
+the returned string may contain environment variable strings such as %systemroot%.
+To expand the string, thereby replacing the strings with their system defined
+value, use <REF>ExpandEnvironmentVar</REF>.
+[Parameters]
+Count=3
+1=Name:string=Name of the environment variable to retrieve.
+2=Value:string=Receives the value of the specified environment variable, if
+it exists.
+3=Expand:Boolean=If True the returned value has the embedded environment strings
+expanded. If False these string are left unexpanded.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=DelEnvironmentVar
+2=ExpandEnvironmentVar
+3=GetEnvironmentVars
+4=SetEnvironmentVar
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
+[ShortDescr]
+Retrieves a list of all environment variables.
+[Description]
+GetEnvironmentVars is similar to <REF>GetEnvironmentVar</REF> except that it
+retrieves a list of environment variables in the process environment block and
+their values. If Expand is set to True any embedded environment strings, such
+as %systemroot% are replaced by their system defined value before exit. <BR>
+Use of this function is not recommended by Microsoft. Instead you should
+use <REF>GetEnvironmentVar</REF> to query the value of specific environment
+variables.
+[Parameters]
+Count=2
+1=Vars:TStrings=Receives the list of environment variables and their values.
+2=Expand:Boolean=If True the individual items have the embedded environment
+strings expanded to their system defined value before exit. If False this expansion
+is not done.
+[Result]
+If the function succeeds in retrieving the environment strings it returns True,
+on failure it returns False. Note that a result of True does not necessarily mean
+that environment string expansion was successful for all variables.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=DelEnvironmentVar
+2=ExpandEnvironmentVar
+3=GetEnvironmentVar
+4=SetEnvironmentVar
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SetEnvironmentVar(const Name, Value: string): Boolean;
+[ShortDescr]
+Sets the value of an environment variable.
+[Description]
+SetEnvironmentVar sets the value of the specified environment variable to the
+supplied value. If the variable does not exists it is created first.
+[Parameters]
+Count=2
+1=Name:string=Name of the environment variable to set.
+2=Value:string=New value for the specified environment variable.
+[Result]
+If the function succeeds it returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=DelEnvironmentVar
+2=ExpandEnvironmentVar
+3=GetEnvironmentVar
+4=GetEnvironmentVars
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWin2000, wvWinNT3, wvWinNT4);
+[ShortDescr]
+Enumeration of Windows versions. Used as function result
+by <REF Target"..\GetWindowsVersion">GetWindowsVersion</REF>
+[Enumeration]
+Count=8
+1=wvUnknown=Unknown Windows version. This can happen when a new Windows version
+is released after JCL or if you are running a Windows version with a different
+build number then expected. For example a beta version.
+2=wvWin95=Windows 95
+3=wvWin95OSR2=Windows 95 OSR 2
+4wvWin98=Windows 98
+5=wvWin98SE=Windows 98 Second Edition
+6=wvWin2000=Windows 2000
+7=wvWinNT3=Windows NT 3.x
+8=wvWinNT4=Windows NT 4.0
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=GetWindowsVersion;..\GetWindowsVersion
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetWindowsVersion: TWindowsVersion;
+[ShortDescr]
+Returns the Windows version.
+[Description]
+GetWindowsVersion returns the Windows version as an enumerated type.
+[Result]
+The Windows version, see <REF Target"Types\TWindowsVersion">TWindowsVersion</REF> for the possible values.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+[SeeAlso]
+Count=7
+1=IsWin95
+2=IsWin98
+3=IsWinNT
+4=IsWinNT3
+5=IsWinNT4
+6=IsWin2K
+7=NtProductType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function TestFDIVInstruction: Boolean;
+[ShortDescr]
+Tests the processor for the flawed FDIV instruction.
+[Description]
+TestFDIVInstruction tests the processor for the correctness of the FDIV instruction.
+Older pentium processors had a bug in this instruction that caused incorrect
+results under specific circumstances. Modern processors do not exhibit this bug.
+[Result]
+If the FDIV instruction is OK the function returns True, if it is flawed the
+function returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+[SeeAlso]
+Count=4
+1=GetCpuInfo
+2=TCpuInfo;Types\TCpuInfo
+3=TestFDIVInstruction
+4=GetCpuSpeed
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CPUID: TCpuInfo;
+[ShortDescr]
+Returns information about the processor.
+[Description]
+CPUID is used by <REF>GetCpuInfo</REF> for obtaining information about the processor.
+You can call this function directly but it is recommend you use <REF>GetCpuInfo</REF>
+instead. If you do call CPUID then keep in mind that the ISFDIVOK, FrequencyInfo
+and MMX fields of the returned <REF Target"Types\TCpuInfo">TCpuInfo</REF> record contain undefined data.
+[Result]
+CPUID returns information about the processor through a <REF Target"Types\TCpuInfo">TCpuInfo</REF> record.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=GetCpuInfo
+2=TCpuInfo;Types\TCpuInfo
+3=TestFDIVInstruction
+4=GetCpuSpeed
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCPUSpeed: TFreqInfo;
+[ShortDescr]
+Returns information about the processor speed.
+[Description]
+GetCpuSpeed calculates the speed (frequency) of a processor. It returns the
+information in a <REF Target"Types\TFreqInfo">TFreqInfo</REF> record which includes the actual calculated
+speed as well as a normalized speed.
+[Result]
+GetCpuSpeed returns information in a <REF Target"Types\TFreqInfo">TFreqInfo</REF> record.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=2
+1=GetCpuInfo
+2=TFreqInfo;Types\TFreqInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function RoundFrequency(Frequency: Integer): Integer;
+[ShortDescr]
+Normalizes a frequency.
+[Description]
+RoundFrequency rounds a frequency as obtained from <REF>GetCpuSpeed</REF> to a
+normalized frequency. For example, if GetCpuSpeed returns a calculated frequency
+of 266.13 MHz then RoundFrequency will return the normalized 266 MHz.
+[Parameters]
+Count=1
+1=Frequency:Integer=The frequency to round (normalize) in MHz.
+[Result]
+The normalized frequency in MHz.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
+[ShortDescr]
+Retrieves the MAC addresses for a computer.
+[Description]
+GetMacAddresses returns a list of all MAC addresses for the specified computer.
+The computer can be the local computer or a computer on the network.
+[Parameters]
+Count=2
+1=Machine:string=Netbios name of the computer who's MAC addresses you want. This
+can be the 'standard' computer name of a computer on the network or a '*' for
+the local computer (you can also use the local computer name or an empty string).
+2=Addresses:TStrings=On output a list of all MAC address found.
+[Result]
+The function returns the number of MAC addresses that are available for the
+specified computer. The Addresses list may contain fewer addresses though. The
+function attempts to get all the addresses but might fail for some of them, in
+which case it continues to retrieve the remaining addresses. In case of complete
+failure the function returns -1 and the Addresses list will be empty.
+[Notes]
+Count=1
+1=This function is an adapted conversion from the Platform SDK example described
+in knowledge base article Q118623.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ReadTimeStampCounter: Int64;
+[ShortDescr]
+Reads the time stamp counter.
+[Description]
+The ReadTimeStampCounter function reads and returns the current value of the time stamp counter.
+The time-stamp counter counts CPU clocks from the time the processor is reset,
+where it is initialized to an unknown count. This is a 64 bit count and therefore
+it can accumulate counts for almost 2500 years (based on a 200MHz processor)
+before a rollover occurs. You may want to consider inlining this instruction as
+opposed to calling this function. If you do, the resulting 64 bit integer
+containing the count is returned in the combination EDX:EAX.
+[Result]
+The current value of the time stamp counter.
+[Note]
+Count=1
+1=This instruction is only available on Pentium (and higher) processors.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Azret Botash;azret@attglobal.net
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetVolumeSerialNumber(const Drive: string): string;
+[ShortDescr]
+Returns the volume serial number for the specified drive.
+[Description]
+GetVolumeSerialNumber returns the serial number for the specified volume. You
+may specify a volume (e.g. 'c:\') or a UNC name.
+[Parameters]
+Count=1
+1=Drive:string=The volume for which to retrieve the serial number. You must
+specify the root-directory of a drive (e.g. 'c:\') or a full UNC name in which case
+you must follow it with an additional backslash.
+[Result]
+If the function succeeds it returns the serial number of the specified volume.
+If the function fails it returns an empty string.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=John C Molyneux;jaymol@hotmail.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetVolumeFileSystem(const Drive: string): string;
+[ShortDescr]
+Returns the name of the filesystem of the specified volume.
+[Description]
+GetVolumeFileSystem returns the name of the filesystem of the specified volume.
+This can be a string such as 'FAT' or 'NTFS'. You may specify a volume (e.g. 'c:\')
+or a UNC name.
+[Parameters]
+Count=1
+1=Drive:string=The volume for which to filesystem name. You must
+specify the root-directory of a drive (e.g. 'c:\') or a full UNC name in which case
+you must follow it with an additional backslash.
+[Result]
+If the function succeeds it returns the name of the filesystem of the specified
+volume. If the function fails it returns an empty string.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=John C Molyneux;jaymol@hotmail.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetVolumeName(const Drive: string): string;
+[ShortDescr]
+Returns the name for the specified drive.
+[Description]
+GetVolumeName returns the name of the specified volume. You
+may specify a volume (e.g. 'c:\') or a UNC name.
+[Parameters]
+Count=1
+1=Drive:string=The volume for which to retrieve the name. You must
+specify the root-directory of a drive (e.g. 'c:\') or a full UNC name in which case
+you must follow it with an additional backslash.
+[Result]
+If the function succeeds it returns the name of the specified volume.
+If the function fails it returns an empty string.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=John C Molyneux;jaymol@hotmail.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetIPAddress(const HostName: string): string;
+[ShortDescr]
+Returns the IP address of a host.
+[Description]
+GetIPAddress attempts to resolve a hostname to an IP address. If the function
+succeeds it returns the IP address in dotted decimal notation. You can call
+GetIPAddress with GetLocalComputerName or an empty string as the HostName
+parameter to get the IP address of the local computer. This function assumes
+IPv4 addresses and only returns one IP address, even if the specified host has
+more then one.
+[Parameters]
+Count=1
+1=HostName:string=The name of the host computer who's IP address you want. If an
+empty string is passed the function returns the IP address of the local computer.
+[Result]
+If the function succeeds it returns the IP address of the specified host in the
+dotted decimal notation. If the function fails it returns an empty string.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=John C Molyneux;jaymol@hotmail.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+Requirements=Requires Windows sockets 1.1 or higher
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TIntelSpecific = record
+  L2Cache: Cardinal;
+  CacheDescriptors: array [0..15] of Byte;
+end;
+[ShortDescr]
+Describes the cache of an Intel processor.
+[RecordFields]
+Count=2
+1=L2Cache:Cardinal=Size of the level 2 cache in Kb.
+2=CacheDescriptors:array [0..15] of Byte=Detailed information about the data and
+instruction caches. You can map these entries to a descriptive string by using
+the IntelCacheDescription global variable. The entry in that array for which the
+D member matches the value in the CacheDescriptors array is the entry who's I
+member contains the descriptive string. You can use
+the <REF Target"..\IntelCacheDescription">IntelCacheDescription</REF>
+function to get that string.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TCyrixSpecific = record
+  L1CacheInfo: array [0..3] of Byte;
+  TLBInfo: array [0..3] of Byte;
+end;
+[ShortDescr]
+Describes the cache of a Cyrix processor.
+[RecordFields]
+Count=2
+1=L1CacheInfo:array [0..3] of Byte=Describes the level 1 cache.
+If an entry contains the value $80 it denotes a '16KB L1 Cache, 4-way set
+associative, 16 byte line size' cache.
+2=TLBInfo:array [0..3] of Byte=Describes the TLB.
+If an entry contains the value $70 it denotes a 'TLB, 4Kb pages, 4-way set
+associative, 32 entries' TLB.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TAMDSpecific = record
+  DataTLB: array [0..1] of Byte;
+  InstructionTLB: array [0..1] of Byte;
+  L1DataCache: array [0..3] of Byte;
+  L1ICache: array [0..3] of Byte;
+end;
+[ShortDescr]
+Describes the cache of an AMD processor.
+[RecordFields]
+Count=4
+1=DataTLB:array [0..1] of Byte=Describes the Data TLB. The entries have the
+following meaning:
+ <UL>
+ <LI>DataTLB[0] Contains the number of TLB entries while
+ <LI>DataTLB[1] Contains the associativity ($FF denotes fully associative TLB)
+ </UL>
+2=InstructionTLB:array [0..1] of Byte=Describes the instruction TLB. The entries
+have the following meaning:
+ <UL>
+ <LI>InstructionTLB[0] Contains the number of TLB entries
+ <LI>InstructionTLB[1] Contains the associativity ($FF denotes a fully associative TLB)
+ </UL>
+3=L1DataCache:array [0..3] of Byte=Describes the level 1 data cache. The entries
+have the following meaning:
+ <UL>
+ <LI>L1DataCache[0] Line size in bytes
+ <LI>L1DataCache[1] Lines per tag
+ <LI>L1DataCache[2] Associativity ($FF is fully associative)
+ <LI>L1DataCache[3] Size in Kb
+ </UL>
+4=L1ICache:array [0..3] of Byte=Describes the level 1 instruction cache. The
+entries have the following meaning:
+ <UL>
+ <LI>L1ICache[0] Line size in bytes
+ <LI>L1ICache[1] Lines per tag
+ <LI>L1ICache[2] Associativity ($FF is fully associative)
+ <LI>L1ICache[3] Size in Kb
+ </UL>
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TCacheInfo = record
+  D: Byte;
+  I: string[74];
+end;
+[ShortDescr]
+The IntelCacheDescription global variable uses this type to provide a mapping
+from a cache descriptor to a cache entry description.
+[RecordFields]
+Count=2
+1=D:Byte=Descriptor used to match a cache descriptor to it's representative string.
+2=I:string[74]=Description of cache.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TFreqInfo = record
+  RawFreq: Cardinal;
+  NormFreq: Cardinal;
+  InCycles: Cardinal;
+  ExTicks: Cardinal;
+end;
+[ShortDescr]
+Record used as a field in the <REF>TCpuInfo</REF> record which contains frequency
+information about the CPU. This information is calculated when you call <REF>GetCpuInfo</REF>.
+[RecordFields]
+Count=4
+1=RawFreq:Cardinal=The raw frequency of the CPU in MHz.
+2=NormFreq:Cardinal=The normalized frequency of the CPU in MHz.
+3=InCycles:Cardinal=The elapsed, internal clock cycles during the test.
+4=ExTicks:Cardinal=The time, in microseconds, that elapsed during the test.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TCpuInfo = record
+  HasInstruction: Boolean;
+  MMX: Boolean;
+  IsFDIVOK: Boolean;
+  HasCacheInfo: Boolean;
+  HasExtendedInfo: Boolean;
+  CpuType: Byte;
+  PType: Byte;
+  Family: Byte;
+  Model: Byte;
+  Stepping: Byte;
+  Features: Cardinal;
+  FrequencyInfo: TFreqInfo;
+  VendorIDString: array [0..11] of Char;
+  Manufacturer: array [0..9] of Char;
+  CpuName: array [0..47] of Char;
+  IntelSpecific: TIntelSpecific;
+  CyrixSpecific: TCyrixSpecific;
+  AMDSpecific: TAMDSpecific;
+end;
+[ShortDescr]
+The TCpuInfo record is used by <REF>GetCpuInfo</REF> and returns the requested
+processor information.
+[RecordFields]
+Count=18
+1=HasInstruction:Boolean=True if the processor supports CPU identification instructions.
+If False the MMX, Features and FrequencyInfo fields do not contain valid data.
+2=MMX:Boolean=True if the processor supports the MMX extension instructions.
+3=IsFDIVOK:Boolean=True if the FDIV instruction is OK, False if it's flawed.
+4=HasCacheInfo:Boolean=True if the processor specific subrecords contain valid
+cache information data. If False the IntelSpecific, CyrixSpecific and AMDSpecific
+subrecords do not contain valid data.
+5=HasExtendedInfo:Boolean=Denotes whether or not the AMD or Cyrix processors have
+the extended CPUID instruction. This affects the possible flags in the
+Features field. If False the Features member does not contain any of the extended
+Cyrix and AMD flags (the ones starting with an 'E').
+6=CpuType:Byte=Denotes the CPU vendor, can be one of the following values:
+CPU_TYPE_INTEL, CPU_TYPE_CYRIX, CPU_TYPE_AMD.
+7=PType:Byte=Denotes the CPU: Type 0 = Normal, 1 = Overdrive
+8=Family:Byte=Processor family. For example, for Intel processors a value of 4
+denotes a 486, 5 a Pentium and 6 a Pentium Pro. The family and model members are
+used together to form a descriptive string in the CpuName member.
+9=Model:Byte=The specific model within a processor family. For example, for an
+Intel processor with family 6 (Pentium Pro) a value of 1 denotes a Pentium Pro while
+a 3 denotes a Pentium II. The family and model members are used together to form
+a descriptive string in the CpuName member.
+10=Stepping:Byte=TODO
+11=Features:Cardinal=Contains a set of flags detailing the features of the processor.
+The possible flags are processor specific. See <REF Target"Features">Flags</REF>
+for more information.
+12=FrequencyInfo:<REF>TFreqInfo</REF>=Contains processor freqeuncy information.
+13=VendorIDString:array [0..11] of Char=Contains a string describing the processor's vendor.
+14=Manufacturer:array [0..9] of Char=Contains a string describing the processor's manufacturer.
+15=CpuName:array [0..47] of Char=Contains a descriptive string for the processor
+(for example "Pentium II Xeon").
+16=IntelSpecific:<REF>TIntelSpecific</REF>=Contains Intel processor specific information. Only valid if HasCacheInfo is True.
+17=CyrixSpecific:<REF>TCyrixSpecific</REF>=Contains Cyrix processor specific information. Only valid if HasCacheInfo is True.
+18=AMDSpecific:<REF>TAMDSpecific</REF>=Contains AMD processor specific information. Only valid if HasCacheInfo is True.
+[Quick Info]
+BCB=3,4,5
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure GetCpuInfo(var CpuInfo: TCpuInfo);
+[ShortDescr]
+Returns information about the CPU.
+[Description]
+GetCpuInfo returns extensive information about the CPU (Central Processing Unit).
+It returns 'generic' information such as type, speed and manufacturer information
+as well as brand specific information for Intel, AMD and Cyrix processors. This
+function includes support for the Intel 486 to Pentium II, AMD AM486 to K6-3 and
+Cyrix Media GX to 6x86MX.
+[Parameters]
+Count=1
+1=CpuInfo:<REF>TCpuInfo</REF>=Record to receive processor information.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Bryan Coutch;oracle@bmts.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetIntelCacheDescription(const D: Byte): string;
+[ShortDescr]
+Returns a descriptive string for an Intel cache descriptor.
+[Description]
+GetIntelCacheDescription returns a descriptive string for an Intel cache descriptor.
+This is something like: 'Instruction TLB, 4Kb pages, 4-way set associative, 32 entries'.
+[Parameters]
+Count=1
+1=D:Byte=The descriptor for which you want a descriptive string. This is usually
+one of the entries in the <REF Target"Types\TIntelSpecific">TIntelSpecific</REF>.CacheDescriptors array.
+[Result]
+The descriptive string for the specified descriptor. If a description isn't
+available the function returns an empty string.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Hardware
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=TIntelSpecific;Types\TIntelSpecific
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCommonFilesFolder: string;
+[ShortDescr]
+Returns the Windows Common Files directory.
+[Description]
+GetCommonFilesFolder returns the Windows Common Files folder as read from the
+registry. On a default installation of Windows 2000 this is a string such as
+c:\Program Files\Common Files.
+[Result]
+The Windows Common Files folder. If the function fails it returns an empty string.
+[Notes]
+Count=1
+1=You can use the SHGetFolderPath API function to get many more common directories.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Carl Clark;carl@caztec.co.za
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetProgramFilesFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetLocalComputerName: string;
+[ShortDescr]
+Returns the name of the local computer.
+[Description]
+The GetLocalComputerName function retrieves the NetBIOS name of the local computer.
+This name is established at system startup, when the system reads it from the
+registry. If the local computer is a node in a cluster, GetLocalComputerName returns
+the name of the cluster.
+[Result]
+The local computer name or an empty string on failure.
+[Notes]
+Count=1
+1=If you're running Windows 2000 you can use the GetComputerNameEx function for more
+detailed control over exactly which name you want.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetLocalUserName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetLocalUserName: string;
+[ShortDescr]
+Returns the name of the current user.
+[Description]
+Returns the name of the user associated with the current thread. That is the
+user currently logged on to the system. If the current thread is impersonating
+a client, the function returns the name of that client.
+[Result]
+The local user name or an empty string on failure.
+[Notes]
+Count=1
+1=If you're running Windows 2000 you can use the GetUserNameEx function to control
+the format of the returned name.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetLocalComputerName
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetProgramFilesFolder: string;
+[ShortDescr]
+Returns the Windows Program Files directory.
+[Description]
+GetProgramFilesFolder returns the Windows Program Files folder as read from the
+registry. On a default installation of Windows 2000 this is a string such as
+c:\Program Files.
+[Result]
+The Windows Program Files folder. If the function fails it returns an empty string.
+[Notes]
+Count=1
+1=You can use the SHGetFolderPath API function to get many more common directories.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Carl Clark;carl@caztec.co.za
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetCommonFilesFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetRegisteredCompany: string;
+[ShortDescr]
+Returns the registered company.
+[Description]
+Returns the registered company string for the local computer as read from the
+registry.
+[Result]
+The registered company string or an empty string on failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetRegisteredOwner
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetRegisteredOwner: string;
+[ShortDescr]
+Returns the registered owner.
+[Description]
+Returns the registered owner string for the local computer as read from the registry.
+[Result]
+The registered owner string or an empty string on failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetRegisteredCompany
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetWindowsFolder: string;
+[ShortDescr]
+Returns the Windows folder.
+[Description]
+The GetWindowsFolder function retrieves the path of the Windows directory. The
+Windows directory contains such files as Win32-based applications, initialization
+files, and help files. On a default installation of Windows 2000 this is c:\winnt.
+[Result]
+The Windows directory or an empty string on failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetWindowsSystemFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetWindowsSystemFolder: string;
+[ShortDescr]
+Returns the Windows system directory.
+[Description]
+The GetWindowsSystemFolder function retrieves the path of the system directory. The
+system directory contains such files as dynamic-link libraries, drivers, and font
+files. On a default installation of Windows 2000 this is c:\winnt\system32.
+[Result]
+The Windows system directory or an empty string on failure.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetWindowsFolder
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetWindowsTempFolder: string;
+[ShortDescr]
+Returns the Windows temp folder.
+[Description]
+The GetWindowsTempFolder function retrieves the path of the directory designated
+for temporary files. Normally this is the folder specified by the TMP or TEMP
+environment variable. If TMP and TEMP do not exist then for Windows 95/98 the
+result is the current directory and for Windows NT/2000 the result is the Windows
+directory.
+[Result]
+The Windows folder designated for temporary files.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Common Folders
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWin95: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows 95
+[Description]
+IsWin95 returns whether or not the system is running Windows 95.
+[Result]
+If the system is running Windows 95 the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=IsWin2K
+2=IsWin98
+3=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWin95OSR2: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows 95 OSR 2
+[Description]
+IsWin95OSR2 returns whether or not the system is running Windows 95 OSR 2.
+[Result]
+If the system is running Windows 95 OSR 2 the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=IsWin2K
+2=IsWin98
+3=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWin98: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows 98
+[Description]
+IsWin98 returns whether or not the system is running Windows 98.
+[Result]
+If the system is running Windows 98 the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=IsWin2K
+2=IsWin95
+3=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWin98SE: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows 98 SE
+[Description]
+IsWin98SE returns whether or not the system is running Windows 98 Second Edition.
+[Result]
+If the system is running Windows 98 SE the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=IsWin2K
+2=IsWin95
+3=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWinNT: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows NT
+[Description]
+IsWinNT returns whether or not the system is running Windows NT.
+[Result]
+If the system is running Windows NT the result is True otherwise the result is False.
+You can use the <REF>IsWinNT3</REF>, <REF>IsWinNT4</REF> and <REF>IsWin2K</REF>
+to further distinguish between the different NT versions.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=6
+1=IsWin2K
+2=IsWin95
+3=IsWin98
+4=NtProductType
+5=IsWinNT3
+6=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWinNT3: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows NT 3
+[Description]
+IsWinNT3 returns whether or not the system is running Windows NT 3.
+[Result]
+If the system is running Windows NT 3 the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=IsWin2K
+2=IsWin95
+3=IsWin98
+4=NtProductType
+5=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWinNT4: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows NT 4.
+[Description]
+IsWinNT4 returns whether or not the system is running Windows NT 4.
+[Result]
+If the system is running Windows NT 4 the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=IsWin2K
+2=IsWin95
+3=IsWin98
+4=IsWinNT3
+5=NtProductType
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWin2K: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows 2000
+[Description]
+IsWin2K returns whether or not the system is running Windows 2000.
+[Result]
+If the system is running Windows 2000 the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=IsWinNT3
+2=IsWin95
+3=IsWin98
+4=NtProductType
+5=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function NtProductType: TNtProductType;
+[ShortDescr]
+Returns the Windows NT product type.
+[Description]
+NtProductType returns which edition of Windows NT is running on the system.
+[Result]
+The edition of Windows NT. This is one of the values in the TNtProductType
+enumeration which is defined as:
+TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
+ <UL>
+ <LI>ptUnknown Edition could not be determined. Most likely the system is not running NT
+ <LI>ptWorkStation The system is running Windows NT workstation or Windows 2000 professional.
+ <LI>ptServer The system is running Windows NT/2000Windows 2000 Server
+ <LI>ptAdvancedServer The system is running Windows NT/2000 Server as a (primary or backup) domain controller.
+ </UL>
+[Notes]
+Count=1
+1=On platforms other then Windows NT/2000 this function always returns ptUnknown.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=2
+1=IsWinNT
+2=IsWin2K
