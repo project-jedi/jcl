@@ -25,7 +25,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
@@ -76,7 +76,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
@@ -120,7 +120,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -157,7 +157,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -194,7 +194,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -234,7 +234,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -265,7 +265,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -296,7 +296,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -329,7 +329,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=1
@@ -361,7 +361,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=1
@@ -389,7 +389,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
@@ -421,7 +421,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -456,7 +456,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -505,7 +505,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -540,7 +540,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=1
@@ -573,7 +573,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -604,7 +604,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=1
@@ -645,7 +645,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=3
@@ -676,7 +676,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -713,7 +713,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -747,7 +747,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -778,7 +778,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -811,7 +811,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -840,7 +840,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -892,7 +892,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -924,7 +924,7 @@ Delphi=4,5,6
 Windows NT/2000=Requires Windows 2000 or later.
 Windows 95/98=Unsupported.
 Requirements=NTFS version 5.0 or later.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -962,7 +962,7 @@ The FAT filesystem does not support compression.
 2=Directories are not actually compressed by this operation. Rather, the
 operation sets the default state for files created in the directory to be
 compressed. To change the compression state of
-a directory and all of its contents, use <REF>NtfsSetDirectoryCompression</REF>.
+a directory and all of its contents, use <REF>NtfsSetDirectoryTreeCompression</REF>.
 [Quick Info]
 Unit=JclNTFS
 Category=Files and IO
@@ -971,21 +971,22 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
-Count=4
+Count=5
 1=NtfsGetCompression
 2=NtfsSetFileCompression
-3=NtfsSetDirectoryCompression
-4=NtfsSetDirectoryCompressionDefault
+3=NtfsSetDefaultFileCompression
+4=NtfsSetDirectoryTreeCompression
+5=NtfsSetPathCompression
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure NtfsSetFileCompression(const FileName: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
 [ShortDescr]
 Sets the compression state of a file.
 [Description]
-NtfsSetDirectoryCompression sets the compression state of the specified file.
+NtfsSetDirectoryTreeCompression sets the compression state of the specified file.
 The underlying filesystem must support per stream compression or this function
 will fail. Currently only LZNT1 is supported as the compression format but this
 may change in future releases of the Windows operating system.
@@ -1000,7 +1001,7 @@ means the specified file or directory must reside on an NTFS formatted partition
 The FAT filesystem does not support compression.
 2=NtfsSetFileCompression will raise an EJclInvalidArgument exception if the
 'FileName' parameter denotes a directory. To change the compression state of a
-directory, use <REF>NtfsSetDirectoryCompression</REF>.
+directory, use <REF>NtfsSetDirectoryTreeCompression</REF>.
 [Quick Info]
 Unit=JclNTFS
 Category=Files and IO
@@ -1009,21 +1010,22 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
-Count=4
+Count=5
 1=TFileCompressionState;Types\TFileCompressionState
-2=NtfsSetDirectoryCompression
-3=NtfsSetDirectoryCompressionDefault
-4=NtfsGetCompression
+2=NtfsSetDefaultFileCompression
+3=NtfsSetDirectoryTreeCompression
+4=NtfsSetPathCompression
+5=NtfsGetCompression
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure NtfsSetDirectoryCompression(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
+procedure NtfsSetDirectoryTreeCompression(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
 [ShortDescr]
 Sets the compression state of a directory and its contents.
 [Description]
-NtfsSetDirectoryCompression sets the compression state of the specified
+NtfsSetDirectoryTreeCompression sets the compression state of the specified
 directory, including all of its files and subdirectories.
 The underlying filesystem must support per stream compression or this function
 will fail. Currently only LZNT1 is supported as the compression format but this
@@ -1037,7 +1039,7 @@ Count=2
 1=The underlying filesystem must support per stream compression. Currently that
 means the specified file or directory must reside on an NTFS formatted partition.
 The FAT filesystem does not support compression.
-2=NtfsSetDirectoryCompression will raise an EJclInvalidArgument exception if the
+2=NtfsSetDirectoryTreeCompression will raise an EJclInvalidArgument exception if the
 'Directory' parameter does not denote a directory.
 [Quick Info]
 Unit=JclNTFS
@@ -1047,21 +1049,65 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
-Count=4
+Count=5
 1=TFileCompressionState;Types\TFileCompressionState
-2=NtfsSetDirectoryCompressionDefault
-3=NtfsSetFileCompression
-4=NtfsGetCompression
+2=NtfsSetPathCompression
+3=NtfsSetDefaultFileCompression
+4=NtfsSetFileCompression
+5=NtfsGetCompression
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure NtfsSetDirectoryCompressionDefault(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
+procedure NtfsSetPathCompression(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>; Recursive: Boolean);
+[ShortDescr]
+Sets the compression state for all files specified by Path.
+[Description]
+NtfsSetPathCompression sets the compression state for all files in the directory
+specified by <I>Path</I> which match the file name implied by <I>Path</I>.
+When <I>Recursive</I> is set, subdirectories are processed as well.
+The underlying filesystem must support per stream compression or this function
+will fail. Currently only LZNT1 is supported as the compression format but this
+may change in future releases of the Windows operating system.
+[Parameters]
+Count=3
+1=Directory:string=The name of the directory for which you want to set the compression state.
+2=State:TFileCompressionState=The desired compression state.
+3=Recursive:Boolean=Determines whether subdirectories are affected.
+[Notes]
+Count=2
+1=The file compression default (compare <REF>NtfsSetDefaultFileCompression</REF>)
+for the involved directories is affected only if <I>Path</I> denotes a directory.
+If, in addition, <I>Recursive</I> is set, NtfsSetPathCompression will work
+exactly like <REF>NtfsSetDirectoryTreeCompression</REF>(Path, State).
+2=The underlying filesystem must support per stream compression. Currently that
+means the specified file or directory must reside on an NTFS formatted partition.
+The FAT filesystem does not support compression.
+[Quick Info]
+Unit=JclNTFS
+Category=Files and IO
+SubCat=File Systems\NTFS
+Author=Robert Rossmair;Robert.Rossmair@t-online.de
+Delphi=4,5,6
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Unsupported.
+Kylix=Not applicable
+FPC=1.x
+[SeeAlso]
+Count=5
+1=TFileCompressionState;Types\TFileCompressionState
+2=NtfsSetDefaultFileCompression
+3=NtfsSetFileCompression
+4=NtfsSetDirectoryTreeCompression
+5=NtfsGetCompression
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure NtfsSetDefaultFileCompression(const Directory: string; const State: <REF Target"Types\TFileCompressionState">TFileCompressionState</REF>);
 [ShortDescr]
 Sets the default compression state of a directory.
 [Description]
-NtfsSetDirectoryCompression sets the default compression state for files created
+NtfsSetDefaultFileCompression sets the default compression state for files created
 in 'Directory'.
 The underlying filesystem must support per stream compression or this function
 will fail. Currently only LZNT1 is supported as the compression format but this
@@ -1077,8 +1123,8 @@ means the specified file or directory must reside on an NTFS formatted partition
 The FAT filesystem does not support compression.
 2=This operation does not alter the compression state of files already existing
 in the directory. To change the compression state of a directory and all of its
-contents, use <REF>NtfsSetDirectoryCompression</REF>.
-3=NtfsSetDirectoryCompressionDefault will raise an EJclInvalidArgument exception
+contents, use <REF>NtfsSetDirectoryTreeCompression</REF>.
+3=NtfsSetDefaultFileCompression will raise an EJclInvalidArgument exception
 if the 'Directory' parameter does not denote a directory.
 [Quick Info]
 Unit=JclNTFS
@@ -1088,14 +1134,15 @@ Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
-Count=4
+Count=5
 1=TFileCompressionState;Types\TFileCompressionState
-2=NtfsSetDirectoryCompression
-3=NtfsSetFileCompression
-4=NtfsGetCompression
+2=NtfsSetFileCompression
+3=NtfsSetDirectoryTreeCompression
+4=NtfsSetPathCompression
+5=NtfsGetCompression
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function NtfsGetCompression(const FileName: string; var State: Short): Boolean; overload;
@@ -1136,7 +1183,7 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Unsupported.
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=2
@@ -1166,11 +1213,11 @@ Category=Files and IO
 SubCat=File Systems\NTFS
 Author=Robert Rossmair;Robert.Rossmair@t-online.de
 Delphi=4,5,6
-Kylix=1
+Kylix=Not applicable
 FPC=1.x
 [SeeAlso]
 Count=4
 1=NtfsGetCompression;..\NtfsGetCompression
 2=NtfsSetFileCompression;..\NtfsSetFileCompression
-3=NtfsSetDirectoryCompression;..\NtfsSetDirectoryCompression
-4=NtfsSetDirectoryCompressionDefault;..\NtfsSetDirectoryCompressionDefault
+3=NtfsSetDefaultFileCompression;..\NtfsSetDefaultFileCompression
+4=NtfsSetDirectoryTreeCompression;..\NtfsSetDirectoryTreeCompression
