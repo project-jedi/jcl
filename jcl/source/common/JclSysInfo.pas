@@ -16,22 +16,16 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 29, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains routines and classes to retrieve various pieces of system }
+{ information. Examples are the location of standard folders, settings of      }
+{ environment variables, processor details and the Windows version.            }
+{                                                                              }
+{ Unit owner: Eric S. Fisher                                                   }
+{ Last modified: January 19, 2001                                              }
 {                                                                              }
 {******************************************************************************}
-
-//*****************************************************************************
-
-//  CURRENT MODIFICATIONS BY ESF    2000/06/04
-
-//  BUG0001    Fixed according to specification
-//  BUG0002    Scan for #13#10 removed per MVB's suggestion
-//  CCP0004    Tabs have been replaced with spaces per suggestion
-//  [MVB]      IsWinNT initialization restored per MVB's request
-//  (rom)      Trim() ed Win32CSDVersion per Petr Vones bug report
-//  (rom)      added new RunningProcessesList from Petr Vones
-//  [MVB]      removed buildnumber check in GetWindowsVersion because it prevents
-//             correct recognition of some versions.
 
 unit JclSysInfo;
 
@@ -43,7 +37,7 @@ uses
   Windows, ActiveX, Classes, ShlObj;
 
 //------------------------------------------------------------------------------
-// Environment
+// Environment Variables
 //------------------------------------------------------------------------------
 
 type
@@ -58,7 +52,7 @@ function CreateEnvironmentBlock(const Options: TEnvironmentOptions;
   const AdditionalVars: TStrings): PChar;
 
 //------------------------------------------------------------------------------
-// Common Folders
+// Common Folder Locations
 //------------------------------------------------------------------------------
 
 function GetCommonFilesFolder: string;
@@ -123,7 +117,7 @@ function GetRegisteredOwner: string;
 function GetBIOSName: string;
 function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
-function GetBIOSDate : TDateTime;
+function GetBIOSDate: TDateTime;
 
 function RunningProcessesList(const List: TStrings): Boolean;
 function GetPidFromProcessName(const ProcessName: string): DWORD;
@@ -139,9 +133,10 @@ type
                      wvWinME, wvWinNT3, wvWinNT4, wvWin2000);
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
 
-function GetWindowsVersion: TWindowsVersion;
-
 var
+
+  { in case of additions, don't forget to update initialization section!}
+
   IsWin95: Boolean = False;
   IsWin95OSR2: Boolean = False;
   IsWin98: Boolean = False;
@@ -152,6 +147,7 @@ var
   IsWinNT4: Boolean = False;
   IsWin2K: Boolean = False;
 
+function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
 
 //------------------------------------------------------------------------------
@@ -423,7 +419,7 @@ procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
 function GetIntelCacheDescription(const D: Byte): string;
 function RoundFrequency(const Frequency: Integer): Integer;
-function GetCPUSpeed: TFreqInfo;  // TODO CCP Change to procedure
+function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
 
@@ -515,10 +511,7 @@ begin
   else
   begin
     SetLength(Value, R);
-//    P := Pos(#13#10, Value);                         BUG0002  ESF  2000/06/04
-//    if P > 0 then Delete(Value, P, Length(Value) - P + 1);
-    if Expand then
-      ExpandEnvironmentVar(Value);
+    if Expand then ExpandEnvironmentVar(Value);
   end;
 end;
 
@@ -543,8 +536,7 @@ begin
     for I := 0 to Vars.Count - 1 do
     begin
       Expanded := Vars[I];
-      if ExpandEnvironmentVar(Expanded) then
-        Vars[I] := Expanded;
+      if ExpandEnvironmentVar(Expanded) then Vars[I] := Expanded;
     end;
   end;
 end;
@@ -558,66 +550,69 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CreateEnvironmentBlock(const Options: TEnvironmentOptions;
-  const AdditionalVars: TStrings): PChar;
+function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 const
   RegLocalEnvironment = '\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\';
   RegUserEnvironment = '\Environment\';
 var
-  KeyNames, stlTemp: TStrings;
-  strTemp, strName, strValue: string;
+  KeyNames, TempList: TStrings;
+  Temp, Name, Value: string;
   I: Integer;
 begin
-  stlTemp := TStringList.Create;
-
-  // get additional environment strings
-  if eoAdditional in Options then
-    for I := 0 to AdditionalVars.Count - 1 do
-    begin
-      strTemp := AdditionalVars[I];
-      ExpandEnvironmentVar(strTemp);
-      stlTemp.Add(strTemp);
-    end;
-
-  // get environment strings from local machine
-  if eoLocalMachine in Options then
-  begin
-    KeyNames := TStringList.Create;
-    if RegGetValueNames(HKEY_LOCAL_MACHINE, RegLocalEnvironment, KeyNames) then
-    begin
-      for I := 0 to KeyNames.Count - 1 do
+  TempList := TStringList.Create;
+  try
+    // add additional environment variables
+    if eoAdditional in Options then
+      for I := 0 to AdditionalVars.Count - 1 do
       begin
-        strName := KeyNames[I];
-        strValue := RegReadString(HKEY_LOCAL_MACHINE, RegLocalEnvironment, strName);
-        ExpandEnvironmentVar(strValue);
-        stlTemp.Add(strName + '=' + strValue);
+        Temp := AdditionalVars[I];
+        ExpandEnvironmentVar(Temp);
+        TempList.Add(Temp);
       end;
-      KeyNames.Free;
-    end;
-  end;
-
-  // get environment strings from current user
-  if eoCurrentUser in Options then
-  begin
-    KeyNames := TStringLIst.Create;
-    if RegGetValueNames(HKEY_CURRENT_USER, RegUserEnvironment, KeyNames) then
+    // get environment strings from local machine
+    if eoLocalMachine in Options then
     begin
-      for I := 0 to KeyNames.Count - 1 do
-      begin
-        strName := KeyNames[I];
-        strValue := RegReadString(HKEY_CURRENT_USER, RegUserEnvironment, strName);
-        ExpandEnvironmentVar(strValue);
-        stlTemp.Add(strName + '=' + strValue);
+      KeyNames := TStringList.Create;
+      try
+        if RegGetValueNames(HKEY_LOCAL_MACHINE, RegLocalEnvironment, KeyNames) then
+        begin
+          for I := 0 to KeyNames.Count - 1 do
+          begin
+            Name := KeyNames[I];
+            Value := RegReadString(HKEY_LOCAL_MACHINE, RegLocalEnvironment, Name);
+            ExpandEnvironmentVar(Value);
+            TempList.Add(Name + '=' + Value);
+          end;
+        end;
+      finally
+        FreeAndNil(KeyNames);
       end;
-      KeyNames.Free;
     end;
+    // get environment strings from current user
+    if eoCurrentUser in Options then
+    begin
+      KeyNames := TStringLIst.Create;
+      try
+        if RegGetValueNames(HKEY_CURRENT_USER, RegUserEnvironment, KeyNames) then
+        begin
+          for I := 0 to KeyNames.Count - 1 do
+          begin
+            Name := KeyNames[I];
+            Value := RegReadString(HKEY_CURRENT_USER, RegUserEnvironment, Name);
+            ExpandEnvironmentVar(Value);
+            TempList.Add(Name + '=' + Value);
+          end;
+        end;
+      finally
+        KeyNames.Free;
+      end;
+    end;
+    // transform stringlist into multi-PChar
+    StringsToMultiSz(Result, TempList);
+  finally
+    FreeAndNil(TempList);
   end;
-
-  // transform stringlist into multi-PChar
-  StringsToMultiSz(Result, stlTemp);
-  stlTemp.Free;
 end;
-
 
 //==============================================================================
 // Common Folders
@@ -657,8 +652,6 @@ begin
   if Required <> 0 then
   begin
     SetLength(Result, Required);
-    // Required := GetCurrentDirectory(Required, PChar(Result));
-    // SetLength(Result, Required);
     GetCurrentDirectory(Required, PChar(Result));
     StrResetLength(Result);
   end;
@@ -683,8 +676,6 @@ begin
   if Required <> 0 then
   begin
     SetLength(Result, Required);
-    // Required := GetWindowsDirectory(PChar(Result), Required);
-    // SetLength(Result, Required);
     GetWindowsDirectory(PChar(Result), Required);
     StrResetLength(Result);
   end;
@@ -701,8 +692,6 @@ begin
   if Required <> 0 then
   begin
     SetLength(Result, Required);
-    // Required := GetSystemDirectory(PChar(Result), Required);
-    // SetLength(Result, Required);
     GetSystemDirectory(PChar(Result), Required);
     StrResetLength(Result);
   end;
@@ -719,8 +708,6 @@ begin
   if Required <> 0 then
   begin
     SetLength(Result, Required);
-    // Required := GetTempPath(Required, PChar(Result));
-    // SetLength(Result, Required);
     GetTempPath(Required, PChar(Result));
     StrResetLength(Result);
     Result := PathRemoveSeparator(Result);
@@ -976,7 +963,6 @@ begin
     begin
       SetLength(Host, MAX_PATH);
       GetHostName(PChar(Host), MAX_PATH);
-      // Host := GetLocalComputerName;
     end;
     HostEnt := GetHostByName(PChar(Host));
     if HostEnt <> nil then
@@ -984,11 +970,6 @@ begin
       SockAddr.sin_addr.S_addr := Longint(PLongint(HostEnt^.h_addr_list^)^);
       Result := inet_ntoa(SockAddr.sin_addr);
     end;
-    //if Assigned(HostEnt) then with HostEnt^ do
-    //begin
-    //  Result := Format('%u.%u.%u.%u', [Byte(h_addr^[0]), Byte(h_addr^[1]),
-    //    Byte(h_addr^[2]), Byte(h_addr^[3])]);
-    //end;
   finally
     WSACleanup;
   end;
@@ -1003,7 +984,6 @@ begin
   Count := MAX_COMPUTERNAME_LENGTH + 1;
   SetLength(Result, Count);
   GetComputerName(PChar(Result), Count);
-  // SetLength(Result, StrLen(PChar(Result)));
   StrResetLength(Result);
 end;
 
@@ -1016,7 +996,6 @@ begin
   Count := 256 + 1; // UNLEN + 1
   SetLength(Result, Count);
   GetUserName(PChar(Result), Count);
-  // SetLength(Result, StrLen(PChar(Result)));
   StrResetLength(Result);
 end;
 
@@ -1048,19 +1027,17 @@ begin
   Count2 := 0;
   Sd := nil;
   Snu := SIDTypeUser;
-
-  // have the API function determine the required buffer sizes
   LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
   SetLength(Result, Count2 + 1);
-
   Sd := AllocMem(Count1);
-
-  if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
-    StrResetLength(Result)
-  else
-    Result := EmptyStr;
-
-  FreeMem(Sd);
+  try
+    if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
+      StrResetLength(Result)
+    else
+      Result := EmptyStr;
+  finally
+    FreeMem(Sd);
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -1117,15 +1094,14 @@ const
   REGSTR_SYSTEMBIOSDATE = 'SystemBiosDate';
 var
   RegStr, RegFormat: string;
-  RegSeparator: char;
+  RegSeparator: Char;
 begin
   Result := 0;
   RegStr := RegReadString(HKEY_LOCAL_MACHINE, REGSTR_PATH_SYSTEM, REGSTR_SYSTEMBIOSDATE);
-
   RegFormat := ShortDateFormat;
   RegSeparator := DateSeparator;
   try
-    DateSeparator   := '/';
+    DateSeparator := '/';
     try
       ShortDateFormat := 'm/d/y';
       Result := StrToDate(RegStr);
@@ -1138,7 +1114,7 @@ begin
     end;
   finally
     ShortDateFormat := RegFormat;
-    DateSeparator   := RegSeparator;
+    DateSeparator := RegSeparator;
   end;
 end;
 
@@ -1178,21 +1154,24 @@ function RunningProcessesList(const List: TStrings): Boolean;
     ModuleFileName: array [0..MAX_PATH] of Char;
   begin
     Result := EnumProcesses(@PIDs, SizeOf(PIDs), Needed);
-    if not Result then
-      Exit;
-    for I := 0 to (Needed div SizeOf(DWORD)) - 1 do
-      if PIDs[I] <> 0 then
+    if Result then
+    begin
+      for I := 0 to (Needed div SizeOf(DWORD)) - 1 do
       begin
-        Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PIDs[I]);
-        if Handle <> 0 then
+        if PIDs[I] <> 0 then
         begin
-          if GetModuleFileNameEx(Handle, 0, ModuleFileName, SizeOf(ModuleFileName)) = 0 then
-            List.AddObject('[System]', Pointer(INVALID_HANDLE_VALUE))
-          else
-            List.AddObject(ModuleFileName, Pointer(PIDs[I]));
-          CloseHandle(Handle);
+          Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PIDs[I]);
+          if Handle <> 0 then
+          begin
+            if GetModuleFileNameEx(Handle, 0, ModuleFileName, SizeOf(ModuleFileName)) = 0 then
+              List.AddObject('[System]', Pointer(INVALID_HANDLE_VALUE))
+            else
+              List.AddObject(ModuleFileName, Pointer(PIDs[I]));
+            CloseHandle(Handle);
+          end;
         end;
       end;
+    end;
   end;
 
 begin
@@ -1284,19 +1263,41 @@ end;
 // Version Information
 //==============================================================================
 
+{ Q159/238
+
+  Windows 95 retail, OEM    4.00.950                      7/11/95
+  Windows 95 retail SP1     4.00.950A                     7/11/95-12/31/95
+  OEM Service Release 2     4.00.1111* (4.00.950B)        8/24/96
+  OEM Service Release 2.1   4.03.1212-1214* (4.00.950B)   8/24/96-8/27/97
+  OEM Service Release 2.5   4.03.1214* (4.00.950C)        8/24/96-11/18/97
+  Windows 98 retail, OEM    4.10.1998                     5/11/98
+  Windows 98 Second Edition 4.10.2222A                    4/23/99
+  Windows Millennium        4.90.3000
+
+  TODO: Distinquish between all these different releases?
+}
+
+var
+  KernelVersionHi: DWORD;
+
 function GetWindowsVersion: TWindowsVersion;
 begin
   Result := wvUnknown;
   case Win32Platform of
     VER_PLATFORM_WIN32_WINDOWS:
       case Win32MinorVersion of
-        0:
+        0..9:
           if Trim(Win32CSDVersion) = 'B' then
             Result := wvWin95OSR2
           else
             Result := wvWin95;
-        10:
-          if Trim(Win32CSDVersion) = 'A' then
+        10..89:
+          // On Windows ME Win32MinorVersion can be 10 (indicating Windows 98
+          // under certain circumstances (image name is setup.exe). Checking
+          // the kernel version is one way of working around that.
+          if KernelVersionHi = $0004005A then // 4.90.x.x
+            Result := wvWinME
+          else if Trim(Win32CSDVersion) = 'A' then
             Result := wvWin98SE
           else
             Result := wvWin98;
@@ -1324,10 +1325,10 @@ var
   Product: string;
   VersionInfo: TOSVersionInfoEx;
 begin
+  Result := ptUnknown;
   if IsWin2K then
   begin
-    { favor documented API over registry }
-    Result := ptUnknown;
+    // favor documented API over registry
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
     if JclWin32.GetVersionEx(@VersionInfo) then
@@ -1338,10 +1339,10 @@ begin
         VER_NT_SERVER: Result := ptServer;
       end;
     end;
-  end
-  else
+  end;
+  if Result = ptUnknown then
   begin
-    { GetVersionEx is not supported on pre Windows 2000 systems }
+    // non Windows 2000 system or the above method failed, try registry
     Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
     if CompareText(Product, 'WinNT') = 0 then
       Result :=  ptWorkStation
@@ -1373,13 +1374,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-{ TODO
-  Return value should be Integer. Tells expected number of network cards.
-  -1 == Machine not found.  0 == (own) machine has no network card.
-  Machine should be converted to upper case.
-  TODO: complete the set of functions to connect the tuples of
-  <netbios name, host name, IP address, Mac address> }
 
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 var
@@ -1471,11 +1465,8 @@ begin
   if CpuInfo.HasInstruction then
   begin
     if (CpuInfo.Features and TSC_FLAG = TSC_FLAG) then
-      CpuInfo.FrequencyInfo := GetCpuSpeed;
-    if (CpuInfo.Features and MMX_FLAG) = MMX_FLAG then
-      CpuInfo.MMX := True
-    else
-      CpuInfo.MMX := False;
+      GetCpuSpeed(CpuInfo.FrequencyInfo);
+    CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   end;
 end;
 
@@ -1493,7 +1484,7 @@ begin
   Freq := Frequency mod 100;
   for I := 0 to 8 do
   begin
-    if Freq < NF[i] then
+    if Freq < NF[I] then
     begin
       Hi := I;
       Lo := I - 1;
@@ -1509,23 +1500,19 @@ end;
 
 //------------------------------------------------------------------------------
 
-function GetCPUSpeed: TFreqInfo;
+function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 var
-  {$IFNDEF COMPILER4_UP}
-  T0, T1: TLargeInteger;
-  CountFreq: TLargeInteger;
-  {$ELSE}
   T0, T1: TULargeInteger;
   CountFreq: TULargeInteger;
-  {$ENDIF}
-  CpuSpeed: TFreqInfo;
   Freq, Freq2, Freq3, Total: Integer;
   TotalCycles, Cycles: Cardinal;
   Stamp0, Stamp1: Cardinal;
   TotalTicks, Ticks: Cardinal;
-  Tries, IPriority: Integer;
-  hThread: THandle;
+  Tries, Priority: Integer;
+  Thread: THandle;
 begin
+  Stamp0 := 0;
+  Stamp1 := 0;
   Freq  := 0;
   Freq2 := 0;
   Freq3 := 0;
@@ -1534,77 +1521,40 @@ begin
   TotalTicks := 0;
   Total := 0;
 
-  hThread := GetCurrentThread();
-  {$IFNDEF COMPILER4_UP}
-  if not QueryPerformanceFrequency(CountFreq) then
-  {$ELSE}
-  if not QueryPerformanceFrequency(Int64(CountFreq)) then
-  {$ENDIF}
-  begin
-    Result := CpuSpeed;
-  end
-  else
+  Thread := GetCurrentThread();
+  Result := QueryPerformanceFrequency(Int64(CountFreq));
+  if Result then
   begin
     while ((Tries < 3 ) or ((Tries < 20) and ((Abs(3 * Freq - Total) > 3) or
-          (Abs(3 * Freq2 - Total) > 3) or (Abs(3 * Freq3 - Total) > 3)))) do
+      (Abs(3 * Freq2 - Total) > 3) or (Abs(3 * Freq3 - Total) > 3)))) do
     begin
       Inc(Tries);
       Freq3 := Freq2;
       Freq2 := Freq;
-      {$IFNDEF COMPILER4_UP}
-      QueryPerformanceCounter(T0);
-      {$ELSE}
       QueryPerformanceCounter(Int64(T0));
-      {$ENDIF}
       T1.LowPart := T0.LowPart;
       T1.HighPart := T0.HighPart;
 
-      iPriority := GetThreadPriority(hThread);
-      if iPriority <> THREAD_PRIORITY_ERROR_RETURN then
-      begin
-        SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
-      end;
-      while (T1.LowPart - T0.LowPart) < 50 do
-      begin
-        {$IFNDEF COMPILER4_UP}
-        QueryPerformanceCounter(T1);
-        {$ELSE}
-        QueryPerformanceCounter(Int64(T1));
-        {$ENDIF}
-        asm
-          PUSH    EAX
-          PUSH    EDX
-          DB      0Fh             // Read Time
-          DB      31h             // Stamp Counter
-          MOV     Stamp0, EAX
-          POP     EDX
-          POP     EAX
+      Priority := GetThreadPriority(Thread);
+      if Priority <> THREAD_PRIORITY_ERROR_RETURN then
+        SetThreadPriority(Thread, THREAD_PRIORITY_TIME_CRITICAL);
+      try
+        while (T1.LowPart - T0.LowPart) < 50 do
+        begin
+          QueryPerformanceCounter(Int64(T1));
+          Stamp0 := ReadTimeStampCounter;
         end;
-      end;
-      T0.LowPart := T1.LowPart;
-      T0.HighPart := T1.HighPart;
+        T0.LowPart := T1.LowPart;
+        T0.HighPart := T1.HighPart;
 
-      while (T1.LowPart - T0.LowPart) < 1000 do
-      begin
-        {$IFNDEF COMPILER4_UP}
-        QueryPerformanceCounter(T1);
-        {$ELSE}
-        QueryPerformanceCounter(Int64(T1));
-        {$ENDIF}
-        asm
-          PUSH    EAX
-          PUSH    EDX
-          DB      0Fh             // Read Time
-          DB      31h             // Stamp Counter
-          MOV     Stamp1, EAX
-          POP     EDX
-          POP     EAX
+        while (T1.LowPart - T0.LowPart) < 1000 do
+        begin
+          QueryPerformanceCounter(Int64(T1));
+          Stamp1 := ReadTimeStampCounter;
         end;
-      end;
-
-      if iPriority <> THREAD_PRIORITY_ERROR_RETURN then
-      begin
-        SetThreadPriority(hThread, iPriority);
+      finally
+        if Priority <> THREAD_PRIORITY_ERROR_RETURN then
+          SetThreadPriority(Thread, Priority);
       end;
 
       Cycles := Stamp1 - Stamp0;
@@ -1613,9 +1563,7 @@ begin
       Ticks := Round(Ticks / (CountFreq.LowPart / 10));
       TotalTicks := TotalTicks + Ticks;
       TotalCycles := TotalCycles + Cycles;
-
       Freq := Round(Cycles / Ticks);
-
       Total := Freq + Freq2 + Freq3;
     end;
     Freq3 := Round((TotalCycles * 10) / TotalTicks);
@@ -1635,7 +1583,7 @@ begin
     CpuSpeed.InCycles := TotalCycles;
 
     CpuSpeed.NormFreq := RoundFrequency(CpuSpeed.NormFreq);
-    Result := CpuSpeed;
+    Result := True;
   end;
 end;
 
@@ -2166,7 +2114,7 @@ end;
 
 function GetAPMLineStatus: TAPMLineStatus;
 var
-  SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := alsUnknown;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2188,7 +2136,7 @@ end;
 
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 var
-  SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := abfUnknown;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2216,7 +2164,7 @@ end;
 
 function GetAPMBatteryLifePercent: Integer;
 var
-  SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2229,7 +2177,7 @@ end;
 
 function GetAPMBatteryLifeTime: Integer;
 var
-  SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2242,7 +2190,7 @@ end;
 
 function GetAPMBatteryFullLifeTime: Integer;
 var
-  SystemPowerstatus: _System_Power_Status;
+  SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
   if not GetSystemPowerStatus(SystemPowerStatus) then
@@ -2261,7 +2209,7 @@ var
 begin
   FillChar(SystemInfo, SizeOf(SystemInfo), #0);
   GetSystemInfo(SystemInfo);
-  Result := LongInt(SystemInfo.lpMaximumApplicationAddress);
+  Result := Integer(SystemInfo.lpMaximumApplicationAddress);
 end;
 
 //------------------------------------------------------------------------------
@@ -2272,7 +2220,7 @@ var
 begin
   FillChar(SystemInfo, SizeOf(SystemInfo), #0);
   GetSystemInfo(SystemInfo);
-  Result := LongInt(SystemInfo.lpMinimumApplicationAddress);
+  Result := Integer(SystemInfo.lpMinimumApplicationAddress);
 end;
 
 //------------------------------------------------------------------------------
@@ -2281,6 +2229,7 @@ function GetMemoryLoad: Byte;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwMemoryLoad;
@@ -2292,6 +2241,7 @@ function GetSwapFileSize: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   with MemoryStatus do
@@ -2304,10 +2254,11 @@ function GetSwapFileUsage: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   with MemoryStatus do
-    Result := 100-Trunc(dwAvailPageFile/dwTotalPageFile*100);
+    Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100);
 end;
 
 //------------------------------------------------------------------------------
@@ -2316,6 +2267,7 @@ function GetTotalPhysicalMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwTotalPhys;
@@ -2327,6 +2279,7 @@ function GetFreePhysicalMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwAvailPhys;
@@ -2338,6 +2291,7 @@ function GetTotalPageFileMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwTotalPageFile;
@@ -2349,6 +2303,7 @@ function GetFreePageFileMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwAvailPageFile;
@@ -2360,6 +2315,7 @@ function GetTotalVirtualMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwTotalVirtual;
@@ -2371,6 +2327,7 @@ function GetFreeVirtualMemory: Integer;
 var
   MemoryStatus: TMemoryStatus;
 begin
+  FillChar(MemoryStatus, SizeOf(MemoryStatus), 0);
   MemoryStatus.dwLength := SizeOf(MemoryStatus);
   GlobalMemoryStatus(MemoryStatus);
   Result := MemoryStatus.dwAvailVirtual;
@@ -2416,12 +2373,30 @@ end;
 procedure InitSysInfo;
 var
   SystemInfo: TSystemInfo;
+  Kernel32FileName: string;
 begin
+
+  { processor information related initialization }
+
   FillChar(SystemInfo, SizeOf(SystemInfo), #0);
   GetSystemInfo(SystemInfo);
   ProcessorCount := SystemInfo.dwNumberOfProcessors;
   AllocGranularity := SystemInfo.dwAllocationGranularity;
   PageSize := SystemInfo.dwPageSize;
+
+  { Windows version information }
+
+  KernelVersionHi := 0;
+  Kernel32FileName := GetModulePath(GetModuleHandle(kernel32));
+  if (not IsWinNT) and VersionResourceAvailable(Kernel32FileName) then
+  begin
+    with TJclFileVersionInfo.Create(Kernel32FileName) do
+    try
+      KernelVersionHi := FixedInfo.dwProductVersionMS;
+    finally
+      Free;
+    end
+  end;
 
   IsWinNT := Win32Platform = VER_PLATFORM_WIN32_NT;
   case GetWindowsVersion of
