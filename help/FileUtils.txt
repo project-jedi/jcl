@@ -1,5 +1,71 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+DriveLetters = ['a'..'z', 'A'..'Z'];
+[ShortDescr]
+Set of valid characters to use as drive letters.
+[Description]
+DriveLetters is a set of characters which can be used to designate a drive under
+the Windows operating system.
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Path manipulation
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+PathDevicePrefix = '\\.\';
+[ShortDescr]
+Prefix used to specify a physical device under Windows.
+[Description]
+PathDevicePrefix is the character string used in Windows to specify a physical
+device such as a harddisk.
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Path manipulation
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+PathSeparator = '\'; // '/' if compiled under Linux
+[ShortDescr]
+Character used as path element separator.
+[Description]
+PathSeparator is the character used by the file system to separate the elememts
+of a path such as the drive, directories and the filename. The value of this
+constant is conditionally defined as a forward or backward slash depening on the
+targetted operating system (Linux and Windows respectively).
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Path manipulation
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+PathUncPrefix    = '\\';
+[ShortDescr]
+Prefix for UNC path names.
+[Description]
+Character string used a prefix for UNC paths. A full UNC path is of the
+form: \\Server\Share or \\?\UNC\Server\Share.
+[Quick Info]
+Kind=Constant
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Path manipulation
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(Handle: THandle): Int64; overload;
 [ShortDescr]
@@ -304,6 +370,8 @@ be one of the following values:
   </TR>
   </TABLE><BR>
 [Quick Info]
+Kind=Method
+Visibility=Public
 BCB=3,4,5
 Unit=JclFileUtils
 Category=Files and IO
@@ -582,25 +650,30 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+constructor Create(const FileName: string; FileMode: Cardinal; const Name: string; Protect: Cardinal; const MaximumSize: Int64; const SecAttr: PSecurityAttributes); overload;
 constructor Create(FileHandle: THandle; Name: string; Protect: Cardinal; MaximumSize: Int64; SecAttr: PSecurityAttributes);
 [ShortDescr]
 Creates an instance of a TJclFileMapping object.
 [Description]
 Creates an instance of a TJclFileMapping object. The filemapping object is backed
 by an actual disk file and it is the callers responsibility to ensure the disk file
-actually exists. As such the FileHandle parameter must be a valid handle.
+actually exists. As such the FileHandle parameter must be a valid handle or the
+FileName, FileMode combination must be valid.
 [Parameters]
-Count=5
-1=FileHandle:THandle=Handle to a disk file. Must be a valid handle.
-2=Name:string=Name for the filemapping object. Specifying a name allows another
+Count=7
+1=FileName:string=Fully qualified name of the file to map.
+2=FileMode:Cardinal=Access mode to open the file with. See the "File open mode
+constants" topic in the Delphi help for a list of valid values. 
+3=FileHandle:THandle=Handle to a disk file. Must be a valid handle.
+4=Name:string=Name for the filemapping object. Specifying a name allows another
 process to open the same filemapping object.
-3=Protect:Cardinal=Protection attributes for the filemapping object. See the Win32
+5=Protect:Cardinal=Protection attributes for the filemapping object. See the Win32
 help file or Platform SDK for the allowed values (look at the description of the
 CreateFileMapping function, flProtect parameter).
-4=MaximumSize:Int64=Maximum size of the filemapping object. If you specify 0 the
+6=MaximumSize:Int64=Maximum size of the filemapping object. If you specify 0 the
 filemapping will be the same size as the underlying disk file (which is not allowed
 to have a 0 size itself).
-5=SecAttr:PSecurityAttributes=Security attributes for the filemapping. See the
+7=SecAttr:PSecurityAttributes=Security attributes for the filemapping. See the
 Win32 help file or Platform SDK for details.
 [Quick Info]
 Kind=Method
@@ -875,6 +948,32 @@ Count=2
 2=PathGetDisplayName
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function PathIsChild(const Path, Base: AnsiString): Boolean;
+[ShortDescr]
+Checks whether Path is a child of Base.
+[Description]
+The PathIsChild routine determines whether the directory specified by Path is
+a child directory, either immediate or several levels deep, of the specified
+Base path. For example, 'c:\winnt\system32' is a child of 'c:\winnt'.
+[Parameters]
+Count=2
+1=Path:string=The path to test.
+2=Base:string=The base path to compare path against.
+[Result]
+If Path is a child of Base the function returns True, otherwise it returns False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Path manipulation
+Author=Anthony Steele;anthony@southeaster.com
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=PathIsDiskDevice
+2=PathIsUnc
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function PathIsAbsolute(const Path: string): Boolean;
 [ShortDescr]
 Tests if a path is an absolute path.
@@ -1120,6 +1219,30 @@ Unit=JclFileUtils
 Category=Files and IO
 SubCat=Path manipulation
 Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
+[ShortDescr]
+Extracts drive and directory parts from a filename.
+[Description]
+PathExtractFileDirFixed extracts the drive and directory parts from the filename
+specified by S. The resulting path is always terminated with the PathSeparator
+character (a backslash a forward slahs depending on the target OS) regardless of
+whether a drive and/or directory is present in the filename.
+[Parameters]
+Count=1
+1=S:string=The filename from which to extract the drive and directory parts.
+[Result]
+The drive and directory part of the specified filename, terminated with a
+PathSeparator. If the filename does not contain a drive and directory specification
+the resulting string is a single PathSeparator character.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Path manipulation
+Author=Anthony Steele;anthony@southeaster.com
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
@@ -1623,6 +1746,196 @@ Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function UnLockVolume(var Handle: THandle): Boolean;
+[ShortDescr]
+Unlocks the specified volume.
+[Description]
+UnLockVolume unlocks a volume previously locked with <REF>LockVolume</REF>.
+[Parameters]
+Count=1
+1=Handle:THandle=The handle previously returned from <REF>LockVolume</REF>. If
+the function succeeds in closing unlocking the volume the handle is closed and no
+longer valid.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. The latter
+case either means that the specified handle was invalid or that the device
+could not be unlocked. In either case the Handle parameter is unaffected and
+retains it's value.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=LockVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LockVolume(const Volume: string; out Handle: THandle): Boolean;
+[ShortDescr]
+Locks the specified volume.
+[Description]
+LockVolume locks the specified volume. Locking a volume will give exclusive access
+to the specified volume to whomever owns the lock. Subsequent access to the
+volume must be performed through the returned handle. When you're done with the
+volume you must call <REF>UnLockVolume</REF>. Note that to lock a volume there
+can be no open files on the volume (even a single open file, by whatever process,
+will cause the function to fail).
+[Parameters]
+Count=2
+1=Volume:string=The volume to lock this must be a string in the format:
+ <UL>
+ <LI>X: Where X is the volume to lock, for example 'a:'
+ <LI>PHYSICALDRIVEX Where X is the 0 based hard disk number, for example 'PHYSICALDRIVE0'
+ </UL>
+ <B>Note:</B> Do not prepend the Volume name with a '\\.\'. This is done by the function.
+2=Handle:THandle=Receives a handle of the locked device upon successful return.
+[Result]
+If the function succeeds in locking the volume it returns True and a handle to
+the specified device in the Handle parameter. If it fails the function returns
+False and the Handle parameter is undefined.
+[Notes]
+Count=2
+1=You must have administrative privileges to lock a volume.
+2=The device is, according to Microsoft recommendations, opened with no buffering.
+This action imposes a number of 'limitations' for subsequent access to the device.
+For example the alignment of buffers must be on a multiple of the volume's sector
+size. See the Platform SDK for details.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=UnlockVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function OpenVolume(const Drive: Char): THandle;
+[ShortDescr]
+OIpens a handle to the specified volume.
+[Description]
+OpenVolume opens a handle for the specified volume with read/write access.
+Subsequent access to the volume must be performed through the returned handle.
+When you're done with the volume you must call <REF>CloseVolume</REF>.
+[Parameters]
+Count=1
+1=Drive:Char=The drive letter corresponding to the volume to open.
+[Result]
+If the function succeeds it returns a handle to the specified volume.
+If it fails the function returns INVALID_HANDLE_VALUE.
+[Notes]
+Count=2
+1=You must have administrative privileges to open a volume.
+2=This action imposes a number of 'limitations' for subsequent access to the volume.
+For example the alignment of buffers must be on a multiple of the volume's sector
+size. See the Platform SDK on CreateFile for details.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=CloseVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CloseVolume(var Volume: THandle): Boolean;
+[ShortDescr]
+Closes a handle for a previously opened volume.
+[Description]
+CloseVolume closes the handle to a volume previously opened with <REF>OpenVolume</REF>.
+[Parameters]
+Count=1
+1=Handle:THandle=The handle previously returned from <REF>OpenVolume</REF>. If
+the function succeeds in closing the volume the handle is closed and no
+longer valid.
+[Result]
+If the function succeeds it returns True, otherwise it returns False. The latter
+case either means that the specified handle was invalid or that the device
+could not be closed. In either case the Handle parameter is unaffected and
+retains it's value.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Massimo Maria Ghisalberti;nissl@dada.it
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.5 or later.
+Windows 95/98=Unsupported.
+[SeeAlso]
+Count=1
+1=OpenVolume
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFileInformation(const FileName: string): TSearchRec;
+[ShortDescr]
+Returns information about a file.
+[Description]
+GetFileInformation returns a TSearchRec record containing information about the
+specified file such as creation time, filesize and so forth.
+[Parameters]
+Count=1
+1=FileName:string=Fully qualified name of the file for which to retrieve information.
+[Result]
+If the function succeeds it returns a TSearchRec with information about the file.
+The Delphi help contains documentation for this record. If the function fails,
+for example because it can't find the file, it raises an EWin32Error exception.
+[Quick Info]
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=3,4,5
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetStandardFileInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
+[ShortDescr]
+Returns information about a file.
+[Description]
+GetStandardFileInfo returns standard information about the specified file such as
+creation time, filesize and attributes.
+[Parameters]
+Count=1
+1=FileName:string=Fully qualified name of the file for which to retrieve information.
+[Result]
+If the function succeeds it returns a TWin32FileAttributeData record with
+information about the file. The Platform SDK contains documentation for this record.
+If the function fails, for example because it can't find the file, it raises an
+EFileUtilsError exception.
+[Quick Info]
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+BCB=3,4,5
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetFileInformation
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function GetFileAgeCoherence(const FileName: string): Boolean;
 [ShortDescr]
 Tests the file age coherence of a file.
@@ -1776,7 +2089,7 @@ Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TDelTreeProgress = function (const FileName: string): Boolean;
+TDelTreeProgress = function (const FileName: string; Attr: DWORD): Boolean;
 [ShortDescr]
 Progress callback routine for the DelTreeEx function.
 [Description]
@@ -1785,8 +2098,10 @@ DelTreeEx function. This function is called just before the file is deleted. You
 can use this callback routine to display progress to the user. To allow DelTreeEx
 to continue deleting files return True, to abort the deletion return False.
 [Parameters]
-Count=1
+Count=2
 1=FileName:string=The name of the file that is about to be deleted.
+2=Attr:DWORD=The attributes of the file. See GetFileAttributes in the Platform SDK
+for a full list of attribute flags.
 [Result]
 If you return True DelTreeEx deletes the specified file and continues with the
 next one. If you return False DeltreeEx aborts immediately.
@@ -1889,6 +2204,34 @@ Windows 95/98=Requires Windows 95 or later.
 [SeeAlso]
 Count=1
 1=DelTree
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function DirectoryExists(const Name: string): Boolean;
+[ShortDescr]
+Determines whether a directory exists.
+[Description]
+DirectoryExists determines whether the specified directory exists.
+[Parameters]
+Count=1
+1=Name:string=The directory to check for existence. If Name is not fully qualified
+it is interpreted as relative to the current directory.
+[Result]
+If the directory exists the function returns True, otherwise it returns False.
+[Notes]
+Count=1
+1=This function is a replacement for the FileUtils.DirectoryExists function from
+the Delphi RTL to avoid dependency on that particular unit. There's nothing wrong
+with that function except that the unit uses Forms etc. which add significant
+resources and startup time to your application (if it doesn't use these units already).
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DiskInDrive(Drive: Char): Boolean;
@@ -2595,11 +2938,11 @@ Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-constructor Create(const Buffer: string);
+constructor Attach(const Buffer: string);
 [ShortDescr]
 Creates an instance of TJclFileVersionInfo using the supplied buffer.
 [Description]
-The Create constructor creates an instance of the TJclFileVersionInfo class and
+The Attach constructor creates an instance of the TJclFileVersionInfo class and
 attaches it to the specified buffer. If successful you can use the properties
 of TJclFileVersionInfo to start reading the version resource information
 from the executable. Use this constructor if you already have read the version info
@@ -2631,7 +2974,7 @@ attaches it to the executable specified by FileName. If successful you can use
 the properties of TJclFileVersionInfo to start reading the version resource information
 from the executable. If the constructor cannot read the version resource from
 the specified file (e.g. because the file does not exist or does not have a version
-resource) am exception is raised (using RaiseLastWin32Error). To avoid the
+resource) an exception is raised (using RaiseLastWin32Error). To avoid the
 exception and check beforehand if the file has a version resource you can use
 the <REF Target"..\VersionResourceAvailable">VersionResourceAvailable</REF>
 function.
