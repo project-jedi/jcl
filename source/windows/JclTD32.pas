@@ -19,7 +19,7 @@
 {                                                                                                  }
 { Borland TD32 symbolic debugging information support routines and classes.                        }
 {                                                                                                  }
-{ Last modified: February 21, 2002                                                                 }
+{ Last modified: February 26, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -653,7 +653,8 @@ type
   TJclTD32InfoScanner = class (TJclTD32InfoParser)
   public
     function LineNumberFromAddr(AAddr: DWORD): Integer;
-    function ProcNameFromAddr(AAddr: DWORD): string;
+    function ProcNameFromAddr(AAddr: DWORD): string; overload;
+    function ProcNameFromAddr(AAddr: DWORD; var Offset: Integer): string; overload;
     function ModuleNameFromAddr(AAddr: DWORD): string;
     function SourceNameFromAddr(AAddr: DWORD): string;
   end;
@@ -1104,7 +1105,7 @@ begin
         begin
           Result  := True;
           ASrcMod := SourceModules[I];
-          Exit;;
+          Exit;
         end;
 
   Result  := False;
@@ -1191,12 +1192,23 @@ var
   AMod: TJclModuleInfo;
 begin
   if FindModule(AAddr, AMod) then
-    Result := Names[AMod.NameIndex];
+    Result := Names[AMod.NameIndex]
+  else
+    Result := '';
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD): string;
+var
+  Dummy: Integer;
+begin
+  Result := ProcNameFromAddr(AAddr, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclTD32InfoScanner.ProcNameFromAddr(AAddr: DWORD; var Offset: Integer): string;
 var
   AProc: TJclProcSymbolInfo;
 
@@ -1218,7 +1230,15 @@ var
 
 begin
   if FindProc(AAddr, AProc) then
+  begin
     Result := FormatProcName(Names[AProc.NameIndex]);
+    Offset := AAddr - AProc.Offset;
+  end
+  else
+  begin
+    Result := '';
+    Offset := 0;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1326,5 +1346,7 @@ begin
     end;
   end;
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
