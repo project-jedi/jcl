@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: May 27, 2000                                                  }
+{ Last modified: December 04, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -38,7 +38,6 @@ function OrdToBinary(const Value: Integer): string; overload;
 function OrdToBinary(const Value: Cardinal): string; overload;
 function OrdToBinary(const Value: Int64): string; overload;
 
-
 //------------------------------------------------------------------------------
 // Bit manipulation
 //------------------------------------------------------------------------------
@@ -53,19 +52,16 @@ function BitsHighest(X: Integer): Integer; overload;
 function BitsHighest(X: Cardinal): Integer; assembler; overload;
 function BitsHighest(X: Int64): Integer; overload;
 
-
 function BitsLowest(X: Byte): Integer; overload;
 function BitsLowest(X: Word): Integer; overload;
 function BitsLowest(X: Integer): Integer; overload;
 function BitsLowest(X: Cardinal): Integer; assembler; overload;
 function BitsLowest(X: Int64): Integer; overload;
 
-
 function ClearBit(const Value: Byte; const Bit: TBitRange): Byte; overload;
 function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
-
 
 function CountBitsSet(X: Byte): Integer; overload;
 function CountBitsSet(X: Word): Integer; overload;
@@ -73,12 +69,10 @@ function CountBitsSet(X: Integer): Integer; overload;
 function CountBitsSet(X: Cardinal): Integer; assembler; overload;
 function CountBitsSet(X: Int64): Integer; overload;
 
-
 function CountBitsCleared(X: Byte): Integer; overload;
 function CountBitsCleared(X: Word): Integer; overload;
 function CountBitsCleared(X: Integer): Integer; overload;
 function CountBitsCleared(X: Int64): Integer; overload;
-
 
 function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function LRot(const Value: Word; const Count: TBitRange): Word; overload;
@@ -88,7 +82,7 @@ function ReverseBits(const Value: Byte): Byte; overload;
 function ReverseBits(const Value: Word): Word; overload;
 function ReverseBits(const Value: Integer): Integer; overload;
 function ReverseBits(const Value: Int64): Int64; overload;
-
+function ReverseBits(P: Pointer; Count: Integer): Pointer; overload;
 
 function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function RRot(const Value: Word; const Count: TBitRange): Word; overload;
@@ -147,19 +141,33 @@ procedure SwapOrd(var I, J: Integer); overload;
 procedure SwapOrd(var I, J: Cardinal); overload;
 procedure SwapOrd(var I, J: Int64); overload;
 
-procedure IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure IncLimit(var B: Word; const Limit: Word; const Incr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure IncLimit(var B: Int64; const Limit: Int64; const Incr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
+function IncLimit(var B: Byte; const Limit: Byte; const Incr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Byte; overload;
+function IncLimit(var B: Shortint; const Limit: Shortint; const Incr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Shortint; overload;
+function IncLimit(var B: Word; const Limit: Word; const Incr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Word; overload;
+function IncLimit(var B: Integer; const Limit: Integer; const Incr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer; overload;
+function IncLimit(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Cardinal; overload;
+function IncLimit(var B: Int64; const Limit: Int64; const Incr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Int64; overload;
 
-procedure DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure DecLimit(var B: Shortint; const Limit: Shortint; const Decr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure DecLimit(var B: Word; const Limit: Word; const Decr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
-procedure DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}); overload;
+function DecLimit(var B: Byte; const Limit: Byte; const Decr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Byte; overload;
+function DecLimit(var B: Shortint; const Limit: Shortint; const Decr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Shortint; overload;
+function DecLimit(var B: Word; const Limit: Word; const Decr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Word; overload;
+function DecLimit(var B: Integer; const Limit: Integer; const Decr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer; overload;
+function DecLimit(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Cardinal; overload;
+function DecLimit(var B: Int64; const Limit: Int64; const Decr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Int64; overload;
+
+function IncLimitClamp(var B: Byte; const Limit: Byte; const Incr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Byte; overload;
+function IncLimitClamp(var B: Shortint; const Limit: Shortint; const Incr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Shortint; overload;
+function IncLimitClamp(var B: Word; const Limit: Word; const Incr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Word; overload;
+function IncLimitClamp(var B: Integer; const Limit: Integer; const Incr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer; overload;
+function IncLimitClamp(var B: Cardinal; const Limit: Cardinal; const Incr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Cardinal; overload;
+function IncLimitClamp(var B: Int64; const Limit: Int64; const Incr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Int64; overload;
+
+function DecLimitClamp(var B: Byte; const Limit: Byte; const Decr: Byte {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Byte; overload;
+function DecLimitClamp(var B: Shortint; const Limit: Shortint; const Decr: Shortint {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Shortint; overload;
+function DecLimitClamp(var B: Word; const Limit: Word; const Decr: Word {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Word; overload;
+function DecLimitClamp(var B: Integer; const Limit: Integer; const Decr: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Integer; overload;
+function DecLimitClamp(var B: Cardinal; const Limit: Cardinal; const Decr: Cardinal {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Cardinal; overload;
+function DecLimitClamp(var B: Int64; const Limit: Int64; const Decr: Int64 {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF}): Int64; overload;
 
 function Max(const B1, B2: Byte): Byte; overload;
 function Max(const B1, B2: Shortint): Shortint; overload;
@@ -562,6 +570,64 @@ end;
 
 //------------------------------------------------------------------------------
 
+const
+  ReverseTable: array [0..255] of Byte = (
+    $00, $80, $40, $C0, $20, $A0, $60, $E0,
+    $10, $90, $50, $D0, $30, $B0, $70, $F0,
+    $08, $88, $48, $C8, $28, $A8, $68, $E8,
+    $18, $98, $58, $D8, $38, $B8, $78, $F8,
+    $04, $84, $44, $C4, $24, $A4, $64, $E4,
+    $14, $94, $54, $D4, $34, $B4, $74, $F4,
+    $0C, $8C, $4C, $CC, $2C, $AC, $6C, $EC,
+    $1C, $9C, $5C, $DC, $3C, $BC, $7C, $FC,
+    $02, $82, $42, $C2, $22, $A2, $62, $E2,
+    $12, $92, $52, $D2, $32, $B2, $72, $F2,
+    $0A, $8A, $4A, $CA, $2A, $AA, $6A, $EA,
+    $1A, $9A, $5A, $DA, $3A, $BA, $7A, $FA,
+    $06, $86, $46, $C6, $26, $A6, $66, $E6,
+    $16, $96, $56, $D6, $36, $B6, $76, $F6,
+    $0E, $8E, $4E, $CE, $2E, $AE, $6E, $EE,
+    $1E, $9E, $5E, $DE, $3E, $BE, $7E, $FE,
+    $01, $81, $41, $C1, $21, $A1, $61, $E1,
+    $11, $91, $51, $D1, $31, $B1, $71, $F1,
+    $09, $89, $49, $C9, $29, $A9, $69, $E9,
+    $19, $99, $59, $D9, $39, $B9, $79, $F9,
+    $05, $85, $45, $C5, $25, $A5, $65, $E5,
+    $15, $95, $55, $D5, $35, $B5, $75, $F5,
+    $0D, $8D, $4D, $CD, $2D, $AD, $6D, $ED,
+    $1D, $9D, $5D, $DD, $3D, $BD, $7D, $FD,
+    $03, $83, $43, $C3, $23, $A3, $63, $E3,
+    $13, $93, $53, $D3, $33, $B3, $73, $F3,
+    $0B, $8B, $4B, $CB, $2B, $AB, $6B, $EB,
+    $1B, $9B, $5B, $DB, $3B, $BB, $7B, $FB,
+    $07, $87, $47, $C7, $27, $A7, $67, $E7,
+    $17, $97, $57, $D7, $37, $B7, $77, $F7,
+    $0F, $8F, $4F, $CF, $2F, $AF, $6F, $EF,
+    $1F, $9F, $5F, $DF, $3F, $BF, $7F, $FF);
+
+// Table based reverse bits implementation. Generalisation of other overloaded
+// ReverseBits implementation. Original assembler implementation by Mike Lishke
+// rewritten to OP by MVB. Implementation note: OP version is faster than asm!
+
+function ReverseBits(P: Pointer; Count: Integer): Pointer;
+var
+  I: Integer;
+  PB: PByte;
+begin
+  if (P <> nil) and (Count > 0) then
+  begin
+    PB := P;
+    for I := 1 to Count do
+    begin
+      PB^ := ReverseTable[PB^];
+      Inc(PB);
+    end;
+  end;
+  Result := P;
+end;
+
+//------------------------------------------------------------------------------
+
 function RRot(const Value: Byte; const Count: TBitRange): Byte; assembler;
 asm
         MOV     CL, Count
@@ -951,98 +1017,242 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure IncLimit(var B: Byte; const Limit, Incr: Byte);
+function IncLimit(var B: Byte; const Limit, Incr: Byte): Byte;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
+  Result := B;    
 end;
 
 //------------------------------------------------------------------------------
 
-procedure IncLimit(var B: Shortint; const Limit, Incr: Shortint);
+function IncLimit(var B: Shortint; const Limit, Incr: Shortint): Shortint;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure IncLimit(var B: Word; const Limit, Incr: Word);
+function IncLimit(var B: Word; const Limit, Incr: Word): Word;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure IncLimit(var B: Integer; const Limit, Incr: Integer);
+function IncLimit(var B: Integer; const Limit, Incr: Integer): Integer;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure IncLimit(var B: Cardinal; const Limit, Incr: Cardinal);
+function IncLimit(var B: Cardinal; const Limit, Incr: Cardinal): Cardinal;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure IncLimit(var B: Int64; const Limit, Incr: Int64);
+function IncLimit(var B: Int64; const Limit, Incr: Int64): Int64;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecLimit(var B: Byte; const Limit, Decr: Byte);
+function DecLimit(var B: Byte; const Limit, Decr: Byte): Byte;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecLimit(var B: Shortint; const Limit, Decr: Shortint);
+function DecLimit(var B: Shortint; const Limit, Decr: Shortint): shortint;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecLimit(var B: Word; const Limit, Decr: Word);
+function DecLimit(var B: Word; const Limit, Decr: Word): Word;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecLimit(var B: Integer; const Limit, Decr: Integer);
+function DecLimit(var B: Integer; const Limit, Decr: Integer): Integer;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecLimit(var B: Cardinal; const Limit, Decr: Cardinal);
+function DecLimit(var B: Cardinal; const Limit, Decr: Cardinal): Cardinal;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure DecLimit(var B: Int64; const Limit, Decr: Int64);
+function DecLimit(var B: Int64; const Limit, Decr: Int64): Int64;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function IncLimitClamp(var B: Byte; const Limit, Incr: Byte): Byte;
+begin
+  if (B + Incr) <= Limit then
+    Inc(B, Incr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function IncLimitClamp(var B: Shortint; const Limit, Incr: Shortint): Shortint;
+begin
+  if (B + Incr) <= Limit then
+    Inc(B, Incr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function IncLimitClamp(var B: Word; const Limit, Incr: Word): Word;
+begin
+  if (B + Incr) <= Limit then
+    Inc(B, Incr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function IncLimitClamp(var B: Integer; const Limit, Incr: Integer): Integer;
+begin
+  if (B + Incr) <= Limit then
+    Inc(B, Incr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function IncLimitClamp(var B: Cardinal; const Limit, Incr: Cardinal): Cardinal;
+begin
+  if (B + Incr) <= Limit then
+    Inc(B, Incr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function IncLimitClamp(var B: Int64; const Limit, Incr: Int64): Int64;
+begin
+  if (B + Incr) <= Limit then
+    Inc(B, Incr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function DecLimitClamp(var B: Byte; const Limit, Decr: Byte): Byte;
+begin
+  if (B - Decr) >= Limit then
+    Dec(B, Decr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function DecLimitClamp(var B: Shortint; const Limit, Decr: Shortint): Shortint;
+begin
+  if (B - Decr) >= Limit then
+    Dec(B, Decr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function DecLimitClamp(var B: Word; const Limit, Decr: Word): Word;
+begin
+  if (B - Decr) >= Limit then
+    Dec(B, Decr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function DecLimitClamp(var B: Integer; const Limit, Decr: Integer): Integer;
+begin
+  if (B - Decr) >= Limit then
+    Dec(B, Decr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function DecLimitClamp(var B: Cardinal; const Limit, Decr: Cardinal): Cardinal;
+begin
+  if (B - Decr) >= Limit then
+    Dec(B, Decr)
+  else
+    B := Limit;
+  Result := B;
+end;
+
+//------------------------------------------------------------------------------
+
+function DecLimitClamp(var B: Int64; const Limit, Decr: Int64): Int64;
+begin
+  if (B - Decr) >= Limit then
+    Dec(B, Decr)
+  else
+    B := Limit;
+  Result := B;
 end;
 
 //------------------------------------------------------------------------------
