@@ -20,7 +20,7 @@
 { Exception hooking routines                                                                       }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 28, 2002                                                                    }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -63,19 +63,13 @@ function JclHookExceptionsInModule(Module: HMODULE): Boolean;
 function JclUnkookExceptionsInModule(Module: HMODULE): Boolean;
 
 //--------------------------------------------------------------------------------------------------
-// Exceptions hooking in libraries (hooking from main EXE module option)
+// Exceptions hooking in libraries
 //--------------------------------------------------------------------------------------------------
 
 type
   TJclModuleArray = array of HMODULE;
 
-function JclHookExceptionsInLibraries(var ModulesList: TJclModuleArray; ReturnBorlandModules: Boolean = False): Boolean;
-
-//--------------------------------------------------------------------------------------------------
-// Exceptions hooking in libraries (hooking from libraries option)
-//--------------------------------------------------------------------------------------------------
-
-function JclInitializeLibrariesHookExcept(DynamicLinkingOnly: Boolean = False): Boolean;
+function JclInitializeLibrariesHookExcept: Boolean;
 function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
 
 //--------------------------------------------------------------------------------------------------
@@ -89,8 +83,6 @@ implementation
 uses
   Classes,
   JclBase, JclPeImage, JclSysInfo, JclSysUtils;
-
-{$UNDEF JclHookExceptUseMappingVersion}
 
 type
   PExceptionArguments = ^TExceptionArguments;
@@ -118,44 +110,6 @@ var
   SysUtils_ExceptObjProc: function (P: PExceptionRecord): Exception;
   Notifiers: TThreadList;
 
-{$IFDEF JclHookExceptUseMappingVersion}
-
-const
-  MappingNameFormat = 'JclHookExceptDataMap$%.8x_1';
-  MutexNameFormat   = 'JclHookExceptDataMtx$%.8x_1';
-
-type
-  PJclHookExceptData = ^TJclHookExceptData;
-  TJclHookExceptData = packed record
-    HookedRaiseExceptionAddr: Pointer;
-    HookedModules: array [0..127] of HMODULE;
-  end;
-
-  TJclHookExceptSharedData = class (TObject)
-  private
-    FData: PJclHookExceptData;
-    FMutexHandle: THandle;
-    FMappingHandle: THandle;
-  protected
-    procedure Close;
-    function FindModuleIndex(Module: HMODULE; var FreeSlotIndex: Integer): Integer;
-    procedure InitializeHook;
-    procedure Open;
-    procedure UninitializeHook;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    class function Exists: Boolean;
-    procedure List(var ModulesList: TJclModuleArray);
-    procedure HookModule;
-    procedure UnhookModule;
-  end;
-
-var
-  HookExceptSharedData: TJclHookExceptSharedData;
-
-{$ELSE JclHookExceptUseMappingVersion}
-
 const
   JclHookExceptDebugHookName = '__JclHookExcept';
 
@@ -180,10 +134,10 @@ var
   HookExceptModuleList: TJclHookExceptModuleList;
   JclHookExceptDebugHook: Pointer;
 
+{$IFDEF HOOK_DLL_EXCEPTIONS}
 exports
   JclHookExceptDebugHook name JclHookExceptDebugHookName;
-
-{$ENDIF JclHookExceptUseMappingVersion}
+{$ENDIF HOOK_DLL_EXCEPTIONS}
 
 {$STACKFRAMES OFF}
 
@@ -257,22 +211,25 @@ var
 begin
   if Recursive then
     Exit;
-  Recursive := True;
-  NewResultExc := nil;
-  try
-    with Notifiers.LockList do
+  if Assigned(Notifiers) then
+  begin
+    Recursive := True;
+    NewResultExc := nil;
     try
-      for Priorities := High(Priorities) downto Low(Priorities) do
-        for I := 0 to Count - 1 do
-          with TNotifierItem(Items[I]) do
-            if Priority = Priorities then
-              DoNotify(ExceptObj, ExceptAddr, OSException);
+      with Notifiers.LockList do
+      try
+        for Priorities := High(Priorities) downto Low(Priorities) do
+          for I := 0 to Count - 1 do
+            with TNotifierItem(Items[I]) do
+              if Priority = Priorities then
+                DoNotify(ExceptObj, ExceptAddr, OSException);
+      finally
+        Notifiers.UnlockList;
+      end;
     finally
-      Notifiers.UnlockList;
+      Recursive := False;
     end;
-  finally
-    Recursive := False;
-  end;
+  end;  
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -475,265 +432,8 @@ begin
 end;
 
 //==================================================================================================
-// Exceptions hooking in libraries (hooking from main EXE module option)
+// Exceptions hooking in libraries
 //==================================================================================================
-
-function JclHookExceptionsInLibraries(var ModulesList: TJclModuleArray; ReturnBorlandModules: Boolean): Boolean;
-var
-  Modules: TStringList;
-  PeImage: TJclPeBorImage;
-  I, C: Integer;
-  H: HMODULE;
-begin
-  Result := ExceptionsHooked and not IsLibrary;
-  if Result then
-  begin
-    ModulesList := nil;
-    C := Length(ModulesList);
-    PeImage := nil;
-    Modules := TStringList.Create;
-    try
-      PeImage := TJclPeBorImage.Create(True);
-      if LoadedModulesList(Modules, GetCurrentProcessId, True) then
-        for I := 0 to Modules.Count - 1 do
-        begin
-          H := HMODULE(Modules.Objects[I]);
-          if H <> HInstance then
-          begin
-            PeImage.AttachLoadedModule(H);
-            if PeImage.StatusOK and PeImage.IsBorlandImage and (JclHookExceptionsInModule(H) or ReturnBorlandModules) then
-            begin
-              SetLength(ModulesList, C + 1);
-              ModulesList[C] := H;
-              Inc(C);
-            end;
-          end;
-        end;
-    finally
-      Modules.Free;
-      PeImage.Free;
-    end;
-  end;
-end;
-
-//==================================================================================================
-// Exceptions hooking in libraries (hooking from libraries option)
-//==================================================================================================
-
-{$IFDEF JclHookExceptUseMappingVersion}
-
-function JclInitializeLibrariesHookExcept(DynamicLinkingOnly: Boolean): Boolean;
-begin
-  if not Assigned(HookExceptSharedData) and
-    ((not IsLibrary) or (not DynamicLinkingOnly) or TJclHookExceptSharedData.Exists) then
-    HookExceptSharedData := TJclHookExceptSharedData.Create;
-  Result := Assigned(HookExceptSharedData);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
-begin
-  Result := Assigned(HookExceptSharedData);
-  if Result then
-    HookExceptSharedData.List(ModulesList);
-end;
-
-//==================================================================================================
-// TJclHookExceptSharedData
-//==================================================================================================
-
-procedure TJclHookExceptSharedData.Close;
-begin
-  if FMutexHandle <> 0 then
-    CloseHandle(FMutexHandle);
-  if FData <> nil then
-    UnmapViewOfFile(FData);
-  if FMappingHandle <> 0 then
-    CloseHandle(FMappingHandle);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclHookExceptSharedData.Create;
-begin
-  Open;
-  if IsLibrary then
-    HookModule
-  else
-    InitializeHook;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclHookExceptSharedData.Destroy;
-begin
-  if IsLibrary then
-    UnhookModule
-  else
-    UninitializeHook;
-  Close;
-  inherited;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-class function TJclHookExceptSharedData.Exists: Boolean;
-var
-  H: THandle;
-  MutexName: string;
-begin
-  MutexName := Format(MutexNameFormat, [GetCurrentProcessId]);
-  H := OpenMutex(MUTEX_ALL_ACCESS, False, PChar(MutexName));
-  Result := H <> 0;
-  if Result then
-    CloseHandle(H);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclHookExceptSharedData.FindModuleIndex(Module: HMODULE; var FreeSlotIndex: Integer): Integer;
-var
-  I: Integer;
-begin
-  Result := -1;
-  FreeSlotIndex := -1;
-  with FData^ do
-    for I := Low(HookedModules) to High(HookedModules) do
-      if HookedModules[I] = Module then
-      begin
-        Result := I;
-        Break;
-      end
-      else
-      if (HookedModules[I] = 0) and (FreeSlotIndex = -1) then
-        FreeSlotIndex := I;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclHookExceptSharedData.HookModule;
-var
-  I: Integer;
-  Module: HMODULE;
-begin
-  WaitForSingleObject(FMutexHandle, INFINITE);
-  try
-    Module := HInstance;
-    if FindModuleIndex(Module, I) = -1 then
-    begin
-      FData^.HookedModules[I] := Module;
-      if FData^.HookedRaiseExceptionAddr <> nil then
-        with TJclPeMapImgHooks do
-          ReplaceImport(SystemBase, kernel32, RaiseExceptionAddress, FData^.HookedRaiseExceptionAddr);
-    end;
-  finally
-    ReleaseMutex(FMutexHandle);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclHookExceptSharedData.InitializeHook;
-var
-  I: Integer;
-begin
-  WaitForSingleObject(FMutexHandle, INFINITE);
-  try
-    with FData^ do
-    begin
-      HookedRaiseExceptionAddr := @HookedRaiseException;
-      for I := Low(HookedModules) to High(HookedModules) do
-        if HookedModules[I] <> 0 then
-          JclHookExceptionsInModule(HookedModules[I]);
-    end;
-  finally
-    ReleaseMutex(FMutexHandle);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclHookExceptSharedData.List(var ModulesList: TJclModuleArray);
-var
-  I, C: Integer;
-begin
-  WaitForSingleObject(FMutexHandle, INFINITE);
-  try
-    C := 0;
-    ModulesList := nil;
-    with FData^ do
-    begin
-      for I := Low(HookedModules) to High(HookedModules) do
-        if HookedModules[I] <> 0 then
-        begin
-          SetLength(ModulesList, C + 1);
-          ModulesList[C] := HookedModules[I];
-          Inc(C);
-        end;
-    end;
-  finally
-    ReleaseMutex(FMutexHandle);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclHookExceptSharedData.Open;
-var
-  MappingName, MutexName: string;
-begin
-  MappingName := Format(MappingNameFormat, [GetCurrentProcessId]);
-  MutexName := Format(MutexNameFormat, [GetCurrentProcessId]);
-  FMutexHandle := CreateMutex(nil, False, PChar(MutexName));
-  if FMutexHandle = 0 then
-    RaiseLastOSError;
-  FMappingHandle := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
-    SizeOf(TJclHookExceptData), PChar(MappingName));
-  if FMappingHandle = 0 then
-    RaiseLastOSError;
-  FData := MapViewOfFile(FMappingHandle, FILE_MAP_WRITE, 0, 0, 0);
-  if FData = nil then
-    RaiseLastOSError;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclHookExceptSharedData.UnhookModule;
-var
-  I, Slot: Integer;
-  Module: HMODULE;
-begin
-  WaitForSingleObject(FMutexHandle, INFINITE);
-  try
-    Module := HInstance;
-    I := FindModuleIndex(Module, Slot);
-    if I <> -1 then
-    begin
-      FData^.HookedModules[I] := 0;
-    end;
-  finally
-    ReleaseMutex(FMutexHandle);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclHookExceptSharedData.UninitializeHook;
-begin
-  WaitForSingleObject(FMutexHandle, INFINITE);
-  try
-    FData^.HookedRaiseExceptionAddr := nil;
-  finally
-    ReleaseMutex(FMutexHandle);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-{$ELSE JclHookExceptUseMappingVersion}
-
-//--------------------------------------------------------------------------------------------------
 
 procedure JclHookExceptDebugHookProc(Module: HMODULE; Hook: Boolean); stdcall;
 begin
@@ -762,8 +462,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function JclInitializeLibrariesHookExcept(DynamicLinkingOnly: Boolean): Boolean;
+function JclInitializeLibrariesHookExcept: Boolean;
 begin
+  {$IFDEF HOOK_DLL_EXCEPTIONS}
   if IsLibrary then
     Result := CallExportedHookExceptProc(SystemTObjectInstance, True)
   else
@@ -772,21 +473,29 @@ begin
       HookExceptModuleList := TJclHookExceptModuleList.Create;
     Result := True;
   end;
+  {$ELSE HOOK_DLL_EXCEPTIONS}
+  Result := True;
+  {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function JclHookedExceptModulesList(var ModulesList: TJclModuleArray): Boolean;
 begin
+  {$IFDEF HOOK_DLL_EXCEPTIONS}
   Result := Assigned(HookExceptModuleList);
   if Result then
     HookExceptModuleList.List(ModulesList);
+  {$ELSE HOOK_DLL_EXCEPTIONS}
+  Result := False;
+  {$ENDIF HOOK_DLL_EXCEPTIONS}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure FinalizeLibrariesHookExcept;
 begin
+  FreeAndNil(HookExceptModuleList);
   if IsLibrary then
     CallExportedHookExceptProc(SystemTObjectInstance, False);
 end;
@@ -833,6 +542,7 @@ procedure TJclHookExceptModuleList.HookStaticModules;
 var
   ModulesList: TStringList;
   I: Integer;
+  Module: HMODULE;
 begin
   ModulesList := nil;
   with FModules.LockList do
@@ -840,8 +550,11 @@ begin
     ModulesList := TStringList.Create;
     if LoadedModulesList(ModulesList, GetCurrentProcessId, True) then
       for I := 0 to ModulesList.Count - 1 do
-        if GetProcAddress(HMODULE(ModulesList.Objects[I]), JclHookExceptDebugHookName) <> nil then
-          HookModule(HMODULE(ModulesList.Objects[I]));
+      begin
+        Module := HMODULE(ModulesList.Objects[I]);
+        if GetProcAddress(Module, JclHookExceptDebugHookName) <> nil then
+          HookModule(Module);
+      end;    
   finally
     FModules.UnlockList;
     ModulesList.Free;
@@ -886,20 +599,15 @@ begin
   end;
 end;
 
-{$ENDIF JclHookExceptUseMappingVersion}
-
 //--------------------------------------------------------------------------------------------------
 
 initialization
   Notifiers := TThreadList.Create;
-  
+
 finalization
-  {$IFDEF JclHookExceptUseMappingVersion}
-  FreeAndNil(HookExceptSharedData);
-  {$ELSE JclHookExceptUseMappingVersion}
-  FreeAndNil(HookExceptModuleList);
+  {$IFDEF HOOK_DLL_EXCEPTIONS}
   FinalizeLibrariesHookExcept;
-  {$ENDIF JclHookExceptUseMappingVersion}
+  {$ENDIF HOOK_DLL_EXCEPTIONS}
   FreeNotifiers;
 
 end.
