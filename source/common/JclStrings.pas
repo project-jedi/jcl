@@ -3013,7 +3013,8 @@ var
   L: Integer;
 begin
   PosStart := Pos(Start, S);
-  PosEnd := Pos(Stop, S);
+  PosEnd := StrSearch(Stop, S, PosStart+1);  // PosEnd has to be after PosStart.
+
   if (PosStart > 0) and (PosEnd > PosStart) then
   begin
     L := PosEnd - PosStart;
@@ -3964,6 +3965,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.11  2004/04/08 19:40:26  mthoma
+// Fixed 0000947, 0001060 (StrBetween with same start/end symbol problem). Added a note to the docs.
+//
 // Revision 1.10  2004/04/06 04:31:32  peterjhaas
 // Add functions for String <--> MultiString conversion
 //
