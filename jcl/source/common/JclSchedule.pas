@@ -1523,7 +1523,7 @@ var
 begin
   Result := NullStamp;
   UseFrom := From;
-  if From.Date = 0 then
+  if (From.Date = 0) or (From.Date < StartDate.Date) then
   begin
     UseFrom := StartDate;
     Dec(UseFrom.Time);
