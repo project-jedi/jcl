@@ -59,7 +59,7 @@ unit JclEDI_ANSIX12;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, 
   JclEDI;
 
 //--------------------------------------------------------------------------------------------------
@@ -72,6 +72,7 @@ const
   FGTSegmentId = 'GE';  // Functional Group Trailer Segment Id
   TSHSegmentId = 'ST';  // Transaction Set Header Segment Id
   TSTSegmentId = 'SE';  // Transaction Set Trailer Segment Id
+  TA1SegmentId = 'TA1'; // Interchange Acknowledgment Segment
 
 //--------------------------------------------------------------------------------------------------
 //  Reserved Data Field Names (TStringList Values)
@@ -546,6 +547,7 @@ type
   private
     FISASegment: TEDIInterchangeControlSegment;
     FIEASegment: TEDIInterchangeControlSegment;
+    FTA1Segments: TEDIObjectList;
     function GetFunctionalGroup(Index: Integer): TEDIFunctionalGroup;
     procedure SetFunctionalGroup(Index: Integer; FunctionalGroup: TEDIFunctionalGroup);
     {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
@@ -591,6 +593,7 @@ type
   published
     property SegmentISA: TEDIInterchangeControlSegment read FISASegment write SetISASegment;
     property SegmentIEA: TEDIInterchangeControlSegment read FIEASegment write SetIEASegment;
+    property TA1Segments: TEDIObjectList read FTA1Segments;
     property FunctionalGroupCount: Integer read GetCount;
   end;
 
@@ -1701,12 +1704,15 @@ begin
     inherited Create(nil, FunctionalGroupCount);
   FEDIDOT := ediInterchangeControl;
   InternalCreateHeaderTrailerSegments;
+  FTA1Segments := TEDIObjectList.Create;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TEDIInterchangeControl.Destroy;
 begin
+  FTA1Segments.Clear;
+  FTA1Segments.Free;
   FISASegment.Free;
   FIEASegment.Free;
   FreeAndNil(FDelimiters);
@@ -1801,7 +1807,11 @@ end;
 procedure TEDIInterchangeControl.Disassemble;
 var
   I, StartPos, SearchResult: Integer;
+  ProcessTA1: Boolean;
+  TA1Segment: TEDIInterchangeControlSegment;
 begin
+  ProcessTA1 := False;
+  FTA1Segments.Clear;
   FISASegment.Data := '';
   FISASegment.DeleteElements;
   FIEASegment.Data := '';
@@ -1828,39 +1838,73 @@ begin
     raise EJclEDIError.CreateResRec(@RsEDIError015);
   // Search for Functional Group Header
   SearchResult := StrSearch(FDelimiters.SD + FGHSegmentId + FDelimiters.ED, FData, StartPos);
-  if SearchResult <= 0 then
+  // Check for TA1 Segment
+  I := StrSearch(FDelimiters.SD + TA1SegmentId + FDelimiters.ED, FData, StartPos);
+  if ((I < SearchResult) or ((I > SearchResult) and (SearchResult = 0))) and (I <> 0) then
+  begin
+    ProcessTA1 := True;
+    SearchResult := I;
+  end;
+  if (SearchResult <= 0) and (not ProcessTA1) then
     raise EJclEDIError.CreateResRec(@RsEDIError022);
   // Set next start positon
   StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
   // Continue
   while ((StartPos + Length(FGHSegmentId)) < Length(FData)) and (SearchResult > 0) do
   begin
-    // Search for Functional Group Trailer
-    SearchResult := StrSearch(FDelimiters.SD + FGTSegmentId + FDelimiters.ED, FData, StartPos);
-    if SearchResult > 0 then
+    if not ProcessTA1 then
     begin
-      // Set next start positon
-      SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
-      // Search for end of Functional Group Trailer Segment Terminator
-      SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
+      // Search for Functional Group Trailer
+      SearchResult := StrSearch(FDelimiters.SD + FGTSegmentId + FDelimiters.ED, FData, StartPos);
       if SearchResult > 0 then
       begin
-        I := AddFunctionalGroup;
-        FEDIDataObjects[I].Data :=
-          Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
-        FEDIDataObjects[I].Disassemble;
+        // Set next start positon
+        SearchResult := SearchResult + FDelimiters.SDLen; // Move past the delimiter
+        // Search for end of Functional Group Trailer Segment Terminator
+        SearchResult := StrSearch(FDelimiters.SD, FData, SearchResult);
+        if SearchResult > 0 then
+        begin
+          I := AddFunctionalGroup;
+          FEDIDataObjects[I].Data :=
+            Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+          FEDIDataObjects[I].Disassemble;
+        end
+        else
+          raise EJclEDIError.CreateResRec(@RsEDIError023);
       end
       else
-        raise EJclEDIError.CreateResRec(@RsEDIError023);
+        raise EJclEDIError.CreateResRec(@RsEDIError024);
+      // Set next start positon
+      StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
+      // Verify the next record is a Functional Group Header
+      if (TA1SegmentId + FDelimiters.ED) =
+        Copy(FData, StartPos, (Length(TA1SegmentId) + FDelimiters.EDLen)) then
+        ProcessTA1 := True
+      else if(FGHSegmentId + FDelimiters.ED) <>
+        Copy(FData, StartPos, (Length(FGHSegmentId) + FDelimiters.EDLen)) then
+        Break;
     end
-    else
-      raise EJclEDIError.CreateResRec(@RsEDIError024);
-    // Set next start positon
-    StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
-    // Verify the next record is a Functional Group Header
-    if (FGHSegmentId + FDelimiters.ED) <>
-      Copy(FData, StartPos, (Length(FGHSegmentId) + FDelimiters.EDLen)) then
-      Break;
+    else //Process TA1 Segment
+    begin
+      ProcessTA1 := False;
+      // Check next segment
+      SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
+      // Debug
+      //ShowMessage('"' + Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen)) + '"');
+      TA1Segment := TEDIInterchangeControlSegment.Create(Self);
+      FTA1Segments.Add(TA1Segment);
+      TA1Segment.Data := Copy(FData, StartPos, ((SearchResult - StartPos) + FDelimiters.SDLen));
+      TA1Segment.Disassemble;
+      // Set next start positon
+      StartPos := SearchResult + FDelimiters.SDLen; // Move past the delimiter
+      // Check next segment
+      if (TA1SegmentId + FDelimiters.ED) =
+        Copy(FData, StartPos, (Length(TA1SegmentId) + FDelimiters.EDLen)) then
+        ProcessTA1 := True
+      else if (FGHSegmentId + FDelimiters.ED) <>
+        Copy(FData, StartPos, (Length(FGHSegmentId) + FDelimiters.EDLen)) then
+        Break;
+    end;
   end;
   // Verify the next record is a Interchange Control Trailer
   if (ICTSegmentId + FDelimiters.ED) =
@@ -2322,6 +2366,8 @@ begin
   SearchResult := 1;
   FDelimiters.ED := Copy(FData, StartPos + Length(ICHSegmentId), 1);
   SearchResult := StrSearch(FGHSegmentId + FDelimiters.ED, FData, SearchResult);
+  if SearchResult = 0 then
+    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1);
   FDelimiters.SS := Copy(FData, SearchResult - 2, 1);
   FDelimiters.SD := Copy(FData, SearchResult - 1, 1);
 end;
