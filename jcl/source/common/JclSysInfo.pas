@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: December 14, 2003                                                                      }
+{ Last modified: December 29, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -150,13 +150,26 @@ function GetBIOSDate: TDateTime;
 type
   TJclTerminateAppResult = (taError, taClean, taKill);
 
+{$IFDEF FPC}
+  {$IFDEF MSWINDOWS}
+    {$DEFINE WinFpc}
+  {$ENDIF}
+{$ENDIF}
+
+{$IFNDEF WinFpc}
 function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
+{$ENDIF}
+
 {$IFDEF MSWINDOWS}
+{$IFNDEF FPC}
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean = False): Boolean;
+{$ENDIF}
 function GetTasksList(const List: TStrings): Boolean;
 
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
+{$IFNDEF FPC}
 function IsSystemModule(const Module: HMODULE): Boolean;
+{$ENDIF}
 
 function IsMainAppWindow(Wnd: HWND): Boolean;
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
@@ -166,13 +179,17 @@ function GetWindowCaption(Wnd: HWND): string;
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 
+{$IFNDEF FPC}
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 function GetProcessNameFromWnd(Wnd: HWND): string;
 function GetProcessNameFromPid(PID: DWORD): string;
 function GetMainAppWndFromPid(PID: DWORD): HWND;
+{$ENDIF}
 
 function GetShellProcessName: string;
+{$IFNDEF FPC}
 function GetShellProcessHandle: THandle;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 // Version Information
@@ -613,10 +630,14 @@ uses
   JclRegistry, JclWin32,
   {$IFNDEF FPC}
   TLHelp32, PsApi,
-  JclShell,
+  JclShell, 
   {$ENDIF FPC}
   {$ENDIF MSWINDOWS}
   JclBase, Jcl8087, JclStrings, JclFileUtils, JclIniFiles;
+
+{$IFDEF FPC}
+  {$INCLUDE JclSysInfo.fpc}
+{$ENDIF}
 
 //==================================================================================================
 // Environment
@@ -1525,7 +1546,10 @@ begin
   end;
 end;
 {$ENDIF UNIX}
+
 {$IFDEF MSWINDOWS}
+{$IFNDEF FPC}
+
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
   function ProcessFileName(PID: DWORD): string;
@@ -1751,6 +1775,8 @@ begin
     Result := EnumModulesTH;
 end;
 
+{$ENDIF not FPC}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetTasksList(const List: TStrings): Boolean;
@@ -1783,6 +1809,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
+
 function IsSystemModule(const Module: HMODULE): Boolean;
 var
   CurModule: PLibModule;
@@ -1802,6 +1830,8 @@ begin
     end;
   end;
 end;
+
+{$ENDIF not FPC}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1936,6 +1966,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
+
 function GetProcessNameFromWnd(Wnd: HWND): string;
 var
   List: TStringList;
@@ -2008,6 +2040,8 @@ begin
   end;
 end;
 
+{$ENDIF not FPC}
+
 //--------------------------------------------------------------------------------------------------
 
 function GetMainAppWndFromPid(PID: DWORD): HWND;
@@ -2062,6 +2096,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC}
+
 function GetShellProcessHandle: THandle;
 var
   Pid: Longword;
@@ -2071,6 +2107,8 @@ begin
   if Result = 0 then
     RaiseLastOSError;
 end;
+
+{$ENDIF not FPC}
 
 //==================================================================================================
 // Version Information

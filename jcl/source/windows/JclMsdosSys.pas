@@ -18,7 +18,7 @@
 {                                                                                                  }
 { Contributor(s): Robert Rossmair (IJclMsdosSys interface)                                         }
 {                                                                                                  }
-{ Last Modified: 2002-01-01                                                                        }
+{ Last Modified: 2003-12-29                                                                        }
 {                                                                                                  }
 { You may retrieve the latest version of this file at the Project JEDI's Code Library home page,   }
 { located at http://sourceforge.net/projects/jcl/                                                  }
@@ -28,6 +28,8 @@
 {**************************************************************************************************}
 
 unit JclMsdosSys;
+
+{$I jcl.inc}
 
 interface
 

@@ -21,7 +21,7 @@
 { privileges.                                                                                      }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: December 27, 2003                                                                 }
+{ Last modified: December 29, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -69,7 +69,9 @@ function GetUserObjectName(hUserObject: THandle): string;
 
 procedure LookupAccountBySid(Sid: PSID; var Name, Domain: string);
 procedure QueryTokenInformation(Token: THandle; InformationClass: TTokenInformationClass; var Buffer: Pointer);
-function GetInteractiveUserName: string;  
+{$IFNDEF FPC}
+function GetInteractiveUserName: string;
+{$ENDIF}  
 
 implementation
 
@@ -391,6 +393,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFNDEF FPC} // JclSysInfo.GetShellProcessHandle not available
+
 function GetInteractiveUserName: string;
 var
   Handle: THandle;
@@ -416,5 +420,7 @@ begin
     CloseHandle(Handle);
   end;
 end;
+
+{$ENDIF not FPC}
 
 end.

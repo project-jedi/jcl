@@ -22,7 +22,7 @@
 { through shell interfaces, shortcut's and program execution.                                      }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: December 27, 2003                                                                 }
+{ Last modified: December 29, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -179,7 +179,11 @@ function ShellFindExecutable(const FileName, DefaultDir: string): string;
 implementation
 
 uses
-  ActiveX, CommCtrl, ComObj, Messages, ShellApi,
+  ActiveX,
+  {$IFNDEF FPC}
+  CommCtrl,
+  {$ENDIF FPC}
+  ComObj, Messages, ShellApi,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 const
@@ -217,13 +221,21 @@ begin
   FillChar(FileOp, SizeOf(FileOp), #0);
   with FileOp do
   begin
+    {$IFDEF FPC}
+    hwnd := Parent;
+    {$ELSE}
     Wnd := Parent;
+    {$ENDIF}
     wFunc := FO_DELETE;
     Source := Files + #0#0;
     pFrom := PChar(Source);
     fFlags := DeleteOptionsToCardinal(Options);
   end;
+  {$IFDEF FPC}
+  Result := SHFileOperation(@FileOp) = 0;
+  {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -258,7 +270,11 @@ begin
   FillChar(FileOp, SizeOf(FileOp), #0);
   with FileOp do
   begin
+    {$IFDEF FPC}
+    hwnd := GetDesktopWindow;
+    {$ELSE}
     Wnd := GetDesktopWindow;
+    {$ENDIF}
     wFunc := FO_RENAME;
     Source := Src + #0#0;
     Destination := Dest + #0#0;
@@ -266,7 +282,11 @@ begin
     pTo := PChar(Destination);
     fFlags := RenameOptionsToCardinal(Options);
   end;
+  {$IFDEF FPC}
+  Result := SHFileOperation(@FileOp) = 0;
+  {$ELSE}
   Result := SHFileOperation(FileOp) = 0;
+  {$ENDIF}
 end;
 
 //--------------------------------------------------------------------------------------------------
