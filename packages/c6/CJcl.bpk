@@ -39,15 +39,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="indy.lib dbxcds.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib 
-      inetdbxpress.lib inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib 
-      visualdbclx.lib teeqr.lib dss.lib tee.lib teedb.lib teeui.lib qrpt.lib 
-      bdecds.lib cds.lib ibxpress.lib vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
-    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
-      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dbxcds.lib 
-      indy.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\source\common;..\..\source\windows"/>
