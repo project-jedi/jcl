@@ -23,7 +23,7 @@
 { structures and name unmangling.                                                                  }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: April 24, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -846,6 +846,9 @@ function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp: DWORD = 0;
   MaxNewSize: DWORD = 0): TJclRebaseImageInfo;
 
+function PeUpdateLinkerTimeStamp(const FileName: string; const Time: TDateTime): Boolean;
+function PeReadLinkerTimeStamp(const FileName: string): TDateTime;
+
 { Image Checksum }
 
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
@@ -1039,6 +1042,10 @@ const
 
   DebugSectionName    = '.debug';
   ReadOnlySectionName = '.rdata';
+
+  {$IFNDEF COMPILER7_UP}
+  UnixDateDelta = 25569;  { TODO : Move to more appropriate unit }
+  {$ENDIF COMPILER7_UP}
 
 //==================================================================================================
 // Helper routines
@@ -3964,10 +3971,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.StampToDateTime(TimeDateStamp: DWORD): TDateTime;
-const
-  UnixDateDelta = 25569;
 begin
-   Result := TimeDateStamp / SecsPerDay + UnixDateDelta
+  Result := TimeDateStamp / SecsPerDay + UnixDateDelta
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -4703,6 +4708,45 @@ begin
     NewImageBase := NewBase;
     Win32Check(ReBaseImage(PChar(ImageName), nil, True, False, False, MaxNewSize,
       OldImageSize, OldImageBase, NewImageSize, NewImageBase, TimeStamp));
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PeUpdateLinkerTimeStamp(const FileName: string; const Time: TDateTime): Boolean;
+var
+  Mapping: TJclFileMapping;
+  View: TJclFileMappingView;
+  Headers: PImageNtHeaders;
+begin
+  Mapping := TJclFileMapping.Create(FileName, fmOpenReadWrite, '', PAGE_READWRITE, 0, nil);
+  try
+    View := TJclFileMappingView.Create(Mapping, FILE_MAP_WRITE, 0, 0);
+    Headers := PeMapImgNtHeaders(View.Memory);
+    Result := (Headers <> nil);
+    if Result then
+      Headers^.FileHeader.TimeDateStamp := Round((Time - UnixDateDelta) * SecsPerDay);
+  finally
+    Mapping.Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function PeReadLinkerTimeStamp(const FileName: string): TDateTime;
+var
+  Mapping: TJclFileMappingStream;
+  Headers: PImageNtHeaders;
+begin
+  Mapping := TJclFileMappingStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    Headers := PeMapImgNtHeaders(Mapping.Memory);
+    if Headers <> nil then
+      Result := Headers^.FileHeader.TimeDateStamp / SecsPerDay + UnixDateDelta
+    else
+      Result := -1;
+  finally
+    Mapping.Free;
   end;
 end;
 
