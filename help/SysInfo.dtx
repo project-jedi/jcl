@@ -309,6 +309,16 @@ Description:
 Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
+@@PageSize
+<GROUP SystemInformationRoutines.Memory>
+Summary:
+  Holds the value of the system's virtual memory page size
+Description:
+  Specifies the page size and the granularity of page protection and commitment.
+  This is the page size used by the VirtualAlloc function.
+Platform:
+  Windows
+--------------------------------------------------------------------------------
 @@GetCommonAppdataFolder
 <GROUP SystemInformationRoutines.CommonFolders>
 Summary:
@@ -544,8 +554,8 @@ Result:
   or an empty string if the OS is not recognized.
 See also:
   GetWindowsVersionString, GetWindowsServicePackVersionString
-Autor:
-  Robert Rossmair
+Quick Info:
+  Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetWindowsVersionString
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -558,7 +568,7 @@ Result:
 See also:
   GetWindowsVersion
 Quick info:
-  Autor: Jean-Fabien Connault
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetWindowsServicePackVersion
 <GROUP SystemInformationRoutines.VersionInformation>
@@ -572,7 +582,7 @@ Result:
 See Also:
   GetWindowsVersion, GetWindowsServicePackVersionString
 Quick Info:
-  Author: Jean-Fabien Connault
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@GetWindowsServicePackVersionString
 Summary:
@@ -585,7 +595,7 @@ Result:
 See Also:
   GetWindowsServicePackVersion, GetWindowsVersionString
 Quick Info:
-  Author: Jean-Fabien Connault
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@TestFDIVInstruction
 <GROUP SystemInformationRoutines.Hardware>
@@ -1393,7 +1403,7 @@ Result:
 See also:
   NtProductType
 Quick info:
-  Autor: Jean-Fabien Connault
+  Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
 @@CreateEnvironmentBlock
 <GROUP SystemInformationRoutines.Environment>
@@ -2736,62 +2746,37 @@ Quick info:
 @@GetOpenGLVersion
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns the current OpenGL library version string
-Description:
-  Takes a WinControl against which to perform the tests, and then returns
-  the Version String information provided by the current OpenGL library.
-Result:
-  Surfaces the information provided by the OpenGL library (if any) relating to
-  the version and vendor of the OpenGL library in the parameters passed.
-Author:
-  Scott Price
---------------------------------------------------------------------------------
-@@GetOpenGLVersion
-<GROUP SystemInformationRoutines.VersionInformation>
-Summary:
   Returns the current OpenGL library version string (for window rendering)
 Description:
   Takes a WinControl against which to perform the tests, and then returns
   the information provided by the OpenGL library (if any) relating to
   the version and vendor in the parameters passed.
 Parameters:
-  Win: HWND - Handle of the window to use for rendering
-  Version: AnsiString - the string to receive the library version information
-  Vendor: AnsiString - the string to receive the library vendor information
+  Win - Handle of the window to use for rendering
+  \Version - the string to receive the library version information
+  Vendor - the string to receive the library vendor information
 Result:
   Surfaces the information provided by the OpenGL library (if any) relating to
   the version and vendor of the OpenGL library in the parameters passed.
-Author:
-  Scott Price
-Contributor:
-  Peter J. Haas
+Quick Info:
+  Donator: Scott Price
+  Contributor: Peter J. Haas
 --------------------------------------------------------------------------------
 @@GetOpenGLVersionBitmapRendering
 <GROUP SystemInformationRoutines.VersionInformation>
 Summary:
-  Returns the current OpenGL library version string (for bitmap rendering)
+  Returns the current OpenGL library version string
 Description:
-  Creates a bitmap against which to perform the tests, and then returns the
-  information provided by the OpenGL library (if any) relating to the version
-  and vendor in the parameters passed.
+  Takes a WinControl against which to perform the tests, and then returns
+  the Version String information provided by the current OpenGL library.
 Parameters:
-  Version: AnsiString - the string to receive the library version information
-  Vendor: AnsiString - the string to receive the library vendor information
+  Win - Handle of the window to use for rendering
+  \Version - the string to receive the library version information
+  Vendor - the string to receive the library vendor information
 Result:
-  True, if successful, False otherwise.
-Author:
-  Scott Price
-Contributor:
-  Peter J. Haas
---------------------------------------------------------------------------------
-@@PageSize
-<GROUP SystemInformationRoutines.Memory>
-Summary:
-  Holds the value of the system's virtual memory page size
-Description:
-  Specifies the page size and the granularity of page protection and commitment.
-  This is the page size used by the VirtualAlloc function.
-Platform:
-  Windows
+  Surfaces the information provided by the OpenGL library (if any) relating to
+  the version and vendor of the OpenGL library in the parameters passed.
+Quick Info:
+  Donator: Peter J. Haas
 --------------------------------------------------------------------------------
 

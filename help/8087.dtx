@@ -105,7 +105,7 @@ Description:
   the error situation. Note that by default exceptions previously masked are cleared if they
   do not appear in the Exception parameter.
 Parameters:
-  Exceptions \- Set of exceptions to mask.
+  \Exceptions - Set of exceptions to mask.
   ClearBefore - If set to True the routine clears pending exceptions, if any, before modifying the exception mask. This is the default behavior.  If set to False the routine does not clear pending exceptions.
 Result:
   The result is the exception mask before it was modified.
@@ -128,10 +128,10 @@ Description:
   and you call Mask8087Exceptions([emZeroDivide]), then upon return the exception
   mask equals [emInvalidOp, emDenormalizedOperand, emZeroDivide].
 Parameters:
-  Exceptions \- Set of exceptions to mask, in addition to the current set of masked exceptions.
+  \Exceptions - Set of exceptions to mask, in addition to the current set of masked exceptions.
 Result:
   The set of exceptions that were masked upon routine entry. Upon exit the set of
-  masked exceptions equals Result + Exceptions.
+  masked exceptions equals Result plus Exceptions.
 See also:
   T8087Exceptions
   Unmask8087Exceptions
@@ -150,11 +150,11 @@ Description:
   unchanged, unlike SetMasked8087Exceptions which modifies the entire
   mask.
 Parameters:
-  Exceptions \- The set of exceptions to unmask.
+  \Exceptions - The set of exceptions to unmask.
   ClearBefore - If set to True any pending exceptions are cleared before the routine returns, if set to False pending exceptions are not cleared.
 Result:
   The set of exceptions that were masked upon routine entry. Upon exit the set of
-  masked exceptions equals Result - Exceptions.
+  masked exceptions equals Result minus Exceptions.
 See also:
   T8087Exceptions
   Mask8087Exceptions
