@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January 21, 2001                                              }
+{ Last modified: January 27, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -2003,296 +2003,296 @@ var
   TimesToExecute, CurrentLoop: Byte;
 begin
   asm
-    MOV     [CPUInfo.HasInstruction], 0
-    MOV     [CPUInfo.HasExtendedInfo], 0
-    MOV     [CPUInfo.HasCacheInfo], 0
-    MOV     [CPUInfo.PType], 0
-    MOV     [CPUInfo.Model], 0
-    MOV     [CPUInfo.Stepping], 0
-    MOV     [CPUInfo.Features], 0
-    MOV     [CPUInfo.FrequencyInfo.RawFreq], 0
-    MOV     [CPUInfo.FrequencyInfo.NormFreq], 0
-    MOV     [CPUInfo.FrequencyInfo.InCycles], 0
-    MOV     [CPUInfo.FrequencyInfo.ExTicks], 0
+        MOV     [CPUInfo.HasInstruction], 0
+        MOV     [CPUInfo.HasExtendedInfo], 0
+        MOV     [CPUInfo.HasCacheInfo], 0
+        MOV     [CPUInfo.PType], 0
+        MOV     [CPUInfo.Model], 0
+        MOV     [CPUInfo.Stepping], 0
+        MOV     [CPUInfo.Features], 0
+        MOV     [CPUInfo.FrequencyInfo.RawFreq], 0
+        MOV     [CPUInfo.FrequencyInfo.NormFreq], 0
+        MOV     [CPUInfo.FrequencyInfo.InCycles], 0
+        MOV     [CPUInfo.FrequencyInfo.ExTicks], 0
 
-    PUSH    EAX
-    PUSH    EBP
-    PUSH    EBX
-    PUSH    ECX
-    PUSH    EDI
-    PUSH    EDX
-    PUSH    ESI
+        PUSH    EAX
+        PUSH    EBP
+        PUSH    EBX
+        PUSH    ECX
+        PUSH    EDI
+        PUSH    EDX
+        PUSH    ESI
 
-  @@Check_80486:
-    MOV     [CPUInfo.Family], 4
-    PUSHFD
-    POP     EAX
-    MOV     ECX, EAX
-    XOR     EAX, 200000H
-    PUSH    EAX
-    POPFD
-    PUSHFD
-    POP     EAX
-    XOR     EAX, ECX
-    JE      @@DONE_CPU_TYPE
+  @@Check80486:
+        MOV     [CPUInfo.Family], 4
+        PUSHFD
+        POP     EAX
+        MOV     ECX, EAX
+        XOR     EAX, 200000H
+        PUSH    EAX
+        POPFD
+        PUSHFD
+        POP     EAX
+        XOR     EAX, ECX
+        JE      @@DoneCpuType
 
-  @@Has_CPUID_Instruction:
-    MOV     [CPUInfo.HasInstruction], 1
-    MOV     EAX, 0
-    DB      0FH
-    DB      0A2H
+  @@HasCPUIDInstruction:
+        MOV     [CPUInfo.HasInstruction], 1
+        MOV     EAX, 0
+        DB      0FH
+        DB      0A2H
 
-    MOV     HiVal, EAX
-    MOV     DWORD PTR [CPUInfo.VendorIDString], EBX
-    MOV     DWORD PTR [CPUInfo.VendorIDString + 4], EDX
-    MOV     DWORD PTR [CPUInfo.VendorIDString + 8], ECX
+        MOV     HiVal, EAX
+        MOV     DWORD PTR [CPUInfo.VendorIDString], EBX
+        MOV     DWORD PTR [CPUInfo.VendorIDString + 4], EDX
+        MOV     DWORD PTR [CPUInfo.VendorIDString + 8], ECX
 
-  @@CHECK_INTEL:
-    CMP     DWORD PTR [CPUInfo.VendorIDString], 'uneG'
-    JNE     @@CHECK_AMD
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'Ieni'
-    JNE     @@CHECK_AMD
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'letn'
-    JNE     @@CHECK_AMD
-    MOV     [CPUInfo.CpuType], CPU_TYPE_INTEL
-    JMP     @@Standard_Functions
+  @@CheckIntel:
+        CMP     DWORD PTR [CPUInfo.VendorIDString], 'uneG'
+        JNE     @@CheckAMD
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'Ieni'
+        JNE     @@CheckAMD
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'letn'
+        JNE     @@CheckAMD
+        MOV     [CPUInfo.CpuType], CPU_TYPE_INTEL
+        JMP     @@StandardFunctions
 
-  @@CHECK_AMD:
-    CMP     DWORD PTR [CPUInfo.VendorIDString], 'htuA'
-    JNE     @@CHECK_CYRIX
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'itne'
-    JNE     @@CHECK_CYRIX
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'DMAc'
-    JNE     @@CHECK_CYRIX
-    MOV     [CPUInfo.CpuType], CPU_TYPE_AMD
-    JMP     @@CHECK_AMD_EXTENDED
+  @@CheckAMD:
+        CMP     DWORD PTR [CPUInfo.VendorIDString], 'htuA'
+        JNE     @@CheckCitrix
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'itne'
+        JNE     @@CheckCitrix
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'DMAc'
+        JNE     @@CheckCitrix
+        MOV     [CPUInfo.CpuType], CPU_TYPE_AMD
+        JMP     @@CheckAMDExtended
 
-  @@CHECK_CYRIX:
-    CMP     DWORD PTR [CPUInfo.VendorIDString], 'iryC'
-    JNE     @@Standard_Functions
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'snIx'
-    JNE     @@Standard_Functions
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'daet'
-    JNE     @@Standard_Functions
-    MOV     [CPUInfo.CpuType], CPU_TYPE_CYRIX
-    JMP     @@CHECK_CYRIX_EXTENDED
+  @@CheckCitrix:
+        CMP     DWORD PTR [CPUInfo.VendorIDString], 'iryC'
+        JNE     @@StandardFunctions
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'snIx'
+        JNE     @@StandardFunctions
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'daet'
+        JNE     @@StandardFunctions
+        MOV     [CPUInfo.CpuType], CPU_TYPE_CYRIX
+        JMP     @@CheckCitrixExtended
 
-  @@CHECK_AMD_EXTENDED:
-    MOV     EAX, 80000000h
-    DB      0Fh
-    DB      0A2h
-    CMP     EAX, 0
-    JE      @@Standard_Functions
-    JMP     @@AMD_ONLY
+  @@CheckAMDExtended:
+        MOV     EAX, 80000000h
+        DB      0Fh
+        DB      0A2h
+        CMP     EAX, 0
+        JE      @@StandardFunctions
+        JMP     @@AMDOnly
 
-  @@CHECK_CYRIX_EXTENDED:
-    MOV     EAX, 80000000h
-    DB      0Fh
-    DB      0A2h
-    CMP     EAX, 0
-    JE      @@Standard_Functions
-    JMP     @@CYRIX_ONLY
+  @@CheckCitrixExtended:
+        MOV     EAX, 80000000h
+        DB      0Fh
+        DB      0A2h
+        CMP     EAX, 0
+        JE      @@StandardFunctions
+        JMP     @@CitrixOnly
 
-  @@Standard_Functions:
-    CMP     HiVal, 1
-    JL      @@DONE_CPU_TYPE
-    MOV     EAX, 1
-    DB      0FH
-    DB      0A2H
-    MOV     [CPUInfo.Features], EDX
-    MOV     ECX, EAX
-    AND     EAX, 3000H
-    SHR     EAX, 12
-    MOV     [CPUInfo.PType], AL
-    MOV     EAX, ECX
-    AND     EAX, 0F00H
-    SHR     EAX, 8
-    MOV     [CPUInfo.Family], AL
-    MOV     EAX, ECX
-    AND     EAX, 00F0H
-    SHR     EAX, 4
-    MOV     [CPUInfo.MODEL], AL
-    MOV     EAX, ECX
-    AND     EAX, 000FH
-    MOV     [CPUInfo.Stepping], AL
-    CMP     DWORD PTR [CPUInfo.VendorIDString], 'uneG'
-    JNE     @@DONE_CPU_TYPE
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'Ieni'
-    JNE     @@DONE_CPU_TYPE
-    CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'letn'
-    JNE     @@DONE_CPU_TYPE
+  @@StandardFunctions:
+        CMP     HiVal, 1
+        JL      @@DoneCPUType
+        MOV     EAX, 1
+        DB      0FH
+        DB      0A2H
+        MOV     [CPUInfo.Features], EDX
+        MOV     ECX, EAX
+        AND     EAX, 3000H
+        SHR     EAX, 12
+        MOV     [CPUInfo.PType], AL
+        MOV     EAX, ECX
+        AND     EAX, 0F00H
+        SHR     EAX, 8
+        MOV     [CPUInfo.Family], AL
+        MOV     EAX, ECX
+        AND     EAX, 00F0H
+        SHR     EAX, 4
+        MOV     [CPUInfo.MODEL], AL
+        MOV     EAX, ECX
+        AND     EAX, 000FH
+        MOV     [CPUInfo.Stepping], AL
+        CMP     DWORD PTR [CPUInfo.VendorIDString], 'uneG'
+        JNE     @@DoneCPUType
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'Ieni'
+        JNE     @@DoneCPUType
+        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'letn'
+        JNE     @@DoneCPUType
 
-  @@INTEL_STANDARD:
-    CMP     HiVal, 2
-    JL      @@DONE_CPU_TYPE
-    MOV     CurrentLoop, 0
-    MOV     [CPUInfo.HasCacheInfo], 1
-    PUSH    ECX
+  @@IntelStandard:
+        CMP     HiVal, 2
+        JL      @@DoneCPUType
+        MOV     CurrentLoop, 0
+        MOV     [CPUInfo.HasCacheInfo], 1
+        PUSH    ECX
 
-  @@REPEAT_CACHE_QUERY:
-    POP     ECX
-    MOV     EAX, 2
-    DB      0FH
-    DB      0A2H
-    INC     CurrentLoop
-    CMP     CurrentLoop, 1
-    JNE     @@DONE_CACHE_QUERY
-    MOV     TimesToExecute, AL
-    CMP     AL, 0
-    JE      @@DONE_CPU_TYPE
+  @@RepeatCacheQuery:
+        POP     ECX
+        MOV     EAX, 2
+        DB      0FH
+        DB      0A2H
+        INC     CurrentLoop
+        CMP     CurrentLoop, 1
+        JNE     @@DoneCacheQuery
+        MOV     TimesToExecute, AL
+        CMP     AL, 0
+        JE      @@DoneCPUType
 
-  @@DONE_CACHE_QUERY:
-    PUSH    ECX
-    MOV     CL, CurrentLoop
-    SUB     CL, TimesToExecute
-    JNZ     @@REPEAT_CACHE_QUERY
-    POP     ECX
-    MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors], EAX
-    MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 4], EBX
-    MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 8], ECX
-    MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 12], EDX
-    JMP     @@DONE_CPU_TYPE
+  @@DoneCacheQuery:
+        PUSH    ECX
+        MOV     CL, CurrentLoop
+        SUB     CL, TimesToExecute
+        JNZ     @@RepeatCacheQuery
+        POP     ECX
+        MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors], EAX
+        MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 4], EBX
+        MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 8], ECX
+        MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 12], EDX
+        JMP     @@DoneCPUType
 
-  @@AMD_ONLY:
-    MOV     HiVal, EAX
-    MOV     EAX, 80000001h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    MOV     [CPUInfo.HasExtendedInfo], 1
-    DB      0Fh
-    DB      0A2h
-    MOV     ECX, EAX
-    AND     EAX, 0F000H
-    SHR     EAX, 12
-    MOV     [CPUInfo.PType], AL
-    MOV     EAX, ECX
-    AND     EAX, 0F00H
-    SHR     EAX, 8
-    MOV     [CPUInfo.Family], AL
-    MOV     EAX, ECX
-    AND     EAX, 00F0H
-    SHR     EAX, 4
-    MOV     [CPUInfo.MODEL], AL
-    MOV     EAX, ECX
-    AND     EAX, 000FH
-    MOV     [CPUInfo.Stepping], AL
-    MOV     [CPUInfo.Features], EDX
+  @@AMDOnly:
+        MOV     HiVal, EAX
+        MOV     EAX, 80000001h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        MOV     [CPUInfo.HasExtendedInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     ECX, EAX
+        AND     EAX, 0F000H
+        SHR     EAX, 12
+        MOV     [CPUInfo.PType], AL
+        MOV     EAX, ECX
+        AND     EAX, 0F00H
+        SHR     EAX, 8
+        MOV     [CPUInfo.Family], AL
+        MOV     EAX, ECX
+        AND     EAX, 00F0H
+        SHR     EAX, 4
+        MOV     [CPUInfo.MODEL], AL
+        MOV     EAX, ECX
+        AND     EAX, 000FH
+        MOV     [CPUInfo.Stepping], AL
+        MOV     [CPUInfo.Features], EDX
 
-    MOV     EAX, 80000002h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CpuName], EAX
-    MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
-    MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
-    MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
+        MOV     EAX, 80000002h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
 
-    MOV     EAX, 80000003h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
-    MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
-    MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
-    MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
+        MOV     EAX, 80000003h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
 
-    MOV     EAX, 80000004h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
-    MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
-    MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
-    MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
+        MOV     EAX, 80000004h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
 
-    MOV     EAX, 80000005h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    MOV     [CPUInfo.HasCacheInfo], 1
-    DB      0Fh
-    DB      0A2h
-    MOV     WORD PTR [CPUInfo.AMDSpecific.InstructionTLB], BX
-    SHR     EBX, 16
-    MOV     WORD PTR [CPUInfo.AMDSpecific.DataTLB], BX
-    MOV     DWORD PTR [CPUInfo.AMDSpecific.L1DataCache], ECX
-    MOV     DWORD PTR [CPUInfo.AMDSpecific.L1ICache], EDX
-    JMP     @@DONE_CPU_TYPE
+        MOV     EAX, 80000005h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        MOV     [CPUInfo.HasCacheInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     WORD PTR [CPUInfo.AMDSpecific.InstructionTLB], BX
+        SHR     EBX, 16
+        MOV     WORD PTR [CPUInfo.AMDSpecific.DataTLB], BX
+        MOV     DWORD PTR [CPUInfo.AMDSpecific.L1DataCache], ECX
+        MOV     DWORD PTR [CPUInfo.AMDSpecific.L1ICache], EDX
+        JMP     @@DoneCPUType
 
-  @@CYRIX_ONLY:
-    MOV     HiVal, EAX
-    MOV     EAX, 80000001h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    MOV     [CPUInfo.HasExtendedInfo], 1
-    DB      0Fh
-    DB      0A2h
-    MOV     ECX, EAX
-    AND     EAX, 0F000H
-    SHR     EAX, 12
-    MOV     [CPUInfo.PType], AL
-    MOV     EAX, ECX
-    AND     EAX, 0F00H
-    SHR     EAX, 8
-    MOV     [CPUInfo.Family], AL
-    MOV     EAX, ECX
-    AND     EAX, 00F0H
-    SHR     EAX, 4
-    MOV     [CPUInfo.MODEL], AL
-    MOV     EAX, ECX
-    AND     EAX, 000FH
-    MOV     [CPUInfo.Stepping], AL
-    MOV     [CPUInfo.Features], EDX
+  @@CitrixOnly:
+        MOV     HiVal, EAX
+        MOV     EAX, 80000001h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        MOV     [CPUInfo.HasExtendedInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     ECX, EAX
+        AND     EAX, 0F000H
+        SHR     EAX, 12
+        MOV     [CPUInfo.PType], AL
+        MOV     EAX, ECX
+        AND     EAX, 0F00H
+        SHR     EAX, 8
+        MOV     [CPUInfo.Family], AL
+        MOV     EAX, ECX
+        AND     EAX, 00F0H
+        SHR     EAX, 4
+        MOV     [CPUInfo.MODEL], AL
+        MOV     EAX, ECX
+        AND     EAX, 000FH
+        MOV     [CPUInfo.Stepping], AL
+        MOV     [CPUInfo.Features], EDX
 
-    MOV     EAX, 80000002h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CpuName], EAX
-    MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
-    MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
-    MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
+        MOV     EAX, 80000002h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
 
-    MOV     EAX, 80000003h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
-    MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
-    MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
-    MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
+        MOV     EAX, 80000003h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
 
-    MOV     EAX, 80000004h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
-    MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
-    MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
-    MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
+        MOV     EAX, 80000004h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
 
-    MOV     EAX, 80000005h
-    CMP     HiVal, EAX
-    JL      @@DONE_CPU_TYPE
-    MOV     [CPUInfo.HasCacheInfo], 1
-    DB      0Fh
-    DB      0A2h
-    MOV     DWORD PTR [CPUInfo.CyrixSpecific.TLBInfo], EBX
-    MOV     DWORD PTR [CPUInfo.CyrixSpecific.L1CacheInfo], ECX
+        MOV     EAX, 80000005h
+        CMP     HiVal, EAX
+        JL      @@DoneCPUType
+        MOV     [CPUInfo.HasCacheInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CyrixSpecific.TLBInfo], EBX
+        MOV     DWORD PTR [CPUInfo.CyrixSpecific.L1CacheInfo], ECX
 
-  @@DONE_CPU_TYPE:
-    POP     ESI
-    POP     EDX
-    POP     EDI
-    POP     ECX
-    POP     EBX
-    POP     EBP
-    POP     EAX
+  @@DoneCpuType:
+        POP     ESI
+        POP     EDX
+        POP     EDI
+        POP     ECX
+        POP     EBX
+        POP     EBP
+        POP     EAX
   end;
   if CPUInfo.VendorIDString = 'GenuineIntel' then
     IntelSpecific(CpuInfo);
@@ -2319,17 +2319,17 @@ begin
   BottomNum := PI;
   One := 1;
   asm
-    PUSH    EAX
-    FLD     [TopNum]
-    FDIV    [BottomNum]
-    FMUL    [BottomNum]
-    FSUBR   [TopNum]
-    FCOMP   [One]
-    FSTSW   AX
-    SHR     EAX, 8
-    AND     EAX, 01H
-    MOV     ISOK, AL
-    POP     EAX
+        PUSH    EAX
+        FLD     [TopNum]
+        FDIV    [BottomNum]
+        FMUL    [BottomNum]
+        FSUBR   [TopNum]
+        FCOMP   [One]
+        FSTSW   AX
+        SHR     EAX, 8
+        AND     EAX, 01H
+        MOV     ISOK, AL
+        POP     EAX
   end;
   Result := ISOK;
 end;
