@@ -15,10 +15,19 @@
 { The Initial Developer of the Original Code is Marcel van Brakel.                                 }
 { Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{ Heri Bender, Marcel van Brakel, Charlie Calvert, Marc Convents,                                  }
-{ Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Nick Hodges, Michael Schnell, Anthony Steele,       }
-{ Matthias Thoma, Robert Marquardt, Robert Rossmair, Petr Vones                                    }
+{ Contributors:                                                                                    }
+{   Anthony Steele                                                                                 }
+{   Charlie Calvert                                                                                }
+{   Heri Bender                                                                                    }
+{   Marc Convents                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Michael Schnell                                                                                }
+{   Nick Hodges                                                                                    }
+{   Peter J. Haas (peterjhaas)                                                                     }
+{   Petr Vones                                                                                     }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -45,9 +54,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF LINUX}
+  {$ENDIF HAS_UNIT_TYPES}
   SysUtils,
   JclBase, JclResources;
 
@@ -1209,6 +1218,9 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.7  2004/05/31 01:54:38  rrossmair
+// $IFDEF LINUX replaced by $IFDEF HAS_UNIT_LIBC
+//
 // Revision 1.6  2004/05/05 00:04:10  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
