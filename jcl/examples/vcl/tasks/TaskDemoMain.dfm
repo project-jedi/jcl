@@ -38,8 +38,6 @@ object frmMain: TfrmMain
     Width = 688
     Height = 209
     Align = alTop
-    BevelInner = bvNone
-    BevelOuter = bvNone
     BorderStyle = bsNone
     Columns = <
       item
@@ -91,7 +89,7 @@ object frmMain: TfrmMain
     object mnuFile: TMenuItem
       Caption = '&File'
       object mnuFileExit: TMenuItem
-        Action = DM.Action1
+        Action = DM.actFileExit
       end
     end
     object mnuTask: TMenuItem
