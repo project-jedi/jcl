@@ -22,7 +22,7 @@
 { Junker (ralfjunker@gmx.de).                                                  }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 20, 2000                                             }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -37,84 +37,16 @@ interface
 uses
   Classes, SysUtils;
 
-// MimeEncodeString takes a string, encodes it, and returns the result as a string.
-// To decode the result string, use MimeDecodefString.
-
 function MimeEncodeString(const S: AnsiString): AnsiString;
-
-// MimeDecodeString takes a a string, decodes it, and returns the result as a string.
-// Use MimeDecodeString to decode a string previously encoded with MimeEncodeString.
-
 function MimeDecodeString(const S: AnsiString): AnsiString;
-
-// MimeEncodeStream encodes InputStream starting at the current position
-// up to the end and writes the result to OutputStream, again starting at
-// the current position. When done, it will not reset either stream's positions,
-// but leave InputStream at the last read position (i.e. the end) and
-// OutputStream at the last write position (which can, but most not be the end).
-// To encode the entire InputStream from beginning to end, make sure
-// that its offset is positioned at the beginning of the stream. You can
-// force this by issuing InputStream.Seek(0, soFromBeginning) before calling this function.
-
 procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStream);
-
-// MimeDecodeStream decodes InputStream starting at the current position
-// up to the end and writes the result to OutputStream, again starting at
-// the current position. When done, it will not reset either stream's positions,
-// but leave InputStream at the last read position (i.e. the end) and
-// OutputStream at the last write position (which can, but most not be the end).
-// To decode the entire InputStream from beginning to end, make sure
-// that its offset is positioned at the beginning of the stream. You can
-// force this by issuing InputStream.Seek(0, soFromBeginning) before calling this function.
-
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
-
-// Calculates the output size of i MimeEncoded bytes. Use for MimeEncode only.
-
 function MimeEncodedSize(const I: Cardinal): Cardinal;
-
-// Calculates the maximum output size of i MimeDecoded bytes.
-// You may use it for MimeDecode to calculate the maximum amount of memory
-// required for decoding in one single pass.
-
 function MimeDecodedSize(const I: Cardinal): Cardinal;
-
-// The primary Mime encoding routine.
-//
-// CAUTION: OutputBuffer must have enough memory allocated to take all encoded output.
-// MimeEncodedSize (InputBytesCount) calculates this amount in bytes. MimeEncode will
-// then fill the entire OutputBuffer, so there is no OutputBytesCount result for
-// this procedure. Preallocating all memory at once (as required by MimeEncode)
-// avoids the time-cosuming process of reallocation.
-//
-// If not all data fits into memory at once, you can use MimeEncode multiple times,
-// but you must be very careful about the size of the InputBuffer.
-// See comments on BUFFER_SIZE below for details.
-
-procedure MimeEncode(var InputBuffer; const InputByteCount: Cardinal;
-  var OutputBuffer);
-
-// The primary Mime decoding routines.
-//
-// CAUTION: OutputBuffer must have enough memory allocated to take all output.
-// MimeDecodedSize (InputBytesCount) calculates this amount in bytes. There is
-// no guarantee that all output will be filled after decoding. All decoding
-// functions therefore return the acutal number of bytes written to OutputBuffer.
-// Preallocating all memory at once (as is required by MimeDecode)
-// avoids the time-cosuming process of reallocation. After calling
-// MimeDecode, simply cut the allocated memory down to OutputBytesCount,
-// i.e. SetLength(OutString, OutputBytesCount).
-
-function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal;
-  var OutputBuffer): Cardinal;
-
-// The MimeDecodePartial_ functions are mostly for internal use.
-// They serve the purpose of decoding very large data in multiple parts of
-// smaller chunks, as used in MimeDecodeStream.
-
+procedure MimeEncode(var InputBuffer; const InputByteCount: Cardinal; var OutputBuffer);
+function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal; var OutputBuffer): Cardinal;
 function MimeDecodePartial(var InputBuffer; const InputBytesCount: Cardinal;
   var OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
- 
 function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
   const ByteBufferSpace: Cardinal): Cardinal;
 
@@ -130,7 +62,7 @@ implementation
 
 const
   BUFFER_SIZE = $3000;
-  EqualSign   = Byte('=');
+  EqualSign = Byte('=');
 
   MIME_ENCODE_TABLE: array [0..63] of Byte = (
      65,  66,  67,  68,  69,  70,  71,  72,  // 00 - 07
@@ -352,8 +284,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal;
-  var OutputBuffer): Cardinal;
+function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal; var OutputBuffer): Cardinal;
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
 begin
