@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = CJcl60.bpl CJclVcl60.bpl CJclVClx60.bpl
+PROJECTS = CJcl60.bpl CJclVcl60.bpl CJclVClx60.bpl IdeOpenDlgFavoriteC60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -25,6 +25,10 @@ CJclVcl60.bpl: c6\CJclVcl.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 CJclVClx60.bpl: c6\CJclVClx.bpk
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+IdeOpenDlgFavoriteC60.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavoriteC60.bpk
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
