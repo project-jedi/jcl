@@ -65,6 +65,7 @@
 unit JclSecurity;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 { TODO : Several functions that use the SECURITY_DESCRIPTOR structure require
   that this structure be on a valid pointer boundary in memory. These boundaries
@@ -516,6 +517,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/07/29 07:58:22  marquardt
+// inc files updated
+//
 // Revision 1.12  2004/07/28 18:00:54  marquardt
 // various style cleanings, some minor fixes
 //

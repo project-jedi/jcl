@@ -17,7 +17,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jcl.inc).
+
+// Suppress platform warnings which are irrelevant
+// because the including unit inherently has to handle
+// platform specifics already.
+
+{$IFDEF SUPPORTS_PLATFORM_WARNINGS}
+  {$WARN UNIT_PLATFORM OFF}
+  {$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM_WARNINGS}

@@ -38,6 +38,7 @@
 unit JclLocales;
 
 {$I jcl.inc}
+{$I windowsonly.inc}
 
 interface
 
@@ -1153,6 +1154,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
 // Revision 1.8  2004/06/14 11:05:52  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

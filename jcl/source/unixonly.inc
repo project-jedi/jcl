@@ -24,10 +24,18 @@ Known Issues:
 // Last modified: $Date$
 // For history see end of file
 
-{$I jedi.inc}
+// This inc file depends on jedi.inc which has to
+// be included first (usually indirectly through
+// the inclusion of jcl.inc).
+
+// Suppress platform warnings which are irrelevant
+// because the including unit can only be compiled
+// for Unix platforms anyway.
 
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
+
+// Cause a compilation error for non-Unix platforms.
 
 {$IFNDEF UNIX}
   {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
@@ -42,6 +50,9 @@ Known Issues:
 // History:
 
 // $Log$
+// Revision 1.2  2004/07/29 07:58:21  marquardt
+// inc files updated
+//
 // Revision 1.1  2004/06/21 01:21:37  rrossmair
 // - renamed from linuxonly.inc
 // - $IFDEFed contents (to prevent from repeated inclusion)

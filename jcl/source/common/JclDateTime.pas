@@ -47,6 +47,7 @@
 unit JclDateTime;
 
 {$I jcl.inc}
+{$I crossplatform.inc}
 
 interface
 
@@ -1218,6 +1219,9 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.10  2004/07/29 07:58:20  marquardt
+// inc files updated
+//
 // Revision 1.9  2004/07/28 18:00:49  marquardt
 // various style cleanings, some minor fixes
 //
