@@ -22,7 +22,7 @@
 { versions of Delphi as well as FPC.                                           }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: August 24, 2001                                               }
+{ Last modified: August 25, 2001                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -47,7 +47,7 @@ const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 10;   // Forth minor release JCL 1.10
   JclVersionRelease = 1;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 463 ;  // build number, days since march 1, 2000
+  JclVersionBuild   = 464;  // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
                (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -295,7 +295,9 @@ type
 //------------------------------------------------------------------------------
 
 {$IFNDEF DELPHI6_UP}
+
 procedure RaiseLastOSError;
+
 {$ENDIF}
 
 //------------------------------------------------------------------------------
@@ -311,8 +313,7 @@ type
 {$ENDIF}
 {$ENDIF}
 
-
-implementation
+implementation
 
 uses
   JclResources;
@@ -614,18 +615,20 @@ procedure TObjectList.SetItems(Index: Integer; const Value: TObject);
 begin
   Put(Index, Value);
 end;
-{$ENDIF DELPHI5_UP}
 
+{$ENDIF DELPHI5_UP}
 
 //==============================================================================
 // Cross=Platform Compatibility
 //==============================================================================
 
 {$IFNDEF DELPHI6_UP}
+
 procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
 end;
+
 {$ENDIF}
 
 
