@@ -1138,12 +1138,6 @@ end;
 // Processes, Tasks and Modules
 //==============================================================================
 
-// todo move to JclResources
-
-resourcestring
-  RsSystemProcess = 'System Process';
-  RsSystemIdleProcess = 'System Idle Process';
-  
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
   function ProcessFileName(PID: DWORD): string;
