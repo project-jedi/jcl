@@ -1358,7 +1358,7 @@ var
     NonDigitFound := False;
     while (P <> nil) and (P^ <> #0) and (P^ <> '\') do
     begin
-      if P^ in ['a'..'z', 'A'..'Z', '-', '_'] then
+      if P^ in ['a'..'z', 'A'..'Z', '-', '_', '.'] then
       begin
         NonDigitFound := True;
         Inc(P);
@@ -1460,17 +1460,20 @@ begin
   Assert(List <> nil);
   R := FindFirst(Path, Attr, SearchRec);
   Result := R = 0;
-  if Result then
-  begin
-    while R = 0 do
+  try
+    if Result then
     begin
-      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-        List.Add(SearchRec.Name);
-      R := FindNext(SearchRec);
+      while R = 0 do
+      begin
+        if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+          List.Add(SearchRec.Name);
+        R := FindNext(SearchRec);
+      end;
+      Result := R = ERROR_NO_MORE_FILES;
     end;
-    Result := R = ERROR_NO_MORE_FILES;
+  finally
     SysUtils.FindClose(SearchRec);
-  end;
+  end;  
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3035,29 +3038,33 @@ var
   end;
 
 begin
+  Assert(Files <> nil);
   FileMask := ExtractFileName(Path);
   RootDir := ExtractFilePath(Path);
 
   Folders := TStringList.Create;
-  Folders.Add(RootDir);
+  try
+    Folders.Add(RootDir);
 
-  if Attr = faAnyFile then
-    LocAttr := faReadOnly + faHidden + faSysFile + faArchive
-  else
-    LocAttr := Attr;
+    if Attr = faAnyFile then
+      LocAttr := faReadOnly + faHidden + faSysFile + faArchive
+    else
+      LocAttr := Attr;
 
-  // here's the recursive search for nested folders
+    // here's the recursive search for nested folders
 
-  if flRecursive in Options then
-    BuildFolderList;
+    if flRecursive in Options then
+      BuildFolderList;
 
-  for Counter := 0 to Folders.Count - 1 do
-  begin
-    if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask, Folders[Counter], 1))) or
-      (not (flMaskedSubfolders in Options))) then
-      FillFileList(Counter);
-  end;
-  Folders.Free;
+    for Counter := 0 to Folders.Count - 1 do
+    begin
+      if (((flMaskedSubfolders in Options) and (StrMatches(SubfoldersMask, Folders[Counter], 1))) or
+        (not (flMaskedSubfolders in Options))) then
+        FillFileList(Counter);
+    end;
+  finally
+    Folders.Free;
+  end;  
   Result := True;
 end;
 
