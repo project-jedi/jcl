@@ -29,13 +29,20 @@
 {$J-} // Read-only typed constants
 {$T-} // Type checked pointers off
 
-{$INCLUDE JEDI.INC} // Pull in the JCL/J-VCL shared directives
+{$INCLUDE jedi.inc} // Pull in the JCL/J-VCL shared directives
 
 // Math precision selection, mutually exclusive
 
 {$DEFINE MATH_EXTENDED_PRECISION}
 {.$DEFINE MATH_DOUBLE_PRECISION}
 {.$DEFINE MATH_SINGLE_PRECISION}
+
+{$IFDEF MATH_DOUBLE_PRECISION}
+  {$UNDEF MATH_EXTENDED_PRECISION}
+{$ENDIF}
+{$IFDEF MATH_SINGLE_PRECISION}
+  {$UNDEF MATH_EXTENDED_PRECISION}
+{$ENDIF}
 
 // Free Pascal specific
 
