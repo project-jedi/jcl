@@ -21,7 +21,7 @@
 { This unit contains various PE file classes and support routines              }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: January 6, 2001                                               }
+{ Last modified: January 21, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -874,6 +874,7 @@ type
     FContains: TStrings;
     FRequires: TStrings;
     FFlags: Integer;
+    FDescription: string;
     function GetContainsCount: Integer;
     function GetContainsFlags(Index: Integer): Byte;
     function GetContainsNames(Index: Integer): string;
@@ -892,6 +893,7 @@ type
     property ContainsCount: Integer read GetContainsCount;
     property ContainsNames[Index: Integer]: string read GetContainsNames;
     property ContainsFlags[Index: Integer]: Byte read GetContainsFlags;
+    property Description: string read FDescription;
     property Flags: Integer read FFlags;
     property Requires: TStrings read FRequires;
     property RequiresCount: Integer read GetRequiresCount;
@@ -903,7 +905,6 @@ type
     FIsPackage: Boolean;
     FIsBorlandImage: Boolean;
     FLibHandle: THandle;
-    FPackageDescription: string;
     FPackageInfo: TJclPePackageInfo;
     function GetIsTD32DebugPresent: Boolean;
     function GetLibHandle: THandle;
@@ -917,7 +918,6 @@ type
     property IsBorlandImage: Boolean read FIsBorlandImage;
     property IsPackage: Boolean read FIsPackage;
     property LibHandle: THandle read GetLibHandle;
-    property PackageDescription: string read FPackageDescription;
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
   end;
 
@@ -983,10 +983,8 @@ function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 // Various simple PE Image functions
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 type
   TJclStringArray = array of string;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
@@ -1006,25 +1004,19 @@ function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: strin
 function PeImportedLibraries(const FileName: TFileName; LibrariesList: TStrings;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
   FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray;
   Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
   FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeImportedFunctions(const FileName: TFileName; FunctionsList: TStrings;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
   const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
   IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeExportedFunctions(const FileName: TFileName; FunctionsList: TStrings): Boolean;
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
 
@@ -1108,7 +1100,7 @@ function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
   var Name: string): Boolean;
 
 //------------------------------------------------------------------------------
-// Borland name unmangling for Delphi packages
+// Borland BPL packages name unmangling
 //------------------------------------------------------------------------------
 
 type
@@ -1209,6 +1201,20 @@ end;
 function GetVersionString(HiV, LoV: Word): string;
 begin
   Result := Format('%u.%.2u', [HiV, LoV]);
+end;
+
+//------------------------------------------------------------------------------
+
+function AddFlagTextRes(var Text: string; const FlagText: PResStringRec;
+  const Value, Mask: DWORD): Boolean;
+begin
+  Result := (Value and Mask <> 0);
+  if Result then
+  begin
+    if Length(Text) > 0 then
+      Text := Text + ', ';
+    Text := Text + LoadResString(FlagText);
+  end;
 end;
 
 //==============================================================================
@@ -3832,11 +3838,11 @@ class function TJclPePackageInfo.PackageModuleTypeToString(Flags: Integer): stri
 begin
   case Flags and pfModuleTypeMask of
     pfExeModule, pfModuleTypeMask:
-      Result := 'Executable';
+      Result := RsPePkgExecutable;
     pfPackageModule:
-      Result := 'Package';
+      Result := RsPePkgPackage;
     pfLibraryModule:
-      Result := 'Library';
+      Result := PsPePkgLibrary;
   else
     Result := '';
   end;
@@ -3845,28 +3851,12 @@ end;
 //------------------------------------------------------------------------------
 
 class function TJclPePackageInfo.PackageOptionsToString(Flags: Integer): string;
-const
-  FlagNames: packed array [0..3] of record
-    Mask: DWORD;
-    Text: PChar;
-  end = (
-  (Mask: $00000001; Text: 'NeverBuild'),
-  (Mask: $00000002; Text: 'DesignOnly'),
-  (Mask: $00000004; Text: 'RunOnly'),
-  (Mask: $00000008; Text: 'IgnoreDupUnits')
-  );
-var
-  I: Integer;
 begin
   Result := '';
-  for I := Low(FlagNames) to High(FlagNames) do
-    with FlagNames[I] do
-      if Flags and Mask <> 0 then
-      begin
-        if Length(Result) > 0 then
-          Result := Result + ', ';
-        Result := Result + Text;
-      end;
+  AddFlagTextRes(Result, @RsPePkgNeverBuild, Flags, $00000001);
+  AddFlagTextRes(Result, @RsPePkgDesignOnly, Flags, $00000002);
+  AddFlagTextRes(Result, @RsPePkgRunOnly, Flags, $00000004);
+  AddFlagTextRes(Result, @RsPePkgIgnoreDupUnits, Flags, $00000008);
 end;
 
 //------------------------------------------------------------------------------
@@ -3875,13 +3865,13 @@ class function TJclPePackageInfo.ProducerToString(Flags: Integer): string;
 begin
   case Flags and pfProducerMask of
     pfV3Produced:
-      Result := 'V3';
+      Result := RsPePkgV3Produced;
     pfProducerUndefined:
-      Result := 'Undefined';
+      Result := RsPePkgProducerUndefined;
     pfBCB4Produced:
-      Result := 'BCB4';
+      Result := RsPePkgBCB4Produced;
     pfDelphi4Produced:
-      Result := 'Delphi4';
+      Result := RsPePkgDelphi4Produced;
   else
     Result := '';
   end;
@@ -3901,38 +3891,33 @@ begin
 end;
 
 procedure TJclPePackageInfo.ReadPackageInfo(ALibHandle: THandle);
+var
+  DescrResInfo: HRSRC;
+  DescrResData: HGLOBAL;
 begin
   GetPackageInfo(ALibHandle, Self, FFlags, PackageInfoProc);
   TStringList(FContains).Sort;
   TStringList(FRequires).Sort;
+  DescrResInfo := FindResource(ALibHandle, 'DESCRIPTION', RT_RCDATA);
+  if DescrResInfo <> 0 then
+  begin
+    DescrResData := LoadResource(ALibHandle, DescrResInfo);
+    if DescrResData <> 0 then
+      FDescription := WideCharLenToString(LockResource(DescrResData),
+        SizeofResource(ALibHandle, DescrResInfo));
+  end;
 end;
 
 //------------------------------------------------------------------------------
 
 class function TJclPePackageInfo.UnitInfoFlagsToString(UnitFlags: Byte): string;
-const
-  FlagNames: packed array [0..4] of record
-    Mask: Byte;
-    Text: PChar;
-  end = (
-  (Mask: $01; Text: 'Main'),
-  (Mask: $02; Text: 'Package'),
-  (Mask: $04; Text: 'Weak'),
-  (Mask: $08; Text: 'OrgWeak'),
-  (Mask: $10; Text: 'Implicit')
-  );
-var
-  I: Integer;
 begin
   Result := '';
-  for I := Low(FlagNames) to High(FlagNames) do
-    with FlagNames[I] do
-      if UnitFlags and Mask <> 0 then
-      begin
-        if Length(Result) > 0 then
-          Result := Result + ', ';
-        Result := Result + Text;
-      end;
+  AddFlagTextRes(Result, @RsPePkgMain, UnitFlags, $01);
+  AddFlagTextRes(Result, @RsPePkgPackage, UnitFlags, $02);
+  AddFlagTextRes(Result, @RsPePkgWeak, UnitFlags, $04);
+  AddFlagTextRes(Result, @RsPePkgOrgWeak, UnitFlags, $08);
+  AddFlagTextRes(Result, @RsPePkgImplicit, UnitFlags, $10);
 end;
 
 //==============================================================================
@@ -3942,7 +3927,6 @@ end;
 procedure TJclPeBorImage.AfterOpen;
 var
   HasDVCLAL, HasPACKAGEINFO, HasPACKAGEOPTIONS: Boolean;
-  Description: TJclPeResourceItem;
 begin
   inherited;
   if StatusOK then
@@ -3953,12 +3937,6 @@ begin
       HasPACKAGEOPTIONS := (FindResource(rtRCData, 'PACKAGEOPTIONS') <> nil);
       FIsPackage := HasPACKAGEINFO and HasPACKAGEOPTIONS;
       FIsBorlandImage := HasDVCLAL or FIsPackage;
-      if FIsPackage then
-      begin
-        Description := FindResource(rtRCData, 'DESCRIPTION');
-        if Description <> nil then
-          FPackageDescription := PWideChar(Description.List[0].RawEntryData);
-      end;
     end;
 end;
 
@@ -3971,7 +3949,6 @@ begin
   inherited;
   FIsBorlandImage := False;
   FIsPackage := False;
-  FPackageDescription := '';
 end;
 
 //------------------------------------------------------------------------------
@@ -4456,7 +4433,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeImportedLibrariesArray(const FileName: TFileName; var LibrariesList: TJclStringArray; Recursive, FullPathName: Boolean): Boolean;
 var
   I: Integer;
@@ -4480,7 +4456,6 @@ begin
     Free;
   end;
 end;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
@@ -4514,7 +4489,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeImportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray;
   const LibraryName: string; IncludeLibNames: Boolean): Boolean;
 var
@@ -4548,7 +4522,6 @@ begin
     Free;
   end;
 end;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
@@ -4570,7 +4543,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function PeExportedFunctionsArray(const FileName: TFileName; var FunctionsList: TJclStringArray): Boolean;
 var
   I: Integer;
@@ -4589,7 +4561,6 @@ begin
     Free;
   end;
 end;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //------------------------------------------------------------------------------
 
@@ -5002,7 +4973,7 @@ begin
 end;
 
 //==============================================================================
-// Borland name unmangling for Delphi packages
+// Borland BPL packages name unmangling
 //==============================================================================
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
