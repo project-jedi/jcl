@@ -34,7 +34,8 @@ unit JclSysInfo;
 interface
 
 uses
-  Windows, ActiveX, Classes, ShlObj;
+  Windows, ActiveX, Classes, ShlObj,
+  JclResources;
 
 //------------------------------------------------------------------------------
 // Environment Variables
@@ -151,7 +152,6 @@ type
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer);
 
 var
-
   { in case of additions, don't forget to update initialization section! }
 
   IsWin95: Boolean = False;
@@ -196,7 +196,7 @@ type
 
   TCacheInfo = record
     D: Byte;
-    I: string[74];
+    I: string;
   end;
 
   TFreqInfo = record
@@ -418,20 +418,20 @@ const
 
 const
   IntelCacheDescription: array [0..13] of TCacheInfo = (
-    (D: $01; I: 'Instruction TLB, 4Kb pages, 4-way set associative, 32 entries';),
-    (D: $02; I: 'Instruction TLB, 4Mb pages, fully associative, 2 entries'),
-    (D: $03; I: 'Data TLB, 4Kb pages, 4-way set associative, 64 entries'),
-    (D: $04; I: 'Data TLB, 4Mb pages, 4-way set associative, 8 entries'),
-    (D: $06; I: '8KB instruction cache, 4-way set associative, 32 byte line size'),
-    (D: $08; I: '16KB instruction cache, 4-way set associative, 32 byte line size'),
-    (D: $0A; I: '8KB data cache 2-way set associative, 32 byte line size'),
-    (D: $0C; I: '16KB data cache, 4-way set associative, 32 byte line size'),
-    (D: $40; I: 'No L2 cache'),
-    (D: $41; I: 'Unified cache, 32 byte cache line, 4-way set associative, 128Kb'),
-    (D: $42; I: 'Unified cache, 32 byte cache line, 4-way set associative, 256Kb'),
-    (D: $43; I: 'Unified cache, 32 byte cache line, 4-way set associative, 512Kb'),
-    (D: $44; I: 'Unified cache, 32 byte cache line, 4-way set associative, 1Mb'),
-    (D: $45; I: 'Unified cache, 32 byte cache line, 4-way set associative, 2Mb'));
+    (D: $01; I: RsIntelCacheDescr01),
+    (D: $02; I: RsIntelCacheDescr02),
+    (D: $03; I: RsIntelCacheDescr03),
+    (D: $04; I: RsIntelCacheDescr04),
+    (D: $06; I: RsIntelCacheDescr06),
+    (D: $08; I: RsIntelCacheDescr08),
+    (D: $0A; I: RsIntelCacheDescr0A),
+    (D: $0C; I: RsIntelCacheDescr0C),
+    (D: $40; I: RsIntelCacheDescr40),
+    (D: $41; I: RsIntelCacheDescr41),
+    (D: $42; I: RsIntelCacheDescr42),
+    (D: $43; I: RsIntelCacheDescr43),
+    (D: $44; I: RsIntelCacheDescr44),
+    (D: $45; I: RsIntelCacheDescr45));
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
@@ -485,11 +485,11 @@ var
 implementation
 
 uses
-  Messages, Registry, SysUtils, TLHelp32, Winsock,
+  Messages, SysUtils, TLHelp32, Winsock,
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
-  JclBase, JclFileUtils, JclRegistry, JclResources, JclShell, JclStrings, JclWin32;
+  JclBase, JclFileUtils, JclRegistry, JclShell, JclStrings, JclWin32;
 
 //==============================================================================
 // Environment
@@ -532,7 +532,8 @@ begin
   else
   begin
     SetLength(Value, R);
-    if Expand then ExpandEnvironmentVar(Value);
+    if Expand then
+      ExpandEnvironmentVar(Value);
   end;
 end;
 
@@ -557,7 +558,8 @@ begin
     for I := 0 to Vars.Count - 1 do
     begin
       Expanded := Vars[I];
-      if ExpandEnvironmentVar(Expanded) then Vars[I] := Expanded;
+      if ExpandEnvironmentVar(Expanded) then
+        Vars[I] := Expanded;
     end;
   end;
 end;
@@ -920,7 +922,8 @@ begin
   // TODO Perform better checking of Drive param or document that no checking is
   // performed. RM Suggested:
   // DriveStr := Drive;
-  // if (Length(Drive) < 2) or (Drive[2] <> ':') then DriveStr := GetCurrentFolder;
+  // if (Length(Drive) < 2) or (Drive[2] <> ':') then
+  //   DriveStr := GetCurrentFolder;
   // DriveStr  := DriveStr[1] + ':\';
   Result := '';
   DriveStr := Drive + ':\';
@@ -1202,12 +1205,14 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
           if IsWin2k then
           begin
             FileName := ProcessFileName(ProcEntry.th32ProcessID);
-            if FileName = '' then FileName := ProcEntry.szExeFile;
+            if FileName = '' then
+              FileName := ProcEntry.szExeFile;
           end
           else
           begin
             FileName := ProcEntry.szExeFile; 
-            if not FullPath then FileName := ExtractFileName(FileName);
+            if not FullPath then
+              FileName := ExtractFileName(FileName);
           end;
         end;
         List.AddObject(FileName, Pointer(ProcEntry.th32ProcessID));
@@ -1252,7 +1257,8 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         else
           FileName := ProcessFileName(PIDs[I]);
         end;
-        if FileName <> '' then List.AddObject(FileName, Pointer(PIDs[I]));
+        if FileName <> '' then
+          List.AddObject(FileName, Pointer(PIDs[I]));
       end;
     end;
   end;
@@ -1455,7 +1461,8 @@ begin
         EnumWindows(@EnumWindowsProc, LPARAM(ProcessID));
         if WaitForSingleObject(ProcessHandle, Timeout) = WAIT_OBJECT_0 then
           Result := taClean
-        else if TerminateProcess(ProcessHandle, 0) then
+        else
+        if TerminateProcess(ProcessHandle, 0) then
           Result := taKill;
       end;
     finally
@@ -1580,32 +1587,21 @@ begin
   finally
     CloseHandle(Snapshot);
   end;
-  if not Success then raise Exception.CreateResFmt(@RsProcessNotFound, [Name]);
+  if not Success then
+    raise Exception.CreateResFmt(@RsProcessNotFound, [Name]);
 end;
 
 //------------------------------------------------------------------------------
 
 function GetShellProcessName: string;
 const
-  ShellKey = 'Software\Microsoft\Windows NT\CurrentVersion\WinLogon';
-  ShellValue = 'Shell';
-  ShellDefault = 'explorer.exe';
-var
-  Reg: TRegistry;
+  cShellKey = 'Software\Microsoft\Windows NT\CurrentVersion\WinLogon';
+  cShellValue = 'Shell';
+  cShellDefault = 'explorer.exe';
 begin
-  Result := '';
-  Reg := TRegistry.Create;
-  try
-    Reg.RootKey := HKEY_LOCAL_MACHINE;
-    if Reg.KeyExists(ShellKey) then
-    begin
-      Reg.OpenKeyReadOnly(ShellKey);
-      if Reg.ValueExists(ShellValue) then Result := Reg.ReadString(ShellValue);
-    end;
-    if Result = '' then Result := ShellDefault;
-  finally
-    Reg.Free;
-  end;
+  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, cShellKey, cShellValue, '');
+  if Result = '' then
+    Result := cShellDefault;
 end;
 
 //------------------------------------------------------------------------------
@@ -1616,7 +1612,8 @@ var
 begin
   Pid := GetProcessPid(GetShellProcessName);
   Result := OpenProcess(PROCESS_ALL_ACCESS, False, Pid);
-  if Result = 0 then RaiseLastOSError;
+  if Result = 0 then
+    RaiseLastOSError;
 end;
 
 //==============================================================================
@@ -1657,7 +1654,8 @@ begin
           // the kernel version is one way of working around that.
           if KernelVersionHi = $0004005A then // 4.90.x.x
             Result := wvWinME
-          else if Trim(Win32CSDVersion) = 'A' then
+          else
+          if Trim(Win32CSDVersion) = 'A' then
             Result := wvWin98SE
           else
             Result := wvWin98;
@@ -1697,13 +1695,14 @@ begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
     if JclWin32.GetVersionEx(@VersionInfo) then
-    begin
       case VersionInfo.wProductType of
-        VER_NT_WORKSTATION: Result := ptWorkStation;
-        VER_NT_DOMAIN_CONTROLLER: Result := ptAdvancedServer;
-        VER_NT_SERVER: Result := ptServer;
+        VER_NT_WORKSTATION:
+          Result := ptWorkStation;
+        VER_NT_DOMAIN_CONTROLLER:
+          Result := ptAdvancedServer;
+        VER_NT_SERVER:
+          Result := ptServer;
       end;
-    end;
   end;
   if Result = ptUnknown then
   begin
@@ -1829,7 +1828,7 @@ begin
   CpuInfo.IsFDIVOK := TestFDIVInstruction;
   if CpuInfo.HasInstruction then
   begin
-    if (CpuInfo.Features and TSC_FLAG = TSC_FLAG) then
+    if (CpuInfo.Features and TSC_FLAG) = TSC_FLAG then
       GetCpuSpeed(CpuInfo.FrequencyInfo);
     CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   end;
@@ -1964,7 +1963,7 @@ begin
   begin
     Manufacturer := 'Intel';
     CpuType := CPU_TYPE_INTEL;
-    if HasCacheInfo = True then
+    if HasCacheInfo then
       with CPUInfo.IntelSpecific do
       begin
         L2Cache := 0;
@@ -2790,6 +2789,3 @@ end;
 initialization
   InitSysInfo;
 end.
-
-
-
