@@ -25,8 +25,9 @@ SubCat=Synchronization\Debugging
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Unsupported
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
@@ -77,8 +78,9 @@ SubCat=Synchronization\Debugging
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Unsupported
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
@@ -130,8 +132,9 @@ SubCat=Synchronization\Debugging
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Unsupported
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
@@ -182,8 +185,9 @@ SubCat=Synchronization\Debugging
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Unsupported
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
@@ -242,8 +246,9 @@ SubCat=Synchronization\Debugging
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Unsupported
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclMultiReadExclusiveWrite = class (TObject)
@@ -278,8 +283,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(Preferred: TMrewPreferred); virtual;
@@ -300,8 +306,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -318,8 +325,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure BeginRead;
@@ -350,8 +358,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=EndRead
@@ -390,8 +399,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=EndRead
@@ -420,8 +430,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure EndWrite;
@@ -445,8 +456,9 @@ SubCat=Synchronization\TJclMultiReadExclusiveWrite
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclOptex = class (TObject)
@@ -470,8 +482,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Existed: Boolean read FExisted;
@@ -492,8 +505,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Name: string read FName;
@@ -510,8 +524,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property SpinCount: Integer read GetSpinCount write SetSpinCount;
@@ -530,8 +545,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property UniProcess: Boolean read GetUniProcess;
@@ -553,8 +569,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(const Name: string = ''; SpinCount: Integer = 4000);
@@ -590,8 +607,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -610,8 +628,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Enter;
@@ -641,8 +660,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Leave;
@@ -663,8 +683,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TryEnter: Boolean;
@@ -688,8 +709,9 @@ SubCat=Synchronization\TJclOptex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclWaitableTimer = class (<REF Target"..\TJclDispatcherObject\TJclDispatcherObject">TJclDispatcherObject</REF>)
@@ -705,8 +727,9 @@ SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Cancel: Boolean;
@@ -730,8 +753,9 @@ SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SetTimer(const DueTime: Int64; Period: Longint; Resume: Boolean): Boolean;
@@ -770,8 +794,9 @@ SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SetTimerApc(const DueTime: Int64; Period: Longint; Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
@@ -813,8 +838,9 @@ SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TFNTimerAPCRoutine = procedure (Arg: Pointer; TimerLow, TimerHigh: DWORD); stdcall;
@@ -834,14 +860,15 @@ This value corresponds to the dwLowDateTime value of a TFileTime record.
 This value corresponds to the dwHighDateTime value of a TFileTime record.
 [Quick Info]
 Kind=Type
-BCB=3,4,5
 Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=..\Methods\SetTimerApc
@@ -876,8 +903,9 @@ SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Open(Access: Cardinal; inheritable: Boolean; const Name: string);
@@ -928,8 +956,9 @@ SubCat=Synchronization\TJclWaitableTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclSemaphore = class (<REF Target"..\TJclDispatcherObject\TJclDispatcherObject">TJclDispatcherObject</REF>)
@@ -945,8 +974,9 @@ SubCat=Synchronization\TJclSemaphore
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Release(ReleaseCount: Longint): Boolean;
@@ -973,8 +1003,9 @@ SubCat=Synchronization\TJclSemaphore
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=ReleasePrev
@@ -1006,8 +1037,9 @@ SubCat=Synchronization\TJclSemaphore
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Release
@@ -1047,8 +1079,9 @@ SubCat=Synchronization\TJclSemaphore
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
@@ -1095,8 +1128,9 @@ SubCat=Synchronization\TJclSemaphore
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclMutex = class (<REF Target"..\TJclDispatcherObject\TJclDispatcherObject">TJclDispatcherObject</REF>)
@@ -1112,8 +1146,9 @@ SubCat=Synchronization\TJclMutex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
@@ -1149,8 +1184,9 @@ SubCat=Synchronization\TJclMutex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Open(Access: Cardinal; Inheritable: Boolean; const Name: string);
@@ -1193,8 +1229,9 @@ SubCat=Synchronization\TJclMutex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Release: Boolean;
@@ -1220,8 +1257,9 @@ SubCat=Synchronization\TJclMutex
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclCriticalSectionEx = class (<REF Target"..\TJclDispatcherObject\TJclDispatcherObject">TJclDispatcherObject</REF>)
@@ -1241,8 +1279,9 @@ SubCat=Synchronization\TJclCriticalSectionEx
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateEx(SpinCount: Cardinal; NoFailEnter: Boolean); virtual;
@@ -1279,8 +1318,9 @@ SubCat=Synchronization\TJclCriticalSectionEx
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function TryEnter: Boolean;
@@ -1306,8 +1346,9 @@ SubCat=Synchronization\TJclCriticalSectionEx
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Unsupported.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 class function GetSpinTimeOut: Cardinal;
@@ -1329,8 +1370,9 @@ SubCat=Synchronization\TJclCriticalSectionEx
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Unsupported
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=SetSpinTimeOut
@@ -1359,8 +1401,9 @@ SubCat=Synchronization\TJclCriticalSectionEx
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Unsupported
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=GetSpinTimeOut
@@ -1382,8 +1425,9 @@ SubCat=Synchronization\TJclCriticalSectionEx
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 SP 3 or later.
 Windows 95/98=Requires Windows 98 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclCriticalSection = class (TObject)
@@ -1402,8 +1446,9 @@ SubCat=Synchronization\TJclCriticalSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create; virtual;
@@ -1422,8 +1467,9 @@ SubCat=Synchronization\TJclCriticalSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 class procedure CreateAndEnter(var CS: TJclCriticalSection);
@@ -1455,8 +1501,9 @@ SubCat=Synchronization\TJclCriticalSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -1475,8 +1522,9 @@ SubCat=Synchronization\TJclCriticalSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Enter;
@@ -1506,8 +1554,9 @@ SubCat=Synchronization\TJclCriticalSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Leave
@@ -1537,8 +1586,9 @@ SubCat=Synchronization\TJclCriticalSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Enter
@@ -1556,8 +1606,9 @@ SubCat=Synchronization\TJclEvent
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Pulse: Boolean;
@@ -1582,8 +1633,9 @@ SubCat=Synchronization\TJclEvent
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=ResetEvent
@@ -1611,8 +1663,9 @@ SubCat=Synchronization\TJclEvent
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Pulse
@@ -1641,8 +1694,9 @@ SubCat=Synchronization\TJclEvent
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=Pulse
@@ -1683,8 +1737,9 @@ SubCat=Synchronization\TJclEvent
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Open
@@ -1734,8 +1789,9 @@ SubCat=Synchronization\TJclEvent
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=Create
@@ -1761,8 +1817,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Existed: Boolean read FExisted;
@@ -1787,8 +1844,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Handle: THandle read FHandle;
@@ -1808,8 +1866,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Name: string read FName;
@@ -1826,8 +1885,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclWaitResult = (wrAbandoned, wrError, wrIoCompletion, wrSignaled, wrTimeout);
@@ -1852,8 +1912,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function SignalAndWait(const Obj: TJclDispatcherObject; TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
@@ -1900,8 +1961,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Unsupported
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=WaitFor
@@ -1946,8 +2008,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=WaitFor
@@ -1999,8 +2062,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=WaitAlertable
@@ -2037,8 +2101,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=WaitAlertable
@@ -2068,8 +2133,9 @@ Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 SubCat=Synchronization\TJclDispatcherObject
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -2092,8 +2158,9 @@ SubCat=Synchronization\TJclDispatcherObject
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
@@ -2122,9 +2189,10 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
 Requirements=Requires a 486 or better processor.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedExchangeSub
@@ -2155,8 +2223,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedExchangeSub
@@ -2188,8 +2257,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedSub
@@ -2220,8 +2290,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedExchangeAdd
@@ -2253,8 +2324,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedAdd
@@ -2286,8 +2358,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedAdd
@@ -2317,8 +2390,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedExchangeAdd
@@ -2349,8 +2423,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedAdd
@@ -2380,8 +2455,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedExchangeAdd
@@ -2412,8 +2488,9 @@ Unit=JclSynch
 Category=Libraries, Processes and Threads
 SubCat=Synchronization\Locked integer manipulation
 Author=Azret Botash;azret@attglobal.net
-BCB=3,4,5
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LockedAdd
@@ -2441,8 +2518,9 @@ SubCat=Synchronization\TJclMeteredSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Enter(TimeOut: Longword): TJclWaitResult;
@@ -2481,8 +2559,9 @@ SubCat=Synchronization\TJclMeteredSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Leave(ReleaseCount: Longint): Boolean; overload;
@@ -2516,8 +2595,9 @@ SubCat=Synchronization\TJclMeteredSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(InitialCount, MaxCount: Longint; const Name: string);
@@ -2553,8 +2633,9 @@ SubCat=Synchronization\TJclMeteredSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Open(const Name: string);
@@ -2577,5 +2658,6 @@ SubCat=Synchronization\TJclMeteredSection
 Author=Marcel van Brakel;brakelm@bart.nl
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Delphi=3,4,5
-BCB=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
