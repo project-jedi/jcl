@@ -2223,7 +2223,7 @@ begin
     L := 0;
     R := N;
     R := Sqrt(R);
-    Max := Round (R);        // only one factor can be > Sqrt (N)
+    Max := Round(R);         // only one factor can be > Sqrt (N)
     if N mod 2 = 0 then      // test even at first
     begin                    // 2 is a prime factor
       Inc(L);
@@ -3732,6 +3732,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.14  2004/09/16 19:47:32  rrossmair
+// check-in in preparation for release 1.92
+//
 // Revision 1.13  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
 //

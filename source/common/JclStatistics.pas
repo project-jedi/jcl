@@ -539,12 +539,15 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/09/16 19:47:32  rrossmair
+// check-in in preparation for release 1.92
+//
 // Revision 1.10  2004/08/18 19:06:15  rrossmair
 // - got rid of warning
 // - renamed local variables "L" to "N" (as commonly used to denote sample size)
 //
 // Revision 1.9  2004/08/18 17:08:59  rrossmair
-// - mantis #2019 fixed, improved error reports
+// - mantis #2019 & #2021 handled, improved error reports
 //
 // Revision 1.8  2004/07/29 15:16:51  marquardt
 // simple style cleaning

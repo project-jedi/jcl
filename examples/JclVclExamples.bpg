@@ -9,11 +9,13 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = ApiHookExample.exe AppInstExample.exe CreateProcAsUserExample.exe FramesTrackExample.exe \
-  LanManExample.exe LocalesExample.exe MapiExample.exe MidiOutExample.exe MultiMediaExample.exe \
-  NtSvcExample.exe PeFuncExample.exe ReadMailExample.exe RegistryExample.exe RTTIExample.exe \
-  SingleInstExample.exe SourceLocExample.exe StackTrackExample.exe SysInfoExample.exe \
-  TextReaderExample.exe ThreadExceptExample.exe UnmangleNameExample.exe VerInfoExample.exe
+PROJECTS = ApiHookExample.exe AppInstExample.exe CreateProcAsUserExample.exe \
+  FramesTrackExample.exe LanManExample.exe LocalesExample.exe MapiExample.exe \
+  MidiOutExample.exe MultiMediaExample.exe NtSvcExample.exe PeFuncExample.exe \
+  ReadMailExample.exe RegistryExample.exe RTTIExample.exe SingleInstExample.exe \
+  SourceLocExample.exe StackTrackExample.exe StructStorageExample.exe \
+  SysInfoExample.exe TextReaderExample.exe ThreadExceptExample.exe \
+  UnmangleNameExample.exe VerInfoExample.exe
 #------------------------------------------------------------------------------
 default: vcl\$(PROJECTS)
 #------------------------------------------------------------------------------
@@ -76,6 +78,9 @@ NtSvcExample.exe: vcl\ntservice\NtSvcExample.dpr
   $(DCC)
 
 RTTIExample.exe: vcl\rtti\RTTIExample.dpr
+  $(DCC)
+
+StructStorageExample.exe: vcl\structstorage\StructStorageExample.dpr
   $(DCC)
 
 TextReaderExample.exe: vcl\textreader\TextReaderExample.dpr

@@ -9,21 +9,23 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = NumFormatExample.exe FileSearchDemo.exe RTTIExample.exe EnvironmentExample.exe
+PROJECTS = FileSearchDemo.exe ClipLineDemo.exe NumFormatExample.exe \
+  RTTIExample.exe EnvironmentExample.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-NumFormatExample.exe: visclx\numformat\NumFormatExample.dpr
+FileSearchDemo.exe: visclx/filesearch/FileSearchDemo.dpr
   $(DCC)
 
-FileSearchDemo.exe: visclx\filesearch\FileSearchDemo.dpr
+ClipLineDemo.exe: visclx/graphics/ClipLineDemo.dpr
   $(DCC)
 
-RTTIExample.exe: visclx\rtti\RTTIExample.dpr
+NumFormatExample.exe: visclx/numformat/NumFormatExample.dpr
   $(DCC)
 
-EnvironmentExample.exe: visclx\sysinfo\EnvironmentExample.dpr
+RTTIExample.exe: visclx/rtti/RTTIExample.dpr
   $(DCC)
 
-
+EnvironmentExample.exe: visclx/sysinfo/EnvironmentExample.dpr
+  $(DCC)

@@ -62,7 +62,7 @@ type
     FFracLen: Byte;
     function MiscalcSingle(const X: Float): Float;
     procedure MiscalcComplex; // eliminates miscalculation
-    procedure FillCoords(const CompexType: TComplexKind);
+    procedure FillCoords(const ComplexType: TComplexKind);
     function GetRectangularString: string;
     function GetPolarString: string;
     procedure SetRectangularString(StrToParse: string);
@@ -289,10 +289,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclComplex.FillCoords(const CompexType: TComplexKind);
+procedure TJclComplex.FillCoords(const ComplexType: TComplexKind);
 begin
   MiscalcComplex;
-  case CompexType of
+  case ComplexType of
     crPolar:
       begin
         FCoord.X := FCoord.R * Cos(FCoord.Theta);
@@ -1770,6 +1770,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/09/16 19:47:32  rrossmair
+// check-in in preparation for release 1.92
+//
 // Revision 1.7  2004/08/01 05:52:11  marquardt
 // move constructors/destructors
 //
@@ -1782,5 +1785,14 @@ end;
 // Revision 1.4  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
+// Revision 1.3  2004/03/23 08:54 rrossmair
+// to work around D7 trial issues, $WEAKPACKAGEUNIT directives now depend on symbol in jedi.inc
+// modification date comments replaced by $Id$ CVS key word
+//
+// Revision 1.2  2003/11/27 16:54 rrossmair
+// removed unused JclSysUtils from uses clause
+//
+// Revision 1.1  2003/11/19 16:43 mthoma
+// Initial upload.
 
 end.

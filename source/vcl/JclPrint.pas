@@ -21,7 +21,7 @@
 {                                                                                                  }
 { Contributors:                                                                                    }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus att pjh2 dott de                                          }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Matthias Thoma (mthoma)                                                                        }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -1381,6 +1381,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/09/16 19:47:32  rrossmair
+// check-in in preparation for release 1.92
+//
 // Revision 1.12  2004/08/02 15:30:16  marquardt
 // hunting down (rom) comments
 //
