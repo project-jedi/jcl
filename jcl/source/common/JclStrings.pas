@@ -160,6 +160,7 @@ function StrProper(const S: AnsiString): AnsiString;
 procedure StrProperBuff(S: PAnsiChar);
 function StrQuote(const S: AnsiString; C: AnsiChar): AnsiString;
 function StrRemoveChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
+function StrKeepChars(const S: AnsiString; const Chars: TSysCharSet): AnsiString;
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString;
   Flags: TReplaceFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}); // TODOC Robert Lee
 function StrReplaceChar(const S: AnsiString; const C1, C2: Char): AnsiString;
