@@ -13,8 +13,7 @@ Count=2
 1=XRes:DWORD=New Width of the screen, in pixels.
 2=YRes:DWORD=New Height of the screen, in pixels.
 [Result]
-The function internally uses the ChangeDisplaySettings function and the result
-is the result of that function. The possible return values are:
+Internally the ChangeDisplaySettings function is used to obtain the result. The possible return values are:
   <TABLE>
   <TR VALIGN="top">
   <TH align=left width=43%>Value</TH><TH align=left width=57%>Meaning</TH>
