@@ -311,12 +311,7 @@ begin
   FEDIDOT := ediUnknown;
   FData := '';
   FLength := 0;
-  if Assigned(Parent) then
-  begin
-    FParent := Parent;
-  end
-  else
-    FParent := nil;
+  FParent := Parent;
   FDelimiters := nil;
   FSpecPointer := nil;
   FCustomData1 := nil;
@@ -334,8 +329,7 @@ begin
   Inc(Debug_EDIDataObjectsDestroyed);
   {$ENDIF}
   if not Assigned(FParent) then
-    if Assigned(FDelimiters) then
-      FDelimiters.Free;
+    FDelimiters.Free;
   FDelimiters := nil;
   FSpecPointer := nil;
   FCustomData1 := nil;
@@ -363,11 +357,7 @@ end;
 procedure TEDIDataObject.SetDelimiters(const Delimiters: TEDIDelimiters);
 begin
   if not Assigned(FParent) then
-    if Assigned(FDelimiters) then
-    begin
-      FDelimiters.Free;
-      FDelimiters := nil;
-    end;
+    FreeAndNil(FDelimiters);
   FDelimiters := Delimiters;
 end;
 
@@ -462,8 +452,7 @@ begin
     (Index <= High(FEDIDataObjects)) then
   begin
     // Delete
-    FEDIDataObjects[Index].Free;
-    FEDIDataObjects[Index] := nil;
+    FreeAndNil(FEDIDataObjects[Index]);
     // (rom) please replace with a call to Move() throughout the file
     // Shift
     for I := Index + 1 to High(FEDIDataObjects) do
@@ -482,12 +471,8 @@ var
   I: Integer;
 begin
   for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
-    if Assigned(FEDIDataObjects[I]) then
-    begin
-      // Delete
-      FEDIDataObjects[I].Free;
-      FEDIDataObjects[I] := nil;
-    end;
+    // Delete
+    FreeAndNil(FEDIDataObjects[I]);
   // Resize
   SetLength(FEDIDataObjects, 0);
 end;
@@ -503,11 +488,7 @@ begin
   begin
     // Delete
     for I := Index to (Index + Count) - 1 do
-      if Assigned(FEDIDataObjects[I]) then
-      begin
-        FEDIDataObjects[I].Free;
-        FEDIDataObjects[I] := nil;
-      end;
+      FreeAndNil(FEDIDataObjects[I]);
     // Shift
     for I := (Index + Count) to High(FEDIDataObjects) do
     begin
@@ -565,7 +546,6 @@ begin
     for I := High(FEDIDataObjects) downto InsertIndex + 1 do
       FEDIDataObjects[I] := FEDIDataObjects[I-1];
     // Insert
-    FEDIDataObjects[InsertIndex] := nil;
     FEDIDataObjects[InsertIndex] := InternalCreateEDIDataObject;
   end
   else
@@ -589,7 +569,6 @@ begin
     for I := High(FEDIDataObjects) downto InsertIndex + 1 do
       FEDIDataObjects[I] := FEDIDataObjects[I-1];
     // Insert
-    FEDIDataObjects[InsertIndex] := nil;
     FEDIDataObjects[InsertIndex] := EDIDataObject;
     FEDIDataObjects[InsertIndex].Parent := Self;
   end
@@ -664,11 +643,7 @@ begin
     if Index >= Low(FEDIDataObjects) then
       if Index <= High(FEDIDataObjects) then
       begin
-        if Assigned(FEDIDataObjects[Index]) then
-        begin
-          FEDIDataObjects[Index].Free;
-          FEDIDataObjects[Index] := nil;
-        end;
+        FreeAndNil(FEDIDataObjects[Index]);
         FEDIDataObjects[Index] := EDIDataObject;
       end
       else
