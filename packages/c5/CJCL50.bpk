@@ -2,115 +2,137 @@
 <!-- C++Builder XML Project -->
 <PROJECT>
   <MACROS>
-    <VERSION value="BCB.05.03"/>
-    <PROJECT value="CJCL50.bpl"/>
-    <OBJFILES value="..\..\lib\C5\Jcl8087.obj ..\..\lib\C5\JclBase.obj ..\..\lib\C5\JclComplex.obj
-      ..\..\lib\C5\JclCounter.obj ..\..\lib\C5\JclDateTime.obj ..\..\lib\C5\JclEDIXML.obj
-      ..\..\lib\C5\JclEDI_ANSIX12.obj ..\..\lib\C5\JclEDI_UNEDIFACT.obj ..\..\lib\C5\JclEDI.obj
-      ..\..\lib\C5\JclEDISEF.obj ..\..\lib\C5\JclEDITranslators.obj ..\..\lib\C5\JclExprEval.obj
-      ..\..\lib\C5\JclFileUtils.obj ..\..\lib\C5\JclIniFiles.obj ..\..\lib\C5\JclLogic.obj
-      ..\..\lib\C5\JclMath.obj ..\..\lib\C5\JclMIDI.obj ..\..\lib\C5\JclMime.obj
-      ..\..\lib\C5\JclResources.obj ..\..\lib\C5\JclSchedule.obj ..\..\lib\C5\JclStatistics.obj
-      ..\..\lib\C5\JclStrHashMap.obj ..\..\lib\C5\JclStrings.obj ..\..\lib\C5\JclSysInfo.obj
-      ..\..\lib\C5\JclSysUtils.obj ..\..\lib\C5\JclUnitConv.obj ..\..\lib\C5\JclAppInst.obj
-      ..\..\lib\C5\JclCOM.obj ..\..\lib\C5\JclConsole.obj ..\..\lib\C5\JclDebug.obj
-      ..\..\lib\C5\JclHookExcept.obj ..\..\lib\C5\JclLANMan.obj ..\..\lib\C5\JclLocales.obj
-      ..\..\lib\C5\JclMapi.obj ..\..\lib\C5\JclMiscel.obj ..\..\lib\C5\JclMultimedia.obj 
-      ..\..\lib\C5\JclNTFS.obj ..\..\lib\C5\JclPeImage.obj ..\..\lib\C5\JclRegistry.obj 
-      ..\..\lib\C5\JclRTTI.obj ..\..\lib\C5\JclSecurity.obj ..\..\lib\C5\JclShell.obj 
-      ..\..\lib\C5\JclSvcCtrl.obj ..\..\lib\C5\JclSynch.obj ..\..\lib\C5\JclTD32.obj 
-      ..\..\lib\C5\JclUnicode.obj ..\..\lib\C5\JclWin32.obj ..\..\lib\C5\JclWinMIDI.obj 
-      ..\..\lib\C5\LM.obj ..\..\lib\C5\Snmp.obj ..\..\lib\C5\JclGraphics.obj 
-      ..\..\lib\C5\JclGraphUtils.obj ..\..\lib\C5\JclPrint.obj ..\..\lib\C5\CJCL50.obj"/>
-    <RESFILES value="CJCL50.res ..\..\lib\C5\JclUnicode.res"/>
+    <VERSION value="BCB.05.00"/>
+    <PROJECT value="CJcl50.bpl"/>
+    <OBJFILES value="..\..\lib\c5\obj\cjcl.obj ..\..\lib\c5\obj\JclUnitConv.obj 
+      ..\..\lib\c5\obj\JclBase.obj ..\..\lib\c5\obj\JclComplex.obj 
+      ..\..\lib\c5\obj\JclCounter.obj ..\..\lib\c5\obj\JclDateTime.obj 
+      ..\..\lib\c5\obj\JclEDI.obj ..\..\lib\c5\obj\JclEDI_ANSIX12.obj 
+      ..\..\lib\c5\obj\JclEDI_UNEDIFACT.obj ..\..\lib\c5\obj\JclEDISEF.obj 
+      ..\..\lib\c5\obj\JclEDITranslators.obj ..\..\lib\c5\obj\JclEDIXML.obj 
+      ..\..\lib\c5\obj\JclExprEval.obj ..\..\lib\c5\obj\JclFileUtils.obj 
+      ..\..\lib\c5\obj\JclIniFiles.obj ..\..\lib\c5\obj\JclLogic.obj 
+      ..\..\lib\c5\obj\JclMath.obj ..\..\lib\c5\obj\JclMIDI.obj 
+      ..\..\lib\c5\obj\JclMime.obj ..\..\lib\c5\obj\JclResources.obj 
+      ..\..\lib\c5\obj\JclRTTI.obj ..\..\lib\c5\obj\JclSchedule.obj 
+      ..\..\lib\c5\obj\JclStatistics.obj ..\..\lib\c5\obj\JclStrHashMap.obj 
+      ..\..\lib\c5\obj\JclStrings.obj ..\..\lib\c5\obj\JclSysInfo.obj 
+      ..\..\lib\c5\obj\JclSysUtils.obj ..\..\lib\c5\obj\Jcl8087.obj 
+      ..\..\lib\c5\obj\Snmp.obj ..\..\lib\c5\obj\JclCIL.obj 
+      ..\..\lib\c5\obj\JclCLR.obj ..\..\lib\c5\obj\JclCOM.obj 
+      ..\..\lib\c5\obj\JclConsole.obj ..\..\lib\c5\obj\JclDebug.obj 
+      ..\..\lib\c5\obj\JclHookExcept.obj ..\..\lib\c5\obj\JclLANMan.obj 
+      ..\..\lib\c5\obj\JclLocales.obj ..\..\lib\c5\obj\JclMapi.obj 
+      ..\..\lib\c5\obj\JclMetadata.obj ..\..\lib\c5\obj\JclMiscel.obj 
+      ..\..\lib\c5\obj\JclMultimedia.obj ..\..\lib\c5\obj\JclNTFS.obj 
+      ..\..\lib\c5\obj\JclPeImage.obj ..\..\lib\c5\obj\JclRegistry.obj 
+      ..\..\lib\c5\obj\JclSecurity.obj ..\..\lib\c5\obj\JclShell.obj 
+      ..\..\lib\c5\obj\JclSvcCtrl.obj ..\..\lib\c5\obj\JclSynch.obj 
+      ..\..\lib\c5\obj\JclTD32.obj ..\..\lib\c5\obj\JclUnicode.obj 
+      ..\..\lib\c5\obj\JclWin32.obj ..\..\lib\c5\obj\JclWinMIDI.obj 
+      ..\..\lib\c5\obj\LM.obj ..\..\lib\c5\obj\JclAppInst.obj"/>
+    <RESFILES value="CJcl.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JvInspector50_AJLBCB.lib"/>
-    <SPARELIBS value="Vcl50.lib vcljpg50.lib JvInspector50_AJLBCB.lib"/>
-    <PACKAGES value="vcl50.bpi vcljpg50.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value="rtl.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\source\Common;..\..\source\Windows;..\..\source\VCL"/>
-    <PATHRC value=".;..\..\source\Common;..\..\source\Windows;..\..\source\VCL"/>
+    <PATHPAS value=".;..\..\source\common;..\..\source\windows"/>
+    <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
-    <LINKER value="tlink32"/>
-    <USERDEFINES value=""/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="CJCL50.cpp"/>
-    <INCLUDEPATH value="..\..\source\Common;..\..\source\Windows;..\..\source\VCL;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\projects\lib;..\..\source\Common;..\..\source\Windows;..\..\source\VCL;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <MAINSOURCE value="CJcl.cpp"/>
+    <INCLUDEPATH value="..\..\source\windows;..\..\source\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\source\windows;..\..\source\common;..\..\lib\c5\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\source\Common;..\..\source\Windows;..\..\source\VCL; -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
-    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
-    <PFLAGS value="-N2..\..\lib\C5 -N0..\..\lib\C5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
+    <IDLCFLAGS value="-I..\..\source\windows -I..\..\source\common -I$(BCB)\include 
+      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tWM"/>
+    <PFLAGS value="-N2..\..\lib\c5\obj -N0..\..\lib\c5\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\..\lib\C5 -D&quot;JEDI Code Library package for C++Builder 5&quot; -aa -Tpp -Gpr -x 
-      -Gn -Gl -Gi"/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\lib\c5\obj -D&quot;JEDI Code Library RTL package&quot; -aa -Tpp
+      -Gpr -x -Gn -Gl -Gi -v"/>
+    <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
   </LINKER>
+  <FILELIST>
+      <FILE FILENAME="CJcl.res" FORMNAME="" UNITNAME="CJcl.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cjcl.cpp" FORMNAME="" UNITNAME="CJcl" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclEDI_UNEDIFACT.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclEDISEF.pas" FORMNAME="" UNITNAME="JclEDISEF" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclEDITranslators.pas" FORMNAME="" UNITNAME="JclEDITranslators" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclEDIXML.pas" FORMNAME="" UNITNAME="JclEDIXML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclExprEval.pas" FORMNAME="" UNITNAME="JclExprEval" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclFileUtils.pas" FORMNAME="" UNITNAME="JclFileUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclIniFiles.pas" FORMNAME="" UNITNAME="JclIniFiles" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclLogic.pas" FORMNAME="" UNITNAME="JclLogic" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclMath.pas" FORMNAME="" UNITNAME="JclMath" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclMIDI.pas" FORMNAME="" UNITNAME="JclMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclMime.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclResources.pas" FORMNAME="" UNITNAME="JclResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclRTTI.pas" FORMNAME="" UNITNAME="JclRTTI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclStatistics.pas" FORMNAME="" UNITNAME="JclStatistics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclStrHashMap.pas" FORMNAME="" UNITNAME="JclStrHashMap" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclStrings.pas" FORMNAME="" UNITNAME="JclStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\JclSysUtils.pas" FORMNAME="" UNITNAME="JclSysUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\common\Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\Snmp.pas" FORMNAME="" UNITNAME="Snmp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclCIL.pas" FORMNAME="" UNITNAME="JclCIL" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclCLR.pas" FORMNAME="" UNITNAME="JclCLR" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclCOM.pas" FORMNAME="" UNITNAME="JclCOM" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclConsole.pas" FORMNAME="" UNITNAME="JclConsole" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclDebug.pas" FORMNAME="" UNITNAME="JclDebug" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclHookExcept.pas" FORMNAME="" UNITNAME="JclHookExcept" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclLANMan.pas" FORMNAME="" UNITNAME="JclLANMan" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclLocales.pas" FORMNAME="" UNITNAME="JclLocales" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclMapi.pas" FORMNAME="" UNITNAME="JclMapi" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclMetadata.pas" FORMNAME="" UNITNAME="JclMetadata" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclMiscel.pas" FORMNAME="" UNITNAME="JclMiscel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclMultimedia.pas" FORMNAME="" UNITNAME="JclMultimedia" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclNTFS.pas" FORMNAME="" UNITNAME="JclNTFS" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclPeImage.pas" FORMNAME="" UNITNAME="JclPeImage" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclRegistry.pas" FORMNAME="" UNITNAME="JclRegistry" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclSecurity.pas" FORMNAME="" UNITNAME="JclSecurity" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclShell.pas" FORMNAME="" UNITNAME="JclShell" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclSvcCtrl.pas" FORMNAME="" UNITNAME="JclSvcCtrl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclSynch.pas" FORMNAME="" UNITNAME="JclSynch" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclTD32.pas" FORMNAME="" UNITNAME="JclTD32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclUnicode.pas" FORMNAME="" UNITNAME="JclUnicode" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclWin32.pas" FORMNAME="" UNITNAME="JclWin32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclWinMIDI.pas" FORMNAME="" UNITNAME="JclWinMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\LM.pas" FORMNAME="" UNITNAME="LM" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\source\windows\JclAppInst.pas" FORMNAME="" UNITNAME="JclAppInst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
   <IDEOPTIONS>
-[Version Info]
-IncludeVerInfo=1
-AutoIncBuild=0
-MajorVer=1
-MinorVer=20
-Release=1
-Build=779
-Debug=0
-PreRelease=0
-Special=1
-Private=0
-DLL=0
-Locale=1033
-CodePage=1252
-
-[Version Info Keys]
-CompanyName=Project JEDI
-FileDescription=C5 package for JCL
-FileVersion=1.20.1.779
-InternalName=CJCL50
-LegalCopyright=Copyright (C) 1999, 2003 Project JEDI
-LegalTrademarks=
-OriginalFilename=CJCL50.bpk
-ProductName=Jedi Code Library
-ProductVersion=1.20.1.779 Release 1.20
-Comments=
-SpecialBuild=for C++Builder 5
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>
