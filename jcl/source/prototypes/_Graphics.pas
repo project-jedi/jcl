@@ -26,12 +26,13 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
-// For history see end of file
+{$IFDEF PROTOTYPE}
+// Last modified: $Date$
+{$ELSE ~PROTOTYPE}
+// For history, see end of file
 
-{$IFNDEF Develop}
 unit {$IFDEF VisualCLX} JclQGraphics {$ELSE} JclGraphics {$ENDIF};
-{$ENDIF Develop}
+{$ENDIF ~PROTOTYPE}
 
 {$I jcl.inc}
 
@@ -6117,13 +6118,16 @@ initialization
   SetGamma(0.7);
 
 // History:
-
+{$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.8  2004/04/18 06:32:07  rrossmair
+// replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //
 // Revision 1.6  2004/04/06 05:01:54  peterjhaas
 // adapt compiler conditions, add log entry
-//
 
 end.
