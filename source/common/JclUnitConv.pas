@@ -328,9 +328,10 @@ end;
 
 function DmsToDeg(const D, M: Integer; const S: Float): Float;
 begin
-  DomainCheck((M < 0) or (S < 0));
+  DomainCheck((M < 0) or (M > 60) or (S < 0.0) or (S > 60.0));
   Result := Abs(D) + M * DegPerArcMinute + S * DegPerArcSecond;
-  if D < 0 then Result := -Result;
+  if D < 0 then
+    Result := -Result;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -351,7 +352,8 @@ begin
   D := Trunc(DD);
   M := Trunc(MM);
   S := Frac(MM) * ArcSecondsPerArcMinute;
-  if Degrees < 0 then D := -D;
+  if Degrees < 0 then
+    D := -D;
 end;
 
 //--------------------------------------------------------------------------------------------------
