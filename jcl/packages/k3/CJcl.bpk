@@ -4,16 +4,20 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="CJclK3.bpl"/>
-    <OBJFILES value="../../lib/K3/Jcl8087.obj ../../lib/K3/JclBase.obj ../../lib/K3/JclComplex.obj
-      ../../lib/K3/JclCounter.obj ../../lib/K3/JclDateTime.obj ../../lib/K3/JclEDIXML.obj
-      ../../lib/K3/JclEDI_ANSIX12.obj ../../lib/K3/JclEDI_UNEDIFACT.obj ../../lib/K3/JclEDI.obj
-      ../../lib/K3/JclEDISEF.obj ../../lib/K3/JclEDITranslators.obj ../../lib/K3/JclExprEval.obj
-      ../../lib/K3/JclFileUtils.obj ../../lib/K3/JclIniFiles.obj ../../lib/K3/JclLogic.obj
-      ../../lib/K3/JclMath.obj ../../lib/K3/JclMIDI.obj ../../lib/K3/JclMime.obj
-      ../../lib/K3/JclResources.obj ../../lib/K3/JclSchedule.obj ../../lib/K3/JclStatistics.obj
-      ../../lib/K3/JclStrHashMap.obj ../../lib/K3/JclStrings.obj ../../lib/K3/JclSysInfo.obj
-      ../../lib/K3/JclSysUtils.obj ../../lib/K3/JclUnitConv.obj ../../lib/K3/CJcl.obj"/>
-    <RESFILES value="CJcl.res"/>
+    <OBJFILES value="../../lib/k3/CJcl.obj ../../lib/k3/Jcl8087.obj ../../lib/k3/JclBase.obj 
+      ../../lib/k3/JclComplex.obj ../../lib/k3/JclCounter.obj 
+      ../../lib/k3/JclDateTime.obj ../../lib/k3/JclEDI.obj 
+      ../../lib/k3/JclEDIXML.obj ../../lib/k3/JclEDI_ANSIX12.obj 
+      ../../lib/k3/JclEDI_UNEDIFACT.obj ../../lib/k3/JclEDISEF.obj 
+      ../../lib/k3/JclEDITranslators.obj ../../lib/k3/JclExprEval.obj 
+      ../../lib/k3/JclFileUtils.obj ../../lib/k3/JclIniFiles.obj 
+      ../../lib/k3/JclLogic.obj ../../lib/k3/JclMath.obj 
+      ../../lib/k3/JclMIDI.obj ../../lib/k3/JclMime.obj 
+      ../../lib/k3/JclResources.obj ../../lib/k3/JclSchedule.obj 
+      ../../lib/k3/JclStatistics.obj ../../lib/k3/JclStrHashMap.obj 
+      ../../lib/k3/JclStrings.obj ../../lib/k3/JclSysInfo.obj 
+      ../../lib/k3/JclSysUtils.obj ../../lib/k3/JclUnitConv.obj"/>
+    <RESFILES value="CJCL.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -21,9 +25,9 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi"/>
+    <PACKAGES value="rtl.bpi bcbie.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;../../source/Common;../../source/Unix"/>
+    <PATHPAS value=".;../../source/common;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)/lib/debug"/>
@@ -31,21 +35,21 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="CJCL.cpp"/>
-    <INCLUDEPATH value="../../source/Common;../../source/Unix;$(BCB)/include;$(BCB)/include/vcl"/>
-    <LIBPATH value="../../source/Common;../../source/Unix;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
+    <MAINSOURCE value="CJcl.cpp"/>
+    <INCLUDEPATH value="../../source/common;../../source/unix;$(BCB)/include;$(BCB)/include/vcl"/>
+    <LIBPATH value="../../source/common;../../source/unix;../../lib/K3;$(BCB)/lib/debug;$(BCB)/lib/obj;$(BCB)/lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I../../source/Common;../../source/Unix -I$(BCB)/include -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG
-      -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
+    <IDLCFLAGS value="-I../../source/common -I../../source/unix -I$(BCB)/include 
+      -I$(BCB)/include/vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)/lib/vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2../../lib/K3 -N0../../lib/K3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2../../lib/k3 -N0../../lib/k3 -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I../../lib/K3 -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I../../lib/k3 -GB&quot;CJcl&quot; -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -56,35 +60,34 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="CJCL.res" FORMNAME="" UNITNAME="CJCL.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJCL.cpp" FORMNAME="" UNITNAME="CJCL" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJcl.cpp" FORMNAME="" UNITNAME="CJCL" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclEDIXML.pas" FORMNAME="" UNITNAME="JclEDIXML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclEDI_UNEDIFACT.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclEDISEF.pas" FORMNAME="" UNITNAME="JclEDISEF" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclEDITranslators.pas" FORMNAME="" UNITNAME="JclEDITranslators" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclExprEval.pas" FORMNAME="" UNITNAME="JclExprEval" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclFileUtils.pas" FORMNAME="" UNITNAME="JclFileUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclIniFiles.pas" FORMNAME="" UNITNAME="JclIniFiles" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclLogic.pas" FORMNAME="" UNITNAME="JclLogic" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclMath.pas" FORMNAME="" UNITNAME="JclMath" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclMIDI.pas" FORMNAME="" UNITNAME="JclMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclMime.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclResources.pas" FORMNAME="" UNITNAME="JclResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclStatistics.pas" FORMNAME="" UNITNAME="JclStatistics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclStrHashMap.pas" FORMNAME="" UNITNAME="JclStrHashMap" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclStrings.pas" FORMNAME="" UNITNAME="JclStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclSysUtils.pas" FORMNAME="" UNITNAME="JclSysUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="../../source/Common/JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/Jcl8087.pas" FORMNAME="" UNITNAME="Jcl8087" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclBase.pas" FORMNAME="" UNITNAME="JclBase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclComplex.pas" FORMNAME="" UNITNAME="JclComplex" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclCounter.pas" FORMNAME="" UNITNAME="JclCounter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclDateTime.pas" FORMNAME="" UNITNAME="JclDateTime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI.pas" FORMNAME="" UNITNAME="JclEDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDIXML.pas" FORMNAME="" UNITNAME="JclEDIXML" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI_ANSIX12.pas" FORMNAME="" UNITNAME="JclEDI_ANSIX12" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDI_UNEDIFACT.pas" FORMNAME="" UNITNAME="JclEDI_UNEDIFACT" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDISEF.pas" FORMNAME="" UNITNAME="JclEDISEF" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclEDITranslators.pas" FORMNAME="" UNITNAME="JclEDITranslators" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclExprEval.pas" FORMNAME="" UNITNAME="JclExprEval" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclFileUtils.pas" FORMNAME="" UNITNAME="JclFileUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclIniFiles.pas" FORMNAME="" UNITNAME="JclIniFiles" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclLogic.pas" FORMNAME="" UNITNAME="JclLogic" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclMath.pas" FORMNAME="" UNITNAME="JclMath" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclMIDI.pas" FORMNAME="" UNITNAME="JclMIDI" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclMime.pas" FORMNAME="" UNITNAME="JclMime" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclResources.pas" FORMNAME="" UNITNAME="JclResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclSchedule.pas" FORMNAME="" UNITNAME="JclSchedule" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclStatistics.pas" FORMNAME="" UNITNAME="JclStatistics" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclStrHashMap.pas" FORMNAME="" UNITNAME="JclStrHashMap" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclStrings.pas" FORMNAME="" UNITNAME="JclStrings" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclSysInfo.pas" FORMNAME="" UNITNAME="JclSysInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclSysUtils.pas" FORMNAME="" UNITNAME="JclSysUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="../../source/common/JclUnitConv.pas" FORMNAME="" UNITNAME="JclUnitConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -108,14 +111,17 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=1.0.0.0
+FileVersion=1.90.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=1.0.0.0
+ProductVersion=1.90.0.0
 Comments=
+
+[Debugging]
+DebugSourceDirs=
 
 [Parameters]
 RunParams=
