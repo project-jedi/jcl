@@ -15,10 +15,10 @@
 { The Initial Developer of the Original Code is Marcel van Brakel.                                 }
 { Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Marcel van Brakel,                                                                             }
 {   Peter Friese,                                                                                  }
-{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de,                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
@@ -53,7 +53,7 @@ const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 91;   // Forth minor release JCL 1.20
   JclVersionRelease = 0;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1534; // build number, days since march 1, 2000
+  JclVersionBuild   = 1540; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -95,7 +95,6 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  { TODO -cHelp : Exception class for JCL internal errors }
   EJclInternalError = class(EJclError);
 
 //--------------------------------------------------------------------------------------------------
@@ -312,6 +311,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.15  2004/05/31 01:43:18  rrossmair
+// Processed documentation TODOs
+//
 // Revision 1.14  2004/05/13 07:47:30  rrossmair
 // Removed FPC compatibility code rendered superfluous by latest FPC updates; updated build #
 //
