@@ -4482,15 +4482,14 @@ end;
 
 function AttributeMatch(FileAttributes, RejectedAttr, RequiredAttr: Integer): Boolean;
 begin
+  if FileAttributes = 0 then
+    FileAttributes := faNormalFile;
   {$IFDEF MSWINDOWS}
-  Assert(FileAttributes <> 0, 'File attributes can be null?');
   RequiredAttr := RequiredAttr and not faUnixSpecific;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  if FileAttributes = 0 then
-    FileAttributes := faNormalFile;
   RequiredAttr := RequiredAttr and not faWindowsSpecific;
-  {$ENDIF def UNIX}
+  {$ENDIF UNIX}
   Result := (FileAttributes and RejectedAttr = 0)
     and (FileAttributes and RequiredAttr = RequiredAttr);
 end;
