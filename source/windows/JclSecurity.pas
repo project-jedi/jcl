@@ -208,11 +208,7 @@ begin
   if OpenProcessToken(GetCurrentProcess, TOKEN_ADJUST_PRIVILEGES, Token) then
   begin
     TokenPriv.PrivilegeCount := 1;
-    {$IFDEF FPC}
-    LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid.QuadPart);
-    {$ELSE}
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
-    {$ENDIF}
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
     JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv),
       nil, nil);
@@ -242,11 +238,7 @@ begin
   if HaveToken then
   begin
     TokenPriv.PrivilegeCount := 1;
-    {$IFDEF FPC}
-    LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid.QuadPart);
-    {$ELSE}
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privileges[0].Luid);
-    {$ENDIF}
     TokenPriv.Privileges[0].Attributes := PrivAttrs[Enable];
     JclWin32.AdjustTokenPrivileges(Token, False, TokenPriv, SizeOf(TokenPriv),
       nil, nil);
@@ -273,11 +265,7 @@ begin
   begin
     TokenPriv.PrivilegeCount := 1;
     TokenPriv.Control := 0;
-    {$IFDEF FPC}
-    LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privilege[0].Luid.QuadPart);
-    {$ELSE}
     LookupPrivilegeValue(nil, PChar(Privilege), TokenPriv.Privilege[0].Luid);
-    {$ENDIF}
     Result := PrivilegeCheck(Token, TokenPriv, Res) and Res;
     CloseHandle(Token);
   end;
