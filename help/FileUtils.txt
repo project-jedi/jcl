@@ -862,6 +862,61 @@ Count=1
 1=PathGetDisplayName
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function FindUnusedFileName(const FileName, FileExt, Suffix: AnsiString): AnsiString;
+[ShortDescr]
+Returns a unique filename composed of the specified parts and a unique number.
+[Description]
+FindUnusedFileName returns a unique filename composed of the FileName and Suffix
+parts and an optional number. If a file of the form FileName + Suffix.FileExt
+doesn't exist yet this is the name that's returned. If such a file already exists
+the function appends a number to the filename, starting at '1' and continues to
+increment this number until no file with the composed filename exists. For example,
+calling FindUnusedFileName('My', 'txt', 'File') while a file named 'MyFile.txt'
+and 'MyFile1.txt' already exists, will return 'MyFile2.txt' (the sequence tried
+by the function is 'MyFile.txt', 'MyFile1.txt' and 'MyFile2.txt').
+[Parameters]
+Count=3
+1=FileName:string=Name part of the filename
+2=FileExt:string=Extension part of the filename
+3=Suffix:string=Optional suffix to be appended to FileName
+[Result]
+A unique filename composed of the specified parts and a number to make it unique.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Anthony Steele;anthony@southeaster.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ForceDirectories(Name: string): Boolean;
+[ShortDescr]
+Creates all the directories along a directory path if they do not already exist.
+[Description]
+Creates all the directories along a directory path if they do not already exist.
+Note that this routine was copied from FileCtrl.pas to avoid a dependency on that
+unit, see source code further more details. 
+[Parameters]
+Count=1
+1=Name:string=Directory path to be created, if it doesn't exist already.
+[Result]
+ForceDirectories returns True if it successfully creates all necessary directories,
+False if it could not create a needed directory.
+[Notes]
+Count=1
+1=Do not call ForceDirectories with an empty string. Doing so causes ForceDirectories to raise an exception.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function FileGetDisplayName(const FileName: string): string;
 [ShortDescr]
 Returns the display name of a path.
@@ -941,7 +996,7 @@ exist on the specified drive and the drive must support short name aliases or th
 function will fail.
 [Result]
 If the function succeeds it returns the short name of the given path. If it fails
-it returns an empty string.
+it returns a copy of the supplied path.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1057,7 +1112,7 @@ Count=2
 2=PathIsAbsolute
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure PathExtractElements(const P: string; var Drive, Path, FileName, Ext: string);
+procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 [ShortDescr]
 Extracts all elements from a path.
 [Description]
@@ -1066,7 +1121,7 @@ path and filename. Depending on the supplied path any of the out parameters can
 be an empty string on return.
 [Parameters]
 Count=5
-1=P:string=String that represents a path that you want to split into its elements.
+1=Source:string=String that represents a path that you want to split into its elements.
 2=Drive:string=Drive indicator. This is a string in the form "c:\".
 3=Path:string=Path of the file, without drive or filename. Leading and trailing directory separators are trimmed.
 4=FileName:string=Name of the file, without the extension part.
@@ -1478,7 +1533,7 @@ Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure GetFileAttributeListEx(const Items: TStrings; A: Integer);
+procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 [ShortDescr]
 Converts attributes flag to a stringlist.
 [Description]
@@ -1490,7 +1545,7 @@ where GetFileAttributeList only handles the standard attributes.
 [Parameters]
 Count=2
 1=List:TStrings=TStrings derivative that receives the strings.
-2=A:Integer=Attributes of a file, for example retrieved by GetFileAttributes.
+2=Attr:Integer=Attributes of a file, for example retrieved by GetFileAttributes.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1505,7 +1560,7 @@ Count=1
 1=GetFileAttributeList
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure GetFileAttributeList(const Items: TStrings; A: Integer);
+procedure GetFileAttributeList(const Items: TStrings; const Attr: Integer);
 [ShortDescr]
 Converts attributes flag to a stringlist.
 [Description]
@@ -1515,7 +1570,7 @@ the 'standard' file attributes as specified by the faXXX constants in SysUtils.p
 [Parameters]
 Count=2
 1=List:TStrings=TStrings derivative that receives the strings.
-2=A:Integer=Attributes of a file, usually you'll pass in TSearchRec.Attr.
+2=Attr:Integer=Attributes of a file, usually you'll pass in TSearchRec.Attr.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1893,6 +1948,29 @@ Count=1
 1=OpenVolume
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+procedure CreateEmptyFile(const FileName: string);
+[ShortDescr]
+Creates a new file with a zero length.
+[Description]
+CreateEmptyFile creates a new file with size of zero, that is without content.
+If a file with the same name already exists but isn't opened, the file is
+overwritten. Upon failure an exception is raised, for example if a file with the
+same name already exists but is opened.
+[Parameters]
+Count=1
+1=FileName:string=Name of the file to create.
+[Result]
+[Quick Info]
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=Anthony Steele;anthony@southeaster.com
+BCB=3,4,5
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function GetFileInformation(const FileName: string): TSearchRec;
 [ShortDescr]
 Returns information about a file.
@@ -2171,7 +2249,7 @@ Count=1
 1=DelTreeEx
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function DelTreeEx(Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
+function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 [ShortDescr]
 Recursively deletes a folder.
 [Description]
