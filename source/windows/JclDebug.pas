@@ -2583,7 +2583,11 @@ end;
 procedure HookedRaiseException(ExceptionCode, ExceptionFlags, NumberOfArguments: DWORD;
   Arguments: PExceptionArguments); stdcall;
 const
-  cDelphiException = {$IFDEF DELPHI2}$0EEDFACE{$ELSE}$0EEDFADE{$ENDIF};
+  {$IFDEF DELPHI2}
+  cDelphiException = $0EEDFACE;
+  {$ELSE}
+  cDelphiException = $0EEDFADE;
+  {$ENDIF}
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
