@@ -374,7 +374,7 @@ uses
   RegStr,
   {$ENDIF FPC}
   Math,
-  JclStrings, JclRegistry, JclSysInfo;
+  JclRegistry, JclStrings, JclSysInfo, JclWideStrings;
 
 const
   INVALID_SCM_HANDLE = 0;
@@ -1096,21 +1096,24 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   end;}
 
   { TODO -cTest : Test, if OK delete function above }
-  { TODO -cHelp : Contributor Peter J. Haas }
+  { TODO -cHelp : }
   procedure EnumServiceGroups;
   const
     cKeyServiceGroupOrder = '\SYSTEM\CurrentControlSet\Control\ServiceGroupOrder';
-    cValList              = 'List';
+    cValList = 'List';
   var
-    S: WideString;
-    List: TDynStringArray;
+    List: TWideStringList;
     I: Integer;
   begin
     // Get the service groups
-    S := RegReadBinaryAsWideString(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList);
-    MultiWideStringToStrings(List, S);
-    for I := Low(List) to High(List) do
-      AddGroup(TJclServiceGroup.Create(Self, List[I], GetGroupCount));
+    List := TWideStringList.Create;
+    try
+      RegReadWideMultiSz(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, List);
+      for I := 0 to List.Count - 1 do
+        AddGroup(TJclServiceGroup.Create(Self, List[I], GetGroupCount));
+    finally
+      List.Free;
+    end;
   end;
 
   procedure RefreshAllServices;
@@ -1454,6 +1457,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.23  2004/10/11 08:13:04  marquardt
+// PH cleaning of JclStrings
+//
 // Revision 1.22  2004/07/29 07:58:22  marquardt
 // inc files updated
 //
