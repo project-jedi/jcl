@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: January 30, 2001                                              }
+{ Last modified: February 28, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -998,8 +998,9 @@ var
   Count: DWORD;
 begin
   Count := MAX_COMPUTERNAME_LENGTH + 1;
+  // set buffer size to MAX_COMPUTERNAME_LENGTH + 2 characters for safety
   SetLength(Result, Count);
-  GetComputerName(PChar(Result), Count);
+  Win32Check(GetComputerName(PChar(Result), Count));
   StrResetLength(Result);
 end;
 
@@ -1010,8 +1011,9 @@ var
   Count: DWORD;
 begin
   Count := 256 + 1; // UNLEN + 1
+  // set buffer size to 256 + 2 characters
   SetLength(Result, Count);
-  GetUserName(PChar(Result), Count);
+  Win32Check(GetUserName(PChar(Result), Count));
   StrResetLength(Result);
 end;
 
@@ -1044,6 +1046,7 @@ begin
   Sd := nil;
   Snu := SIDTypeUser;
   LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
+  // set buffer size to Count2 + 2 characters for safety
   SetLength(Result, Count2 + 1);
   Sd := AllocMem(Count1);
   try
