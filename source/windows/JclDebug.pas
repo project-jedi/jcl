@@ -20,7 +20,7 @@
 {                                                                              }
 { Various debugging support routines and classes. This includes: Diagnostics   }
 { routines, Trace routines, Stack tracing and Source Locations a la the C/C++  }
-{ __FILE__ and __LINE__ macro's.                                               }
+{ __FILE__ and __LINE__ macros.                                                }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
 { Last modified: July 15, 2001                                                 }
@@ -363,17 +363,17 @@ function ExtractMethodName(const ProcedureName: string): string;
 
 // Original function names, deprecated will be removed in V2.0; do not use!
 
-function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
-function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+function __FILE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __MODULE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __PROC__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __LINE__(const Level: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Integer; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __FILE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __MODULE_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __PROC_OF_ADDR__(const Addr: Pointer): string; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
+function __LINE_OF_ADDR__(const Addr: Pointer): Integer; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP}deprecated;{$ENDIF}
+  var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 
 //------------------------------------------------------------------------------
 // Info routines base list
@@ -651,7 +651,9 @@ asm
   MOV EAX, FS:[4]
 end;
 
-{$IFDEF STACKFRAMES_ON} {$STACKFRAMES ON} {$ENDIF}
+{$IFDEF STACKFRAMES_ON}
+{$STACKFRAMES ON}
+{$ENDIF STACKFRAMES_ON}
 
 //==============================================================================
 // Diagnostics
@@ -681,14 +683,14 @@ end;
 
 procedure Trace(const Msg: string);
 begin
-  OutputDebugString(PChar('"' + Msg + '"'));
+  OutputDebugString(PChar(StrDoubleQuote(Msg)));
 end;
 
 //------------------------------------------------------------------------------
 
 procedure TraceFmt(const Fmt: string; const Args: array of const);
 begin
-  OutputDebugString(PChar(Format('"' + Fmt + '"', Args)));
+  OutputDebugString(PChar(Format(StrDoubleQuote(Fmt), Args)));
 end;
 
 //------------------------------------------------------------------------------
@@ -706,7 +708,7 @@ var
   S: string;
 begin
   S := Format('%s:%u (%s) ', [FileByLevel(1), LineByLevel(1), ProcByLevel(1)]) +
-    Format('"' + Fmt + '"', Args);
+    Format(StrDoubleQuote(Fmt), Args);
   OutputDebugString(PChar(S));
 end;
 
@@ -823,6 +825,7 @@ var
   end;
 
 {$OVERFLOWCHECKS OFF}
+
   function ReadHexValue: Integer;
   var
     C: Char;
@@ -857,7 +860,10 @@ var
       Inc(CurrPos);
     until False;
   end;
-{$IFDEF OVERFLOWCHECKS_ON} {$OVERFLOWCHECKS ON} {$ENDIF}
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
   function ReadAddress: TJclMapAddress;
   begin
@@ -1452,7 +1458,7 @@ var
 
   procedure RoundUpToAlignment(var Value: DWORD; Alignment: DWORD);
   begin
-    if (Value mod Alignment <> 0) then
+    if (Value mod Alignment) <> 0 then
       Value := ((Value div Alignment) + 1) * Alignment;
   end;
 
@@ -2418,7 +2424,9 @@ begin
   end;
 end;
 
-{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
 
 //------------------------------------------------------------------------------
 
@@ -2569,27 +2577,37 @@ begin
   Result := FileByLevel(Level + 1);
 end;
 
+//------------------------------------------------------------------------------
+
 function __MODULE__(const Level: Integer): string;
 begin
   Result := ModuleByLevel(Level + 1);
 end;
+
+//------------------------------------------------------------------------------
 
 function __PROC__(const Level: Integer): string;
 begin
   Result := ProcByLevel(Level + 1);
 end;
 
+//------------------------------------------------------------------------------
+
 function __LINE__(const Level: Integer): Integer;
 begin
   Result := LineByLevel(Level + 1);
 end;
+
+//------------------------------------------------------------------------------
 
 function __MAP__(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
 begin
   Result := MapByLevel(Level + 1, _File, _Module, _Proc, _Line);
 end;
 
-{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
 
 //------------------------------------------------------------------------------
 
@@ -2850,6 +2868,7 @@ end;
 //   Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
 
 {$OVERFLOWCHECKS OFF}
+
 function ValidCallSite(CodeAddr: DWORD): Boolean;
 var
   CodeDWORD4: DWORD;
@@ -2889,11 +2908,15 @@ begin
     // can also get false negatives.
   end;
 end;
-{$IFDEF OVERFLOWCHECKS_ON} {$OVERFLOWCHECKS ON} {$ENDIF}
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //------------------------------------------------------------------------------
 
 {$OVERFLOWCHECKS OFF}
+
 function NextStackFrame(var StackFrame: PStackFrame; var StackInfo : TStackInfo): Boolean;
 begin
   // Only report this stack frame into the StockInfo structure
@@ -2921,7 +2944,10 @@ begin
   end;
   Result := False;
 end;
-{$IFDEF OVERFLOWCHECKS_ON} {$OVERFLOWCHECKS ON} {$ENDIF}
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
 
 //------------------------------------------------------------------------------
 
@@ -3007,7 +3033,7 @@ var
 begin
   // Start at level 0
   StackInfo.Level := 0;
-  // Get the current stack fram from the EBP register
+  // Get the current stack frame from the EBP register
   StackFrame := GetEBP;
   // We define the bottom of the valid stack to be the current EBP Pointer
   // There is a TIB field called pvStackUserBase, but this includes more of the
@@ -3095,7 +3121,9 @@ begin
   Result := TJclStackInfoItem(inherited Items[Index]);
 end;
 
-{$IFNDEF STACKFRAMES_ON} {$STACKFRAMES OFF} {$ENDIF}
+{$IFNDEF STACKFRAMES_ON}
+{$STACKFRAMES OFF}
+{$ENDIF STACKFRAMES_ON}
 
 //==============================================================================
 // Exception frame info routines
@@ -3157,18 +3185,18 @@ begin
     if Dest <> 0 then
     begin
       LocInfo := GetLocationInfo(Pointer(Dest));
-      if (CompareText(LocInfo.UnitName, 'system') = 0) then
+      if CompareText(LocInfo.UnitName, 'system') = 0 then
       begin
-        if (CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0) then
+        if CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0 then
           FFrameKind := efkAnyException
         else
-        if (CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0) then
+        if CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0 then
           FFrameKind := efkOnException
         else
-        if (CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0) then
+        if CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0 then
           FFrameKind := efkAutoException
         else
-        if (CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0) then
+        if CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0 then
           FFrameKind := efkFinally;
       end;
     end;
@@ -3523,9 +3551,12 @@ begin
     if I <> -1 then
     begin
       case Index of
-        0: Result := ThreadName;
-        1: Result := FList.Names[I];
-        2: Result := Format('%.8x [%s] "%s"', [ThreadID, ThreadName, FList.Names[I]]);
+        0:
+          Result := ThreadName;
+        1:
+          Result := FList.Names[I];
+        2:
+          Result := Format('%.8x [%s] "%s"', [ThreadID, ThreadName, FList.Names[I]]);
       end;
     end
     else
