@@ -121,12 +121,12 @@ function StrRetFreeMem(StrRet: TStrRet): Boolean;
 function StrRetToString(IdList: PItemIdList; StrRet: TStrRet; Free: Boolean): string;
 
 //------------------------------------------------------------------------------
-// Shortcuts
+// Shortcuts / Shell link
 //------------------------------------------------------------------------------
 
 type
-  PShortCut = ^TShortCut;
-  TShortCut = record
+  PShellLink = ^TShellLink;
+  TShellLink = record
     Arguments: string;
     ShowCmd: Integer;
     WorkingDirectory: string;
@@ -138,10 +138,10 @@ type
     HotKey: Word;
   end;
 
-procedure ShortCutFree(var ShortCut: TShortCut);
-function ShortCutResolve(const FileName: string; var ShortCut: TShortCut): HRESULT;
-function ShortCutCreate(const ShortCut: TShortCut; const FileName: string): HRESULT;
-function ShortCutCreateSystem(const ShortCut: TShortCut; const Folder: Integer;
+procedure ShellLinkFree(var Link: TShellLink);
+function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
+function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
+function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
   const FileName: string): HRESULT;
 
 //------------------------------------------------------------------------------
@@ -976,12 +976,12 @@ begin
 end;
 
 //==============================================================================
-// ShortCuts
+// ShortCuts / Shell link
 //==============================================================================
 
-procedure ShortCutFree(var ShortCut: TShortCut);
+procedure ShellLinkFree(var Link: TShellLink);
 begin
-  PidlFree(ShortCut.IdList);
+  PidlFree(Link.IdList);
 end;
 
 //------------------------------------------------------------------------------
@@ -990,7 +990,7 @@ const
   IID_IShellLink: TGUID = ( { IID_IShellLinkA }
     D1:$000214EE; D2:$0000; D3:$0000; D4:($C0,$00,$00,$00,$00,$00,$00,$46));
 
-function ShortCutCreateSystem(const ShortCut: TShortCut; const Folder: Integer;
+function ShellLinkCreateSystem(const Link: TShellLink; const Folder: Integer;
   const FileName: string): HRESULT;
 var
   Path: string;
@@ -1004,14 +1004,14 @@ begin
     if Path <> '' then
     begin
       StrResetLength(Path);
-      Result := ShortCutCreate(ShortCut, PathAddSeparator(Path) + FileName);
+      Result := ShellLinkCreate(Link, PathAddSeparator(Path) + FileName);
     end;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function ShortCutCreate(const ShortCut: TShortCut; const FileName: string): HRESULT;
+function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESULT;
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
@@ -1021,13 +1021,13 @@ begin
     IID_IShellLink, ShellLink);
   if Succeeded(Result) then
   begin
-    ShellLink.SetArguments(PChar(ShortCut.Arguments));
-    ShellLink.SetShowCmd(ShortCut.ShowCmd);
-    ShellLink.SetWorkingDirectory(PChar(ShortCut.WorkingDirectory));
-    ShellLink.SetPath(PChar(ShortCut.Target));
-    ShellLink.SetDescription(PChar(ShortCut.Description));
-    ShellLink.SetHotkey(ShortCut.HotKey);
-    ShellLink.SetIconLocation(PChar(ShortCut.IconLocation), ShortCut.IconIndex);
+    ShellLink.SetArguments(PChar(Link.Arguments));
+    ShellLink.SetShowCmd(Link.ShowCmd);
+    ShellLink.SetWorkingDirectory(PChar(Link.WorkingDirectory));
+    ShellLink.SetPath(PChar(Link.Target));
+    ShellLink.SetDescription(PChar(Link.Description));
+    ShellLink.SetHotkey(Link.HotKey);
+    ShellLink.SetIconLocation(PChar(Link.IconLocation), Link.IconIndex);
     PersistFile := ShellLink as IPersistFile;
     MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FileName), -1,
       LinkName, MAX_PATH);
@@ -1037,7 +1037,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function ShortCutResolve(const FileName: string; var ShortCut: TShortCut): HRESULT;
+function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
@@ -1060,18 +1060,18 @@ begin
       begin
         SetLength(Buffer, MAX_PATH);
         ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData, SLGP_SHORTPATH);
-        ShortCut.Target := PChar(Buffer);
+        Link.Target := PChar(Buffer);
         ShellLink.GetArguments(PChar(Buffer), MAX_PATH);
-        ShortCut.Arguments := PChar(Buffer);
-        ShellLink.GetShowCmd(ShortCut.ShowCmd);
+        Link.Arguments := PChar(Buffer);
+        ShellLink.GetShowCmd(Link.ShowCmd);
         ShellLink.GetWorkingDirectory(PChar(Buffer), MAX_PATH);
-        ShortCut.WorkingDirectory := PChar(Buffer);
+        Link.WorkingDirectory := PChar(Buffer);
         ShellLink.GetDescription(PChar(Buffer), MAX_PATH);
-        ShortCut.Description := PChar(Buffer);
-        ShellLink.GetIconLocation(PChar(Buffer), MAX_PATH, ShortCut.IconIndex);
-        ShortCut.IconLocation := PChar(Buffer);
-        ShellLink.GetHotkey(ShortCut.HotKey);
-        ShellLink.GetIDList(ShortCut.IdList);
+        Link.Description := PChar(Buffer);
+        ShellLink.GetIconLocation(PChar(Buffer), MAX_PATH, Link.IconIndex);
+        Link.IconLocation := PChar(Buffer);
+        ShellLink.GetHotkey(Link.HotKey);
+        ShellLink.GetIDList(Link.IdList);
       end;
     end;
   end;
