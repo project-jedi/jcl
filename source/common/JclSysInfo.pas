@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: October 05, 2000                                              }
+{ Last modified: October 22, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -38,7 +38,7 @@ unit JclSysInfo;
 interface
 
 uses
-  Windows, Classes;
+  Windows, Classes, ShlObj, ActiveX;
 
 //------------------------------------------------------------------------------
 // Environment
@@ -65,6 +65,29 @@ function GetProgramFilesFolder: string;
 function GetWindowsFolder: string;
 function GetWindowsSystemFolder: string;
 function GetWindowsTempFolder: string;
+
+function GetDesktopFolder: string;
+function GetProgramsFolder: string;
+function GetPersonalFolder: string;
+function GetFavoritesFolder: string;
+function GetStartupFolder: string;
+function GetRecentFolder: string;
+function GetSendToFolder: string;
+function GetStartmenuFolder: string;
+function GetDesktopDirectoryFolder: string;
+function GetNethoodFolder: string;
+function GetFontsFolder: string;
+function GetCommonStartmenuFolder: string;
+function GetCommonProgramsFolder: string;
+function GetCommonStartupFolder: string;
+function GetCommonDesktopdirectoryFolder: string;
+function GetAppdataFolder: string;
+function GetPrinthoodFolder: string;
+function GetCommonFavoritesFolder: string;
+function GetTemplatesFolder: string;
+function GetInternetCacheFolder: string;
+function GetCookiesFolder: string;
+function GetHistoryFolder: string;
 
 //------------------------------------------------------------------------------
 // Identification
@@ -392,6 +415,7 @@ procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 var
   ProcessorCount: Cardinal = 0;
   AllocGranularity: Cardinal = 0;
+  SHMalloc: IMalloc;
 
 implementation
 
@@ -1711,6 +1735,8 @@ begin
     wvWin2000:
       IsWin2K := True;
   end;
+
+  SHGetMalloc(SHMalloc);
 end;
 
 //------------------------------------------------------------------------------
@@ -1726,7 +1752,7 @@ begin
   Sd := nil;
   Snu := SIDTypeUser;
 
-  // have the the API function determine the required buffer sizes
+  // have the API function determine the required buffer sizes
   LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
   SetLength(Result, Count2 + 1);
 
@@ -1809,6 +1835,154 @@ begin
   stlTemp.Free;
 end;
 
+function GetSpecialFolderLocation(const Folder: integer): string;
+var
+  shBuff: PChar;
+  idRoot: PItemIDList;
+begin
+  Result  := '';
+  SetLength(Result, MAX_PATH);
+  shBuff := PChar(SHMalloc.Alloc(MAX_PATH));
+  if Assigned(shBuff) then begin
+    CoInitialize(nil);
+    try
+      SHGetSpecialFolderLocation(0, Folder, idRoot);
+      try
+        if SHGetPathFromIDList(idRoot, shBuff) then
+          Result := shBuff;
+      finally
+        SHMalloc.Free(idRoot);
+      end;
+    finally
+      SHMalloc.Free(shBuff);
+      CoUninitialize;
+    end;
+  end;
+
+end;
+
+function GetDesktopFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_DESKTOP);
+end;
+
+function GetProgramsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
+end;
+
+function GetPersonalFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
+end;
+
+function GetFavoritesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
+end;
+
+function GetStartupFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_STARTUP);
+end;
+
+function GetRecentFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_RECENT);
+end;
+
+function GetSendToFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_SENDTO);
+end;
+
+function GetStartmenuFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_STARTMENU);
+end;
+
+function GetDesktopDirectoryFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
+end;
+
+function GetNethoodFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_NETHOOD);
+end;
+
+function GetFontsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_FONTS);
+end;
+
+function GetCommonStartmenuFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTMENU);
+end;
+
+function GetCommonProgramsFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_PROGRAMS);
+end;
+
+function GetCommonStartupFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTUP);
+end;
+
+function GetCommonDesktopdirectoryFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
+end;
+
+function GetAppdataFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_APPDATA);
+end;
+
+function GetPrinthoodFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PRINTHOOD);
+end;
+
+function GetCommonFavoritesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COMMON_FAVORITES);
+end;
+
+function GetTemplatesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_TEMPLATES);
+end;
+
+function GetInternetCacheFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_INTERNET_CACHE);
+end;
+
+function GetCookiesFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_COOKIES);
+end;
+
+function GetHistoryFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_HISTORY);
+end;
+
+// the following special folders are pure virtual and cannot be
+// mapped to a directory path:
+// CSIDL_INTERNET
+// CSIDL_CONTROLS
+// CSIDL_PRINTERS
+// CSIDL_BITBUCKET
+// CSIDL_DRIVES
+// CSIDL_NETWORK
+// CSIDL_ALTSTARTUP
+// CSIDL_COMMON_ALTSTARTUP
+
 initialization
   InitSysInfo;
+
 end.
