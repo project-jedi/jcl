@@ -46,6 +46,7 @@ uses
   JclEDI, JclEDI_ANSIX12, JclEDISEF;
 
 type
+
   TEDISpecToSEFTranslator = class(TEDIObject)
   public
     constructor Create;
@@ -354,12 +355,19 @@ procedure TEDISpecToSEFTranslator.TranslateToSEFElementTEXTSETS(ElementSpec: TED
   SEFElement: TEDISEFElement);
 var
   Location: string;
+  Data: string;
 begin
   Location := SEFElement.GetTextSetsLocation;
-  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm0,
-    ElementSpec.Notes);
-  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm2,
-    ElementSpec.Description);
+  Data := ElementSpec.Notes;
+  Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
+  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm0, Data);
+  Data := ElementSpec.Description;
+  Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
+  SEFElement.TEXTSETS.SetText(SEFElement.SEFFile, Location, SEFTextSetsCode_Elm2, Data);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -371,12 +379,19 @@ var
   E: Integer;
   ElementSpec: TEDIElementSpec;
   SEFElement: TEDISEFElement;
+  Data: string;
 begin
   Location := SEFSegment.GetTextSetsLocation;
-  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg3,
-    SegmentSpec.Description);
-  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg4,
-    SegmentSpec.Notes);
+  Data := SegmentSpec.Description;
+  Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
+  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg3, Data);
+  Data := SegmentSpec.Notes;
+  Data := JclEDI.StringReplace(Data, AnsiCrLf, SEFTextCRLF, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiCarriageReturn, SEFTextCR, [rfReplaceAll]);
+  Data := JclEDI.StringReplace(Data, AnsiLineFeed, SEFTextLF, [rfReplaceAll]);
+  SEFSegment.TEXTSETS.SetText(SEFSegment.SEFFile, Location, SEFTextSetsCode_Seg4, Data);
 
   SEFSegment.AssignElementOrdinals;
   for E := 0 to SegmentSpec.ElementCount - 1 do
