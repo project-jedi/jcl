@@ -1,0 +1,70 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function BooleanToStr(B: Boolean): string;
+[ShortDescr]
+Returns a string representation of the boolean values True and False.
+[Description]
+BooleanToStr returns a string representation of the boolean values True or False.
+Thus, if B equals True the string 'True' is returned, if B equals False the
+string 'False' is returned.
+[Parameters]
+Count=1
+1=B:Boolean=The boolean value for which you want the string representation.
+[Result]
+If B is True the result is the string 'True', if B is False the result is the
+string 'False'.
+[Quick Info]
+Unit=JclMiscel
+Category=Miscellaneous
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function SetDisplayResolution(XRes, YRes: DWORD): Longint;
+[ShortDescr]
+Changes the resolution of the screen.
+[Description]
+Dynamically changes the resolution (width and height) of the visible device
+surface of the default display device. In simpler terms, changes the width and
+height of the screen. If the function succeeds the system automatically sends a
+WM_DISPLAYCHANGE message to all running applications.
+[Parameters]
+Count=2
+1=XRes:DWORD=New Width of the screen, in pixels.
+2=YRes:DWORD=New Height of the screen, in pixels.
+[Result]
+The function internally uses the ChangeDisplaySettings function and the result
+is the result of that function. The possible return values are:
+  <TABLE>
+  <TR VALIGN="top">
+  <TH align=left width=43%>Value</TH><TH align=left width=57%>Meaning</TH>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_SUCCESSFUL</TD><TD width=57%>The settings change was successful.</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_RESTART</TD><TD width=57%>The computer must be restarted in order for the graphics mode to work.</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_BADFLAGS</TD><TD width=57%>An invalid set of flags was passed in.</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_BADPARAM</TD><TD width=57%>An invalid parameter was passed in. This can include an invalid flag or combination of flags.</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_FAILED</TD><TD width=57%>The display driver failed the specified graphics mode.</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_BADMODE</TD><TD width=57%>The graphics mode is not supported.</TD>
+  </TR>
+  <TR VALIGN="top">
+  <TD width=43%>DISP_CHANGE_NOTUPDATED</TD><TD width=57%><B>Windows NT/2000:</B> Unable to write settings to the registry.</TD>
+  </TR>
+  </TABLE>
+[Quick Info]
+Unit=JclMiscel
+Category=Miscellaneous
+Author=John C Molyneux;jaymol@hotmail.com
+Delphi=3,4,5
+BCB=3,4,5
