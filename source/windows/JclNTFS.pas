@@ -16,10 +16,15 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Description: Contains routines to perform tasks available only with NTFS.    }
-{ Unit Owner: Marcel van Brakel                                                }
+{******************************************************************************}
 {                                                                              }
-{ Last modified: October 18, 2000                                              }
+{ Contains routines to perform filesystem related tasks available only with    }
+{ NTFS. These are mostly relatively straightforward wrappers for various IOCTs }
+{ related to compression, sparse files, reparse points, volume mount points    }
+{ and so forth. Note that some functions require NTFS 5 or higher!             }
+{                                                                              }
+{ Unit Owner: Marcel van Brakel                                                }
+{ Last modified: November 22, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -127,7 +132,7 @@ type
     Attributes: DWORD;
     StreamID: TStreamId;
     Name: WideString;
-    Size: TLargeInteger;
+    Size: Int64;
   end;
 
 function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds;
@@ -214,7 +219,8 @@ begin
   Result := False;
   if Handle <> INVALID_HANDLE_VALUE then
   begin
-    // Continue only if the file is a sparse file
+    // Continue only if the file is a sparse file, this avoids the overhead
+    // associated with an IOCTL when the file isn't even a sparse file.
     GetFileInformationByHandle(Handle, Info);
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
     if Result then
@@ -682,8 +688,14 @@ end;
 // Delphi's declaration of BackupSeek is wrong (last parameter is missing var).
 
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
-  var lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: LPVOID): BOOL; stdcall;
+  var lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
   external 'kernel32.dll' name 'BackupSeek';
+
+// FindStream is an internal helper routine for NtfsFindFirstStream and
+// NtfsFindNextStream. It uses the backup API to enumerate the streams in an
+// NTFS file and returns when it either finds a stream that matches the filter
+// specified in the Data parameter or hits EOF. Details are returned through
+// the Data parameter and success/failure as the Boolean result value.
 
 function FindStream(var Data: TFindStreamData): Boolean;
 var
@@ -707,7 +719,7 @@ begin
       SetLastError(ERROR_READ_FAULT);
       Exit;
     end;
-    if BytesRead = 0 then
+    if BytesRead = 0 then // EOF
     begin
       SetLastError(ERROR_NO_MORE_FILES);
       Exit;
@@ -731,7 +743,7 @@ begin
       StreamName[Header.dwStreamNameSize div SizeOf(WCHAR)] := WideChar(#0);
     end
     else StreamName := nil;
-    // Did we find any of the specified stream ([] means any stream)?
+    // Did we find any of the specified streams ([] means any stream)?
     if (Data.Internal.StreamIds = []) or
       (TStreamId(Header.dwStreamId) in Data.Internal.StreamIds) then
     begin
@@ -744,8 +756,8 @@ begin
     // Release stream name memory if necessary
     if Header.dwStreamNameSize > 0 then
       HeapFree(GetProcessHeap, 0, StreamName);
-    // Move past data part to beginngin of next stream (or EOF)
-    BytesToSeek := Header.Size;
+    // Move past data part to beginning of next stream (or EOF)
+    BytesToSeek.QuadPart := Header.Size;
     if not BackupSeek(Data.Internal.FileHandle, BytesToSeek.LowPart,
       BytesToSeek.HighPart, Lo, Hi, Data.Internal.Context) then
     begin
