@@ -62,6 +62,7 @@ uses
   PCharUtils in 'PCharUtils.pas';
 
 const
+  SubstChar = '_';
   ProcessedExtension = '.jpp';
   SWarningJppGenerated =
     '{**************************************************************************************************}'#13#10 +
@@ -78,14 +79,15 @@ begin
     '  ' + ParamStr(0) + ' [options] <input files>...'#10,
     #10,
     'Options:'#10,
-    '  -h, -?   This help'#10,
-    '  -i       Process includes'#10,
-    '  -c       Process conditional directives'#10,
-    '  -C       Strip comments'#10,
-    '  -pxxx    Add xxx to include path'#10,
-    '  -dxxx    Define xxx as a preprocessor conditional symbol'#10,
-    '  -uxxx    Assume preprocessor conditional symbol xxx as not defined'#10,
-    '  -x[n:]yyy  Strip first n characters from file name; precede filename by prefix yyy'#10,
+    '  -h, -?     This help'#10,
+    '  -i         Process includes'#10,
+    '  -c         Process conditional directives'#10,
+    '  -C         Strip comments'#10,
+    '  -pxxx      Add xxx to include path'#10,
+    '  -dxxx      Define xxx as a preprocessor conditional symbol'#10,
+    '  -uxxx      Assume preprocessor conditional symbol xxx as not defined'#10,
+    '  -rx[,y...] Comma-separated list of strings to replace underscores in input file names with'#10,
+    //'  -x[n:]yyy  Strip first n characters from file name; precede filename by prefix yyy'#10,
     #10,
     'When required to prevent the original file from being overwritten, '#10 +
     'the processed file''s extension will be changed to ', ProcessedExtension, #10,
@@ -119,12 +121,52 @@ begin
   end;
 end;
 
+procedure Substitute(var S: string; SubstChar: Char; SubstStrings: TStrings);
+var
+  I, J, K, N, Count: Integer;
+  Result, SubstString: string;
+  SubstDone: Boolean;
+begin
+  if SubstStrings = nil then
+    Exit;
+
+  Count := SubstStrings.Count;
+
+  if Count = 0 then
+    Exit;
+
+  SetLength(Result, Length(S) + Length(SubstStrings.Text)); // sufficient length
+  J := 1;
+  N := 0;
+  SubstDone := False;
+  for I := 1 to Length(S) do
+    if (S[I] = SubstChar) and not SubstDone then
+    begin
+      SubstString := SubstStrings[N];
+      for K := 1 to Length(SubstString) do
+      begin
+        Result[J] := SubstString[K];
+        Inc(J);
+      end;
+      Inc(N);
+      SubstDone := N = SubstStrings.Count;
+    end
+    else
+    begin
+      Result[J] := S[I];
+      Inc(J);
+    end;
+  SetLength(Result, J - 1);
+  S := Result;
+end;
+
 procedure Params(ACommandLine: PChar);
 var
   pppState: TSimplePppState;
   StripLength: Integer; // RR
-  Prefix: string; // RR
+  Prefix, ReplaceString: string; // RR
   N: Integer;
+  ReplaceStrings: TStringList;
 
   function HandleOptions(cp: PChar): PChar;
 
@@ -180,6 +222,13 @@ var
           pppState.Define(tmp);
         end;
 
+        'r':
+        begin
+          Inc(cp);
+          cp := ReadStringDoubleQuotedMaybe(cp, ReplaceString);
+          ReplaceStrings.CommaText := ReplaceString;
+        end;
+
         'u': // RR
         begin
           Inc(cp);
@@ -218,8 +267,16 @@ var
       if CreateFindFile(ExpandUNCFileName(tmp), faAnyFile and not faDirectory, iter) then
         repeat
           try
-            NewName := Prefix + Copy(ExtractFileName(iter.Name), StripLength + 1, Length(iter.Name));
-            if iter.Name = ExpandUNCFileName(NewName) then
+            if StripLength > 0 then
+              NewName := Copy(ExtractFileName(iter.Name), StripLength + 1, Length(iter.Name))
+            else
+              NewName := ExtractFileName(iter.Name);
+
+            Substitute(NewName, SubstChar, ReplaceStrings);
+
+            NewName := ExpandUNCFileName(Prefix + NewName);
+
+            if iter.Name = NewName then
               ChangeFileExt(NewName, ProcessedExtension);
             Process(pppState, iter.Name, NewName);
           except
@@ -238,15 +295,18 @@ var
 begin
   cp := ACommandLine;
   StripLength := 0;
-  
-  pppState := TJppState.Create;
+  pppState := nil;
+  ReplaceStrings := nil;
   try
+    pppState := TJppState.Create;
+    ReplaceStrings := TStringList.Create;
     repeat
       cp := HandleOptions(cp);
       cp := HandleFiles(cp);
     until cp^ = #0;
   finally
     pppState.Free;
+    ReplaceStrings.Free;
   end;
 end;
 
@@ -276,6 +336,9 @@ begin
 
 // Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
 // $Log$
+// Revision 1.8  2004/08/23 16:42:35  rrossmair
+// added -r option
+//
 // Revision 1.7  2004/06/20 03:24:48  rrossmair
 // - orphaned line breaks problem fixed.
 //
