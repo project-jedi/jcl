@@ -552,11 +552,11 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function FeetToMeter(const Feet: Float): Float;
+function FeetToMetre(const Feet: Float): Float;
 [ShortDescr]
 Converts a length from feet to meters.
 [Description]
-The FeetToMeter routine converts the specified length, in feet, to the corresponding length in meters.
+The FeetToMetre routine converts the specified length, in feet, to the corresponding length in meters.
 [Parameters]
 Count=1
 1=Feet:Float=The length, in feet, to convert to meters.
@@ -571,14 +571,14 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MeterToFeet(const Meter: Float): Float;
+function MetreToFeet(const Metre: Float): Float;
 [ShortDescr]
 Converts a length from meters to feet.
 [Description]
-The MeterToFeet routine converts the specified length, in meters, to the corresponding length in feet.
+The MetreToFeet routine converts the specified length, in meters, to the corresponding length in feet.
 [Parameters]
 Count=1
-1=Meter:Float=The length, in meters, to convert to feet.
+1=Metre:Float=The length, in meters, to convert to feet.
 [Result]
 The length after conversion to feet.
 [Quick Info]
@@ -590,11 +590,11 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function YardToMeter(const Yard: Float): Float;
+function YardToMetre(const Yard: Float): Float;
 [ShortDescr]
 Converts a length from yards to meters.
 [Description]
-The YardToMeter routine converts the specified length, in yards, to the corresponding length in meters.
+The YardToMetre routine converts the specified length, in yards, to the corresponding length in meters.
 [Parameters]
 Count=1
 1=Yard:Float=The length, in yards, to convert to meters.
@@ -609,14 +609,14 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function MeterToYard(const Meter: Float): Float;
+function MetreToYard(const Metre: Float): Float;
 [ShortDescr]
 Converts a length from meters to yards.
 [Description]
-The MeterToYard routine converts the specified length, in meters, to the corresponding length in yards.
+The MetreToYard routine converts the specified length, in meters, to the corresponding length in yards.
 [Parameters]
 Count=1
-1=Meter:Float=The length, in meters, to convert to yards.
+1=Metre:Float=The length, in meters, to convert to yards.
 [Result]
 The length after conversion to yards.
 [Quick Info]
@@ -818,14 +818,14 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function LiterToGalUs(const Liter: Float): Float;
+function LitreToGalUs(const Litre: Float): Float;
 [ShortDescr]
 Converts a volume from liters to US Gallons.
 [Description]
-The LiterToGalUs routine converts the specified volume, in liters, to the corresponding volume in US Gallons.
+The LitreToGalUs routine converts the specified volume, in liters, to the corresponding volume in US Gallons.
 [Parameters]
 Count=1
-1=Liter:Float=The volume, in liters, to convert to US Gallons.
+1=Litre:Float=The volume, in liters, to convert to US Gallons.
 [Result]
 The volume after conversion to US Gallons.
 [Quick Info]
@@ -837,11 +837,11 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-function GalUsToLiter(const GalUs: Float): Float;
+function GalUsToLitre(const GalUs: Float): Float;
 [ShortDescr]
 Converts a volume from US Gallons to Liters.
 [Description]
-The GalUsToLiter routine converts the specified volume, in US Gallons, to the corresponding volume in Liters.
+The GalUsToLitre routine converts the specified volume, in US Gallons, to the corresponding volume in Liters.
 [Parameters]
 Count=1
 1=GalUs:Float=The volume, in US Gallons, to convert to Liters.
@@ -1251,5 +1251,113 @@ Unit=JclUnitConv
 Category=Unit Conversions
 SubCat=Mass Conversion
 Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function KnotToMs(const Knot: Float): Float;
+[ShortDescr]
+Converts a velocity from knot to meters per second.
+[Description]
+The KnotToMs routine converts the specified velocity, in knots, to the corresponding velocity in meters per second.
+[Parameters]
+1=Knot:Float=The velocity, in Knot, to convert to meters per second.
+[Result]
+The velocity after conversion to meters per second.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Velocity
+Author=Manlio Laschena;lasc@iol.it
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function HpElectricToWatt(const HpE: Float): Float;
+[ShortDescr]
+Converts a power from horsepower to Watt.
+[Description]
+The HpElectricToWatt routine converts the specified power, in horsepower, to the corresponding power in Watt.
+[Parameters]
+1=HpE:Float=The power, in horsepower, to convert to Watt.
+[Result]
+The power after conversion to Watt.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Power
+Author=Manlio Laschena;lasc@iol.it
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function HpMetricToWatt(const HpM: Float): Float;
+[ShortDescr]
+Converts a power from metric horsepower to Watt.
+[Description]
+The HpMetricToWatt routine converts the specified power, in metric horsepower, to the corresponding power in Watt.
+[Parameters]
+1=HpM:Float=The power, in metric horsepower, to convert to Watt.
+[Result]
+The power after conversion to Watt.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Power
+Author=Manlio Laschena;lasc@iol.it
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MsToKnot(const ms: Float): Float;
+[ShortDescr]
+Converts a velocity from meters per second to knots.
+[Description]
+The MsToKnot routine converts the specified velocity, in meters per second, to the corresponding velocity in knots.
+[Parameters]
+1=ms:Float=The velocity, in meters per second, to convert to knots.
+[Result]
+The velocity after conversion to knots.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Velocity
+Author=Manlio Laschena;lasc@iol.it
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WattToHpElectric(const W: Float): Float;
+[ShortDescr]
+Converts a power from Watt to horsepower.
+[Description]
+The WattToHpElectric routine converts the specified power, in Watt, to the corresponding power in horsepower.
+[Parameters]
+1=W:Float=The power, in Watt, to convert to horsepower.
+[Result]
+The power after conversion to horsepower.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Power
+Author=Manlio Laschena;lasc@iol.it
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WattToHpMetric(const W: Float): Float;
+[ShortDescr]
+Converts a power from Watt to metric horsepower.
+[Description]
+The WattToHpMetric routine converts the specified power, in Watt, to the corresponding power in metric horsepower.
+[Parameters]
+1=W:Float=The power, in Watt, to convert to metric horsepower.
+[Result]
+The power after conversion to metric horsepower.
+[Quick Info]
+Unit=JclUnitConv
+Category=Unit Conversions
+SubCat=Power
+Author=Manlio Laschena;lasc@iol.it
 Delphi=3,4,5
 BCB=3,4,5
