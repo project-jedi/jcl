@@ -2066,12 +2066,14 @@ begin
         begin
           case PeBorUnmangleName(Items[I].Name, Unmangled, Desc, BasePos) of
             urOk:
-              if not (Desc.Kind in [skRTTI, skVTable]) then
               begin
                 Info.UnitName := Copy(Unmangled, 1, BasePos - 2);
-                Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
-                if smLinkProc in Desc.Modifiers then
-                  Info.ProcedureName := '@' + Info.ProcedureName;
+                if not (Desc.Kind in [skRTTI, skVTable]) then
+                begin
+                  Info.ProcedureName := Copy(Unmangled, BasePos, Length(Unmangled));
+                  if smLinkProc in Desc.Modifiers then
+                    Info.ProcedureName := '@' + Info.ProcedureName;
+                end;
                 Result := True;
               end;
             urNotMangled:
