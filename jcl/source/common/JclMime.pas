@@ -28,7 +28,7 @@
 
 unit JclMime;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
