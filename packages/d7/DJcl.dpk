@@ -1,27 +1,27 @@
 package DJcl;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
-{$TYPEDADDRESS ON}
+{$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $400000}
+{$IMAGEBASE $48000000}
 {$DESCRIPTION 'JEDI Code Library RTL package for Delphi 7'}
 {$LIBSUFFIX '70'}
 {$RUNONLY}
@@ -29,57 +29,60 @@ package DJcl;
 
 requires
   rtl;
-
+  
 contains
-  Jcl8087 in '..\..\Source\Common\Jcl8087.pas',
-  JclBase in '..\..\Source\Common\JclBase.pas',
-  JclComplex in '..\..\Source\Common\JclComplex.pas',
-  JclCounter in '..\..\Source\Common\JclCounter.pas',
-  JclDateTime in '..\..\Source\Common\JclDateTime.pas',
-  JclEDIXML in '..\..\Source\Common\JclEDIXML.pas',
-  JclEDI_ANSIX12 in '..\..\Source\Common\JclEDI_ANSIX12.pas',
-  JclEDI_UNEDIFACT in '..\..\Source\Common\JclEDI_UNEDIFACT.pas',
-  JclEDI in '..\..\Source\Common\JclEDI.pas',
-  JclEDISEF in '..\..\Source\Common\JclEDISEF.pas',
-  JclEDITranslators in '..\..\Source\Common\JclEDITranslators.pas',
-  JclExprEval in '..\..\Source\Common\JclExprEval.pas',
-  JclFileUtils in '..\..\Source\Common\JclFileUtils.pas',
-  JclIniFiles in '..\..\Source\Common\JclIniFiles.pas',
-  JclLogic in '..\..\Source\Common\JclLogic.pas',
-  JclMath in '..\..\Source\Common\JclMath.pas',
-  JclMIDI in '..\..\Source\Common\JclMIDI.pas',
-  JclMime in '..\..\Source\Common\JclMime.pas',
-  JclResources in '..\..\Source\Common\JclResources.pas',
-  JclSchedule in '..\..\Source\Common\JclSchedule.pas',
-  JclStatistics in '..\..\Source\Common\JclStatistics.pas',
-  JclStrHashMap in '..\..\Source\Common\JclStrHashMap.pas',
-  JclStrings in '..\..\Source\Common\JclStrings.pas',
-  JclSysInfo in '..\..\Source\Common\JclSysInfo.pas',
-  JclSysUtils in '..\..\Source\Common\JclSysUtils.pas',
-  JclUnitConv in '..\..\Source\Common\JclUnitConv.pas',
-  JclAppInst in '..\..\Source\Windows\JclAppInst.pas',
-  JclRTTI in '..\..\Source\Windows\JclRTTI.pas',
-  JclCOM in '..\..\Source\Windows\JclCOM.pas',
-  JclConsole in '..\..\Source\Windows\JclConsole.pas',
-  JclDebug in '..\..\Source\Windows\JclDebug.pas',
-  JclHookExcept in '..\..\Source\Windows\JclHookExcept.pas',
-  JclLANMan in '..\..\Source\Windows\JclLANMan.pas',
-  JclLocales in '..\..\Source\Windows\JclLocales.pas',
-  JclMapi in '..\..\Source\Windows\JclMapi.pas',
-  JclMiscel in '..\..\Source\Windows\JclMiscel.pas',
-  JclMultimedia in '..\..\Source\Windows\JclMultimedia.pas',
-  JclNTFS in '..\..\Source\Windows\JclNTFS.pas',
-  JclPeImage in '..\..\Source\Windows\JclPeImage.pas',
-  JclRegistry in '..\..\Source\Windows\JclRegistry.pas',
-  JclSecurity in '..\..\Source\Windows\JclSecurity.pas',
-  JclShell in '..\..\Source\Windows\JclShell.pas',
-  JclSvcCtrl in '..\..\Source\Windows\JclSvcCtrl.pas',
-  JclSynch in '..\..\Source\Windows\JclSynch.pas',
-  JclTD32 in '..\..\Source\Windows\JclTD32.pas',
-  JclUnicode in '..\..\Source\Windows\JclUnicode.pas',
-  JclWin32 in '..\..\Source\Windows\JclWin32.pas',
-  JclWinMIDI in '..\..\Source\Windows\JclWinMIDI.pas',
-  LM in '..\..\Source\Windows\LM.pas',
-  Snmp in '..\..\Source\Windows\Snmp.pas';
-
+  JclUnitConv in '..\..\source\common\JclUnitConv.pas' ,
+  JclBase in '..\..\source\common\JclBase.pas' ,
+  JclComplex in '..\..\source\common\JclComplex.pas' ,
+  JclCounter in '..\..\source\common\JclCounter.pas' ,
+  JclDateTime in '..\..\source\common\JclDateTime.pas' ,
+  JclEDI in '..\..\source\common\JclEDI.pas' ,
+  JclEDI_ANSIX12 in '..\..\source\common\JclEDI_ANSIX12.pas' ,
+  JclEDI_UNEDIFACT in '..\..\source\common\JclEDI_UNEDIFACT.pas' ,
+  JclEDISEF in '..\..\source\common\JclEDISEF.pas' ,
+  JclEDITranslators in '..\..\source\common\JclEDITranslators.pas' ,
+  JclEDIXML in '..\..\source\common\JclEDIXML.pas' ,
+  JclExprEval in '..\..\source\common\JclExprEval.pas' ,
+  JclFileUtils in '..\..\source\common\JclFileUtils.pas' ,
+  JclIniFiles in '..\..\source\common\JclIniFiles.pas' ,
+  JclLogic in '..\..\source\common\JclLogic.pas' ,
+  JclMath in '..\..\source\common\JclMath.pas' ,
+  JclMIDI in '..\..\source\common\JclMIDI.pas' ,
+  JclMime in '..\..\source\common\JclMime.pas' ,
+  JclResources in '..\..\source\common\JclResources.pas' ,
+  JclRTTI in '..\..\source\common\JclRTTI.pas' ,
+  JclSchedule in '..\..\source\common\JclSchedule.pas' ,
+  JclStatistics in '..\..\source\common\JclStatistics.pas' ,
+  JclStrHashMap in '..\..\source\common\JclStrHashMap.pas' ,
+  JclStrings in '..\..\source\common\JclStrings.pas' ,
+  JclSysInfo in '..\..\source\common\JclSysInfo.pas' ,
+  JclSysUtils in '..\..\source\common\JclSysUtils.pas' ,
+  Jcl8087 in '..\..\source\common\Jcl8087.pas' ,
+  Snmp in '..\..\source\windows\Snmp.pas' ,
+  JclCIL in '..\..\source\windows\JclCIL.pas' ,
+  JclCLR in '..\..\source\windows\JclCLR.pas' ,
+  JclCOM in '..\..\source\windows\JclCOM.pas' ,
+  JclConsole in '..\..\source\windows\JclConsole.pas' ,
+  JclDebug in '..\..\source\windows\JclDebug.pas' ,
+  JclHookExcept in '..\..\source\windows\JclHookExcept.pas' ,
+  JclLANMan in '..\..\source\windows\JclLANMan.pas' ,
+  JclLocales in '..\..\source\windows\JclLocales.pas' ,
+  JclMapi in '..\..\source\windows\JclMapi.pas' ,
+  JclMetadata in '..\..\source\windows\JclMetadata.pas' ,
+  JclMiscel in '..\..\source\windows\JclMiscel.pas' ,
+  JclMultimedia in '..\..\source\windows\JclMultimedia.pas' ,
+  JclNTFS in '..\..\source\windows\JclNTFS.pas' ,
+  JclPeImage in '..\..\source\windows\JclPeImage.pas' ,
+  JclRegistry in '..\..\source\windows\JclRegistry.pas' ,
+  JclSecurity in '..\..\source\windows\JclSecurity.pas' ,
+  JclShell in '..\..\source\windows\JclShell.pas' ,
+  JclSvcCtrl in '..\..\source\windows\JclSvcCtrl.pas' ,
+  JclSynch in '..\..\source\windows\JclSynch.pas' ,
+  JclTD32 in '..\..\source\windows\JclTD32.pas' ,
+  JclUnicode in '..\..\source\windows\JclUnicode.pas' ,
+  JclWin32 in '..\..\source\windows\JclWin32.pas' ,
+  JclWinMIDI in '..\..\source\windows\JclWinMIDI.pas' ,
+  LM in '..\..\source\windows\LM.pas' ,
+  JclAppInst in '..\..\source\windows\JclAppInst.pas' ;
+  
 end.
