@@ -3404,7 +3404,7 @@ begin
   try
     PathList.Sorted := True;
     PathList.Duplicates := dupIgnore;
-    StrToStrings(FPath, ';', TStrings(PathList));
+    StrToStrings(FPath, ';', PathList);
     for I := 0 to PathList.Count - 1 do
       ProcessDirectorySearch(PathAddSeparator(Trim(PathList[I])) + '*.*');
   finally
