@@ -12,14 +12,17 @@
 {                                                                                                  }
 { The Original Code is JclGraphUtils.pas.                                                          }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Last modified: October 30, 2003                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
+
 //
 // 28-MAR-2001 ml:
 //   - ShortenString included

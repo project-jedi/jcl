@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclEDISEF.pas.                                                              }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -23,7 +23,6 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: July, 20, 2003                                                                     }
-{ Last modified: March 22, 2004                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -31,11 +30,15 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
+// $Id$
+
 unit JclEDISEF;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 

@@ -12,17 +12,17 @@
 {                                                                                                  }
 { The Original Code is JclSysUtils.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Description: Various pointer and class related routines.                                         }
 { Unit Owner: Jeroen Speldekamp                                                                    }
 {                                                                                                  }
-{ Last modified: January 19, 2004                                                                  }
-{                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclSysUtils;
 

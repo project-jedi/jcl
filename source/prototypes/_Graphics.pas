@@ -19,12 +19,12 @@
 {                                                                                                  }
 { (C)opyright 1997-1999 Anders Melander                                                            }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
-{                                                                                                  }
-{ Last modified: Nov 25, 2003                                                                      }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 {$IFNDEF Develop}
 unit {$IFDEF VisualCLX} JclQGraphics {$ELSE} JclGraphics {$ENDIF};

@@ -12,8 +12,8 @@
 {                                                                                                  }
 { The Original Code is Jcl8087.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -22,9 +22,10 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: October 12, 2003                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 // rr 2003-10-12:
 //   Removed references to Default8087CW because of compiler problems when including Jcl8087 in
@@ -36,7 +37,9 @@ unit Jcl8087;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 

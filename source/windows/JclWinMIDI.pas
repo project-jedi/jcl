@@ -12,17 +12,18 @@
 {                                                                                                  }
 { The Original Code is JclWinMidi.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { MIDI functions for MS Windows platform                                                           }
 {                                                                                                  }
 { Unit owner: Robert Rossmair                                                                      }
-{ Last modified: June 5, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 unit JclWinMidi;
 

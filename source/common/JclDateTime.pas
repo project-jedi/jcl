@@ -12,9 +12,8 @@
 {                                                                                                  }
 { The Original Code is JclDateTime.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)                       }
-{ of these individuals.                                                                            }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -22,7 +21,6 @@
 { different formats but also some date testing routines (is leap year? etc)                        }
 {                                                                                                  }
 { Unit Owner: Michael Schnell                                                                      }
-{ Last modified: July 08, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -129,11 +127,15 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
+// $Id$
+
 unit JclDateTime;
 
 {$I jcl.inc}
 
-{$WEAKPACKAGEUNIT ON}
+{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
+  {$WEAKPACKAGEUNIT ON}
+{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 

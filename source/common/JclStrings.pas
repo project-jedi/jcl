@@ -12,17 +12,18 @@
 {                                                                                                  }
 { The Original Code is JclStrings.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{ The Initial Developers of the Original Code are documented in the accompanying help file         }
+{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various character and string routines (searching, testing and transforming)                      }
 {                                                                                                  }
 { Unit owner: Azret Botash                                                                         }
-{ Last modified: January 22, 2004                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// $Id$
 
 // rr  25 feb 2003 Linux port (implemented LoadCharTypes & LoadCaseMap)
 // mvb 20 jan 2002 added StrIToStrings to interface section
