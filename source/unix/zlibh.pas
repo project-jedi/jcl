@@ -78,6 +78,9 @@ interface
 uses
   Libc;
 
+{$HPPEMIT '#define ZEXPORT __cdecl'}
+{$HPPEMIT '#define ZEXPORTVA __cdecl'}
+{$HPPEMIT ''}
 {$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
 { zlib.h -- interface of the 'zlib' general purpose compression library
