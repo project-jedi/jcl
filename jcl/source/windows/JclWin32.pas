@@ -4023,6 +4023,7 @@ end;
 
 initialization
   Assert(SizeOf(ULONG_PTR) = SizeOf(Pointer));
+
 finalization
   JclFreeLibrary(_Advapi32Handle);
   JclFreeLibrary(_NetApi32Handle);
@@ -4036,6 +4037,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.27  2004/08/02 06:34:59  marquardt
+// minor string literal improvements
+//
 // Revision 1.26  2004/08/01 05:50:00  marquardt
 // fix JclFreeLibrary
 //

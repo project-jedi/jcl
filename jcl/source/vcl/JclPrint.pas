@@ -192,6 +192,8 @@ const
   PrintIniYResolution   = 'YResolution';
   PrintIniTTOption      = 'TTOption';
 
+  WindowsIdent = 'windows';
+  DeviceIdent = 'device';
 //==================================================================================================
 // Misc. functions
 //==================================================================================================
@@ -199,6 +201,8 @@ const
 procedure DirectPrint(const Printer, Data: string);
 const
   cRaw = 'RAW';
+  // (rom) resourcestring?
+  cMyDocument = 'My Document';
 type
   TDoc_Info_1 = record
     DocName: PChar;
@@ -222,7 +226,7 @@ begin
   if not OpenPrinter(PChar(Printer), PrinterHandle, @Defaults) then
     raise EJclPrinterError.CreateResRec(@RsInvalidPrinter);
   // Fill in the structure with info about this "document"
-  DocInfo.DocName := 'My Document';
+  DocInfo.DocName := cMyDocument;
   DocInfo.OutputFile := nil;
   DocInfo.Datatype := cRaw;
   try
@@ -1202,7 +1206,7 @@ var
 begin
   // Retrieve the default string from Win.ini (the registry).
   // string will be in form "printername,drivername,portname".
-  Len := GetProfileString('windows', 'device', ',', PrinterNameBuffer,
+  Len := GetProfileString(WindowsIdent, DeviceIdent, ',', PrinterNameBuffer,
     Length(PrinterNameBuffer));
   // Printer name precedes first "," character.
   { TODO : a missing ',' mean, that the buffer was too small }
@@ -1251,8 +1255,6 @@ end;
 function DPSetDefaultPrinter(const PrinterName: string): Boolean;
 
 function SetDefaultPrinter9x(const PrinterName: string): Boolean;
-const
-  WindowsIdent = 'windows';
 var
   PrinterHandle: THandle;
   NeededSize: DWord;
@@ -1335,7 +1337,7 @@ begin
       // Build string in form "printername,drivername,portname".
       S := Format('%s,%s,%s', [PrinterName, Info2Ptr^.pDriverName, Info2Ptr^.pPortName]);
       // Set the default printer in Win.ini and registry.
-      if not WriteProfileString('windows', 'device', PChar(S)) then
+      if not WriteProfileString(WindowsIdent, DeviceIdent, PChar(S)) then
         Exit;
     finally
       FreeMem(Info2Ptr);
@@ -1381,6 +1383,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/08/02 06:34:59  marquardt
+// minor string literal improvements
+//
 // Revision 1.10  2004/07/30 07:20:25  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate
 //

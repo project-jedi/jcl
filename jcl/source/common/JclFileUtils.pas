@@ -2386,7 +2386,8 @@ var
 
   function AbsorbShareName: Boolean;
   const
-    InvalidCharacters = ['<','>','?','/',',','*','+','=','[',']','|',':',';','"',''''];
+    InvalidCharacters =
+      ['<', '>', '?', '/', ',', '*', '+', '=', '[', ']', '|', ':', ';', '"', ''''];
   begin
     // a valid share name is a string composed of a set the set !InvalidCharacters note that a
     // leading '$' is valid (indicates a hidden share)
@@ -5762,6 +5763,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.27  2004/08/02 06:34:59  marquardt
+// minor string literal improvements
+//
 // Revision 1.26  2004/08/01 05:52:11  marquardt
 // move constructors/destructors
 //

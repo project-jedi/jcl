@@ -2241,8 +2241,8 @@ begin
   for I := SearchResult downto 1 do              
   begin
     Delimiter := Copy(FData, I, 1);
-    if not (Delimiter[1] in ['0'..'9','A'..'Z','a'..'z',
-      FDelimiters.ED[1], FDelimiters.SD[1]]) then
+    if not (Delimiter[1] in
+      ['0'..'9', 'A'..'Z', 'a'..'z', FDelimiters.ED[1], FDelimiters.SD[1]]) then
     begin
       FDelimiters.SS := Copy(FData, I, 1);
       Break;
@@ -2268,7 +2268,7 @@ end;
 
 function TEDIFile.InternalAssignDelimiters: TEDIDelimiters;
 begin
-  Result := TEDIDelimiters.Create('''','+',':');
+  Result := TEDIDelimiters.Create('''', '+', ':');
 end;
 
 //--------------------------------------------------------------------------------------------------

@@ -170,6 +170,11 @@ implementation
 uses
   JclResources;
 
+const
+  cNaNText = 'NAN';
+  cInfText = 'INF';
+  cNegInfText = '-INF';
+
 //==================================================================================================
 // Date and Time Data Interchange (ISO 8601)
 //==================================================================================================
@@ -504,13 +509,13 @@ var
 begin
   case Rec.Exponent of
     Low(Rec.Exponent):
-      Result := 'NAN';
+      Result := cNaNText;
     High(Rec.Exponent):
       begin
         if Rec.Negative then
-          Result := '-INF'
+          Result := cNegInfText
         else
-          Result := 'INF';
+          Result := cInfText;
       end;
     Low(Rec.Exponent)+1..-4, 16..High(Rec.Exponent)-1:
       begin
@@ -587,13 +592,13 @@ begin
         Delete(Value, 1, 1);
       Value := UpperCase(Value);
       // (rom) better based on JclMath
-      if Value = 'NAN' then
+      if Value = cNaNText then
         Float := 0/0
       else
-      if Value = 'INF' then
+      if Value = cInfText then
         Float := 1/0
       else
-      if Value = '-INF' then
+      if Value = cNegInfText then
         Float := -1/0
       else
         Result := False;
@@ -634,6 +639,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.11  2004/08/02 06:34:59  marquardt
+//   minor string literal improvements
+//
 //   Revision 1.10  2004/07/29 15:16:51  marquardt
 //   simple style cleaning
 //
