@@ -22,22 +22,25 @@
 { highly accurate timing.                                                      }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: February 06, 2001                                             }
+{ Last modified: November 25, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
 unit JclCounter;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
 interface
 
 uses
-  {$IFDEF WIN32}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF WIN32}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  Libc,
+  {$ENDIF UNIX}
   JclBase;
 
 type
@@ -45,19 +48,33 @@ type
   private
     FCounting: Boolean;
     FElapsedTime: Float;
+    FOverhead: Int64;
+    FOverallElapsedTime: Float;
     FFrequency: Int64;
     FStart: Int64;
     FStop: Int64;
-    FOverhead: Int64;
+
+    {$IFDEF UNIX}
+    FTimeval: TTimeval;
+    {$ENDIF}
+
+  protected
+    function GetRunElapsedTime: Float;
+
   public
-    constructor Create(Compensate: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    constructor Create(const Compensate: Boolean = False);
+    procedure Continue;
     procedure Start;
     function Stop: Float;
+
     property Counting: Boolean read FCounting;
     property ElapsedTime: Float read FElapsedTime;
+    property Overhead: Int64 read FOverhead;
+    property RunElapsedTime: Float read GetRunElapsedTime;
   end;
 
-procedure StartCount(var Counter: TJclCounter);
+procedure ContinueCount(var Counter: TJclCounter);
+procedure StartCount(var Counter: TJclCounter; const Compensate: Boolean = False);
 function StopCount(var Counter: TJclCounter): Float;
 
 type
@@ -67,25 +84,52 @@ implementation
 
 uses
   SysUtils,
-  JclResources, JclSysUtils;
+  JclResources;
 
 //------------------------------------------------------------------------------
-constructor TJclCounter.Create(Compensate: Boolean);
+
+constructor TJclCounter.Create(const Compensate: Boolean);
+const
+  Iterations: Integer = 10000;
+
+var
+  Count: Integer;
+  TmpOverhead: Int64;
+
 begin
   inherited Create;
+
+  {$IFDEF MSWINDOWS}
   if not QueryPerformanceFrequency(FFrequency) then
     raise EJclCounterError.CreateResRec(@RsNoCounter);
+  {$ENDIF}
+
+  {$IFDEF UNIX}
+  FFrequency := 100000;  // 1 sec = 10E6 microseconds, therefor we have to devide by 10E5
+  {$ENDIF}
+
   FCounting := False;
   FOverhead := 0;
+
   if Compensate then
   begin
     // Determine overhead associated with calling of the Start and Stop methods.
     // This allows the Stop method to compensate for it and return a more
     // accurate result. Thanks to John O'Harrow (john@elmcrest.demon.co.uk)
-    Start;
-    Stop;
-    FOverhead := FStop - FStart;
+
+   TmpOverhead := 0;
+
+   for Count := 0 to Iterations do
+   begin
+     Start;
+     Stop;
+     TmpOverhead := TmpOverhead + (FStop - FStart);
+   end;
+
+   FOverHead := Round(TmpOverhead / Iterations);
   end;
+
+  FOverallElapsedTime := 0;
   FElapsedTime := 0;
 end;
 
@@ -95,24 +139,77 @@ procedure TJclCounter.Start;
 begin
   FCounting := True;
   FElapsedTime := 0;
-  QueryPerformanceCounter(FStart);
+  FOverallElapsedTime := 0;
+
+  {$IFDEF MSWINDOWS}
+    QueryPerformanceCounter(FStart);
+  {$ENDIF}
+
+  {$IFDEF UNIX}
+    GetTimeOfDay(FTimeval, nil);
+    FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+  {$ENDIF}
 end;
 
 //------------------------------------------------------------------------------
 
 function TJclCounter.Stop: Float;
 begin
+  {$IFDEF MSWINDOWS}
   QueryPerformanceCounter(FStop);
+  {$ENDIF}
+
+  {$IFDEF UNIX}
+    GetTimeOfDay(FTimeval, nil);
+    FStop := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+  {$ENDIF}
+
   FCounting := False;
-  FElapsedTime := (FStop - FStart - FOverhead) / FFrequency;
+
+  FElapsedTime := FOverallElapsedTime + ((FStop - FStart - FOverhead) / FFrequency);
+  FOverallElapsedTime := FElapsedTime;
   Result := FElapsedTime;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure StartCount(var Counter: TJclCounter);
+function TJclCounter.GetRunElapsedTime: Float;
+var
+  TimeNow: Int64;
+
 begin
-  Counter := TJclCounter.Create;
+  {$IFDEF MSWINDOWS}
+    QueryPerformanceCounter(TimeNow);
+  {$ENDIF}
+
+  {$IFDEF UNIX}
+    GetTimeOfDay(FTimeval, nil);
+    TimeNow := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+  {$ENDIF}
+
+  Result := FOverallElapsedTime + ((TimeNow - FStart - FOverhead) / FFrequency);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclCounter.Continue;
+var
+  Overall: Float;
+
+begin
+   if not(FCounting) then
+   begin
+     Overall := FOverallElapsedTime;
+     Start;
+     FOverallElapsedTime := Overall;
+   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure StartCount(var Counter: TJclCounter; const Compensate: Boolean = False);
+begin
+  Counter := TJclCounter.Create(Compensate);
   Counter.Start;
 end;
 
@@ -127,6 +224,14 @@ begin
   end
   else
     Result := 0.0;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure ContinueCount(var Counter: TJclCounter);
+begin
+  if Counter <> nil then
+    Counter.Continue;
 end;
 
 end.
