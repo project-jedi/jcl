@@ -12,17 +12,16 @@
 {                                                                                                  }
 { The Original Code is JclIniFiles.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is John C Molyneux.                                   }
+{ Portions created by Marcel van Brakel are Copyright (C) John C Molyneux.                         }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   John C Molyneux                                                                                }
-{   Eric S. Fisher                                                                                 }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Eric S. Fisher, Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Robert Marquardt, John C Molyneux,}
+{   Robert Rossmair, Petr Vones                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclIniFiles;
@@ -297,6 +296,9 @@ end;
 //  - add TJclISOMemIniFile, TJclISOIniFile
 
 // $Log$
+// Revision 1.4  2004/05/05 00:04:11  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.3  2004/04/06 04:32:43  peterjhaas
 // Add TJclISOIniFile, TJclISOMemIniFile
 //

@@ -12,12 +12,13 @@
 {                                                                                                  }
 { The Original Code is JclDateTime.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Michael Schnell                                                                                }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{ Heri Bender, Marcel van Brakel, Charlie Calvert, Marc Convents,                                  }
+{ Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Nick Hodges, Michael Schnell, Anthony Steele,       }
+{ Matthias Thoma, Robert Marquardt, Robert Rossmair, Petr Vones                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -1208,8 +1209,13 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.6  2004/05/05 00:04:10  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.5  2004/04/08 18:14:00  mthoma
-// Fixed 402, 403, 1045, 236 (all DateTimeToLocalDateTime and vice versa problems), changed $data$ to $date$, removed the todoc statements, changed function prototypes from Value to a more JclDateTime like naming.
+// Fixed 402, 403, 1045, 236 (all DateTimeToLocalDateTime and vice versa problems),
+// changed $data$ to $date$, removed the todoc statements, changed function prototypes from Value
+// to a more JclDateTime like naming.
 //
 // Revision 1.4  2004/04/06 04:33:37  peterjhaas
 // Add UNIX time <--> TDateTime / TFiletime conversion

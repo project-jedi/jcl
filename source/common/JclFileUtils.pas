@@ -12,13 +12,14 @@
 {                                                                                                  }
 { The Original Code is JclFileUtils.pas.                                                           }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel                                                                              }
-{   Rudy Velthuis                                                                                  }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Marcel Bestebroer, Marcel van Brakel, Azret Botash, Charlie Calvert, Wim De Cleen,             }
+{   Massimo Maria Ghisalberti, Peter J. Haas (PeterJHaas) jediplus@pjh2.de, David Hervieux,        }
+{   Pelle F. S. Liljendal, Robert Marquardt, John Molyneux, Robert Rossmair,                       }
+{   Olivier Sannier (obones), André Snepvangers, Anthony Steele, Matthias Thoma, Rudy Velthuis     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -31,7 +32,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclFileUtils;
@@ -5706,6 +5707,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/05/05 00:04:11  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.11  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

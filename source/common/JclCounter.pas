@@ -12,11 +12,12 @@
 {                                                                                                  }
 { The Original Code is JclCounter.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developers of the Original Code are Theo Bebekis and Marcel van Brakel.              }
+{ Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All Rights Reserved.  }
+{ Portions created by Theo Bebekis are Copyright (C) Theo Bebekis. All Rights Reserved.            }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel                                                                              }
+{   Theo Bebekis, Marcel van Brakel, Robert Marquardt, Matthias Thoma, Petr Vones                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -24,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclCounter;
@@ -221,6 +222,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/05/05 00:04:10  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.4  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

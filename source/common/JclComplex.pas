@@ -12,11 +12,12 @@
 {                                                                                                  }
 { The Original Code is JclComplex.pas.                                                             }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Alexei Koudinov. Portions created by               }
+{ Alexei Koudinov are Copyright (C) of Alexei Koudinov. All Rights Reserved.                       }                         
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Alexei Koudinov                                                                                }
+{   Marcel van Brakel, Alexei Koudinov, Robert Marquardt, Robert Rossmair, Matthias Thoma,         }
+{   Petr Vones                                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -24,7 +25,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclComplex;
@@ -1770,6 +1771,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/05/05 00:04:10  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.4  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //

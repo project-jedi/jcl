@@ -1,6 +1,6 @@
 {**************************************************************************************************}
 {                                                                                                  }
-{ Project JEDI Code Library (JCL) extension                                                        }
+{ Project JEDI Code Library (JCL)                                                                  }
 {                                                                                                  }
 { The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
 { you may not use this file except in compliance with the License. You may obtain a copy of the    }
@@ -15,7 +15,8 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (rrossmair) - crossplatform & BCB support                        }
+{ Contributor(s):                                                                                  }
+{   Robert Rossmair (rrossmair) - crossplatform & BCB support                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -2298,6 +2299,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/05 00:04:10  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.7  2004/04/18 05:15:07  rrossmair
 // code clean-up
 //

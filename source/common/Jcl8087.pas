@@ -10,13 +10,14 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is Jcl8087.pas.                                                                }
+{ The Original Code is Jcl8087.pas                                                                 }
 {                                                                                                  }
-{ The Initial Developers of the Original Code are documented in the accompanying help file         }
-{ JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
+{ The Initial Developer of the Original Code is Marcel van Brakel.                                 }
+{ Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel                                                                              }
+{   Marcel van Brakel, ESB Consultancy, Robert Marquardt, Robert Rossmair, Matthias Thoma,         }
+{   Petr Vones                                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -26,7 +27,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit Jcl8087;
@@ -257,6 +258,9 @@ end;
 //   "Need imported data reference ($G) to access Default8087CW".
 
 // $Log$
+// Revision 1.4  2004/05/05 00:04:10  mthoma
+// Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 // Revision 1.3  2004/04/06 04:53:18  peterjhaas
 // adapt compiler conditions, add log entry
 //
