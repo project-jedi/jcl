@@ -36,7 +36,7 @@ unit JclLocales;
 interface
 
 uses
-  Windows, Classes,
+  Windows, Classes, SysUtils,
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
@@ -288,7 +288,7 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer {$IFDEF 
 implementation
 
 uses
-  Registry, SysUtils,
+  Registry,
   JclFileUtils, JclStrings, JclSysInfo, JclSysUtils, JclWin32;
 
 const
