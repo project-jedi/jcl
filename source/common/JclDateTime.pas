@@ -90,6 +90,12 @@
 { more elegant code for ISOWeekNumber                                          }
 { added ISOWeekToDateTime                                                      }
 { added overload for ISOWeekNumber with three integer parameters               }
+{                                                                              }
+{ 000914                                                                       }
+{ added functions DayOfTheYear and DayOfTheYearToDateTime                      }
+{                                                                              }
+{ 000918                                                                       }
+{ added function FormatDateTime                                                }
 
 
 { TODO:                                                                        }
@@ -97,21 +103,10 @@
 
 
 { in Help:                                                                     }
-{  Type TDosDateTime is used by Delphi as "FileDate"                           }
-{                                                                              }
 {  We do all conversions (but thoses provided by Delphi anyway)  between       }
 {  TDatetime, TDosDateTime, TFileTime and TSystemTime         plus             }
 {  TDatetime, TDosDateTime, TFileTime, TSystemTime to string                   }
 {                                                                              }
-{  Swapped function names CenturyOfDate and CenturyBaseYear                    }
-{         those were obviously called wrong before                             }
-{                                                                              }
-{  Support for negative dates and Year >= 10000 added for DecodeDate and EncodeDate}
-{  With that for DayOfDate, MonthOfYear, YearOfDate,CenturyOfDate and CenturyBaseYear, too}
-{   as people did not use 12 Months before year 0001, and supposedly will not after 9999,}
-{   we just use the solar year and a month = 1/12 of a solar year here         }
-{                                                                              }
-{  CreationDateTimeOfFile, LastAccessDateTimeOfFile and LastWriteDateTimeOfFile}
 {                                                                              }
 {******************************************************************************}
 
@@ -134,6 +129,9 @@ function CenturyBaseYear(DateTime: TDateTime): Integer;
 function DayOfDate(DateTime: TDateTime): Integer;
 function MonthOfDate(DateTime: TDateTime): Integer;
 function YearOfDate(DateTime: TDateTime): Integer;
+function DayOfTheYear(DateTime: TDateTime; var Year: Integer): Integer;  overload;
+function DayOfTheYear(DateTime: TDateTime): Integer; overload;
+function DayOfTheYearToDateTime(Year, Day: Integer): TDateTime;
 
 function HourOfTime(DateTime: TDateTime): Integer;
 function MinuteOfTime(DateTime: TDateTime): Integer;
@@ -149,6 +147,8 @@ function DaysInMonth(DateTime: TDateTime): Integer;
 function Make4DigitYear(Year, pivot: Integer): Integer;
 function MakeYear4Digit(Year, WindowsillYear: Integer): Integer;
 function EasterSunday(Year: Integer): TDateTime;
+function FormatDateTime(Form: String; DateTime: TDateTime): String;
+
 
 //------------------------------------------------------------------------------
 // Conversion
@@ -247,7 +247,7 @@ begin
                 + SolarDifference;                       // guarantee a smooth transition at 1/1/10000
     Result := trunc (result);            
     Result := Result + (Month-1) * DaysPerMonth;
-    Result := Result + (Day-1);
+    Result := round(Result) + (Day-1);
   end;
 end;
 
@@ -367,6 +367,33 @@ var
   M, D: Word;
 begin
  DecodeDate(DateTime, Result, M, D);
+end;
+
+//------------------------------------------------------------------------------
+
+function DayOfTheYear(DateTime: TDateTime; var Year: Integer): Integer;
+var Month, Day: Word;
+    DT: TDateTime;
+begin
+   decodedate(DateTime, Year, Month, Day);
+   DT := encodedate(Year, 1, 1);
+   Result := trunc(DateTime);
+   Result := Result - trunc(DT) + 1;
+end;
+
+//------------------------------------------------------------------------------
+
+function DayOfTheYear(DateTime: TDateTime): Integer;
+var Year: integer;
+begin
+   Result := DayOfTheYear(DateTime, Year);
+end;
+
+//------------------------------------------------------------------------------
+
+function DayOfTheYearToDateTime(Year, Day: Integer): TDateTime;
+begin
+   Result := encodedate(Year, 1, 1) + Day - 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -807,6 +834,169 @@ function LastWriteDateTimeOfFile(const sr: TSearchRec): TDateTime;
 begin
   Result := FileTimeToDateTime(sr.FindData.ftLastWriteTime);
 end;
+
+//------------------------------------------------------------------------------
+
+function FormatDateTime(Form: String; DateTime: TDateTime): String;
+(* Additional format tokens (also available in upper case):
+   w: Week no according to ISO
+   ww: Week no according to ISO forced two digits
+   i: Year of the ISO-week denoted by w (4 digits for 1000..9999)
+   ii: Year of the ISO-week denoted by w forced two digits
+   e: Number of the Day in the ISO-week denoted by w (ISO-Notation 1=Monday...)
+   f: Number of the Day in the year denoted by y
+   fff: Number of the Day in the year denoted by y forced three digits*)
+var n: integer;
+    ISODay, ISOWeek, ISOYear, DayOfYear, yy : Integer;
+
+   procedure Digest;
+   begin
+      if n > 1 then
+      begin
+         Result := Result + copy(Form, 1, n-1);
+         Delete(Form, 1, n-1);
+         n := 1;
+      end;
+   end;
+
+begin
+   ISOWeek := 0;
+   DayOfYear := 0;
+   Result := '';
+   n := 1;
+   while n <= length(Form) do
+   begin
+      case Form[n] of
+         '"':
+         begin
+            inc(n);
+            Digest;
+            n := pos('"', Form);
+            if n=0 then
+            begin
+               Result := Result + Form;
+               Form := '';
+               n := 1;
+            end
+            else
+            begin
+               Digest;
+            end;
+         end;
+         '''':
+         begin
+            inc(n);
+            Digest;
+            n := pos('''', Form);
+            if n=0 then
+            begin
+               Result := Result + Form;
+               Form := '';
+               n := 1;
+            end
+            else
+            begin
+               Digest;
+            end;
+         end;
+         'i', 'I':             //ISO Week Year
+         begin
+            Digest;
+            if ISOWeek = 0 then ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
+            if (length(Form)>1) and ((Form[2]='i') or (Form[2]='I')) then
+            begin              // <ii>
+               if (length(Form)>2) and ((Form[3]='i') or (Form[3]='I')) then
+               begin
+                  if (length(Form)>3) and ((Form[4]='i') or (Form[4]='I')) then
+                  begin        // <iiii>
+                     Delete(Form,1,4);
+                     Result := Result + '"' + IntToStr(ISOYear) + '"';
+                  end
+                  else
+                  begin        // <iii>
+                     Delete(Form,1,3);
+                     Result := Result + '"' + IntToStr(ISOYear) + '"';
+                  end;
+               end
+               else
+               begin           // <ii>
+                  Delete(Form,1,2);
+                  Result := Result + '"';
+                  if ISOYear < 10 then Result := Result + '0';
+                  yy := ISOYear mod 100;
+                  if yy < 10 then Result := Result + '0';
+                  Result := Result + IntToStr(yy) + '"';
+               end;
+            end
+            else
+            begin               // <i>
+               Delete(Form,1,1);
+               Result := Result + '"' + IntToStr(ISOYear) + '"';
+            end;
+         end;
+         'w', 'W':              //ISO Week
+         begin
+            digest;
+            if ISOWeek = 0 then ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISoDay);
+            if (length(Form)>1) and ((Form[2]='w') or (Form[2]='W')) then
+            begin               // <ww>
+               Delete(Form,1,2);
+               Result := Result + '"';
+               if ISOWeek < 10 then Result := Result + '0';
+               Result := Result + IntToStr(ISOWeek) + '"';
+            end
+            else
+            begin               // <w>
+               Delete(Form,1,1);
+               Result := Result + '"' + IntToStr(ISOWeek) + '"';
+            end;
+         end;
+         'e', 'E':   //ISO Week Day
+         begin
+            digest;
+            if ISOWeek = 0 then ISOWeek := ISOWeekNumber(DateTime, ISOYear, ISODay);
+            Delete(Form,1,1);
+            Result := Result + '"' + IntToStr(ISODay) + '"';
+         end;
+         'f', 'F':   //Day of the Year
+         begin
+            digest;
+            if DayOfYear = 0 then DayOfYear := DayOfTheYear(DateTime);
+            if (length(Form)>1) and ((Form[2]='f') or (Form[2]='F')) then
+            begin
+               if (length(Form)>2) and ((Form[3]='f') or (Form[3]='F')) then
+               begin            // <fff>
+                  Delete(Form,1,3);
+                  Result := Result + '"';
+                  if DayOfYear < 10  then Result := Result + '0';
+                  if DayOfYear < 100 then Result := Result + '0';
+                  Result := Result + IntToStr(DayOfYear) + '"';
+               end
+               else
+               begin            // <ff>
+                  Delete(Form,1,2);
+                  Result := Result + '"';
+                  if DayOfYear < 10 then Result := Result + '0';
+                  Result := Result + IntToStr(DayOfYear) + '"';
+               end;
+            end
+            else
+            begin               // <f>
+               Delete(Form,1,1);
+               Result := Result + '"' + IntToStr(DayOfYear) + '"';
+            end
+         end;
+         else
+         begin
+            inc(n);
+         end;
+      end;
+   end;
+   Result := Result + Form;
+   Result := SysUtils.FormatDateTime(Result, DateTime);
+end;
+
+//------------------------------------------------------------------------------
 
 
 end.
