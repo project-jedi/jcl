@@ -374,6 +374,13 @@ incremented and write-access is preserved. It is safe to call BeginWrite while
 already holding write-access, it merely increments a recursion count. If you call
 BeginWrite multiple times you must also call <REF>EndWrite</REF> multiple times.
 That is, the calls to BeginWrite and EndWrite must be balanced.
+[Notes]
+Count=1
+1=<B>Warning</B>Calling BeginWrite while the thread already owns a read lock
+causes the thread to temporarily give up it's read lock altogether. Therefore
+it is not safe to assume that the resource is unchanged when you "promote" a
+read lock to a write lock. This is necessary to prevent a dead lock situation
+where two threads both attempt to promote a read lock. 
 [Quick Info]
 Kind=Method
 Visibility=Public
