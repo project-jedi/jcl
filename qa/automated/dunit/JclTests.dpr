@@ -23,7 +23,8 @@ uses
   TestJcl8087 in 'units\TestJcl8087.pas',
   TestJclMath in 'units\TestJclMath.pas',
   TestJclStrings in 'units\TestJclStrings.pas',
-  TestJclDateTime in 'units\TestJclDateTime.pas';
+  TestJclDateTime in 'units\TestJclDateTime.pas',
+  TestJclEDI in 'units\TestJclEDI.pas';
 
 {$R *.res}
 

@@ -19,10 +19,11 @@ program JclQTests;
 
 uses
   QForms,
-  QGUITestRunner,       // from http://sourceforge.net/projects/dunit/
-  TestJcl8087 in 'units/TestJcl8087.pas',
-  TestJclMath in 'units/TestJclMath.pas',
-  TestJclStrings in 'units/TestJclStrings.pas';
+  QGUITestRunner,
+  TestJcl8087 in 'units\TestJcl8087.pas',
+  TestJclMath in 'units\TestJclMath.pas',
+  TestJclStrings in 'units\TestJclStrings.pas',
+  TestJclEDI in 'units\TestJclEDI.pas';
 
 {$R *.res}
 
