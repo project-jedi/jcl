@@ -1,3 +1,85 @@
+@@$MathRoutines
+<TITLE Math Routines>
+<TOPICORDER 1200>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Conversion
+<GROUP MathRoutines>
+<TITLE Conversion>
+<TOPICORDER 200>
+--------------------------------------------------------------------------------
+@@$MathRoutines.CRC
+<TITLE CRC>
+<GROUP $MathRoutines>
+<TOPICORDER 300>
+  The CRC method used here is a quite "native" translation of a
+  hardware CRC generator to software. The data array is
+  interpreted as a bit stream with Byte 0 Bit 7 sent first.
+  Mathematically when calculating an m-Bit CRC on a n Byte
+  data-array, this is like calculating the "modulus" of an an
+  8*n + m Bit word, Byte 0 bit 7 of the array being the most
+  significant Bit, m Zero Bits added to the end of the array. To
+  check the CRC the Zero Bits are replaced by the CRC to be
+  checked, thus the CRC forming the low order bits of the 8*n +
+  m Bit word. If the CRC is correct the result of this
+  operation is Zero, otherwise it's the "syndrome" that can be
+  used to calculate the order of the false bit to correct it.
+  The software comes with the CRC calculating function in two
+  kinds. A "basic" one that works bitwise, like a hardware CRC
+  generator would do and a fast one that uses a lookup table
+  for complete bytes. The bitwise function can be used to
+  calculate the table. So this kind of CRC calculating offers
+  some specialities:
+      *   the table based operation creates the same result as
+          the bitwise calculation.
+      *   the table is reproduced by calculating the CRC of a
+          single byte, using the starting value Zero.
+      *   the CRC check immediately creates the syndrome.
+  Beware, that the results of different CRC software algorithms
+  might be different even if the same Polynomial and starting
+  value is used. The algorithm might use another order of bits
+  in the byte stream to be checked or another order of bits in
+  the calculated CRC-value. Moreover the input and/or output
+  bits might be used inverted and as the CRC-result the
+  contents of the shift register after 8*n shifts might be used
+  instead shifting the m bits out through the generator the
+  additional m steps as done here. E.g. as far as I know the
+  CRC result used by "ZIP" is our CRC32 result xor $FFFFFFFF.
+--------------------------------------------------------------------------------
+@@$MathRoutines.Exponential
+<GROUP MathRoutines>
+<TITLE Exponential>
+<TOPICORDER 400>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Floatsupport
+<GROUP MathRoutines>
+<TITLE Float support>
+<TOPICORDER 500>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Hyperbolic
+<GROUP MathRoutines>
+<TITLE Hyperbolic>
+<TOPICORDER 700>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Logarithmic
+<GROUP MathRoutines>
+<TITLE Logarithmic>
+<TOPICORDER 800>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Miscellaneous
+<GROUP MathRoutines>
+<TITLE Miscellaneous>
+<TOPICORDER 900>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Statistics
+<GROUP MathRoutines>
+<TITLE Statistics>
+<TOPICORDER 1000>
+--------------------------------------------------------------------------------
+@@$MathRoutines.Transcendental
+<GROUP MathRoutines>
+<TITLE Transcendental>
+<TOPICORDER 1100>
+--------------------------------------------------------------------------------
 @@ISqrt
 <GROUP MathRoutines.Miscellaneous>
 Summary:
