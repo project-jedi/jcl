@@ -11,12 +11,13 @@ has a very high frequency thereby allowing for the timing of very short interval
 The hardware must support a high performance counter or the construction of a
 TJclCounter object will raise an exception.
 [Quick Info]
-BCB=3,4,5
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters\TJclCounter
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StartCount;..\StartCount
@@ -36,14 +37,15 @@ overhead associated with calling the user calling the Start and Stop methods and
 corrects the resulting time; thereby providing a more accurate timing. By default,
 for backwards compatibility, no compensation takes place.
 [Quick Info]
-BCB=3,4,5
 Kind=Method
 Visibility=Public
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters\TJclCounter
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=StartCount;..\..\StartCount
@@ -58,14 +60,15 @@ Start starts the timer, resets the elapsed time and sets the Counting property t
 True. To stop the timer and retrieve the elapsed time since Start was called, use
 the Stop method.
 [Quick Info]
-BCB=3,4,5
 Kind=Method
 Visibility=Public
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters\TJclCounter
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StartCount;..\..\StartCount
@@ -80,14 +83,15 @@ the elapsed time since the Start method was called.
 [Result]
 The elapsed time between Start and Stop calls. Unit is seconds.
 [Quick Info]
-BCB=3,4,5
 Kind=Method
 Visibility=Public
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters\TJclCounter
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StartCount;..\..\StartCount
@@ -101,14 +105,15 @@ ElpasedTime returns the elapsed time between the last Start and Stop calls. The
 value is divided by the counter's frequency before returning so the unit is seconds.
 During a counting operation, Counting equals True, ElapsedTimer is always 0.
 [Quick Info]
-BCB=3,4,5
 Kind=Property
 Visibility=Public
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters\TJclCounter
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Counting: Boolean read FCounting;
@@ -120,14 +125,15 @@ Start has, but Stop hasn't, been called the return value is True. Immediately
 after construction or after a call to Stop, Counting is False. When Counting is
 True the ElapsedTime property is invalid.
 [Quick Info]
-BCB=3,4,5
 Kind=Property
 Visibility=Public
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters\TJclCounter
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure StartCount(var Counter: TJclCounter);
@@ -145,14 +151,15 @@ Count=1
 Count=1
 1=If the hardware does not support high performance resolution counters an exception is raised.
 [Quick Info]
-BCB=3,4,5
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StopCount
@@ -172,14 +179,15 @@ by <REF>StartCount</REF>. This object is freed before the function returns.
 [Result]
 The elapsed time since the counter was started, in seconds.
 [Quick Info]
-BCB=3,4,5
 Unit=JclCounter
 Category=Date and Time
 SubCat=Timers and Counters
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=StartCount
