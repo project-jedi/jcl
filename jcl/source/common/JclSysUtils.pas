@@ -281,13 +281,18 @@ function SizeOfMem(const APointer: Pointer): Integer;
 var
   U: PUsed;
 begin
-  Result := 0;
-  if APointer <> nil then
+  if IsMemoryManagerSet then
+    Result:= -1
+  else
   begin
-    U := APointer;
-    U := PUsed(PChar(U) - SizeOf(TUsed));
-    if (U.SizeFlags and cThisUsedFlag) <> 0 then
-      Result := (U.SizeFlags) and (not cFlags - SizeOf(TUsed));
+    Result := 0;
+    if APointer <> nil then
+    begin
+      U := APointer;
+      U := PUsed(PChar(U) - SizeOf(TUsed));
+      if (U.SizeFlags and cThisUsedFlag) <> 0 then
+        Result := (U.SizeFlags) and (not cFlags - SizeOf(TUsed));
+    end;
   end;
 end;
 
