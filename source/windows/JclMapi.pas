@@ -72,7 +72,7 @@ type
     FClientLibHandle: THandle;
     FDefaultClientIndex: Integer;
     FDefaultProfileName: string;
-    FFunctions: array of ^Pointer;
+    FFunctions: array[0..11] of ^Pointer;
     FMapiInstalled: Boolean;
     FMapiVersion: string;
     FProfiles: array of string;
@@ -1412,6 +1412,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/10/25 20:42:07  mthoma
+// #0002255
+//
 // Revision 1.10  2004/10/17 21:29:23  mthoma
 // Used version rev 1.2 to remove all rev 1.3 contributions.
 //
