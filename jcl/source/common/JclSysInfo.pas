@@ -1032,7 +1032,7 @@ var
   CountFreq: TULargeInteger;
   {$ENDIF}
   CpuSpeed: TFreqInfo;
-  Freq, Freq2, Freq3, Total: Cardinal;
+  Freq, Freq2, Freq3, Total: Integer;
   TotalCycles, Cycles: Cardinal;
   Stamp0, Stamp1: Cardinal;
   TotalTicks, Ticks: Cardinal;
