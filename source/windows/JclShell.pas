@@ -963,13 +963,18 @@ function ShortCutCreateSystem(const ShortCut: TShortCut; const Folder: Integer;
   const FileName: string): HRESULT;
 var
   Path: string;
+  Pidl: PItemIDList;
 begin
   Result := E_INVALIDARG;
   SetLength(Path, MAX_PATH);
-  if SHGetSpecialFolderPath(0, PChar(Path), Folder, False) then
+  if Succeeded(SHGetSpecialFolderLocation(0, Folder, Pidl)) then
   begin
-    StrResetLength(Path);
-    Result := ShortCutCreate(ShortCut, PathAddSeparator(Path) + FileName);
+    Path := PidltoPath(Pidl);
+    if Path <> '' then
+    begin
+      StrResetLength(Path);
+      Result := ShortCutCreate(ShortCut, PathAddSeparator(Path) + FileName);
+    end;
   end;
 end;
 
