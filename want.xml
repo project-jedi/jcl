@@ -38,7 +38,7 @@ $Id$
   <property name="app.shortname"    value="JCL"/>
 
   <property name="version.major"    value="1"/>
-  <property name="version.minor"    value="92"/>
+  <property name="version.minor"    value="93"/>
   <property name="version"          value="${version.major}.${version.minor} ${date.tag}"/>
 
   <!-- why won't the following line work with subst=""? -->
@@ -146,6 +146,7 @@ $Id$
           <exclude name="${basedir}/dist/**" />
           <exclude name="${basedir}/docs/about jcl/**" />
           <exclude name="${basedir}/docs/contributors.txt" />
+          <exclude name="${doc.dir}/*.info" />
           <exclude name="${install.dir}/prototypes/**" />
           <exclude name="${install.dir}/prototypes.mak" />
           <exclude name="${help.dir}/dtx/**" />
@@ -181,6 +182,9 @@ $Id$
           <include name="${pack.dir}/**/*.xml" />
           <include name="${src.dir}/**/*.obj" />
           <include name="${src.dir}/common/*.fpc" />
+          <include name="${src.dir}/windows/win32api/*.int" />
+          <include name="${src.dir}/windows/win32api/*.imp" />
+          <include name="${src.dir}/windows/win32api/*.inc" />
           <include name="${basedir}/**/*.pas" />
           <include name="${basedir}/**/*.dfm" />
           <include name="${basedir}/**/*.xfm" />
