@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: October 29, 2003                                                                    }
+{ Last modified: December 01, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -499,10 +499,10 @@ type
     procedure StopTask(ID: TFileSearchTaskID);
     procedure StopAllTasks(Silently: Boolean = False); // Silently: Don't call OnTerminateTask
     property FileMask: string read GetFileMask write SetFileMask;
-    property IncludeSubDirectories: Boolean index fsIncludeSubDirectories
-      read GetOption write SetOption;
-    property IncludeHiddenSubDirectories: Boolean index fsIncludeHiddenSubDirectories
-      read GetOption write SetOption;
+    property IncludeSubDirectories: Boolean
+      read GetIncludeSubDirectories write SetIncludeSubDirectories;
+    property IncludeHiddenSubDirectories: Boolean 
+      read GetIncludeHiddenSubDirectories write SetIncludeHiddenSubDirectories;
     property SearchOption[const Option: TFileSearchOption]: Boolean read GetOption write SetOption;
     property LastChangeAfterAsString: string read GetLastChangeAfterStr write SetLastChangeAfterStr;
     property LastChangeBeforeAsString: string read GetLastChangeBeforeStr write SetLastChangeBeforeStr;
