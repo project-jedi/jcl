@@ -3,16 +3,13 @@
 Summary:
   Converts a UTC based TFileTime to a local TDateTime.
 Description:
-
   FileTimeToLocalDateTime converts the supplied, UTC based TFileTime to a local
   TDateTime.
 Parameters:
   FileTime - The UTC based TFileTime to convert.
 Result:
-
   The TFileTime converted to local TDateTime. On failure the function raises an exception.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
 Quick info:
   Unit: JclDateTime
@@ -27,15 +24,12 @@ Quick info:
 Summary:
   Converts a UTC based TFileTime to a TDateTime.
 Description:
-
   FileTimeToDosDateTime converts the supplied, UTC based TFileTime to a TDateTime.
 Parameters:
   FileTime - The UTC based TFileTime to convert.
 Result:
-
   The TFileTime converted to TDateTime. On failure the function raises an exception.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
   The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.FileTimeToDosDateTime). Failure to do so may lead to a compiler error.
@@ -52,15 +46,12 @@ Quick info:
 Summary:
   Converts a UTC based TFileTime to a TSystemTime.
 Description:
-
   FileTimeToSystemTime converts the supplied, UTC based TFileTime to a TSystemTime.
 Parameters:
   FileTime - The UTC based TFileTime to convert.
 Result:
-
   The TFileTime converted to TSystemTime
 Notes:
-
   This function performs the same operation as the procedure FileTimeToSystemTime from Windows.pas.
   The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.FileTimeToSystemTime). Failure to do so may lead to a compiler error.
@@ -77,16 +68,13 @@ Quick info:
 Summary:
   Converts a TFileTime to a TDateTime.
 Description:
-
   FileTimeToDateTime converts the supplied TFileTime to a TDateTime, ignoring whether
   the supplied DateTime is UNC based or local.
 Parameters:
   FileTime - The TFileTime to convert.
 Result:
-
   The TFileTime converted to TDateTime.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
 Quick info:
   Unit: JclDateTime
@@ -101,16 +89,13 @@ Quick info:
 Summary:
   Converts a TDoaDateTime to a TSystemTime.
 Description:
-
   DosDateTimeToSystemTime converts the supplied TDosDateTime to a TSystemTime,
   ignoring whether the supplied DateTime is UNC based or local.
 Parameters:
   DosTime - The TDosDateTime to convert.
 Result:
-
   The TDosDateTime converted to TSystemTime.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
 Quick info:
   Unit: JclDateTime
@@ -125,16 +110,13 @@ Quick info:
 Summary:
   Converts a TSystemTime to a TDosDateTime.
 Description:
-
   SystemTimeToDosDateTime converts the supplied TSystemTime to a TDosDateTime,
   ignoring whether the supplied DateTime is UNC based or local.
 Parameters:
   SystemTime - The TSystemTime to convert.
 Result:
-
   The TSystemTime converted to TDosDateTime. On failure the function raises an exception.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
 Quick info:
   Unit: JclDateTime
@@ -149,15 +131,12 @@ Quick info:
 Summary:
   Converts a TSystemTime to a TFileTime.
 Description:
-
   SystemTimeToFileTime converts the supplied TSystemTime to a TFileTime.
 Parameters:
   SystemTime - The TSystemTime to convert.
 Result:
-
   The TSystemTime converted to TFileTime. On failure the function raises an exception.
 Notes:
-
   This function performs the same operation as the procedure SystemTimeToFileTime from Windows.pas.
   The overloaded procedure is identical to the procedure in Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.SystemTimeToFileTime). Failure to do so may lead to a compiler error.
@@ -174,15 +153,12 @@ Quick info:
 Summary:
   Converts a TSystemTime to a string.
 Description:
-
   SystemTimeToFileTime converts the supplied TSystemTime to a string.
 Parameters:
   SystemTime - The TSystemTime to convert.
 Result:
-
   String representation of the supplied SystemTime.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
 Quick info:
   Unit: JclDateTime
@@ -197,16 +173,13 @@ Quick info:
 Summary:
   Converts a TDosDateTime to a TDateTime.
 Description:
-
   DosDateTimeToDateTime converts the supplied TDosDateTime to a TDateTime, ignoring
   whether the supplied DateTime is UNC based or local.
 Parameters:
   DosTime - The TDosDateTime to convert.
 Result:
-
   The TDosDateTime converted to TDateTime.
 Notes:
-
   This function performs the same operation as the procedure DateTimeToFileDate from SysUtils.
 Quick info:
   Unit: JclDateTime
@@ -221,16 +194,13 @@ Quick info:
 Summary:
   Converts a TDosDateTime to a TFileTime.
 Description:
-
   DosDateTimeToFileTime converts the supplied TDosDateTime to a TFileTime, ignoring
   whether the supplied DateTime is UNC based or local.
 Parameters:
   DosTime - The TDosDateTime to convert.
 Result:
-
   The TDosDateTime converted to TFileTime. On failure the function raises an exception.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
   The overloaded procedure is identical to the procedure from Windows and provided for compatibility.
   Please keep in mind that this routine is also defined in Windows.pas and to succesfully use it you must ensure that either JclDateTime is listed after Windows in the uses clause or you prefix the call with the unit name (JclDateTime.DosDateTimeToFileTime). Failure to do so may lead to a compiler error.
@@ -247,16 +217,13 @@ Quick info:
 Summary:
   Converts a TDateTime to a TDosDateTime.
 Description:
-
   DateTimeToDosDateTime converts the supplied TDateTime to a TDosDateTime, ignoring
   whether the supplied DateTime is UNC based or local.
 Parameters:
   DateTime - The TDateTime to convert.
 Result:
-
   The TDateTime converted to TDosDateTime.
 Notes:
-
   This function performs the same operation as DateTimeToFileDate from SysUtils.
 Quick info:
   Unit: JclDateTime
@@ -271,16 +238,13 @@ Quick info:
 Summary:
   Converts a TDateTime to a TFileTime.
 Description:
-
   DateTimeToFileTime converts the supplied TDateTime to a TFileTime, ignoring
   whether the supplied DateTime is UNC based or local.
 Parameters:
   DateTime - The TDateTime to convert.
 Result:
-
   The TDateTime converted to TFileTime.
 Notes:
-
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
 Quick info:
   Unit: JclDateTime
@@ -295,16 +259,13 @@ Quick info:
 Summary:
   Converts a TDateTime to a TSystemTime.
 Description:
-
   DateTimeToSystemTime converts the supplied TDateTime to a TSystemTime, ignoring
   whether the supplied DateTime is UNC based or local.
 Parameters:
   DateTime - The TDateTime to convert.
 Result:
-
   The TDateTime converted to TSystemTime.
 Notes:
-
   DateTimeToSystemTime just calls the VCL procedure DateTimeToSystemTime
   The JCL DateTime conversion functions supplement routines found in the Delphi RTL and the Win32 API. If a conversion function is not included here it most likely can be found in either of those libraries.
   The overloaded procedure is identical to the procedure from SysUtils and provided for compatibility.
@@ -322,17 +283,14 @@ Quick info:
 Summary:
   Converts a local TDateTime to a UNC based TDateTime
 Description:
-
   LocalDateTimeToDateTime converts a local TDateTime to a UNC (coordinated universal
   time) based TDateTime. The function uses the settings for the time zone and daylight
   saving time.
 Parameters:
   DateTime - The local TDateTime to convert to UNC based time.
 Result:
-
   The UNC based TDateTime. If the function fails it raises an EJclDateTimeError exception.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -347,17 +305,14 @@ Quick info:
 Summary:
   Converts a local TDateTime to a UNC based TFileTime
 Description:
-
   LocalDateTimeToFileTime converts a local TDateTime to a UNC (coordinated universal
   time) based TFileTime. The function uses the settings for the time zone and daylight
   saving time.
 Parameters:
   DateTime - The local TDateTime to convert to UNC based file time.
 Result:
-
   The UNC based TFileTime. If the function fails it raises an EJclDateTimeError exception.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -372,17 +327,14 @@ Quick info:
 Summary:
   Converts a UNC based TDateTime to a local TDateTime
 Description:
-
   DateTimeToLocalDateTime converts a UNC (coordinated universal time) based TDateTime
   to a local TDateTime. The function uses the settings for the time zone and daylight
   saving time.
 Parameters:
   DateTime - The UNC based TDateTime to convert to local time.
 Result:
-
   The local TDateTime. If the function fails it raises an EJclDateTimeError exception.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -397,12 +349,10 @@ Quick info:
 Summary:
   Converts a TFileTime to a string.
 Description:
-
   FileTimeToStr converts the TFileTime to a string.
 Parameters:
   FileTime - The TFileTime to convert.
 Result:
-
   The string representation of FileTime.
 Quick info:
   Unit: JclDateTime
@@ -417,12 +367,10 @@ Quick info:
 Summary:
   Converts a DOS DateTime to a string.
 Description:
-
   Converts a DOS DateTime to a string.
 Parameters:
   DateTime - The DOS DateTime to convert.
 Result:
-
   String representation of the DOS DateTime or an empty string on failure.
 Quick info:
   Unit: JclDateTime
@@ -439,17 +387,14 @@ Quick info:
 Summary:
   Returns the number of seconds in a DateTime.
 Description:
-
   Returns the number of seconds in a DateTime. Basically it extracts the hour, minutes
   and seconds from the date time and returns the result of the formula
   (3600 * Hours) + (60 * Minutes) + Seconds, but is much faster than doing it this way.
 Parameters:
   DateTime - The DateTime for which you want to know the number of seconds.
 Result:
-
   The number of seconds in the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -464,17 +409,14 @@ Quick info:
 Summary:
   Returns the number of milliseconds in a DateTime.
 Description:
-
   Returns the number of milliseconds in a DateTime. Basically it extracts the hour, minutes
   and seconds from the date time and returns the result of the formula
   ((3600 * Hours) + (60 * Minutes) + Seconds) * 1000, but is much faster than doing it this way.
 Parameters:
   DateTime - The DateTime for which you want to know the number of milliseconds.
 Result:
-
   The number of milliseconds in the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -489,13 +431,11 @@ Quick info:
 Summary:
   Converts hours to milliseconds.
 Description:
-
   HoursToMSecs converts hours to milliseconds. The maximum value for Hours is asserted
   to Hours smaller than MaxInt / 60 / 60 / 1000.
 Parameters:
   Hours - The number of hours to convert to milliseconds.
 Result:
-
   The number of milliseconds corresponding with Hours.
 Quick info:
   Unit: JclDateTime
@@ -510,13 +450,11 @@ Quick info:
 Summary:
   Converts minutes to milliseconds.
 Description:
-
   MinutesToMSecs converts Minutes to milliseconds. The maximum value for Minutes is
   asserted to Minutes smaller than MaxInt / 60 / 1000
 Parameters:
   Minutes - The number of minutes to convert to milliseconds.
 Result:
-
   The number of milliseconds corresponding with Minutes.
 Quick info:
   Unit: JclDateTime
@@ -531,13 +469,11 @@ Quick info:
 Summary:
   Converts seconds to milliseconds.
 Description:
-
   SecondsToMSecs converts Seconds to milliseconds. The maximum value for Seconds is
   asserted to Seconds smaller than MaxInt / 1000
 Parameters:
   Seconds - The number of seconds to convert to milliseconds.
 Result:
-
   The number of milliseconds corresponding with Seconds.
 Quick info:
   Unit: JclDateTime
@@ -548,10 +484,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ISOWeekNumber
+<GROUP DateandTime>
 Summary:
   Returns the week number of a given date. Optionally the reference-year for this week and the weekday can be requested
 Description:
-
   ISOWeekNumber returns week number of the specified date according to
   the ISO 8601 specification. Optionally the reference-year for this week and the
   weekday can be requested. In ISO 8601 weeks start with Monday and the first
@@ -562,11 +498,9 @@ Parameters:
   YearOfWeekNumber - (Optional) The year the returned week belongs to.
   WeekDay - (Optional) The day in this week.
 Result:
-
   The function returns the week number of the specified DateTime. The year this
   week belongs to and the day in this week are returned through the var parameters.
 Notes:
-
   The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
   According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
   The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility. Other values might be useful in some instances and can be set in the source code.
@@ -581,10 +515,10 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ISOWeekToDateTime
+<GROUP DateandTime>
 Summary:
   Returns the date denoted by year, week and weekday.
 Description:
-
   ISOWeekToDateTime returns the date denoted by year, week and weekday.
   according to the ISO 8601 specification.
 Parameters:
@@ -592,10 +526,8 @@ Parameters:
   Week - ISO week of the year.
   Day - Day in the week (1=Monday, ... 7=Sunday).
 Result:
-
   The function returns the TDateTime value of the specified day
 Notes:
-
   The specified date is assumed to be after 1/1/0001 and before 1/1/10000).
   According to ISO 8601 the reference year for the week can be the same as in DateTime, the previous or the next year.
   The constants ISOFirstWeekDay=2 and ISOFirstWeekMinDays=4 are defined for ISO compatibility, Other values might be useful in some instances and can be set in the source code.
@@ -610,16 +542,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@DayOfTheYear
+<GROUP DateandTime>
 Summary:
   Returns the day of the year (1... 366) and optionally the year.
 Description:
-
   Returns the day of the year (1... 366) and optionally the year.
 Parameters:
   DateTime - The DateTime for which to retrieve the year and the number of the day in that year.
   Year - (Optional) The year of the date.
 Result:
-
   The function returns the number of the day in that year.
 Quick info:
   Unit: JclDateTime
@@ -632,16 +563,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@DayOfTheYearToDateTime
+<GROUP DateandTime>
 Summary:
   Encodes the DateTime denoted by a year and the number of a day in that year.
 Description:
-
   DayOfTheYearToDateTime encodes the DateTime denoted by a year and the number of a day in that year.
 Parameters:
   Year - The year of the date.
   Day - The number of a day in that year.
 Result:
-
   The function returns the DateTime denoted by a year and the number of a day in that year.
 Quick info:
   Unit: JclDateTime
@@ -654,16 +584,15 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@EasterSunday
+<GROUP DateandTime>
 Summary:
   Returns the date of Easter Sunday for a given year.
 Description:
-
   EasterSunday returns the date of Easter Sunday for the specified year. The year
   must be specified with 4 digits - for example 1999.
 Parameters:
   Year - The year for which you want to know the date of Easter Sunday.
 Result:
-
   The date of Easter Sunday in the specified year.
 Quick info:
   Unit: JclDateTime
@@ -674,20 +603,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CenturyOfDate
+<GROUP DateandTime>
 Summary:
   Extracts the century from a DateTime.
 Description:
-
   CenturyOfDate returns the century of the specified DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then CenturyOfDate(D) returns 21
 Parameters:
   DateTime - The DateTime from which to extract the century.
 Result:
-
   The century of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -698,20 +625,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CenturyBaseYear
+<GROUP DateandTime>
 Summary:
   Gives the year "00" of the century specified by DateTime.
 Description:
-
   CenturyBaseYear returns the year "00" of the century specified by DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then CenturyBaseYear(D) returns 2000.
 Parameters:
   DateTime - The DateTime from which to extract the year "00" of the century.
 Result:
-
   The year "00" of the century of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -722,20 +647,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@YearOfDate
+<GROUP DateandTime>
 Summary:
   Extracts the year from a DateTime.
 Description:
-
   YearOfDate returns the year of the specified DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then YearOfDate(D) returns 2000.
 Parameters:
   DateTime - The DateTime from which to extract the year.
 Result:
-
   The year of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -746,20 +669,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MonthOfDate
+<GROUP DateandTime>
 Summary:
   Extracts the month from a DateTime.
 Description:
-
   Extracts the month from a DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then MonthOfDate(D) returns 2.
 Parameters:
   DateTime - The DateTime from which to extract the month.
 Result:
-
   The month of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -770,20 +691,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DayOfDate
+<GROUP DateandTime>
 Summary:
   Extracts the day from a DateTime.
 Description:
-
   Extracts the day from a DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then DayOfDate(D) returns 17.
 Parameters:
   DateTime - The DateTime from which to extract the day.
 Result:
-
   The day of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -794,20 +713,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@HourOfTime
+<GROUP DateandTime>
 Summary:
   Extracts the hour from a DateTime.
 Description:
-
   Extracts the hour from a DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then HourOfTime(D) returns 12.
 Parameters:
   DateTime - The DateTime from which to extract the hour.
 Result:
-
   The hour of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
   12:00:00 AM evaluates to 0.
 Quick info:
@@ -819,20 +736,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MinuteOfTime
+<GROUP DateandTime>
 Summary:
   Extracts the minutes from a DateTime.
 Description:
-
   Extracts the minutes from a DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then MinuteOfTime(D) returns 37.
 Parameters:
   DateTime - The DateTime from which to extract the minutes.
 Result:
-
   The minutes of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -843,20 +758,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@SecondOfTime
+<GROUP DateandTime>
 Summary:
   Extracts the seconds from a DateTime.
 Description:
-
   Extracts the seconds from a DateTime.
   For example: if D is assumed to be StrToDateTime('2/17/2000 12:37:21 PM');
   then SecondOfTime(D) returns 21.
 Parameters:
   DateTime - The DateTime from which to extract the seconds.
 Result:
-
   The seconds of the specified DateTime.
 Notes:
-
   The specified DateTime is assumed to be valid (with JCLDate negative years and dates > year 9999 are valid).
 Quick info:
   Unit: JclDateTime
@@ -867,18 +780,16 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IsLeapYear
+<GROUP DateandTime>
 Summary:
   Tests whether DateTime represents a leap year.
 Description:
-
   Tests whether the specified Year or DateTime represents a leap year.
 Parameters:
   DateTime - The year or DateTime to test.
 Result:
-
   True if DateTime is a leap year or False if it's not.
 Notes:
-
   The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
   The overloaded function avoids an erroneous result if the user thinks he calls SysUtils.IsLeapYear
 Quick info:
@@ -890,15 +801,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DaysInMonth
+<GROUP DateandTime>
 Summary:
   Returns the number of days in the month represent by a DateTime.
 Parameters:
   DateTime - DateTime that determines the month for which you want to know the number of days.
 Result:
-
   The number of days in the month in which DateTime lies.
 Notes:
-
   The specified DateTime is assumed to be after 1/1/0001 and before 1/1/10000).
 Quick info:
   Unit: JclDateTime
@@ -909,10 +819,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@Make4DigitYear
+<GROUP DateandTime>
 Summary:
   Converts a 2 digit year into a 4 digit year.
 Description:
-
   Make4DigitYear converts a two digit year into a 4 digit year using Pivot as the
   base of a 100 year window. If Year is smaller the Pivot then the result will be
   2000 + year, if the Year is greater or equal to Pivot the result is 1900 + Year.
@@ -920,10 +830,8 @@ Parameters:
   Year - The 2 digit year to convert. Is asserted to be in the range 0..100
   Pivot - The base of the 100 year window. Is asserted to be in the range 0..100
 Result:
-
   The 4 digit year.
 Notes:
-
   If Year or Pivot is 100 they are converted to 0 first.
 Quick info:
   Unit: JclDateTime
@@ -934,10 +842,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@MakeYear4Digit
+<GROUP DateandTime>
 Summary:
   Converts a 2 digit year into a 4 digit year.
 Description:
-
   "Window" technique for years to translate 2 digits to 4 digits.
   The window is 100 years wide. The windowsill year is the lower edge of the window.
   A windowsill year of 1900 is equivalent to putting 1900 before every 2-digit year.
@@ -947,10 +855,8 @@ Parameters:
   Year - The 2 digit year to convert. Is asserted to be in the range 0..100
   WindowsillYear - windowsill year
 Result:
-
   The 4 digit year.
 Notes:
-
   If Year is 100 it is converted to 0 first.
 Quick info:
   Unit: JclDateTime
@@ -961,20 +867,18 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EncodeDate
+<GROUP DateandTime>
 Summary:
   Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
 Description:
-
   Works like EncodeDate in SysUtils, but can do negative years and years > 9999.
 Parameters:
   Year - Year of date to convert.
   Month - Month of date to convert.
   Day - Day of date to convert
 Result:
-
   The date converted to TDateTime.
 Notes:
-
   With JCLDate negative years and dates > year 9999 are valid in nearly all functions handling TDateTime.
   As people did not use 12 Months before year 0001, and supposedly will not after 9999, we just use the solar year and a month = 1/12 of a solar year in such years.
   Year 0 does not exist.
@@ -988,10 +892,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DecodeDate
+<GROUP DateandTime>
 Summary:
   Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
 Description:
-
   Works like DecodeDate in SysUtils, but can do negative years and years > 9999.
 Parameters:
   Date - date to be converted.
@@ -999,7 +903,6 @@ Parameters:
   Month - Month of the converted date.
   Day - Day of the converted date.
 Notes:
-
   With JCLDate negative years and dates > year 9999 are valid in nearly all functions handling TDateTime.
   As people did not use 12 Months before year 0001, and supposedly will not after 9999, we just use the solar year and a month = 1/12 of a solar year in such years.
   Year 0 does not exist.
@@ -1013,15 +916,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CreationDateTimeOfFile
+<GROUP DateandTime>
 Summary:
   Extracts the creation date of the file specified by SR.
 Description:
-
   Extracts the creation date of the file specified by SR. SR must be defined by a previoous call of FindFirst or FindNext.
 Parameters:
   SR - SR: TSearchRec: SearchRecord holding the file information.
 Result:
-
   The creation date date of the file specified by SR, converted to TDateTime.
 Quick info:
   Unit: JclDateTime
@@ -1032,15 +934,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@LastAccessDateTimeOfFile
+<GROUP DateandTime>
 Summary:
   Extracts the last access date of the file specified by SR.
 Description:
-
   Extracts the last access date of the file specified by SR. SR must be defined by a previoous call of FindFirst or FindNext.
 Parameters:
   SR - SR: TSearchRec: SearchRecord holding the file information.
 Result:
-
   The last access date date of the file specified by SR, converted to TDateTime.
 Quick info:
   Unit: JclDateTime
@@ -1051,15 +952,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@LastWriteDateTimeOfFile
+<GROUP DateandTime>
 Summary:
   Extracts the last write date of the file specified by SR.
 Description:
-
   Extracts the last write date of the file specified by SR. SR must be defined by a previoous call of FindFirst or FindNext.
 Parameters:
   SR - SR: TSearchRec: SearchRecord holding the file information.
 Result:
-
   The last write date date of the file specified by SR, converted to TDateTime.
 Quick info:
   Unit: JclDateTime
@@ -1070,10 +970,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@FormatDateTime
+<GROUP DateandTime>
 Summary:
   Enhences FormatDateTime by the additional Format tokens w, i, e and f.
 Description:
-
   Enhences FormatDateTime by additional Format tokens:
     <TABLE>
 Token         Meaning
@@ -1091,10 +991,8 @@ Parameters:
   Form - Form: String: Format String.
   DateTime - DateTime: TDateTime: Date to be formatted
 Result:
-
   String holding the formatted date.
 Notes:
-
   To activate this function JCLDateTime must appear after SysUtils in the uses clause or it must be explicitly denoted as JCLDateTime.FormatDateTime.
   The help for SysUtils.FormatDateTime does not state that unrecognized characters in the format string are passed unchanged. If this feature was erroneously used, JCLDateTime.FormatDateTime is not 100% compatible, as it defines additional tokens.
 Quick info:
@@ -1106,19 +1004,17 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@FATDatesEqual
+<GROUP DateandTime>
 Summary:
   Test if the dates are equal within the granularity of the FAT file system (2 seconds)
 Description:
-
   Test if the dates are equal within the granularity of the FAT file system (2 seconds)
 Parameters:
   FileTime1 - Time to compare
   FileTime2 - Time to compare
 Result:
-
   True if dates differ less than the granularity of the FAT file system (2 seconds)
 Notes:
-
   A TFiletime can be seen as an Int64 or as a record of two Integers.
   Use DateTimeToFileTime if one argument is a TDatetime.
 Quick info:
