@@ -1,6 +1,6 @@
 package DJcl50;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -84,6 +84,8 @@ contains
   JclGraphUtils in '..\..\Source\VCL\JclGraphUtils.pas',
   JclGraphics in '..\..\Source\VCL\JclGraphics.pas',
   JclPrint in '..\..\Source\Vcl\JclPrint.pas',
-  JclDITs in '..\..\source\common\JclDITs.pas';
+  JclDITs in '..\..\source\common\JclDITs.pas',
+  JclZlib in '..\..\source\common\JclZlib.pas',
+  zlibh in '..\..\source\windows\zlibh.pas';
 
 end.
