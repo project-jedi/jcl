@@ -27,6 +27,9 @@
 {**************************************************************************************************}
 
 // $Log$
+// Revision 1.9  2004/03/15 18:29:52  rrossmair
+// didn't compile for Win32 anymore; fixed
+//
 // Revision 1.8  2004/03/15 01:23:22  rrossmair
 // minor improvements
 //
@@ -1775,10 +1778,10 @@ end;
 
 function TJclBorRADToolInstallation.InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean;
 begin
-  Result := False;
   {$IFDEF MSWINDOWS}
   raise EAbstractError.CreateResFmt(@SAbstractError, ['']); // BCB doesn't support abstract keyword
   {$ENDIF MSWINDOWS}
+  Result := False;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1851,9 +1854,9 @@ begin
   end;
 
   for I := 1 to 3 do
-    if LatestUpdatePacks[I].Version = VersionNumber then
+    if LatestUpdatePacks[RADToolKind, I].Version = VersionNumber then
     begin
-      FLatestUpdatePack := LatestUpdatePacks[I].LatestUpdatePack;
+      FLatestUpdatePack := LatestUpdatePacks[RADToolKind, I].LatestUpdatePack;
       Break;
     end;
 end;
@@ -2139,23 +2142,23 @@ begin
 end;
 {$ELSE KYLIX}
 const
-  KeyNames: array[Boolean] of string = (DelphiKeyName, BCBKeyName);
+  KeyNames: array[TJclBorRADToolKind] of string = (DelphiKeyName, BCBKeyName);
 var
   VersionNumbers: TStringList;
 
-  procedure EnumVersions(BCB: Boolean);
+  procedure EnumVersions(RADToolKind: TJclBorRADToolKind);
   var
     I: Integer;
     Item: TJclBorRADToolInstallation;
     VersionKeyName: string;
   begin
-    if RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyNames[BCB], VersionNumbers) then
+    if RegGetKeyNames(HKEY_LOCAL_MACHINE, KeyNames[RADToolKind], VersionNumbers) then
       for I := 0 to VersionNumbers.Count - 1 do
       begin
-        VersionKeyName := KeyNames[BCB] + PathSeparator + VersionNumbers[I];
+        VersionKeyName := KeyNames[RADToolKind] + PathSeparator + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
         begin
-          if BCB then
+          if RADToolKind = brCBuilder then
             Item := TJclBCBInstallation.Create(VersionKeyName)
           else
             Item := TJclDelphiInstallation.Create(VersionKeyName);
@@ -2168,8 +2171,8 @@ begin
   FList.Clear;
   VersionNumbers := TStringList.Create;
   try
-    EnumVersions(False);
-    EnumVersions(True);
+    EnumVersions(brDelphi);
+    EnumVersions(brCBuilder);
   finally
     VersionNumbers.Free;
   end;
