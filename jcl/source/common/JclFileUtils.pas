@@ -2903,7 +2903,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Donator: Scott Price; Contributor: Robert Rossmair }
 function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 {$IFDEF MSWINDOWS}
 var
@@ -2945,7 +2944,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{ TODO -cHelp : Donator: Scott Price; Contributor: Robert Rossmair }
 function FileGetOwnerName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 {$IFDEF MSWINDOWS}
 var
@@ -6032,6 +6030,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.37  2004/12/23 04:31:43  rrossmair
+// - check-in for JCL 1.94 RC 1
+//
 // Revision 1.36  2004/12/20 05:14:24  rrossmair
 // - added FileGetOwnerName, FileGetGroupName (Unix parts)
 //

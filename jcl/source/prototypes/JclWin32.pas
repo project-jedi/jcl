@@ -180,6 +180,13 @@ implementation
 uses
   JclResources;
 
+const
+  {$IFDEF UNICODE}
+  AWSuffix = 'W';
+  {$ELSE ~UNICODE}
+  AWSuffix = 'A';
+  {$ENDIF ~UNICODE}
+
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
   ModuleHandle: HMODULE;
@@ -208,14 +215,19 @@ end;
 {$I win32api\WinNLS.imp}
 {$I win32api\WinNT.imp}
 
-// History:
+// History of source\prototypes\JclWin32.pas:
 
 {$IFDEF PROTOTYPE}
 // $Log$
-// Revision 1.1  2004/12/03 04:05:19  rrossmair
-// JclWin32 a unit generated from prototype now
+// Revision 1.2  2004/12/23 04:31:43  rrossmair
+// - check-in for JCL 1.94 RC 1
 //
 {$ENDIF PROTOTYPE}
+// Revision 1.1  2004/12/03 04:05:19  rrossmair
+// JclWin32 a unit generated from prototype now
+
+// History of source\windows\JclWin32.pas:
+//
 // Revision 1.32  2004/11/04 12:55:21  obones
 // BCB compatibility fix: aclapi.h and shlobj.h must not be included.
 //

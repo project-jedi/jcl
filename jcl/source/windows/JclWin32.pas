@@ -165,7 +165,7 @@ type
   USHORT = Word;
   {$EXTERNALSYM USHORT}
 
-{$I jcl.inc}
+
 //==================================================================================================
 // presumable from any older WinNT.h or from WinIfs.h
 //==================================================================================================
@@ -2892,7 +2892,7 @@ const
   {$EXTERNALSYM REG_QWORD}
   REG_QWORD_LITTLE_ENDIAN        = ( 11 ); // 64-bit number (same as REG_QWORD)
   {$EXTERNALSYM REG_QWORD_LITTLE_ENDIAN}
-{$I jcl.inc}
+
 // line 160
 
 //
@@ -2983,7 +2983,32 @@ function SetWaitableTimer(hTimer: THandle; var lpDueTime: TLargeInteger;
   lpArgToCompletionRoutine: Pointer; fResume: BOOL): BOOL; stdcall;
   {$EXTERNALSYM SetWaitableTimer}
 
-// line 6880
+// WinBase.h line 8839
+
+function SetFileSecurityA(lpFileName: LPCSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
+{$EXTERNALSYM SetFileSecurityA}
+function SetFileSecurityW(lpFileName: LPCWSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
+{$EXTERNALSYM SetFileSecurityW}
+function SetFileSecurity(lpFileName: LPCTSTR; SecurityInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR): BOOL; stdcall;
+{$EXTERNALSYM SetFileSecurityA}
+
+function GetFileSecurityA(lpFileName: LPCSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetFileSecurityA}
+function GetFileSecurityW(lpFileName: LPCWSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetFileSecurityW}
+function GetFileSecurity(lpFileName: LPCTSTR; RequestedInformation: SECURITY_INFORMATION;
+  pSecurityDescriptor: PSECURITY_DESCRIPTOR; nLength: DWORD;
+  var lpnLengthNeeded: DWORD): BOOL; stdcall;
+{$EXTERNALSYM GetFileSecurityA}
+
+// WinBase.h line 10251
 
 function SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName: LPCSTR): BOOL; stdcall;
 {$EXTERNALSYM SetVolumeMountPoint}
@@ -2995,7 +3020,7 @@ function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
   lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
 {$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
 
-{$I jcl.inc}
+
 type
   {$EXTERNALSYM ULONG_PTR}
   ULONG_PTR = LongWord;      // Need to have the same size like Pointer
@@ -3003,7 +3028,7 @@ type
   DWORD_PTR = ULONG_PTR;
   {$EXTERNALSYM PDWORD_PTR}
   PDWORD_PTR = ^PLongWord;
-{$I jcl.inc}
+
 // From JwaAclApi
 
 // line 185
@@ -3012,7 +3037,7 @@ function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
 {$EXTERNALSYM SetNamedSecurityInfoW}
-{$I jcl.inc}
+
 const
   IMAGE_SEPARATION = (64*1024);
   {$EXTERNALSYM IMAGE_SEPARATION}
@@ -3137,7 +3162,7 @@ function UnDecorateSymbolName(DecoratedName: PAnsiChar; UnDecoratedName: PAnsiCh
 {$EXTERNALSYM UnDecorateSymbolName}
 
 
-{$I jcl.inc}
+
 
 const
   NERR_Success = 0; // Success
@@ -4029,7 +4054,7 @@ const
 //
 //    WARNING:  Do not exceed MAX_NERR; values above this are used by
 //              other error code ranges (errlog.h, service.h, apperr.h).
-{$I jcl.inc}
+
 // JwaLmCons, complete
 // LAN Manager common definitions
 
@@ -4310,7 +4335,7 @@ const
   {$EXTERNALSYM MIN_LANMAN_MESSAGE_ID}
   MAX_LANMAN_MESSAGE_ID = 5899;
   {$EXTERNALSYM MAX_LANMAN_MESSAGE_ID}
-{$I jcl.inc}
+
 // line 59
 
 //
@@ -4759,10 +4784,10 @@ type
   TLocalGroupMembersInfo3 = LOCALGROUP_MEMBERS_INFO_3;
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
 
-{$I jcl.inc}
+
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
-{$I jcl.inc}
+
 (****************************************************************
  *                                                              *
  *              Data structure templates                        *
@@ -5186,7 +5211,7 @@ const
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
 
-{$I jcl.inc}
+
 type
   PRasDialDlg = ^TRasDialDlg;
   tagRASDIALDLG = packed record
@@ -5205,7 +5230,7 @@ type
   {$EXTERNALSYM RASDIALDLG}
   TRasDialDlg = tagRASDIALDLG;
 
-{$I jcl.inc}
+
 // Reason flags
 
 // Flags used by the various UIs.
@@ -5331,7 +5356,7 @@ const
   {$EXTERNALSYM PDIRTYUI}
   UDIRTYUI = (SHTDN_REASON_FLAG_DIRTY_UI);
   {$EXTERNALSYM UDIRTYUI}
-{$I jcl.inc}
+
 
 const
   CSIDL_COMMON_APPDATA       = $0023; { All Users\Application Data }
@@ -5376,7 +5401,7 @@ const
   {$EXTERNALSYM CSIDL_CDBURN_AREA}
   {$EXTERNALSYM CSIDL_COMPUTERSNEARME}
 
-{$I jcl.inc}
+
 { TODO BCB-compatibility}
 
 const
@@ -5399,7 +5424,7 @@ type
   DLLVERSIONINFO = _DLLVERSIONINFO;
   {$EXTERNALSYM DLLVERSIONINFO}
 
-{$I jcl.inc}
+
 // JwaWinError
 // line 22146
 
@@ -5628,7 +5653,7 @@ const
   SCHED_E_SERVICE_NOT_RUNNING = HRESULT($80041315);
   {$EXTERNALSYM SCHED_E_SERVICE_NOT_RUNNING}
 
-{$I jcl.inc}
+
 // line 151
 
 //
@@ -6230,7 +6255,7 @@ type
   TFileAllocatedRangeBuffer = FILE_ALLOCATED_RANGE_BUFFER;
   PFileAllocatedRangeBuffer = PFILE_ALLOCATED_RANGE_BUFFER;
 
-{$I jcl.inc}
+
 // line 340
 
 //
@@ -6365,7 +6390,7 @@ function EnumCalendarInfoExA(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXA;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 {$EXTERNALSYM EnumCalendarInfoExA}
 
-{$I jcl.inc}
+
 type
   MAKEINTRESOURCEA = LPSTR;
   {$EXTERNALSYM MAKEINTRESOURCEA}
@@ -6449,7 +6474,7 @@ const
   KLF_RESET         = $40000000;
   {$EXTERNALSYM KLF_RESET}
 
-{$I jcl.inc}
+
 
 
 type
@@ -6512,7 +6537,7 @@ type
   PImgDelayDescr = ImgDelayDescr;
   TImgDelayDescr = ImgDelayDescr;
 *)
-{$I jcl.inc}
+
 
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
@@ -6582,6 +6607,13 @@ implementation
 uses
   JclResources;
 
+const
+  {$IFDEF UNICODE}
+  AWSuffix = 'W';
+  {$ELSE ~UNICODE}
+  AWSuffix = 'A';
+  {$ENDIF ~UNICODE}
+
 procedure GetProcedureAddress(var P: Pointer; const ModuleName, ProcName: string);
 var
   ModuleHandle: HMODULE;
@@ -6616,7 +6648,7 @@ begin
     jmp [_SetNamedSecurityInfoW]
   end;
 end;
-{$I jcl.inc}
+
 
 const
   ImageHlpLib = 'imagehlp.dll';
@@ -6751,7 +6783,7 @@ begin
   end;
 end;
 
-{$I jcl.inc}
+
 var
   _NetUserAdd: Pointer;
 
@@ -7155,7 +7187,7 @@ begin
   end;
 end;
 
-{$I jcl.inc}
+
 var
   _NetApiBufferFree: Pointer;
 
@@ -7168,7 +7200,7 @@ begin
     jmp [_NetApiBufferFree]
   end;
 end;
-{$I jcl.inc}
+
 var
   _Netbios: Pointer;
 
@@ -7181,7 +7213,7 @@ begin
     jmp [_Netbios]
   end;
 end;
-{$I jcl.inc}
+
 var
   _BackupSeek: Pointer;
 
@@ -7228,6 +7260,83 @@ begin
     jmp [_SetWaitableTimer]
   end;
 end;
+var
+  _SetFileSecurityA: Pointer;
+
+function SetFileSecurityA;
+begin
+  GetProcedureAddress(_SetFileSecurityA, advapi32, 'SetFileSecurityA');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_SetFileSecurityA]
+  end;
+end;
+
+var
+  _SetFileSecurityW: Pointer;
+
+function SetFileSecurityW;
+begin
+  GetProcedureAddress(_SetFileSecurityW, advapi32, 'SetFileSecurityW');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_SetFileSecurityW]
+  end;
+end;
+
+var
+  _SetFileSecurity: Pointer;
+
+function SetFileSecurity;
+begin
+  GetProcedureAddress(_SetFileSecurity, advapi32, 'SetFileSecurity' + AWSuffix);
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_SetFileSecurity]
+  end;
+end;
+
+var
+  _GetFileSecurityA: Pointer;
+
+function GetFileSecurityA;
+begin
+  GetProcedureAddress(_GetFileSecurityA, advapi32, 'GetFileSecurityA');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_GetFileSecurityA]
+  end;
+end;
+
+var
+  _GetFileSecurityW: Pointer;
+
+function GetFileSecurityW;
+begin
+  GetProcedureAddress(_GetFileSecurityW, advapi32, 'GetFileSecurityW');
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_GetFileSecurityW]
+  end;
+end;
+
+var
+  _GetFileSecurity: Pointer;
+
+function GetFileSecurity;
+begin
+  GetProcedureAddress(_GetFileSecurity, advapi32, 'GetFileSecurity' + AWSuffix);
+  asm
+        MOV     ESP, EBP
+        POP     EBP
+        JMP     [_GetFileSecurity]
+  end;
+end;
 
 var
   _SetVolumeMountPoint: Pointer;
@@ -7268,7 +7377,7 @@ begin
   end;
 end;
 
-{$I jcl.inc}
+
 var
   _GetCalendarInfoA: Pointer;
 
@@ -7308,7 +7417,7 @@ begin
   end;
 end;
 
-{$I jcl.inc}
+
 // line 9078
 
 function MAKELANGID(PrimaryLang, SubLang: USHORT): WORD;
@@ -7414,10 +7523,15 @@ begin
   Result := ((Ordinal and IMAGE_ORDINAL_FLAG32) <> 0);
 end;
 
-{$I jcl.inc}
 
-// History:
 
+// History of source\prototypes\JclWin32.pas:
+
+// Revision 1.1  2004/12/03 04:05:19  rrossmair
+// JclWin32 a unit generated from prototype now
+
+// History of source\windows\JclWin32.pas:
+//
 // Revision 1.32  2004/11/04 12:55:21  obones
 // BCB compatibility fix: aclapi.h and shlobj.h must not be included.
 //

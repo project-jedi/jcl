@@ -60,7 +60,7 @@ type
 const
   SupportedDelphiVersions       = [5, 6, 7, 9];
   SupportedBCBVersions          = [5, 6];
-  
+
   // Object Repository
   BorRADToolRepositoryPagesSection    = 'Repository Pages';
 
@@ -89,7 +89,7 @@ const
     ('OPEN', 'PRO', 'SVR');
   {$ELSE ~KYLIX}
   BorRADToolEditionIDs: array [TJclBorRADToolEdition] of PChar =
-    ('STD', 'PRO', 'CSS', 'Architect');
+    ('STD', 'PRO', 'CSS', 'ARC'); // 'ARC' is an assumption
   {$ENDIF ~KYLIX}
 
 //--------------------------------------------------------------------------------------------------
@@ -312,6 +312,7 @@ type
     FBinFolderName: string;
     FDCC: TJclDCC;
     FMake: IJclCommandLineTool;
+    FEditionStr: string;
     FEdition: TJclBorRADToolEdition;
     FEnvironmentVariables: TStringList;
     FIdePackages: TJclBorRADToolIdePackages;
@@ -1791,20 +1792,22 @@ begin
         Result := RsServerDeveloper;
   end;
   {$ELSE}
-  case Edition of
-    deSTD:
-      if VersionNumber >= 6 then
-        Result := RsPersonal
-      else
-        Result := RsStandard;
-    dePRO:
-      Result := RsProfessional;
-    deCSS:
-      if VersionNumber >= 5 then
-        Result := RsEnterprise
-      else
-        Result := RsClientServer;
-  end;
+  Result := FEditionStr;
+  if Length(FEditionStr) = 3 then
+    case Edition of
+      deSTD:
+        if VersionNumber >= 6 then
+          Result := RsPersonal
+        else
+          Result := RsStandard;
+      dePRO:
+        Result := RsProfessional;
+      deCSS:
+        if VersionNumber >= 5 then
+          Result := RsEnterprise
+        else
+          Result := RsClientServer;
+    end;
   {$ENDIF KYLIX}
 end;
 
@@ -2049,12 +2052,11 @@ begin
   FRootDir := Globals.Values[RootDirValueName];
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
 
-  if IsBDSPersonality then
-    Key := Globals.Values[EditionValueName]
-  else
-    Key := Globals.Values[VersionValueName];
+  FEditionStr := Globals.Values[EditionValueName];
+  if FEditionStr = '' then
+    FEditionStr := Globals.Values[VersionValueName];
   for Ed := Low(Ed) to High(Ed) do
-    if BorRADToolEditionIDs[Ed] = Key then
+    if StrIPos(BorRADToolEditionIDs[Ed], FEditionStr) = 1 then
       FEdition := Ed;
 
   for I := 0 to Globals.Count - 1 do
@@ -2510,6 +2512,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2004/12/23 04:31:42  rrossmair
+// - check-in for JCL 1.94 RC 1
+//
 // Revision 1.29  2004/12/20 05:15:48  rrossmair
 // - fixed for Kylix ($IFDEFed GetBorlandStudioProjectsDir)
 //

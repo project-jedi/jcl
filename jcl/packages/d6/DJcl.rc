@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,93,1,1722
-PRODUCTVERSION 1,93,1,1722
+FILEVERSION 1,94,0
+PRODUCTVERSION 1,94,0
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JEDI Code Library RTL package for Delphi 6\0"
-              VALUE "FileVersion", "1.93.1.1722\0"
+              VALUE "FileVersion", "1.94.0\0"
               VALUE "InternalName", "DJcl60\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2004 Project JEDI\0"
               VALUE "OriginalFilename", "DJcl60.bpl\0"
               VALUE "ProductName", "Jedi Code Library\0"
-              VALUE "ProductVersion", "1.93 Build 1722\0"
+              VALUE "ProductVersion", "1.94 Build 1758\0"
          END
     END
     BLOCK "VarFileInfo"
