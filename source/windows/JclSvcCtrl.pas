@@ -40,7 +40,8 @@ interface
 {$I jcl.inc}
 
 uses
-  Windows, Classes, SysUtils, Contnrs, WinSvc,
+  Windows, Classes, SysUtils, Contnrs,
+  {$IFDEF FPC} JwaWinNT, JwaWinSvc, {$ELSE} WinSvc, {$ENDIF}
   JclBase, JclSysUtils;
 
 //--------------------------------------------------------------------------------------------------
@@ -414,7 +415,7 @@ end;
 
 procedure TJclNtService.UpdateDescription;
 var
-  Ret: Boolean;
+  Ret: BOOL;
   BytesNeeded: DWORD;
   pSvcDesc: PServiceDescriptionA;
 begin
@@ -461,7 +462,7 @@ end;
 procedure TJclNtService.UpdateDependents;
 var
   I: Integer;
-  Ret: Boolean;
+  Ret: BOOL;
   pBuf: Pointer;
   pEss: PEnumServiceStatus;
   NtSvc: TJclNtService;
@@ -480,7 +481,7 @@ begin
       repeat
         ReallocMem(pBuf, BytesNeeded);
         Ret := EnumDependentServices(FHandle, SERVICE_STATE_ALL,
-          PEnumServiceStatus(pBuf)^, BytesNeeded, BytesNeeded, ServicesReturned);
+          PEnumServiceStatus(pBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
@@ -645,7 +646,7 @@ end;
 
 procedure TJclNtService.Refresh;
 var
-  Ret: Boolean;
+  Ret: BOOL;
   BytesNeeded: DWORD;
   pQrySvcCnfg: PQueryServiceConfig;
 begin
@@ -675,6 +676,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclNtService.Delete;
+const
+  {$IFDEF FPC}
+  _DELETE = $00010000; { Renamed from DELETE }
+  {$ENDIF FPC}
 begin
   Open(_DELETE);
   try
@@ -1027,7 +1032,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   procedure EnumServices;
   var
     I: Integer;
-    Ret: Boolean;
+    Ret: BOOL;
     pBuf: Pointer;
     pEss: PEnumServiceStatus;
     NtSvc: TJclNtService;
@@ -1042,7 +1047,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
       repeat
         ReallocMem(pBuf, BytesNeeded);
         Ret := EnumServicesStatus(FHandle, SERVICE_TYPE_ALL, SERVICE_STATE_ALL,
-          PEnumServiceStatus(pBuf)^, BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
+          PEnumServiceStatus(pBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
       until Ret or (GetLastError <> ERROR_MORE_DATA);
       Win32Check(Ret);
 
@@ -1213,7 +1218,7 @@ end;
 
 function TJclSCManager.GetServiceLockStatus: PQueryServiceLockStatus;
 var
-  Ret: Boolean;
+  Ret: BOOL;
   BytesNeeded: DWORD;
 begin
   Assert((DesiredAccess and SC_MANAGER_QUERY_LOCK_STATUS) <> 0);
@@ -1224,7 +1229,7 @@ begin
     BytesNeeded := 10240;
     repeat
       ReallocMem(Result, BytesNeeded);
-      Ret := QueryServiceLockStatus(FHandle, Result^, BytesNeeded, BytesNeeded);
+      Ret := QueryServiceLockStatus(FHandle, Result{$IFNDEF FPC}^{$ENDIF FPC}, BytesNeeded, BytesNeeded);
     until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     Win32Check(Ret);
   except
@@ -1442,6 +1447,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.13  2004/05/06 22:29:19  rrossmair
+// Changes for FPC v1.9.4 compatibility
+//
 // Revision 1.12  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
