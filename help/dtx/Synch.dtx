@@ -8,7 +8,8 @@ Description:
   Windows.pas.
 Parameters:
   CS - The critical section object about which to return information.
-  Info - Receives information about the critical section. See Windows.pas for the declaration of this record, most fields are self-explanatory.
+  Info - Receives information about the critical section. See Windows.pas for the 
+         declaration of this record, most fields are self-explanatory.
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
@@ -34,7 +35,19 @@ Description:
   the kind of event and whether it is signaled.
 Parameters:
   Handle - Handle of the event object for which you want information.
-  Info - Received information about the event. TEventInfo is defined as:   <PRE class=syntax>   TEventInfo = <B>record</B>     EventType: Longint;     Signaled: LongBool;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>EventType</TD>   <TD width=25%>Longint</TD>   <TD width=50%>If the event is a manual-reset event this member is 0. If the event is an auto-reset event this member is non-zero.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Signaled</TD>   <TD width=25%>LongBool</TD>   <TD width=50%>True if the event is in the signaled state, False if its in the non-signaled state</TD>   </TR>   </TABLE>
+  Info - Received information about the event. TEventInfo is defined as:   
+         <PRE class=syntax>   
+           TEventInfo = <B>record</B>     
+             EventType: Longint;     
+             Signaled: LongBool;   
+           <B>end</B>;   
+         </PRE> 
+         The following table describes the members of this record:   
+         <TABLE>   
+           <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>EventType</TD>   <TD width=25%>Longint</TD>   <TD width=50%>If the event is a manual-reset event this member is 0. If the event is an auto-reset event this member is non-zero.</TD>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>Signaled</TD>   <TD width=25%>LongBool</TD>   <TD width=50%>True if the event is in the signaled state, False if its in the non-signaled state</TD>   </TR>   
+         </TABLE>
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
@@ -61,7 +74,19 @@ Description:
   signaled.
 Parameters:
   Handle - Handle of the timer object for which you want information.
-  Info - Received information about the timer. TTimerInfo is defined as:   <PRE class=syntax>   TTimerInfo = <B>record</B>     Remaining: TLargeInteger;     Signaled: LongBool;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>Remaining</TD>   <TD width=25%>TLargeInteger</TD>   <TD width=50%>The time, in 100 ns intervals, until the timer becomes signaled.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Signaled</TD>   <TD width=25%>LongBool</TD>   <TD width=50%>True if the timer is currently signaled.</TD>   </TR>   </TABLE>
+  Info - Received information about the timer. TTimerInfo is defined as:   
+         <PRE class=syntax>   
+         TTimerInfo = <B>record</B>     
+           Remaining: TLargeInteger;     
+           Signaled: LongBool;   
+         <B>end</B>;   
+         </PRE> 
+         The following table describes the members of this record:   
+         <TABLE>   
+           <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>Remaining</TD>   <TD width=25%>TLargeInteger</TD>   <TD width=50%>The time, in 100 ns intervals, until the timer becomes signaled.</TD>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>Signaled</TD>   <TD width=25%>LongBool</TD>   <TD width=50%>True if the timer is currently signaled.</TD>   </TR>   
+         </TABLE>
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
@@ -87,7 +112,19 @@ Description:
   the semaphores' current and maximum count.
 Parameters:
   Handle - Handle of the semaphore object for which you want information.
-  Info - Received information about the event. TSemaphoreInfo is defined as:   <PRE class=syntax>   TSemaphoreCounts = <B>record</B>     CurrentCount: Longint;     MaximumCount: Longint;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>CurrentCount</TD>   <TD width=25%>Longint</TD>   <TD width=50%>The current count of the semaphore object.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>MaximumCount</TD>   <TD width=25%>Longint</TD>   <TD width=50%>The maximum count of the semaphore object as specified when it was constructed.</TD>   </TR>   </TABLE>
+  Info - Received information about the event. TSemaphoreInfo is defined as:   
+         <PRE class=syntax>   
+         TSemaphoreCounts = <B>record</B>     
+           CurrentCount: Longint;     
+           MaximumCount: Longint;   
+         <B>end</B>;   
+         </PRE> 
+         The following table describes the members of this record:   
+         <TABLE>   
+           <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>CurrentCount</TD>   <TD width=25%>Longint</TD>   <TD width=50%>The current count of the semaphore object.</TD>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>MaximumCount</TD>   <TD width=25%>Longint</TD>   <TD width=50%>The maximum count of the semaphore object as specified when it was constructed.</TD>   </TR>   
+         </TABLE>
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
@@ -113,7 +150,22 @@ Description:
   whether the mutex is signaled and owned.
 Parameters:
   Handle - Handle of the mutex object for which you want information.
-  Info - Received information about the mutex. TMutexInfo is defined as:   <PRE class=syntax>   TMutexInfo = <B>record</B>     SignalState: Longint;     Owned: Boolean;     Abandoned: Boolean;   <B>end</B>;   </PRE> The following table describes the members of this record:   <TABLE>   <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=25%>SignalState</TD>   <TD width=25%>Longint</TD>   <TD width=50%>Indicates the state of the mutex. If this member is greater than                 0 the mutex is signaled. A value smaller than 0 indicates the                 number of times the mutex was recursively acquired.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Owned</TD>   <TD width=25%>Boolean</TD>   <TD width=50%>True if the mutex is currently owned by a thread.</TD>   </TR>   <TR VALIGN="top">   <TD width=25%>Abandoned</TD>   <TD width=25%>Boolean</TD>   <TD width=50%>True if the mutex was abandoned (thread exited while owning the mutex).</TD>   </TR>   </TABLE>
+  Info - Received information about the mutex. TMutexInfo is defined as:   
+         <PRE class=syntax>   
+         TMutexInfo = <B>record</B>     
+           SignalState: Longint;     
+           Owned: Boolean;     
+           Abandoned: Boolean;   
+         <B>end</B>;   
+         </PRE> 
+         The following table describes the members of this record:   
+         <TABLE>   
+           <TR VALIGN="top">   <TH align=left width=25%>Member</TH>   <TH align=left width=25%>Type</TH>   <TH align=left width=50%>Description</TH>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>SignalState</TD>   <TD width=25%>Longint</TD>   <TD width=50%>Indicates the state of the mutex. If this member is greater than                 
+               0 the mutex is signaled. A value smaller than 0 indicates the number of times the mutex was recursively acquired.</TD>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>Owned</TD>   <TD width=25%>Boolean</TD>   <TD width=50%>True if the mutex is currently owned by a thread.</TD>   </TR>   
+           <TR VALIGN="top">   <TD width=25%>Abandoned</TD>   <TD width=25%>Boolean</TD>   <TD width=50%>True if the mutex was abandoned (thread exited while owning the mutex).</TD>   </TR>   
+         </TABLE>
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case the contents of the Info parameter are undefined.
@@ -171,7 +223,8 @@ Summary:
 Description:
   Creates an instance of TJclMultiReadExclusiveWrite.
 Parameters:
-  Preferred - Denotes whether the class should favor readers over writers, vice versa or treat them equally. See TMrewPreferred for more information.
+  Preferred - Denotes whether the class should favor readers over writers, vice versa or 
+              treat them equally. See TMrewPreferred for more information.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -245,7 +298,11 @@ Description:
   BeginWrite multiple times you must also call EndWrite multiple times.
   That is, the calls to BeginWrite and EndWrite must be balanced.
 Notes:
-  <B>Warning</B>Calling BeginWrite while the thread already owns a read lock causes the thread to temporarily give up it's read lock altogether. Therefore it is not safe to assume that the resource is unchanged when you "promote" a read lock to a write lock. This is necessary to prevent a dead lock situation where two threads both attempt to promote a read lock.
+  <B>Warning</B>Calling BeginWrite while the thread already owns a read lock causes 
+  the thread to temporarily give up it's read lock altogether. Therefore it is not 
+  safe to assume that the resource is unchanged when you "promote" a read lock to a 
+  write lock. This is necessary to prevent a dead lock situation where two threads 
+  both attempt to promote a read lock.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -412,8 +469,21 @@ Description:
   the name parameter. If you want to share it between processes you must give the
   optex a name.
 Parameters:
-  Name - Name for the Optex. When you want to share the Optex between multiple processes you must give it a name. The second process can then open the Optex by calling Create with the same name.
-  SpinCount - The spincount for the optex object. Conceptually the optex will try to attempt ownership of the optex for SpinCount number of times when the Enter method is called. If the optex is still not available after these attempts the thread enters a wait state until the optex is released. On a single-processor system this parameter is ignored and the optex will use 0 internally. This means the optex will never spin before waiting on the kernel event. This makes sense since the optex could never be released while the thread was spinning (and thus monopolizing the processor). Note that the spincount is effective for all processes that use the same, named optex. If one process changes the spincount this takes effect in all the other processes immediately as well.
+  Name - Name for the Optex. When you want to share the Optex between multiple 
+         processes you must give it a name. The second process can then open the 
+         Optex by calling Create with the same name.
+  SpinCount - The spincount for the optex object. Conceptually the optex will try 
+              to attempt ownership of the optex for SpinCount number of times when 
+              the Enter method is called. If the optex is still not available after 
+              these attempts the thread enters a wait state until the optex is 
+              released. On a single-processor system this parameter is ignored and 
+              the optex will use 0 internally. This means the optex will never spin 
+              before waiting on the kernel event. This makes sense since the optex 
+              could never be released while the thread was spinning (and thus 
+              monopolizing the processor). Note that the spincount is effective for 
+              all processes that use the same, named optex. If one process changes 
+              the spincount this takes effect in all the other processes immediately 
+              as well.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -565,9 +635,16 @@ Description:
   (in its signaled state) the timer is reactivated with the new parameters without
   releasing any waiting threads.
 Parameters:
-  DueTime - Specifies when the timer becomes signaled. A positive value indicates an absolute time in UTC and TFileTime format (you must convert a time expressed in UTC from a TFileTime to an Int64). A negative value indicates a relative time in 100 nanosecond intervals.
-  Period - Period of the timer in milliseconds. A 0 period causes the timer to become signaled only once while a value greater than 0 causes the timer to periodically become signaled. Note that a periodic manual-reset timer remains in the signaled state until it is explicitly reset.
-  Resume - Specifies whether to restore a system in suspended power conservation mode when the timer state is set to signaled.
+  DueTime - Specifies when the timer becomes signaled. A positive value indicates 
+            an absolute time in UTC and TFileTime format (you must convert a time 
+            expressed in UTC from a TFileTime to an Int64). A negative value 
+            indicates a relative time in 100 nanosecond intervals.
+  Period - Period of the timer in milliseconds. A 0 period causes the timer to 
+           become signaled only once while a value greater than 0 causes the timer 
+           to periodically become signaled. Note that a periodic manual-reset timer 
+           remains in the signaled state until it is explicitly reset.
+  Resume - Specifies whether to restore a system in suspended power conservation 
+           mode when the timer state is set to signaled.
 Result:
   If the function succeeds the result is True, otherwise it is False. In the latter
   case you can call GetLastError to get extended error information. Note that if
@@ -637,8 +714,10 @@ Description:
   thread must be in an alertable state or the completion routine will be cancelled.
 Parameters:
   Arg - Application defined value as passed to SetTimerApc.
-  TimerLow - Low order 32-bits of the UTC based time when the timer was signaled. This value corresponds to the dwLowDateTime value of a TFileTime record.
-   - High order 32-bits of the UTC based time when the timer was signaled. This value corresponds to the dwHighDateTime value of a TFileTime record.
+  TimerLow - Low order 32-bits of the UTC based time when the timer was signaled. This 
+             value corresponds to the dwLowDateTime value of a TFileTime record.
+  TimerHigh - High order 32-bits of the UTC based time when the timer was signaled. This
+              value corresponds to the dwHighDateTime value of a TFileTime record.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -655,9 +734,20 @@ Summary:
 Description:
   Creates an instance of a TJclWaitableTimer object and the underlying Win32 waitable timer object.
 Parameters:
-  SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new waitable timer object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the waitable timer receives a default security descriptor.
-  Manual - If True the timer acts as a manual-reset notification timer. If False the timer acts as a synchronization timer.
-  Name - Name of the waitable timer object, can be empty. If a waitable timer already exists on the system with the same name, the waitable timer is opened with TIMER_ALL_ACCESS. If the waitable timer cannot be opened the constructor fails by raising an EJclWaitableTimerError exception. If no waitable timer with the specified name exists, the waitable timer is created with that name. If a named object already exists with the specified name but it is not a waitable timer, the constructor fails by raising an EJclWaitableTimerError exception.
+  SecAttr - Pointer to a TSecurityAttributes record that specifies the security 
+            attributes of the new waitable timer object such as whether it can 
+            be inherited. If you specify nil the Handle cannot be inherited and 
+            the waitable timer receives a default security descriptor.
+  Manual - If True the timer acts as a manual-reset notification timer. If False 
+           the timer acts as a synchronization timer.
+  Name - Name of the waitable timer object, can be empty. If a waitable timer 
+         already exists on the system with the same name, the waitable timer is 
+         opened with TIMER_ALL_ACCESS. If the waitable timer cannot be opened 
+         the constructor fails by raising an EJclWaitableTimerError exception. 
+         If no waitable timer with the specified name exists, the waitable timer 
+         is created with that name. If a named object already exists with the 
+         specified name but it is not a waitable timer, the constructor fails by 
+         raising an EJclWaitableTimerError exception.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -678,7 +768,14 @@ Description:
   thread does not have sufficient access to open the waitable timer object, the constructor
   fails by raising an EJclWaitableTimerError exception.
 Parameters:
-  Access - Requested access to the timer object. This can be a combination of the following values:   <TABLE>   <TR VALIGN="top">   <TH align=left width=39%>Value</TH>   <TH align=left width=61%>Meaning</TH>   </TR>   <TR VALIGN="top">   <TD width=39%>TIMER_ALL_ACCESS</TD>   <TD width=61%>Specifies all possible access rights for the timer object.</TD>   </TR>   <TR VALIGN="top">   <TD width=39%>TIMER_MODIFY_STATE</TD>   <TD width=61%>Enables use of the timer handle in the SetTimer     and Cancel methods to modify the timer's state.</TD>   </TR>   <TR VALIGN="top">   <TD width=39%>TIMER_QUERY_STATE</TD>   <TD width=61%>Reserved for future use.</TD>   </TR>   <TR VALIGN="top">   <TD width=39%>SYNCHRONIZE</TD>   <TD width=61%><B>Windows NT/2000:</B> Enables use of the timer handle in any     of the wait methods to wait for the timer's state to be signaled.</TD>   </TR>   </TABLE>
+  Access - Requested access to the timer object. This can be a combination of the following values:   
+           <TABLE>   
+             <TR VALIGN="top">   <TH align=left width=39%>Value</TH>   <TH align=left width=61%>Meaning</TH>   </TR>   
+             <TR VALIGN="top">   <TD width=39%>TIMER_ALL_ACCESS</TD>   <TD width=61%>Specifies all possible access rights for the timer object.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=39%>TIMER_MODIFY_STATE</TD>   <TD width=61%>Enables use of the timer handle in the SetTimer and Cancel methods to modify the timer's state.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=39%>TIMER_QUERY_STATE</TD>   <TD width=61%>Reserved for future use.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=39%>SYNCHRONIZE</TD>   <TD width=61%><B>Windows NT/2000:</B> Enables use of the timer handle in any of the wait methods to wait for the timer's state to be signaled.</TD>   </TR>   
+           </TABLE>
    - Specifies whether the Handle of the waitable timer object can be inherited by child processes.
   Name - Name of the waitable timer object to open.
 Quick info:
@@ -717,7 +814,10 @@ Description:
   The Release method increases the count of the semaphore object by the specified
   amount, but never increases past the maximum count as specified during construction.
 Parameters:
-  ReleaseCount - The amount by which the semaphore's count should be increased. The value must be greater than 0. If the increase would cause the count to exceed the maximum the method fails (returns False) and the current count remains unchanged.
+  ReleaseCount - The amount by which the semaphore's count should be increased. The 
+                 value must be greater than 0. If the increase would cause the count 
+                 to exceed the maximum the method fails (returns False) and the current 
+                 count remains unchanged.
 Result:
   If the function succeeds the result is True, otherwise the result is False. In
   the latter case you can call GetLastError to get extended error information.
@@ -740,8 +840,12 @@ Description:
   The Release method increases the count of the semaphore object by the specified
   amount, but never increases past the maximum count as specified during construction.
 Parameters:
-  ReleaseCount - The amount by which the semaphore's count should be increased. The value must be greater than 0. If the increase would cause the count to exceed the maximum the method fails (returns False) and the current count remains unchanged.
-  PrevCount - Receives the previous count of the semaphore, before the increase. If the function fails the value of this parameter is undefined.
+  ReleaseCount - The amount by which the semaphore's count should be increased. The 
+                 value must be greater than 0. If the increase would cause the count 
+                 to exceed the maximum the method fails (returns False) and the current 
+                 count remains unchanged.
+  PrevCount - Receives the previous count of the semaphore, before the increase. If 
+              the function fails the value of this parameter is undefined.
 Result:
   If the function succeeds the result is True, otherwise the result is False. In
   the latter case you can call GetLastError to get extended error information.
@@ -763,10 +867,23 @@ Summary:
 Description:
   Creates an instance of a TJclSemaphore object and the underlying Win32 semaphore object.
 Parameters:
-  SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new semaphore object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the semaphore receives a default security descriptor.
-  Initial - Initial count of the semaphore object. This value must be between 0 and Maximum (both inclusive). The state of a semaphore is signaled when its count is zero and nonsignaled otherwise. A successful wait operation on a semaphore decreases the count of the semaphore by one. The count is increased by a specified amount by using the Release method but cannot be increased beyond the specified Maximum.
+  SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes 
+            of the new semaphore object such as whether it can be inherited. If you specify 
+            nil the Handle cannot be inherited and the semaphore receives a default security 
+            descriptor.
+  Initial - Initial count of the semaphore object. This value must be between 0 and Maximum 
+            (both inclusive). The state of a semaphore is signaled when its count is zero 
+            and nonsignaled otherwise. A successful wait operation on a semaphore decreases 
+            the count of the semaphore by one. The count is increased by a specified amount 
+            by using the Release method but cannot be increased beyond the specified Maximum.
   Maximum - Maximum count of the semaphore object. Must be greater than 0.
-  Name - Name of the semaphore object, can be empty. If a semaphore already exists on the system with the same name, the semaphore is opened with SEMAPHORE_ALL_ACCESS. If the semaphore cannot be opened the constructor fails by raising an EJclSemaphoreError exception. If no semaphore with the specified name exists, the semaphore is created with that name. If a named object already exists with the specified name but it is not a semaphore, the constructor fails by raising an EJclSemaphoreError exception.
+  Name - Name of the semaphore object, can be empty. If a semaphore already exists on the 
+         system with the same name, the semaphore is opened with SEMAPHORE_ALL_ACCESS. 
+         If the semaphore cannot be opened the constructor fails by raising an 
+         EJclSemaphoreError exception. If no semaphore with the specified name exists, the 
+         semaphore is created with that name. If a named object already exists with the 
+         specified name but it is not a semaphore, the constructor fails by raising an 
+         EJclSemaphoreError exception.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -787,7 +904,13 @@ Description:
   thread does not have sufficient access to open the semaphore object, the constructor
   fails by raising an EJclSemaphoreError exception.
 Parameters:
-  Access - Requested access to the semaphore object. This can be a combination of the following values:   <TABLE>   <TR VALIGN="top">   <TH align=left width=48%>Access</TH>   <TH align=left width=52%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=48%>SEMAPHORE_ALL_ACCESS</TD>   <TD width=52%>Specifies all possible access flags for the semaphore object.</TD>   </TR>   <TR VALIGN="top">   <TD width=48%>SEMAPHORE_MODIFY_STATE</TD>   <TD width=52%>Enables use of the semaphore handle in the Release method to     modify the semaphore's count.</TD>   </TR>   <TR VALIGN="top">   <TD width=48%>SYNCHRONIZE</TD>   <TD width=52%><B>Windows NT/2000:</B> Enables use of the semaphore handle     in any of the wait methods to wait for the semaphore's state to be signaled.</TD>   </TR>   </TABLE>
+  Access - Requested access to the semaphore object. This can be a combination of the following values:   
+           <TABLE>   
+             <TR VALIGN="top">   <TH align=left width=48%>Access</TH>   <TH align=left width=52%>Description</TH>   </TR>   
+             <TR VALIGN="top">   <TD width=48%>SEMAPHORE_ALL_ACCESS</TD>   <TD width=52%>Specifies all possible access flags for the semaphore object.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=48%>SEMAPHORE_MODIFY_STATE</TD>   <TD width=52%>Enables use of the semaphore handle in the Release method to modify the semaphore's count.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=48%>SYNCHRONIZE</TD>   <TD width=52%><B>Windows NT/2000:</B> Enables use of the semaphore handle in any of the wait methods to wait for the semaphore's state to be signaled.</TD>   </TR>   
+           </TABLE>
    - Specifies whether the Handle of the semaphore object can be inherited by child processes.
   Name - Name of the semaphore object to open.
 Quick info:
@@ -825,9 +948,23 @@ Summary:
 Description:
   Creates an instance of a TJclMutex object and the underlying Win32 mutex object.
 Parameters:
-  SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new Mutex object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the Mutex receives a default security descriptor.
-  InitialOwner - Set to True if you want immediate ownership of the mutex object. Note that initial ownership will only be granted if the call actually creates the mutex. If the named mutex already exists the constructor opens the mutex but you will not have ownership. Use the Existed property to determine whether the constructor created or opened the named mutex. This is a non-issue for unnamed mutexes or calls for which this parameter is False.
-  Name - Name of the Mutex object, can be empty. If a mutex already exists on the system with the same name, the mutex is opened with MUTEX_ALL_ACCESS. If the mutex cannot be opened the constructor fails by raising an EJclMutexError exception. If no mutex with the specified name exists, the mutex is created with that name. If a named object already exists wit the specified name but it is not a mutex, the constructor fails by raising an EJclMutexError exception.
+  SecAttr - Pointer to a TSecurityAttributes record that specifies the security 
+            attributes of the new Mutex object such as whether it can be inherited. 
+            If you specify nil the Handle cannot be inherited and the Mutex receives 
+            a default security descriptor.
+  InitialOwner - Set to True if you want immediate ownership of the mutex object. 
+                 Note that initial ownership will only be granted if the call actually 
+                 creates the mutex. If the named mutex already exists the constructor 
+                 opens the mutex but you will not have ownership. Use the Existed 
+                 property to determine whether the constructor created or opened the 
+                 named mutex. This is a non-issue for unnamed mutexes or calls for which 
+                 this parameter is False.
+  Name - Name of the Mutex object, can be empty. If a mutex already exists on the system 
+         with the same name, the mutex is opened with MUTEX_ALL_ACCESS. If the mutex 
+         cannot be opened the constructor fails by raising an EJclMutexError exception. 
+         If no mutex with the specified name exists, the mutex is created with that name. 
+         If a named object already exists wit the specified name but it is not a mutex, 
+         the constructor fails by raising an EJclMutexError exception.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -848,7 +985,12 @@ Description:
   thread does not have sufficient access to open the mutex object, the constructor
   fails by raising an EJclMutexError exception.
 Parameters:
-  Access - Requested access to the Mutex object. This can be a combination of the following values:   <TABLE>   <TR VALIGN="top">   <TH align=left width=38%>Access</TH>   <TH align=left width=62%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=38%>MUTEX_ALL_ACCESS</TD>   <TD width=62%>Specifies all possible access flags for the mutex object.</TD>   </TR>   <TR VALIGN="top">   <TD width=38%>SYNCHRONIZE</TD>   <TD width=62%><B>Windows NT/2000:</B> Enables use of the mutex handle in any     of the wait functions to acquire ownership of the mutex, or in the ReleaseMutex     function to release ownership.</TD>   </TR>   </TABLE>
+  Access - Requested access to the Mutex object. This can be a combination of the following values:   
+           <TABLE>   
+             <TR VALIGN="top">   <TH align=left width=38%>Access</TH>   <TH align=left width=62%>Description</TH>   </TR>   
+             <TR VALIGN="top">   <TD width=38%>MUTEX_ALL_ACCESS</TD>   <TD width=62%>Specifies all possible access flags for the mutex object.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=38%>SYNCHRONIZE</TD>   <TD width=62%><B>Windows NT/2000:</B> Enables use of the mutex handle in any of the wait functions to acquire ownership of the mutex, or in the ReleaseMutex function to release ownership.</TD>   </TR>   
+           </TABLE>
    - Specifies whether the Handle of the Mutex object can be inherited by child processes.
   Name - Name of the Mutex object to open.
 Quick info:
@@ -920,8 +1062,20 @@ Description:
   Create constructor is overloaded for TJclCriticalSectionEx and simply calls
   CreateEx with 4000 and False for SpinCount and NoFailEnter respectively.
 Parameters:
-  SpinCount - The spincount for the critical section object. Conceptually the critical section will try to attempt ownership of the critical section for SpinCount number of times when the Enter method is called. If the critical section is still not available after these attempts the thread enters a wait state until the critical section is released. On a single-processor system this parameter is ignored and the critical section will use 0 internally. This means the critical section will never spin before waiting on a kernel event. This makes sense since the critical section could never be released while the thread was spinning (and thus monopolizing the processor).
-  NoFailEnter - If True the kernel event object which is used when a thread must enter a wait state because the critical section is not available, is preallocated thereby guaranteeing that the Enter method does not fail, even in low memory situations.
+  SpinCount - The spincount for the critical section object. Conceptually the 
+              critical section will try to attempt ownership of the critical 
+              section for SpinCount number of times when the Enter method is 
+              called. If the critical section is still not available after 
+              these attempts the thread enters a wait state until the critical 
+              section is released. On a single-processor system this parameter 
+              is ignored and the critical section will use 0 internally. This 
+              means the critical section will never spin before waiting on a 
+              kernel event. This makes sense since the critical section could never 
+              be released while the thread was spinning (and thus monopolizing the processor).
+  NoFailEnter - If True the kernel event object which is used when a thread must 
+                enter a wait state because the critical section is not available, 
+                is preallocated thereby guaranteeing that the Enter method does not fail, 
+                even in low memory situations.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1071,7 +1225,12 @@ Description:
   ciritical section until it is actually needed) and there's a possibility that
   multiple threads could attempt to create the critical section simultanuously.
 Parameters:
-  CS - Variable which receives a reference to the newly created critical section object. It is valid for the parameter to contain a reference to an already created critical section. In that case the method merely attempts to Enter the existing critical section. If the parameter does not contain a valid reference it must be nil (declaring a variable as a global variable or object data field will ensure the variable is initialized to nil).
+  CS - Variable which receives a reference to the newly created critical section object. 
+       It is valid for the parameter to contain a reference to an already created critical 
+       section. In that case the method merely attempts to Enter the existing critical 
+       section. If the parameter does not contain a valid reference it must be nil 
+       (declaring a variable as a global variable or object data field will ensure the 
+       variable is initialized to nil).
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1116,7 +1275,8 @@ Description:
   more than once. This means you can call Enter multiple times. However, calls to Enter
   and Leave must be balanced: you must call Leave for each time you call Enter.
 Notes:
-  In extremely low-memory situations a call to Enter may fail by raising an exception. If you cannot tolerate a failure of Enter you should use TJclCriticalSectionEx instead.
+  In extremely low-memory situations a call to Enter may fail by raising an exception. 
+  If you cannot tolerate a failure of Enter you should use TJclCriticalSectionEx instead.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1139,7 +1299,9 @@ Description:
   times the critical section will not be released until the last, balancing call
   to Release.
 Notes:
-  If you call Release while you don't currently own the critical section, the state of the critical section object becomes corrupted and threads waiting for ownership may be blocked forever.
+  If you call Release while you don't currently own the critical section, the state 
+  of the critical section object becomes corrupted and threads waiting for ownership 
+  may be blocked forever.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1245,10 +1407,23 @@ Summary:
 Description:
   Create creates an instance of a TJclEvent object.
 Parameters:
-  SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new Event object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the Event receives a default security descriptor.
-  Manual - Specifies whether a manual-reset or auto-reset event is created. If True (manual-reset) you must use the ResetEvent method to manually reset the state of the event to nonsignaled. If False (auto-reset) the system automatically sets the state of the Event object to non-signaled when a thread successfully waited on the event.
-  Signaled - Specifies the initial state of the Event. If True the Event is created in the signaled state, if False it is created in the non-signaled state.
-  Name - Name of the Event object, can be empty. If an event already exists on the system with the same name, the event is opened with EVENT_ALL_ACCESS. If the Event cannot be opened the constructor fails by raising an EJclEventError exception. If no Event with the specified name exists, the Event is created with that name. If a named object already exists wit the specified name but it is not an event, the constructor fails by raising an EJclEventError exception.
+  SecAttr - Pointer to a TSecurityAttributes record that specifies the security 
+            attributes of the new Event object such as whether it can be inherited. 
+            If you specify nil the Handle cannot be inherited and the Event receives 
+            a default security descriptor.
+  Manual - Specifies whether a manual-reset or auto-reset event is created. If True 
+           (manual-reset) you must use the ResetEvent method to manually reset the 
+           state of the event to nonsignaled. If False (auto-reset) the system 
+           automatically sets the state of the Event object to non-signaled when a 
+           thread successfully waited on the event.
+  Signaled - Specifies the initial state of the Event. If True the Event is created 
+             in the signaled state, if False it is created in the non-signaled state.
+  Name - Name of the Event object, can be empty. If an event already exists on the 
+         system with the same name, the event is opened with EVENT_ALL_ACCESS. If 
+         the Event cannot be opened the constructor fails by raising an EJclEventError exception. 
+         If no Event with the specified name exists, the Event is created with that name. 
+         If a named object already exists wit the specified name but it is not an event, 
+         the constructor fails by raising an EJclEventError exception.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1269,7 +1444,13 @@ Description:
   thread does not have sufficient access to open the Event object, the constructor
   fails by raising an EJclEventError exception.
 Parameters:
-  Access - Requested access to the Event object. This can be a combination of the following values:   <TABLE>   <TR VALIGN="top">   <TH align=left width=40%>Access</TH>   <TH align=left width=60%>Description</TH>   </TR>   <TR VALIGN="top">   <TD width=40%>EVENT_ALL_ACCESS</TD>   <TD width=60%>Specifies all possible access flags for the event object.</TD>   </TR>   <TR VALIGN="top">   <TD width=40%>EVENT_MODIFY_STATE</TD>   <TD width=60%>Enables modification of the event's state with the SetEvent     and ResetEvent methods.</TD>   </TR>   <TR VALIGN="top">   <TD width=40%>SYNCHRONIZE</TD>   <TD width=60%><B>Windows NT/2000:</B> Enables use of the event handle in any     of the wait functions to wait for the event's state to be signaled.</TD>   </TR>   </TABLE>
+  Access - Requested access to the Event object. This can be a combination of the following values:   
+           <TABLE>   
+             <TR VALIGN="top">   <TH align=left width=40%>Access</TH>   <TH align=left width=60%>Description</TH>   </TR>   
+             <TR VALIGN="top">   <TD width=40%>EVENT_ALL_ACCESS</TD>   <TD width=60%>Specifies all possible access flags for the event object.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=40%>EVENT_MODIFY_STATE</TD>   <TD width=60%>Enables modification of the event's state with the SetEvent and ResetEvent methods.</TD>   </TR>   
+             <TR VALIGN="top">   <TD width=40%>SYNCHRONIZE</TD>   <TD width=60%><B>Windows NT/2000:</B> Enables use of the event handle in any of the wait functions to wait for the event's state to be signaled.</TD>   </TR>   
+           </TABLE>
    - Specifies whether the Handle of the Event object can be inherited by child processes.
   Name - Name of the Event object to open.
 Quick info:
@@ -1295,7 +1476,8 @@ Description:
   when the object is destructed. Additionally it provides methods to wait on the
   object which are common to all dispatcher object derivatives.
 Notes:
-  There are several non-kernel synchronization objects that do not derive from TJclDispatcherObject. Examples are the TJclCriticalSection and TJclOptex.
+  There are several non-kernel synchronization objects that do not derive from 
+  TJclDispatcherObject. Examples are the TJclCriticalSection and TJclOptex.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1381,9 +1563,12 @@ Quick info:
   Windows NT/2000: Requires Windows NT 3.1 or later.
   Windows 95/98: Requires Windows 95 or later.
 @@TJclWaitResult.wrAbandoned
-  Only applicable if the object is a mutex which was not released by the owning thread before the thread exited. The calling thread has been granted ownership of the mutex which is set to nonsignaled.
+  Only applicable if the object is a mutex which was not released by the owning 
+  thread before the thread exited. The calling thread has been granted ownership of 
+  the mutex which is set to nonsignaled.
 @@TJclWaitResult.wrError
-  An error occurred. You can call GetLastError to get more information about why the method failed.
+  An error occurred. You can call GetLastError to get more information about why 
+  the method failed.
 @@TJclWaitResult.wrIoCompletion
   One or more I/O completion routines were queued. Only applicable to WaitAlertable.
 @@TJclWaitResult.wrSignaled
@@ -1411,9 +1596,15 @@ Description:
   is decreased by one before the method returns. See the individual synchronization
   classes and the Platform SDK for details.
 Parameters:
-  Obj - The object to signal before waiting on the object for which this method is called. The object to signal can be a Mutex, Event or Semaphore to which you must have the appropriate access.
-  TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns.
-  Alertable - If False the method blocks until either the object becomes signaled or the timeout expires. If True the calling thread enters an alertable wait-state until one of the aforementioned events occur or an I/O Completion routine or APC is queued for the thread.
+  Obj - The object to signal before waiting on the object for which this method is called. 
+        The object to signal can be a Mutex, Event or Semaphore to which you must have the 
+        appropriate access.
+  TimeOut - Interval, in milliseconds, the method waits on an object. If the object does 
+            not become signaled before the interval has expired, the method returns.
+  Alertable - If False the method blocks until either the object becomes signaled or the 
+              timeout expires. If True the calling thread enters an alertable wait-state 
+              until one of the aforementioned events occur or an I/O Completion routine or 
+              APC is queued for the thread.
 Result:
   The result indicates success or failure and is of
   type TJclWaitResult. This method can
@@ -1449,7 +1640,8 @@ Description:
   is decreased by one before the method returns. See the individual synchronization
   classes and the Platform SDK for details.
 Parameters:
-  TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns.
+  TimeOut - Interval, in milliseconds, the method waits on an object. If the object 
+            does not become signaled before the interval has expired, the method returns.
 Result:
   The result indicates success or failure and is of
   type TJclWaitResult. This method can
@@ -1483,15 +1675,19 @@ Description:
   is decreased by one before the method returns. See the individual synchronization
   classes and the Platform SDK for details.
 Parameters:
-  TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns. If you specify a 0 timeout the method tests the state of the object and immediately returns. You can specify INFINITE to wait forever or use WaitForever instead.
+  TimeOut - Interval, in milliseconds, the method waits on an object. If the object 
+            does not become signaled before the interval has expired, the method returns. 
+            If you specify a 0 timeout the method tests the state of the object and 
+            immediately returns. You can specify INFINITE to wait forever or use 
+            WaitForever instead.
 Result:
-  The result indicates success or failure and is of
-  type TJclWaitResult. This type is shared
-  between all WaitXxx functions and as such not all members of this enumeration can
-  be returned from this method. Valid ones are wrError, wrAbandoned, wrTimeOut and
-  wrSignaled. See TJclWaitResult for the details.
+  The result indicates success or failure and is of type TJclWaitResult. This type 
+  is shared between all WaitXxx functions and as such not all members of this 
+  enumeration can be returned from this method. Valid ones are wrError, wrAbandoned, 
+  wrTimeOut and wrSignaled. See TJclWaitResult for the details.
 Notes:
-  This method results in non-alertable wait state while the object is not signaled. Use WaitAlertable to enter an alertable wait state.
+  This method results in non-alertable wait state while the object is not signaled. 
+  Use WaitAlertable to enter an alertable wait state.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1542,7 +1738,8 @@ Description:
   Handle. This is particularly useful when passing handles between a parent and
   child process using handle inheritance.
 Parameters:
-  Handle - Handle of the dispatcher object to attach to. This must be a handle to an event, mutex, semaphore, waitable timer or timer queue.
+  Handle - Handle of the dispatcher object to attach to. This must be a handle to 
+           an event, mutex, semaphore, waitable timer or timer queue.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1588,7 +1785,8 @@ Description:
   simple and efficient way for applications to synchronize access to and manipulate
   integer variables which are shared by multiple threads.
 Parameters:
-  Target - The target variable to compare Value and which conditionally receives the value of Exch.
+  Target - The target variable to compare Value and which conditionally receives 
+           the value of Exch.
   Exch - The value which is moved into Target if Comp and Target are equal.
   Comp - The comperand which Target is compared against.
 Result:
@@ -1854,14 +2052,21 @@ Description:
   until either access was granted, the specified timeout elapses or an error
   occurs.
 Parameters:
-  TimeOut - Specifies the time-out interval, in milliseconds. The function returns if the interval elapses, even if the metered section does not have an open slot. If Milliseconds is zero, the function tests the metered section's state a and returns immediately. If Milliseconds is INFINITE, the function's time-out interval never elapses.
+  TimeOut - Specifies the time-out interval, in milliseconds. The function returns if 
+            the interval elapses, even if the metered section does not have an open 
+            slot. If Milliseconds is zero, the function tests the metered section's 
+            state a and returns immediately. If Milliseconds is INFINITE, the 
+            function's time-out interval never elapses.
 Result:
   If access was granted the result is wrSignaled, if the specified TimeOut elapsed
   the result is wrTimeOut and if an error occured the result is wrError. Although
   TJclWaitResult includes other values, these should never be encountered as the
   function result.
 Notes:
-  The EnterMeteredSection function checks for an available slot in the metered section. If the metered section does not have an available slot, the calling thread enters an efficient wait state. The thread consumes very little processor time while waiting for a slot to become free.
+  The EnterMeteredSection function checks for an available slot in the metered section. 
+  If the metered section does not have an available slot, the calling thread enters an 
+  efficient wait state. The thread consumes very little processor time while waiting 
+  for a slot to become free.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
@@ -1884,7 +2089,11 @@ Description:
   may be released from their wait state. Note that incrementing the count is not thread
   bound. That is, all threads may call Leave even though they never called Enter.
 Parameters:
-  ReleaseCount - Specifies the number of the metered section's slots to release. The value must be greater than zero. If the specified amount would cause the metered section's count to exceed the maximum number of available slots specified during creation of the metered section, the number of available slots is not changed and the function returns False.
+  ReleaseCount - Specifies the number of the metered section's slots to release. The 
+  value must be greater than zero. If the specified amount would cause the metered 
+  section's count to exceed the maximum number of available slots specified during 
+  creation of the metered section, the number of available slots is not changed and 
+  the function returns False.
   PrevCount - 32-bit Longint which receives the previous metered section open slot count.
 Result:
   If the function succeeds the result is True, otherwise the result is False.
@@ -1906,9 +2115,23 @@ Summary:
 Description:
   Creates a named or unnamed instance of a TJclMeteredSection object.
 Parameters:
-  InitialCount - Specifies an initial count of open slots for the metered section. This value must be greater than or equal to zero and less than or equal to MaxCount. A slot is available when the count is greater than zero and none is available when it is zero. The count is decreased by one whenever the EnterMeteredSection function releases a thread that was waiting for the metered section. The count is increased by a specified amount by calling the LeaveMeteredSection function.
-  MaxCount - Specifies the maximum number of available slots for the metered section. This value must be greater than zero.
-  Name - String specifying the name of the metered section. The name is limited to MAX_METSECT_NAMELEN characters, and can contain any character except the backslash path-separator character (\). Name comparison is case sensitive.<P> If Name matches the name of an existing named metered section, the InitialCount and MaxCount parameters are ignored because they have already been set by the process that originally created the metered section.<P> If Name is empty, the metered section is created without a name.
+  InitialCount - Specifies an initial count of open slots for the metered section. 
+                 This value must be greater than or equal to zero and less than or 
+                 equal to MaxCount. A slot is available when the count is greater 
+                 than zero and none is available when it is zero. The count is 
+                 decreased by one whenever the EnterMeteredSection function 
+                 releases a thread that was waiting for the metered section. The 
+                 count is increased by a specified amount by calling the 
+                 LeaveMeteredSection function.
+  MaxCount - Specifies the maximum number of available slots for the metered section. 
+             This value must be greater than zero.
+  Name - String specifying the name of the metered section. The name is limited to 
+         MAX_METSECT_NAMELEN characters, and can contain any character except the 
+         backslash path-separator character (\). Name comparison is case sensitive.<P> 
+         If Name matches the name of an existing named metered section, the 
+         InitialCount and MaxCount parameters are ignored because they have already 
+         been set by the process that originally created the metered section.<P> 
+         If Name is empty, the metered section is created without a name.
 Quick info:
   Unit: JclSynch
   Category: Libraries, Processes and Threads
