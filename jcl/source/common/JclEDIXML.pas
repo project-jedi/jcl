@@ -41,8 +41,6 @@ unit JclEDIXML;
 
 {$I jcl.inc}
 
-{$I jedi.inc}
-
 {$WEAKPACKAGEUNIT ON}
 
 interface
