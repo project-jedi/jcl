@@ -2,19 +2,19 @@ package DJclVClx;
 
 {$R *.res}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -22,12 +22,11 @@ package DJclVClx;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JEDI Code Library VisualCLX package for Kylix 3'}
+{$DESCRIPTION ''}
 {$LIBSUFFIX 'K3'}
-{$LIBVERSION '0.1'}
+{$LIBVERSION '1.90.0'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
-{$DEFINE VisualCLX}
 
 requires
   rtl,
@@ -35,7 +34,7 @@ requires
   DJcl;
 
 contains
-  JclQGraphUtils in '../../source/VisCLX/JclQGraphUtils.pas',
-  JclQGraphics in '../../source/VisCLX/JclQGraphics.pas';
+  JclQGraphUtils in '../../source/visclx/JclQGraphUtils.pas' ,
+  JclQGraphics in '../../source/visclx/JclQGraphics.pas' ;
 
 end.
