@@ -28,6 +28,7 @@ package JediUsesD50;
 
 requires
   vcl50,
+  vclx50,
   DJCL50;
 
 {%File 'JediUsesWizard.ini'}
