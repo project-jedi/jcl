@@ -44,6 +44,17 @@ uses
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
 
+//==================================================================================================
+// TJclReferenceMemoryStream
+//==================================================================================================
+{ TODO : Move TJclReferenceMemoryStream to JclSysUtil unit or other }
+type
+  TJclReferenceMemoryStream = class (TCustomMemoryStream)
+  public
+    constructor Create(const Ptr: Pointer; Size: Longint);
+    function Write(const Buffer; Count: Longint): Longint; override;
+  end;
+
 const
   MAX_CLASS_NAME = 1024;
   MAX_PATH_NAME  = 260;
@@ -251,17 +262,15 @@ type
     property GuidCount: Integer read GetGuidCount;
   end;
 
-  TJclPeCLRBlobRecord = class
+  TJclPeCLRBlobRecord = class(TJclReferenceMemoryStream)
   private
     FPtr: PByteArray;
-    FData: Pointer;
-    FSize: DWORD;
+    FOffset: DWORD;
   protected
-    constructor Create(const APtr: PByteArray);
+    constructor Create(const AStream: TJclPeCLRStream; const APtr: PByteArray);
   public
     property Ptr: PByteArray read FPtr;
-    property Data: Pointer read FData;
-    property Size: DWORD read FSize;
+    property Offset: DWORD read FOffset;
   end;
 
   TJclPeCLRBlobStream = class(TJclPeCLRStream)
@@ -275,6 +284,8 @@ type
   public
     destructor Destroy; override;
 
+    function At(const Offset: DWORD): TJclPeCLRBlobRecord;
+
     property Blobs[const Idx: Integer]: TJclPeCLRBlobRecord read GetBlob; default;
     property BlobCount: Integer read GetBlobCount;
   end;
@@ -284,6 +295,8 @@ type
     function GetString(const Idx: Integer): WideString;
     function GetStringCount: Integer;
   public
+    function At(const Offset: DWORD): WideString;
+
     property Strings[const Idx: Integer]: WideString read GetString; default;
     property StringCount: Integer read GetStringCount;
   end;
@@ -355,6 +368,7 @@ type
 
   TJclPeCLRTableModule = class(TJclPeCLRTable)
   private
+    FGeneration: Word;
     FNameOffset,
     FMvidIdx,
     FEncIdIdx,
@@ -366,6 +380,10 @@ type
   protected
     procedure Load; override;
   public
+    function HasEncId: Boolean;
+    function HasEncBaseId: Boolean;
+
+    property Generation: Word read FGeneration;
     property NameOffset: DWORD read FNameOffset;
     property MvidIdx: DWORD read FMvidIdx;
     property EncIdIdx: DWORD read FEncIdIdx;
@@ -382,7 +400,7 @@ type
   TJclPeCLRTableAssembly = class(TJclPeCLRTable)
   private
     FCultureOffset,
-    FPublicKeyIdx,
+    FPublicKeyOffset,
     FHashAlgId,
     FNameOffset: DWORD;
     FMajorVersion,
@@ -402,7 +420,7 @@ type
     property BuildNumber: Word read FBuildNumber;
     property RevisionNumber: Word read FRevisionNumber;
     property Flags: DWORD read FFlags;
-    property PublicKeyIdx: DWORD read FPublicKeyIdx;
+    property PublicKeyOffset: DWORD read FPublicKeyOffset;
     property NameOffset: DWORD read FNameOffset;
     property CultureOffset: DWORD read FCultureOffset;
 
@@ -437,8 +455,8 @@ type
   private
     FCultureOffset,
     FNameOffset,
-    FPublicKeyOrTokenIdx,
-    FHashValueIdx: DWORD;
+    FPublicKeyOrTokenOffset,
+    FHashValueOffsetOffset: DWORD;
     FMajorVersion,
     FRevisionNumber,
     FBuildNumber,
@@ -456,10 +474,10 @@ type
     property BuildNumber: Word read FBuildNumber;
     property RevisionNumber: Word read FRevisionNumber;
     property Flags: DWORD read FFlags;
-    property PublicKeyOrTokenIdx: DWORD read FPublicKeyOrTokenIdx;
+    property PublicKeyOrTokenOffset: DWORD read FPublicKeyOrTokenOffset;
     property NameOffset: DWORD read FNameOffset;
     property CultureOffset: DWORD read FCultureOffset;
-    property HashValueIdx: DWORD read FHashValueIdx;
+    property HashValueOffsetOffset: DWORD read FHashValueOffsetOffset;
 
     property PublicKeyOrToken: TJclPeCLRBlobRecord read GetPublicKeyOrToken;
     property Name: WideString read GetName;
@@ -506,13 +524,13 @@ type
   private
     FKind: Byte;
     FParentIdx: DWORD;
-    FValueIdx: DWORD;
+    FValueOffset: DWORD;
   protected
     constructor Create(const ATable: TJclPeCLRTable); override;
   public
     property Kind: Byte read FKind;
     property ParentIdx: DWORD read FParentIdx;
-    property ValueIdx: DWORD read FValueIdx;
+    property ValueOffset: DWORD read FValueOffset;
   end;
 
   TJclPeCLRTableConstant = class(TJclPeCLRTable)
@@ -528,14 +546,14 @@ type
   private
     FParentIdx: DWORD;
     FTypeIdx: DWORD;
-    FValueIdx: DWORD;
+    FValueOffset: DWORD;
     function GetValue: TJclPeCLRBlobRecord;
   protected
     constructor Create(const ATable: TJclPeCLRTable); override;
   public
     property ParentIdx: DWORD read FParentIdx;
     property TypeIdx: DWORD read FTypeIdx;
-    property ValueIdx: DWORD read FValueIdx;
+    property ValueOffset: DWORD read FValueOffset;
 
     property Value: TJclPeCLRBlobRecord read GetValue;
   end;
@@ -558,7 +576,7 @@ type
   private
     FFlags: Word;
     FNameOffset: DWORD;
-    FSignatureIdx: DWORD;
+    FSignatureOffset: DWORD;
     FParentToken: TJclPeCLRTableRow;
     function GetName: WideString;
     function GetSignature: TJclPeCLRBlobRecord;
@@ -569,7 +587,7 @@ type
   public
     property Flags: Word read FFlags;
     property NameOffset: DWORD read FNameOffset;
-    property SignatureIdx: DWORD read FSignatureIdx;
+    property SignatureOffset: DWORD read FSignatureOffset;
 
     property Name: WideString read GetName;
     property Signature: TJclPeCLRBlobRecord read GetSignature;
@@ -649,7 +667,7 @@ type
   private
     FClassIdx: DWORD;
     FNameOffset: DWORD;
-    FSignatureIdx: DWORD;
+    FSignatureOffset: DWORD;
     function GetName: WideString;
     function GetSignature: TJclPeCLRBlobRecord;
   protected
@@ -657,7 +675,7 @@ type
   public
     property ClassIdx: DWORD read FClassIdx;
     property NameOffset: DWORD read FNameOffset;
-    property SignatureIdx: DWORD read FSignatureIdx;
+    property SignatureOffset: DWORD read FSignatureOffset;
 
     property Name: WideString read GetName;
     property Signature: TJclPeCLRBlobRecord read GetSignature;
@@ -678,7 +696,7 @@ type
     FImplFlags: Word;
     FFlags: Word;
     FNameOffset: DWORD;
-    FSignatureIdx: DWORD;
+    FSignatureOffset: DWORD;
     FParamListIdx: DWORD;
     FParentToken: TJclPeCLRTableRow;
     function GetName: WideString;
@@ -692,7 +710,7 @@ type
     property ImplFlags: Word read FImplFlags;
     property Flags: Word read FFlags;
     property NameOffset: DWORD read FNameOffset;
-    property SignatureIdx: DWORD read FSignatureIdx;
+    property SignatureOffset: DWORD read FSignatureOffset;
     property ParamListIdx: DWORD read FParamListIdx;
 
     property Name: WideString read GetName;
@@ -828,12 +846,12 @@ type
 
   TJclPeCLRTableStandAloneSigRow = class(TJclPeCLRTableRow)
   private
-    FSignatureIdx: DWORD;
+    FSignatureOffset: DWORD;
     function GetSignature: TJclPeCLRBlobRecord;
   protected
     constructor Create(const ATable: TJclPeCLRTable); override;
   public
-    property SignatureIdx: DWORD read FSignatureIdx;
+    property SignatureOffset: DWORD read FSignatureOffset;
 
     property Signature: TJclPeCLRBlobRecord read GetSignature;
   end;
@@ -987,10 +1005,14 @@ type
     function FindStream(const AClass: TJclPeCLRStreamClass; var Stream: TJclPeCLRStream): Boolean; overload;
 
     function StringAt(const Offset: DWORD): WideString;
+    function BlobAt(const Offset: DWORD): TJclPeCLRBlobRecord;
+
+    function TokenExists(const Token: TJclCLRToken): Boolean;
 
     class function TokenTable(const Token: TJclCLRToken): TJclPeCLRTableKind;
     class function TokenIndex(const Token: TJclCLRToken): Integer;
     class function TokenCode(const Token: TJclCLRToken): Integer;
+    class function MakeToken(const Table: TJclPeCLRTableKind; const Idx: Integer): TJclCLRToken;
 
     property Image: TJclPeImage read FImage;
     property Header: PCLRMetadataHeader read FHeader;
@@ -1045,6 +1067,8 @@ uses
   Math, TypInfo, JclUnicode, JclResources;
 
 const
+  GUID_NULL : TGUID = '{00000000-0000-0000-0000-000000000000}';
+
   ValidTableMapping: array[TJclPeCLRTableKind] of TJclPeCLRTableClass = (
     TJclPeCLRTableModule,               //  $00
     TJclPeCLRTableTypeRef,              //  $01
@@ -1090,17 +1114,6 @@ const
     TJclPeCLRTableNestedClass,          //  $29
     TJclPeCLRTable,                     //  $2A
     TJclPeCLRTable);                    //  $2B
-
-//==================================================================================================
-// TJclReferenceMemoryStream
-//==================================================================================================
-{ TODO : Move TJclReferenceMemoryStream to JclSysUtil unit or other }
-type
-  TJclReferenceMemoryStream = class (TCustomMemoryStream)
-  public
-    constructor Create(const Ptr: Pointer; Size: Longint);
-    function Write(const Buffer; Count: Longint): Longint; override;
-  end;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1205,7 +1218,9 @@ var
 begin
   Idx := FStrings.IndexOfObject(TObject(Offset));
   if Idx <> -1 then
-    Result := GetString(Idx);
+    Result := GetString(Idx)
+  else
+    Result := '';
 end;
 
 { TJclPeCLRGuidStream }
@@ -1240,37 +1255,40 @@ end;
 
 { TJclPeCLRBlobRecord }
 
-constructor TJclPeCLRBlobRecord.Create(const APtr: PByteArray);
+constructor TJclPeCLRBlobRecord.Create(const AStream: TJclPeCLRStream; const APtr: PByteArray);
 var
   b: Byte;
+  AData: Pointer;
+  ASize: DWORD;
 begin
-  inherited Create;
-
-  FPtr := APtr;
+  FPtr    := APtr;
+  FOffset := DWORD(FPtr) - DWORD(AStream.Data);
 
   b := FPtr[0];
   if b = 0 then
   begin
-    FData := @FPtr[1];
-    FSize := 0;
+    AData := @FPtr[1];
+    ASize := 0;
   end
   else if ((b and $C0) = $C0) and ((b and $20) = 0) then    // 110bs
   begin
-    FData := @FPtr[4];
-    FSize := ((b and $1F) shl 24) + (FPtr[1] shl 16) + (FPtr[2] shl 8) + FPtr[3];
+    AData := @FPtr[4];
+    ASize := ((b and $1F) shl 24) + (FPtr[1] shl 16) + (FPtr[2] shl 8) + FPtr[3];
   end
   else if ((b and $80) = $80) and ((b and $40) = 0) then    // 10bs
   begin
-    FData := @FPtr[2];
-    FSize := ((b and $3F) shl 8) + FPtr[1];
+    AData := @FPtr[2];
+    ASize := ((b and $3F) shl 8) + FPtr[1];
   end
   else
   begin
-    FData := @FPtr[1];
-    FSize := b and $7F;
+    AData := @FPtr[1];
+    ASize := b and $7F;
   end;
 
-  Assert(not IsBadReadPtr(FData, FSize));
+  Assert(not IsBadReadPtr(AData, ASize));
+
+  inherited Create(AData, ASize);
 end;
 
 { TJclPeCLRBlobStream }
@@ -1284,13 +1302,13 @@ begin
 
   FBlobs := TObjectList.Create;
 
-  ABlob := TJclPeCLRBlobRecord.Create(Data);
+  ABlob := TJclPeCLRBlobRecord.Create(Self, Data);
   while Assigned(ABlob) do
   begin
     if ABlob.Size > 0 then
       FBlobs.Add(ABlob);
-    if (DWORD(ABlob.Data) + ABlob.Size) < (DWORD(Data) + Size) then
-      ABlob := TJclPeCLRBlobRecord.Create(Pointer(DWORD(ABlob.Data) + ABlob.Size))
+    if (Integer(ABlob.Memory) + ABlob.Size) < (Integer(Self.Data) + Integer(Self.Size)) then
+      ABlob := TJclPeCLRBlobRecord.Create(Self, Pointer(Integer(ABlob.Memory) + ABlob.Size))
     else
       ABlob := nil;
   end;
@@ -1303,9 +1321,22 @@ begin
   inherited;
 end;
 
+function TJclPeCLRBlobStream.At(const Offset: DWORD): TJclPeCLRBlobRecord;
+var
+  I: Integer;
+begin
+  for I:=0 to FBlobs.Count-1 do
+  begin
+    Result := TJclPeCLRBlobRecord(FBlobs.Items[I]);
+    if Result.Offset = Offset then
+      Exit;
+  end;
+  Result := nil;
+end;
+
 function TJclPeCLRBlobStream.GetBlob(const Idx: Integer): TJclPeCLRBlobRecord;
 begin
-  Result := TJclPeCLRBlobRecord(FBlobs.Items[Idx]);
+  Result := TJclPeCLRBlobRecord(FBlobs.Items[Idx])
 end;
 
 function TJclPeCLRBlobStream.GetBlobCount: Integer;
@@ -1316,14 +1347,31 @@ end;
 { TJclPeCLRUserStringStream }
 
 function TJclPeCLRUserStringStream.GetString(const Idx: Integer): WideString;
+var
+  ABlob: TJclPeCLRBlobRecord;
 begin
-  SetLength(Result, Blobs[Idx].Size div 2 + 1);
-  StrLCopyW(PWideChar(Result), PWideChar(Blobs[Idx].Data), Blobs[Idx].Size div 2);
+  ABlob := Blobs[Idx];
+  SetLength(Result, ABlob.Size div 2 + 1);
+  StrLCopyW(PWideChar(Result), PWideChar(ABlob.Memory), ABlob.Size div 2);
 end;
 
 function TJclPeCLRUserStringStream.GetStringCount: Integer;
 begin
   Result := BlobCount;
+end;
+
+function TJclPeCLRUserStringStream.At(const Offset: DWORD): WideString;
+var
+  ABlob: TJclPeCLRBlobRecord;
+begin
+  ABlob := inherited At(Offset);
+  if Assigned(ABlob) then
+  begin
+    SetLength(Result, ABlob.Size div 2 + 1);
+    StrLCopyW(PWideChar(Result), PWideChar(ABlob.Memory), ABlob.Size div 2);
+  end
+  else
+    Result := '';
 end;
 
 { TJclPeCLRTableRow }
@@ -1481,39 +1529,49 @@ end;
 
 procedure TJclPeCLRTableModule.Load;
 begin
+  Assert(RowCount = 1); // The Module table shall contain one and only one row
+
   inherited;
 
-  ReadWord; // Generation (2 byte value, reserved, shall be zero)
+  FGeneration   := ReadWord;            // Generation (reserved, shall be zero)
   FNameOffset   := ReadIndex(hkString); // Name (index into String heap)
   FMvidIdx      := ReadIndex(hkGuid);   // Mvid (index into Guid heap)
   FEncIdIdx     := ReadIndex(hkGuid);   // Mvid (index into Guid heap)
   FEncBaseIdIdx := ReadIndex(hkGuid);   // Mvid (index into Guid heap)
 end;
 
+function TJclPeCLRTableModule.HasEncId: Boolean;
+begin
+  Result := FEncIdIdx > 0;
+end;
+
+function TJclPeCLRTableModule.HasEncBaseId: Boolean;
+begin
+  Result := FEncBaseIdIdx > 0;
+end;
+
 function TJclPeCLRTableModule.GetName: WideString;
 begin
   Result := Stream.Metadata.StringAt(FNameOffset);
+  Assert(Result <> ''); // Name shall index a non-null string.
+  Assert(Length(Result) < MAX_PATH_NAME);
 end;
 
 function TJclPeCLRTableModule.GetMvid: TGUID;
 begin
+  // Mvid shall index a non-null GUID in the Guid heap
+  Assert(FMvidIdx <= DWORD(Stream.Metadata.GuidCount));
   Result := Stream.Metadata.Guids[FMvidIdx-1];
 end;
 
 function TJclPeCLRTableModule.GetEncId: TGUID;
 begin
-  if FEncIdIdx > 0 then
-    Result := Stream.Metadata.Guids[FEncIdIdx-1]
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  Result := Stream.Metadata.Guids[FEncIdIdx-1];
 end;
 
 function TJclPeCLRTableModule.GetEncBaseId: TGUID;
 begin
-  if FEncBaseIdIdx > 0 then
-    Result := Stream.Metadata.Guids[FEncBaseIdIdx-1]
-  else
-    FillChar(Result, SizeOf(Result), 0);
+  Result := Stream.Metadata.Guids[FEncBaseIdIdx-1];
 end;
 
 { TJclPeCLRTableAssembly }
@@ -1531,7 +1589,7 @@ begin
 
   FFlags          := ReadDWord;
 
-  FPublicKeyIdx   := ReadIndex(hkBlob);
+  FPublicKeyOffset   := ReadIndex(hkBlob);
   FNameOffset     := ReadIndex(hkString);
   FCultureOffset  := ReadIndex(hkString);
 end;
@@ -1548,7 +1606,7 @@ end;
 
 function TJclPeCLRTableAssembly.GetPublicKey: TJclPeCLRBlobRecord;
 begin
-  Result := Stream.Metadata.Blobs[FPublicKeyIdx];
+  Result := Stream.Metadata.BlobAt(FPublicKeyOffset);
 end;
 
 { TJclPeCLRTableAssemblyOS }
@@ -1585,10 +1643,10 @@ begin
 
   FFlags               := Table.ReadDWord;
 
-  FPublicKeyOrTokenIdx := Table.ReadIndex(hkBlob);
+  FPublicKeyOrTokenOffset := Table.ReadIndex(hkBlob);
   FNameOffset          := Table.ReadIndex(hkString);
   FCultureOffset       := Table.ReadIndex(hkString);
-  FHashValueIdx        := Table.ReadIndex(hkBlob);
+  FHashValueOffsetOffset        := Table.ReadIndex(hkBlob);
 end;
 
 function TJclPeCLRTableAssemblyRefRow.GetCulture: WideString;
@@ -1598,7 +1656,7 @@ end;
 
 function TJclPeCLRTableAssemblyRefRow.GetHashValue: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FHashValueIdx];
+  Result := Table.Stream.Metadata.BlobAt(FHashValueOffsetOffset);
 end;
 
 function TJclPeCLRTableAssemblyRefRow.GetName: WideString;
@@ -1608,7 +1666,7 @@ end;
 
 function TJclPeCLRTableAssemblyRefRow.GetPublicKeyOrToken: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FPublicKeyOrTokenIdx];
+  Result := Table.Stream.Metadata.BlobAt(FPublicKeyOrTokenOffset);
 end;
 
 { TJclPeCLRTableAssemblyRef }
@@ -1662,7 +1720,7 @@ begin
   FKind      := Table.ReadByte;
   Table.ReadByte; // padding zero
   FParentIdx := Table.ReadIndex([ttParamDef, ttFieldDef, ttProperty]);
-  FValueIdx  := Table.ReadIndex(hkBlob);
+  FValueOffset  := Table.ReadIndex(hkBlob);
 end;
 
 { TJclPeCLRTableConstant }
@@ -1692,12 +1750,12 @@ begin
     ttAssemblyProcessor, ttAssemblyOS, ttAssemblyRef, ttAssemblyRefProcessor,
     ttAssemblyRefOS, ttFile, ttExportedType, ttManifestResource, ttNestedClass]);
   FTypeIdx   := Table.ReadIndex([ttMethodDef, ttMemberRef]);
-  FValueIdx  := Table.ReadIndex(hkBlob);
+  FValueOffset  := Table.ReadIndex(hkBlob);
 end;
 
 function TJclPeCLRTableCustomAttributeRow.GetValue: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FValueIdx];
+  Result := Table.Stream.Metadata.BlobAt(FValueOffset);
 end;
 
 { TJclPeCLRTableCustomAttribute }
@@ -1720,7 +1778,7 @@ begin
 
   FFlags        := Table.ReadWord;
   FNameOffset   := Table.ReadIndex(hkString);
-  FSignatureIdx := Table.ReadIndex(hkBlob);
+  FSignatureOffset := Table.ReadIndex(hkBlob);
   FParentToken  := nil;
 end;
 
@@ -1731,7 +1789,7 @@ end;
 
 function TJclPeCLRTableFieldRow.GetSignature: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FSignatureIdx];
+  Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
 
 procedure TJclPeCLRTableFieldRow.SetParentToken(const ARow: TJclPeCLRTableRow);
@@ -1814,7 +1872,7 @@ begin
 
   FClassIdx     := Table.ReadIndex([ttTypeRef, ttModuleRef, ttMethodDef, ttTypeSpec, ttTypeDef]); 
   FNameOffset   := Table.ReadIndex(hkString);
-  FSignatureIdx := Table.ReadIndex(hkBlob);
+  FSignatureOffset := Table.ReadIndex(hkBlob);
 end;
 
 function TJclPeCLRTableMemberRefRow.GetName: WideString;
@@ -1824,7 +1882,7 @@ end;
 
 function TJclPeCLRTableMemberRefRow.GetSignature: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FSignatureIdx];
+  Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
 
 { TJclPeCLRTableMemberRef }
@@ -1849,7 +1907,7 @@ begin
   FImplFlags    := Table.ReadWord;
   FFlags        := Table.ReadWord;
   FNameOffset   := Table.ReadIndex(hkString);
-  FSignatureIdx := Table.ReadIndex(hkBlob);
+  FSignatureOffset := Table.ReadIndex(hkBlob);
   FParamListIdx := Table.ReadIndex([ttParamDef]);
   FParentToken  := nil;
 end;
@@ -1861,7 +1919,7 @@ end;
 
 function TJclPeCLRTableMethodDefRow.GetSignature: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FSignatureIdx];
+  Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
 
 procedure TJclPeCLRTableMethodDefRow.SetParentToken(const ARow: TJclPeCLRTableRow);
@@ -2019,12 +2077,12 @@ constructor TJclPeCLRTableStandAloneSigRow.Create(
 begin
   inherited;
 
-  FSignatureIdx := Table.ReadIndex(hkBlob);
+  FSignatureOffset := Table.ReadIndex(hkBlob);
 end;
 
 function TJclPeCLRTableStandAloneSigRow.GetSignature: TJclPeCLRBlobRecord;
 begin
-  Result := Table.Stream.Metadata.Blobs[FSignatureIdx];
+  Result := Table.Stream.Metadata.BlobAt(FSignatureOffset);
 end;
 
 { TJclPeCLRTableStandAloneSig }
@@ -2432,7 +2490,7 @@ end;
 function TJclPeMetadata.GetToken(const AToken: TJclCLRToken): TJclPeCLRTableRow;
 begin
   try
-    Result := Tables[TokenTable(AToken)].Rows[TokenIndex(AToken)];
+    Result := Tables[TokenTable(AToken)].Rows[TokenIndex(AToken)-1];
   except
     Result := nil;
   end;
@@ -2458,14 +2516,27 @@ function TJclPeMetadata.StringAt(const Offset: DWORD): WideString;
 begin
   if Assigned(FStringStream) or
      FindStream(TJclPeCLRStringsStream, TJclPeCLRStream(FStringStream)) then
-    Result := TJclPeCLRStringsStream(FStringStream).At(Offset);
+    Result := TJclPeCLRStringsStream(FStringStream).At(Offset)
+  else
+    Result := '';
+end;
+
+function TJclPeMetadata.BlobAt(const Offset: DWORD): TJclPeCLRBlobRecord;
+begin
+  if Assigned(FBlobStream) or
+     FindStream(TJclPeCLRBlobStream, TJclPeCLRStream(FBlobStream)) then
+    Result := TJclPeCLRBlobStream(FBlobStream).At(Offset)
+  else
+    Result := nil;
 end;
 
 function TJclPeMetadata.GetGuid(const Idx: Integer): TGUID;
 begin
   if Assigned(FGuidStream) or
      FindStream(TJclPeCLRGuidStream, TJclPeCLRStream(FGuidStream)) then
-    Result := FGuidStream.Guids[Idx];
+    Result := FGuidStream.Guids[Idx]
+  else
+    Result := GUID_NULL;
 end;
 
 function TJclPeMetadata.GetGuidCount: Integer;
@@ -2513,6 +2584,11 @@ begin
     Result := 0;
 end;
 
+function TJclPeMetadata.TokenExists(const Token: TJclCLRToken): Boolean;
+begin
+  Result := TokenIndex(Token) in [1..Tables[TokenTable(Token)].RowCount];
+end;
+
 class function TJclPeMetadata.TokenTable(const Token: TJclCLRToken): TJclPeCLRTableKind;
 begin
   Result := TJclPeCLRTableKind(Token shr 24);
@@ -2520,12 +2596,18 @@ end;
 
 class function TJclPeMetadata.TokenIndex(const Token: TJclCLRToken): Integer;
 begin
-  Result := (Token and DWORD($FFFFFF)) - 1;
+  Result := Token and DWORD($FFFFFF);
 end;
 
 class function TJclPeMetadata.TokenCode(const Token: TJclCLRToken): Integer;
 begin
   Result := Token and $FF000000;
+end;
+
+class function TJclPeMetadata.MakeToken(
+  const Table: TJclPeCLRTableKind; const Idx: Integer): TJclCLRToken;
+begin
+  Result := (DWORD(Table) shl 24) and TokenIndex(Idx);
 end;
 
 { TJclPeCLRInformation }
