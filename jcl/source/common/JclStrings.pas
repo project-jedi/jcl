@@ -330,6 +330,16 @@ procedure StrTokens(const S: AnsiString; const List: TStrings);
 procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TStrings);
 function StrWord(var S: PAnsiChar; out Word: AnsiString): Boolean;
 
+{$IFNDEF DELPHI5_UP}
+
+//------------------------------------------------------------------------------
+// Backward compatibility
+//------------------------------------------------------------------------------
+
+function AnsiSameText(const S1, S2: string): Boolean;
+
+{$ENDIF DELPHI5_UP}
+
 implementation
 
 uses
@@ -3140,6 +3150,20 @@ begin
     end;
   end;
 end;
+
+{$IFNDEF DELPHI5_UP}
+
+//==============================================================================
+// Backward compatibility
+//==============================================================================
+
+function AnsiSameText(const S1, S2: string): Boolean;
+begin
+  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, PChar(S1),
+    Length(S1), PChar(S2), Length(S2)) = 2;
+end;
+
+{$ENDIF DELPHI5_UP}
 
 //==============================================================================
 // Initialization
