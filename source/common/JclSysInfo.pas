@@ -1,31 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclSysInfo.pas.                                         }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains routines and classes to retrieve various pieces of system }
-{ information. Examples are the location of standard folders, settings of      }
-{ environment variables, processor details and the Windows version.            }
-{                                                                              }
-{ Unit owner: Eric S. Fisher                                                   }
-{ Last modified: Januari 12, 2002                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclSysInfo.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains routines and classes to retrieve various pieces of system information.        }
+{ Examples are the location of standard folders, settings of environment variables, processor      }
+{ details and the Windows version.                                                                 }
+{                                                                                                  }
+{ Unit owner: Eric S. Fisher                                                                       }
+{ Last modified: February 14, 2002                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclSysInfo;
 
@@ -37,9 +36,9 @@ uses
   Windows, ActiveX, Classes, ShlObj,
   JclResources;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Environment Variables
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TEnvironmentOption = (eoLocalMachine, eoCurrentUser, eoAdditional);
@@ -53,9 +52,9 @@ function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Common Folder Locations
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonFilesFolder: string;
 function GetCurrentFolder: string;
@@ -88,9 +87,9 @@ function GetInternetCacheFolder: string;
 function GetCookiesFolder: string;
 function GetHistoryFolder: string;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Advanced Power Management (APM)
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TAPMLineStatus = (alsOffline, alsOnline, alsUnknown);
@@ -102,9 +101,9 @@ function GetAPMBatteryLifePercent: Integer;
 function GetAPMBatteryLifeTime: DWORD;
 function GetAPMBatteryFullLifeTime: DWORD;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Identification
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetVolumeName(const Drive: string): string;
 function GetVolumeSerialNumber(const Drive: string): string;
@@ -122,14 +121,14 @@ function GetBIOSCopyright: string;
 function GetBIOSExtendedInfo: string;
 function GetBIOSDate: TDateTime;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Processes, Tasks and Modules
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclTerminateAppResult = (taError, taClean, taKill);
 
-function RunningProcessesList(const List: TStrings; FullPath: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+function RunningProcessesList(const List: TStrings; FullPath: Boolean = True): Boolean;
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
 function GetTasksList(const List: TStrings): Boolean;
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
@@ -142,9 +141,9 @@ function GetProcessNameFromPid(PID: DWORD): string;
 function GetShellProcessName: string;
 function GetShellProcessHandle: THandle;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Version Information
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // TODOC Added wvWinNT351, wvWinNT35, IsWinNT351 and changed wvWinNT3 to wvWinNT31
 
@@ -218,9 +217,9 @@ Result: The major version number of the latest installed Service Pack. In case o
 Author: Jean-Fabien Connault
 }
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Hardware
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 
@@ -492,9 +491,9 @@ function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Memory Information
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetMaxAppAddress: Integer;
 function GetMinAppAddress: Integer;
@@ -508,25 +507,25 @@ function GetFreePageFileMemory: Integer;
 function GetTotalVirtualMemory: Integer;
 function GetFreeVirtualMemory: Integer;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Alloc granularity
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Keyboard Information
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetKeyState(const VirtualKey: Cardinal): boolean;
 function GetNumLockKeyState: boolean;
 function GetScrollLockKeyState: boolean;
 function GetCapsLockKeyState: boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Public global variables
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 var
   ProcessorCount: Cardinal = 0;
@@ -542,16 +541,16 @@ uses
   {$ENDIF DELPHI5_UP}
   JclBase, JclFileUtils, JclRegistry, JclShell, JclStrings, JclWin32;
 
-//==============================================================================
+//==================================================================================================
 // Environment
-//==============================================================================
+//==================================================================================================
 
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
   Result := SetEnvironmentVariable(PChar(Name), nil);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExpandEnvironmentVar(var Value: string): Boolean;
 var
@@ -568,7 +567,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetEnvironmentVar(const Name: string; var Value: string; Expand: Boolean): Boolean;
 var
@@ -588,7 +587,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetEnvironmentVars(const Vars: TStrings; Expand: Boolean): Boolean;
 var
@@ -615,14 +614,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
   Result := SetEnvironmentVariable(PChar(Name), PChar(Value));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
 const
@@ -688,16 +687,16 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Common Folders
-//==============================================================================
+//==================================================================================================
+
+// Utility function which returns the Windows independent CurrentVersion key
+// inside HKEY_LOCAL_MACHINE
 
 const
   HKLM_CURRENT_VERSION_WINDOWS = 'Software\Microsoft\Windows\CurrentVersion';
   HKLM_CURRENT_VERSION_NT      = 'Software\Microsoft\Windows NT\CurrentVersion';
-
-// Utility function which returns the Windows independent CurrentVersion key
-// inside HKEY_LOCAL_MACHINE
 
 function REG_CURRENT_VERSION: string;
 begin
@@ -707,7 +706,7 @@ begin
     Result := HKLM_CURRENT_VERSION_WINDOWS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonFilesFolder: string;
 begin
@@ -715,7 +714,7 @@ begin
     'CommonFilesDir', '');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCurrentFolder: string;
 var
@@ -731,15 +730,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetProgramFilesFolder: string;
 begin
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS,
-    'ProgramFilesDir', '');
+  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS, 'ProgramFilesDir', '');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowsFolder: string;
 var
@@ -755,7 +753,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowsSystemFolder: string;
 var
@@ -771,7 +769,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowsTempFolder: string;
 var
@@ -788,172 +786,166 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetDesktopFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_DESKTOP);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetProgramsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetPersonalFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PERSONAL);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFavoritesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FAVORITES);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetStartupFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_STARTUP);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetRecentFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_RECENT);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSendToFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_SENDTO);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetStartmenuFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_STARTMENU);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetDesktopDirectoryFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_DESKTOPDIRECTORY);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetNethoodFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_NETHOOD);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFontsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_FONTS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonStartmenuFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTMENU);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonProgramsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_PROGRAMS);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonStartupFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_STARTUP);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonDesktopdirectoryFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_DESKTOPDIRECTORY);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // TODOC
 // From: Jean-Fabien Connault
 // Descr: Application data for all users. A typical path is C:\Documents and Settings\All Users\Application Data.
 // Note: requires shell v 5.00 up
 
-const
-  CSIDL_COMMON_APPDATA = $0023; { All Users\Application Data }
-{$IFDEF SUPPORTS_EXTSYM}
-  {$EXTERNALSYM CSIDL_COMMON_APPDATA}
-{$ENDIF SUPPORTS_EXTSYM}
-
 function GetCommonAppdataFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_APPDATA);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetAppdataFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_APPDATA);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetPrinthoodFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PRINTHOOD);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCommonFavoritesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COMMON_FAVORITES);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetTemplatesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_TEMPLATES);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetInternetCacheFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_INTERNET_CACHE);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCookiesFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_COOKIES);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetHistoryFolder: string;
 begin
@@ -971,9 +963,9 @@ end;
 // CSIDL_ALTSTARTUP
 // CSIDL_COMMON_ALTSTARTUP
 
-//==============================================================================
+//==================================================================================================
 // Identification
-//==============================================================================
+//==================================================================================================
 
 type
   TVolumeInfoKind = (vikName, vikSerial, vikFileSystem);
@@ -1016,28 +1008,28 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetVolumeName(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetVolumeSerialNumber(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikSerial);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetVolumeFileSystem(const Drive: string): string;
 begin
   Result := GetVolumeInfoHelper(Drive, vikFileSystem);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetIPAddress(const HostName: string): string;
 var
@@ -1068,7 +1060,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetLocalComputerName: string;
 var
@@ -1081,7 +1073,7 @@ begin
   StrResetLength(Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetLocalUserName: string;
 var
@@ -1094,23 +1086,21 @@ begin
   StrResetLength(Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetRegisteredCompany: string;
 begin
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION,
-    'RegisteredOrganization', '');
+  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetRegisteredOwner: string;
 begin
-  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION,
-    'RegisteredOwner', '');
+  Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', '');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetUserDomainName(const CurUser: string): string;
 var
@@ -1136,14 +1126,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetDomainName: string;
 begin
   Result := GetUserDomainName(GetLocalUserName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetBIOSName: string;
 const
@@ -1156,7 +1146,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetBIOSCopyright: string;
 const
@@ -1169,7 +1159,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetBIOSExtendedInfo: string;
 const
@@ -1182,7 +1172,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetBIOSDate : TDateTime;
 const
@@ -1214,9 +1204,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Processes, Tasks and Modules
-//==============================================================================
+//==================================================================================================
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
@@ -1339,7 +1329,7 @@ begin
     Result := BuildListTH;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD): Boolean;
 
@@ -1435,9 +1425,9 @@ begin
     Result := EnumModulesTH;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-// http://msdn.microsoft.com/library/periodic/period97/win321197.htm
+// Refernce: http://msdn.microsoft.com/library/periodic/period97/win321197.htm
 
 function GetTasksList(const List: TStrings): Boolean;
 
@@ -1445,7 +1435,7 @@ function GetTasksList(const List: TStrings): Boolean;
   var
     ParentWnd: HWND;
     ExStyle: DWORD;
-    Caption: array [0..255] of Char;
+    Caption: array [0..1024] of Char;
   begin
     if IsWindowVisible(Wnd) then
     begin
@@ -1463,7 +1453,7 @@ begin
   Result := EnumWindows(@EnumWindowsProc, Integer(List));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function IsWindowResponding(Wnd: HWND; Timeout: Integer): Boolean;
 var
@@ -1472,7 +1462,7 @@ begin
   Result := SendMessageTimeout(Wnd, WM_NULL, 0, 0, SMTO_ABORTIFHUNG, Timeout, Res) <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowIcon(Wnd: HWND; LargeIcon: Boolean): HICON;
 var
@@ -1501,7 +1491,7 @@ begin
   Result := CopyImage(TempIcon, IMAGE_ICON, Width, Height, 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Q178893
 
@@ -1540,7 +1530,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TerminateTask(Wnd: HWND; Timeout: Integer): TJclTerminateAppResult;
 var
@@ -1552,7 +1542,7 @@ begin
     Result := taError;  
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetProcessNameFromWnd(Wnd: HWND): string;
 var
@@ -1579,17 +1569,19 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetPidFromProcessName(const ProcessName: string): DWORD;
 var
   List: TStringList;
   I: Integer;
+  HasFullPath: Boolean;
 begin
   Result := INVALID_HANDLE_VALUE;
   List := TStringList.Create;
   try
-    if RunningProcessesList(List, True) then
+    HasFullPath := ExtractFilePath(ProcessName) <> '';
+    if RunningProcessesList(List, HasFullPath) then
     begin
       I := List.IndexOf(ProcessName);
       if I > -1 then
@@ -1600,7 +1592,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetProcessNameFromPid(PID: DWORD): string;
 var
@@ -1624,43 +1616,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
-resourcestring
-  RsProcessNotFound = 'Process %s not found.';
-
-function GetProcessPid(const Name: string): Longword;
-var
-  Snapshot: THandle;
-  Process: TProcessEntry32;
-  Success, NextEntryFound: Boolean;
-begin
-  Result := 0;
-  Success := False;
-  Snapshot := CreateToolHelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  if Snapshot <> INVALID_HANDLE_VALUE then
-  try
-    FillChar(Process, SizeOf(Process), 0);
-    Process.dwSize := SizeOf(Process);
-    NextEntryFound := Process32First(Snapshot, Process);
-    while NextEntryFound do
-    begin
-      if CompareText(Process.szExeFile, Name) = 0 then
-      begin
-        Result := Process.th32ProcessID;
-        Success := True;
-        Break;
-      end;
-      NextEntryFound := Process32Next(Snapshot, Process);
-    end;
-  finally
-    CloseHandle(Snapshot);
-  end;
-  if not Success then
-    raise Exception.CreateResFmt(@RsProcessNotFound, [Name]);
-end;
-
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetShellProcessName: string;
 const
@@ -1673,21 +1629,21 @@ begin
     Result := cShellDefault;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetShellProcessHandle: THandle;
 var
   Pid: Longword;
 begin
-  Pid := GetProcessPid(GetShellProcessName);
+  Pid := GetPidFromProcessName(GetShellProcessName);
   Result := OpenProcess(PROCESS_ALL_ACCESS, False, Pid);
   if Result = 0 then
     RaiseLastOSError;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Version Information
-//==============================================================================
+//==================================================================================================
 
 { Q159/238
 
@@ -1755,7 +1711,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function NtProductType: TNtProductType;
 const
@@ -1832,7 +1788,7 @@ begin
 
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowsVersionString: string;
 begin
@@ -1851,7 +1807,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function NtProductTypeString: string;
 begin
@@ -1867,7 +1823,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowsServicePackVersion: Integer;
 const
@@ -1890,7 +1846,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetWindowsServicePackVersionString: string;
 var
@@ -1903,9 +1859,9 @@ begin
     Result := '';
 end;
 
-//==============================================================================
+//==================================================================================================
 // Hardware
-//==============================================================================
+//==================================================================================================
 
 // Helper function for GetMacAddress()
 // Converts the adapter_address array to a string
@@ -1919,7 +1875,7 @@ begin
       Integer(adapter_address[4]), Integer(adapter_address[5])]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 var
@@ -1968,21 +1924,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ReadTimeStampCounter: Int64; assembler;
 asm
-        {$IFNDEF SUPPORTS_INT64}
-        MOV     ECX, EAX
         DW      $310F
-        MOV     [ECX], EAX
-        MOV     [ECX+$04], EDX
-        {$ELSE}
-        DW      $310F
-        {$ENDIF SUPPORTS_INT64}
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetIntelCacheDescription(const D: Byte): string;
 var
@@ -2002,7 +1951,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 begin
@@ -2016,7 +1965,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function RoundFrequency(const Frequency: Integer): Integer;
 const
@@ -2044,7 +1993,7 @@ begin
   Result := Frequency + RF;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 var
@@ -2133,7 +2082,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Helper function for CPUID. Initializes Intel specific fields.
 
@@ -2258,7 +2207,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Helper function for CPUID. Initializes Cyrix specific fields.
 
@@ -2289,7 +2238,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 // Helper function for CPUID. Initializes AMD specific fields.
 
@@ -2332,7 +2281,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CPUID: TCpuInfo;
 var
@@ -2643,7 +2592,7 @@ begin
   Result := CPUInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TestFDIVInstruction: Boolean;
 var
@@ -2674,9 +2623,9 @@ begin
   Result := ISOK;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Alloc granularity
-//==============================================================================
+//==================================================================================================
 
 procedure RoundToAllocGranularity64(var Value: Int64; Up: Boolean);
 begin
@@ -2687,7 +2636,7 @@ begin
       Value := (Value div AllocGranularity) * AllocGranularity;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure RoundToAllocGranularityPtr(var Value: Pointer; Up: Boolean);
 begin
@@ -2698,9 +2647,9 @@ begin
       Value := Pointer((Cardinal(Value) div AllocGranularity) * AllocGranularity);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Advanced Power Management (APM)
-//==============================================================================
+//==================================================================================================
 
 function GetAPMLineStatus: TAPMLineStatus;
 var
@@ -2722,7 +2671,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetAPMBatteryFlag: TAPMBatteryFlag;
 var
@@ -2750,7 +2699,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetAPMBatteryLifePercent: Integer;
 var
@@ -2763,7 +2712,7 @@ begin
     Result := SystemPowerStatus.BatteryLifePercent;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetAPMBatteryLifeTime: DWORD;
 var
@@ -2776,7 +2725,7 @@ begin
     Result := SystemPowerStatus.BatteryLifeTime;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetAPMBatteryFullLifeTime: DWORD;
 var
@@ -2789,9 +2738,9 @@ begin
     Result := SystemPowerStatus.BatteryFullLifeTime;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Memory Information
-//==============================================================================
+//==================================================================================================
 
 function GetMaxAppAddress: Integer;
 var
@@ -2802,7 +2751,7 @@ begin
   Result := Integer(SystemInfo.lpMaximumApplicationAddress);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetMinAppAddress: Integer;
 var
@@ -2813,7 +2762,7 @@ begin
   Result := Integer(SystemInfo.lpMinimumApplicationAddress);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetMemoryLoad: Byte;
 var
@@ -2825,7 +2774,7 @@ begin
   Result := MemoryStatus.dwMemoryLoad;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSwapFileSize: Integer;
 var
@@ -2838,7 +2787,7 @@ begin
     Result := Trunc(dwTotalPageFile - dwAvailPageFile);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetSwapFileUsage: Integer;
 var
@@ -2851,7 +2800,7 @@ begin
     Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetTotalPhysicalMemory: Integer;
 var
@@ -2863,7 +2812,7 @@ begin
   Result := MemoryStatus.dwTotalPhys;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFreePhysicalMemory: Integer;
 var
@@ -2875,7 +2824,7 @@ begin
   Result := MemoryStatus.dwAvailPhys;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetTotalPageFileMemory: Integer;
 var
@@ -2887,7 +2836,7 @@ begin
   Result := MemoryStatus.dwTotalPageFile;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFreePageFileMemory: Integer;
 var
@@ -2899,7 +2848,7 @@ begin
   Result := MemoryStatus.dwAvailPageFile;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetTotalVirtualMemory: Integer;
 var
@@ -2911,7 +2860,7 @@ begin
   Result := MemoryStatus.dwTotalVirtual;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetFreeVirtualMemory: Integer;
 var
@@ -2923,9 +2872,9 @@ begin
   Result := MemoryStatus.dwAvailVirtual;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Keyboard Information
-//==============================================================================
+//==================================================================================================
 
 function GetKeyState(const VirtualKey: Cardinal): boolean;
 var
@@ -2935,30 +2884,30 @@ begin
   Result := Keys[VirtualKey] and $80 <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetNumLockKeyState: boolean;
 begin
   Result := GetKeyState(VK_NUMLOCK);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetScrollLockKeyState: boolean;
 begin
   Result := GetKeyState(VK_SCROLL);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetCapsLockKeyState: boolean;
 begin
   Result := GetKeyState(VK_CAPITAL);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Initialization
-//==============================================================================
+//==================================================================================================
 
 procedure InitSysInfo;
 var
