@@ -21,7 +21,7 @@
 { privileges.                                                                                      }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: January 29, 2000                                                                  }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -72,9 +72,7 @@ function GetInteractiveUserName: string;
 implementation
 
 uses
-  {$IFDEF COMPILER5_UP}
   AccCtrl, AclApi,
-  {$ENDIF COMPILER5_UP}
   JclStrings, JclSysInfo, JclWin32;
 
 //==================================================================================================
