@@ -11,8 +11,6 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is Hardlink.pas.                                                               }
-{                                                                                                  }
 { The Initial Developer of the Original Code is Oliver Schneider (Assarbad att gmx dott info).     }
 { Portions created by Oliver Schneider are Copyright (C) 1995 - 2004 Oliver Schneider.             }
 { All rights reserved.                                                                             }
@@ -21,7 +19,9 @@
 {   Joint Endeavour of Delphi Innovators (Project JEDI)                                            }
 {                                                                                                  }
 { You may retrieve the latest version of the original file at the Original Developer's homepage,   }
-{ located at http://assarbad.net.                                                                  }
+{ located at [http://assarbad.net]. Note that the original file can be used with an arbitrary OSI- }
+{ approved license as long as you follow the additional terms given in the original file.          }
+{ Additionally a C/C++ (MS VC++) version is available under the same terms.                        }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Oliver Schneider (assarbad)                                                                    }
@@ -43,7 +43,7 @@
  ***  This implementation should be fully compatible with the Windows 2000  ***
  ***  implementation (including last error and so on).                      ***
  ***                                                                        ***
- ***  Version [1.12c]                               {Last mod 2004-10-26}   ***
+ ***  Version [1.13]                                {Last mod 2005-03-03}   ***
  ***                                                                        ***
  ******************************************************************************
  ******************************************************************************
@@ -54,7 +54,7 @@
  ******************************************************************************
  ******************************************************************************
  ***                                                                        ***
- ***                Copyright (c) 1995 - 2004 by -=Assarbad=-               ***
+ ***                Copyright (c) 1995 - 2005 by -=Assarbad=-               ***
  ***             Portions Copyright (c) 2004 by Robert Marquardt            ***
  ***             Portions Copyright (c) 2004 by Robert Rossmair             ***
  ***                       (see JCL revision history)                       ***
@@ -104,15 +104,28 @@
 
  LEGAL STUFF:
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NOTE: This source is triple-licensed. You may choose between:
+ NOTE: This source is OSI-licensed. You may choose between any of the licenses
+       approved by the OSI (Open Source Initiative) as long as the licensing
+       of this module will not force a whole project under the chosen license.
+       This basically means that the virulent character of a license (e.g. GPL)
+       must no be misused to force a project to use the license you chose for
+       this module!
+       OSI-approved licenses can be found at this website:
+       http://www.opensource.org/licenses/
+
+       You have the choice to make this module compatible with your own open
+       source or commercial or whatever project by choosing the right license.
+
+       However, I recommend using either of the following licenses:
        - the BSD-License (as seen below)
        - the LGPL [ http://www.opensource.org/licenses/lgpl-license.php ]
        - the MPL [ http://www.opensource.org/licenses/mozilla1.1.php ]
-       Attention: if this unit comes bundled with the files of the project
+
+       !ATTENTION!: if this unit comes bundled with the files of the project
        JEDI the project license (currently MPL) is mandatory!!!
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- Copyright (c) 1995-2004, -=Assarbad=- ["copyright holder(s)"]
+ Copyright (c) 1995-2005, -=Assarbad=- ["copyright holder(s)"]
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -239,6 +252,60 @@ type
   NTSTATUS = Longint;
   PPWideChar = ^PWideChar;
 
+type
+  LARGE_INTEGER = TLargeInteger;
+  PLARGE_INTEGER = ^LARGE_INTEGER;
+
+type
+  UNICODE_STRING = record
+    Length: WORD;
+    MaximumLength: WORD;
+    Buffer: PWideChar;
+  end;
+  PUNICODE_STRING = ^UNICODE_STRING;
+
+type
+  ANSI_STRING = record
+    Length: WORD;
+    MaximumLength: WORD;
+    Buffer: PAnsiChar;
+  end;
+  PANSI_STRING = ^ANSI_STRING;
+
+type
+  OBJECT_ATTRIBUTES = record
+    Length: ULONG;
+    RootDirectory: THandle;
+    ObjectName: PUNICODE_STRING;
+    Attributes: ULONG;
+    SecurityDescriptor: Pointer;       // Points to type SECURITY_DESCRIPTOR
+    SecurityQualityOfService: Pointer; // Points to type SECURITY_QUALITY_OF_SERVICE
+  end;
+  POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
+
+type
+  IO_STATUS_BLOCK = record
+    case integer of
+      0:
+       (Status: NTSTATUS);
+      1:
+       (Pointer: Pointer;
+        Information: ULONG); // 'Information' does not belong to the union!
+  end;
+  PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
+
+type
+  _FILE_LINK_RENAME_INFORMATION = record // File Information Classes 10 and 11
+    ReplaceIfExists: BOOL;
+    RootDirectory: THandle;
+    FileNameLength: ULONG;
+    FileName: array[0..0] of WideChar;
+  end;
+  FILE_LINK_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
+  PFILE_LINK_INFORMATION = ^FILE_LINK_INFORMATION;
+  FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
+  PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
+
 // =================================================================
 // Constants
 // =================================================================
@@ -280,271 +347,6 @@ const
   RELATIVE_PATH                = 5;
   DEVICE_PATH                  = 6;
   UNC_DOT_PATH                 = 7;
-
-// =================================================================
-// Type definitions
-// =================================================================
-type
-  LARGE_INTEGER = TLargeInteger;
-  PLARGE_INTEGER = ^LARGE_INTEGER;
-
-  UNICODE_STRING = record
-    Length: WORD;
-    MaximumLength: WORD;
-    Buffer: PWideChar;
-  end;
-  PUNICODE_STRING = ^UNICODE_STRING;
-
-  ANSI_STRING = record
-    Length: WORD;
-    MaximumLength: WORD;
-    Buffer: PAnsiChar;
-  end;
-  PANSI_STRING = ^ANSI_STRING;
-
-  OBJECT_ATTRIBUTES = record
-    Length: ULONG;
-    RootDirectory: THandle;
-    ObjectName: PUNICODE_STRING;
-    Attributes: ULONG;
-    SecurityDescriptor: Pointer;       // Points to type SECURITY_DESCRIPTOR
-    SecurityQualityOfService: Pointer; // Points to type SECURITY_QUALITY_OF_SERVICE
-  end;
-  POBJECT_ATTRIBUTES = ^OBJECT_ATTRIBUTES;
-
-  IO_STATUS_BLOCK = record
-    case integer of
-      0:
-       (Status: NTSTATUS);
-      1:
-       (Pointer: Pointer;
-        Information: ULONG);
-  end;
-  PIO_STATUS_BLOCK = ^IO_STATUS_BLOCK;
-
-  _FILE_LINK_RENAME_INFORMATION = record // File Information Classes 10 and 11
-    ReplaceIfExists: BOOL;
-    RootDirectory: THandle;
-    FileNameLength: ULONG;
-    FileName: array[0..0] of WideChar;
-  end;
-  FILE_LINK_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
-  PFILE_LINK_INFORMATION = ^FILE_LINK_INFORMATION;
-  FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
-  PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
-
-// =================================================================
-// PROCESS ENVIRONMENT BLOCK (PEB)
-// =================================================================
-
-  MODULE_HEADER = record
-    d000: DWORD;        // 000
-    d004: DWORD;        // 004
-    List1: LIST_ENTRY;  // 008
-    List2: LIST_ENTRY;  // 010
-    List3: LIST_ENTRY;  // 018
-  end;
-  PMODULE_HEADER = ^MODULE_HEADER;
-  PPMODULE_HEADER = ^PMODULE_HEADER;
-
-// -----------------------------------------------------------------
-
-  PROCESS_MODULE_INFO = record
-     Size: DWORD;                 // 000
-     ModuleHeader: MODULE_HEADER; // 004
-  end;
-  PPROCESS_MODULE_INFO = ^PROCESS_MODULE_INFO;
-  PPPROCESS_MODULE_INFO = ^PPROCESS_MODULE_INFO;
-
-// -----------------------------------------------------------------
-
-  PROCESS_PARAMETERS = record
-    Allocated: DWORD;                      // 000
-    Size: DWORD;                           // 004
-    Flags: DWORD;                          // 008   bit 0: all pointers normalized
-    DebugFlags: DWORD;                     // 00C
-    Console: THandle;                      // 010
-    ProcessGroup: DWORD;                   // 014
-    StdInput: THandle;                     // 018
-    StdOutput: THandle;                    // 01C
-    StdError: THandle;                     // 020
-    WorkingDirectoryName: UNICODE_STRING;  // 024
-    WorkingDirectoryHandle: THandle;       // 02C
-    SearchPath: UNICODE_STRING;            // 030
-    ImagePath: UNICODE_STRING;             // 038
-    CommandLine: UNICODE_STRING;           // 040
-    Environment: PWideChar;                // 048
-    X: DWORD;                              // 04C
-    Y: DWORD;                              // 050
-    XSize: DWORD;                          // 054
-    YSize: DWORD;                          // 058
-    XCountChars: DWORD;                    // 05C
-    YCountChars: DWORD;                    // 060
-    FillAttribute: DWORD;                  // 064
-    Flags2: DWORD;                         // 068
-    ShowWindow: Word;                      // 06C
-    Reserved2: Word;                       // 06E
-    Title: UNICODE_STRING;                 // 070
-    Desktop: UNICODE_STRING;               // 078
-    Reserved3: UNICODE_STRING;             // 080
-    Reserved4: UNICODE_STRING;             // 088
-  end;
-  PPROCESS_PARAMETERS = ^PROCESS_PARAMETERS;
-  PPPROCESS_PARAMETERS = ^PPROCESS_PARAMETERS;
-
-// -----------------------------------------------------------------
-
-  SYSTEM_STRINGS = record
-    SystemRoot: UNICODE_STRING;        // 000  %SystemRoot%
-    System32Root: UNICODE_STRING;      // 008  %SystemRoot%\System32
-    BaseNamedObjects: UNICODE_STRING;  // 010  \BaseNamedObjects
-  end;
-  PSYSTEM_STRINGS = ^SYSTEM_STRINGS;
-  PPSYSTEM_STRINGS = ^PSYSTEM_STRINGS;
-
-// -----------------------------------------------------------------
-
-  TEXT_INFO = record
-    Reserved: Pointer;               // 000
-    SystemStrings: PSYSTEM_STRINGS;  // 004
-  end;
-  PTEXT_INFO = ^TEXT_INFO;
-  PPTEXT_INFO = ^PTEXT_INFO;
-
-// -----------------------------------------------------------------
-
-  PPEB_FREE_BLOCK = ^PEB_FREE_BLOCK;
-  PEB_FREE_BLOCK = record
-    Next: PPEB_FREE_BLOCK;  // 000
-    Size: ULONG;            // 004
-  end;
-
-  RTL_BITMAP = record
-    SizeOfBitMap: DWORD;  // 000
-    Buffer: PDWORD;       // 004
-  end;
-  PRTL_BITMAP = ^RTL_BITMAP;
-  PPRTL_BITMAP = ^PRTL_BITMAP;
-
-  KAFFINITY = DWORD;
-  PKAFFINITY = ^KAFFINITY;
-
-  CLIENT_ID = record
-    UniqueProcess: THandle;  // 000
-    UniqueThread: THandle;   // 004
-  end;
-  PCLIENT_ID = ^CLIENT_ID;
-
-  PCRITICAL_SECTION = PRtlCriticalSection;
-  PPEBLOCKROUTINE = procedure(PebLock: PCRITICAL_SECTION); stdcall;
-  PFarProc = ^TFarProc;
-
-// -----------------------------------------------------------------
-// located at 0x7FFDF000
-
-  _PEB = record
-    InheritedAddressSpace: Boolean;                      // 000
-    ReadImageFileExecOptions: Boolean;                   // 001
-    BeingDebugged: Boolean;                              // 002
-    bReserved: Boolean;                                  // 003
-    Mutant: Pointer;                                     // 004  THandle
-    SectionBaseAddress: Pointer;                         // 008
-    ProcessModuleInfo: PPROCESS_MODULE_INFO;             // 00C
-    ProcessParameters: PPROCESS_PARAMETERS;              // 010
-    SubSystemData: DWORD;                                // 014
-    ProcessHeap: Pointer;                                // 018  THandle
-    FastPebLock: PCRITICAL_SECTION;                      // 01C
-    AcquireFastPebLock: PPEBLOCKROUTINE;                 // 020  function
-    ReleaseFastPebLock: PPEBLOCKROUTINE;                 // 024  function
-    EnvironmentUpdateCount: DWORD;                       // 028
-    KernelCallbackTable: PFarProc;                       // 02C  function
-    EventLogSection: Pointer;                            // 030  THandle
-    EventLog: Pointer;                                   // 034  THandle
-    FreeList: PPEB_FREE_BLOCK;                           // 038
-    TlsBitMapSize: DWORD;                                // 03C  number of bits
-    TlsBitMap: PRTL_BITMAP;                              // 040  ntdll!TlsBitMap
-    TlsBitMapData: array [0..1] of DWORD;                // 044  64 bits
-    ReadOnlySharedMemoryBase: Pointer;                   // 04C
-    ReadOnlySharedMemoryHeap: Pointer;                   // 050
-    TextInfo: PTEXT_INFO;                                // 054
-    InitAnsiCodePageData: Pointer;                       // 058
-    InitOemCodePageData: Pointer;                        // 05C
-    InitUnicodeCaseTableData: Pointer;                   // 060
-    KeNumberProcessors: array [0..3] of Byte;            // 064
-    NtGlobalFlag: array [0..3] of Byte;                  // 068
-    Reserved: array [0..3] of Byte;                      // 06C
-    MmCriticalSectionTimeout: LARGE_INTEGER;             // 070
-    MmHeapSegmentReserve: DWORD;                         // 078
-    MmHeapSegmentCommit: DWORD;                          // 07C
-    MmHeapDeCommitTotalFreeThreshold: DWORD;             // 080
-    MmHeapDeCommitFreeBlockThreshold: DWORD;             // 084
-    NumberOfHeaps: DWORD;                                // 088
-    AvailableHeaps: DWORD;                               // 08C  16, *2 if exhausted
-    ProcessHeapsListBuffer: PHandle;                     // 090
-    GdiSharedHandleTable: Pointer;                       // 094
-    ProcessStarterHelper: Pointer;                       // 098
-    GdiDCAttributeList: Pointer;                         // 09C
-    LoaderLock: PCRITICAL_SECTION;                       // 0A0
-    NtMajorVersion: DWORD;                               // 0A4
-    NtMinorVersion: DWORD;                               // 0A8
-    NtBuildNumber: WORD;                                 // 0AC
-    CmNtCSDVersion: WORD;                                // 0AE
-    PlatformId: DWORD;                                   // 0B0
-    Subsystem: DWORD;                                    // 0B4
-    MajorSubsystemVersion: DWORD;                        // 0B8
-    MinorSubsystemVersion: DWORD;                        // 0BC
-    AffinityMask: KAFFINITY;                             // 0C0
-    ad0C4: array [0..33] of DWORD;                       // 0C4
-    PostProcessInitRoutine: ^Pointer;                    // 14C
-    TlsExpansionBitmap: ULONG;                           // 150
-    TlsExpansionBitmapBits: array [0..$80 - 1] of Byte;  // 154
-    Win32WindowStation: THandle;                         // 1D4  aka SessionId???
-    d1D8: DWORD;                                         // 1D8
-    d1DC: DWORD;                                         // 1DC
-    CSDVersion: PWord;                                   // 1E0
-    d1E4: DWORD;                                         // 1E4
-  end;
-  PEB = _PEB;
-  PPEB = ^PEB;
-  PPPEB = ^PPEB;
-
-// =================================================================
-// THREAD ENVIRONMENT BLOCK (TEB)
-// =================================================================
-
-  PNT_TIB = ^NT_TIB;
-  NT_TIB = record
-    ExceptionList: Pointer;         // 000   ^_EXCEPTION_REGISTRATION_RECORD
-    StackBase: Pointer;             // 004
-    StackLimit: Pointer;            // 008
-    SubSystemTib: Pointer;          // 00C
-    _union: record                  // 010
-    case Integer of
-      0:
-        (FiberData: Pointer);       // 010
-      1:
-        (Version: ULONG);           // 010
-    end;
-    ArbitraryUserPointer: Pointer;  // 014
-    Self: PNT_TIB;                  // 018
-  end;
-  PPNT_TIB = ^PNT_TIB;
-
-// -----------------------------------------------------------------
-// located at 0x7FFDE000, 0x7FFDD000, ...
-
-  _TEB = record
-    Tib: NT_TIB;                   // 000
-    EnvironmentPointer: Pointer;   // 01C
-    ClientId: CLIENT_ID;           // 020
-    RpcHandle: THandle;            // 028
-    ThreadLocalStorage: ^Pointer;  // 02C
-    Peb: PPEB;                     // 030
-    LastErrorValue: DWORD;         // 034
-  end;
-  TEB = _TEB;
-  PTEB = ^TEB;
-  PPTEB = ^PTEB;
 
 // =================================================================
 // Function prototypes
@@ -649,12 +451,15 @@ var
   RtlNtStatusToDosError: TRtlNtStatusToDosError = nil;
 {$ENDIF RTDL}
 
-function NtMyGetProcessHeap: Pointer; assembler;
+
+function NtpGetProcessHeap: Pointer; assembler;
 asm
-  // To understand this a deep understanding of the NT Native API and its
-  // structures is required.
-  MOV    EAX, FS:[0]._TEB.Peb // FS points to TEB/TIB which has a pointer to the PEB
-  MOV    EAX, [EAX]._PEB.ProcessHeap // Get the process heap's handle
+  // The structure offsets are now hardcoded to be able to remove otherwise
+  // obsolete structure definitions.
+//MOV    EAX, FS:[0]._TEB.Peb
+  MOV    EAX, FS:$30    // FS points to TEB/TIB which has a pointer to the PEB
+//MOV    EAX, [EAX]._PEB.ProcessHeap
+  MOV    EAX, [EAX+$18] // Get the process heap's handle
 end;
 
 (******************************************************************************
@@ -772,7 +577,7 @@ begin
     Exit;
 {$ENDIF RTDL}
   // Get process' heap
-  hHeap := NtMyGetProcessHeap;
+  hHeap := NtpGetProcessHeap;
   {-------------------------------------------------------------
   Preliminary parameter checks which do Exit with error code set
   --------------------------------------------------------------}
@@ -971,7 +776,7 @@ begin
     Exit;
 {$ENDIF RTDL}
   // Get the process' heap
-  hHeap := NtMyGetProcessHeap;
+  hHeap := NtpGetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
   if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
   try
@@ -1071,15 +876,24 @@ initialization
   end; // if not (Assigned(@CreateHardLinkA) and Assigned(@CreateHardLinkW)) then ...
 {$ENDIF PREFERAPI}
 
+{$IFNDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF ~JCL}
+
 // History:
 
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.10  2005/03/03 13:47:04  assarbad
+// - Dividing lines now enclosed by a preprocessor statement to still show in the author's version.
+// - Removed PEB/TEB/TIB declarations and renamed one function (see author's version comments for details v1.13)
+// - Any OSI-approved license qualifies now for licensing of this module.
+//
 // Revision 1.9  2005/02/24 16:34:41  marquardt
-// remove divider lines, add section lines (unfinished)
+// - remove divider lines, add section lines (unfinished)
 //
 // Revision 1.8  2004/10/29 05:46:36  marquardt
-// style cleaning
+// - style cleaning
 //
 // Revision 1.7  2004/10/26 14:23:48  assarbad
 // - Implementation of Robert Marquardts proposals for the sake of brevity
@@ -1097,7 +911,7 @@ initialization
 // - Will not yet check in the preprocessed version - still discussing in the egroup about it
 //
 // Revision 1.5  2004/10/25 15:05:12  marquardt
-// remove strange round braces in Hardlinks.pas, bugfix JclRegistry.pas
+// - remove strange round braces in Hardlinks.pas, bugfix JclRegistry.pas
 //
 // Revision 1.4  2004/10/22 01:26:50  rrossmair
 // - fixed style cleaning collateral damage (as far as required to make it compile)
@@ -1110,7 +924,7 @@ initialization
 // - creation of new unit from style-cleaned prototype
 //
 // Revision 1.2  2004/10/21 17:53:03  marquardt
-// style cleaning
+// - style cleaning
 //
 // Revision 1.1  2004/10/20 19:49:00  rrossmair
 // - added prototype unit Hardlinks (formerly known as Hardlink)
@@ -1119,6 +933,13 @@ initialization
 {$ENDIF PROTOTYPE}
 
 {
+   Version 1.13 - 2005-03-03
+   + NtMyGetProcessHeap() renamed to NtpGetProcessHeap()
+   + Removed declarations for TEB/PEB/TIB and supplement. As they depend
+     on structures which are unlikely to change, the respective offsets
+     can be hardcoded. As soon as this function becomes OS-version-
+     dependent, adapted offsets will be used.
+
    Version 1.12c - 2004-10-26
    + Implementation of Robert Marquardts proposals for the sake of brevity
      in the CreateHardLinkW() implementation - C-like returns
