@@ -36,7 +36,7 @@ uses
   Windows,
   Classes, SysUtils,
   {$IFDEF COMPILER5_UP}
-  Contnrs,
+  Contnrs, JclUnicode,
   {$ENDIF COMPILER5_UP}
   JwaWinType, JwaWinBase, JwaMsTask,
   JclBase, JclSysUtils, JclSysInfo;
@@ -540,7 +540,7 @@ class procedure TJclTaskSchedule.Stop;
     begin
       hProcess := OpenProcess(PROCESS_TERMINATE, False,
         GetWindowThreadProcessId(
-          FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), PDWORD(nil)^));
+          FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
       Win32Check(hProcess <> 0);
       Win32Check(TerminateProcess(hProcess, ERROR_PROCESS_ABORTED));
       Win32Check(CloseHandle(hProcess));
@@ -635,9 +635,12 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclTaskSchedule.Remove(const TaskName: WideString): Integer;
+var
+  Language: LCID;
 begin
+  Language := GetUserDefaultLCID;
   for Result := 0 to TaskCount-1 do
-    if WideCompareText(Tasks[Result].TaskName, TaskName) = 0 then
+    if JclUnicode.WideCompareText(Tasks[Result].TaskName, TaskName, Language) = 0 then
     begin
       Delete(Result);
       Exit;

@@ -3,13 +3,15 @@ unit TaskDemoDataModule;
 interface
 
 uses
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF}
   SysUtils, Classes, ActnList, ImgList, Controls, StdActns, JclTask;
 
 type
   TDM = class(TDataModule)
     lstImage: TImageList;
     lstAction: TActionList;
-    actFileExit: TFileExit;
     actTaskProp: TAction;
     actTaskAdd: TAction;
     actTaskDelete: TAction;
@@ -102,7 +104,11 @@ begin
     end;
   except
     on E: Exception do
+      {$IFDEF COMPILER6_UP}
       ApplicationShowException(E);
+      {$ELSE}
+      Application.ShowException(E);
+      {$ENDIF}
   end;
 end;
 
