@@ -17,7 +17,7 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Marcel van Brakel                                                                              }
-{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{   Peter J. Haas (peterjhaas)                                                                     }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
@@ -35,7 +35,7 @@
 // For history see end of file
 
 
-// Comments to Win9x compatibility of the functions used in this unit
+// Comments on Win9x compatibility of the functions used in this unit
 
 // The following functions exist at least since Win95C, but invariably returns
 // ERROR_CALL_NOT_IMPLEMENTED:
@@ -166,90 +166,6 @@ function NtfsFindStreamClose(var Data: TFindStreamData): Boolean;
 //--------------------------------------------------------------------------------------------------
 // Hard links
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cDOC : Hard links }
-//
-// CreateHardLinkNT
-//
-// Creates a hard link on NT 4. Both LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
-//
-// LinkName: Name of the hard link to create
-// ExistingFileName: Fully qualified path of the file for which to create a hard link
-// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
-//
-// Remarks: On Windows 2000 and up you should favor the usage of CreateHardLinkNT5.
-//          You must be a member of the Administrators or Backup Operators group.
-// Requirements: Windows NT 3.51, 4.0, 2000 or XP
-
-//
-// CreateHardLink2000
-//
-// Creates a hard link on NT 5. Simple wrapper around CreateHardLink API function. See PSDK docs for more details.
-//
-// LinkName: Name of the hard link to create
-// ExistingFileName: Fully qualified path of the file for which to create a hard link
-// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
-//
-// Remarks: On Windows NT 4 and earlier you can use CreateHardLinkNT.
-// Requirements: Windows 2000 or XP
-//
-
-//
-// NtfsCreateHardLink
-//
-// Creates a hard link. Both LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
-//
-// LinkName: Name of the hard link to create
-// ExistingFileName: Fully qualified path of the file for which to create a hard link
-// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
-//
-// Remarks: On NT 3.51 and 4.0 you must be a member of the Administrators or Backup Operators group.
-// Requirements: Windows NT 3.51, 4.0, 2000 or XP
-//
-
-//
-// NtfsGetHardLinkInfo
-//
-// Returns information about a hard link. Specifically it's link count and fileindex.
-//
-// LinkName: Name of the file for which to get hard link information
-// Info: A TNtfsHardLinkInfo containing the requested information
-// Result: If the function succeeds it returns True, otherwise it returns False.
-//
-// Requirements: The specified file must reside on an NTFS formatted volume
-//
-
-//
-// NtfsFindHardLinks
-//
-// Builds a list of fully qualified hard link path names for the specified file. The function recursively searches
-// the specified directory and all it's subdirectories. Usually you set Path to the root of a volume to search the
-// entire volume for hard links, but this is not strictly necessary.
-//
-// Path: The path where the function should search for hard links, without trailing backslash
-// FileIndexHigh, FileIndexLow: The file-index of the file for which to find the hard links. You can obtain the
-// file-index by calling the NtfsGetHardLinkInfo function.
-// List: A TStrings derivative that receives the fully qualified path names of all found hard links.
-// Result: If the function succeeds it returns True, otherwise it returns False. In the latter case, some hard links
-// may have been found and stored in List but it's not guarenteed to be all hard links.
-//
-// Remarks: It's possible that this function doesn't find all hard links due to access rights...
-// Requirements: Path must point to a directory on an NTFS formatted volume.
-//
-
-//
-// NtfsDeleteHardLinks
-//
-// Given the name of a file, this function deletes all hard links (including the specified one). This will result in
-// the file actually being deleted, including all of it's hard links. This in contrast to the DeleteFile function that
-// only deleted the specified hard link but doesn't affect other hard links (if any exist the file remains).
-//
-// FileName: The name of the file to delete
-// Result: If the function succeeds it returns True, otherwise it returns False.
-//
-// Remarks: Note that in case of failure the function attempts to restore the hard links it had already deleted, but
-// it can't be guarenteed that this will succeed. So in case of failure, some hard links might already have been deleted
-//
 
 function NtfsCreateHardLink(const LinkFileName, ExistingFileName: string): Boolean;
 
@@ -1152,7 +1068,19 @@ end;
 //==================================================================================================
 // Hard links
 //==================================================================================================
-
+//
+// CreateHardLinkNT
+//
+// Creates a hard link on NT 4. Both LinkFileName and ExistingFileName must reside on the same, NTFS formatted volume.
+//
+// LinkName: Name of the hard link to create
+// ExistingFileName: Fully qualified path of the file for which to create a hard link
+// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
+//
+// Remarks: On Windows 2000 and up you should favor the usage of CreateHardLinkNT5.
+//          You must be a member of the Administrators or Backup Operators group.
+// Requirements: Windows NT 3.51, 4.0, 2000 or XP
+//
 function CreateHardLinkNT(const LinkFileName, ExistingFileName: string): BOOL;
 var
   BackupPriv, RestorePriv: Boolean;      // we're these privileges enabled on entry?
@@ -1232,8 +1160,18 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
-{ TODO -cHelp : Contributer Peter J. Haas }
+//
+// CreateHardLink2000
+//
+// Creates a hard link on NT 5. Simple wrapper around CreateHardLink API function. See PSDK docs for more details.
+//
+// LinkName: Name of the hard link to create
+// ExistingFileName: Fully qualified path of the file for which to create a hard link
+// Result: True if successfull, False if failed. In the latter case use GetLastError to obtain the reason of failure.
+//
+// Remarks: On Windows NT 4 and earlier you can use CreateHardLinkNT.
+// Requirements: Windows 2000 or XP
+//
 function CreateHardLink2000(const LinkFileName, ExistingFileName: string): BOOL;
 begin
   Result := RtdlCreateHardLink(PChar(LinkFileName), PChar(ExistingFileName), nil);
@@ -1396,6 +1334,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/31 00:30:45  rrossmair
+// Processed documentation TODOs
+//
 // Revision 1.7  2004/05/13 07:46:06  rrossmair
 // changes for FPC 1.9.3+ compatibility
 //
