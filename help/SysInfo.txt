@@ -1076,6 +1076,96 @@ Count=1
 1=GetRegisteredCompany
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function GetBIOSDate : TDateTime;
+[ShortDescr]
+Returns the BIOS date.
+[Description]
+Returns the date the BIOS release date.
+[Result]
+The BIOS release date, if successful. The system base date (12/30/1899), if
+there has been a problem.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.51 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetBIOSName
+2=GetBIOSCopyright
+3=GetBIOSExtendedInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetBIOSName: string;
+[ShortDescr]
+Returns the BIOS name.
+[Description]
+Returns the name of the BIOS.
+[Result]
+The BIOS name, if successful. An empty string otherwise.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=James Azarja;support@jazarsoft.cjb.net
+Delphi=3,4,5
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetBIOSDate
+2=GetBIOSCopyright
+3=GetBIOSExtendedInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetBIOSCopyright: string;
+[ShortDescr]
+Returns the BIOS copyright string.
+[Description]
+Returns the BIOS copyright string.
+[Result]
+The BIOS copyright, if successful. An  empty string otherwise.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=James Azarja;support@jazarsoft.cjb.net
+Delphi=3,4,5
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetBIOSDate
+2=GetBIOSName
+3=GetBIOSExtendedInfo
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetBIOSExtendedInfo: string;
+[ShortDescr]
+Returns extended information on the BIOS.
+[Description]
+Returns extended information on the BIOS.
+[Result]
+The BIOS extended information, if successful. An  empty string otherwise.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Identification
+Author=James Azarja;support@jazarsoft.cjb.net
+Delphi=3,4,5
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetBIOSDate
+2=GetBIOSName
+3=GetBIOSCopyright
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function GetWindowsFolder: string;
 [ShortDescr]
 Returns the Windows folder.
@@ -2724,3 +2814,329 @@ Author=Peter Friese;freter@gmx.net
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 2000 or later
 Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetMaxAppAddress: Integer;
+[ShortDescr]
+Returns a pointer to the highest memory address available to applications and DLLs.
+[Description]
+Returns a pointer to the highest memory address available to applications and DLLs.
+You can typecast the return value to a pointer to directly point to the specified
+memory address.
+[Result]
+The highest memory address available to applications and DLLs, casted into an
+integer.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetMinAppAddress
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetMinAppAddress: Integer;
+[ShortDescr]
+Returns a pointer to the lowest memory address available to applications and DLLs.
+[Description]
+Returns a pointer to the lowest memory address available to applications and DLLs.
+You can typecast the return value to a pointer to directly point to the specified
+memory address.
+[Result]
+The lowest memory address available to applications and DLLs, casted into an
+integer.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetMaxAppAddress
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetMemoryLoad: Byte;
+[ShortDescr]
+Returns the current system memory load.
+[Description]
+This function returns the current system memory load. The result is a value
+between 0 and 100.
+[Result]
+The current system memory load.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetSwapFileUsage
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetSwapFileSize: Integer;
+[ShortDescr]
+Returns the current pagefile size.
+[Description]
+Returns the current system pagefile size in bytes.
+[Result]
+The current system pagefile size in bytes.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetSwapFileUsage
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetSwapFileUsage: Integer;
+[ShortDescr]
+Returns the percentage of swap file space occupied.
+[Description]
+Returns the percentage of swap file space occupied. This is a value between 0
+and 100.
+[Result]
+The percentage of swap file space occupied.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=2
+1=GetMemoryLoad
+2=GetSwapFileSize
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetTotalPhysicalMemory: Integer;
+[ShortDescr]
+Returns the total size of physical memory.
+[Description]
+Returns the total size of physical memory in bytes.
+[Result]
+The total size of physical memory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetFreePhysicalMemory
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFreePhysicalMemory: Integer;
+[ShortDescr]
+Returns the size of free physical memory.
+[Description]
+Returns the size of free physical memory in bytes.
+[Result]
+The size of free physical memory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetTotalPhysicalMemory
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetTotalPageFileMemory: Integer;
+[ShortDescr]
+Returns the amount of pagefile memory.
+[Description]
+Returns the total size of pagefile memory available to the system.
+[Result]
+The total size of pagefile memory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetFreePageFileMemory
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFreePageFileMemory: Integer;
+[ShortDescr]
+Returns the amount of free pagefile memory.
+[Description]
+Returns the amount of free pagefile memory.
+[Result]
+The amount of free pagefile memory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetTotalPageFileMemory
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetTotalVirtualMemory: Integer;
+[ShortDescr]
+Returns the amount of virtual memory.
+[Description]
+Returns the total size of virtual memory available to the system.
+[Result]
+The total size of virtual memory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetFreeVirtualMemory
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetFreeVirtualMemory: Integer;
+[ShortDescr]
+Returns the amount of free virtual memory.
+[Description]
+Returns the amount of free virtual memory.
+[Result]
+The amount of free virtual memory.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Memory
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=GetTotalVirtualMemory
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetKeyState(const VirtualKey: Cardinal): boolean;
+[ShortDescr]
+Returns the state of a key.
+[Description]
+Returns the state of the virtual key passed. You can use any of the VK_* constants
+defined in Windows.pas.
+[Parameters]
+Count=1
+1=VirtualKey:Cardinal=Any virtual key code, for example VK_NUMLOCK. See
+Windows.pas for more constants.
+[Result]
+True, if the key is pressed or toggled. False otherwise.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Keyboard
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetNumLockKeyState
+2=GetScrollLockKeyState
+3=GetCapsLockKeyState
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetNumLockKeyState: boolean;
+[ShortDescr]
+Returns the state of the Numlock key.
+[Description]
+Returns the state of the Numlock key. If Numlock is on, true will be returned and
+false otherwise.
+[Result]
+True, if the NumLock toggled. False otherwise.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Keyboard
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetKeyState
+2=GetScrollLockKeyState
+3=GetCapsLockKeyState
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetScrollLockKeyState: boolean;
+[ShortDescr]
+Returns the state of the ScrollLock key.
+[Description]
+Returns the state of the ScrollLock key. If ScrollLock is on, true will be
+returned and false otherwise.
+[Result]
+True, if the ScrollLock toggled. False otherwise.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Keyboard
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetKeyState
+2=GetNumLockKeyState
+3=GetCapsLockKeyState
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCapsLockKeyState: boolean;
+[ShortDescr]
+Returns the state of the CapsLock key.
+[Description]
+Returns the state of the CapsLock key. If CapsLock is on, true will be
+returned and false otherwise.
+[Result]
+True, if the CapsLock toggled. False otherwise.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Keyboard
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=GetKeyState
+2=GetNumLockKeyState
+3=GetScrollLockKeyState
+
