@@ -37,6 +37,9 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
+// Last modified: $Date$
+// For history see end of file
+
 unit JclCompression;
 
 interface
@@ -207,13 +210,13 @@ type
 
   TJclTARDecompressionStream = class(TJclDecompressStream)
   end;
-(*
+
 //--------------------------------------------------------------------------------------------------
 // BZIP2 Support
 //--------------------------------------------------------------------------------------------------
-
+(*
 type
-  TJclBZIP2CompressionStream = class(TJclCompressStream)
+  TJclBZIP2CompressStream = class(TJclCompressStream)
  private
     FDeflateInitialized: Boolean;
 
@@ -228,7 +231,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJclBZIP2DecompressionStream = class(TJclDecompressStream)
+  TJclBZIP2DecompressStream = class(TJclDecompressStream)
   private
     FInflateInitialized: Boolean;
 
@@ -365,12 +368,13 @@ begin
   if ErrCode < 0 then
   begin
     case ErrCode of
-      Z_ERRNO:         EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
-      Z_STREAM_ERROR:  EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
-      Z_DATA_ERROR:    EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
-      Z_MEM_ERROR:     EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
-      Z_BUF_ERROR:     EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
-      Z_VERSION_ERROR: EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
+      Z_ERRNO:         raise EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
+      Z_STREAM_ERROR:  raise EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
+      Z_DATA_ERROR:    raise EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
+      Z_MEM_ERROR:     raise EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
+      Z_BUF_ERROR:     raise EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
+      Z_VERSION_ERROR: raise EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
+
     else
       raise EJclCompressionError.CreateResRec(@RsCompressionZLibError);
     end;
@@ -409,7 +413,14 @@ destructor TJclZLibCompressStream.Destroy;
 begin
   Flush;
   if FDeflateInitialized then
+  begin
+    ZLibRecord.next_in   := nil;
+    ZLibRecord.avail_in  := 0;
+    ZLibRecord.avail_out  := 0;
+    ZLibRecord.next_out  := nil;
+
     ZLibCheck(deflateEnd(ZLibRecord));
+  end;
 
   inherited Destroy;
 end;
@@ -454,7 +465,7 @@ begin
       ZLibRecord.next_in := nil;
       ZLibRecord.avail_in := 0;
 
-      while (ZLibCheck(deflate(ZLibRecord, Z_FULL_FLUSH)) <> Z_STREAM_END) and (ZLibRecord.avail_out = 0) do
+      while (ZLibCheck(deflate(ZLibRecord, Z_FINISH)) <> Z_STREAM_END) and (ZLibRecord.avail_out = 0) do
       begin
         FStream.WriteBuffer(FBuffer^, FBufferSize);
         Progress(self);
@@ -632,6 +643,8 @@ begin
       Progress(self);
     end;
   end;
+
+  Result := Count;
 end;
 
 //-------------------------------------------------------------------------------------------------
@@ -664,19 +677,19 @@ begin
   if ErrCode < 0 then
   begin
     case ErrCode of
-      Z_ERRNO:         EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
-      Z_STREAM_ERROR:  EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
-      Z_DATA_ERROR:    EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
-      Z_MEM_ERROR:     EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
-      Z_BUF_ERROR:     EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
-      Z_VERSION_ERROR: EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
+      Z_ERRNO:         raise EJclCompressionError.CreateResRec(@RsCompressionZLibZErrNo);
+      Z_STREAM_ERROR:  raise EJclCompressionError.CreateResRec(@RsCompressionZLibZStreamError);
+      Z_DATA_ERROR:    raise EJclCompressionError.CreateResRec(@RsCompressionZLibZDataError);
+      Z_MEM_ERROR:     raise EJclCompressionError.CreateResRec(@RsCompressionZLibZMemError);
+      Z_BUF_ERROR:     raise EJclCompressionError.CreateResRec(@RsCompressionZLibZBufError);
+      Z_VERSION_ERROR: raise EJclCompressionError.CreateResRec(@RsCompressionZLibZVersionError);
     else
       raise EJclCompressionError.CreateResRec(@RsCompressionZLibError);
     end;
   end;
 end;
 
-constructor TJclBZIP2CompressionStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
+constructor TJclBZIP2CompressStream.Create(Destination: TStream; CompressionLevel: TJclCompressionLevel);
 begin
   inherited Create(Destination);
 
@@ -692,6 +705,7 @@ begin
     avail_in  := 0;
     next_out  := FBuffer;
     avail_out := FBufferSize;
+
   end;
 
   FDeflateInitialized := False;
@@ -699,7 +713,7 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-destructor TJclBZIP2CompressionStream.Destroy;
+destructor TJclBZIP2CompressStream.Destroy;
 begin
   Flush;
   if FDeflateInitialized then
@@ -710,7 +724,7 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-function TJclBZIP2CompressionStream.Write(const Buffer; Count: Longint): Longint;
+function TJclBZIP2CompressStream.Write(const Buffer; Count: Longint): Longint;
 begin
   if not FDeflateInitialized then
   begin
@@ -739,7 +753,7 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-function TJclBZIP2CompressionStream.Flush: Integer;
+function TJclBZIP2CompressStream.Flush: Integer;
 begin
     Result := 0;
 
@@ -771,7 +785,7 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-function TJclBZIP2CompressionStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclBZIP2CompressStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
     Result := BZLibRecord.total_in_lo32
@@ -786,7 +800,7 @@ end;
 // TJclZLibDecompressionStream
 //-------------------------------------------------------------------------------------------------
 
-constructor TJclBZIP2DecompressionStream.Create(Source: TStream);
+constructor TJclBZIP2DecompressStream.Create(Source: TStream);
 begin
   inherited Create(Source);
 
@@ -797,6 +811,7 @@ begin
     bzfree    := nil;
     opaque    := nil;
     next_in   := nil;
+    state     := nil;
     avail_in  := 0;
     next_out  := FBuffer;
     avail_out := FBufferSize;
@@ -807,7 +822,7 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-destructor TJclBZIP2DecompressionStream.Destroy;
+destructor TJclBZIP2DecompressStream.Destroy;
 begin
   if FInflateInitialized then
   begin
@@ -820,34 +835,41 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-function TJclBZIP2DecompressionStream.Read(var Buffer; Count: Longint): Longint;
+function TJclBZIP2DecompressStream.Read(var Buffer; Count: Longint): Longint;
+var
+  avail_out_ctr: Integer;
+
 begin
   if not FInflateInitialized then
   begin
-    BZIP2LibCheck(BZ2_bzDecompress(@BZLibRecord));
+    BZIP2LibCheck(BZ2_bzDecompressInit(@BZLibRecord,0,0));
     FInflateInitialized := true;
   end;
 
   BZLibRecord.next_out := @Buffer;
   BZLibRecord.avail_out := Count;
+  avail_out_ctr := Count;
 
-  while BZLibRecord.avail_out > 0 do     // as long as we have data
+  while avail_out_ctr > 0 do     // as long as we have data
   begin
     if BZLibRecord.avail_in = 0 then
+    begin
       BZLibRecord.avail_in := FStream.Read(FBuffer^, FBufferSize);
+      if BZLibRecord.avail_in = 0 then
+      begin
+        Result := Count - avail_out_ctr;
+        Exit;
+      end;
+
+      BZLibRecord.next_in := FBuffer;
+    end;
+
 
     if BZLibRecord.avail_in > 0 then
     begin
-      BZLibRecord.next_in := FBuffer;
       BZIP2LibCheck(BZ2_bzDecompress(@BZLibRecord));
+      avail_out_ctr := Count - BZLibRecord.avail_out;
     end
-    else
-    begin
-      Result := Count - BZLibRecord.avail_out;
-      Exit;
-    end;
-
-    Progress(self);
   end;
 
   Result := Count;
@@ -855,14 +877,22 @@ end;
 
 //-------------------------------------------------------------------------------------------------
 
-function TJclBZIP2DecompressionStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJclBZIP2DecompressStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
    if (Offset = 0) and (Origin = soFromCurrent) then
     Result := BZLibRecord.total_out_lo32
    else
      Result := inherited Seek(Offset, Origin);
 end;
-
 *)
+
+// History:
+// $Log$
+// Revision 1.4  2004/11/17 03:24:43  mthoma
+// Just noticed that I checked in the wrong version... this one is bugfixed and contains
+//  $date and $log
+//
+
+
 end.
 
