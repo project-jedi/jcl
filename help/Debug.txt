@@ -766,6 +766,9 @@ function SourceNameFromAddr(Addr: DWORD): string;
 Returns the source file name for an address.
 [Description]
 SourceNameFromAddr returns the source-file name for the specified address.
+[Parameters]
+Count=1
+1=Addr:DWORD=Address to get procedure name for.
 [Result]
 The source file name for the specified address.
 [Quick Info]
@@ -1485,7 +1488,6 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=3,4,5
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
-Requirements=A detailed map file.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function __FILE__(const Level: Integer = 0): string;
@@ -1517,14 +1519,16 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
 [SeeAlso]
-Count=7
+Count=9
 1=__MODULE__
 2=__PROC__
 3=__LINE__
-4=__FILE_OF_ADDR__
-5=__MODULE_OF_ADDR__
-6=__PROC_OF_ADDR__
-7=__LINE_OF_ADDR__
+4=__MAP__
+5=__FILE_OF_ADDR__
+6=__MODULE_OF_ADDR__
+7=__PROC_OF_ADDR__
+8=__LINE_OF_ADDR__
+9=__MAP_OF_ADDR__
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function __MODULE__(const Level: Integer = 0): string;
@@ -1556,14 +1560,16 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
 [SeeAlso]
-Count=7
+Count=9
 1=__FILE__
 2=__PROC__
 3=__LINE__
-4=__FILE_OF_ADDR__
-5=__MODULE_OF_ADDR__
-6=__PROC_OF_ADDR__
-7=__LINE_OF_ADDR__
+4=__MAP__
+5=__FILE_OF_ADDR__
+6=__MODULE_OF_ADDR__
+7=__PROC_OF_ADDR__
+8=__LINE_OF_ADDR__
+9=__MAP_OF_ADDR__
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function __PROC__(const Level: Integer = 0): string;
@@ -1594,14 +1600,16 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
 [SeeAlso]
-Count=7
+Count=9
 1=__FILE__
 2=__MODULE__
 3=__LINE__
-4=__FILE_OF_ADDR__
-5=__MODULE_OF_ADDR__
-6=__PROC_OF_ADDR__
-7=__LINE_OF_ADDR__
+4=__MAP__
+5=__FILE_OF_ADDR__
+6=__MODULE_OF_ADDR__
+7=__PROC_OF_ADDR__
+8=__LINE_OF_ADDR__
+9=__MAP_OF_ADDR__
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function __LINE__(const Level: Integer = 0): Integer;
@@ -1902,6 +1910,8 @@ Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TStackInfo = record
@@ -1938,6 +1948,8 @@ Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclStackInfoItem = class (TObject)
@@ -1952,6 +1964,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoItem
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LogicalAddress: DWORD read GetLogicalAddress;
@@ -1969,6 +1983,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoItem
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property StackInfo: TStackInfo read FStackInfo;
@@ -1985,6 +2001,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoItem
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclStackInfoList = class (TObjectList)
@@ -1999,6 +2017,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
@@ -2022,6 +2042,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure AddToStrings(Strings: TStrings);
@@ -2042,6 +2064,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
@@ -2058,6 +2082,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property IgnoreLevels: DWORD read FIgnoreLevels;
@@ -2075,6 +2101,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ThreadID: DWORD read FThreadID;
@@ -2091,6 +2119,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TimeStamp: TDateTime read FTimeStamp;
@@ -2107,6 +2137,8 @@ Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
@@ -2134,6 +2166,8 @@ Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclLastExceptStackList: TJclStackInfoList;
@@ -2155,6 +2189,8 @@ Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 JmpInstruction = packed record
@@ -2180,6 +2216,8 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TExcDescEntry = record
@@ -2205,6 +2243,8 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PExcDesc = ^TExcDesc;
@@ -2240,6 +2280,8 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PExcFrame = ^TExcFrame;
@@ -2279,6 +2321,8 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TExcFrameType = (eftUnknown, eftFinally, eftAnyException, eftOnException,
@@ -2304,6 +2348,8 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptFrame = class(TObject)
@@ -2318,6 +2364,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AExcFrame: <REF Target"..\Types\PExcFrame">PExcFrame</REF>);
@@ -2339,6 +2387,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Handles(ExceptObj: TObject): Boolean;
@@ -2365,6 +2415,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
@@ -2394,6 +2446,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ExcFrame: PExcFrame read FExcFrame;
@@ -2411,6 +2465,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property FrameType: TExcFrameType read FFrameType;
@@ -2429,6 +2485,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptFrameList = class(TObjectList)
@@ -2443,6 +2501,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AIgnoreLevels: Integer);
@@ -2463,6 +2523,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure TraceExceptionFrames;
@@ -2479,6 +2541,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: TJclExceptFrame read GetItems;
@@ -2496,6 +2560,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property IgnoreLevels: Integer read FIgnoreLevels write FIgnoreLevels;
@@ -2513,6 +2579,8 @@ Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): <REF Target"TJclExceptFrameList\TJclExceptFrameList">TJclExceptFrameList</REF>;
@@ -2538,6 +2606,8 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclLastExceptFrameList: TJclExceptFrameList;
@@ -2559,14 +2629,15 @@ Category=Debugging
 SubCat=Except frame info routines
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
 [ShortDescr]
-Exception notify event types.
+Exception notify procedure type.
 [Description]
-TJclExceptNotify<I>xxxx</I> are exception notify events.
+TJclExceptNotifyProc is the exception notify procedure type.
 [Parameters]
 Count=3
 1=ExceptObj:TObject=Exception object
@@ -2581,6 +2652,31 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
+[ShortDescr]
+Exception notify method type.
+[Description]
+TJclExceptNotifyMethod is the exception notify method type.
+[Parameters]
+Count=3
+1=ExceptObj:TObject=Exception object
+2=ExceptAddr:Pointer=Address where exception occured
+3=OSException:Boolean=If the exception occured outside of any Borland module,
+this parameter is True, otherwise it is False.
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclHookExceptions: Boolean;
@@ -2601,6 +2697,15 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=JclUnhookExceptions
+2=JclExceptionsHooked
+3=ExceptNotifyProc;Global Variables\ExceptNotifyProc
+4=ExceptNotifyMethod;Global Variables\ExceptNotifyMethod
+5=ExceptionFrameTrackingEnable;Global Variables\ExceptionFrameTrackingEnable
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclUnhookExceptions: Boolean;
@@ -2618,6 +2723,15 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=JclHookExceptions
+2=JclExceptionsHooked
+3=ExceptNotifyProc;Global Variables\ExceptNotifyProc
+4=ExceptNotifyMethod;Global Variables\ExceptNotifyMethod
+5=ExceptionFrameTrackingEnable;Global Variables\ExceptionFrameTrackingEnable
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclExceptionsHooked: Boolean;
@@ -2634,6 +2748,15 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=JclHookExceptions
+2=JclUnhookExceptions
+3=ExceptNotifyProc;Global Variables\ExceptNotifyProc
+4=ExceptNotifyMethod;Global Variables\ExceptNotifyMethod
+5=ExceptionFrameTrackingEnable;Global Variables\ExceptionFrameTrackingEnable
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 ExceptNotifyProc: TJclExceptNotifyProc;
@@ -2651,6 +2774,15 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=JclHookExceptions
+2=JclUnhookExceptions
+3=JclExceptionsHooked
+4=ExceptNotifyMethod;Global Variables\ExceptNotifyMethod
+5=ExceptionFrameTrackingEnable;Global Variables\ExceptionFrameTrackingEnable
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 ExceptNotifyMethod: TJclExceptNotifyMethod;
@@ -2666,8 +2798,17 @@ BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
-Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=JclHookExceptions
+2=JclUnhookExceptions
+3=JclExceptionsHooked
+4=ExceptNotifyProc;Global Variables\ExceptNotifyProc
+5=ExceptionFrameTrackingEnable;Global Variables\ExceptionFrameTrackingEnable
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 StackTrackingEnable: Boolean;
@@ -2684,6 +2825,15 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=5
+1=ExceptionFrameTrackingEnable
+2=RawStackTracking
+3=JclHookExceptions;..\JclHookExceptions
+4=JclUnhookExceptions;..\JclUnhookExceptions
+5=JclExceptionsHooked;..\JclExceptionsHooked
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 RawStackTracking: Boolean;
@@ -2700,6 +2850,14 @@ Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=4
+1=StackTrackingEnable
+2=JclHookExceptions;..\JclHookExceptions
+3=JclUnhookExceptions;..\JclUnhookExceptions
+4=JclExceptionsHooked;..\JclExceptionsHooked
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 ExceptionFrameTrackingEnable: Boolean;
@@ -2714,5 +2872,15 @@ BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
-Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=6
+1=JclHookExceptions;..\JclHookExceptions
+2=JclUnhookExceptions;..\JclUnhookExceptions
+3=JclExceptionsHooked;..\JclExceptionsHooked
+4=ExceptNotifyProc
+5=ExceptNotifyMethod
+6=StackTrackingEnable
