@@ -6,3 +6,5 @@
 @%1 clean qinstall
 :Finis
 @CD ..
+@ECHO.
+@PAUSE
