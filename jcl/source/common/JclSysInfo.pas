@@ -1786,8 +1786,8 @@ var
   T0, T1: TULargeInteger;
   CountFreq: TULargeInteger;
   Freq, Freq2, Freq3, Total: Integer;
-  TotalCycles, Cycles: Cardinal;
-  Stamp0, Stamp1: Cardinal;
+  TotalCycles, Cycles: Int64;
+  Stamp0, Stamp1: Int64;
   TotalTicks, Ticks: Cardinal;
   Tries, Priority: Integer;
   Thread: THandle;
