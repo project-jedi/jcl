@@ -29,7 +29,7 @@
 
 unit JclWin32;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
