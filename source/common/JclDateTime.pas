@@ -96,10 +96,17 @@
 {                                                                              }
 { 000918                                                                       }
 { added function FormatDateTime                                                }
-
+{                                                                              }
+{ 001015                                                                       }
+{ avoiding "absolute" (in locations where stated)                              }
+{ extended functionality for MakeYear4Digit: can pass Result unchanged if appropriate}
+{ added function FATDatesEqual                                                 }
+{                                                                              }
+{ 001019                                                                       }
+{ changed EasterSunday to the code by Marc Convents (marc.convents@progen.be)  }
 
 { TODO:                                                                        }
-
+{ Help for FATDatesEqual                                                       }
 
 
 { in Help:                                                                     }
@@ -148,6 +155,8 @@ function Make4DigitYear(Year, pivot: Integer): Integer;
 function MakeYear4Digit(Year, WindowsillYear: Integer): Integer;
 function EasterSunday(Year: Integer): TDateTime;
 function FormatDateTime(Form: String; DateTime: TDateTime): String;
+function FATDatesEqual(FileTime1, FileTime2: Int64): Boolean; overload;
+function FATDatesEqual(FileTime1, FileTime2: TFileTime): Boolean; overload;
 
 
 //------------------------------------------------------------------------------
@@ -535,51 +544,70 @@ end;
 }
 function MakeYear4Digit (Year, WindowsillYear: integer): integer;
 var
-  CC: integer;
+  CC, Y: integer;
 begin
   { have come across this specific problem : y2K read as year 100 }
   if Year = 100 then
     Year := 0;
-  Assert((Year >= 0) and (Year <= 100));
-
   { turn 2 digit years to 4 digits }
-  if (Year >= 0) and (Year < 100) then
-  begin
-    CC := (WindowsillYear div 100) * 100;
-
-    Result := Year + CC; // give the result the same century as the windowsill
-    if Result < WindowsillYear then //  cannot be lower than the windowsill
-      Result := Result + 100;
-  end
-  else
-    Result := Year;
+  Y := Year mod 100;
+  CC := (WindowsillYear div 100) * 100;
+  Result := Y + CC; // give the result the same century as the windowsill
+  if Result < WindowsillYear then //  cannot be lower than the windowsill
+    Result := Result + 100;
+  if (Year >= 100) or (Year < 0) then
+    assert (Year = Result); // assert: no unwanted century translation
 end;
 
 
 //------------------------------------------------------------------------------
 
 function EasterSunday(Year: Integer): TDateTime;
+{----------------------------------------------------------------}
+{ Calculates and returns Easter Day for specified year.          }
+{ Originally from Mark Lussier, AppVision <MLussier@best.com>.   }
+{ Corrected to prevent integer overflow if it is inadvertently   }
+{ passed a year of 6554 or greater.                              }
+{----------------------------------------------------------------}
 var
-  A, B, C, D, F, G: Double;
-  E: Integer;
+  nMonth, nDay, nMoon, nEpact, nSunday,
+  nGold, nCent, nCorx, nCorz: Integer;
 begin
-  A := Year mod 19;
-  B := Year mod 4;
-  C := Year mod 7;
-  F := 19 * A + 24;
-  D := F - (Int(F / 30) * 30);
-  G := (5 + 2 * B + 4 * C + 6 * D);
-  E := Trunc((G - (Int(G / 7) * 7)) + D + 22);
-  if E <= 31 then
-    Result := EncodeDate(Year, 3, E)
+  { The Golden Number of the year in the 19 year Metonic Cycle: }
+  nGold := (Year mod 19) + 1;
+  { Calculate the Century: }
+  nCent := (Year div 100) + 1;
+  { Number of years in which leap year was dropped in order... }
+  { to keep in step with the sun: }
+  nCorx := (3 * nCent) div 4 - 12;
+  { Special correction to syncronize Easter with moon's orbit: }
+  nCorz := (8 * nCent + 5) div 25 - 5;
+  { Find Sunday: }
+  nSunday := (Longint(5) * Year) div 4 - nCorx - 10;
+              { ^ To prevent overflow at year 6554}
+  { Set Epact - specifies occurrence of full moon: }
+  nEpact := (11 * nGold + 20 + nCorz - nCorx) mod 30;
+  if nEpact < 0 then
+   nEpact := nEpact + 30;
+  if ((nEpact = 25) and (nGold > 11)) or (nEpact = 24) then
+   nEpact := nEpact + 1;
+  { Find Full Moon: }
+  nMoon := 44 - nEpact;
+  if nMoon < 21 then
+   nMoon := nMoon + 30;
+  { Advance to Sunday: }
+  nMoon := nMoon + 7 - ((nSunday + nMoon) mod 7);
+  if nMoon > 31 then
+  begin
+   nMonth := 4;
+   nDay   := nMoon - 31;
+  end
   else
   begin
-    if E - 31 >= 26 then
-      E := 19
-    else
-      Dec(E, 31);
-    Result := EncodeDate(Year, 4, E);
+   nMonth := 3;
+   nDay   := nMoon;
   end;
+  Result := EncodeDate(Year, nMonth, nDay);
 end;
 
 //==============================================================================
@@ -652,10 +680,9 @@ end;
 //  Result := SystemTimeToDateTime(SystemTime);
 
 function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
-var
-  F64: Int64 absolute FileTime;
+//  var F64: Int64 absolute FileTime;
 begin
-  Result := F64 / FileTimeStep;
+  Result := Int64(FileTime) / FileTimeStep;
   Result := Result + FileTimeBase;
 end;
 
@@ -683,10 +710,11 @@ end;
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 var
   E: Extended;
-  F64: Int64 absolute Result;
+  F64: Int64; // absolute Result;
 begin
   E := (DateTime - FileTimeBase) * FileTimeStep;
   F64 := Round(E);
+  Result := TFileTime(F64);
 end;
 
 //------------------------------------------------------------------------------
@@ -880,6 +908,7 @@ begin
             end
             else
             begin
+               inc(n);
                Digest;
             end;
          end;
@@ -896,6 +925,7 @@ begin
             end
             else
             begin
+               inc(n);
                Digest;
             end;
          end;
@@ -994,6 +1024,26 @@ begin
    end;
    Result := Result + Form;
    Result := SysUtils.FormatDateTime(Result, DateTime);
+end;
+
+//------------------------------------------------------------------------------
+
+
+
+function FATDatesEqual(FileTime1, FileTime2: Int64): Boolean;
+{ FAT has a granularity of 2 seconds
+  The intervals are /10 of a second }
+const
+ALLOWED_FAT_FILE_TIME_VARIATION = 20;
+begin
+  Result := Abs(FileTime1-FileTime2) <= ALLOWED_FAT_FILE_TIME_VARIATION;
+end;
+
+function FATDatesEqual(FileTime1, FileTime2: TFileTime): Boolean;
+//var  F641: Int64 absolute fdt1;
+//     F642: Int64 absolute fdt2;
+begin
+   Result := FATDatesEqual(Int64(FileTime1), Int64(FileTime2));
 end;
 
 //------------------------------------------------------------------------------
