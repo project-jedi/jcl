@@ -12,6 +12,14 @@
 {                                                                              }
 { The Original Code is JclGraphics.pas.                                        }
 {                                                                              }
+{ The resampling algorithms and methods used in this library were adapted by   }
+{ Anders Melander from the article "General Filtered Image Rescaling" by Dale  }
+{ Schumacher which appeared in the book Graphics Gems III, published by        }
+{ Academic Press, Inc. Additional improvements were done by David Ullrich and  }
+{ Josha Beukema.                                                               }
+{                                                                              }
+{ (C)opyright 1997-1999 Anders Melander                                        }             
+{                                                                              }
 { The Initial Developer of the Original Code is documented in the accompanying }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
