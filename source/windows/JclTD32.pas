@@ -652,7 +652,8 @@ type
 
   TJclTD32InfoScanner = class (TJclTD32InfoParser)
   public
-    function LineNumberFromAddr(AAddr: DWORD): Integer;
+    function LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer; overload;
+    function LineNumberFromAddr(AAddr: DWORD): Integer; overload;
     function ProcNameFromAddr(AAddr: DWORD): string; overload;
     function ProcNameFromAddr(AAddr: DWORD; var Offset: Integer): string; overload;
     function ModuleNameFromAddr(AAddr: DWORD): string;
@@ -817,22 +818,22 @@ var
   I: Integer;
 begin
   for I := 0 to LineCount - 1 do
-  with Line[I] do
-  begin
-    if AAddr = Offset then
+    with Line[I] do
     begin
-      Result := True;
-      ALine  := Line[I];
-      Exit;
-    end
-    else
-    if (I > 1) and (Line[I - 1].Offset < AAddr) and (AAddr < Offset) then
-    begin
-      Result := True;
-      ALine  := Line[I-1];
-      Exit;
+      if AAddr = Offset then
+      begin
+        Result := True;
+        ALine  := Line[I];
+        Exit;
+      end
+      else
+      if (I > 1) and (Line[I - 1].Offset < AAddr) and (AAddr < Offset) then
+      begin
+        Result := True;
+        ALine  := Line[I-1];
+        Exit;
+      end;
     end;
-  end;
   Result := False;
   ALine  := nil;
 end;
@@ -1176,13 +1177,28 @@ end;
 
 function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD): Integer;
 var
+  Dummy: Integer;
+begin
+  Result := LineNumberFromAddr(AAddr, Dummy);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclTD32InfoScanner.LineNumberFromAddr(AAddr: DWORD; var Offset: Integer): Integer;
+var
   ASrcMod: TJclSourceModuleInfo;
   ALine: TJclLineInfo;
 begin
   if FindSourceModule(AAddr, ASrcMod) and ASrcMod.FindLine(AAddr, ALine) then
-    Result := ALine.LineNo
+  begin
+    Result := ALine.LineNo;
+    Offset := AAddr - ALine.Offset;
+  end
   else
+  begin
     Result := 0;
+    Offset := 0;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
