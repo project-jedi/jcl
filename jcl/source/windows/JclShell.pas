@@ -379,12 +379,19 @@ begin
     F.Folder.GetUIObjectOf(0, 1, F.Item, IID_IExtractIconW, nil,
       Pointer(ExtractIcon));
     Flags := 0;
-    ExtractIcon.GetIconLocation(0, @IconFile, MAX_PATH, IconIndex, Flags);
-    if (IconIndex < 0) and ((Flags and GIL_NOTFILENAME) = GIL_NOTFILENAME) then
-      ExtractIconEx(@IconFile, IconIndex, F.IconLarge, F.IconSmall, 1)
-    else
-      ExtractIcon.Extract(@IconFile, IconIndex, F.IconLarge, F.IconSmall,
-        MakeLong(32, 16));
+    F.IconLarge := 0;
+    F.IconSmall := 0;
+    
+    if Assigned(ExtractIcon) then
+    begin
+      ExtractIcon.GetIconLocation(0, @IconFile, MAX_PATH, IconIndex, Flags);
+      if (IconIndex < 0) and ((Flags and GIL_NOTFILENAME) = GIL_NOTFILENAME) then
+        ExtractIconEx(@IconFile, IconIndex, F.IconLarge, F.IconSmall, 1)
+      else
+        ExtractIcon.Extract(@IconFile, IconIndex, F.IconLarge, F.IconSmall,
+          MakeLong(32, 16));
+    end;
+          
     Result := True;
   end;
 end;
@@ -1537,6 +1544,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.18  2005/02/13 15:47:09  mthoma
+// SHEnumFolderNext works now with Win9x.
+//
 // Revision 1.17  2004/12/22 11:44:22  rikbarker
 // Modified ShellLinkResolve to correctly read the target from MSI style shortcuts without invoking the windows installer if the product component was set to "Install on First Use".  Added dynamic links to MSI functions in msi.dll
 //
