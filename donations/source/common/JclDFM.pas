@@ -23,7 +23,7 @@
 {   This is a preview - class and functionnames might be changed                                   }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: December 7, 2003                                                                  }
+{ Last modified: December 13, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -60,7 +60,7 @@ TODO:
 **- make TDFMProperty.As... writable + Add/Clear/Delete/Insert
 - check .Add and .Insert (if Add or Insert into the ObjectList fails we should have
     a memoryleak because the property or component is still created) 
-- add support for value replacing (for example .Color clHotLight does exist in D6 but not in D5)
+*- add support for value replacing (for example .Color clHotLight does exist in D6 but not in D5)
 - categorize the removed properties and replaced values
   (removing DesignSize doesn't matter but AutoCheck might break the functionality) 
 - improve DFMLevel writing (autoclean, binary write for D2 or lower)
@@ -349,7 +349,9 @@ procedure DFMRemoveUnwantedComponentsAndProps(ADFMComponent: TJclDFMComponent;
   AComponentSkipList, APropertySkipList: TStrings);
 procedure DFMGetAllComponentTypes(ADFMComponent: TJclDFMComponent;
   AComponentList: TStrings); overload;
-procedure DFMGetAllComponentTypes(AFileName: string; AComponentList: TStrings);  overload;
+procedure DFMGetAllComponentTypes(AFileName: string; AComponentList: TStrings); overload;
+procedure DFMReplacePropertyValues(ADFMComponent: TJclDFMComponent;
+  APropertyReplaceList: TStrings);
 
 implementation
 
@@ -359,7 +361,7 @@ var
 begin
   Stream.Read(ASignature, SizeOf(ASignature));
   Result := ASignature = $FF;
-  Stream.Seek(-sizeof(ASignature), soFromCurrent);
+  Stream.Seek(-SizeOf(ASignature), soFromCurrent);
 end;
 
 const
@@ -1600,7 +1602,7 @@ begin
   Result := False;
   if Assigned(APropertySkipList) then
     for I := 0 to APropertySkipList.Count - 1 do
-      if SameText(AClassName+'.' + APropName, APropertySkipList[I]) or
+      if SameText(AClassName + '.' + APropName, APropertySkipList[I]) or
         SameText('*.' + APropName, APropertySkipList[I]) then
       begin
         Result := True;
@@ -1653,6 +1655,34 @@ begin
     DFMGetAllComponentTypes(RComp, AComponentList);
   finally
     RComp.Free;
+  end;
+end;
+
+function GetNewPropertyValue(const APropertyValue: string;
+  APropertyReplaceList: TStrings): string;
+begin
+  Result := '';
+  if Assigned(APropertyReplaceList) then
+    Result := APropertyReplaceList.Values[APropertyValue];
+end;
+
+procedure DFMReplacePropertyValues(ADFMComponent: TJclDFMComponent;
+  APropertyReplaceList: TStrings);
+var
+  I: Integer;
+  NewPropertyValue: string;
+begin
+  if Assigned(APropertyReplaceList) and (APropertyReplaceList.Count > 0) then
+  with ADFMComponent do
+  begin
+    for I := Properties.Count - 1 downto 0 do
+    begin
+      NewPropertyValue := GetNewPropertyValue(Properties[I].AsString, APropertyReplaceList);
+      if NewPropertyValue <> '' then
+        Properties[I].AsString := NewPropertyValue;
+    end;
+    for I := SubComponents.Count - 1 downto 0 do
+      DFMReplacePropertyValues(SubComponents[I], APropertyReplaceList);
   end;
 end;
 
