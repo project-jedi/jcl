@@ -60,9 +60,7 @@ uses
 // Character constants and sets
 
 const
-
-// Misc. often used character definitions
-
+  // Misc. often used character definitions
   AnsiNull           = AnsiChar(#0);
   AnsiSoh            = AnsiChar(#1);
   AnsiStx            = AnsiChar(#2);
@@ -73,11 +71,11 @@ const
   AnsiBell           = AnsiChar(#7);
   AnsiBackspace      = AnsiChar(#8);
   AnsiTab            = AnsiChar(#9);
-  AnsiLineFeed       = AnsiChar(#10);
+  AnsiLineFeed       = JclBase.AnsiLineFeed;
   AnsiVerticalTab    = AnsiChar(#11);
   AnsiFormFeed       = AnsiChar(#12);
-  AnsiCarriageReturn = AnsiChar(#13);
-  AnsiCrLf           = AnsiString(#13#10);
+  AnsiCarriageReturn = JclBase.AnsiCarriageReturn;
+  AnsiCrLf           = JclBase.AnsiCrLf;
   AnsiSo             = AnsiChar(#14);
   AnsiSi             = AnsiChar(#15);
   AnsiDle            = AnsiChar(#16);
@@ -104,12 +102,7 @@ const
   AnsiDoubleQuote = AnsiChar('"');
   AnsiSingleQuote = AnsiChar('''');
 
-  {$IFDEF MSWINDOWS}
-  AnsiLineBreak = AnsiCrLf;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  AnsiLineBreak = AnsiLineFeed;
-  {$ENDIF UNIX}
+  AnsiLineBreak = JclBase.AnsiLineBreak;
 
 // Misc. character sets
 
@@ -4069,6 +4062,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.33  2005/01/06 18:48:31  marquardt
+// AnsiLineBreak, AnsiLineFeed, AnsiCarriageReturn, AnsiCrLf moved to JclBase JclStrings now reexports the names
+//
 // Revision 1.32  2004/12/23 04:31:43  rrossmair
 // - check-in for JCL 1.94 RC 1
 //
