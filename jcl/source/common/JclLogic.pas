@@ -23,7 +23,7 @@
 { manipulation routines, min/max testing and conversion to string.             }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: Februari 08, 2001                                             }
+{ Last modified: June 4, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -78,6 +78,7 @@ function ClearBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ClearBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ClearBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ClearBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
+procedure ClearBitBuffer(var Value; const Bit: TBitRange);
 
 function CountBitsSet(X: Byte): Integer; assembler; overload;
 function CountBitsSet(X: Word): Integer; assembler; overload;
@@ -123,6 +124,7 @@ function SetBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function SetBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function SetBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function SetBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
+procedure SetBitBuffer(var Value; const Bit: TBitRange);
 
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Shortint; const Bit: TBitRange): Boolean; overload;
@@ -131,6 +133,7 @@ function TestBit(const Value: Word; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Cardinal; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Integer; const Bit: TBitRange): Boolean; overload;
 function TestBit(const Value: Int64; const Bit: TBitRange): Boolean; overload;
+function TestBitBuffer(const Value; const Bit: TBitRange): Boolean;
 
 function TestBits(const Value, Mask: Byte): Boolean; overload;
 function TestBits(const Value, Mask: Shortint): Boolean; overload;
@@ -147,6 +150,7 @@ function ToggleBit(const Value: Word; const Bit: TBitRange): Word; overload;
 function ToggleBit(const Value: Cardinal; const Bit: TBitRange): Cardinal; overload;
 function ToggleBit(const Value: Integer; const Bit: TBitRange): Integer; overload;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64; overload;
+procedure ToggleBitBuffer(var Value; const Bit: TBitRange);
 
 procedure BooleansToBits(var Dest: Byte; const B: TBooleanArray); overload;
 procedure BooleansToBits(var Dest: Word; const B: TBooleanArray); overload;
@@ -581,6 +585,19 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure ClearBitBuffer(var Value; const Bit: TBitRange);
+var
+  P: PByte;
+  BitOfs: TBitRange;
+begin
+  P := Addr(Value);
+  Inc(P, Bit div 8);
+  BitOfs := Bit mod 8;
+  P^ := ClearBit(P^, BitOfs);
+end;
+
+//------------------------------------------------------------------------------
+
 function CountBitsSet(X: Cardinal): Integer; assembler;
 asm
         MOV     ECX, BitsPerCardinal
@@ -969,6 +986,19 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure SetBitBuffer(var Value; const Bit: TBitRange);
+var
+  P: PByte;
+  BitOfs: TBitRange;
+begin
+  P := Addr(Value);
+  Inc(P, Bit div 8);
+  BitOfs := Bit mod 8;
+  P^ := SetBit(P^, BitOfs);
+end;
+
+//------------------------------------------------------------------------------
+
 function TestBit(const Value: Byte; const Bit: TBitRange): Boolean;
 begin
   Result := (Value and (1 shl (Bit mod BitsPerByte))) <> 0;
@@ -1016,6 +1046,18 @@ begin
   Result := (Value and (Int64(1) shl (Bit mod BitsPerInt64))) <> 0;
 end;
 
+//------------------------------------------------------------------------------
+
+function TestBitBuffer(const Value; const Bit: TBitRange): Boolean;
+var
+  P: PByte;
+  BitOfs: TBitRange;
+begin
+  P := Addr(Value);
+  Inc(P, Bit div 8);
+  BitOfs := Bit mod 8;
+  Result := TestBit(P^, BitOfs);
+end;
 
 //------------------------------------------------------------------------------
 
@@ -1113,6 +1155,19 @@ end;
 function ToggleBit(const Value: Int64; const Bit: TBitRange): Int64;
 begin
   Result := Value xor (Int64(1) shl (Bit mod BitsPerInt64));
+end;
+
+//------------------------------------------------------------------------------
+
+procedure ToggleBitBuffer(var Value; const Bit: TBitRange);
+var
+  P: PByte;
+  BitOfs: TBitRange;
+begin
+  P := Addr(Value);
+  Inc(P, Bit div 8);
+  BitOfs := Bit mod 8;
+  P^ := ToggleBit(P^, BitOfs);
 end;
 
 //------------------------------------------------------------------------------
