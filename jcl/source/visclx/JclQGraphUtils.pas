@@ -260,7 +260,7 @@ procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 {$ENDIF ~DROP_OBSOLETE_CODE}
 
-// keep HSL identifier to avoid ambiguidy with HLS overload
+// keep HSL identifier to avoid ambiguity with HLS overload
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
 procedure RGBToHSL(const RGB: TColor32; out H, S, L: Single); overload;
 
@@ -1028,7 +1028,6 @@ end;
 //==================================================================================================
 
 {$IFDEF MSWINDOWS}
-
 function DialogUnitsToPixelsX(const DialogUnits: Word): Word;
 begin
   Result := (DialogUnits * LoWord(GetDialogBaseUnits)) div 4;
@@ -1054,7 +1053,6 @@ function PixelsToDialogUnitsY(const PixelUnits: Word): Word;
 begin
   Result := PixelUnits * 8 div HiWord(GetDialogBaseUnits);
 end;
-
 {$ENDIF MSWINDOWS}
 
 //==================================================================================================
@@ -1170,11 +1168,11 @@ begin
   {$IFDEF MSWINDOWS}
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-  {$ELSE}
+  {$ELSE ~MSWINDOWS}
   { TODO : Find a Qt-independent solution }
   X := QWidget_width(QApplication_desktop);
   Y := QWidget_height(QApplication_desktop);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF ~MSWINDOWS}
   with R do
   begin
     if Right > X then
@@ -2758,6 +2756,18 @@ finalization
 
 // History:
 
+// Revision 1.15  2004/10/18 16:22:14  marquardt
+// corrected typo
+//
+// Revision 1.14  2004/10/17 20:54:14  mthoma
+// cleaning
+//
+// Revision 1.13  2004/07/31 06:21:02  marquardt
+// - reset AlphaTable to nil in FreeAlphaTable
+//
+// Revision 1.12  2004/07/16 03:58:14  rrossmair
+// some style cleaning
+//
 // Revision 1.11  2004/06/27 23:28:51  rrossmair
 // some style cleaning (case, spaces)
 //
@@ -2781,7 +2791,7 @@ finalization
 // Revision 1.5  2004/04/18 06:32:07  rrossmair
 // replaced symbol "Develop" by jpp-pre-undefined "PROTOTYPE"; protected CVS key words by "PROTOTYPE" symbol
 //
-// Revision 1.4  2004/04/06 05:01:54  peterjhaas
+// Revision 1.4  2004/04/06 05:01:54
 // adapt compiler conditions, add log entry
 //
 // 2001-03-28, Mike Lischke:

@@ -175,10 +175,15 @@ function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
 {$ENDIF MSWINDOWS}
+
+
+
 {$IFDEF MSWINDOWS}
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
 {$ENDIF MSWINDOWS}
+
+
 
 implementation
 
@@ -249,6 +254,7 @@ function IntToByte(Value: Integer): Byte;
 begin
   Result := Math.Max(0, Math.Min(255, Value));
 end;
+
 
 //==================================================================================================
 // Internal low level routines
@@ -990,6 +996,7 @@ begin
   Stretch(NewWidth, NewHeight, Filter, Radius, Bitmap, Bitmap);
 end;
 
+
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1005,6 +1012,8 @@ begin
   DeleteObject(MemDC);
 end;
 {$ENDIF MSWINDOWS}
+
+
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1043,6 +1052,10 @@ begin
   end;
 end;
 {$ENDIF MSWINDOWS}
+
+
+
+
 {$IFDEF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
@@ -1095,6 +1108,8 @@ begin
   Result := True;
 end;
 {$ENDIF MSWINDOWS}
+
+
 
 //==================================================================================================
 // Matrices
@@ -1360,6 +1375,9 @@ end;
 // PolyLines and Polygons
 //==================================================================================================
 
+
+//--------------------------------------------------------------------------------------------------
+
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
 var
   I, J, P: Integer;
@@ -1532,6 +1550,7 @@ begin
       AddEdgePoint(X1, Y1);
   end;
 end;
+
 //==================================================================================================
 // Gamma table support for opacities
 //==================================================================================================
@@ -1570,6 +1589,21 @@ initialization
   SetGamma(0.7);
 
 // History:
+// Revision 1.17  2004/11/06 02:19:45  mthoma
+// history cleaning.
+//
+// Revision 1.16  2004/10/17 20:54:14  mthoma
+// cleaning
+//
+// Revision 1.15  2004/07/28 07:40:41  marquardt
+// remove comiler warnings
+//
+// Revision 1.14  2004/07/16 03:50:35  rrossmair
+// fixed "not accesssible with BCB" warning for TJclRegion.CreateRect
+//
+// Revision 1.13  2004/07/15 05:15:41  rrossmair
+// TJclRegion: Handle ownership management added, some refactoring
+//
 // Revision 1.12  2004/07/12 02:54:33  rrossmair
 // TJclRegion.Create fixed
 //
@@ -1588,7 +1622,7 @@ initialization
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //
-// Revision 1.6  2004/04/06 05:01:54  peterjhaas
+// Revision 1.6  2004/04/06 05:01:54  
 // adapt compiler conditions, add log entry
 
 end.

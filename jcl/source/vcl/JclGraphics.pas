@@ -465,6 +465,7 @@ procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
 function ExtractIconCount(const FileName: string): Integer;
 function BitmapToIcon(Bitmap: HBITMAP; cx, cy: Integer): HICON;
 function IconToBitmap(Icon: HICON): HBITMAP;
+
 procedure BitmapToJPeg(const FileName: string);
 procedure JPegToBitmap(const FileName: string);
 
@@ -475,6 +476,7 @@ procedure WriteIcon(Stream: TStream; Icon: HICON; WriteLength: Boolean = False);
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
 
 function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
+
 procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 
@@ -483,12 +485,15 @@ procedure StretchTransfer( Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32;
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
 procedure SetBorderTransparent(ABitmap: TJclBitmap32; ARect: TRect);
+
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
   StartColor, EndColor: TColor; ADirection: TGradientDirection): Boolean; overload;
+
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
 procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
+
 //--------------------------------------------------------------------------------------------------
 // PolyLines and Polygons
 //--------------------------------------------------------------------------------------------------
@@ -612,6 +617,7 @@ begin
     raise EJclGraphicsError.CreateResRec(@RsSourceBitmapInvalid);
   Result := True;
 end;
+
 //==================================================================================================
 // Internal low level routines
 //==================================================================================================
@@ -1618,6 +1624,7 @@ begin
     MapY := nil;
   end;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 procedure DrawBitmap(DC: HDC; Bitmap: HBITMAP; X, Y, Width, Height: Integer);
@@ -1631,6 +1638,7 @@ begin
   SelectObject(MemDC, OldBitmap);
   DeleteObject(MemDC);
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 { TODO : remove VCL-dependency by replacing pf24bit by pf32bit }
@@ -1713,6 +1721,7 @@ begin
     FreeAndNil(JPeg);
   end;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 function ExtractIconCount(const FileName: string): Integer;
@@ -1749,6 +1758,7 @@ begin
     Result := IconInfo.hbmColor;
   end;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 procedure GetIconFromBitmap(Icon: TIcon; Bitmap: TBitmap);
@@ -1883,6 +1893,7 @@ begin
     Stream.Free;
   end;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect;
@@ -2012,6 +2023,7 @@ begin
     ABitmap.Changed;
   end;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
@@ -2150,6 +2162,7 @@ begin
     SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
   ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
@@ -2200,6 +2213,7 @@ begin
   end;
   Result := True;
 end;
+
 //==================================================================================================
 // TJclDesktopCanvas
 //==================================================================================================
@@ -2552,9 +2566,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ Documentation Info (from MSDN): After a successful call to SetWindowRgn, the system owns
+                                  the region specified by the region handle hRgn. The system does
+                                  not make a copy of the region. Thus, you should not make any
+                                  further function calls with this region handle. In particular,
+                                  do not delete this region handle. The system deletes the region
+                                  handle when it no longer needed. }
+
 procedure TJclRegion.SetWindow(Window: HWND; Redraw: Boolean);
 begin
-  SetWindowRgn(Window, FHandle, Redraw);
+  if SetWindowRgn(Window, FHandle, Redraw) <> 0 then
+    FOwnsHandle := False;  // Make sure that we do not release the Handle. If we didn't own it before
+                           // please take care that the owner doesn't release it.
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2572,7 +2595,6 @@ function TJclRegion.GetRegionInfo: TJclRegionInfo;
 begin
   Result := TJclRegionInfo.Create(Self);
 end;
-
 
 //==================================================================================================
 // TJclThreadPersistent
@@ -4959,6 +4981,7 @@ begin
     Dest.Changed;
   end;
 end;
+
 //==================================================================================================
 // Matrices
 //==================================================================================================
@@ -5222,6 +5245,7 @@ end;
 //==================================================================================================
 // PolyLines and Polygons
 //==================================================================================================
+
 procedure PolylineTS(Bitmap: TJclBitmap32; const Points: TDynPointArray;
   Color: TColor32);
 var
@@ -5293,6 +5317,7 @@ begin
   Bitmap.EndUpdate;
   Bitmap.Changed;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 procedure QSortLine(const ALine: TScanLine; L, R: Integer);
@@ -5467,6 +5492,7 @@ begin
       AddEdgePoint(X1, Y1);
   end;
 end;
+
 //--------------------------------------------------------------------------------------------------
 
 procedure FillLines(Bitmap: TJclBitmap32; BaseY: Integer;
@@ -6014,6 +6040,7 @@ begin
   end;
   Dst.Changed;
 end;
+
 //==================================================================================================
 // Gamma table support for opacities
 //==================================================================================================
@@ -6052,6 +6079,21 @@ initialization
   SetGamma(0.7);
 
 // History:
+// Revision 1.17  2004/11/06 02:19:45  mthoma
+// history cleaning.
+//
+// Revision 1.16  2004/10/17 20:54:14  mthoma
+// cleaning
+//
+// Revision 1.15  2004/07/28 07:40:41  marquardt
+// remove comiler warnings
+//
+// Revision 1.14  2004/07/16 03:50:35  rrossmair
+// fixed "not accesssible with BCB" warning for TJclRegion.CreateRect
+//
+// Revision 1.13  2004/07/15 05:15:41  rrossmair
+// TJclRegion: Handle ownership management added, some refactoring
+//
 // Revision 1.12  2004/07/12 02:54:33  rrossmair
 // TJclRegion.Create fixed
 //
@@ -6070,7 +6112,7 @@ initialization
 // Revision 1.7  2004/04/08 19:44:30  mthoma
 // Fixed 0001513: CheckParams at the beginning of ApplyLut is: CheckParams(Src, Dst) but should be CheckParams(Dst, Src)
 //
-// Revision 1.6  2004/04/06 05:01:54  peterjhaas
+// Revision 1.6  2004/04/06 05:01:54  
 // adapt compiler conditions, add log entry
 
 end.
