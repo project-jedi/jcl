@@ -1,25 +1,25 @@
 @@$Security
-<GROUP JCL>
+<GROUP $Windows>
 <TITLE Security>
-<TOPICORDER 2200>
+<TOPICORDER 400>
 --------------------------------------------------------------------------------
 @@$Security.AccessControl
-<GROUP Security>
+<GROUP $Security>
 <TITLE Access Control>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$AccountInformation
-<GROUP Security>
+<GROUP $Security>
 <TITLE Account Information>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$Security.Privileges
-<GROUP Security>
+<GROUP $Security>
 <TITLE Privileges>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@AllowRegKeyForEveryone
-<GROUP Security.AccessControl>
+<GROUP $Security.AccessControl>
 Summary:
   Allows full access to everyone for a registry key.
 Description:
@@ -37,7 +37,7 @@ Donator:
   John C Molyneux
 --------------------------------------------------------------------------------
 @@CreateNullDacl
-<GROUP Security.AccessControl>
+<GROUP $Security.AccessControl>
 Summary:
   Initializes a security attributes structure for NULL access and optional inheritability.
 Description:
@@ -61,7 +61,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CreateInheritable
-<GROUP Security.AccessControl>
+<GROUP $Security.AccessControl>
 Summary:
   Initializes a security attributes structure for inheritable object creation.
 Description:
@@ -82,7 +82,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsPrivilegeEnabled
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Tests if the specified Privilege is enabled.
 Description:
@@ -105,7 +105,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EnableProcessPrivilege
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Enables or disables a privilege for the process.
 Description:
@@ -128,7 +128,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EnableThreadPrivilege
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Enables or disables a privilege for the thread.
 Description:
@@ -153,7 +153,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsAdministrator
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Tests whether the process is running in the user context of a local administrator.
 Description:
@@ -164,11 +164,10 @@ Result:
   If the process is running in the user context of a local administrator the function
   returns True, otherwise it returns False.
 Note: Under Windows 95/98/Millenium Edition, this function always returns True.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LookupAccountBySid
-<GROUP AccountInformation>
+<GROUP $AccountInformation>
 Summary:
   Returns the name and domain of an alias, user or group.
 Description:
@@ -181,11 +180,10 @@ Parameters:
   Domain - Returns the domain-name in which the principal identified by Sid is located (if any).
 Note:
   Under Windows 95/98/Millenium Edition, LookupAccountBySid always returns empty strings.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@QueryTokenInformation
-<GROUP AccountInformation>
+<GROUP $AccountInformation>
 Summary:
   Wrapper for the GetTokenInformation Windows API function.
 Description:
@@ -203,7 +201,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetInteractiveUserName
-<GROUP AccountInformation>
+<GROUP $AccountInformation>
 Summary:
   Returns the name of the interactive user.
 Description:
@@ -225,7 +223,7 @@ Donator:
   Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetPrivilegeDisplayName
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Wrapper around the LookupPrivilegeDisplayName Windows API function.
 Description:
@@ -244,7 +242,7 @@ Donator:
   Unknown
 --------------------------------------------------------------------------------
 @@GetUserObjectName
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Returns the name of the specified object.
 Description:
@@ -259,7 +257,7 @@ Donator:
   Unknown
 --------------------------------------------------------------------------------
 @@SetUserObjectFullAccess
-<GROUP Security.Privileges>
+<GROUP $Security.Privileges>
 Summary:
   Permits full access to a user object.
 Description:

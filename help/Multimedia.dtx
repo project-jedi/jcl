@@ -1,5 +1,5 @@
 @@$MultiMedia
-<GROUP JCL>
+<GROUP $JCL>
 <TITLE MultiMedia>
 <TOPICORDER 1800>
 --------------------------------------------------------------------------------
@@ -36,12 +36,12 @@ We also recommend George Hansper's MIDI
 <GROUP $MultiMedia>
 --------------------------------------------------------------------------------
 @@$MultiMedia.CDDrive
-<GROUP MultiMedia>
+<GROUP $MultiMedia>
 <TITLE CD-Drive Functions>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@TJclMultimediaTimer
-<GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
+<GROUP $DateandTime.TimersandCounters.TJclMultimediaTimer>
 Summary:
   Wrapper for a Win32 multi-media timer 'object'.
 Description:
@@ -220,7 +220,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TMmTimerKind
-<GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
+<GROUP $DateandTime.TimersandCounters.TJclMultimediaTimer>
 Summary:
   Determines the kind of timer, periodic or one-shot.
 Description:
@@ -233,7 +233,7 @@ Quick info:
   The timer is a periodic timer. After calling BeginTimer the timer will 'fire' after the specified interval until you call EndTimer. Note that when you use the nkSetEvent notification type you must call Event.ResetEvent manually!
 --------------------------------------------------------------------------------
 @@TMmNotificationKind
-<GROUP DateandTime.TimersandCounters.TJclMultimediaTimer>
+<GROUP $DateandTime.TimersandCounters.TJclMultimediaTimer>
 Summary:
   Determines the method of notification when the timer's interval elapses. You can choose between using kernel events or callbacks.
 Description:
@@ -263,7 +263,7 @@ Quick Info:
   Donator: Bernhard Berger
 --------------------------------------------------------------------------------
 @@GetMciErrorMessage
-<GROUP MultiMedia.MCI>
+<GROUP $MultiMedia.MCI>
 Summary:
   Wrapper for mciGetErrorString API.
 Description:

@@ -1,25 +1,25 @@
 @@$LANManager
-<GROUP JCL>
+<GROUP $Windows>
 <TITLE LAN Manager>
-<TOPICORDER 1200>
+<TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@$LANManager.Auxilliaryfunctions
-<GROUP LANManager>
+<GROUP $LANManager>
 <TITLE Auxilliary functions>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$LANManager.GroupManagement
-<GROUP LANManager>
+<GROUP $LANManager>
 <TITLE Group Management>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$LANManager.UserManagement
-<GROUP LANManager>
+<GROUP $LANManager>
 <TITLE User Management>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@CreateAccount
-<GROUP LANManager.UserManagement>
+<GROUP $LANManager.UserManagement>
 Summary:
   Creates a new user account on a Windows NT machine.
 Description:
@@ -40,11 +40,10 @@ Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
 See also:
   CreateLocalAccount
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@CreateLocalAccount
-<GROUP LANManager.UserManagement>
+<GROUP $LANManager.UserManagement>
 Summary:
   Creates a new user account on a local Windows NT machine.
 Description:
@@ -64,11 +63,10 @@ Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
 See also:
   CreateAccount
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@DeleteAccount
-<GROUP LANManager.UserManagement>
+<GROUP $LANManager.UserManagement>
 Summary:
   Deletes a user account from the given Windows NT machine.
 Description:
@@ -87,11 +85,10 @@ See also:
   DeleteLocalAccount
   CreateLocalAccount
   CreateAccount
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@DeleteLocalAccount
-<GROUP LANManager.UserManagement>
+<GROUP $LANManager.UserManagement>
 Summary:
   Deletes a user account from the local Windows NT machine.
 Description:
@@ -109,11 +106,10 @@ See also:
   DeleteAccount
   CreateLocalAccount
   CreateAccount
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@CreateLocalGroup
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Creates a local group on a Windows NT machine.
 Description:
@@ -130,11 +126,10 @@ Notes:
 See also:
   CreateGlobalGroup
   DeleteLocalGroup
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@CreateGlobalGroup
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Creates a global group on a Windows NT machine.
 Description:
@@ -151,11 +146,10 @@ Notes:
 See also:
   CreateLocalGroup
   DeleteLocalGroup
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@DeleteLocalGroup
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Deletes a local group from a Windows NT machine.
 Description:
@@ -171,11 +165,10 @@ Notes:
 See also:
   CreateLocalGroup
   CreateGlobalGroup
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetLocalGroups
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Retrieves a list of local groups on a Windows NT machine.
 Description:
@@ -190,11 +183,10 @@ Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
 See also:
   GetGlobalGroups
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GetGlobalGroups
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Retrieves a list of global groups on a Windows NT machine.
 Description:
@@ -209,11 +201,10 @@ Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
 See also:
   GetLocalGroups
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@LocalGroupExists
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Checks whether a given group exists in the local account database.
 Description:
@@ -227,11 +218,10 @@ Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
 See also:
   GlobalGroupExists
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@GlobalGroupExists
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Checks whether a given group exists in the local account database of the given server.
 Description:
@@ -246,11 +236,10 @@ Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
 See also:
   LocalGroupExists
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@AddAccountToLocalGroup
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Adds an account to a local group.
 Description:
@@ -263,11 +252,10 @@ Result:
   If the function succeeds, the result is True, otherwise it is False.
 Notes:
   If the function returns False, the user can retrieve extended error information by calling RaiseLastOSException.
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@LookupGroupName
-<GROUP LANManager.GroupManagement>
+<GROUP $LANManager.GroupManagement>
 Summary:
   Returns the textual representation of a well-know account.
 Description:
@@ -279,11 +267,10 @@ Result:
   Textual represantation of the well known group name.
 See also:
   TNetWellKnownRID
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@ParseAccountName
-<GROUP LANManager.Auxilliaryfunctions>
+<GROUP $LANManager.Auxilliaryfunctions>
 Summary:
   Split up a qualified account name.
 Description:
@@ -295,11 +282,10 @@ Parameters:
   UserName - Returns the name of the user specified in the qualified name.
 Notes:
   If the parameter QualifiedName does not contain a fully qualified account name, the function will assume that the QualifiedName is the user's name.
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@IsLocalAccount
-<GROUP LANManager.Auxilliaryfunctions>
+<GROUP $LANManager.Auxilliaryfunctions>
 Summary:
   Checks whether an accoun is a local account.
 Description:
@@ -309,18 +295,16 @@ Parameters:
 Result:
   If the account is a local account, the functin returns True, otherwise it returns
   False.
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 --------------------------------------------------------------------------------
 @@TNetWellKnownRID
-<GROUP LANMAnager.GroupManagement>
+<GROUP $LANMAnager.GroupManagement>
 Summary:
   Well-known group accounts.
 Description:
   TNetWellKnownRID is an enumeration of well-known group accounts on Windows NT and
   Windows 2000 machines. It is used in conjunction with LookupGroupName.
-Quick info:
-  Donator: Peter Friese
+Donator: Peter Friese
 @@TNetWellKnownRID.wkrAdmins
   The administrators' group.
 @@TNetWellKnownRID.wkrUsers

@@ -1,65 +1,65 @@
 @@$BaseServices
-<GROUP JCL>
+<GROUP $JCL>
 <TITLE Base Services>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$BaseServices.Compatibility
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE Compatibility>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$BaseServices.Dynamicarrays
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE Dynamic arrays>
 <TOPICORDER 200>
 --------------------------------------------------------------------------------
 @@$BaseServices.Dynamicloading
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE Dynamic loading>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
 @@$BaseServices.EJclError
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE EJclError>
 <TOPICORDER 400>
 --------------------------------------------------------------------------------
 @@$BaseServices.EJclInternalError
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE EJclInternalError>
 <TOPICORDER 410>
 --------------------------------------------------------------------------------
 @@$BaseServices.EJclWin32Error
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE EJclWin32Error>
 <TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@$BaseServices.FPCCompatibility
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE FPC Compatibility>
 <TOPICORDER 600>
 --------------------------------------------------------------------------------
 @@$BaseServices.Int64support
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE Int64 support>
 <TOPICORDER 700>
 --------------------------------------------------------------------------------
 @@$BaseServices.Numericformattingroutines
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE Numeric formatting routines>
 <TOPICORDER 800>
 --------------------------------------------------------------------------------
 @@$BaseServices.Pointermanipulation
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE Pointer manipulation>
 <TOPICORDER 900>
 --------------------------------------------------------------------------------
 @@$BaseServices.TObjectList
-<GROUP BaseServices>
+<GROUP $BaseServices>
 <TITLE TObjectList>
 <TOPICORDER 1000>
 --------------------------------------------------------------------------------
 @@JclVersion
-<GROUP BaseServices>
+<GROUP $BaseServices>
 Summary:
   Constants describing the JCL version.
 Description:
@@ -79,7 +79,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@string
-<GROUP BaseServices.FPCCompatibility>
+<GROUP $BaseServices.FPCCompatibility>
 Summary:
   ResStringRec is a pointer to a resource string.
 Description:
@@ -90,7 +90,7 @@ Quick info:
   Donator: JCL Team
 --------------------------------------------------------------------------------
 @@SysErrorMessage
-<GROUP BaseServices.FPCCompatibility>
+<GROUP $BaseServices.FPCCompatibility>
 Summary:
   Converts OS error codes into strings.
 Description:
@@ -105,7 +105,7 @@ Quick info:
   Donator: JCL Team
 --------------------------------------------------------------------------------
 @@EJclError
-<GROUP BaseServices.EJclError>
+<GROUP $BaseServices.EJclError>
 Summary:
   Base exception class for all JCL exceptions.
 Description:
@@ -158,7 +158,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EJclInternalError
-<GROUP BaseServices.EJclInternalError>
+<GROUP $BaseServices.EJclInternalError>
 Summary:
   Exception class for JCL internal errors.
 Description:
@@ -167,7 +167,7 @@ Description:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@EJclWin32Error
-<GROUP BaseServices.EJclWin32Error>
+<GROUP $BaseServices.EJclWin32Error>
 Summary:
   Base class for exceptions raised in response to Win32 errors.
 Description:
@@ -265,7 +265,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Float
-<GROUP BaseServices>
+<GROUP $BaseServices>
 Summary:
   Generic floating point type.
 Description:
@@ -279,7 +279,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LongWord
-<GROUP BaseServices>
+<GROUP $BaseServices>
 Summary:
   Alias for Cardinal.
 Description:
@@ -290,7 +290,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TSysCharSet
-<GROUP BaseServices>
+<GROUP $BaseServices>
 Summary:
   A set of characters.
 Description:
@@ -301,7 +301,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@I64Assign
-<GROUP BaseServices.Int64support>
+<GROUP $BaseServices.Int64support>
 Summary:
   Initializes an Int64 to the supplied values.
 Description:
@@ -317,7 +317,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@I64Copy
-<GROUP BaseServices.Int64support>
+<GROUP $BaseServices.Int64support>
 Summary:
   Copies an Int64
 Description:
@@ -332,7 +332,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@I64Compare
-<GROUP BaseServices.Int64support>
+<GROUP $BaseServices.Int64support>
 Summary:
   Compares two 64 bit integers.
 Description:
@@ -351,7 +351,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CardinalsToI64
-<GROUP BaseServices.Int64support>
+<GROUP $BaseServices.Int64support>
 Summary:
   Packs the supplied 32 bit values in an Int64
 Description:
@@ -367,7 +367,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@I64ToCardinals
-<GROUP BaseServices.Int64support>
+<GROUP $BaseServices.Int64support>
 Summary:
   Extracts the high and low 32 bit values from an Int64.
 Description:
@@ -383,7 +383,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TDynArray
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   A dynamic array of some type.
 Description:
@@ -448,7 +448,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArrayHigh
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Upper bound for dynamic array of some type.
 Description:
@@ -477,7 +477,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArrayAllocSize
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Returns the allocation size for a dynamic array.
 Description:
@@ -499,7 +499,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArrayLength
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Returns the length of a dynamic array.
 Description:
@@ -521,7 +521,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArrayElemSize
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Returns the size of an element in the array.
 Description:
@@ -542,7 +542,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArrayInitialize
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Initializes a dynamic array for use.
 Description:
@@ -566,7 +566,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArrayFinalize
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Releases the memory reserved for the dynamic array.
 Description:
@@ -586,7 +586,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DynArraySetLength
-<GROUP BaseServices.Dynamicarrays>
+<GROUP $BaseServices.Dynamicarrays>
 Summary:
   Sets the length of the dynamic array.
 Description:
@@ -607,7 +607,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TObjectList
-<GROUP BaseServices.TObjectList>
+<GROUP $BaseServices.TObjectList>
 Summary:
   TList descendent to maintain a list of TObject descendants.
 Description:
@@ -652,7 +652,7 @@ Quick info:
   Donator: Petr Vones
 --------------------------------------------------------------------------------
 @@RaiseLastOSError
-<GROUP BaseServices.Compatibility>
+<GROUP $BaseServices.Compatibility>
 Summary:
   Raises an exception for the last occurring OS or system library error.
 Description:
@@ -665,7 +665,7 @@ Quick info:
   Donator: JCL Team
 --------------------------------------------------------------------------------
 @@IInterface
-<GROUP BaseServices.Compatibility>
+<GROUP $BaseServices.Compatibility>
 Summary:
   IInterface is the base class for all Object Pascal interfaces.
 Description:

@@ -5,39 +5,39 @@ Donator: Barry Kelly
 Contributors: Barry Kelly, Robert Rossmair, Matthias Thoma, Petr Vones
 --------------------------------------------------------------------------------
 @@$Algorithms
-<GROUP JCL>
+<GROUP $JCL>
 <TITLE Algorithms>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$Algorithms.Searching
-<GROUP Algorithms>
+<GROUP $Algorithms>
 <TITLE Searching>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$Algorithms.Searching.HashMaps
-<GROUP Algorithms.Searching>
+<GROUP $Algorithms.Searching>
 <TITLE Hash Maps>
 <TOPICORDER 100>
 --------------------------------------------------------------------------------
 @@$TStringHashMap_Alloc
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 <TITLE Customizing TStringHashMap's node allocation strategy.>
 You can customize the way TStringHashMap allocates nodes, to avoid the
 overhead of millions of calls to New, by overriding the AllocNode
 and FreeNode methods.
 --------------------------------------------------------------------------------
 @@EJclStringHashMapError
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 The error exception class used by TStringhashMap.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@THashValue
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 The type of the return value for hashing functions.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMapTraits
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 Brief: An abstract class describing the interface for traits classes.
 Description:
   The desired behaviour of TStringHashMap for case sensitive and
@@ -61,17 +61,17 @@ Returns a negative integer if l is before r, a positive
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@CaseSensitiveTraits
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A utility function returning an instance of TCaseSensitiveTraits.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@CaseInsensitiveTraits
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A utility function returning an instance of TCaseInsensitiveTraits.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TIterateFunc
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 Brief: The type of the parameter to TStringHashMap.Iterate.
 Description:
   * AUserData:
@@ -85,7 +85,7 @@ stop iterating and return to whatever called the Iterate method.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TIterateMethod
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 Brief: The type of the parameter to TStringHashMap.IterateMethod.
 Description:
   These are the meanings of the arguments:<p>
@@ -101,7 +101,7 @@ Description:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@THashNode
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 The internal storage record used by TStringHashMap.
 Donator: Barry Kelly
 
@@ -114,7 +114,7 @@ Pointer to a THashNode record.
 Pointer to a pointer to a THashNode record.
 --------------------------------------------------------------------------------
 @@THashArray
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 THashArray is the type of the array used for internal storage in
   TStringHashMap.
 Donator: Barry Kelly
@@ -124,7 +124,7 @@ Donator: Barry Kelly
 Pointer to a THashArray.
 --------------------------------------------------------------------------------
 @@TStringHashMap
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 Brief: TStringHashMap is a string-pointer associative array.
 Description:
   TStringHashMap is a string-pointer associative array. It uses a
@@ -189,7 +189,7 @@ Parameters:
   s: The key of the node to set.
   p: The data to set the node's data to.
 Description:
-  SetData will create a new node if none exists with key s. 
+  SetData will create a new node if none exists with key s.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Create
@@ -246,7 +246,7 @@ Example:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.RemoveData
-Brief: Removes <b>every</b> instance of p as a data field from the map.
+Removes <b>every</b> instance of p as a data field from the map.
 Parameters:
   p: The data to item.
 Donator: Barry Kelly
@@ -263,7 +263,7 @@ See Also: IterateMethod
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.IterateMethod
-Iterates through associations in the map.
+Brief: Iterates through associations in the map.
 Parameters:
   AUserData: A pointer parameter passed through untouched to the
     iterator method.
@@ -274,7 +274,7 @@ See Also: Iterate
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TStringHashMap.Has
-Checks if the map has an association with a string key.
+Brief: Checks if the map has an association with a string key.
 Parameters:
   s: The key to search for.
 Returns:
@@ -350,17 +350,17 @@ Note: Don't change the value of this property too often, as it will
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@StrHash
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 Case sensitive hash of string s.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TextHash
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 Case insensitive hash of string s.
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@DataHash
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A utility function which computes a hash a buffer.
 Parameters:
   AValue: A reference to the buffer to compute a hash value for.
@@ -368,7 +368,7 @@ Parameters:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@Iterate_FreeObjects
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A utility iterating function that calls TObject.Free for all
   data items in a map.
 Example:
@@ -383,28 +383,28 @@ Example:
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@Iterate_Dispose
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A utility iterating function that calls Dispose for all data
   items in a map.
 See Also: Iterate_FreeObjects
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@Iterate_FreeMem
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A utility iterating function that calls FreeMem for all data
   items in a map.
 See Also: Iterate_FreeMem
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TCaseSensitiveTraits
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A useful concrete descendant of TStringHashMapTraits which
        implements case sensitive traits, with order based on ordinal value.
 See Also: TCaseInsensitiveTraits
 Donator: Barry Kelly
 --------------------------------------------------------------------------------
 @@TCaseInsensitiveTraits
-<GROUP Algorithms.Searching.HashMaps>
+<GROUP $Algorithms.Searching.HashMaps>
 A useful concrete descendant of TStringHashMapTraits which
     implements case insensitive traits, with order based on ordinal value.
     See Also: TCaseSensitiveTraits
