@@ -17,12 +17,13 @@ Count=1
 If the specified handle is valid the function returns True. If the specified
 handle is invalid the function returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Miscellanuous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsDebuggerAttached: Boolean;
@@ -36,12 +37,13 @@ one also functions correctly under Windows 95.
 If the current process is running in the context of a debugger, the return value is True.
 If the current process is not running in the context of a debugger, the return value is False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Miscellanuous
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function EnableCrashOnCtrlScroll(const Enable: Boolean): Boolean;
@@ -60,14 +62,15 @@ set to False it is disabled.
 [Result]
 If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Miscellanuous
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 2000 or later.
 Windows 95/98=Unsupported.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure AssertKindOf(const ClassName: string; const Obj: TObject); overload;
@@ -84,12 +87,13 @@ Count=2
 1=ClassName:string=Name of the class to test Obj for.
 2=Obj:TObject=The object to test.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Diagnostics
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Trace(const Msg: string);
@@ -107,14 +111,15 @@ these messages using the event log dialog, 'View | Debug Windows | Event Log'.
 If the application is not running under the debugger the message is sent to the
 system debugger. If there is no system debugger active the function does nothing.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Diagnostics
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=TraceFmt
@@ -141,14 +146,15 @@ these messages using the event log dialog, 'View | Debug Windows | Event Log'.
 If the application is not running under the debugger the message is sent to the
 system debugger. If there is no system debugger active the function does nothing.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Diagnostics
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Trace
@@ -177,15 +183,16 @@ these messages using the event log dialog, 'View | Debug Windows | Event Log'.
 If the application is not running under the debugger the message is sent to the
 system debugger. If there is no system debugger active the function does nothing.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Diagnostics
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Trace
@@ -214,15 +221,16 @@ these messages using the event log dialog, 'View | Debug Windows | Event Log'.
 If the application is not running under the debugger the message is sent to the
 system debugger. If there is no system debugger active the function does nothing.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Diagnostics
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=Trace
@@ -244,13 +252,14 @@ Count=2
 2=Offset:Integer=Offset of item.
 [Quick Info]
 Kind=Type
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PJclMapString = PAnsiChar;
@@ -261,13 +270,14 @@ PJclMapString holds a map-file specific string. Use the MapStringToString class
 function to convert it to a normal string.
 [Quick Info]
 Kind=Type
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclAbstractMapParser = class (TObject)
@@ -276,12 +286,13 @@ Abstract Map parser
 [Description]
 TJclAbstractMapParser is an abstract base class for a MAP-file parser.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ClassTableItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Len: Integer; SectionName, GroupName: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
@@ -299,12 +310,13 @@ Count=4
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SegmentItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Len: Integer; GroupName, UnitName: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
@@ -322,12 +334,13 @@ Count=4
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure PublicsByNameItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Name: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
@@ -345,12 +358,13 @@ Count=2
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure PublicsByValueItem(const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>; Name: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
@@ -368,12 +382,13 @@ Count=2
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure LineNumberUnitItem(UnitName, UnitFileName: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>); virtual; abstract;
@@ -390,12 +405,13 @@ Count=2
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure LineNumbersItem(LineNumber: Integer; const Address: <REF Target"..\..\Types\TJclMapAddress">TJclMapAddress</REF>); virtual; abstract;
@@ -412,12 +428,13 @@ Count=2
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(const MapFileName: TFileName); virtual;
@@ -435,12 +452,13 @@ Count=1
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 destructor Destroy; override;
@@ -451,12 +469,13 @@ Destroy frees up all internal objects before freeing this instance.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Parse;
@@ -469,12 +488,13 @@ to store it in an internal structure.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 class function MapStringToStr(MapString: <REF Target"..\..\Types\PJclMapString">PJclMapString</REF>): string;
@@ -496,12 +516,13 @@ translated version of the string.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Stream: TJclFileMappingStream read FStream;
@@ -512,12 +533,13 @@ Stream holds the a reference to the map file assigned by the Create method.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LinkerBug: Boolean read FLinkerBug;
@@ -530,12 +552,13 @@ follows. The solution is to move the data to a separate unit.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=LinkerBugUnit
@@ -550,12 +573,13 @@ no linker bug present (ie. LinkerBug = False) LinkerBugUnit is empty.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=LinkerBug
@@ -568,12 +592,13 @@ Generic map file parser
 TJclMapParser is a class for a generic MAP-file parser. Items are reported to
 the user through event calls.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnClassTable: TJclMapClassTableEvent read FOnClassTable write FOnClassTable;
@@ -585,12 +610,13 @@ the ClassTableItem method when the parser finds a class table item.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnSegment: TJclMapSegmentEvent read FOnSegmentItem write FOnSegmentItem;
@@ -602,12 +628,13 @@ It gets called by the SegmentItem method when the parser finds a segment item.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnPublicsByName: TJclMapPublicsEvent read FOnPublicsByName write FOnPublicsByName;
@@ -621,12 +648,13 @@ the "Publics By Name"-section.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnPublicsByValue: TJclMapPublicsEvent read FOnPublicsByValue write FOnPublicsByValue;
@@ -640,12 +668,13 @@ the "Publics By Value"-section.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnLineNumberUnit: TJclMapLineNumberUnitEvent read FOnLineNumberUnit write FOnLineNumberUnit;
@@ -658,12 +687,13 @@ finds a unit declaration in the lines section.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnLineNumbers: TJclMapLineNumbersEvent read FOnLineNumbers write FOnLineNumbers;
@@ -676,12 +706,13 @@ a unit declaration in the lines section.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapParser
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclMapScanner = class (<REF Target"..\TJclAbstractMapParser\TJclAbstractMapParser">TJclAbstractMapParser</REF>)
@@ -691,12 +722,13 @@ Generic map file parser
 TJclMapScanner is a map file scanner. The class scans the map file and holds the
 result for later reference.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Scan;
@@ -708,12 +740,13 @@ reference.
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(const MapFileName: TFileName);
@@ -729,12 +762,13 @@ Count=1
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LineNumberFromAddr(Addr: DWORD): Integer;
@@ -750,12 +784,13 @@ The line number for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ModuleNameFromAddr
@@ -777,12 +812,13 @@ The Delphi unit name for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -805,12 +841,13 @@ The starting address of the Delphi unit that contains the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -832,12 +869,13 @@ The procedure name for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -859,12 +897,13 @@ The source file name for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Map Parsers\TJclMapScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -880,12 +919,13 @@ Signature of Jcl Binary Debug Data
 JclDbgDataSignature is the signature of the Jcl Binary Debug Data
 [Quick Info]
 Kind=Constant
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 JclDbgDataResName = 'JCLDEBUG';
@@ -895,12 +935,13 @@ Resource name for binary debug data
 JclDbgDataResName is the resource name for Jcl Binary Debug Data.
 [Quick Info]
 Kind=Constant
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 JclDbgFileExtension = '.jdbg';
@@ -910,12 +951,13 @@ File extension for a Jcl Binary Debug File
 JclDbgFileExtension is the extension for Jcl Binary Debug Data File.
 [Quick Info]
 Kind=Constant
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclBinDebugGenerator = class (<REF Target"..\..\Map Parsers\TJclMapScanner\TJclMapScanner">TJclMapScanner</REF>)
@@ -925,12 +967,13 @@ Generates a binary version of a map file.
 TJclBinDebugGenerator translates the text based map file created by the linker into
 a smaller, binary version. The result is saved in a memory stream.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugGenerator
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure CreateData;
@@ -947,12 +990,13 @@ needed space.
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugGenerator
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(const MapFileName: TFileName);
@@ -969,12 +1013,13 @@ Count=1
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugGenerator
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CalculateCheckSum: Boolean;
@@ -988,12 +1033,13 @@ False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugGenerator
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property DataStream: TMemoryStream read FDataStream;
@@ -1004,12 +1050,13 @@ DataStream holds the result of the translation.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugGenerator
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclBinDebugScanner = class (TObject)
@@ -1021,12 +1068,13 @@ file. The binary file can be generated from a text-based map file by instantiati
 a <REF Target"..\TJclBinDebugGenerator\TJclBinDebugGenerator">TJclBinDebugGenerator</REF>-object 
 and saving the DataStream to a file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AStream: TCustomMemoryStream; CacheData: Boolean);
@@ -1043,12 +1091,13 @@ Count=2
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsModuleNameValid(const Name: TFileName): Boolean;
@@ -1065,12 +1114,13 @@ otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LineNumberFromAddr(Addr: DWORD): Integer;
@@ -1086,12 +1136,13 @@ The line number for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=ModuleNameFromAddr
@@ -1113,12 +1164,13 @@ The Delphi unit name for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -1141,12 +1193,13 @@ The starting address of the Delphi unit that contains the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -1168,12 +1221,13 @@ The procedure name for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -1192,12 +1246,13 @@ The source file name for the specified address.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=LineNumberFromAddr
@@ -1214,12 +1269,13 @@ ValidFormat is true if the data in the specified stream is valid binary debug da
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data\TJclBinDebugScanner
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ConvertMapFileToJdbgFile(const MapFileName: TFileName): Boolean;
@@ -1229,12 +1285,13 @@ Converts a text based MAP file to a Jcl binary debug file.
 ConvertMapFileToJdbgFile convert the specified text based map file to a Jcl binary
 debug file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\Binary Debug Data
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclLocationInfo = record
@@ -1263,12 +1320,13 @@ for more information.
 [Quick Info]
 Kind=Type
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclDebugInfoSource = class (TObject)
@@ -1280,12 +1338,13 @@ Instances of descendants are created by the TJclDebugInfoList-object.</P><P>
 Descendants should override the <REF Target"Methods\InitializeSource">InitializeSource</REF>
 and <REF Target"Methods\GetLocationInfo">GetLocationInfo</REF> methods.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoSource
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function InitializeSource: Boolean; virtual; abstract;
@@ -1298,12 +1357,13 @@ If the function succeeds it returns True, otherwise it returns False.
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoSource
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AModule: HMODULE); virtual;
@@ -1319,12 +1379,13 @@ Count=1
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoSource
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetLocationInfo(const Addr: Pointer; var Info: <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>): Boolean; virtual; abstract;
@@ -1345,12 +1406,13 @@ If the address does not exist within the module, the function returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoSource
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Module: HMODULE read FModule;
@@ -1361,12 +1423,13 @@ Module holds the module handle this instance has been created for.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoSource
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property FileName: TFileName read GetFileName;
@@ -1377,12 +1440,13 @@ FileName holds the file name of the module this instance has been created for.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoSource
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclDebugInfoList = class (TObjectList)
@@ -1392,12 +1456,13 @@ Holds a list of debug info items
 TJclDebugInfoList holds a list of <REF Target"..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF> 
 items requested. Items are created when needed, not when the list is created.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CreateDebugInfo(const Module: HMODULE): <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF>;
@@ -1422,12 +1487,13 @@ descendant will be returned, otherwise it returns nil.
 [Quick Info]
 Kind=Method
 Visibility=Protected
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetLocationInfo(const Addr: Pointer; var Info: <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>): Boolean;
@@ -1448,12 +1514,13 @@ not exist within the current process, the function returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
@@ -1468,12 +1535,13 @@ Count=1
 If the specified module has debug information the function returns True, otherwise
 False will be returned.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ItemFromModule[const Module: HMODULE]: <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF> read GetItemFromModule;
@@ -1485,12 +1553,13 @@ hasn't been created, it will try to do so.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJclDebugInfoSource</REF> read GetItems;
@@ -1501,12 +1570,13 @@ Items returns the <REF Target"..\..\TJclDebugInfoSource\TJclDebugInfoSource">TJc
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoList
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclDebugInfoMap = class (TJclDebugInfoSource)
@@ -1516,12 +1586,13 @@ Debug info location item for text-base map files.
 TJclDebugInfoMap is the class to hold location information by scanning
 a text-based map file. It uses a TJclMapScanner object to do so.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoMap
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclDebugInfoBinary = class (TJclDebugInfoSource)
@@ -1531,12 +1602,13 @@ Debug info location item for Jcl binary debug data.
 TJclDebugInfoBinary is the class to hold location information by scanning
 a Jcl binary debug data resource. It uses a TJclBinDebugScanner object to do so.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoBinary
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclDebugInfoExports = class (TJclDebugInfoSource)
@@ -1546,12 +1618,13 @@ Debug info location item for Borland export header.
 TJclDebugInfoExports is the class to hold location information by scanning
 a Borland export header for the PE-image. It uses a TJclPeBorImage object to do so.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations\TJclDebugInfoExports
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ModuleFromAddr(const Addr: Pointer): HMODULE;
@@ -1566,14 +1639,15 @@ Count=1
 If the Addr parameter points to an address in code-segment, it returns the
 handle of the module at at that address, otherwise it returns 0.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IsSystemModule(const Module: HMODULE): Boolean;
@@ -1589,14 +1663,15 @@ Count=1
 If the module belongs to the application, the function returns True, otherwise it
 returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Caller(Level: Integer): Pointer;
@@ -1617,14 +1692,15 @@ and so forth.
 The address of the instruction of the routine specified by Level at which execution
 resumes when the function(s) return.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetLocationInfo(const Addr: Pointer): <REF Target"..\..\Types\TJclLocationInfo">TJclLocationInfo</REF>; overload;
@@ -1640,15 +1716,16 @@ Count=1
 This function returns a TJclLocationInfo record filled with any information it
 could find.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False): string;
@@ -1668,15 +1745,16 @@ this parameter is set to True, the module name is inserted right after the addre
 If location info was found, the function returns the formatted info string,
 otherwise it returns a string formatted as <B>[</B><I>Address</I><B>]</B>.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure ClearLocationData;
@@ -1689,14 +1767,15 @@ different modules have been made, this could consume a lot of memory. By clearin
 the list, the memory is release, but items will be added for any location request
 made later on.
 [Quick Info]
-BCB=3,4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function __FILE__(const Level: Integer = 0): string;
@@ -1719,15 +1798,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use FileByLevel instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__MODULE__
@@ -1761,15 +1841,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use ModuleByLevel instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -1802,15 +1883,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use ProcByLevel instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -1843,15 +1925,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use LineByLevel instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -1889,15 +1972,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use MapByLevel instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -1927,15 +2011,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use FileOfAddr instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -1965,15 +2050,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use ModuleOfAddr instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -2003,15 +2089,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use ProcOfAddr instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -2041,15 +2128,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use LineOfAddr instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -2085,15 +2173,16 @@ Count=2
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 2=This function is obsolete. Use MapOfAddr instead.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=__FILE__
@@ -2126,15 +2215,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=ModuleByLevel
@@ -2167,15 +2257,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2207,15 +2298,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2247,15 +2339,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2292,15 +2385,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2329,15 +2423,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2366,15 +2461,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2403,15 +2499,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2440,15 +2537,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2483,15 +2581,16 @@ Count=1
 1=Usage of this function requires building the module with a detailed map file.
 Use the Linker tab in the Project Options dialog to enable creation of a map file.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 Requirements=A detailed map file.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=9
 1=FileByLevel
@@ -2520,15 +2619,16 @@ Count=2
 2=CallerAdr:DWORD=Address of caller
 [Quick Info]
 Kind=Type
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TStackInfo = record
@@ -2558,15 +2658,16 @@ Count=8
 8=DumpPtr:PByteArray=Points to the memory block of the stack frame (only filled if the trace was not a raw stack trace)
 [Quick Info]
 Kind=Type
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclStackInfoItem = class (TObject)
@@ -2575,14 +2676,15 @@ Stack information item
 [Description]
 TStackInfoItem holds stack information.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoItem
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LogicalAddress: DWORD read GetLogicalAddress;
@@ -2592,16 +2694,17 @@ Retreives the logical address for the caller
 LogicalAddress retreives teh logical address for the caller. It does so by
 subtracting the caller's module base address from the caller's address.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoItem
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property StackInfo: TStackInfo read FStackInfo;
@@ -2610,16 +2713,17 @@ Stack information.
 [Description]
 StackInfo holds the actual stack information.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoItem
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclStackBaseList = class (TObjectList)
@@ -2630,14 +2734,15 @@ TJclStackBaseList is the base class for the track list's (TJclStackInfoList and
 TJclExceptFrameList). It provides properties that hold information on the thread
 and timestamp of the info list.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Tracking routines\TJclStackBaseList
 Author=Petr Vones
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ThreadID: DWORD read FThreadID;
@@ -2646,16 +2751,17 @@ ID of thread that made the trace.
 [Description]
 ThreadID is ID of the thread that executed the trace.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Tracking routines\TJclStackBaseList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TimeStamp: TDateTime read FTimeStamp;
@@ -2664,16 +2770,17 @@ Time stamp of list creation
 [Description]
 TimeStamp holds the date and time of creation of the list.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Tracking routines\TJclStackBaseList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclStackInfoList = class (TJclStackBaseList)
@@ -2682,14 +2789,15 @@ Stack information list
 [Description]
 TStackInfoList holds a list of stack information items (<REF Target"..\TJclStackInfoItem\TJclStackInfoItem"TJclStackInfoItem</REF>).
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
@@ -2705,16 +2813,17 @@ when set to True, all DWORDs are checked for valid caller addresses.
 3=FirstCaller:Pointer=If not nil, an explicit TJclStackInfoItem is added to the
 list, pointing to the FirstCaller.
 [Quick Info]
-BCB=4,5
 Kind=Method
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure AddToStrings(const Strings: TStrings; IncludeModuleName: Boolean = False);
@@ -2731,16 +2840,17 @@ Count=2
 If this parameter is set to True, the module name is inserted right after the
 address.
 [Quick Info]
-BCB=4,5
 Kind=Method
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
@@ -2749,16 +2859,17 @@ List of stack info items
 [Description]
 Items is a reference to all stack info items obtained during the trace.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property IgnoreLevels: DWORD read FIgnoreLevels;
@@ -2768,16 +2879,17 @@ Number of levels ignored in the trace
 IgnoreLevels is the number of levels that were ignored when the trace started. This
 number was given upon creation of the list.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ThreadID: DWORD read FThreadID;
@@ -2786,16 +2898,17 @@ ID of thread that made the trace.
 [Description]
 ThreadID is ID of the thread that executed the trace.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TimeStamp: TDateTime read FTimeStamp;
@@ -2804,16 +2917,17 @@ Time stamp of list creation
 [Description]
 TimeStamp holds the date and time of creation of the list.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines\TJclStackInfoList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
@@ -2835,14 +2949,15 @@ A reference to the stack list.
 Count=1
 1=Do not free this object, it's freed internally when a new one needs to be created.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclLastExceptStackList: TJclStackInfoList;
@@ -2858,14 +2973,15 @@ A reference to the last generated stack list.
 Count=1
 1=Do not free this object, it's freed internally when a new one needs to be created.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Stack info routines
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 JmpInstruction = packed record
@@ -2884,15 +3000,16 @@ Count=2
 Count=1
 1=This type is copied from System.pas
 [Quick Info]
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TExcDescEntry = record
@@ -2911,15 +3028,16 @@ Count=2
 Count=1
 1=This type is copied from System.pas
 [Quick Info]
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PExcDesc = ^TExcDesc;
@@ -2948,15 +3066,16 @@ Count=4
 Count=1
 1=This type is copied from System.pas
 [Quick Info]
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 PExcFrame = ^TExcFrame;
@@ -2989,15 +3108,16 @@ the compiler to allow for destruction of the object when an exception occured.
 Count=1
 1=This type is copied from System.pas
 [Quick Info]
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Borland
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
@@ -3021,15 +3141,16 @@ references).
 5=efkAutoException=A try..except frame for an automated method declared with
 the safecall directive (these are implicit frames inserted by the compiler).
 [Quick Info]
-BCB=4,5
 Kind=Type
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptFrame = class(TObject)
@@ -3038,14 +3159,15 @@ Except frame item.
 [Description]
 TJclExceptFrame holds information on an except frame.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AExcFrame: <REF Target"..\Types\PExcFrame">PExcFrame</REF>);
@@ -3061,14 +3183,15 @@ item for.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Handles(ExceptObj: TObject): Boolean;
@@ -3089,14 +3212,15 @@ returns False.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
@@ -3120,14 +3244,15 @@ exception the function returns False and HandlerAt will be undefined.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function CodeLocation: Pointer;
@@ -3145,14 +3270,15 @@ the "official" location.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ExcFrame: PExcFrame read FExcFrame;
@@ -3164,14 +3290,15 @@ the memory pointed to by ExcFrame
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property FrameKind: TExceptFrameKind read FFrameKind;
@@ -3184,14 +3311,15 @@ to any of the known Borland handlers.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrame
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptFrameList = class(TJclStackBaseList)
@@ -3200,14 +3328,15 @@ List of except frame item.
 [Description]
 TJclExceptFrameList holds a list of <REF Target"..\TJclExceptFrame\TJclExceptFrame">except frame items</REF>.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=TJclExceptFrame;..\TJclExceptFrame\TJclExceptFrame
@@ -3225,14 +3354,15 @@ Count=1
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure TraceExceptionFrames;
@@ -3243,14 +3373,15 @@ TraceExceptionFrames clears the current list and traces the except frames stack.
 [Quick Info]
 Kind=Method
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: TJclExceptFrame read GetItems;
@@ -3262,14 +3393,15 @@ trace.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property IgnoreLevels: Integer read FIgnoreLevels write FIgnoreLevels;
@@ -3281,14 +3413,15 @@ number of levels to ignore on the next trace.
 [Quick Info]
 Kind=Property
 Visibility=Public
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ThreadID: DWORD read FThreadID;
@@ -3297,16 +3430,17 @@ ID of thread that made the trace.
 [Description]
 ThreadID is ID of the thread that executed the trace.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TimeStamp: TDateTime read FTimeStamp;
@@ -3315,16 +3449,17 @@ Time stamp of list creation
 [Description]
 TimeStamp holds the date and time of creation of the list.
 [Quick Info]
-BCB=4,5
 Kind=Property
 Visibility=Public
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclCreateExceptFrameList(AIgnoreLevels: Integer): <REF Target"TJclExceptFrameList\TJclExceptFrameList">TJclExceptFrameList</REF>;
@@ -3344,14 +3479,15 @@ A reference to the exception frame list.
 Count=1
 1=Do not free this object, it's freed internally when a new one needs to be created.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclLastExceptFrameList: TJclExceptFrameList;
@@ -3369,14 +3505,15 @@ A reference to the last generated exception frame list.
 Count=1
 1=Do not free this object, it's freed internally when a new one needs to be created.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
@@ -3392,14 +3529,15 @@ Count=3
 this parameter is True, otherwise it is False.
 [Quick Info]
 Kind=Type
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=TJclExceptNotifyMethod
@@ -3420,14 +3558,15 @@ Count=3
 this parameter is True, otherwise it is False.
 [Quick Info]
 Kind=Type
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=TJclExceptNotifyProc
@@ -3447,14 +3586,15 @@ and / or except frame tracking to occur automatically on any exception.
 [Result]
 If the hook was succesful, the function returns True, otherwise it returns False.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=JclUnhookExceptions
@@ -3473,14 +3613,15 @@ JclUnhookExceptions disables the exception hooking.
 If exceptions where hooked and the function succeeded in unhooking them, the
 function returns True, otherwise it returns False.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=JclHookExceptions
@@ -3498,14 +3639,15 @@ JclExceptionsHooked determines if exceptions are currently hooked.
 [Result]
 If exceptions are hooked, the function returns True, otherwise it returns False.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=JclHookExceptions
@@ -3524,14 +3666,15 @@ which gets called when an exception occurs and exceptions are hooked through a
 previous call to JclHookExceptions.
 [Quick Info]
 Kind=Variable
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=JclHookExceptions
@@ -3550,14 +3693,15 @@ which gets called when an exception occurs and exceptions are hooked through a
 previous call to JclHookExceptions.
 [Quick Info]
 Kind=Variable
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=JclHookExceptions
@@ -3575,14 +3719,15 @@ StackTrackingEnable is a flag that enables or disables automatic stack tracking
 when exception hooking is on.
 [Quick Info]
 Kind=Variable
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=5
 1=ExceptionFrameTrackingEnable
@@ -3600,14 +3745,15 @@ RawStackTracking is a flag that enables or disables raw stack tracking
 when exception hooking is on and stack tracking is enabled.
 [Quick Info]
 Kind=Variable
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=4
 1=StackTrackingEnable
@@ -3624,14 +3770,15 @@ ExceptionFrameTrackingEnable is a flag that enables or disables exception frame
 tracking when exception hooking is on.
 [Quick Info]
 Kind=Variable
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=6
 1=JclHookExceptions;..\JclHookExceptions
@@ -3652,14 +3799,15 @@ modules are reported in the stack list, otherwise only addresses that are within
 a Borland module are reported.
 [Quick Info]
 Kind=Variable
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Exception hooking
 Author=Petr Vones
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
@@ -3695,14 +3843,15 @@ stored.
 6=JclDebugDataSize:Integer=Variable where the size of the binary debug data will
 be stored.
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Helpers
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ExtractClassName(const ProcedureName: string): string;
@@ -3720,14 +3869,15 @@ Count=1
 1=ProcedureName:string=Name of a procedure as returned by ProcOfAddr/ProcByLevel
 or the _Proc parameter of MapByLevel/MapOfAddr
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ExtractMethodName(const ProcedureName: string): string;
@@ -3745,11 +3895,12 @@ Count=1
 1=ProcedureName:string=Name of a procedure as returned by ProcOfAddr/ProcByLevel
 or the _Proc parameter of MapByLevel/MapOfAddr
 [Quick Info]
-BCB=4,5
 Unit=JclDebug
 Category=Debugging
 SubCat=Source Locations
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
