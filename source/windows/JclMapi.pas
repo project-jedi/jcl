@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 20, 2001                                              }
+{ Last modified: January 21, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -1030,7 +1030,7 @@ begin
   Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
   Result := Strings.Count - Cnt;
   Strings.Add('');
-  Strings.Add(WrapText(Body, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+  Strings.Add(WrapText(Body, AnsiCrLf, [AnsiTab, AnsiSpace, '-'], MaxWidth));
 end;
 
 //------------------------------------------------------------------------------
