@@ -4,6 +4,8 @@ Summary:
   TJclSmartCompOptions is a set of flags which determine how comparison of function names within the TJclPeImage module is performed. Using these options you can specify, for example, whether such a comparison should be case sensitive or not.
 Description:
   TJclSmartCompOptions is a set of flags which determine how comparison of function names within the TJclPeImage module is performed. Using these options you can specify, for example, whether such a comparison should be case sensitive or not.
+See also:
+  PeSmartFunctionNameSame
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -30,6 +32,8 @@ Parameters:
   FunctionName - Name of a function as it appears in the import or export section of an image file.
 Result:
   The base name of the supplied function.
+See also:
+  PeSmartFunctionNameSame
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -53,6 +57,8 @@ Parameters:
 Result:
   If the two function names are considered equal the function returns True, otherwise
   it returns False.
+See also:
+  PeStripFunctionAW
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -108,6 +114,8 @@ Description:
   such it remains the responsibility of the caller to free that instance eventually.
 Parameters:
   AImage - Reference to a TJclPeImage instance for which the class is created. The reference will be available for later use through the Image property.
+See also:
+  TJclPeImage
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -2698,6 +2706,8 @@ Description:
   The ExportList property returns a TJclPeExportFuncList instance which allows
   access to the export section (.edata) of the loaded PE image file.
   See TJclPeExportFuncList for more information.
+See also:
+  TJclPeExportFuncList
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -2716,6 +2726,8 @@ Description:
   instance was constructed, loading an invalid image file may either raise an
   exception or not. In any case the Status is updated to reflect success
   or failure.
+See also:
+  Status
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -2762,6 +2774,9 @@ Description:
   The ImageSectionCount property returns the number of sections in the loaded
   PE image file. The returned Count minus one, is the highest valid index into
   the ImageSectionHeader and ImageSectionNames properties.
+See also:
+  ImageSectionNames
+  ImageSectionHeaders
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -2781,6 +2796,9 @@ Description:
   For the interpretation of the fields in the returned header see the Platform SDK
   and "Portable Executable and Common Object File Format Specification"
   Revision 6.0 February 1999 in the MSDN library.
+See also:
+  ImageSectionCount
+  ImageSectionNames
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -2797,6 +2815,9 @@ Description:
   The ImageSectionNames array property returns the name of the section indicated
   by the index. Valid indices are from 0 to ImageSectionCount - 1. Returned names
   are always 8 characters or shorter. Common names are ".reloc", ".text" and ".data".
+See also:
+  ImageSectionCount
+  ImageSectionHeaders
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -2873,6 +2894,8 @@ Description:
   The MappedAddress property returns the (virtual) base address at which the PE
   file was loaded. The returned value is identical to LoadedImage.MappedAddress
   and is only provided for convenience (it's often used field).
+See also:
+  LoadedImage
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -3517,6 +3540,8 @@ Summary:
 Description:
   Record used by the PeRebaseImage function to return information about
   a rebase operation.
+See also:
+  PeRebaseImage
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -3592,6 +3617,8 @@ Result:
   The function returns a TJclRebaseImageInfo
   record which contains information about the rebase such as the new base address
   and image size. If the function fails it raises an EWin32Error exception.
+See also:
+  TJclRebaseImageInfo
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
@@ -3632,6 +3659,8 @@ Parameters:
 Result:
   If the image exports the specified function the function returns True, otherwise
   it returns False.
+See also:
+  TJclSmartCompOptions
 Quick info:
   Unit: JclPeImage
   Category: Libraries, Processes and Threads
