@@ -85,7 +85,7 @@ unit JclUnicode;
 //     there are limitations like maximum text lengths). Under Win9x conversions
 //     from and to MBCS are necessary which are bound to a particular locale and
 //     so very limited in general use. These comparisons should be changed so that
-//     the code in this unit is used. 
+//     the code in this unit is used.
 
 interface
 
@@ -903,7 +903,7 @@ var
   First,
   Second: Byte;
   J, K: Integer;
-  
+
 begin
   // Data already loaded?
   if not CategoriesLoaded then
@@ -958,7 +958,7 @@ function CategoryLookup(Code: Cardinal; Cats: TCharacterCategories): Boolean; ov
 var
   First,
   Second: Byte;
-  
+
 begin
   // load property data if not already done
   if not CategoriesLoaded then
@@ -1145,7 +1145,7 @@ const
 type
   TDecompositions = array of TUCS4Array;
   TDecompositionsArray = array[Byte] of TDecompositions;
-  
+
 var
   // list of decompositions, organized (again) as two stage matrix
   // Note: there are two tables, one for canonical decompositions and the other one
@@ -1312,7 +1312,7 @@ var
   Buffer: TRangeArray;
   First,
   Second: Byte;
-  
+
 begin
   // make sure no other code is currently modifying the global data area
   if LoadInProgress = nil then
@@ -1366,7 +1366,7 @@ function CanonicalCombiningClass(Code: Cardinal): Cardinal;
 var
   First,
   Second: Byte;
-  
+
 begin
   // load combining class data if not already done
   if not CCCsLoaded then
@@ -1476,7 +1476,7 @@ end;
 
 type
   // maps between a pair of code points to a composite code point
-  // Note: the source pair is packed into one 4 byte value to speed up search. 
+  // Note: the source pair is packed into one 4 byte value to speed up search.
   TCompositionPair = record
     Code: Cardinal;
     Composition: UCS4;
@@ -2361,7 +2361,7 @@ var
   I: Integer;
   Run,
   ListEnd: PUCS2;
-  
+
 begin
   Run := np;
   ListEnd := Run + Limit;
@@ -2822,7 +2822,7 @@ var
   I: Integer;
   Run,
   ListEnd: PUCS2;
-  
+
 begin
   I := 0;
   Code := 0;
@@ -4217,7 +4217,7 @@ var
   Start, Stop: Cardinal;
   Run: PWideChar;
   RunLen: Cardinal;
-  
+
 begin
   ClearResults;
   Run := Text;
@@ -4336,7 +4336,7 @@ var
   I: Integer;
   S: WideString;
   CP: Integer;
-  
+
 begin
   BeginUpdate;
   try
@@ -4429,7 +4429,7 @@ var
   I: Integer;
   S: string;
   CP: Integer;
-  
+
 begin
   if Dest is TStrings then
   begin
@@ -4605,7 +4605,7 @@ var
   S: WideString;
   P: PWideChar;
   I, Count: Integer;
-  
+
 begin
   Count := GetCount;
   if (Count = 1) and (Get(0) = '') then
@@ -4703,7 +4703,7 @@ function TWideStrings.GetValue(const Name: WideString): WideString;
 
 var
   I: Integer;
-  
+
 begin
   I := IndexOfName(Name);
   if I >= 0 then
@@ -4768,7 +4768,7 @@ procedure TWideStrings.LoadFromFile(const FileName: string);
 
 var
   Stream: TStream;
-  
+
 begin
   try
     Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
@@ -4889,7 +4889,7 @@ end;
 procedure TWideStrings.SaveToStream(Stream: TStream; WithBOM: Boolean = True);
 
 // Saves the currently loaded text into the given stream. WithBOM determines whether to write a
-// byte order mark or not. Note: when saved as ANSI text there will never be a BOM. 
+// byte order mark or not. Note: when saved as ANSI text there will never be a BOM.
 
 var
   SW, BOM: WideString;
@@ -5041,7 +5041,7 @@ procedure TWideStrings.SetNormalizationForm(const Value: TNormalizationForm);
 
 var
   I: Integer;
-  
+
 begin
   if FNormalizationForm <> Value then
   begin
@@ -5082,7 +5082,7 @@ var
   Len: Integer;
   W: WideString;
   Value: TValueType;
-  
+
 begin
   Value := vaWString;
   W := GetText;
@@ -5098,7 +5098,7 @@ destructor TWideStringList.Destroy;
 
 begin
   Clear;
-  
+
   inherited;
 end;
 
@@ -5508,7 +5508,7 @@ asm
        AND     ECX, 1
        REP     MOVSW
        JMP     @@2
-         
+
 @@1:
        LEA     ESI, [ESI + 2 * ECX - 2]
        LEA     EDI, [EDI + 2 * ECX - 2]
@@ -5772,7 +5772,7 @@ begin
     Folded1 := Folded1 + WideCaseFolding(Str1^);
     Inc(Str1);
   end;
-  
+
   Folded2 := '';
   while Str2^ <> #0 do
   begin
@@ -6055,7 +6055,7 @@ asm
        SUB     ECX, ESI
        JBE     @@2
        MOV     EDI, EBX
-       LEA     EBX, [ESI - 1] 
+       LEA     EBX, [ESI - 1]
 @@1:
        MOV     ESI, EDX
        LODSW
@@ -6417,7 +6417,7 @@ function WideTrimLeft(const S: WideString): WideString;
 
 var
   I, L: Integer;
-  
+
 begin
   L := Length(S);
   I := 1;
@@ -6624,7 +6624,7 @@ begin
       // A swap is presumed to be rare (and a double-swap very rare),
       // so don't worry about efficiency here.
       if (CurrentClass > LastClass) and (LastClass > 0) then
-      begin                                        
+      begin
         // swap characters
         Temp := S[I];
         S[I] := S[I + 1];
@@ -6675,7 +6675,7 @@ var
   I, J: Integer;
   Decomp: TUCS4Array;
 
-begin  
+begin
   Result := '';
   Decomp := nil;
 
@@ -7400,7 +7400,7 @@ end;
 // I need to fix a problem (introduced by MS) here. The first parameter can be a pointer
 // (and is so defined) or can be a normal DWORD, depending on the dwFlags parameter.
 // As usual, lpSrc has been translated to a var parameter. But this does not work in
-// our case, hence the redeclaration of the function with a pointer as first parameter. 
+// our case, hence the redeclaration of the function with a pointer as first parameter.
 
 function TranslateCharsetInfoEx(lpSrc: PDWORD; var lpCs: TCharsetInfo; dwFlags: DWORD): BOOL; stdcall;
   external 'gdi32.dll' name 'TranslateCharsetInfo';
@@ -7410,7 +7410,7 @@ function CharSetFromLocale(Language: LCID): TFontCharSet;
 var
   CP: Cardinal;
   CSI: TCharsetInfo;
-  
+
 begin
   CP:= CodePageFromLocale(Language);
   TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
@@ -7641,7 +7641,7 @@ function StringToWideStringEx(const S: string; CodePage: Word): WideString;
 
 var
   L: Integer;
-  
+
 begin
   L:= MultiByteToWideChar(CodePage, 0, PChar(S), -1, nil, 0);
   SetLength(Result, L - 1);
