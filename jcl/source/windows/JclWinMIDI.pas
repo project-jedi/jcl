@@ -78,7 +78,7 @@ var
 function MidiOutputs: TStrings;
 var
   I: Integer;
-  Caps: TMidiOutCaps;
+  Caps: MIDIOUTCAPS;
 begin
   if FMidiOutputs = nil then
   begin
@@ -146,7 +146,7 @@ type
   private
     FHandle: HMIDIOUT;
     FDeviceID: Cardinal;
-    FDeviceCaps: TMidiOutCaps;
+    FDeviceCaps: MIDIOUTCAPS;
     FVolume: DWord;
     function GetChannelVolume(Channel: TStereoChannel): Word;
     procedure SetChannelVolume(Channel: TStereoChannel; const Value: Word);
@@ -223,7 +223,7 @@ end;
 
 procedure TMidiOut.LongMessage(const Data: array of Byte);
 var
-  Hdr: TMidiHdr;
+  Hdr: MIDIHDR;
 begin
   FillChar(Hdr, SizeOf(Hdr), 0);
   Hdr.dwBufferLength := High(Data) - Low(Data) + 1;;
