@@ -20,7 +20,7 @@
 { Description: Various pointer and class related routines.                                         }
 { Unit Owner: Jeroen Speldekamp                                                                    }
 {                                                                                                  }
-{ Last modified: November 27, 2003                                                                 }
+{ Last modified: January 19, 2004                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1246,12 +1246,12 @@ end;
 procedure SetVMTPointer(AClass: TClass; Offset: Integer; Value: Pointer);
 var
   WrittenBytes: DWORD;
-  PatchAddress: Pointer;
+  PatchAddress: PPointer;
 begin
-  PatchAddress := PPointer(Integer(AClass) + Offset)^;
+  PatchAddress := Pointer(Integer(AClass) + Offset);
   //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
   // better VirtualProtect, direct patch, VirtualProtect
-  if not WriteProtectedMemory(PatchAddress, Value, SizeOf(Pointer), WrittenBytes) then
+  if not WriteProtectedMemory(PatchAddress, @Value, SizeOf(Value), WrittenBytes) then
     raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
 
   if WrittenBytes <> SizeOf(Pointer) then
@@ -1430,8 +1430,19 @@ end;
 //==================================================================================================
 
 procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
+var
+  WrittenBytes: DWORD;
+  PatchAddress: Pointer;
 begin
-  SetVMTPointer(AClass, vmtParent, @NewClassParent);
+  PatchAddress := PPointer(Integer(AClass) + vmtParent)^;
+  //! StH: WriteProcessMemory IMO is not exactly the politically correct approach;
+  // better VirtualProtect, direct patch, VirtualProtect
+  if not WriteProtectedMemory(PatchAddress, @NewClassParent, SizeOf(Pointer), WrittenBytes) then
+    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [SysErrorMessage(GetLastError)]);
+  if WrittenBytes <> SizeOf(Pointer) then
+    raise EJclVMTError.CreateResRecFmt(@RsVMTMemoryWriteError, [IntToStr(WrittenBytes)]);
+  // make sure that everything keeps working in a dual processor setting
+  FlushInstructionCache(GetCurrentProcess, PatchAddress, SizeOf(Pointer));
 end;
 
 //--------------------------------------------------------------------------------------------------
