@@ -145,12 +145,7 @@ Result:
   If the specified handle is valid the function returns True. If the specified
   handle is invalid the function returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IsDebuggerAttached
 <GROUP Debugging.Miscellanuous>
@@ -164,12 +159,7 @@ Result:
   If the current process is running in the context of a debugger, the return value is True.
   If the current process is not running in the context of a debugger, the return value is False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EnableCrashOnCtrlScroll
 <GROUP Debugging.Miscellanuous>
@@ -186,14 +176,7 @@ Parameters:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 2000 or later.
-  Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
 @@AssertKindOf
 <GROUP Debugging.Diagnostics>
@@ -208,12 +191,7 @@ Parameters:
   ClassName - Name of the class to test Obj for.
   Obj - The object to test.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@Trace
 <GROUP Debugging.Diagnostics>
@@ -230,14 +208,7 @@ See also:
   TraceLoc
   TraceLocFmt
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TraceFmt
 <GROUP Debugging.Diagnostics>
@@ -258,14 +229,7 @@ See also:
   TraceLoc
   TraceLocFmt
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TraceLoc
 <GROUP Debugging.Diagnostics>
@@ -288,15 +252,7 @@ See also:
   TraceFmt
   TraceLocFmt
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@TraceLocFmt
 <GROUP Debugging.Diagnostics>
@@ -319,15 +275,7 @@ See also:
   TraceFmt
   TraceLoc
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@TJclMapAddress
 <GROUP Debugging.SourceLocations.MapParsers>
@@ -336,12 +284,7 @@ Summary:
 Description:
   TJclMapAddress holds location information in notifiers of the map parsers.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclMapAddress.Segment
   Segment number of item.
 @@TJclMapAddress.Offset
@@ -355,12 +298,7 @@ Description:
   PJclMapString holds a map-file specific string. Use the MapStringToString class
   function to convert it to a normal string.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser
 <GROUP Debugging.SourceLocations.MapParsers.TJclAbstractMapParser>
@@ -369,12 +307,7 @@ Summary:
 Description:
   TJclAbstractMapParser is an abstract base class for a MAP-file parser.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.ClassTableItem
 Summary:
@@ -388,13 +321,7 @@ Parameters:
    - Section name of the class item (eg. ".text").
    - Class name of the class item (eg. "CODE").
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.SegmentItem
 Summary:
@@ -408,13 +335,7 @@ Parameters:
   GroupName - Class name of the segment item (eg. "CODE").
   UnitName - Delphi unit name of the segment item (eg. "System").
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.PublicsByNameItem
 Summary:
@@ -428,13 +349,7 @@ Parameters:
   Address - Address of the public item.
   Name - Name of the public item.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.PublicsByValueItem
 Summary:
@@ -448,13 +363,7 @@ Parameters:
   Address - Address of the public item.
   Name - Name of the public item.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LineNumberUnitItem
 Summary:
@@ -467,13 +376,7 @@ Parameters:
   UnitName - Name of the unit.
   UnitFileName - Name of the source file.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LineNumbersItem
 Summary:
@@ -486,13 +389,7 @@ Parameters:
   LineNumber - Line number for the item.
   Address - Starting address for the line number.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Create
 Summary:
@@ -506,13 +403,7 @@ Description:
 Parameters:
   MapFileName - Name of the map-file to associate with the parser.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Destroy
 Summary:
@@ -520,13 +411,7 @@ Summary:
 Description:
   Destroy frees up all internal objects before freeing this instance.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Parse
 Summary:
@@ -536,13 +421,7 @@ Description:
   different methods for items found in the file. Descendants override these methods
   to store it in an internal structure.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.MapStringToStr
 Summary:
@@ -560,13 +439,7 @@ Result:
   If MapString = nil the function returns an empty string, otherwise it returns
   translated version of the string.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.Stream
 Summary:
@@ -574,13 +447,7 @@ Summary:
 Description:
   Stream holds the a reference to the map file assigned by the Create method.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LinkerBug
 Summary:
@@ -592,13 +459,7 @@ Description:
 See also:
   LinkerBugUnit
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclAbstractMapParser.LinkerBugUnitName
 Summary:
@@ -609,13 +470,7 @@ Description:
 See also:
   LinkerBug
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser
 <GROUP Debugging.SourceLocations.MapParsers.TJclMapParser>
@@ -625,12 +480,7 @@ Description:
   TJclMapParser is a class for a generic MAP-file parser. Items are reported to
   the user through event calls.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnClassTable
 Summary:
@@ -639,13 +489,7 @@ Description:
   OnClassTable is the event handler for a class item in the map file. It get's called by
   the ClassTableItem method when the parser finds a class table item.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnSegment
 Summary:
@@ -654,13 +498,7 @@ Description:
   OnSegment is the event handler for a segment item (i.e.. a Delphi unit) in the map file.
   It gets called by the SegmentItem method when the parser finds a segment item.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnPublicsByName
 Summary:
@@ -671,13 +509,7 @@ Description:
   It gets called by the PublicsByNameItem method when the parser finds a public item in
   the "Publics By Name"-section.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnPublicsByValue
 Summary:
@@ -688,13 +520,7 @@ Description:
   It gets called by the PublicsByValueItem method when the parser finds a public item in
   the "Publics By Value"-section.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnLineNumberUnit
 Summary:
@@ -704,13 +530,7 @@ Description:
   of the map file. It gets called by the LineNumberUnitItem method when the parser
   finds a unit declaration in the lines section.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapParser.OnLineNumbers
 Summary:
@@ -720,13 +540,7 @@ Description:
   of the map file. It gets called by the LineNumbers method when the parser finds
   a unit declaration in the lines section.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner
 <GROUP Debugging.SourceLocations.MapParsers.TJclMapScanner>
@@ -736,12 +550,7 @@ Description:
   TJclMapScanner is a map file scanner. The class scans the map file and holds the
   result for later reference.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.Scan
 Summary:
@@ -750,13 +559,7 @@ Description:
   Scan scans the map file specified by Create and stores the result for later
   reference.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.Create
 Summary:
@@ -768,13 +571,7 @@ Description:
 Parameters:
   MapFileName - Name of the map-file to associate with the parser.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.LineNumberFromAddr
 Summary:
@@ -791,13 +588,7 @@ See also:
   ProcNameFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.ModuleNameFromAddr
 Summary:
@@ -814,13 +605,7 @@ See also:
   ProcNameFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.ModuleStartFromAddr
 Summary:
@@ -838,13 +623,7 @@ See also:
   ProcNameFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.ProcNameFromAddr
 Summary:
@@ -861,13 +640,7 @@ See also:
   ModuleStartFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclMapScanner.SourceNameFromAddr
 Summary:
@@ -884,13 +657,7 @@ See also:
   ModuleStartFromAddr
   ProcNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@JclDbgDataSignature
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -899,12 +666,7 @@ Summary:
 Description:
   JclDbgDataSignature is the signature of the Jcl Binary Debug Data
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@JclDbgDataResName
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -913,12 +675,7 @@ Summary:
 Description:
   JclDbgDataResName is the resource name for Jcl Binary Debug Data.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@JclDbgFileExtension
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -927,12 +684,7 @@ Summary:
 Description:
   JclDbgFileExtension is the extension for Jcl Binary Debug Data File.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator
 <GROUP Debugging.SourceLocations.BinaryDebugData.TJclBinDebugGenerator>
@@ -942,12 +694,7 @@ Description:
   TJclBinDebugGenerator translates the text based map file created by the linker into
   a smaller, binary version. The result is saved in a memory stream.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.CreateData
 Summary:
@@ -961,13 +708,7 @@ Description:
   4 bytes instead of 8-byte hex-string). This results in a considerable savings on
   needed space.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.Create
 Summary:
@@ -980,13 +721,7 @@ Description:
 Parameters:
   MapFileName - Name of the map-file to associate with the parser.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.CalculateCheckSum
 Summary:
@@ -997,13 +732,7 @@ Result:
   If the checksum could be calculated the function returns True, otherwise it returns
   False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugGenerator.DataStream
 Summary:
@@ -1011,13 +740,7 @@ Summary:
 Description:
   DataStream holds the result of the translation.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner
 <GROUP Debugging.SourceLocations.BinaryDebugData.TJclBinDebugScanner>
@@ -1029,12 +752,7 @@ Description:
   a TJclBinDebugGenerator-object
   and saving the DataStream to a file.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.Create
 Summary:
@@ -1047,13 +765,7 @@ Parameters:
   AStream - Stream with binary debug data.
   CacheData - If set to true, data read from the stream is internally cached.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.IsModuleNameValid
 Summary:
@@ -1066,13 +778,7 @@ Result:
   If the specified filename belongs to this module the function returns True,
   otherwise it returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.LineNumberFromAddr
 Summary:
@@ -1089,13 +795,7 @@ See also:
   ProcNameFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ModuleNameFromAddr
 Summary:
@@ -1112,13 +812,7 @@ See also:
   ProcNameFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ModuleStartFromAddr
 Summary:
@@ -1136,13 +830,7 @@ See also:
   ProcNameFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ProcNameFromAddr
 Summary:
@@ -1159,13 +847,7 @@ See also:
   ModuleStartFromAddr
   SourceNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.SourceNameFromAddr
 Summary:
@@ -1180,13 +862,7 @@ See also:
   ModuleStartFromAddr
   ProcNameFromAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclBinDebugScanner.ValidFormat
 Summary:
@@ -1194,13 +870,7 @@ Summary:
 Description:
   ValidFormat is true if the data in the specified stream is valid binary debug data.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ConvertMapFileToJdbgFile
 <GROUP Debugging.SourceLocations.BinaryDebugData>
@@ -1210,12 +880,7 @@ Description:
   ConvertMapFileToJdbgFile convert the specified text based map file to a Jcl binary
   debug file.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclLocationInfo
 <GROUP Debugging.SourceLocations>
@@ -1225,13 +890,7 @@ Description:
   TJclLocationInfo is the structure returned in various routines and methods that
   request location info for a specific address.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 @@TJclLocationInfo.Address
   Nearest address of the request.
 @@TJclLocationInfo.UnitName
@@ -1255,12 +914,7 @@ Description:
   Descendants should override the InitializeSource
   and GetLocationInfo methods.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.InitializeSource
 Summary:
@@ -1270,13 +924,7 @@ Description:
 Result:
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.Create
 Summary:
@@ -1288,13 +936,7 @@ Description:
 Parameters:
   AModule - Module handle to create debug info for.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.GetLocationInfo
 Summary:
@@ -1310,13 +952,7 @@ Result:
   function returns True and Info will hold the information for the specified address.
   If the address does not exist within the module, the function returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.Module
 Summary:
@@ -1324,13 +960,7 @@ Summary:
 Description:
   Module holds the module handle this instance has been created for.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoSource.FileName
 Summary:
@@ -1338,13 +968,7 @@ Summary:
 Description:
   FileName holds the file name of the module this instance has been created for.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList
 <GROUP Debugging.SourceLocations.TJclDebugInfoList>
@@ -1354,12 +978,7 @@ Description:
   TJclDebugInfoList holds a list of TJclDebugInfoSource
   items requested. Items are created when needed, not when the list is created.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.CreateDebugInfo
 Summary:
@@ -1380,13 +999,7 @@ Result:
   If debug info could be obtained for the specified module, a TJclDebugInfoSource
   descendant will be returned, otherwise it returns nil.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Protected
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.GetLocationInfo
 Summary:
@@ -1402,13 +1015,7 @@ Result:
   and Info will hold the information for the specified address. If the address does
   not exist within the current process, the function returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DebugInfoAvailable
 <GROUP Debugging.SourceLocations>
@@ -1422,12 +1029,7 @@ Result:
   If the specified module has debug information the function returns True, otherwise
   False will be returned.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.ItemFromModule
 Summary:
@@ -1436,13 +1038,7 @@ Description:
   ItemFromModule returns a TJclDebugInfoSource-item for the specified module. If the item
   hasn't been created, it will try to do so.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoList.Items
 Summary:
@@ -1450,13 +1046,7 @@ Summary:
 Description:
   Items returns the TJclDebugInfoSource-item at the specified index.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoMap
 <GROUP Debugging.SourceLocations.TJclDebugInfoMap>
@@ -1466,12 +1056,7 @@ Description:
   TJclDebugInfoMap is the class to hold location information by scanning
   a text-based map file. It uses a TJclMapScanner object to do so.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoBinary
 <GROUP Debugging.SourceLocations.TJclDebugInfoBinary>
@@ -1481,12 +1066,7 @@ Description:
   TJclDebugInfoBinary is the class to hold location information by scanning
   a Jcl binary debug data resource. It uses a TJclBinDebugScanner object to do so.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDebugInfoExports
 <GROUP Debugging.SourceLocations.TJclDebugInfoExports>
@@ -1496,12 +1076,7 @@ Description:
   TJclDebugInfoExports is the class to hold location information by scanning
   a Borland export header for the PE-image. It uses a TJclPeBorImage object to do so.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ModuleFromAddr
 <GROUP Debugging.SourceLocations>
@@ -1515,14 +1090,7 @@ Result:
   If the Addr parameter points to an address in code-segment, it returns the
   handle of the module at at that address, otherwise it returns 0.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@IsSystemModule
 <GROUP Debugging.SourceLocations>
@@ -1537,14 +1105,7 @@ Result:
   If the module belongs to the application, the function returns True, otherwise it
   returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@Caller
 <GROUP Debugging.SourceLocations>
@@ -1562,14 +1123,7 @@ Result:
   The address of the instruction of the routine specified by Level at which execution
   resumes when the function(s) return.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@GetLocationInfo
 <GROUP Debugging.SourceLocations>
@@ -1583,15 +1137,7 @@ Result:
   This function returns a TJclLocationInfo record filled with any information it
   could find.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@GetLocationInfoStr
 <GROUP Debugging.SourceLocations>
@@ -1609,15 +1155,7 @@ Result:
   If location info was found, the function returns the formatted info string,
   otherwise it returns a string formatted as <B>[</B><I>Address</I><B>]</B>.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@ClearLocationData
 <GROUP Debugging.SourceLocations>
@@ -1630,14 +1168,7 @@ Description:
   the list, the memory is release, but items will be added for any location request
   made later on.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@__FILE__
 <GROUP Debugging.SourceLocations>
@@ -1665,15 +1196,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__MODULE__
 <GROUP Debugging.SourceLocations>
@@ -1701,15 +1224,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__PROC__
 <GROUP Debugging.SourceLocations>
@@ -1737,15 +1252,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__LINE__
 <GROUP Debugging.SourceLocations>
@@ -1773,15 +1280,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__MAP__
 <GROUP Debugging.SourceLocations>
@@ -1812,15 +1311,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__FILE_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1846,15 +1337,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__MODULE_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1880,15 +1363,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__PROC_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1914,15 +1389,7 @@ See also:
   __LINE_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__LINE_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1948,15 +1415,7 @@ See also:
   __PROC_OF_ADDR__
   __MAP_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@__MAP_OF_ADDR__
 <GROUP Debugging.SourceLocations>
@@ -1987,15 +1446,7 @@ See also:
   __PROC_OF_ADDR__
   __LINE_OF_ADDR__
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@FileByLevel
 <GROUP Debugging.SourceLocations>
@@ -2022,15 +1473,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@ModuleByLevel
 <GROUP Debugging.SourceLocations>
@@ -2057,15 +1500,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@ProcByLevel
 <GROUP Debugging.SourceLocations>
@@ -2092,15 +1527,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@LineByLevel
 <GROUP Debugging.SourceLocations>
@@ -2127,15 +1554,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@MapByLevel
 <GROUP Debugging.SourceLocations>
@@ -2165,15 +1584,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@FileOfAddr
 <GROUP Debugging.SourceLocations>
@@ -2198,15 +1609,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@ModuleOfAddr
 <GROUP Debugging.SourceLocations>
@@ -2231,15 +1634,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@ProcOfAddr
 <GROUP Debugging.SourceLocations>
@@ -2264,15 +1659,7 @@ See also:
   LineOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@LineOfAddr
 <GROUP Debugging.SourceLocations>
@@ -2297,15 +1684,7 @@ See also:
   ProcOfAddr
   MapOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@MapOfAddr
 <GROUP Debugging.SourceLocations>
@@ -2335,15 +1714,7 @@ See also:
   ProcOfAddr
   LineOfAddr
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
-  Requirements: A detailed map file.
 --------------------------------------------------------------------------------
 @@TStackFrame
 <GROUP Debugging.Stackinforoutines>
@@ -2352,14 +1723,7 @@ Summary:
 Description:
   TStackFrame holds stack frame information.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TStackFrame.CallersEBP
   Callers EBP register
 @@TStackFrame.CallerAdr
@@ -2375,14 +1739,7 @@ Summary:
 Description:
   TStackInfo holds stack information.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TStackInfo.CallerAdr
   Return address  (the address of the caller)
 @@TStackInfo.Level
@@ -2407,14 +1764,7 @@ Summary:
 Description:
   TStackInfoItem holds stack information.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoItem.LogicalAddress
 Summary:
@@ -2423,15 +1773,7 @@ Description:
   LogicalAddress retreives teh logical address for the caller. It does so by
   subtracting the caller's module base address from the caller's address.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoItem.StackInfo
 Summary:
@@ -2439,15 +1781,7 @@ Summary:
 Description:
   StackInfo holds the actual stack information.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackBaseList
 <GROUP Debugging.Trackingroutines.TJclStackBaseList>
@@ -2458,14 +1792,7 @@ Description:
   TJclExceptFrameList). It provides properties that hold information on the thread
   and timestamp of the info list.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackBaseList.ThreadID
 Summary:
@@ -2473,15 +1800,7 @@ Summary:
 Description:
   ThreadID is ID of the thread that executed the trace.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackBaseList.TimeStamp
 Summary:
@@ -2489,15 +1808,7 @@ Summary:
 Description:
   TimeStamp holds the date and time of creation of the list.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoList
 <GROUP Debugging.Stackinforoutines.TJclStackInfoList>
@@ -2506,14 +1817,7 @@ Summary:
 Description:
   TStackInfoList holds a list of stack information items ().
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.Create
 Summary:
@@ -2525,15 +1829,7 @@ Parameters:
   AIgnoreLevels - Number of callers to ignore upon tracing.
   FirstCaller - If not nil, an explicit TJclStackInfoItem is added to the list, pointing to the FirstCaller.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.AddToStrings
 Summary:
@@ -2546,15 +1842,7 @@ Parameters:
   String - TStrings descendant to retreive the stack trace in.
   IncludeModuleName - Should the module name be included in each string. If this parameter is set to True, the module name is inserted right after the address.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.Items
 Summary:
@@ -2562,15 +1850,7 @@ Summary:
 Description:
   Items is a reference to all stack info items obtained during the trace.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclStackInfoList.IgnoreLevels
 Summary:
@@ -2579,15 +1859,7 @@ Description:
   IgnoreLevels is the number of levels that were ignored when the trace started. This
   number was given upon creation of the list.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 
 
@@ -2607,14 +1879,7 @@ Result:
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@JclLastExceptStackList
 <GROUP Debugging.Stackinforoutines>
@@ -2629,14 +1894,7 @@ Result:
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJmpInstruction
 <GROUP Debugging.Exceptframeinforoutines>
@@ -2647,14 +1905,7 @@ Description:
 Notes:
   This type is copied from System.pas
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Borland
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TJmpInstruction.OpCode
   OpCode for the JMP instruction.
 @@TJmpInstruction.Distance
@@ -2672,14 +1923,7 @@ Description:
 Notes:
   This type is copied from System.pas
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Borland
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TExcDescEntry.VTable
   Pointer to the Virtual Method table of an Exception class.
 @@TExcDescEntry.Handler
@@ -2702,14 +1946,7 @@ Description:
 Notes:
   This type is copied from System.pas
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Borland
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TExcDesc.JMP
   Holds the JMP-instruction incase of Borland code
 @@TExcDesc.Instructions
@@ -2735,14 +1972,7 @@ Description:
 Notes:
   This type is copied from System.pas
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Borland
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TExcFrame.Next
   Link to next except frame or -1(!) if there is no next frame.
 @@TExcFrame.Desc
@@ -2766,14 +1996,7 @@ Description:
   often inserts implicit frames around a method, function or procedure. For these
   frames source code location routines can be of by 1 line.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 @@TExceptFrameKind.efkUnknown
   Unknown exception frame (most likely an exception frame inside a non-Borland library.
 @@TExceptFrameKind.efkFinally
@@ -2792,14 +2015,7 @@ Summary:
 Description:
   TJclExceptFrame holds information on an except frame.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.Create
 Summary:
@@ -2810,15 +2026,7 @@ Description:
 Parameters:
   AExcFrame - Reference to the except frame on the stack to create this item for.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.Handles
 Summary:
@@ -2835,15 +2043,7 @@ Result:
   If the frame will handle the exception the function returns True, otherwise it
   returns False.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.HandlerInfo
 Summary:
@@ -2863,15 +2063,7 @@ Result:
   parameter will contain the address of the handler. If the frame won't handle the
   exception the function returns False and HandlerAt will be undefined.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.CodeLocation
 Summary:
@@ -2886,15 +2078,7 @@ Result:
   return the destination of that address, otherwise the function just returns
   the "official" location.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.ExcFrame
 Summary:
@@ -2903,15 +2087,7 @@ Description:
   ExcFrame is a reference to except frame on the stack. It is not wise to modify
   the memory pointed to by ExcFrame
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrame.FrameKind
 Summary:
@@ -2921,15 +2097,7 @@ Description:
   determined when the object is created by checking the code and see if it jumps
   to any of the known Borland handlers.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList
 <GROUP Debugging.Exceptframeinforoutines.TJclExceptFrameList>
@@ -2940,14 +2108,7 @@ Description:
 See also:
   TJclExceptFrame
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.Create
 Summary:
@@ -2958,15 +2119,7 @@ Description:
 Parameters:
   AIgnoreLevels - Number of levels to ignore on tracing.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.TraceExceptionFrames
 Summary:
@@ -2974,15 +2127,7 @@ Summary:
 Description:
   TraceExceptionFrames clears the current list and traces the except frames stack.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.Items
 Summary:
@@ -2991,15 +2136,7 @@ Description:
   Items is a reference to the list of except frame object found during the last
   trace.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptFrameList.IgnoreLevels
 Summary:
@@ -3008,15 +2145,7 @@ Description:
   IgnoreLevels shows the number of levels ignored on the last trace or sets the
   number of levels to ignore on the next trace.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
-  Visibility: Public
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 
 
@@ -3035,14 +2164,7 @@ Result:
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@JclLastExceptFrameList
 <GROUP Debugging.Exceptframeinforoutines>
@@ -3059,14 +2181,7 @@ Result:
 Notes:
   Do not free this object, it's freed internally when a new one needs to be created.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptNotifyProc
 <GROUP Debugging.Exceptionhooking>
@@ -3083,14 +2198,7 @@ See also:
   ExceptNotifyProc
   ExceptNotifyMethod
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TJclExceptNotifyMethod
 <GROUP Debugging.Exceptionhooking>
@@ -3107,14 +2215,7 @@ See also:
   ExceptNotifyProc
   ExceptNotifyMethod
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@JclHookExceptions
 <GROUP Debugging.Exceptionhooking>
@@ -3135,14 +2236,7 @@ See also:
   ExceptNotifyMethod
   ExceptionFrameTrackingEnable
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@JclUnhookExceptions
 <GROUP Debugging.Exceptionhooking>
@@ -3160,14 +2254,7 @@ See also:
   ExceptNotifyMethod
   ExceptionFrameTrackingEnable
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@JclExceptionsHooked
 <GROUP Debugging.Exceptionhooking>
@@ -3184,14 +2271,7 @@ See also:
   ExceptNotifyMethod
   ExceptionFrameTrackingEnable
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ExceptNotifyProc
 <GROUP Debugging.Exceptionhooking>
@@ -3208,14 +2288,7 @@ See also:
   ExceptNotifyMethod
   ExceptionFrameTrackingEnable
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ExceptNotifyMethod
 <GROUP Debugging.Exceptionhooking>
@@ -3232,14 +2305,7 @@ See also:
   ExceptNotifyProc
   ExceptionFrameTrackingEnable
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@StackTrackingEnable
 <GROUP Debugging.Exceptionhooking>
@@ -3255,14 +2321,7 @@ See also:
   JclUnhookExceptions
   JclExceptionsHooked
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@RawStackTracking
 <GROUP Debugging.Exceptionhooking>
@@ -3277,14 +2336,7 @@ See also:
   JclUnhookExceptions
   JclExceptionsHooked
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Hallvard Vassbotn
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ExceptionFrameTrackingEnable
 <GROUP Debugging.Exceptionhooking>
@@ -3301,14 +2353,7 @@ See also:
   ExceptNotifyMethod
   StackTrackingEnable
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Marcel Bestebroer
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@TrackAllModules
 <GROUP Debugging.Exceptionhooking>
@@ -3320,14 +2365,7 @@ Description:
   modules are reported in the stack list, otherwise only addresses that are within
   a Borland module are reported.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@InsertDebugDataIntoExecutableFile
 <GROUP Debugging.Helpers>
@@ -3352,14 +2390,7 @@ Result:
   result, it will also return the unit for the linker bug (if any found), the map
   file size and the binary debug data size.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ExtractClassName
 <GROUP Debugging.SourceLocations>
@@ -3375,14 +2406,7 @@ Result:
   If the given procedure name contains a '.', the string before the '.' will be
   returned, otherwise an empty string is returned.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ExtractMethodName
 <GROUP Debugging.SourceLocations>
@@ -3398,12 +2422,4 @@ Result:
   If the given procedure name contains a '.', the string after the '.' is returned,
   otherwise the entire string is returned.
 Quick info:
-  Unit: JclDebug
-  Category: Debugging
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
-  Windows NT/2000: Requires Windows NT 4 or later.
-  Windows 95/98: Requires Windows 95 or later.
---------------------------------------------------------------------------------
