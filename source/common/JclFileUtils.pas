@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: April 21, 2003                                                                    }
+{ Last modified: September 22, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -45,14 +45,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics,
-  {$ENDIF VisualCLX}
   Classes, SysUtils;
-
+  
 //--------------------------------------------------------------------------------------------------
 // replacements for defective Libc.pas declarations
 //--------------------------------------------------------------------------------------------------
@@ -114,10 +108,6 @@ function PathCommonPrefix(const Path1, Path2: string): Integer;
 {$IFDEF MSWINDOWS}
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string; overload;
-{$IFDEF VCL}
-function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width: Integer;
-  CmpFmt: TCompactPath): string; overload;
-{$ENDIF VCL}
 {$ENDIF MSWINDOWS}
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
@@ -169,9 +159,7 @@ procedure EnumDirectories(const Root: string; const HandleDirectory: TFileHandle
 {$IFDEF MSWINDOWS}
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
-{$IFNDEF VisualCLX}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
-{$ENDIF not def VisualCLX}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
@@ -225,10 +213,8 @@ function GetSizeOfFile(const FileName: string): Int64; overload;
 function GetSizeOfFile(const FileInfo: TSearchRec): Int64; overload;
 {$IFDEF MSWINDOWS}
 function GetSizeOfFile(Handle: THandle): Int64; overload;
-{$ENDIF MSWINDOWS}
-{$IFNDEF VisualCLX}
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
-{$ENDIF not def VisualCLX}
+{$ENDIF MSWINDOWS}
 function IsDirectory(const FileName: string): Boolean;
 function IsRootDirectory(const FileName: string): Boolean;
 {$IFDEF MSWINDOWS}
@@ -244,9 +230,7 @@ function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): B
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
-{$IFNDEF VisualCLX}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
-{$ENDIF not def VisualCLX}
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 function Win32RestoreFile(const FileName: string): Boolean;
 {$ENDIF MSWINDOWS}
@@ -885,11 +869,8 @@ implementation
 uses
   {$IFDEF MSWINDOWS}
   ActiveX, ShellApi, ShlObj,
-  JclSecurity, JclWin32, JclDateTime,
+  JclSecurity, JclWin32, JclShell, JclDateTime, JclSysInfo, 
   {$ENDIF MSWINDOWS}
-  {$IFNDEF VisualCLX}
-  JclSysInfo, JclShell,
-  {$ENDIF not def VisualCLX}
   JclResources, JclStrings, JclSysUtils;
 
 { Some general notes:
@@ -973,7 +954,7 @@ end;
 // TJclFileMappingView
 //==================================================================================================
 
-{$IFDEF VisualCLX} // Helper functions, if JclSysInfo not available
+{$IFNDEF MSWINDOWS} // Helper functions, if JclSysInfo not available
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1013,7 +994,7 @@ begin
       Value := Pointer((Cardinal(Value) div AllocGranularity) * AllocGranularity);
 end;
 
-{$ENDIF VisualCLX}
+{$ENDIF not def MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1955,18 +1936,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF VCL}
-
-function PathCompactPath(const Canvas: TCanvas; const Path: string;
-  const Width: Integer; CmpFmt: TCompactPath): string; overload;
-begin
-  Result := PathCompactPath(Canvas.Handle, Path, Width, CmpFmt);
-end;
-
-{$ENDIF VCL}
-
-//--------------------------------------------------------------------------------------------------
-
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 begin
   Drive := ExtractFileDrive(Source);
@@ -2408,8 +2377,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF VisualCLX}
-
 // todoc author Jeff
 
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -2419,8 +2386,6 @@ begin
   else
     Result := DelTree(DirectoryName);
 end;
-
-{$ENDIF not def VisualCLX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2440,6 +2405,14 @@ var
   PartialResult: Boolean;
   Attr: DWORD;
 begin
+  Assert(Path <> '', RsDelTreePathIsEmpty);
+{$IFOPT C-}
+  if Path = '' then
+  begin
+    Result := False;
+    Exit;
+  end;
+{$ENDIF ASSERTIONS OFF}
   Result := True;
   Files := TStringList.Create;
   try
@@ -3140,7 +3113,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF VisualCLX}
+{$IFDEF MSWINDOWS}
 
 function GetStandardFileInfo(const FileName: string): TWin32FileAttributeData;
 var
@@ -3174,7 +3147,7 @@ begin
   end;
 end;
 
-{$ENDIF not def VisualCLX}
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3471,8 +3444,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF VisualCLX}
-
 // todoc Author: Jeff
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -3482,8 +3453,6 @@ begin
   else
     Result := Windows.DeleteFile(PChar(FileName));
 end;
-
-{$ENDIF not def VisualCLX}
 
 //--------------------------------------------------------------------------------------------------
 
