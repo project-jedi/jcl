@@ -263,22 +263,37 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@StrCenter
-<GROUP Stringmanipulation.StringTransformationRoutines>
-Summary:
-  Centers a string.
-Description:
-  The StrCenter routine takes the specified string and pads it on both the left
-  and right side with the specified character until the resulting string is of the
-  specified length. While doing this the original string is kept centered. That is,
-  there is the same amount of padding at the left side as there is on the right side.
-Parameters:
-  S - The string to center.
-  L - The desired length of the resulting string.
-  C - The character to use for padding.
-Result:
-  The centered string.
-Quick info:
-  Unit: JclStrings
+<GROUP $Stringmanipulation.StringTransformationRoutines>
+
+Description
+The StrCenter routine takes the specified string and pads it
+on both the left and right side with the specified character
+until the resulting string is of the specified length. While
+doing this the original string is kept centered. That is,
+there is the same amount of padding at the left side as there
+is on the right side.
+
+If the specified length is smaller than the length of the
+original the string remains unchanged. In cases where an odd
+number of padding chars have to be inserted there is always
+one more padding char on the right side than on the left
+side. 
+
+
+
+Summary
+Centers a string.
+
+Parameters
+C :   The character to use for padding.
+L :   The desired length of the resulting string.
+S :   The string to center.
+
+Returns
+The centered string.
+
+QuickInfo
+ Unit: JclStrings
   Category: String manipulation
   Donator: Alexander Radchenko
   Delphi Versions: 4,5,6
@@ -291,7 +306,9 @@ Summary:
   Returns a double-quoted version of the string.
 Description:
   StrDoubleQuote returns a copy of the string encapsulated in double quotes (").
-  That is, if you pass in 'Project JEDI' you'll get '"Project JEDI"' back.
+  That is, if you pass in 'Project JEDI' you'll get '"Project JEDI"' back. If double
+  quotes (") are already at the beginning and the end of the string they are added again.
+  If they should be added only if they are not already there use StrQuote instead.
 Parameters:
   S - The string to encapsulate in quotes. Even an empty string.
 Result:
@@ -1136,7 +1153,7 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@StrCompare
-<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+<GROUP Stringmanipulation.StringTestRoutines>
 Summary:
   Compares two strings.
 Description:
@@ -2673,3 +2690,342 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@StrRepeatLength@AnsiString@Integer
+<GROUP $Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Repeats a string until a specified length L has been reached.
+Description:
+  The StrRepeatLength routine returns a string consisting of
+  the specified string, repeated until the length of the string
+  is exactly L. For example StrRepeatLength('JEDI!', 12) returns
+  'JEDI!JEDI!JE'.
+Parameters:
+  S - The string to repeat.
+  L - Length of the resulting string.
+Returns:
+  A string consisting of the specified string, repeated until
+  the length of the string is exactly L.
+QuickInfo:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrCharPosLower@AnsiString@Integer
+<GROUP $Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Lowercases a character within a string.
+Description:
+  The StrCharPosLower routine returns a string with the specified character in lowercase.
+  If the character is already lowercase the function does nothing.
+Parameters:
+  S - The string which contains the character.
+  CharPos - The position of the character within the string to convert.
+QuickInfo:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Jean-Fabien Connault
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrCharPosUpper@AnsiString@Integer
+<GROUP $Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Uppercases a character within a string.
+Description:
+  The StrCharPosUpper routine returns a string with the specified character in uppercase.
+  If the character is already uppercase the function does nothing.
+Parameters:
+  S - The string which contains the character.
+  CharPos - The position of the character within the string to convert.
+QuickInfo:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Jean-Fabien Connault
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrTrimCharsLeft
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes characters from the left side of supplied string.
+Description:
+  StrTrimCharsLeft removes all characters defined in the "Chars" set from
+  the left side of the string.
+Parameters:
+  S - The string to trim.
+Result:
+  The trimmed string.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Leonard Wennekers
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrTrimCharsRight
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Removes characters from the right side of supplied string.
+Description:
+  StrTrimCharsLeft removes all characters defined in the "Chars" set from
+  the right side of the string.
+Parameters:
+  S - The string to trim.
+Result:
+  The trimmed string.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Leonard Wennekers
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@AnsiSameText
+<GROUP Stringmanipulation.Miscellaneous>
+Summary:
+ AnsiSameText compares two strings.
+Description:
+  AnsiSameText compares the two supplied ANSI strings and returns whether or not they are
+  identical. AnsiSameText is case insensitive and uses the users local settings for
+  comparisation. For more information please refer to the Windows API CompareString function.
+Parameters:
+  S1 - First string to compare
+  S2 - Second string to compare
+Result:
+  AnsiSameText returns 0 (CSTR_EQUAL) if the two strings match.
+Quick info:
+  Unit: JclStrings
+  Category: Backward compatability
+  Donator: JCL Team
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrAnsiToOem
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Translates an ANSI string into a string using the OEM character set.
+Description:
+  The StrAnsiToOem function translates an ansi string into a string using the
+  OEM defined character set.
+Parameters:
+  S - The string to translate.
+Result:
+  The translated string.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrOemToAnsi
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Translates an OEM string into an ansi string.
+Description:
+  The StrOemToAnsi function translated a string using the OEM defined character set
+  into an ansi string.
+Parameters:
+  S - The string to translate.
+Result:
+  The translated string.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrCharsCount
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Counts the occurrences of characters in a string.
+Description:
+  StrCharsCount returns the number of occurrences of the specified characters in the
+  supplied string.
+Parameters:
+  S - Source string.
+  Chars - The characters which occurrences to count.
+Result:
+  The number of occurrences of Chars in S.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrKeepChars
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Keeps all occurences of specified characters within a string and removes the
+  others.
+Description:
+  StrKeepChars keeps all occurences of the characters specified in the Chars set
+  and removes any other characters from the string.
+  For example, if you pass in 'Joint Endeavour of Delphi Innovators' and specify
+  ['e', 'a', 'o', 'u', 'i', ' '] the resulting string will be 'oi eaou o ei oao'.
+Parameters:
+  S - The source string from which to remove the characters.
+  Chars - The set of characters to keep within S.
+Result:
+  A string containing only characters which are within Chars.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrReplace
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  StrReplace replaces one or all occurrences of the specified search pattern with the supplied replace
+  string.
+Description:
+  StrReplace replaces one or all occurrences of the specified search pattern with the supplied replace
+  string. The flags determine how the search is done and if only one or if all occurrences should
+  be replaced.
+
+  TReplaceFlags = [rfIgnoreCase, rfReplaceAll]
+
+  If rfIgnoreCase is is within the flags the search is performed case insenitive, otherwise
+  it is case sensitive. If rfReplaceAll is specified StrReplace replaces all occurrences otherwise
+  only the first one.
+Parameters:
+  S - The source string.
+  Search - The substring to replace.
+  Replace - The string to use as a replacement of Search.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Robert Lee
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrReplaceChar
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Replaces all occurrences of a character with another character
+Description:
+  StrReplaceChar replaces all occurrences of the specified search character with the supplied
+  replace character. Note that the replacement is case-sensitive.
+Parameters:
+  S - The source string.
+  Search - The character to replace.
+  Replace - The character to use as a replacement of Search.
+Result:
+  The string with all replacements performed.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrReplaceChars
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Replaces all occurrences of one or more characters with another character.
+Description:
+  StrReplaceChars replaces all occurrences of the specified search character(s) with the
+  supplied replace character. Note that the replacement is case-sensitive.
+Parameters:
+  S - The string in which to replace characters.
+  Chars - The character(s) to replace.
+  Replace - The character to use as a replacement of the characters definied in Chars.
+Result
+  The string with all replacements performed.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrReplaceButChars
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Replaces all occurrences of one or more characters with another character.
+Description:
+  StrReplaceButChars replaces all occurrences of characters which are not within the specified
+  search character(s) with the supplied replace character. Note that the replacement is case-sensitive.
+Parameters:
+  S - The string in which to replace characters.
+  Chars - The characters which should not be replaced.
+  Replace - The character to use as replacement.
+Result:
+  The string with all replacements performed.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrMatches
+<GROUP Stringmanipulation.StringTestRoutines>
+Summary:
+  Compares two strings.
+Description:
+  StrMatches compares two given strings. The search starts at the supplied index and is case-insensitive.
+  The specified sub-string may contain wildcards. The '?' wildcard matches 1 character
+  while the '*' wildcard matches 0 or more occurrences of a character. For example, 'J?DI'
+  will find 'JEDI', 'JZDI' and 'JODI' (and more) while 'J*I' will find 'JEDI' and 'JI'.
+Parameters:
+  Substr - The sub-string to search for. May contain wildcards.
+  Str - The string in which to search.
+  Index - The index in Str at which to start the search.
+Result:
+  True if Str and Substr are equal.
+See also:
+  StrSearch
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Michael Winter
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrNormIndex
+Summary:
+  Normalizes Index and count parameter.
+Description:
+  StrNormIndex is a auxiliary function for normalizations of Index
+  and Count parameters transfered in string functions.
+  Index and Count parameters are normalized as in standard Delphi
+  function System.Delete.
+
+  Str     Index Count => Index Count
+  '12345' 2     3        2     3
+  '12345' 2     <0       2     0
+  '12345' 2     >4       2     4
+  '12345' <1    3        1     3
+  '12345' <1    <0       1     0
+  '12345' <1    >5       1     5
+  '12345' >5    Any      6     0
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: Alexander Radchenko
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+
