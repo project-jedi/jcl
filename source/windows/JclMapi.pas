@@ -796,7 +796,7 @@ end;
 
 function TJclEmail.FindNextMessage: Boolean;
 var
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
   Flags, Res: ULONG;
 begin
   Result := False;
@@ -867,7 +867,7 @@ var
   MapiMessage: TMapiMessage;
   Flags, Res: DWORD;
   I: Integer;
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
 begin
   if not AnyClientInstalled then
     raise EJclMapiError.CreateResRec(@RsMapiMailNoClient);
@@ -1035,7 +1035,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TJclEmail.Read(const Options: TJclEmailReadOptions ): Boolean;
+function TJclEmail.Read(const Options: TJclEmailReadOptions): Boolean;
 var
   Flags: ULONG;
   Msg: PMapiMessage;
@@ -1159,7 +1159,4 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
-
 end.
-
