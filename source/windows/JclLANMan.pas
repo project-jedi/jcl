@@ -22,7 +22,7 @@
 { tasks. As the name implies, it uses the LAN Manager API.                     }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: July 16, 2001                                                 }
+{ Last modified: August 24, 2001                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -56,9 +56,9 @@ type
     wkrReplicator, wkrEveryone);
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
-  Homedir, Script: string): boolean;
+  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
 function CreateLocalAccount(const Username, Fullname, Password, Description,
-  Homedir, Script: string): Boolean;
+  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
 function DeleteAccount(const Servername, Username: string): Boolean;
 function DeleteLocalAccount(Username: string): Boolean;
 function CreateLocalGroup(const Server, Groupname, Description: string): Boolean;
@@ -86,7 +86,7 @@ uses
 //------------------------------------------------------------------------------
 
 function CreateAccount(const Server, Username, Fullname, Password, Description,
-  Homedir, Script: string): boolean;
+  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
 var
   wServer, wUsername, wFullname,
   wPassword, wDescription, wHomedir, wScript: WideString;
@@ -111,8 +111,11 @@ begin
     usri2_comment := PWideChar(wDescription);
     usri2_priv := USER_PRIV_USER;
     usri2_flags := UF_SCRIPT;
+    if PassWordNeverExpires then
+      usri2_flags := usri2_flags or UF_DONT_EXPIRE_PASSWD;
     usri2_script_path := PWideChar(wScript);
     usri2_home_dir := PWideChar(wHomedir);
+    usri2_acct_expires := TIMEQ_FOREVER;
   end;
 
   err := NetUserAdd(PWideChar(wServer), 2, @details, @parmErr);
@@ -122,9 +125,10 @@ end;
 //------------------------------------------------------------------------------
 
 function CreateLocalAccount(const Username, Fullname, Password, Description,
-  Homedir, Script: string): boolean;
+  Homedir, Script: string; const PasswordNeverExpires: boolean = true): boolean;
 begin
-  Result := CreateAccount('', Username, Fullname, Password, Description, Homedir, Script);
+  Result := CreateAccount('', Username, Fullname, Password, Description, Homedir,
+    Script, PassWordNeverExpires);
 end;
 
 //------------------------------------------------------------------------------
