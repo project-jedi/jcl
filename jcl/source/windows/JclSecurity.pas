@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: August 9, 2000                                                }
+{ Last modified: December 24, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -135,30 +135,33 @@ var
 begin
   Result := False;
   psidAdmin := nil;
-  HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_QUERY, True, Token);
-  if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
-  begin
-    HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, Token);
-  end;
-  if HaveToken then
-  begin
-    Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
-      SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
-      psidAdmin));
-    Win32Check(GetTokenInformation(Token, TokenGroups, nil, 0, Count));
-    TokenInfo := PTokenGroups(AllocMem(Count));
-    Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
-    for I := 0 to TokenInfo^.GroupCount - 1 do
+  TokenInfo := nil;
+  HaveToken := False;
+  try
+    HaveToken := OpenThreadToken(GetCurrentThread, TOKEN_QUERY, True, Token);
+    if (not HaveToken) and (GetLastError = ERROR_NO_TOKEN) then
+      HaveToken := OpenProcessToken(GetCurrentProcess, TOKEN_QUERY, Token);
+    if HaveToken then
     begin
-      {$R-} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
-      Result := EqualSid(psidAdmin, TokenInfo^.Groups[I].Sid);
-      {$R+}
-      if Result then
-        Break;
+      Win32Check(AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
+        SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0,
+        psidAdmin));
+      if GetTokenInformation(Token, TokenGroups, nil, 0, Count) or
+        (GetLastError <> ERROR_INSUFFICIENT_BUFFER) then RaiseLastWin32Error;
+      TokenInfo := PTokenGroups(AllocMem(Count));
+      Win32Check(GetTokenInformation(Token, TokenGroups, TokenInfo, Count, Count));
+      for I := 0 to TokenInfo^.GroupCount - 1 do
+      begin
+        {$R-} // Groups is an array [0..0] of TSIDAndAttributes, ignore ERangeError
+        Result := EqualSid(psidAdmin, TokenInfo^.Groups[I].Sid);
+        {$R+}
+        if Result then Break;
+      end;
     end;
-    FreeMem(TokenInfo);
-    CloseHandle(Token);
-    FreeSid(psidAdmin);
+  finally
+    if TokenInfo <> nil then FreeMem(TokenInfo);
+    if HaveToken then CloseHandle(Token);
+    if psidAdmin <> nil then FreeSid(psidAdmin);
   end;
 end;
 
