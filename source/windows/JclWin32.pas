@@ -162,14 +162,24 @@ uses
 
 // {$HPPEMIT '#include <AclAPI.h>'}
 {$HPPEMIT '#include <BaseTsd.h>'}
+{$IFDEF BCB5}
+{$HPPEMIT '#define LONG64 System::LONG64'} // to lift ambiguities in BCB5
+{$ENDIF BCB5}
 {$HPPEMIT '#include <ImageHlp.h>'}
+{$IFDEF BCB5}
+{$HPPEMIT '#undef LONG64'} // to lift ambiguities in BCB5
+{$ENDIF BCB5}
 {$HPPEMIT '#include <LMaccess.h>'}
 {$HPPEMIT '#include <LMAPIbuf.h>'}
 {$HPPEMIT '#include <LMcons.h>'}
 {$HPPEMIT '#include <LMErr.h>'}
 {$HPPEMIT '#include <nb30.h>'}
 // {$HPPEMIT '#include <ntstatus.h>'}
+
+{$IFDEF COMPILER6_UP}
 {$HPPEMIT '#include <Reason.h>'}
+{$ENDIF COMPILER6_UP}
+
 {$HPPEMIT '#include <RasDlg.h>'}
 // {$HPPEMIT '#include <ShlObj.h>'}
 {$HPPEMIT '#include <ShlWApi.h>'}
@@ -1669,9 +1679,8 @@ const
 {$IFNDEF FPC}
 type
   // COM+ 2.0 header structure.
-  { TODO : Why Compiler6? }
-  // {$IFDEF COMPILER6_UP} {$EXTERNALSYM IMAGE_COR20_HEADER} {$ENDIF}
-  {$EXTERNALSYM IMAGE_COR20_HEADER}
+  { IMAGE_COR20_HEADER is already defined in BCB6 but not in BCB5 }
+  {$IFDEF COMPILER6_UP} {$EXTERNALSYM IMAGE_COR20_HEADER} {$ENDIF}
   IMAGE_COR20_HEADER = packed record
     // Header versioning
     cb: DWORD;
@@ -4024,6 +4033,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.20  2004/05/28 14:00:46  obones
+// BCB5 compatibility
+//
 // Revision 1.19  2004/05/06 05:09:55  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //
