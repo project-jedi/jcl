@@ -846,6 +846,54 @@ Author=Azret Botash;azret@attglobal.net
 Delphi=3,4,5
 <DECL>-------------------------------------------------------------------------
 [Declaration]
+function StrTrimCharLeft(const S: AnsiString; C: AnsiChar): AnsiString;
+[ShortDescr]
+Removes leading characters from a string.
+[Description]
+The StrTrimCharLeft routine removes leading characters from the specified string.
+For example, StrTrimCharLeft('000123', '0') returns '123'.
+[Parameters]
+Count=2
+1=S:AnsiString=The source string from which the leading characters need to be removed.
+2=C:AnsiChar=The character to remove
+[Result]
+The function returns the source string S without any leading characters C.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Transformation Routines
+Author=Jack N.A. Bakker;JACKB@Europdonor.NL
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrTrimCharRight
+<DECL>-------------------------------------------------------------------------
+[Declaration]
+function StrTrimCharRight(const S: AnsiString; C: AnsiChar): AnsiString;
+[ShortDescr]
+Removes trailing characters from a string.
+[Description]
+The StrTrimCharRight routine removes trailing characters from the specified string.
+For example, StrTrimCharRight('123000', '0') returns '123'.
+[Parameters]
+Count=2
+1=S:AnsiString=The source string from which the trailing characters need to be removed.
+2=C:AnsiChar=The character to remove
+[Result]
+The function returns the source string S without any trailing characters C.
+[Quick Info]
+BCB=3,4,5
+Unit=JclStrings
+Category=String manipulation
+SubCat=String Transformation Routines
+Author=Jack N.A. Bakker;JACKB@Europdonor.NL
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StrTrimCharLeft
+<DECL>-------------------------------------------------------------------------
+[Declaration]
 function StrUpper(const S: AnsiString): AnsiString;
 [ShortDescr]
 Uppercases all characters in a string
