@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: Before February, 1, 2001                                                           }
-{ Last modified: October 1, 2003                                                                   }
+{ Last modified: October 14, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -55,8 +55,7 @@ unit JclEDI;
 interface
 
 uses
-  SysUtils, Classes,
-  JclBase;
+  SysUtils, Classes, JclBase{, Dialogs};
 
 const
   NA_LoopId = 'N/A'; // Constant used for loop id comparison
@@ -73,7 +72,7 @@ var
 {$ENDIF}
 
 type
-  TEDIObject = class(TObject); //Base EDI Object
+  TEDIObject = class(TObject); // Base EDI Object
   TEDIObjectArray = array of TEDIObject;
 
   EJclEDIError = EJclError;
@@ -213,7 +212,7 @@ type
     {$ENDIF}
   published
     property CreateObjectType: TEDIDataObjectType read FCreateObjectType;
-    property EDIDataObjectCount: Integer read GetCount; //[recommended instead of Length(EDIDataObject)]
+    property EDIDataObjectCount: Integer read GetCount;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -304,9 +303,68 @@ type
   end;
 
 //--------------------------------------------------------------------------------------------------
+//  EDI Loop Stack
+//--------------------------------------------------------------------------------------------------
+
+  TEDILoopStackRecord = record
+    SegmentId: string;
+    SpecStartIndex: Integer;
+    OwnerLoopId: string;
+    ParentLoopId: string;
+    EDIObject: TEDIObject;
+  end;
+
+  TEDILoopStackArray = array of TEDILoopStackRecord;
+
+  TEDILoopStackFlags = (ediAltStackPointer, ediStackResized, ediLoopRepeated);
+
+  TEDILoopStackFlagSet = set of TEDILoopStackFlags;
+
+  TEDILoopStackOnAddLoopEvent = procedure(StackRecord: TEDILoopStackRecord;
+    SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject) of object;
+
+  TEDILoopStack = class(TEDIObject)
+  private
+    function GetSize: Integer;
+  protected
+    FStack: TEDILoopStackArray;
+    FFlags: TEDILoopStackFlagSet;
+    FCheckAssignedEDIObject: Boolean;
+    FOnAddLoop: TEDILoopStackOnAddLoopEvent;
+    procedure DoAddLoop(StackRecord: TEDILoopStackRecord;
+      SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    // Basic Stack Routines
+    function Peek: TEDILoopStackRecord; overload;
+    function Peek(Index: Integer): TEDILoopStackRecord; overload;
+    procedure Pop(Index: Integer);
+    function Push(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+      EDIObject: TEDIObject): Integer;
+    // Extended Stack Routines
+    function GetSafeStackIndex(Index: Integer): Integer;
+    function SetStackPointer(OwnerLoopId, ParentLoopId: string): Integer;
+    procedure UpdateStackObject(EDIObject: TEDIObject);
+    procedure UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+      EDIObject: TEDIObject);
+    // Extended Stack Routines
+    function ValidateLoopStack(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+      EDIObject: TEDIObject): TEDILoopStackRecord;
+    function Debug: string;
+    //
+    property Stack: TEDILoopStackArray read FStack;
+  published
+    property Size: Integer read GetSize;
+    property Flags: TEDILoopStackFlagSet read FFlags write FFlags;
+    property OnAddLoop: TEDILoopStackOnAddLoopEvent read FOnAddLoop write FOnAddLoop;    
+  end;
+
+//--------------------------------------------------------------------------------------------------
 //  Other
 //--------------------------------------------------------------------------------------------------
 
+// Compatibility functions
 function StringRemove(const S, Pattern: string; Flags: TReplaceFlags): string;
 function StringReplace(const S, OldPattern, NewPattern: string; Flags: TReplaceFlags): string;
 
@@ -411,19 +469,22 @@ begin
     SearchResult := StrSearch(SearchPattern, SearchString, SearchResult);
   end;
   SetLength(Result, Length(S) + ((ReplacePatternLength - SearchPatternLength) * ReplaceCount));
-  // Shift the characters
+  // Copy the characters by looping through the result and source at the same time
   ReplaceCount := 0;
   ReplaceIndex := 1;
   SearchIndex := 1;
+  // Loop while the indexes are still in range
   while (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) do
   begin
+    // Enter algorithm if replacing a pattern or there have been no replacements yet
     if (rfReplaceAll in Flags) or ((not (rfReplaceAll in Flags)) and (ReplaceCount = 0)) then
     begin
+      // Replace the pattern (including repeating patterns)
       while Copy(SearchString, SearchIndex, SearchPatternLength) = SearchPattern do
       begin
         // Move forward in the search string
         SearchIndex := SearchIndex + Length(SearchPattern);
-        // Replace old pattern
+        // Replace an old pattern by writing the new pattern to the result
         I := 1;
         while (ReplaceIndex <= Length(Result)) and (I <= ReplacePatternLength) do
         begin
@@ -431,25 +492,32 @@ begin
           Inc(I);
           Inc(ReplaceIndex);
         end;
+        // 
         Inc(ReplaceCount);
+        // If only making one replacement then break
         if not (rfReplaceAll in Flags) then Break;
       end;
-    end;
+    end; // if
 
+    // Copy character
     if (ReplaceIndex <= Length(Result)) and (SearchIndex <= Length(SearchString)) then
       Result[ReplaceIndex] := S[SearchIndex];
 
-    if not (rfReplaceAll in Flags) then
-      Break;
+    if ReplacePatternLength > 0 then
+      if not (rfReplaceAll in Flags) then
+        Break;
 
+    // Set indexes for next copy
     Inc(SearchIndex);
     Inc(ReplaceIndex);
-  end;
+  end; //while
 end;
 
 //==================================================================================================
 // TEDIDelimiters
 //==================================================================================================
+
+{ TEDIDelimiters }
 
 constructor TEDIDelimiters.Create;
 begin
@@ -493,6 +561,8 @@ end;
 //==================================================================================================
 // TEDIDataObject
 //==================================================================================================
+
+{ TEDIDataObject }
 
 constructor TEDIDataObject.Create(Parent: TEDIDataObject);
 begin
@@ -554,6 +624,8 @@ end;
 //==================================================================================================
 // TEDIDataObjectGroup
 //==================================================================================================
+
+{ TEDIDataObjectGroup }
 
 function TEDIDataObjectGroup.AddEDIDataObjects(Count: Integer): Integer;
 var
@@ -1019,6 +1091,8 @@ end;
 // TEDIObjectListItem
 //==================================================================================================
 
+{ TEDIObjectListItem }
+
 constructor TEDIObjectListItem.Create(Parent: TEDIObjectList;
   PriorItem: TEDIObjectListItem; EDIObject: TEDIObject = nil);
 begin
@@ -1084,6 +1158,8 @@ end;
 //==================================================================================================
 // TEDIObjectList
 //==================================================================================================
+
+{ TEDIObjectList }
 
 constructor TEDIObjectList.Create(OwnsObjects: Boolean = True);
 begin
@@ -1171,7 +1247,7 @@ procedure TEDIObjectList.Add(EDIObject: TEDIObject);
 var
   ListItem: TEDIObjectListItem;
 begin
-  ListItem := CreateListItem(FLastItem, EDIObject); //TEDIObjectListItem.Create(Self, FLastItem, EDIObject);
+  ListItem := CreateListItem(FLastItem, EDIObject);
   if FLastItem <> nil then
     FLastItem.NextItem := ListItem;
   if FFirstItem = nil then
@@ -1190,7 +1266,7 @@ begin
   FCurrentItem := GetItem(InsertIndex);
   if FCurrentItem <> nil then
   begin
-    ListItem := CreateListItem(FCurrentItem.PriorItem); //TEDIObjectListItem.Create(Self, FCurrentItem.PriorItem);
+    ListItem := CreateListItem(FCurrentItem.PriorItem);
     ListItem.NextItem := FCurrentItem;
     ListItem.EDIObject := EDIObject;
     if ListItem.PriorItem <> nil then
@@ -1360,7 +1436,7 @@ begin
       if ListItem = FLastItem then
         FLastItem := ListItem.PriorItem;
       Dec(FCount);
-      FCurrentItem := ListItem.NextItem;      
+      FCurrentItem := ListItem.NextItem;
       FreeAndNil(ListItem);
       Break;
     end;
@@ -1447,7 +1523,9 @@ begin
     ListItem.EDIObject := Value;
 end;
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
+// TEDIDataObjectListItem
+//==================================================================================================
 
 { TEDIDataObjectListItem }
 
@@ -1456,33 +1534,298 @@ begin
   Result := TEDIDataObject(FEDIObject);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDIDataObjectListItem.SetEDIDataObject(const Value: TEDIDataObject);
 begin
   FEDIObject := Value;
 end;
+
+//==================================================================================================
+// TEDIDataObjectList
+//==================================================================================================
 
 { TEDIDataObjectList }
 
 function TEDIDataObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
   EDIObject: TEDIObject): TEDIObjectListItem;
 begin
-  Result := TEDIDataObjectListItem.Create(Self, PriorItem, EDIObject); 
+  Result := TEDIDataObjectListItem.Create(Self, PriorItem, EDIObject);
 end;
+
+//--------------------------------------------------------------------------------------------------
 
 function TEDIDataObjectList.GetEDIDataObject(Index: Integer): TEDIDataObject;
 begin
   Result := TEDIDataObject(GetEDIObject(Index));
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 procedure TEDIDataObjectList.SetEDIDataObject(Index: Integer; const Value: TEDIDataObject);
 begin
   SetEDIObject(Index, Value);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
 function TEDIObjectList.CreateListItem(PriorItem: TEDIObjectListItem;
   EDIObject: TEDIObject = nil): TEDIObjectListItem;
 begin
   Result := TEDIObjectListItem.Create(Self, PriorItem, EDIObject);
+end;
+
+//==================================================================================================
+// TEDILoopStack
+//==================================================================================================
+
+{ TEDILoopStack }
+
+constructor TEDILoopStack.Create;
+begin
+  inherited;
+  SetLength(FStack, 0);
+  FFlags := [];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.Debug: string;
+var
+  I: Integer;
+begin
+  Result := 'Loop Stack' + #13#10;
+  for I := 0 to High(FStack) do
+    Result := Result + FStack[I].SegmentId + ', ' +
+      FStack[I].OwnerLoopId + ', ' +
+      FStack[I].ParentLoopId + ', ' +
+      IntToStr(FStack[I].SpecStartIndex) + #13#10;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDILoopStack.Destroy;
+var
+  I: Integer;
+begin
+  for I := Low(FStack) to High(FStack) do
+    FStack[I].EDIObject := nil;
+  SetLength(FStack, 0);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDILoopStack.DoAddLoop(StackRecord: TEDILoopStackRecord;
+  SegmentId, OwnerLoopId, ParentLoopId: string; var EDIObject: TEDIObject);
+begin
+  if Assigned(FOnAddLoop) then
+    FOnAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.GetSafeStackIndex(Index: Integer): Integer;
+begin
+  if Length(FStack) > 0 then
+  begin
+    if Index >= Low(FStack) then
+    begin
+      if Index <= High(FStack) then
+        Result := Index
+      else
+        Result := High(FStack);
+    end
+    else
+      Result := Low(FStack);
+  end
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError057, [IntToStr(Index)]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.GetSize: Integer;
+begin
+  Result := Length(FStack);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.Peek: TEDILoopStackRecord;
+begin
+  Result := FStack[High(FStack)];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.Peek(Index: Integer): TEDILoopStackRecord;
+begin
+  if Length(FStack) > 0 then
+    if Index >= Low(FStack) then
+      if Index <= High(FStack) then
+        Result := FStack[Index]
+      else
+        raise EJclEDIError.CreateResRecFmt(@RsEDIError054, [IntToStr(Index)])
+    else
+      raise EJclEDIError.CreateResRecFmt(@RsEDIError055, [IntToStr(Index)])
+  else
+    raise EJclEDIError.CreateResRecFmt(@RsEDIError056, [IntToStr(Index)]);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDILoopStack.Pop(Index: Integer);
+begin
+  // Resize loop stack if the index is less than the length
+  if (Index >= 0) and (Index < Length(FStack)) then
+  begin
+    SetLength(FStack, Index);
+    FFlags := FFlags + [ediStackResized];
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.Push(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
+  EDIObject: TEDIObject): Integer;
+begin
+  // Add to loop stack
+  SetLength(FStack, Length(FStack) + 1);
+  FStack[High(FStack)].SegmentId := SegmentId;
+  FStack[High(FStack)].OwnerLoopId := OwnerLoopId;
+  FStack[High(FStack)].ParentLoopId := ParentLoopId;
+  FStack[High(FStack)].SpecStartIndex := StartIndex;
+  FStack[High(FStack)].EDIObject := EDIObject;
+  Result := High(FStack);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.SetStackPointer(OwnerLoopId,
+  ParentLoopId: string): Integer;
+var
+  I: Integer;
+begin
+  FFlags := FFlags - [ediStackResized];
+  FFlags := FFlags - [ediAltStackPointer];
+  Result := -1; // Entry not found
+  // Find the loop in the stack
+  for I := High(FStack) downto 0 do
+  begin
+    if (OwnerLoopId = FStack[I].OwnerLoopId) and
+      (ParentLoopId = FStack[I].ParentLoopId) then
+    begin
+      Result := I;
+      // Pop entries from the stack starting at the index after the found loop
+      Pop(I + 1);
+      Break;
+    end;
+  end;
+  // Check if an exact entry was found
+  if Result = -1 then
+  begin
+    // Find the parent loop in the stack
+    for I := High(FStack) downto 0 do
+    begin
+      if (ParentLoopId = FStack[I].ParentLoopId) and
+        (FStack[I].OwnerLoopId <> NA_LoopId) then
+      begin
+        FFlags := FFlags + [ediAltStackPointer];
+        Result := GetSafeStackIndex(I);
+        // Pop entries from the stack starting at the index after the found loop
+        Pop(I + 1);
+        Break;
+      end;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDILoopStack.UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId: string;
+  StartIndex: Integer; EDIObject: TEDIObject);
+begin
+  FStack[High(FStack)].SegmentId := SegmentId;
+  FStack[High(FStack)].OwnerLoopId := OwnerLoopId;
+  FStack[High(FStack)].ParentLoopId := ParentLoopId;
+  FStack[High(FStack)].SpecStartIndex := StartIndex;
+  FStack[High(FStack)].EDIObject := EDIObject;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDILoopStack.UpdateStackObject(EDIObject: TEDIObject);
+begin
+  FStack[High(FStack)].EDIObject := EDIObject;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDILoopStack.ValidateLoopStack(SegmentId, OwnerLoopId, ParentLoopId: string;
+  StartIndex: Integer; EDIObject: TEDIObject): TEDILoopStackRecord;
+var
+  I: Integer;
+  StackRecord: TEDILoopStackRecord;
+begin
+  if Length(FStack) <= 0 then
+  begin
+    // Add entry to stack
+    Push(SegmentId, OwnerLoopId, ParentLoopId, StartIndex, EDIObject);
+  end
+  else
+  begin
+    I := SetStackPointer(OwnerLoopId, ParentLoopId);
+    if I >= 0 then // Entry found
+    begin
+      if ediLoopRepeated in FFlags then
+      begin
+        // Get the previous stack record so the repeated loop will not be nested
+        StackRecord := Peek(I-1);
+        // In event handler add loop to external data structure since it repeated
+        // See JclEDI_ANSIX12.TEDITransactionSetDocument class for implementation example.
+        DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
+        // Update stack object only
+        UpdateStackObject(EDIObject);
+        // Debug
+        // ShowMessage('LoopRepeated');
+      end
+      else if ediAltStackPointer in FFlags then
+      begin
+        // Get the previous stack record because the loop
+        // is not to be nested at the current stack pointer
+        StackRecord := Peek(I-1);
+        // In event handler add loop to external data structure since it is new
+        // See JclEDI_ANSIX12.TEDITransactionSetDocument class for implementation example.
+        DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
+        // Update stack entry
+        UpdateStackData(SegmentId, OwnerLoopId, ParentLoopId, StartIndex, EDIObject);
+        // Debug
+        // ShowMessage('AltStackPointer');
+      end
+      else if ediStackResized in FFlags then
+      begin
+        // Debug
+        // ShowMessage('Stack Size Decreased');
+      end
+      else
+      begin
+        // Segment is part of loop
+      end;
+    end
+    else if I = -1 then // Entry not found.
+    begin
+      // In event handler add loop since it is new
+      StackRecord := Peek;
+      // In event handler add loop to external data structure since it is new
+      DoAddLoop(StackRecord, SegmentId, OwnerLoopId, ParentLoopId, EDIObject);
+      // Add entry to stack
+      Push(SegmentId, OwnerLoopId, ParentLoopId, StartIndex, EDIObject);
+      // Debug
+      // ShowMessage('Stack Size Increased');
+    end;
+  end;
+  Result := Peek;
 end;
 
 end.
