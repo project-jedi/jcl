@@ -116,13 +116,14 @@ type
   Largeint = Int64;
   {$ELSE}
   PPointer = ^Pointer;
-  {$IFNDEF RTL140_UP}
+  {$IFDEF RTL140_UP}
+  PByte = System.PByte;
+  {$ELSE ~RTL140_UP}
   PBoolean = ^Boolean;
+  PByte = Windows.PByte;
   {$ENDIF ~RTL140_UP}
   {$ENDIF FPC}
-
   PCardinal = ^Cardinal;
-
   {$IFNDEF COMPILER7}
   UInt64 = Int64;
   {$ENDIF ~COMPILER7}
@@ -315,6 +316,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.30  2005/02/14 00:41:58  rrossmair
+// - supply PByte for D5/BCB5. Pbyte is required by JclMath.GetParity; including it here helps
+//   avoid inclusion of unit Windows in the uses clause of unit JclMath just because of PByte.
+//
 // Revision 1.29  2005/02/13 22:24:25  rrossmair
 // moved PCardinal declaration from JclMime to JclBase
 //
