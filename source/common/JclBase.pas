@@ -289,7 +289,7 @@ begin
 end;
 
 //==================================================================================================
-// Cross=Platform Compatibility
+// Cross Platform Compatibility
 //==================================================================================================
 
 {$IFNDEF XPLATFORM_RTL}
@@ -302,6 +302,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.18  2004/06/14 11:05:50  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.17  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //

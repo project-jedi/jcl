@@ -175,7 +175,7 @@ type
     procedure SetElement(Index: Integer; Element: TEDIElement);
     {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
     function GetElements: TEDIElementArray;
-    {$ENDIF}
+    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
   protected
     FSegmentId: string;
     function InternalCreateElement: TEDIElement; virtual;
@@ -208,7 +208,7 @@ type
     property Elements: TEDIDataObjectList read FEDIDataObjects;
     {$ELSE}
     property Elements: TEDIElementArray read GetElements;
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property SegmentId: string read FSegmentId write FSegmentId;
     property ElementCount: Integer read GetCount;
@@ -324,7 +324,7 @@ type
     procedure SetSegment(Index: Integer; Segment: TEDISegment);
     {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
     function GetSegments: TEDISegmentArray;
-    {$ENDIF}
+    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
     procedure SetSTSegment(const STSegment: TEDITransactionSetSegment);
     procedure SetSESegment(const SESegment: TEDITransactionSetSegment);
   protected
@@ -359,7 +359,7 @@ type
     property Segments: TEDIDataObjectList read FEDIDataObjects;
     {$ELSE}
     property Segments: TEDISegmentArray read GetSegments;
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property SegmentST: TEDITransactionSetSegment read FSTSegment write SetSTSegment;
     property SegmentSE: TEDITransactionSetSegment read FSESegment write SetSESegment;
@@ -474,7 +474,7 @@ type
     procedure SetTransactionSet(Index: Integer; TransactionSet: TEDITransactionSet);
     {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
     function GetTransactionSets: TEDITransactionSetArray;
-    {$ENDIF}
+    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
     procedure SetGSSegment(const GSSegment: TEDIFunctionalGroupSegment);
     procedure SetGESegment(const GESegment: TEDIFunctionalGroupSegment);
   protected
@@ -511,7 +511,7 @@ type
     property TransactionSets: TEDIDataObjectList read FEDIDataObjects;
     {$ELSE}
     property TransactionSets: TEDITransactionSetArray read GetTransactionSets;
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property SegmentGS: TEDIFunctionalGroupSegment read FGSSegment write SetGSSegment;
     property SegmentGE: TEDIFunctionalGroupSegment read FGESegment write SetGESegment;
@@ -555,7 +555,7 @@ type
     procedure SetFunctionalGroup(Index: Integer; FunctionalGroup: TEDIFunctionalGroup);
     {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
     function GetFunctionalGroups: TEDIFunctionalGroupArray;
-    {$ENDIF}
+    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
     procedure SetISASegment(const ISASegment: TEDIInterchangeControlSegment);
     procedure SetIEASegment(const IEASegment: TEDIInterchangeControlSegment);
   protected
@@ -592,7 +592,7 @@ type
     property FunctionalGroups: TEDIDataObjectList read FEDIDataObjects;
     {$ELSE}
     property FunctionalGroups: TEDIFunctionalGroupArray read GetFunctionalGroups;
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property SegmentISA: TEDIInterchangeControlSegment read FISASegment write SetISASegment;
     property SegmentIEA: TEDIInterchangeControlSegment read FIEASegment write SetIEASegment;
@@ -641,7 +641,7 @@ type
     procedure InternalLoadFromFile;
     {$IFNDEF OPTIMIZED_INTERNAL_STRUCTURE}
     function GetInterchanges: TEDIInterchangeControlArray;
-    {$ENDIF}
+    {$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
   protected
     procedure InternalDelimitersDetection(StartPos: Integer); virtual;
     procedure InternalAlternateDelimitersDetection(StartPos: Integer);
@@ -683,7 +683,7 @@ type
     property Interchanges: TEDIDataObjectList read FEDIDataObjects;
     {$ELSE}
     property Interchanges: TEDIInterchangeControlArray read GetInterchanges;
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
   published
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
@@ -1015,7 +1015,7 @@ function TEDISegment.GetElements: TEDIElementArray;
 begin
   Result := TEDIElementArray(FEDIDataObjects);
 end;
-{$ENDIF}
+{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 //--------------------------------------------------------------------------------------------------
 
 function TEDISegment.InternalCreateEDIDataObject: TEDIDataObject;
@@ -1293,7 +1293,7 @@ function TEDITransactionSet.GetSegments: TEDISegmentArray;
 begin
   Result := TEDISegmentArray(FEDIDataObjects);
 end;
-{$ENDIF}
+{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 //--------------------------------------------------------------------------------------------------
 
 function TEDITransactionSet.InsertSegment(InsertIndex: Integer; Segment: TEDISegment): Integer;
@@ -1687,7 +1687,7 @@ function TEDIFunctionalGroup.GetTransactionSets: TEDITransactionSetArray;
 begin
   Result := TEDITransactionSetArray(FEDIDataObjects);
 end;
-{$ENDIF}
+{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 //--------------------------------------------------------------------------------------------------
 
 function TEDIFunctionalGroup.InternalCreateEDIDataObject: TEDIDataObject;
@@ -2022,7 +2022,7 @@ function TEDIInterchangeControl.GetFunctionalGroups: TEDIFunctionalGroupArray;
 begin
   Result := TEDIFunctionalGroupArray(FEDIDataObjects);
 end;
-{$ENDIF}
+{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 //--------------------------------------------------------------------------------------------------
 
 function TEDIInterchangeControl.InternalCreateEDIDataObject: TEDIDataObject;
@@ -2149,19 +2149,19 @@ begin
     FData := JclEDI.StringReplace(FData, AnsiCrLf, '', [rfReplaceAll]);
     {$ELSE}
     FData := SysUtils.StringReplace(FData, AnsiCrLf, '', [rfReplaceAll]);
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_STRINGREPLACE}
   if foRemoveCr in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
     FData := JclEDI.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
     {$ELSE}
     FData := SysUtils.StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll]);
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_STRINGREPLACE}
   if foRemoveLf in FEDIFileOptions then
     {$IFDEF OPTIMIZED_STRINGREPLACE}
     FData := JclEDI.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
     {$ELSE}
     FData := SysUtils.StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll]);
-    {$ENDIF}
+    {$ENDIF OPTIMIZED_STRINGREPLACE}
 
   StartPos := 1;
   // Search for Interchange Control Header
@@ -2406,7 +2406,7 @@ function TEDIFile.GetInterchanges: TEDIInterchangeControlArray;
 begin
   Result := TEDIInterchangeControlArray(FEDIDataObjects);
 end;
-{$ENDIF}
+{$ENDIF ~OPTIMIZED_INTERNAL_STRUCTURE}
 //--------------------------------------------------------------------------------------------------
 
 function TEDIFile.InternalAssignDelimiters: TEDIDelimiters;
@@ -3106,7 +3106,7 @@ begin
   FEDIDataObjects.OwnsObjects := False;
   {$ELSE}
   SetLength(FEDIDataObjects, 0);
-  {$ENDIF}
+  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3123,7 +3123,7 @@ function TEDITransactionSetLoop.AddLoop(OwnerLoopId, ParentLoopId: string): Inte
 {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
 var
   Loop: TEDITransactionSetLoop;
-{$ENDIF}
+{$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 begin
   FCreateObjectType := ediLoop;
   {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
@@ -3138,7 +3138,7 @@ begin
   TEDITransactionSetLoop(FEDIDataObjects[High(FEDIDataObjects)]).OwnerLoopId := OwnerLoopId;
   TEDITransactionSetLoop(FEDIDataObjects[High(FEDIDataObjects)]).ParentLoopId := ParentLoopId;
   Result := High(FEDIDataObjects);
-  {$ENDIF}
+  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3150,7 +3150,7 @@ begin
   {$ELSE}
   SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
   FEDIDataObjects[High(FEDIDataObjects)] := Segment;
-  {$ENDIF}
+  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3200,7 +3200,7 @@ begin
       end;
   // Resize
   SetLength(FEDIDataObjects, 0);
-  {$ENDIF}
+  {$ENDIF OPTIMIZED_INTERNAL_STRUCTURE}
 end;
 
 //--------------------------------------------------------------------------------------------------

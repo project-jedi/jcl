@@ -105,14 +105,14 @@ const
 const
   WindowsPathDelimiter = '\';
   UnixPathDelimiter = '/';
-{$IFNDEF RTL140_UP}
+  {$IFNDEF RTL140_UP}
   {$IFDEF MSWINDOWS}
   PathDelim = WindowsPathDelimiter;
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   PathDelim = UnixPathDelimiter;
   {$ENDIF UNIX}
-{$ENDIF ~RTL140_UP}
+  {$ENDIF ~RTL140_UP}
 
 //--------------------------------------------------------------------------------------------------
 // zlib format support
@@ -177,7 +177,7 @@ type
   EJclZLibError = class(EJclError);
 
 // zlib error texts
-function GetZlibErrorText(const ErrorCode: Integer): PResStringRec;
+function GetZLibErrorText(const ErrorCode: Integer): PResStringRec;
 
 function ZLibCompressMem(const Src: Pointer; SrcLen: Integer;
   out Dst: Pointer; out DstLen: Integer; out DstCapacity: Integer;
@@ -212,8 +212,8 @@ type
   private
     FZLibReader: TJclZLibReader;
     FTextMode: Boolean;
-    FFilename: String;
-    FComment: String;
+    FFilename: string;
+    FComment: string;
     FTimeStamp: TJclUnixTime32;
     FLevel: Integer;
     FOperatingSystem: Byte;
@@ -224,7 +224,7 @@ type
   public
     constructor Create(const Stream: TStream;
       const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-      const LineSeparator: String = JclZLibDefaultLineSeparator);
+      const LineSeparator: string = JclZLibDefaultLineSeparator);
     
     destructor Destroy; override;
 
@@ -232,8 +232,8 @@ type
     function Write(const Buffer; Count: Longint): Longint; override;
 
     property TextMode: Boolean read FTextMode;
-    property Filename: String read FFilename;
-    property Comment: String read FComment;
+    property Filename: string read FFilename;
+    property Comment: string read FComment;
     property TimeStamp: TJclUnixTime32 read FTimeStamp;
     property Level: Integer read FLevel;
     property OperatingSystem: Byte read FOperatingSystem;
@@ -253,9 +253,9 @@ type
       const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
       const Level: Integer = Z_DEFAULT_COMPRESSION;
       const Strategie: Integer = Z_DEFAULT_STRATEGY;
-      const Filename: String = '';
+      const Filename: string = '';
       const TimeStamp: TJclUnixTime32 = 0;
-      const Comment: String = '';
+      const Comment: string = '';
       const TextMode: Boolean = False;
       const ExtraField: Pointer = Nil;
       const ExtraFieldSize: Integer = 0);
@@ -273,9 +273,9 @@ const
   JclGZipDefaultFileExtension = '.gz';
 
 // if DstFilename = '' -> DstFilename := SrcFilename + JclGZipDefaultFileExtension
-procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
+procedure GZipCompressFile(const SrcFilename: string; DstFilename: string;
   const Level: Integer = Z_DEFAULT_COMPRESSION);
-procedure GZipDecompressFile(const SrcFilename: String; DstFilename: String);
+procedure GZipDecompressFile(const SrcFilename: string; DstFilename: string);
 
 //--------------------------------------------------------------------------------------------------
 // tar archive support
@@ -401,7 +401,7 @@ type
     FHeader: TTarHeader;
     FArchiveFormat: TTarArchiveFormat;
     FFileType: TJclTarFileType;
-    FFilename: String;
+    FFilename: string;
     FFileSize: TJclTarFileSize;
     FFileTime: TJclUnixTime32;
     function ReadHeader: Boolean;  // False if Eof
@@ -409,11 +409,11 @@ type
   public
     constructor Create(const TarStream: TStream);
     procedure CopyToStream(const FileStream: TStream; CanSeek: Boolean = False);
-    procedure CopyToFile(const FilePath: String);
+    procedure CopyToFile(const FilePath: string);
     procedure SkipFile;
     procedure SkipFileSeek;
     property FileType: TJclTarFileType read FFileType;
-    property Filename: String read FFilename;
+    property Filename: string read FFilename;
     property FileSize: TJclTarFileSize read FFileSize;
     property FileTime: TJclUnixTime32 read FFileTime;
     property FileDateTime: TDateTime read GetFileDateTime;
@@ -426,25 +426,25 @@ type
   public
     constructor Create(const TarStream: TStream);
     destructor Destroy; override;
-    procedure AddFile(FileRoot, Filename: String);
-    procedure AddStream(const Stream: TStream; Filename: String;
+    procedure AddFile(FileRoot, Filename: string);
+    procedure AddStream(const Stream: TStream; Filename: string;
       FileSize: TJclTarFileSize; FileTime: TJclUnixTime32);
-    procedure AddDirectory(DirName: String);
+    procedure AddDirectory(DirName: string);
   end;
 
   EJclTarError = class(EJclError);
 
-procedure TarAllFiles(const TarFilename, FileRoot: String);
-procedure TarFileList(const TarFilename, FileRoot: String; List: TStrings);
-procedure TarFileArray(const TarFilename, FileRoot: String; const Filenames: array of String);
-procedure TarGZipAllFiles(const TgzFilename, FileRoot: String);
-procedure TarGZipFileList(const TgzFilename, FileRoot: String; List: TStrings);
-procedure TarGZipFileArray(const TgzFilename, FileRoot: String; const Filenames: array of String);
+procedure TarAllFiles(const TarFilename, FileRoot: string);
+procedure TarFileList(const TarFilename, FileRoot: string; List: TStrings);
+procedure TarFileArray(const TarFilename, FileRoot: string; const Filenames: array of string);
+procedure TarGZipAllFiles(const TgzFilename, FileRoot: string);
+procedure TarGZipFileList(const TgzFilename, FileRoot: string; List: TStrings);
+procedure TarGZipFileArray(const TgzFilename, FileRoot: string; const Filenames: array of string);
 
-procedure UnTarAllFiles(const TarFilename: String; DstDir: String);
-procedure UnGZipTarAllFiles(const TgzFilename: String; DstDir: String);
+procedure UnTarAllFiles(const TarFilename: string; DstDir: string);
+procedure UnGZipTarAllFiles(const TgzFilename: string; DstDir: string);
 
-procedure GetFileList(RootDir: String; List: TStrings);
+procedure GetFileList(RootDir: string; List: TStrings);
 
 implementation
 
@@ -455,25 +455,26 @@ uses
 // zlib format support
 //==================================================================================================
 
-function GetZlibErrorText(const ErrorCode: Integer): PResStringRec;
+function GetZLibErrorText(const ErrorCode: Integer): PResStringRec;
 const
-  ErrorTexts: array[-6..2] of {$IFDEF FPC}AnsiString{$ELSE FPC}PResStringRec{$ENDIF FPC} = (
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibVersionError,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibBufError,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibMemError,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibDataError,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibStreamError,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibErrNo,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibOK,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibStreamEnd,
-    {$IFNDEF FPC}@{$ENDIF FPC}RsZlibNeedDict
-  );
+  ErrorTexts: array[-6..2] of {$IFDEF FPC} AnsiString {$ELSE} PResStringRec {$ENDIF} =
+   (
+    {$IFNDEF FPC}@{$ENDIF}RsZLibVersionError,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibBufError,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibMemError,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibDataError,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibStreamError,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibErrNo,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibOK,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibStreamEnd,
+    {$IFNDEF FPC}@{$ENDIF}RsZLibNeedDict
+   );
 begin
   case ErrorCode of
     Low(ErrorTexts)..High(ErrorTexts):
       Result := {$IFDEF FPC}@{$ENDIF FPC}ErrorTexts[ErrorCode];
   else
-    Result := @RsZlibUnknownError;
+    Result := @RsZLibUnknownError;
   end;
 end;
 
@@ -484,7 +485,7 @@ end;
 procedure Check(const ErrorCode: Integer);
 begin
   if ErrorCode < Z_OK then
-    raise EJclZLibError.CreateRes(GetZlibErrorText(ErrorCode));
+    raise EJclZLibError.CreateRes(GetZLibErrorText(ErrorCode));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -514,14 +515,14 @@ end;
 
 procedure TJclZLibStream.SetSize(NewSize: Longint);
 begin
-  raise EJclZLibError.CreateRes(@RsZlibNoSetSize);
+  raise EJclZLibError.CreateRes(@RsZLibNoSetSize);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclZLibStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
-  raise EJclZLibError.CreateRes(@RsZlibNoSeek);
+  raise EJclZLibError.CreateRes(@RsZLibNoSeek);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -634,7 +635,7 @@ end;
 
 function TJclZLibReader.Write(const Buffer; Count: Longint): Longint;
 begin
-  raise EJclZLibError.CreateRes(@RsZlibNoWrite);
+  raise EJclZLibError.CreateRes(@RsZLibNoWrite);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -714,7 +715,7 @@ end;
 
 function TJclZLibWriter.Read(var Buffer; Count: Longint): Longint;
 begin
-  raise EJclZLibError.CreateRes(@RsZlibNoRead);
+  raise EJclZLibError.CreateRes(@RsZLibNoRead);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -941,7 +942,7 @@ const
 
 constructor TJclGZipReader.Create(const Stream: TStream;
   const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
-  const LineSeparator: String = JclZLibDefaultLineSeparator);
+  const LineSeparator: string = JclZLibDefaultLineSeparator);
 var
   b: Byte;
   c: AnsiChar;
@@ -1080,7 +1081,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ConvertNewLineToLF(const Value: String): String;
+function ConvertNewLineToLF(const Value: string): string;
 var
   SrcPtr: PChar;
   DstIdx: Integer;
@@ -1126,16 +1127,16 @@ constructor TJclGZipWriter.Create(const Stream: TStream;
   const BufferSize: Integer = JclZLibStreamDefaultBufferSize;
   const Level: Integer = Z_DEFAULT_COMPRESSION;
   const Strategie: Integer = Z_DEFAULT_STRATEGY;
-  const Filename: String = '';
+  const Filename: string = '';
   const TimeStamp: TJclUnixTime32 = 0;
-  const Comment: String = '';
+  const Comment: string = '';
   const TextMode: Boolean = False;
   const ExtraField: Pointer = Nil;
   const ExtraFieldSize: Integer = 0);
 var
   b: Byte;
   w: Word;
-  s: String;
+  s: string;
   Flags: Byte;
 begin
   inherited Create(Stream);
@@ -1190,11 +1191,11 @@ begin
   // write filename
   if (Flags and gzipFlag_ORIG_NAME) <> 0 then
   begin
-    s := ExtractFilename(Filename);
+    s := ExtractFileName(Filename);
     {$IFDEF MSWINDOWS}
     // convert to lower case, because caseinsensitive filenames
     s := AnsiLowerCase(s);
-    {$ENDIF}
+    {$ENDIF MSWINDOWS}
     Stream.WriteBuffer(Pointer(s)^, StrLen(Pointer(s)) + 1);
   end;
 
@@ -1231,7 +1232,7 @@ end;
 
 function TJclGZipWriter.Write(const Buffer; Count: Longint): Longint;
 var
-  s: String;
+  s: string;
   p: Pointer;
 begin
   if FTextMode then
@@ -1259,11 +1260,11 @@ const
 
 //--------------------------------------------------------------------------------------------------
 
-procedure GZipCompressFile(const SrcFilename: String; DstFilename: String;
+procedure GZipCompressFile(const SrcFilename: string; DstFilename: string;
   const Level: Integer = Z_DEFAULT_COMPRESSION);
 var
   Src, Dst: TFileStream;
-  DstPath: String;
+  DstPath: string;
   gzip: TJclGZipWriter;
   {$IFDEF MSWINDOWS}
   FileInfo: TByHandleFileInformation;
@@ -1282,7 +1283,7 @@ begin
     // Get file time stamp and attributes
     {$IFDEF MSWINDOWS}
     if not GetFileInformationByHandle(Src.Handle, FileInfo) then
-      {$IFDEF XPLATFORM_RTL}RaiseLastOSError{$ELSE}RaiseLastWin32Error{$ENDIF};
+      RaiseLastOSError;
     GZipTime := FileTimeToUnixTime(FileInfo.ftLastWriteTime);
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
@@ -1357,18 +1358,18 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure GZipDecompressFile(const SrcFilename: String; DstFilename: String);
+procedure GZipDecompressFile(const SrcFilename: string; DstFilename: string);
 var
   Src, Dst: TFileStream;
-  DstPath: String;
+  DstPath: string;
   gzip: TJclGZipReader;
   {$IFDEF MSWINDOWS}
   FileInfo: TByHandleFileInformation;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   FileInfo: TStatBuf;
   TimeInfo: TUTimeBuffer;
-  {$ENDIF}
+  {$ENDIF UNIX}
   Buffer: Pointer;
   BufferSize: Integer;
   BlockSize: Integer;
@@ -1378,12 +1379,11 @@ begin
     // Get file time stamp and attributes
     {$IFDEF MSWINDOWS}
     if not GetFileInformationByHandle(Src.Handle, FileInfo) then
-      {$IFDEF XPLATFORM_RTL}RaiseLastOSError{$ELSE}RaiseLastWin32Error{$ENDIF};
     {$ENDIF MSWINDOWS}
     {$IFDEF UNIX}
     if stat(PChar(SrcFileName), FileInfo) <> 0 then
-      RaiseLastOSError;
     {$ENDIF UNIX}
+      RaiseLastOSError;
     // Allocate Buffer
     BufferSize := Src.Size;
     if BufferSize > (MaxBufferSize div 2) then
@@ -1465,7 +1465,7 @@ end;
 function OctalToInt(const Value: array of AnsiChar; MaxValue: TJclTarFileSize): TJclTarFileSize;
 var
   I: Integer;
-  V: String;
+  V: string;
   C: AnsiChar;
 begin
   I := Low(Value);
@@ -1558,7 +1558,7 @@ var
   {$IFNDEF UNIX}
   I: Integer;
   {$ENDIF ~UNIX}
-  Prefix: String;
+  Prefix: string;
 begin
   if FFileType = tftEof then
     Exit;
@@ -1637,10 +1637,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTarReader.CopyToFile(const FilePath: String);
+procedure TJclTarReader.CopyToFile(const FilePath: string);
 var
-  Filename: String;
-  FileDir: String;
+  Filename: string;
+  FileDir: string;
   FileStream: TFileStream;
   UnixFileTime: TJclUnixTime32;
   {$IFDEF MSWINDOWS}
@@ -1648,10 +1648,10 @@ var
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   TimeInfo: TUTimeBuffer;
-  {$ENDIF}
+  {$ENDIF UNIX}
 begin
-  Filename := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(FilePath) + FFilename;
-  FileDir := {$IFDEF XPLATFORM_RTL}ExcludeTrailingPathDelimiter{$ELSE}ExcludeTrailingBackslash{$ENDIF}(ExtractFilePath(Filename));
+  Filename := {$IFDEF XPLATFORM_RTL} IncludeTrailingPathDelimiter {$ELSE} IncludeTrailingBackslash{$ENDIF}(FilePath) + FFilename;
+  FileDir := {$IFDEF XPLATFORM_RTL} ExcludeTrailingPathDelimiter {$ELSE} ExcludeTrailingBackslash{$ENDIF}(ExtractFilePath(Filename));
   if FileDir <> '' then
     ForceDirectories(FileDir);
   FileStream := TFileStream.Create(Filename, fmCreate);
@@ -1695,16 +1695,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure UnTarAllFiles(const TarFilename: String; DstDir: String);
+procedure UnTarAllFiles(const TarFilename: string; DstDir: string);
 var
   TarFile: TFileStream;
   TarReader: TJclTarReader;
-  DstFilename: String;
+  DstFilename: string;
 begin
   if DstDir = '' then
     DstDir := ChangeFileExt(TarFilename, '')
   else
-    DstDir := {$IFDEF XPLATFORM_RTL}ExcludeTrailingPathDelimiter{$ELSE}ExcludeTrailingBackslash{$ENDIF}(DstDir);
+    DstDir := {$IFDEF XPLATFORM_RTL} ExcludeTrailingPathDelimiter {$ELSE} ExcludeTrailingBackslash{$ENDIF}(DstDir);
   if DstDir = TarFilename then
     DstDir := DstDir + '.dir';
   DstDir := DstDir + PathDelim;           
@@ -1754,7 +1754,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTarWriter.AddFile(FileRoot, Filename: String);
+procedure TJclTarWriter.AddFile(FileRoot, Filename: string);
 var
   FileStream: TFileStream;
   {$IFDEF MSWINDOWS}
@@ -1762,10 +1762,10 @@ var
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   FileInfo: TStatBuf;
-  {$ENDIF}
+  {$ENDIF UNIX}
   FileUnixTime: TJclUnixTime32;
 begin
-  FileRoot := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(FileRoot);
+  FileRoot := {$IFDEF XPLATFORM_RTL} IncludeTrailingPathDelimiter {$ELSE} IncludeTrailingBackslash{$ENDIF}(FileRoot);
   FileStream := TFileStream.Create(FileRoot + Filename, fmOpenRead or fmShareDenyWrite);
   try
     FillChar(FileInfo, SizeOf(FileInfo), 0);
@@ -1815,7 +1815,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTarWriter.AddStream(const Stream: TStream; Filename: String;
+procedure TJclTarWriter.AddStream(const Stream: TStream; Filename: string;
   FileSize: TJclTarFileSize; FileTime: TJclUnixTime32);
 var
   I: Integer;
@@ -1856,14 +1856,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclTarWriter.AddDirectory(DirName: String);
+procedure TJclTarWriter.AddDirectory(DirName: string);
 var
   {$IFNDEF UNIX}
   I: Integer;
-  {$ENDIF UNIX}
+  {$ENDIF ~UNIX}
   Header: TTarHeader;
 begin
-  DirName := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(DirName);
+  DirName := {$IFDEF XPLATFORM_RTL} IncludeTrailingPathDelimiter {$ELSE} IncludeTrailingBackslash{$ENDIF}(DirName);
   {$IFNDEF UNIX}
   // path delimiter -> UNIX
   for I := 1 to Length(DirName) do
@@ -1894,17 +1894,17 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure UnGZipTarAllFiles(const TgzFilename: String; DstDir: String);
+procedure UnGZipTarAllFiles(const TgzFilename: string; DstDir: string);
 var
   TgzFile: TFileStream;
   GZipReader: TJclGZipReader;
   TarReader: TJclTarReader;
-  DstFilename: String;
+  DstFilename: string;
 begin
   if DstDir = '' then
     DstDir := ChangeFileExt(TgzFilename, '')
   else
-    DstDir := {$IFDEF XPLATFORM_RTL}ExcludeTrailingPathDelimiter{$ELSE}ExcludeTrailingBackslash{$ENDIF}(DstDir);
+    DstDir := {$IFDEF XPLATFORM_RTL} ExcludeTrailingPathDelimiter {$ELSE} ExcludeTrailingBackslash{$ENDIF}(DstDir);
   if DstDir = TgzFilename then
     DstDir := DstDir + '.dir';
   DstDir := DstDir + PathDelim;
@@ -1943,9 +1943,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure GetFileList(RootDir: String; List: TStrings);
+procedure GetFileList(RootDir: string; List: TStrings);
 
-  procedure ScanDir(const Dir: String);
+  procedure ScanDir(const Dir: string);
   var
     Info: TSearchRec;
   begin
@@ -1968,13 +1968,13 @@ procedure GetFileList(RootDir: String; List: TStrings);
   end;
 
 begin
-  RootDir := {$IFDEF XPLATFORM_RTL}IncludeTrailingPathDelimiter{$ELSE}IncludeTrailingBackslash{$ENDIF}(RootDir);
+  RootDir := {$IFDEF XPLATFORM_RTL} IncludeTrailingPathDelimiter {$ELSE} IncludeTrailingBackslash{$ENDIF}(RootDir);
   ScanDir('');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure ArrayToList(const Filenames: array of String; List: TStrings);
+procedure ArrayToList(const Filenames: array of string; List: TStrings);
 var
   I: Integer;
 begin
@@ -1984,12 +1984,12 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TarFileList(const TarFilename, FileRoot: String; List: TStrings);
+procedure TarFileList(const TarFilename, FileRoot: string; List: TStrings);
 var
   TarFile: TFileStream;
   TarWriter: TJclTarWriter;
   I: Integer;
-  Filename: String;
+  Filename: string;
 begin
   TarFile := TFileStream.Create(TarFilename, fmCreate);
   try
@@ -2016,7 +2016,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TarAllFiles(const TarFilename, FileRoot: String);
+procedure TarAllFiles(const TarFilename, FileRoot: string);
 var
   List: TStringList;
 begin
@@ -2031,7 +2031,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TarFileArray(const TarFilename, FileRoot: String; const Filenames: array of String);
+procedure TarFileArray(const TarFilename, FileRoot: string; const Filenames: array of string);
 var
   List: TStringList;
 begin
@@ -2046,13 +2046,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TarGZipFileList(const TgzFilename, FileRoot: String; List: TStrings);
+procedure TarGZipFileList(const TgzFilename, FileRoot: string; List: TStrings);
 var
   TgzFile: TFileStream;
   GZipWriter: TJclGZipWriter;
   TarWriter: TJclTarWriter;
   I: Integer;
-  Filename: String;
+  Filename: string;
 begin
   TgzFile := TFileStream.Create(TgzFilename, fmCreate);
   try
@@ -2090,7 +2090,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TarGZipAllFiles(const TgzFilename, FileRoot: String);
+procedure TarGZipAllFiles(const TgzFilename, FileRoot: string);
 var
   List: TStringList;
 begin
@@ -2105,7 +2105,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TarGZipFileArray(const TgzFilename, FileRoot: String; const Filenames: array of String);
+procedure TarGZipFileArray(const TgzFilename, FileRoot: string; const Filenames: array of string);
 var
   List: TStringList;
 begin
@@ -2121,6 +2121,9 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.9  2004/06/14 11:05:51  marquardt
+//  symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 //  Revision 1.8  2004/05/31 22:11:35  rrossmair
 //  added Log CVS key word.
 //

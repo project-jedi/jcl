@@ -42,7 +42,9 @@ unit JclLocales;
 interface
 
 uses
-  {$IFDEF FPC} JwaWinNLS, {$ENDIF}
+  {$IFDEF FPC}
+  JwaWinNLS,
+  {$ENDIF FPC}
   Windows, Classes, SysUtils, Contnrs,
   JclBase, JclWin32;
 
@@ -883,7 +885,7 @@ end;
 
 function TJclKeyboardLayout.Activate(ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)){$IFNDEF FPC} <> 0 {$ENDIF};
+  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -975,7 +977,7 @@ end;
 function TJclKeyboardLayoutList.ActivateNextLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)){$IFNDEF FPC} <> 0 {$ENDIF};
+  Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -983,7 +985,7 @@ end;
 function TJclKeyboardLayoutList.ActivatePrevLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)){$IFNDEF FPC} <> 0 {$ENDIF};
+  Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) {$IFNDEF FPC} <> 0 {$ENDIF};
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1151,6 +1153,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/14 11:05:52  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.7  2004/05/13 07:46:06  rrossmair
 // changes for FPC 1.9.3+ compatibility
 //

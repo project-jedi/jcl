@@ -56,7 +56,7 @@ const
   HKUS: HKEY = HKEY_USERS;
   HKCC: HKEY = HKEY_CURRENT_CONFIG;
   HKPD: HKEY = HKEY_PERFORMANCE_DATA;
-{$ENDIF FPC}
+{$ENDIF ~FPC}
 
 function SetDisplayResolution(const XRes, YRes: DWORD): Longint;
 
@@ -71,7 +71,6 @@ function PowerOffOS: Boolean;
 function ShutDownOS: Boolean;
 function RebootOS: Boolean;
 
-
 //--------------------------------------------------------------------------------------------------
 // CreateProcAsUser
 //--------------------------------------------------------------------------------------------------
@@ -84,8 +83,8 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
   const Environment: PChar);
 
 {$IFDEF SUPPORTS_EXTSYM}
-  {$EXTERNALSYM ExitWindows}
-{$ENDIF}
+{$EXTERNALSYM ExitWindows}
+{$ENDIF SUPPORTS_EXTSYM}
 
 implementation
 
@@ -272,7 +271,8 @@ function LogOffOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := JclMiscel.ExitWindows(EWX_LOGOFF);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
+  { TODO : implement at least LINUX variants throwing an exception }
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -281,7 +281,7 @@ function PowerOffOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := JclMiscel.ExitWindows(EWX_POWEROFF);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -290,7 +290,7 @@ function ShutDownOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := JclMiscel.ExitWindows(EWX_SHUTDOWN);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -299,7 +299,7 @@ function RebootOS: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := JclMiscel.ExitWindows(EWX_Reboot);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -428,16 +428,16 @@ begin
   if not CreateProcessAsUser(hUserToken, nil, PChar(CommandLine), nil, nil,
     False, CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, Environment, nil,
     {$IFDEF FPC}
-    @StartUpInfo, @ProcInfo
+    @StartUpInfo, @ProcInfo) then
     {$ELSE}
-    StartUpInfo, ProcInfo
-    {$ENDIF}) then
+    StartUpInfo, ProcInfo) then
+    {$ENDIF FPC}
   begin
     case GetLastError of
       ERROR_PRIVILEGE_NOT_HELD:
         raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcPrivilegesMissing,
           [GetPrivilegeDisplayName(SE_ASSIGNPRIMARYTOKEN_NAME), SE_ASSIGNPRIMARYTOKEN_NAME,
-          GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
+           GetPrivilegeDisplayName(SE_INCREASE_QUOTA_NAME), SE_INCREASE_QUOTA_NAME]);
       ERROR_FILE_NOT_FOUND:
         raise EJclCreateProcessError.CreateResRecFmt(@RsCreateProcCommandNotFound, [CommandLine]);
       else
@@ -461,6 +461,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

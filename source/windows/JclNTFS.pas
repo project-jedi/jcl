@@ -1129,7 +1129,7 @@ begin
       StreamId.Size.QuadPart := (Length(HardLinkName) + 1) * SizeOf(WideChar);
       {$ELSE}
       StreamId.Size := (Length(HardLinkName) + 1) * SizeOf(WideChar);
-      {$ENDIF}
+      {$ENDIF FPC}
       BytesToWrite := DWORD(@StreamId.cStreamName[0]) - DWORD(@StreamId.dwStreamId);
       Context := nil;
       Win32Check(Windows.BackupWrite(HardLink, @StreamId, BytesToWrite, BytesWritten, False, False, Context));
@@ -1142,7 +1142,7 @@ begin
       {$ELSE}
       Win32Check(Windows.BackupWrite(HardLink, @HardLinkName[1], StreamId.Size, BytesWritten, False, False, Context));
       if BytesWritten <> StreamId.Size then
-      {$ENDIF}
+      {$ENDIF FPC}
         RaiseLastOSError;
       // and finally release the context
       Windows.BackupWrite(HardLink, nil, 0, BytesWritten, True, False, Context);
@@ -1334,6 +1334,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/06/14 11:05:53  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.8  2004/05/31 00:30:45  rrossmair
 // Processed documentation TODOs
 //

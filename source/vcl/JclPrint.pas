@@ -107,9 +107,9 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
     { TODO : Find a solution for deprecated }
-    function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED}deprecated;{$ENDIF}
-    procedure GetBinSourceList(List: TStrings); overload; 
-    function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED}deprecated;{$ENDIF}
+    function GetBinSourceList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
+    procedure GetBinSourceList(List: TStrings); overload;
+    function GetPaperList: TStringList; overload; {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
     procedure GetPaperList(List: TStrings); overload;
     procedure SetDeviceMode(Creating: Boolean);
     procedure UpdateDeviceMode;
@@ -1368,6 +1368,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 11:05:52  marquardt
+// symbols added to all ENDIFs and some other minor style changes like removing IFOPT
+//
 // Revision 1.6  2004/05/13 07:32:18  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

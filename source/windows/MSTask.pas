@@ -56,13 +56,31 @@
 {                                                                              }
 {******************************************************************************}
 
-{$I jediwinapi.inc}
+{$I jcl.inc}
+{$I windowsonly.inc}
 
-unit MSTask{$IFDEF SUPPORTS_PLATFORM} platform{$ENDIF};
+unit MSTask;
 
-{$I jediwinapi.inc}
+{$ALIGN ON}
+{$MINENUMSIZE 4}
+{$WEAKPACKAGEUNIT}
+
+{$IFDEF SUPPORTS_PLATFORM}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF SUPPORTS_PLATFORM}
+
+{$IFDEF SUPPORTS_DEPRECATED}
+{$WARN SYMBOL_DEPRECATED OFF}
+{$ENDIF SUPPORTS_DEPRECATED}
+
+{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
+{$WARN UNSAFE_CODE OFF}
+{$WARN UNSAFE_TYPE OFF}
+{$WARN UNSAFE_CAST OFF}
+{$ENDIF SUPPORTS_UNSAFE_WARNINGS}
 
 interface
+
 uses
   Windows, ActiveX;
   
@@ -297,7 +315,6 @@ type
   TTaskTrigger = _TASK_TRIGGER;
   PTaskTrigger = PTASK_TRIGGER;
 
-  
 //+----------------------------------------------------------------------------
 //
 //  Interfaces
@@ -326,7 +343,6 @@ type
     function GetTriggerString(out ppwszTrigger: LPWSTR): HRESULT; stdcall;
   end;
 
-  
 //+----------------------------------------------------------------------------
 //
 //  Interface:  IScheduledWorkItem
@@ -378,7 +394,6 @@ type
     function GetAccountInformation(out ppwszAccountName: LPWSTR): HRESULT; stdcall;
   end;
 
-  
 //+----------------------------------------------------------------------------
 //
 //  Interface:  ITask
@@ -412,7 +427,6 @@ type
     function GetMaxRunTime(out pdwMaxRunTimeMS: DWORD): HRESULT; stdcall;
   end;
 
-
 //+----------------------------------------------------------------------------
 //
 //  Interface:  IEnumWorkItems
@@ -435,7 +449,6 @@ type
     function Reset: HRESULT; stdcall;
     function Clone(out ppEnumWorkItems: IEnumWorkItems): HRESULT; stdcall;
   end;
-
 
 //+----------------------------------------------------------------------------
 //
@@ -465,7 +478,6 @@ type
     function IsOfType(pwszName: LPCWSTR; const riid: TIID): HRESULT; stdcall;
   end;
 
-  
 const
   // {148BD520-A2AB-11CE-B11F-00AA00530503}
   {$EXTERNALSYM CLSID_CTask}
@@ -474,7 +486,6 @@ const
   {$EXTERNALSYM CLSID_CTaskScheduler}
   CLSID_CTaskScheduler: TCLSID = (D1: $148BD52A; D2: $A2AB; D3: $11CE; D4: ($B1, $1F, $00, $AA, $00, $53, $05, $03));
 
-  
 //
 // NOTE: Definition of HPROPSHEETPAGE is from sdk\inc\prsht.h
 //       Including this header file causes numerous redefinition errors.
@@ -495,7 +506,6 @@ type
     TASKPAGE_SETTINGS);
   {$EXTERNALSYM TASKPAGE}
   TASKPAGE = _TASKPAGE;
-
 
 //+----------------------------------------------------------------------------
 //
@@ -518,7 +528,6 @@ type
     ['{4086658a-cbbb-11cf-b604-00c04fd8d565}']
     function GetPage(tpType: TASKPAGE; fPersistChanges: BOOL; out phPage: HPROPSHEETPAGE): HRESULT; stdcall;
   end;
-
   
 type
   {$EXTERNALSYM ISchedulingAgent}
