@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: July 25, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -140,6 +140,11 @@ type
 // Simple email classes
 //--------------------------------------------------------------------------------------------------
 
+const
+  MapiAddressTypeSMTP = 'SMTP';
+  MapiAddressTypeFAX  = 'FAX';
+
+type
   TJclEmailRecipKind = (rkOriginator, rkTO, rkCC, rkBCC);
 
   TJclEmailRecip = class (TObject)
@@ -251,6 +256,9 @@ type
 //--------------------------------------------------------------------------------------------------
 
 function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
+  const AAttachment: TFileName = ''; ShowDialog: Boolean = True; AParentWND: HWND = 0): Boolean;
+
+function JclSimpleSendFax(const ARecipient, AName, ASubject, ABody: string;
   const AAttachment: TFileName = ''; ShowDialog: Boolean = True; AParentWND: HWND = 0): Boolean;
 
 function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
@@ -863,7 +871,7 @@ begin
   FLogonOptions := [loLogonUI];
   FFindOptions := [foFifo];
   FRecipients := TJclEmailRecips.Create(True);
-  FRecipients.AddressesType := 'SMTP';
+  FRecipients.AddressesType := MapiAddressTypeSMTP;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1328,7 +1336,26 @@ begin
   with TJclEmail.Create do
   try
     ParentWnd := AParentWND;
-    Recipients.Add(ARecipient, AName, rkTO, '');
+    Recipients.Add(ARecipient, AName, rkTO, MapiAddressTypeSMTP);
+    Subject := ASubject;
+    Body := ABody;
+    if AAttachment <> '' then
+      Attachments.Add(AAttachment);
+    Result := Send(ShowDialog);
+  finally
+    Free;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclSimpleSendFax(const ARecipient, AName, ASubject, ABody: string;
+  const AAttachment: TFileName; ShowDialog: Boolean; AParentWND: HWND): Boolean;
+begin
+  with TJclEmail.Create do
+  try
+    ParentWnd := AParentWND;
+    Recipients.Add(ARecipient, AName, rkTO, MapiAddressTypeFAX);
     Subject := ASubject;
     Body := ABody;
     if AAttachment <> '' then
