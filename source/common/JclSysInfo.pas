@@ -854,31 +854,26 @@ begin
   end;
 end;
 
-(* (rom) to be integrated
-procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
-var
-  Reg: TRegistry;
-begin
-  Reg := TRegistry.Create;
-  Reg.OpenKey('Environment', False);
-  Reg.WriteString(VariableName, VariableContent);
-  Reg.Free;
-  SetEnvironmentVariable(PChar(VariableName), PChar(VariableContent));
-  SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar('Environment')));
-end;
+//--------------------------------------------------------------------------------------------------
 
-procedure RemoveGlobalEnvironmentVariable(VariableName: string);
-var
-  Reg: TRegistry;
+procedure SetGlobalEnvironmentVariable(VariableName, VariableContent: string);
+const
+  cEnvironment = 'Environment';
 begin
-  Reg := TRegistry.Create;
-  Reg.OpenKey('Environment', False);
-  Reg.DeleteValue(VariableName);
-  Reg.Free;
-  SetEnvironmentVariable(PChar(VariableName), nil);
-  SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar('Environment')));
+  if VariableName = '' then
+    Exit;
+  if VariableContent = '' then
+  begin
+    RegDeleteEntry(HKEY_CURRENT_USER, cEnvironment, VariableName);
+    SetEnvironmentVariable(PChar(VariableName), nil);
+  end
+  else
+  begin
+    RegWriteAnsiString(HKEY_CURRENT_USER, cEnvironment, VariableName, VariableContent);
+    SetEnvironmentVariable(PChar(VariableName), PChar(VariableContent));
+  end;
+  SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, LPARAM(PChar(cEnvironment)));
 end;
-*)
 
 //==================================================================================================
 // Common Folders
@@ -4038,6 +4033,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.28  2004/08/04 06:11:49  marquardt
+// added SetGlobalEnvironmentVariable
+//
 // Revision 1.27  2004/08/03 07:22:37  marquardt
 // resourcestring cleanup
 //
