@@ -122,10 +122,10 @@ procedure BooleansToBits(var Dest: Word; const B: array of Boolean); overload;
 procedure BooleansToBits(var Dest: Integer; const B: array of Boolean); overload;
 procedure BooleansToBits(var Dest: Int64; const B: array of Boolean); overload;
 
-procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
-procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
-procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
-procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS}= False{$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Byte; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Word; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Integer; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); overload;
+procedure BitsToBooleans(const Bits: Int64; var B: TBooleanArray; AllBits: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); overload;
 
 function BitsNeeded(const X: Byte): Integer; overload;
 function BitsNeeded(const X: Word): Integer; overload;
