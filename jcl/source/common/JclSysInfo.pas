@@ -33,7 +33,7 @@ unit JclSysInfo;
 interface
 
 uses
-  Windows, ActiveX, Classes, ShlObj,
+  Windows, ActiveX, Classes, ShlObj, Controls,
   JclResources;
 
 //--------------------------------------------------------------------------------------------------
@@ -226,6 +226,16 @@ Descr: Returns the major version number of the latest installed Windows Service 
 Result: The major version number of the latest installed Service Pack. In case of failure, or if
         no Service Pack is installed, the function returns an empty string.
 Author: Jean-Fabien Connault
+}
+
+function GetOpenGLVersion(const Win: TWinControl; var Version, Vendor: String): boolean;
+{
+ShortDescr: Returns the current OpenGL library version string
+Descr: Takes a WinControl against which to perform the tests, and then Returns
+       the Version String information provided by the current OpenGL library.
+Result: Surfaces the information provided by the OpenGL library (if any) relating to
+        the version and vendor of the OpenGL library in the parameters passed.
+Author: Scott Price
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -562,7 +572,7 @@ var
 implementation
 
 uses
-  Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp,
+  Messages, SysUtils, TLHelp32, PsApi, Winsock, Snmp, OpenGL,
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
@@ -2013,6 +2023,116 @@ begin
     Result := 'SP' + IntToStr(SP)
   else
     Result := '';
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetOpenGLVersion(const Win: TWinControl; var Version, Vendor: String): boolean;
+const
+  RsOpenGLInfoError = 'Err';
+  RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
+  RsOpenGLInfoExcep_SPF = 'GetOpenGLVersion:  SetPixelFormat Failed';
+  RsOpenGLInfoExcep_CC = 'GetOpenGLVersion:  wglCreateContect Failed';
+  RsOpenGLInfoExcep_MC = 'GetOpenGLVersion:  wglMakeCurrent Failed';
+var
+  pfd: TPixelFormatDescriptor;
+  iFormatIndex: Integer;
+  hGLContext: HGLRC;
+  hGLDC: HDC;
+  pcTemp: PChar;
+  glErr: glEnum;
+  bError: Boolean;
+  sOpenGLVersion, sOpenGLVendor: String;
+begin
+  { To call for the version information string we must first have an active
+    context established for use.  We can, of course, close this after use }
+  hGLContext := 0;
+  Result := False;
+  bError := False;
+
+  if Win = Nil then
+  begin
+    Result := False;
+    Vendor := RsOpenGLInfoError;
+    Version := RsOpenGLInfoError;
+    Exit;
+  end;
+
+  FillChar(pfd, SizeOf(pfd), 0);
+  with pfd do
+  begin
+    nSize := SizeOf(pfd);
+    nVersion := 1;  { The Current Version of the descriptor is 1 }
+    dwFlags := PFD_DRAW_TO_WINDOW OR PFD_SUPPORT_OPENGL;
+    iPixelType := PFD_TYPE_RGBA;
+    cColorBits := 24;  { support 24-bit colour }
+    cDepthBits := 32;  { Depth of the z-buffer }
+    iLayerType := PFD_MAIN_PLANE;
+  end;
+
+  hGLDC := GetDC(Win.Handle);
+  try
+    iFormatIndex := ChoosePixelFormat(hGLDC, @pfd);
+    if iFormatIndex = 0 then
+      raise Exception.Create(RsOpenGLInfoExcep_CPF);
+
+    if NOT SetPixelFormat(hGLDC, iFormatIndex, @pfd) then
+      raise Exception.Create(RsOpenGLInfoExcep_SPF);
+
+    hGLContext := wglCreateContext(hGLDC);
+    if hGLContext = 0 then
+      raise Exception.Create(RsOpenGLInfoExcep_CC);
+
+    if NOT wglMakeCurrent(hGLDC, hGLContext) then
+      raise Exception.Create(RsOpenGLInfoExcep_MC);
+
+    { TODO:  Review the following.  Not sure I am 100% happy with this code in }
+    {        its current structure. }
+    pcTemp := glGetString(GL_VERSION);
+    if pcTemp <> Nil then
+    begin
+      { TODO:  Store this information in a Global Variable, and return that?? }
+      {        This would save this work being performed again with later calls }
+      sOpenGLVersion := StrPas(pcTemp);
+    end
+    else
+    begin
+      bError := True;
+      glErr := glGetError;
+      if (glErr <> GL_NO_ERROR) then
+      begin
+        sOpenGLVersion := gluErrorString(glErr);
+        sOpenGLVendor := '';
+      end;
+    end;
+
+    pcTemp := glGetString(GL_VENDOR);
+    if pcTemp <> Nil then
+    begin
+      { TODO:  Store this information in a Global Variable, and return that?? }
+      {        This would save this work being performed again with later calls }
+      sOpenGLVendor := StrPas(pcTemp);
+    end
+    else
+    begin
+      bError := True;
+      glErr := glGetError;
+      if (glErr <> GL_NO_ERROR) then
+      begin
+        sOpenGLVendor := gluErrorString(glErr);
+        Exit;
+      end;
+    end;
+
+    Result := (NOT bError);
+    Version := sOpenGLVersion;
+    Vendor := sOpenGLVendor;
+  finally
+    { Close all resources }
+    wglMakeCurrent(hGLDC, 0);
+    if hGLContext <> 0 then
+      wglDeleteContext(hGLContext);
+  end;
 end;
 
 //==================================================================================================
