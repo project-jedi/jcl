@@ -83,6 +83,8 @@ contains
   JclWin32 in '..\..\source\windows\JclWin32.pas' ,
   JclWinMIDI in '..\..\source\windows\JclWinMIDI.pas' ,
   LM in '..\..\source\windows\LM.pas' ,
-  JclAppInst in '..\..\source\windows\JclAppInst.pas' ;
+  JclAppInst in '..\..\source\windows\JclAppInst.pas',
+  JclDITs in '..\..\source\common\JclDITs.pas'
+  ;
 
 end.
