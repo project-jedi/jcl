@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: December 03, 2000                                                  }
+{ Last modified: December 13, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -106,10 +106,10 @@ unit JclUnicode;
 interface
 
 uses
-  {$ifdef WIN32}
-    Windows,
-  {$endif}
-    Classes;
+  {$IFDEF WIN32}
+  Windows,
+  {$ENDIF}
+  Classes;
 
 const
   // definitions of often used characters:
@@ -847,17 +847,8 @@ implementation
 {$R JclUnicode.res}
 
 uses
-  Consts, SyncObjs, SysUtils;
-
-resourcestring
-  RsUREBaseString = 'Error in regular expression: %s' + #13;
-  RsUREUnexpectedEOS = 'Unexpected end of pattern.';
-  RsURECharacterClassOpen = 'Character class not closed, '']'' is missing.';
-  RsUREUnbalancedGroup = 'Unbalanced group expression, '')'' is missing.';
-  RsUREInvalidCharProperty = 'A character property is invalid';
-  RsUREInvalidRepeatRange = 'Invalid repeation range.';
-  RsURERepeatRangeOpen = 'Repeation range not closed, ''}'' is missing.';
-  RsUREExpressionEmpty = 'Expression is empty.';
+  Consts, SyncObjs, SysUtils,
+  JclResources;
 
 const
   // some predefined sets to shorten parameter lists below and ease repeative usage
