@@ -59,10 +59,11 @@
 // For history see end of file
 {$ENDIF PROTOTYPE}
 
-{$I jedi.inc}
-
 {$ALIGN ON}{$BOOLEVAL OFF}{$LONGSTRINGS ON}{$IOCHECKS ON}{$WRITEABLECONST OFF}
 {$OVERFLOWCHECKS OFF}{$RANGECHECKS OFF}{$TYPEDADDRESS ON}{$MINENUMSIZE 1}
+
+{$I jedi.inc}
+
 {$IFDEF SUPPORTS_UNSAFE_WARNINGS}
   {$WARN UNSAFE_CODE OFF}
   {$WARN UNSAFE_TYPE OFF}
@@ -139,12 +140,19 @@ uses
   {$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
+{$IFDEF ZLIB_WIN32DLL}
+{$HPPEMIT '#define ZLIB_DLL'}
+{$HPPEMIT '#define ZEXPORT __cdecl'}
+{$HPPEMIT '#define ZEXPORTVA __cdecl'}
+{$ELSE ZLIB_WIN32DLL}
 {$HPPEMIT '#define ZEXPORT __fastcall'}
+{$HPPEMIT '#define ZEXPORTVA __cdecl'}
+{$ENDIF ZLIB_WIN32DLL}
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 {$HPPEMIT '#define ZEXPORT __cdecl'}
-{$ENDIF UNIX}
 {$HPPEMIT '#define ZEXPORTVA __cdecl'}
+{$ENDIF UNIX}
 {$HPPEMIT ''}
 {$HPPEMIT '#include <zutil.h>'  // zutil.h include zlib.h }
 
@@ -1652,6 +1660,10 @@ end;
 //    - compiler symbol to hide platform specific comments
 //
 //   $Log$
+//   Revision 1.5  2004/05/01 03:04:37  peterjhaas
+//   - move jedi.in after setting compiler options
+//   - add symbols for calling conventions
+//
 //   Revision 1.4  2004/04/30 17:59:43  peterjhaas
 //   - add calling convention for .hpp file
 //   - change NONBORLAND to BORLAND
