@@ -103,7 +103,7 @@ begin
   wScript := Script;
   wHomedir := Homedir;
 
-  FillChar (Details, SizeOf(Details), 0);
+  FillChar(Details, SizeOf(Details), #0);
   with Details do
   begin
     usri2_name := PWideChar(wUsername);
@@ -165,7 +165,7 @@ begin
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar (Details, SizeOf(Details), 0);
+  FillChar(Details, SizeOf(Details), #0);
   Details.grpi1_name := PWideChar(wGroupName);
   Details.grpi1_comment := PWideChar(wDescription);
 
@@ -186,7 +186,7 @@ begin
   wGroupname := Groupname;
   wDescription := Description;
 
-  FillChar (Details, SizeOf(Details), 0);
+  FillChar(Details, SizeOf(Details), #0);
   Details.lgrpi1_name := PWideChar(wGroupName);
   Details.lgrpi1_comment := PWideChar(wDescription);
 
@@ -254,6 +254,7 @@ begin
   if Err = NERR_SUCCESS then
   begin
     Details := PGroupInfo0(Buffer);
+    // (rom) is 'None' locale independent?
     if (EntriesRead <> 1) or (Details^.grpi0_name <> 'None') then
       for I := 0 to EntriesRead - 1 do
       begin
@@ -343,7 +344,7 @@ begin
     wkrBackupOPs:
       Result := DOMAIN_ALIAS_RID_BACKUP_OPS;
     wkrReplicator:
-      Result := DOMAIN_ALIAS_RID_REPLICATOR;
+      Result := DOMAIN_ALIAS_RID_REPLICATOR;
   else // (wkrEveryone)
     Result := SECURITY_WORLD_RID;
   end;
@@ -403,11 +404,11 @@ begin
     AccountNameLen := 0;
     DomainNameLen := 0;
     if not LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-             nil, DomainNameLen, SidNameUse) then
+      nil, DomainNameLen, SidNameUse) then
       SetLength(Result, AccountNamelen);
 
     if LookupAccountSID(PChar(Server), sd, PChar(Result), AccountNameLen,
-         nil, DomainNameLen, sidNameUse) then
+      nil, DomainNameLen, sidNameUse) then
       StrResetLength(Result)
     else
       RaiseLastOSError;
