@@ -18,7 +18,7 @@ BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL Debug IDE expert\0"
               VALUE "FileVersion", "1.93.1.1722\0"
-              VALUE "InternalName", "JclDebugIde70\0"
+              VALUE "InternalName", "JclDebugIde90\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2004 Project JEDI\0"
               VALUE "OriginalFilename", "JclDebugIde90.bpl\0"
               VALUE "ProductName", "Jedi Code Library Extension\0"
