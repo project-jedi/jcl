@@ -314,6 +314,7 @@ Parameters:
 Result:
   The double-quoted version of the string.
 See also:
+  StrQuote
   StrSingleQuote
   StrTrimQuotes
 Quick info:
@@ -2417,33 +2418,46 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@StrToStrings
-<GROUP Stringmanipulation.TStringsManipulation>
-Summary:
-  Converts a string into a list of strings using the specified separator character.
-Description:
-  StrToStrings converts the supplied string, which supposedly is a list of strings
-  packed into a single string variable, to a TStrings. The function uses the supplied
-  separator string to separate the string into its individual elements. For
-  example, if you call the function like this:
-  StrToStrings('Project JEDI Rules', ' ', List) then on return list will contain three
-  items, namely 'Project', 'JEDI', and 'Rules'. As this example shows, the last
-  string doesn't have to be terminated by the separator string although it is allowed.
-Parameters:
-  S - The string to split into elements
-  Sep - The string that separates the individual elements
-  List - A TStrings derivative that receives the individual elements
-Notes:
-  The list will be cleared by this function before adding the elements.
-See also:
-  StringsToStr
-Quick info:
-  Unit: JclStrings
+<GROUP $Stringmanipulation.TStringsManipulation>
+
+Description
+StrToStrings converts the supplied string, which supposedly is
+a list of strings packed into a single string variable, to a
+TStrings. The function uses the supplied separator string to
+separate the string into its individual elements. 
+
+For example, if you call the function like this:
+StrToStrings('Project JEDI Rules', ' ', List) then on return
+list will contain three items, namely 'Project', 'JEDI', and
+'Rules'. As this example shows, the last string doesn't have
+to be terminated by the separator string although it is
+allowed.
+
+Summary
+Converts a string into a list of strings using the specified
+separator character.
+
+Note
+The list will be cleared by this function before adding the
+elements.
+
+Parameters
+List :   A TStrings derivative that receives the individual
+         elements
+S :      The string to split into elements
+Sep :    The string that separates the individual elements
+
+QuickInfo
+ Unit: JclStrings
   Category: String manipulation
   Donator: Anthony Steele
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
+
+See Also
+StringsToStr
+
 @@StringsToStr
 <GROUP Stringmanipulation.TStringsManipulation>
 Summary:
@@ -2610,13 +2624,11 @@ Quick info:
 @@StrTokens
 <GROUP Stringmanipulation.Miscellaneous>
 Summary:
-  TODO
 Description:
-  TODO
 Parameters:
-  S - TODO
+  S -
+  List -
 Result:
-  TODO
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -2628,13 +2640,9 @@ Quick info:
 @@StrWord
 <GROUP Stringmanipulation.Miscellaneous>
 Summary:
-  TODO
 Description:
-  TODO
 Parameters:
-  S - TODO
 Result:
-  TODO
 Quick info:
   Unit: JclStrings
   Category: String manipulation
@@ -3005,6 +3013,7 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@StrNormIndex
+<GROUP Stringmanipulation.Miscellaneous>
 Summary:
   Normalizes Index and count parameter.
 Description:
@@ -3028,4 +3037,153 @@ Quick info:
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@StrStrCount
+<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
+Summary:
+  Counts the occurrences of a substring in a string.
+Description:
+  StrStrCount returns the number of occurrences of the specified substring in the
+  supplied string.
+Parameters:
+  S - Source string.
+  SubS - The character whose occurrences to count.
+Result:
+  The number of occurrences of SubS in S.
+Quick info:
+  Unit: JclStrings
+  Category: String manipulation
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@AnsiNull
+
+JclStrings defines several often used character definitions. They are symbolic
+representations of their corresponding ANSI character. They can, for instance,
+be used to achieve self explaining code.
+
+<TABLE>
+Symbol                   Description                   Char
+---------------------    ----------------------------  ------
+AnsiNull                 No character                      #0
+AnsiSoh                  Start of header                   #1
+AnsiStx                  Start of Text                     #2
+AnsiEtx                  End of Text                       #3
+AnsiEot                  End of Transmission               #4
+AnsiEnq                  Enquiry                           #5
+AnsiAck                  Acknowledgment                    #6
+AnsiBell                 Bell                              #7
+AnsiBackspace            Backspace                         #8
+AnsiTab                  Horizontal Tab                    #9
+AnsiLineFeed             Line Feed                        #10
+AnsiVerticalTab          Vertical Tab                     #11
+AnsiFormFeed             Form Feed                        #12
+AnsiCarriageReturn       Carriage Return                  #13
+AnsiCrLf                 Carriage Return and LineFeed   #1310
+AnsiSo                   Shift Out                        #14
+AnsiSi                   Shift In                         #15
+AnsiDle                  Data Link Escape                 #16
+AnsiDc1                  Device Control 1                 #17
+AnsiDc2                  Device Control 2                 #18
+AnsiDc3                  Device Control 3                 #19
+AnsiDc4                  Device Control 4                 #20
+AnsiNak                  Negative Acknowledgement         #21
+AnsiSyn                  Synchronous Idle                 #22
+AnsiEtb                  End of Transmission Block        #23
+AnsiCan                  Cancel                           #24
+AnsiEm                   End of Medium                    #25
+AnsiEndOfFile            Substitute                       #26
+AnsiEscape               Escape                           #27
+AnsiFs                   File Separator                   #28
+AnsiGs                   Group Separator                  #29
+AnsiRs                   Request to Send                  #30
+AnsiUs                   Unit Separator                   #31
+AnsiSpace                Space                            #32
+AnsiComma                Comma                            #44
+AnsiBackslash            Backslash                        #92
+AnsiForwardSlash         Forward Slash                    #47
+AnsiDoubleQuote          Double Quote                     #34
+AnsiSingleQuote          Single Quote                     #39
+</TABLE>
+--------------------------------------------------------------------------------
+@@AnsiSoh
+<ALIAS AnsiNull>
+@@AnsiStx
+<ALIAS AnsiNull>
+@@AnsiEtx
+<ALIAS AnsiNull>
+@@AnsiEot
+<ALIAS AnsiNull>
+@@AnsiEnq
+<ALIAS AnsiNull>
+@@AnsiAck
+<ALIAS AnsiNull>
+@@AnsiBell
+<ALIAS AnsiNull>
+@@AnsiBackspace
+<ALIAS AnsiNull>
+@@AnsiTab
+<ALIAS AnsiNull>
+@@AnsiLineFeed
+<ALIAS AnsiNull>
+@@AnsiVerticalTab
+<ALIAS AnsiNull>
+@@AnsiFormFeed
+<ALIAS AnsiNull>
+@@AnsiCarriageReturn
+<ALIAS AnsiNull>
+@@AnsiCrLf
+<ALIAS AnsiNull>
+@@AnsiSo
+<ALIAS AnsiNull>
+@@AnsiSi
+<ALIAS AnsiNull>
+@@AnsiDle
+<ALIAS AnsiNull>
+@@AnsiDc1
+<ALIAS AnsiNull>
+@@AnsiDc2
+<ALIAS AnsiNull>
+@@AnsiDc3
+<ALIAS AnsiNull>
+@@AnsiDc4
+<ALIAS AnsiNull>
+@@AnsiNak
+<ALIAS AnsiNull>
+@@AnsiSyn
+<ALIAS AnsiNull>
+@@AnsiEtb
+<ALIAS AnsiNull>
+@@AnsiCan
+<ALIAS AnsiNull>
+@@AnsiEm
+<ALIAS AnsiNull>
+@@AnsiEndOfFile
+<ALIAS AnsiNull>
+@@AnsiEscape
+<ALIAS AnsiNull>
+@@AnsiFs
+<ALIAS AnsiNull>
+@@AnsiGs
+<ALIAS AnsiNull>
+@@AnsiRs
+<ALIAS AnsiNull>
+@@AnsiUs
+<ALIAS AnsiNull>
+@@AnsiSpace
+<ALIAS AnsiNull>
+@@AnsiComma
+<ALIAS AnsiNull>
+@@AnsiBackslash
+<ALIAS AnsiNull>
+@@AnsiForwardSlash
+<ALIAS AnsiNull>
+@@AnsiDoubleQuote
+<ALIAS AnsiNull>
+@@AnsiSingleQuote
+<ALIAS AnsiNull>
+@@AnsiLineBreak
+<ALIAS AnsiNull>
 
