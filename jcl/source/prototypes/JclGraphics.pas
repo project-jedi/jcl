@@ -1722,9 +1722,12 @@ function IconToBitmap(Icon: HICON): HBITMAP;
 var
   IconInfo: TIconInfo;
 begin
-  GetIconInfo(Icon, IconInfo);
-  DeleteObject(IconInfo.hbmMask);
-  Result := IconInfo.hbmColor;
+  Result := 0;
+  if GetIconInfo(Icon, IconInfo) then
+  begin
+    DeleteObject(IconInfo.hbmMask);
+    Result := IconInfo.hbmColor;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
