@@ -28,8 +28,7 @@ Windows:        ..\windows\JclWin32.pas \
                 ..\windows\Hardlinks.pas \
                 ..\windows\zlibh.pas
 
-Unix:		..\unix\zlibh.pas \
-                ..\unix\JclWin32.pas
+Unix:		..\unix\zlibh.pas
 
 zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 
