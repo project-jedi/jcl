@@ -243,7 +243,7 @@ uses
 
 type
   PByte = ^Byte;
-    
+
 const
   // Constants defining the number of bits in each Integer type
 
@@ -265,7 +265,7 @@ const
   NibblesPerInteger  = SizeOf(Integer) * NibblesPerByte;
   NibblesPerCardinal = SizeOf(Cardinal) * NibblesPerByte;
   NibblesPerInt64    = SizeOf(Int64) * NibblesPerByte;
-                     
+
   // Constants defining a mask with all bits set for each Integer type
 
   NibbleMask      = $F;
@@ -476,7 +476,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function BitsLowest(X: Cardinal): Integer; assembler; 
+function BitsLowest(X: Cardinal): Integer; assembler;
 asm
         MOV     ECX, EAX
         MOV     EAX, -1
@@ -485,7 +485,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function BitsLowest(X: Byte): Integer; 
+function BitsLowest(X: Byte): Integer;
 begin
   Result := BitsLowest(Cardinal(X) and ByteMask);
 end;
@@ -581,7 +581,7 @@ function ClearBit(const Value: Int64; const Bit: TBitRange): Int64;
 begin
   Result := Value and not (Int64(1) shl (Bit mod BitsPerInt64));
 end;
-               
+
 //------------------------------------------------------------------------------
 
 procedure ClearBitBuffer(var Value; const Bit: TBitRange);
@@ -604,7 +604,8 @@ begin
   Result := 0;
   for Index := 1 to BitsPerCardinal do
   begin
-    if ((X and 1) = 1) then Inc(Result);
+    if (X and 1) = 1 then
+      Inc(Result);
     X := X shr 1;
   end;
 end;
@@ -618,7 +619,8 @@ begin
   Result := 0;
   for Index := 1 to BitsPerByte do
   begin
-    if ((X and 1) = 1) then Inc(Result);
+    if (X and 1) = 1 then
+      Inc(Result);
     X := X shr 1;
   end;
 end;
@@ -632,7 +634,8 @@ begin
   Result := 0;
   for Index := 1 to BitsPerWord do
   begin
-    if ((X and 1) = 1) then Inc(Result);
+    if (X and 1) = 1 then
+      Inc(Result);
     X := X shr 1;
   end;
 end;
@@ -871,7 +874,7 @@ begin
       Inc(P1);
       Dec(P2);
     end;
-    if (P1 = P2) then
+    if P1 = P2 then
       P1^ := ReverseTable[P1^];
   end;
   Result := P;
@@ -1085,7 +1088,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TestBits(const Value, Mask: Cardinal): Boolean; 
+function TestBits(const Value, Mask: Cardinal): Boolean;
 begin
   Result := (Value and Mask) = Mask;
 end;
@@ -1293,7 +1296,8 @@ end;
 function BitsNeeded(const X: Byte): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then Result := 1;
+  if Result = 0 then
+    Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1301,7 +1305,8 @@ end;
 function BitsNeeded(const X: Word): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then Result := 1;
+  if Result = 0 then
+    Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1309,7 +1314,8 @@ end;
 function BitsNeeded(const X: Integer): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then Result := 1;
+  if Result = 0 then
+    Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1317,7 +1323,8 @@ end;
 function BitsNeeded(const X: Int64): Integer;
 begin
   Result := BitsHighest(X) + 1;
-  if Result = 0 then Result := 1;
+  if Result = 0 then
+    Result := 1;
 end;
 
 //------------------------------------------------------------------------------
@@ -1564,7 +1571,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DecLimit(var B: Smallint; const Limit, Decr: Smallint): Smallint; 
+function DecLimit(var B: Smallint; const Limit, Decr: Smallint): Smallint;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr);
@@ -1631,7 +1638,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function IncLimitClamp(var B: Smallint; const Limit, Incr: Smallint): Smallint; 
+function IncLimitClamp(var B: Smallint; const Limit, Incr: Smallint): Smallint;
 begin
   if (B + Incr) <= Limit then
     Inc(B, Incr)
@@ -1708,7 +1715,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function DecLimitClamp(var B: Smallint; const Limit, Decr: Smallint): Smallint; 
+function DecLimitClamp(var B: Smallint; const Limit, Decr: Smallint): Smallint;
 begin
   if (B - Decr) >= Limit then
     Dec(B, Decr)
@@ -1813,7 +1820,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function Min(const B1, B2: Smallint): Smallint; 
+function Min(const B1, B2: Smallint): Smallint;
 begin
   if B1 < B2 then
     Result := B1
