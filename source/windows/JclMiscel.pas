@@ -20,7 +20,7 @@
 { Various miscellanuous routines that do not (yet) fit nicely into other units                     }
 {                                                                                                  }
 { Unit owner: Jeroen Speldekamp                                                                    }
-{ Last modified: January 29, 2000                                                                  }
+{ Last modified: July 18, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -168,8 +168,6 @@ end;
 
 function LogOffOS: Boolean;
 begin
-  Result := False;
-
   {$IFDEF MSWINDOWS}
   Result := ExitWindows(EWX_LOGOFF);
   {$ENDIF}
@@ -179,8 +177,6 @@ end;
 
 function PowerOffOS: Boolean;
 begin
-  Result := False;
-
   {$IFDEF MSWINDOWS}
   Result := ExitWindows(EWX_POWEROFF);
   {$ENDIF}
@@ -190,8 +186,6 @@ end;
 
 function ShutDownOS: Boolean;
 begin
-  Result := False;
-
   {$IFDEF MSWINDOWS}
   Result := ExitWindows(EWX_SHUTDOWN);
   {$ENDIF}
@@ -201,8 +195,6 @@ end;
 
 function RebootOS: Boolean;
 begin
-  Result := False;
-
   {$IFDEF MSWINDOWS}
   Result := ExitWindows(EWX_Reboot);
   {$ENDIF}
@@ -211,32 +203,11 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function ExitWindows(ExitCode: Cardinal): Boolean;
-const
-  SE_SHUTDOWN_NAME = 2;
-var
-  hToken: Cardinal;
-  Privs: TTokenPrivileges;
-  ReturnLength: Cardinal;
 begin
-  if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
-    Result := OpenProcessToken(GetCurrentProcess,TOKEN_ADJUST_PRIVILEGES Or TOKEN_QUERY,hToken) and
-    LookupPrivilegeValue(nil, 'SeShutdownPrivilege', Privs.Privileges[0].luid);
-    if Result then
-    begin
-      with Privs do
-      begin
-        PrivilegeCount := 1;
-        Privileges[0].Attributes := SE_SHUTDOWN_NAME;
-      end;
-
-      Result := AdjustTokenPrivileges(Token, false, Privs, sizeof(Privs), nil, @ReturnLength);
-    end;
-    if not Result then
-      Exit;
-  end;
-
-  Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or SHTDN_REASON_MINOR_OTHER);
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and not EnableProcessPrivilege(True, SE_SHUTDOWN_NAME) then
+    Result := False
+  else
+    Result := ExitWindowsEx(ExitCode, SHTDN_REASON_MAJOR_APPLICATION or SHTDN_REASON_MINOR_OTHER);
 end;
 
 //--------------------------------------------------------------------------------------------------
