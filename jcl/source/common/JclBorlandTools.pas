@@ -1952,6 +1952,8 @@ begin
         Name := Names[I];
         Result := StringReplace(Result, Format('$(%s)', [Name]), Values[Name], [rfReplaceAll, rfIgnoreCase]);
       end;
+  // remove duplicate path delimiters '\\'
+  Result := StringReplace(Result, PathSeparator + PathSeparator, PathSeparator, [rfReplaceAll]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2334,6 +2336,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2004/11/15 20:42:35  rrossmair
+// - TJclBorRADToolInstallation.SubstitutePath: remove duplicate path delimiters
+//
 // Revision 1.21  2004/11/09 07:51:37  rrossmair
 // - installer refactoring (incomplete)
 //
