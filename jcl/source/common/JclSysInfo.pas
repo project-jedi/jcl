@@ -23,7 +23,7 @@
 { environment variables, processor details and the Windows version.            }
 {                                                                              }
 { Unit owner: Eric S. Fisher                                                   }
-{ Last modified: October 14, 2001                                              }
+{ Last modified: November 17, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -180,6 +180,7 @@ type
   TIntelSpecific = record
     L2Cache: Cardinal;
     CacheDescriptors: array [0..15] of Byte;
+    BrandID : Byte;
   end;
 
   TCyrixSpecific = record
@@ -2024,8 +2025,50 @@ begin
               else
                 CpuName := 'Pentium II';
               end;
+            6:
+              case IntelSpecific.L2Cache of
+                0:
+                  CpuName := 'Celeron';
+                128:
+                  CpuName := 'Celeron';
+              else
+                CpuName := 'Pentium II';
+              end;
+            7:
+              case IntelSpecific.L2Cache of
+                1024:
+                  CpuName := 'Pentium III Xeon';
+                2048:
+                  CpuName := 'Pentium III Xeon';
+              else
+                CpuName := 'Pentium III';
+              end;
+            8:
+              case IntelSpecific.BrandID of
+                1: CpuName := 'Celeron';
+                2: CpuName := 'Pentium III';
+                3: CpuName := 'Pentium III Xeon';
+                4: CpuName := 'Pentium III';
+              else
+                CpuName := 'Pentium III';
+              end;
+            10:
+              CpuName := 'Pentium III Xeon';
+            11:
+              CpuName := 'Pentium III';
           else
             StrPCopy(CpuName, Format('P6 (Model %d)', [Model]));
+          end;
+        15:
+          case IntelSpecific.BrandID of
+            1:
+              CpuName := 'Celeron';
+            8:
+              CpuName := 'Pentium 4';
+            14:
+              CpuName := 'Xeon';
+          else
+            CpuName := 'Pentium 4';
           end;
       else
         StrPCopy(CpuName, Format('P%d', [Family]));
@@ -2128,6 +2171,7 @@ begin
         MOV     [CPUInfo.FrequencyInfo.NormFreq], 0
         MOV     [CPUInfo.FrequencyInfo.InCycles], 0
         MOV     [CPUInfo.FrequencyInfo.ExTicks], 0
+        MOV     [CPUInfo.IntelSpecific.BrandID],0
 
         PUSH    EAX
         PUSH    EBP
@@ -2214,6 +2258,7 @@ begin
         DB      0FH
         DB      0A2H
         MOV     [CPUInfo.Features], EDX
+        MOV     [CPUInfo.IntelSpecific.BrandID], BL 
         MOV     ECX, EAX
         AND     EAX, 3000H
         SHR     EAX, 12
