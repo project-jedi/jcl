@@ -16,7 +16,14 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: December 10, 2000                                             }
+{******************************************************************************}
+{                                                                              }
+{ Various routines to perform various arithmetic and logical operations on one }
+{ or more ordinal values (integer numbers). This includes various bit          }
+{ manipulation routines, min/ma testing and conversion to string.              }
+{                                                                              }
+{ Unit owner: Marcel van Brakel                                                }
+{ Last modified: January 29, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
