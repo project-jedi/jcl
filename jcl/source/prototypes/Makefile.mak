@@ -16,13 +16,27 @@ UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -x..\unix\\
 
 release:	Common Windows Unix VCL VisualCLX
 
-VCL:    	_Graphics.pas \
-		_GraphUtils.pas
-	$(jpp) $(VclOptions) $**
+VCL:    	..\vcl\JclGraphics.pas \
+		..\vcl\JclGraphUtils.pas
 
-VisualCLX:    	_Graphics.pas \
+VisualCLX:    	..\visclx\JclQGraphics.pas \
+		..\visclx\JclQGraphUtils.pas
+
+..\vcl\JclGraphics.pas: \
+		_Graphics.pas
+	$(jpp) $(VclOptions) $?
+
+..\vcl\JclGraphUtils.pas: \
 		_GraphUtils.pas
-	$(jpp) $(VClxOptions) $**
+	$(jpp) $(VclOptions) $?
+
+..\visclx\JclQGraphics.pas: \
+		_Graphics.pas
+	$(jpp) $(VClxOptions) $?
+
+..\visclx\JclQGraphUtils.pas: \
+		_GraphUtils.pas
+	$(jpp) $(VClxOptions) $?
 
 Common:         ..\common\JclZLib.pas \
                 ..\common\JclDITs.pas
