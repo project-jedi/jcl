@@ -995,11 +995,11 @@ implementation
 {$R JclUnicode.res}
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RtlConsts,
   {$ELSE}
   Consts,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF}
   SysUtils,
   JclBase, JclResources, JclSynch;
 
