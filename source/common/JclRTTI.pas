@@ -45,6 +45,9 @@ interface
 uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
+  {$IFDEF SUPPORTS_INLINE}
+  Windows,
+  {$ENDIF SUPPORTS_INLINE}
   {$ELSE}
   Windows,
   {$ENDIF HAS_UNIT_TYPES}
@@ -2534,6 +2537,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.19  2005/03/01 00:10:26  ahuser
+// Delphi 2005 inline support
+//
 // Revision 1.18  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
