@@ -1912,11 +1912,11 @@ const
 {$EXTERNALSYM AdjustTokenPrivileges}
 function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
   const NewState: TTokenPrivileges; BufferLength: DWORD;
-  PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall; overload;
+  PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall;
 
 // alternative conversion for WinNT 4.0 SP6 and later (OSVersionInfoEx instead of OSVersionInfo)
 {$EXTERNALSYM GetVersionEx}
-function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall; overload;
+function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
 
 { TODO -cTest : test the CreateMutex - BOOL problem }
 // Supposition: modified conversion to avoid a WinAPI bug
@@ -1925,12 +1925,12 @@ function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall
 // alternative conversion, bInitialOwner DWORD instead of BOOL
 {$EXTERNALSYM CreateMutex}
 function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD;
-  lpName: PChar): THandle; stdcall; overload;
+  lpName: PChar): THandle; stdcall; 
 
 // wrong Declaration in Windows.pas
 {$EXTERNALSYM BackupSeek}
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
-  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall; overload;
+  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall; 
 
 //--------------------------------------------------------------------------------------------------
 // Run time dynamic linking
@@ -3247,20 +3247,10 @@ end;
 // alternative conversions
 //--------------------------------------------------------------------------------------------------
 
-function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
-  const NewState: TTokenPrivileges; BufferLength: DWORD;
-  PreviousState: PTokenPrivileges; ReturnLength: PDWORD): BOOL; stdcall; overload;
-  external 'Advapi32.dll' name 'AdjustTokenPrivileges';
-
-function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
-  overload; external kernel32 name 'GetVersionExA';
-
-function CreateMutex(lpMutexAttributes: PSecurityAttributes; bInitialOwner: DWORD;
-  lpName: PChar): THandle; stdcall; overload; external kernel32 name 'CreateMutexA';
-
-function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
-  out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL;
-  stdcall; overload; external kernel32 name 'BackupSeek';
+function AdjustTokenPrivileges; external 'Advapi32.dll' name 'AdjustTokenPrivileges';
+function GetVersionEx; external kernel32 name 'GetVersionExA';
+function CreateMutex; external kernel32 name 'CreateMutexA';
+function BackupSeek; external kernel32 name 'BackupSeek';
 
 //--------------------------------------------------------------------------------------------------
 // Run time dynamic linking
@@ -3647,14 +3637,10 @@ function UnDecorateSymbolName; external ImageHlpLib name 'UnDecorateSymbolName';
 { TODO : don't used in the JCL }
 
 {$IFNDEF FPC}
-function BindImageEx(Flags: DWORD; ImageName, DllPath, SymbolPath: LPSTR;
-  StatusRoutine: TImagehlpStatusRoutine): Bool; stdcall; overload;
-  external ImageHlpLib name 'BindImageEx';
+function BindImageEx; external ImageHlpLib name 'BindImageEx';
 {$ENDIF ~FPC}
 
-function ImageEnumerateCertificates(FileHandle: THandle; TypeFilter: Word;
-  CertificateCount, Indices: PDWORD; IndexCount: DWORD): Bool; stdcall; overload;
-  external ImageHlpLib name 'ImageEnumerateCertificates';
+function ImageEnumerateCertificates; external ImageHlpLib name 'ImageEnumerateCertificates';
 
 //--------------------------------------------------------------------------------------------------
 // Run time dynamic linking
@@ -3797,6 +3783,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.10  2004/04/06 17:13:03  peterjhaas
+// Delete overload statements to solve the linker problem
+//
 // Revision 1.9  2004/04/06 04:19:47  peterjhaas
 // Complete redesign, add all needed Win32 declarations from other units and run time dynamic linking for platform dependent functions
 //
