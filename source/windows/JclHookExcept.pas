@@ -38,8 +38,8 @@ uses
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclExceptNotifyProc = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-  TJclExceptNotifyMethod = procedure (ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
+  TJclExceptNotifyProc = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+  TJclExceptNotifyMethod = procedure(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean) of object;
 
   TJclExceptNotifyPriority = (npNormal, npFirstChain);
 
@@ -91,7 +91,7 @@ type
     ExceptObj: Exception;
   end;
 
-  TNotifierItem = class (TObject)
+  TNotifierItem = class(TObject)
   private
     FNotifyMethod: TJclExceptNotifyMethod;
     FNotifyProc: TJclExceptNotifyProc;
@@ -114,9 +114,9 @@ const
   JclHookExceptDebugHookName = '__JclHookExcept';
 
 type
-  TJclHookExceptDebugHook = procedure (Module: HMODULE; Hook: Boolean); stdcall;
+  TJclHookExceptDebugHook = procedure(Module: HMODULE; Hook: Boolean); stdcall;
 
-  TJclHookExceptModuleList = class (TObject)
+  TJclHookExceptModuleList = class(TObject)
   private
     FModules: TThreadList;
   protected
@@ -177,6 +177,8 @@ end;
 
 constructor TNotifierItem.Create(const NotifyProc: TJclExceptNotifyProc; Priority: TJclExceptNotifyPriority);
 begin
+  // (rom) added inherited Create
+  inherited Create;
   FNotifyProc := NotifyProc;
   FPriority := Priority;
 end;
@@ -185,6 +187,8 @@ end;
 
 constructor TNotifierItem.Create(const NotifyMethod: TJclExceptNotifyMethod; Priority: TJclExceptNotifyPriority);
 begin
+  // (rom) added inherited Create
+  inherited Create;
   FNotifyMethod := NotifyMethod;
   FPriority := Priority;
 end;
@@ -506,6 +510,8 @@ end;
 
 constructor TJclHookExceptModuleList.Create;
 begin
+  // (rom) added inherited Create
+  inherited Create;
   FModules := TThreadList.Create;
   HookStaticModules;
   JclHookExceptDebugHook := @JclHookExceptDebugHookProc;
@@ -517,7 +523,7 @@ destructor TJclHookExceptModuleList.Destroy;
 begin
   JclHookExceptDebugHook := nil;
   FreeAndNil(FModules);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
