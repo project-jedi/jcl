@@ -122,7 +122,7 @@
     <echo message="${app.fullname} (${app.shortname}) ${version}" />
   </target>
 
-  <target name="compile" depends="prepare,versioninfo" description="${compile.hint}" >
+  <target name="compile" depends="clean,prepare,versioninfo" description="${compile.hint}" >
     <echo message="compile the source files..." />
     <brcc file="${src.dir}/windows/JclUnicode.rc" output="${src.dir}/windows/JclUnicode.res" />
     <dcc basedir="${pack.ver.dir}" source="DJcl*.dpk" >
@@ -141,6 +141,31 @@
         <include    name="${src.dir}/common" />
       </resourcepath>
     </dcc>
+    <!-- make debug DCUs
+    <dcc basedir="${src.dir}" source="common/*.pas" >
+      <dcuoutput path="${lib.dir}/debug" />
+      <debug value="true" />
+      <build value="true" />
+    </dcc>
+    <dcc basedir="${src.dir}" source="vcl/*.pas" >
+      <dcuoutput path="${lib.dir}/debug" />
+      <debug value="true" />
+      <build value="true" />
+    </dcc>
+    <dcc basedir="${src.dir}" source="visclx/*.pas" >
+      <dcuoutput path="${lib.dir}/debug" />
+      <debug value="true" />
+      <build value="true" />
+    </dcc>
+    <dcc basedir="${src.dir}" source="windows/*.pas" >
+      <dcuoutput path="${lib.dir}/debug" />
+      <unitpath refid="unit.dirs">
+        <include name="${basedir}/../Win32API" />
+      </unitpath>
+      <debug value="true" />
+      <build value="true" />
+    </dcc>
+     -->
   </target>
 
   <target name="examples" depends="compile" description="${samples.hint}" >
@@ -153,7 +178,6 @@
       <build value="true" />
       <unitpath>
         <include name="**" />
-        <include name="../../Win32API" />
         <include name="${lib.dir}" />
       </unitpath>
       <includepath>
@@ -167,7 +191,6 @@
       <debug value="true" />
       <build value="true" />
       <unitpath>
-        <include name="../../Win32API" />
         <include name="${lib.dir}" />
       </unitpath>
       <includepath>
@@ -181,7 +204,6 @@
       <build value="true" />
       <unitpath>
         <include name="%{delphi.dir}/Source/ToolsAPI" />
-        <include name="../../Win32API" />
         <include name="${lib.dir}" />
       </unitpath>
       <includepath>
@@ -195,7 +217,6 @@
       <debug value="true" />
       <build value="true" />
       <unitpath>
-        <include name="../../Win32API" />
         <include name="${lib.dir}" />
       </unitpath>
       <includepath>
@@ -239,10 +260,15 @@
           <exclude name="${help.dir}/dtx/**" />
           <exclude name="${help.dir}/HIT/**" />
           <exclude name="${help.dir}/*.txt" />
-          <exclude name="${basedir}/packages/*.dev/**" />
-          <exclude name="${basedir}/packages/JclDevPackages*.bpg" />
+          <exclude name="${pack.dir}/*.dev/**" />
+          <exclude name="${pack.dir}/JclDevPackages*.bpg" />
+          <exclude name="${pack.dir}/**/template.*" />
           <exclude name="${src.dir}/prototypes/**" />
           <exclude name="${src.dir}/unix/ProcessInfo.pas" />
+          <exclude name="${samp.dir}/makefile.mak" />
+          <exclude name="${src.dir}/common/*.inc" />
+          <exclude name="${src.dir}/*.bat" />
+          <exclude name="${basedir}/want.*" />
 
           <include name="${doc.dir}/**" />
           <include name="${basedir}/**/*.pas" />
@@ -271,9 +297,8 @@
           <include name="${basedir}/**/*.txt" />
           <include name="${basedir}/**/*.htm" />
           <include name="${basedir}/**/*.html" />
-          <include name="${basedir}/**/*.xml" />
+          <!-- include name="${basedir}/**/*.xml" / -->
           <include name="${basedir}/**/*.bat" />
-          <include name="${basedir}/want.exe" />
           <include name="install.bat" />
           <include name="readme.txt" />
       </fileset>
