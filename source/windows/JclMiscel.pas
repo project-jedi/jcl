@@ -271,7 +271,7 @@ end;
 
 procedure CheckOSVersion;
 begin
-  if Win32Platofrm <> VER_PLATFORM_WIN32_NT then
+  if Win32Platform <> VER_PLATFORM_WIN32_NT then
     raise EJclError.CreateResRec(@RsCreateProcNTRequiredError);
   if Win32BuildNumber < 1057 then
     raise EJclError.CreateResRec(@RsCreateProcBuild1057Error);  
