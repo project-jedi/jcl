@@ -819,7 +819,7 @@ begin
   inherited Create;
   FFileHandle := FileOpen(FileName, FileMode);
   if FFileHandle = INVALID_HANDLE_VALUE then
-    RaiseLastWin32Error;
+    RaiseLastOSError;
   if (FileMode and $0F) = fmOpenReadWrite then
   begin
     Protect := PAGE_WRITECOPY;
@@ -1375,7 +1375,7 @@ begin
   if Handle <> INVALID_HANDLE_VALUE then
     CloseHandle(Handle)
   else
-    RaiseLastWin32Error;
+    RaiseLastOSError;
 end;
 
 //------------------------------------------------------------------------------
@@ -1766,7 +1766,7 @@ begin
   if FindFirst(FileName, faAnyFile, Result) = 0 then
     SysUtils.FindClose(Result)
   else
-    RaiseLastWin32Error;
+    RaiseLastOSError;
 end;
 
 //------------------------------------------------------------------------------
@@ -1817,7 +1817,7 @@ begin
     Result := (FindData.nFileSizeHigh shl 32) + FindData.nFileSizeLow;
   end
   else
-    RaiseLastWin32Error;
+    RaiseLastOSError;
 end;
 
 //------------------------------------------------------------------------------
