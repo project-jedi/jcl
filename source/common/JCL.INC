@@ -21,7 +21,7 @@
 { the JEDI.INC file which is shared with the JEDI VCL.                                             }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: January 29, 2001                                                                  }
+{ Last modified: July 5, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -46,6 +46,10 @@
 {$ENDIF}
 
 {.$DEFINE MATH_EXT_EXTREMEVALUES}
+
+// JclHookExcept support for hooking exceptions from DLLs
+
+{.$DEFINE HOOK_DLL_EXCEPTIONS}
 
 // Free Pascal specific
 
