@@ -20,9 +20,6 @@
 {                                                                              }
 {******************************************************************************}
 
-//  (rom)   replaced TJclFileVersionInfo.ExtractLanguageIds with
-//          fixed version from Petr Vones
-
 unit JclFileUtils;
 
 {$I JCL.INC}
@@ -1525,12 +1522,23 @@ type
   end;
 
 procedure TJclFileVersionInfo.ExtractLanguageIds;
+const
+  DefaultLangId = $0409;  // English (US)
+  DefaultCodePage = $04E4;
 var
   Translation: PLongint;
   I: Integer;
   Lang: TLangIdRec;
   Size: ULONG;
   NeutralLang: Boolean;
+  LangString: string;
+
+  procedure AddLang;
+  begin
+    with Lang do
+      FLanguages.AddObject(Format('%.4x%.4x', [LangId, CodePage]), TObject(Pair));
+  end;
+
 begin
   NeutralLang := False;
   if VerQueryValue(PChar(FBuffer), PChar(VerTranslation), Pointer(Translation), Size) then
@@ -1541,13 +1549,28 @@ begin
       if Lang.LangId = LANG_NEUTRAL then
         NeutralLang := True
       else
-        FLanguages.AddObject(Format('%.4x%.4x', [Lang.LangId, Lang.CodePage]),
-          TObject(Lang.Pair));
+        AddLang;
     end;
   end;
-  // default if no translations or neutral lang ID
-  if (FLanguages.Count = 0) or NeutralLang then
-    FLanguages.Add('040904E4'); // English (United States)
+  if NeutralLang then
+  begin
+    // 'Neutral language' usually doesn't match the value readed before. We have
+    // to try search it using StringFileInfo key.
+    I := Pos('StringFileInfo', FBuffer);
+    if I > 0 then
+    begin
+      LangString := Copy(FBuffer, I + 20, 8);
+      Lang.LangId := StrToIntDef('$' + Copy(LangString, 1, 4), DefaultLangId);
+      Lang.CodePage := StrToIntDef('$' + Copy(LangString, 5, 4), DefaultCodePage);
+      AddLang;
+    end;
+  end;
+  if FLanguages.Count = 0 then
+  begin
+    Lang.LangId := DefaultLangId;
+    Lang.CodePage := DefaultCodePage;
+    AddLang;
+  end;
 end;
 
 //------------------------------------------------------------------------------
