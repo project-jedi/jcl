@@ -15,7 +15,7 @@
 { The Initial Developer of the Original Code is Barry Kelly.                                       }
 { Portions created by Barry Kelly are Copyright (C) Barry Kelly. All rights reserved.              }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
+{ Contributors:                                                                                    }
 {   Barry Kelly, Robert Rossmair, Matthias Thoma, Petr Vones                                       }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -39,70 +39,26 @@ uses
   JclBase, JclResources;
 
 type
-  { Brief: The error exception class used by TStringhashMap. }
   EJclStringHashMapError = class (EJclError);
-  { Brief: The type of the return value for hashing functions. }
   THashValue = Cardinal;
 
 type
-  { Brief: An abstract class describing the interface for traits classes.
-    Description:
-      The desired behaviour of TStringHashMap for case sensitive and
-      case insensitive maps is different. This class describes the
-      interface through which user code can communicate to TStringHashMap
-      how string keys added should be treated. Concrete instances are
-      returned by the CaseSensitiveTraits and CaseInsensitiveTraits
-      functions.
-
-      See also: TCaseSensitiveTraits, TCaseInsensitiveTraits }
   TStringHashMapTraits = class (TObject)
   public
-    { Brief: Returns the hash value of the string s. }
     function Hash(const s: string): Cardinal; virtual; abstract;
-    { Brief: Returns a negative integer if l is before r, a positive
-      integer if r is before l, and zero if they are equal; all comparisons
-      being lexicographical, i.e. not necessarily based on the ordinal
-      values of the characters, but may be case insensitive, for example. }
     function Compare(const l, r: string): Integer; virtual; abstract;
   end;
 
-{ Brief: A utility function returning an instance of TCaseSensitiveTraits. }
 function CaseSensitiveTraits: TStringHashMapTraits;
-{ Brief: A utility function returning an instance of TCaseInsensitiveTraits. }
 function CaseInsensitiveTraits: TStringHashMapTraits;
 
 type
-  { Brief: The type of the parameter to TStringHashMap.Iterate.
-    Description:
-      * AUserData:
-        The same parameter as was passed to the Iterate method.
-      * AStr:
-        The value of the string part of the current key.
-      * APtr:
-        The value of the pointer part of the current key.
-    Should return True to continue iterating, or False to
-    stop iterating and return to whatever called the Iterate method. }
   TIterateFunc = function(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean;
 
-  { Brief: The type of the parameter to TStringHashMap.IterateMethod.
-    Description:
-      These are the meanings of the arguments:<p>
-      AUserData:
-        The same parameter as was passed to the IterateMethod method.
-      AStr:
-        The value of the string part of the current key.
-      APtr:
-        The value of the pointer part of the current key.
-
-      <p>Return value: Should return True to continue iterating, or False to
-        stop iterating and return to whatever called the IterateMethod method. }
   TIterateMethod = function(AUserData: Pointer; const AStr: string; var APtr: Pointer): Boolean of object;
 
-  { Brief: Pointer to a pointer to a THashNode record. }
   PPHashNode = ^PHashNode;
-  { Brief: Pointer to a THashNode record. }
   PHashNode = ^THashNode;
-  { Brief: The internal storage record used by TStringHashMap. }
   THashNode = record
     Str: string;
     Ptr: Pointer;
@@ -114,24 +70,9 @@ type
     TStringHashMap.NodeIterate method. }
   TNodeIterateFunc = procedure(AUserData: Pointer; ANode: PPHashNode);
 
-  { Brief: Pointer to a THashArray. }
   PHashArray = ^THashArray;
-  { Brief: THashArray is the type of the array used for internal storage in
-    TStringHashMap. }
   THashArray = array[0..MaxInt div SizeOf(PHashNode) - 1] of PHashNode;
 
-  { Brief: TStringHashMap is a string-pointer associative array.
-    Description:
-      TStringHashMap is a string-pointer associative array. It uses a
-      hash table for its implementation, which has several ramifications
-      for its behaviour:
-        * Lookup by string takes a constant time, i.e. if the map is big
-          enough it takes just as long to find an item from 10 as from
-          10 million (ignoring cache and paging effects).
-        * Items are unordered. An iteration of all the items using the
-          Iterate or IterateMethod methods won't go through all the items
-          in any order that has meaning, i.e. the ordering is essentially
-          random. }
   TStringHashMap = class (TObject)
   private
     FHashSize: Cardinal;
@@ -139,7 +80,6 @@ type
     FList: PHashArray;
     FLeftDelete: Boolean;
     FTraits: TStringHashMapTraits;
-
     function IterateNode(ANode: PHashNode; AUserData: Pointer; AIterateFunc: TIterateFunc): Boolean;
     function IterateMethodNode(ANode: PHashNode; AUserData: Pointer; AIterateMethod: TIterateMethod): Boolean;
     procedure NodeIterate(ANode: PPHashNode; AUserData: Pointer; AIterateFunc: TNodeIterateFunc);
@@ -147,248 +87,45 @@ type
     procedure DeleteNodes(var q: PHashNode);
     procedure DeleteNode(var q: PHashNode);
   protected
-    { Brief: A helper method used by the public methods.
-
-      Parameters:
-        s: The string key of the node to find.
-
-      Returns:
-        The location of the pointer to the node corresponding to s, if
-        s is in the hash table. If s isn't in the table, then it will
-        return the location of the pointer (= nil) which must be set
-        in order to add s correctly to the table.
-
-      Description:
-        Returns, using double indirection, the node corresponding to the
-        parameter. The double indirection allows internal implementation
-        methods to both search and add using only one search through the
-        table. }
     function FindNode(const s: string): PPHashNode;
-
-    {@@$TStringHashMap_Alloc
-      <TITLE Customizing TStringHashMap's node allocation strategy.>
-      You can customize the way TStringHashMap allocates nodes, to avoid the
-      overhead of millions of calls to New, by overriding the AllocNode
-      and FreeNode methods. }
-
-    { <GROUP $TStringHashMap_Alloc>
-      <TITLE Allocating a node>
-      Brief: Allocates a node.
-      Returns: A pointer to a newly allocated node, with the Left and Right
-        members set to nil. }
     function AllocNode: PHashNode; virtual;
-    { <GROUP $TStringHashMap_Alloc>
-      <TITLE Freeing a node>
-      Brief: Frees a node.
-      Parameters:
-        ANode: The node to free. }
     procedure FreeNode(ANode: PHashNode); virtual;
-
-    { Brief: Data property getter.
-      Parameters:
-        s: The key of the node to find.
-      Returns:
-        The value of the pointer if the node exists, or nil otherwise. }
     function GetData(const s: string): Pointer;
-    { Brief: Data property setter.
-      Parameters:
-        s: The key of the node to set.
-        p: The data to set the node's data to.
-      Description:
-        SetData will create a new node if none exists with key s. }
     procedure SetData(const s: string; p: Pointer);
   public
-    { Brief: Constructs a new TStringHashMap instance.
-      Parameters:
-        ATraits:
-          An instance of a descendant of TStringHashMapTraits. This object
-          describes how the hash map will hash and compare string values.
-        AHashSize:
-          An initial size for the internal hash lookup table. This doesn't
-          limit the amount of items the hash can hold; it just affects the
-          speed of operations on the hash map. See the HashSize property for
-          more info.
-      Note: AHashSize should <b>not</b> be a power of 2. Use a power of 2
-        minus 1, or a prime number. }
     constructor Create(ATraits: TStringHashMapTraits; AHashSize: Cardinal);
-
-    { Brief: Destroys the instance. Call Free instead of Destroy. }
     destructor Destroy; override;
-
-    { public methods }
-
-    { Brief: Adds an association to the map.
-      Parameters:
-        s: The key to add.
-        p: The data to add. It is an untyped constant to avoid typecasting
-          issues, and to make code using the map more readable. It should
-          be a 4-byte data type, like Integer or Pointer, or some object
-          reference. }
     procedure Add(const s: string; const p{: Pointer});
-
-    { Brief: Removes an association from the map.
-      Parameters:
-        s: The string value of the association to remove.
-      Returns:
-        The data field of the assocation.
-      Description:
-        The Remove method isn't as fast at removing items as Clear is; that
-        is, calling Remove for every key in the hash will be quite a bit
-        slower than calling Clear. The method returns the data field so that
-        compact code can be written. See the example for sample usage.
-
-        EJclStringHashMapError will be raised if the item isn't found.
-      Example:
-        This example demonstrates how the Remove method's return value can
-        be used.
-        <code>
-        var
-          myMap: TStringHashMap;
-          // ...
-          TObject(myMap.Remove('SomeItem')).Free;
-        </code> }
     function Remove(const s: string): Pointer;
-
-    { Brief: Removes <b>every</b> instance of p as a data field from the map.
-      Parameters:
-        p: The data to item. }
     procedure RemoveData(const p{: Pointer});
-
-    { Brief: Iterates through associations in the map.
-      Parameters:
-        AUserData: A pointer parameter passed through untouched to the
-          iterator function.
-        AIterateFunc: A function pointer called for every assocation in
-          the map; it should return False if it wants to prematurely stop
-          the iteration.
-      See Also: IterateMethod }
     procedure Iterate(AUserData: Pointer; AIterateFunc: TIterateFunc);
-
-    { Brief: Iterates through associations in the map.
-      Parameters:
-        AUserData: A pointer parameter passed through untouched to the
-          iterator method.
-        AIterateMethod: A method pointer called for every assocation in
-          the map; it should return False if it wants to prematurely stop
-          the iteration.
-      See Also: Iterate }
     procedure IterateMethod(AUserData: Pointer; AIterateMethod: TIterateMethod);
-
-    { Brief: Checks if the map has an association with a string key.
-      Parameters:
-        s: The key to search for.
-      Returns:
-        True if found, False if there is no assocation with key s in the
-          map. }
     function Has(const s: string): Boolean;
-
-    { Brief: Finds the data part of an association corresponding to a string
-        key.
-      Parameters:
-        s: The string key to find.
-        p: A reference to a pointer which will be updated if the assocation
-          is found. If the assocation isn't found, the pointer isn't touched.
-          That is, it won't automatically be set to nil.
-      Returns:
-        True if the key was found, False otherwise. }
     function Find(const s: string; var p{: Pointer}): Boolean;
-
-    { Brief: Finds the string key for a data value.
-      Parameters:
-        p: The data value to find.
-        s: A reference to the string key to set if found.
-      Returns:
-        True if found, false otherwise.
-      Description:
-        FindData will find the first association in the map with a data
-        field equal to p. However, the order of the search has no meaning;
-        if there are multiple instances of p in the node, the key returned
-        is not in any particular order. }
     function FindData(const p{: Pointer}; var s: string): Boolean;
-
-    { Brief: Clears the map of all associations. }
     procedure Clear;
-
-    { Brief: The number of assocations stored in the map. }
     property Count: Cardinal read FCount;
-
-    { Brief: Allows access to the map like an array looked up by string.
-      Description:
-        This is the default property, so it needn't be specified directly.
-        If the key corresponding to the string isn't found, an assocation
-        is added if setting, but isn't added if getting. Reading from the
-        map with a key not in the map will return nil.
-      Example:
-        Demonstrates use of the TStringHashMap.Data property.
-        <code>
-        var
-          myMap: TStringHashMap;
-          // ...
-          myMap['this'] := Self;
-          if myMap['something'] = nil then
-            // 'something' not found
-        </code> }
     property Data[const s: string]: Pointer read GetData write SetData; default;
-    { Brief: Returns the traits object being used by the map. }
     property Traits: TStringHashMapTraits read FTraits;
-    { Brief: The internal hash table size.
-      Description:
-        The hash table size affects all operations on the hash map. For maps
-        designed to work with large numbers of assocations, the table should
-        be correspondingly larger.
-      Note: Don't change the value of this property too often, as it will
-        force all items in the table to be rehashed, and this can take
-        some time. }
     property HashSize: Cardinal read FHashSize write SetHashSize;
   end;
 
 { str=case sensitive, text=case insensitive }
 
-{ Brief: Case sensitive hash of string s. }
 function StrHash(const s: string): THashValue;
-{ Brief: Case insensitive hash of string s. }
 function TextHash(const s: string): THashValue;
-{ Brief: A utility function which computes a hash a buffer.
-  Parameters:
-    AValue: A reference to the buffer to compute a hash value for.
-    ASize: The size of the buffer. Use SizeOf where possible. }
 function DataHash(var AValue; ASize: Cardinal): THashValue;
-
-{ Brief: A utility iterating function that calls TObject.Free for all
-  data items in a map.
-  Example:
-    This frees all objects in the map and clears the map.
-    <code>
-    var
-      myMap: TStringHashMap;
-      // ...
-      myMap.Iterate(nil, Iterate_FreeObjects);
-      myMap.Clear;
-    </code> }
 function Iterate_FreeObjects(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
-{ Brief: A utility iterating function that calls Dispose for all data
-  items in a map.
-  See Also: Iterate_FreeObjects }
 function Iterate_Dispose(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
-{ Brief: A utility iterating function that calls FreeMem for all data
-  items in a map.
-  See Also: Iterate_FreeMem }
 function Iterate_FreeMem(AUserData: Pointer; const AStr: string; var AData: Pointer): Boolean;
 
 type
-  { Brief: A useful concrete descendant of TStringHashMapTraits which
-    implements case sensitive traits, with order based on ordinal value.
-    See Also: TCaseInsensitiveTraits }
   TCaseSensitiveTraits = class(TStringHashMapTraits)
   public
     function Hash(const s: string): Cardinal; override;
     function Compare(const l, r: string): Integer; override;
   end;
 
-type
-  { Brief: A useful concrete descendant of TStringHashMapTraits which
-    implements case insensitive traits, with order based on ordinal value.
-    See Also: TCaseSensitiveTraits }
   TCaseInsensitiveTraits = class(TStringHashMapTraits)
   public
     function Hash(const s: string): Cardinal; override;
@@ -1118,6 +855,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.5  2004/05/18 18:58:04  rrossmair
+// documentation extracted to StrHashMap.dtx
+//
 // Revision 1.4  2004/05/05 00:11:24  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
