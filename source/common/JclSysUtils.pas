@@ -19,7 +19,14 @@
 { Description: Various pointer and class related routines.                     }
 { Unit Owner: Jeroen Speldekamp                                                }
 {                                                                              }
-{ Last modified: October 05, 2000                                              }
+{******************************************************************************}
+{                                                                              }
+{ This unit contains various routine for manipulating the math coprocessor.    }
+{ This includes such things as querying and setting the rounding precision of  }
+{ floating point operations and retrieving the coprocessor's status word.      }
+{                                                                              }
+{ Unit owner: Eric S. Fisher                                                   }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
