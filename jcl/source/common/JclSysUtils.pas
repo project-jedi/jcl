@@ -189,9 +189,6 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  {$IFDEF LINUX}
-  Types,
-  {$ENDIF}
   SysUtils,
   JclResources;
 
@@ -523,41 +520,6 @@ end;
 //==============================================================================
 // Classes information and manipulation
 //==============================================================================
-
-{$IFDEF LINUX}
-
-type
-  THandle = DWORD;
-
-const
-  // TODO only as dummy for GetCurrentProcess
-  INVALID_HANDLE_VALUE = THandle(-1);
-
-function GetCurrentProcess: THandle;
-begin
-  // TODO implement a Linux version
-  Result := INVALID_HANDLE_VALUE;
-end;
-
-//------------------------------------------------------------------------------
-
-function WriteProcessMemory(hProcess: THandle; lpBaseAddress: Pointer;
-  lpBuffer: Pointer; nSize: DWORD; var nBytesWritten: DWORD): LongBool;
-begin
-  // TODO implement a Linux version
-  Result := False;
-end;
-
-//------------------------------------------------------------------------------
-
-function FlushInstructionCache(hProcess: THandle; lpBaseAddress: Pointer;
-  dwSize: DWORD): LongBool;
-begin
-  // TODO implement a Linux version
-  Result := False;
-end;
-
-{$ENDIF}
 
 //==============================================================================
 // Virtual Methods
