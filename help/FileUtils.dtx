@@ -50,6 +50,8 @@ Summary:
 Description:
   DriveLetters is a set of characters which can be used to designate a drive under
   the Windows operating system.
+Platform:
+  Windows
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathDevicePrefix
@@ -60,6 +62,8 @@ Description:
   PathDevicePrefix is the character string used in Windows to specify a physical
   device such as a harddisk. To be precise its a prefix to indicate the "path name"
   of any driver.
+Platform:
+  Windows
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@PathSeparator
@@ -562,6 +566,50 @@ See also:
 
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
+@@FileGetOwnerName
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+  Returns the name of the owner of a file.
+Description:
+  FileGetOwnerName returns the name of the owner of the specified file.
+Parameters:
+  FileName - The name of the file for which you want to know the owner.
+Result:
+  If the function succeeds it returns the owner name of the supplied file. If the
+  function fails the result is an empty string.
+Note:
+  Not supported on Windows 95/98/ME.
+Platforms:
+  Unix, Windows NT, Windows 2000, Windows XP, Windows Server 2003
+See also:
+  PathGetGroupName
+Donator:
+  Scott Price
+Contributor:
+  Robert Rossmair
+--------------------------------------------------------------------------------
+@@FileGetGroupName
+<GROUP $FilesandIO.FilesandDirectories>
+Summary:
+  Returns the name of the owner of a file.
+Description:
+  FileGetGroupName returns the name of the group of the specified file.
+Parameters:
+  FileName - The name of the file for which you want to know the group it belongs to.
+Result:
+  If the function succeeds it returns the name of the group (Windows: the primary group)
+  to which the supplied file belongs. If the function fails the result is an empty string.
+Note:
+  Not supported on Windows 95/98/ME.
+Platforms:
+  Unix, Windows NT, Windows 2000, Windows XP, Windows Server 2003
+See also:
+  PathGetOwnerName
+Donator:
+  Scott Price
+Contributor:
+  Robert Rossmair
+--------------------------------------------------------------------------------
 @@PathCanonicalize
 Summary:
   If possible, shortens a path by resolving relative path elements ('.', '..')
@@ -606,7 +654,8 @@ Result:
 Category: Files and IO
 Platform:
   Windows
-Donator: Rudy Velthuis
+Donator:
+  Rudy Velthuis
 See Also
   PathGetShortName
 --------------------------------------------------------------------------------
@@ -625,6 +674,8 @@ Result:
   If the function succeeds it returns the long name of the
   supplied path. If the function fails the result is a copy of
   the supplied Path.
+Platform:
+  Windows
 See Also
   PathGetLongName
 --------------------------------------------------------------------------------
@@ -639,10 +690,13 @@ Parameters:
 Result:
   If the function succeeds it returns the short name of the given path. If it fails
   it returns a copy of the supplied path.
+Platform:
+  Windows
 See also:
   PathGetLongName
   PathGetDisplayName
-Donator: Rudy Velthuis
+Donator:
+  Rudy Velthuis
 --------------------------------------------------------------------------------
 @@PathGetRelativePath
 <GROUP $FilesandIO.Pathmanipulation>
@@ -862,6 +916,8 @@ Result:
   The compacted path or an empty string if the function fails.
 Notes:
   If Width is smaller than the most compacted path then the result is the most compacted path, even though it does not fit within the specified width.
+Platform:
+  Windows
 Donator: Marcel van Brakel
 Contributor: Anonymous
 --------------------------------------------------------------------------------
@@ -872,8 +928,8 @@ Summary:
 Description:
   PathExtractFileDirFixed extracts the drive and directory parts from the filename
   specified by S. The resulting path is always terminated with the PathSeparator
-  character (a backslash a forward slahs depending on the target OS) regardless of
-  whether a drive and/or directory is present in the filename.
+  character (a backslash or a forward slahs depending on the target OS) regardless
+  of whether a drive and/or directory is present in the filename.
 Parameters:
   S - The filename from which to extract the drive and directory parts.
 Result:
@@ -1345,6 +1401,8 @@ Result:
 Notes:
   You must have administrative privileges to lock a volume.
   The device is, according to Microsoft recommendations, opened with no buffering. This action imposes a number of 'limitations' for subsequent access to the device. For example the alignment of buffers must be on a multiple of the volume's sector size. See the Platform SDK for details.
+Platform:
+  Windows
 See also:
   UnlockVolume
 Donator: Marcel van Brakel
@@ -1365,6 +1423,8 @@ Result:
 Notes:
   You must have administrative privileges to open a volume.
   This action imposes a number of 'limitations' for subsequent access to the volume. For example the alignment of buffers must be on a multiple of the volume's sector size. See the Platform SDK on CreateFile for details.
+Platform:
+  Windows
 See also:
   CloseVolume
 
@@ -1383,6 +1443,8 @@ Result:
   case either means that the specified handle was invalid or that the device
   could not be closed. In either case the Handle parameter is unaffected and
   retains its value.
+Platform:
+  Windows
 See also:
   OpenVolume
 
@@ -1399,6 +1461,8 @@ Description:
   same name already exists but is opened.
 Parameters:
   FileName - Name of the file to create.
+Platform:
+  Windows
 
 Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1510,6 +1574,8 @@ Parameters:
   FileName - The name of the file for which to retrieve the time of creation.
 Result:
   The date/time the file was created. On failure the function raises an exception.
+Platform:
+  Windows
 See also:
   GetFileAgeCoherence
   GetFileLastAccess
@@ -1692,6 +1758,8 @@ Parameters:
 Result:
   If the drive is accessible, a disk is present, and the result is True. If the drive
   is not accessible or an error occurred the function returns False.
+Platform:
+  Windows
 
 Donator: John C Molyneux
 --------------------------------------------------------------------------------
@@ -1710,6 +1778,8 @@ Description:
   The file was not built using standard release procedures.
 * ffSpecialBuild
   The file was built by the original company using standard release procedures but is a variation of the normal file of the same version number.
+Platform:
+  Windows
 See also:
   TJclFileVersionInfo
 
@@ -1728,6 +1798,8 @@ Parameters:
 Result:
   If the specified file contains a version resource the result is True, if it does
   not or the file could not be found the result is False.
+Platform:
+  Windows
 See also:
   TJclFileVersionInfo
 
@@ -1744,7 +1816,23 @@ Parameters:
   OSIdent - An OS identifier returned by FileOS property of TJclFileVersionInfo.
 Result:
   String representation of the OS identifier.
+Platform:
+  Windows
 
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@TJclFileVersionInfo
+<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
+Summary:
+  Enables reading of version information from executables.
+Description:
+  TJclFileVersionInfo is a class that enables you to read the version information
+  from an executable file (exe, dll etc.). Naturally the executable itself has to
+  have a version resource linked in. Besides allowing you to read standard version
+  key such as ProductName and FileVersion this class also allows you to read custom
+  keys through the UserKeys property.
+Platform:
+  Windows
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclFileVersionInfo.LanguageCount
@@ -2090,18 +2178,6 @@ Notes:
 See also:
   Attach
 
-Donator: Marcel van Brakel
---------------------------------------------------------------------------------
-@@TJclFileVersionInfo
-<GROUP $FilesandIO.FilesandDirectories.FileVersionInfo>
-Summary:
-  Enables reading of version information from executables.
-Description:
-  TJclFileVersionInfo is a class that enables you to read the version information
-  from an executable file (exe, dll etc.). Naturally the executable itself has to
-  have a version resource linked in. Besides allowing you to read standard version
-  key such as ProductName and FileVersion this class also allows you to read custom
-  keys through the UserKeys property.
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@DeleteDirectory

@@ -18,20 +18,10 @@
 <TITLE Dynamic loading>
 <TOPICORDER 300>
 --------------------------------------------------------------------------------
-@@$BaseServices.EJclError
+@@$BaseServices.ErrorHandling
 <GROUP $BaseServices>
-<TITLE EJclError>
+<TITLE Error Handling>
 <TOPICORDER 400>
---------------------------------------------------------------------------------
-@@$BaseServices.EJclInternalError
-<GROUP $BaseServices>
-<TITLE EJclInternalError>
-<TOPICORDER 410>
---------------------------------------------------------------------------------
-@@$BaseServices.EJclWin32Error
-<GROUP $BaseServices>
-<TITLE EJclWin32Error>
-<TOPICORDER 500>
 --------------------------------------------------------------------------------
 @@$BaseServices.FPCCompatibility
 <GROUP $BaseServices>
@@ -52,11 +42,6 @@
 <GROUP $BaseServices>
 <TITLE Pointer manipulation>
 <TOPICORDER 900>
---------------------------------------------------------------------------------
-@@$BaseServices.TObjectList
-<GROUP $BaseServices>
-<TITLE TObjectList>
-<TOPICORDER 1000>
 --------------------------------------------------------------------------------
 @@JclVersion
 <GROUP $BaseServices>
@@ -105,7 +90,7 @@ Quick info:
   Donator: JCL Team
 --------------------------------------------------------------------------------
 @@EJclError
-<GROUP $BaseServices.EJclError>
+<GROUP $BaseServices.ErrorHandling>
 Summary:
   Base exception class for all JCL exceptions.
 Description:
@@ -158,7 +143,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EJclInternalError
-<GROUP $BaseServices.EJclInternalError>
+<GROUP $BaseServices.ErrorHandling>
 Summary:
   Exception class for JCL internal errors.
 Description:
@@ -167,7 +152,7 @@ Description:
 Donator: Unknown
 --------------------------------------------------------------------------------
 @@EJclWin32Error
-<GROUP $BaseServices.EJclWin32Error>
+<GROUP $BaseServices.ErrorHandling>
 Summary:
   Base class for exceptions raised in response to Win32 errors.
 Description:
@@ -279,7 +264,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LongWord
-<GROUP $BaseServices>
+<GROUP $BaseServices.Compatibility>
 Summary:
   Alias for Cardinal.
 Description:
@@ -290,7 +275,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TSysCharSet
-<GROUP $BaseServices>
+<GROUP $BaseServices.Compatibility>
 Summary:
   A set of characters.
 Description:
@@ -607,7 +592,7 @@ Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TObjectList
-<GROUP $BaseServices.TObjectList>
+<GROUP $BaseServices.Compatibility>
 Summary:
   TList descendent to maintain a list of TObject descendants.
 Description:
