@@ -25,6 +25,10 @@ unit JclUnicode;
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
 //
+// 09-DEC-2000 ml:
+//   - bug fixes
+//   - special case folding data included into the *.res file and load routines adjusted
+//   - correct binary string comparation with surrogate fixup (StrICompW, StrLICompW)
 // 04-DEC-2000 ml:
 //   - improved binary string comparation with surrogate fixup (StrCompW, StrLCompW)
 // 02/03-DEC-2000 ml:
@@ -728,6 +732,8 @@ function WideDecompose(const S: WideString): WideString;
 function WideExtractQuotedStr(var Src: PWideChar; Quote: WideChar): WideString;
 function WideQuotedStr(const S: WideString; Quote: WideChar): WideString;
 function WideStringOfChar(C: WideChar; Count: Cardinal): WideString;
+function WideCaseFolding(C: WideChar): WideString; overload;
+function WideCaseFolding(const S: WideString): WideString; overload;
 function WideLowerCase(C: WideChar): WideString; overload;
 function WideLowerCase(const S: WideString): WideString; overload;
 function WideTitleCase(C: WideChar): WideString; overload;
@@ -740,6 +746,7 @@ function WideTrimRight(const S: WideString): WideString;
 
 // Low level character routines
 function UnicodeNumberLookup(Code: UCS4; var Number: TUcNumber): Boolean;
+function UnicodeCaseFold(Code: UCS4): TUCS4Array;
 function UnicodeToUpper(Code: UCS4): TUCS4Array;
 function UnicodeToLower(Code: UCS4): TUCS4Array;
 function UnicodeToTitle(Code: UCS4): TUCS4Array;
@@ -835,7 +842,7 @@ implementation
 // needed by one of the lookup functions.
 // Note: There is a little tool called UDExtract which creates a resouce script from
 //       the Unicode database file which can be compiled to the needed res file.
-//       This tool, including its source code can be downloaded from www.lischke-online.de/Unicode.html.
+//       This tool, including its source code, can be downloaded from www.lischke-online.de/Unicode.html.
 
 {$R JclUnicode.res}
 
@@ -880,36 +887,9 @@ type
 
 var
   WideCompareText: TCompareFunc;
-
-// Loader routines and structure definitions for resource data
-type
-  TUHeader = record
-    BOM: WideChar;
-    Count: Word;
-    case Boolean of
-      True: (
-        Bytes: Cardinal);
-      False: (
-        Len: array [0..1] of Word);
-  end;
-
-var
   // As the global data can be accessed by several threads it should be guarded
   // while the data is loaded.
   LoadInProgress: TCriticalSection;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-// Internal support routines
-
-function SwapCardinal(C: Cardinal): Cardinal;
-
-// swaps all bytes in C from MSB to LSB order
-// EAX contains both parameter as well as result
-
-asm
-         BSWAP EAX
-end;
 
 //----------------- support for character categories -------------------------------------------------------------------
 
@@ -975,6 +955,7 @@ function CategoryLookup(Code: Cardinal; Category: TCharacterCategory): Boolean; 
 
 var
   L, R, M, C: Integer;
+  Ranges: TRangeArray;
 
 begin
   // load property data if not already done
@@ -982,21 +963,22 @@ begin
     LoadCharacterCategories;
 
   // is there anything assigned in the given category
-  Result := Assigned(Categories[Category]);
+  Ranges := Categories[Category];
+  Result := Assigned(Ranges);
   if Result then
   begin
     Result := False;
     // search through all ranges to find the code
     L := 0;
-    R := High(Categories[Category]);
+    R := High(Ranges);
     while L <= R do
     begin
       M := (L + R) shr 1;
-      C := Integer(Categories[Category][M].Start) - Integer(Code);
+      C := Integer(Ranges[M].Start) - Integer(Code);
       if C > 0 then
         R := M - 1
       else
-        if (C = 0) or (Categories[Category][M].Stop >= Code) then
+        if (C = 0) or (Ranges[M].Stop >= Code) then
         begin
           Result := True;
           Break;
@@ -1035,9 +1017,10 @@ end;
 type
   TCase = record
     Code: Cardinal;
-    Lower,
-    Title,
-    Upper: TUCS4Array;
+    Fold,               // normalized case for case independent string comparison (e.g. for "ß" this is "ss")
+    Lower,              // lower case (e.g. for "ß" it is "ß")
+    Title,              // tile case (used mainly for compatiblity, ligatures etc., e.g. for "ß" this is "Ss")
+    Upper: TUCS4Array;  // upper cae (e.g. for "ß" it is "SS")
   end;
 
 var
@@ -1070,21 +1053,28 @@ begin
         begin
           // a) read actual code point
           Stream.ReadBuffer(Code, 4);
-          // b) read lower case array
+          // b) read fold case array
+          Stream.ReadBuffer(Size, 4);
+          if Size > 0 then
+          begin
+            SetLength(Fold, Size);
+            Stream.ReadBuffer(Fold[0], Size * SizeOf(Cardinal));
+          end;
+          // c) read lower case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
             SetLength(Lower, Size);
             Stream.ReadBuffer(Lower[0], Size * SizeOf(Cardinal));
           end;
-          // c) read title case array
+          // d) read title case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
             SetLength(Title, Size);
             Stream.ReadBuffer(Title[0], Size * SizeOf(Cardinal));
           end;
-          // d) read upper case array
+          // e) read upper case array
           Stream.ReadBuffer(Size, 4);
           if Size > 0 then
           begin
@@ -1130,13 +1120,20 @@ begin
         R := M - 1
       else
       begin
+        // no need to copy the dynamic array, it is reference counted
         case Mapping of
           0:
-            Result := Copy(CaseMapping[M].Lower, 0, Length(CaseMapping[M].Lower));
+            begin
+              Result := CaseMapping[M].Fold;
+              if Result = nil then
+                Result := CaseMapping[M].Lower;
+            end;
           1:
-            Result := Copy(CaseMapping[M].Title, 0, Length(CaseMapping[M].Title));
+            Result := CaseMapping[M].Lower;
           2:
-            Result := Copy(CaseMapping[M].Upper, 0, Length(CaseMapping[M].Upper));
+            Result := CaseMapping[M].Title;
+          3:
+            Result := CaseMapping[M].Upper;
         end;
         if Assigned(Result) then
           Exit
@@ -1152,15 +1149,11 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeToUpper(Code: UCS4): TUCS4Array;
+function UnicodeCaseFold(Code: UCS4): TUCS4Array;
 
-begin
-  Result := CaseLookup(Code, 2);
-end;                            
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function UnicodeToLower(Code: UCS4): TUCS4Array;
+// This fucntion returnes an array of special case fold mappings if there is one defined for the given
+// code, otherwise the lower case will be returned. This all applies only to cased code points.
+// Uncased code points are returned unchanged.
 
 begin
   Result := CaseLookup(Code, 0);
@@ -1168,10 +1161,26 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function UnicodeToTitle(Code: UCS4): TUCS4Array;
+function UnicodeToUpper(Code: UCS4): TUCS4Array;
+
+begin
+  Result := CaseLookup(Code, 3);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeToLower(Code: UCS4): TUCS4Array;
 
 begin
   Result := CaseLookup(Code, 1);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function UnicodeToTitle(Code: UCS4): TUCS4Array;
+
+begin
+  Result := CaseLookup(Code, 2);
 end;
 
 //----------------- support for decomposition --------------------------------------------------------------------------
@@ -1307,7 +1316,7 @@ begin
           begin
             // found a decomposition, return the codes
             with Decompositions[M] do
-              Result := Copy(Decompositions, 0, Length(Decompositions));
+              Result := Decompositions;
             Break;
           end;
       end;
@@ -1662,7 +1671,7 @@ function TUTBMSearch.Match(Text, Start, Stop: PUCS2; var MatchStart, MatchEnd: C
 //       the left check. Although this pointer might not point to the real string
 //       start (e.g. in TUTBMSearch.FindAll Text is incremented as needed) it is
 //       still a valid check mark. The reason is that Text either points to the
-//       real string start or a previous match(happend already, keep in mind the
+//       real string start or a previous match (happend already, keep in mind the
 //       search options do not change in the FindAll loop) and the character just
 //       before Text is a space character.
 //       This fact implies, though, that strings passed to Find (or FindFirst,
@@ -1746,8 +1755,7 @@ begin
     if sfSpaceCompress in FFlags then
     begin
       CheckSpace := False;
-      while (Start > Text) and
-            (UnicodeIsWhiteSpace(C1) or UnicodeIsControl(C1)) do
+      while (Start > Text) and (UnicodeIsWhiteSpace(C1) or UnicodeIsControl(C1)) do
       begin
         CheckSpace := UnicodeIsWhiteSpace(C1);
         Dec(Start);
@@ -5660,23 +5668,24 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function StrCompW(Str1, Str2: PWideChar): Integer;
-
-// Binary comparation of Str1 and Str2 with surrogate fix-up.
-// Returns < 0 if Str1 is smaller in binary order than Str2, = 0 if both strings are
-// equal and > 0 if Str1 is larger than Str2. 
-//
-// This code is based on an idea of Markus W. Scherer (IBM).
-// Note: The surrogate fix-up is necessary because some single value code points have
-//       larger values than surrogates which are in UTF-32 actually larger.
-
 const
+  // data used to bring UTF-16 coded strings into correct UTF-32 order for correct comparation
   UTF16Fixup: array[0..31] of Word = (
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     $2000, $F800, $F800, $F800, $F800
   );
-  
+
+function StrCompW(Str1, Str2: PWideChar): Integer;
+
+// Binary comparation of Str1 and Str2 with surrogate fix-up.
+// Returns < 0 if Str1 is smaller in binary order than Str2, = 0 if both strings are
+// equal and > 0 if Str1 is larger than Str2.
+//
+// This code is based on an idea of Markus W. Scherer (IBM).
+// Note: The surrogate fix-up is necessary because some single value code points have
+//       larger values than surrogates which are in UTF-32 actually larger.
+
 var
   C1, C2: Word;
   Run1,
@@ -5689,7 +5698,7 @@ begin
     C1 := Word(Run1^);
     C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
     C2 := Word(Run2^);
-    C2 := Word(C1 + UTF16Fixup[C2 shr 11]);
+    C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
 
     // now C1 and C2 are in UTF-32-compatible order
     Result := Integer(C1) - Integer(C2);
@@ -5709,42 +5718,111 @@ end;
 
 function StrICompW(Str1, Str2: PWideChar): Integer;
 
-// compares Str1 to Str2 without case sensitivity (binary comparation),
-// Note: only ANSI characters are compared case insensitively
+// Compares Str1 to Str2 without case sensitivity.
+// See also comments in StrCompW, but keep in mind that case folding might result in
+// one-to-many mapping which must be considered here.
 
-asm
-         PUSH EDI
-         PUSH ESI
-         MOV EDI, EDX
-         MOV ESI, EAX
-         MOV ECX, 0FFFFFFFFH
-         XOR EAX, EAX
-         REPNE SCASW
-         NOT ECX
-         MOV EDI, EDX
-         XOR EDX, EDX
-@@1:
-         REPE CMPSW
-         JE @@4
-         MOV AX, [ESI - 2]
-         CMP AX, 'a'
-         JB @@2
-         CMP AX, 'z'
-         JA @@2
-         SUB AL, 20H
-@@2:
-         MOV DX, [EDI - 2]
-         CMP DX, 'a'
-         JB @@3
-         CMP DX, 'z'
-         JA @@3
-         SUB DX, 20H
-@@3:
-         SUB EAX, EDX
-         JE @@1
-@@4:
-         POP ESI
-         POP EDI
+var
+  C1, C2: Word;
+  Run1,
+  Run2: PWideChar;
+
+  Folded1,
+  Folded2: WideString;
+  
+begin
+  // Because of size changes of the string when doing case folding
+  // it is unavoidable to convert both strings completely in advance.
+  Folded1 := '';
+  while Str1^ <> #0 do
+  begin
+    Folded1 := Folded1 + WideCaseFolding(Str1^);
+    Inc(Str1);
+  end;
+  
+  Folded2 := '';
+  while Str2^ <> #0 do
+  begin
+    Folded2 := Folded2 + WideCaseFolding(Str2^);
+    Inc(Str2);
+  end;
+
+  Run1 := PWideChar(Folded1);
+  Run2 := PWideChar(Folded2);
+  repeat
+    C1 := Word(Run1^);
+    C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
+    C2 := Word(Run2^);
+    C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
+
+    // now C1 and C2 are in UTF-32-compatible order
+    Result := Integer(C1) - Integer(C2);
+    if(Result <> 0) or (C1 = 0) or (C2 = 0) then
+      Break;
+    Inc(Run1);
+    Inc(Run2);
+  until False;
+
+  // If the strings have different lengths but the comparison returned equity so far
+  // then adjust the result so that the longer string is marked as the larger one.
+  if Result = 0 then
+    Result := (Run1 - PWideChar(Folded1)) - (Run2 - PWideChar(Folded2));
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
+
+// compares strings up to MaxLen code points
+// see also StrICompW
+
+var
+  C1, C2: Word;
+  Run1,
+  Run2: PWideChar;
+  Folded1,
+  Folded2: WideString;
+
+begin
+  if MaxLen > 0 then
+  begin
+    // Because of size changes of the string when doing case folding
+    // it is unavoidable to convert both strings completely in advance.
+    Folded1 := '';
+    while Str1^ <> #0 do
+    begin
+      Folded1 := Folded1 + WideCaseFolding(Str1^);
+      Inc(Str1);
+    end;
+
+    Folded2 := '';
+    while Str2^ <> #0 do
+    begin
+      Folded2 := Folded2 + WideCaseFolding(Str2^);
+      Inc(Str2);
+    end;
+
+    Run1 := PWideChar(Folded1);
+    Run2 := PWideChar(Folded2);
+
+    repeat
+      C1 := Word(Run1^);
+      C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
+      C2 := Word(Run2^);
+      C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
+
+      // now C1 and C2 are in UTF-32-compatible order
+      // TODO: surrogates take up 2 words and are counted twice here, count them only once
+      Result := Integer(C1) - Integer(C2);
+      Dec(MaxLen);
+      if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
+        Break;
+      Inc(Run1);
+      Inc(Run2);
+    until False;
+  end
+  else
+    Result := 0;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5753,13 +5831,6 @@ function StrLCompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
 
 // compares strings up to MaxLen code points
 // see also StrCompW
-
-const
-  UTF16Fixup: array[0..31] of Word = (
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    $2000, $F800, $F800, $F800, $F800
-  );
 
 var
   C1, C2: Word;
@@ -5771,7 +5842,7 @@ begin
       C1 := Word(Str1^);
       C1 := Word(C1 + UTF16Fixup[C1 shr 11]);
       C2 := Word(Str2^);
-      C2 := Word(C1 + UTF16Fixup[C2 shr 11]);
+      C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
 
       // now C1 and C2 are in UTF-32-compatible order
       // TODO: surrogates take up 2 words and are counted twice here, count them only once
@@ -5785,53 +5856,6 @@ begin
   end
   else
     Result := 0;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function StrLICompW(Str1, Str2: PWideChar; MaxLen: Cardinal): Integer;
-
-// compares strings up to a specified maximum number of characters, not case sensitive
-// Note: only ANSI characters are compared case insensitively
-
-asm
-         PUSH EDI
-         PUSH ESI
-         PUSH EBX
-         MOV EDI, EDX
-         MOV ESI, EAX
-         MOV EBX, ECX
-         XOR EAX, EAX
-         OR ECX, ECX
-         JE @@4
-         REPNE SCASW
-         SUB EBX, ECX
-         MOV ECX, EBX
-         MOV EDI, EDX
-         XOR EDX, EDX
-@@1:
-        REPE CMPSW
-        JE @@4
-        MOV AX, [ESI - 2]
-        CMP AX, 'a'
-        JB @@2
-        CMP AX, 'z'
-        JA @@2
-        SUB AX, 20H
-@@2:
-        MOV DX, [EDI - 2]
-        CMP DX, 'a'
-        JB @@3
-        CMP DX, 'z'
-        JA @@3
-        SUB DX, 20H
-@@3:
-        SUB EAX, EDX
-        JE @@1
-@@4:
-        POP EBX
-        POP ESI
-        POP EDI
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -6240,7 +6264,7 @@ begin
     P := StrScanW(Src, Quote);
     repeat
       Inc(P);
-      Move(Src^, Dest^, P - Src);
+      Move(Src^, Dest^, 2 * (P - Src));
       Inc(Dest, P - Src);
       Dest^ := Quote;
       Inc(Dest);
@@ -6248,7 +6272,7 @@ begin
       P := StrScanW(Src, Quote);
     until P = nil;
     P := StrEndW(Src);
-    Move(Src^, Dest^, P - Src);
+    Move(Src^, Dest^, 2 * (P - Src));
     Inc(Dest, P - Src);
     Dest^ := Quote;
   end;
@@ -6301,7 +6325,7 @@ begin
       Inc(Src);
       if Src^ <> Quote then
         Break;
-      Move(P^, Dest^, Src - P);
+      Move(P^, Dest^, 2 * (Src - P));
       Inc(Dest, Src - P);
       Inc(Src);
       P := Src;
@@ -6309,7 +6333,7 @@ begin
     end;
     if Src = nil then
       Src := StrEndW(P);
-    Move(P^, Dest^, Src - P - 1);
+    Move(P^, Dest^, 2 * (Src - P - 1));
   end;
 end;
 
@@ -6360,8 +6384,7 @@ var
 begin
   L := Length(S);
   I := 1;
-  while (I <= L) and
-        (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
+  while (I <= L) and (UnicodeIsWhiteSpace(Word(S[I])) or UnicodeIsControl(Word(S[I]))) do
     Inc(I);
   Result := Copy(S, I, Maxint);
 end;
@@ -6520,10 +6543,11 @@ var
   I, J, K: Integer;
   CClass: Cardinal;
   Decomp: TUCS4Array;
-  
+
 begin
   Result := '';
   Decomp := nil;
+  
   for I := 1 to Length(S) do
   begin
     // No need to dive iteratively into decompositions as this is already done
@@ -6556,6 +6580,37 @@ end;
 // Note that most of the assigned code points don't have a case mapping and are therefor
 // returned as they are. Other code points, however, might be converted into several characters
 // like the german ß (es-zed) whose upper case mapping is SS.
+
+function WideCaseFolding(C: WideChar): WideString;
+
+// Special case folding function to map a string to either its lower case or
+// to special cases. This can be used for case-insensitive comparation.
+
+var
+  I: Integer;
+  Mapping: TUCS4Array;
+
+begin
+  Mapping := UnicodeCaseFold(UCS4(C));
+  SetLength(Result, Length(Mapping));
+  for I := 0 to High(Mapping) do
+    Result[I + 1] := WideChar(Mapping[I]);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function WideCaseFolding(const S: WideString): WideString;
+
+var
+  I: Integer;
+
+begin
+  Result := '';
+  for I := 1 to Length(S) do
+    Result := Result + WideCaseFolding(S[I]);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 function WideLowerCase(C: WideChar): WideString;
 
@@ -7495,7 +7550,7 @@ const
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5);
 
-  firstByteMark: array [0..6] of Byte = ($00, $00, $C0, $E0, $F0, $F8, $FC);
+  FirstByteMark: array [0..6] of Byte = ($00, $00, $C0, $E0, $F0, $F8, $FC);
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -7504,9 +7559,9 @@ function WideStringToUTF8(S: WideString): AnsiString;
 var
   ch: UCS4;
   L, J, T,
-  bytesToWrite: Cardinal;
-  byteMask: UCS4;
-  byteMark: UCS4;
+  BytesToWrite: Cardinal;
+  ByteMask: UCS4;
+  ByteMark: UCS4;
 
 begin
   if Length(S) = 0 then
@@ -7517,45 +7572,45 @@ begin
 
   SetLength(Result, Length(S) * 6); // assume worst case
   T := 1;
+  ByteMask := $BF;
+  ByteMark := $80;
+
   for J := 1 to Length(S) do
   begin
-    byteMask := $BF;
-    byteMark := $80;
-
     ch := UCS4(S[J]);
 
     if ch < $80 then
-      bytesToWrite := 1
+      BytesToWrite := 1
     else
     if ch < $800 then
-      bytesToWrite := 2
+      BytesToWrite := 2
     else
     if ch < $10000 then
-      bytesToWrite := 3
+      BytesToWrite := 3
     else
     if ch < $200000 then
-      bytesToWrite := 4
+      BytesToWrite := 4
     else
     if ch < $4000000 then
-      bytesToWrite := 5
+      BytesToWrite := 5
     else
     if ch <= MaximumUCS4 then
-      bytesToWrite := 6
+      BytesToWrite := 6
     else
     begin
-      bytesToWrite := 2;
+      BytesToWrite := 2;
       ch := ReplacementCharacter;
     end;
 
-    for L := bytesToWrite downto 2 do
+    for L := BytesToWrite downto 2 do
     begin
-      Result[T + L - 1] := Char((ch or byteMark) and byteMask);
+      Result[T + L - 1] := Char((ch or ByteMark) and ByteMask);
       ch := ch shr 6;
     end;
-    Result[T] := Char(ch or firstByteMark[bytesToWrite]);
-    Inc(T, bytesToWrite);
+    Result[T] := Char(ch or FirstByteMark[BytesToWrite]);
+    Inc(T, BytesToWrite);
   end;
-  SetLength(Result, T - 1); // assume worst case
+  SetLength(Result, T - 1); // set to actual length
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
