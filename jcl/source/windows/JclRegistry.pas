@@ -657,6 +657,7 @@ var
   DataType, DataSize: DWORD;
   Ret: Int64;
 begin
+  RegGetDataType(RootKey, Key, Name, DataType);
   if DataType in [REG_SZ, REG_EXPAND_SZ] then
   begin
     // (rom) circumvents internal compiler error for D6
@@ -1315,6 +1316,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.26  2004/10/20 17:13:53  rrossmair
+// - fixed RegReadUInt64 (DataType undefined)
+//
 // Revision 1.25  2004/10/20 16:57:32  rrossmair
 // - RegReadUInt64: D7 internal error C1118 workaround
 //
