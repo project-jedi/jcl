@@ -24,13 +24,12 @@ package DJcl;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI Code Library RTL package'}
 {$LIBSUFFIX 'K3'}
-{$LIBVERSION '1.91.1'}
+{$LIBVERSION '1.92.1'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
-  vcl;
+  rtl;
 
 contains
   Jcl8087 in '../../source/common/Jcl8087.pas',
