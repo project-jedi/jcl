@@ -1044,13 +1044,16 @@ var
   LinkName: array [0..MAX_PATH] of WideChar;
   Buffer: string;
   Win32FindData: TWin32FindData;
+  FullPath: string;
 begin
   Result := CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
     IID_IShellLink, ShellLink);
   if Succeeded(Result) then
   begin
     PersistFile := ShellLink as IPersistFile;
-    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FileName), -1,
+    // PersistFile.Load fails if the filename is not fully qualified
+    FullPath := PathGetLongName(FileName);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(FullPath), -1,
       LinkName, MAX_PATH);
     Result := PersistFile.Load(LinkName, STGM_READ);
     if Succeeded(Result) then
