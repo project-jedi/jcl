@@ -99,9 +99,9 @@ procedure SaveOptions(const Options: IOTAOptions; const FileName: string);
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, ImageHlp,
   JclFileUtils, JclRegistry, JclStrings;
 
@@ -197,13 +197,13 @@ var
 begin
   ProjectFileName := Project.FileName;
   OutputDirectory := GetOutputDirectory(Project);
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF RTL140_UP}
   LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[LIBPREFIXOptionName]));
   LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[LIBSUFFIXOptionName]));
-  {$ELSE DELPHI6_UP}
+  {$ELSE ~RTL140_UP}
   LibPrefix := '';
   LibSuffix := '';
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF ~RTL140_UP}
   Result := PathAddSeparator(OutputDirectory) + LibPrefix + PathExtractFileNameNoExt(ProjectFileName) +
     LibSuffix + MAPExtension;
 end;
@@ -330,7 +330,7 @@ begin
   if FEnvVariables.Count = 0 then
     ReadEnvVariables;
   Result := Path;
-  if Pos('$(', Result) > 0 then
+  while Pos('$(', Result) > 0 do
     for I := 0 to FEnvVariables.Count - 1 do
     begin
       Name := FEnvVariables.Names[I];
@@ -413,5 +413,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+// History:
+
+// $Log$
+// Revision 1.6  2005/03/14 05:56:27  rrossmair
+// - fixed issue #2752 (TJclOTAUtils.SubstitutePath does not support nested environment variables) as proposed by the reporter.
+//
 
 end.
