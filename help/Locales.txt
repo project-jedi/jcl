@@ -13,8 +13,9 @@ SubCat=National Language Support
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(ALocaleID: LCID = LOCALE_SYSTEM_DEFAULT);
@@ -33,8 +34,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CharInfo[InfoType: Integer]: Char read GetCharInfo;
@@ -57,8 +59,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property IntegerInfo[InfoType: Integer]: Integer read GetIntegerInfo;
@@ -80,8 +83,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property StringInfo[InfoType: Integer]: string read GetStringInfo; default;
@@ -103,8 +107,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property FontCharset: Byte read GetFontCharset;
@@ -136,8 +141,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LangID: LANGID read GetLangID;
@@ -154,8 +160,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LocaleID: LCID read FLocaleID;
@@ -172,8 +179,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LangIDPrimary: Word read GetLangIDPrimary;
@@ -229,8 +237,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LangIDSub: Word read GetLangIDSub;
@@ -342,8 +351,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property SortID: Word read GetSortID;
@@ -376,8 +386,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property UseSystemACP: Boolean read FUseSystemACP write SetUseSystemACP;
@@ -396,8 +407,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AbbreviatedCountryName: string index LOCALE_SABBREVCTRYNAME read GetStringInfo;
@@ -414,8 +426,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AbbreviatedDayNames[Day: TJclLocalesDays]: string read GetAbbreviatedDayNames;
@@ -434,8 +447,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AbbreviatedLangName: string index LOCALE_SABBREVLANGNAME read GetStringInfo;
@@ -454,8 +468,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AbbreviatedMonthNames[Month: TJclLocalesMonths]: string read GetAbbreviatedMonthNames;
@@ -474,8 +489,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CodePageANSI: Integer index LOCALE_IDEFAULTANSICODEPAGE read GetIntegerInfo;
@@ -494,8 +510,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CodePageMAC: Integer index LOCALE_IDEFAULTMACCODEPAGE read GetIntegerInfo;
@@ -514,8 +531,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CodePageOEM: Integer index LOCALE_IDEFAULTCODEPAGE read GetIntegerInfo;
@@ -534,8 +552,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CountryCode: Integer index LOCALE_IDEFAULTCOUNTRY read GetIntegerInfo;
@@ -554,8 +573,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property DateFormats[Format: TJclLocaleDateFormats]: TStrings read GetDateFormats;
@@ -576,8 +596,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property DecimalSeparator: Char index LOCALE_SDECIMAL read GetCharInfo;
@@ -595,8 +616,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property EnglishCountryName: string index LOCALE_SENGCOUNTRY read GetStringInfo;
@@ -614,8 +636,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property EnglishLangName: string index LOCALE_SENGLANGUAGE read GetStringInfo;
@@ -635,8 +658,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LangIdStr: string index LOCALE_ILANGUAGE read GetStringInfo;
@@ -653,8 +677,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ListItemSeparator: Char index LOCALE_SLIST read GetCharInfo;
@@ -672,8 +697,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LocalizedCountryName: string index LOCALE_SCOUNTRY read GetStringInfo;
@@ -691,8 +717,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LocalizedLangName: string index LOCALE_SLANGUAGE read GetStringInfo;
@@ -710,8 +737,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LongDayNames[Day: TJclLocalesDays]: string read GetLongDayNames;
@@ -730,8 +758,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LongMonthNames[Month: TJclLocalesMonths]: string read GetLongMonthNames;
@@ -751,8 +780,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MonetarySymbolIntl: string index LOCALE_SINTLSYMBOL read GetStringInfo;
@@ -771,8 +801,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MonetarySymbolLocal: string index LOCALE_SCURRENCY read GetStringInfo;
@@ -791,8 +822,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property NativeCountryName: string index LOCALE_SNATIVECTRYNAME read GetStringInfo;
@@ -809,8 +841,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property NegativeNumber: Char index LOCALE_INEGNUMBER read GetCharInfo;
@@ -840,8 +873,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TimeFormats: TStrings read GetTimeFormats;
@@ -858,8 +892,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ThousandSeparator: Char index LOCALE_STHOUSAND read GetCharInfo;
@@ -877,8 +912,9 @@ SubCat=National Language Support\TJclLocaleInfo
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclLocalesKind = (lkInstalled, lkSupported);
@@ -900,8 +936,9 @@ SubCat=National Language Support
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclLocalesList = class (TObjectList)
@@ -919,8 +956,9 @@ SubCat=National Language Support
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AKind: TJclLocalesKind = lkSupported);
@@ -947,8 +985,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property CodePages: TStrings read FCodePages;
@@ -969,8 +1008,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ItemFromLangID[LangID: LANGID]: TJclLocaleInfo read GetItemFromLangID;
@@ -991,8 +1031,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ItemFromLangIDPrimary[LangIDPrimary: Word]: TJclLocaleInfo read GetItemFromLangIDPrimary;
@@ -1013,8 +1054,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ItemFromLocaleID[LocaleID: LCID]: TJclLocaleInfo read GetItemFromLocaleID;
@@ -1035,8 +1077,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: TJclLocaleInfo read GetItems; default;
@@ -1055,8 +1098,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Kind: TJclLocalesKind read FKind;
@@ -1075,8 +1119,9 @@ SubCat=National Language Support\TJclLocalesList
 Windows NT/2000=Requires Windows NT 3.5 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclKeyboardLayoutList = class (TObject)
@@ -1094,8 +1139,9 @@ SubCat=Keyboard Input
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ActivatePrevLayout(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
@@ -1121,8 +1167,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function ActivateNextLayout(ActivateFlags: TJclKeybLayoutFlags {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
@@ -1148,8 +1195,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function LoadLayout(const LayoutName: string; LoadFlags: TJclKeybLayoutFlags): Boolean;
@@ -1181,8 +1229,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure Refresh;
@@ -1199,8 +1248,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ActiveLayout: TJclKeyboardLayout read GetActiveLayout;
@@ -1217,8 +1267,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AvailableLayouts[Index: Integer]: TJclAvailableKeybLayout read GetAvailableLayouts;
@@ -1236,8 +1287,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property AvailableLayoutCount: Integer read GetAvailableLayoutCount;
@@ -1254,8 +1306,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Count: Integer read GetCount;
@@ -1273,8 +1326,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ItemFromHKL[Layout: HKL]: TJclKeyboardLayout read GetItemFromHKL;
@@ -1293,8 +1347,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Items[Index: Integer]: TJclKeyboardLayout read GetItems; default;
@@ -1313,8 +1368,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LayoutFromLocaleID[LocaleID: Word]: TJclKeyboardLayout read GetLayoutFromLocaleID;
@@ -1333,8 +1389,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OnRefresh: TNotifyEvent read FOnRefresh write FOnRefresh;
@@ -1351,8 +1408,9 @@ SubCat=Keyboard Input\TJclKeyboardLayoutList
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclKeyboardLayout = class (TObject)
@@ -1371,8 +1429,9 @@ SubCat=Keyboard Input
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
@@ -1398,8 +1457,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Activate(ActivateFlags: TJclKeybLayoutFlags = []): Boolean;
@@ -1423,8 +1483,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Unload: Boolean;
@@ -1448,8 +1509,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property DisplayName: string read GetDisplayName;
@@ -1466,8 +1528,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property DeviceHandle: Word read GetDeviceHandle;
@@ -1484,8 +1547,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Layout: HKL read FLayout;
@@ -1502,8 +1566,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LocaleID: Word read GetLocaleID;
@@ -1522,8 +1587,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LocaleInfo: TJclLocaleInfo read GetLocaleInfo;
@@ -1542,8 +1608,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property VariationName: string read GetVariationName;
@@ -1560,8 +1627,9 @@ SubCat=Keyboard Input\TJclKeyboardLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclKeybLayoutFlags = set of (klReorder, klUnloadPrevious, klSetForProcess,
@@ -1614,8 +1682,9 @@ SubCat=Keyboard Input
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclAvailableKeybLayout = class (TObject)
@@ -1630,8 +1699,9 @@ SubCat=Keyboard Input
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Load(const LoadFlags: TJclKeybLayoutFlags): Boolean;
@@ -1650,8 +1720,9 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Identifier: DWORD read FIdentifier;
@@ -1673,8 +1744,9 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property IdentifierName: string read GetIdentifierName;
@@ -1692,8 +1764,9 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LayoutID: Word read FLayoutID;
@@ -1710,8 +1783,9 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LayoutFile: string read FLayoutFile;
@@ -1728,8 +1802,9 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LayoutFileExists: Boolean read GetLayoutFileExists;
@@ -1746,8 +1821,9 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Name: string read FName;
@@ -1765,5 +1841,6 @@ SubCat=Keyboard Input\TJclAvailableKeybLayout
 Windows NT/2000=Requires Windows NT 4.0 or later.
 Windows 95/98=Requires Windows 95 or later.
 Author=Petr Vones;petr.v@mujmail.cz
-Delphi=4,5
-BCB=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
