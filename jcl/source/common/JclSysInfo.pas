@@ -274,9 +274,9 @@ Author: Jean-Fabien Connault
 
 { TODO -cHelp : Author: Scott Price; Contributor: Peter J. Haas;
                 return OpenGL version for window rendering }
-function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean; overload;
+function GetOpenGLVersion(Win: HWND; out Version, Vendor: AnsiString): Boolean; 
 { TODO -cHelp : Author: Peter J. Haas, return OpenGL version for bitmap rendering }
-function GetOpenGLVersion(out Version, Vendor: AnsiString): Boolean; overload;
+function GetOpenGLVersionBitmapRendering(out Version, Vendor: AnsiString): Boolean;
 {
 ShortDescr: Returns the current OpenGL library version string
 Descr: Takes a WinControl against which to perform the tests, and then Returns
@@ -2431,10 +2431,6 @@ begin
   if DCHandle = 0 then
     Exit;
 
-  // We need to load the libraries
-  OpenGl32Handle;
-  Glu32Handle;
-
   // To call for the version information string we must first have an active
   // context established for use.  We can, of course, close this after use
   Save8087CW := Get8087ControlWord;
@@ -2453,6 +2449,8 @@ begin
       iLayerType := PFD_MAIN_PLANE;
     end;
 
+    // We need to load the OpenGl32 library before calling ChoosePixelFormat
+    OpenGl32Handle;
     FormatIndex := ChoosePixelFormat(DCHandle, @PFDesc);
     if FormatIndex = 0 then
       RaiseLastOSError;
@@ -2472,7 +2470,7 @@ begin
                This would save this work being performed again with later calls }
       Result := GetOpenGlString(GL_VERSION, Version) and GetOpenGlString(GL_VENDOR, Vendor);
     finally
-      // Close all resources 
+      // Close all resources
       RtdlwglMakeCurrent(DCHandle, 0);
       if RenderingContextHandle <> 0 then
         RtdlwglDeleteContext(RenderingContextHandle);
@@ -2482,7 +2480,7 @@ begin
   end;
 end;
 
-function GetOpenGLVersion(out Version, Vendor: AnsiString): Boolean;
+function GetOpenGLVersionBitmapRendering(out Version, Vendor: AnsiString): Boolean;
 var
   BmpInfoHdr: TBitmapInfoHeader;
   DCHandle: HDC;
@@ -4016,6 +4014,11 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.15  2004/04/18 19:57:29  peterjhaas
+// - rename one of the GetOpenGLVersion to GetOpenGLVersionBitmapRendering
+// - delete pre-loading of Glu32Handle
+// - move the OpenGl32Handle call to directly before ChoosePixelFormat
+//
 // Revision 1.14  2004/04/18 05:14:11  rrossmair
 // fixed GetOpenGLVersion (draw to bitmap overload); removed VCL dependency ("uses Graphics")
 //
