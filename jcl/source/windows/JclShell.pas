@@ -43,10 +43,13 @@ uses
 //--------------------------------------------------------------------------------------------------
 
 type
-  TSHDeleteOption = (doSilent, doAllowUndo, doFilesOnly);
+  TSHDeleteOption  = (doSilent, doAllowUndo, doFilesOnly);
   TSHDeleteOptions = set of TSHDeleteOption;
-  TSHRenameOption = (roSilent, roRenameOnCollision);
+  TSHRenameOption  = (roSilent, roRenameOnCollision);
   TSHRenameOptions = set of TSHRenameOption;
+
+  TUnicodePath     = array[0..MAX_PATH-1] of WideChar;
+  TAnsiPath        = array[0..MAX_PATH-1] of char;
 
 function SHDeleteFiles(Parent: HWND; const Files: string; Options: TSHDeleteOptions): Boolean;
 function SHDeleteFolder(Parent: HWND; const Folder: string; Options: TSHDeleteOptions): Boolean;
@@ -323,7 +326,7 @@ var
   DisplayNameRet: TStrRet;
   ItemsFetched: ULONG;
   ExtractIcon: IExtractIcon;
-  IconFile: array [0..MAX_PATH] of WideChar;
+  IconFile: TUnicodePath;
   IconIndex: Integer;
   Flags: DWORD;
 begin
@@ -710,7 +713,7 @@ var
   Eaten: ULONG;
   DesktopFolder: IShellFolder;
   Drives: PItemIdList;
-  Path: array [0..MAX_PATH] of WideChar;
+  Path: TUnicodePath;
 begin
   Result := nil;
   if Succeeded(SHGetDesktopFolder(DesktopFolder)) then
@@ -740,7 +743,7 @@ function PathToPidl(const Path: string; Folder: IShellFolder): PItemIdList;
 var
   DesktopFolder: IShellFolder;
   CharsParsed, Attr: ULONG;
-  WidePath: array [0..MAX_PATH] of WideChar;
+  WidePath: TUnicodePath;
 begin
   Result := nil;
   MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WidePath, MAX_PATH);
@@ -758,7 +761,7 @@ var
   Attr, Eaten: ULONG;
   PathIdList: PItemIdList;
   DesktopFolder: IShellFolder;
-  Path, ItemName: array [0..MAX_PATH] of WideChar;
+  Path, ItemName: TUnicodePath;
 begin
   Result := nil;
   MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(ExtractFilePath(FileName)), -1, Path, MAX_PATH);
@@ -989,7 +992,7 @@ function ShellLinkCreate(const Link: TShellLink; const FileName: string): HRESUL
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
-  LinkName: array [0..MAX_PATH] of WideChar;
+  LinkName: TUnicodePath;
 begin
   Result := CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
     IID_IShellLink, ShellLink);
@@ -1015,7 +1018,7 @@ function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
-  LinkName: array [0..MAX_PATH] of WideChar;
+  LinkName: TUnicodePath;
   Buffer: string;
   Win32FindData: TWin32FindData;
   FullPath: string;
@@ -1387,7 +1390,7 @@ end;
 function ShellFindExecutable(const FileName, DefaultDir: string): string;
 var
   Res: HINST;
-  Buffer: array [0..MAX_PATH] of Char;
+  Buffer: TAnsiPath;
   I: Integer;
 begin
   FillChar(Buffer, SizeOf(Buffer), #0);
