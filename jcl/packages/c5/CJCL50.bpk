@@ -95,6 +95,7 @@
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
     <PFLAGS value="-N2..\..\lib\c5\obj -N0..\..\lib\c5\obj -I..\..\source -$YD -$W -$O- -$A8 -v -JPHNE -M
+                   -U$(BCB)\Lib\Obj
                    -LUvcl50
                    -U$(BCB)\Projects\Bpl
                   "/>
