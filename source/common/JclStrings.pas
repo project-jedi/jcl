@@ -2483,7 +2483,7 @@ function StrAfter(const SubStr, S: AnsiString): AnsiString;
 var
   P: Integer;
 begin
-  P := StrFind(SubStr, S); // StrFind is case-insensitive pos
+  P := StrFind(SubStr, S, 1); // StrFind is case-insensitive pos
   if P <= 0 then
     Result := ''           // substr not found -> nothing after it
   else
@@ -2496,7 +2496,7 @@ function StrBefore(const SubStr, S: AnsiString): AnsiString;
 var
   P: Integer;
 begin
-  P := StrFind(SubStr, S);
+  P := StrFind(SubStr, S, 1);
   if P <= 0 then
     Result := S
   else
