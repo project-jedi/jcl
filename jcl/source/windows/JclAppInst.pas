@@ -112,7 +112,7 @@ procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 implementation
 
 uses
-  ComObj, SysUtils,
+  SysUtils,
   JclStrings, JclSysUtils;
 
 const
