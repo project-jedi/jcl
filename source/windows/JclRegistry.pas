@@ -31,7 +31,7 @@
 
 unit JclRegistry;
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
