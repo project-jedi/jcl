@@ -192,7 +192,10 @@ type
 implementation
 
 uses
+  SysUtils,
+  {$IFDEF COMPILER6_UP}
   Variants, StrUtils,
+  {$ENDIF COMPILER6_UP}
   JclResources;
 
 type
