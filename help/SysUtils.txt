@@ -1032,3 +1032,235 @@ BCB=3,4,5
 [SeeAlso]
 Count=1
 1=ClearObjectList
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TModuleHandle = HINST;
+[ShortDescr]
+OS independent type for loaded modules.
+[Description]
+OS independent type for loaded modules.
+[Quick Info]
+Kind=Type
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
+[ShortDescr]
+OS independent value for variables of type <REF>TModuleHandle</REF>.
+[Description]
+OS independent value for variables of type <REF>TModuleHandle</REF>.
+Denotes that the variable does not contain a valid handle to a module.
+[Quick Info]
+Kind=Constant
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
+[ShortDescr]
+Loads the dynamic module (DLL) from file FileName.
+[Description]
+The dynamic module (DLL) is loaded into memory and its initialization code 
+is executed. This is an OS independent replacement for LoadLibrary.
+The function does nothing but reports success if Module is not initialized
+to INVALID_MODULEHANDLE_VALUE to prevent multiple loads.
+[Parameters]
+Count=2
+1=Module:TModuleHandle=Receives the handle of the loaded module.
+2=FileName:string=File name of the module to load.
+[Result]
+The function returns True if the module could be loaded False otherwise.
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=LoadModuleEx
+2=UnloadModule
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
+[ShortDescr]
+Loads the dynamic module (DLL) from file FileName.
+[Description]
+The dynamic module (DLL) is loaded into memory and its initialization code 
+is executed if the flags allow that.
+This is an OS independent replacement for LoadLibraryEx.
+Flags are OS dependent. For Windows its the flags of LoadLibraryEx.
+The function does nothing but reports success if Module is not initialized
+to INVALID_MODULEHANDLE_VALUE to prevent multiple loads.
+[Parameters]
+Count=3
+1=Module:TModuleHandle=Receives the handle of the loaded module.
+2=FileName:string=File name of the module to load.
+3=Flags:Cardinal=Additional loading flags.
+[Result]
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=LoadModule
+2=UnloadModule
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure UnloadModule(var Module: TModuleHandle);
+[ShortDescr]
+Unloads a dynamic module (DLL) from memory.
+[Description]
+Unloads a dynamic module (DLL) loaded with <REF>LoadModule</REF> or 
+<REF>LoadModuleEx</REF>. Module is set to INVALID_MODULEHANDLE_VALUE
+after unloading of the module.
+The function does nothing if Module contains already INVALID_MODULEHANDLE_VALUE
+to allow multiple calls to UnloadModule without errors.
+contains INVALID_MODULEHANDLE_VALUE to
+[Parameters]
+Count=1
+1=Module:TModuleHandle=Contains the handle of the module to unload.
+[Result]
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=2
+1=LoadModule
+2=LoadModuleEx
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
+[ShortDescr]
+Gives access to the exported symbol SymbolName from the loaded module Module.
+[Description]
+Gives access to the exported symbol SymbolName from the loaded module Module.
+Normally this is the name of an exported function.
+[Parameters]
+Count=2
+1=Module:TModuleHandle=Handle to the loaded module.
+2=SymbolName:string=Name of the exported symbol to access.
+[Result]
+The pointer to the exported symbol. Normally this is a "pointer to function"
+as C calls it. In Pascal its a function type. nil is returned for symbols
+not contained in the module.
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=GetModuleSymbolEx
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
+[ShortDescr]
+Gives access to the exported symbol SymbolName from the loaded module Module.
+[Description]
+Gives access to the exported symbol SymbolName from the loaded module Module.
+Normally this is the name of an exported function.
+Accu is updated by "Accu := Accu and (Result <> nil);". This allows to
+call GetModuleSymbolEx for many symbols and render a global result for
+successfully accessing all symbols.
+[Parameters]
+Count=3
+1=Module:TModuleHandle=Handle to the loaded module.
+2=SymbolName:string=Name of the exported symbol to access.
+3=Accu:Boolean=Success accumulator to be updated.
+[Result]
+The pointer to the exported symbol. Normally this is a "pointer to function"
+as C calls it. In Pascal its a function type. nil is returned for symbols
+not contained in the module and Accu will contain False.
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=GetModuleSymbol
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+[ShortDescr]
+Reads the data of an exported variable.
+[Description]
+ReadModuleData copies the contents of the exported variable SymbolName to
+Buffer. Size tells the amount of bytes to be copied.
+This function allows to access variables in dynamic modules which are
+not directly accessible in Pascal.
+Beware! You are accessing the DLL memory image directly.
+Be sure to access a variable not a function and be sure
+to read the correct amount of data.
+[Parameters]
+Count=4
+1=Module:TModuleHandle=Handle to the loaded module.
+2=SymbolName:string=Name of the exported variable to access.
+3=Buffer=The untyped destination of the copy.
+4=Size:Cardinal=Amount of bytes to copy.
+[Result]
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=WriteModuleData
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+[ShortDescr]
+Writes the data of an exported variable.
+[Description]
+WriteModuleData copies the contents of Buffer to the exported variable SymbolName.
+Size tells the amount of bytes to be copied.
+This function allows to set variables in dynamic modules which are
+not directly accessible in Pascal.
+BEWARE! You are accessing the DLL memory image directly.
+Be sure to access a variable not a function and be sure
+to write the correct amount of data.
+The changes are not persistent. They get lost when the
+DLL is unloaded.
+[Parameters]
+Count=4
+1=Module:TModuleHandle=Handle to the loaded module.
+2=SymbolName:string=Name of the exported variable to access.
+3=Buffer=The untyped source of the copy.
+4=Size:Cardinal=Amount of bytes to copy.
+[Result]
+[Quick Info]
+Unit=JclSysUtils
+Category=Base Services
+SubCat=Dynamic loading
+Author=Robert Marquardt;robert_marquardt@gmx.de
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=ReadModuleData
