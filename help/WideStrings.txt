@@ -1,5 +1,26 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function WideSameText(const Str1, Str2: WideString): Boolean;
+[ShortDescr]
+[Description]
+WideSameText compares the two strings case insensitively and returns True if the
+strings are equal.
+[Parameters]
+Count=2
+1=Str1:WideString=The first string.
+1=Str2:WideString=The second string.
+[Result]
+If both strings are equal (case insensitive) the function returns True, otherwise
+False is returned.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=WideString routines
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 TWideStrings = class (TPersistent)
 [ShortDescr]
 TWideStrings is the abstract base class for objects that represent a list of WideStrings.
