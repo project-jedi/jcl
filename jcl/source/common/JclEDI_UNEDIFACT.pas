@@ -197,6 +197,7 @@ type
     procedure Disassemble; override;
   published
     property SegmentID: string read FSegmentID write FSegmentID;
+    property ElementCount: Integer read GetCount;
   end;
 
   TEDISegmentArray = array of TEDISegment;
@@ -217,6 +218,39 @@ type
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
     function InternalAssignDelimiters: TEDIDelimiters; override;
+  end;
+
+//--------------------------------------------------------------------------------------------------
+//  EDI Transaction Set Loop
+//--------------------------------------------------------------------------------------------------
+
+  TEDIMessageLoop = class(TEDIDataObjectGroup)
+  protected
+    FOwnerLoopId: string;
+    FParentLoopId: string;
+    FParentMessage: TEDIMessage;
+    function InternalAssignDelimiters: TEDIDelimiters; override;
+    function InternalCreateEDIDataObject: TEDIDataObject; override;
+  public
+    constructor Create(Parent: TEDIDataObject); reintroduce;
+    destructor Destroy; override;
+    function Assemble: string; override;
+    procedure Disassemble; override;
+    //
+    //  ToDo:  More procedures and functions to manage internal structures
+    //
+    function FindLoop(LoopId: string; var StartIndex: Integer): TEDIMessageLoop;
+    function FindSegment(SegmentId: string; var StartIndex: Integer): TEDISegment; overload;
+    function FindSegment(SegmentId: string; var StartIndex: Integer;
+      ElementConditions: TStrings): TEDISegment; overload;
+    //
+    function AddLoop(OwnerLoopId, ParentLoopId: string): Integer;
+    procedure AppendSegment(Segment: TEDISegment);
+    procedure DeleteEDIDataObjects;
+  published
+    property OwnerLoopId: string read FOwnerLoopId write FOwnerLoopId;
+    property ParentLoopId: string read FParentLoopId write FParentLoopId;
+    property ParentMessage: TEDIMessage read FParentMessage write FParentMessage;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -465,9 +499,11 @@ uses
 // TEDIElement
 //==================================================================================================
 
+{ TEDIElement }
+
 constructor TEDIElement.Create(Parent: TEDIDataObject);
 begin
-  if Assigned(Parent) and (Parent is TEDISegment) then
+  if Assigned(Parent) and ((Parent is TEDISegment) or (Parent is TEDICompositeElement)) then
     inherited Create(Parent)
   else
     inherited Create(nil);
@@ -495,6 +531,7 @@ function TEDIElement.GetIndexPositionFromParent: Integer;
 var
   I: Integer;
   EDISegment: TEDISegment;
+  EDICompositeElement: TEDICompositeElement;
 begin
   Result := -1;
   if Assigned(Parent) and (Parent is TEDISegment) then
@@ -506,12 +543,24 @@ begin
         Result := I;
         Break;
       end;
+  end
+  else if Assigned(Parent) and (Parent is TEDICompositeElement) then
+  begin
+    EDICompositeElement := TEDICompositeElement(Parent);
+    for I := 0 to EDICompositeElement.EDIDataObjectCount - 1 do
+      if EDICompositeElement.EDIDataObjects[I] = Self then
+      begin
+        Result := I;
+        Break;
+      end;
   end;
 end;
 
 //==================================================================================================
 // TEDISegment
 //==================================================================================================
+
+{ TEDISegment }
 
 constructor TEDISegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -839,6 +888,8 @@ end;
 // TEDIMessageSegment
 //==================================================================================================
 
+{ TEDIMessageSegment }
+
 constructor TEDIMessageSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
@@ -856,6 +907,8 @@ end;
 //==================================================================================================
 // TEDIFunctionalGroupSegment
 //==================================================================================================
+
+{ TEDIFunctionalGroupSegment }
 
 constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -891,6 +944,8 @@ end;
 // TEDIInterchangeControlSegment
 //==================================================================================================
 
+{ TEDIInterchangeControlSegment }
+
 constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
   inherited Create(Parent, ElementCount);
@@ -913,6 +968,8 @@ end;
 //==================================================================================================
 // TEDIMessage
 //==================================================================================================
+
+{ TEDIMessage }
 
 function TEDIMessage.AddSegment: Integer;
 begin
@@ -1198,6 +1255,8 @@ end;
 //==================================================================================================
 // TEDIFunctionalGroup
 //==================================================================================================
+
+{ TEDIFunctionalGroup }
 
 constructor TEDIFunctionalGroup.Create(Parent: TEDIDataObject; MessageCount: Integer);
 begin
@@ -1510,6 +1569,8 @@ end;
 //==================================================================================================
 // TEDIInterchangeControl
 //==================================================================================================
+
+{ TEDIInterchangeControl }
 
 constructor TEDIInterchangeControl.Create(Parent: TEDIDataObject; FunctionalGroupCount: Integer);
 begin
@@ -1887,6 +1948,8 @@ end;
 // TEDIFile
 //==================================================================================================
 
+{ TEDIFile }
+
 constructor TEDIFile.Create(Parent: TEDIDataObject; InterchangeCount: Integer);
 begin
   if Assigned(Parent) then
@@ -2235,7 +2298,7 @@ begin
   FDelimiters.ED := Copy(FData, StartPos + Length(UNBSegmentId), 1);
   SearchResult := StrSearch(UNGSegmentId + FDelimiters.ED, FData, SearchResult);
   if SearchResult <= 0 then
-    SearchResult := StrSearch(UNHSegmentId + FDelimiters.ED, FData, SearchResult);
+    SearchResult := StrSearch(UNHSegmentId + FDelimiters.ED, FData, 1);
   FDelimiters.SD := Copy(FData, SearchResult - 1, 1);
   SearchResult := SearchResult - 2;
   for I := SearchResult downto 1 do
@@ -2288,6 +2351,8 @@ end;
 //==================================================================================================
 // TEDICompositeElement
 //==================================================================================================
+
+{ TEDICompositeElement }
 
 constructor TEDICompositeElement.Create(Parent: TEDIDataObject; ElementCount: Integer);
 begin
@@ -2508,6 +2573,238 @@ end;
 procedure TEDICompositeElement.SetElement(Index: Integer; Element: TEDIElement);
 begin
   SetEDIDataObject(Index, Element);
+end;
+
+//--------------------------------------------------------------------------------------------------
+//  EDI Transaction Set Loop
+//--------------------------------------------------------------------------------------------------
+
+{ TEDIMessageLoop }
+
+function TEDIMessageLoop.InternalAssignDelimiters: TEDIDelimiters;
+begin
+  Result := nil;
+  if FDelimiters = nil then // Attempt to assign the delimiters
+    if Assigned(FParentMessage) then
+      Result := FParentMessage.Delimiters;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TEDIMessageLoop.Create(Parent: TEDIDataObject);
+begin
+  inherited Create(Parent);
+  FCreateObjectType := ediLoop;  
+  FGroupIsParent := False;
+  if Assigned(Parent) and (Parent is TEDIMessage) then
+    FParentMessage := TEDIMessage(Parent)
+  else
+  if Assigned(Parent) and (Parent is TEDIMessageLoop) then
+    FParentMessage := TEDIMessageLoop(Parent).ParentMessage
+  else
+    FParentMessage := nil;
+  FEDIDOT := ediLoop;
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  FEDIDataObjects.OwnsObjects := False;
+  {$ELSE}
+  SetLength(FEDIDataObjects, 0);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TEDIMessageLoop.Destroy;
+begin
+  DeleteEDIDataObjects;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.InternalCreateEDIDataObject: TEDIDataObject;
+begin
+  case FCreateObjectType of
+    ediLoop:
+    begin
+      Result := TEDIMessageLoop.Create(Self);
+      TEDIMessageLoop(Result).OwnerLoopId := OwnerLoopId;
+      TEDIMessageLoop(Result).ParentLoopId := ParentLoopId;
+      TEDIMessageLoop(Result).Parent := Self;
+    end;
+  else
+    Result := nil;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.Assemble: string;
+begin
+  Result := '';
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIMessageLoop.Disassemble;
+begin
+  // Do Nothing
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.AddLoop(OwnerLoopId, ParentLoopId: string): Integer;
+{$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+var
+  Loop: TEDIMessageLoop;
+{$ENDIF}
+begin
+  FCreateObjectType := ediLoop;
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  Loop := TEDIMessageLoop(InternalCreateEDIDataObject);
+  Loop.OwnerLoopId := OwnerLoopId;
+  Loop.ParentLoopId := ParentLoopId;
+  Loop.Parent := Self;
+  Result := AppendEDIDataObject(Loop);
+  {$ELSE}
+  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
+  FEDIDataObjects[High(FEDIDataObjects)] := TEDIMessageLoop.Create(Self);
+  TEDIMessageLoop(FEDIDataObjects[High(FEDIDataObjects)]).OwnerLoopId := OwnerLoopId;
+  TEDIMessageLoop(FEDIDataObjects[High(FEDIDataObjects)]).ParentLoopId := ParentLoopId;
+  Result := High(FEDIDataObjects);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIMessageLoop.AppendSegment(Segment: TEDISegment);
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  AppendEDIDataObject(Segment);
+  {$ELSE}
+  SetLength(FEDIDataObjects, Length(FEDIDataObjects) + 1);
+  FEDIDataObjects[High(FEDIDataObjects)] := Segment;
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TEDIMessageLoop.DeleteEDIDataObjects;
+var
+  I: Integer;
+begin
+  {$IFDEF OPTIMIZED_INTERNAL_STRUCTURE}
+  for I := 0 to FEDIDataObjects.Count - 1 do
+    if Assigned(FEDIDataObjects[I]) then
+      try
+        // Delete
+        if FEDIDataObjects[I] is TEDIMessageLoop then
+          FEDIDataObjects.Item[I].FreeAndNilEDIDataObject
+        else
+          // Do not free segments because they are not owned by
+          FEDIDataObjects[I] := nil;
+      except
+        // This exception block was put here to capture the case where FEDIDataObjects[I] was
+        // actually destroyed prior to destroying this object.
+        FEDIDataObjects[I] := nil;
+      end;
+  // Resize
+  FEDIDataObjects.Clear;
+  {$ELSE}
+  for I := Low(FEDIDataObjects) to High(FEDIDataObjects) do
+    if Assigned(FEDIDataObjects[I]) then
+      try
+        // Delete
+        if FEDIDataObjects[I] is TEDIMessageLoop then
+          FreeAndNil(FEDIDataObjects[I])
+        else
+          // Do not free segments
+          FEDIDataObjects[I] := nil;
+      except
+        // This exception block was put here to capture the case where FEDIDataObjects[I] was
+        // actually destroyed prior to destroying this object.
+        FEDIDataObjects[I] := nil;
+      end;
+  // Resize
+  SetLength(FEDIDataObjects, 0);
+  {$ENDIF}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.FindLoop(LoopId: string;
+  var StartIndex: Integer): TEDIMessageLoop;
+var
+  I, J: Integer;
+begin
+  Result := nil;
+  J := StartIndex;
+  for I := StartIndex to GetCount {FEDIDataObjects.Count} - 1 do
+  begin
+    StartIndex := I;
+    if FEDIDataObjects[I] is TEDIMessageLoop then
+    begin
+      Result := TEDIMessageLoop(GetEDIDataObject(I));
+      if Result.OwnerLoopId = LoopId then
+      begin
+        Inc(StartIndex);
+        Break;
+      end;
+      Result := nil;
+    end;
+  end;
+  if Result = nil then
+    StartIndex := J;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.FindSegment(SegmentId: string; var StartIndex: Integer): TEDISegment;
+var
+  I, J: Integer;
+begin
+  Result := nil;
+  J := StartIndex;
+  for I := StartIndex to GetCount {FEDIDataObjects.Count} - 1 do
+  begin
+    StartIndex := I;
+    if FEDIDataObjects[I] is TEDISegment then
+    begin
+      Result := TEDISegment(GetEDIDataObject(I));
+      if Result.SegmentId = SegmentId then
+      begin
+        Inc(StartIndex);
+        Break;
+      end;
+      Result := nil;
+    end;
+  end;
+  if Result = nil then
+    StartIndex := J;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TEDIMessageLoop.FindSegment(SegmentId: string; var StartIndex: Integer;
+  ElementConditions: TStrings): TEDISegment;
+var
+  I, TrueCount, ElementIndex: Integer;
+  Name: string;
+begin
+  Result := FindSegment(SegmentId, StartIndex);
+  while Result <> nil do
+  begin
+    TrueCount := 0;
+    for I := 0 to ElementConditions.Count - 1 do
+    begin
+      Name := ElementConditions.Names[I];
+      ElementIndex := StrToInt(Name);
+      if Result[ElementIndex].Data = ElementConditions.Values[Name] then
+        Inc(TrueCount);
+    end;
+    if TrueCount = ElementConditions.Count then
+      Break;
+    Result := FindSegment(SegmentId, StartIndex);
+  end;
 end;
 
 end.
