@@ -9,19 +9,19 @@ unit Algorithms;
 
 interface
 
-uses DCL_intf;
-
+uses
+  DCL_intf;
 
 // function pointer types
 type
   // pointer functions for Apply Algorithms
-  TIntfApplyFunction = function (AObject: IInterface): IInterface;
-  TStrApplyFunction = function (const AObject: string): string;
-  TApplyFunction = function (AObject: TObject): TObject;
+  TIntfApplyFunction = function(AObject: IInterface): IInterface;
+  TStrApplyFunction = function(const AObject: string): string;
+  TApplyFunction = function(AObject: TObject): TObject;
   // Pointer functions for comparator
-  TIntfCompare = function (Obj1, Obj2: IInterface): Integer;
-  TStrCompare = function (const Obj, Obj2: string): Integer;
-  TCompare = function (Obj1, Obj2: TObject): Integer;
+  TIntfCompare = function(Obj1, Obj2: IInterface): Integer;
+  TStrCompare = function(const Obj, Obj2: string): Integer;
+  TCompare = function(Obj1, Obj2: TObject): Integer;
 
 // Compare functions
 function IntfSimpleCompare(Obj1, Obj2: IInterface): Integer;
@@ -37,11 +37,11 @@ procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction); overload;
 
 // Find algorithms
 function Find(First: IIntfIterator; Count: Integer; AObject: IInterface;
-	AComparator: TIntfCompare): IIntfIterator; overload;
+  AComparator: TIntfCompare): IIntfIterator; overload;
 function Find(First: IStrIterator; Count: Integer; const AObject: string;
-	AComparator: TStrCompare): IStrIterator; overload;
+  AComparator: TStrCompare): IStrIterator; overload;
 function Find(First: IIterator; Count: Integer; AObject: TObject;
-	AComparator: TCompare): IIterator; overload;
+  AComparator: TCompare): IIterator; overload;
 
 // CountObject algorithms
 function CountObject(First: IIntfIterator; Count: Integer; AObject: IInterface;
@@ -73,9 +73,9 @@ procedure Reverse(First, Last: IIterator); overload;
 
 type
   // Pointer functions for sort algorithms
-  TIntfSortProc = procedure (AList: IIntfList; L, R: Integer; AComparator: TIntfCompare);
-  TStrSortProc = procedure (AList: IStrList; L, R: Integer; AComparator: TStrCompare);
-  TSortProc = procedure (AList: IList; L, R: Integer; AComparator: TCompare);
+  TIntfSortProc = procedure(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare);
+  TStrSortProc = procedure(AList: IStrList; L, R: Integer; AComparator: TStrCompare);
+  TSortProc = procedure(AList: IList; L, R: Integer; AComparator: TCompare);
 
 procedure QuickSort(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare); overload;
 procedure QuickSort(AList: IStrList; L, R: Integer; AComparator: TStrCompare); overload;
@@ -91,35 +91,36 @@ procedure Sort(AList: IIntfList; First, Last: Integer; AComparator: TIntfCompare
 procedure Sort(AList: IStrList; First, Last: Integer; AComparator: TStrCompare); overload;
 procedure Sort(AList: IList; First, Last: Integer; AComparator: TCompare); overload;
 
-
 implementation
 
-uses SysUtils;
+uses
+  SysUtils;
 
 function IntfSimpleCompare(Obj1, Obj2: IInterface): Integer;
 begin
-  Result := 1;
   if Obj1 = Obj2 then
-    Result := 0;
+    Result := 0
+  else
+    Result := 1;
 end;
 
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 begin
-	Result := CompareText(Obj1, Obj2);
+  Result := CompareText(Obj1, Obj2);
 end;
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 begin
-  Result := 1;
   if Obj1 = Obj2 then
-    Result := 0;
+    Result := 0
+  else
+    Result := 1;
 end;
 
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
 begin
   Result := Integer(Obj1) - Integer(Obj2);
 end;
-
 
 procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction);
 var
@@ -128,10 +129,10 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     First.SetObject(F(First.GetObject));
     First.Next;
-	end;
+  end;
 end;
 
 procedure Apply(First: IStrIterator; Count: Integer; F: TStrApplyFunction);
@@ -141,10 +142,10 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     First.SetString(F(First.GetString));
     First.Next;
-	end;
+  end;
 end;
 
 procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction);
@@ -154,14 +155,14 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     First.SetObject(F(First.GetObject));
     First.Next;
-	end;
+  end;
 end;
 
 function Find(First: IIntfIterator; Count: Integer; AObject: IInterface;
-	AComparator: TIntfCompare): IIntfIterator;
+  AComparator: TIntfCompare): IIntfIterator;
 var
   I: Integer;
   Obj: IInterface;
@@ -170,19 +171,19 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     Obj := First.GetObject;
     if AComparator(Obj, AObject) = 0 then
     begin
       Result := First;
-      Exit;
+      Break;
     end;
     First.Next;
   end;
 end;
 
 function Find(First: IStrIterator; Count: Integer; const AObject: string;
-	AComparator: TStrCompare): IStrIterator;
+  AComparator: TStrCompare): IStrIterator;
 var
   I: Integer;
   Obj: string;
@@ -191,19 +192,19 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     Obj := First.GetString;
     if AComparator(Obj, AObject) = 0 then
     begin
       Result := First;
-      Exit;
+      Break;
     end;
     First.Next;
   end;
 end;
 
 function Find(First: IIterator; Count: Integer; AObject: TObject;
-	AComparator: TCompare): IIterator;
+  AComparator: TCompare): IIterator;
 var
   I: Integer;
   Obj: TObject;
@@ -212,17 +213,16 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     Obj := First.GetObject;
     if AComparator(Obj, AObject) = 0 then
     begin
       Result := First;
-      Exit;
+      Break;
     end;
     First.Next;
   end;
 end;
-
 
 function CountObject(First: IIntfIterator; Count: Integer; AObject: IInterface;
   AComparator: TIntfCompare): Integer;
@@ -233,7 +233,7 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     if AComparator(First.Next, AObject) = 0 then
       Inc(Result);
   end;
@@ -248,7 +248,7 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     if AComparator(First.Next, AObject) = 0 then
       Inc(Result);
   end;
@@ -263,21 +263,20 @@ begin
   for I := 0 to Count - 1 do
   begin
     if not First.HasNext then
-      Exit;
+      Break;
     if AComparator(First.Next, AObject) = 0 then
       Inc(Result);
   end;
 end;
 
-
-procedure Copy(First: IIntfIterator; Count: Integer; Output: IIntfIterator); 
+procedure Copy(First: IIntfIterator; Count: Integer; Output: IIntfIterator);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
   begin
     if (not Output.HasNext) or (not First.HasNext) then
-      Exit;
+      Break;
     Output.SetObject(First.GetObject);
     First.Next;
     Output.Next;
@@ -291,12 +290,13 @@ begin
   for I := 0 to Count - 1 do
   begin
     if (not Output.HasNext) or (not First.HasNext) then
-      Exit;
+      Break;
     Output.SetString(First.GetString);
     First.Next;
     Output.Next;
   end;
 end;
+
 procedure Copy(First: IIterator; Count: Integer; Output: IIterator);
 var
   I: Integer;
@@ -304,13 +304,12 @@ begin
   for I := 0 to Count - 1 do
   begin
     if (not Output.HasNext) or (not First.HasNext) then
-      Exit;
+      Break;
     Output.SetObject(First.GetObject);
     First.Next;
     Output.Next;
   end;
 end;
-
 
 procedure Generate(List: IIntfList; Count: Integer; AObject: IInterface);
 var
@@ -339,15 +338,14 @@ begin
     List.Add(AObject);
 end;
 
-
-procedure Fill(First: IIntfIterator; Count: Integer; AObject: IInterface); 
+procedure Fill(First: IIntfIterator; Count: Integer; AObject: IInterface);
 var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
   begin
-    if (not First.HasNext) then
-      Exit;
+    if not First.HasNext then
+      Break;
     First.SetObject(AObject);
     First.Next;
   end;
@@ -359,8 +357,8 @@ var
 begin
   for I := 0 to Count - 1 do
   begin
-    if (not First.HasNext) then
-      Exit;
+    if not First.HasNext then
+      Break;
     First.SetString(AObject);
     First.Next;
   end;
@@ -372,22 +370,22 @@ var
 begin
   for I := 0 to Count - 1 do
   begin
-    if (not First.HasNext) then
-      Exit;
+    if not First.HasNext then
+      Break;
     First.SetObject(AObject);
     First.Next;
   end;
 end;
 
-procedure Reverse(First, Last: IIntfIterator); 
+procedure Reverse(First, Last: IIntfIterator);
 var
   Obj: IInterface;
 begin
-  if not  First.HasNext then
+  if not First.HasNext then
     Exit;
-  if not  Last.HasPrevious then
+  if not Last.HasPrevious then
     Exit;
-  while (First.NextIndex < Last.PreviousIndex) do
+  while First.NextIndex < Last.PreviousIndex do
   begin
     Obj := First.GetObject;
     Last.Previous;
@@ -401,11 +399,11 @@ procedure Reverse(First, Last: IStrIterator);
 var
   Obj: string;
 begin
-  if not  First.HasNext then
+  if not First.HasNext then
     Exit;
-  if not  Last.HasPrevious then
+  if not Last.HasPrevious then
     Exit;
-  while (First.NextIndex <= Last.PreviousIndex) do
+  while First.NextIndex <= Last.PreviousIndex do
   begin
     Obj := First.GetString;
     Last.Previous;
@@ -415,15 +413,15 @@ begin
   end;
 end;
 
-procedure Reverse(First, Last: IIterator); 
+procedure Reverse(First, Last: IIterator);
 var
   Obj: TObject;
 begin
-  if not  First.HasNext then
+  if not First.HasNext then
     Exit;
-  if not  Last.HasPrevious then
+  if not Last.HasPrevious then
     Exit;
-  while (First.NextIndex <= Last.PreviousIndex) do
+  while First.NextIndex <= Last.PreviousIndex do
   begin
     Obj := First.GetObject;
     Last.Previous;
@@ -433,7 +431,7 @@ begin
   end;
 end;
 
-procedure QuickSort(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare); 
+procedure QuickSort(AList: IIntfList; L, R: Integer; AComparator: TIntfCompare);
 var
   I, J, P: Integer;
   Obj: IInterface;
@@ -451,21 +449,23 @@ begin
       begin
         Obj := AList.GetObject(I);
         AList.SetObject(I, AList.GetObject(J));
-				AList.SetObject(J, Obj);
+        AList.SetObject(J, Obj);
         if P = I then
           P := J
-        else if P = J then
+        else
+        if P = J then
           P := I;
         Inc(I);
         Dec(J);
       end;
     until I > J;
-    if L < J then QuickSort(AList, L, J, AComparator);
+    if L < J then
+      QuickSort(AList, L, J, AComparator);
     L := I;
   until I >= R;
 end;
 
-procedure QuickSort(AList: IStrList; L, R: Integer; AComparator: TStrCompare); 
+procedure QuickSort(AList: IStrList; L, R: Integer; AComparator: TStrCompare);
 var
   I, J, P: Integer;
   Obj: string;
@@ -483,21 +483,23 @@ begin
       begin
         Obj := AList.GetString(I);
         AList.SetString(I, AList.GetString(J));
-				AList.SetString(J, Obj);
+        AList.SetString(J, Obj);
         if P = I then
           P := J
-        else if P = J then
+        else
+        if P = J then
           P := I;
         Inc(I);
         Dec(J);
       end;
     until I > J;
-    if L < J then QuickSort(AList, L, J, AComparator);
+    if L < J then
+      QuickSort(AList, L, J, AComparator);
     L := I;
   until I >= R;
 end;
 
-procedure QuickSort(AList: IList; L, R: Integer; AComparator: TCompare); 
+procedure QuickSort(AList: IList; L, R: Integer; AComparator: TCompare);
 var
   I, J, P: Integer;
   Obj: TObject;
@@ -515,33 +517,36 @@ begin
       begin
         Obj := AList.GetObject(I);
         AList.SetObject(I, AList.GetObject(J));
-				AList.SetObject(J, Obj);
+        AList.SetObject(J, Obj);
         if P = I then
           P := J
-        else if P = J then
+        else
+        if P = J then
           P := I;
         Inc(I);
         Dec(J);
       end;
     until I > J;
-    if L < J then QuickSort(AList, L, J, AComparator);
+    if L < J then
+      QuickSort(AList, L, J, AComparator);
     L := I;
   until I >= R;
 end;
 
-procedure Sort(AList: IIntfList; First, Last: Integer; AComparator: TIntfCompare); 
+procedure Sort(AList: IIntfList; First, Last: Integer; AComparator: TIntfCompare);
 begin
   IntfSortProc(AList, First, Last, AComparator);
 end;
 
-procedure Sort(AList: IStrList; First, Last: Integer; AComparator: TStrCompare); 
+procedure Sort(AList: IStrList; First, Last: Integer; AComparator: TStrCompare);
 begin
   StrSortProc(AList, First, Last, AComparator);
 end;
 
-procedure Sort(AList: IList; First, Last: Integer; AComparator: TCompare); 
+procedure Sort(AList: IList; First, Last: Integer; AComparator: TCompare);
 begin
   SortProc(AList, First, Last, AComparator);
 end;
 
 end.
+

@@ -10,29 +10,29 @@ unit AbstractContainer;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Libc,
-{$ENDIF}
-	DCL_Intf, DCLUtil;
+  {$ENDIF LINUX}
+  DCL_Intf, DCLUtil;
 
 type
   TIntfCriticalSection = class(TObject, IInterface)
   private
-   	FCriticalSection: TRTLCriticalSection;
-	protected
-		function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
-		function _AddRef: Integer; stdcall;
-		function _Release: Integer; stdcall;
-	public
-   	constructor Create;
+    FCriticalSection: TRTLCriticalSection;
+  protected
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
+  public
+    constructor Create;
     destructor Destroy; override;
   end;
 
   TAbstractContainer = class(TInterfacedObject)
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   private
     FCriticalSection: TIntfCriticalSection;
   protected
@@ -40,48 +40,49 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   end;
 
 implementation
 
-{ TIntfCriticalSection }
-
-function TIntfCriticalSection._AddRef: Integer;
-begin
-	EnterCriticalSection(FCriticalSection);
-  Result := 0;
-end;               
-
-function TIntfCriticalSection._Release: Integer;
-begin
-	LeaveCriticalSection(FCriticalSection);
-  Result := 0;
-end;
+//=== { TIntfCriticalSection } ===============================================
 
 constructor TIntfCriticalSection.Create;
 begin
-	inherited;
-	InitializeCriticalSection(FCriticalSection);
+  inherited Create;
+  InitializeCriticalSection(FCriticalSection);
 end;
 
 destructor TIntfCriticalSection.Destroy;
 begin
-	DeleteCriticalSection(FCriticalSection);
-  inherited;
+  DeleteCriticalSection(FCriticalSection);
+  inherited Destroy;
 end;
 
-function TIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HResult;
+function TIntfCriticalSection._AddRef: Integer;
 begin
-	if GetInterface(IID, Obj) then
-   	Result := 0
-   else
-   	Result := E_NOINTERFACE;
+  EnterCriticalSection(FCriticalSection);
+  Result := 0;
 end;
 
-{ TAbstractContainer }
+function TIntfCriticalSection._Release: Integer;
+begin
+  LeaveCriticalSection(FCriticalSection);
+  Result := 0;
+end;
+
+function TIntfCriticalSection.QueryInterface(const IID: TGUID; out Obj): HRESULT;
+begin
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
+//=== { TAbstractContainer } =================================================
 
 {$IFDEF THREADSAFE}
+
 constructor TAbstractContainer.Create;
 begin
   FCriticalSection := TIntfCriticalSection.Create;
@@ -90,13 +91,15 @@ end;
 destructor TAbstractContainer.Destroy;
 begin
   FCriticalSection.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TAbstractContainer.EnterCriticalSection: IInterface;
 begin
   Result := FCriticalSection as IInterface;
 end;
-{$ENDIF}
+
+{$ENDIF THREADSAFE}
 
 end.
+

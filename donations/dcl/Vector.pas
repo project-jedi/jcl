@@ -525,7 +525,7 @@ begin
   if ACollection = nil then
     Exit;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(SOutOfBounds);
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size],
   	Size * SizeOf(IInterface));
@@ -707,7 +707,7 @@ end;
 function TIntfVector.Remove(Index: Integer): IInterface;
 begin
 	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := nil;
   System.Move(Items[Index + 1], Items[Index],
@@ -761,7 +761,7 @@ procedure TIntfVector.SetObject(Index: Integer;
   AObject: IInterface);
 begin
 	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
@@ -834,7 +834,7 @@ begin
   if ACollection = nil then
     Exit;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(SOutOfBounds);
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size],
   	Size * SizeOf(string));
@@ -1029,7 +1029,7 @@ end;
 function TStrVector.Remove(Index: Integer): string;
 begin
 	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   Items[Index] := '';
   System.Move(Items[Index + 1], Items[Index],
@@ -1064,7 +1064,7 @@ end;
 procedure TStrVector.SetString(Index: Integer; const AString: string);
 begin
 	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AString;
 end;
 
@@ -1115,7 +1115,7 @@ begin
   if ACollection = nil then
     Exit;
   if (Index < 0) or (Index >= FCount) then
-    raise EDCLOutOfBounds.Create(SOutOfBounds);
+    raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Size := ACollection.Size;
   System.Move(Items[Index], Items[Index + Size],
   	Size * SizeOf(IInterface));
@@ -1325,7 +1325,7 @@ end;
 function TVector.Remove(Index: Integer): TObject;
 begin
 	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Result := Items[Index];
   FreeObject(Items[Index]);
   System.Move(Items[Index + 1], Items[Index],
@@ -1360,7 +1360,7 @@ end;
 procedure TVector.SetObject(Index: Integer; AObject: TObject);
 begin
 	if (Index < 0) or (Index >= FCount) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 

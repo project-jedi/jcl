@@ -9,15 +9,15 @@ unit ArraySet;
 
 interface
 
-uses DCL_intf, DCLUtil, AbstractContainer, ArrayList;
+uses
+  DCL_intf, DCLUtil, AbstractContainer, ArrayList;
 
 type
   TIntfArraySet = class(TIntfArrayList, IIntfCollection, IIntfSet, IIntfCloneable)
   protected
     function Add(AObject: IInterface): Boolean;
     function AddAll(ACollection: IIntfCollection): Boolean;
-  protected
-  { IIntfSet }
+    { IIntfSet }
     procedure Intersect(ACollection: IIntfCollection);
     procedure Subtract(ACollection: IIntfCollection);
     procedure Union(ACollection: IIntfCollection);
@@ -27,8 +27,7 @@ type
   protected
     function Add(const AString: string): Boolean;
     function AddAll(ACollection: IStrCollection): Boolean;
-  protected
-  { IStrSet }
+    { IStrSet }
     procedure Intersect(ACollection: IStrCollection);
     procedure Subtract(ACollection: IStrCollection);
     procedure Union(ACollection: IStrCollection);
@@ -37,9 +36,8 @@ type
   TArraySet = class(TArrayList, ICollection, ISet, ICloneable)
   protected
     function Add(AObject: TObject): Boolean;
-    function AddAll(ACollection: ICollection): Boolean; 
-  protected
-  { ISet }
+    function AddAll(ACollection: ICollection): Boolean;
+    { ISet }
     procedure Intersect(ACollection: ICollection);
     procedure Subtract(ACollection: ICollection);
     procedure Union(ACollection: ICollection);
@@ -47,27 +45,25 @@ type
 
 implementation
 
-{ TIntfArraySet }
+//=== { TIntfArraySet } ======================================================
 
 function TIntfArraySet.Add(AObject: IInterface): Boolean;
 begin
-  Result := False;
-  if Contains(AObject) then
-    Exit;
-  inherited Add(AObject);
-  Result := True;
+  Result := Contains(AObject);
+  if not Result then
+    inherited Add(AObject);
 end;
 
 function TIntfArraySet.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -92,27 +88,25 @@ begin
   AddAll(ACollection);
 end;
 
-{ TStrArraySet }
+//=== { TStrArraySet } =======================================================
 
 function TStrArraySet.Add(const AString: string): Boolean;
 begin
-  Result := False;
-  if Contains(AString) then
-    Exit;
-  inherited Add(AString);
-  Result := True;
+  Result := Contains(AString);
+  if not Result then
+    inherited Add(AString);
 end;
 
 function TStrArraySet.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;
@@ -137,27 +131,25 @@ begin
   AddAll(ACollection);
 end;
 
-{ TArraySet }
+//=== { TArraySet } ==========================================================
 
 function TArraySet.Add(AObject: TObject): Boolean;
 begin
-  Result := False;
-  if Contains(AObject) then
-    Exit;
-  inherited Add(AObject);
-  Result := True;
+  Result := Contains(AObject);
+  if not Result then
+    inherited Add(AObject);
 end;
 
 function TArraySet.AddAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS: IInterface;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
 begin
-{$IFDEF THREADSAFE}
+  {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
-{$ENDIF}
+  {$ENDIF THREADSAFE}
   Result := False;
   if ACollection = nil then
     Exit;

@@ -12,7 +12,7 @@ interface
 {$IFNDEF DELPHI6_UP}
 type
   IInterface = IUnknown;
-{$ENDIF}
+{$ENDIF DELPHI6_UP}
 
 type
   IIntfCloneable = interface

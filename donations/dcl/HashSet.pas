@@ -9,14 +9,15 @@ unit HashSet;
 
 interface
 
-uses DCL_intf, HashMap, AbstractContainer;
+uses
+  DCL_intf, HashMap, AbstractContainer;
 
 type
   TIntfHashSet = class(TAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
   private
     FMap: IIntfIntfMap;
   protected
-  { IIntfCollection }
+    { IIntfCollection }
     function Add(AObject: IInterface): Boolean;
     function AddAll(ACollection: IIntfCollection): Boolean;
     procedure Clear;
@@ -30,13 +31,11 @@ type
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
-  protected
-  { IIntfSet }
+    { IIntfSet }
     procedure Intersect(ACollection: IIntfCollection);
     procedure Subtract(ACollection: IIntfCollection);
     procedure Union(ACollection: IIntfCollection);
-  protected
-  { IIntfCloneable }
+    { IIntfCloneable }
     function Clone: IInterface;
   public
     constructor Create; overload;
@@ -48,7 +47,7 @@ type
   private
     FMap: IStrMap;
   protected
-  { IStrCollection }
+    { IStrCollection }
     function Add(const AString: string): Boolean;
     function AddAll(ACollection: IStrCollection): Boolean;
     procedure Clear;
@@ -62,13 +61,11 @@ type
     function RemoveAll(ACollection: IStrCollection): Boolean;
     function RetainAll(ACollection: IStrCollection): Boolean;
     function Size: Integer;
-  protected
-  { IIntfSet }
+    { IIntfSet }
     procedure Intersect(ACollection: IStrCollection);
     procedure Subtract(ACollection: IStrCollection);
     procedure Union(ACollection: IStrCollection);
-  protected
-  { IIntfCloneable }
+    { IIntfCloneable }
     function Clone: TObject;
   public
     constructor Create; overload;
@@ -80,7 +77,7 @@ type
   private
     FMap: IMap;
   protected
-  { ICollection }
+    { ICollection }
     function Add(AObject: TObject): Boolean;
     function AddAll(ACollection: ICollection): Boolean;
     procedure Clear;
@@ -94,13 +91,11 @@ type
     function RemoveAll(ACollection: ICollection): Boolean;
     function RetainAll(ACollection: ICollection): Boolean;
     function Size: Integer;
-  protected
-  { ISet }
+    { ISet }
     procedure Intersect(ACollection: ICollection);
     procedure Subtract(ACollection: ICollection);
     procedure Union(ACollection: ICollection);
-  protected
-  { ICloneable }
+    { ICloneable }
     function Clone: TObject;
   public
     constructor Create; overload;
@@ -111,11 +106,32 @@ type
 implementation
 
 const
-	RefUnique: TObject = @RefUnique;
-var
-	IRefUnique: IInterface = nil;
+  // (rom) this needs an explanation
+  RefUnique: TObject = @RefUnique;
 
-{ TIntfHashSet }
+var
+  IRefUnique: IInterface = nil;
+
+//=== { TIntfHashSet } =======================================================
+
+constructor TIntfHashSet.Create;
+begin
+  Create(16);
+end;
+
+constructor TIntfHashSet.Create(Capacity: Integer);
+begin
+  inherited Create;
+  FMap := TIntfIntfHashMap.Create(Capacity);
+  if IRefUnique = nil then
+    IRefUnique := TInterfacedObject.Create;
+end;
+
+destructor TIntfHashSet.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 function TIntfHashSet.Add(AObject: IInterface): Boolean;
 begin
@@ -130,13 +146,13 @@ function TIntfHashSet.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
-  Result := False;
-  if ACollection = nil then
-    Exit;
-  It := ACollection.First;
-  while It.HasNext do
-    Add(It.Next);
-  Result := True;
+  Result := ACollection <> nil;
+  if Result then
+  begin
+    It := ACollection.First;
+    while It.HasNext do
+      Add(It.Next);
+  end;
 end;
 
 procedure TIntfHashSet.Clear;
@@ -162,37 +178,16 @@ function TIntfHashSet.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
-	Result := True;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
     if not Contains(It.Next) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
-  end;
-end;
-
-constructor TIntfHashSet.Create;
-begin
-  Create(16);
-end;
-
-constructor TIntfHashSet.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FMap := TIntfIntfHashMap.Create(Capacity);
-  if IRefUnique = nil then
-  	IRefUnique := TInterfacedObject.Create;
-end;
-
-destructor TIntfHashSet.Destroy;
-begin
-  Clear;
-  inherited;
 end;
 
 function TIntfHashSet.Equals(ACollection: IIntfCollection): Boolean;
@@ -200,7 +195,7 @@ var
   It: IIntfIterator;
   ItMap: IIntfIterator;
 begin
-	Result := False;
+  Result := False;
   if ACollection = nil then
     Exit;
   if FMap.Size <> ACollection.Size then
@@ -208,7 +203,7 @@ begin
   It := ACollection.First;
   ItMap := FMap.Values.First;
   while ItMap.HasNext do
-		if ItMap.Next <> It.Next then
+    if ItMap.Next <> It.Next then
       Exit;
   Result := True;
 end;
@@ -220,7 +215,7 @@ end;
 
 procedure TIntfHashSet.Intersect(ACollection: IIntfCollection);
 begin
-  RetainAll(ACollection)
+  RetainAll(ACollection);
 end;
 
 function TIntfHashSet.IsEmpty: Boolean;
@@ -278,7 +273,24 @@ begin
   AddAll(ACollection);
 end;
 
-{ TStrHashSet }
+//=== { TStrHashSet } ========================================================
+
+constructor TStrHashSet.Create(Capacity: Integer);
+begin
+  inherited Create;
+  FMap := TStrHashMap.Create(Capacity, False);
+end;
+
+constructor TStrHashSet.Create;
+begin
+  Create(16);
+end;
+
+destructor TStrHashSet.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 function TStrHashSet.Add(const AString: string): Boolean;
 begin
@@ -325,35 +337,16 @@ function TStrHashSet.ContainsAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
-	Result := True;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
-    if not Contains(It.Next) then
+    if not contains(It.Next) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
-  end;
-end;
-
-constructor TStrHashSet.Create(Capacity: Integer);
-begin
-  inherited Create;
-  FMap := TStrHashMap.Create(Capacity, False);
-end;
-
-constructor TStrHashSet.Create;
-begin
-  Create(16);
-end;
-
-destructor TStrHashSet.Destroy;
-begin
-  Clear;
-  inherited;
 end;
 
 function TStrHashSet.Equals(ACollection: IStrCollection): Boolean;
@@ -361,7 +354,7 @@ var
   It: IStrIterator;
   ItMap: IStrIterator;
 begin
-	Result := False;
+  Result := False;
   if ACollection = nil then
     Exit;
   if FMap.Size <> ACollection.Size then
@@ -369,7 +362,7 @@ begin
   It := ACollection.First;
   ItMap := FMap.KeySet.First;
   while ItMap.HasNext do
-		if ItMap.Next <> It.Next then
+    if ItMap.Next <> It.Next then
       Exit;
   Result := True;
 end;
@@ -439,7 +432,24 @@ begin
   AddAll(ACollection);
 end;
 
-{ THashSet }
+//=== { THashSet } ===========================================================
+
+constructor THashSet.Create;
+begin
+  Create(16, False);
+end;
+
+constructor THashSet.Create(Capacity: Integer; AOwnsObject: Boolean);
+begin
+  inherited Create;
+  FMap := THashMap.Create(Capacity, AOwnsObject);
+end;
+
+destructor THashSet.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
 
 function THashSet.Add(AObject: TObject): Boolean;
 begin
@@ -486,35 +496,16 @@ function THashSet.ContainsAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
-	Result := True;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  begin
     if not Contains(It.Next) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
-  end;
-end;
-
-constructor THashSet.Create;
-begin
-  Create(16, False);
-end;
-
-constructor THashSet.Create(Capacity: Integer; AOwnsObject: Boolean);
-begin
-  inherited Create;
-  FMap := THashMap.Create(Capacity, AOwnsObject);
-end;
-
-destructor THashSet.Destroy;
-begin
-  Clear;
-  inherited;
 end;
 
 function THashSet.Equals(ACollection: ICollection): Boolean;
@@ -522,7 +513,7 @@ var
   It: IIterator;
   ItMap: IIterator;
 begin
-	Result := False;
+  Result := False;
   if ACollection = nil then
     Exit;
   if FMap.Size <> ACollection.Size then
@@ -530,7 +521,7 @@ begin
   It := ACollection.First;
   ItMap := FMap.Values.First;
   while ItMap.HasNext do
-		if ItMap.Next <> It.Next then
+    if ItMap.Next <> It.Next then
       Exit;
   Result := True;
 end;
@@ -557,7 +548,7 @@ end;
 
 function THashSet.Remove(AObject: TObject): Boolean;
 begin
-  Result := Fmap.Remove(AObject) = RefUnique;
+  Result := FMap.Remove(AObject) = RefUnique;
 end;
 
 function THashSet.RemoveAll(ACollection: ICollection): Boolean;
@@ -601,3 +592,4 @@ begin
 end;
 
 end.
+

@@ -7,15 +7,16 @@ unit DCLUtil;
 
 interface
 
-uses DCL_Intf, SysUtils;
+uses
+  DCL_Intf, SysUtils;
 
 resourcestring
-  SOutOfBounds = 'Out of bounds';
-  SNoSuchElement = 'No such element';
-  SIllegalState = 'Illegal state';
-  SConcurrentModification = 'Concurrent modification';
-  SIllegalArgument = 'Illegal argument';
-  SOperationNotSupported = 'Operation not supported';
+  RsEOutOfBounds = 'Out of bounds';
+  //RsENoSuchElement = 'No such element';
+  //RsEIllegalState = 'Illegal state';
+  //RsEConcurrentModification = 'Concurrent modification';
+  //RsEIllegalArgument = 'Illegal argument';
+  RsEOperationNotSupported = 'Operation not supported';
 
 type
   TIInterfaceArray = array of IInterface;
@@ -29,9 +30,8 @@ type
   EDCLIllegalState = class(EDCLException);
   EDCLConcurrentModification = class(EDCLException);
   EDCLIllegalArgument = class(EDCLException);
-	EDCLOperationNotSupported = class(EDCLException);
+  EDCLOperationNotSupported = class(EDCLException);
 
 implementation
-
 
 end.

@@ -296,7 +296,7 @@ end;
 function TIntfItr.HasPrevious: Boolean;
 begin
 	// Unidirectional
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Next: IInterface;
@@ -316,19 +316,19 @@ end;
 function TIntfItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.Previous: IInterface;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TIntfItr.PreviousIndex: Integer;
 begin
   // No Index;
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 procedure TIntfItr.Remove;
@@ -434,7 +434,7 @@ end;
 function TStrItr.HasPrevious: Boolean;
 begin
 	// Unidirectional
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Next: string;
@@ -454,19 +454,19 @@ end;
 function TStrItr.NextIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.Previous: string;
 begin
   // Unidirectional
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TStrItr.PreviousIndex: Integer;
 begin
   // No index
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 procedure TStrItr.Remove;
@@ -571,7 +571,7 @@ end;
 function TItr.HasPrevious: Boolean;
 begin
 	// Unidirectional
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Next: TObject;
@@ -591,19 +591,19 @@ end;
 function TItr.NextIndex: Integer;
 begin
 	// No Index
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TItr.Previous: TObject;
 begin
 	// Unidirectional
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 function TItr.PreviousIndex: Integer;
 begin
 	// No Index
-  raise EDCLOperationNotSupported.Create(SOperationNotSupported);
+  raise EDCLOperationNotSupported.Create(RsEOperationNotSupported);
 end;
 
 procedure TItr.Remove;
@@ -667,7 +667,7 @@ begin
     Exit;
   end;
   if (Index < 0) or (Index > FSize) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
 	New(NewItem);
   NewItem.Obj := AObject;
   if Index = 0 then
@@ -758,7 +758,7 @@ begin
     Exit;
   end;
   if (Index < 0) or (Index > FSize) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Current := FStart;
   I := 0;
   while (Current <> nil) and (I <> Index) do
@@ -1202,7 +1202,7 @@ begin
     Exit;
   end;
   if (Index < 0) or (Index > FSize) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
 	New(NewItem);
   NewItem.Str := AString;
   if Index = 0 then
@@ -1293,7 +1293,7 @@ begin
     Exit;
   end;
   if (Index < 0) or (Index > FSize) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Current := FStart;
   I := 0;
   while (Current <> nil) and (I <> Index) do
@@ -1735,7 +1735,7 @@ begin
     Exit;
   end;
   if (Index < 0) or (Index > FSize) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
 	New(NewItem);
   NewItem.Obj := AObject;
   if Index = 0 then
@@ -1823,7 +1823,7 @@ begin
     Exit;
   end;
   if (Index < 0) or (Index > FSize) then
-  	raise EDCLOutOfBounds.Create(SOutOfBounds);
+  	raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Current := FStart;
   I := 0;
   while (Current <> nil) and (I <> Index) do
