@@ -412,11 +412,13 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF UNIX}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ELSE ~HAS_UNIT_LIBC}
   dl,
   {$ENDIF ~HAS_UNIT_LIBC}
+  {$ENDIF UNIX}
   SysUtils,
   JclResources, JclStrings, JclMath;
 
@@ -2302,6 +2304,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/05/09 03:22:15  rrossmair
+// fix: missing {$IFDEF Unix} around "uses dl" added
+//
 // Revision 1.15  2004/05/09 03:01:57  rrossmair
 // module loader code made FPC compatible
 //
