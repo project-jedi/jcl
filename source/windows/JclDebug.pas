@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 27, 2002                                                                 }
+{ Last modified: March 02, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -64,10 +64,8 @@ type
     FEndAddr: Pointer;
     FStartAddr: Pointer;
     FSystemModule: Boolean;
-    function GetFileName: string;
   public
     property EndAddr: Pointer read FEndAddr;
-    property FileName: string read GetFileName;
     property Size: Cardinal read FSize;
     property StartAddr: Pointer read FStartAddr;
     property SystemModule: Boolean read FSystemModule;
@@ -394,7 +392,7 @@ function Caller(Level: Integer = 0): Pointer;
 function GetLocationInfo(const Addr: Pointer): TJclLocationInfo; overload;
 function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; overload;
 function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName: Boolean = False;
-  IncludeOffset: Boolean = False): string;
+  IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False): string;
 function DebugInfoAvailable(const Module: HMODULE): Boolean;
 procedure ClearLocationData;
 
@@ -402,13 +400,13 @@ function FileByLevel(const Level: Integer = 0): string;
 function ModuleByLevel(const Level: Integer = 0): string;
 function ProcByLevel(const Level: Integer = 0): string;
 function LineByLevel(const Level: Integer = 0): Integer;
-function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
+function MapByLevel(const Level: Integer; var File_, Module_, Proc_: string; var Line_: Integer): Boolean;
 
 function FileOfAddr(const Addr: Pointer): string;
 function ModuleOfAddr(const Addr: Pointer): string;
 function ProcOfAddr(const Addr: Pointer): string;
 function LineOfAddr(const Addr: Pointer): Integer;
-function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string; var _Line: Integer): Boolean;
+function MapOfAddr(const Addr: Pointer; var File_, Module_, Proc_: string; var Line_: Integer): Boolean;
 
 function ExtractClassName(const ProcedureName: string): string;
 function ExtractMethodName(const ProcedureName: string): string;
@@ -428,7 +426,7 @@ function __MAP_OF_ADDR__(const Addr: Pointer; var _File, _Module, _Proc: string;
   var _Line: Integer): Boolean; {$IFDEF DELPHI6_UP} deprecated; {$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
-// Info routines base list
+// Stack info routines base list
 //--------------------------------------------------------------------------------------------------
 
 type
@@ -480,12 +478,21 @@ type
   TJclStackInfoList = class (TJclStackBaseList)
   private
     FIgnoreLevels: DWORD;
+    TopOfStack: Cardinal;
+    BaseOfStack: Cardinal;
+    FModuleInfoList: TJclModuleInfoList;
     function GetItems(Index: Integer): TJclStackInfoItem;
+    function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
+    procedure StoreToList(const StackInfo: TStackInfo);
+    procedure TraceStackFrames;
+    procedure TraceStackRaw;
+    function ValidCallSite(CodeAddr: DWORD): Boolean;
+    function ValidStackAddr(StackAddr: DWORD): Boolean;
   public
     constructor Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
     destructor Destroy; override;
     procedure AddToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
-      IncludeOffset: Boolean = False);
+      IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False);
     property Items[Index: Integer]: TJclStackInfoItem read GetItems; default;
     property IgnoreLevels: DWORD read FIgnoreLevels;
   end;
@@ -493,7 +500,8 @@ type
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
 
 function JclLastExceptStackList: TJclStackInfoList;
-function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False): Boolean;
+function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean = False;
+  IncludeAddressOffset: Boolean = False; IncludeStartProcLineOffset: Boolean = False): Boolean;
 
 //--------------------------------------------------------------------------------------------------
 // Exception frame info routines
@@ -578,7 +586,7 @@ function JclLastExceptFrameList: TJclExceptFrameList;
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclStackTrackingOption = (stStack, stExceptFrame, stRawMode, stAllModules);
+  TJclStackTrackingOption = (stStack, stExceptFrame, stRawMode, stAllModules, stStaticModuleList);
   TJclStackTrackingOptions = set of TJclStackTrackingOption;
 
 var
@@ -596,9 +604,9 @@ type
   TJclDebugThread = class (TThread)
   private
     FSyncException: Exception;
+    FThreadName: string;
     procedure DoHandleException;
     function GetThreadInfo: string;
-    function GetThreadName: string;
   protected
     procedure DoNotify;
     procedure DoSyncHandleException; dynamic;
@@ -608,7 +616,7 @@ type
     destructor Destroy; override;
     property SyncException: Exception read FSyncException;
     property ThreadInfo: string read GetThreadInfo;
-    property ThreadName: string read GetThreadName;
+    property ThreadName: string read FThreadName;
   end;
 
   TJclDebugThreadNotifyEvent = procedure (Thread: TJclDebugThread) of object;
@@ -618,28 +626,32 @@ type
   private
     FList: TStringList;
     FLock: TJclCriticalSection;
+    FReadLock: TJclCriticalSection;
+    FRegSyncThreadID: DWORD;
+    FUnregSyncThreadID: DWORD;
     FOnSyncException: TJclDebugThreadNotifyEvent;
     FOnThreadRegistered: TJclThreadIDNotifyEvent;
     FOnThreadUnregistered: TJclThreadIDNotifyEvent;
-    function GetCount: Integer;
-    function GetThreadNames(ThreadID: DWORD; Index: Integer): string;
+    procedure DoSyncThreadRegistered;
+    procedure DoSyncThreadUnregistered;
     function GetThreadIDs(Index: Integer): DWORD;
+    function GetThreadIDCount: Integer;
+    function GetThreadNames(ThreadID: DWORD; Index: Integer): string;
   protected
     procedure DoSyncException(Thread: TJclDebugThread);
-    procedure DoThreadRegistered(ThreadID: DWORD);
-    procedure DoThreadUnregistered(ThreadID: DWORD);
-    procedure InternalRegisterThread(ThreadID: DWORD; const ThreadName, ThreadClassName: string);
+    procedure DoThreadRegistered(Thread: TThread);
+    procedure DoThreadUnregistered(Thread: TThread);
+    procedure InternalRegisterThread(Thread: TThread; const ThreadName: string);
+    procedure InternalUnregisterThread(Thread: TThread);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure RegisterThread(ThreadID: DWORD; const ThreadName: string); overload;
-    procedure RegisterThread(Thread: TThread; const ThreadName: string); overload;
-    procedure UnregisterThread(ThreadID: DWORD); overload;
-    procedure UnregisterThread(Thread: TThread); overload;
-    property Count: Integer read GetCount;
+    procedure RegisterThread(Thread: TThread; const ThreadName: string);
+    procedure UnregisterThread(Thread: TThread);
     property Lock: TJclCriticalSection read FLock;
     property ThreadClassNames[ThreadID: DWORD]: string index 1 read GetThreadNames;
     property ThreadIDs[Index: Integer]: DWORD read GetThreadIDs;
+    property ThreadIDCount: Integer read GetThreadIDCount;
     property ThreadInfos[ThreadID: DWORD]: string index 2 read GetThreadNames;
     property ThreadNames[ThreadID: DWORD]: string index 0 read GetThreadNames;
     property OnSyncException: TJclDebugThreadNotifyEvent read FOnSyncException write FOnSyncException;
@@ -767,15 +779,6 @@ begin
 end;
 
 //==================================================================================================
-// TJclModuleInfo
-//==================================================================================================
-
-function TJclModuleInfo.GetFileName: string;
-begin
-  Result := GetModulePath(HMODULE(FStartAddr));
-end;
-
-//==================================================================================================
 // TJclModuleInfoList
 //==================================================================================================
 
@@ -850,7 +853,7 @@ end;
 
 function TJclModuleInfoList.GetItems(Index: Integer): TJclModuleInfo;
 begin
-  Result := TJclModuleInfo(inherited Items[Index]);
+  Result := TJclModuleInfo(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1632,9 +1635,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function InsertDebugDataIntoExecutableFile(const ExecutableFileName,
-  MapFileName: TFileName; var LinkerBugUnit: string;
-  var MapFileSize, JclDebugDataSize: Integer): Boolean;
+function InsertDebugDataIntoExecutableFile(const ExecutableFileName, MapFileName: TFileName;
+  var LinkerBugUnit: string; var MapFileSize, JclDebugDataSize: Integer): Boolean;
 var
   BinDebug: TJclBinDebugGenerator;
 begin
@@ -2401,7 +2403,7 @@ end;
 
 function TJclDebugInfoList.GetItems(Index: Integer): TJclDebugInfoSource;
 begin
-  Result := TJclDebugInfoSource(inherited Items[Index]);
+  Result := TJclDebugInfoSource(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2709,10 +2711,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeOffset: Boolean): string;
+function GetLocationInfoStr(const Addr: Pointer; IncludeModuleName, IncludeAddressOffset,
+  IncludeStartProcLineOffset: Boolean): string;
 var
-  Info: TJclLocationInfo;
-  OffsetStr: string;
+  Info, StartProcInfo: TJclLocationInfo;
+  OffsetStr, StartProcOffsetStr: string;
 begin
   if GetLocationInfo(Addr, Info) then
   with Info do
@@ -2720,15 +2723,20 @@ begin
     OffsetStr := '';
     if LineNumber > 0 then
     begin
-      if IncludeOffset then
-        OffsetStr := Format(' + %x', [OffsetFromLineNumber]);
-      Result := Format('[%p] %s.%s (Line %u, "%s"%s)', [Addr, UnitName, ProcedureName, LineNumber,
-        SourceName, OffsetStr]);
+      if IncludeStartProcLineOffset and GetLocationInfo(Pointer(Cardinal(Info.Address) -
+        Cardinal(Info.OffsetFromProcName)), StartProcInfo) and (StartProcInfo.LineNumber > 0) then
+          StartProcOffsetStr := Format(' + %d', [LineNumber - StartProcInfo.LineNumber])
+      else
+        StartProcOffsetStr := '';
+      if IncludeAddressOffset then
+        OffsetStr := Format(' + $%x', [OffsetFromLineNumber]);
+      Result := Format('[%p] %s.%s (Line %u, "%s"%s)%s', [Addr, UnitName, ProcedureName, LineNumber,
+        SourceName, StartProcOffsetStr, OffsetStr]);
     end
     else
     begin
-      if IncludeOffset then
-        OffsetStr := Format(' + %x', [OffsetFromProcName]);
+      if IncludeAddressOffset then
+        OffsetStr := Format(' + $%x', [OffsetFromProcName]);
       if UnitName <> '' then
         Result := Format('[%p] %s.%s%s', [Addr, UnitName, ProcedureName, OffsetStr])
       else
@@ -2799,10 +2807,10 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function MapByLevel(const Level: Integer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean;
+function MapByLevel(const Level: Integer; var File_, Module_, Proc_: string;
+  var Line_: Integer): Boolean;
 begin
-  Result := MapOfAddr(Caller(Level + 1), _File, _Module, _Proc, _Line);
+  Result := MapOfAddr(Caller(Level + 1), File_, Module_, Proc_, Line_);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2894,8 +2902,8 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function MapOfAddr(const Addr: Pointer; var _File, _Module, _Proc: string;
-  var _Line: Integer): Boolean;
+function MapOfAddr(const Addr: Pointer; var File_, Module_, Proc_: string;
+  var Line_: Integer): Boolean;
 var
   LocInfo: TJclLocationInfo;
 begin
@@ -2903,10 +2911,10 @@ begin
   Result := DebugInfoList.GetLocationInfo(Addr, LocInfo);
   if Result then
   begin
-    _File := LocInfo.SourceName;
-    _Module := LocInfo.UnitName;
-    _Proc := LocInfo.ProcedureName;
-    _Line := LocInfo.LineNumber;
+    File_ := LocInfo.SourceName;
+    Module_ := LocInfo.UnitName;
+    Proc_ := LocInfo.ProcedureName;
+    Line_ := LocInfo.LineNumber;
   end;
 end;
 
@@ -2962,10 +2970,12 @@ end;
 //==================================================================================================
 
 type
+  TJclStackBaseListClass = class of TJclStackBaseList;
+
   TJclGlobalStackList = class (TThreadList)
   private
     FLockedTID: DWORD;
-    FTIDLocked: Boolean;  
+    FTIDLocked: Boolean;
     function GetExceptStackInfo: TJclStackInfoList;
     function GetLastExceptFrameList: TJclExceptFrameList;
   public
@@ -2973,7 +2983,7 @@ type
     procedure AddObject(AObject: TJclStackBaseList);
     procedure LockThreadID(TID: DWORD);
     procedure UnlockThreadID;
-    function FindObject(TID: DWORD; AClass: TClass): TJclStackBaseList;
+    function FindObject(TID: DWORD; AClass: TJclStackBaseListClass): TJclStackBaseList;
     property ExceptStackInfo: TJclStackInfoList read GetExceptStackInfo;
     property LastExceptFrameList: TJclExceptFrameList read GetLastExceptFrameList;
   end;
@@ -2989,7 +2999,7 @@ var
 begin
   with LockList do
   try
-    ReplacedObj := FindObject(AObject.ThreadID, AObject.ClassType);
+    ReplacedObj := FindObject(AObject.ThreadID, TJclStackBaseListClass(AObject.ClassType));
     if ReplacedObj <> nil then
     begin
       Remove(ReplacedObj);
@@ -3019,7 +3029,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclGlobalStackList.FindObject(TID: DWORD; AClass: TClass): TJclStackBaseList;
+function TJclGlobalStackList.FindObject(TID: DWORD; AClass: TJclStackBaseListClass): TJclStackBaseList;
 var
   I: Integer;
   Item: TJclStackBaseList;
@@ -3088,24 +3098,77 @@ begin
 end;
 
 //==================================================================================================
+// TJclGlobalModulesList
+//==================================================================================================
+
+type
+  TJclGlobalModulesList = class (TObject)
+  private
+    FLock: TJclCriticalSection;
+    FModulesList: TJclModuleInfoList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function CreateModulesList: TJclModuleInfoList;
+    procedure FreeModulesList(var ModulesList: TJclModuleInfoList);
+  end;
+
+var
+  GlobalModulesList: TJclGlobalModulesList;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclGlobalModulesList.Create;
+begin
+  FLock := TJclCriticalSection.Create;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclGlobalModulesList.CreateModulesList: TJclModuleInfoList;
+begin
+  FLock.Enter;
+  try
+    if FModulesList = nil then
+    begin
+      Result := TJclModuleInfoList.Create(False, not (stAllModules in JclStackTrackingOptions));
+      if stStaticModuleList in JclStackTrackingOptions then
+        FModulesList := Result;
+    end
+    else
+      Result := FModulesList;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclGlobalModulesList.Destroy;
+begin
+  FreeAndNil(FLock);
+  FreeAndNil(FModulesList);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclGlobalModulesList.FreeModulesList(var ModulesList: TJclModuleInfoList);
+begin
+  FLock.Enter;
+  try
+    if FModulesList <> ModulesList then
+      FreeAndNil(FModulesList);
+  finally
+    FLock.Leave
+  end;
+end;
+
+//==================================================================================================
 // Stack info routines
 //==================================================================================================
 
 {$STACKFRAMES OFF}
-
-threadvar
-  TopOfStack: Cardinal;
-  BaseOfStack: Cardinal;
-  ModuleInfoList: TJclModuleInfoList;
-
-//--------------------------------------------------------------------------------------------------
-
-function ValidStackAddr(StackAddr: DWORD): Boolean;
-begin
-  Result := (BaseOfStack < StackAddr) and (StackAddr < TopOfStack);
-end;
-
-//--------------------------------------------------------------------------------------------------
 
 function ValidCodeAddr(CodeAddr: DWORD; ModuleList: TJclModuleInfoList): Boolean;
 begin
@@ -3121,15 +3184,255 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-// Validate that the code address is a valid code site
-//
-// Information from Intel Manual 24319102(2).pdf, Download the 6.5 MBs from:
-//   http://developer.intel.com/design/pentiumii/manuals/243191.htm
-//   Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
+procedure CorrectExceptStackListTop(List: TJclStackInfoList);
+var
+  I, FoundPos: Integer;
+begin
+  FoundPos := -1;
+  with List do
+  begin
+    for I := Count - 1 downto 0 do
+      if JclBelongsHookedCode(Pointer(Items[I].StackInfo.CallerAdr)) then
+      begin
+        FoundPos := I;
+        Break;
+      end;
+    if FoundPos <> -1 then
+      for I := FoundPos downto 0 do
+        Delete(I);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+{$STACKFRAMES ON}
+
+procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
+var
+  IgnoreLevels: Integer;
+  FirstCaller: Pointer;
+  RawMode: Boolean;
+begin
+  RawMode := stRawMode in JclStackTrackingOptions;
+  if RawMode then
+    IgnoreLevels := 10
+  else
+    IgnoreLevels := 5;
+  if OSException then
+    FirstCaller := ExceptAddr
+  else
+    FirstCaller := nil;
+  CorrectExceptStackListTop(JclCreateStackList(RawMode, IgnoreLevels, FirstCaller));
+//  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclLastExceptStackList: TJclStackInfoList;
+begin
+  Result := GlobalStackList.ExceptStackInfo;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
+  IncludeStartProcLineOffset: Boolean): Boolean;
+var
+  List: TJclStackInfoList;
+begin
+  List := JclLastExceptStackList;
+  Result := Assigned(List);
+  if Result then
+    List.AddToStrings(Strings, IncludeModuleName, IncludeAddressOffset, IncludeStartProcLineOffset);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
+begin
+  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
+  GlobalStackList.AddObject(Result);
+end;
+
+//==================================================================================================
+// TJclStackInfoItem
+//==================================================================================================
+
+function TJclStackInfoItem.GetLogicalAddress: DWORD;
+begin
+  Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(Pointer(FStackInfo.CallerAdr)));
+end;
+
+//==================================================================================================
+// TJclStackInfoList
+//==================================================================================================
+
+procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeAddressOffset,
+  IncludeStartProcLineOffset: Boolean);
+var
+  I: Integer;
+begin
+  for I := 0 to Count - 1 do
+    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName,
+      IncludeAddressOffset, IncludeStartProcLineOffset));
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
+var
+  Item: TJclStackInfoItem;
+begin
+  inherited Create;
+  FIgnoreLevels := AIgnoreLevels;
+  TopOfStack := GetStackTop;
+  FModuleInfoList := GlobalModulesList.CreateModulesList;
+  if FirstCaller <> nil then
+  begin
+    Item := TJclStackInfoItem.Create;
+    Item.FStackInfo.CallerAdr := DWORD(FirstCaller);
+    Add(Item);
+  end;
+  if Raw then
+    TraceStackRaw
+  else
+    TraceStackFrames;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclStackInfoList.Destroy;
+begin
+  GlobalModulesList.FreeModulesList(FModuleInfoList);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclStackInfoList.GetItems(Index: Integer): TJclStackInfoItem;
+begin
+  Result := TJclStackInfoItem(Get(Index));
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 {$OVERFLOWCHECKS OFF}
 
-function ValidCallSite(CodeAddr: DWORD): Boolean;
+function TJclStackInfoList.NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
+begin
+  // Only report this stack frame into the StockInfo structure
+  // if the StackFrame pointer, EBP on the stack and return
+  // address on the stack are valid addresses
+  while ValidStackAddr(DWORD(StackFrame)) do
+  begin
+    // CallerAdr within current process space, code segment etc.
+    if ValidCodeAddr(StackFrame^.CallerAdr, FModuleInfoList) then
+    begin
+      Inc(StackInfo.Level);
+      StackInfo.StackFrame := StackFrame;
+      StackInfo.ParamPtr := PDWORDArray(DWORD(StackFrame) + SizeOf(TStackFrame));
+      StackInfo.CallersEBP := StackFrame^.CallersEBP;
+      StackInfo.CallerAdr := StackFrame^.CallerAdr;
+      StackInfo.DumpSize := StackFrame^.CallersEBP - DWORD(StackFrame);
+      StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
+      // Step to the next stack frame by following the EBP pointer
+      StackFrame := PStackFrame(StackFrame^.CallersEBP);
+      Result := True;
+      Exit;
+    end;
+    // Step to the next stack frame by following the EBP pointer
+    StackFrame := PStackFrame(StackFrame^.CallersEBP);
+  end;
+  Result := False;
+end;
+
+{$IFDEF OVERFLOWCHECKS_ON}
+{$OVERFLOWCHECKS ON}
+{$ENDIF OVERFLOWCHECKS_ON}
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclStackInfoList.StoreToList(const StackInfo: TStackInfo);
+var
+  Item: TJclStackInfoItem;
+begin
+  if StackInfo.Level > IgnoreLevels + 1 then
+  begin
+    Item := TJclStackInfoItem.Create;
+    Item.FStackInfo := StackInfo;
+    Add(Item);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclStackInfoList.TraceStackFrames;
+var
+  StackFrame: PStackFrame;
+  StackInfo: TStackInfo;
+begin
+  // Start at level 0
+  StackInfo.Level := 0;
+  // Get the current stack frame from the EBP register
+  StackFrame := GetEBP;
+  // We define the bottom of the valid stack to be the current EBP Pointer
+  // There is a TIB field called pvStackUserBase, but this includes more of the
+  // stack than what would define valid stack frames.
+  BaseOfStack := DWORD(StackFrame) - 1;
+  // Loop over and report all valid stackframes
+  while NextStackFrame(StackFrame, StackInfo) do
+    StoreToList(StackInfo);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclStackInfoList.TraceStackRaw;
+var
+  StackInfo: TStackInfo;
+  StackPtr: PDWORD;
+  PrevCaller: DWORD;
+begin
+  // We define the bottom of the valid stack to be the current ESP pointer
+  BaseOfStack := DWORD(GetESP);
+  // We will not be able to fill in all the fields in the StackInfo record,
+  // so just blank it all out first
+  FillChar(StackInfo, SizeOf(StackInfo), 0);
+  // Clear the previous call address
+  PrevCaller := 0;
+  // Get a pointer to the current bottom of the stack
+  StackPtr := PDWORD(BaseOfStack);
+  // Loop through all of the valid stack space
+  while DWORD(StackPtr) < TopOfStack do
+  begin
+    // If the current DWORD on the stack,
+    // refers to a valid call site...
+    if ValidCallSite(StackPtr^) and (StackPtr^ <> PrevCaller) then
+    begin
+      // then pick up the callers address
+      StackInfo.CallerAdr := StackPtr^;
+      // remember to callers address so that we don't report it repeatedly
+      PrevCaller := StackPtr^;
+      // increase the stack level
+      Inc(StackInfo.Level);
+      // then report it back to our caller
+      StoreToList(StackInfo);
+    end;
+    // Look at the next DWORD on the stack
+    Inc(StackPtr);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+// Validate that the code address is a valid code site
+//
+// Information from Intel Manual 24319102(2).pdf, Download the 6.5 MBs from:
+// http://developer.intel.com/design/pentiumii/manuals/243191.htm
+// Instruction format, Chapter 2 and The CALL instruction: page 3-53, 3-54
+
+{$OVERFLOWCHECKS OFF}
+
+function TJclStackInfoList.ValidCallSite(CodeAddr: DWORD): Boolean;
 var
   CodeDWORD4: DWORD;
   CodeDWORD8: DWORD;
@@ -3138,7 +3441,7 @@ begin
   // First check that the address is within range of our code segment!
   C8P := PDWORD(CodeAddr - 8);
   C4P := PDWORD(CodeAddr - 4);
-  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), ModuleInfoList) and
+  Result := (CodeAddr > 8) and ValidCodeAddr(DWORD(C8P), FModuleInfoList) and
     not IsBadReadPtr(C8P, 8) and not IsBadCodePtr(C8P) and not IsBadCodePtr(C4P);
 
   // Now check to see if the instruction preceding the return address
@@ -3173,225 +3476,16 @@ end;
 {$OVERFLOWCHECKS ON}
 {$ENDIF OVERFLOWCHECKS_ON}
 
-//--------------------------------------------------------------------------------------------------
-
-{$OVERFLOWCHECKS OFF}
-
-function NextStackFrame(var StackFrame: PStackFrame; var StackInfo: TStackInfo): Boolean;
-begin
-  // Only report this stack frame into the StockInfo structure
-  // if the StackFrame pointer, EBP on the stack and return
-  // address on the stack are valid addresses
-  while ValidStackAddr(DWORD(StackFrame)) do
-  begin
-    // CallerAdr within current process space, code segment etc.
-    if ValidCodeAddr(StackFrame^.CallerAdr, ModuleInfoList) then
-    begin
-      Inc(StackInfo.Level);
-      StackInfo.StackFrame := StackFrame;
-      StackInfo.ParamPtr := PDWORDArray(DWORD(StackFrame) + SizeOf(TStackFrame));
-      StackInfo.CallersEBP := StackFrame^.CallersEBP;
-      StackInfo.CallerAdr := StackFrame^.CallerAdr;
-      StackInfo.DumpSize := StackFrame^.CallersEBP - DWORD(StackFrame);
-      StackInfo.ParamSize := (StackInfo.DumpSize - SizeOf(TStackFrame)) div 4;
-      // Step to the next stack frame by following the EBP pointer
-      StackFrame := PStackFrame(StackFrame^.CallersEBP);
-      Result := True;
-      Exit;
-    end;
-    // Step to the next stack frame by following the EBP pointer
-    StackFrame := PStackFrame(StackFrame^.CallersEBP);
-  end;
-  Result := False;
-end;
-
-{$IFDEF OVERFLOWCHECKS_ON}
-{$OVERFLOWCHECKS ON}
-{$ENDIF OVERFLOWCHECKS_ON}
-
-//--------------------------------------------------------------------------------------------------
-
-{$STACKFRAMES ON}
-
-procedure DoExceptionStackTrace(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
-var
-  IgnoreLevels: Integer;
-  FirstCaller: Pointer;
-  RawMode: Boolean;
-begin
-  RawMode := stRawMode in JclStackTrackingOptions;
-  if RawMode then
-    IgnoreLevels := 11
-  else
-    IgnoreLevels := 6;
-  if OSException then
-    FirstCaller := ExceptAddr
-  else
-    FirstCaller := nil;
-  JclCreateStackList(RawMode, IgnoreLevels, FirstCaller);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function JclLastExceptStackList: TJclStackInfoList;
-begin
-  Result := GlobalStackList.ExceptStackInfo;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean): Boolean;
-var
-  List: TJclStackInfoList;
-begin
-  List := JclLastExceptStackList;
-  Result := Assigned(List);
-  if Result then
-    List.AddToStrings(Strings, IncludeModuleName);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
-begin
-  Result := TJclStackInfoList.Create(Raw, AIgnoreLevels, FirstCaller);
-  GlobalStackList.AddObject(Result);
-end;
-
-//==================================================================================================
-// TJclStackInfoItem
-//==================================================================================================
-
-function TJclStackInfoItem.GetLogicalAddress: DWORD;
-begin
-  Result := FStackInfo.CallerAdr - DWORD(ModuleFromAddr(Pointer(FStackInfo.CallerAdr)));
-end;
-
-//==================================================================================================
-// TJclStackInfoList
-//==================================================================================================
-
-procedure StoreToList(List: TJclStackInfoList; const StackInfo: TStackInfo);
-var
-  Item: TJclStackInfoItem;
-begin
-  with List do
-    if StackInfo.Level > IgnoreLevels + 1 then
-    begin
-      Item := TJclStackInfoItem.Create;
-      Item.FStackInfo := StackInfo;
-      Add(Item);
-    end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TraceStackFrames(List: TJclStackInfoList);
-var
-  StackFrame: PStackFrame;
-  StackInfo: TStackInfo;
-begin
-  // Start at level 0
-  StackInfo.Level := 0;
-  // Get the current stack frame from the EBP register
-  StackFrame := GetEBP;
-  // We define the bottom of the valid stack to be the current EBP Pointer
-  // There is a TIB field called pvStackUserBase, but this includes more of the
-  // stack than what would define valid stack frames.
-  BaseOfStack := DWORD(StackFrame) - 1;
-  // Loop over and report all valid stackframes
-  while NextStackFrame(StackFrame, StackInfo) do
-    StoreToList(List, StackInfo);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TraceStackRaw(List: TJclStackInfoList);
-var
-  StackInfo: TStackInfo;
-  StackPtr: PDWORD;
-  PrevCaller: DWORD;
-begin
-  // We define the bottom of the valid stack to be the current ESP pointer
-  BaseOfStack := DWORD(GetESP);
-  // We will not be able to fill in all the fields in the StackInfo record,
-  // so just blank it all out first
-  FillChar(StackInfo, SizeOf(StackInfo), 0);
-  // Clear the previous call address
-  PrevCaller := 0;
-  // Get a pointer to the current bottom of the stack
-  StackPtr := PDWORD(BaseOfStack);
-  // Loop through all of the valid stack space
-  while DWORD(StackPtr) < TopOfStack do
-  begin
-    // If the current DWORD on the stack,
-    // refers to a valid call site...
-    if ValidCallSite(StackPtr^) and (StackPtr^ <> PrevCaller) then
-    begin
-      // then pick up the callers address
-      StackInfo.CallerAdr := StackPtr^;
-      // remember to callers address so that we don't report it repeatedly
-      PrevCaller := StackPtr^;
-      // increase the stack level
-      Inc(StackInfo.Level);
-      // then report it back to our caller
-      StoreToList(List, StackInfo);
-    end;
-    // Look at the next DWORD on the stack
-    Inc(StackPtr);
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclStackInfoList.AddToStrings(Strings: TStrings; IncludeModuleName, IncludeOffset: Boolean);
-var
-  I: Integer;
-begin
-  for I := 0 to Count - 1 do
-    Strings.Add(GetLocationInfoStr(Pointer(Items[I].StackInfo.CallerAdr), IncludeModuleName, IncludeOffset));
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclStackInfoList.Create(Raw: Boolean; AIgnoreLevels: DWORD; FirstCaller: Pointer);
-var
-  Item: TJclStackInfoItem;
-begin
-  inherited Create;
-  FIgnoreLevels := AIgnoreLevels;
-  TopOfStack := GetStackTop;
-  if FirstCaller <> nil then
-  begin
-    Item := TJclStackInfoItem.Create;
-    Item.FStackInfo.CallerAdr := DWORD(FirstCaller);
-    Add(Item);
-  end;
-  ModuleInfoList := TJclModuleInfoList.Create(False, not (stAllModules in JclStackTrackingOptions));
-  if Raw then
-    TraceStackRaw(Self)
-  else
-    TraceStackFrames(Self);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclStackInfoList.Destroy;
-begin
-  FreeAndNil(ModuleInfoList);
-  inherited;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function TJclStackInfoList.GetItems(Index: Integer): TJclStackInfoItem;
-begin
-  Result := TJclStackInfoItem(inherited Items[Index]);
-end;
-
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
 {$ENDIF STACKFRAMES_ON}
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclStackInfoList.ValidStackAddr(StackAddr: DWORD): Boolean;
+begin
+  Result := (BaseOfStack < StackAddr) and (StackAddr < TopOfStack);
+end;
 
 //==================================================================================================
 // Exception frame info routines
@@ -3432,7 +3526,6 @@ begin
   else
     Result := 0;
   if (Result <> 0) and (PJmpTable(Result).OPCode = $25FF) then
-//    Result := pointer(pinteger(PJmpTable(Result))^);
     if not IsBadReadPtr(PJmpTable(Result).Ptr, 4) then
       Result := PDWORD(PJmpTable(Result).Ptr)^;
 end;
@@ -3568,7 +3661,7 @@ end;
 
 function TJclExceptFrameList.GetItems(Index: Integer): TJclExceptFrame;
 begin
-  Result := TJclExceptFrame(inherited Items[Index]);
+  Result := TJclExceptFrame(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3589,7 +3682,7 @@ var
   ModulesList: TJclModuleInfoList;
 begin
   Clear;
-  ModulesList := TJclModuleInfoList.Create(False, not (stAllModules in JclStackTrackingOptions));
+  ModulesList := GlobalModulesList.CreateModulesList;
   try
     Level := 0;
     FS := GetFS;
@@ -3601,7 +3694,7 @@ begin
       FS := FS.next;
     end;
   finally
-    ModulesList.Free;
+    GlobalModulesList.FreeModulesList(ModulesList);
   end;
 end;
 
@@ -3616,10 +3709,13 @@ var
 
 procedure DoExceptNotify(ExceptObj: TObject; ExceptAddr: Pointer; OSException: Boolean);
 begin
-  if stStack in JclStackTrackingOptions then
-    DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
-  if stExceptFrame in JclStackTrackingOptions then
-    DoExceptFrameTrace;
+  if TrackingActive then
+  begin
+    if stStack in JclStackTrackingOptions then
+      DoExceptionStackTrace(ExceptObj, ExceptAddr, OSException);
+    if stExceptFrame in JclStackTrackingOptions then
+      DoExceptFrameTrace;
+  end;    
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3677,6 +3773,7 @@ end;
 
 constructor TJclDebugThread.Create(Suspended: Boolean; const AThreadName: string);
 begin
+  FThreadName := AThreadName;
   inherited Create(True);
   JclDebugThreadList.RegisterThread(Self, AThreadName);
   if not Suspended then
@@ -3687,8 +3784,8 @@ end;
 
 destructor TJclDebugThread.Destroy;
 begin
-  inherited;
   JclDebugThreadList.UnregisterThread(Self);
+  inherited;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3707,7 +3804,7 @@ end;
 
 procedure TJclDebugThread.DoNotify;
 begin
-  RegisteredThreadList.DoSyncException(Self);
+  JclDebugThreadList.DoSyncException(Self);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3731,13 +3828,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclDebugThread.GetThreadName: string;
-begin
-  Result := JclDebugThreadList.ThreadNames[ThreadID];
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 procedure TJclDebugThread.HandleException;
 begin
   FSyncException := Exception(ExceptObject);
@@ -3753,9 +3843,15 @@ end;
 // TJclDebugThreadList
 //==================================================================================================
 
+type
+  TThreadAccess = class (TThread);
+
+//--------------------------------------------------------------------------------------------------
+
 constructor TJclDebugThreadList.Create;
 begin
   FLock := TJclCriticalSection.Create;
+  FReadLock := TJclCriticalSection.Create;
   FList := TStringList.Create;
 end;
 
@@ -3765,6 +3861,7 @@ destructor TJclDebugThreadList.Destroy;
 begin
   FreeAndNil(FList);
   FreeAndNil(FLock);
+  FreeAndNil(FReadLock);
   inherited;
 end;
 
@@ -3778,25 +3875,52 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclDebugThreadList.DoThreadRegistered(ThreadID: DWORD);
-begin
-  if Assigned(FOnThreadRegistered) then
-    FOnThreadRegistered(ThreadID);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclDebugThreadList.DoThreadUnregistered(ThreadID: DWORD);
+procedure TJclDebugThreadList.DoSyncThreadRegistered;
 begin
   if Assigned(FOnThreadUnregistered) then
-    FOnThreadUnregistered(ThreadID);
+    FOnThreadRegistered(FRegSyncThreadID);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclDebugThreadList.GetCount: Integer;
+procedure TJclDebugThreadList.DoSyncThreadUnregistered;
 begin
-  Result := FList.Count;
+  if Assigned(FOnThreadUnregistered) then
+    FOnThreadUnregistered(FUnregSyncThreadID);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.DoThreadRegistered(Thread: TThread);
+begin
+  if Assigned(FOnThreadRegistered) then
+  begin
+    FRegSyncThreadID := Thread.ThreadID;
+    TThreadAccess(Thread).Synchronize(DoSyncThreadRegistered);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.DoThreadUnregistered(Thread: TThread);
+begin
+  if Assigned(FOnThreadUnregistered) then
+  begin
+    FUnregSyncThreadID := Thread.ThreadID;
+    TThreadAccess(Thread).Synchronize(DoSyncThreadUnregistered);
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDebugThreadList.GetThreadIDCount: Integer;
+begin
+  FReadLock.Enter;
+  try
+    Result := FList.Count;
+  finally
+    FReadLock.Leave;
+  end;    
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3819,7 +3943,7 @@ var
   end;
 
 begin
-  FLock.Enter;
+  FReadLock.Enter;
   try
     I := FList.IndexOfObject(Pointer(ThreadID));
     if I <> -1 then
@@ -3830,68 +3954,40 @@ begin
         1:
           Result := FList.Names[I];
         2:
-          Result := Format('%.8x [%s] "%s"', [ThreadID, ThreadName, FList.Names[I]]);
+          Result := Format('%.8x [%s] "%s"', [ThreadID, FList.Names[I], ThreadName]);
       end;
     end
     else
       Result := '';
   finally
-    FLock.Leave;
+    FReadLock.Leave;
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclDebugThreadList.InternalRegisterThread(ThreadID: DWORD; const ThreadName, ThreadClassName: string);
+procedure TJclDebugThreadList.InternalRegisterThread(Thread: TThread; const ThreadName: string);
 var
   I: Integer;
 
   function FormatInternalName: string;
   begin
-    Result := Format('%s=%s', [ThreadClassName, ThreadName]);
+    Result := Format('%s=%s', [Thread.ClassName, ThreadName]);
   end;
 
 begin
   FLock.Enter;
   try
-    I := FList.IndexOfObject(Pointer(ThreadID));
+    I := FList.IndexOfObject(Pointer(Thread.ThreadID));
     if I = -1 then
-      FList.AddObject(FormatInternalName, Pointer(ThreadID))
-    else
-      FList[I] := FormatInternalName;
-    DoThreadRegistered(ThreadID);  
-  finally
-    FLock.Leave;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclDebugThreadList.RegisterThread(ThreadID: DWORD; const ThreadName: string);
-begin
-  InternalRegisterThread(ThreadID, ThreadName, '');
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclDebugThreadList.RegisterThread(Thread: TThread; const ThreadName: string);
-begin
-  InternalRegisterThread(Thread.ThreadID, ThreadName, Thread.ClassName);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-procedure TJclDebugThreadList.UnregisterThread(ThreadID: DWORD);
-var
-  I: Integer;
-begin
-  FLock.Enter;
-  try
-    I := FList.IndexOfObject(Pointer(ThreadID));
-    if I <> -1 then
     begin
-      FList.Delete(I);
-      DoThreadUnregistered(ThreadID);
+      FReadLock.Enter;
+      try
+        FList.AddObject(FormatInternalName, Pointer(Thread.ThreadID));
+      finally
+        FReadLock.Leave;
+      end;
+      DoThreadRegistered(Thread);
     end;
   finally
     FLock.Leave;
@@ -3900,9 +3996,40 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclDebugThreadList.InternalUnregisterThread(Thread: TThread);
+var
+  I: Integer;
+begin
+  FLock.Enter;
+  try
+    I := FList.IndexOfObject(Pointer(Thread.ThreadID));
+    if I <> -1 then
+    begin
+      DoThreadUnregistered(Thread);
+      FReadLock.Enter;
+      try
+        FList.Delete(I);
+      finally
+        FReadLock.Leave;
+      end;
+    end;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDebugThreadList.RegisterThread(Thread: TThread; const ThreadName: string);
+begin
+  InternalRegisterThread(Thread, ThreadName);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclDebugThreadList.UnregisterThread(Thread: TThread);
 begin
-  UnregisterThread(Thread.ThreadID);
+  InternalUnregisterThread(Thread);
 end;
 
 //==================================================================================================
@@ -3977,9 +4104,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-
 initialization
   DebugInfoCritSect := TJclCriticalSection.Create;
+  GlobalModulesList := TJclGlobalModulesList.Create;
   GlobalStackList := TJclGlobalStackList.Create;
 
 finalization
@@ -3987,9 +4114,10 @@ finalization
     the code without a real need. Although there doesn't seem to be a way to unhook exceptions
     safely because we need to be covered by JclHookExcept.Notifiers critical section }
   JclStopExceptionTracking;
+  FreeAndNil(RegisteredThreadList);
   FreeAndNil(DebugInfoList);
   FreeAndNil(GlobalStackList);
-  FreeAndNil(RegisteredThreadList);
+  FreeAndNil(GlobalModulesList);
   FreeAndNil(DebugInfoCritSect);
 
 end.
