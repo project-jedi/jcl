@@ -3,13 +3,11 @@
 Summary:
   Brightens one channel of a color by a percentage.
 Description:
-
   BrightColorChannel brightens one channel of a color by a certain percentage.
 Parameters:
   Channel - Value of the color channel to brighten.
   Pct - The percentage with which to brighten the channel. Percentage should be between 0 and 100.0.
 Result:
-
   The brightened channel.
 Quick info:
   Unit: JclGraphUtils
@@ -24,13 +22,11 @@ Quick info:
 Summary:
   Darkens one channel of a color by a percentage.
 Description:
-
   DarkColorChannel darkens one channel of a color by a certain percentage.
 Parameters:
   Channel - Value of the color channel to darken.
   Pct - The percentage with which to darken the channel. Percentage should be between 0 and 100.0.
 Result:
-
   The darkened channel.
 Quick info:
   Unit: JclGraphUtils
@@ -45,13 +41,11 @@ Quick info:
 Summary:
   Darkens a color by a percentage.
 Description:
-
   DarkColor darkens a color by a certain percentage.
 Parameters:
   Color - The color to darken.
   Pct - The percentage with which to darken the color. Percentage should be between 0 and 100.0.
 Result:
-
   The darkened color.
 Quick info:
   Unit: JclGraphUtils
@@ -66,13 +60,11 @@ Quick info:
 Summary:
   Brightens a color by a percentage.
 Description:
-
   BrightColor brightens a color by a certain percentage.
 Parameters:
   Color - The color to brighten.
   Pct - The percentage with which to brighten the color. Percentage should be between 0 and 100.0.
 Result:
-
   The brightened color.
 Quick info:
   Unit: JclGraphUtils
@@ -87,7 +79,6 @@ Quick info:
 Summary:
   Returns the Red, Green and Blue components of a TColor.
 Description:
-
   GetRGBValue returns the intensity of the Red, Green and Blue components of the
   supplied TColor. You can use the GetColorFlag to extract the remaining
   Flag component.
@@ -109,7 +100,6 @@ Quick info:
 Summary:
   Returns a TColor initialized with the supplied values.
 Description:
-
   SetRGBValue returns a TColor value with the individual color components
   initialized to the supplied intensities. The Flag component (high order byte) is
   initialized to 0.
@@ -118,7 +108,6 @@ Parameters:
   Green - Intensity for the Green component of the returned TColor value.
   Blue - Intensity for the Blue component of the returned TColor value.
 Result:
-
   The TColor value initialized with the supplied values.
 Quick info:
   Unit: JclGraphUtils
@@ -133,13 +122,11 @@ Quick info:
 Summary:
   Sets the Red component of a TColor.
 Description:
-
   SetColorRed sets intensity of the Red component of a TColor.
 Parameters:
   Color - The color whose Red component to set.
   Red - New intensity for the Red component.
 Result:
-
   Copy of the supplied color after the Red component has been modified.
 Quick info:
   Unit: JclGraphUtils
@@ -154,13 +141,11 @@ Quick info:
 Summary:
   Sets the Green component of a TColor.
 Description:
-
   SetColorGreen sets intensity of the Green component of a TColor.
 Parameters:
   Color - The color whose Green component to set.
   Green - New intensity for the Green component.
 Result:
-
   Copy of the supplied color after the Green component has been modified.
 Quick info:
   Unit: JclGraphUtils
@@ -175,13 +160,11 @@ Quick info:
 Summary:
   Sets the Blue component of a TColor.
 Description:
-
   SetColorBlue sets intensity of the Blue component of a TColor.
 Parameters:
   Color - The color whose Blue component to set.
   Blue - New intensity for the Blue component.
 Result:
-
   Copy of the supplied color after the Blue component has been modified.
 Quick info:
   Unit: JclGraphUtils
@@ -196,7 +179,6 @@ Quick info:
 Summary:
   Sets the Flag component of a TColor.
 Description:
-
   SetColorFlag sets the Flag component of a TColor. The Flag component
   is contained in the high order byte of the TColor value and determines how
   Delphi displays the color. Currently this can be either 0, 1, or 2 and have the
@@ -213,7 +195,6 @@ Parameters:
   Color - The color whose Flag component to set.
   Flag - Value for the Flag component. Valid values are 0,1 and 2. See the description above.
 Result:
-
   Copy of the supplied color after the Flag component has been modified.
 Quick info:
   Unit: JclGraphUtils
@@ -228,12 +209,10 @@ Quick info:
 Summary:
   Extracts the Red component from a TColor.
 Description:
-
   GetColorRed extracts the Red component from a TColor value.
 Parameters:
   Color - The Color value from which to extract the Red component.
 Result:
-
   The Red component from the supplied TColor. The value ranges from 0 to 255.
 Quick info:
   Unit: JclGraphUtils
@@ -248,12 +227,10 @@ Quick info:
 Summary:
   Extracts the Blue component from a TColor.
 Description:
-
   GetColorBlue extracts the Blue component from a TColor value.
 Parameters:
   Color - The Color value from which to extract the Blue component.
 Result:
-
   The Blue component from the supplied TColor. The value ranges from 0 to 255.
 Quick info:
   Unit: JclGraphUtils
@@ -268,12 +245,10 @@ Quick info:
 Summary:
   Extracts the Green component from a TColor.
 Description:
-
   GetColorGreen extracts the Green component from a TColor value.
 Parameters:
   Color - The Color value from which to extract the Green component.
 Result:
-
   The Green component from the supplied TColor. The value ranges from 0 to 255.
 Quick info:
   Unit: JclGraphUtils
@@ -288,7 +263,6 @@ Quick info:
 Summary:
   Extracts the Flag component from a TColor.
 Description:
-
   GetColorFlag extracts the Flag component from a TColor value. The Flag component
   is contained in the high order byte of the TColor value and determines how
   Delphi displays the color. Currently this can be either 0, 1, or 2 and have the
@@ -304,7 +278,6 @@ Value  Description
 Parameters:
   Color - The Color value from which to extract the Flag component.
 Result:
-
   The Flag component from the supplied TColor. The value ranges from 0 to 2.
 Quick info:
   Unit: JclGraphUtils
@@ -319,13 +292,11 @@ Quick info:
 Summary:
   Initializes a TPoint with the supplied values.
 Description:
-
   PointAssign returns a TPoint record initialized with the supplied values.
 Parameters:
   X - X value for the new TPoint.
   Y - Y value for the new TPoint.
 Result:
-
   A TPoint initialized with X and Y.
 Quick info:
   Unit: JclGraphUtils
@@ -340,7 +311,6 @@ Quick info:
 Summary:
   Copies a TPoint.
 Description:
-
   PointCopy copies the values of the Source point into the Destination point. When
   the function returns Dest is an exact copy of Source.
 Parameters:
@@ -359,13 +329,11 @@ Quick info:
 Summary:
   Tests two points for equality.
 Description:
-
   PointEqual compares the two supplied points.
 Parameters:
   P1 - First TPoint
   P2 - Second TPoint
 Result:
-
   If the two points are equal (identical values for X and Y) the function returns
   True otherwise it returns False.
 Quick info:
@@ -381,12 +349,10 @@ Quick info:
 Summary:
   Tests a point against the null point.
 Description:
-
   PointIsNull compares P against the null point (0, 0).
 Parameters:
   P - The point to test.
 Result:
-
   If the supplied point equals the null point (a TPoint with both X and Y set to 0)
   the function returns True, otherwise it returns False.
 Quick info:
@@ -402,14 +368,12 @@ Quick info:
 Summary:
   Moves a point.
 Description:
-
   PointMove moves the specified point by the supplied offsets.
 Parameters:
   P - The point to move.
   DeltaX - The amount by which to offset the X member of the TPoint.
   DeltaY - The amount by which to offset the Y member of the TPoint.
 Result:
-
   The moved point (P.X = P.X + DeltaX, P.Y = P.Y + DeltaY).
 Quick info:
   Unit: JclGraphUtils
@@ -424,10 +388,8 @@ Quick info:
 Summary:
   Returns a null point.
 Description:
-
   NullPoint returns a TPoint with both it's X and Y member initialized to 0.
 Result:
-
   A TPoint initialized to (X, Y) = (0, 0).
 Quick info:
   Unit: JclGraphUtils
@@ -442,13 +404,11 @@ Quick info:
 Summary:
   Tests if the rectangle is empty.
 Description:
-
   RectIsEmpty tests if the specified rectangle is empty, that is, if the rectangle's
   width and height are 0.
 Parameters:
   R - The rectangle to test.
 Result:
-
   If the rectangle is empty the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -463,7 +423,6 @@ Quick info:
 Summary:
   Normalizes a rectangle.
 Description:
-
   RectNormalize normalizes the specified rectangle. A normalized rectangle is defined
   as a rectangle for which Left is smaller than or equal to Right and Top is smaller
   than or equal to Bottom. If these conditions are not met, RectNormalize normalizes
@@ -483,7 +442,6 @@ Quick info:
 Summary:
   Calculates the union of two rectangles.
 Description:
-
   RectUnion returns the union of two rectangles. In this context, the union is
   defined as the smallest rectangle that contains the two specified rectangles.
   If the union is empty a null rectangle is returned.
@@ -491,7 +449,6 @@ Parameters:
   R1 - The first rectangle.
   R2 - The second rectangle.
 Result:
-
   The union of the two rectangles, or a null rectangle if the union is empty.
 Quick info:
   Unit: JclGraphUtils
@@ -506,12 +463,10 @@ Quick info:
 Summary:
   Tests if the rectangle is square.
 Description:
-
   RectIsSquare tests if the specified rectangle is square (width equals height).
 Parameters:
   R - The rectangle to test.
 Result:
-
   If the rectangle is square the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -526,7 +481,6 @@ Quick info:
 Summary:
   Returns the center-point of the rectangle.
 Description:
-
   RectCenter returns a TPoint which lies in the center of the rectangle. Note that
   if the width or height of the rectangle is odd, then the returned point does not
   lie exactly in the center of the rectangle. In such cases the point is 'rounded'
@@ -534,7 +488,6 @@ Description:
 Parameters:
   R - The rectangle.
 Result:
-
   TPoint representing the center of the rectangle.
 Quick info:
   Unit: JclGraphUtils
@@ -549,13 +502,11 @@ Quick info:
 Summary:
   Tests two rectangles for equality.
 Description:
-
   RectEqual tests if two rectangle are equal.
 Parameters:
   R1 - The first rectangle.
   R2 - The second rectangle.
 Result:
-
   If the rectangles are equal the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -570,14 +521,12 @@ Quick info:
 Summary:
   Tests if a rectangle is a null rectangle.
 Description:
-
   RectIsNull tests if the specified rectangle is a null rectangle.
   A null rectangle is a rectangle with all it's members initialized to 0. Some
   functions return a null rectangle to indicate failure.
 Parameters:
   R - The rectangle to test.
 Result:
-
   If the rectangle is a null rectangle the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -592,11 +541,9 @@ Quick info:
 Summary:
   Returns a null rectangle.
 Description:
-
   NullRect returns a null rectangle. A null rectangle is a rectangle with all its
   members initialized to 0. Some functions return a null rectangle to indicate failure.
 Result:
-
   The null rectangle.
 Quick info:
   Unit: JclGraphUtils
@@ -611,14 +558,12 @@ Quick info:
 Summary:
   Tests if R is a valid rectangle.
 Description:
-
   RectIsValid tests if the specified rectangle is valid, or in Win32 terms, normalized.
   A rectangle is considered valid if Left is smaller than or equal to Right and
   Top is smaller than or equal to Bottom.
 Parameters:
   R - The rectangle to test.
 Result:
-
   If the rectangle is valid the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -633,14 +578,12 @@ Quick info:
 Summary:
   Tests if all the rectangles in the array are valid.
 Description:
-
   RectIsValid tests if the rectangles in the specified array are valid, or in Win32
   terms, normalized. A rectangle is considered valid if Left is smaller than or
   equal to Right and Top is smaller than or equal to Bottom.
 Parameters:
   R - The rectangles to test.
 Result:
-
   If all rectangles are valid the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -655,7 +598,6 @@ Quick info:
 Summary:
   Tests if two rectangles intersect.
 Description:
-
   RectIntersectRect tests whether the two rectangles intersect. Note that the
   function performs the test by actually calculating the intersection. Therefore,
   don't write code like this: if RectIntersectRect then R := RectIntersection(...).
@@ -665,7 +607,6 @@ Parameters:
   R1 - The first rectangle.
   R2 - The second rectangle.
 Result:
-
   If the two rectangles intersect the function returns True, otherwise it returns False.
 Quick info:
   Unit: JclGraphUtils
@@ -680,7 +621,6 @@ Quick info:
 Summary:
   Calculates the intersection of two rectangles.
 Description:
-
   RectIntersection returns the intersection of the two supplied rectangles. The
   intersection is that part of the rectangles that overlap, or the part that is shared by
   the two rectangles.
@@ -688,7 +628,6 @@ Parameters:
   R1 - The first rectangle.
   R2 - The second rectangle.
 Result:
-
   The intersection of the two rectangles. If the two rectangles don't intersect
   a null rectangle is returned.
 Quick info:
@@ -704,7 +643,6 @@ Quick info:
 Summary:
   Tests if a point lies within a rectangle.
 Description:
-
   RectIncludesPoint tests if the specified point lies inside the boundaries defined
   by the specified rectangle. The test is performed excluding the borders of the
   rectangle (a point lying on a border of the rectangle causes the function to
@@ -713,7 +651,6 @@ Parameters:
   R - The bounding rectangle.
   Pt - The point to test.
 Result:
-
   If the point lies inside the rectangle (excluding the borders) the function returns
   True, otherwise it returns False.
 Quick info:
@@ -729,7 +666,6 @@ Quick info:
 Summary:
   Tests if one rectangle is completely embedded inside another rectangle.
 Description:
-
   RectIncludesRect tests whether the first rectangle is completely embedded inside
   the second rectangle. In other words, the function tests whether R1 is a 'subset'
   of R2.
@@ -737,7 +673,6 @@ Parameters:
   R1 - The rectangle to test.
   R2 - The second rectangle.
 Result:
-
   If the first rectangle is embedded inside the second the function returns True,
   otherwise it returns False.
 Quick info:
@@ -753,7 +688,6 @@ Quick info:
 Summary:
   Initializes a rectangle by bounds.
 Description:
-
   RectBounds returns a rectangle with its top-left corner set to the combination
   of Left and Top and with a width and height of Width and Height respectively.
 Parameters:
@@ -762,7 +696,6 @@ Parameters:
   Width - Width of the rectangle.
   Height - Height of the rectangle.
 Result:
-
   A TRect initialized with the specified coordinates/dimensions.
 Quick info:
   Unit: JclGraphUtils
@@ -777,7 +710,6 @@ Quick info:
 Summary:
   Initializes a rectangle by the individual coordinates.
 Description:
-
   RectAssign returns a TRect with it's members initialized to the individually
   specified coordinates.
 Parameters:
@@ -786,7 +718,6 @@ Parameters:
   Right - Right coordinate of the rectangle.
   Bottom - Bottom coordinate of the rectangle.
 Result:
-
   A TRect initialized with the coordinates.
 Quick info:
   Unit: JclGraphUtils
@@ -801,14 +732,12 @@ Quick info:
 Summary:
   Initializes a rectangle by TPoints.
 Description:
-
   RectAssignPoints returns a rectangle initialized to the specified top-left and
   bottom-right coordinate points.
 Parameters:
   TopLeft - Top-left coordinate of the rectangle.
   BottonRight - Bottom-right coordinate of the rectangle.
 Result:
-
   A TRect initialized to the specified points.
 Quick info:
   Unit: JclGraphUtils
@@ -823,7 +752,6 @@ Quick info:
 Summary:
   Copies a rectangle.
 Description:
-
   RectCopy copies the Source rectangle's coordinates into the Dest(ination) rectangle.
 Parameters:
   Dest - Destination rectangle which receives a copy of Source.
@@ -841,7 +769,6 @@ Quick info:
 Summary:
   Moves the specified rectangle by the specified offsets.
 Description:
-
   RectMove moves the specified rectangle by the specified offsets. This does not
   affect the width and height of the rectangle.
 Parameters:
@@ -861,7 +788,6 @@ Quick info:
 Summary:
   Moves the rectangle to the specified coordinates.
 Description:
-
   RectMoveTo moves the rectangle to the coordinates specified by X and Y. This does
   not affect the width and height of the rectangle.
 Parameters:
@@ -881,7 +807,6 @@ Quick info:
 Summary:
   Expands a rectangle by the specified amount.
 Description:
-
   RectGrow expands the rectangle with Delta in each direction. As such, all members
   of the TRect record are altered. Left becomes Left - Delta, Right becomes Right + Delta
   and so forth. Note that specifying a negative Delta effectively shrinks the
@@ -902,7 +827,6 @@ Quick info:
 Summary:
   Expands the horizontal dimension of a rectangle by the specified amount.
 Description:
-
   RectGrowX expands the horizontal dimension of the rectangle with Delta in each
   direction. As such, Left becomes Left - Delta, Right becomes Right + Delta.
   Note that specifying a negative Delta effectively shrinks the rectangle. However,
@@ -923,7 +847,6 @@ Quick info:
 Summary:
   Expands the vertical dimension of a rectangle by the specified amount.
 Description:
-
   RectGrowY expands the vertical dimension of the rectangle with Delta in each
   direction. As such, Top becomes Top - Delta, Bottom becomes Bottom + Delta.
   Note that specifying a negative Delta effectively shrinks the rectangle. However,
@@ -944,12 +867,10 @@ Quick info:
 Summary:
   Returns the height of a rectangle.
 Description:
-
   RectHeight returns the height, in pixels, of the specified rectangle.
 Parameters:
   R - The rectangle for which to calculate the height.
 Result:
-
   The height of the rectangle in pixels.
 Quick info:
   Unit: JclGraphUtils
@@ -964,12 +885,10 @@ Quick info:
 Summary:
   Returns the width of a rectangle.
 Description:
-
   RectWidth returns the width, in pixels, of the specified rectangle.
 Parameters:
   R - The rectangle for which to calculate the width.
 Result:
-
   The width of the rectangle in pixels.
 Quick info:
   Unit: JclGraphUtils
@@ -980,10 +899,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DrawBitmap
+<GROUP Graphics>
 Summary:
   Draws a bitmap to a device context.
 Description:
-
   DrawBitmap draws the specified bitmap to the specified device context at the
   position indicated by (X, Y) and with the width and height specified by Width
   and Height respectively. If the bitmap's size is different from the supplied
@@ -1010,7 +929,6 @@ Quick info:
 Summary:
   Converts a bitmap to a JPEG.
 Description:
-
   BitmapToJPeg converts a bitmap file to a JPEG file. The destination file is
   saved with the same name as the source bitmap file but with the extension '.jpg'.
   If the function fails at any point it raises an exception.
@@ -1031,7 +949,6 @@ Quick info:
 Summary:
   Converts a JPEG to a bitmap.
 Description:
-
   JPegToBitmap converts a JPEG image to a bitmap file. The destination file is
   saved with the same name as the source file but with the extension '.bmp'. If the
   function fails at any point it raises an exception.
@@ -1048,10 +965,10 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@ExtractIconCount
+<GROUP Graphics>
 Summary:
   Returns the number of icons in a file.
 Description:
-
   ExtractIconCount returns the number of icons that exist in the specified file.
   The function is capable of detecting the number of icons in an executable file,
   a dynamic link library or an icon file. In the case of a .exe or .dll the function
@@ -1060,7 +977,6 @@ Description:
 Parameters:
   FileName - Fully qualified name of the file for which to count the number of icons. This can be any executable file, dynamic link library or icon file.
 Result:
-
   The number of icons in the specified file. If the file does not contain icons
   the result is 0.
 Quick info:
@@ -1078,14 +994,12 @@ Quick info:
 Summary:
   Converts a bitmap to an icon.
 Description:
-
   BitmapToIcon converts the specified bitmap (identified by handle) to an icon.
 Parameters:
   Bitmap - Handle of the bitmap to convert.
   cx - Width of the bitmap.
   cy - Height of the bitmap.
 Result:
-
   Handle to the icon or 0 on failure. Caller is responsible for eventually releasing
   the icon resource by calling DestroyIcon.
 Quick info:
@@ -1103,12 +1017,10 @@ Quick info:
 Summary:
   Converts an icon to a bitmap.
 Description:
-
   IconToBitmap converts the specified icon, represented by handle, to a bitmap.
 Parameters:
   Icon - Icon to convert.
 Result:
-
   Handle to the bitmap or 0 on failure. The caller is responsible for freeing the
   resources associated with this bitmap by calling DeleteObject.
 Quick info:
@@ -1122,10 +1034,10 @@ Quick info:
   Windows 95/98: Requires Windows 95 or later.
 --------------------------------------------------------------------------------
 @@Stretch
+<GROUP Graphics>
 Summary:
   Scales a bitmap to another bitmap.
 Description:
-
   Scales the source bitmap to the given size (NewWidth, NewHeight) and stores the Result
   in Target. Filter describes the filter function to be applied and Radius the size of
   the filter area. If Radius = 0 then the recommended filter area will be used
@@ -1148,10 +1060,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TResamplingFilter
+<GROUP Graphics>
 Summary:
   Filters for stretch function.
 Description:
-
   The filters used in the resampling code differ mainly in complexity but also in the way
   they calculate pixel contributions. These contributions are used to calculate the final pixel
   and depend on the original value and the values of neighbor pixels. How many pixel are taken
@@ -1175,12 +1087,10 @@ Quick info:
 Summary:
   Antialiases a bitmap.
 Description:
-
   Antialiases a bitmap.
 Parameters:
   Bitmap - The bitmap to be antialiased.
 Result:
-
   An antialiased true color bitmap shrunk 2 times on each dimension. Output bitmap is
   created inside the function and should be manually freed.
 Quick info:
@@ -1196,7 +1106,6 @@ Quick info:
 Summary:
   Converts values of the XYZ color space using the D65 white point to D50 white point.
 Description:
-
   Converts values of the XYZ color space using the D65 white point to D50 white point.
   The values were taken from www.srgb.com/hpsrgbprof/sld005.htm
 Parameters:
@@ -1216,7 +1125,6 @@ Quick info:
 Summary:
   Converts each color component from a 16 bits per sample to 8 bit used in Windows DIBs.
 Description:
-
   Converts each color component from a 16 bits per sample to the 8 bits used in Windows DIBs.
   Count is the number of entries in Source and Target.
 Parameters:
@@ -1236,7 +1144,6 @@ Quick info:
 Summary:
   Converts a stream of Count CMYK values to BGR.
 Description:
-
   Converts a stream of Count CMYK values to BGR.
 Parameters:
   Source(C,M,Y,K) - Source Pointer of the stream of CMYK records, these are records of 4 bytes or 4 words representing the CMYK colors. These can also be separate C, Y, M and K streams, then each stream represents a byte or word array of color components.
@@ -1256,7 +1163,6 @@ Quick info:
 Summary:
   Conversion of the CIE L*a*b color space to RGB using a two step approach assuming a D65 white point, first a conversion to CIE XYZ is performed and then from there to RGB.
 Description:
-
   Conversion of the CIE L*a*b color space to RGB using a two step approach assuming a D65 white point,
   first a conversion to CIE XYZ is performed and then from there to RGB.
 Parameters:
@@ -1276,7 +1182,6 @@ Quick info:
 Summary:
   Reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done.
 Description:
-
   Reorders a stream of "Count" RGB values to BGR, additionally an eventual sample size adjustment is done.
 Parameters:
   Source - Source pointer to a stream of RGB records, the records in the stream can be 3 bytes or 3 words. This can also be a separate R, G and B stream of single byte or word color components.
@@ -1296,7 +1201,6 @@ Quick info:
 Summary:
   Reorders a stream of "Count" RGBA values to BGRA, additionally an eventual sample size adjustment is done.
 Description:
-
   Reorders a stream of "Count" RGBA values to BGRA, additionally an eventual sample
   size adjustment is done.
 Parameters:
@@ -1317,7 +1221,6 @@ Quick info:
 Summary:
   Converts TColor to OpenGLColor.
 Description:
-
   Conversion of TColor to OpenGLColor, the color channels of OpenGL are floats between 0.0 and 1.0.
 Parameters:
   Color - The color to convert.
@@ -1337,14 +1240,12 @@ Quick info:
 Summary:
   Converts OpenGLColor to TColor.
 Description:
-
   Conversion of OpenGLColor to TColor, the color channels of OpenGL are floats between 0.0 and 1.0.
 Parameters:
   Red - The Red OpenGLColor channel between 0.0 and 1.0.
   Green - The Green OpenGLColor channel between 0.0 and 1.0.
   Blue - The Blue OpenGLColor channel between 0.0 and 1.0.
 Result:
-
   The windows color.
 Quick info:
   Unit: JclGraphUtils
@@ -1355,11 +1256,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas
-<GROUP Graphics>
+<GROUP Graphics.TJclDesktopCanvas>
 Summary:
   Access the desktop canvas.
 Description:
-
   This class gives you access to the desktop canvas. It inherits everything from the canvas
   class. When using this canvas don't change the handle of the canvas this will remove the
   functionality of the class.
@@ -1372,11 +1272,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas.Create
-<GROUP Graphics>
 Summary:
   Creates the desktop canvas class.
 Description:
-
   Gets the desktop graphics device handle from the operating system and initializes the canvas.
 Quick info:
   Unit: JclGraphics
@@ -1388,11 +1286,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas.Destroy
-<GROUP Graphics>
 Summary:
   Destroys the desktop canvas class.
 Description:
-
   Destroys the desktop canvas class.
 Quick info:
   Unit: JclGraphics
@@ -1408,7 +1304,6 @@ Quick info:
 Summary:
   TColor32 represents an ARGB color quad.
 Description:
-
   TColor32 represents an ARGB color quad.
 Quick info:
   Unit: JclGraphUtils
@@ -1423,7 +1318,6 @@ Quick info:
 Summary:
   TColor32 Arrays.
 Description:
-
   TColor32 Arrays.
 Quick info:
   Unit: JclGraphUtils
@@ -1438,7 +1332,6 @@ Quick info:
 Summary:
   TPalette32 types are mostly used to simulate palette-based operations.
 Description:
-
   TPalette32 types are mostly used to simulate palette-based operations.
 Quick info:
   Unit: JclGraphUtils
