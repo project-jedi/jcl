@@ -25,6 +25,15 @@
 {  You may retrieve the latest version of this file at the homepage of         }
 {  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
 {                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
+{  NOTE: As of 2004-05-15, Peter J. Haas has stopped maintaining code he       }
+{        donated to the JCL. He is not to be held responsible for              }
+{        modifications applied after this date.                                }
+{        Peter J. Haas no longer wants to be associated with Project JEDI.     }
+{                                                                              }
+{------------------------------------------------------------------------------}
+{                                                                              }
 {  Contributor(s):                                                             }
 {                                                                              }
 {  Alternatively, the contents of this file may be used under the terms of     }
