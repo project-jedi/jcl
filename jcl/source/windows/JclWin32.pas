@@ -127,7 +127,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// Last modified: $Data$
+// Last modified: $Date$
 // For history see end of file
 
 unit JclWin32;
@@ -2671,6 +2671,7 @@ const
 
 // need Win2k or later
 function RtdlSetDefaultPrinter(pszPrinter: LPCSTR): BOOL; 
+function RtdlGetDefaultPrinter(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL;
 
 //==================================================================================================
 // from winternl.h
@@ -3679,9 +3680,11 @@ end;
 
 type
   TFNSetDefaultPrinterA = function(pszPrinter: LPCSTR): BOOL; stdcall;
+  TFNGetDefaultPrinterA = function(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL; stdcall;
 
 var
   _SetDefaultPrinterA: TFNSetDefaultPrinterA{ = Nil};
+  _GetDefaultPrinterA: TFNGetDefaultPrinterA{ = Nil};
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3690,6 +3693,15 @@ begin
   Result := JclGetProcAddressBool(@_SetDefaultPrinterA, WinSpoolHandle, 'SetDefaultPrinterA');
   if Result then
     Result := _SetDefaultPrinterA(pszPrinter);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function RtdlGetDefaultPrinter(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL;
+begin
+  Result := JclGetProcAddressBool(@_GetDefaultPrinterA, WinSpoolHandle, 'GetDefaultPrinterA');
+  if Result then
+     Result := _GetDefaultPrinterA(pszBuffer, pcchBuffer);
 end;
 
 //==================================================================================================
@@ -3792,6 +3804,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.16  2004/04/11 22:16:20  mthoma
+// Modifications for GetDefaultPrinterName. Added GetDefaultPrinter API function.
+//
 // Revision 1.15  2004/04/08 19:59:11  ahuser
 // BCB compatibility
 //
