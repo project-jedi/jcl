@@ -161,6 +161,7 @@ const
 function StrIsAlpha(const S: AnsiString): Boolean;
 function StrIsAlphaNum(const S: AnsiString): Boolean;
 function StrIsAlphaNumUnderscore(const S: AnsiString): Boolean;
+function StrIsDigit(const S: AnsiString): Boolean;
 function StrIsNumber(const S: AnsiString): Boolean;
 function StrIsSubset(const S: AnsiString; const ValidChars: TSysCharSet): Boolean;
 function StrSame(const S1, S2: AnsiString): Boolean;
@@ -256,7 +257,7 @@ function CharIsDelete(const C: AnsiChar): Boolean;
 function CharIsDigit(const C: AnsiChar): Boolean;
 function CharIsLower(const C: AnsiChar): Boolean;
 function CharIsNumber(const C: AnsiChar): Boolean;
-function CharIsPrint(const C: AnsiChar): Boolean;
+function CharIsPrintable(const C: AnsiChar): Boolean;
 function CharIsPunctuation(const C: AnsiChar): Boolean;
 function CharIsReturn(const C: AnsiChar): Boolean;
 function CharIsSpace(const C: AnsiChar): Boolean;
@@ -591,11 +592,13 @@ var
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
+  begin
     if not CharIsAlpha(S[I]) then
     begin
       Result := False;
       Exit;
     end;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -606,11 +609,13 @@ var
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
+  begin
     if not CharIsAlphaNum(S[I]) then
     begin
       Result := False;
       Exit;
     end;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -634,17 +639,36 @@ end;
 
 //------------------------------------------------------------------------------
 
+function StrIsDigit(const S: AnsiString): Boolean;
+var
+  I: Integer;
+begin
+  Result := S <> '';
+  for I := 1 to Length(S) do
+  begin
+    if not CharIsDigit(S[I]) then
+    begin
+      Result := False;
+      Exit;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function StrIsNumber(const S: AnsiString): Boolean;
 var
   I: Integer;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
+  begin
     if not CharIsNumber(S[I]) then
     begin
       Result := False;
       Exit;
     end;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -654,11 +678,13 @@ var
   I: Integer;
 begin
   for I := 1 to Length(S) do
+  begin
     if not (S[I] in ValidChars) then
     begin
       Result := False;
       Exit;
     end;
+  end;
   Result := True;
 end;
 
@@ -2552,7 +2578,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function CharIsPrint(const C: AnsiChar): Boolean;
+function CharIsPrintable(const C: AnsiChar): Boolean;
 begin
   Result := not CharIsControl(C);
 end;
@@ -3026,11 +3052,10 @@ var
 begin
   Assert(List <> nil);
   List.Clear;
-  Token := StrToken(S, Separator);
-  while Token <> '' do
+  while S <> '' do
   begin
-    List.Add(Token);
     Token := StrToken(S, Separator);
+    List.Add(Token);
   end;
 end;
 
