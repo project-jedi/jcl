@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 27, 2001                                              }
+{ Last modified: January 31, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -92,6 +92,7 @@ function JclAppInstances: TJclAppInstances;
 
 function JclReadMessageCheck(var Message: TMessage; const DataKind: DWORD;
   const IgnoredOriginatorWnd: HWND): Boolean;
+procedure JclReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 procedure JclReadMessageString(const Message: TMessage; var S: string);
 procedure JclReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 
@@ -397,35 +398,39 @@ var
     ClassName: array[0..200] of Char;
     I: Integer;
     PID: DWORD;
+    Found: Boolean;
   begin
     if (GetClassName(Wnd, ClassName, SizeOf(ClassName)) > 0) and
       (StrComp(ClassName, Data.WindowClassName) = 0) then
     begin
       GetWindowThreadProcessId(Wnd, @PID);
-      with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
-        for I := 0 to Count - 1 do
-          if ProcessIDs[I] = PID then
-          begin
-            SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
-            Break;
-          end;
+      Found := False;
+      Data.Self.FOptex.Enter;
+      try
+        with PJclAISharedData(Data.Self.FMappingView.Memory)^ do
+          for I := 0 to Count - 1 do
+            if ProcessIDs[I] = PID then
+            begin
+              Found := True;
+              Break;
+            end;
+      finally
+        Data.Self.FOptex.Leave;
+      end;
+      if Found then
+        SendMessage(Wnd, WM_COPYDATA, Data.OriginatorWnd, LPARAM(@Data.CopyData));
     end;
     Result := True;
   end;
 
 begin
-  FOptex.Enter;
-  try
-    EnumWinRec.WindowClassName := PChar(WindowClassName);
-    EnumWinRec.OriginatorWnd := OriginatorWnd;
-    EnumWinRec.CopyData.dwData := DataKind;
-    EnumWinRec.CopyData.cbData := Size;
-    EnumWinRec.CopyData.lpData := Data;
-    EnumWinRec.Self := Self;
-    Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
-  finally
-    FOptex.Leave;
-  end;
+  EnumWinRec.WindowClassName := PChar(WindowClassName);
+  EnumWinRec.OriginatorWnd := OriginatorWnd;
+  EnumWinRec.CopyData.dwData := DataKind;
+  EnumWinRec.CopyData.cbData := Size;
+  EnumWinRec.CopyData.lpData := Data;
+  EnumWinRec.Self := Self;
+  Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
 end;
 
 //------------------------------------------------------------------------------
@@ -514,6 +519,19 @@ begin
   else
     Result := False;
   Message.Result := Integer(Result);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure JclReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
+begin
+  with TWMCopyData(Message) do
+    if Msg = WM_COPYDATA then
+    begin
+      Size := CopyDataStruct^.cbData;
+      GetMem(Data, Size);
+      Move(CopyDataStruct^.lpData^, Data^, Size);
+    end;
 end;
 
 //------------------------------------------------------------------------------
