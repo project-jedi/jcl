@@ -21,7 +21,8 @@ PathDevicePrefix = '\\.\';
 Prefix used to specify a physical device under Windows.
 [Description]
 PathDevicePrefix is the character string used in Windows to specify a physical
-device such as a harddisk.
+device such as a harddisk. To be precise its a prefix to indicate the "path name"
+of any driver.
 [Quick Info]
 Kind=Constant
 BCB=3,4,5
@@ -36,7 +37,7 @@ PathSeparator = '\'; // '/' if compiled under Linux
 [ShortDescr]
 Character used as path element separator.
 [Description]
-PathSeparator is the character used by the file system to separate the elememts
+PathSeparator is the character used by the file system to separate the elements
 of a path such as the drive, directories and the filename. The value of this
 constant is conditionally defined as a forward or backward slash depening on the
 targetted operating system (Linux and Windows respectively).
@@ -73,7 +74,7 @@ Returns the size of a file.
 [Description]
 The GetSizeOfFile returns the size, in bytes of the specified file. Note that
 the returned value is the actual size of the file. This may, and most likely will,
-defer from the storage the file actually occupies on the disk.
+differ from the storage the file actually occupies on the disk.
 [Parameters]
 Count=2
 1=FileName:string=Fully qualified name of the file for which to determine the size.
@@ -386,7 +387,7 @@ function Add(Access, Count: Cardinal; Offset: Int64): Integer;
 [ShortDescr]
 Create a new view and adds it to the list.
 [Description]
-The Add method create a new TJclFileMappingView object and adds it to the internal
+The Add method creates a new TJclFileMappingView object and adds it to the internal
 Views list.
 [Parameters]
 Count=3
@@ -416,9 +417,9 @@ Count=1
 [Declaration]
 function AddAt(Access, Count: Cardinal; Offset: Int64; Address: Pointer): Integer;
 [ShortDescr]
-Create a new view and adds it to the list.
+Creates a new view and adds it to the list.
 [Description]
-The AddAt method create a new TJclFileMappingView object and adds it to the internal
+The AddAt method creates a new TJclFileMappingView object and adds it to the internal
 Views list. The difference between <REF>Add</REF> and this method is that you
 can specify a base address at which the view must be mapped. Note however that
 the supplied Address is implicitly rounded towards a multiple of the systems
@@ -592,7 +593,7 @@ property RoundViewOffset: TJclFileMappingRoundOffset read FRoundViewOffset write
 [ShortDescr]
 Rounding used when creating view objects.
 [Description]
-A filemapping view must be created with it's offset being a multiple of the systems'
+A filemapping view must be created with its offset being a multiple of the systems'
 memory allocation granularity (usually 64K). Additionally, when you use the
 AddAt method, the specified base address must also be a multiple of the allocation
 granularity. The RoundViewOffset determines how the TJclFileMappingView class
@@ -611,7 +612,7 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-property Views[index: integer]: TJclFileMappingView read GetView;
+property Views[index: Integer]: TJclFileMappingView read GetView;
 [ShortDescr]
 List of all view objects managed by this class.
 [Description]
@@ -637,7 +638,7 @@ TJclFileMapping = class (TJclCustomFileMapping)
 Implements a filemapping object backed by an actual disk file.
 [Description]
 TJclFileMapping is a specification of a filemapping object. It only differs from
-TJclCustomFileMapping in the implementation of it's constructor. Use this class
+TJclCustomFileMapping in the implementation of its constructor. Use this class
 when you want to map an actual disk file.
 [Quick Info]
 BCB=3,4,5
@@ -672,7 +673,7 @@ help file or Platform SDK for the allowed values (look at the description of the
 CreateFileMapping function, flProtect parameter).
 6=MaximumSize:Int64=Maximum size of the filemapping object. If you specify 0 the
 filemapping will be the same size as the underlying disk file (which is not allowed
-to have a 0 size itself).
+to have a size of 0 itself).
 7=SecAttr:PSecurityAttributes=Security attributes for the filemapping. See the
 Win32 help file or Platform SDK for details.
 [Quick Info]
@@ -719,7 +720,7 @@ TJclSwapFileMapping = class (TJclCustomFileMapping)
 Implements a filemapping object backed by the swap file.
 [Description]
 TJclSwapFileMapping is a specification of a filemapping object. It only differs
-from TJclCustomFileMapping in the implementation of it's constructor. Use this
+from TJclCustomFileMapping in the implementation of its constructor. Use this
 class when you want to create a filemapping backed by the systems swap file (ideal
 for cross-process communication).
 [Quick Info]
@@ -843,7 +844,7 @@ registered or the function fails it returns a string of the form '.PAS File' whe
 [Parameters]
 Count=1
 1=FileName:string=The name of the file for which you want to know the type name.
-The file does not have to physically exist.
+The file does not have to exist physically.
 [Result]
 String that describes the file type.
 [Quick Info]
@@ -1060,12 +1061,12 @@ procedure PathExtractElements(const P: string; var Drive, Path, FileName, Ext: s
 [ShortDescr]
 Extracts all elements from a path.
 [Description]
-PathExtractElements splits the supplied path into it's elements such as drive,
+PathExtractElements splits the supplied path into its elements such as drive,
 path and filename. Depending on the supplied path any of the out parameters can
 be an empty string on return.
 [Parameters]
 Count=5
-1=P:string=String that represents a path that you want to split into it's elements.
+1=P:string=String that represents a path that you want to split into its elements.
 2=Drive:string=Drive indicator. This is a string in the form "c:\".
 3=Path:string=Path of the file, without drive or filename. Leading and trailing directory separators are trimmed.
 4=FileName:string=Name of the file, without the extension part.
@@ -1092,7 +1093,7 @@ Count=1
 1=Path:string=A string that represents a path and which should be forced to end
 with a directory separator.
 [Result]
-The resulting string is the path, ended in a directory separator.
+The resulting string is the path, ending in a directory separator.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1201,10 +1202,10 @@ function PathCompactPath(Canvas: TCanvas; const Path: string; Width: Integer; Cm
 Compacts a path to fit within the given pixel width.
 [Description]
 PathCompactPath compacts, or truncates, the path to fit within the given pixel
-width by replacing part of the string with an ellipses. The specified device
+width by replacing part of the string with an ellipsis (...). The specified device
 context is used to retrieve the font metrics which determine how a string maps
 to a pixel width. Note the existence of two overloads allowing you to pass in
-either an HDC or TCanvas (descendent). The TCanvas overload simply delegates the
+either an HDC or TCanvas (descendant). The TCanvas overload simply delegates the
 work to the first overload passing in Canvas.Handle for the DC parameter.
 [Parameters]
 Count=4
@@ -1213,17 +1214,17 @@ canvas on which you eventually intend to display the compacted path.
 2=Path:string=The path to compact or truncate.
 3=Width:Integer=Width, in pixels, that the path will be forced to fit within.
 4=CmpFmt:TCompactPath=Determines which part of the string is replaced with
-ellipses. Valid values are:<br>
+an ellipsis. Valid values are:<br>
   <table>
-    <tr><td>cpCenter</td><td>Replaces characters in the middle of the string with an ellipses</td></tr>
-    <tr><td>cpEnd</td><td>Replaces characters at the end of the string with an ellipses</td></tr>
+    <tr><td>cpCenter</td><td>Replaces characters in the middle of the string with an ellipsis</td></tr>
+    <tr><td>cpEnd</td><td>Replaces characters at the end of the string with an ellipsis</td></tr>
   </table>
 [Result]
 The compacted path or an empty string if the function fails.
 [Notes]
 Count=1
 1=If Width is smaller than the most compacted path then the result is the most
-compacted path, even though it does not fit within the specified with.
+compacted path, even though it does not fit within the specified width.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1396,7 +1397,7 @@ function succeeded, Prefix contains the actual name of the temporary file,
 including the path. On failure the contents of Prefix are undefined.
 [Result]
 If the function succeeds the result is a handle to the temporary file, on failure
-the function returns HANDLE_INVALID_VALUE.
+the function returns INVALID_HANDLE_VALUE.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1413,7 +1414,7 @@ function FileExists(const FileName: string): Boolean;
 Tests whether a file exists.
 [Description]
 FileExists tests whether the specified file exists. Unlike the FileExists function
-from the Delphi RTL, this function suppresses potential dialogs raises due to a
+from the Delphi RTL, this function suppresses potential dialog raises due to a
 disk not being available.
 [Parameters]
 Count=1
@@ -1435,9 +1436,9 @@ procedure ShredFile(const FileName: string; Times: Integer = 1);
 [ShortDescr]
 Shreds the contents of the file and then deletes it.
 [Description]
-The ShredFile functions destroys the contents of the specified file and then
+The ShredFile functions overwrites the contents of the specified file and then
 deletes the file. This ensures that even if the underlying filesystem does not
-physically remove the file, it's contents are effectively inaccessible.
+physically remove the file, its contents are effectively inaccessible.
 [Parameters]
 Count=2
 1=FileName:string=The fully qualified name of the file to shred.
@@ -1464,7 +1465,7 @@ Count=1
 1=FileName:string=The fully qualified name of the file.
 [Result]
 If the function succeeds it returns the size, in bytes, of the specified file.
-If the function fails, for example because the file does not exists, the result
+If the function fails, for example because the file does not exist, the result
 is -1.
 [Quick Info]
 BCB=3,4,5
@@ -1765,13 +1766,13 @@ UnLockVolume unlocks a volume previously locked with <REF>LockVolume</REF>.
 [Parameters]
 Count=1
 1=Handle:THandle=The handle previously returned from <REF>LockVolume</REF>. If
-the function succeeds in closing unlocking the volume the handle is closed and no
+the function succeeds in unlocking the volume the handle is closed and no
 longer valid.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. The latter
 case either means that the specified handle was invalid or that the device
 could not be unlocked. In either case the Handle parameter is unaffected and
-retains it's value.
+retains its value.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -1791,7 +1792,7 @@ function LockVolume(const Volume: string; out Handle: THandle): Boolean;
 Locks the specified volume.
 [Description]
 LockVolume locks the specified volume. Locking a volume will give exclusive access
-to the specified volume to whomever owns the lock. Subsequent access to the
+to the specified volume to whoever owns the lock. Subsequent access to the
 volume must be performed through the returned handle. When you're done with the
 volume you must call <REF>UnLockVolume</REF>. Note that to lock a volume there
 can be no open files on the volume (even a single open file, by whatever process,
@@ -1832,7 +1833,7 @@ Count=1
 [Declaration]
 function OpenVolume(const Drive: Char): THandle;
 [ShortDescr]
-OIpens a handle to the specified volume.
+Opens a handle to the specified volume.
 [Description]
 OpenVolume opens a handle for the specified volume with read/write access.
 Subsequent access to the volume must be performed through the returned handle.
@@ -1877,7 +1878,7 @@ longer valid.
 If the function succeeds it returns True, otherwise it returns False. The latter
 case either means that the specified handle was invalid or that the device
 could not be closed. In either case the Handle parameter is unaffected and
-retains it's value.
+retains its value.
 [Quick Info]
 BCB=3,4,5
 Unit=JclFileUtils
@@ -2387,7 +2388,7 @@ property LanguageIds[Index: Integer]: string read GetLanguageIds;
 [ShortDescr]
 List of supported languages.
 [Description]
-List of language id's for which the version resource contains translated strings.
+List of language IDs for which the version resource contains translated strings.
 Use the LanguageIndex property to set the language in which you want the class to
 return string properties. Use the LanguageNames property to get readable names
 for these identifiers.
@@ -2861,7 +2862,7 @@ property SpecialBuild: string;
 Returns the special build module attribute.
 [Description]
 SpecialBuild is set to true if the executable has the special build module attribute
-set in it's version resource. If it doesn't SpecialBuild is False.
+set in its version resource. If it doesn't SpecialBuild is False.
 [Quick Info]
 BCB=3,4,5
 Kind=Property
@@ -2882,7 +2883,7 @@ property PrivateBuild: string;
 Returns the private build module attribute.
 [Description]
 PrivateBuild is set to true if the executable has the private build module attribute
-set in it's version resource. If it doesn't PrivateBuild is False.
+set in its version resource. If it doesn't PrivateBuild is False.
 [Quick Info]
 BCB=3,4,5
 Kind=Property
@@ -2905,7 +2906,7 @@ Allows for reading user defined keys.
 UserKeys allows for reading of non standard, or custom, keys within a version
 resource. This is implemented as an array with a string index. The key you
 want to read is used as an index into this array. For example:
-S := V.UserKeys['MyKey']; The property returns the value of the key.
+S := V.UserKeys['MyKey']; The property returns the value of the key 'MyKey'.
 [Quick Info]
 BCB=3,4,5
 Kind=Property
