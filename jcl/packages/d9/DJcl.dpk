@@ -87,6 +87,7 @@ contains
   zlibh in '..\..\source\windows\zlibh.pas',
   JclCLR in '..\..\source\windows\JclCLR.pas',
   JclWideStrings in '..\..\source\common\JclWideStrings.pas',
+  JclUnitVersioning in '..\..\source\common\JclUnitVersioning.pas',
   Hardlinks in '..\..\source\windows\Hardlinks.pas';
 
 end.
