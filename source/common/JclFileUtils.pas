@@ -119,6 +119,7 @@ function PathGetLongName(const Path: string): string;
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF MSWINDOWS}
+function PathGetRelativePath(Origin, Destination: string): string;
 function PathIsAbsolute(const Path: string): Boolean;
 function PathIsChild(const Path, Base: AnsiString): Boolean;
 function PathIsDiskDevice(const Path: string): Boolean;
@@ -2119,6 +2120,72 @@ begin
 end;
 
 {$ENDIF MSWINDOWS}
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODOc Author: Olivier Sannier}
+
+function PathGetRelativePath(Origin, Destination: string): string;
+var
+  OrigList: TStringList;
+  DestList: TStringList;
+  DiffIndex: Integer;
+  I: Integer;
+begin
+  Origin := PathCanonicalize(Origin);
+  Destination := PathCanonicalize(Destination);
+  // create a list of paths as separate strings
+  OrigList := TStringList.Create;
+  DestList := TStringList.Create;
+  try
+    // NOTE: DO NOT USE DELIMITER AND DELIMITEDTEXT FROM
+    // TSTRINGS, THEY WILL SPLIT PATHS WITH SPACES !!!!
+    StrToStrings(Origin, PathSeparator, OrigList);
+    StrToStrings(Destination, PathSeparator, DestList);
+    {$IFDEF MSWINDOWS}
+    { TODO : Handle UNC names properly }
+
+    // Let's do some tests when the paths indicate drive letters
+    // This, of course, only happens under a Windows platform
+
+    // If the destination indicates a drive and the drive
+    // letter is different from the one from the one in
+    // origin, then simply return it as the result
+    // Else, if the origin indicates a drive and destination
+    // doesn't, then return the concatenation of origin and
+    // destination, ensuring a pathseparator between them.
+    // Else, try to find the relative path between the two.
+    if (OrigList[0][2] = ':') and (DestList[0][2] = ':') and (DestList[0][1] <> OrigList[0][1]) then
+      Result := Destination
+    else
+    if (OrigList[0][2] = ':') and (DestList[0][2] <> ':') then
+      Result := StrEnsureSuffix(PathSeparator, Origin) +
+        StrEnsureNoPrefix(PathSeparator, Destination);
+    else
+    {$ENDIF}
+    begin
+      // find the first directory that is not the same
+      DiffIndex := 0;
+      {$IFDEF MSWINDOWS} // case insensitive
+      while StrSame(OrigList[DiffIndex], DestList[DiffIndex]) do
+      {$ELSE}            // case sensitive
+      while OrigList[DiffIndex] = DestList[DiffIndex] do
+      {$ENDIF}
+        Inc(DiffIndex);
+
+      Result := StrRepeat('..'+PathSeparator, OrigList.Count - DiffIndex);
+      if DiffIndex < DestList.Count then
+      begin
+        for I := DiffIndex to DestList.Count - 2 do
+          Result := Result + DestList[i] + PathSeparator;
+        Result := Result + DestList[DestList.Count-1];
+      end;
+    end;
+  finally
+    DestList.Free;
+    OrigList.Free;
+  end;
+end;
 
 //--------------------------------------------------------------------------------------------------
 
