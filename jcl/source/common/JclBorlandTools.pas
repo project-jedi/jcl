@@ -1767,15 +1767,18 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclBorRADToolInstallation.GetIdeExeFileName: string;
+{$IFDEF KYLIX}
 const
-  IdeFileNames: array [TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName); 
+  IdeFileNames: array [TJclBorRADToolKind] of string = (DelphiIdeExeName, BCBIdeExeName);
 begin
-  {$IFDEF MSWINDOWS}
-  Result := Globals.Values['App'];
-  {$ELSE}
   Result := FBinFolderName + IdeFileNames[RADToolKind];
-  {$ENDIF}
 end;
+{$ENDIF KYLIX}
+{$IFDEF MSWINDOWS}
+begin
+  Result := Globals.Values['App'];
+end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2408,6 +2411,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.27  2004/12/16 19:56:58  rrossmair
+// - fixed for Windows
+//
 // Revision 1.26  2004/12/15 22:54:04  rrossmair
 // - fixed for Kylix
 //
