@@ -23,7 +23,7 @@
 { __FILE__ and __LINE__ macro's.                                               }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: June 18, 2001                                                 }
+{ Last modified: July 2, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -439,8 +439,9 @@ type
   end;
 
 function JclCreateStackList(Raw: Boolean; AIgnoreLevels: Integer; FirstCaller: Pointer): TJclStackInfoList;
+
 function JclLastExceptStackList: TJclStackInfoList;
-function JclLastExceptStackListToStrings(Strings: TStrings): Boolean;
+function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
 
 //------------------------------------------------------------------------------
 // Exception frame info routines
@@ -548,7 +549,7 @@ var
   TrackAllModules: Boolean;
 
 //------------------------------------------------------------------------------
-// Advanced thread debugging
+// Thread exception tracking support
 //------------------------------------------------------------------------------
 
 type
@@ -561,15 +562,23 @@ type
     procedure RegisterThread;
     procedure UnRegisterThread;
   protected
+    procedure DoNotify;
     procedure DoSyncHandleException; dynamic;
     procedure HandleException;
-    property SyncException: Exception read FSyncException;
   public
     constructor Create(Suspended: Boolean; const AThreadName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
     destructor Destroy; override;
+    property SyncException: Exception read FSyncException;
     property ThreadInfo: string read GetThreadInfo;
     property ThreadName: string read FThreadName;
   end;
+
+  TJclThreadExceptNotifyProc = procedure (Thread: TJclDebugThread);
+  TJclThreadExceptNotifyMethod = procedure (Thread: TJclDebugThread) of object;
+
+var
+  SyncThreadExceptNotifyProc: TJclThreadExceptNotifyProc;
+  SyncThreadExceptNotifyMethod: TJclThreadExceptNotifyMethod;
 
 function JclFindDebugThread(ThreadID: DWORD): TJclDebugThread;
 function JclDebugThreadInfoStr(ThreadID: DWORD): string;
@@ -2943,14 +2952,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function JclLastExceptStackListToStrings(Strings: TStrings): Boolean;
+function JclLastExceptStackListToStrings(Strings: TStrings; IncludeModuleName: Boolean): Boolean;
 var
   List: TJclStackInfoList;
 begin
   List := JclLastExceptStackList;
   Result := Assigned(List);
   if Result then
-    List.AddToStrings(Strings);
+    List.AddToStrings(Strings, IncludeModuleName);
 end;
 
 //------------------------------------------------------------------------------
@@ -3366,8 +3375,8 @@ begin
     Recursive := False;
     if PeImportHooks = nil then
       PeImportHooks := TJclPeMapImgHooks.Create;
-    Result := PeImportHooks.HookImport(Pointer(FindClassHInstance(System.TObject)),
-      kernel32, 'RaiseException', @HookedRaiseException, @Kernel32_RaiseException);
+    Result := PeImportHooks.HookImport(PeImportHooks.SystemBase, kernel32,
+      'RaiseException', @HookedRaiseException, @Kernel32_RaiseException);
     if Result then
     begin
       SysUtils_ExceptObjProc := System.ExceptObjProc;
@@ -3402,7 +3411,7 @@ begin
 end;
 
 //==============================================================================
-// Advanced thread debugging
+// Thread exception tracking support
 //==============================================================================
 
 var
@@ -3485,13 +3494,24 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure TJclDebugThread.DoNotify;
+begin
+  if Assigned(SyncThreadExceptNotifyProc) then
+    SyncThreadExceptNotifyProc(Self);
+  if Assigned(SyncThreadExceptNotifyMethod) then
+    SyncThreadExceptNotifyMethod(Self);
+end;
+
+//------------------------------------------------------------------------------
+
 procedure TJclDebugThread.DoSyncHandleException;
 begin
- // Note: JclLastExceptStackList and JclLastExceptFrameList returns information
- // for this Thread ID instead of MainThread ID here to allow use a common
- // exception handling routine easily.
- // Any other call of those JclLastXXX routines from another thread at the same
- // time will return expected information for current Thread ID.
+  // Note: JclLastExceptStackList and JclLastExceptFrameList returns information
+  // for this Thread ID instead of MainThread ID here to allow use a common
+  // exception handling routine easily.
+  // Any other call of those JclLastXXX routines from another thread at the same
+  // time will return expected information for current Thread ID.
+  DoNotify;
 end;
 
 //------------------------------------------------------------------------------
