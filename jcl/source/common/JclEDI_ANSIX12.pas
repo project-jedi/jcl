@@ -42,8 +42,6 @@ unit JclEDI_ANSIX12;
 
 {$I jcl.inc}
 
-{$I jedi.inc}
-
 {$WEAKPACKAGEUNIT ON}
 
 //Comment these compiler directives if you encounter problems with the following optimized methods.
