@@ -160,6 +160,7 @@ function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const Li
 function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 function RegHasSubKeys(const RootKey: DelphiHKEY; const Key: string): Boolean;
 
+function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolean;
 {
 From: Jean-Fabien Connault [cycocrew att worldnet dott fr]
 Descr: Test whether a registry key exists as a subkey of RootKey
@@ -201,6 +202,11 @@ implementation
 
 uses
   SysUtils,
+  {$IFDEF FPC}
+  JwaAccCtrl,
+  {$ELSE}
+  AccCtrl,
+  {$ENDIF FPC}
   JclResources, JclSysUtils, JclWin32;
 
 type
@@ -268,20 +274,38 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function RelativeKey(Key: PChar): PChar;
+function RelativeKey(const RootKey: DelphiHKEY; Key: PChar): PChar;
+type
+  TRootKey = record
+    Key: DelphiHKEY;
+    Name: PChar;
+  end;
+const
+  RootKeys: array [0..6] of TRootKey =
+   (
+    (Key: HKCR; Name: 'HKEY_CLASSES_ROOT\'),
+    (Key: HKCU; Name: 'HKEY_CURRENT_USER\'),
+    (Key: HKLM; Name: 'HKEY_LOCAL_MACHINE\'),
+    (Key: HKUS; Name: 'HKEY_USERS\'),
+    (Key: HKPD; Name: 'HKEY_PERFORMANCE_DATA\'),
+    (Key: HKCC; Name: 'HKEY_CURRENT_CONFIG\'),
+    (Key: HKDD; Name: 'HKEY_DYN_DATA\')
+   );
+var
+  I: Integer;
 begin
   Result := Key;
   if Result^ = '\' then
     Inc(Result);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function RelativeKeyW(Key: PWideChar): PWideChar;
-begin
-  Result := Key;
-  if Result^ = WideChar('\') then
-    Inc(Result);
+  for I := Low(RootKeys) to High(RootKeys) do
+    if StrPos(Key, RootKeys[I].Name) = Key then
+    begin
+      if RootKey <> RootKeys[I].Key then
+        raise EJclRegistryError.CreateResRecFmt(@RsInconsistentPath, [Key])
+      else
+        Inc(Result, StrLen(RootKeys[I].Name));
+      Break;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -295,10 +319,10 @@ var
 begin
   DataType := REG_NONE;
   DataSize := 0;
-  WideKey := Key;
+  WideKey := RelativeKey(RootKey, PChar(Key));
   WideName := Name;
   // using Unicode functions to avoid REG_SZ transformations
-  if RegOpenKeyExW(RootKey, RelativeKeyW(PWideChar(WideKey)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     try
       if RegQueryValueExW(RegKey, PWideChar(WideName), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
@@ -329,7 +353,7 @@ begin
   DataType := REG_NONE;
   DataSize := 0;
   Result := '';
-  if RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     try
       if RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
@@ -368,10 +392,10 @@ var
 begin
   DataType := REG_NONE;
   DataSize := 0;
-  WideKey := Key;
+  WideKey := RelativeKey(RootKey, PChar(Key));
   WideName := Name;
   Result := '';
-  if RegOpenKeyExW(RootKey, RelativeKeyW(PWideChar(WideKey)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     try
       if RegQueryValueExW(RegKey, PWideChar(WideName), nil, @DataType, nil, @DataSize) = ERROR_SUCCESS then
@@ -412,7 +436,7 @@ var
 begin
   if not RegKeyExists(RootKey, Key) then
     RegCreateKey(RootKey, Key);
-  if RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
     try
       if RegSetValueEx(RegKey, PChar(Name), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
       WriteError(Key);
@@ -433,9 +457,9 @@ var
 begin
   if not RegKeyExists(RootKey, Key) then
     RegCreateKey(RootKey, Key);
-  WideKey := Key;
+  WideKey := RelativeKey(RootKey, PChar(Key));
   WideName := Name;
-  if RegOpenKeyExW(RootKey, RelativeKeyW(PWideChar(WideKey)), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyExW(RootKey, PWideChar(WideKey), 0, KEY_WRITE, RegKey) = ERROR_SUCCESS then
     try
       if RegSetValueExW(RegKey, PWideChar(WideName), 0, RegKind, Value, ValueSize) <> ERROR_SUCCESS then
       WriteError(Key);
@@ -454,7 +478,7 @@ function RegCreateKey(const RootKey: DelphiHKEY; const Key: string): Longint;
 var
   RegKey: HKEY;
 begin
-  Result := Windows.RegCreateKey(RootKey, RelativeKey(PChar(Key)), RegKey);
+  Result := Windows.RegCreateKey(RootKey, RelativeKey(RootKey, PChar(Key)), RegKey);
   if Result = ERROR_SUCCESS then
     RegCloseKey(RegKey);
 end;
@@ -463,7 +487,7 @@ end;
 
 function RegCreateKey(const RootKey: DelphiHKEY; const Key, Value: string): Longint;
 begin
-  Result := RegSetValue(RootKey, RelativeKey(PChar(Key)), REG_SZ, PChar(Value), Length(Value));
+  Result := RegSetValue(RootKey, RelativeKey(RootKey, PChar(Key)), REG_SZ, PChar(Value), Length(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -473,7 +497,7 @@ var
   RegKey: HKEY;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_SET_VALUE, RegKey) = ERROR_SUCCESS then
   begin
     Result := RegDeleteValue(RegKey, PChar(Name)) = ERROR_SUCCESS;
     RegCloseKey(RegKey);
@@ -495,7 +519,7 @@ var
   MaxSubKeyLen: DWORD;
   KeyName: string;
 begin
-  Result := RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
+  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_ALL_ACCESS, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil);
@@ -512,7 +536,7 @@ begin
       end;
     RegCloseKey(RegKey);
     if Result then
-      Result := Windows.RegDeleteKey(RootKey, RelativeKey(PChar(Key))) = ERROR_SUCCESS;
+      Result := Windows.RegDeleteKey(RootKey, RelativeKey(RootKey, PChar(Key))) = ERROR_SUCCESS;
     end
     else
       WriteError(Key);
@@ -526,7 +550,7 @@ var
   RegKey: HKEY;
 begin
   DataSize := 0;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
+  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, nil, nil, @DataSize) = ERROR_SUCCESS;
@@ -542,7 +566,7 @@ var
   RegKey: HKEY;
 begin
   DataType := REG_NONE;
-  Result := RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
+  Result := RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS;
   if Result then
   begin
     Result := RegQueryValueEx(RegKey, PChar(Name), nil, @DataType, nil, nil) = ERROR_SUCCESS;
@@ -1343,7 +1367,7 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    if RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+    if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
       if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, @NumSubValues, @MaxSubValueLen, nil, nil, nil) = ERROR_SUCCESS then
       begin
@@ -1381,7 +1405,7 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    if RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+    if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
     begin
       if RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, @MaxSubKeyLen, nil, nil, nil, nil, nil, nil) = ERROR_SUCCESS then
       begin
@@ -1412,7 +1436,7 @@ var
   NumSubKeys: Integer;
 begin
   Result := False;
-  if RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
+  if RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS then
   begin
     RegQueryInfoKey(RegKey, nil, nil, nil, @NumSubKeys, nil, nil, nil, nil, nil, nil, nil);
     Result := NumSubKeys <> 0;
@@ -1428,7 +1452,7 @@ function RegKeyExists(const RootKey: DelphiHKEY; const Key: string): Boolean;
 var
   RegKey: HKEY;
 begin
-  Result := (RegOpenKeyEx(RootKey, RelativeKey(PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
+  Result := (RegOpenKeyEx(RootKey, RelativeKey(RootKey, PChar(Key)), 0, KEY_READ, RegKey) = ERROR_SUCCESS);
   if Result then
     RegCloseKey(RegKey);
 end;
@@ -1493,9 +1517,41 @@ begin
     end;
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function AllowRegKeyForEveryone(const RootKey: DelphiHKEY; Path: string): Boolean;
+var
+  WidePath: PWideChar;
+  Len: Integer;
+begin
+  Result := Win32Platform <> VER_PLATFORM_WIN32_NT;
+  if not Result then // Win 2000/XP
+  begin
+    case RootKey of
+      HKLM:
+        Path := 'HKEY_LOCAL_MACHINE\' + RelativeKey(RootKey, PChar(Path));
+      HKCU:
+        Path := 'HKEY_CURRENT_USER\' + RelativeKey(RootKey, PChar(Path));
+      HKCR:
+        Path := 'HKEY_CLASSES_ROOT\' + RelativeKey(RootKey, PChar(Path));
+      HKUS:
+        Path := 'HKEY_USERS\' + RelativeKey(RootKey, PChar(Path));
+    end;
+    Len := (Length(Path) + 1) * SizeOf(WideChar);
+    GetMem(WidePath, Len);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, PChar(Path), -1, WidePath, Len);
+    Result := RtdlSetNamedSecurityInfoW(WidePath, SE_REGISTRY_KEY,
+      DACL_SECURITY_INFORMATION, nil, nil, nil, nil) = ERROR_SUCCESS;
+    FreeMem(WidePath);
+  end;
+end;
+
 // History:
 
 // $Log$
+// Revision 1.29  2004/10/25 08:51:22  marquardt
+// PH cleaning
+//
 // Revision 1.28  2004/10/22 15:47:15  marquardt
 // add functions for Single, Double, Extended
 //

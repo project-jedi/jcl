@@ -849,6 +849,7 @@ resourcestring
   RsUnableToOpenKeyWrite = 'Unable to open key "%s" for write';
   RsUnableToAccessValue  = 'Unable to open key "%s" and access value "%s"';
   RsWrongDataType        = '"%s\%s" is of wrong kind or size';
+  RsInconsistentPath     = '"%s" does not match RootKey';
 
 //--------------------------------------------------------------------------------------------------
 // JclRTTI
@@ -1124,6 +1125,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.21  2004/10/25 08:51:22  marquardt
+// PH cleaning
+//
 // Revision 1.20  2004/10/21 08:40:10  marquardt
 // style cleaning
 //
