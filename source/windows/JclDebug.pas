@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: January 20, 2001                                              }
+{ Last modified: January 22, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -423,21 +423,22 @@ type
     2:  ( SelfOfMethod: Pointer );
   end;
 
-  TExcFrameType = (eftUnknown, eftFinally, eftAnyException, eftOnException,
-    eftAutoException);
+  TExceptFrameKind = (efkUnknown, efkFinally, efkAnyException, efkOnException,
+    efkAutoException);
 
   TJclExceptFrame = class(TObject)
   private
     FExcFrame: PExcFrame;
-    FFrameType: TExcFrameType;
+    FFrameKind: TExceptFrameKind;
   protected
-    procedure DoDetermineFrameType;
+    procedure DoDetermineFrameKind;
   public
     constructor Create(AExcFrame: PExcFrame);
     function Handles(ExceptObj: TObject): Boolean;
     function HandlerInfo(ExceptObj: TObject; var HandlerAt: Pointer): Boolean;
+    function CodeLocation: Pointer;
     property ExcFrame: PExcFrame read FExcFrame;
-    property FrameType: TExcFrameType read FFrameType;
+    property FrameKind: TExceptFrameKind read FFrameKind;
   end;
 
   TJclExceptFrameList = class(TObjectList)
@@ -2495,44 +2496,53 @@ end;
 
 procedure DoExceptFrameTrace;
 begin
-  { Ignore first 2 levels; this is the try finally in DoExceptNotify and a
-    FindClose call in the kernel. Note that it now ignores 3 levels; there's one
-    level that is unexplainable; by the time it gets to the notifier method is
-    already gone and invalid }
-  JclCreateExceptFrameList(3);
+  { Ignore first 2 levels; the First level is an undefined frame (I haven't a
+    clue as to where it comes from. The second level is the try..finally block
+    in DoExceptNotify. }
+  JclCreateExceptFrameList(2);
+end;
+
+//------------------------------------------------------------------------------
+
+type
+  PJmpInstruction = ^JmpInstruction;
+  
+function GetJmpDest(Jmp: PJmpInstruction): DWORD;
+begin
+  if Jmp.opCode = $E9 then
+    Result := Longint(Jmp) + Jmp.distance + 5
+  else if Jmp.opCode = $EB then
+    Result := Longint(Jmp) + ShortInt(jmp.distance) + 2
+  else
+    Result := 0;
 end;
 
 //==============================================================================
 // TJclExceptFrame
 //==============================================================================
 
-procedure TJclExceptFrame.DoDetermineFrameType;
+procedure TJclExceptFrame.DoDetermineFrameKind;
 var
   Dest: Longint;
   LocInfo: TJclLocationInfo;
 begin
-  FFrameType := eftUnknown;
+  FFrameKind := efkUnknown;
   if FExcFrame <> nil then
   begin
-    if ExcFrame.desc.jmp.opCode = $E9 then
-      Dest := ExcFrame.desc.jmp.distance + 5 + Longint(ExcFrame.desc)
-    else if ExcFrame.desc.jmp.opCode = $EB then
-      Dest := Byte(ExcFrame.desc.jmp.distance) + 2 + Longint(ExcFrame.desc)
-    else
-      Dest := 0;
+    Dest := GetJmpDest(@ExcFrame.desc.Jmp);
     if Dest <> 0 then
     begin
       LocInfo := GetLocationInfo(Pointer(Dest));
       if (CompareText(LocInfo.UnitName, 'system') = 0) then
       begin
         if (CompareText(LocInfo.ProcedureName, '@HandleAnyException') = 0) then
-          FFrameType := eftAnyException
+          FFrameKind := efkAnyException
         else if (CompareText(LocInfo.ProcedureName, '@HandleOnException') = 0) then
-          FFrameType := eftOnException
+          FFrameKind := efkOnException
         else if (CompareText(LocInfo.ProcedureName, '@HandleAutoException') = 0) then
-          FFrameType := eftAutoException
+          FFrameKind := efkAutoException
         else if (CompareText(LocInfo.ProcedureName, '@HandleFinally') = 0) then
-          FFrameType := eftFinally;
+          FFrameKind := efkFinally;
       end;
     end;
   end;
@@ -2544,7 +2554,7 @@ constructor TJclExceptFrame.Create(AExcFrame: PExcFrame);
 begin
   inherited Create;
   FExcFrame := AExcFrame;
-  DoDetermineFrameType;
+  DoDetermineFrameKind;
 end;
 
 //------------------------------------------------------------------------------
@@ -2564,8 +2574,8 @@ var
   I: Integer;
   vTable: Pointer;
 begin
-  Result := FrameType = eftAnyException;
-  if not Result and (FrameType = eftOnException) then
+  Result := FrameKind in [efkAnyException, efkAutoException];
+  if not Result and (FrameKind = efkOnException) then
   begin
     I := 0;
     vTable := Pointer(Integer(ExceptObj.ClassType) + vmtSelfPtr);
@@ -2587,9 +2597,22 @@ begin
       HandlerAt := ExcFrame.desc.excTab[I].handler;
   end
   else if Result then
-    HandlerAt := @ExcFrame.desc.instructions
+  begin
+    HandlerAt := Pointer(GetJmpDest(@ExcFrame.desc.instructions));
+    if HandlerAt = nil then
+      HandlerAt := @ExcFrame.desc.instructions;
+  end
   else
     HandlerAt := nil;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclExceptFrame.CodeLocation: Pointer;
+begin
+  Result := Pointer(GetJmpDest(PJmpInstruction(DWORD(@ExcFrame.desc.instructions))));
+    if Result = nil then
+      Result := @ExcFrame.desc.instructions;
 end;
 
 //==============================================================================
