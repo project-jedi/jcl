@@ -24,7 +24,7 @@
 { and so forth. Note that some functions require NTFS 5 or higher!             }
 {                                                                              }
 { Unit Owner: Marcel van Brakel                                                }
-{ Last modified: January 09, 2001                                              }
+{ Last modified: January 29, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
