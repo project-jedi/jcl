@@ -116,23 +116,18 @@ uses
   JclStrings, JclSysUtils;
 
 const
-
   { strings to form a unique name for file mapping and optex objects }
-
   JclAIPrefix = 'Jcl';
   JclAIOptex = '_Otx';
   JclAIMapping = '_Map';
 
   { window message used for communication between instances }
-
   JclAIMessage = '_Msg';
 
   { maximum number of instance that may exist at any time }
-
   JclAIMaxInstances = 256;
 
   { name of the application window class }
-
   ClassNameOfTApplication = 'TApplication';
 
 type
@@ -148,9 +143,7 @@ type
   end;
 
 var
-
   { the single global TJclAppInstance instance }
-
   AppInstances: TJclAppInstances;
   ExplicitUniqueAppId: string;
 
@@ -450,7 +443,7 @@ var
 
   function EnumWinProc(Wnd: HWND; Data: PEnumWinRec): BOOL; stdcall;
   var
-    ClassName: array[0..200] of Char;
+    ClassName: array [0..200] of Char;
     I: Integer;
     PID: DWORD;
     Found: Boolean;
