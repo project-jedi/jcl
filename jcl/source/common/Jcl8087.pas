@@ -22,7 +22,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: January 29, 2001                                                                  }
+{ Last modified: April 22, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -68,6 +68,20 @@ uses
 
 const
   X87ExceptBits = $3F;
+
+//--------------------------------------------------------------------------------------------------
+
+// Linux: Get Global Offset Table (GOT) adress for Position Independent Code
+// (PIC, used by shared objects)
+
+{$IFDEF PIC}
+function GetGOT: Pointer;
+begin
+  asm
+        MOV Result, EBX
+  end;
+end;
+{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -154,9 +168,17 @@ end;
 function Set8087ControlWord(const Control: Word): Word; assembler;
 asm
         FNCLEX
-        FSTCW   Default8087CW
-        XCHG    Default8087CW, AX
-        FLDCW   Default8087CW
+{$IFDEF PIC}
+        PUSH    EAX
+        CALL    GetGOT
+        LEA     EDX, [EAX].Default8087CW
+        POP     EAX
+{$ELSE}
+        LEA     EDX, Default8087CW
+{$ENDIF}
+        FSTCW   [EDX]
+        XCHG    [EDX], AX
+        FLDCW   [EDX]
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -199,13 +221,21 @@ asm
         JZ      @1
         FNCLEX                     // clear pending exceptions
 @1:
-        FSTCW   Default8087CW
+{$IFDEF PIC}
+        PUSH    EAX
+        CALL    GetGOT
+        LEA     ECX, [EAX].Default8087CW
+        POP     EAX
+{$ELSE}
+        LEA     ECX, Default8087CW
+{$ENDIF PIC}
+        FSTCW   [ECX]
         FWAIT
         AND     AX, X87ExceptBits  // mask exception mask bits 0..5
-        MOV     DX, Default8087CW
-        AND     Default8087CW, NOT X87ExceptBits
-        OR      Default8087CW, AX
-        FLDCW   Default8087CW
+        MOV     DX, [ECX]
+        AND     [ECX], NOT X87ExceptBits
+        OR      [ECX], AX
+        FLDCW   [ECX]
         MOV     AX, DX
         AND     AX, X87ExceptBits
 end;
