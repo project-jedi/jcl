@@ -1419,6 +1419,39 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+class procedure CreateAndEnter(var CS: TJclCriticalSection);
+[ShortDescr]
+Creates an instance of a TJclCriticalSection object and enters it.
+[Description]
+The CreateAndEnter class method creates an instance of TJclCriticalSection and
+Enters it in an atomic, and therefor thread safe, manner. The newly created
+critical section is then assigned to the CS parameter. The method does not return
+until ownership of the critical section can be obtained. This routine is handy in
+situations where you use a lazy creation approach (that is don't create the
+ciritical section until it is actually needed) and there's a possibility that
+multiple threads could attempt to create the critical section simultanuously.
+[Parameters]
+Count=1
+1=CS:TJclCriticalSection=Variable which receives a reference to the newly created
+critical section object. It is valid for the parameter to contain a reference to
+an already created critical section. In that case the method merely attempts to
+Enter the existing critical section. If the parameter does not contain a valid
+reference it must be nil (declaring a variable as a global variable or object
+data field will ensure the variable is initialized to nil).
+[Quick Info]
+BCB=3,4,5
+Kind=Method
+Visibility=Public
+Unit=JclSynch
+Category=Libraries, Processes and Threads
+SubCat=Synchronization\TJclCriticalSection
+Author=Marcel van Brakel;brakelm@bart.nl
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 destructor Destroy; override;
 [ShortDescr]
 Destroys the TJclCriticalSection object.
