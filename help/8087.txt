@@ -298,7 +298,7 @@ function Set8087Precision(const Precision: T8087Precision): T8087Precision;
 [ShortDescr]
 Sets the precision control of the FPU.
 [Description]
-Set8087Precision adjusts the infinity control setting of the mathematical
+Set8087Precision adjusts the precision control setting of the mathematical
 coprocessor.
 [Parameters]
 Count=1
