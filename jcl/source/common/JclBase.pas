@@ -16,8 +16,12 @@
 { Portions created by Marcel van Brakel are Copyright Marcel van Brakel. All rights reserved.      }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Marcel van Brakel, Peter Friese, Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Robert Marquardt,}
-{   Robert Rossmair, Petr Vones                                                                    }
+{   Marcel van Brakel,                                                                             }
+{   Peter Friese,                                                                                  }
+{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de,                                                   }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
+{   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -49,25 +53,9 @@ const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 91;   // Forth minor release JCL 1.20
   JclVersionRelease = 0;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1531;  // build number, days since march 1, 2000
+  JclVersionBuild   = 1534; // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
-
-//--------------------------------------------------------------------------------------------------
-// FreePascal Support
-//--------------------------------------------------------------------------------------------------
-
-{$IFDEF FPC}
-
-function SysErrorMessage(ErrNo: Integer): string;
-
-{$IFDEF MSWINDOWS}
-function Win32Check(RetVal: BOOL): BOOL;
-{$ENDIF MSWINDOWS}
-
-var
-  Default8087CW: Word;
-{$ENDIF FPC}
 
 //--------------------------------------------------------------------------------------------------
 // EJclError
@@ -245,43 +233,6 @@ begin
 end;
 
 //==================================================================================================
-// FreePascal support
-//==================================================================================================
-
-{$IFDEF FPC}
-{$IFDEF MSWINDOWS}
-
-function SysErrorMessage(ErrNo: Integer): string;
-var
-  Size: Integer;
-  Buffer: PChar;
-begin
-  GetMem(Buffer, 4000);
-  Size := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrNo,
-    0, Buffer, 4000, nil);
-  SetString(Result, Buffer, Size);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function Win32Check(RetVal: BOOL): BOOL;
-begin
-  if not RetVal then
-    RaiseLastOSError;
-  Result := RetVal;
-end;
-
-{$ELSE MSWINDOWS}
-
-function SysErrorMessage(ErrNo: Integer): string;
-begin
-  Result := Format(RsSysErrorMessageFmt, [ErrNo, ErrNo]);
-end;
-
-{$ENDIF MSWINDOWS}
-{$ENDIF FPC}
-
-//==================================================================================================
 // EJclWin32Error
 //==================================================================================================
 
@@ -361,6 +312,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/05/13 07:47:30  rrossmair
+// Removed FPC compatibility code rendered superfluous by latest FPC updates; updated build #
+//
 // Revision 1.13  2004/05/08 19:56:55  rrossmair
 // FPC-related improvements
 //
