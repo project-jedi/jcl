@@ -515,7 +515,8 @@ begin
     StrResetLength(Result);
     // Note: GetLocaleInfo returns sometimes incorrect length of string on
     // Win95 (usually plus 1), that's why StrResetLength is called.
-  end else
+  end
+  else
   if IsWinNT then
   begin
     Res := GetLocaleInfoW(FLocaleID, InfoType, nil, 0);
