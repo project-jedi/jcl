@@ -19,8 +19,8 @@
 {                                                                                                  }
 { This unit contains routines and classes to control NT service                                    }
 {                                                                                                  }
-{ Unit owner: Flier Lu (flier_lu@yahoo.com.cn)                                                     }
-{ Last modified: February 21, 2002                                                                 }
+{ Unit owner: Flier Lu                                                                             }
+{ Last modified: March 10, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -41,10 +41,6 @@ uses
   JclBase, JclSysUtils;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
-
-{ TODO -cDesign : Move TJclIndex define to JclBase? }
-type
-  TJclIndex = Cardinal;
 
 //--------------------------------------------------------------------------------------------------
 // Service Types
@@ -201,12 +197,12 @@ type
     FControlsAccepted: TJclServiceControlAccepteds;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
-    function GetDependentService(const Idx: TJclIndex): TJclNtService;
-    function GetDependentServiceCount: TJclIndex;
-    function GetDependentGroup(const Idx: TJclIndex): TJclServiceGroup;
-    function GetDependentGroupCount: TJclIndex;
-    function GetDependentByService(const Idx: TJclIndex): TJclNtService;
-    function GetDependentByServiceCount: TJclIndex;
+    function GetDependentService(const Idx: Integer): TJclNtService;
+    function GetDependentServiceCount: Integer;
+    function GetDependentGroup(const Idx: Integer): TJclServiceGroup;
+    function GetDependentGroupCount: Integer;
+    function GetDependentByService(const Idx: Integer): TJclNtService;
+    function GetDependentByServiceCount: Integer;
   protected
     constructor Create(const ASCManager: TJclSCManager; const SvcStatus: TEnumServiceStatus);
     procedure Open(const ADesiredAccess: DWORD = DefaultSvcDesiredAccess);
@@ -235,12 +231,12 @@ type
     property DesiredAccess: DWORD read FDesiredAccess;
     property Description: string read FDescription; // Win2K or later
     property FileName: TFileName read FFileName;
-    property DependentServices[const Idx: TJclIndex]: TJclNtService read GetDependentService;
-    property DependentServiceCount: TJclIndex read GetDependentServiceCount;
-    property DependentGroups[const Idx: TJclIndex]: TJclServiceGroup read GetDependentGroup;
-    property DependentGroupCount: TJclIndex read GetDependentGroupCount;
-    property DependentByServices[const Idx: TJclIndex]: TJclNtService read GetDependentByService;
-    property DependentByServiceCount: TJclIndex read GetDependentByServiceCount;
+    property DependentServices[const Idx: Integer]: TJclNtService read GetDependentService;
+    property DependentServiceCount: Integer read GetDependentServiceCount;
+    property DependentGroups[const Idx: Integer]: TJclServiceGroup read GetDependentGroup;
+    property DependentGroupCount: Integer read GetDependentGroupCount;
+    property DependentByServices[const Idx: Integer]: TJclNtService read GetDependentByService;
+    property DependentByServiceCount: Integer read GetDependentByServiceCount;
     property ServiceTypes: TJclServiceTypes read FServiceTypes;
     property ServiceState: TJclServiceState read FServiceState;
     property StartType: TJclServiceStartType read FStartType;
@@ -256,8 +252,8 @@ type
     FName: string;
     FOrder: Integer;
     FServices: TList;
-    function GetService(const Idx: TJclIndex): TJclNtService;
-    function GetServiceCount: TJclIndex;
+    function GetService(const Idx: Integer): TJclNtService;
+    function GetServiceCount: Integer;
   protected
     constructor Create(const ASCManager: TJclSCManager; const AName: string; const AOrder: Integer);
     function Add(const AService: TJclNtService): Integer;
@@ -267,8 +263,8 @@ type
     property SCManager: TJclSCManager read FSCManager;
     property Name: string read FName;
     property Order: Integer read FOrder;
-    property Services[const Idx: TJclIndex]: TJclNtService read GetService;
-    property ServiceCount: TJclIndex read GetServiceCount;
+    property Services[const Idx: Integer]: TJclNtService read GetService;
+    property ServiceCount: Integer read GetServiceCount;
   end;
 
   TJclSCManager = class (TObject)
@@ -284,10 +280,10 @@ type
     FQueryServiceConfig2A: TQueryServiceConfig2AFunction;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
-    function GetService(const Idx: TJclIndex): TJclNtService;
-    function GetServiceCount: TJclIndex;
-    function GetGroup(const Idx: TJclIndex): TJclServiceGroup;
-    function GetGroupCount: TJclIndex;
+    function GetService(const Idx: Integer): TJclNtService;
+    function GetServiceCount: Integer;
+    function GetGroup(const Idx: Integer): TJclServiceGroup;
+    function GetGroupCount: Integer;
     procedure SetOrderAsc(const Value: Boolean);
     procedure SetOrderType(const Value: TJclServiceSortOrderType);
     function GetAdvApi32Handle: TModuleHandle;
@@ -327,10 +323,10 @@ type
     property DesiredAccess: DWORD read FDesiredAccess;
     property Active: Boolean read GetActive write SetActive;
     property Handle: SC_HANDLE read FHandle;
-    property Services[const Idx: TJclIndex]: TJclNtService read GetService;
-    property ServiceCount: TJclIndex read GetServiceCount;
-    property Groups[const Idx: TJclIndex]: TJclServiceGroup read GetGroup;
-    property GroupCount: TJclIndex read GetGroupCount;
+    property Services[const Idx: Integer]: TJclNtService read GetService;
+    property ServiceCount: Integer read GetServiceCount;
+    property Groups[const Idx: Integer]: TJclServiceGroup read GetGroup;
+    property GroupCount: Integer read GetGroupCount;
     property OrderType: TJclServiceSortOrderType read FOrderType write SetOrderType;
     property OrderAsc: Boolean read FOrderAsc write SetOrderAsc;
   end;
@@ -477,35 +473,35 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclNtService.GetDependentService(const Idx: TJclIndex): TJclNtService;
+function TJclNtService.GetDependentService(const Idx: Integer): TJclNtService;
 begin
   Result := TJclNtService(FDependentServices.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclNtService.GetDependentServiceCount: TJclIndex;
+function TJclNtService.GetDependentServiceCount: Integer;
 begin
   Result := FDependentServices.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclNtService.GetDependentGroup(const Idx: TJclIndex): TJclServiceGroup;
+function TJclNtService.GetDependentGroup(const Idx: Integer): TJclServiceGroup;
 begin
   Result := TJclServiceGroup(FDependentGroups.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclNtService.GetDependentGroupCount: TJclIndex;
+function TJclNtService.GetDependentGroupCount: Integer;
 begin
   Result := FDependentGroups.Count;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclNtService.GetDependentByService(const Idx: TJclIndex): TJclNtService;
+function TJclNtService.GetDependentByService(const Idx: Integer): TJclNtService;
 begin
   if not Assigned(FDependentByServices) then
     UpdateDependents;
@@ -515,7 +511,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclNtService.GetDependentByServiceCount: TJclIndex;
+function TJclNtService.GetDependentByServiceCount: Integer;
 begin
   if not Assigned(FDependentByServices) then
     UpdateDependents;
@@ -824,14 +820,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclServiceGroup.GetService(const Idx: TJclIndex): TJclNtService;
+function TJclServiceGroup.GetService(const Idx: Integer): TJclNtService;
 begin
   Result := TJclNtService(FServices.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclServiceGroup.GetServiceCount: TJclIndex;
+function TJclServiceGroup.GetServiceCount: Integer;
 begin
   Result := FServices.Count;
 end;
@@ -877,14 +873,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSCManager.GetService(const Idx: TJclIndex): TJclNtService;
+function TJclSCManager.GetService(const Idx: Integer): TJclNtService;
 begin
   Result := TJclNtService(FServices.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSCManager.GetServiceCount: TJclIndex;
+function TJclSCManager.GetServiceCount: Integer;
 begin
   Result := FServices.Count;
 end;
@@ -898,14 +894,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSCManager.GetGroup(const Idx: TJclIndex): TJclServiceGroup;
+function TJclSCManager.GetGroup(const Idx: Integer): TJclServiceGroup;
 begin
   Result := TJclServiceGroup(FGroups.Items[Idx]);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSCManager.GetGroupCount: TJclIndex;
+function TJclSCManager.GetGroupCount: Integer;
 begin
   Result := FGroups.Count;
 end;
