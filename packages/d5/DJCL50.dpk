@@ -73,6 +73,7 @@ contains
   Snmp in '..\Source\Snmp.pas',
   JclTD32 in '..\Source\JclTD32.pas',
   JclSvcCtrl in '..\Source\JclSvcCtrl.pas',
+  JclSchedule in '..\Source\JclSchedule.pas',
   JclStrHashMap in '..\Source\JclStrHashMap.pas';
 
 end.
