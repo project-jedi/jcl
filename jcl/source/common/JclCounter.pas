@@ -142,12 +142,12 @@ begin
   FOverallElapsedTime := 0;
 
   {$IFDEF MSWINDOWS}
-    QueryPerformanceCounter(FStart);
+   QueryPerformanceCounter(FStart);
   {$ENDIF}
 
   {$IFDEF UNIX}
-    GetTimeOfDay(FTimeval, nil);
-    FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+   GetTimeOfDay(FTimeval, nil);
+   FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
   {$ENDIF}
 end;
 
@@ -160,8 +160,8 @@ begin
   {$ENDIF}
 
   {$IFDEF UNIX}
-    GetTimeOfDay(FTimeval, nil);
-    FStop := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+  GetTimeOfDay(FTimeval, nil);
+  FStop := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
   {$ENDIF}
 
   FCounting := False;
@@ -179,12 +179,12 @@ var
 
 begin
   {$IFDEF MSWINDOWS}
-    QueryPerformanceCounter(TimeNow);
+  QueryPerformanceCounter(TimeNow);
   {$ENDIF}
 
   {$IFDEF UNIX}
-    GetTimeOfDay(FTimeval, nil);
-    TimeNow := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+  GetTimeOfDay(FTimeval, nil);
+  TimeNow := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
   {$ENDIF}
 
   Result := FOverallElapsedTime + ((TimeNow - FStart - FOverhead) / FFrequency);
