@@ -33,10 +33,8 @@
 {    the provisions above, a recipient may use your version of this file       }
 {    under either the MPL or the LPGL License.                                 }
 {                                                                              }
-{ **************************************************************************** }
-{    $Id$                }
+{    $Id$                    }
 {                                                                              }
-{    Last modified:  2003-11-15, Robert Rossmair                               }
 { **************************************************************************** }
 
 // Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
@@ -45,12 +43,8 @@
 program jpp;
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF}
   SysUtils,
   Classes,
   TypInfo,
@@ -62,10 +56,10 @@ uses
   PCharUtils in 'PCharUtils.pas';
 
 const
-  ProcessedExtension = '.pas'; // '.pi';
+  ProcessedExtension = '.pas';
   SWarningJppGenerated =
     '{**************************************************************************************************}'#13#10 +
-    '{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }'#13#10 +
+    '{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }'#13#10 +
     '{**************************************************************************************************}'#13#10;
 
 procedure Syntax;
