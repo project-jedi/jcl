@@ -21,7 +21,7 @@
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
 { Unit owner: Jan Jacobs                                                                           }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: May 12, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -426,9 +426,10 @@ end;
 
 procedure TJclMultimediaTimer.EndTimer;
 begin
-  if (FTimerId <> 0) and (FKind = tkPeriodic) then
+  if FTimerId <> 0 then
   begin
-    timeKillEvent(FTimerId);
+    if FKind = tkPeriodic then
+      timeKillEvent(FTimerId);
     timeEndPeriod(FPeriod);
     FTimerId := 0;
   end;
