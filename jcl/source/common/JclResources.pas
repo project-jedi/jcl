@@ -488,6 +488,18 @@ resourcestring
   RsNaNSignal          = 'NaN signaling %d';
 
 //--------------------------------------------------------------------------------------------------
+// JclMetadata
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsUnknownClassLayout      = 'Unknown class layout - $%.8x';
+  RsUnknownStringFormatting = 'Unknown string formatting - $%.8x';
+  RsInvalidSignatureData    = 'Invalid compressed signature data - %.2x %.2x %.2x %.2x';
+  RsUnknownManifestResource = 'Unknown manifest resource visibility - %d';
+  RsNoLocalVarSig           = 'Signature %s is not LocalVarSig';
+  RsLocalVarSigOutOfRange   = 'LocalVarSig count %d is out of range [1..$$FFFE]';
+
+//--------------------------------------------------------------------------------------------------
 // JclMidi
 //--------------------------------------------------------------------------------------------------
 
