@@ -26,20 +26,27 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: October 30, 2003                                                                      }
+{ Last modified: Nov 25, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclGraphics;
+
+unit  JclGraphics ;
+
 
 {$I jcl.inc}
 
 interface
 
 uses
-   Windows, 
+  
+  Windows,
+  
   SysUtils, Classes,
-  Graphics, JclGraphUtils,
+  
+  Graphics,
+  JclGraphUtils,
+  
   JclBase;
 
 type
@@ -487,7 +494,7 @@ function FillGradient(DC: HDC; ARect: TRect; ColorCount: Integer;
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;
   RegionBitmapMode: TJclRegionBitmapMode): HRGN;
 procedure ScreenShot(bm: TBitmap; Left, Top, Width, Height: Integer; Window: HWND = HWND_DESKTOP); overload;
-procedure ScreenShot(bm: TBitmap); overload;
+procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
 
 
 //--------------------------------------------------------------------------------------------------
@@ -2153,9 +2160,20 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure ScreenShot(bm: TBitmap); overload;
+procedure ScreenShot(bm: TBitmap; IncludeTaskBar: Boolean = True); overload;
+var
+  R: TRect;
 begin
-  ScreenShot(bm, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), HWND_DESKTOP);
+  if IncludeTaskBar then
+  begin
+    R.Left := 0;
+    R.Top := 0;
+    R.Right := GetSystemMetrics(SM_CXSCREEN);
+    R.Bottom := GetSystemMetrics(SM_CYSCREEN);
+  end
+  else
+    SystemParametersInfo(SPI_GETWORKAREA, 0, @R, 0);
+  ScreenShot(bm, R.Left, R.Top, R.Right, R.Bottom, HWND_DESKTOP);
 end;
 
 

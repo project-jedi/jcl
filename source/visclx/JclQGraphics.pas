@@ -26,20 +26,28 @@
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
-{ Last modified: October 30, 2003                                                                      }
+{ Last modified: Nov 25, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
-unit JclQGraphics;
+
+unit  JclQGraphics ;
+
 
 {$I jcl.inc}
 
 interface
 
 uses
-  {$IFDEF MSWINDOWS} Windows, {$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  Types, SyncObjs, QGraphics, JclQGraphUtils,
+  
+  Types, SyncObjs,
+  QGraphics,
+  JclQGraphUtils,
+  
   JclBase;
 
 type
