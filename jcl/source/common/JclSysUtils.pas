@@ -16,6 +16,9 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
+{ Description: Various pointer and class related routines.                     }
+{ Unit Owner: Jeroen Speldekamp                                                }
+{                                                                              }
 { Last modified: October 05, 2000                                              }
 {                                                                              }
 {******************************************************************************}
@@ -38,14 +41,14 @@ uses
 
 {$IFNDEF DELPHI5_UP}
 procedure FreeAndNil(var Obj);
-{$ENDIF} // DELPHI5_UP
+{$ENDIF DELPHI5_UP}
 
 procedure GetAndFillMem(var P: Pointer; const Size: Integer; const Value: Byte);
 procedure FreeMemAndNil(var P: Pointer);
-function PCharOrNil(const S: AnsiString): PChar;
+function PCharOrNil(const S: AnsiString): PAnsiChar;
 {$IFDEF SUPPORTS_WIDESTRING}
 function PWideCharOrNil(const W: WideString): PWideChar;
-{$ENDIF}
+{$ENDIF SUPPORTS_WIDESTRING}
 
 function SizeOfMem(const APointer: Pointer): Integer;
 
@@ -69,7 +72,7 @@ function Guard(Obj: TObject; out SafeGuard: ISafeGuard): TObject; overload;
 function GuardGetMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 function GuardAllocMem(Size: Cardinal; out SafeGuard: ISafeGuard): Pointer;
 
-{$ENDIF}
+{$ENDIF SUPPORTS_INTERFACE}
 
 //------------------------------------------------------------------------------
 // Object lists
@@ -92,7 +95,7 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Bool
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 {$IFDEF SUPPORTS_INT64}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
-{$ENDIF}
+{$ENDIF SUPPORTS_INT64}
 
 //------------------------------------------------------------------------------
 // Classes information and manipulation
@@ -126,6 +129,7 @@ function HasDynamicMethod(AClass: TClass; Index: Integer): Boolean;
 function GetDynamicMethod(AClass: TClass; Index: Integer): Pointer;
 
 { init table methods }
+
 function GetInitTable(AClass: TClass): PTypeInfo;
 
 { field table methods }
@@ -182,21 +186,22 @@ procedure SetClassParent(AClass: TClass; NewClassParent: TClass);
 function GetClassParent(AClass: TClass): TClass;
 
 function IsClass(Address: Pointer): Boolean;
+function IsObject(Address: Pointer): Boolean;
 
 //------------------------------------------------------------------------------
 // Numeric formatting routines
 //------------------------------------------------------------------------------
 
-function IntToStrZeroPad(Value, Count: Integer): AnsiString; // TODOC Anthony
+function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
 implementation
 
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+  {$ENDIF WIN32}
   SysUtils,
-  JclStrings, JclResources;
+  JclResources;
 
 //==============================================================================
 // Pointer manipulation
@@ -213,7 +218,7 @@ begin
   O.Free;
 end;
 
-{$ENDIF} // DELPHI5_UP
+{$ENDIF DELPHI5_UP}
 
 //------------------------------------------------------------------------------
 
@@ -236,7 +241,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PCharOrNil(const S: AnsiString): PChar;
+function PCharOrNil(const S: AnsiString): PAnsiChar;
 begin
   if Length(S) = 0 then
     Result := nil
@@ -256,7 +261,7 @@ begin
     Result := PWideChar(W);
 end;
 
-{$ENDIF}
+{$ENDIF SUPPORTS_WIDESTRING}
 
 //------------------------------------------------------------------------------
 
@@ -399,7 +404,7 @@ begin
   Guard(Result, SafeGuard);
 end;
 
-{$ENDIF}
+{$ENDIF SUPPORTS_INTERFACE}
 
 //==============================================================================
 // Object lists
@@ -521,7 +526,7 @@ begin
     Result := FalsePart;
 end;
 
-{$ENDIF}
+{$ENDIF SUPPORTS_INT64}
 
 //==============================================================================
 // Classes information and manipulation
@@ -604,9 +609,9 @@ function GetDynamicMethodCount(AClass: TClass): Integer; assembler;
 asm
         MOV     EAX, [EAX].vmtDynamicTable
         TEST    EAX, EAX
-        JE      @@EXIT
+        JE      @@Exit
         MOVZX   EAX, WORD PTR [EAX]
-@@EXIT:
+@@Exit:
 end;
 
 //------------------------------------------------------------------------------
@@ -638,29 +643,29 @@ asm
 
         PUSH    EDI
         XCHG    EAX, EDX
-        JMP     @@haveVMT
-@@outerLoop:
+        JMP     @@HaveVMT
+@@OuterLoop:
         MOV     EDX, [EDX]
-@@haveVMT:
+@@HaveVMT:
         MOV     EDI, [EDX].vmtDynamicTable
         TEST    EDI, EDI
-        JE      @@parent
+        JE      @@Parent
         MOVZX   ECX, WORD PTR [EDI]
         PUSH    ECX
         ADD     EDI,2
         REPNE   SCASW
-        JE      @@found
+        JE      @@Found
         POP     ECX
-@@parent:
+@@Parent:
         MOV     EDX,[EDX].vmtParent
         TEST    EDX,EDX
-        JNE     @@outerLoop
+        JNE     @@OuterLoop
         MOV     EAX, 0
-        JMP     @@exit
-@@found:
+        JMP     @@Exit
+@@Found:
         POP     EAX
         MOV     EAX, 1
-@@exit:
+@@Exit:
         POP     EDI
 end;
 
@@ -730,9 +735,9 @@ function GetClassParent(AClass: TClass): TClass; assembler;
 asm
         MOV     EAX, [AClass].vmtParent
         TEST    Result, EAX
-        JE      @@EXIT
+        JE      @@Exit
         MOV     EAX, [EAX]
-@@EXIT:
+@@Exit:
 end;
 
 //------------------------------------------------------------------------------
@@ -740,12 +745,12 @@ end;
 function IsClass(Address: Pointer): Boolean; assembler;
 asm
         CMP     Address, Address.vmtSelfPtr
-        JNZ     @FALSE
+        JNZ     @False
         MOV     Result, True
-        JMP     @EXIT
-@FALSE:
+        JMP     @Exit
+@False:
         MOV     Result, False
-@EXIT:
+@Exit:
 end;
 
 //------------------------------------------------------------------------------
@@ -755,12 +760,12 @@ asm
 // or IsClass(Pointer(Address^));
         MOV     EAX, [Address]
         CMP     EAX, EAX.vmtSelfPtr
-        JNZ     @FALSE
+        JNZ     @False
         MOV     Result, True
-        JMP     @EXIT
-@FALSE:
+        JMP     @Exit
+@False:
         MOV     Result, False
-@EXIT:
+@Exit:
 end;
 
 //==============================================================================
