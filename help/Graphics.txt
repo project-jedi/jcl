@@ -104,7 +104,7 @@ Count=3
 3=DarkColorChannel
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure GetRGBValue(const Color: TColor; var Red, Green, Blue: Byte);
+procedure GetRGBValue(const Color: TColor; out Red, Green, Blue: Byte);
 [ShortDescr]
 Returns the Red, Green and Blue components of a TColor.
 [Description]
@@ -1449,7 +1449,7 @@ Delphi=3,4,5
 BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure WinColor2OpenGLColor(Color : TColor; var Red, Green, Blue: Float);
+procedure WinColor2OpenGLColor(Color : TColor; out Red, Green, Blue: Float);
 [ShortDescr]
 Converts TColor to OpenGLColor.
 [Description]
