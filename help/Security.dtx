@@ -31,8 +31,10 @@ Parameters:
   Path - Path of the registry key for which to set full access to everyone.
 Result:
   If the function succeeds it returns True, otherwise it returns False.
-Quick info:
-  Donator: John C Molyneux
+Note:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
+Donator:
+  John C Molyneux
 --------------------------------------------------------------------------------
 @@CreateNullDacl
 <GROUP Security.AccessControl>
@@ -52,10 +54,11 @@ Result:
   code such as CreateFile(..., CreateNullDacl(Sa, True), ...).
 Notes:
   The caller is responsible for freeing the memory associated with the lpSecurityDescriptor member of the TSecurityAttributes member. Use FreeMem(Sa.lpSecurityDescriptor).
+  Under Windows 95/98/Millenium Edition, this function always returns <b>nil</b>.
 See also:
   CreateInheritable
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@CreateInheritable
 <GROUP Security.AccessControl>
@@ -71,10 +74,12 @@ Parameters:
 Result:
   A pointer to the passed in TSecurityAttributes structure. This allows you to write
   code such as CreateFile(..., CreateInheritable(Sa), ...).
+Note:
+  Under Windows 95/98/Millenium Edition, this function always returns <b>nil</b>.
 See also:
   CreateNullDacl
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsPrivilegeEnabled
 <GROUP Security.Privileges>
@@ -91,11 +96,13 @@ Result:
   If the specified privilege is enabled for the calling thread then the function
   returns True, otherwise the function returns False - this is also the return
   value if the function fails in retrieving the status of the specified privilege.
+Note:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
 See also:
   EnableProcessPrivilege
   EnableThreadPrivilege
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EnableProcessPrivilege
 <GROUP Security.Privileges>
@@ -113,11 +120,12 @@ Result:
   If the function succeeds the result is True, otherwise the result is False. Failure
   is usually caused by the caller not having sufficient access rights (i.e. TOKEN_ADJUST_PRIVILEGE)
   to enable or disable privileges.
+Note: Under Windows 95/98/Millenium Edition, this function always returns True.
 See also:
   EnableThreadPrivilege
   IsPrivilegeEnabled
-Quick info:
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EnableThreadPrivilege
 <GROUP Security.Privileges>
@@ -139,8 +147,10 @@ Result:
 See also:
   EnableProcessPrivilege
   IsPrivilegeEnabled
-Quick info:
-  Donator: Marcel van Brakel
+Note:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IsAdministrator
 <GROUP Security.Privileges>
@@ -153,6 +163,7 @@ Description:
 Result:
   If the process is running in the user context of a local administrator the function
   returns True, otherwise it returns False.
+Note: Under Windows 95/98/Millenium Edition, this function always returns True.
 Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -168,6 +179,8 @@ Parameters:
   Sid - Security Identifier of the account for which to lookup the domain and account-name.
   Name - Returns the account-name of the principal identified by Sid.
   Domain - Returns the domain-name in which the principal identified by Sid is located (if any).
+Note:
+  Under Windows 95/98/Millenium Edition, LookupAccountBySid always returns empty strings.
 Quick info:
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -176,7 +189,7 @@ Quick info:
 Summary:
   Wrapper for the GetTokenInformation Windows API function.
 Description:
-  QuerytokenInformation is a wrapper for the GetTokenInformation Windows API function
+  QueryTokenInformation is a wrapper for the GetTokenInformation Windows API function
   which relieves the user of buffer management. For more information about the purpose
   of this funcion look up the GetTokenInformation function in the Platform SDK. If
   the function fails it raises an exception.
@@ -184,8 +197,10 @@ Parameters:
   Token - Handle to an access token to query for information.
   InformationClass - The type of information to retrieve.
   Buffer - Upon success reveices a buffer containing the requested information. This buffer must be freed by the caller by using the FreeMem function. Upon failure the buffer is undefined and should not be freed.
-Quick info:
-  Donator: Marcel van Brakel
+Note:
+  Under Windows 95/98/Millenium Edition, QueryTokenInformation always sets Buffer to <b>nil</b>.
+Donator:
+  Marcel van Brakel
 --------------------------------------------------------------------------------
 @@GetInteractiveUserName
 <GROUP AccountInformation>
@@ -204,5 +219,58 @@ Description:
   accept one running in the localsystem security context.
 Result:
   The name of the interactively logged on user, if any, in the format domain\username.
-Quick info:
-  Donator: Marcel van Brakel
+Note:
+  Under Windows 95/98/Millenium Edition, this function always returns an empty string.
+Donator:
+  Marcel van Brakel
+--------------------------------------------------------------------------------
+@@GetPrivilegeDisplayName
+<GROUP Security.Privileges>
+Summary:
+  Wrapper around the LookupPrivilegeDisplayName Windows API function.
+Description:
+  The GetPrivilegeDisplayName function retrieves the display name that represents a specified
+  privilege on the local system.
+Parameters:
+  PrivilegeName - the name of the privilege, as defined in Winnt.h. For example, this parameter
+    could specify 'SeRemoteShutdownPrivilege'.
+Result:
+  A string that specifies the privilege display name, or an empty string if the function failed.
+  For example, if the PrivilegeName parameter is 'SeRemoteShutdownPrivilege', the privilege display
+  name is 'Force shutdown from a remote system.'
+Note:
+  Under Windows 95/98/Millenium Edition, this function always returns an empty string.
+Donator:
+  Unknown
+--------------------------------------------------------------------------------
+@@GetUserObjectName
+<GROUP Security.Privileges>
+Summary:
+  Returns the name of the specified object.
+Description:
+Parameters:
+  hUserObject - Handle to the window station or desktop object for which to return information.
+    This handle is returned by the CreateWindowStation, OpenWindowStation, CreateDesktop, or OpenDesktop function.
+Result:
+  The name of the specified object, or an empty string if the function failed.
+Note:
+  Under Windows 95/98/Millenium Edition, this function always returns an empty result.
+Donator:
+  Unknown
+--------------------------------------------------------------------------------
+@@SetUserObjectFullAccess
+<GROUP Security.Privileges>
+Summary:
+  Permits full access to a user object.
+Description:
+  The SetUserObjectFullAccess function permits full access to a user object.
+  This can be, for example, a window or a DDE conversation.
+Parameters:
+  hUserObject - Handle to a user object for which full access is to be granted.
+Result:
+  True on success, False otherwise.
+Note:
+  Under Windows 95/98/Millenium Edition, this function does nothing; in addition, it always returns True.
+Donator:
+  Unknown
+

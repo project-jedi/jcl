@@ -9,7 +9,7 @@ Description:
   directly call the registry API they do not suffer from the resource overhead as TRegistry does.
 Donators: John C Molyneux, Marcel van Brakel, Charlie Calvert
 Contributors:
-  Marcel van Brakel, Stephane Fillon, Eric S.Fisher, Peter Friese, Peter J. Haas,
+  Marcel van Brakel, Stephane Fillon, Eric S.Fisher, Peter Friese, <LINK PeterJHaas, Peter J. Haas>,
   Andreas Hausladen, Manlio Laschena, Robert Marquardt, Robert Rossmair,
   Olivier Sannier, Petr Vones
 --------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ See also:
   RegReadStringDef
   RegReadBinaryDef
 Donator: Marcel van Brakel
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegReadStringDef
 <GROUP RegistryandInifiles.Registry>
@@ -125,7 +125,7 @@ See also:
   RegReadIntegerDef
   RegReadBinaryDef
 Donator: Marcel van Brakel
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegReadBinaryDef
 <GROUP RegistryandInifiles.Registry>
@@ -152,7 +152,7 @@ See also:
   RegReadIntegerDef
   RegReadStringDef
 Donator: Stephane Fillon
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegDeleteEntry
 <GROUP RegistryandInifiles.Registry>
@@ -206,7 +206,7 @@ See also:
   RegWriteString
   RegWriteBinary
 Donator: John C Molyneux
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegWriteCardinal
 <GROUP RegistryandInifiles.Registry>
@@ -224,7 +224,7 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegWriteInt64
 <GROUP RegistryandInifiles.Registry>
@@ -243,7 +243,7 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegWriteUInt64
 <GROUP RegistryandInifiles.Registry>
@@ -262,7 +262,7 @@ See also:
   RegWriteBool
   RegWriteString
   RegWriteBinary
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegWriteString
 <GROUP RegistryandInifiles.Registry>
@@ -281,12 +281,14 @@ See also:
   RegWriteInteger
   RegWriteBinary
 Donator: John C Molyneux
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegWriteAnsiString
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegWriteString>
 
 @@RegWriteWideString
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegWriteString>
 --------------------------------------------------------------------------------
 @@RegWriteMultiString
@@ -304,7 +306,7 @@ Parameters:
 See also:
   RegWriteString
   RegReadMultiString
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegWriteBinary
 <GROUP RegistryandInifiles.Registry>
@@ -324,7 +326,7 @@ See also:
   RegWriteInteger
   RegWriteString
 Donator: Stephane Fillon
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegReadBool
 <GROUP RegistryandInifiles.Registry>
@@ -363,7 +365,7 @@ See also:
   RegReadString
   RegReadBinary
 Donator: John C Molyneux
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegReadString
 <GROUP RegistryandInifiles.Registry>
@@ -383,7 +385,7 @@ See also:
   RegReadInteger
   RegReadBinary
 Donator: John C Molyneux
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegReadBinary
 <GROUP RegistryandInifiles.Registry>
@@ -408,24 +410,27 @@ See also:
   RegReadInteger
   RegReadString
 Donator: Stephane Fillon
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadBinaryDef
-Donator: Peter J. Haas
+<GROUP RegistryandInifiles.Registry>
+Donator: <LINK PeterJHaas, Peter J. Haas>
 <COMBINE RegReadBinary>
 --------------------------------------------------------------------------------
 @@RegReadBinaryAsAnsiString
 <GROUP RegistryandInifiles.Registry>
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadBinaryAsAnsiStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadBinaryAsAnsiString>
 --------------------------------------------------------------------------------
 @@RegReadBinaryAsWideString
 <GROUP RegistryandInifiles.Registry>
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadBinaryAsWideStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadBinaryAsWideString>
 --------------------------------------------------------------------------------
 @@UnregisterAutoExec
@@ -490,16 +495,22 @@ See also:
   RegisterAutoExec
 Donator: Marcel van Brakel
 @@TExecKind.ekMachineRun
+<GROUP RegistryandInifiles.Registry>
   Register under HKLM\..\Run. This will execute the specified file each time at logon for each user, until it is unregistered.
 @@TExecKind.ekMachineRunOnce
+<GROUP RegistryandInifiles.Registry>
   Register under HKLM\..\RunOnce. This will execute the specified file once at the next logon independent of which user logs on.
 @@TExecKind.ekUserRun
+<GROUP RegistryandInifiles.Registry>
   Register under HKCU\..\Run. This will execute the specified file each time at logon for the current user, until it is unregistered.
 @@TExecKind.ekUserRunOnce
+<GROUP RegistryandInifiles.Registry>
   Register under HKCU\..\RunOnce. This will execute the specified file once at the next logon for the current user.
 @@TExecKind.ekServiceRun
+<GROUP RegistryandInifiles.Registry>
   Register under HKCU\..\RunServices. Not supported on NT - simulates services on Windows 9x. The specified file is executed before each logon untl it is unregistered.
 @@TExecKind.ekServiceRunOnce
+<GROUP RegistryandInifiles.Registry>
   Register under HKCU\..\RunServicesOnce. Not supported on NT - simulates services on Windows 9x. The specified file is executed once before the next logon.
 --------------------------------------------------------------------------------
 @@RegGetValueNames
@@ -627,7 +638,8 @@ See also:
   RegLoadList
 Donator: Robert Marquardt
 --------------------------------------------------------------------------------
-@@RegKeyExists@HKEY@string
+@@RegKeyExists
+<GROUP RegistryandInifiles.Registry>
 Description
 The function <B>RegKeyExists</B> checks if the specified
 registry key exists.
@@ -651,6 +663,7 @@ QuickInfo
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@EJclRegistryError
+<GROUP RegistryandInifiles.Registry>
 Description
 Error class, the instance of which is raised by functions
 from Registry.pas JCL unit.
@@ -669,84 +682,93 @@ QuickInfo
 @@RegGetDataSize
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegGetDataType
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@RegReadCardinal
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadCardinalDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadCardinal>
 --------------------------------------------------------------------------------
 @@RegReadInt64
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadInt64Def
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadInt64>
 --------------------------------------------------------------------------------
 @@RegReadUInt64
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadUInt64Def
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadUInt64>
 --------------------------------------------------------------------------------
 @@RegReadAnsiString
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadAnsiStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadAnsiString>
 --------------------------------------------------------------------------------
 @@RegReadWideString
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadWideStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadWideString>
 --------------------------------------------------------------------------------
 @@RegReadMultiString
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadMultiStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadMultiString>
 --------------------------------------------------------------------------------
 @@RegReadMultiAnsiString
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadMultiAnsiStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadMultiAnsiString>
 --------------------------------------------------------------------------------
 @@RegReadMultiWideString
 <GROUP RegistryandInifiles.Registry>
 Description: TODO
-Donator: Peter J. Haas
+Donator: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadMultiWideStringDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadMultiWideString>
 --------------------------------------------------------------------------------
 @@RegReadDWORD
 <GROUP RegistryandInifiles.Registry>
 This functions read invalid 8 byte REG_DWORD values.
 Obsolete, use RegReadInt64 instead.
-Contributor: Peter J. Haas
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 
 @@RegReadDWORDDef
+<GROUP RegistryandInifiles.Registry>
 <COMBINE RegReadDWORD>
 --------------------------------------------------------------------------------
 @@RegWriteDWORD

@@ -126,7 +126,8 @@ Parameters:
 Result:
   The size of the file, in bytes. If the function fails to determine the size of
   the file it raises an exception.
-Donator: David Hervieux
+Donator: David Hervieux (Win32 code)
+Contributor: Robert Rossmair (Unix code)
 --------------------------------------------------------------------------------
 @@TJclFileMappingView
 <GROUP FilesandIO.Streams.TJclFileMappingView>
@@ -670,7 +671,6 @@ Result:
 See also:
   PathIsDiskDevice
   PathIsUnc
-
 Donator: Robert Marquardt
 --------------------------------------------------------------------------------
 @@PathIsDiskDevice
@@ -688,8 +688,8 @@ Result:
 See also:
   PathIsUnc
   PathIsAbsolute
-
-Donator: Robert Marquardt
+Donators: Robert Marquardt (Win32), André Snepvangers (Unix)
+Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@PathIsUNC
 <GROUP FilesandIO.Pathmanipulation>
@@ -836,8 +836,8 @@ Result:
   The compacted path or an empty string if the function fails.
 Notes:
   If Width is smaller than the most compacted path then the result is the most compacted path, even though it does not fit within the specified width.
-
 Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@PathExtractFileDirFixed
 <GROUP FilesandIO.Pathmanipulation>
@@ -1206,7 +1206,7 @@ Result:
   returns False. Note that if the specified file is the root of a drive (e.g. 'c:\')
   the function returns True, if the file does not exist the function returns False.
 
-Donator: Marcel van Brakel
+Donators: Marcel van Brakel (Win32), Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@LockVolume
 <GROUP FilesandIO.FilesandDirectories>
@@ -1231,7 +1231,6 @@ Notes:
   The device is, according to Microsoft recommendations, opened with no buffering. This action imposes a number of 'limitations' for subsequent access to the device. For example the alignment of buffers must be on a multiple of the volume's sector size. See the Platform SDK for details.
 See also:
   UnlockVolume
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@OpenVolume
@@ -1323,6 +1322,7 @@ See also:
   GetFileInformation
 
 Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@GetFileAgeCoherence
 <GROUP FilesandIO.FilesandDirectories>
@@ -1543,6 +1543,7 @@ See also:
   DelTree
 
 Donator: John C Molyneux
+Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@DirectoryExists
 <GROUP FilesandIO.FilesandDirectories>
@@ -1556,7 +1557,8 @@ Result:
   If the directory exists the function returns True, otherwise it returns False.
 Notes:
   This function is a replacement for the FileUtils.DirectoryExists function from the Delphi RTL to avoid dependency on that particular unit. There's nothing wrong with that function except that the unit uses Forms etc. which add significant resources and startup time to your application (if it doesn't use these units already).
-
+Donator: Unknown (Win32)
+Contributor: Robert Rossmair (Unix)
 --------------------------------------------------------------------------------
 @@DiskInDrive
 <GROUP FilesandIO.FilesandDirectories>
@@ -2017,7 +2019,7 @@ Parameters
   FileName :   File name that is used to construct file name of
                backup file.
 Category: Files and IO
-Donator: Marcel van Brakel
+Donator: Marcel van Brakel (Jeff?)
 --------------------------------------------------------------------------------
 @@OSFileTypeToString
 <GROUP FilesandIO.FileSystems>
@@ -2127,6 +2129,54 @@ QuickInfo
   Windows NT/2000: Requires Windows NT 4 or later.
   Windows 95/98: Unsupported.
 --------------------------------------------------------------------------------
+@@Win32DeleteFile
+<GROUP FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  FileName - 
+  MoveToRecycleBin -
+Result:
+Donator: Jeff
+--------------------------------------------------------------------------------
+@@Win32MoveFileReplaceExisting
+<GROUP FilesandIO.FilesandDirectories>
+Summary: TODO
+Description: TODO
+Parameters:
+  SrcFilename -
+  DstFilename -
+Result:
+  True on success, False otherwise.
+Donator: <LINK PeterJHaas, Peter J. Haas>
+--------------------------------------------------------------------------------
+@@Win32BackupFile
+<GROUP FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  FileName -
+  Move -
+Result:
+  True on success, False otherwise. If the function fails, call GetLastError to
+  to get extended error information, or RaiseLastOSError to pass the information
+  on to the user.
+Donator:
+Contributor: <LINK PeterJHaas, Peter J. Haas>
+--------------------------------------------------------------------------------
+@@Win32RestoreFile
+<GROUP FilesandIO.FilesandDirectories>
+Summary:
+Description:
+Parameters:
+  FileName - The name of the file to restore.
+Result:
+  True on success, False otherwise. If the function fails, call GetLastError to
+  to get extended error information, or RaiseLastOSError to pass the information
+  on to the user.
+Donator: Unknown
+Contributor: <LINK PeterJHaas, Peter J. Haas>
+--------------------------------------------------------------------------------
 @@VersionFixedFileInfo
 <GROUP FilesandIO.FilesandDirectories.TJclFileVersionInfo>
 Summary
@@ -2148,6 +2198,19 @@ Category: Files and IO
 Donator: Marcel van Brakel
 See Also
   VersionResourceAvailable, TJclFileVersionInfo
+--------------------------------------------------------------------------------
+@@CreateSymbolicLink
+Parameters
+  const Name :  The name of the symbolic link.
+  const Target: The file the link points to.
+Donator: Robert Rossmair
+--------------------------------------------------------------------------------
+@@SymbolicLinkTarget
+Parameters
+  const Name :  The name of the symbolic link
+Result
+  The file the link points to.
+Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@TFileSearchOptions
 <GROUP FilesandIO.FilesandDirectories.>
@@ -2182,8 +2245,6 @@ The attribute is required for a file to be included in the search result set.
 @@TAttributeInterest.aiRejected
 The attribute causes a file to be excluded from the search result set.
 --------------------------------------------------------------------------------
-
-
 @@IJclFileEnumerator
 <GROUP $FilesandIO.FilesandDirectories.FileSearch>
 

@@ -82,10 +82,9 @@ Result:
 Notes:
   If S is an empty string the result is False.
 See also:
-  StrIsNumber
+  StrConsistsOfNumberChars
   StrIsAlphaNum
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -105,10 +104,9 @@ Notes:
   If S is an empty string the result is False.
 See also:
   StrIsAlpha
-  StrIsNumber
+  StrConsistsOfNumberChars
   StrIsAlphaNumUnderscore
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -129,9 +127,8 @@ Notes:
   If S is an empty string the result is False.
 See also:
   StrIsAlpha
-  StrIsNumber
+  StrConsistsOfNumberChars
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -151,7 +148,6 @@ Parameters:
 Result:
   Returns True if the condition is met, otherwise it returns False.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Petr Vones
 --------------------------------------------------------------------------------
@@ -160,10 +156,10 @@ Quick info:
 Summary:
   Tests whether S contains only numerical characters.
 Description:
-  StrIsNumber tests whether the supplied string consists only of numerical characters.
+  StrConsistsOfNumberChars tests whether the supplied string consists only of numerical characters.
   That is, whether or not all individual characters come from the ['0'..'9'] set.
   The test does not include the decimal separator. To include it in the test
-  use StrIsNumber instead.
+  use StrConsistsOfNumberChars instead.
 Parameters:
   S - The string to test
 Result:
@@ -173,18 +169,18 @@ Notes:
 See also:
   StrIsAlpha
   StrIsAlphaNum
-  StrIsNumber
+  StrConsistsOfNumberChars
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Martin Kubecka
 --------------------------------------------------------------------------------
-@@StrIsNumber
+@@StrConsistsOfNumberChars
 <GROUP Stringmanipulation.StringTestRoutines>
 Summary:
   Tests whether S contains only numerical characters.
 Description:
-  StrIsNumber tests whether the supplied string consists only of numerical characters.
+  StrConsistsOfNumberChars tests whether the supplied string consists only of numerical characters.
   That is, whether or not all individual characters come from the ['0'..'9'] set
   including the decimal separator. To test for numerical characters without the
   decimal separator, use StrIsDigit instead;
@@ -199,7 +195,7 @@ See also:
   StrIsAlphaNum
   StrIsDigit
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Nick Hodges
 --------------------------------------------------------------------------------
@@ -219,7 +215,7 @@ Result:
 Notes:
   If the supplied string is empty, the result is always True. If the supplied character set is empty, the result is always False. Empty string overules empty set.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -239,7 +235,7 @@ Result:
 See also:
   StrCompare
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -296,7 +292,7 @@ See also:
   StrSingleQuote
   StrTrimQuotes
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -314,11 +310,31 @@ Parameters:
 Result:
   The function result is a copy of the supplied Text, prefixed with Prefix.
 See also:
+  StrEnsureNoPrefix
   StrEnsureSuffix
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: Nick Hodges
+Donator: Nick Hodges
+--------------------------------------------------------------------------------
+@@StrEnsureNoPrefix
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Eventually removes Prefix from Text.
+Description:
+  StrEnsureNoPrefix tests whether the supplied text start with the supplied prefix.
+  If it does then the prefix is deleted from the string otherwise the function
+  does nothing.
+Parameters:
+  Prefix - The prefix to test for and apply
+  Text - The string which must not have a prefix
+Result:
+  The function result is a copy of the supplied Text, eventually minus the prefix.
+See also:
+  StrEnsurePrefix
+  StrEnsureNoSuffix
+Quick info:
+  Category: String manipulation
+Donator: Olivier Sannier
 --------------------------------------------------------------------------------
 @@StrEnsureSuffix
 <GROUP Stringmanipulation.StringTransformationRoutines>
@@ -334,11 +350,31 @@ Parameters:
 Result:
   The function result is a copy of the supplied Text, with the suffix.
 See also:
+  StrEnsureNoSuffix
   StrEnsurePrefix
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StrEnsureNoSuffix
+<GROUP Stringmanipulation.StringTransformationRoutines>
+Summary:
+  Eventually removes Suffix from Text.
+Description:
+  StrEnsureSuffix tests whether the supplied text ends in the supplied suffix.
+  If it does then the suffix is deleted from the string otherwise the function
+  does nothing.
+Parameters:
+  Suffix - The suffix to test for and apply
+  Text - The string which must not have a suffix
+Result:
+  The function result is a copy of the supplied Text, eventually minus the suffix.
+See also:
+  StrEnsureSuffix
+  StrEnsureNoPrefix
+Quick info:
+  Category: String manipulation
+Donator: Olivier Sannier
 --------------------------------------------------------------------------------
 @@StrEscapedToString
 <GROUP Stringmanipulation.StringTransformationRoutines>
@@ -374,7 +410,7 @@ Result:
 See also:
   StrStringToEscaped
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Robert Marquardt
 --------------------------------------------------------------------------------
@@ -393,7 +429,7 @@ See also:
   StrUpperInPlace
   StrUpperBuff
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
@@ -412,7 +448,7 @@ See also:
   StrUpperInPlace
   StrUpperBuff
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -431,7 +467,7 @@ See also:
   StrUpperInPlace
   StrUpperBuff
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -451,7 +487,7 @@ Parameters:
   FromIndex - The starting index into the source string from which count characters are copied.
   Count - Length of the sub-string to copy in characters.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -473,7 +509,7 @@ See also:
   StrPadRight
   StrCenter
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -495,7 +531,7 @@ See also:
   StrPadLeft
   StrCenter
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -511,7 +547,7 @@ Parameters:
 Result:
   The transformed string.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -525,7 +561,7 @@ Description:
 Parameters:
   S - The string to transform.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -543,7 +579,7 @@ Parameters:
 Result:
   The quoted string.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -563,7 +599,7 @@ Result:
 Notes:
   The function is case sensitive. That is, specifying 'e' will not remove 'E'.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -580,7 +616,7 @@ Parameters:
 Result:
   The specified string, repeated Count number of times.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -601,7 +637,7 @@ Result:
 See also:
   StrReverseInPlace
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -618,7 +654,7 @@ Parameters:
 See also:
   StrReverse
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -637,7 +673,7 @@ See also:
   StrDoubleQuote
   StrTrimQuotes
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -662,7 +698,7 @@ Result:
 Notes:
   Original author is John C Molyneux (jaymol@hotmail.com). Function was rewritten by Marcel van Brakel.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -700,7 +736,7 @@ Result:
 See also:
   StrEscapedToString
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Robert Marquardt
 --------------------------------------------------------------------------------
@@ -711,7 +747,7 @@ Summary:
 Description:
   StrStripNonNumberChars removes all non-number characters from the specified string.
   Hence the resulting string will contain only number characters. Testing whether
-  the individual characters are numbers is done using the CharIsNumber routine and
+  the individual characters are numbers is done using the CharIsNumberChar routine and
   therefore characters that qualify are all digits (0..9), signs (+, -) and decimal
   separators.
 Parameters:
@@ -719,7 +755,7 @@ Parameters:
 Result:
   The string after all non-number characters are removed.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -740,7 +776,7 @@ See also:
   StrSingleQuote
   StrDoubleQuote
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -759,7 +795,7 @@ Parameters:
 Result:
   The string of converted bytes.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -778,7 +814,7 @@ Result:
 See also:
   StrTrimCharRight
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Jack N.A. Bakker
 --------------------------------------------------------------------------------
@@ -797,7 +833,7 @@ Result:
 See also:
   StrTrimCharLeft
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Jack N.A. Bakker
 --------------------------------------------------------------------------------
@@ -816,7 +852,7 @@ See also:
   StrLowerInPlace
   StrLowerBuff
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -835,7 +871,7 @@ See also:
   StrLowerInPlace
   StrLowerBuff
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -854,7 +890,7 @@ See also:
   StrLowerInPlace
   StrLowerBuff
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -874,7 +910,7 @@ Parameters:
 See also:
   StrDecRef
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -903,7 +939,7 @@ Notes:
 See also:
   StrRefCount
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -921,7 +957,7 @@ Parameters:
 See also:
   StrDecRef
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -938,7 +974,7 @@ Parameters:
 Result:
   The length of the string, in characters.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Robert Lee
 --------------------------------------------------------------------------------
@@ -960,7 +996,7 @@ See also:
   StrAllocSize
   StrRefCount
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -983,7 +1019,7 @@ Notes:
 See also:
   StrAllocSize
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1002,7 +1038,7 @@ Description:
 Parameters:
   S - The string whose length to reset.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1019,7 +1055,7 @@ Parameters:
 Result:
   The number of occurrences of C in S.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Massimo Maria Ghisalberti
 --------------------------------------------------------------------------------
@@ -1052,7 +1088,7 @@ Result:
   StrCompare returns 0 if the two strings match or the number of different characters
   in case of a mismatch.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1106,7 +1142,7 @@ Parameters:
 Result:
   A string consisting of the specified character repeated Count times.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1127,7 +1163,7 @@ Result:
 See also:
   StrSearch
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1149,7 +1185,7 @@ Result:
 See also:
   StrPrefixIndex
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1178,7 +1214,7 @@ Result:
   returned. Note that the string comparison is case insensitive but is based on the
   current locale (ie it uses AnsiSameText).
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1198,7 +1234,7 @@ Result:
 See also:
   StrLastPos
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1218,7 +1254,7 @@ Result:
 See also:
   StrILastPos
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1236,7 +1272,7 @@ Result:
   The index of the first occurrence of SubStr in S. If the sub-string does not exist
   at all the result is 0.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1253,7 +1289,7 @@ Parameters:
 Result:
   If the string exists in the supplied list the result is True, otherwise it's False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1277,7 +1313,7 @@ Notes:
 See also:
   StrNIPos
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: JCL Team
 --------------------------------------------------------------------------------
@@ -1301,7 +1337,7 @@ Notes:
 See also:
   StrNPos
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: JCL Team
 --------------------------------------------------------------------------------
@@ -1327,7 +1363,7 @@ Notes:
 See also:
   StrSearch
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1349,7 +1385,7 @@ Result:
   as a prefix in the supplied string. If none of the Prefixes array strings qualifies
   the result is -1.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1370,7 +1406,7 @@ Result:
 See also:
   StrFind
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1391,7 +1427,7 @@ Result:
 See also:
   StrBefore
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1412,7 +1448,7 @@ Result:
 See also:
   StrAfter
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1438,7 +1474,7 @@ Result:
   it returns an empty string, for example if the Start and/or Stop character doesn't
   appear in the sources string.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1456,7 +1492,7 @@ Result:
   The string with the last N characters cut off. Note that when N is larger than
   the string length, the result is an empty string.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1476,7 +1512,7 @@ Result:
 See also:
   StrRight
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1495,7 +1531,7 @@ Parameters:
 Result:
   The string copied from S starting at offset Start and with length Count.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: John C Molyneux
 --------------------------------------------------------------------------------
@@ -1512,7 +1548,7 @@ Parameters:
 Result:
   The remainder of the string starting at the specified index.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1532,7 +1568,7 @@ Result:
 See also:
   StrLeft
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1550,7 +1586,7 @@ Result:
   If the supplied characters are equal except for case, the result is True, otherwise
   the result is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1567,10 +1603,10 @@ Result:
   If C is an alpha character the return value is True, otherwise the return value is False.
 See also:
   CharIsDigit
-  CharIsNumber
+  CharIsNumberChar
   CharIsAlphaNum
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1587,10 +1623,10 @@ Result:
   If C is an alphanumerical character the return value is True, otherwise the return value is False.
 See also:
   CharIsAlpha
-  CharIsNumber
+  CharIsNumberChar
   CharIsDigit
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1605,7 +1641,7 @@ Parameters:
 Result:
   If C is a blank character the return value is True, otherwise the return value is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1621,7 +1657,7 @@ Parameters:
 Result:
   If C is a control character the result is True, otherwise the result is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1637,7 +1673,7 @@ Parameters:
 Result:
   If C is a delete character the result is True, otherwise the result is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1654,10 +1690,10 @@ Result:
   If C is a digit the return value is True, otherwise the return value is False.
 See also:
   CharIsAlpha
-  CharIsNumber
+  CharIsNumberChar
   CharIsAlphaNum
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -1672,16 +1708,16 @@ Parameters:
 Result:
   If C is lowercase the return value is True, otherwise the return value is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
-@@CharIsNumber
+@@CharIsNumberChar
 <GROUP Stringmanipulation.CharacterTestRoutines>
 Summary:
   Tests whether C is a number.
 Description:
-  CharIsNumber returns whether or not the supplied character is a number. That is,
+  CharIsNumberChar returns whether or not the supplied character can occur in a number. That is,
   if it comes from the ['0'..'9', '+', '-', '.'] set where the dot is replaced by the
   system's decimal separator character.
 Parameters:
@@ -1693,7 +1729,7 @@ See also:
   CharIsAlphaNum
   CharIsDigit
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
   Windows NT/2000: Requires Windows NT 4 or later.
@@ -1737,7 +1773,7 @@ Result:
   If C is a punctuation character the return value is True, otherwise the return
   value is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1754,7 +1790,7 @@ Parameters:
 Result:
   If C is a return character the result is True, otherwise the result is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1795,7 +1831,7 @@ Parameters:
 Result:
   If C is uppercase the return value is True, otherwise the return value is False.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1815,7 +1851,7 @@ Result:
 See also:
   CharIsSpace
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -1849,7 +1885,7 @@ C1_ALPHA   0x0100  Any linguistic character: alphabetic, syllabary, or ideograph
 Notes:
   In a future Linux version the values may differ.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1865,7 +1901,7 @@ Parameters:
 Result:
   The binary value of the hex digit or $ff if it was no hex digit.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1884,7 +1920,7 @@ See also:
   CharUpper
   CharToggleCase
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1903,7 +1939,7 @@ See also:
   CharLower
   CharToggleCase
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1920,7 +1956,7 @@ Parameters:
 Result:
   Copy of the character with the case reversed.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1938,7 +1974,7 @@ Parameters:
 Result:
   The 1-based index of the first occurrence found, or 0 if the character was not found.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1956,7 +1992,7 @@ Parameters:
 Result:
   The 1-based index of the first occurrence found, or 0 if the character was not found.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1975,7 +2011,7 @@ Parameters:
 Result:
   CharReplace returns the number of replacements performed.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -1999,7 +2035,7 @@ See also:
   PCharVectorCount
   FreePCharVector
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2019,7 +2055,7 @@ See also:
   StringsToPCharVector
   FreePCharVector
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2041,7 +2077,7 @@ See also:
   StringsToPCharVector
   FreePCharVector
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2060,7 +2096,7 @@ See also:
   StringsToPCharVector
   PCharVectorToStrings
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2084,7 +2120,7 @@ See also:
   MultiSzToStrings
   FreeMultiSz
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2107,9 +2143,8 @@ See also:
   StringsToMultiSz
   FreeMultiSz
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@FreeMultiSz
 <GROUP Stringmanipulation.MultiSz>
@@ -2125,9 +2160,93 @@ See also:
   StringsToMultiSz
   MultiSzToStrings
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: Marcel van Brakel
+Donator:
+  Marcel van Brakel
+--------------------------------------------------------------------------------
+@@StringsToMultiString
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Assembles a single string from multiple strings
+Description:
+  StringsToMultiString concatenates the strings in Value into a single ANSI string,
+  terminating each individual string with a NULL character and the last string with
+  a double NULL character. For example, if Source contains the items 'Project',
+  'JEDI' and 'Rules' the result will be a string with the contents 'Project#0JEDI#0Rules#0#0'.
+Parameters:
+  Value - List resp. array of strings to pack into a single string. If assertions are enabled, an
+  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be skipped.
+Result:
+  The string concatenated from the list or array of strings.
+See also:
+  StringsToMultiWideString
+  StringsToMultiSz
+  MultiStringToStrings
+Quick info:
+  Category: String manipulation
+Donator: <LINK PeterJHaas, Peter J. Haas>
+--------------------------------------------------------------------------------
+@@StringsToMultiWideString
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Assembles a single string from multiple strings
+Description:
+  StringsToMultiWideString concatenates the strings in Value into a single wide string,
+  terminating each individual string with a NULL character and the last string with
+  a double NULL character. For example, if Source contains the items 'Project',
+  'JEDI' and 'Rules' the result will be a string with the contents 'Project#0JEDI#0Rules#0#0'.
+Parameters:
+  Value - List resp. array of strings to pack into a single string. If assertions are enabled, an
+  EAssertionFailed exception is raised when an empty string is encountered; otherwise it will be skipped.
+Result:
+  The string concatenated from the list or array of strings.
+See also:
+  StringsToMultiString
+  StringsToMultiSz
+  MultiWideStringToStrings
+Quick info:
+  Category: String manipulation
+Donator: <LINK PeterJHaas, Peter J. Haas>
+--------------------------------------------------------------------------------
+@@MultiStringToStrings
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Parses a string by separating into substrings whenever a NULL character is encountered.
+Description:
+  Value is assumed to be a list of strings, separated by a NULL character, terminated
+  by a double NULL character. For example 'Project#0JEDI#0Rules#0#0'. The function
+  takes this string and copies the individual strings to Dest. Thus, after executing
+  this function with the above string the Dest list/array will contain the items
+  'Project', 'JEDI' and 'Rules'.
+Parameters:
+  Dest - The string list resp. dynamic array to receive the individual strings.
+  Value - The source string to extract the items from.
+See also:
+  MultiWideStringToStrings
+  StringsToMultiString
+Quick info:
+  Category: String manipulation
+Donator: <LINK PeterJHaas, Peter J. Haas>
+--------------------------------------------------------------------------------
+@@MultiWideStringToStrings
+<GROUP Stringmanipulation.MultiSz>
+Summary:
+  Parses a string by separating into substrings whenever a NULL character is encountered.
+Description:
+  Value is assumed to be a list of strings, separated by a NULL character, terminated
+  by a double NULL character. For example 'Project#0JEDI#0Rules#0#0'. The function
+  takes this string and copies the individual strings to Dest. Thus, after executing
+  this function with the above string the Dest list/array will contain the items
+  'Project', 'JEDI' and 'Rules'.
+Parameters:
+  Dest - The string list resp. dynamic array to receive the individual strings.
+  Value - The source string to extract the items from.
+See also:
+  MultiStringToStrings
+  StringsToMultiWideString
+Quick info:
+  Category: String manipulation
+Donator: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@StrToStrings
 <GROUP $Stringmanipulation.TStringsManipulation>
@@ -2136,7 +2255,7 @@ Description
 StrToStrings converts the supplied string, which supposedly is
 a list of strings packed into a single string variable, to a
 TStrings. The function uses the supplied separator string to
-separate the string into its individual elements. 
+separate the string into its individual elements.
 
 For example, if you call the function like this:
 StrToStrings('Project JEDI Rules', ' ', List) then on return
@@ -2181,7 +2300,7 @@ Parameters:
 See also:
   StrToStrings
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2201,7 +2320,7 @@ See also:
   TrimStringsRight
   TrimStringsLeft
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -2221,7 +2340,7 @@ See also:
   TrimStrings
   TrimStringsLeft
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -2241,7 +2360,7 @@ See also:
   TrimStrings
   TrimStringsRight
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -2259,7 +2378,7 @@ Result:
   If B is True the result is the string 'True', if B is False the result is the
   string 'False'.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
@@ -2280,7 +2399,7 @@ Parameters:
 See also:
   StrToken
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Huanlin Tsai
 --------------------------------------------------------------------------------
@@ -2305,7 +2424,7 @@ Result:
 See also:
   StrTokenToStrings
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Huanlin Tsai
 --------------------------------------------------------------------------------
@@ -2318,7 +2437,7 @@ Parameters:
   List -
 Result:
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -2329,7 +2448,7 @@ Description:
 Parameters:
 Result:
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Azret Botash
 --------------------------------------------------------------------------------
@@ -2352,7 +2471,7 @@ Result:
 See also:
   StringToFile
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -2370,7 +2489,7 @@ Parameters:
 See also:
   FileToString
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Anthony Steele
 --------------------------------------------------------------------------------
@@ -2390,9 +2509,9 @@ Returns:
   A string consisting of the specified string, repeated until
   the length of the string is exactly L.
 QuickInfo:
-  Unit: JclStrings
+
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrCharPosLower@AnsiString@Integer
 <GROUP $Stringmanipulation.StringTransformationRoutines>
@@ -2405,7 +2524,7 @@ Parameters:
   S - The string which contains the character.
   CharPos - The position of the character within the string to convert.
 QuickInfo:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -2420,7 +2539,7 @@ Parameters:
   S - The string which contains the character.
   CharPos - The position of the character within the string to convert.
 QuickInfo:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Jean-Fabien Connault
 --------------------------------------------------------------------------------
@@ -2436,7 +2555,6 @@ Parameters:
 Result:
   The trimmed string.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Leonard Wennekers
 --------------------------------------------------------------------------------
@@ -2452,7 +2570,6 @@ Parameters:
 Result:
   The trimmed string.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Leonard Wennekers
 --------------------------------------------------------------------------------
@@ -2470,7 +2587,6 @@ Parameters:
 Result:
   AnsiSameText returns 0 (CSTR_EQUAL) if the two strings match.
 Quick info:
-  Unit: JclStrings
   Category: Backward compatability
   Donator: JCL Team
 --------------------------------------------------------------------------------
@@ -2486,9 +2602,8 @@ Parameters:
 Result:
   The translated string.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrOemToAnsi
 <GROUP Stringmanipulation.StringTransformationRoutines>
@@ -2502,9 +2617,8 @@ Parameters:
 Result:
   The translated string.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrCharsCount
 <GROUP Stringmanipulation.StringTransformationRoutines>
@@ -2519,9 +2633,9 @@ Parameters:
 Result:
   The number of occurrences of Chars in S.
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrKeepChars
 <GROUP Stringmanipulation.StringSearchandReplaceRoutines>
@@ -2539,9 +2653,8 @@ Parameters:
 Result:
   A string containing only characters which are within Chars.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrReplace
 <GROUP Stringmanipulation.StringSearchandReplaceRoutines>
@@ -2563,7 +2676,6 @@ Parameters:
   Search - The substring to replace.
   Replace - The string to use as a replacement of Search.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Robert Lee
 --------------------------------------------------------------------------------
@@ -2581,9 +2693,8 @@ Parameters:
 Result:
   The string with all replacements performed.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrReplaceChars
 <GROUP Stringmanipulation.StringSearchandReplaceRoutines>
@@ -2599,9 +2710,8 @@ Parameters:
 Result
   The string with all replacements performed.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrReplaceButChars
 <GROUP Stringmanipulation.StringSearchandReplaceRoutines>
@@ -2617,9 +2727,8 @@ Parameters:
 Result:
   The string with all replacements performed.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@StrMatches
 <GROUP Stringmanipulation.StringTestRoutines>
@@ -2639,7 +2748,6 @@ Result:
 See also:
   StrSearch
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
   Donator: Michael Winter
 --------------------------------------------------------------------------------
@@ -2662,7 +2770,7 @@ Description:
   '12345' <1    >5       1     5
   '12345' >5    Any      6     0
 Quick info:
-  Unit: JclStrings
+
   Category: String manipulation
   Donator: Alexander Radchenko
 --------------------------------------------------------------------------------
@@ -2679,9 +2787,8 @@ Parameters:
 Result:
   The number of occurrences of SubS in S.
 Quick info:
-  Unit: JclStrings
   Category: String manipulation
-  Donator: IDK
+Donator: Unknown
 --------------------------------------------------------------------------------
 @@AnsiNull
 
@@ -2834,10 +2941,9 @@ Float value of the string <B>S </B>passed as a parameter. If
 error occurs, the function returns <B>0.00</B>
 
 QuickInfo
-Unit: JclStrings
-  Category: String manipulation
-  Donator: Azret Botash
-
+Category: String manipulation
+Donator: Azret Botash
+Contributor: Robert Rossmair
 --------------------------------------------------------------------------------
 @@StrIToStrings@AnsiString@AnsiString@TStrings@Boolean
 Description

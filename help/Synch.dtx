@@ -79,8 +79,8 @@ Result:
   case the contents of the Info parameter are undefined.
 Notes:
   This function relies on undocumented information.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@QueryEvent
 <GROUP LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -104,8 +104,8 @@ Result:
   case the contents of the Info parameter are undefined.
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@QueryTimer
 <GROUP LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -130,8 +130,8 @@ Result:
   case the contents of the Info parameter are undefined.
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@QuerySemaphore
 <GROUP LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -155,8 +155,8 @@ Result:
   case the contents of the Info parameter are undefined.
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@QueryMutex
 <GROUP LibrariesProcessesandThreads.Synchronization.Debugging>
@@ -181,8 +181,8 @@ Result:
   case the contents of the Info parameter are undefined.
 Notes:
   This function relies on undocumented information and uses an undocumented API call.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclMultiReadExclusiveWrite>
@@ -210,8 +210,8 @@ Description:
   Note that the implementation of this class was inspired mainly by Jeffrey Richters
   CMREW class presented in his book "Programming applications for Microsoft Windows,
   4th edition".
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.Create
 Summary:
@@ -220,16 +220,16 @@ Description:
   Creates an instance of TJclMultiReadExclusiveWrite.
 Parameters:
   Preferred - Denotes whether the class should favor readers over writers, vice versa or treat them equally. See TMrewPreferred for more information.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.Destroy
 Summary:
   Destroys the instance of TJclMultiReadExclusiveWrite.
 Description:
   Destroys the instance of TJclMultiReadExclusiveWrite.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.BeginRead
 Summary:
@@ -254,8 +254,8 @@ See also:
   EndRead
   BeginWrite
   EndWrite
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.BeginWrite
 Summary:
@@ -278,8 +278,8 @@ See also:
   EndRead
   BeginRead
   EndWrite
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.EndRead
 Summary:
@@ -293,8 +293,8 @@ Description:
   read-access locks, currently blocked threads are released. The exact algorithm
   used to determine which threads to release depends on the Preferred value passed
   to the constructor.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMultiReadExclusiveWrite.EndWrite
 Summary:
@@ -308,8 +308,8 @@ Description:
   are balanced so that the write-lock is released, other blocked threads are
   released. The exact algorithm used to determine which threads to release depends
   on the Preferred value passed to the constructor.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclOptex>
@@ -326,8 +326,8 @@ Description:
   is included in the JCL is <U>almost</U> a straight port from that code. Any bugs
   in this class were most likely introduced by these modifications or an incorrect
   port.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.Existed
 Summary:
@@ -338,16 +338,16 @@ Description:
   Optex was already created by another process. This tells you only that the Optex
   existed during execution of the constructor. There is no way to find out whether
   another process still has the Optex open.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.Name
 Summary:
   Name of the object.
 Description:
   The Name property returns the name of the Optex as specified in the constructor.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.SpinCount
 Summary:
@@ -356,8 +356,8 @@ Description:
   The SpinCount property allows you to query the current value of the spincount of
   the optex or to set a new value. Note that the spincount value is shared between
   all processes that use the same optex. This is not True for distinct optex objects.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.UniProcess
 Summary:
@@ -369,8 +369,8 @@ Description:
   be shared and this property will be False, otherwise it will be True. Note that
   this tells you nothing about whether or not multiple processes are actually using
   the optex, only if they can.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.Create
 Summary:
@@ -383,8 +383,7 @@ Description:
 Parameters:
   Name - Name for the Optex. When you want to share the Optex between multiple processes you must give it a name. The second process can then open the Optex by calling Create with the same name.
   SpinCount - The spincount for the optex object. Conceptually the optex will try to attempt ownership of the optex for SpinCount number of times when the Enter method is called. If the optex is still not available after these attempts the thread enters a wait state until the optex is released. On a single-processor system this parameter is ignored and the optex will use 0 internally. This means the optex will never spin before waiting on the kernel event. This makes sense since the optex could never be released while the thread was spinning (and thus monopolizing the processor). Note that the spincount is effective for all processes that use the same, named optex. If one process changes the spincount this takes effect in all the other processes immediately as well.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.Destroy
 Summary:
@@ -393,8 +392,7 @@ Description:
   The Destroy destructor destroys the Optex instance for which it is called. If the
   Optex is shared between multiple processes only this instance is destroyed and
   other processes can continue to use the Optex.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.Enter
 Summary:
@@ -414,8 +412,7 @@ Description:
   number of times, trying to acquire the optex. If the optex becomes available
   before the loop terminated the thread acquires the optex and returns. On a
   single-processor system the method only tries one time.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.Leave
 Summary:
@@ -426,8 +423,7 @@ Description:
   is free to be acquired by a different thread. If you called Enter multiple
   times the optex will not be released until the last, balancing call
   to Release.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclOptex.TryEnter
 Summary:
@@ -441,8 +437,7 @@ Result:
   True. If ownership could not be acquired because the optex was already
   owned by a different thread the function returns False. In this latter case you
   must take care <u>not</U> to call Release.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclWaitableTimer>
@@ -450,8 +445,7 @@ Summary:
   Wrapper for a Win32 Waitable Timer object.
 Description:
   TJclWaitableTimer is a wrapper for a Win32 Waitable Timer object.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Cancel
 Summary:
@@ -464,8 +458,8 @@ Description:
 Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case you can call GetLastError to get extended error information.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.SetTimer
 Summary:
@@ -485,8 +479,8 @@ Result:
   case you can call GetLastError to get extended error information. Note that if
   you set Resume to True on a platform which doesn't support this, the method
   succeeds (returns True) but calling GetLastError will return ERROR_NOT_SUPPORTED.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.SetTimerApc
 Summary:
@@ -517,8 +511,8 @@ Result:
   case you can call GetLastError to get extended error information. Note that if
   you set Resume to True on a platform which doesn't support this, the method
   succeeds (returns True) but calling GetLastError will return ERROR_NOT_SUPPORTED.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TFNTimerAPCRoutine
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclWaitableTimer>
@@ -535,8 +529,7 @@ Parameters:
    - High order 32-bits of the UTC based time when the timer was signaled. This value corresponds to the dwHighDateTime value of a TFileTime record.
 See also:
   ..\Methods\SetTimerApc
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Create
 Summary:
@@ -547,8 +540,8 @@ Parameters:
   SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new waitable timer object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the waitable timer receives a default security descriptor.
   Manual - If True the timer acts as a manual-reset notification timer. If False the timer acts as a synchronization timer.
   Name - Name of the waitable timer object, can be empty. If a waitable timer already exists on the system with the same name, the waitable timer is opened with TIMER_ALL_ACCESS. If the waitable timer cannot be opened the constructor fails by raising an EJclWaitableTimerError exception. If no waitable timer with the specified name exists, the waitable timer is created with that name. If a named object already exists with the specified name but it is not a waitable timer, the constructor fails by raising an EJclWaitableTimerError exception.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclWaitableTimer.Open
 Summary:
@@ -569,8 +562,8 @@ SYNCHRONIZE         <B>Windows NT/2000:</B> Enables use of the timer handle in a
 
   Inheritable - Specifies whether the Handle of the waitable timer object can be inherited by child processes.
   Name - Name of the waitable timer object to open.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclSemaphore
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclSemaphore>
@@ -578,8 +571,7 @@ Summary:
   Wrapper for a Win32 Semaphore object.
 Description:
   TJclSemaphore is a wrapper for a Win32 Semaphore object.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclSemaphore.Release
 Summary:
@@ -594,8 +586,8 @@ Result:
   the latter case you can call GetLastError to get extended error information.
 See also:
   ReleasePrev
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclSemaphore.ReleasePrev
 Summary:
@@ -611,8 +603,8 @@ Result:
   the latter case you can call GetLastError to get extended error information.
 See also:
   Release
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclSemaphore.Create
 Summary:
@@ -624,8 +616,8 @@ Parameters:
   Initial - Initial count of the semaphore object. This value must be between 0 and Maximum (both inclusive). The state of a semaphore is signaled when its count is zero and nonsignaled otherwise. A successful wait operation on a semaphore decreases the count of the semaphore by one. The count is increased by a specified amount by using the Release method but cannot be increased beyond the specified Maximum.
   Maximum - Maximum count of the semaphore object. Must be greater than 0.
   Name - Name of the semaphore object, can be empty. If a semaphore already exists on the system with the same name, the semaphore is opened with SEMAPHORE_ALL_ACCESS. If the semaphore cannot be opened the constructor fails by raising an EJclSemaphoreError exception. If no semaphore with the specified name exists, the semaphore is created with that name. If a named object already exists with the specified name but it is not a semaphore, the constructor fails by raising an EJclSemaphoreError exception.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclSemaphore.Open
 Summary:
@@ -645,8 +637,8 @@ SYNCHRONIZE             <B>Windows NT/2000:</B> Enables use of the semaphore han
 
    - Specifies whether the Handle of the semaphore object can be inherited by child processes.
   Name - Name of the semaphore object to open.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMutex
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclMutex>
@@ -654,8 +646,8 @@ Summary:
   Wrapper for a Win32 Mutex object.
 Description:
   TJclMutex is a wrapper for a Win32 Mutex object.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMutex.Create
 Summary:
@@ -666,8 +658,8 @@ Parameters:
   SecAttr - Pointer to a TSecurityAttributes record that specifies the security attributes of the new Mutex object such as whether it can be inherited. If you specify nil the Handle cannot be inherited and the Mutex receives a default security descriptor.
   InitialOwner - Set to True if you want immediate ownership of the mutex object. Note that initial ownership will only be granted if the call actually creates the mutex. If the named mutex already exists the constructor opens the mutex but you will not have ownership. Use the Existed property to determine whether the constructor created or opened the named mutex. This is a non-issue for unnamed mutexes or calls for which this parameter is False.
   Name - Name of the Mutex object, can be empty. If a mutex already exists on the system with the same name, the mutex is opened with MUTEX_ALL_ACCESS. If the mutex cannot be opened the constructor fails by raising an EJclMutexError exception. If no mutex with the specified name exists, the mutex is created with that name. If a named object already exists wit the specified name but it is not a mutex, the constructor fails by raising an EJclMutexError exception.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMutex.Open
 Summary:
@@ -686,8 +678,8 @@ SYNCHRONIZE       <B>Windows NT/2000:</B> Enables use of the mutex handle in any
 
    - Specifies whether the Handle of the Mutex object can be inherited by child processes.
   Name - Name of the Mutex object to open.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMutex.Release
 Summary:
@@ -702,8 +694,8 @@ Result:
   If the function succeeds it returns True, otherwise it returns False. In the latter
   case, which is usually a result of not owning the mutex, you can call GetLastError
   to get extended error information.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclCriticalSectionEx>
@@ -715,8 +707,8 @@ Description:
   TJclCriticalSectionEx the target system must be running Windows NT 4 with service
   pack 3 or better or Windows 98. Note however that the TryEnter, GetSpinCount, and
   SetSpinCount methods are not implemented in Windows 98.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.CreateEx
 Summary:
@@ -731,8 +723,8 @@ Description:
 Parameters:
   SpinCount - The spincount for the critical section object. Conceptually the critical section will try to attempt ownership of the critical section for SpinCount number of times when the Enter method is called. If the critical section is still not available after these attempts the thread enters a wait state until the critical section is released. On a single-processor system this parameter is ignored and the critical section will use 0 internally. This means the critical section will never spin before waiting on a kernel event. This makes sense since the critical section could never be released while the thread was spinning (and thus monopolizing the processor).
   NoFailEnter - If True the kernel event object which is used when a thread must enter a wait state because the critical section is not available, is preallocated thereby guaranteeing that the Enter method does not fail, even in low memory situations.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.TryEnter
 Summary:
@@ -747,8 +739,8 @@ Result:
   True. If ownership could not be acquired because the critical section was already
   owned by a different thread the function returns False. In this latter case you
   must take care <u>not</U> to call Release.
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.GetSpinTimeOut
 Summary:
@@ -761,8 +753,8 @@ Result:
   The systems critical section timeout interval in seconds.
 See also:
   SetSpinTimeOut
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.SetSpinTimeOut
 Summary:
@@ -778,16 +770,16 @@ Parameters:
   Value - The new critical section timeout interval in seconds.
 See also:
   GetSpinTimeOut
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSectionEx.SpinCount
 Summary:
   Sets the spincount for the critical section.
 Description:
   SpinCount allows you to query or set the critical section's spincount value.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSection
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclCriticalSection>
@@ -798,8 +790,8 @@ Description:
   only functionality common to all Win32 implementations. Windows 98 and Windows NT
   introduced some additional functionality which is only available in the
   TJclCriticalSectionEx class.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Create
 Summary:
@@ -807,8 +799,8 @@ Summary:
 Description:
   The create constructor creates an instance of a TJclCriticalSection object and
   initializes the underlying Win32 critical section object.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.CreateAndEnter
 Summary:
@@ -823,8 +815,8 @@ Description:
   multiple threads could attempt to create the critical section simultanuously.
 Parameters:
   CS - Variable which receives a reference to the newly created critical section object. It is valid for the parameter to contain a reference to an already created critical section. In that case the method merely attempts to Enter the existing critical section. If the parameter does not contain a valid reference it must be nil (declaring a variable as a global variable or object data field will ensure the variable is initialized to nil).
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Destroy
 Summary:
@@ -832,8 +824,8 @@ Summary:
 Description:
   The Destroy destructor releases the underlying Win32 critical section object and
   destroys the TJclCriticalSection object.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Enter
 Summary:
@@ -852,8 +844,8 @@ Notes:
   In extremely low-memory situations a call to Enter may fail by raising an exception. If you cannot tolerate a failure of Enter you should use TJclCriticalSectionEx instead.
 See also:
   Leave
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclCriticalSection.Leave
 Summary:
@@ -868,8 +860,8 @@ Notes:
   If you call Release while you don't currently own the critical section, the state of the critical section object becomes corrupted and threads waiting for ownership may be blocked forever.
 See also:
   Enter
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclEvent
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclEvent>
@@ -877,8 +869,8 @@ Summary:
   Wrapper for the Win32 Event object.
 Description:
   TJclEvent is a wrapper for a Win32 Event object.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclEvent.Pulse
 Summary:
@@ -895,8 +887,8 @@ Result:
 See also:
   ResetEvent
   SetEvent
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclEvent.ResetEvent
 Summary:
@@ -912,8 +904,8 @@ Result:
 See also:
   Pulse
   SetEvent
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclEvent.SetEvent
 Summary:
@@ -930,8 +922,8 @@ Result:
 See also:
   Pulse
   ResetEvent
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclEvent.Create
 Summary:
@@ -945,8 +937,8 @@ Parameters:
   Name - Name of the Event object, can be empty. If an event already exists on the system with the same name, the event is opened with EVENT_ALL_ACCESS. If the Event cannot be opened the constructor fails by raising an EJclEventError exception. If no Event with the specified name exists, the Event is created with that name. If a named object already exists wit the specified name but it is not an event, the constructor fails by raising an EJclEventError exception.
 See also:
   Open
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclEvent.Open
 Summary:
@@ -968,8 +960,8 @@ SYNCHRONIZE         <B>Windows NT/2000:</B> Enables use of the event handle in a
   Name - Name of the Event object to open.
 See also:
   Create
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclDispatcherObject>
@@ -983,8 +975,8 @@ Description:
   object which are common to all dispatcher object derivatives.
 Notes:
   There are several non-kernel synchronization objects that do not derive from TJclDispatcherObject. Examples are the TJclCriticalSection and TJclOptex.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Existed
 Summary:
@@ -999,8 +991,8 @@ Description:
     
   If you create a named object which doesn't exist, the object is created and Existed
   will be False. Unnamed object always result in Existed being False.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Handle
 Summary:
@@ -1010,16 +1002,16 @@ Description:
   could use this in a call to WaitForMultipleObjects or to duplicate the Handle. Never
   manually close the handle by calling CloseHandle, the class does this automatically
   in the destructor.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Name
 Summary:
   The name of the object.
 Description:
   Name contains the name of the object as specified in the constructor.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclWaitResult
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclDispatcherObject>
@@ -1027,8 +1019,8 @@ Summary:
   Enumeration used as the method result by WaitFor, WaitForever and WaitAlertable.
 Description:
   Enumeration used as the method result by WaitFor, WaitForever and WaitAlertable.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 @@TJclWaitResult.wrAbandoned
   Only applicable if the object is a mutex which was not released by the owning thread before the thread exited. The calling thread has been granted ownership of the mutex which is set to nonsignaled.
 @@TJclWaitResult.wrError
@@ -1064,16 +1056,19 @@ Parameters:
   TimeOut - Interval, in milliseconds, the method waits on an object. If the object does not become signaled before the interval has expired, the method returns.
   Alertable - If False the method blocks until either the object becomes signaled or the timeout expires. If True the calling thread enters an alertable wait-state until one of the aforementioned events occur or an I/O Completion routine or APC is queued for the thread.
 Result:
-  The result indicates success or failure and is of
-  type TJclWaitResult. This method can
+  The result indicates success or failure and is of type TJclWaitResult. This method can
   return any of the members of the enumeration. See TJclWaitResult for the details.
+Note:
+  For Windows 9x, Windows Millenium Edition and Windows NT versions below 4, the
+  internally called Windows API function SignalObjectAndWait is not available.
+  In this case the result is wrError.
 See also:
   WaitFor
   WaitForever
   WaitForMultipleObjects
   WaitAlertableForMultipleObjects
-Quick info:
-  Donator: Marcel van Brakel
+Donator: Marcel van Brakel
+Contributor: <LINK PeterJHaas, Peter J. Haas>
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitAlertable
 Summary:
@@ -1104,8 +1099,8 @@ See also:
   WaitForever
   WaitForMultipleObjects
   WaitAlertableForMultipleObjects
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitFor
 Summary:
@@ -1138,8 +1133,8 @@ See also:
   WaitForever
   WaitForMultipleObjects
   WaitAlertableForMultipleObjects
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.WaitForever
 Summary:
@@ -1164,8 +1159,8 @@ See also:
   WaitFor
   WaitForMultipleObjects
   WaitAlertableForMultipleObjects
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Attach
 Summary:
@@ -1176,8 +1171,8 @@ Description:
   child process using handle inheritance.
 Parameters:
   Handle - Handle of the dispatcher object to attach to. This must be a handle to an event, mutex, semaphore, waitable timer or timer queue.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclDispatcherObject.Destroy
 Summary:
@@ -1189,8 +1184,8 @@ Description:
   the object are often undefined and therefore you should never destroy an object
   with outstanding references. TJclDispatcherObject does not make any provisions
   for this, nor do any of the derived classes.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@LockedCompareExchange
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1216,8 +1211,8 @@ See also:
   LockedExchange
   LockedExchangeInc
   LockedExchangeDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedExchangeAdd
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1240,8 +1235,8 @@ See also:
   LockedExchange
   LockedExchangeInc
   LockedExchangeDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedAdd
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1265,8 +1260,8 @@ See also:
   LockedExchange
   LockedInc
   LockedDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedExchangeSub
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1289,8 +1284,8 @@ See also:
   LockedExchange
   LockedExchangeInc
   LockedExchangeDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedSub
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1314,8 +1309,8 @@ See also:
   LockedExchange
   LockedInc
   LockedDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedExchange
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1339,8 +1334,8 @@ See also:
   LockedSub
   LockedInc
   LockedDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedExchangeInc
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1362,8 +1357,8 @@ See also:
   LockedExchangeSub
   LockedExchange
   LockedExchangeDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedInc
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1386,8 +1381,8 @@ See also:
   LockedSub
   LockedExchange
   LockedDec
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedExchangeDec
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1409,8 +1404,8 @@ See also:
   LockedExchangeSub
   LockedExchange
   LockedInc
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@LockedDec
 <GROUP LibrariesProcessesandThreads.Synchronization.Lockedintegermanipulation>
@@ -1433,8 +1428,8 @@ See also:
   LockedSub
   LockedExchange
   LockedInc
-Quick info:
-  Donator: Azret Botash
+
+Donator: Azret Botash
 --------------------------------------------------------------------------------
 @@TJclMeteredSection
 <GROUP LibrariesProcessesandThreads.Synchronization.TJclMeteredSection>
@@ -1448,8 +1443,8 @@ Description:
   This class is (almost) a straight port from the metered section object as presented
   in the article "A Quick and Versatile Synchronization Object", Dan Chou which is
   available from the MSDN Library (Technical Articles\Windows Platform\MultiThreading).
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Enter
 Summary:
@@ -1468,8 +1463,8 @@ Result:
   function result.
 Notes:
   The EnterMeteredSection function checks for an available slot in the metered section. If the metered section does not have an available slot, the calling thread enters an efficient wait state. The thread consumes very little processor time while waiting for a slot to become free.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Leave
 Summary:
@@ -1485,8 +1480,8 @@ Parameters:
   PrevCount - 32-bit Longint which receives the previous metered section open slot count.
 Result:
   If the function succeeds the result is True, otherwise the result is False.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Create
 Summary:
@@ -1497,8 +1492,8 @@ Parameters:
   InitialCount - Specifies an initial count of open slots for the metered section. This value must be greater than or equal to zero and less than or equal to MaxCount. A slot is available when the count is greater than zero and none is available when it is zero. The count is decreased by one whenever the EnterMeteredSection function releases a thread that was waiting for the metered section. The count is increased by a specified amount by calling the LeaveMeteredSection function.
   MaxCount - Specifies the maximum number of available slots for the metered section. This value must be greater than zero.
   Name - String specifying the name of the metered section. The name is limited to MAX_METSECT_NAMELEN characters, and can contain any character except the backslash path-separator character (\). Name comparison is case sensitive.<P> If Name matches the name of an existing named metered section, the InitialCount and MaxCount parameters are ignored because they have already been set by the process that originally created the metered section.<P> If Name is empty, the metered section is created without a name.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@TJclMeteredSection.Open
 Summary:
@@ -1509,5 +1504,5 @@ Description:
   fails by raising an EJclMeteredSectionError exception.
 Parameters:
   Name - Name of the MeteredSection object to open.
-Quick info:
-  Donator: Marcel van Brakel
+
+Donator: Marcel van Brakel
