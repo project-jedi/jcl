@@ -23,7 +23,7 @@
 { can also be detected.                                                                            }
 {                                                                                                  }
 { Unit owner:    Raymond Alexander                                                                 }
-{ Last modified: May 21, 2002                                                                      }
+{ Last modified: July 10, 2002                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -72,84 +72,6 @@ const
   TSHSegmentId = 'ST';  //Transaction Set Header Segment Id
   TSTSegmentId = 'SE';  //Transaction Set Trailer Segment Id
 
-  CRLF = #13#10;
-  CR = #13;
-  LF = #10;
-  EDIError001 = 'Could not set interchange at index [%s], Index too high.';
-  EDIError002 = 'Could not set interchange at index [%s], Index too low.';
-  EDIError003 = 'Could not set interchange at index [%s].';
-  EDIError004 = 'Could not save edi file.  File name and path not specified.';
-  EDIError005 = 'Could not save edi file.  File name and path not specified.';
-  EDIError006 = 'Could not open edi file.  File not specified.';
-  EDIError007 = 'Could not get interchange at index [%s], Interchanges does not exist.';
-  EDIError008 = 'Could not get interchange at index [%s], Index too high.';
-  EDIError009 = 'Could not get interchange at index [%s], Index too low.';
-  EDIError010 = 'Could not get interchanges at index [%s], There were no interchanges to get.';
-  EDIError011 = 'Could not find interchange control header.';
-  EDIError012 = 'Could not find interchange control trailer segment terminator.';
-  EDIError013 = 'Could not find interchange control trailer.';
-  EDIError014 = 'Could not find interchange control trailer or garbage at end of file.';
-  EDIError015 = 'Could not delete interchanges at index [%s].';
-  EDIError016 = 'Could not delete interchange at index [%s].';
-  EDIError017 = 'Could not set functional group at index [%s], Index too high.';
-  EDIError018 = 'Could not set functional group at index [%s], Index too low.';
-  EDIError019 = 'Could not set functional group at index [%s].';
-  EDIError020 = 'Could not get functional group at index [%s], Functional Group does not exist.';
-  EDIError021 = 'Could not get functional group at index [%s], Index too high.';
-  EDIError022 = 'Could not get functional group at index [%s], Index too low.';
-  EDIError023 = 'Could not get functional group at index [%s], There were no functional groups to get.';
-  EDIError024 = 'Delimiters have not been assigned to interchange.  Dissassemble cancelled.';
-  EDIError025 = 'Could not find interchange control header segment terminator.';
-  EDIError026 = 'Could not find interchange control header.';
-  EDIError027 = 'Could not find functional group header.';
-  EDIError028 = 'Could not find functional group trailer segment terminator.';
-  EDIError029 = 'Could not find functional group trailer.';
-  EDIError030 = 'Could not find interchange control trailer segment terminator.';
-  EDIError031 = 'Could not find interchange control trailer.';
-  EDIError032 = 'Could not delete functional groups at index [%s].';
-  EDIError033 = 'Could not delete functional group at index [%s].';
-  EDIError034 = 'Delimiters have not been assigned to interchange.  Assemble cancelled.';
-  EDIError035 = 'Could not set transaction set at index [%s], Index too high.';
-  EDIError036 = 'Could not set transaction set at index [%s], Index too low.';
-  EDIError037 = 'Could not set transaction set at index [%s].';
-  EDIError038 = 'Could not get transaction set at index [%s], Transaction Set does not exist.';
-  EDIError039 = 'Could not get transaction set at index [%s], Index too high.';
-  EDIError040 = 'Could not get transaction set at index [%s], Index too low.';
-  EDIError041 = 'Could not get transaction set at index [%s], There were no Transaction Sets to get.';
-  EDIError042 = 'Could not assign delimiters to functional group.  Dissassemble cancelled.';
-  EDIError043 = 'Could not find functional group header segment terminator.';
-  EDIError044 = 'Could not find functional group header.';
-  EDIError045 = 'Could not find transaction set header.';
-  EDIError046 = 'Could not find transaction set trailer segment terminator.';
-  EDIError047 = 'Could not find transaction set trailer.';
-  EDIError048 = 'Could not find functional group trailer segment terminator.';
-  EDIError049 = 'Could not find functional group trailer..';
-  EDIError050 = 'Could not delete transaction sets at index [%s].';
-  EDIError051 = 'Could not delete transaction set at index [%s].';
-  EDIError052 = 'Could not assign delimiters to functional group.  Assemble cancelled.';
-  EDIError053 = 'Could not set segment at index [%s], Index too high.';
-  EDIError054 = 'Could not set segment at index [%s], Index too low.';
-  EDIError055 = 'Could not set segment at index [%s].';
-  EDIError056 = 'Could not get segment at index [%s], Segment does not exist.';
-  EDIError057 = 'Could not get segment at index [%s], Index too high.';
-  EDIError058 = 'Could not get segment at index [%s], Index too low.';
-  EDIError059 = 'Could not get segment at index [%s], There were no segments to get.';
-  EDIError060 = 'Could not assign delimiters to transaction set.  Dissassemble cancelled.';
-  EDIError061 = 'Could not delete segment at index [%s].';
-  EDIError062 = 'Could not delete segment at index [%s].';
-  EDIError063 = 'Could not assign delimiters to transaction set.  Assemble cancelled.';
-  EDIError064 = 'Could not set element at index [%s], Index too high.';
-  EDIError065 = 'Could not set element at index [%s], Index too low.';
-  EDIError066 = 'Could not set element at index [%s].';
-  EDIError067 = 'Could not get element at index [%s], Element does not exist.';
-  EDIError068 = 'Could not get element at index [%s], Index too high.';
-  EDIError069 = 'Could not get element at index [%s], Index too low.';
-  EDIError070 = 'Could not get element at index [%s], There were no elements to get.';
-  EDIError071 = 'Could not assign delimiters to segment.  Dissassemble cancelled.';
-  EDIError072 = 'Could not delete element at index [%s].';
-  EDIError073 = 'Could not delete element at index [%s].';
-  EDIError074 = 'Could not assign delimiters to segment.  Assemble cancelled.';
-
 type
   TEDIObject = class(TObject); //Base EDI Object
   EJclEDIError = EJclError;
@@ -180,12 +102,12 @@ type
     FElementDelimiterLength: Integer;
     FSubelementSeperatorLength: Integer;
     //Subelement Seperator
-    procedure SetSD(Delimiter: string); //Segment Delimiter
-    procedure SetED(Delimiter: string); //Element Delimiter
-    procedure SetSS(Delimiter: string); //Sub Element Seperator
+    procedure SetSD(const Delimiter: string); //Segment Delimiter
+    procedure SetED(const Delimiter: string); //Element Delimiter
+    procedure SetSS(const Delimiter: string); //Sub Element Seperator
   public
     constructor Create; overload;
-    constructor Create(SD, ED, SS: string); overload;
+    constructor Create(const SD, ED, SS: string); overload;
     property SD: string read FSegmentDelimiter write SetSD;
     property ED: string read FElementDelimiter write SetED;
     property SS: string read FSubElementSeperator write SetSS;
@@ -211,7 +133,7 @@ type
     FDelimiters: TEDIDelimiters;
     FErrorLog: TStrings;
     function GetData: string;
-    procedure SetData(Data: string);
+    procedure SetData(const Data: string);
   public
     constructor Create(Parent: TEDIDataObject); reintroduce;
     destructor Destroy; override;
@@ -452,10 +374,10 @@ type
     constructor Create(Parent: TEDIDataObject; InterchangeCount: Integer); overload;
     destructor Destroy; override;
 
-    procedure LoadFromFile(FileName: string);
+    procedure LoadFromFile(const FileName: string);
     procedure ReLoadFromFile;
     procedure SaveToFile;
-    procedure SaveAsToFile(FileName: string);
+    procedure SaveAsToFile(const FileName: string);
 
     function AddInterchange: Integer;
     function AppendInterchange(Interchange: TEDIInterchangeControl): Integer;
@@ -489,7 +411,12 @@ type
 
 implementation
 
-{ TEDIDelimiters }
+uses
+  JclResources;
+
+//==================================================================================================
+// TEDIDelimiters
+//==================================================================================================
 
 constructor TEDIDelimiters.Create;
 begin
@@ -504,7 +431,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-constructor TEDIDelimiters.Create(SD, ED, SS: string);
+constructor TEDIDelimiters.Create(const SD, ED, SS: string);
 begin
   inherited Create;
   FSegmentDelimiter := SD;
@@ -517,7 +444,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIDelimiters.SetED(Delimiter: string);
+procedure TEDIDelimiters.SetED(const Delimiter: string);
 begin
   FElementDelimiter := Delimiter;
   FElementDelimiterLength := Length(FElementDelimiter);
@@ -525,7 +452,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIDelimiters.SetSD(Delimiter: string);
+procedure TEDIDelimiters.SetSD(const Delimiter: string);
 begin
   FSegmentDelimiter := Delimiter;
   FSegmentDelimiterLength := Length(FSegmentDelimiter);
@@ -533,13 +460,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIDelimiters.SetSS(Delimiter: string);
+procedure TEDIDelimiters.SetSS(const Delimiter: string);
 begin
   FSubelementSeperator := Delimiter;
   FSubelementSeperatorLength := Length(FSubElementSeperator);
 end;
 
-{ TEDIDataObject }
+//==================================================================================================
+// TEDIDataObject
+//==================================================================================================
 
 constructor TEDIDataObject.Create(Parent: TEDIDataObject);
 begin
@@ -581,13 +510,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIDataObject.SetData(Data: string);
+procedure TEDIDataObject.SetData(const Data: string);
 begin
   FData := Data;
   FLength := Length(FData);
 end;
 
-{ TEDIElement }
+//==================================================================================================
+// TEDIElement
+//==================================================================================================
 
 constructor TEDIElement.Create(Parent: TEDIDataObject);
 begin
@@ -602,7 +533,9 @@ begin
   FEDIDOT := ediElement;
 end;
 
-{ TEDISegment }
+//==================================================================================================
+// TEDISegment
+//==================================================================================================
 
 function TEDISegment.AddElements(Count: Integer): Integer;
 var
@@ -673,7 +606,7 @@ begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.Create(EDIError074);
+      raise EJclEDIError.CreateResRec(@EDIError074);
     end;
   end;
 
@@ -753,7 +686,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError073,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError073, [IntToStr(Index)]);
   end;
 end;
 
@@ -785,7 +718,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError072,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError072, [IntToStr(Index)]);
   end;
 end;
 
@@ -833,7 +766,7 @@ begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.Create(EDIError071);
+      raise EJclEDIError.CreateResRec(@EDIError071);
     end;
   end;
   //Continue
@@ -878,16 +811,16 @@ begin
       begin
         if not Assigned(FElements[Index]) then
         begin
-          raise EJclEDIError.Create(Format(EDIError067,[IntToStr(Index)]));
+          raise EJclEDIError.CreateResRecFmt(@EDIError067, [IntToStr(Index)]);
         end;
         Result := FElements[Index];
       end
       else
-        raise EJclEDIError.Create(Format(EDIError068,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError068, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError069,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError069, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError070,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError070, [IntToStr(Index)]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1061,14 +994,16 @@ begin
         FElements[Index] := Element;
       end
       else
-        raise EJclEDIError.Create(Format(EDIError064,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError064, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError065,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError065, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError066,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError066, [IntToStr(Index)]);
 end;
 
-{ TEDITransactionSet }
+//==================================================================================================
+// TEDITransactionSet
+//==================================================================================================
 
 function TEDITransactionSet.AddSegment: Integer;
 begin
@@ -1138,7 +1073,7 @@ begin
     FDelimiters := InternalAssignDelimiters;
     if Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.Create(EDIError063);
+      raise EJclEDIError.CreateResRec(@EDIError063);
     end;
   end;
 
@@ -1224,7 +1159,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError062);
+    raise EJclEDIError.CreateResRec(@EDIError062);
   end;
 end;
 
@@ -1275,7 +1210,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError061,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError061, [IntToStr(Index)]);
   end;
 end;
 
@@ -1307,7 +1242,7 @@ begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.Create(EDIError060);
+      raise EJclEDIError.CreateResRec(@EDIError060);
     end;
   end;
   //Find the first segment
@@ -1360,16 +1295,16 @@ begin
       begin
         if not Assigned(FSegments[Index]) then
         begin
-          raise EJclEDIError.Create(Format(EDIError056,[IntToStr(Index)]));
+          raise EJclEDIError.CreateResRecFmt(@EDIError056, [IntToStr(Index)]);
         end;
         Result := FSegments[Index];
       end
       else
-        raise EJclEDIError.Create(Format(EDIError057,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError057, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError058,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError058, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError059,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError059, [IntToStr(Index)]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1533,14 +1468,16 @@ begin
         FSegments[Index] := Segment;
       end
       else
-        raise EJclEDIError.Create(Format(EDIError053,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError053, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError054,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError054, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError055,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError055, [IntToStr(Index)]);
 end;
 
-{ TEDIFunctionalGroup }
+//==================================================================================================
+// TEDIFunctionalGroup
+//==================================================================================================
 
 function TEDIFunctionalGroup.AddTransactionSet: Integer;
 begin
@@ -1611,7 +1548,7 @@ begin
     FDelimiters := InternalAssignDelimiters;
     if Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.Create(EDIError052);
+      raise EJclEDIError.CreateResRec(@EDIError052);
     end;
   end;
   FData := FGSSegment.Assemble;
@@ -1697,7 +1634,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError051,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError051, [IntToStr(Index)]);
   end;
 end;
 
@@ -1749,7 +1686,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError050,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError050, [IntToStr(Index)]);
   end;
 end;
 
@@ -1780,7 +1717,7 @@ begin
     FDelimiters := InternalAssignDelimiters;
     if not Assigned(FDelimiters) then
     begin
-      raise EJclEDIError.Create(EDIError042);
+      raise EJclEDIError.CreateResRec(@EDIError042);
     end;
   end;
   //Find Functional Group Header Segment
@@ -1798,18 +1735,18 @@ begin
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError043);
+      raise EJclEDIError.CreateResRec(@EDIError043);
     end;
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError044);
+    raise EJclEDIError.CreateResRec(@EDIError044);
   end;
   //Search for Transaction Set Header
   SearchResult := StrSearch(FDelimiters.SD + TSHSegmentId + FDelimiters.ED, FData, StartPos);
   if SearchResult <= 0 then
   begin
-    raise EJclEDIError.Create(EDIError045);
+    raise EJclEDIError.CreateResRec(@EDIError045);
   end;
   //Set next start position
   StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
@@ -1833,12 +1770,12 @@ begin
       end
       else
       begin
-        raise EJclEDIError.Create(EDIError046);
+        raise EJclEDIError.CreateResRec(@EDIError046);
       end;
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError047);
+      raise EJclEDIError.CreateResRec(@EDIError047);
     end;
     //Set the next start position
     StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
@@ -1865,12 +1802,12 @@ begin
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError048);
+      raise EJclEDIError.CreateResRec(@EDIError048);
     end;
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError049);
+    raise EJclEDIError.CreateResRec(@EDIError049);
   end;
   FData := '';
 end;
@@ -1886,16 +1823,16 @@ begin
       begin
         if not Assigned(FTransactionSets[Index]) then
         begin
-          raise EJclEDIError.Create(Format(EDIError038,[IntToStr(Index)]));
+          raise EJclEDIError.CreateResRecFmt(@EDIError038, [IntToStr(Index)]);
         end;
         Result := FTransactionSets[Index];
       end
       else
-        raise EJclEDIError.Create(Format(EDIError039,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError039, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError040,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError040, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError041,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError041, [IntToStr(Index)]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2053,14 +1990,16 @@ begin
         FTransactionSets[Index] := TransactionSet;
       end
       else
-        raise EJclEDIError.Create(Format(EDIError035,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError035, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError036,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError036, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError037,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError037, [IntToStr(Index)]);
 end;
 
-{ TEDIInterchangeControl }
+//==================================================================================================
+// TEDIInterchangeControl
+//==================================================================================================
 
 function TEDIInterchangeControl.AddFunctionalGroup: Integer;
 begin
@@ -2130,7 +2069,7 @@ begin
 
   if not Assigned(FDelimiters) then
   begin
-    raise EJclEDIError.Create(EDIError034);
+    raise EJclEDIError.CreateResRec(@EDIError034);
   end;
 
   FData := FISASegment.Assemble;
@@ -2216,7 +2155,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError033,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError033, [IntToStr(Index)]);
   end;
 end;
 
@@ -2268,7 +2207,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError032,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError032, [IntToStr(Index)]);
   end;
 end;
 
@@ -2300,7 +2239,7 @@ begin
 
   if not Assigned(FDelimiters) then
   begin
-    raise EJclEDIError.Create(EDIError024);
+    raise EJclEDIError.CreateResRec(@EDIError024);
   end;
 
   SearchResult := 0;
@@ -2316,18 +2255,18 @@ begin
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError025);
+      raise EJclEDIError.CreateResRec(@EDIError025);
     end;
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError026);
+    raise EJclEDIError.CreateResRec(@EDIError026);
   end;
   //Search for Functional Group Header
   SearchResult := StrSearch(FDelimiters.SD + FGHSegmentId + FDelimiters.ED, FData, StartPos);
   if SearchResult <= 0 then
   begin
-    raise EJclEDIError.Create(EDIError027);
+    raise EJclEDIError.CreateResRec(@EDIError027);
   end;
   //Set next start positon
   StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
@@ -2351,12 +2290,12 @@ begin
       end
       else
       begin
-        raise EJclEDIError.Create(EDIError028);
+        raise EJclEDIError.CreateResRec(@EDIError028);
       end;
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError029);
+      raise EJclEDIError.CreateResRec(@EDIError029);
     end;
     //Set next start positon
     StartPos := SearchResult + FDelimiters.SDLen; //Move past the delimiter
@@ -2380,12 +2319,12 @@ begin
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError030);
+      raise EJclEDIError.CreateResRec(@EDIError030);
     end;
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError031);
+    raise EJclEDIError.CreateResRec(@EDIError031);
   end;
   FData := '';
 end;
@@ -2401,16 +2340,16 @@ begin
       begin
         if not Assigned(FFunctionalGroups[Index]) then
         begin
-          raise EJclEDIError.Create(Format(EDIError020,[IntToStr(Index)]));
+          raise EJclEDIError.CreateResRecFmt(@EDIError020, [IntToStr(Index)]);
         end;
         Result := FFunctionalGroups[Index];
       end
       else
-        raise EJclEDIError.Create(Format(EDIError021,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError021, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError022,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError022, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError023,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError023, [IntToStr(Index)]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2551,14 +2490,16 @@ begin
         FFunctionalGroups[Index] := FunctionalGroup;
       end
       else
-        raise EJclEDIError.Create(Format(EDIError017,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError017, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError018,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError018, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError019,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError019, [IntToStr(Index)]);
 end;
 
-{ TEDIFile }
+//==================================================================================================
+// TEDIFile
+//==================================================================================================
 
 function TEDIFile.AddInterchange: Integer;
 begin
@@ -2697,7 +2638,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError016,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError016, [IntToStr(Index)]);
   end;
 end;
 
@@ -2730,7 +2671,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(Format(EDIError015,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError015, [IntToStr(Index)]);
   end;
 end;
 
@@ -2776,9 +2717,9 @@ begin
     FEDIFileOptions := FEDIFileOptions + [foVariableDelimiterDetection];
   end;
 
-  FData := StringReplace(FData, CRLF, '', [rfReplaceAll, rfIgnoreCase]);
-  FData := StringReplace(FData, CR, '', [rfReplaceAll, rfIgnoreCase]);
-  FData := StringReplace(FData, LF, '', [rfReplaceAll, rfIgnoreCase]);
+  FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
+  FData := StringReplace(FData, AnsiCarriageReturn, '', [rfReplaceAll, rfIgnoreCase]);
+  FData := StringReplace(FData, AnsiLineFeed, '', [rfReplaceAll, rfIgnoreCase]);
 
   SearchResult := 0;
   StartPos := 1;
@@ -2800,7 +2741,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError011);
+    raise EJclEDIError.CreateResRec(@EDIError011);
   end;
   //Continue
   while (StartPos + Length(ICHSegmentId)) < Length(FData) do
@@ -2823,12 +2764,12 @@ begin
       end
       else
       begin
-        raise EJclEDIError.Create(EDIError012);
+        raise EJclEDIError.CreateResRec(@EDIError012);
       end;
     end
     else
     begin
-      raise EJclEDIError.Create(EDIError013);
+      raise EJclEDIError.CreateResRec(@EDIError013);
     end;
     //Set next start position, Move past the delimiter
     StartPos := SearchResult + FDelimiters.SDLen;
@@ -2850,7 +2791,7 @@ begin
     end
     else if (StartPos + Length(ICHSegmentId)) < Length(FData) then
     begin
-      raise EJclEDIError.Create(EDIError014);
+      raise EJclEDIError.CreateResRec(@EDIError014);
     end;
   end;
   FData := '';
@@ -2867,16 +2808,16 @@ begin
       begin
         if not Assigned(FInterchanges[Index]) then
         begin
-          raise EJclEDIError.Create(Format(EDIError007,[IntToStr(Index)]));
+          raise EJclEDIError.CreateResRecFmt(@EDIError007, [IntToStr(Index)]);
         end;
         Result := FInterchanges[Index];
       end
       else
-        raise EJclEDIError.Create(Format(EDIError008,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError008, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError009,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError009, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError010,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError010, [IntToStr(Index)]);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3012,20 +2953,20 @@ begin
       Buffer := StrAlloc(FileSize(EDIFile));
       BlockRead(EDIFile, Buffer^, FileSize(EDIFile));
       FData := Buffer;
-      FData := StringReplace(FData, CRLF, '', [rfReplaceAll, rfIgnoreCase]);
+      FData := StringReplace(FData, AnsiCrLf, '', [rfReplaceAll, rfIgnoreCase]);
     finally
       CloseFile(EDIFile);
     end;
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError006);
+    raise EJclEDIError.CreateResRec(@EDIError006);
   end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIFile.LoadFromFile(FileName: string);
+procedure TEDIFile.LoadFromFile(const FileName: string);
 begin
   FFileName := FileName;
   InternalLoadFromFile;
@@ -3040,7 +2981,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TEDIFile.SaveAsToFile(FileName: string);
+procedure TEDIFile.SaveAsToFile(const FileName: string);
 var
   EDIFile: file;
 begin
@@ -3057,7 +2998,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError005);
+    raise EJclEDIError.CreateResRec(@EDIError005);
   end;
 end;
 
@@ -3079,7 +3020,7 @@ begin
   end
   else
   begin
-    raise EJclEDIError.Create(EDIError004);
+    raise EJclEDIError.CreateResRec(@EDIError004);
   end;
 end;
 
@@ -3099,14 +3040,16 @@ begin
         FInterchanges[Index] := Interchange
       end
       else
-        raise EJclEDIError.Create(Format(EDIError001,[IntToStr(Index)]))
+        raise EJclEDIError.CreateResRecFmt(@EDIError001, [IntToStr(Index)])
     else
-      raise EJclEDIError.Create(Format(EDIError002,[IntToStr(Index)]))
+      raise EJclEDIError.CreateResRecFmt(@EDIError002, [IntToStr(Index)])
   else
-    raise EJclEDIError.Create(Format(EDIError003,[IntToStr(Index)]));
+    raise EJclEDIError.CreateResRecFmt(@EDIError003, [IntToStr(Index)]);
 end;
 
-{ TEDIInterchangeControlSegment }
+//==================================================================================================
+// TEDIInterchangeControlSegment
+//==================================================================================================
 
 constructor TEDIInterchangeControlSegment.Create(Parent: TEDIDataObject);
 begin
@@ -3143,7 +3086,9 @@ begin
   end;
 end;
 
-{ TEDIFunctionalGroupSegment }
+//==================================================================================================
+// TEDIFunctionalGroupSegment
+//==================================================================================================
 
 constructor TEDIFunctionalGroupSegment.Create(Parent: TEDIDataObject);
 begin
@@ -3189,7 +3134,9 @@ begin
   end;
 end;
 
-{ TEDITransactionSetSegment }
+//==================================================================================================
+// TEDITransactionSetSegment
+//==================================================================================================
 
 constructor TEDITransactionSetSegment.Create(Parent: TEDIDataObject);
 begin
