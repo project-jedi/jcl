@@ -1,5 +1,33 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function GetSizeOfFile(const FileName: string): Int64; overload;
+function GetSizeOfFile(Handle: THandle): Int64; overload;
+[ShortDescr]
+Returns the size of a file.
+[Description]
+The GetSizeOfFile returns the size, in bytes of the specified file. Note that
+the returned value is the actual size of the file. This may, and most likely will,
+defer from the storage the file actually occupies on the disk.
+[Parameters]
+Count=2
+1=FileName:string=Fully qualified name of the file for which to determine the size.
+2=Handle:THandle=Handle of the file for which to determine the size. This handle
+must have been opened with sufficient rights (GENERIC_READ at the very least). The
+function assumes the handle is valid and silently fails if it is not.
+[Result]
+The size of the file, in bytes. If the function fails to determine the size of
+the file it raises an exception.
+[Quick Info]
+BCB=3,4,5
+Unit=JclFileUtils
+Category=Files and IO
+SubCat=Files and Directories
+Author=David Hervieux;dhervieux@Pirel.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 TJclFileMappingView = class (TCustomMemoryStream)
 [ShortDescr]
 Implements a file mapping view object.
