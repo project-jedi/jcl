@@ -46,7 +46,7 @@ const
   ClxDialogFileName = 'ClxExceptDlg.pas';
   VclDialogFileName = 'ExceptDlg.pas';
   VclDlgSndFileName = 'ExceptDlgMail.pas';
-  ClxDialogName     = 'CLX Exception Dialog';
+  ClxDialogName     = 'VisualCLX Exception Dialog';
   VclDialogName     = 'Exception Dialog';
   VclDialogNameSend = 'Exception Dialog with Send';
   DialogDescription = 'JCL Application exception dialog';
@@ -118,7 +118,7 @@ const
   RsJCLExceptDlg    = 'Sample Exception Dialogs in the Object Reporitory';
   RsJCLDialogVCL    = 'VCL Exception Dialog';
   RsJCLDialogVCLSnd = 'VCL Exception Dialog with Send button';
-  RsJCLDialogCLX    = 'CLX Exception Dialog';
+  RsJCLDialogCLX    = 'VisualCLX Exception Dialog';
   RsJCLIdeDebug     = 'Debug Extension';
   RsJCLIdeAnalyzer  = 'Project Analyzer';
   RsJCLIdeFavorite  = 'Favorite combobox in Open/Save dialogs';
@@ -453,14 +453,16 @@ begin
       begin
         AddNode(TempNode, RsMakeWindows, FID_JCL_MakeRelease or FID_JCL_Windows);
         AddNode(TempNode, RsMakeVcl, FID_JCL_MakeRelease or FID_JCL_Vcl);
-        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeRelease or FID_JCL_VClx);
+        if Installation.Edition >= dePro then
+          AddNode(TempNode, RsMakeVClx, FID_JCL_MakeRelease or FID_JCL_VClx);
       end;
       TempNode := AddNode(MakeNode, RsMakeDebug, FID_JCL_MakeDebug);
       if Installation.VersionNumber >= 6 then
       begin
         AddNode(TempNode, RsMakeWindows, FID_JCL_MakeDebug or FID_JCL_Windows);
         AddNode(TempNode, RsMakeVcl, FID_JCL_MakeDebug or FID_JCL_Vcl);
-        AddNode(TempNode, RsMakeVClx, FID_JCL_MakeDebug or FID_JCL_VClx);
+        if Installation.Edition >= dePro then
+          AddNode(TempNode, RsMakeVClx, FID_JCL_MakeDebug or FID_JCL_VClx);
       end;
       if (FJclHlpHelpFileName <> '') or (FJclChmHelpFileName <> '') then
       begin
@@ -469,7 +471,7 @@ begin
           AddNode(TempNode, RsIdeHelpHlp, FID_JCL_HelpHlp);
         if FJclChmHelpFileName <> '' then
           AddNode(TempNode, RsIdeHelpChm, FID_JCL_HelpChm);
-      end;    
+      end;
       TempNode := AddNode(ProductNode, RsJCLExceptDlg, FID_JCL_ExcDialog);
       AddNode(TempNode, RsJCLDialogVCL, FID_JCL_ExcDialogVCL);
       AddNode(TempNode, RsJCLDialogVCLSnd, FID_JCL_ExcDialogVCLSnd);
