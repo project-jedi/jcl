@@ -701,6 +701,16 @@ function IsHandleValid(Handle: THandle): Boolean;
 
 {$ENDIF MSWINDOWS}
 
+
+{$IFDEF SUPPORTS_EXTSYM}
+
+// centralized EXTERNALSYMs to keep this Delphi 3 compatible
+
+{$EXTERNALSYM __FILE__}
+{$EXTERNALSYM __LINE__}
+
+{$ENDIF}
+
 implementation
 
 uses
