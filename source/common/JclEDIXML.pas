@@ -46,7 +46,7 @@ unit JclEDIXML;
 interface
 
 uses
-  SysUtils, Classes, JclBase, JclStrings, JclEDI, JclEDI_ANSIX12;
+  SysUtils, Classes, JclEDI, JclEDI_ANSIX12;
 
 const
   XMLTag_Element = 'Element';
@@ -476,7 +476,7 @@ type
 implementation
 
 uses
-  JclResources;
+  JclResources, JclStrings;
 
 //==================================================================================================
 // TEDIXMLDelimiters
