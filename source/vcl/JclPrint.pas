@@ -168,7 +168,14 @@ var
   DocInfo: TDoc_Info_1;
   BytesWritten: Cardinal;
   Count: Cardinal;
+  Defaults: TPrinterDefaults;
 begin
+  // Defaults added for network printers. Supposedly the last member is ignored
+  // by Windows 9x but is necessary for Windows NT. Code was copied from a msg
+  // by Alberto Toledo to the C++ Builder techlist and fwd by Theo Bebekis.
+  Defaults.pDatatype := PChar('RAW');
+  Defaults.pDevMode := nil;
+  Defaults.DesiredAccess := PRINTER_ACCESS_USE;
   Count := Length(Data);
   if not OpenPrinter(PChar(Printer), PrinterHandle, nil) then
     raise EJclPrinterError.CreateResRec(@RsInvalidPrinter);
