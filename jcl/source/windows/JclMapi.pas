@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: September 18, 2000                                            }
+{ Last modified: November 27, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -116,7 +116,6 @@ type
     property SelectedClientType: TJclMapiClientType read FSelectedClientType write SetSelectedClientType;
     property SimpleMapiInstalled: Boolean read FSimpleMapiInstalled;
     property BeforeUnloadClient: TNotifyEvent read FBeforeUnloadClient write FBeforeUnloadClient;
-
     // Simple MAPI functions
     property MapiAddress: TFNMapiAddress read FMapiAddress;
     property MapiDeleteMail: TFNMapiDeleteMail read FMapiDeleteMail;
@@ -136,10 +135,51 @@ type
 // Simple email
 //------------------------------------------------------------------------------
 
-  TJclEmail = class (TJclSimpleMapi)
+  TJclEmailRecipKind = (rkTO, rkCC, rkBCC);
+
+  TJclEmailRecip = class (TObject)
+  private
+    FAddress: string;
+    FKind: TJclEmailRecipKind;
+    FName: string;
+  protected
+    function SortingName: string;
   public
-    procedure SendMail(const Recipient, Name, Subject, Body: string; ParentWND: HWND);
-    class procedure SimpleSendMail(const Recipient, Name, Subject, Body: string; ParentWND: HWND);
+    function AddressAndName: string;
+    property Address: string read FAddress write FAddress;
+    property Kind: TJclEmailRecipKind read FKind write FKind;
+    property Name: string read FName write FName;
+  end;
+
+  TJclEmailRecips = class (TObjectList)
+  private
+    function GetItems(Index: Integer): TJclEmailRecip;
+  public
+    function Add(const Address: string;
+      const Name: string{$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
+      const Kind: TJclEmailRecipKind{$IFDEF SUPPORTS_DEFAULTPARAMS} = rkTO {$ENDIF}): Integer;
+    procedure SortRecips;
+    property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
+  end;
+
+  TJclEmail = class (TJclSimpleMapi)
+  private
+    FAttachments: TStrings;
+    FBody: string;
+    FSubject: string;
+    FRecipients: TJclEmailRecips;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Send(ShowDialog: Boolean; ParentWND: HWND);
+    class procedure SimpleSendMail(const Recipient, Name, ASubject, ABody: string;
+      ShowDialog: Boolean; ParentWND: HWND);
+    procedure SortAttachments;
+    property Attachments: TStrings read FAttachments write FAttachments;
+    property Body: string read FBody write FBody;
+    property Recipients: TJclEmailRecips read FRecipients;
+    property Subject: string read FSubject write FSubject;
   end;
 
 //------------------------------------------------------------------------------
@@ -522,30 +562,173 @@ begin
 end;
 
 //==============================================================================
+// TJclEmailRecip
+//==============================================================================
+
+function TJclEmailRecip.AddressAndName: string;
+var
+  N: string;
+begin
+  if Name = '' then
+    N := Address
+  else
+    N := Name;
+  Result := Format('"%s" <%s>', [N, Address]);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmailRecip.SortingName: string;
+begin
+  if FName = '' then
+    Result := FAddress
+  else
+    Result := FName;
+end;
+
+//==============================================================================
+// TJclEmailRecips
+//==============================================================================
+
+function TJclEmailRecips.Add(const Address, Name: string;
+  const Kind: TJclEmailRecipKind): Integer;
+var
+  Item: TJclEmailRecip;
+begin
+  Item := TJclEmailRecip.Create;
+  try
+    Item.FAddress := Trim(Address);
+    Item.FName := Name;
+    Item.FKind := Kind;
+    Result := inherited Add(Item);
+  except
+    Item.Free;
+    raise;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclEmailRecips.GetItems(Index: Integer): TJclEmailRecip;
+begin
+  Result := TJclEmailRecip(GetItem(Index));
+end;
+
+//------------------------------------------------------------------------------
+
+function EmailRecipsCompare(Item1, Item2: Pointer): Integer;
+var
+  R1, R2: TJclEmailRecip;
+begin
+  R1 := TJclEmailRecip(Item1);
+  R2 := TJclEmailRecip(Item2);
+  if R1.Kind < R2.Kind then
+    Result := -1
+  else
+  if R1.Kind > R2.Kind then
+    Result := 1
+  else
+    Result := AnsiCompareStr(R1.SortingName, R2.SortingName);
+end;
+
+procedure TJclEmailRecips.SortRecips;
+begin
+  Sort(EmailRecipsCompare);
+end;
+
+//==============================================================================
 // TJclEmail
 //==============================================================================
 
-procedure TJclEmail.SendMail(const Recipient, Name, Subject, Body: string;
-  ParentWND: HWND);
+procedure TJclEmail.Clear;
+begin
+  FAttachments.Clear;
+  FBody := '';
+  FSubject := '';
+  FRecipients.Clear;
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclEmail.Create;
+begin
+  inherited;
+  FAttachments := TStringList.Create;
+  FRecipients := TJclEmailRecips.Create;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclEmail.Destroy;
+begin
+  FreeAndNil(FAttachments);
+  FreeAndNil(FRecipients);
+  inherited;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclEmail.Send(ShowDialog: Boolean; ParentWND: HWND);
+const
+  RecipClasses: array [TJclEmailRecipKind] of DWORD =
+    (MAPI_TO, MAPI_CC, MAPI_BCC);
 var
+  AttachArray: array of TMapiFileDesc;
+  RecipArray: array of TMapiRecipDesc;
   MapiMessage: TMapiMessage;
-  Recip: TMapiRecipDesc;
+  Flags: DWORD;
+  I: Integer;
   TaskWindows: TJclMapiTaskWindows;
 begin
-  FillChar(Recip, SizeOf(Recip), #0);
-  Recip.ulRecipClass := MAPI_TO;
-  Recip.lpszAddress := PChar(Recipient);
-  Recip.lpszName := PChar(Name);
+  if FAttachments.Count > 0 then
+  begin
+    SetLength(AttachArray, FAttachments.Count);
+    for I := 0 to FAttachments.Count - 1 do
+    begin
+      if not FileExists(FAttachments[I]) then
+        MapiCheck(MAPI_E_ATTACHMENT_NOT_FOUND, False);
+      FAttachments[I] := ExpandFileName(FAttachments[I]);
+      FillChar(AttachArray[I], SizeOf(TMapiFileDesc), #0);
+      AttachArray[I].nPosition := $FFFFFFFF;
+      AttachArray[I].lpszFileName := PChar(FAttachments[I]);
+      AttachArray[I].lpszPathName := PChar(FAttachments[I]);
+    end;
+  end else
+    AttachArray := nil;
+
+  if Recipients.Count = 0 then
+    MapiCheck(MAPI_E_INVALID_RECIPS, False);
+  SetLength(RecipArray, Recipients.Count);
+  for I := 0 to Recipients.Count - 1 do
+  begin
+    FillChar(RecipArray[I], SizeOf(TMapiRecipDesc), #0);
+    with RecipArray[I], Recipients[I] do
+    begin
+      ulRecipClass := RecipClasses[Kind];
+      if Name = '' then // some clients requires Name item always filled
+        lpszName := PChar(FAddress)
+      else
+        lpszName := PChar(FName);
+      lpszAddress := PChar(FAddress);
+    end;
+  end;
+
+  LoadClientLib;
+
   FillChar(MapiMessage, SizeOf(MapiMessage), #0);
-  MapiMessage.lpszSubject := PChar(Subject);
-  MapiMessage.lpszNoteText := PChar(Body);
-  MapiMessage.lpRecips := @Recip;
-  MapiMessage.nRecipCount := 1;
+  MapiMessage.lpszSubject := PChar(FSubject);
+  MapiMessage.lpszNoteText := PChar(FBody);
+  MapiMessage.lpRecips := PMapiRecipDesc(RecipArray);
+  MapiMessage.nRecipCount := Length(RecipArray);
+  MapiMessage.lpFiles := PMapiFileDesc(AttachArray);
+  MapiMessage.nFileCount := Length(AttachArray);
   TaskWindows := TJclMapiTaskWindows.Create;
   TaskWindows.SaveTaskWindowsState;
   try
-    MapiCheck(MapiSendMail(0, ParentWND, MapiMessage,
-      MAPI_DIALOG or MAPI_LOGON_UI or MAPI_NEW_SESSION, 0), True);
+    Flags := MAPI_LOGON_UI or MAPI_NEW_SESSION;
+    if ShowDialog then
+      Flags := Flags or MAPI_DIALOG;
+    MapiCheck(MapiSendMail(0, ParentWND, MapiMessage, Flags, 0), True);
   finally
     TaskWindows.RestoreTaskWindowsState;
     TaskWindows.Free;
@@ -554,16 +737,25 @@ end;
 
 //------------------------------------------------------------------------------
 
-class procedure TJclEmail.SimpleSendMail(const Recipient, Name, Subject,
-  Body: string; ParentWND: HWND);
+class procedure TJclEmail.SimpleSendMail(const Recipient, Name, ASubject,
+  ABody: string; ShowDialog: Boolean; ParentWND: HWND);
 begin
   with Create do
   try
-    LoadClientLib;
-    SendMail(Recipient, Name, Subject, Body, ParentWND);
+    Recipients.Add(Recipient, Name, rkTO);
+    Subject := ASubject;
+    Body := ABody;
+    Send(ShowDialog, ParentWND);
   finally
     Free;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclEmail.SortAttachments;
+begin
+  TStringList(FAttachments).Sort;
 end;
 
 end.
