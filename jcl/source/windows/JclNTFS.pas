@@ -66,26 +66,8 @@ function NtfsGetSparse(const FileName: string): Boolean;
 // NTFS - Reparse Points
 //------------------------------------------------------------------------------
 
-type
-  TGenericReparseBuffer = record
-    DataBuffer: array [0..0] of BYTE;
-  end;
-
-  PReparseGuidDataBuffer = ^TReparseGuidDataBuffer;
-  _REPARSE_GUID_DATA_BUFFER = record
-    ReparseTag: DWORD;
-    ReparseDataLength: WORD;
-    Reserved: WORD;
-    ReparseGuid: TGUID;
-    GenericReparseBuffer: TGenericReparseBuffer;
-  end;
-  TReparseGuidDataBuffer = _REPARSE_GUID_DATA_BUFFER;
-
-const
-  FILE_FLAG_OPEN_REPARSE_POINT = $00200000;
-
 function NtfsDeleteReparsePoint(const FileName: string; ReparseTag: DWORD): Boolean;
-function NtfsSetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
+function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
 function NtfsGetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
 function NtfsGetReparseTag(const Path: string; var Tag: DWORD): Boolean;
 function NtfsReparsePointsSupported(const Volume: string): Boolean;
@@ -115,6 +97,14 @@ function NtfsOpLockBreakAckNo2(Handle: THandle; Overlapped: TOverlapped): Boolea
 function NtfsOpLockBreakAcknowledge(Handle: THandle; Overlapped: TOverlapped): Boolean;
 function NtfsOpLockBreakNotify(Handle: THandle; Overlapped: TOverlapped): Boolean;
 function NtfsRequestOpLock(Handle: THandle; Kind: TOpLock; Overlapped: TOverlapped): Boolean;
+
+//------------------------------------------------------------------------------
+// Junction Points
+//------------------------------------------------------------------------------
+
+function CreateJunctionPoint(const MountDir, Destination: string): Boolean;
+function DeleteJunctionPoint(const MountDir: string): Boolean;
+function GetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
 
 type
   EJclNtfsError = class (EJclWin32Error);
@@ -382,33 +372,37 @@ var
   ReparseData: TReparseGuidDataBuffer;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING,
-    FILE_FLAG_OPEN_REPARSE_POINT, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil, OPEN_EXISTING,
+    FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Assert(SizeOf(ReparseData) >= REPARSE_GUID_DATA_BUFFER_HEADER_SIZE);
+  try
     FillChar(ReparseData, SizeOf(ReparseData), #0);
     ReparseData.ReparseTag := ReparseTag;
     Result := DeviceIoControl(Handle, FSCTL_DELETE_REPARSE_POINT, @ReparseData,
-      SizeOf(ReparseData), nil, 0, BytesReturned, nil);
+      REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nil, 0, BytesReturned, nil);
+  finally
     CloseHandle(Handle);
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function NtfsSetReparsePoint(const FileName: string; var ReparseData: TReparseGuidDataBuffer): Boolean;
+function NtfsSetReparsePoint(const FileName: string; var ReparseData; Size: Longword): Boolean;
 var
   Handle: THandle;
   BytesReturned: DWORD;
 begin
   Result := False;
-  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING,
-    FILE_FLAG_OPEN_REPARSE_POINT, 0);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ or GENERIC_WRITE, 0, nil,
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
+//    Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
+//      SizeOf(ReparseData) + ReparseData.ReparseDataLength, nil, 0, BytesReturned, nil);
     Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
-      SizeOf(ReparseData) + ReparseData.ReparseDataLength, nil, 0, BytesReturned, nil);
+      Size, nil, 0, BytesReturned, nil);
+
+  finally
     CloseHandle(Handle);
   end;
 end;
@@ -423,20 +417,20 @@ var
 begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil,
-    OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT, 0);
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
     Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
-      SizeOf(ReparseData) + ReparseData.ReparseDataLength, BytesReturned, nil);
+      ReparseData.ReparseDataLength + SizeOf(ReparseData), BytesReturned, nil);
     if not Result then
     begin
       ReparseData.ReparseDataLength := BytesReturned;
       LastError := GetLastError;
       CloseHandle(Handle);
       SetLastError(LastError);
-    end
-    else
-      CloseHandle(Handle);
+    end;
+  finally
+    CloseHandle(Handle);
   end;
 end;
 
@@ -556,6 +550,122 @@ var
 begin
   Result := DeviceIoControl(Handle, IoCodes[Kind], nil, 0, nil, 0, BytesReturned, @Overlapped);
   Result := Result or (GetLastError = ERROR_IO_PENDING);
+end;
+
+//==============================================================================
+// Junction Points
+//==============================================================================
+
+function IsReparseTagValid(Tag: DWORD): Boolean;
+begin
+  Result := (Tag and (not IO_REPARSE_TAG_VALID_VALUES) = 0) and
+    (Tag > IO_REPARSE_TAG_RESERVED_RANGE);
+end;
+
+function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+// copies characters from a Pascal-style string into a null-terminated wide string
+asm
+        PUSH    EDI
+        PUSH    ESI
+        MOV     EDI, EAX
+        MOV     ESI, EDX
+        MOV     EDX, EAX
+        XOR     AX, AX
+@@1:
+        LODSB
+        STOSW
+        DEC     ECX
+        JNZ     @@1
+        MOV     EAX, EDX
+        POP     ESI
+        POP     EDI
+end;
+
+function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
+// copies a Pascal-style string to a null-terminated wide string
+begin
+  Result := StrPLCopyW(Dest, Source, Length(Source));
+  Result[Length(Source)] := WideChar(#0);
+end;
+
+//------------------------------------------------------------------------------
+
+function CreateJunctionPoint(const MountDir, Destination: string): Boolean;
+var
+  Dest: array [0..1024] of Char;
+  WideDest: WideString;  
+  FullDir: array [0..1024] of Char;
+  FilePart: PChar;
+  Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
+  ReparseData: TReparseDataBuffer absolute Buffer;
+  NameLength: Longword;
+begin
+  Result := False;
+  if Copy(Destination, 1, 2) = '\??' then
+    StrPCopy(Dest, Destination)
+  else
+  begin
+    if (GetFullPathName(PChar(Destination), 1024, FullDir, FilePart) = 0) or
+      (GetFileAttributes(FullDir) = $FFFFFFFF) then
+      Exit;
+    StrPCopy(Dest, '\??\' + Destination);
+  end;
+  FillChar(ReparseData, SizeOf(ReparseData), #0);
+  NameLength := StrLen(Dest) * SizeOf(WideChar);
+  ReparseData.ReparseTag := IO_REPARSE_TAG_MOUNT_POINT;
+  ReparseData.ReparseDataLength := NameLength + 12;
+  ReparseData.SubstituteNameLength := NameLength;
+  ReparseData.PrintNameOffset := NameLength + 2;
+  WideDest := WideString(Dest); // TODO User MultiByte....
+  StrPCopyW(ReparseData.PathBuffer, WideDest);
+  Result := NtfsSetReparsePoint(MountDir, ReparseData,
+    ReparseData.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
+end;
+
+//------------------------------------------------------------------------------
+
+function DeleteJunctionPoint(const MountDir: string): Boolean;
+begin
+  Result := NtfsDeleteReparsePoint(MountDir, IO_REPARSE_TAG_MOUNT_POINT);
+end;
+
+//------------------------------------------------------------------------------
+
+const
+  CP_THREAD_ACP = 3;           // current thread's ANSI code page
+
+function GetJunctionPointDestination(const MountDir: string; var Destination: string): Boolean;
+var
+  Handle: THandle;
+  Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
+  ReparseData: TReparseDataBuffer absolute Buffer;
+  BytesReturned: DWORD;
+begin
+  Result := False;
+  if NtfsFileHasReparsePoint(MountDir) then
+  begin
+    Handle := CreateFile(PChar(MountDir), GENERIC_READ, 0, nil,
+      OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+    if Handle <> INVALID_HANDLE_VALUE then
+    try
+      if DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
+        MAXIMUM_REPARSE_DATA_BUFFER_SIZE, BytesReturned, nil) {and
+        IsReparseTagValid(ReparseData.ReparseTag) then}
+        then
+      begin
+        if BytesReturned >= ReparseData.SubstituteNameLength + SizeOf(WideChar) then
+        begin
+          SetLength(Destination, (ReparseData.SubstituteNameLength div SizeOf(WideChar)) + 1);
+          WideCharToMultiByte(CP_THREAD_ACP, 0, ReparseData.PathBuffer,
+            (ReparseData.SubstituteNameLength div SizeOf(WCHAR)) + 1,
+            PChar(Destination), Length(Destination), nil, nil);
+          Result := True;
+        end;
+      end;
+    finally
+      CloseHandle(Handle);
+    end
+  end;
 end;
 
 end.
