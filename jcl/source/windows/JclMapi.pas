@@ -21,7 +21,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI  }
 {                                                                              }
 { Unit owner: Petr Vones                                                       }
-{ Last modified: April 14, 2001                                                }
+{ Last modified: June 5, 2001                                                  }
 {                                                                              }
 {******************************************************************************}
 
@@ -1053,6 +1053,11 @@ var
   I: Integer;
   Files: PMapiFileDesc;
 
+  function CopyAndStrToInt(const S: string; Index, Count: Integer): Integer;
+  begin
+    Result := StrToIntDef(Copy(S, Index, Count), 0);
+  end;
+
   function MessageDateToDate(const S: string): TDateTime;
   var
     T: TSystemTime;
@@ -1060,8 +1065,11 @@ var
     FillChar(T, SizeOf(T), #0);
     with T do
     begin
-    // Petr could you replace the Sscanf. Thanks!
-    //  Sscanf(S, '%4h/%2h/%2h %2h:%2h', [@wYear, @wMonth, @wDay, @wHour, @wMinute]);
+      wYear := CopyAndStrToInt(S, 1, 4);
+      wMonth := CopyAndStrToInt(S, 6, 2);
+      wDay := CopyAndStrToInt(S, 9, 2);
+      wHour := CopyAndStrToInt(S, 12, 2);
+      wMinute := CopyAndStrToInt(S, 15,2);
       Result := EncodeDate(wYear, wMonth, wDay) +
         EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
     end;
