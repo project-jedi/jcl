@@ -243,7 +243,7 @@ begin
   {$IFDEF MSWINDOWS}
     and FileExists(FVclDialogFileName)  and FileExists(FVclDialogIconFileName)
   {$ENDIF MSWINDOWS};
-  FJclReadmeFileName := PathAddSeparator(FJclPath) + RsReadmeFileName;
+  FJclReadmeFileName := PathAddSeparator(FJclPath) + 'docs' + PathSeparator + RsReadmeFileName;
   if FileExists(FJclReadmeFileName) then
   begin
     ReadmeText := FileToString(FJclReadmeFileName);
