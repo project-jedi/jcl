@@ -605,27 +605,22 @@ end;
 procedure TJclMIDIOut.SendSingleNoteTuningChange(const TargetDeviceID, TuningProgramNum: TMidiDataByte;
   const TuningData: array of TSingleNoteTuningData);
 var
-  Count: Integer;
-  Buf: PByteArray;
-  BufSize: Integer;
+  BufSize, Count: Integer;
+  Buf: array of Byte;
 begin
   Count := High(TuningData) - Low(TuningData) + 1;
   BufSize := 8 + Count * SizeOf(TSingleNoteTuningData);
-  GetMem(Buf, BufSize);
-  try
-    Buf[0] := MIDIMsgSysEx;      // Universal Real Time SysEx header, first byte
-    Buf[1] := $7F;               // second byte
-    Buf[2] := TargetDeviceID;    // ID of target device (?)
-    Buf[3] := 8;                 // sub-ID#1 (MIDI Tuning)
-    Buf[4] := 2;                 // sub-ID#2 (note change)
-    Buf[5] := TuningProgramNum;  // tuning program number (0 – 127)
-    Buf[6] := Count;
-    Move(TuningData, Buf[7], Count * SizeOf(TSingleNoteTuningData));
-    Buf[BufSize - 1] := MIDIMsgEOX;
-    SendMessage(Slice(Buf^, BufSize));
-  finally
-    FreeMem(Buf);
-  end;
+  SetLength(Buf, BufSize);
+  Buf[0] := MIDIMsgSysEx;      // Universal Real Time SysEx header, first byte
+  Buf[1] := $7F;               // second byte
+  Buf[2] := TargetDeviceID;    // ID of target device (?)
+  Buf[3] := 8;                 // sub-ID#1 (MIDI Tuning)
+  Buf[4] := 2;                 // sub-ID#2 (note change)
+  Buf[5] := TuningProgramNum;  // tuning program number (0 – 127)
+  Buf[6] := Count;
+  Move(TuningData, Buf[7], Count * SizeOf(TSingleNoteTuningData));
+  Buf[BufSize - 1] := MIDIMsgEOX;
+  SendMessage(Buf);
 end;
 
 //--------------------------------------------------------------------------------------------------
