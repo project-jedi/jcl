@@ -22,7 +22,7 @@ package JediUsesD60;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JEDI Code Library Uses Wizard'}
+{$DESCRIPTION 'JCL Uses Wizard for Delphi 6'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
