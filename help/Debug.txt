@@ -520,6 +520,47 @@ Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+property LinkerBug: Boolean read FLinkerBug;
+[ShortDescr]
+Is the linker bug found in the map
+[Description]
+LinkerBug holds a flag to determine if the linker bug is found in the map file.
+The bug appears if a unit has >64K of data after the code and another unit
+follows. The solution is to move the data to a separate unit.
+[Quick Info]
+Kind=Property
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=LinkerBugUnit
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LinkerBugUnitName: string read GetLinkerBugUnitName;
+[ShortDescr]
+Unit name of where the linker bug occured.
+[Description]
+LinkerBugUnit holds the name of the unit containing the linker bug. If there's
+no linker bug present (ie. LinkerBug = False) LinkerBugUnit is empty.
+[Quick Info]
+Kind=Property
+Visibility=Public
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Source Locations\Map Parsers\TJclAbstractMapParser
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+[SeeAlso]
+Count=1
+1=LinkerBug
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 TJclMapParser = class (<REF Target"..\TJclAbstractMapParser\TJclAbstractMapParser">TJclAbstractMapParser</REF>)
 [ShortDescr]
 Generic map file parser
