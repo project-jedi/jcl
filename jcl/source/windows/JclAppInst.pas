@@ -35,7 +35,7 @@ unit JclAppInst;
 interface
 
 uses
-  Windows, Messages, Classes,
+  Windows, Classes, Messages,
   JclBase, JclFileUtils, JclSynch;
 
 //------------------------------------------------------------------------------
@@ -234,6 +234,7 @@ type
     ProcessID: DWORD;
     Wnd: HWND;
   end;
+
 var
   TopLevelWnd: TTopLevelWnd;
 
@@ -427,6 +428,7 @@ type
     CopyData: TCopyDataStruct;
     Self: TJclAppInstances;
   end;
+
 var
   EnumWinRec: TEnumWinRec;
 
