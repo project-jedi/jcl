@@ -202,6 +202,7 @@ $Id$
 
           <include name="${help.dir}/JCLHelp.hlp" />
           <include name="${help.dir}/JCLHelp.cnt" />
+          <include name="${help.dir}/JCLHelp.als" />
 
           <include name="${basedir}/**/*.tlb" />
 
