@@ -47,20 +47,19 @@ type
 {$IFNDEF DELPHI5_UP}
   PImageExportDirectory = ^TImageExportDirectory;
   _IMAGE_EXPORT_DIRECTORY = packed record
-      Characteristics: DWord;
-      TimeDateStamp: DWord;
-      MajorVersion: Word;
-      MinorVersion: Word;
-      Name: DWord;
-      Base: DWord;
-      NumberOfFunctions: DWord;
-      NumberOfNames: DWord;
-      AddressOfFunctions: ^PDWORD;
-      AddressOfNames: ^PDWORD;
-      AddressOfNameOrdinals: ^PWord;
+    Characteristics: DWORD;
+    TimeDateStamp: DWORD;
+    MajorVersion: Word;
+    MinorVersion: Word;
+    Name: DWORD;
+    Base: DWORD;
+    NumberOfFunctions: DWORD;
+    NumberOfNames: DWORD;
+    AddressOfFunctions: DWORD;    // RVA from base of image
+    AddressOfNames: DWORD;        // RVA from base of image
+    AddressOfNameOrdinals: DWORD; // RVA from base of image
   end;
   TImageExportDirectory = _IMAGE_EXPORT_DIRECTORY;
-  IMAGE_EXPORT_DIRECTORY = _IMAGE_EXPORT_DIRECTORY;
 {$ENDIF}
 
 { Non-COFF Object file header }
