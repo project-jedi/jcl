@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: November 26, 2002                                                                 }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -896,10 +896,20 @@ begin
     Kind := rkOriginator;
     with RecipDesc^ do
     begin
-      if ulRecipClass in [MAPI_ORIG..MAPI_BCC] then
-        Kind := TJclEmailRecipKind(ulRecipClass)
+      case ulRecipClass of
+        MAPI_ORIG:
+          Kind := rkOriginator;
+        MAPI_TO:
+          Kind := rkTO;
+        MAPI_CC:
+          Kind := rkCC;
+        MAPI_BCC:
+          Kind := rkBCC;
+        $FFFFFFFF:  // Eudora client version 5.2.0.9 bug
+          Kind := rkOriginator;
       else
         MapiCheck(MAPI_E_INVALID_MESSAGE, True);
+      end;  
       S := lpszAddress;
       N := Pos(AddressTypeDelimiter, S);
       if N = 0 then
