@@ -15,9 +15,6 @@ object FormUsesConfirm: TFormUsesConfirm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
-  DesignSize = (
-    427
-    214)
   PixelsPerInch = 96
   TextHeight = 13
   object ButtonOK: TButton

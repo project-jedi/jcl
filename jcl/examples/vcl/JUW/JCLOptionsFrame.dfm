@@ -4,9 +4,6 @@ object FrameJclOptions: TFrameJclOptions
   Width = 419
   Height = 265
   TabOrder = 0
-  DesignSize = (
-    419
-    265)
   object GroupBoxWizard: TGroupBox
     Left = 8
     Top = 8
@@ -15,9 +12,6 @@ object FrameJclOptions: TFrameJclOptions
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Uses wizard '
     TabOrder = 0
-    DesignSize = (
-      403
-      97)
     object LabelIniFile: TLabel
       Left = 8
       Top = 18

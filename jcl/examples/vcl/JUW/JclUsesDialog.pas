@@ -47,7 +47,7 @@ function TFormUsesConfirm.ToggleNode(Node: TTreeNode): Boolean;
 begin
   if Node.ImageIndex = 0 then
   begin
-    Node.Imageindex := 1;
+    Node.ImageIndex := 1;
     Node.SelectedIndex := 1;
     Result := True;
   end
