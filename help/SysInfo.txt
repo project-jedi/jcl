@@ -338,12 +338,12 @@ Count=4
 4=GetEnvironmentVars
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWin2000, wvWinNT3, wvWinNT4);
+TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME, wvWin2000, wvWinNT3, wvWinNT4);
 [ShortDescr]
 Enumeration of Windows versions. Used as function result
 by <REF Target"..\GetWindowsVersion">GetWindowsVersion</REF>
 [Enumeration]
-Count=8
+Count=9
 1=wvUnknown=Unknown Windows version. This can happen when a new Windows version
 is released after JCL or if you are running a Windows version with a different
 build number then expected. For example a beta version.
@@ -351,9 +351,10 @@ build number then expected. For example a beta version.
 3=wvWin95OSR2=Windows 95 OSR 2
 4wvWin98=Windows 98
 5=wvWin98SE=Windows 98 Second Edition
-6=wvWin2000=Windows 2000
-7=wvWinNT3=Windows NT 3.x
-8=wvWinNT4=Windows NT 4.0
+6=wvWinME=Windows Millenium
+7=wvWin2000=Windows 2000
+8=wvWinNT3=Windows NT 3.x
+9=wvWinNT4=Windows NT 4.0
 [Quick Info]
 BCB=3,4,5
 Kind=Type
@@ -1310,6 +1311,29 @@ Returns whether the system is running Windows 98 SE
 IsWin98SE returns whether or not the system is running Windows 98 Second Edition.
 [Result]
 If the system is running Windows 98 SE the result is True otherwise the result is False.
+[Quick Info]
+BCB=3,4,5
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Version Information
+Author=Nick Hodges;nick@xapware.com
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=3
+1=IsWin2K
+2=IsWin95
+3=IsWinNT4
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function IsWinME: Boolean;
+[ShortDescr]
+Returns whether the system is running Windows Millenium
+[Description]
+IsWin98SE returns whether or not the system is running Windows Millenium.
+[Result]
+If the system is running Windows Millenium the result is True otherwise the result is False.
 [Quick Info]
 BCB=3,4,5
 Unit=JclSysInfo
