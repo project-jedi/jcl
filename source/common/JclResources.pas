@@ -1486,6 +1486,7 @@ resourcestring
   RsSystemIdleProcess = 'System Idle Process';
 
   RsIntelUnknownCache = 'Unknown cache ID (%.2x)';
+  RsIntelCacheDescr00 = 'Null descriptor';
   RsIntelCacheDescr01 = 'Instruction TLB, 4Kb pages, 4-way set associative, 32 entries';
   RsIntelCacheDescr02 = 'Instruction TLB, 4Mb pages, fully associative, 2 entries';
   RsIntelCacheDescr03 = 'Data TLB, 4Kb pages, 4-way set associative, 64 entries';
@@ -1494,10 +1495,10 @@ resourcestring
   RsIntelCacheDescr08 = '16KB instruction cache, 4-way set associative, 32 byte line size';
   RsIntelCacheDescr0A = '8KB data cache 2-way set associative, 32 byte line size';
   RsIntelCacheDescr0C = '16KB data cache, 4-way set associative, 32 byte line size';
-  RsIntelCacheDescr22 = '3° Level cache, 512 KBytes, 4-way set associative, 2 lines per sector, 64 Bytes sector size';
-  RsIntelCacheDescr23 = '3° Level cache, 1 MBytes, 8-way set associative, 2 lines per sector, 64 Bytes sector size';
-  RsIntelCacheDescr25 = '3° Level cache, 2 MBytes, 8-way set associative, 2 lines per sector, 64 byte line size';
-  RsIntelCacheDescr29 = '3° Level cache, 4M Bytes, 8-way set associative, 2 lines per sector, 64 byte line size';
+  RsIntelCacheDescr22 = '3° Level cache, 512 KBytes, 4-way set associative, 2 lines per sector, 128 byte sector size';
+  RsIntelCacheDescr23 = '3° Level cache, 1 MBytes, 8-way set associative, 2 lines per sector, 128 byte sector size';
+  RsIntelCacheDescr25 = '3° Level cache, 2 MBytes, 8-way set associative, 2 lines per sector, 128 byte line size';
+  RsIntelCacheDescr29 = '3° Level cache, 4M Bytes, 8-way set associative, 2 lines per sector, 128 byte line size';
   RsIntelCacheDescr2C = '1° Level data cache: 32K Bytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr30 = '1° Level instruction cache: 32K Bytes, 8-way set associative, 64 byte line size';
   RsIntelCacheDescr40 = 'No L2 cache';
@@ -1519,6 +1520,7 @@ resourcestring
   RsIntelCacheDescr70  = 'Trace cache, 12 KµOps, 8-way set associative';
   RsIntelCacheDescr71  = 'Trace cache, 16 KµOps, 8-way set associative';
   RsIntelCacheDescr72  = 'Trace cache, 32 KµOps, 8-way set associative';
+  RsIntelCacheDescr78  = '2° Level cache, 1 MBytes, 4-way set associative, 64 Bytes line size';
   RsIntelCacheDescr79  = '2° Level cache, 128 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
   RsIntelCacheDescr7A  = '2° Level cache, 256 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
   RsIntelCacheDescr7B  = '2° Level cache, 512 KBytes, 8-way set associative, dual-sectored line, 64 Bytes sector size';
@@ -1641,6 +1643,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.33  2005/03/12 01:32:50  outchy
+// Update of the CPUID function. New processors detection, constants reworked and specifications upgraded.
+//
 // Revision 1.32  2005/03/08 11:45:26  ahuser
 // Fixed missing sLineBreak for Delphi5
 //

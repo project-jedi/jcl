@@ -275,11 +275,15 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
 function ReadTimeStampCounter: Int64;
 
 type
+  TTLBInformation = (tiEntries, tiAssociativity);
+  TCacheInformation = (ciLineSize {in Bytes}, ciLinesPerTag, ciAssociativity, ciSize);
+
   TIntelSpecific = record
     L2Cache: Cardinal;
     CacheDescriptors: array [0..15] of Byte;
     BrandID: Byte;
     ExFeatures: Cardinal;
+    Ex64Features: Cardinal;
   end;
 
   TCyrixSpecific = record
@@ -288,16 +292,65 @@ type
   end;
 
   TAMDSpecific = record
-    DataTLB: array [0..1] of Byte;
-    InstructionTLB: array [0..1] of Byte;
-    L1DataCache: array [0..3] of Byte;
-    L1ICache: array [0..3] of Byte;
+    ExFeatures: Cardinal;
+    MByteDataTLB: array [TTLBInformation] of Byte;
+    MByteInstructionTLB: array [TTLBInformation] of Byte;
+    KByteDataTLB: array [TTLBInformation] of Byte;
+    KByteInstructionTLB: array [TTLBInformation] of Byte;
+    L1DataCache: array [TCacheInformation] of Byte;
+    L1InstructionCache: array [TCacheInformation] of Byte;
+    L2MByteDataTLB: array [TTLBInformation] of Byte;           // L2 TLB for 2-MByte and 4-MByte pages
+    L2MByteInstructionTLB: array [TTLBInformation] of Byte;    // L2 TLB for 2-MByte and 4-MByte pages
+    L2KByteDataTLB: array [TTLBInformation] of Byte;           // L2 TLB for 4-KByte pages
+    L2KByteInstructionTLB: array [TTLBInformation] of Byte;    // L2 TLB for 4-KByte pages
+    L2Cache: Cardinal;
+    AdvancedPowerManagement: Cardinal;
+    PhysicalAddressSize: Byte;
+    VirtualAddressSize: Byte;
   end;
+
+  TVIASpecific = record
+    ExFeatures: Cardinal;
+    DataTLB: array [TTLBInformation] of Byte;
+    InstructionTLB: array [TTLBInformation] of Byte;
+    L1DataCache: array [TCacheInformation] of Byte;
+    L1InstructionCache: array [TCacheInformation] of Byte;
+    L2DataCache: Cardinal;
+  end;
+
+  TTransmetaSpecific = record
+    ExFeatures: Cardinal;
+    DataTLB: array [TTLBInformation] of Byte;
+    CodeTLB: array [TTLBInformation] of Byte;
+    L1DataCache: array [TCacheInformation] of Byte;
+    L1CodeCache: array [TCacheInformation] of Byte;
+    L2Cache: Cardinal;
+    RevisionABCD: Cardinal;
+    RevisionXXXX: Cardinal;
+    Frequency: Cardinal;
+    CodeMorphingABCD: Cardinal;
+    CodeMorphingXXXX: Cardinal;
+    TransmetaFeatures: Cardinal;
+    TransmetaInformations: array [0..64] of Char;
+    CurrentVoltage: Cardinal;
+    CurrentFrequency: Cardinal;
+    CurrentPerformance: Cardinal;
+  end;
+
+  TCacheFamily = ( cfInstructionTLB, cfDataTLB,
+                   cfL1InstructionCache, cfL1DataCache,
+                   cfL2Cache, cfL3Cache, cfTrace, cfOther );
 
   TCacheInfo = record
     D: Byte;
+    Family: TCacheFamily;
+    Size: Cardinal;
+    WaysOfAssoc: Byte;
+    LineSize: Byte;       // for Normal Cache
+    LinePerSector: Byte;  // for L3 Normal Cache
+    Entries: Cardinal;        // for TLB
     I: string;
-  end;
+  end; 
 
   TFreqInfo = record
     RawFreq: Cardinal;
@@ -306,33 +359,64 @@ type
     ExTicks: Cardinal;
   end;
 
+const
+  CPU_TYPE_INTEL     = 1;
+  CPU_TYPE_CYRIX     = 2;
+  CPU_TYPE_AMD       = 3;
+  CPU_TYPE_TRANSMETA = 4;
+  CPU_TYPE_VIA       = 5;
+
+type
   TCpuInfo = record
     HasInstruction: Boolean;
     MMX: Boolean;
+    ExMMX: Boolean;
+    _3DNow: Boolean;
+    Ex3DNow: Boolean;
     SSE: Byte;        // SSE version 0 = no SSE, 1 = SSE, 2 = SSE2, 3 = SSE3
     IsFDIVOK: Boolean;
+    Is64Bits: Boolean;
     HasCacheInfo: Boolean;
     HasExtendedInfo: Boolean;
-    CpuType: Byte;
     PType: Byte;
     Family: Byte;
+    ExtendedFamily: Byte;
     Model: Byte;
+    ExtendedModel: Byte;
     Stepping: Byte;
     Features: Cardinal;
     FrequencyInfo: TFreqInfo;
     VendorIDString: array [0..11] of Char;
     Manufacturer: array [0..9] of Char;
     CpuName: array [0..47] of Char;
-    IntelSpecific: TIntelSpecific;
-    CyrixSpecific: TCyrixSpecific;
-    AMDSpecific: TAMDSpecific;
+    L1DataCacheSize: Cardinal;             // in kByte
+    L1DataCacheLineSize: Byte;             // in Byte
+    L1DataCacheAssociativity: Byte;
+    L1InstructionCacheSize: Cardinal;      // in kByte
+    L1InstructionCacheLineSize: Byte;      // in Byte
+    L1InstructionCacheAssociativity: Byte;
+    L2CacheSize: Cardinal;                 // in kByte
+    L2CacheLineSize: Byte;                 // in Byte
+    L2CacheAssociativity: Byte;
+    L3CacheSize: Cardinal;                 // in kByte
+    L3CacheLineSize: Byte;                 // in Byte
+    L3CacheAssociativity: Byte;
+    L3LinesPerSector: Byte;
+    // todo: TLB
+    case CpuType: Byte of
+      CPU_TYPE_INTEL     : (IntelSpecific: TIntelSpecific;);
+      CPU_TYPE_CYRIX     : (CyrixSpecific: TCyrixSpecific;);
+      CPU_TYPE_AMD       : (AMDSpecific: TAMDSpecific;);
+      CPU_TYPE_TRANSMETA : (TransmetaSpecific: TTransmetaSpecific;);
+      CPU_TYPE_VIA       : (ViaSpecific: TViaSpecific;);
   end;
 
 const
-  CPU_TYPE_INTEL  = 1;
-  CPU_TYPE_CYRIX  = 2;
-  CPU_TYPE_AMD    = 3;
-  CPU_TYPE_CRUSOE = 4;
+  VendorIDIntel     : array [0..11] of Char = 'GenuineIntel';
+  VendorIDCyrix     : array [0..11] of Char = 'CyrixInstead';
+  VendorIDAMD       : array [0..11] of Char = 'AuthenticAMD';
+  VendorIDTransmeta : array [0..11] of Char = 'GenuineTMx86';
+  VendorIDVIA       : array [0..11] of Char = 'CentaurHauls';
 
 // Constants to be used with Feature Flag set of a CPU
 // eg. IF (Features and FPU_FLAG = FPU_FLAG) THEN CPU has Floating-Point unit on
@@ -342,268 +426,577 @@ const
 // eg. IF (Features and FPU_FLAG = 0) then CPU has Floating-Point unit on chip.
 
 const
-  { Standard (Intel) Feature Flags }
-  FPU_FLAG    = $00000001; // Floating-Point unit on chip
-  VME_FLAG    = $00000002; // Virtual Mode Extention
-  DE_FLAG     = $00000004; // Debugging Extention
-  PSE_FLAG    = $00000008; // Page Size Extention
-  TSC_FLAG    = $00000010; // Time Stamp Counter
-  MSR_FLAG    = $00000020; // Model Specific Registers
-  PAE_FLAG    = $00000040; // Physical Address Extention
-  MCE_FLAG    = $00000080; // Machine Check Exception
-  CX8_FLAG    = $00000100; // CMPXCHG8 Instruction
-  APIC_FLAG   = $00000200; // Software-accessible local APIC on Chip
-  BIT_10      = $00000400; // Reserved, do not count on value
-  SEP_FLAG    = $00000800; // Fast System Call
-  MTRR_FLAG   = $00001000; // Memory Type Range Registers
-  PGE_FLAG    = $00002000; // Page Global Enable
-  MCA_FLAG    = $00004000; // Machine Check Architecture
-  CMOV_FLAG   = $00008000; // Conditional Move Instruction
-  PAT_FLAG    = $00010000; // Page Attribute Table
-  PSE36_FLAG  = $00020000; // 36-bit Page Size Extention
-  BIT_18      = $00040000; // Reserved, do not count on value
-  CLFLSH_FLAG = $00080000; // CLFLUSH intruction
-  BIT_20      = $00100000; // Reserved, do not count on value
-  DS_FLAG     = $00200000; // Debug store
-  ACPI_FLAG   = $00400000; // Thermal monitor and clock control
-  MMX_FLAG    = $00800000; // MMX technology
-  FXSR_FLAG   = $01000000; // Fast Floating Point Save and Restore
-  SSE_FLAG    = $02000000; // Streaming SIMD Extensions
-  SSE2_FLAG   = $04000000; // Streaming SIMD Extensions 2
-  SS_FLAG     = $08000000; // Self snoop
-  HTT_FLAG    = $10000000; // Hyper-threading technology
-  TM_FLAG     = $20000000; // Thermal monitor
-  BIT_30      = $40000000; // Reserved, do not count on value
-  PBE_FLAG    = DWORD($80000000); // Pending Break Enable
 
-{ Extended (Intel) Feature Flags }
+{ 32 bits in a DWord Value }
 
-  SSE3_EFLAG    = $00000001; // Streaming SIMD Extensions 3
-  EBIT_1        = $00000002; // Reserved, do not count on value
-  EBIT_2        = $00000004; // Reserved, do not count on value
-  MONITOR_EFLAG = $00000008; // Monitor/MWAIT
-  DSCPL_EFLAG   = $00000010; // CPL Qualified debug Store
-  EBIT_5        = $00000020; // Reserved, do not count on value
-  EBIT_6        = $00000040; // Reserved, do not count on value
-  EST_EFLAG     = $00000080; // Enhanced Intel Speedstep technology
-  TM2_EFLAG     = $00000100; // Thermal monitor 2
-  EBIT_9        = $00000200; // Reserved, do not count on value
-  CNXTID_EFLAG  = $00000400; // L1 Context ID
-  EBIT_11       = $00000800; // Reserved, do not count on value
-  EBIT_12       = $00001000; // Reserved, do not count on value
-  EBIT_13       = $00002000; // Reserved, do not count on value
-  EBIT_14       = $00004000; // Reserved, do not count on value
-  EBIT_15       = $00008000; // Reserved, do not count on value
-  EBIT_16       = $00010000; // Reserved, do not count on value
-  EBIT_17       = $00020000; // Reserved, do not count on value
-  EBIT_18       = $00040000; // Reserved, do not count on value
-  EBIT_19       = $00080000; // Reserved, do not count on value
-  EBIT_20       = $00100000; // Reserved, do not count on value
-  EBIT_21       = $00200000; // Reserved, do not count on value
-  EBIT_22       = $00400000; // Reserved, do not count on value
-  EBIT_23       = $00800000; // Reserved, do not count on value
-  EBIT_24       = $01000000; // Reserved, do not count on value
-  EBIT_25       = $02000000; // Reserved, do not count on value
-  EBIT_26       = $04000000; // Reserved, do not count on value
-  EBIT_27       = $08000000; // Reserved, do not count on value
-  EBIT_28       = $10000000; // Reserved, do not count on value
-  EBIT_29       = $20000000; // Reserved, do not count on value
-  EBIT_30       = $40000000; // Reserved, do not count on value
-  EBIT_31       = DWORD($80000000); // Reserved, do not count on value
+  BIT_0       = $00000001;
+  BIT_1       = $00000002;
+  BIT_2       = $00000004;
+  BIT_3       = $00000008;
+  BIT_4       = $00000010;
+  BIT_5       = $00000020;
+  BIT_6       = $00000040;
+  BIT_7       = $00000080;
+  BIT_8       = $00000100;
+  BIT_9       = $00000200;
+  BIT_10      = $00000400;
+  BIT_11      = $00000800;
+  BIT_12      = $00001000;
+  BIT_13      = $00002000;
+  BIT_14      = $00004000;
+  BIT_15      = $00008000;
+  BIT_16      = $00010000;
+  BIT_17      = $00020000;
+  BIT_18      = $00040000;
+  BIT_19      = $00080000;
+  BIT_20      = $00100000;
+  BIT_21      = $00200000;
+  BIT_22      = $00400000;
+  BIT_23      = $00800000;
+  BIT_24      = $01000000;
+  BIT_25      = $02000000;
+  BIT_26      = $04000000;
+  BIT_27      = $08000000;
+  BIT_28      = $10000000;
+  BIT_29      = $20000000;
+  BIT_30      = $40000000;
+  BIT_31      = DWORD($80000000);
+
+{ Standard Feature Flags }
+
+  FPU_FLAG    = BIT_0 ; // Floating-Point unit on chip
+  VME_FLAG    = BIT_1 ; // Virtual Mode Extention
+  DE_FLAG     = BIT_2 ; // Debugging Extention
+  PSE_FLAG    = BIT_3 ; // Page Size Extention
+  TSC_FLAG    = BIT_4 ; // Time Stamp Counter
+  MSR_FLAG    = BIT_5 ; // Model Specific Registers
+  PAE_FLAG    = BIT_6 ; // Physical Address Extention
+  MCE_FLAG    = BIT_7 ; // Machine Check Exception
+  CX8_FLAG    = BIT_8 ; // CMPXCHG8 Instruction
+  APIC_FLAG   = BIT_9 ; // Software-accessible local APIC on Chip
+  BIT_10_FLAG = BIT_10; // Reserved, do not count on value
+  SEP_FLAG    = BIT_11; // Fast System Call
+  MTRR_FLAG   = BIT_12; // Memory Type Range Registers
+  PGE_FLAG    = BIT_13; // Page Global Enable
+  MCA_FLAG    = BIT_14; // Machine Check Architecture
+  CMOV_FLAG   = BIT_15; // Conditional Move Instruction
+  PAT_FLAG    = BIT_16; // Page Attribute Table
+  PSE36_FLAG  = BIT_17; // 36-bit Page Size Extention
+  PSN_FLAG    = BIT_18; // Processor serial number is present and enabled
+  CLFLSH_FLAG = BIT_19; // CLFLUSH intruction
+  BIT_20_FLAG = BIT_20; // Reserved, do not count on value
+  DS_FLAG     = BIT_21; // Debug store
+  ACPI_FLAG   = BIT_22; // Thermal monitor and clock control
+  MMX_FLAG    = BIT_23; // MMX technology
+  FXSR_FLAG   = BIT_24; // Fast Floating Point Save and Restore
+  SSE_FLAG    = BIT_25; // Streaming SIMD Extensions
+  SSE2_FLAG   = BIT_26; // Streaming SIMD Extensions 2
+  SS_FLAG     = BIT_27; // Self snoop
+  HTT_FLAG    = BIT_28; // Hyper-threading technology
+  TM_FLAG     = BIT_29; // Thermal monitor
+  BIT_30_FLAG = BIT_30; // Reserved, do not count on value
+  PBE_FLAG    = BIT_31; // Pending Break Enable
+
+{ Standard Intel Feature Flags }
+
+  INTEL_FPU    = BIT_0 ; // Floating-Point unit on chip
+  INTEL_VME    = BIT_1 ; // Virtual Mode Extention
+  INTEL_DE     = BIT_2 ; // Debugging Extention
+  INTEL_PSE    = BIT_3 ; // Page Size Extention
+  INTEL_TSC    = BIT_4 ; // Time Stamp Counter
+  INTEL_MSR    = BIT_5 ; // Model Specific Registers
+  INTEL_PAE    = BIT_6 ; // Physical Address Extention
+  INTEL_MCE    = BIT_7 ; // Machine Check Exception
+  INTEL_CX8    = BIT_8 ; // CMPXCHG8 Instruction
+  INTEL_APIC   = BIT_9 ; // Software-accessible local APIC on Chip
+  INTEL_BIT_10 = BIT_10; // Reserved, do not count on value
+  INTEL_SEP    = BIT_11; // Fast System Call
+  INTEL_MTRR   = BIT_12; // Memory Type Range Registers
+  INTEL_PGE    = BIT_13; // Page Global Enable
+  INTEL_MCA    = BIT_14; // Machine Check Architecture
+  INTEL_CMOV   = BIT_15; // Conditional Move Instruction
+  INTEL_PAT    = BIT_16; // Page Attribute Table
+  INTEL_PSE36  = BIT_17; // 36-bit Page Size Extention
+  INTEL_PSN    = BIT_18; // Processor serial number is present and enabled
+  INTEL_CLFLSH = BIT_19; // CLFLUSH intruction
+  INTEL_BIT_20 = BIT_20; // Reserved, do not count on value
+  INTEL_DS     = BIT_21; // Debug store
+  INTEL_ACPI   = BIT_22; // Thermal monitor and clock control
+  INTEL_MMX    = BIT_23; // MMX technology
+  INTEL_FXSR   = BIT_24; // Fast Floating Point Save and Restore
+  INTEL_SSE    = BIT_25; // Streaming SIMD Extensions
+  INTEL_SSE2   = BIT_26; // Streaming SIMD Extensions 2
+  INTEL_SS     = BIT_27; // Self snoop
+  INTEL_HTT    = BIT_28; // Hyper-threading technology
+  INTEL_TM     = BIT_29; // Thermal monitor
+  INTEL_BIT_30 = BIT_30; // Reserved, do not count on value
+  INTEL_PBE    = BIT_31; // Pending Break Enable
+
+{ Extended Intel Feature Flags }
+
+  EINTEL_SSE3    = BIT_0 ; // Streaming SIMD Extensions 3
+  EINTEL_BIT_1   = BIT_1 ; // Reserved, do not count on value
+  EINTEL_BIT_2   = BIT_2 ; // Reserved, do not count on value
+  EINTEL_MONITOR = BIT_3 ; // Monitor/MWAIT
+  EINTEL_DSCPL   = BIT_4 ; // CPL Qualified debug Store
+  EINTEL_BIT_5   = BIT_5 ; // Reserved, do not count on value
+  EINTEL_BIT_6   = BIT_6 ; // Reserved, do not count on value
+  EINTEL_EST     = BIT_7 ; // Enhanced Intel Speedstep technology
+  EINTEL_TM2     = BIT_8 ; // Thermal monitor 2
+  EINTEL_BIT_9   = BIT_9 ; // Reserved, do not count on value
+  EINTEL_CNXTID  = BIT_10; // L1 Context ID
+  EINTEL_BIT_11  = BIT_11; // Reserved, do not count on value
+  EINTEL_BIT_12  = BIT_12; // Reserved, do not count on value
+  EINTEL_BIT_13  = BIT_13; // Reserved, do not count on value
+  EINTEL_XTPR    = BIT_14; // Send Task Priority messages
+  EINTEL_BIT_15  = BIT_15; // Reserved, do not count on value
+  EINTEL_BIT_16  = BIT_16; // Reserved, do not count on value
+  EINTEL_BIT_17  = BIT_17; // Reserved, do not count on value
+  EINTEL_BIT_18  = BIT_18; // Reserved, do not count on value
+  EINTEL_BIT_19  = BIT_19; // Reserved, do not count on value
+  EINTEL_BIT_20  = BIT_20; // Reserved, do not count on value
+  EINTEL_BIT_21  = BIT_21; // Reserved, do not count on value
+  EINTEL_BIT_22  = BIT_22; // Reserved, do not count on value
+  EINTEL_BIT_23  = BIT_23; // Reserved, do not count on value
+  EINTEL_BIT_24  = BIT_24; // Reserved, do not count on value
+  EINTEL_BIT_25  = BIT_25; // Reserved, do not count on value
+  EINTEL_BIT_26  = BIT_26; // Reserved, do not count on value
+  EINTEL_BIT_27  = BIT_27; // Reserved, do not count on value
+  EINTEL_BIT_28  = BIT_28; // Reserved, do not count on value
+  EINTEL_BIT_29  = BIT_29; // Reserved, do not count on value
+  EINTEL_BIT_30  = BIT_30; // Reserved, do not count on value
+  EINTEL_BIT_31  = BIT_31; // Reserved, do not count on value
+
+{ Extended Intel 64 Bits Feature Flags }
+
+  EINTEL64_BIT_0  = BIT_0 ; // Reserved, do not count on value
+  EINTEL64_BIT_1  = BIT_1 ; // Reserved, do not count on value
+  EINTEL64_BIT_2  = BIT_2 ; // Reserved, do not count on value
+  EINTEL64_BIT_3  = BIT_3 ; // Reserved, do not count on value
+  EINTEL64_BIT_4  = BIT_4 ; // Reserved, do not count on value
+  EINTEL64_BIT_5  = BIT_5 ; // Reserved, do not count on value
+  EINTEL64_BIT_6  = BIT_6 ; // Reserved, do not count on value
+  EINTEL64_BIT_7  = BIT_7 ; // Reserved, do not count on value
+  EINTEL64_BIT_8  = BIT_8 ; // Reserved, do not count on value
+  EINTEL64_BIT_9  = BIT_9 ; // Reserved, do not count on value
+  EINTEL64_BIT_10 = BIT_10; // Reserved, do not count on value
+  EINTEL64_SYS    = BIT_11; // 64 Bit - SYSCALL SYSRET
+  EINTEL64_BIT_12 = BIT_12; // Reserved, do not count on value
+  EINTEL64_BIT_13 = BIT_13; // Reserved, do not count on value
+  EINTEL64_BIT_14 = BIT_14; // Reserved, do not count on value
+  EINTEL64_BIT_15 = BIT_15; // Reserved, do not count on value
+  EINTEL64_BIT_16 = BIT_16; // Reserved, do not count on value
+  EINTEL64_BIT_17 = BIT_17; // Reserved, do not count on value
+  EINTEL64_BIT_18 = BIT_18; // Reserved, do not count on value
+  EINTEL64_BIT_19 = BIT_19; // Reserved, do not count on value
+  EINTEL64_BIT_20 = BIT_20; // Reserved, do not count on value
+  EINTEL64_BIT_21 = BIT_21; // Reserved, do not count on value
+  EINTEL64_BIT_22 = BIT_22; // Reserved, do not count on value
+  EINTEL64_BIT_23 = BIT_23; // Reserved, do not count on value
+  EINTEL64_BIT_24 = BIT_24; // Reserved, do not count on value
+  EINTEL64_BIT_25 = BIT_25; // Reserved, do not count on value
+  EINTEL64_BIT_26 = BIT_26; // Reserved, do not count on value
+  EINTEL64_BIT_27 = BIT_27; // Reserved, do not count on value
+  EINTEL64_BIT_28 = BIT_28; // Reserved, do not count on value
+  EINTEL64_EM64T  = BIT_29; // Intel® Extended Memory 64 Technology
+  EINTEL64_BIT_30 = BIT_30; // Reserved, do not count on value
+  EINTEL64_BIT_31 = BIT_31; // Reserved, do not count on value
 
 { AMD Standard Feature Flags }
 
-  AMD_FPU_FLAG    = $00000001; // Floating-Point unit on chip
-  AMD_VME_FLAG    = $00000002; // Virtual Mode Extention
-  AMD_DE_FLAG     = $00000004; // Debugging Extention
-  AMD_PSE_FLAG    = $00000008; // Page Size Extention
-  AMD_TSC_FLAG    = $00000010; // Time Stamp Counter
-  AMD_MSR_FLAG    = $00000020; // Model Specific Registers
-  AMD_PAE_FLAG    = $00000040; // Physical address Extensions
-  AMD_MCE_FLAG    = $00000080; // Machine Check Exception
-  AMD_CX8_FLAG    = $00000100; // CMPXCHG8 Instruction
-  AMD_APIC_FLAG   = $00000200; // Software-accessible local APIC on Chip
-  AMD_BIT_10      = $00000400; // Reserved, do not count on value
-  AMD_SEP_BIT     = $00000800; // SYSENTER and SYSEXIT instructions
-  AMD_MTRR_FLAG   = $00001000; // Memory Type Range Registers
-  AMD_PGE_FLAG    = $00002000; // Page Global Enable
-  AMD_MCA_FLAG    = $00004000; // Machine Check Architecture
-  AMD_CMOV_FLAG   = $00008000; // Conditional Move Instruction
-  AMD_PAT_FLAG    = $00010000; // Page Attribute Table
-  AMD_PSE2_FLAG   = $00020000; // Page Size Extensions
-  AMD_BIT_18      = $00040000; // Reserved, do not count on value
-  AMD_CLFLSH_FLAG = $00080000; // CLFLUSH instruction
-  AMD_BIT_20      = $00100000; // Reserved, do not count on value
-  AMD_BIT_21      = $00200000; // Reserved, do not count on value
-  AMD_BIT_22      = $00400000; // Reserved, do not count on value
-  AMD_MMX_FLAG    = $00800000; // MMX technology
-  AMD_FX_FLAG     = $01000000; // FXSAVE and FXSTORE instructions
-  AMD_SSE_FLAG    = $02000000; // SSE Extensions
-  AMD_SSE2_FLAG   = $04000000; // SSE2 Extensions
-  AMD_BIT_27      = $08000000; // Reserved, do not count on value
-  AMD_BIT_28      = $10000000; // Reserved, do not count on value
-  AMD_BIT_29      = $20000000; // Reserved, do not count on value
-  AMD_BIT_30      = $40000000; // Reserved, do not count on value
-  AMD_BIT_31      = DWORD($80000000); // Reserved, do not count on value
+  AMD_FPU     = BIT_0 ; // Floating-Point unit on chip
+  AMD_VME     = BIT_1 ; // Virtual Mode Extention
+  AMD_DE      = BIT_2 ; // Debugging Extention
+  AMD_PSE     = BIT_3 ; // Page Size Extention
+  AMD_TSC     = BIT_4 ; // Time Stamp Counter
+  AMD_MSR     = BIT_5 ; // Model Specific Registers
+  AMD_PAE     = BIT_6 ; // Physical address Extensions
+  AMD_MCE     = BIT_7 ; // Machine Check Exception
+  AMD_CX8     = BIT_8 ; // CMPXCHG8 Instruction
+  AMD_APIC    = BIT_9 ; // Software-accessible local APIC on Chip
+  AMD_BIT_10  = BIT_10; // Reserved, do not count on value
+  AMD_SEP_BIT = BIT_11; // SYSENTER and SYSEXIT instructions
+  AMD_MTRR    = BIT_12; // Memory Type Range Registers
+  AMD_PGE     = BIT_13; // Page Global Enable
+  AMD_MCA     = BIT_14; // Machine Check Architecture
+  AMD_CMOV    = BIT_15; // Conditional Move Instruction
+  AMD_PAT     = BIT_16; // Page Attribute Table
+  AMD_PSE2    = BIT_17; // Page Size Extensions
+  AMD_BIT_18  = BIT_18; // Reserved, do not count on value
+  AMD_CLFLSH  = BIT_19; // CLFLUSH instruction
+  AMD_BIT_20  = BIT_20; // Reserved, do not count on value
+  AMD_BIT_21  = BIT_21; // Reserved, do not count on value
+  AMD_BIT_22  = BIT_22; // Reserved, do not count on value
+  AMD_MMX     = BIT_23; // MMX technology
+  AMD_FX      = BIT_24; // FXSAVE and FXSTORE instructions
+  AMD_SSE     = BIT_25; // SSE Extensions
+  AMD_SSE2    = BIT_26; // SSE2 Extensions
+  AMD_BIT_27  = BIT_27; // Reserved, do not count on value
+  AMD_BIT_28  = BIT_28; // Reserved, do not count on value
+  AMD_BIT_29  = BIT_29; // Reserved, do not count on value
+  AMD_BIT_30  = BIT_30; // Reserved, do not count on value
+  AMD_BIT_31  = BIT_31; // Reserved, do not count on value
 
 { AMD Enhanced Feature Flags }
 
-  EAMD_FPU_FLAG     = $00000001; // Floating-Point unit on chip
-  EAMD_VME_FLAG     = $00000002; // Virtual Mode Extention
-  EAMD_DE_FLAG      = $00000004; // Debugging Extention
-  EAMD_PSE_FLAG     = $00000008; // Page Size Extention
-  EAMD_TSC_FLAG     = $00000010; // Time Stamp Counter
-  EAMD_MSR_FLAG     = $00000020; // Model Specific Registers
-  EAMD_PAE_EFLAG    = $00000040; // Physical-address extensions
-  EAMD_MCE_FLAG     = $00000080; // Machine Check Exception
-  EAMD_CX8_FLAG     = $00000100; // CMPXCHG8 Instruction
-  EAMD_APIC_FLAG    = $00000200; // Advanced Programmable Interrupt Controler
-  EAMD_BIT_10       = $00000400; // Reserved, do not count on value
-  EAMD_SEP_FLAG     = $00000800; // Fast System Call
-  EAMD_MTRR_FLAG    = $00001000; // Memory-Type Range Registers
-  EAMD_PGE_FLAG     = $00002000; // Page Global Enable
-  EAMD_MCA_FLAG     = $00004000; // Machine Check Architecture
-  //EAMD_ICMOV_FLAG = $00008000; // Integer Conditional Move Instruction
-  //EAMD_FCMOV_FLAG = $00010000; // Floating Point Conditional Move Instruction
-  EAMD_CMOV_FLAG    = $00008000; // Conditional Move Intructions
-  EAMD_PAT_FLAG     = $00010000; // Page Attributes Table
-  EAMD_PSE2_FLAG    = $00020000; // Page Size Extensions
-  EAMD_BIT_18       = $00040000; // Reserved, do not count on value
-  EAMD_BIT_19       = $00080000; // Reserved, do not count on value
-  EAMD_NEPP_FLAG    = $00100000; // No-Execute Page Protection
-  EAMD_BIT_21       = $00200000; // Reserved, do not count on value
-  EAMD_EXMMX_FLAG   = $00400000; // AMD Extensions to MMX technology
-  EAMD_MMX_FLAG     = $00800000; // MMX technology
-  EAMD_FX_FLAG      = $01000000; // FXSAVE and FXSTORE instructions
-  EAMD_FFX_FLAG     = $02000000; // Fast FXSAVE and FXSTORE instructions
-  EAMD_BIT_26       = $04000000; // Reserved, do not count on value
-  EAMD_BIT_27       = $08000000; // Reserved, do not count on value
-  EAMD_BIT_28       = $10000000; // Reserved, do not count on value
-  EAMD_LONG_FLAG    = $20000000; // Long Mode (64-bit Core)
-  EAMD_EX3DNOW_FLAG = $40000000; // AMD Extensions to 3DNow! intructions
-  EAMD_3DNOW_FLAG   = DWORD($80000000); // AMD 3DNOW! Technology
+  EAMD_FPU     = BIT_0 ; // Floating-Point unit on chip
+  EAMD_VME     = BIT_1 ; // Virtual Mode Extention
+  EAMD_DE      = BIT_2 ; // Debugging Extention
+  EAMD_PSE     = BIT_3 ; // Page Size Extention
+  EAMD_TSC     = BIT_4 ; // Time Stamp Counter
+  EAMD_MSR     = BIT_5 ; // Model Specific Registers
+  EAMD_PAE     = BIT_6 ; // Physical-address extensions
+  EAMD_MCE     = BIT_7 ; // Machine Check Exception
+  EAMD_CX8     = BIT_8 ; // CMPXCHG8 Instruction
+  EAMD_APIC    = BIT_9 ; // Advanced Programmable Interrupt Controler
+  EAMD_BIT_10  = BIT_10; // Reserved, do not count on value
+  EAMD_SEP     = BIT_11; // Fast System Call
+  EAMD_MTRR    = BIT_12; // Memory-Type Range Registers
+  EAMD_PGE     = BIT_13; // Page Global Enable
+  EAMD_MCA     = BIT_14; // Machine Check Architecture
+  EAMD_CMOV    = BIT_15; // Conditional Move Intructions
+  EAMD_PAT     = BIT_16; // Page Attributes Table
+  EAMD_PSE2    = BIT_17; // Page Size Extensions
+  EAMD_BIT_18  = BIT_18; // Reserved, do not count on value
+  EAMD_BIT_19  = BIT_19; // Reserved, do not count on value
+  EAMD_NEPP    = BIT_20; // No-Execute Page Protection
+  EAMD_BIT_21  = BIT_21; // Reserved, do not count on value
+  EAMD_EXMMX   = BIT_22; // AMD Extensions to MMX technology
+  EAMD_MMX     = BIT_23; // MMX technology
+  EAMD_FX      = BIT_24; // FXSAVE and FXSTORE instructions
+  EAMD_FFX     = BIT_25; // Fast FXSAVE and FXSTORE instructions
+  EAMD_BIT_26  = BIT_26; // Reserved, do not count on value
+  EAMD_BIT_27  = BIT_27; // Reserved, do not count on value
+  EAMD_BIT_28  = BIT_28; // Reserved, do not count on value
+  EAMD_LONG    = BIT_29; // Long Mode (64-bit Core)
+  EAMD_EX3DNOW = BIT_30; // AMD Extensions to 3DNow! intructions
+  EAMD_3DNOW   = BIT_31; // AMD 3DNOW! Technology
+
+{ AMD Power Management Features Flags }
+
+  PAMD_TEMPSENSOR       = $00000001;  // Temperature Sensor
+  PAMD_FREQUENCYID      = $00000002;  // Frequency ID Control
+  PAMD_VOLTAGEID        = $00000004;  // Voltage ID Control
+  PAMD_THERMALTRIP      = $00000008;  // Thermal Trip
+  PAMD_THERMALMONITOR   = $00000010;  // Thermal Monitoring
+  PAMD_SOFTTHERMCONTROL = $00000020;  // Software Thermal Control
+
+{ AMD TLB and L1 Associativity constants }
+
+  AMD_ASSOC_RESERVED = 0;
+  AMD_ASSOC_DIRECT   = 1;
+  // 2 to 254 = direct value to the associativity
+  AMD_ASSOC_FULLY    = 255;
+
+{ AMD L2 Cache Associativity constants }
+
+  AMD_L2_ASSOC_DISABLED = 0;
+  AMD_L2_ASSOC_DIRECT   = 1;
+  AMD_L2_ASSOC_2WAY     = 2;
+  AMD_L2_ASSOC_4WAY     = 4;
+  AMD_L2_ASSOC_8WAY     = 6;
+  AMD_L2_ASSOC_16WAY    = 8;
+  AMD_L2_ASSOC_FULLY    = 15;
+
+{ VIA Standard Feature Flags }
+
+  VIA_FPU           = BIT_0 ; // FPU present
+  VIA_VME           = BIT_1 ; // Virtual Mode Extension
+  VIA_DE            = BIT_2 ; // Debugging extensions
+  VIA_PSE           = BIT_3 ; // Page Size Extensions (4MB)
+  VIA_TSC           = BIT_4 ; // Time Stamp Counter
+  VIA_MSR           = BIT_5 ; // Model Specific Registers
+  VIA_PAE           = BIT_6 ; // Physical Address Extension
+  VIA_MCE           = BIT_7 ; // Machine Check Exception
+  VIA_CX8           = BIT_8 ; // CMPXCHG8B instruction
+  VIA_APIC          = BIT_9 ; // APIC supported
+  VIA_BIT_10        = BIT_10; // Reserved, do not count on value
+  VIA_SEP           = BIT_11; // Fast System Call
+  VIA_MTRR          = BIT_12; // Memory Range Registers
+  VIA_PTE           = BIT_13; // PTE Global Bit
+  VIA_MCA           = BIT_14; // Machine Check Architecture
+  VIA_CMOVE         = BIT_15; // Conditional Move
+  VIA_PAT           = BIT_16; // Page Attribute Table
+  VIA_PSE2          = BIT_17; // 36-bit Page Size Extension
+  VIA_SNUM          = BIT_18; // Processor serial number
+  VIA_BIT_19        = BIT_19; // Reserved, do not count on value
+  VIA_BIT_20        = BIT_20; // Reserved, do not count on value
+  VIA_BIT_21        = BIT_21; // Reserved, do not count on value
+  VIA_BIT_22        = BIT_22; // Reserved, do not count on value
+  VIA_MMX           = BIT_23; // MMX
+  VIA_FX            = BIT_24; // FXSAVE and FXSTORE instructions
+  VIA_SSE           = BIT_25; // Streaming SIMD Extension
+  VIA_BIT_26        = BIT_26; // Reserved, do not count on value
+  VIA_BIT_27        = BIT_27; // Reserved, do not count on value
+  VIA_BIT_28        = BIT_28; // Reserved, do not count on value
+  VIA_BIT_29        = BIT_29; // Reserved, do not count on value
+  VIA_BIT_30        = BIT_30; // Reserved, do not count on value
+  VIA_3DNOW         = BIT_31; // 3DNow! Technology
+
+{ VIA Extended Feature Flags }
+
+  EVIA_AIS    = BIT_0;  // Alternate Instruction Set
+  EVIA_AISE   = BIT_1;  // Alternate Instruction Set Enabled
+  EVIA_NO_RNG = BIT_2;  // NO Random Number Generator
+  EVIA_RNGE   = BIT_3;  // Random Number Generator Enabled
+  EVIA_MSR    = BIT_4;  // Longhaul MSR 0x110A available
+  EVIA_FEMMS  = BIT_5;  // FEMMS instruction Present
+  EVIA_NO_ACE = BIT_6;  // Advanced Cryptography Engine NOT Present
+  EVIA_ACEE   = BIT_7;  // ACE Enabled
+  EVIA_BIT_8  = BIT_8;  // Reserved, do not count on value
+  EVIA_BIT_9  = BIT_9;  // Reserved, do not count on value
+  EVIA_BIT_10 = BIT_10; // Reserved, do not count on value
+  EVIA_BIT_11 = BIT_11; // Reserved, do not count on value
+  EVIA_BIT_12 = BIT_12; // Reserved, do not count on value
+  EVIA_BIT_13 = BIT_13; // Reserved, do not count on value
+  EVIA_BIT_14 = BIT_14; // Reserved, do not count on value
+  EVIA_BIT_15 = BIT_15; // Reserved, do not count on value
+  EVIA_BIT_16 = BIT_16; // Reserved, do not count on value
+  EVIA_BIT_17 = BIT_17; // Reserved, do not count on value
+  EVIA_BIT_18 = BIT_18; // Reserved, do not count on value
+  EVIA_BIT_19 = BIT_19; // Reserved, do not count on value
+  EVIA_BIT_20 = BIT_20; // Reserved, do not count on value
+  EVIA_BIT_21 = BIT_21; // Reserved, do not count on value
+  EVIA_BIT_22 = BIT_22; // Reserved, do not count on value
+  EVIA_BIT_23 = BIT_23; // Reserved, do not count on value
+  EVIA_BIT_24 = BIT_24; // Reserved, do not count on value
+  EVIA_BIT_25 = BIT_25; // Reserved, do not count on value
+  EVIA_BIT_26 = BIT_26; // Reserved, do not count on value
+  EVIA_BIT_27 = BIT_27; // Reserved, do not count on value
+  EVIA_BIT_28 = BIT_28; // Reserved, do not count on value
+  EVIA_BIT_29 = BIT_29; // Reserved, do not count on value
+  EVIA_BIT_30 = BIT_30; // Reserved, do not count on value
+  EVIA_BIT_31 = BIT_31; // Reserved, do not count on value
 
 { Cyrix Standard Feature Flags }
 
-  CYRIX_FPU_FLAG   = $00000001; // Floating-Point unit on chip
-  CYRIX_VME_FLAG   = $00000002; // Virtual Mode Extention
-  CYRIX_DE_FLAG    = $00000004; // Debugging Extention
-  CYRIX_PSE_FLAG   = $00000008; // Page Size Extention
-  CYRIX_TSC_FLAG   = $00000010; // Time Stamp Counter
-  CYRIX_MSR_FLAG   = $00000020; // Model Specific Registers
-  CYRIX_PAE_FLAG   = $00000040; // Physical Address Extention
-  CYRIX_MCE_FLAG   = $00000080; // Machine Check Exception
-  CYRIX_CX8_FLAG   = $00000100; // CMPXCHG8 Instruction
-  CYRIX_APIC_FLAG  = $00000200; // Software-accessible local APIC on Chip
-  CYRIX_BIT_10     = $00000400; // Reserved, do not count on value
-  CYRIX_BIT_11     = $00000800; // Reserved, do not count on value
-  CYRIX_MTRR_FLAG  = $00001000; // Memory Type Range Registers
-  CYRIX_PGE_FLAG   = $00002000; // Page Global Enable
-  CYRIX_MCA_FLAG   = $00004000; // Machine Check Architecture
-  CYRIX_CMOV_FLAG  = $00008000; // Conditional Move Instruction
-  CYRIX_BIT_16     = $00010000; // Reserved, do not count on value
-  CYRIX_BIT_17     = $00020000; // Reserved, do not count on value
-  CYRIX_BIT_18     = $00040000; // Reserved, do not count on value
-  CYRIX_BIT_19     = $00080000; // Reserved, do not count on value
-  CYRIX_BIT_20     = $00100000; // Reserved, do not count on value
-  CYRIX_BIT_21     = $00200000; // Reserved, do not count on value
-  CYRIX_BIT_22     = $00400000; // Reserved, do not count on value
-  CYRIX_MMX_FLAG   = $00800000; // MMX technology
-  CYRIX_BIT_24     = $01000000; // Reserved, do not count on value
-  CYRIX_BIT_25     = $02000000; // Reserved, do not count on value
-  CYRIX_BIT_26     = $04000000; // Reserved, do not count on value
-  CYRIX_BIT_27     = $08000000; // Reserved, do not count on value
-  CYRIX_BIT_28     = $10000000; // Reserved, do not count on value
-  CYRIX_BIT_29     = $20000000; // Reserved, do not count on value
-  CYRIX_BIT_30     = $40000000; // Reserved, do not count on value
-  CYRIX_BIT_31     = DWORD($80000000); // Reserved, do not count on value
+  CYRIX_FPU    = BIT_0 ; // Floating-Point unit on chip
+  CYRIX_VME    = BIT_1 ; // Virtual Mode Extention
+  CYRIX_DE     = BIT_2 ; // Debugging Extention
+  CYRIX_PSE    = BIT_3 ; // Page Size Extention
+  CYRIX_TSC    = BIT_4 ; // Time Stamp Counter
+  CYRIX_MSR    = BIT_5 ; // Model Specific Registers
+  CYRIX_PAE    = BIT_6 ; // Physical Address Extention
+  CYRIX_MCE    = BIT_7 ; // Machine Check Exception
+  CYRIX_CX8    = BIT_8 ; // CMPXCHG8 Instruction
+  CYRIX_APIC   = BIT_9 ; // Software-accessible local APIC on Chip
+  CYRIX_BIT_10 = BIT_10; // Reserved, do not count on value
+  CYRIX_BIT_11 = BIT_11; // Reserved, do not count on value
+  CYRIX_MTRR   = BIT_12; // Memory Type Range Registers
+  CYRIX_PGE    = BIT_13; // Page Global Enable
+  CYRIX_MCA    = BIT_14; // Machine Check Architecture
+  CYRIX_CMOV   = BIT_15; // Conditional Move Instruction
+  CYRIX_BIT_16 = BIT_16; // Reserved, do not count on value
+  CYRIX_BIT_17 = BIT_17; // Reserved, do not count on value
+  CYRIX_BIT_18 = BIT_18; // Reserved, do not count on value
+  CYRIX_BIT_19 = BIT_19; // Reserved, do not count on value
+  CYRIX_BIT_20 = BIT_20; // Reserved, do not count on value
+  CYRIX_BIT_21 = BIT_21; // Reserved, do not count on value
+  CYRIX_BIT_22 = BIT_22; // Reserved, do not count on value
+  CYRIX_MMX    = BIT_23; // MMX technology
+  CYRIX_BIT_24 = BIT_24; // Reserved, do not count on value
+  CYRIX_BIT_25 = BIT_25; // Reserved, do not count on value
+  CYRIX_BIT_26 = BIT_26; // Reserved, do not count on value
+  CYRIX_BIT_27 = BIT_27; // Reserved, do not count on value
+  CYRIX_BIT_28 = BIT_28; // Reserved, do not count on value
+  CYRIX_BIT_29 = BIT_29; // Reserved, do not count on value
+  CYRIX_BIT_30 = BIT_30; // Reserved, do not count on value
+  CYRIX_BIT_31 = BIT_31; // Reserved, do not count on value
 
 { Cyrix Enhanced Feature Flags }
 
-  ECYRIX_FPU_FLAG   = $00000001; // Floating-Point unit on chip
-  ECYRIX_VME_FLAG   = $00000002; // Virtual Mode Extention
-  ECYRIX_DE_FLAG    = $00000004; // Debugging Extention
-  ECYRIX_PSE_FLAG   = $00000008; // Page Size Extention
-  ECYRIX_TSC_FLAG   = $00000010; // Time Stamp Counter
-  ECYRIX_MSR_FLAG   = $00000020; // Model Specific Registers
-  ECYRIX_PAE_FLAG   = $00000040; // Physical Address Extention
-  ECYRIX_MCE_FLAG   = $00000080; // Machine Check Exception
-  ECYRIX_CX8_FLAG   = $00000100; // CMPXCHG8 Instruction
-  ECYRIX_APIC_FLAG  = $00000200; // Software-accessible local APIC on Chip
-  ECYRIX_SEP_FLAG   = $00000400; // Fast System Call
-  ECYRIX_BIT_11     = $00000800; // Reserved, do not count on value
-  ECYRIX_MTRR_FLAG  = $00001000; // Memory Type Range Registers
-  ECYRIX_PGE_FLAG   = $00002000; // Page Global Enable
-  ECYRIX_MCA_FLAG   = $00004000; // Machine Check Architecture
-  ECYRIX_ICMOV_FLAG = $00008000; // Integer Conditional Move Instruction
-  ECYRIX_FCMOV_FLAG = $00010000; // Floating Point Conditional Move Instruction
-  ECYRIX_BIT_17     = $00020000; // Reserved, do not count on value
-  ECYRIX_BIT_18     = $00040000; // Reserved, do not count on value
-  ECYRIX_BIT_19     = $00080000; // Reserved, do not count on value
-  ECYRIX_BIT_20     = $00100000; // Reserved, do not count on value
-  ECYRIX_BIT_21     = $00200000; // Reserved, do not count on value
-  ECYRIX_BIT_22     = $00400000; // Reserved, do not count on value
-  ECYRIX_MMX_FLAG   = $00800000; // MMX technology
-  ECYRIX_EMMX_FLAG  = $01000000; // Extended MMX Technology
-  ECYRIX_BIT_25     = $02000000; // Reserved, do not count on value
-  ECYRIX_BIT_26     = $04000000; // Reserved, do not count on value
-  ECYRIX_BIT_27     = $08000000; // Reserved, do not count on value
-  ECYRIX_BIT_28     = $10000000; // Reserved, do not count on value
-  ECYRIX_BIT_29     = $20000000; // Reserved, do not count on value
-  ECYRIX_BIT_30     = $40000000; // Reserved, do not count on value
-  ECYRIX_BIT_31     = DWORD($80000000); // Reserved, do not count on value
+  ECYRIX_FPU    = BIT_0 ; // Floating-Point unit on chip
+  ECYRIX_VME    = BIT_1 ; // Virtual Mode Extention
+  ECYRIX_DE     = BIT_2 ; // Debugging Extention
+  ECYRIX_PSE    = BIT_3 ; // Page Size Extention
+  ECYRIX_TSC    = BIT_4 ; // Time Stamp Counter
+  ECYRIX_MSR    = BIT_5 ; // Model Specific Registers
+  ECYRIX_PAE    = BIT_6 ; // Physical Address Extention
+  ECYRIX_MCE    = BIT_7 ; // Machine Check Exception
+  ECYRIX_CX8    = BIT_8 ; // CMPXCHG8 Instruction
+  ECYRIX_APIC   = BIT_9 ; // Software-accessible local APIC on Chip
+  ECYRIX_SEP    = BIT_10; // Fast System Call
+  ECYRIX_BIT_11 = BIT_11; // Reserved, do not count on value
+  ECYRIX_MTRR   = BIT_12; // Memory Type Range Registers
+  ECYRIX_PGE    = BIT_13; // Page Global Enable
+  ECYRIX_MCA    = BIT_14; // Machine Check Architecture
+  ECYRIX_ICMOV  = BIT_15; // Integer Conditional Move Instruction
+  ECYRIX_FCMOV  = BIT_16; // Floating Point Conditional Move Instruction
+  ECYRIX_BIT_17 = BIT_17; // Reserved, do not count on value
+  ECYRIX_BIT_18 = BIT_18; // Reserved, do not count on value
+  ECYRIX_BIT_19 = BIT_19; // Reserved, do not count on value
+  ECYRIX_BIT_20 = BIT_20; // Reserved, do not count on value
+  ECYRIX_BIT_21 = BIT_21; // Reserved, do not count on value
+  ECYRIX_BIT_22 = BIT_22; // Reserved, do not count on value
+  ECYRIX_MMX    = BIT_23; // MMX technology
+  ECYRIX_EMMX   = BIT_24; // Extended MMX Technology
+  ECYRIX_BIT_25 = BIT_25; // Reserved, do not count on value
+  ECYRIX_BIT_26 = BIT_26; // Reserved, do not count on value
+  ECYRIX_BIT_27 = BIT_27; // Reserved, do not count on value
+  ECYRIX_BIT_28 = BIT_28; // Reserved, do not count on value
+  ECYRIX_BIT_29 = BIT_29; // Reserved, do not count on value
+  ECYRIX_BIT_30 = BIT_30; // Reserved, do not count on value
+  ECYRIX_BIT_31 = BIT_31; // Reserved, do not count on value
+
+{ Transmeta Features }
+
+  TRANSMETA_FPU    = BIT_0 ; // Floating-Point unit on chip
+  TRANSMETA_VME    = BIT_1 ; // Virtual Mode Extention
+  TRANSMETA_DE     = BIT_2 ; // Debugging Extention
+  TRANSMETA_PSE    = BIT_3 ; // Page Size Extention
+  TRANSMETA_TSC    = BIT_4 ; // Time Stamp Counter
+  TRANSMETA_MSR    = BIT_5 ; // Model Specific Registers
+  TRANSMETA_BIT_6  = BIT_6 ; // Reserved, do not count on value
+  TRANSMETA_BIT_7  = BIT_7 ; // Reserved, do not count on value
+  TRANSMETA_CX8    = BIT_8 ; // CMPXCHG8 Instruction
+  TRANSMETA_BIT_9  = BIT_9 ; // Reserved, do not count on value
+  TRANSMETA_BIT_10 = BIT_10; // Reserved, do not count on value
+  TRANSMETA_SEP    = BIT_11; // Fast system Call Extensions
+  TRANSMETA_BIT_12 = BIT_12; // Reserved, do not count on value
+  TRANSMETA_BIT_13 = BIT_13; // Reserved, do not count on value
+  TRANSMETA_BIT_14 = BIT_14; // Reserved, do not count on value
+  TRANSMETA_CMOV   = BIT_15; // Conditional Move Instruction
+  TRANSMETA_BIT_16 = BIT_16; // Reserved, do not count on value
+  TRANSMETA_BIT_17 = BIT_17; // Reserved, do not count on value
+  TRANSMETA_PSN    = BIT_18; // Processor Serial Number
+  TRANSMETA_BIT_19 = BIT_19; // Reserved, do not count on value
+  TRANSMETA_BIT_20 = BIT_20; // Reserved, do not count on value
+  TRANSMETA_BIT_21 = BIT_21; // Reserved, do not count on value
+  TRANSMETA_BIT_22 = BIT_22; // Reserved, do not count on value
+  TRANSMETA_MMX    = BIT_23; // MMX technology
+  TRANSMETA_BIT_24 = BIT_24; // Reserved, do not count on value
+  TRANSMETA_BIT_25 = BIT_25; // Reserved, do not count on value
+  TRANSMETA_BIT_26 = BIT_26; // Reserved, do not count on value
+  TRANSMETA_BIT_27 = BIT_27; // Reserved, do not count on value
+  TRANSMETA_BIT_28 = BIT_28; // Reserved, do not count on value
+  TRANSMETA_BIT_29 = BIT_29; // Reserved, do not count on value
+  TRANSMETA_BIT_30 = BIT_30; // Reserved, do not count on value
+  TRANSMETA_BIT_31 = BIT_31; // Reserved, do not count on value
+
+{ Extended Transmeta Features }
+
+  ETRANSMETA_FPU    = BIT_0 ; // Floating-Point unit on chip
+  ETRANSMETA_VME    = BIT_1 ; // Virtual Mode Extention
+  ETRANSMETA_DE     = BIT_2 ; // Debugging Extention
+  ETRANSMETA_PSE    = BIT_3 ; // Page Size Extention
+  ETRANSMETA_TSC    = BIT_4 ; // Time Stamp Counter
+  ETRANSMETA_MSR    = BIT_5 ; // Model Specific Registers
+  ETRANSMETA_BIT_6  = BIT_6 ; // Reserved, do not count on value
+  ETRANSMETA_BIT_7  = BIT_7 ; // Reserved, do not count on value
+  ETRANSMETA_CX8    = BIT_8 ; // CMPXCHG8 Instruction
+  ETRANSMETA_BIT_9  = BIT_9 ; // Reserved, do not count on value
+  ETRANSMETA_BIT_10 = BIT_10; // Reserved, do not count on value
+  ETRANSMETA_BIT_11 = BIT_11; // Reserved, do not count on value
+  ETRANSMETA_BIT_12 = BIT_12; // Reserved, do not count on value
+  ETRANSMETA_BIT_13 = BIT_13; // Reserved, do not count on value
+  ETRANSMETA_BIT_14 = BIT_14; // Reserved, do not count on value
+  ETRANSMETA_CMOV   = BIT_15; // Conditional Move Instruction
+  ETRANSMETA_FCMOV  = BIT_16; // Float Conditional Move Instruction
+  ETRANSMETA_BIT_17 = BIT_17; // Reserved, do not count on value
+  ETRANSMETA_BIT_18 = BIT_18; // Reserved, do not count on value
+  ETRANSMETA_BIT_19 = BIT_19; // Reserved, do not count on value
+  ETRANSMETA_BIT_20 = BIT_20; // Reserved, do not count on value
+  ETRANSMETA_BIT_21 = BIT_21; // Reserved, do not count on value
+  ETRANSMETA_BIT_22 = BIT_22; // Reserved, do not count on value
+  ETRANSMETA_MMX    = BIT_23; // MMX technology
+  ETRANSMETA_BIT_24 = BIT_24; // Reserved, do not count on value
+  ETRANSMETA_BIT_25 = BIT_25; // Reserved, do not count on value
+  ETRANSMETA_BIT_26 = BIT_26; // Reserved, do not count on value
+  ETRANSMETA_BIT_27 = BIT_27; // Reserved, do not count on value
+  ETRANSMETA_BIT_28 = BIT_28; // Reserved, do not count on value
+  ETRANSMETA_BIT_29 = BIT_29; // Reserved, do not count on value
+  ETRANSMETA_BIT_30 = BIT_30; // Reserved, do not count on value
+  ETRANSMETA_BIT_31 = BIT_31; // Reserved, do not count on value
+
+{ Transmeta Specific Features }
+
+  STRANSMETA_RECOVERY = BIT_0 ; // Recovery Mode
+  STRANSMETA_LONGRUN  = BIT_1 ; // Long Run
+  STRANSMETA_BIT_2    = BIT_2 ; // Debugging Extention
+  STRANSMETA_LRTI     = BIT_3 ; // Long Run Table Interface
+  STRANSMETA_BIT_4    = BIT_4 ; // Reserved, do not count on value
+  STRANSMETA_BIT_5    = BIT_5 ; // Reserved, do not count on value
+  STRANSMETA_BIT_6    = BIT_6 ; // Reserved, do not count on value
+  STRANSMETA_PTTI1    = BIT_7 ; // Persistent Translation Technology 1.x
+  STRANSMETA_PTTI2    = BIT_8 ; // Persistent Translation Technology 2.0
+  STRANSMETA_BIT_9    = BIT_9 ; // Reserved, do not count on value
+  STRANSMETA_BIT_10   = BIT_10; // Reserved, do not count on value
+  STRANSMETA_BIT_11   = BIT_11; // Reserved, do not count on value
+  STRANSMETA_BIT_12   = BIT_12; // Reserved, do not count on value
+  STRANSMETA_BIT_13   = BIT_13; // Reserved, do not count on value
+  STRANSMETA_BIT_14   = BIT_14; // Reserved, do not count on value
+  STRANSMETA_BIT_15   = BIT_15; // Reserved, do not count on value
+  STRANSMETA_BIT_16   = BIT_16; // Reserved, do not count on value
+  STRANSMETA_BIT_17   = BIT_17; // Reserved, do not count on value
+  STRANSMETA_BIT_18   = BIT_18; // Reserved, do not count on value
+  STRANSMETA_BIT_19   = BIT_19; // Reserved, do not count on value
+  STRANSMETA_BIT_20   = BIT_20; // Reserved, do not count on value
+  STRANSMETA_BIT_21   = BIT_21; // Reserved, do not count on value
+  STRANSMETA_BIT_22   = BIT_22; // Reserved, do not count on value
+  STRANSMETA_BIT_23   = BIT_23; // Reserved, do not count on value
+  STRANSMETA_BIT_24   = BIT_24; // Reserved, do not count on value
+  STRANSMETA_BIT_25   = BIT_25; // Reserved, do not count on value
+  STRANSMETA_BIT_26   = BIT_26; // Reserved, do not count on value
+  STRANSMETA_BIT_27   = BIT_27; // Reserved, do not count on value
+  STRANSMETA_BIT_28   = BIT_28; // Reserved, do not count on value
+  STRANSMETA_BIT_29   = BIT_29; // Reserved, do not count on value
+  STRANSMETA_BIT_30   = BIT_30; // Reserved, do not count on value
+  STRANSMETA_BIT_31   = BIT_31; // Reserved, do not count on value
 
 const
-  IntelCacheDescription: array [0..48] of TCacheInfo = (
-    (D: $01; I: RsIntelCacheDescr01),
-    (D: $02; I: RsIntelCacheDescr02),
-    (D: $03; I: RsIntelCacheDescr03),
-    (D: $04; I: RsIntelCacheDescr04),
-    (D: $06; I: RsIntelCacheDescr06),
-    (D: $08; I: RsIntelCacheDescr08),
-    (D: $0A; I: RsIntelCacheDescr0A),
-    (D: $0C; I: RsIntelCacheDescr0C),
-    (D: $22; I: RsIntelCacheDescr22),
-    (D: $23; I: RsIntelCacheDescr23),
-    (D: $25; I: RsIntelCacheDescr25),
-    (D: $29; I: RsIntelCacheDescr29),
-    (D: $2C; I: RsIntelCacheDescr2C),
-    (D: $30; I: RsIntelCacheDescr30),
-    (D: $40; I: RsIntelCacheDescr40),
-    (D: $41; I: RsIntelCacheDescr41),
-    (D: $42; I: RsIntelCacheDescr42),
-    (D: $43; I: RsIntelCacheDescr43),
-    (D: $44; I: RsIntelCacheDescr44),
-    (D: $45; I: RsIntelCacheDescr45),
-    (D: $50; I: RsIntelCacheDescr50),
-    (D: $51; I: RsIntelCacheDescr51),
-    (D: $52; I: RsIntelCacheDescr52),
-    (D: $5B; I: RsIntelCacheDescr5B),
-    (D: $5C; I: RsIntelCacheDescr5C),
-    (D: $5D; I: RsIntelCacheDescr5D),
-    (D: $60; I: RsIntelCacheDescr60),
-    (D: $66; I: RsIntelCacheDescr66),
-    (D: $67; I: RsIntelCacheDescr67),
-    (D: $68; I: RsIntelCacheDescr68),
-    (D: $70; I: RsIntelCacheDescr70),
-    (D: $71; I: RsIntelCacheDescr71),
-    (D: $72; I: RsIntelCacheDescr72),
-    (D: $79; I: RsIntelCacheDescr79),
-    (D: $7A; I: RsIntelCacheDescr7A),
-    (D: $7B; I: RsIntelCacheDescr7B),
-    (D: $7C; I: RsIntelCacheDescr7C),
-    (D: $7D; I: RsIntelCacheDescr7D),
-    (D: $7F; I: RsIntelCacheDescr7F),
-    (D: $82; I: RsIntelCacheDescr82),
-    (D: $83; I: RsIntelCacheDescr83),
-    (D: $84; I: RsIntelCacheDescr84),
-    (D: $85; I: RsIntelCacheDescr85),
-    (D: $86; I: RsIntelCacheDescr86),
-    (D: $87; I: RsIntelCacheDescr87),
-    (D: $B0; I: RsIntelCacheDescrB0),
-    (D: $B3; I: RsIntelCacheDescrB3),
-    (D: $F0; I: RsIntelCacheDescrF0),
-    (D: $F1; I: RsIntelCacheDescrF1) );
+  IntelCacheDescription: array [0..50] of TCacheInfo = (
+    (D: $00; Family:cfOther;                                                                      I: RsIntelCacheDescr00),
+    (D: $01; Family:cfInstructionTLB;     Size:4;    WaysOfAssoc:4; Entries:32;                   I: RsIntelCacheDescr01), // Instruction TLB: 4 KByte Pages, 4-way set associative, 32 entries
+    (D: $02; Family:cfInstructionTLB;     Size:4096; WaysOfAssoc:4; Entries:2;                    I: RsIntelCacheDescr02), // Instruction TLB: 4 MByte Pages, 4-way set associative, 2 entries
+    (D: $03; Family:cfDataTLB;            Size:4;    WaysOfAssoc:4; Entries:64;                   I: RsIntelCacheDescr03), // Data TLB: 4KByte Pages, 4-way set associative, 64 entries
+    (D: $04; Family:cfDataTLB;            Size:4096; WaysOfAssoc:4; Entries:8;                    I: RsIntelCacheDescr04), // Data TLB: 4MByte Pages, 4-way set associative, 8 entries
+    (D: $06; Family:cfL1InstructionCache; Size:8;    WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr06), // 1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size
+    (D: $08; Family:cfL1InstructionCache; Size:16;   WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr08), // 1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size
+    (D: $0A; Family:cfL1DataCache;        Size:8;    WaysOfAssoc:2; LineSize:32;                  I: RsIntelCacheDescr0A), // 1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size
+    (D: $0C; Family:cfL1DataCache;        Size:16;   WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr0C), // 1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size
+    (D: $22; Family:cfL3Cache;            Size:512;  WaysOfAssoc:4; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr22), // 3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector
+    (D: $23; Family:cfL3Cache;            Size:1024; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr23), // 3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $25; Family:cfL3Cache;            Size:2048; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr25), // 3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $29; Family:cfL3Cache;            Size:4096; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr29), // 3rd-level cache: 4M Bytes, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $2C; Family:cfL1DataCache;        Size:32;   WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr2C), // 1st-level data cache: 32K Bytes, 8-way set associative, 64 byte line size
+    (D: $30; Family:cfL1InstructionCache; Size:32;   WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr30), // 1st-level instruction cache: 32K Bytes, 8-way set associative, 64 byte line size
+    (D: $40; Family:cfOther;                                                                      I: RsIntelCacheDescr40), // No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache
+    (D: $41; Family:cfL2Cache;            Size:128;  WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr41), // 2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size
+    (D: $42; Family:cfL2Cache;            Size:256;  WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr42), // 2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size
+    (D: $43; Family:cfL2Cache;            Size:512;  WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr43), // 2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size
+    (D: $44; Family:cfL2Cache;            Size:1024; WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr44), // 2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size
+    (D: $45; Family:cfL2Cache;            Size:2048; WaysOfAssoc:4; LineSize:32;                  I: RsIntelCacheDescr45), // 2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size
+    (D: $50; Family:cfInstructionTLB;     Size:4096;                Entries:64;                   I: RsIntelCacheDescr50), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries
+    (D: $51; Family:cfInstructionTLB;     Size:4096;                Entries:128;                  I: RsIntelCacheDescr51), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries
+    (D: $52; Family:cfInstructionTLB;     Size:4096;                Entries:256;                  I: RsIntelCacheDescr52), // Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries
+    (D: $5B; Family:cfDataTLB;            Size:4096;                Entries:64;                   I: RsIntelCacheDescr5B), // Data TLB: 4 KByte and 4 MByte pages, 64 entries
+    (D: $5C; Family:cfDataTLB;            Size:4096;                Entries:128;                  I: RsIntelCacheDescr5C), // Data TLB: 4 KByte and 4 MByte pages,128 entries
+    (D: $5D; Family:cfDataTLB;            Size:4096;                Entries:256;                  I: RsIntelCacheDescr5D), // Data TLB: 4 KByte and 4 MByte pages,256 entries
+    (D: $60; Family:cfL1DataCache;        Size:16;   WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr60), // 1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size
+    (D: $66; Family:cfL1DataCache;        Size:8;    WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr66), // 1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size
+    (D: $67; Family:cfL1DataCache;        Size:16;   WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr67), // 1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size
+    (D: $68; Family:cfL1DataCache;        Size:32;   WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr68), // 1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size
+    (D: $70; Family:cfTrace;              Size:12;   WaysOfAssoc:8;                               I: RsIntelCacheDescr70), // Trace cache: 12 K-µop, 8-way set associative
+    (D: $71; Family:cfTrace;              Size:16;   WaysOfAssoc:8;                               I: RsIntelCacheDescr71), // Trace cache: 16 K-µop, 8-way set associative
+    (D: $72; Family:cfTrace;              Size:32;   WaysOfAssoc:8;                               I: RsIntelCacheDescr72), // Trace cache: 32 K-µop, 8-way set associative
+    (D: $78; Family:cfL2Cache;            Size:1024; WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr78), // 2nd-level cache: 1 MByte, 4-way set associative, 64byte line size
+    (D: $79; Family:cfL2Cache;            Size:128;  WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr79), // 2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7A; Family:cfL2Cache;            Size:256;  WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr7A), // 2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7B; Family:cfL2Cache;            Size:512;  WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr7B), // 2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7C; Family:cfL2Cache;            Size:1024; WaysOfAssoc:8; LineSize:64; LinePerSector:2; I: RsIntelCacheDescr7C), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector
+    (D: $7D; Family:cfL2Cache;            Size:2048; WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr7D), // 2nd-level cache: 2 MByte, 8-way set associative, 64byte line size
+    (D: $7F; Family:cfL2Cache;            Size:512;  WaysOfAssoc:2; LineSize:64;                  I: RsIntelCacheDescr7F), // 2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size
+    (D: $82; Family:cfL2Cache;            Size:256;  WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr82), // 2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size
+    (D: $83; Family:cfL2Cache;            Size:512;  WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr83), // 2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size
+    (D: $84; Family:cfL2Cache;            Size:1024; WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr84), // 2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size
+    (D: $85; Family:cfL2Cache;            Size:2048; WaysOfAssoc:8; LineSize:32;                  I: RsIntelCacheDescr85), // 2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size
+    (D: $86; Family:cfL2Cache;            Size:512;  WaysOfAssoc:4; LineSize:64;                  I: RsIntelCacheDescr86), // 2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size
+    (D: $87; Family:cfL2Cache;            Size:1024; WaysOfAssoc:8; LineSize:64;                  I: RsIntelCacheDescr87), // 2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size
+    (D: $B0; Family:cfInstructionTLB;     Size:4;    WaysOfAssoc:4; Entries:128;                  I: RsIntelCacheDescrB0), // Instruction TLB: 4 KByte Pages, 4-way set associative, 128 entries
+    (D: $B3; Family:cfDataTLB;            Size:4;    WaysOfAssoc:4; Entries:128;                  I: RsIntelCacheDescrB3), // Data TLB: 4 KByte Pages, 4-way set associative, 128 entries
+    (D: $F0; Family:cfOther;                                                                      I: RsIntelCacheDescrF0), // 64-Byte Prefetching
+    (D: $F1; Family:cfOther;                                                                      I: RsIntelCacheDescrF1)  // 128-Byte Prefetching
+  );
 
 procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
@@ -1302,7 +1695,9 @@ end;
 
 
 {$IFDEF UNIX}
+
 { TODO -cDoc: Donator: twm, Contributor rrossmair }
+
 // Returns all IP addresses of the local machine in the form
 // <interface>=<IP-Address> (which allows for access to the interface names
 // by means of Results.Names and the addresses through Results.Values)
@@ -1651,7 +2046,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         if GetModuleBaseNameA(Handle, 0, PChar(Result), MAX_PATH) > 0 then
           StrResetLength(Result)
         else
-          Result := '';  
+          Result := '';
       end;
     finally
       CloseHandle(Handle);
@@ -2348,7 +2743,7 @@ begin
       Result := RsOSVersionWin2003;
   else
     Result := '';
-  end;  
+  end;
 end;
 
 function NtProductTypeString: string;
@@ -2783,18 +3178,6 @@ begin
     if (CpuInfo.Features and TSC_FLAG) = TSC_FLAG then
       GetCpuSpeed(CpuInfo.FrequencyInfo);
     {$ENDIF MSWINDOWS}
-    CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
-    if (CpuInfo.Features and SSE_FLAG) = SSE_FLAG then
-      if (CpuInfo.Features and SSE2_FLAG) = SSE2_FLAG then
-        if    (CpuInfo.CpuType = CPU_TYPE_INTEL)
-          and ((CpuInfo.IntelSpecific.ExFeatures and SSE3_EFLAG) = SSE3_EFLAG) then
-          CpuInfo.SSE := 3
-        else
-          CpuInfo.SSE := 2
-      else
-        CpuInfo.SSE := 1
-    else
-      CpuInfo.SSE := 0;
   end;
 end;
 
@@ -2945,32 +3328,57 @@ end;
 
 procedure IntelSpecific(var CpuInfo: TCpuInfo);
 var
-  I: Integer;
+  I, J: Integer;
 begin
   with CpuInfo do
   begin
     Manufacturer := 'Intel';
-    CpuType := CPU_TYPE_INTEL;
     if HasCacheInfo then
-      with CPUInfo.IntelSpecific do
+    begin
+      if (IntelSpecific.L2Cache <> 0) then
       begin
-        L2Cache := 0;
-        for I := 1 to 15 do
-          case CacheDescriptors[I] of
-            $40:
-              L2Cache := 0;
-            $41:
-              L2Cache := 128;
-            $42:
-              L2Cache := 256;
-            $43:
-              L2Cache := 512;
-            $44:
-              L2Cache := 1024;
-            $45:
-              L2Cache := 2048;
-          end;
+        L2CacheSize := IntelSpecific.L2Cache shr 16;
+        L2CacheLineSize := IntelSpecific.L2Cache and $FF;
+        L2CacheAssociativity := (IntelSpecific.L2Cache shr 12) and $F;
       end;
+      for I := Low(IntelSpecific.CacheDescriptors) to High(IntelSpecific.CacheDescriptors) do
+        if IntelSpecific.CacheDescriptors[I]<>0 then
+          for J := Low(IntelCacheDescription) to High(IntelCacheDescription) do
+            if IntelCacheDescription[J].D = IntelSpecific.CacheDescriptors[I] then
+              with IntelCacheDescription[J] do
+        case Family of
+          //cfInstructionTLB :
+          //cfDataTLB :
+          cfL1InstructionCache :
+            begin
+              Inc(L1InstructionCacheSize,Size);
+              L1InstructionCacheLineSize := LineSize;
+              L1InstructionCacheAssociativity := WaysOfAssoc;
+            end;
+          cfL1DataCache :
+            begin
+              Inc(L1DataCacheSize,Size);
+              L1DataCacheLineSize := LineSize;
+              L1DataCacheAssociativity := WaysOfAssoc;
+            end;
+          cfL2Cache :
+            if (IntelSpecific.L2Cache = 0) then
+            begin
+              Inc(L2CacheSize,Size);
+              L2CacheLineSize := LineSize;
+              L2CacheAssociativity := WaysOfAssoc;
+            end;
+          cfL3Cache :
+            begin
+              Inc(L3CacheSize,Size);
+              L3CacheLineSize := LineSize;
+              L3CacheAssociativity := WaysOfAssoc;
+              L3LinesPerSector := LinePerSector;
+            end;
+          //cfTrace :    // no numeric informations
+          //cfOther :
+        end;
+    end;
     if not HasExtendedInfo then
     begin
       case Family of
@@ -3002,7 +3410,7 @@ begin
             3:
               CpuName := 'Pentium II';
             5:
-              case IntelSpecific.L2Cache of
+              case L2CacheSize of
                 0:
                   CpuName := 'Celeron';
                 1024:
@@ -3013,7 +3421,7 @@ begin
                 CpuName := 'Pentium II';
               end;
             6:
-              case IntelSpecific.L2Cache of
+              case L2CacheSize of
                 0:
                   CpuName := 'Celeron';
                 128:
@@ -3022,7 +3430,7 @@ begin
                 CpuName := 'Pentium II';
               end;
             7:
-              case IntelSpecific.L2Cache of
+              case L2CacheSize of
                 1024:
                   CpuName := 'Pentium III Xeon';
                 2048:
@@ -3065,8 +3473,21 @@ begin
         StrPCopy(CpuName, Format('P%d', [Family]));
       end;
     end;
+
+    MMX := (Features and MMX_FLAG) <> 0;
+    if (Features and SSE_FLAG) <> 0 then
+      if (Features and SSE2_FLAG) <> 0 then
+        if (IntelSpecific.ExFeatures and EINTEL_SSE3) <> 0 then
+          SSE := 3
+        else
+          SSE := 2
+      else
+        SSE := 1
+    else
+      SSE := 0;
+    Is64Bits := HasExtendedInfo and ((IntelSpecific.Ex64Features and EINTEL64_EM64T)<>0);
   end;
-end;
+ end;
 
 // Helper function for CPUID. Initializes Cyrix specific fields.
 
@@ -3075,7 +3496,6 @@ begin
   with CpuInfo do
   begin
     Manufacturer := 'Cyrix';
-    CpuType := CPU_TYPE_CYRIX;
     if not HasExtendedInfo then
     begin
       case Family of
@@ -3099,12 +3519,14 @@ end;
 
 // Helper function for CPUID. Initializes AMD specific fields.
 
+resourcestring
+  RsUnknownAMDModel = 'Unknown AMD (Model %d)';
+  
 procedure AMDSpecific(var CpuInfo: TCpuInfo);
 begin
   with CpuInfo do
   begin
     Manufacturer := 'AMD';
-    CpuType := CPU_TYPE_AMD;
     if not HasExtendedInfo then
     begin
       case Family of
@@ -3121,60 +3543,145 @@ begin
             3:
               CpuName := 'AMD-K5 (Model 3)';
             6:
-              CpuName := 'AMD-K6(R)';
+              CpuName := 'AMD-K6® (Model 6)';
             7:
-              CpuName := 'AMD-K6';
+              CpuName := 'AMD-K6® (Model 7)';
             8:
-              CpuName := 'AMD-K6(R) -2';
+              CpuName := 'AMD-K6®-2 (Model 8)';
             9:
-              CpuName := 'AMD-K6(R) -3';
-          else
-            CpuName := 'Unknown AMD Model';
+              CpuName := 'AMD-K6®-III (Model 9)';
+            else
+              StrFmt(CpuName,PChar(RsUnknownAMDModel),[Model]);
           end;
-      else
-        CpuName := 'Unknown AMD Chip';
+        6:
+          case Model of
+            1:
+              CpuName := 'AMD Athlon™ (Model 1)';
+            2:
+              CpuName := 'AMD Athlon™ (Model 2)';
+            3:
+              CpuName := 'AMD Duron™ (Model 3)';
+            4:
+              CpuName := 'AMD Athlon™ (Model 4)';
+            6:
+              CpuName := 'AMD Athlon™ XP (Model 6)';
+            7:
+              CpuName := 'AMD Duron™ (Model 7)';
+            8:
+              CpuName := 'AMD Athlon™ XP (Model 8)';
+            10:
+              CpuName := 'AMD Athlon™ XP (Model 10)';
+            else
+              StrFmt(CpuName,PChar(RsUnknownAMDModel),[Model]);
+          end;
+        8:
+
+        else
+          CpuName := 'Unknown AMD Chip';
       end;
     end;
+    if (HasCacheInfo) then
+    begin
+      L1DataCacheSize := AMDSpecific.L1DataCache[ciSize];
+      L1DataCacheLineSize := AMDSpecific.L1DataCache[ciLineSize];
+      L1DataCacheAssociativity := AMDSpecific.L1DataCache[ciAssociativity];
+      L1InstructionCacheSize := AMDSpecific.L1InstructionCache[ciSize];
+      L1InstructionCacheLineSize := AMDSpecific.L1InstructionCache[ciLineSize];
+      L1InstructionCacheAssociativity := AMDSpecific.L1InstructionCache[ciAssociativity];
+      L2CacheLineSize := AMDSpecific.L2Cache and $FF;
+      L2CacheAssociativity := (AMDSpecific.L2Cache shr 12) and $F;
+      L2CacheSize := AMDSpecific.L2Cache shr 16;
+    end;
+    MMX := (Features and AMD_MMX) <> 0;
+    ExMMX := HasExtendedInfo and ((AMDSpecific.ExFeatures and EAMD_EXMMX) <> 0);
+    _3DNow := HasExtendedInfo and ((AMDSpecific.ExFeatures and EAMD_3DNOW) <> 0);
+    Ex3DNow := HasExtendedInfo and ((AMDSpecific.ExFeatures and EAMD_EX3DNOW) <> 0);
+    if (Features and AMD_SSE) <> 0 then
+      if (Features and AMD_SSE2) <> 0 then
+        SSE := 2
+      else
+        SSE := 1
+    else
+      SSE := 0;
+    Is64Bits := HasExtendedInfo and ((AMDSpecific.ExFeatures and EAMD_LONG) <> 0);
   end;
 end;
+
+// Helper function for CPUID. Initializes Transmeta specific fields.
 
 procedure TransmetaSpecific(var CpuInfo: TCpuInfo);
 begin
   with CpuInfo do
   begin
     Manufacturer := 'Transmeta';
-    CpuType := CPU_TYPE_CRUSOE;
-    CpuName := 'Crusoe';
+    if not HasExtendedInfo then
+      CpuName := 'Crusoe';
+    if HasCacheInfo then
+    begin
+      L1DataCacheSize := TransmetaSpecific.L1DataCache[ciSize];
+      L1DataCacheLineSize := TransmetaSpecific.L1DataCache[ciLineSize];
+      L1DataCacheAssociativity := TransmetaSpecific.L1DataCache[ciAssociativity];
+      L1InstructionCacheSize := TransmetaSpecific.L1CodeCache[ciSize];
+      L1InstructionCacheLineSize := TransmetaSpecific.L1CodeCache[ciLineSize];
+      L1InstructionCacheAssociativity := TransmetaSpecific.L1CodeCache[ciAssociativity];
+      L2CacheLineSize := TransmetaSpecific.L2Cache and $FF;
+      L2CacheAssociativity := (TransmetaSpecific.L2Cache shr 12) and $F;
+      L2CacheSize := TransmetaSpecific.L2Cache shr 16;
+    end;
+    MMX := (Features and TRANSMETA_MMX) <> 0;
   end;
 end;
-  
+
+// Helper function for CPUID. Initializes Via specific fields.
+
+procedure ViaSpecific(var CpuInfo: TCpuInfo);
+begin
+  with CpuInfo do
+  begin
+    Manufacturer := 'Via';
+    if not HasExtendedInfo then
+      CpuName := 'C3';
+    if HasCacheInfo then
+    begin
+      L1DataCacheSize := VIASpecific.L1DataCache[ciSize];
+      L1DataCacheLineSize := VIASpecific.L1DataCache[ciLineSize];
+      L1DataCacheAssociativity := VIASpecific.L1DataCache[ciAssociativity];
+      L1InstructionCacheSize := VIASpecific.L1InstructionCache[ciSize];
+      L1InstructionCacheLineSize := VIASpecific.L1InstructionCache[ciLineSize];
+      L1InstructionCacheAssociativity := VIASpecific.L1InstructionCache[ciAssociativity];
+      L2CacheLineSize := VIASpecific.L2DataCache and $FF;
+      L2CacheAssociativity := (VIASpecific.L2DataCache shr 12) and $F;
+      L2CacheSize := VIASpecific.L2DataCache shr 16;
+    end;
+    MMX := (Features and VIA_MMX) <> 0;
+    if (Features and VIA_SSE) <> 0
+      then SSE := 1
+      else SSE := 0;
+    _3DNow := (Features and VIA_3DNOW) <> 0;
+  end;
+end;
+
 function CPUID: TCpuInfo;
 var
   CPUInfo: TCpuInfo;
   HiVal: Cardinal;
+  ExHiVal: Cardinal;
   TimesToExecute, CurrentLoop: Byte;
 begin
+  FillChar(CPUInfo, sizeof(CPUInfo), 0);
   asm
-        MOV     [CPUInfo.HasInstruction], 0
-        MOV     [CPUInfo.HasExtendedInfo], 0
-        MOV     [CPUInfo.HasCacheInfo], 0
-        MOV     [CPUInfo.PType], 0
-        MOV     [CPUInfo.Model], 0
-        MOV     [CPUInfo.Stepping], 0
-        MOV     [CPUInfo.Features], 0
-        MOV     [CPUInfo.FrequencyInfo.RawFreq], 0
-        MOV     [CPUInfo.FrequencyInfo.NormFreq], 0
-        MOV     [CPUInfo.FrequencyInfo.InCycles], 0
-        MOV     [CPUInfo.FrequencyInfo.ExTicks], 0
-        MOV     [CPUInfo.IntelSpecific.BrandID],0
-
         PUSH    EAX
         PUSH    EBP
         PUSH    EBX
-        PUSH    ECX
+        PUSH    ECX                
         PUSH    EDI
         PUSH    EDX
         PUSH    ESI
+{$IFDEF PIC} // position independent code for linux
+        MOV     ESI, EBX       // get the GOT placed in ebx
+{$ELSE}      // PIC
+        XOR     ESI, ESI
+{$ENDIF}     // PIC
 
   @@Check80486:
         MOV     [CPUInfo.Family], 4
@@ -3201,36 +3708,70 @@ begin
         MOV     DWORD PTR [CPUInfo.VendorIDString + 8], ECX
 
   @@CheckIntel:
-        CMP     DWORD PTR [CPUInfo.VendorIDString], 'uneG'
+        CMP     DWORD PTR [ESI].VendorIDIntel, EBX       //'uneG'
         JNE     @@CheckAMD
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'Ieni'
+        CMP     DWORD PTR [ESI+4].VendorIDIntel, EDX     //'Ieni'
         JNE     @@CheckAMD
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'letn'
+        CMP     DWORD PTR [ESI+8].VendorIDIntel, ECX     //'letn'
         JNE     @@CheckAMD
         MOV     [CPUInfo.CpuType], CPU_TYPE_INTEL
-        JMP     @@StandardFunctions
+        JMP     @@CheckIntelExtended
 
   @@CheckAMD:
-        CMP     DWORD PTR [CPUInfo.VendorIDString], 'htuA'
-        JNE     @@CheckCitrix
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'itne'
-        JNE     @@CheckCitrix
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'DMAc'
-        JNE     @@CheckCitrix
+        CMP     DWORD PTR [ESI].VendorIDAMD, EBX         //'htuA'
+        JNE     @@CheckCyrix
+        CMP     DWORD PTR [ESI+4].VendorIDAMD, EDX       //'itne'
+        JNE     @@CheckCyrix
+        CMP     DWORD PTR [ESI+8].VendorIDAMD, ECX       //'DMAc'
+        JNE     @@CheckCyrix
         MOV     [CPUInfo.CpuType], CPU_TYPE_AMD
         JMP     @@CheckAMDExtended
 
-  @@CheckCitrix:
-        CMP     DWORD PTR [CPUInfo.VendorIDString], 'iryC'
-        JNE     @@StandardFunctions
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'snIx'
-        JNE     @@StandardFunctions
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'daet'
-        JNE     @@StandardFunctions
+  @@CheckCyrix:
+        CMP     DWORD PTR [ESI].VendorIDCyrix, EBX       //'iryC'
+        JNE     @@CheckVIA
+        CMP     DWORD PTR [ESI+4].VendorIDCyrix, EDX     //'snIx'
+        JNE     @@CheckVIA
+        CMP     DWORD PTR [ESI+8].VendorIDCyrix, ECX     //'daet'
+        JNE     @@CheckVIA
         MOV     [CPUInfo.CpuType], CPU_TYPE_CYRIX
-        JMP     @@CheckCitrixExtended
+        JMP     @@CheckCyrixExtended
+
+  @@CheckVIA:
+        CMP     DWORD PTR [ESI].VendorIDVIA, EBX         //'tneC'
+        JNE     @@CheckTransmeta
+        CMP     DWORD PTR [ESI+4].VendorIDVIA, EDX       //'Hrua'
+        JNE     @@CheckTransmeta
+        CMP     DWORD PTR [ESI+8].VendorIDVIA, ECX       //'slua'
+        JNE     @@CheckTransmeta
+        MOV     [CPUInfo.CpuType], CPU_TYPE_VIA
+        JMP     @@CheckVIAExtended
+
+  @@CheckTransmeta:
+        CMP     DWORD PTR [ESI].VendorIDTransmeta, EBX   //'uneG'
+        JNE     @@StandardFunctions
+        CMP     DWORD PTR [ESI+4].VendorIDTransmeta, EDX //'Teni'
+        JNE     @@StandardFunctions
+        CMP     DWORD PTR [ESI+8].VendorIDTransmeta, ECX //'68xM'
+        JNE     @@StandardFunctions
+        MOV     [CPUInfo.CpuType], CPU_TYPE_TRANSMETA
+        JMP     @@CheckTransmetaExtended
+
+  @@CheckIntelExtended:
+        MOV     EAX, 80000000h
+        DB      0Fh
+        DB      0A2h
+        TEST    EAX, 80000000h
+        JZ      @@StandardFunctions
+        JMP     @@IntelOnly
 
   @@CheckAMDExtended:
+        MOV     EAX, 1
+        CMP     HiVal, 1
+        JL      @@StandardFunctions
+        DB      0Fh
+        DB      0A2h
+        MOV     [CpuInfo.Features], EDX
         MOV     EAX, 80000000h
         DB      0Fh
         DB      0A2h
@@ -3238,13 +3779,24 @@ begin
         JE      @@StandardFunctions
         JMP     @@AMDOnly
 
-  @@CheckCitrixExtended:
+  @@CheckCyrixExtended:
         MOV     EAX, 80000000h
         DB      0Fh
         DB      0A2h
         CMP     EAX, 0
         JE      @@StandardFunctions
-        JMP     @@CitrixOnly
+        JMP     @@CyrixOnly
+
+  @@CheckVIAExtended:
+        MOV     EAX, 80000000h
+        DB      0Fh
+        DB      0A2h
+        CMP     EAX, 0
+        JE      @@StandardFunctions
+        JMP     @@VIAOnly
+
+  @@CheckTransmetaExtended:
+        JMP     @@TransmetaOnly
 
   @@StandardFunctions:
         CMP     HiVal, 1
@@ -3253,30 +3805,26 @@ begin
         DB      0FH
         DB      0A2H
         MOV     [CPUInfo.Features], EDX
-        MOV     [CPUInfo.IntelSpecific.ExFeatures], ECX  // (outchy) added extended features for intel processors
-        MOV     [CPUInfo.IntelSpecific.BrandID], BL 
-        MOV     ECX, EAX
+        MOV     [CPUInfo.IntelSpecific.BrandID], BL
+        MOV     EBX, EAX
         AND     EAX, 3000H
         SHR     EAX, 12
         MOV     [CPUInfo.PType], AL
-        MOV     EAX, ECX
+        MOV     EAX, EBX
         AND     EAX, 0F00H
         SHR     EAX, 8
         MOV     [CPUInfo.Family], AL
-        MOV     EAX, ECX
+        MOV     EAX, EBX
         AND     EAX, 00F0H
         SHR     EAX, 4
         MOV     [CPUInfo.MODEL], AL
-        MOV     EAX, ECX
+        MOV     EAX, EBX
         AND     EAX, 000FH
         MOV     [CPUInfo.Stepping], AL
-        CMP     DWORD PTR [CPUInfo.VendorIDString], 'uneG'
+        CMP     [CpuInfo.CpuType], CPU_TYPE_INTEL
         JNE     @@DoneCPUType
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 4], 'Ieni'
-        JNE     @@DoneCPUType
-        CMP     DWORD PTR [CPUInfo.VendorIDString + 8], 'letn'
-        JNE     @@DoneCPUType
-
+        MOV     [CPUInfo.IntelSpecific.ExFeatures], ECX  // (outchy) added extended features for intel processors
+        
   @@IntelStandard:
         CMP     HiVal, 2
         JL      @@DoneCPUType
@@ -3308,33 +3856,91 @@ begin
         MOV     DWORD PTR [CPUInfo.IntelSpecific.CacheDescriptors + 12], EDX
         JMP     @@DoneCPUType
 
-  @@AMDOnly:
-        MOV     HiVal, EAX
+  @@IntelOnly:
+        MOV     ExHiVal, EAX
+
         MOV     EAX, 80000001h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
+        JL      @@StandardFunctions
+        MOV     [CPUInfo.HasExtendedInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.IntelSpecific.Ex64Features], EDX
+
+        MOV     EAX, 80000002h
+        CMP     ExHiVal, EAX
+        JL      @@StandardFunctions
+        MOV     [CPUInfo.HasExtendedInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
+
+        MOV     EAX, 80000003h
+        CMP     ExHiVal, EAX
+        JL      @@StandardFunctions
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
+
+        MOV     EAX, 80000004h
+        CMP     ExHiVal, EAX
+        JL      @@StandardFunctions
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
+
+        MOV     EAX, 80000006h
+        CMP     ExHiVal, EAX
+        JL      @@StandardFunctions
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.IntelSpecific.L2Cache], EDX
+        JMP     @@StandardFunctions
+
+  @@AMDOnly:
+        MOV     ExHiVal, EAX
+        MOV     EAX, 80000001h
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         MOV     [CPUInfo.HasExtendedInfo], 1
         DB      0Fh
         DB      0A2h
         MOV     ECX, EAX
-        AND     EAX, 0F000H
-        SHR     EAX, 12
-        MOV     [CPUInfo.PType], AL
-        MOV     EAX, ECX
-        AND     EAX, 0F00H
+        //AND     EAX, 0F000H
+        //SHR     EAX, 12
+        //MOV     [CPUInfo.PType], AL        // (outchy) AMD processors don't support ProcessorType
+        //MOV     EAX, ECX
+        AND     EAX, 00000F00h
         SHR     EAX, 8
         MOV     [CPUInfo.Family], AL
         MOV     EAX, ECX
-        AND     EAX, 00F0H
+        AND     EAX, 0FF00000h
+        SHR     EAX, 20
+        MOV     [CpuInfo.ExtendedFamily], AL
+        MOV     EAX, ECX
+        AND     EAX, 000000F0h
         SHR     EAX, 4
-        MOV     [CPUInfo.MODEL], AL
+        MOV     [CPUInfo.Model], AL
+        MOV     EAX, ECX
+        AND     EAX, 000F0000h
+        SHR     EAX, 16
+        MOV     [CpuInfo.ExtendedModel], AL
         MOV     EAX, ECX
         AND     EAX, 000FH
         MOV     [CPUInfo.Stepping], AL
-        MOV     [CPUInfo.Features], EDX
+        MOV     [CPUInfo.AMDSpecific.ExFeatures], EDX
 
         MOV     EAX, 80000002h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         DB      0Fh
         DB      0A2h
@@ -3344,7 +3950,7 @@ begin
         MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
 
         MOV     EAX, 80000003h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         DB      0Fh
         DB      0A2h
@@ -3354,7 +3960,7 @@ begin
         MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
 
         MOV     EAX, 80000004h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         DB      0Fh
         DB      0A2h
@@ -3364,22 +3970,53 @@ begin
         MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
 
         MOV     EAX, 80000005h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         MOV     [CPUInfo.HasCacheInfo], 1
         DB      0Fh
         DB      0A2h
-        MOV     WORD PTR [CPUInfo.AMDSpecific.InstructionTLB], BX
+        MOV     [CPUInfo.AMDSpecific.MByteInstructionTLB], AX
+        SHR     EAX, 16
+        MOV     [CPUInfo.AMDSpecific.MByteDataTLB], AX
+        MOV     [CPUInfo.AMDSpecific.KByteInstructionTLB], BX
         SHR     EBX, 16
-        MOV     WORD PTR [CPUInfo.AMDSpecific.DataTLB], BX
-        MOV     DWORD PTR [CPUInfo.AMDSpecific.L1DataCache], ECX
-        MOV     DWORD PTR [CPUInfo.AMDSpecific.L1ICache], EDX
+        MOV     [CPUInfo.AMDSpecific.KByteDataTLB], BX
+        MOV     [CPUInfo.AMDSpecific.L1DataCache], ECX
+        MOV     [CPUInfo.AMDSpecific.L1InstructionCache], EDX
+
+        MOV     EAX, 80000006h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CpuInfo.AMDSpecific.L2MByteInstructionTLB], AX
+        SHR     EAX, 16
+        MOV     [CpuInfo.AMDSpecific.L2MByteDataTLB], AX
+        MOV     [CpuInfo.AMDSpecific.L2KByteInstructionTLB], BX
+        SHR     EBX, 16
+        MOV     [CpuInfo.AMDSpecific.L2KByteDataTLB], BX
+        MOV     [CpuInfo.AMDSpecific.L2Cache], ECX
+
+        MOV     EAX, 80000007h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CpuInfo.AMDSpecific.AdvancedPowerManagement], EDX
+
+        MOV     EAX, 80000008h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.AMDSpecific.PhysicalAddressSize], AL
+        MOV     [CPUInfo.AMDSpecific.VirtualAddressSize], AH
         JMP     @@DoneCPUType
 
-  @@CitrixOnly:
-        MOV     HiVal, EAX
+  @@CyrixOnly:
+        MOV     ExHiVal, EAX
         MOV     EAX, 80000001h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         MOV     [CPUInfo.HasExtendedInfo], 1
         DB      0Fh
@@ -3395,14 +4032,14 @@ begin
         MOV     EAX, ECX
         AND     EAX, 00F0H
         SHR     EAX, 4
-        MOV     [CPUInfo.MODEL], AL
+        MOV     [CPUInfo.Model], AL
         MOV     EAX, ECX
         AND     EAX, 000FH
         MOV     [CPUInfo.Stepping], AL
         MOV     [CPUInfo.Features], EDX
 
         MOV     EAX, 80000002h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         DB      0Fh
         DB      0A2h
@@ -3412,7 +4049,7 @@ begin
         MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
 
         MOV     EAX, 80000003h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         DB      0Fh
         DB      0A2h
@@ -3422,7 +4059,7 @@ begin
         MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
 
         MOV     EAX, 80000004h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         DB      0Fh
         DB      0A2h
@@ -3432,13 +4069,271 @@ begin
         MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
 
         MOV     EAX, 80000005h
-        CMP     HiVal, EAX
+        CMP     ExHiVal, EAX
         JL      @@DoneCPUType
         MOV     [CPUInfo.HasCacheInfo], 1
         DB      0Fh
         DB      0A2h
-        MOV     DWORD PTR [CPUInfo.CyrixSpecific.TLBInfo], EBX
-        MOV     DWORD PTR [CPUInfo.CyrixSpecific.L1CacheInfo], ECX
+        MOV     [CPUInfo.CyrixSpecific.TLBInfo], EBX
+        MOV     [CPUInfo.CyrixSpecific.L1CacheInfo], ECX
+        JMP     @@DoneCPUType
+
+  @@VIAOnly:
+        MOV     ExHiVal, EAX
+        MOV     EAX, 80000001h
+        CMP     ExHiVal, EAX
+        JL      @@VIAExtended
+        MOV     [CPUInfo.HasExtendedInfo], 1
+        DB      0Fh
+        DB      0A2h
+        MOV     [CpuInfo.Features], EDX
+        MOV     ECX, EAX
+        AND     EAX, 000Fh
+        MOV     [CpuInfo.Stepping], AL
+        MOV     EAX, ECX
+        AND     EAX, 00F0h
+        MOV     [CpuInfo.Model], AL
+        MOV     EAX, ECX
+        AND     EAX, 0F00h
+        MOV     [CpuInfo.Family], AL
+        MOV     EAX, ECX
+        AND     EAX, 3000h
+        MOV     [CpuInfo.Stepping], AL
+
+        MOV     EAX, 80000002h
+        CMP     ExHiVal, EAX
+        JL      @@VIAExtended
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
+
+        MOV     EAX, 80000003h
+        CMP     ExHiVal, EAX
+        JL      @@VIAExtended
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
+
+        MOV     EAX, 80000004h
+        CMP     ExHiVal, EAX
+        JL      @@VIAExtended
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
+
+        MOV     EAX, 80000005h
+        CMP     ExHiVal, EAX
+        JL      @@VIAExtended
+        DB      0Fh
+        DB      0A2h
+
+        MOV     [CPUInfo.VIASpecific.InstructionTLB], BX
+        SHR     EBX, 16
+        MOV     [CPUInfo.VIASpecific.DataTLB], BX
+        MOV     [CPUInfo.VIASpecific.L1DataCache], ECX
+        MOV     [CPUInfo.VIASpecific.L1InstructionCache], EDX
+        MOV     [CPUInfo.HasCacheInfo], 1
+
+        MOV     EAX, 80000006h
+        CMP     ExHiVal, EAX
+        JL      @@VIAExtended
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.VIASpecific.L2DataCache], ECX
+
+  @@VIAExtended:
+        MOV     EAX, 0C0000000h
+        DB      0Fh
+        DB      0A2h
+        CMP     EAX, 0
+        JE      @@DoneCpuType
+        MOV     ExHiVal, EAX
+
+        MOV     EAX, 0C0000001h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCpuType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.VIASpecific.ExFeatures], EDX
+        JMP     @@DoneCpuType
+
+  @@TransmetaOnly:
+        MOV     EAX, 1
+        CMP     HiVal, EAX
+        JL      @@TransmetaExtended1
+        DB      0Fh
+        DB      0A2h
+        MOV     [CpuInfo.Features], EDX
+        MOV     EBX, EAX
+        AND     EAX, 3000H
+        SHR     EAX, 12
+        MOV     [CPUInfo.PType], AL
+        MOV     EAX, EBX
+        AND     EAX, 0F00H
+        SHR     EAX, 8
+        MOV     [CPUInfo.Family], AL
+        MOV     EAX, EBX
+        AND     EAX, 00F0H
+        SHR     EAX, 4
+        MOV     [CPUInfo.MODEL], AL
+        MOV     EAX, EBX
+        AND     EAX, 000FH
+        MOV     [CPUInfo.Stepping], AL
+        // no information when eax is 2
+        // eax is 3 means Serial Number, not detected there
+  @@TransmetaExtended1:
+        MOV     EAX, 80000000h
+        DB      0Fh
+        DB      0A2h
+        CMP     EAX, 0
+        JE      @@TransmetaExtended2
+        MOV     ExHiVal, EAX
+        MOV     [CPUInfo.HasExtendedInfo], 1
+        MOV     DWORD PTR [CPUInfo.CpuName], EBX         // small CPU description, overriden if ExHiVal >=80000004
+        MOV     DWORD PTR [CPUInfo.CpuName + 4], EDX
+        MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
+
+        MOV     EAX, 80000001h
+        CMP     ExHiVal, EAX
+        JL      @@TransmetaExtended2
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.TransmetaSpecific.ExFeatures], EDX
+
+        MOV     EAX, 80000002h
+        CMP     ExHiVal, EAX
+        JL      @@TransmetaExtended2
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName], EAX         // large CPU description
+        MOV     DWORD PTR [CPUInfo.CpuName + 4], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 8], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 12], EDX
+
+        MOV     EAX, 80000003h
+        CMP     ExHiVal, EAX
+        JL      @@TransmetaExtended2
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 16], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 20], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 24], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 28], EDX
+
+        MOV     EAX, 80000004h
+        CMP     ExHiVal, EAX
+        JL      @@TransmetaExtended2
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.CpuName + 32], EAX
+        MOV     DWORD PTR [CPUInfo.CpuName + 36], EBX
+        MOV     DWORD PTR [CPUInfo.CpuName + 40], ECX
+        MOV     DWORD PTR [CPUInfo.CpuName + 44], EDX
+
+        MOV     EAX, 80000005h
+        CMP     ExHiVal, EAX
+        JL      @@TransmetaExtended2
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.HasCacheInfo], 1
+        MOV     [CPUInfo.TransmetaSpecific.CodeTLB], BX
+        SHR     EBX, 16
+        MOV     [CPUInfo.TransmetaSpecific.DataTLB], BX
+        MOV     [CPUInfo.TransmetaSpecific.L1DataCache], ECX
+        MOV     [CPUInfo.TransmetaSpecific.L1CodeCache], EDX
+
+        MOV     EAX, 80000006h
+        CMP     ExHiVal, EAX
+        JL      @@TransmetaExtended2
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.TransmetaSpecific.L2Cache], ECX
+
+  @@TransmetaExtended2:
+        MOV     EAX, 80860000h
+        DB      0Fh
+        DB      0A2h
+        CMP     EAX, 0
+        JE      @@DoneCPUType
+        MOV     ExHiVal, EAX
+
+        MOV     EAX, 80860001h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.TransmetaSpecific.RevisionABCD], EBX
+        MOV     [CPUInfo.TransmetaSpecific.RevisionXXXX], ECX
+        MOV     [CPUInfo.TransmetaSpecific.TransmetaFeatures], EDX
+
+        MOV     EAX, 80860002h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.TransmetaSpecific.CodeMorphingABCD], EBX
+        MOV     [CPUInfo.TransmetaSpecific.CodeMorphingXXXX], ECX
+
+        MOV     EAX, 80860003h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations], EAX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 4], EBX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 8], ECX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 12], EDX
+
+        MOV     EAX, 80860004h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 16], EAX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 20], EBX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 24], ECX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 28], EDX
+
+        MOV     EAX, 80860005h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 32], EAX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 36], EBX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 40], ECX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 44], EDX
+
+        MOV     EAX, 80860006h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 48], EAX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 52], EBX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 56], ECX
+        MOV     DWORD PTR [CPUInfo.TransmetaSpecific.TransmetaInformations + 60], EDX
+
+        MOV     EAX, 80860007h
+        CMP     ExHiVal, EAX
+        JL      @@DoneCPUType
+        MOV     EBX, [CPUInfo.TransmetaSpecific.TransmetaFeatures]
+        TEST    EBX, STRANSMETA_LONGRUN
+        JZ      @@DoneCPUType
+        DB      0Fh
+        DB      0A2h
+        MOV     [CPUInfo.TransmetaSpecific.CurrentFrequency], EAX
+        MOV     [CPUInfo.TransmetaSpecific.CurrentVoltage], EBX
+        MOV     [CPUInfo.TransmetaSpecific.CurrentPerformance], ECX
 
   @@DoneCpuType:
         POP     ESI
@@ -3450,24 +4345,17 @@ begin
         POP     EAX
   end;
 
-  if CPUInfo.VendorIDString = 'GenuineIntel' then
-    IntelSpecific(CpuInfo)
-  else
-  if CPUInfo.VendorIDString = 'CyrixInstead' then
-    CyrixSpecific(CpuInfo)
-  else
-  if CPUInfo.VendorIDString = 'AuthenticAMD' then
-    AMDSpecific(CpuInfo)
-  else
-  if CPUInfo.VendorIDString = 'GenuineTMx86' then
-    TransmetaSpecific(CpuInfo)
-  else
-  begin
-    CpuInfo.Manufacturer := 'Unknown';
-    CpuInfo.CpuName := 'Unknown';
+  case CPUInfo.CpuType of
+    CPU_TYPE_INTEL     : IntelSpecific(CpuInfo);
+    CPU_TYPE_CYRIX     : CyrixSpecific(CpuInfo);
+    CPU_TYPE_AMD       : AMDSpecific(CpuInfo);
+    CPU_TYPE_TRANSMETA : TransmetaSpecific(CpuInfo);
+    CPU_TYPE_VIA       : ViaSpecific(CpuInfo);
+    else begin
+      CpuInfo.Manufacturer := 'Unknown';
+      CpuInfo.CpuName := 'Unknown';
+    end;
   end;
-
-
   Result := CPUInfo;
 end;
 
@@ -3995,6 +4883,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.41  2005/03/12 01:32:50  outchy
+// Update of the CPUID function. New processors detection, constants reworked and specifications upgraded.
+//
 // Revision 1.40  2005/03/08 08:33:17  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
