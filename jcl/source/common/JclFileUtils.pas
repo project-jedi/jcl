@@ -27,7 +27,7 @@
 { file related routines as well but they are specific to the Windows shell.    }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: Februari 01, 2001                                             }
+{ Last modified: Februari 19, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -407,7 +407,7 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF WIN32}
-  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
+  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32, JclDateTime;
 
 { Some general notes:
 
@@ -1885,8 +1885,7 @@ type
   // indicates the file time to set, used by SetFileTimesHelper and SetDirTimesHelper
   TFileTimes = (ftLastAccess, ftLastWrite, ftCreation);
 
-function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime;
-  Times: TFileTimes): Boolean;
+function SetFileTimesHelper(const FileName: string; const DateTime: TDateTime; Times: TFileTimes): Boolean;
 var
   Handle: THandle;
   FileTime: TFileTime;
@@ -1896,17 +1895,21 @@ begin
   Handle := CreateFile(PChar(FileName), GENERIC_WRITE, FILE_SHARE_READ, nil,
     OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    DateTimeToSystemTime(DateTime, SystemTime);
-    SystemTimeToFileTime(SystemTime, FileTime);
-    case Times of
-      ftLastAccess:
-        Result := SetFileTime(Handle, nil, @FileTime, nil);
-      ftLastWrite:
-        Result := SetFileTime(Handle, nil, nil, @FileTime);
-      ftCreation:
-        Result := SetFileTime(Handle, @FileTime, nil, nil);
+  try
+    //SysUtils.DateTimeToSystemTime(DateTimeToLocalDateTime(DateTime), SystemTime);
+    SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
+    if Windows.SystemTimeToFileTime(SystemTime, FileTime) then
+    begin
+      case Times of
+        ftLastAccess:
+          Result := SetFileTime(Handle, nil, @FileTime, nil);
+        ftLastWrite:
+          Result := SetFileTime(Handle, nil, nil, @FileTime);
+        ftCreation:
+          Result := SetFileTime(Handle, @FileTime, nil, nil);
+      end;
     end;
+  finally
     CloseHandle(Handle);
   end;
 end;
@@ -1956,9 +1959,9 @@ begin
     Handle := CreateFile(PChar(DirName), GENERIC_WRITE, FILE_SHARE_READ, nil,
       OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, 0);
     if Handle <> INVALID_HANDLE_VALUE then
-    begin
-      DateTimeToSystemTime(DateTime, SystemTime);
-      SystemTimeToFileTime(SystemTime, FileTime);
+    try
+      SysUtils.DateTimeToSystemTime(DateTime, SystemTime);
+      Windows.SystemTimeToFileTime(SystemTime, FileTime);
       case Times of
         ftLastAccess:
           Result := SetFileTime(Handle, nil, @FileTime, nil);
@@ -1967,6 +1970,7 @@ begin
         ftCreation:
           Result := SetFileTime(Handle, @FileTime, nil, nil);
       end;
+    finally
       CloseHandle(Handle);
     end;
   end;
@@ -2329,7 +2333,10 @@ var
                Value := ''
              else
              if IsUnicode then
-               Value := WideCharLenToString(PWideChar(Data), ValueLen)
+             begin
+               Value := WideCharLenToString(PWideChar(Data), ValueLen);
+               StrResetLength(Value);
+             end
              else
                Value := PAnsiChar(Data);
         else
