@@ -10,10 +10,10 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is Jcl8087.pas.                                                                }
+{ The Original Code is JclStrings.pas.                                                                }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }                                                                           }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
