@@ -58,12 +58,8 @@
 {  http://www.gnu.org/copyleft/lesser.html                                     }
 {                                                                              }
 {******************************************************************************}
-{                                                                              }
-{  $Id$                                                                        }
-{                                                                              }
-{  For a history take a look to the end of this file                           }
-{                                                                              }
-{******************************************************************************}
+
+// $Id$
 
 {$I jedi.inc}
 
@@ -1306,38 +1302,5 @@ function inflateBackInit(var strm: TZStreamRec; windowBits: Integer;
 begin
   Result := inflateBackInit_(strm, windowBits, window, ZLIB_VERSION, SizeOf(strm));
 end;
-
-// ****************************************************************************
-
-//  History:
-//   2002-04-04, Peter J. Haas
-//    - first internal version 1.1.4
-//
-//   2002-04-04, Matthias Thoma (mthoma)
-//    - Global change: define Kylix had to be change to Linux
-//
-//   2002-04-07, Peter J. Haas
-//    - First public pre release
-//
-//   2003-04-14, Peter J. Haas
-//    - First public version
-//
-//   2003-11-14, Peter J. Haas
-//    - add demo
-//
-//   2004-01-23, Peter J. Haas
-//    - add new functions from version 1.2.1
-//    - generate different units for Delphi 3, Delphi 4 ... and Kylix
-//
-//   2004-03-15, Peter J. Haas
-//    - move directive comments to directives
-//
-//   2004-03-19, Peter J. Haas
-//    - compiler symbol to hide platform specific comments
-//
-//   $Log$
-//   Revision 1.2  2004/04/06 23:02:10  peterjhaas
-//   Change the (relative) path to the obj files to 'obj'
-//
 
 end.
