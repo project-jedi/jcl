@@ -208,8 +208,8 @@ function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: 
 function FileRestore(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
 function FileGetDisplayName(const FileName: string): string;
-function FileGetGroupName(const FileName: string): string;
-function FileGetOwnerName(const FileName: string): string;
+function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
+function FileGetOwnerName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 function FileGetSize(const FileName: string): Integer;
 function FileGetTempName(const Prefix: string): string;
 {$IFDEF MSWINDOWS}
@@ -2904,7 +2904,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : Donator: Scott Price; Contributor: Robert Rossmair }
-function FileGetGroupName(const FileName: string): string;
+function FileGetGroupName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 {$IFDEF MSWINDOWS}
 var
   DomainName: AnsiString;
@@ -2927,15 +2927,26 @@ begin
 end;
 {$ENDIF ~MSWINDOWS}
 {$IFDEF UNIX}
+var
+  Buf: TStatBuf64;
+  ResultBuf: TGroup;
+  ResultBufPtr: PGroup;
+  Buffer: array of Char;
 begin
-  { TODO:  Implementation to retrieve similar data from Nix type systems }
+  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
+  begin
+    SetLength(Buffer, 128);
+    while getgrgid_r(Buf.st_gid, ResultBuf, @Buffer[0], Length(Buffer), ResultBufPtr) = ERANGE do
+      SetLength(Buffer, Length(Buffer) * 2);
+    Result := ResultBuf.gr_name;
+  end;
 end;
 {$ENDIF ~UNIX}
 
 //--------------------------------------------------------------------------------------------------
 
 { TODO -cHelp : Donator: Scott Price; Contributor: Robert Rossmair }
-function FileGetOwnerName(const FileName: string): string;
+function FileGetOwnerName(const FileName: string {$IFDEF UNIX}; ResolveSymLinks: Boolean = True {$ENDIF}): string;
 {$IFDEF MSWINDOWS}
 var
   DomainName: AnsiString;
@@ -2958,8 +2969,19 @@ begin
 end;
 {$ENDIF ~MSWINDOWS}
 {$IFDEF UNIX}
+var
+  Buf: TStatBuf64;
+  ResultBuf: TPasswordRecord;
+  ResultBufPtr: PPasswordRecord;
+  Buffer: array of Char;
 begin
-  { TODO:  Implementation to retrieve similar data from Nix type systems }
+  if GetFileStatus(FileName, Buf, ResolveSymLinks) = 0 then
+  begin
+    SetLength(Buffer, 128);
+    while getpwuid_r(Buf.st_uid, ResultBuf, @Buffer[0], Length(Buffer), ResultBufPtr) = ERANGE do
+      SetLength(Buffer, Length(Buffer) * 2);
+    Result := ResultBuf.pw_name;
+  end;
 end;
 {$ENDIF ~UNIX}
 
@@ -6010,6 +6032,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.36  2004/12/20 05:14:24  rrossmair
+// - added FileGetOwnerName, FileGetGroupName (Unix parts)
+//
 // Revision 1.35  2004/12/20 04:03:25  rrossmair
 // - added FileGetOwnerName, FileGetGroupName functions (Windows part)
 //
