@@ -15,17 +15,19 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Barry Kelly                                                                                    }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains three expression evaluators, each tailored for different usage patterns. It   }
 { also contains the component objects, so that a customized expression evaluator can be assembled  }
 { relatively easily.                                                                               }
 {                                                                                                  }
-{ Unit owner: Barry Kelly                                                                          }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 { Brief: This unit contains the expression evaluator.
   Description:
@@ -41,10 +43,6 @@
 unit JclExprEval;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -1687,7 +1685,7 @@ type
     function Evaluate: TFloat;
   end;
 
-  {TODO: change this definition to be just a normal function pointer, not
+  { TODO : change this definition to be just a normal function pointer, not
     a closure; will require a small executable memory allocater, and a
     couple of injected instructions. Similar concept to
     Forms.MakeObjectInstance.
@@ -3787,10 +3785,10 @@ end;
 
 procedure TExprVirtMachNodeFactory.GenCode(AVirtMach: TExprVirtMach);
 begin
-  {TODO: optimize the expression tree into a DAG (i.e. find CSEs) and
+  { TODO : optimize the expression tree into a DAG (i.e. find CSEs) and
     evaluate constant subexpressions, implement strength reduction, etc. }
 
-  {TODO: move optimization logic (as far as possible) into ancestor classes
+  { TODO : move optimization logic (as far as possible) into ancestor classes
     once tested and interfaces are solid, so that other evaluation strategies
     can take advantage of these optimizations. }
 
@@ -5497,5 +5495,11 @@ begin
   FExprHash.Iterate(nil, Iterate_FreeObjects);
 end;
 
-end.
+// History:
 
+// $Log$
+// Revision 1.3  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
+
+end.

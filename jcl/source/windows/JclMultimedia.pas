@@ -15,24 +15,22 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Jan Jacobs                                                                                     }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Contains a high performance timer based on the MultiMedia API and a routine to open or close the }
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
-{ Unit owner: Jan Jacobs                                                                           }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMultimedia;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -76,8 +74,8 @@ type
     constructor Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
     destructor Destroy; override;
     class function GetTime: Cardinal;
-    class function BeginPeriod(const Period: Cardinal): Boolean; // TODO DOC
-    class function EndPeriod(const Period: Cardinal): Boolean;   // TODO DOC
+    class function BeginPeriod(const Period: Cardinal): Boolean; { TODO -cHelp : Doc }
+    class function EndPeriod(const Period: Cardinal): Boolean;   { TODO -cHelp : Doc }
     procedure BeginTimer(const Delay, Resolution: Cardinal);
     procedure EndTimer;
     function Elapsed(const Update: Boolean): Cardinal;
@@ -323,6 +321,7 @@ uses
   SysUtils,
   JclResources, JclSysUtils;
 
+{ TODO : move to JclWin32? }  
 {$IFDEF FPC}
 // declarations missing from mmsystem.pp
 const
@@ -501,8 +500,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Applications should not call any system-defined functions from
+    inside a callback function, except for PostMessage, timeGetSystemTime,
+    timeGetTime, timeSetEvent, timeKillEvent, midiOutShortMsg, midiOutLongMsg,
+    and OutputDebugString. }
 procedure TJclMultimediaTimer.Timer(Id: Cardinal);
 begin
+  { TODO : A exception in the callbacl i very likely very critically }
   if Id <> FTimerId then
     raise EJclMmTimerError.CreateResRec(@RsMmInconsistentId);
   if Assigned(FOnTimer) then
@@ -1520,5 +1524,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+// History:
+
+// $Log$
+// Revision 1.6  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

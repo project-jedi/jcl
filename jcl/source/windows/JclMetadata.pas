@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Microsoft .Net framework Clr information support routines and classes.                           }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMetadata;
 
@@ -36,9 +40,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs,
-  {$ENDIF COMPILER5_UP}
+  {$ENDIF RTL130_UP}
   JclBase, JclSysUtils, JclFileUtils, JclPeImage, JclClr;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
@@ -1624,6 +1628,9 @@ type
 implementation
 
 uses
+  {$IFNDEF RTL140_UP}
+  ComObj,  // need for GuidToString
+  {$ENDIF RTL140_UP}
   Math,
   JclStrings, JclCIL, JclResources;
 
@@ -2807,7 +2814,7 @@ function TJclClrTableConstantRow.DumpIL: string;
 begin
   case ElementType of
     etBoolean:
-      Result := BoolToStr(PBoolean(Value.Memory)^, True);
+      Result := BooleanToStr(PBoolean(Value.Memory)^);
     etChar:
       Result := PWideChar(Value.Memory)^;
     etI1:
@@ -3196,6 +3203,7 @@ begin
   else
   if ffHasFieldRVA in Flags then
   begin
+    { TODO : What to do? }
   end;
 end;
 
@@ -3749,7 +3757,7 @@ end;
 
 function TJclClrTableParamDefRow.DumpIL: string;
 begin
-
+  { TODO : What to do? }
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3956,7 +3964,7 @@ end;
 
 procedure TJclClrMethodBody.AddOptILTable(OptILTable: Pointer; Size: Integer);
 begin
-
+  { TODO : What to do? }
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -5007,7 +5015,7 @@ begin
     end;
 
     Add('(');
-    
+
     if HasField then
     for I := 0 to FieldCount-1 do
       Add(Indent + Fields[I].DumpIL);
@@ -5459,5 +5467,12 @@ function TJclClrMethodParam.GetCustomModifierCount: Integer;
 begin
   Result := FCustomMods.Count;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,6 +15,10 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains various classes and support routines for implementing synchronisation in      }
@@ -23,19 +27,14 @@
 { (critical section, semaphore, mutex etc). It also includes three user defined classes to         }
 { complement these.                                                                                }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclSynch;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -317,6 +316,7 @@ type
 // it is all part of the Windows NT Native API.
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cTest : Test this structures }
 type
   TEventInfo = record
     EventType: Longint;       // 0 = manual, otherwise auto
@@ -325,8 +325,8 @@ type
 
   TMutexInfo = record
     SignalState: Longint;     // >0 = signaled, <0 = |SignalState| recurs. acquired
-    Owned: Boolean;           // owned by thread
-    Abandoned: Boolean;       // is abandoned?
+    Owned: ByteBool;          // owned by thread
+    Abandoned: ByteBool;      // is abandoned?
   end;
 
   TSemaphoreCounts = record
@@ -336,10 +336,11 @@ type
 
   TTimerInfo = record
     Remaining: TLargeInteger; // 100ns intervals until signaled
-    Signaled: LongBool;       // is signaled?
+    Signaled: ByteBool;       // is signaled?
   end;
 
 function QueryCriticalSection(CS: TJclCriticalSection; var Info: TRTLCriticalSection): Boolean;
+{ TODO -cTest : Test this 4 functions }
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
@@ -515,12 +516,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas, return wrError, if
+  SignalObjectAndWait not available on the OS (Win9x, WinNT before 4.0) }  
 function TJclDispatcherObject.SignalAndWait(const Obj: TJclDispatcherObject;
   TimeOut: Cardinal; Alertable: Boolean): TJclWaitResult;
 begin
   // Note: Do not make this method virtual! It's only available on NT 4 up...
-  Result := MapSignalResult(
-    JclWin32.SignalObjectAndWait(Obj.Handle, Handle, TimeOut, Alertable));
+  Result := MapSignalResult(RtdlSignalObjectAndWait(Obj.Handle, Handle, TimeOut,
+    Alertable));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -583,7 +586,7 @@ end;
 constructor TJclCriticalSection.Create;
 begin
   inherited Create;
-  InitializeCriticalSection(FCriticalSection);
+  Windows.InitializeCriticalSection(FCriticalSection);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -605,7 +608,7 @@ end;
 
 destructor TJclCriticalSection.Destroy;
 begin
-  DeleteCriticalSection(FCriticalSection);
+  Windows.DeleteCriticalSection(FCriticalSection);
   inherited Destroy;
 end;
 
@@ -613,14 +616,14 @@ end;
 
 procedure TJclCriticalSection.Enter;
 begin
-  EnterCriticalSection(FCriticalSection);
+  Windows.EnterCriticalSection(FCriticalSection);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclCriticalSection.Leave;
 begin
-  LeaveCriticalSection(FCriticalSection);
+  Windows.LeaveCriticalSection(FCriticalSection);
 end;
 
 //==================================================================================================
@@ -637,13 +640,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 constructor TJclCriticalSectionEx.CreateEx(SpinCount: Cardinal;
   NoFailEnter: Boolean);
 begin
   FSpinCount := SpinCount;
   if NoFailEnter then
     SpinCount := SpinCount or Cardinal($80000000);
-  if not InitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
+  // InitializeCriticalSectionAndSpinCount need Win98 and later or WinNT4.0 SP3 and later
+  if not RtdlInitializeCriticalSectionAndSpinCount(FCriticalSection, SpinCount) then
     raise EJclCriticalSectionError.CreateResRec(@RsSynchInitCriticalSection);
 end;
 
@@ -669,10 +674,15 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
+                             
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 procedure TJclCriticalSectionEx.SetSpinCount(const Value: Cardinal);
 begin
+  // InitializeCriticalSectionAndSpinCount need WinNT4.0 SP3 and later
   FSpinCount := SetCriticalSectionSpinCount(FCriticalSection, Value);
+  { TODO : Exception for Win9x, older WinNT? }
+  // RaiseLastOSError;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -685,9 +695,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclCriticalSectionEx.TryEnter: Boolean;
 begin
-  Result := TryEnterCriticalSection(FCriticalSection);
+  Result := RtdlTryEnterCriticalSection(FCriticalSection);
+  { TODO : Exception for Win9x, older WinNT? }
+  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
+  //   RaiseLastOSError;
 end;
 
 //==================================================================================================
@@ -699,7 +714,7 @@ constructor TJclEvent.Create(SecAttr: PSecurityAttributes; Manual,
 begin
   inherited Create;
   FName := Name;
-  FHandle := CreateEvent(SecAttr, Manual, Signaled, PChar(FName));
+  FHandle := Windows.CreateEvent(SecAttr, Manual, Signaled, PChar(FName));
   if FHandle = 0 then
     raise EJclEventError.CreateResRec(@RsSynchCreateEvent);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -712,7 +727,7 @@ constructor TJclEvent.Open(Access: Cardinal; Inheritable: Boolean;
 begin
   FName := Name;
   FExisted := True;
-  FHandle := OpenEvent(Access, Inheritable, PChar(Name));
+  FHandle := Windows.OpenEvent(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclEventError.CreateResRec(@RsSynchOpenEvent);
 end;
@@ -742,19 +757,26 @@ end;
 // TJclWaitableTimer
 //==================================================================================================
 
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclWaitableTimer.Cancel: Boolean;
 begin
-  Result := CancelWaitableTimer(FHandle);
+  Result := RtdlCancelWaitableTimer(FHandle);
+  { TODO : Exception for Win9x, older WinNT? }
+  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
+  //   RaiseLastOSError;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 constructor TJclWaitableTimer.Create(SecAttr: PSecurityAttributes;
   Manual: Boolean; const Name: string);
 begin
   FName := Name;
   FResume := False;
-  FHandle := CreateWaitableTimer(SecAttr, Manual, PChar(Name));
+  FHandle := RtdlCreateWaitableTimer(SecAttr, Manual, PChar(Name));
   if FHandle = 0 then
     raise EJclWaitableTimerError.CreateResRec(@RsSynchCreateWaitableTimer);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -762,37 +784,49 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 constructor TJclWaitableTimer.Open(Access: Cardinal; Inheritable: Boolean;
   const Name: string);
 begin
   FExisted := True;
   FName := Name;
   FResume := False;
-  FHandle := OpenWaitableTimer(Access, Inheritable, PChar(Name));
+  FHandle := RtdlOpenWaitableTimer(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclWaitableTimerError.CreateResRec(@RsSynchOpenWaitableTimer);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclWaitableTimer.SetTimer(const DueTime: Int64; Period: Longint;
   Resume: Boolean): Boolean;
 var
   DT: Int64;
 begin
   DT := DueTime;
-  Result := SetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
+  Result := RtdlSetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
+  { TODO : Exception for Win9x, older WinNT? }
+  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
+  //   RaiseLastOSError;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : OS restrictions }
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function TJclWaitableTimer.SetTimerApc(const DueTime: Int64; Period: Longint;
   Resume: Boolean; Apc: TFNTimerAPCRoutine; Arg: Pointer): Boolean;
 var
   DT: Int64;
 begin
   DT := DueTime;
-  Result := SetWaitableTimer(FHandle, DT, Period, Apc, Arg, FResume);
+  Result := RtdlSetWaitableTimer(FHandle, DT, Period, Apc, Arg, FResume);
+  { TODO : Exception for Win9x, older WinNT? }
+  // if not Result and (GetLastError = ERROR_CALL_NOT_IMPLEMENTED) then
+  //   RaiseLastOSError;
 end;
 
 //==================================================================================================
@@ -804,7 +838,7 @@ constructor TJclSemaphore.Create(SecAttr: PSecurityAttributes; Initial,
 begin
   Assert((Initial >= 0) and (Maximum > 0));
   FName := Name;
-  FHandle := CreateSemaphore(SecAttr, Initial, Maximum, PChar(Name));
+  FHandle := Windows.CreateSemaphore(SecAttr, Initial, Maximum, PChar(Name));
   if FHandle = 0 then
     raise EJclSemaphoreError.CreateResRec(@RsSynchCreateSemaphore);
   FExisted := GetLastError = ERROR_ALREADY_EXISTS;
@@ -817,7 +851,7 @@ constructor TJclSemaphore.Open(Access: Cardinal; Inheritable: Boolean;
 begin
   FName := Name;
   FExisted := True;
-  FHandle := OpenSemaphore(Access, Inheritable, PChar(Name));
+  FHandle := Windows.OpenSemaphore(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclSemaphoreError.CreateResRec(@RsSynchOpenSemaphore);
 end;
@@ -843,7 +877,7 @@ end;
 
 constructor TJclMutex.Create(SecAttr: PSecurityAttributes; InitialOwner: Boolean; const Name: string);
 const
-  InitialOwners: array [Boolean] of DWORD = (0, 1);
+  InitialOwners: array[Boolean] of DWORD = (0, 1);
 begin
   FName := Name;
   FHandle := JclWin32.CreateMutex(SecAttr, InitialOwners[InitialOwner], PChar(Name));
@@ -859,7 +893,7 @@ constructor TJclMutex.Open(Access: Cardinal; Inheritable: Boolean;
 begin
   FName := Name;
   FExisted := True;
-  FHandle := OpenMutex(Access, Inheritable, PChar(Name));
+  FHandle := Windows.OpenMutex(Access, Inheritable, PChar(Name));
   if FHandle = 0 then
     raise EJclMutexError.CreateResRec(@RsSynchOpenMutex);
 end;
@@ -868,7 +902,7 @@ end;
 
 function TJclMutex.Release: Boolean;
 begin
-  Result := ReleaseMutex(FHandle);
+  Result := Windows.ReleaseMutex(FHandle);
 end;
 
 //==================================================================================================
@@ -893,10 +927,10 @@ begin
     // if another process already created it.
     FEvent := TJclEvent.Create(nil, False, False, 'Optex_Event_' + Name);
     FExisted := FEvent.Existed;
-    FFileMapping := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
+    FFileMapping := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE,
       0, SizeOf(TOptexSharedInfo), PChar('Optex_MMF_' + Name));
     Assert(FFileMapping <> 0);
-    FSharedInfo := MapViewOfFile(FFileMapping, FILE_MAP_WRITE, 0, 0, 0);
+    FSharedInfo := Windows.MapViewOfFile(FFileMapping, FILE_MAP_WRITE, 0, 0, 0);
     Assert(FSharedInfo <> nil);
   end;
   SetSpinCount(SpinCount);
@@ -911,8 +945,8 @@ begin
     FreeMem(FSharedInfo)
   else
   begin
-    UnmapViewOfFile(FSharedInfo);
-    CloseHandle(FFileMapping);
+    Windows.UnmapViewOfFile(FSharedInfo);
+    Windows.CloseHandle(FFileMapping);
   end;
   inherited Destroy;
 end;
@@ -925,8 +959,8 @@ var
 begin
   if TryEnter then
     Exit;
-  ThreadId := GetCurrentThreadId;
-  if InterlockedIncrement(FSharedInfo^.LockCount) = 1 then
+  ThreadId := Windows.GetCurrentThreadId;
+  if Windows.InterlockedIncrement(FSharedInfo^.LockCount) = 1 then
   begin
     // Optex was unowned
     FSharedInfo^.ThreadId := ThreadId;
@@ -970,11 +1004,11 @@ procedure TJclOptex.Leave;
 begin
   Dec(FSharedInfo^.RecursionCount);
   if FSharedInfo^.RecursionCount > 0 then
-    InterlockedDecrement(FSharedInfo^.LockCount)
+    Windows.InterlockedDecrement(FSharedInfo^.LockCount)
   else
   begin
     FSharedInfo^.ThreadId := 0;
-    if InterlockedDecrement(FSharedInfo^.LockCount) > 0 then
+    if Windows.InterlockedDecrement(FSharedInfo^.LockCount) > 0 then
       FEvent.SetEvent;
   end;
 end;
@@ -987,7 +1021,7 @@ begin
     Value := DefaultCritSectSpinCount;
   // Spinning only makes sense on multiprocessor systems
   if ProcessorCount > 1 then
-    InterlockedExchange(Integer(FSharedInfo^.SpinCount), Value);
+    Windows.InterlockedExchange(Integer(FSharedInfo^.SpinCount), Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -998,7 +1032,7 @@ var
   ThreadOwnsOptex: Boolean;
   SpinCount: Integer;
 begin
-  ThreadId := GetCurrentThreadId;
+  ThreadId := Windows.GetCurrentThreadId;
   SpinCount := FSharedInfo^.SpinCount;
   repeat
     //ThreadOwnsOptex := InterlockedCompareExchange(Pointer(FSharedInfo^.LockCount),
@@ -1015,7 +1049,7 @@ begin
       if FSharedInfo^.ThreadId = ThreadId then
       begin
         // We already owned the Optex
-        InterlockedIncrement(FSharedInfo^.LockCount);
+        Windows.InterlockedIncrement(FSharedInfo^.LockCount);
         Inc(FSharedInfo^.RecursionCount);
         ThreadOwnsOptex := True;
       end;
@@ -1051,7 +1085,7 @@ var
   MustWait: Boolean;
 begin
   MustWait := False;
-  ThreadId := GetCurrentThreadId;
+  ThreadId := Windows.GetCurrentThreadId;
   FLock.Enter;
   try
     Index := FindThread(ThreadId);
@@ -1102,7 +1136,7 @@ begin
   MustWait := False;
   FLock.Enter;
   try
-    ThreadId := GetCurrentThreadId;
+    ThreadId := Windows.GetCurrentThreadId;
     Index := FindThread(ThreadId);
     if Index < 0 then
     begin
@@ -1316,8 +1350,8 @@ const
 
 procedure TJclMeteredSection.AcquireLock;
 begin
-  while InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 1) <> 0 do
-    Sleep(0);
+  while Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 1) <> 0 do
+    Windows.Sleep(0);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1327,11 +1361,11 @@ begin
   if FMetSect <> nil then
   begin
     if FMetSect^.SharedInfo <> nil then
-      UnmapViewOfFile(FMetSect^.SharedInfo);
+      Windows.UnmapViewOfFile(FMetSect^.SharedInfo);
     if FMetSect^.FileMap <> 0 then
-      CloseHandle(FMetSect^.FileMap);
+      Windows.CloseHandle(FMetSect^.FileMap);
     if FMetSect^.Event <> 0 then
-      CloseHandle(FMetSect^.Event);
+      Windows.CloseHandle(FMetSect^.Event);
     FreeMem(FMetSect);
   end;
 end;
@@ -1362,14 +1396,14 @@ var
   FullName: string;
 begin
   if Name = '' then
-    FMetSect^.Event := CreateEvent(nil, False, False, nil)
+    FMetSect^.Event := Windows.CreateEvent(nil, False, False, nil)
   else
   begin
     FullName :=  'JCL_MSECT_EVT_' + Name;
     if OpenOnly then
-      FMetSect^.Event := OpenEvent(0, False, PChar(FullName))
+      FMetSect^.Event := Windows.OpenEvent(0, False, PChar(FullName))
     else
-      FMetSect^.Event := CreateEvent(nil, False, False, PChar(FullName));
+      FMetSect^.Event := Windows.CreateEvent(nil, False, False, PChar(FullName));
   end;
   Result := FMetSect^.Event <> 0;
 end;
@@ -1384,19 +1418,19 @@ var
 begin
   Result := False;
   if Name = '' then
-    FMetSect^.FileMap := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
+    FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
   else
   begin
     FullName := 'JCL_MSECT_MMF_' + Name;
     if OpenOnly then
-      FMetSect^.FileMap := OpenFileMapping(0, False, PChar(FullName))
+      FMetSect^.FileMap := Windows.OpenFileMapping(0, False, PChar(FullName))
     else
-      FMetSect^.FileMap := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
+      FMetSect^.FileMap := Windows.CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
   end;
   if FMetSect^.FileMap <> 0 then
   begin
     LastError := GetLastError;
-    FMetSect^.SharedInfo := MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
+    FMetSect^.SharedInfo := Windows.MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
     if FMetSect^.SharedInfo <> nil then
     begin
       if LastError = ERROR_ALREADY_EXISTS then
@@ -1407,7 +1441,7 @@ begin
         FMetSect^.SharedInfo^.ThreadsWaiting := 0;
         FMetSect^.SharedInfo^.AvailableCount := InitialCount;
         FMetSect^.SharedInfo^.MaximumCount := MaxCount;
-        InterlockedExchange(Integer(FMetSect^.SharedInfo^.Initialized), 1);
+        Windows.InterlockedExchange(Integer(FMetSect^.SharedInfo^.Initialized), 1);
       end;
       Result := True;
     end;
@@ -1437,11 +1471,11 @@ begin
         Exit;
       end;
       Inc(FMetSect^.SharedInfo^.ThreadsWaiting);
-      ResetEvent(FMetSect^.Event);
+      Windows.ResetEvent(FMetSect^.Event);
     finally
       ReleaseLock;
     end;
-    Result := MapSignalResult(WaitForSingleObject(FMetSect^.Event, TimeOut));
+    Result := MapSignalResult(Windows.WaitForSingleObject(FMetSect^.Event, TimeOut));
     if Result <> wrSignaled then
       Exit;
   end;
@@ -1469,7 +1503,7 @@ begin
     if (ReleaseCount < 0) or
       (FMetSect^.SharedInfo^.AvailableCount + ReleaseCount > FMetSect^.SharedInfo^.MaximumCount) then
     begin
-      SetLastError(ERROR_INVALID_PARAMETER);
+      Windows.SetLastError(ERROR_INVALID_PARAMETER);
       Result := False;
       Exit;
     end;
@@ -1480,7 +1514,7 @@ begin
       for Count := 0 to ReleaseCount - 1 do
       begin
         Dec(FMetSect^.SharedInfo^.ThreadsWaiting);
-        SetEvent(FMetSect^.Event);
+        Windows.SetEvent(FMetSect^.Event);
       end;
     end;
   finally
@@ -1519,7 +1553,7 @@ end;
 
 procedure TJclMeteredSection.ReleaseLock;
 begin
-  InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 0);
+  Windows.InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 0);
 end;
 
 //==================================================================================================
@@ -1533,65 +1567,73 @@ begin
     Info := CS.FCriticalSection;
 end;
 
-//--------------------------------------------------------------------------------------------------
+//==================================================================================================
+// Native API functions
+//==================================================================================================
 
-type
-  TNtQueryProc = function (Handle: THandle; InfoClass: Byte; Info: Pointer;
-    Len: Longint; ResLen: PLongint): Longint; stdcall;
+// http://undocumented.ntinternals.net/
 
-var
-  _QueryEvent: TNtQueryProc = nil;
-  _QueryMutex: TNtQueryProc = nil;
-  _QuerySemaphore: TNtQueryProc = nil;
-  _QueryTimer: TNtQueryProc = nil;
-
-function CallQueryProc(var P: TNtQueryProc; const Name: string; Handle: THandle;
-  Info: Pointer; InfoSize: Longint): Boolean;
-var
-  NtDll: THandle;
-  Status: Longint;
-begin
-  Result := False;
-  if @P = nil then
-  begin
-    NtDll := GetModuleHandle(PChar('ntdll.dll'));
-    if NtDll <> 0 then
-      @P := GetProcAddress(NtDll, PChar(Name));
-  end;
-  if @P <> nil then
-  begin
-    Status := P(Handle, 0, Info, InfoSize, nil);
-    Result := (Status and $80000000) = 0;
-  end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function QueryEvent(Handle: THandle; var Info: TEventInfo): Boolean;
+var
+  ResultStatus: NTSTATUS;
 begin
-  Result := CallQueryProc(_QueryEvent, 'NtQueryEvent', Handle, @Info, SizeOf(Info));
+  ResultStatus := RtdlNtQueryEvent(Handle, EventBasicInformation,
+    @Info, SizeOf(Info), Nil);
+  if ResultStatus = STATUS_NOT_IMPLEMENTED then
+    RaiseLastOSError;
+  Result := (ResultStatus and $80000000) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function QueryMutex(Handle: THandle; var Info: TMutexInfo): Boolean;
+var
+  ResultStatus: NTSTATUS;
 begin
-  Result := CallQueryProc(_QueryMutex, 'NtQueryMutex', Handle, @Info, SizeOf(Info));
+  ResultStatus := RtdlNtQueryMutant(Handle, MutantBasicInformation,
+    @Info, SizeOf(Info), Nil);
+  if ResultStatus = STATUS_NOT_IMPLEMENTED then
+    RaiseLastOSError;
+  Result := (ResultStatus and $80000000) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function QuerySemaphore(Handle: THandle; var Info: TSemaphoreCounts): Boolean;
+var
+  ResultStatus: NTSTATUS;
 begin
-  Result := CallQueryProc(_QuerySemaphore, 'NtQuerySemaphore', Handle, @Info, SizeOf(Info));
+  ResultStatus := RtdlNtQuerySemaphore(Handle, SemaphoreBasicInformation,
+    @Info, SizeOf(Info), Nil);
+  if ResultStatus = STATUS_NOT_IMPLEMENTED then
+    RaiseLastOSError;
+  Result := (ResultStatus and $80000000) = 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function QueryTimer(Handle: THandle; var Info: TTimerInfo): Boolean;
+var
+  ResultStatus: NTSTATUS;
 begin
-  Result := CallQueryProc(_QueryTimer, 'NtQueryTimer', Handle, @Info, SizeOf(Info));
+  ResultStatus := RtdlNtQueryTimer(Handle, TimerBasicInformation,
+    @Info, SizeOf(Info), Nil);
+  if ResultStatus = STATUS_NOT_IMPLEMENTED then
+    RaiseLastOSError;
+  Result := (ResultStatus and $80000000) = 0;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.
-

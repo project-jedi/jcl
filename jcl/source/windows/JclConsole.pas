@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains classes and routines to support windows Character-Mode Applications           }
@@ -23,15 +26,12 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclConsole;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 {$HPPEMIT 'namespace JclConsole'}
 (*$HPPEMIT '{'*)
@@ -628,6 +628,7 @@ function TJclConsole.GetTitle: string;
 var
   Len: Integer;
 begin
+  { TODO : max 64kByte instead of max 255 }
   SetLength(Result, High(Byte));
   Len := GetConsoleTitle(PChar(Result), Length(Result));
   Win32Check((0 < Len) and (Len < Length(Result)));
@@ -652,6 +653,7 @@ end;
 
 procedure TJclConsole.SetInputCodePage(const Value: DWORD);
 begin
+  { TODO -cTest : SetConsoleCP under Win9x }
   Win32Check(SetConsoleCP(Value));
 end;
 
@@ -666,6 +668,7 @@ end;
 
 procedure TJclConsole.SetOutputCodePage(const Value: DWORD);
 begin
+  { TODO -cTest : SetConsoleOutputCP under Win9x }
   Win32Check(SetConsoleOutputCP(Value));
 end;
 
@@ -674,6 +677,7 @@ end;
 class function TJclConsole.IsConsole(const Module: HMODULE): Boolean;
 begin
   Result := False;
+  { TODO : Documentation of this solution }
   with PImageDosHeader(Module)^ do
   if e_magic = IMAGE_DOS_SIGNATURE then
     with PImageNtHeaders(Integer(Module) + _lfanew)^ do
@@ -1712,5 +1716,12 @@ begin
   Evts[0] := Event;
   Result := PutEvents(Evts) = 1;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.5  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

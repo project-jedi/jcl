@@ -15,25 +15,23 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes which makes working with the Windows Shell a bit easier. }
 { Included are routines for working with PIDL's, special folder's, file and folder manipulation    }
 { through shell interfaces, shortcut's and program execution.                                      }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclShell;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -1271,7 +1269,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-// TODOC author Jeff note, ShellExecEx() above used to be ShellExec()...
+{ TODO -cHelp : author Jeff note, ShellExecEx() above used to be ShellExec()... }
 
 function ShellExec(Wnd: Integer; const Operation, FileName, Parameters, Directory: string; ShowCommand: Integer): Boolean;
 begin
@@ -1325,28 +1323,16 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Contributer: Peter J. Haas }
 function ShellRasDial(const EntryName: string): Boolean;
 var
   Info: TRasDialDlg;
-  RasDlg: HModule;
-  RasDialDlgA: TRasDialDlgA;
 begin
   if IsWinNT then
   begin
-    Result := False;
-    RasDlg := LoadLibrary(PChar('rasdlg.dll'));
-    if RasDlg <> 0 then
-    try
-      @RasDialDlgA := GetProcAddress(RasDlg, PChar('RasDialDlgA'));
-      if @RasDialDlgA <> nil then
-      begin
-        FillChar(Info, SizeOf(Info), 0);
-        Info.dwSize := SizeOf(Info);
-        Result := RasDialDlgA(nil, PChar(EntryName), nil, @Info);
-      end;
-    finally
-      FreeLibrary(RasDlg);
-    end;
+    FillChar(Info, SizeOf(Info), 0);
+    Info.dwSize := SizeOf(Info);
+    Result := RtdlRasDialDlgA(nil, PChar(EntryName), nil, @Info);
   end
   else
     Result := ShellExecEx('rundll32', Format('rnaui.dll,RnaDial "%s"', [EntryName]), '', SW_SHOWNORMAL);
@@ -1440,5 +1426,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+// History:
+
+// $Log$
+// Revision 1.8  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

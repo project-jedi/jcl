@@ -26,9 +26,12 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 
 unit  JclQGraphics ;
@@ -42,10 +45,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes,
+  Classes, SysUtils,
   
-  Types, QGraphics,
-  JclQGraphUtils, 
+  Types, QGraphics, JclQGraphUtils,
   
   JclBase;
 
@@ -1577,5 +1579,12 @@ end;
 initialization
   SetIdentityMatrix;
   SetGamma(0.7);
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:59:38  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

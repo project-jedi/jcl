@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes to control Microsoft task schedule service               }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclTask;
 
@@ -31,204 +35,16 @@ interface
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
 uses
   Windows,
   Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs, JclUnicode,
-  {$ENDIF COMPILER5_UP}
-  JwaWinType, JwaWinBase, JwaMsTask,
+  {$ENDIF RTL130_UP}
+  MSTask, MSTaskError,
   JclBase, JclSysUtils, JclSysInfo;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
-
-const
-//--------------------------------------------------------------------------------------------------
-// the status of the work item
-//--------------------------------------------------------------------------------------------------
-//
-// MessageId: SCHED_S_TASK_READY
-//
-// MessageText:
-//
-//  The task is ready to run at its next scheduled time.
-//
-  SCHED_S_TASK_READY               = $00041300;
-
-//
-// MessageId: SCHED_S_TASK_RUNNING
-//
-// MessageText:
-//
-//  The task is currently running.
-//
-  SCHED_S_TASK_RUNNING             = $00041301;
-
-//
-// MessageId: SCHED_S_TASK_DISABLED
-//
-// MessageText:
-//
-//  The task will not run at the scheduled times because it has been disabled.
-//
-  SCHED_S_TASK_DISABLED            = $00041302;
-
-//
-// MessageId: SCHED_S_TASK_HAS_NOT_RUN
-//
-// MessageText:
-//
-//  The task has not yet run.
-//
-  SCHED_S_TASK_HAS_NOT_RUN         = $00041303;
-
-//
-// MessageId: SCHED_S_TASK_NO_MORE_RUNS
-//
-// MessageText:
-//
-//  There are no more runs scheduled for this task.
-//
-  SCHED_S_TASK_NO_MORE_RUNS        = $00041304;
-
-//
-// MessageId: SCHED_S_TASK_NOT_SCHEDULED
-//
-// MessageText:
-//
-//  One or more of the properties that are needed to run this task on a schedule have not been set.
-//
-  SCHED_S_TASK_NOT_SCHEDULED       = $00041305;
-
-//
-// MessageId: SCHED_S_TASK_TERMINATED
-//
-// MessageText:
-//
-//  The last run of the task was terminated by the user.
-//
-  SCHED_S_TASK_TERMINATED          = $00041306;
-
-//
-// MessageId: SCHED_S_TASK_NO_VALID_TRIGGERS
-//
-// MessageText:
-//
-//  Either the task has no triggers or the existing triggers are disabled or not set.
-//
-  SCHED_S_TASK_NO_VALID_TRIGGERS   = $00041307;
-
-//
-// MessageId: SCHED_S_EVENT_TRIGGER
-//
-// MessageText:
-//
-//  Event triggers don't have set run times.
-//
-  SCHED_S_EVENT_TRIGGER            = $00041308;
-
-//
-// MessageId: SCHED_E_TRIGGER_NOT_FOUND
-//
-// MessageText:
-//
-//  Trigger not found.
-//
-  SCHED_E_TRIGGER_NOT_FOUND        = $80041309;
-
-//
-// MessageId: SCHED_E_TASK_NOT_READY
-//
-// MessageText:
-//
-//  One or more of the properties that are needed to run this task have not been set.
-//
-  SCHED_E_TASK_NOT_READY           = $8004130A;
-
-//
-// MessageId: SCHED_E_TASK_NOT_RUNNING
-//
-// MessageText:
-//
-//  There is no running instance of the task to terminate.
-//
-  SCHED_E_TASK_NOT_RUNNING         = $8004130B;
-
-//
-// MessageId: SCHED_E_SERVICE_NOT_INSTALLED
-//
-// MessageText:
-//
-//  The Task Scheduler Service is not installed on this computer.
-//
-  SCHED_E_SERVICE_NOT_INSTALLED    = $8004130C;
-
-//
-// MessageId: SCHED_E_CANNOT_OPEN_TASK
-//
-// MessageText:
-//
-//  The task object could not be opened.
-//
-  SCHED_E_CANNOT_OPEN_TASK         = $8004130D;
-
-//
-// MessageId: SCHED_E_INVALID_TASK
-//
-// MessageText:
-//
-//  The object is either an invalid task object or is not a task object.
-//
-  SCHED_E_INVALID_TASK             = $8004130E;
-
-//
-// MessageId: SCHED_E_ACCOUNT_INFORMATION_NOT_SET
-//
-// MessageText:
-//
-//  No account information could be found in the Task Scheduler security database for the task indicated.
-//
-  SCHED_E_ACCOUNT_INFORMATION_NOT_SET = $8004130F;
-
-//
-// MessageId: SCHED_E_ACCOUNT_NAME_NOT_FOUND
-//
-// MessageText:
-//
-//  Unable to establish existence of the account specified.
-//
-  SCHED_E_ACCOUNT_NAME_NOT_FOUND   = $80041310;
-
-//
-// MessageId: SCHED_E_ACCOUNT_DBASE_CORRUPT
-//
-// MessageText:
-//
-//  Corruption was detected in the Task Scheduler security database; the database has been reset.
-//
-  SCHED_E_ACCOUNT_DBASE_CORRUPT    = $80041311;
-
-//
-// MessageId: SCHED_E_NO_SECURITY_SERVICES
-//
-// MessageText:
-//
-//  Task Scheduler security services are available only on Windows NT.
-//
-  SCHED_E_NO_SECURITY_SERVICES     = $80041312;
-
-//
-// MessageId: SCHED_E_UNKNOWN_OBJECT_VERSION
-//
-// MessageText:
-//
-//  The task object version is either unsupported or invalid.
-//
-  SCHED_E_UNKNOWN_OBJECT_VERSION   = $80041313;
 
 type
   TDateTimeArray = array of TDateTime;
@@ -338,8 +154,8 @@ type
     procedure SetErrorRetryInterval(const Value: Word);
     function GetFlags: TJclScheduledTaskFlags;
     procedure SetFlags(const Value: TJclScheduledTaskFlags);
-    function GetData: TStream;
-    procedure SetData(const Value: TStream);
+    function GetData: TStream;                                  { TODO : stream is owned by instance }
+    procedure SetData(const Value: TStream);                    { TODO : stream is owned by caller (copy) }
     function GetTrigger(const Idx: Integer): TJclTaskTrigger;
     function GetTriggerCount: Integer;
   protected
@@ -361,7 +177,7 @@ type
     property ErrorRetryCount: Word read GetErrorRetryCount write SetErrorRetryCount;
     property ErrorRetryInterval: Word read GetErrorRetryInterval write SetErrorRetryInterval;
     property ExitCode: DWORD read GetExitCode;
-    property OwnerData: TStream read GetData write SetData;
+    property OwnerData: TStream read GetData write SetData;  { TODO : wrong design, get: stream is owned by instance, set stream is owned by caller }
     property IdleMinutes: Word read GetIdleMinutes;
     property DeadlineMinutes: Word read GetDeadlineMinutes;
     property MostRecentRunTime: Windows.TSystemTime read GetMostRecentRunTime;
@@ -476,7 +292,7 @@ class function TJclTaskSchedule.IsRunning: Boolean;
     with TJclSCManager.Create do
     try
       Refresh;
-      Result := FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
+      Result := {TJclSCManager.}FindService('Schedule', NtSvc) and (NtSvc.ServiceState = ssRunning);
     finally
       Free;
     end;
@@ -497,13 +313,14 @@ class procedure TJclTaskSchedule.Start;
   var
     AppName: array [0..MAX_PATH] of Char;
     FilePart: PChar;
-    si: TStartupInfo;
-    pi: TProcessInformation;
+    si: Windows.TStartupInfo;
+    pi: Windows.TProcessInformation;
   begin
-    Win32Check(SearchPath(nil, 'mstask.exe', nil, MAX_PATH, AppName, FilePart) > 0);
+    Win32Check(Windows.SearchPath(nil, 'mstask.exe', nil, MAX_PATH, AppName, FilePart) > 0);
 
     si.cb := SizeOf(si);
-    Win32Check(CreateProcess(AppName, nil, nil, nil, False,
+    { TODO : AppName should be the second parameter, the first parameter should be Nil }
+    Win32Check(Windows.CreateProcess(AppName, nil, nil, nil, False,
       CREATE_NEW_CONSOLE or CREATE_NEW_PROCESS_GROUP, nil, nil, si, pi));
 
     CloseHandle(pi.hProcess);
@@ -541,12 +358,12 @@ class procedure TJclTaskSchedule.Stop;
   begin
     if IsRunning then
     begin
-      hProcess := OpenProcess(PROCESS_TERMINATE, False,
+      hProcess := Windows.OpenProcess(PROCESS_TERMINATE, False,
         GetWindowThreadProcessId(
           FindWindow('SAGEWINDOWCLASS', 'SYSTEM AGENT COM WINDOW'), nil));
       Win32Check(hProcess <> 0);
-      Win32Check(TerminateProcess(hProcess, ERROR_PROCESS_ABORTED));
-      Win32Check(CloseHandle(hProcess));
+      Win32Check(Windows.TerminateProcess(hProcess, ERROR_PROCESS_ABORTED));
+      Win32Check(Windows.CloseHandle(hProcess));
     end;
   end;
 
@@ -589,7 +406,7 @@ end;
 procedure TJclTaskSchedule.Refresh;
 var
   EnumWorkItems: IEnumWorkItems;
-  ItemName: LPLPWSTR;
+  ItemName: PLPWSTR;    
   RealItemName: PWideChar;
   FetchedCount: DWORD;
   TaskIid: TIID;
@@ -691,14 +508,14 @@ end;
 function TJclTaskTrigger.GetTrigger: TTaskTrigger;
 begin
   Result.cbTriggerSize := SizeOf(Result);
-  OleCheck(TaskTrigger.GetTrigger(@Result));
+  OleCheck(TaskTrigger.GetTrigger(Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclTaskTrigger.SetTrigger(const Value: TTaskTrigger);
 begin
-  OleCheck(TaskTrigger.SetTrigger(@Value));
+  OleCheck(TaskTrigger.SetTrigger(Value));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -839,7 +656,7 @@ begin
     CoTaskMemFree(AccountName);
 
     if Result = '' then
-      Result := GetLocalComputerName+'\'+LocalSystemAccount;
+      Result := GetLocalComputerName + '\' + LocalSystemAccount;
   except
     Result := '';
   end;
@@ -932,25 +749,25 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclScheduledWorkItem.GetMostRecentRunTime: Windows.TSystemTime;
+function TJclScheduledWorkItem.GetMostRecentRunTime: TSystemTime;
 begin
-  OleCheck(FScheduledWorkItem.GetMostRecentRunTime(JwaWinBase.SystemTime(Result)));
+  OleCheck(FScheduledWorkItem.GetMostRecentRunTime(Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclScheduledWorkItem.GetNextRunTime: Windows.TSystemTime;
+function TJclScheduledWorkItem.GetNextRunTime: TSystemTime;
 begin
-  OleCheck(FScheduledWorkItem.GetNextRunTime(JwaWinBase.SystemTime(Result)));
+  OleCheck(FScheduledWorkItem.GetNextRunTime(Result));
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclScheduledWorkItem.GetRunTimes(const BeginTime, EndTime: TDateTime): TDateTimeArray;
 var
-  BeginSysTime, EndSysTime: Windows.TSystemTime;
+  BeginSysTime, EndSysTime: TSystemTime;
   I, Count: Word;
-  TaskTimes: LPSYSTEMTIME;
+  TaskTimes: PSystemTime;
 begin
   DateTimeToSystemTime(BeginTime, BeginSysTime);
   DateTimeToSystemTime(EndTime, EndSysTime);
@@ -959,15 +776,16 @@ begin
     OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, nil, Count, TaskTimes))
   else
     OleCheck(FScheduledWorkItem.GetRunTimes(@BeginSysTime, @EndSysTime, Count, TaskTimes));
-
-  SetLength(Result, Count);
-  for I:=0 to Count-1 do
-  begin
-    Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
-    Inc(TaskTimes);
+  try
+    SetLength(Result, Count);
+    for I:=0 to Count-1 do
+    begin
+      Result[I] := SystemTimeToDateTime(Windows.PSystemTime(TaskTimes)^);
+      Inc(TaskTimes);
+    end;
+  finally
+    CoTaskMemFree(TaskTimes);
   end;
-
-  CoTaskMemFree(TaskTimes);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1056,10 +874,13 @@ var
 begin
   FData.Clear;
   Buf := nil;
-  OleCheck(FScheduledWorkItem.GetWorkItemData(Count, PByte(@Buf)^));
-  FData.Write(Buf^, Count);
-  FData.Seek(0, soFromBeginning);
-  CoTaskMemFree(Buf);
+  OleCheck(FScheduledWorkItem.GetWorkItemData(Count, Buf));
+  try
+    FData.Write(Buf^, Count);
+    FData.Seek(0, soFromBeginning);
+  finally
+    CoTaskMemFree(Buf);
+  end;
   Result := FData;
 end;
 
@@ -1069,7 +890,7 @@ procedure TJclScheduledWorkItem.SetData(const Value: TStream);
 begin
   FData.Clear;
   FData.CopyFrom(Value, 0);
-  OleCheck(FScheduledWorkItem.SetWorkItemData(FData.Size, PByte(FData.Memory)^));
+  OleCheck(FScheduledWorkItem.SetWorkItemData(FData.Size, PByte(FData.Memory)));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1206,8 +1027,8 @@ end;
 
 function TJclScheduledTask.ShowPage(Pages: TJclScheduleTaskPropertyPages): Boolean;
 var
-  hPropPages: array [0..2] of HPropSheetPage;
-  PropHeader: TPropSheetHeader;
+  hPropPages: array [0..2] of MSTask.HPropSheetPage;
+  PropHeader: {Commctrl.}TPropSheetHeader;
 begin
   OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_TASK, True, hPropPages[0]));
   OleCheck((FScheduledWorkItem as IProvideTaskPage).GetPage(TASKPAGE_SCHEDULE, True, hPropPages[1]));
@@ -1227,5 +1048,12 @@ function TJclScheduledTask.GetTask: ITask;
 begin
   Result := ScheduledWorkItem as ITask;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.6  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

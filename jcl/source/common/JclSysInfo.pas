@@ -15,17 +15,20 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Eric S. Fisher                                                                                 }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains routines and classes to retrieve various pieces of system information.        }
 { Examples are the location of standard folders, settings of environment variables, processor      }
 { details and the Windows version.                                                                 }
 {                                                                                                  }
-{ Unit owner: Eric S. Fisher                                                                       }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclSysInfo;
 
@@ -43,7 +46,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, {$IFNDEF FPC} ShlObj, {$ENDIF}
   {$ENDIF}
-  Classes, JclResources;
+  Classes, JclResources;   
 
 //--------------------------------------------------------------------------------------------------
 // Environment Variables
@@ -196,7 +199,7 @@ function GetShellProcessHandle: THandle;
 // Version Information
 //--------------------------------------------------------------------------------------------------
 
-// TODOC Added wvWinNT351, wvWinNT35, IsWinNT351 and changed wvWinNT3 to wvWinNT31
+{ TODO -cHelp : Added wvWinNT351, wvWinNT35, IsWinNT351 and changed wvWinNT3 to wvWinNT31 }
 
 type
   TWindowsVersion = (wvUnknown, wvWin95, wvWin95OSR2, wvWin98, wvWin98SE, wvWinME,
@@ -204,10 +207,8 @@ type
   TNtProductType = (ptUnknown, ptWorkStation, ptServer, ptAdvancedServer,
                     ptPersonal, ptProfessional, ptDatacenterServer);
 
-{ TODOC
-
-  Added to TNtProductType (by Jean-Fabien Connault):
-
+{ TODO -cHelp : TNtProductType }
+{ Added to TNtProductType (by Jean-Fabien Connault):
   ptPersonal          Windows XP Personal
   ptProfessional      Windows 2000/XP Proffesional
   ptDatacenterServer  Windows 2000 DataCenter server
@@ -234,7 +235,7 @@ var
 function GetWindowsVersion: TWindowsVersion;
 function NtProductType: TNtProductType;
 
-// TODOC
+{ TODO -cHelp : GetWindowsVersionString }
 
 function GetWindowsVersionString: string;
 {
@@ -647,7 +648,7 @@ uses
 function DelEnvironmentVar(const Name: string): Boolean;
 begin
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
   UnSetEnv(PChar(Name));
   Result := True ;
 {$ENDIF UNIX}
@@ -660,7 +661,7 @@ end;
 
 function ExpandEnvironmentVar(var Value: string): Boolean;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 begin
   Result := True;
 end;
@@ -685,7 +686,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 function GetEnvironmentVar(const Name: string; var Value: string): Boolean;
 begin
   Value := getenv(PChar(Name));
@@ -726,7 +727,7 @@ end;
 
 {$IFDEF LINUX}
 function GetEnvironmentVars(const Vars: TStrings): Boolean;
-{ TODOc Author: Robert Rossmair }
+{ TODO -cHelp : Author: Robert Rossmair }
 var
   P: PPChar;
 begin
@@ -782,7 +783,7 @@ end;
 function SetEnvironmentVar(const Name, Value: string): Boolean;
 begin
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
   SetEnv(PChar(Name), PChar(Value), 1);
   Result := True ;
 {$ENDIF UNIX}
@@ -879,6 +880,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Check for documented solution }
 function GetCommonFilesFolder: string;
 begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS,
@@ -889,7 +891,7 @@ end;
 
 function GetCurrentFolder: string;
 {$IFDEF UNIX}
-{ TODOc Author: Robert Rossmair }
+{ TODO -cHelp : Author: Robert Rossmair }
 const
   InitialSize = 64;
 var
@@ -926,6 +928,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Check for documented solution }
 function GetProgramFilesFolder: string;
 begin
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, HKLM_CURRENT_VERSION_WINDOWS, 'ProgramFilesDir', '');
@@ -933,6 +936,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Check for documented solution }
 function GetWindowsFolder: string;
 var
   Required: Cardinal;
@@ -949,6 +953,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Check for documented solution }
 function GetWindowsSystemFolder: string;
 var
   Required: Cardinal;
@@ -989,6 +994,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Check GetProgramsFolder = GetProgramFilesFolder }
 function GetProgramsFolder: string;
 begin
   Result := GetSpecialFolderLocation(CSIDL_PROGRAMS);
@@ -999,7 +1005,7 @@ end;
 function GetPersonalFolder: string;
 begin
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
   Result := GetEnvironmentVariable('HOME');
 {$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
@@ -1093,7 +1099,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-// TODOC
+{ TODO -cHelp : GetCommonAppdataFolder }
 // From: Jean-Fabien Connault
 // Descr: Application data for all users. A typical path is C:\Documents and Settings\All Users\Application Data.
 // Note: requires shell v 5.00 up
@@ -1187,12 +1193,13 @@ var
   ErrorMode: Cardinal;
   DriveStr: string;
 begin
-  // TODO Perform better checking of Drive param or document that no checking is
-  // performed. RM Suggested:
-  // DriveStr := Drive;
-  // if (Length(Drive) < 2) or (Drive[2] <> ':') then
-  //   DriveStr := GetCurrentFolder;
-  // DriveStr  := DriveStr[1] + ':\';
+  { TODO : Change to RootPath }
+  { TODO : Perform better checking of Drive param or document that no checking
+    is performed. RM Suggested:
+    DriveStr := Drive;
+    if (Length(Drive) < 2) or (Drive[2] <> ':') then
+      DriveStr := GetCurrentFolder;
+    DriveStr  := DriveStr[1] + ':\'; }
   Result := '';
   DriveStr := Drive + ':\';
   ErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
@@ -1271,7 +1278,7 @@ end;
 
 function GetLocalComputerName: string;
 {$IFDEF LINUX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   MachineInfo: utsname;
 begin
@@ -1285,6 +1292,7 @@ var
 begin
   Count := MAX_COMPUTERNAME_LENGTH + 1;
   // set buffer size to MAX_COMPUTERNAME_LENGTH + 2 characters for safety
+  { TODO : Win2k solution }
   SetLength(Result, Count);
   if GetComputerName(PChar(Result), Count) then
     StrResetLength(Result)
@@ -1297,7 +1305,7 @@ end;
 
 function GetLocalUserName: string;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 begin
   Result := GetEnv('USER');
 end;
@@ -1308,6 +1316,7 @@ var
 begin
   Count := 256 + 1; // UNLEN + 1
   // set buffer size to 256 + 2 characters
+  { TODO : Win2k solution }
   SetLength(Result, Count);
   if GetUserName(PChar(Result), Count) then
     StrResetLength(Result)
@@ -1320,6 +1329,7 @@ end;
 {$IFDEF MSWINDOWS}
 function GetRegisteredCompany: string;
 begin
+  { TODO : check for MSDN documentation }
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', '');
 end;
 
@@ -1327,40 +1337,58 @@ end;
 
 function GetRegisteredOwner: string;
 begin
+  { TODO : check for MSDN documentation }
   Result := RegReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', '');
 end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO : Several functions that use the SECURITY_DESCRIPTOR structure require
+  that this structure be on a valid pointer boundary in memory. These boundaries
+  vary depending on the type of processor used. Memory allocation functions,
+  such as malloc and LocalAlloc, return properly aligned pointers. }
+
+// At least under Win98 SE LookupAccountName return always 0 and
+// GetLastError = ERROR_CALL_NOT_IMPLEMENTED
+{ TODO : Move to JclSecurity? }
+{ TODO : Maybe a other, Win9x compatible solution }
+{ TODO -cHelp : Win9x: return always '' }
+{ TODO -cHelp : modify this function, need to change the help for GetDomainName as well }
 function GetUserDomainName(const CurUser: string): string;
 var
   Count1, Count2: DWORD;
   Sd: PSID; // PSecurityDescriptor; // FPC requires PSID
   Snu: SID_Name_Use;
 begin
-  Count1 := 0;
-  Count2 := 0;
-  Sd := nil;
-  Snu := SIDTypeUser;
-  LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
-  // set buffer size to Count2 + 2 characters for safety
-  SetLength(Result, Count2 + 1);
-  Sd := AllocMem(Count1);
-  try
-    if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
-      StrResetLength(Result)
-    else
-      Result := EmptyStr;
-  finally
-    FreeMem(Sd);
-  end;
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    Count1 := 0;
+    Count2 := 0;
+    Sd := nil;
+    Snu := SIDTypeUser;
+    LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu);
+    // set buffer size to Count2 + 2 characters for safety
+    SetLength(Result, Count2 + 1);
+    Sd := AllocMem(Count1);
+    try
+      if LookUpAccountName(nil, PChar(CurUser), Sd, Count1, PChar(Result), Count2, Snu) then
+        StrResetLength(Result)
+      else
+        Result := EmptyStr;
+    finally
+      FreeMem(Sd);
+    end;
+  end
+  else
+    Result := '';  // if Win9x, then function return ''
 end;
 {$ENDIF MSWINDOWS}
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Win9x: return always '', because GetUserDomainName }
 function GetDomainName: string;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   MachineInfo: utsname ;
 begin
@@ -1377,6 +1405,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 {$IFDEF MSWINDOWS}
 
+{ TODO -cHelp : This information is accurate only if you have not updated or
+  changed the BIOS since you last ran Windows 95/98 or Windows Millennium
+  Edition (Me) Setup. }
 function GetBIOSName: string;
 const
   Win9xBIOSInfoKey = 'Enum\Root\*PNP0C01\0000';
@@ -1424,6 +1455,10 @@ end;
 // Reference: How to Obtain BIOS Information from the Registry
 // http://support.microsoft.com/default.aspx?scid=kb;EN-US;195268
 
+{ TODO -cHelp : This information is accurate only if you have not updated or
+  changed the BIOS since you last ran Windows 95/98 or Windows Millennium
+  Edition (Me) Setup. }
+{ TODO : the date string can be e.g. 00/00/00 }
 function GetBIOSDate: TDateTime;
 const
   WinNT_REG_PATH = '\HARDWARE\DESCRIPTION\System';
@@ -1432,18 +1467,18 @@ const
   Win9x_REG_KEY  = 'BiosDate';
 var
   RegStr: string;
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF RTL150_UP}
   FormatSettings: TFormatSettings;
-  {$ELSE COMPILER7_UP}
+  {$ELSE RTL150_UP}
   RegFormat: string;
   RegSeparator: Char;
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF RTL150_UP}
 begin
   if IsWinNT then
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY)
   else
     RegStr := RegReadString(HKEY_LOCAL_MACHINE, Win9x_REG_PATH, Win9x_REG_KEY);
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF RTL150_UP}
   FillChar(FormatSettings, SizeOf(FormatSettings), 0);
   FormatSettings.DateSeparator := '/';
   FormatSettings.ShortDateFormat := 'm/d/y';
@@ -1453,8 +1488,9 @@ begin
     if not TryStrToDate(RegStr, Result, FormatSettings) then
       Result := 0;
   end;
-  {$ELSE COMPILER7_UP}
+  {$ELSE RTL150_UP}
   Result := 0;
+  { TODO : change to a threadsafe solution }
   RegFormat := ShortDateFormat;
   RegSeparator := DateSeparator;
   try
@@ -1473,7 +1509,7 @@ begin
     ShortDateFormat := RegFormat;
     DateSeparator := RegSeparator;
   end;
-  {$ENDIF COMPILER7_UP}
+  {$ENDIF RTL150_UP}
 end;
 {$ENDIF MSWINDOWS}
 
@@ -1553,6 +1589,7 @@ end;
 
 function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
 
+  // under Win9x this function always return ''
   function ProcessFileName(PID: DWORD): string;
   var
     Handle: THandle;
@@ -1567,20 +1604,21 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
         if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
           StrResetLength(Result)
         else
-          Result := '';
+          Result := '';  // always valid for Win9x
       end
       else
       begin
         if GetModuleBaseNameA(Handle, 0, PChar(Result), MAX_PATH) > 0 then
           StrResetLength(Result)
         else
-          Result := '';
+          Result := '';  // always valid for Win9x
       end;
     finally
       CloseHandle(Handle);
     end;
   end;
 
+  // under WinNT this function always return False
   function BuildListTH: Boolean;
   var
     SnapProcHandle: THandle;
@@ -1589,7 +1627,9 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
     FileName: string;
   begin
     SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
+    // INVALID_HANDLE_VALUE, if the function failed,
+    // 0 for WinNT (bad design in TLHelp32.pas)
+    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE) and (SnapProcHandle <> 0);
     if Result then
     try
       ProcEntry.dwSize := SizeOf(ProcEntry);
@@ -1625,6 +1665,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
     end;
   end;
 
+  // under Win9x this function always return False
   function BuildListPS: Boolean;
   var
     PIDs: array [0..1024] of DWORD;
@@ -1666,6 +1707,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
   end;
 
 begin
+  { TODO : safer solution? }
   if GetWindowsVersion in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
     Result := BuildListPS
   else
@@ -1674,8 +1716,11 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cTest : Extremely likely this function don't work under Win9x }
+{ TODO -cHelp : Extremely likely this function don't work under Win9x }
 function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: Boolean): Boolean;
 
+  // this function don't work under Win9x
   procedure AddToList(ProcessHandle: THandle; Module: HMODULE);
   var
     FileName: array [0..MAX_PATH] of Char;
@@ -1691,6 +1736,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     end;
   end;
 
+  // this function don't work under Win9x, because it call AddToList
   function EnumModulesVQ(ProcessHandle: THandle): Boolean;
   var
     MemInfo: TMemoryBasicInformation;
@@ -1716,6 +1762,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     end;
   end;
 
+  // this function don't work under Win9x, because it call AddToList
   function EnumModulesPS: Boolean;
   var
     ProcessHandle: THandle;
@@ -1743,6 +1790,7 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     end;
   end;
 
+  // under WinNT this function always return False
   function EnumModulesTH: Boolean;
   var
     SnapProcHandle: THandle;
@@ -1750,7 +1798,9 @@ function LoadedModulesList(const List: TStrings; ProcessID: DWORD; HandlesOnly: 
     Next: Boolean;
   begin
     SnapProcHandle := CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, ProcessID);
-    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE);
+    // INVALID_HANDLE_VALUE, if the function failed,
+    // 0 for WinNT (bad design in TLHelp32.pas)
+    Result := (SnapProcHandle <> INVALID_HANDLE_VALUE) and (SnapProcHandle <> 0);
     if Result then
     try
       FillChar(Module, SizeOf(Module), #0);
@@ -1836,7 +1886,9 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-// Refernce: http://msdn.microsoft.com/library/periodic/period97/win321197.htm
+// Reference: http://msdn.microsoft.com/library/periodic/period97/win321197.htm
+{ TODO : wrong link }
+
 function IsMainAppWindow(Wnd: HWND): Boolean;
 var
   ParentWnd: HWND;
@@ -1900,6 +1952,7 @@ var
   Buffer: PChar;
   Size, TextLen: Integer;
 begin
+  { TODO : use string }
   Result := '';
   Buffer := nil;
   try
@@ -1919,6 +1972,7 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 // Q178893
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;178893
 
 function TerminateApp(ProcessID: DWORD; Timeout: Integer): TJclTerminateAppResult;
 var
@@ -2125,9 +2179,8 @@ end;
   Windows 98 retail, OEM    4.10.1998                     5/11/98
   Windows 98 Second Edition 4.10.2222A                    4/23/99
   Windows Millennium        4.90.3000
-
-  TODO: Distinquish between all these different releases?
 }
+{ TODO : Distinquish between all these different releases? }
 
 var
   KernelVersionHi: DWORD;
@@ -2202,7 +2255,7 @@ begin
   // Favor documented API over registry
   if IsWinNT4 and (GetWindowsServicePackVersion >= 6) then
   begin
-    if JclWin32.GetVersionEx(@VersionInfo) then
+    if GetVersionEx(VersionInfo) then
     begin
       if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
         Result := ptWorkstation
@@ -2213,14 +2266,14 @@ begin
   else
   if IsWin2K then
   begin
-    if JclWin32.GetVersionEx(@VersionInfo) then
+    if GetVersionEx(VersionInfo) then
     begin
       if (VersionInfo.wProductType = VER_NT_SERVER) then
       begin
-        { Changes by Scott Price on 11-Jan-2002 }
+        { Changes by Scott Price on 2002-01-11 }
         if (VersionInfo.wSuiteMask and VER_SUITE_DATACENTER) = VER_SUITE_DATACENTER then
           Result := ptDatacenterServer
-        { Changes by Scott Price on 11-Jan-2002 }
+        { Changes by Scott Price on 2002-01-11 }
         else
         if (VersionInfo.wSuiteMask and VER_SUITE_ENTERPRISE) = VER_SUITE_ENTERPRISE then
           Result := ptAdvancedServer
@@ -2235,11 +2288,11 @@ begin
   else
   if IsWinXP then
   begin
-    if JclWin32.GetVersionEx(@VersionInfo) then
+    if GetVersionEx(VersionInfo) then
     begin
       if (VersionInfo.wProductType = VER_NT_WORKSTATION) then
       begin
-        { Changes by Scott Price on 10-Jan-2002 }
+        { Changes by Scott Price on 2002-01-10 }
         if (VersionInfo.wSuiteMask and VER_SUITE_PERSONAL) = VER_SUITE_PERSONAL then
           Result := ptPersonal
         else
@@ -2251,7 +2304,7 @@ begin
   if Result = ptUnknown then
   begin
     // Non Windows 2000/XP system or the above method failed, try registry
-    { Changes by Scott Price on 11-Jan-2002 }
+    { Changes by Scott Price on 2002-01-11 }
     Product := RegReadStringDef(HKEY_LOCAL_MACHINE, ProductType, 'ProductType', '');
     if CompareText(Product, 'WINNT') = 0 then
       Result :=  ptWorkStation
@@ -2270,18 +2323,18 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function GetWindowsVersionString: string;
+const
+  OSVersionStrings: array[Succ(Low(TWindowsVersion))..High(TWindowsVersion)] of String = (
+    RsOSVersionWin95, RsOSVersionWin95OSR2, RsOSVersionWin98, RsOSVersionWin98SE,
+    RsOSVersionWinME, RsOSVersionWinNT3, RsOSVersionWinNT3, RsOSVersionWinNT3,
+    RsOSVersionWinNT4, RsOSVersionWin2000, RsOSVersionWinXP, RsOSVersionWin2003);
+var
+  WindowsVersion: TWindowsVersion;
 begin
-  case GetWindowsVersion of
-    wvWin95: Result := RsOSVersionWin95;
-    wvWin95OSR2: Result := RsOSVersionWin95OSR2;
-    wvWin98: Result := RsOSVersionWin98;
-    wvWin98SE: Result := RsOSVersionWin98SE;
-    wvWinME: Result := RsOSVersionWinME;
-    wvWinNT31, wvWinNT35, wvWinNT351: Result := Format(RsOSVersionWinNT3, [Win32MinorVersion]);
-    wvWinNT4: Result := Format(RsOSVersionWinNT4, [Win32MinorVersion]);
-    wvWin2000: Result := RsOSVersionWin2000;
-    wvWinXP: Result := RsOSVersionWinXP;
-    wvWin2003: Result := RsOSVersionWin2003;
+  WindowsVersion := GetWindowsVersion;
+  case WindowsVersion of
+    Low(OSVersionStrings)..High(OSVersionStrings):
+      Result := Format(OSVersionStrings[WindowsVersion], [Win32MinorVersion]);
   else
     Result := '';
   end;
@@ -2290,14 +2343,17 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function NtProductTypeString: string;
+const
+  NtProductTypeStrings: array[Succ(Low(TNtProductType))..High(TNtProductType)] of String = (
+    RsProductTypeWorkStation, RsProductTypeServer, RsProductTypeAdvancedServer,
+    RsProductTypePersonal, RsProductTypeProfessional, RsProductTypeDatacenterServer);
+var
+  ProductType: TNtProductType;
 begin
-  case NtProductType of
-    ptWorkStation: Result := RsProductTypeWorkStation;
-    ptServer: Result := RsProductTypeServer;
-    ptAdvancedServer: Result := RsProductTypeAdvancedServer;
-    ptPersonal: Result := RsProductTypePersonal;
-    ptProfessional: Result := RsProductTypeProfessional;
-    ptDatacenterServer: Result := RsProductTypeDatacenterServer;
+  ProductType := NtProductType;
+  case ProductType of
+    Low(NtProductTypeStrings)..High(NtProductTypeStrings):
+      Result := NtProductTypeStrings[ProductType];
   else
     Result := '';
   end;
@@ -2317,7 +2373,7 @@ begin
   begin
     FillChar(VersionInfo, SizeOf(VersionInfo), 0);
     VersionInfo.dwOSVersionInfoSize := SizeOf(VersionInfo);
-    if JclWin32.GetVersionEx(@VersionInfo) then Result := VersionInfo.wServicePackMajor;
+    if GetVersionEx(VersionInfo) then Result := VersionInfo.wServicePackMajor;
   end
   else
   begin
@@ -2334,7 +2390,7 @@ var
 begin
   SP := GetWindowsServicePackVersion;
   if SP > 0 then
-    Result := 'SP' + IntToStr(SP)
+    Result := 'SP' + IntToStr(SP)      { TODO : localize, that mean ResourceString? }
   else
     Result := '';
 end;
@@ -2344,7 +2400,7 @@ end;
 
 // Imports copied from OpenGL unit. Direct using of OpenGL unit might cause unexpected problems due
 // setting 8087CW in the intialization section
-function glGetString(name: Cardinal): PChar; stdcall; external opengl32;
+function glGetString(name: Cardinal): PChar; stdcall; external opengl32; 
 function glGetError: Cardinal; stdcall; external opengl32;
 function gluErrorString(errCode: Cardinal): PChar; stdcall; external 'glu32.dll';
 
@@ -2353,12 +2409,6 @@ const
   GL_NO_ERROR = 0;
   GL_VENDOR   = $1F00;
   GL_VERSION  = $1F02;
-const
-  RsOpenGLInfoError = 'Err';
-  RsOpenGLInfoExcep_CPF = 'GetOpenGLVersion:  ChoosePixelFormat Failed';
-  RsOpenGLInfoExcep_SPF = 'GetOpenGLVersion:  SetPixelFormat Failed';
-  RsOpenGLInfoExcep_CC = 'GetOpenGLVersion:  wglCreateContect Failed';
-  RsOpenGLInfoExcep_MC = 'GetOpenGLVersion:  wglMakeCurrent Failed';
 var
   pfd: TPixelFormatDescriptor;
   iFormatIndex: Integer;
@@ -2416,13 +2466,13 @@ begin
       if not wglMakeCurrent(hGLDC, hGLContext) then
         raise Exception.Create(RsOpenGLInfoExcep_MC);
 
-      { TODO:  Review the following.  Not sure I am 100% happy with this code in }
-      {        its current structure. }
+      { TODO : Review the following.  Not sure I am 100% happy with this code
+               in its current structure. }
       pcTemp := glGetString(GL_VERSION);
       if pcTemp <> Nil then
       begin
-        { TODO:  Store this information in a Global Variable, and return that?? }
-        {        This would save this work being performed again with later calls }
+        { TODO : Store this information in a Global Variable, and return that?? 
+                 This would save this work being performed again with later calls }
         sOpenGLVersion := StrPas(pcTemp);
       end
       else
@@ -2439,8 +2489,8 @@ begin
       pcTemp := glGetString(GL_VENDOR);
       if pcTemp <> Nil then
       begin
-        { TODO:  Store this information in a Global Variable, and return that?? }
-        {        This would save this work being performed again with later calls }
+        { TODO : Store this information in a Global Variable, and return that??
+                 This would save this work being performed again with later calls }
         sOpenGLVendor := StrPas(pcTemp);
       end
       else
@@ -2470,7 +2520,7 @@ end;
 {$ENDIF MSWINDOWS}
 
 function GetOSVersionString: string;
-{ TODOc Author: Robert Rossmair }
+{ TODO -cHelp : Author: Robert Rossmair }
 {$IFDEF UNIX}
 var
   MachineInfo: utsname;
@@ -2506,11 +2556,22 @@ end;
 function GetMacAddresses(const Machine: string; const Addresses: TStrings): Integer;
 
   procedure GetMacAddressesNetBios;
+  // Platform SDK
+  // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/netbios/netbios_1l82.asp
+
+  // Microsoft Knowledge Base Article - 118623
+  // HOWTO: Get the MAC Address for an Ethernet Adapter
+  // http://support.microsoft.com/default.aspx?scid=kb;en-us;118623
+  type
+    TAStat = packed record
+      adapt: TAdapterStatus;
+      NameBuff: array[0..29] of TNameBuffer;
+    end;
   var
     NCB: TNCB;
     Enum: TLanaEnum;
     I, L, NameLen: Integer;
-    Adapter: ASTAT;
+    Adapter: TAStat;
     MachineName: string;
   begin
     MachineName := UpperCase(Machine);
@@ -2527,7 +2588,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
     NCB.ncb_command := NCBENUM;
     NCB.ncb_buffer := Pointer(@Enum);
     NCB.ncb_length := SizeOf(Enum);
-    if NetBios(@NCB) = NRC_GOODRET then
+    if RtdlNetBios(@NCB) = NRC_GOODRET then
     begin
       Result := Enum.Length;
       for I := 0 to Ord(Enum.Length) - 1 do
@@ -2535,7 +2596,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
         FillChar(NCB, SizeOf(NCB), #0);
         NCB.ncb_command := NCBRESET;
         NCB.ncb_lana_num := Enum.lana[I];
-        if NetBios(@NCB) = NRC_GOODRET then
+        if RtdlNetBios(@NCB) = NRC_GOODRET then
         begin
           FillChar(NCB, SizeOf(NCB), #0);
           NCB.ncb_command := NCBASTAT;
@@ -2543,7 +2604,7 @@ function GetMacAddresses(const Machine: string; const Addresses: TStrings): Inte
           Move(MachineName[1], NCB.ncb_callname, SizeOf(NCB.ncb_callname));
           NCB.ncb_buffer := PChar(@Adapter);
           NCB.ncb_length := SizeOf(Adapter);
-          if NetBios(@NCB) = NRC_GOODRET then
+          if RtdlNetBios(@NCB) = NRC_GOODRET then
             Addresses.Add(AdapterToString(@Adapter.adapt));
         end;
       end;
@@ -2713,6 +2774,7 @@ end;
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 {$IFDEF LINUX}
 begin
+  { TODO : GetCPUSpeed: Solution for Linux }
   Result := False;
 end;
 {$ENDIF LINUX}
@@ -3426,6 +3488,8 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := alsUnknown;
+  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
+    support GetSystemPowerStatus }
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3448,6 +3512,8 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := abfUnknown;
+  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
+    support GetSystemPowerStatus }
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3476,6 +3542,8 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
+  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
+    support GetSystemPowerStatus }
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3489,6 +3557,8 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
+  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
+    support GetSystemPowerStatus }
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3502,6 +3572,8 @@ var
   SystemPowerstatus: TSystemPowerStatus;
 begin
   Result := 0;
+  { TODO : GetSystemPowerStatus: Check WinNT, according to MSDN WinNT don't
+    support GetSystemPowerStatus }
   if not GetSystemPowerStatus(SystemPowerStatus) then
     RaiseLastOSError
   else
@@ -3537,7 +3609,7 @@ end;
 
 function GetMemoryLoad: Byte;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo ;
 begin
@@ -3561,7 +3633,7 @@ end;
 
 function GetSwapFileSize: Integer;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3585,7 +3657,7 @@ end;
 
 function GetSwapFileUsage: Integer;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3613,7 +3685,7 @@ end;
 
 function GetTotalPhysicalMemory: Integer;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3636,7 +3708,7 @@ end;
 
 function GetFreePhysicalMemory: Integer;
 {$IFDEF UNIX}
-{ TODOc Author: André Snepvangers }
+{ TODO -cHelp : Author: André Snepvangers }
 var
   SystemInf: TSysInfo;
 begin
@@ -3745,6 +3817,7 @@ end;
 // Windows 95/98/Me system resources information
 //==================================================================================================
 
+{ TODO -oPJH : compare to Win9xFreeSysResources }
 var
   ResmeterLibHandle: THandle;
   MyGetFreeSystemResources: function (ResType: UINT): UINT; stdcall;
@@ -3826,7 +3899,7 @@ begin
 
   { processor information related initialization }
 
-  FillChar(SystemInfo, SizeOf(SystemInfo), #0);
+  FillChar(SystemInfo, SizeOf(SystemInfo), 0);
   GetSystemInfo(SystemInfo);
   ProcessorCount := SystemInfo.dwNumberOfProcessors;
   AllocGranularity := SystemInfo.dwAllocationGranularity;
@@ -3897,4 +3970,12 @@ initialization
 finalization
   FinalizeSysInfo;
 {$ENDIF MSWINDOWS}
+
+// History:
+
+// $Log$
+// Revision 1.9  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
+
 end.

@@ -18,14 +18,15 @@
 {                                                                                                  }
 { Contributor(s): Robert Rossmair (IJclMsdosSys interface)                                         }
 {                                                                                                  }
-{ Last Modified: 2003-12-29                                                                        }
-{                                                                                                  }
 { You may retrieve the latest version of this file at the Project JEDI's Code Library home page,   }
 { located at http://sourceforge.net/projects/jcl/                                                  }
 {                                                                                                  }
 { Known Issues: None                                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
+
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMsdosSys;
 
@@ -34,7 +35,7 @@ unit JclMsdosSys;
 interface
 
 uses
-  Windows, SysUtils, Classes;
+  SysUtils, Classes;
 
 type
 { IJclMsdosSys interface }
@@ -729,5 +730,12 @@ begin
     Free;
   end;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.3  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

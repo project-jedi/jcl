@@ -15,6 +15,8 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various common statistics routines to calculate, for example, the arithmetic mean, geometric     }
@@ -22,15 +24,12 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclStatistics;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -442,7 +441,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function ChiSquare(const X: TDynFloatArray): Float;     // TODO
+function ChiSquare(const X: TDynFloatArray): Float;  { TODO : ChiSquare }
 var
   I, L: Integer;
   Sum: Float;
@@ -457,5 +456,11 @@ begin
   end;
 end;
 
+// History:
+
+// $Log$
+// Revision 1.3  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

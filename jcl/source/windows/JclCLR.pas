@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Flier Lu                                                                                       }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Microsoft .Net framework Clr information support routines and classes.                           }
@@ -23,7 +26,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclCLR;
 
@@ -36,9 +40,9 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
+  {$IFDEF RTL130_UP}
   Contnrs,
-  {$ENDIF COMPILER5_UP}
+  {$ENDIF RTL130_UP}
   JclBase, JclSysUtils, JclFileUtils, JclPeImage;
 
 { TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
@@ -790,7 +794,7 @@ end;
 
 function TJclClrBlobRecord.GetData: PByteArray;
 begin
-  Result := PByteArray(DWORD(Memory) + Position);
+  Result := PByteArray(LongInt(Memory) + Position);
 end;
 
 //==================================================================================================
@@ -1196,10 +1200,13 @@ var
   I: Integer;
 begin
   Result := '// Dump ' + ClassName + AnsiCrLf;
-
+  {$IFDEF RTL140_UP}
   if Supports(ClassType, ITableCanDumpIL) then
-  for I := 0 to FRows.Count-1 do
-    Result := Result + TJclClrTableRow(FRows[I]).DumpIL;
+  {$ELSE RTL140_UP}
+  if ClassType.GetInterfaceEntry(ITableCanDumpIL) <> nil then
+  {$ENDIF RTL140_UP}
+    for I := 0 to FRows.Count - 1 do
+      Result := Result + TJclClrTableRow(FRows[I]).DumpIL;
 end;
 
 //==================================================================================================
@@ -1961,5 +1968,12 @@ begin
     Free;
   end;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

@@ -15,17 +15,13 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
-{**************************************************************************************************}
-{                                                                                                  }
-{ Last modified: October 30, 2003                                                                  }
+{ Contributor(s):                                                                                  }
+{   Mike Lischke                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
-
-//
-// 28-MAR-2001 ml:
-//   - ShortenString included
+// Last modified: $Data$
+// For history see end of file
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}JclQGraphUtils{$ELSE}JclGraphUtils{$ENDIF};{$ENDIF}
 
@@ -147,7 +143,7 @@ function RectAssignPoints(const TopLeft, BottomRight: TPoint): TRect;
 function RectBounds(const Left, Top, Width, Height: Integer): TRect;
 function RectCenter(const R: TRect): TPoint;
 procedure RectCopy(var Dest: TRect; const Source: TRect);
-procedure RectFitToScreen(var R: TRect); // TODO DOC
+procedure RectFitToScreen(var R: TRect);  { TODO -cHelp : Doc }
 procedure RectGrow(var R: TRect; const Delta: Integer);
 procedure RectGrowX(var R: TRect; const Delta: Integer);
 procedure RectGrowY(var R: TRect; const Delta: Integer);
@@ -2562,5 +2558,14 @@ finalization
   if MMX_ACTIVE then
     FreeAlphaTable;
 
-end.
+// History:
 
+// 2001-03-28, Mike Lischke:
+//  - ShortenString included
+
+// $Log$
+// Revision 1.4  2004/04/06 05:01:54  peterjhaas
+// adapt compiler conditions, add log entry
+//
+
+end.

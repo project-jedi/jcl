@@ -15,23 +15,21 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains Various COM (Component Object Model) utility routines.                        }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclCOM;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -146,7 +144,7 @@ uses
 const
   pcOLE32 = 'OLE32.dll';
 
-  { TODO:  Utility routine here might need to be re-vamped with the
+  { TODO : Utility routine here might need to be re-vamped with the
            use of JclUnicode unit in mind. }
 
 //--------------------------------------------------------------------------------------------------
@@ -244,8 +242,7 @@ var
   msData: TMemoryStream;
   itfStream: IStream;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4, D5, D6 (CBx ??) }
+  { TODO -cTest : D4, D5, D6 (CBx ??) }
   try
     { Will need a stream to obtain the data initially before creating the Variant Array }
     msData := TMemoryStream.Create;
@@ -273,7 +270,7 @@ begin
         Result := E_FAIL;
     end
     else
-      { TODO:  Most likely out of memory, though should not reach here }
+      { TODO : Most likely out of memory, though should not reach here }
       Result := E_POINTER;
   except
     Result := E_UNEXPECTED;
@@ -287,8 +284,7 @@ function MarshalInterProcessInterfaceInStream(const iid: TIID; unk: IUnknown;
 var
   msData: TMemoryStream;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   try
     { If passed a variable which doesn't contain a valid stream, create and return }
     if stm = nil then
@@ -311,7 +307,7 @@ begin
       { Same Machine, Different Process}
       Result := CoMarshalInterface(stm, iid, unk, MSHCTX_LOCAL, nil, MSHLFLAGS_NORMAL)
     else
-      { TODO:  Most likely out of memory, though should not reach here }
+      { TODO : Most likely out of memory, though should not reach here }
       Result := E_POINTER;
   except
     Result := E_UNEXPECTED;
@@ -325,14 +321,13 @@ function MarshalInterProcessInterfaceInVarArray(const iid: TIID;
 var
   itfStream: IStream;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   Result := MarshalInterProcessInterfaceInStream(iid, unk, itfStream);
 
   if Result <> S_OK then
     Exit;
 
-  { TODO:  Add compiler support for using a VCL Stream instead of an IStream here }
+  { TODO : Add compiler support for using a VCL Stream instead of an IStream here }
   { Otherwise convert from IStream into Variant Array }
   VarArray := StreamToVariantArray(itfStream);
 
@@ -347,8 +342,7 @@ function MarshalInterMachineInterfaceInStream(const iid: TIID; unk: IUnknown;
 var
   msData: TMemoryStream;
 begin
-  { TODO:  Test this routine.  Have no need for it myself at present.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) Have no need for it myself at present. }
   try
     { If passed a variable which doesn't contain a valid stream, create and return }
     if stm = nil then
@@ -371,7 +365,7 @@ begin
       { Different Machine }
       Result := CoMarshalInterface(stm, iid, unk, MSHCTX_DIFFERENTMACHINE, nil, MSHLFLAGS_NORMAL)
     else
-      { TODO:  Most likely out of memory, though should not reach here }
+      { TODO : Most likely out of memory, though should not reach here }
       Result := E_POINTER;
   except
     Result := E_UNEXPECTED;
@@ -385,14 +379,13 @@ function MarshalInterMachineInterfaceInVarArray(const iid: TIID; unk: IUnknown;
 var
   itfStream: IStream;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   Result := MarshalInterMachineInterfaceInStream(iid, unk, itfStream);
 
   if Result <> S_OK then
     Exit;
 
-  { TODO:  Add compiler support for using a VCL Stream instead of an IStream here }
+  { TODO : Add compiler support for using a VCL Stream instead of an IStream here }
   { Otherwise convert from IStream into Variant Array }
   VarArray := StreamToVariantArray(itfStream);
 
@@ -413,8 +406,7 @@ var
   sTemp: string;
   wsTemp: WideString;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
@@ -456,8 +448,7 @@ var
   hr: HRESULT;
   arCatID: TArrayCatID;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { Register your component categories information }
   CatRegister := nil;
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
@@ -484,8 +475,7 @@ var
   hr: HRESULT;
   arCatID: TArrayCatID;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   CatRegister := nil;
 
   hr := CoCreateInstance(CLSID_StdComponentCategoriesMgr,
@@ -513,8 +503,7 @@ var
   i64Pos: Largeint;
   hrSeek: HRESULT;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { Try to get the current stream position, and reset to start if not already there }
   if Succeeded(Stream.Seek(0, STREAM_SEEK_CUR, i64Pos)) then
   begin
@@ -537,8 +526,7 @@ function SizeOfIStreamContents(Stream: IStream): Largeint;
 var
   stat: TStatStg;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { If we can't determine the size of the Stream, then return -1 for Unattainable }
   if Succeeded(Stream.Stat(stat, STATFLAG_NONAME)) then
     Result := stat.cbSize
@@ -555,8 +543,7 @@ begin
   { Use VarIsEmpty to determine the result of this method!
     VarIsEmptry will return True if VarClear was called - indicating major problem! }
 
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
   if not Assigned(Stream) then
     raise EInvalidParam.CreateResRec(@RsComInvalidParam);
@@ -596,8 +583,7 @@ begin
   { Use VarIsEmpty to determine the result of this method!
     VarIsEmptry will return True if VarClear was called - indicating major problem! }
 
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { Obviously, we must have a valid stream to perform this on }
   if not Assigned(Stream) then
     raise EInvalidParam.CreateResRec(@RsComInvalidParam);
@@ -642,13 +628,12 @@ procedure VariantArrayToStream(VarArray: OleVariant; var Stream: TStream);
 var
   pLocked: Pointer;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { Check if the Variant is Empty or Null }
   if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
     raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
-  { TODO:  Should we allow them to write to the Stream, not matter what position it is at? }
+  { TODO : Should we allow them to write to the Stream, not matter what position it is at? }
   if Assigned(Stream) then
     Stream.Position := 0
   else
@@ -673,15 +658,14 @@ var
   iSize: Largeint;
   iWriteCount: LongInt;
 begin
-  { TODO:  Test this routine.
-    TOTEST:  D4 (CBx ??) }
+  { TODO -cTest : D4 (CBx ??) }
   { Check if the Variant is Empty or Null }
   if VarIsEmpty(VarArray) or VarIsNull(VarArray) then
     raise EInvalidParam.CreateResRec(@RsComInvalidParam);
 
   bCreated := False;
 
-  { TODO:  Should we allow them to write to the Stream, not matter what position it is at? }
+  { TODO : Should we allow them to write to the Stream, not matter what position it is at? }
   if Assigned(Stream) then
     ResetIStreamToStart(Stream)
   else
@@ -714,5 +698,12 @@ begin
     end;
   end;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.6  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

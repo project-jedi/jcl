@@ -15,15 +15,17 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Mike Lischke                                                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Various Unicode related routines                                                                 }
 {                                                                                                  }
-{ Unit owner: Mike Lischke                                                                         }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclUnicode;
 
@@ -2152,7 +2154,7 @@ begin
       // add the character
       if not (sfCaseSensitive in Flags) then
       begin
-        // TODO: use the entire mapping, not only the first character
+        { TODO : use the entire mapping, not only the first character }
         Cp.UpCase := UnicodeToUpper(C1)[0];
         Cp.LoCase := UnicodeToLower(C1)[0];
         Cp.TitleCase := UnicodeToTitle(C1)[0];
@@ -2593,7 +2595,7 @@ begin
   // are converted to lower.
   if (FUREBuffer.Flags and _URE_DFA_CASEFOLD) <> 0 then
   begin
-    // TODO: use the entire mapping, not only the first character
+    { TODO : use the entire mapping, not only the first character }
     Range.MinCode := UnicodeToLower(Range.MinCode)[0];
     Range.MaxCode := UnicodeToLower(Range.MaxCode)[0];
   end;
@@ -3195,8 +3197,8 @@ begin
 
   // Last, make sure any _URE_CHAR type symbols are changed to lower if the
   // 'Casefold' flag is set.
-  // TODO: use the entire mapping, not only the first character and use the
-  //       case fold abilities of the unit.
+  { TODO : use the entire mapping, not only the first character and use the
+           case fold abilities of the unit. }
   if ((FUREBuffer.Flags and _URE_DFA_CASEFOLD) <> 0) and (Symbol.AType = _URE_CHAR) then
     Symbol.Symbol.Chr := UnicodeToLower(Symbol.Symbol.Chr)[0];
 
@@ -4219,7 +4221,7 @@ begin
       end;
 
       if (FDFA.Flags and _URE_DFA_CASEFOLD) <> 0 then
-        // TODO: use the entire mapping, not only the first character
+        { TODO : use the entire mapping, not only the first character }
         C := UnicodeToLower(C)[0];
 
       // See if one of the transitions matches.
@@ -4712,7 +4714,7 @@ begin
   Count := GetCount;
   if Count <> Strings.GetCount then
     Exit;
-  // TODO use internal comparation routine as soon as composition is implemented
+  { TODO : use internal comparation routine as soon as composition is implemented }
   for I := 0 to Count - 1 do
     if Get(I) <> Strings.Get(I) then
       Exit;
@@ -6047,7 +6049,7 @@ begin
       C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
 
       // now C1 and C2 are in UTF-32-compatible order
-      // TODO: surrogates take up 2 words and are counted twice here, count them only once
+      { TODO : surrogates take up 2 words and are counted twice here, count them only once }
       Result := Integer(C1) - Integer(C2);
       Dec(MaxLen);
       if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
@@ -6078,7 +6080,7 @@ begin
       C2 := Word(C2 + UTF16Fixup[C2 shr 11]);
 
       // now C1 and C2 are in UTF-32-compatible order
-      // TODO: surrogates take up 2 words and are counted twice here, count them only once
+      { TODO : surrogates take up 2 words and are counted twice here, count them only once }
       Result := Integer(C1) - Integer(C2);
       Dec(MaxLen);
       if(Result <> 0) or (C1 = 0) or (C2 = 0) or (MaxLen = 0) then
@@ -8078,5 +8080,11 @@ finalization
 
 {$ENDIF SUPPORTS_WIDESTRING}
 
-end.
+// History:
 
+// $Log$
+// Revision 1.8  2004/04/06 04:55:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
+
+end.

@@ -15,24 +15,23 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{   Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                   }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains generic JCL base classes and routines to support earlier                      }
 { versions of Delphi as well as FPC.                                                               }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclBase;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -50,7 +49,7 @@ const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
   JclVersionMinor   = 90;   // Forth minor release JCL 1.20
   JclVersionRelease = 0;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 1497; // build number, days since march 1, 2000
+  JclVersionBuild   = 1497;  // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -111,6 +110,14 @@ type
 {$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
+// EJclInternalError
+//--------------------------------------------------------------------------------------------------
+
+type
+  { TODO -cHelp : Exception class for JCL internal errors }
+  EJclInternalError = class(EJclError);
+
+//--------------------------------------------------------------------------------------------------
 // Types
 //--------------------------------------------------------------------------------------------------
 
@@ -137,10 +144,13 @@ type
 type
   PPointer = ^Pointer;
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFNDEF RTL140_UP}   
   PBoolean = ^Boolean;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF RTL140_UP}
 
+  {$IFNDEF COMPILER7}
+  UInt64 = Int64;
+  {$ENDIF COMPILER7}
 
 //--------------------------------------------------------------------------------------------------
 // Int64 support
@@ -192,21 +202,21 @@ type
 // Cross-Platform Compatibility
 //--------------------------------------------------------------------------------------------------
 
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF XPLATFORM_RTL}
 procedure RaiseLastOSError;
-{$ENDIF COMPILER6_UP}
+{$ENDIF XPLATFORM_RTL}
 
 //--------------------------------------------------------------------------------------------------
 // Interface compatibility
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_INTERFACE}
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF RTL140_UP}
 
 type
   IInterface = IUnknown;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF RTL140_UP}
 {$ENDIF SUPPORTS_INTERFACE}
 
 implementation
@@ -256,6 +266,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -oPJH -cFPC : exists? }
 procedure RaiseLastWin32Error;
 begin
 end;
@@ -266,8 +277,9 @@ function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 var
   T: TULargeInteger;
 begin
-  Windows.QueryPerformanceFrequency(@T);
-  CardinalsToI64(Frequency, T.LowPart, T.HighPart);
+  Result := Windows.QueryPerformanceFrequency(@T);
+  if Result then
+    CardinalsToI64(Frequency, T.LowPart, T.HighPart);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -276,15 +288,17 @@ procedure QueryPerformanceCounter(var C: Int64);
 var
   T: TULargeInteger;
 begin
-  Windows.QueryPerformanceCounter(@T);
-  CardinalsToI64(C, T.LowPart, T.HighPart);
+  Result := Windows.QueryPerformanceCounter(@T);
+  if Result then
+    CardinalsToI64(C, T.LowPart, T.HighPart);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function Win32Check(RetVal: BOOL): BOOL;
 begin
-  if not RetVal then RaiseLastOSError;
+  if not RetVal then
+    RaiseLastOSError;
   Result := RetVal;
 end;
 
@@ -366,13 +380,20 @@ end;
 // Cross=Platform Compatibility
 //==================================================================================================
 
-{$IFNDEF COMPILER6_UP}
+{$IFNDEF XPLATFORM_RTL}
 
 procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF XPLATFORM_RTL}
+
+// History:
+
+// $Log$
+// Revision 1.8  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

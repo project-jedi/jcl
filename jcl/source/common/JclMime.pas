@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Ralf Junker, ralfjunker@gmx.de                                                                 }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { Lightening fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf Junker               }
@@ -22,20 +25,17 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclMime;
 
 {$I jcl.inc}
 
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
-
 interface
 
 uses
-  Classes;
+  Classes;     
 
 function MimeEncodeString(const S: AnsiString): AnsiString;
 function MimeDecodeString(const S: AnsiString): AnsiString;
@@ -366,5 +366,12 @@ begin
     Result := 0;
   end;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

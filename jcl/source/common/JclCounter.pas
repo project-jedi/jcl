@@ -15,23 +15,21 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Marcel van Brakel                                                                              }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains a high performance counter class which can be used for highly accurate timing }
 {                                                                                                  }
-{ Unit owner: Marcel van Brakel                                                                    }
-{                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclCounter;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -133,11 +131,12 @@ begin
   FElapsedTime := 0;
   FOverallElapsedTime := 0;
   {$IFDEF MSWINDOWS}
-   QueryPerformanceCounter(FStart);
+  if not QueryPerformanceCounter(FStart) then  
+    raise EJclCounterError.CreateResRec(@RsNoCounter);
   {$ENDIF}
   {$IFDEF LINUX}
-   GetTimeOfDay(FTimeval, nil);
-   FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
+  GetTimeOfDay(FTimeval, nil);
+  FStart := FTimeval.tv_sec * 100000 + (FTimeval.tv_usec);
   {$ENDIF}
 end;
 
@@ -146,7 +145,8 @@ end;
 function TJclCounter.Stop: Float;
 begin
   {$IFDEF MSWINDOWS}
-  QueryPerformanceCounter(FStop);
+  if not QueryPerformanceCounter(FStop) then
+    raise EJclCounterError.CreateResRec(@RsNoCounter);
   {$ENDIF}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -165,7 +165,8 @@ var
   TimeNow: Int64;
 begin
   {$IFDEF MSWINDOWS}
-  QueryPerformanceCounter(TimeNow);
+  if not QueryPerformanceCounter(TimeNow) then
+    raise EJclCounterError.CreateResRec(@RsNoCounter);
   {$ENDIF}
   {$IFDEF LINUX}
   GetTimeOfDay(FTimeval, nil);
@@ -216,5 +217,12 @@ begin
   if Counter <> nil then
     Counter.Continue;
 end;
+
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:53:18  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.

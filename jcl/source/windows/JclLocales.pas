@@ -15,6 +15,9 @@
 { The Initial Developers of the Original Code are documented in the accompanying help file         }
 { JCLHELP.hlp. Portions created by these individuals are Copyright (C) of these individuals.       }
 {                                                                                                  }
+{ Contributor(s):                                                                                  }
+{   Petr Vones                                                                                     }
+{                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains a set of classes which allow you to easily retrieve locale specific           }
@@ -25,15 +28,12 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Id$
+// Last modified: $Data$
+// For history see end of file
 
 unit JclLocales;
 
 {$I jcl.inc}
-
-{$IFDEF SUPPORTS_WEAKPACKAGEUNIT}
-  {$WEAKPACKAGEUNIT ON}
-{$ENDIF SUPPORTS_WEAKPACKAGEUNIT}
 
 interface
 
@@ -306,7 +306,7 @@ procedure JclLocalesInfoList(const Strings: TStrings; InfoType: Integer = LOCALE
 implementation
 
 uses
-  JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
+  SysConst, JclFileUtils, JclRegistry, JclStrings, JclSysInfo;
 
 const
   JclMaxKeyboardLayouts = 16;
@@ -383,10 +383,14 @@ function TJclLocaleInfo.GetAbbreviatedMonthNames(Month: TJclLocalesMonths): stri
 var
   Param: DWORD;
 begin
-  if Month = 13 then
-    Param := LOCALE_SABBREVMONTHNAME13
+  case Month of
+    1..12:
+      Param := LOCALE_SABBREVMONTHNAME1 + Month - 1;
+    13:
+      Param := LOCALE_SABBREVMONTHNAME13;
   else
-    Param := LOCALE_SABBREVMONTHNAME1 + Month - 1;
+    raise ERangeError.CreateRes(@SRangeError);
+  end;
   Result := GetStringInfo(Param);
 end;
 
@@ -397,9 +401,9 @@ var
   Ret: DWORD;
 begin
   InfoType := InfoType or Integer(LocaleUseAcp[FUseSystemACP]) or CAL_RETURN_NUMBER;
-  Ret := GetCalendarInfoW(FLocaleID, Calendar, InfoType, nil, 0, @Result);
+  Ret := JclWin32.RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType, nil, 0, @Result);
   if Ret = 0 then
-    Ret := GetCalendarInfoA(FLocaleID, Calendar, InfoType, nil, 0, @Result);
+    Ret := JclWin32.RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType, nil, 0, @Result);
   if Ret = 0 then
     Result := 0;
 end;
@@ -432,8 +436,8 @@ begin
     ProcessedLocaleInfoList := FCalendars;
     try
       C := CAL_SCALNAME or LocaleUseAcp[FUseSystemACP];
-      if not EnumCalendarInfoEx(@EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
-        EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
+      if not JclWin32.RtdlEnumCalendarInfoExA(@EnumCalendarInfoProcEx, FLocaleID, ENUM_ALL_CALENDARS, C) then
+        Windows.EnumCalendarInfo(@EnumCalendarInfoProcName, FLocaleID, ENUM_ALL_CALENDARS, C);
       FValidCalendars := True;
     finally
       ProcessedLocaleInfoList := nil;
@@ -457,9 +461,9 @@ begin
     BufferSize := 128;
     repeat
       ReallocMem(Buffer, BufferSize);
-      Ret := GetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
+      Ret := RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
       if (Ret = 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
-        BufferSize := GetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, 0, nil) * 2;
+        BufferSize := RtdlGetCalendarInfoW(FLocaleID, Calendar, InfoType, Buffer, 0, nil) * 2;
     until (Ret > 0) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     if Ret > 0 then
       Result := PWideChar(Buffer)
@@ -468,9 +472,9 @@ begin
       BufferSize := 64;
       repeat
         ReallocMem(Buffer, BufferSize);
-        Ret := GetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
+        Ret := RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, BufferSize, nil);
         if (Ret = 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
-          BufferSize := GetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, 0, nil);
+          BufferSize := RtdlGetCalendarInfoA(FLocaleID, Calendar, InfoType, Buffer, 0, nil);
       until (Ret > 0) or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       if Ret > 0 then
         Result := PChar(Buffer);
@@ -515,7 +519,7 @@ begin
       FDateFormats[Format].Clear;
     ProcessedLocaleInfoList := FDateFormats[Format];
     try
-      EnumDateFormats(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
+      Windows.EnumDateFormats(@EnumDateFormatsProc, FLocaleID, DateFormats[Format] or
         LocaleUseAcp[FUseSystemACP]);
       Include(FValidDateFormatLists, Format);
     finally
@@ -627,19 +631,19 @@ begin
   if Res > 0 then
   begin
     SetString(Result, nil, Res);
-    Res := GetLocaleInfoA(FLocaleID, InfoType, PChar(Result), Res);
+    Res := Windows.GetLocaleInfoA(FLocaleID, InfoType, PChar(Result), Res);
     StrResetLength(Result);
     // Note: GetLocaleInfo returns sometimes incorrect length of string on Win95 (usually plus 1),
     // that's why StrResetLength is called.
   end
-  else
+  else  // GetLocaleInfoA failed
   if IsWinNT then
   begin
     Res := GetLocaleInfoW(FLocaleID, InfoType, nil, 0);
     if Res > 0 then
     begin
       GetMem(W, Res * SizeOf(WideChar));
-      Res := GetLocaleInfoW(FLocaleID, InfoType, W, Res);
+      Res := Windows.GetLocaleInfoW(FLocaleID, InfoType, W, Res);
       Result := WideCharToString(W);
       FreeMem(W);
     end;
@@ -667,7 +671,7 @@ begin
       FTimeFormats.Clear;
     ProcessedLocaleInfoList := FTimeFormats;
     try
-      EnumTimeFormats(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
+      Windows.EnumTimeFormats(@EnumTimeFormatsProc, FLocaleID, LocaleUseAcp[FUseSystemACP]);
       FValidTimeFormatLists := True;
     finally
       ProcessedLocaleInfoList := nil;
@@ -694,7 +698,7 @@ end;
 
 procedure TJclLocaleInfo.SetStringInfo(InfoType: Integer; const Value: string);
 begin
-  Win32Check(SetLocaleInfo(FLocaleID, InfoType, PChar(Value)));
+  Win32Check(Windows.SetLocaleInfo(FLocaleID, InfoType, PChar(Value)));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -747,8 +751,8 @@ const
 begin
   ProcessedLocalesList := Self;
   try
-    Win32Check(EnumSystemLocales(@EnumLocalesProc, Flags[FKind]));
-    Win32Check(EnumSystemCodePages(@EnumCodePagesProc, Flags[FKind]));
+    Win32Check(Windows.EnumSystemLocales(@EnumLocalesProc, Flags[FKind]));
+    Win32Check(Windows.EnumSystemCodePages(@EnumCodePagesProc, Flags[FKind]));
   finally
     ProcessedLocalesList := nil;
   end;
@@ -932,7 +936,7 @@ end;
 
 function TJclKeyboardLayout.Unload: Boolean;
 begin
-  Result := UnloadKeyboardLayout(FLayout);
+  Result := Windows.UnloadKeyboardLayout(FLayout);
   if Result then
     FOwner.Refresh;
 end;
@@ -963,7 +967,7 @@ end;
 function TJclKeyboardLayoutList.ActivateNextLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
+  Result := Windows.ActivateKeyboardLayout(HKL_NEXT, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -971,10 +975,22 @@ end;
 function TJclKeyboardLayoutList.ActivatePrevLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
-  Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
+  Result := Windows.ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
+
+// Documentation:
+
+// HOWTO: How to Find the Available Keyboard Layouts Under Windows NT
+// Microsoft Knowledge Base Article - 139571
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;139571
+
+// Description of Typical Control Subkeys of the HKLM Registry Key
+// Microsoft Knowledge Base Article - 250447
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;250447
+
+// http://www.microsoft.com/windows2000/techinfo/reskit/en-us/regentry/28326.asp
 
 procedure TJclKeyboardLayoutList.CreateAvailableLayouts;
 const
@@ -1096,7 +1112,7 @@ var
   Cnt, I: Integer;
   Layouts: array [1..JclMaxKeyboardLayouts] of HKL;
 begin
-  Cnt := GetKeyboardLayoutList(JclMaxKeyboardLayouts, Layouts);
+  Cnt := Windows.GetKeyboardLayoutList(JclMaxKeyboardLayouts, Layouts);
   // Note: GetKeyboardLayoutList doesn't work as expected, when pass 0 to nBuff it always returns 0
   // on Win95.
   FList.Clear;
@@ -1104,6 +1120,11 @@ begin
     FList.Add(TJclKeyboardLayout.Create(Self, Layouts[I]));
   DoRefresh;
 end;
+
+{ TODO : related MSDN entries, maybe to implement }
+// Enabling the Shift Lock Feature on Windows NT 4.0
+// Microsoft Knowledge Base Article - 174543
+// http://support.microsoft.com/default.aspx?scid=kb;en-us;174543
 
 //==================================================================================================
 // Various routines
@@ -1119,5 +1140,11 @@ begin
   end;
 end;
 
+// History:
+
+// $Log$
+// Revision 1.4  2004/04/06 04:55:17  peterjhaas
+// adapt compiler conditions, add log entry
+//
 
 end.
