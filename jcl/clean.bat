@@ -1,8 +1,7 @@
 @echo cleaning...
 @REM do not delete precompiled installer
-@ren bin\*Installer.exe *Installer.ex_
-@del /f /s *.~* bin\*.exe bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o 
-@ren bin\*Installer.ex_ *Installer.exe
+@for %%f in (bin\*.exe) do @if not %%f==bin\JediInstaller.exe if not %%f==bin\QJediInstaller.exe (del %%f)
+@del /f /s *.~* bin\*.dll *.a *.bpi *.dcp *.dcu *.dpu *.hpp *.jdbg *.map *.o 
 @cd lib
 @del /f /s *.obj *.res
 @cd ..
