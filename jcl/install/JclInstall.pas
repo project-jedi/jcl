@@ -295,7 +295,7 @@ begin
   for I := 0 to Files.Count - 1 do
   begin
     FileName := Files[I];
-    Result := Result and FileCopy(FileName, TargetDir + ExtractFileName(FileName), Overwrite);
+    Result := Result and FileCopy(FileName, PathAddSeparator(TargetDir) + ExtractFileName(FileName), Overwrite);
   end;
 end;
 
