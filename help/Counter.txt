@@ -1,0 +1,179 @@
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclCounter = class (TObject)
+[ShortDescr]
+Implements a high performance counter.
+[Description]
+TJclCounter is a class wrapper around the high performance counter API functions,
+QueryPerformanceCounter and QueryPerformanceFrequency. Using this class you can
+easily time the execution of code or other events. The high performance counter
+has a very high frequency thereby allowing for the timing of very short intervals.
+The hardware must support a high performance counter or the construction of a
+TJclCounter object will raise an exception.
+[Quick Info]
+BCB=3,4,5
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters\TJclCounter
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=StartCount;..\StartCount
+2=StopCount;..\StopCount
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create;
+[ShortDescr]
+Creates an instance of a TJclCounter class.
+[Description]
+Creates an instance of a TJclCounter class. If the hardware does not support
+high performance counters the constructor raises an exception.
+[Quick Info]
+BCB=3,4,5
+Kind=Method
+Visibility=Public
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters\TJclCounter
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+[SeeAlso]
+Count=2
+1=StartCount;..\..\StartCount
+2=StopCount;..\..\StopCount
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Start;
+[ShortDescr]
+Starts the timer.
+[Description]
+Start starts the timer, resets the elapsed time and sets the Counting property to
+True. To stop the timer and retrieve the elapsed time since Start was called, use
+the Stop method.
+[Quick Info]
+BCB=3,4,5
+Kind=Method
+Visibility=Public
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters\TJclCounter
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StartCount;..\..\StartCount
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Stop: Float;
+[ShortDescr]
+Stops the timer.
+[Description]
+The Stop method stops the timer, sets the Counting property to False and returns
+the elapsed time since the Start method was called.
+[Result]
+The elapsed time between Start and Stop calls. Unit is seconds.
+[Quick Info]
+BCB=3,4,5
+Kind=Method
+Visibility=Public
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters\TJclCounter
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=StartCount;..\..\StartCount
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ElapsedTime: Float read FElapsedTime;
+[ShortDescr]
+Returns the elapsed time.
+[Description]
+ElpasedTime returns the elapsed time between the last Start and Stop calls. The
+value is divided by the counter's frequency before returning so the unit is seconds.
+During a counting operation, Counting equals True, ElapsedTimer is always 0.
+[Quick Info]
+BCB=3,4,5
+Kind=Property
+Visibility=Public
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters\TJclCounter
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Counting: Boolean read FCounting;
+[ShortDescr]
+Returns the status of the counter.
+[Description]
+Counting returns whether or not the counter is currently active. That is, if
+Start has, but Stop hasn't, been called the return value is True. Immediately
+after construction or after a call to Stop, Counting is False. When Counting is
+False the ElapsedTime property is invalid.
+[Quick Info]
+BCB=3,4,5
+Kind=Property
+Visibility=Public
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters\TJclCounter
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure StartCount(var Counter: TJclCounter);
+[ShortDescr]
+Starts a high performance resolution counter.
+[Description]
+StartCount starts a high performance resolution counter. It returns a reference
+to a newly created TJclCounter object. You'll need to hang on to this object to
+later stop the counter and retrieve the elapsed time. StartCount is the equivalent
+of instantiating a TJclCouter and immediately calling it's Start method.
+[Parameters]
+Count=1
+1=Counter:TJclCounter=Counter object instantiated by this function.
+[Notes]
+Count=1
+1=If the hardware does not support high performance resolution counters an exception is raised.
+[Quick Info]
+BCB=3,4,5
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=StopCount
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function StopCount(var Counter: TJclCounter): Float;
+[ShortDescr]
+Stops a high performance resolution counter.
+[Description]
+StopCount stops a high performance resolution counter identified by the Counter
+parameter. Although you can use this function with a counter you manually
+instantiated, it's intended to be used in conjunction with <REF>StartCount</REF>.
+[Parameters]
+Count=1
+1=Counter:TJclCounter=An instance of a TJclCounter object, usually the one returned
+by <REF>StartCount</REF>. This object is freed before the function returns.
+[Result]
+The elapsed time since the counter was started, in seconds.
+[Quick Info]
+BCB=3,4,5
+Unit=JclCounter
+Category=Date and Time
+SubCat=Timers and Counters
+Author=Theo Bebekis;bebekis@otenet.gr
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Requires Windows 95 or later.
+[SeeAlso]
+Count=1
+1=StartCount
