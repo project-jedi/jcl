@@ -363,7 +363,7 @@ Description
   The Handle property provides the device context handle of the contained DIB.
 
   This handle may be used in low-level Windows API calls or, for example, to
-  attach a TCanvas object to TBitmap32:
+  attach a TCanvas object to TJclBitmap32:
   <CODE>
   var
     Canvas: TCanvas;
@@ -449,15 +449,15 @@ SeeAlso
 Summary
   Points to the adress of the pixel at coordinates X, Y.
 Description
-  Converts coordinates of a pixel to its address in memory. Since TBitmap32 uses
-  32-bit DIBs, its memory is allocated as continuous string of 4-byte TColor32
-  values, starting at the top left corner.
+  Converts coordinates of a pixel to its address in memory. Since TJclBitmap32
+  uses 32-bit DIBs, its memory is allocated as continuous string of 4-byte
+  TColor32 values, starting at the top left corner.
 
   Pixel with (0, 0) coordinates has the same address as specified in Bits property.
 QuickInfo
   Donator: Alex Denissov
 SeeAlso
-  Bits, Pixel, ScanLine, TBitmap32, TColor32
+  Bits, Pixel, ScanLine, TJclBitmap32, TColor32
 --------------------------------------------------------------------------------
 @@TJclBitmap32.ResetStippleCounter
 Resets the StippleCounter
@@ -578,7 +578,7 @@ Description
   The method provides both: block transfer (versions with DstX, DstY parameters)
   and stretching (versions with DstRect parameter).
 
-  When the source is another TBitmap32 object (Src parameter), the method uses
+  When the source is another TJclBitmap32 object (Src parameter), the method uses
   Src.DrawMode do determine how it should be blended with the background, and if
   stretching, Src.StretchFilter specifies how the image should be stretched.
 
@@ -594,9 +594,11 @@ Description
   not specified (this is a limitation of the current version).
 
 QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
+
 SeeAlso
-  BlockTransfer, DrawMode, DrawTo, StretchFilter, StretchTransfer, TBitmap32, TRect
+BlockTransfer, DrawMode, DrawTo, StretchFilter, StretchTransfer, TJclBitmap32,
+TRect
 --------------------------------------------------------------------------------
 @@TJclBitmap32.DrawTo
 Summary
@@ -608,9 +610,10 @@ Description
   bitmap renders itselt to destination object. See the Draw description for
   details.
 QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
+
 SeeAlso
-  Draw, TBitmap32, TRect
+Draw, TJclBitmap32, TRect
 --------------------------------------------------------------------------------
 @@TJclBitmap32.Empty
 Summary
@@ -965,17 +968,17 @@ Description
   file.
 
   If you need another pixel format or storage format, create intermediate
-  TBitmap object or other TGraphic descendant, assign it from TBitmap32 and save
-  it to a file.
+  TBitmap object or other TGraphic descendant, assign it from TJclBitmap32 and
+  save it to a file.
 
 Parameters
   FileName - the name of the file to write to.
 
 QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 
 SeeAlso
-  LoadFromFile, SaveToStream
+LoadFromFile, SaveToStream
 --------------------------------------------------------------------------------
 @@TJclBitmap32.SaveToStream
 Summary
@@ -1249,7 +1252,7 @@ See Also
 Summary
   TDrawMode defines how the bitmap is combined with the backgrownd.
 Description
-  This is the type for DrawMode property of TBitmap32 class, and it is also
+  This is the type for DrawMode property of TJclBitmap32 class, and it is also
   passed as parameter in BlockTransfer and StretchTransfer functions.
 
 @@TDrawMode.dmOpaque
@@ -1261,14 +1264,19 @@ foreground and background colors are blended together using
 per-pixel opacity of the foreground bitmap (stored in its
 alpha channel), multiplied by its MasterAlpha.
 
+QuickInfo
+Donator: Alex Denissov
+
 SeeAlso
   TJclBitmap32.DrawMode
 --------------------------------------------------------------------------------
 @@TMatrix3d
 <GROUP Graphics.Bitmaps>
 Description
-  3 x 3 Matrix as used by TJclLinearTransformation.
-SeeAlso
+3 x 3 Matrix as used by TJclLinearTransformation.
+
+QuickInfo
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TStretchFilter
 <GROUP Graphics.Bitmaps>
@@ -1278,6 +1286,9 @@ Description
 
   In some functions, however, sfSpline mode may not be supported, if this is the
   case, sfSpline will be substituted with sfLinear.
+QuickInfo
+Donator: Alex Denissov
+
 SeeAlso
   TJclBitmap32.StretchFilter, StretchTransfer
 
@@ -1297,7 +1308,8 @@ Description
   TJclBitmap32 in both directions.
 
 QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
+
 SeeAlso
   TJclBitmap32, TJclCustomMap
 --------------------------------------------------------------------------------
@@ -1617,7 +1629,8 @@ Description
   when you want to store it as standard bitmap into a file.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   IntensityToAlpha, TJclBitmap32
@@ -1640,9 +1653,11 @@ Description
   This function supports in-place operation, that is Dst may be the same as Src.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
+
 SeeAlso
-  TJclBitmap32, TLUT8
+TJclBitmap32, TLUT8
 --------------------------------------------------------------------------------
 @@BlockTransfer
 <GROUP Graphics.Bitmaps>
@@ -1669,11 +1684,14 @@ Description
   transformation will be performed.
 
   This routine is used in TJclBitmap32.Draw and TJclBitmap32.DrawTo methods.
+
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
+
 SeeAlso
-  TJclBitmap32.Draw, TJclBitmap32.DrawTo, TJclBitmap32.MasterAlpha, StretchTransfer, TJclBitmap32,
-  TDrawMode, TPixelCombineEvent, TRect
+TJclBitmap32.Draw, TJclBitmap32.DrawTo, TJclBitmap32.MasterAlpha, StretchTransfer, TJclBitmap32,
+TDrawMode, TPixelCombineEvent, TRect
 --------------------------------------------------------------------------------
 @@ColorToGrayscale
 <GROUP Graphics.Bitmaps>
@@ -1684,7 +1702,8 @@ Description
   This function supports in-place operation, that is Dst may be the same as Src.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   AlphaToGrayscale, TJclBitmap32
@@ -1707,7 +1726,8 @@ Description
   The in-place operation is fully supported, that is Dst may be the same as Src.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   AlphaToGrayscale, Intensity, TJclBitmap32
@@ -1720,7 +1740,9 @@ Description
   This function supports in-place operation, that is Dst may be the same as Src.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
+
 SeeAlso
   InvertRGB, TJclBitmap32
 --------------------------------------------------------------------------------
@@ -1733,9 +1755,11 @@ Description
   This function supports in-place operation, that is Dst may be the same as Src.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
+
 SeeAlso
-  Invert, TJclBitmap32
+Invert, TJclBitmap32
 --------------------------------------------------------------------------------
 @@Polygon
 <GROUP Graphics.Bitmaps>
@@ -1755,7 +1779,8 @@ Description
   All functions perform clipping.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   Graphics_Naming_Conventions, TJclBitmap32, TColor32, TPolyFillMode
@@ -1788,7 +1813,8 @@ Description
   All functions perform clipping.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   Graphics_Naming_Conventions, TJclBitmap32, TColor32
@@ -1810,7 +1836,8 @@ Description
   The filling is performed according to Mode parameter.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   Graphics_Naming_Conventions, Polygon, PolyPolyline, TJclBitmap32, TColor32,
@@ -1854,7 +1881,8 @@ Description
   Transform function as a workarownd to the edge antialiasing problem.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   TJclBitmap32, Transform, TRect
@@ -1874,7 +1902,7 @@ Description
   The default value of 0.7 works fine in most cases.
 
 QuickInfo
-  Donator: Alex Denissov
+Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@StretchTransfer
 <GROUP Graphics.Bitmaps>
@@ -1903,7 +1931,8 @@ Description
   This routine is used in TJclBitmap32.Draw and TJclBitmap32.DrawTo methods.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
 
 SeeAlso
   BlockTransfer, TJclBitmap32, TDrawMode, TPixelCombineEvent, TRect, TStretchFilter
@@ -1941,9 +1970,116 @@ Description
   the color on the edge close to the color of the background.
 
 QuickInfo
-  Donator: Alex Denissov
+Platform: VCL
+Donator: Alex Denissov
+
 SeeAlso
   SetBorderTransparent, TJclBitmap32.StretchFilter, StretchTransfer,
   TJclLinearTransformation
+--------------------------------------------------------------------------------
+@@TPointF
+<GROUP Graphics.Types>
+Description
+The TPointF type defines a location in pixel space.
+
+QuickInfo
+Donator: Alex Denissov
+
+SeeAlso
+  TDynPointArrayF, TDynDynPointArrayArrayF
+--------------------------------------------------------------------------------
+@@TDynPointArrayF
+<GROUP Graphics.Types>
+
+Description
+TDynPointArrayF defines a one-dimensional dynamic array of TPointF.
+
+QuickInfo
+Donator: Alex Denissov
+
+SeeAlso
+TDynDynPointArrayArrayF, TDynPointArray
+--------------------------------------------------------------------------------
+@@TDynDynPointArrayArrayF
+<GROUP Graphics.Types>
+
+Description
+TDynDynPointArrayArrayF defines a two-dimensional dynamic array of TPointF,
+respectively a one-dimensional array of TDynPointArrayF, which means the same.
+
+QuickInfo
+Donator: Alex Denissov
+--------------------------------------------------------------------------------
+@@TDynPointArray
+<GROUP Graphics.Types>
+
+Description
+TDynPointArray defines a one-dimensional dynamic array of TPoint.
+
+QuickInfo
+Donator: Alex Denissov
+
+SeeAlso
+TDynPointArrayF, TDynDynPointArrayArray
+--------------------------------------------------------------------------------
+@@TDynDynPointArrayArray
+<GROUP Graphics.Types>
+
+Description
+TDynDynPointArrayArray defines a two-dimensional dynamic array of TPoint,
+respectively a one-dimensional array of TDynPointArray, which means the same.
+
+QuickInfo
+Donator: Alex Denissov
+--------------------------------------------------------------------------------
+@@TDynDynIntegerArrayArray
+<GROUP Graphics.Types>
+
+Description
+TDynDynIntegerArrayArray defines a two-dimensional dynamic array of Integer,
+respectively a one-dimensional array of TDynIntegerArray, which means the same.
+
+QuickInfo
+Donator: Alex Denissov
+--------------------------------------------------------------------------------
+@@TGamma
+<GROUP Graphics.Types>
+
+Description
+Internal Gamma bias table type as used for line/pixel antialiasing/shape
+correction.
+
+QuickInfo
+  Donator: Alex Denissov
+SeeAlso
+--------------------------------------------------------------------------------
+@@TLUT8
+<GROUP Graphics.Types>
+Description
+A look-up table of 256 values, each ranging from 0 to 255.
+
+TLUT8 is used to transform color data with ApplyLUT procedure.
+
+QuickInfo
+Donator: Alex Denissov
+SeeAlso
+--------------------------------------------------------------------------------
+@@TScanLine
+<GROUP Graphics.Types>
+
+QuickInfo
+Donator: Alex Denissov
+
+SeeAlso
+TScanLines
+--------------------------------------------------------------------------------
+@@TScanLines
+<GROUP Graphics.Types>
+
+QuickInfo
+Donator: Alex Denissov
+
+SeeAlso
+TScanLine
 --------------------------------------------------------------------------------
 
