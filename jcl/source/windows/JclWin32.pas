@@ -1917,7 +1917,10 @@ function AdjustTokenPrivileges(TokenHandle: THandle; DisableAllPrivileges: BOOL;
 
 // alternative conversion for WinNT 4.0 SP6 and later (OSVersionInfoEx instead of OSVersionInfo)
 {$EXTERNALSYM GetVersionEx}
-function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
+function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall; overload;
+{$EXTERNALSYM GetVersionEx}
+function GetVersionEx(lpVersionInformation: POSVERSIONINFOEX): BOOL; stdcall; overload;
+{$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 
 { TODO -cTest : test the CreateMutex - BOOL problem }
 // Supposition: modified conversion to avoid a WinAPI bug
@@ -3249,7 +3252,10 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function AdjustTokenPrivileges; external 'Advapi32.dll' name 'AdjustTokenPrivileges';
-function GetVersionEx; external kernel32 name 'GetVersionExA';
+function GetVersionEx(var lpVersionInformation: TOSVersionInfoEx): BOOL; stdcall;
+  external kernel32 name 'GetVersionExA';
+function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
+  external kernel32 name 'GetVersionExA';
 function CreateMutex; external kernel32 name 'CreateMutexA';
 function BackupSeek; external kernel32 name 'BackupSeek';
 
@@ -3784,6 +3790,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.14  2004/04/08 10:27:15  rrossmair
+// GetVersionEx overload added.
+//
 // Revision 1.13  2004/04/07 10:30:18  peterjhaas
 // modify wrong declarations
 //
