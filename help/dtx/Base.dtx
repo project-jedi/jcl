@@ -71,12 +71,7 @@ JclVersionRelease  If set to 1 this is an official release. If 0 this is a previ
 </TABLE>
 
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@string
 <GROUP BaseServices.FPCCompatibility>
@@ -87,10 +82,7 @@ Description:
   This type is provided for compatibility with FPC. When compiling with Delphi or
   Kylix use the type defined in SysUtils.pas instead.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: JCL Team
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@SysErrorMessage
 <GROUP BaseServices.FPCCompatibility>
@@ -105,10 +97,7 @@ Parameters:
 Result:
   The error message string associated with the specified Windows API error code.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: JCL Team
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclError
 <GROUP BaseServices.EJclError>
@@ -123,12 +112,7 @@ Description:
   and CreateResFmt respectively (to remove the need for overloads and backwards
   compatibility).
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclError.CreateResRecFmt
 Summary:
@@ -148,13 +132,7 @@ Parameters:
 See also:
   CreateResRec
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclError.CreateResRec
 Summary:
@@ -172,13 +150,7 @@ Parameters:
 See also:
   CreateResRecFmt
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error
 <GROUP BaseServices.EJclWin32Error>
@@ -193,12 +165,7 @@ Description:
   the last error. This message is separated from the passed in Msg by a carriage
   return and is made available through the LastErrorMsg property.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error.Create
 Summary:
@@ -210,13 +177,7 @@ Description:
 Parameters:
   Msg - The string to be associated with the exception. The programmer can query the class for this string using the Message property. If the exception is unhandled the RTL displays this message in the exception dialog box.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error.CreateFmt
 Summary:
@@ -234,13 +195,7 @@ See also:
   CreateRes
   CreateResRec
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error.CreateRes
 Summary:
@@ -256,13 +211,7 @@ See also:
   CreateFmt
   CreateResRec
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error.CreateResRec
 Summary:
@@ -277,13 +226,7 @@ See also:
   CreateFmt
   CreateRes
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error.LastError
 Summary:
@@ -294,13 +237,7 @@ Description:
 See also:
   LastErrorMsg
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclWin32Error.LastErrorMsg
 Summary:
@@ -311,13 +248,7 @@ Description:
 See also:
   LastError
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@Float
 <GROUP BaseServices>
@@ -331,12 +262,7 @@ Description:
   See Compiler Directives
   for more information.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@LongWord
 <GROUP BaseServices>
@@ -347,11 +273,7 @@ Description:
   integer. For Delphi 4 and C++ Builder 4 up this type is 'defined' in System.pas,
   in earlier versions this type didn't exist so it is defined in JclBase.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TSysCharSet
 <GROUP BaseServices>
@@ -362,11 +284,7 @@ Description:
   type is defined in SysUtils, in earlier versions this type didn't exist so it is
   defined in JclBase.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@I64Assign
 <GROUP BaseServices.Int64support>
@@ -382,11 +300,7 @@ See also:
   I64Copy
   I64Compare
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@I64Copy
 <GROUP BaseServices.Int64support>
@@ -401,11 +315,7 @@ See also:
   I64Assign
   I64Compare
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@I64Compare
 <GROUP BaseServices.Int64support>
@@ -424,11 +334,7 @@ See also:
   I64Assign
   I64Copy
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CardinalsToI64
 <GROUP BaseServices.Int64support>
@@ -444,12 +350,7 @@ Parameters:
 See also:
   I64ToCardinals
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@I64ToCardinals
 <GROUP BaseServices.Int64support>
@@ -465,12 +366,7 @@ Parameters:
 See also:
   CardinalsToI64
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TDynArray
 <GROUP BaseServices.Dynamicarrays>
@@ -535,12 +431,7 @@ TDynSingleArray    ^array [0..DynSingleArrayHigh] of Single
 </TABLE>
 
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArrayHigh
 <GROUP BaseServices.Dynamicarrays>
@@ -569,11 +460,7 @@ DynSingleArrayHigh    268435448
 </TABLE>
 
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArrayAllocSize
 <GROUP BaseServices.Dynamicarrays>
@@ -595,11 +482,7 @@ See also:
   DynArrayFinalize
   DynArraySetLength
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArrayLength
 <GROUP BaseServices.Dynamicarrays>
@@ -621,11 +504,7 @@ See also:
   DynArrayFinalize
   DynArraySetLength
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArrayElemSize
 <GROUP BaseServices.Dynamicarrays>
@@ -646,11 +525,7 @@ See also:
   DynArrayFinalize
   DynArraySetLength
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArrayInitialize
 <GROUP BaseServices.Dynamicarrays>
@@ -674,11 +549,7 @@ See also:
   DynArrayFinalize
   DynArraySetLength
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArrayFinalize
 <GROUP BaseServices.Dynamicarrays>
@@ -698,11 +569,7 @@ See also:
   DynArrayInitialize
   DynArraySetLength
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@DynArraySetLength
 <GROUP BaseServices.Dynamicarrays>
@@ -723,11 +590,7 @@ See also:
   DynArrayInitialize
   DynArrayFinalize
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Marcel van Brakel
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TObjectList
 <GROUP BaseServices.TObjectList>
@@ -740,12 +603,7 @@ Description:
   for backward compatibility and is not a full-fledged implementation of TObjectList
   as found in Delphi 5 and up.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: Petr Vones
-  Delphi Versions: 4
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TObjectList.Clear
 Summary:
@@ -755,13 +613,7 @@ Description:
   sets Count and Capacity to 0. If OwnsObjects is True, Clear also frees the objects
   in the list.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TObjectList.Create
 Summary:
@@ -771,13 +623,7 @@ Description:
 Parameters:
   AOwnsObjects - Initial value for the OwnsObjects property.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TObjectList.OwnsObjects
 Summary:
@@ -789,13 +635,7 @@ Description:
   through the Clear method merely removes the items from the list but does not free
   the objects.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
-  Visibility: Public
   Donator: Petr Vones
-  Delphi Versions: 4,5,6
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@RaiseLastOSError
 <GROUP BaseServices.Compatibility>
@@ -808,12 +648,7 @@ Description:
   EWin32Error exception with the error code and message associated with that error.
   This routine is provided for backwards compatibility.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: JCL Team
-  Delphi Versions: 4,5
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@IInterface
 <GROUP BaseServices.Compatibility>
@@ -827,10 +662,5 @@ Description:
   alias for IInterface. For more information see the Delphi for IUnknown or IInterface
   depending on your Delphi version.
 Quick info:
-  Unit: JclBase
-  Category: Base Services
   Donator: JCL Team
-  Delphi Versions: 4,5
-  Kylix Versions: 1
-  Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
