@@ -56,11 +56,7 @@ type
 //==================================================================================================
 // Flag	Value	Description
 //==================================================================================================
-const  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
-  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;	// Image has a strong name signature.
-  COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).
-type
-  TClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
+type  TClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
   TClrImageFlags = set of TClrImageFlag;
 
 //==================================================================================================
@@ -1149,6 +1145,18 @@ const
     TJclPeCLRTableNestedClass,          //  $29
     TJclPeCLRTable,                     //  $2A
     TJclPeCLRTable);                    //  $2B
+
+  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).
+  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
+  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;	// Image has a strong name signature.
+  COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).
+  ClrImageFlagMapping: array[TClrImageFlag] of DWORD =
+    (COMIMAGE_FLAGS_ILONLY, COMIMAGE_FLAGS_32BITREQUIRED,
+     COMIMAGE_FLAGS_STRONGNAMESIGNED, COMIMAGE_FLAGS_TRACKDEBUGDATA);
+
+  ClrVTableKindMapping: array[TClrVTableKind] of DWORD =
+    (COR_VTABLE_32BIT, COR_VTABLE_64BIT,
+     COR_VTABLE_FROM_UNMANAGED, COR_VTABLE_CALL_MOST_DERIVED);
 
 { TJclPeCLRStream }
 
@@ -2655,11 +2663,6 @@ begin
   Result := Data.RVA;
 end;
 
-const
-  ClrVTableKindMapping: array[TClrVTableKind] of DWORD =
-    (COR_VTABLE_32BIT, COR_VTABLE_64BIT,
-     COR_VTABLE_FROM_UNMANAGED, COR_VTABLE_CALL_MOST_DERIVED);
-
 class function TJclPeCLRVTableFixupRecord.VTableKinds(
   const Kinds: TClrVTableKinds): DWORD;
 var
@@ -2708,11 +2711,6 @@ begin
 
   inherited;
 end;
-
-const
-  ClrImageFlagMapping: array[TClrImageFlag] of DWORD =
-    (COMIMAGE_FLAGS_ILONLY, COMIMAGE_FLAGS_32BITREQUIRED,
-     COMIMAGE_FLAGS_STRONGNAMESIGNED, COMIMAGE_FLAGS_TRACKDEBUGDATA);
 
 class function TJclPeCLRHeaderEx.ClrImageFlag(const Flags: DWORD): TClrImageFlags;
 var
