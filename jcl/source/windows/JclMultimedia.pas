@@ -21,7 +21,7 @@
 { CD-ROM drive.                                                                                    }
 {                                                                                                  }
 { Unit owner: Jan Jacobs                                                                           }
-{ Last modified: February 14, 2002                                                                 }
+{ Last modified: March 12, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -34,11 +34,10 @@ unit JclMultimedia;
 interface
 
 uses
-  Windows, Messages, Classes,
+  Windows, Messages, Classes, MMSystem,
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  MMSystem,
   JclBase, JclSynch, JclStrings;
 
 type
@@ -106,6 +105,7 @@ type
     FListText: TStrings;
     FMixerLine: TJclMixerLine;
     function GetIsDisabled: Boolean;
+    function GetID: DWORD;
     function GetListText: TStrings;
     function GetName: string;
     function GetUniformValue: Cardinal;
@@ -120,6 +120,7 @@ type
     destructor Destroy; override;
     function FormatValue(AValue: Cardinal): string;
     property ControlInfo: TMixerControl read FControlInfo;
+    property ID: DWORD read GetID;
     property IsDisabled: Boolean read GetIsDisabled;
     property IsList: Boolean read FIsList;
     property IsMultiple: Boolean read FIsMultiple;
@@ -198,6 +199,7 @@ type
     function GetLines(Index: Integer): TJclMixerLine;
     function GetLineByComponentType(ComponentType: DWORD): TJclMixerLine;
     function GetLineByID(LineID: DWORD): TJclMixerLine;
+    function GetLineControlByID(ControlID: DWORD): TJclMixerLineControl;
     function GetLineUniformValue(ComponentType, ControlType: DWORD): Cardinal;
     procedure SetLineUniformValue(ComponentType, ControlType: DWORD; const Value: Cardinal);
   protected
@@ -218,6 +220,7 @@ type
     property LineByComponentType[ComponentType: DWORD]: TJclMixerLine read GetLineByComponentType;
     property Lines[Index: Integer]: TJclMixerLine read GetLines;
     property LineCount: Integer read GetLineCount;
+    property LineControlByID[ControlID: DWORD]: TJclMixerLineControl read GetLineControlByID;
     property LineUniformValue[ComponentType, ControlType: DWORD]: Cardinal read GetLineUniformValue write SetLineUniformValue;
     property ProductName: string read GetProductName;
   end;
@@ -231,6 +234,8 @@ type
     function GetFirstDevice: TJclMixerDevice;
     function GetLineMute(ComponentType: Integer): Boolean;
     function GetLineVolume(ComponentType: Integer): Cardinal;
+    function GetLineByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLine;
+    function GetLineControlByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLineControl;
     procedure SetLineMute(ComponentType: Integer; const Value: Boolean);
     procedure SetLineVolume(ComponentType: Integer; const Value: Cardinal);
   protected
@@ -242,6 +247,8 @@ type
     property Devices[Index: Integer]: TJclMixerDevice read GetDevices; default;
     property DeviceCount: Integer read GetDeviceCount;
     property FirstDevice: TJclMixerDevice read GetFirstDevice;
+    property LineByID[MixerHandle: HMIXER; LineID: DWORD]: TJclMixerLine read GetLineByID;
+    property LineControlByID[MixerHandle: HMIXER; LineID: DWORD]: TJclMixerLineControl read GetLineControlByID;
     property LineMute[ComponentType: Integer]: Boolean read GetLineMute write SetLineMute;
     property LineVolume[ComponentType: Integer]: Cardinal read GetLineVolume write SetLineVolume;
     property SpeakersMute: Boolean index MIXERLINE_COMPONENTTYPE_DST_SPEAKERS read GetLineMute write SetLineMute;
@@ -534,6 +541,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclMixerLineControl.GetID: DWORD;
+begin
+  Result := ControlInfo.dwControlID;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclMixerLineControl.GetIsDisabled: Boolean;
 begin
   Result := FControlInfo.fdwControl and MIXERCONTROL_CONTROLF_DISABLED <> 0;
@@ -676,6 +690,20 @@ end;
 //==================================================================================================
 // TJclMixerLine
 //==================================================================================================
+
+function MixerLineCompareID(Item1, Item2: Pointer): Integer;
+begin
+  Result := Integer(TJclMixerLine(Item1).ID) - Integer(TJclMixerLine(Item2).ID);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function MixerLineSearchID(Param: Pointer; ItemIndex: Integer; const Value): Integer;
+begin
+  Result := Integer(TJclMixerDevice(Param).Lines[ItemIndex].ID) - Integer(Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclMixerLine.BuildLineControls;
 var
@@ -882,7 +910,7 @@ begin
   begin
     BuildSources;
     Result := FSources.Count;
-  end;  
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -910,11 +938,6 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function MixerLineCompare(Item1, Item2: Pointer): Integer;
-begin
-  Result := Integer(TJclMixerLine(Item1).ID) - Integer(TJclMixerLine(Item2).ID);
-end;
-
 procedure TJclMixerDevice.BuildLines;
 var
   D, I: Integer;
@@ -927,7 +950,7 @@ begin
     for I := 0 to Dest.SourceCount - 1 do
       FLines.Add(Dest.Sources[I]);
   end;
-  FLines.Sort(MixerLineCompare);
+  FLines.Sort(MixerLineCompareID);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1011,13 +1034,31 @@ function TJclMixerDevice.GetLineByID(LineID: DWORD): TJclMixerLine;
 var
   I: Integer;
 begin
+  I := SearchSortedUntyped(Self, LineCount, MixerLineSearchID, Pointer(LineID));
+  if I = -1 then
+    Result := nil
+  else
+    Result := Lines[I];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixerDevice.GetLineControlByID(ControlID: DWORD): TJclMixerLineControl;
+var
+  L, C: Integer;
+  TempLine: TJclMixerLine;
+begin
   Result := nil;
-  for I := 0 to LineCount - 1 do
-    if Lines[I].LineInfo.dwLineID = LineID then
-    begin
-      Result := Lines[I];
-      Break;
-    end;
+  for L := 0 to LineCount - 1 do
+  begin
+    TempLine := Lines[L];
+    for C := 0 to TempLine.LineControlCount - 1 do
+      if TempLine.LineControls[C].ID = ControlID then
+      begin
+        Result := TempLine.LineControls[C];
+        Break;
+      end;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1142,6 +1183,46 @@ begin
   if DeviceCount = 0 then
     raise EJclMixerError.CreateResRec(@RsMmMixerNoDevices);
   Result := Devices[0];
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetLineByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLine;
+var
+  I: Integer;
+  TempDevice: TJclMixerDevice;
+begin
+  Result := nil;
+  for I := 0 to DeviceCount - 1 do
+  begin
+    TempDevice := Devices[I];
+    if TempDevice.Handle = MixerHandle then
+    begin
+      Result := TempDevice.LineByID[LineID];
+      if Result <> nil then
+        Break;
+    end;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclMixer.GetLineControlByID(MixerHandle: HMIXER; LineID: DWORD): TJclMixerLineControl;
+var
+  I: Integer;
+  TempDevice: TJclMixerDevice;
+begin
+  Result := nil;
+  for I := 0 to DeviceCount - 1 do
+  begin
+    TempDevice := Devices[I];
+    if TempDevice.Handle = MixerHandle then
+    begin
+      Result := TempDevice.LineControlByID[LineID];
+      if Result <> nil then
+        Break;
+    end;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
