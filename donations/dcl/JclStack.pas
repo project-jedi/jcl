@@ -1,21 +1,43 @@
-//------------------------------------------------------------------------------
-// The Delphi Container Library
-// Jean-Philippe BEMPEL aka RDM
-// rdm_30@yahoo.com
-//------------------------------------------------------------------------------
-unit Stack;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is Stack.pas.                                                                  }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
+{ Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
+{ All rights reserved.                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ The Delphi Container Library                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
+
+unit JclStack;
 
 {$I dcl.inc}
 
 interface
 
 uses
-  DCL_intf, DCLUtil, AbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer;
 
 type
-  TIntfStack = class(TAbstractContainer, IIntfStack)
+  TJclIntfStack = class(TJclAbstractContainer, IIntfStack)
   private
-    FElements: TIInterfaceArray;
+    FElements: TDynIInterfaceArray;
     FCount: Integer;
     FCapacity: Integer;
   protected
@@ -30,9 +52,9 @@ type
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
-  TStrStack = class(TAbstractContainer, IStrStack)
+  TJclStrStack = class(TJclAbstractContainer, IStrStack)
   private
-    FElements: TStringArray;
+    FElements: TDynStringArray;
     FCount: Integer;
     FCapacity: Integer;
   protected
@@ -47,9 +69,9 @@ type
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
-  TStack = class(TAbstractContainer, IStack)
+  TJclStack = class(TJclAbstractContainer, IStack)
   private
-    FElements: TObjectArray;
+    FElements: TDynObjectArray;
     FCount: Integer;
     FCapacity: Integer;
   protected
@@ -66,9 +88,9 @@ type
 
 implementation
 
-//=== { TIntfStack } =========================================================
+//=== { TJclIntfStack } ======================================================
 
-constructor TIntfStack.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfStack.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -76,7 +98,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TIntfStack.Contains(AObject: IInterface): Boolean;
+function TJclIntfStack.Contains(AObject: IInterface): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -97,18 +119,18 @@ begin
     end;
 end;
 
-function TIntfStack.Empty: Boolean;
+function TJclIntfStack.Empty: Boolean;
 begin
   Result := FCount = 0;
 end;
 
-procedure TIntfStack.Grow;
+procedure TJclIntfStack.Grow;
 begin
   FCapacity := FCapacity + FCapacity div 4;
   SetLength(FElements, FCapacity);
 end;
 
-function TIntfStack.Pop: IInterface;
+function TJclIntfStack.Pop: IInterface;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -123,7 +145,7 @@ begin
   Result := FElements[FCount];
 end;
 
-procedure TIntfStack.Push(AObject: IInterface);
+procedure TJclIntfStack.Push(AObject: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -140,14 +162,14 @@ begin
   Inc(FCount);
 end;
 
-function TIntfStack.Size: Integer;
+function TJclIntfStack.Size: Integer;
 begin
   Result := FCount;
 end;
 
-//=== { TStrStack } ==========================================================
+//=== { TJclStrStack } =======================================================
 
-constructor TStrStack.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrStack.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -155,7 +177,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TStrStack.Contains(const AString: string): Boolean;
+function TJclStrStack.Contains(const AString: string): Boolean;
 var
   I: Integer;
 {$IFDEF THREADSAFE}
@@ -176,18 +198,18 @@ begin
     end;
 end;
 
-function TStrStack.Empty: Boolean;
+function TJclStrStack.Empty: Boolean;
 begin
   Result := FCount = 0;
 end;
 
-procedure TStrStack.Grow;
+procedure TJclStrStack.Grow;
 begin
   FCapacity := FCapacity + FCapacity div 4;
   SetLength(FElements, FCapacity);
 end;
 
-function TStrStack.Pop: string;
+function TJclStrStack.Pop: string;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -202,7 +224,7 @@ begin
   Result := FElements[FCount];
 end;
 
-procedure TStrStack.Push(const AString: string);
+procedure TJclStrStack.Push(const AString: string);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -219,14 +241,14 @@ begin
   Inc(FCount);
 end;
 
-function TStrStack.Size: Integer;
+function TJclStrStack.Size: Integer;
 begin
   Result := FCount;
 end;
 
-//=== { TStack } =============================================================
+//=== { TJclStack } ==========================================================
 
-constructor TStack.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStack.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -234,7 +256,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TStack.Contains(AObject: TObject): Boolean;
+function TJclStack.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -255,18 +277,18 @@ begin
     end;
 end;
 
-function TStack.Empty: Boolean;
+function TJclStack.Empty: Boolean;
 begin
   Result := FCount = 0;
 end;
 
-procedure TStack.Grow;
+procedure TJclStack.Grow;
 begin
   FCapacity := FCapacity + FCapacity div 4;
   SetLength(FElements, FCapacity);
 end;
 
-function TStack.Pop: TObject;
+function TJclStack.Pop: TObject;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -282,7 +304,7 @@ begin
   Result := FElements[FCount];
 end;
 
-procedure TStack.Push(AObject: TObject);
+procedure TJclStack.Push(AObject: TObject);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -299,7 +321,7 @@ begin
   Inc(FCount);
 end;
 
-function TStack.Size: Integer;
+function TJclStack.Size: Integer;
 begin
   Result := FCount;
 end;

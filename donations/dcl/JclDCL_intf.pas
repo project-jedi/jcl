@@ -1,9 +1,31 @@
-//------------------------------------------------------------------------------
-// The Delphi Container Library
-// Jean-Philippe BEMPEL aka RDM
-// rdm_30@yahoo.com
-//------------------------------------------------------------------------------
-unit DCL_intf;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is DCL_intf.pas.                                                               }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
+{ Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
+{ All rights reserved.                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ The Delphi Container Library                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
+
+unit JclDCL_intf;
 
 {$I dcl.inc}
 
@@ -140,6 +162,8 @@ type
     function Remove(Index: Integer): string; overload;
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IStrList;
+    //Daniele Teti
+    property Items[Key: Integer]: string read GetString write SetString; default;
   end;
 
   IList = interface(ICollection)
@@ -152,6 +176,8 @@ type
     function Remove(Index: Integer): TObject; overload;
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IList;
+    //Daniele Teti
+    property Items[Key: Integer]: TObject read GetObject write SetObject; default;
   end;
 
   IIntfArray = interface(IIntfList)
@@ -265,6 +291,10 @@ type
     function Remove(const Key: string): string;
     function Size: Integer;
     function Values: IStrCollection;
+    //Daniele Teti
+    function KeyOfValue(const Value: string): string;
+    //Daniele Teti
+    property Items[const Key: string]: string read GetValue write PutValue; default;
   end;
 
   IStrMap = interface
@@ -281,6 +311,8 @@ type
     function Remove(const Key: string): TObject;
     function Size: Integer;
     function Values: ICollection;
+    //Daniele Teti
+    property Items[const Key: string]: TObject read GetValue write PutValue; default;
   end;
 
   IMap = interface
@@ -297,6 +329,8 @@ type
     function Remove(Key: TObject): TObject;
     function Size: Integer;
     function Values: ICollection;
+    //Daniele Teti
+    property Items[Key: TObject]: TObject read GetValue write PutValue; default;
   end;
 
   IIntfQueue = interface

@@ -1,19 +1,41 @@
-//------------------------------------------------------------------------------
-// The Delphi Container Library
-// Jean-Philippe BEMPEL aka RDM
-// rdm_30@yahoo.com
-//------------------------------------------------------------------------------
-unit HashSet;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is HashSet.pas.                                                                }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
+{ Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
+{ All rights reserved.                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ The Delphi Container Library                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
+
+unit JclHashSet;
 
 {$I dcl.inc}
 
 interface
 
 uses
-  DCL_intf, DCLUtil, HashMap, AbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer;
 
 type
-  TIntfHashSet = class(TAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
+  TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
   private
     FMap: IIntfIntfMap;
   protected
@@ -42,7 +64,7 @@ type
     destructor Destroy; override;
   end;
 
-  TStrHashSet = class(TAbstractContainer, IStrCollection, IStrSet, ICloneable)
+  TJclStrHashSet = class(TJclAbstractContainer, IStrCollection, IStrSet, ICloneable)
   private
     FMap: IStrMap;
   protected
@@ -71,7 +93,7 @@ type
     destructor Destroy; override;
   end;
 
-  THashSet = class(TAbstractContainer, ICollection, ISet, ICloneable)
+  TJclHashSet = class(TJclAbstractContainer, ICollection, ISet, ICloneable)
   private
     FMap: IMap;
   protected
@@ -109,32 +131,30 @@ const
 var
   IRefUnique: IInterface = nil;
 
-//=== { TIntfHashSet } =======================================================
+//=== { TJclIntfHashSet } ====================================================
 
-constructor TIntfHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
-  FMap := TIntfIntfHashMap.Create(Capacity);
+  FMap := TJclIntfIntfHashMap.Create(Capacity);
   if IRefUnique = nil then
     IRefUnique := TInterfacedObject.Create;
 end;
 
-destructor TIntfHashSet.Destroy;
+destructor TJclIntfHashSet.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-function TIntfHashSet.Add(AObject: IInterface): Boolean;
+function TJclIntfHashSet.Add(AObject: IInterface): Boolean;
 begin
-  Result := False;
-  if FMap.ContainsKey(AObject) then
-    Exit;
-  FMap.PutValue(AObject, IRefUnique);
-  Result := True;
+  Result := not FMap.ContainsKey(AObject);
+  if Result then
+    FMap.PutValue(AObject, IRefUnique);
 end;
 
-function TIntfHashSet.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
@@ -143,30 +163,30 @@ begin
   begin
     It := ACollection.First;
     while It.HasNext do
-      Add(It.Next);
+      Result := Result and Add(It.Next);
   end;
 end;
 
-procedure TIntfHashSet.Clear;
+procedure TJclIntfHashSet.Clear;
 begin
   FMap.Clear;
 end;
 
-function TIntfHashSet.Clone: IInterface;
+function TJclIntfHashSet.Clone: IInterface;
 var
-  NewSet: TIntfHashSet;
+  NewSet: TJclIntfHashSet;
 begin
-  NewSet := TIntfHashSet.Create;
+  NewSet := TJclIntfHashSet.Create;
   NewSet.FMap := IIntfIntfMap(IIntfCloneable(FMap).Clone);
   Result := NewSet;
 end;
 
-function TIntfHashSet.Contains(AObject: IInterface): Boolean;
+function TJclIntfHashSet.Contains(AObject: IInterface): Boolean;
 begin
   Result := FMap.ContainsKey(AObject);
 end;
 
-function TIntfHashSet.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
@@ -182,7 +202,7 @@ begin
     end;
 end;
 
-function TIntfHashSet.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.Equals(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   ItMap: IIntfIterator;
@@ -200,44 +220,44 @@ begin
   Result := True;
 end;
 
-function TIntfHashSet.First: IIntfIterator;
+function TJclIntfHashSet.First: IIntfIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TIntfHashSet.Intersect(ACollection: IIntfCollection);
+procedure TJclIntfHashSet.Intersect(ACollection: IIntfCollection);
 begin
   RetainAll(ACollection);
 end;
 
-function TIntfHashSet.IsEmpty: Boolean;
+function TJclIntfHashSet.IsEmpty: Boolean;
 begin
   Result := FMap.IsEmpty;
 end;
 
-function TIntfHashSet.Last: IIntfIterator;
+function TJclIntfHashSet.Last: IIntfIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
 
-function TIntfHashSet.Remove(AObject: IInterface): Boolean;
+function TJclIntfHashSet.Remove(AObject: IInterface): Boolean;
 begin
   Result := FMap.Remove(AObject) = IInterface(IRefUnique);
 end;
 
-function TIntfHashSet.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.RemoveAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
-  Result := False;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Remove(It.Next);
+    Result := Result and Remove(It.Next);
 end;
 
-function TIntfHashSet.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfHashSet.RetainAll(ACollection: IIntfCollection): Boolean;
 var
   ItMap: IIntfIterator;
 begin
@@ -250,45 +270,43 @@ begin
       ItMap.Remove;
 end;
 
-function TIntfHashSet.Size: Integer;
+function TJclIntfHashSet.Size: Integer;
 begin
   Result := FMap.Size;
 end;
 
-procedure TIntfHashSet.Subtract(ACollection: IIntfCollection);
+procedure TJclIntfHashSet.Subtract(ACollection: IIntfCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TIntfHashSet.Union(ACollection: IIntfCollection);
+procedure TJclIntfHashSet.Union(ACollection: IIntfCollection);
 begin
   AddAll(ACollection);
 end;
 
-//=== { TStrHashSet } ========================================================
+//=== { TJclStrHashSet } =====================================================
 
-constructor TStrHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
-  FMap := TStrHashMap.Create(Capacity, False);
+  FMap := TJclStrHashMap.Create(Capacity, False);
 end;
 
-destructor TStrHashSet.Destroy;
+destructor TJclStrHashSet.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-function TStrHashSet.Add(const AString: string): Boolean;
+function TJclStrHashSet.Add(const AString: string): Boolean;
 begin
-  Result := False;
-  if FMap.ContainsKey(AString) then
-    Exit;
-  FMap.PutValue(AString, RefUnique);
-  Result := True;
+  Result := not FMap.ContainsKey(AString);
+  if Result then
+    FMap.PutValue(AString, RefUnique);
 end;
 
-function TStrHashSet.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
@@ -297,30 +315,29 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Add(It.Next);
-  Result := True;
+    Result := Result or Add(It.Next);
 end;
 
-procedure TStrHashSet.Clear;
+procedure TJclStrHashSet.Clear;
 begin
   FMap.Clear;
 end;
 
-function TStrHashSet.Clone: TObject;
+function TJclStrHashSet.Clone: TObject;
 var
-  NewSet: TStrHashSet;
+  NewSet: TJclStrHashSet;
 begin
-  NewSet := TStrHashSet.Create;
-  NewSet.FMap := TStrHashMap(ICloneable(FMap).Clone);
+  NewSet := TJclStrHashSet.Create;
+  NewSet.FMap := TJclStrHashMap(ICloneable(FMap).Clone);
   Result := NewSet;
 end;
 
-function TStrHashSet.Contains(const AString: string): Boolean;
+function TJclStrHashSet.Contains(const AString: string): Boolean;
 begin
   Result := FMap.ContainsKey(AString);
 end;
 
-function TStrHashSet.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.ContainsAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
@@ -336,7 +353,7 @@ begin
     end;
 end;
 
-function TStrHashSet.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.Equals(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   ItMap: IStrIterator;
@@ -354,44 +371,44 @@ begin
   Result := True;
 end;
 
-function TStrHashSet.First: IStrIterator;
+function TJclStrHashSet.First: IStrIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-procedure TStrHashSet.Intersect(ACollection: IStrCollection);
+procedure TJclStrHashSet.Intersect(ACollection: IStrCollection);
 begin
   RetainAll(ACollection);
 end;
 
-function TStrHashSet.IsEmpty: Boolean;
+function TJclStrHashSet.IsEmpty: Boolean;
 begin
   Result := FMap.IsEmpty;
 end;
 
-function TStrHashSet.Last: IStrIterator;
+function TJclStrHashSet.Last: IStrIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
 
-function TStrHashSet.Remove(const AString: string): Boolean;
+function TJclStrHashSet.Remove(const AString: string): Boolean;
 begin
-  Result := Fmap.Remove(AString) = RefUnique;
+  Result := FMap.Remove(AString) = RefUnique;
 end;
 
-function TStrHashSet.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.RemoveAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
-  Result := False;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Remove(It.Next);
+    Result := Result and Remove(It.Next);
 end;
 
-function TStrHashSet.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrHashSet.RetainAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
@@ -404,45 +421,43 @@ begin
       FMap.Remove(It.Next);
 end;
 
-function TStrHashSet.Size: Integer;
+function TJclStrHashSet.Size: Integer;
 begin
   Result := FMap.Size;
 end;
 
-procedure TStrHashSet.Subtract(ACollection: IStrCollection);
+procedure TJclStrHashSet.Subtract(ACollection: IStrCollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure TStrHashSet.Union(ACollection: IStrCollection);
+procedure TJclStrHashSet.Union(ACollection: IStrCollection);
 begin
   AddAll(ACollection);
 end;
 
-//=== { THashSet } ===========================================================
+//=== { TJclHashSet } ========================================================
 
-constructor THashSet.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
+constructor TJclHashSet.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
 begin
   inherited Create;
-  FMap := THashMap.Create(Capacity, AOwnsObject);
+  FMap := TJclHashMap.Create(Capacity, AOwnsObject);
 end;
 
-destructor THashSet.Destroy;
+destructor TJclHashSet.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-function THashSet.Add(AObject: TObject): Boolean;
+function TJclHashSet.Add(AObject: TObject): Boolean;
 begin
-  Result := False;
-  if FMap.ContainsKey(AObject) then
-    Exit;
-  FMap.PutValue(AObject, RefUnique);
-  Result := True;
+  Result := not FMap.ContainsKey(AObject);
+  if Result then
+    FMap.PutValue(AObject, RefUnique);
 end;
 
-function THashSet.AddAll(ACollection: ICollection): Boolean;
+function TJclHashSet.AddAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
@@ -451,30 +466,29 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Add(It.Next);
-  Result := True;
+    Result := Result or Add(It.Next);
 end;
 
-procedure THashSet.Clear;
+procedure TJclHashSet.Clear;
 begin
   FMap.Clear;
 end;
 
-function THashSet.Clone: TObject;
+function TJclHashSet.Clone: TObject;
 var
-  NewSet: THashSet;
+  NewSet: TJclHashSet;
 begin
-  NewSet := THashSet.Create;
-  NewSet.FMap := THashMap(ICloneable(FMap).Clone);
+  NewSet := TJclHashSet.Create;
+  NewSet.FMap := TJclHashMap(ICloneable(FMap).Clone);
   Result := NewSet;
 end;
 
-function THashSet.Contains(AObject: TObject): Boolean;
+function TJclHashSet.Contains(AObject: TObject): Boolean;
 begin
   Result := FMap.ContainsKey(AObject);
 end;
 
-function THashSet.ContainsAll(ACollection: ICollection): Boolean;
+function TJclHashSet.ContainsAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
@@ -490,7 +504,7 @@ begin
     end;
 end;
 
-function THashSet.Equals(ACollection: ICollection): Boolean;
+function TJclHashSet.Equals(ACollection: ICollection): Boolean;
 var
   It: IIterator;
   ItMap: IIterator;
@@ -508,44 +522,44 @@ begin
   Result := True;
 end;
 
-function THashSet.First: IIterator;
+function TJclHashSet.First: IIterator;
 begin
   Result := FMap.KeySet.First;
 end;
 
-procedure THashSet.Intersect(ACollection: ICollection);
+procedure TJclHashSet.Intersect(ACollection: ICollection);
 begin
   RetainAll(ACollection);
 end;
 
-function THashSet.IsEmpty: Boolean;
+function TJclHashSet.IsEmpty: Boolean;
 begin
   Result := FMap.IsEmpty;
 end;
 
-function THashSet.Last: IIterator;
+function TJclHashSet.Last: IIterator;
 begin
   Result := FMap.KeySet.Last;
 end;
 
-function THashSet.Remove(AObject: TObject): Boolean;
+function TJclHashSet.Remove(AObject: TObject): Boolean;
 begin
   Result := FMap.Remove(AObject) = RefUnique;
 end;
 
-function THashSet.RemoveAll(ACollection: ICollection): Boolean;
+function TJclHashSet.RemoveAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
-  Result := False;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Remove(It.Next);
+    Result := Result and Remove(It.Next);
 end;
 
-function THashSet.RetainAll(ACollection: ICollection): Boolean;
+function TJclHashSet.RetainAll(ACollection: ICollection): Boolean;
 var
   ItMap: IIterator;
 begin
@@ -558,17 +572,17 @@ begin
       ItMap.Remove;
 end;
 
-function THashSet.Size: Integer;
+function TJclHashSet.Size: Integer;
 begin
   Result := FMap.Size;
 end;
 
-procedure THashSet.Subtract(ACollection: ICollection);
+procedure TJclHashSet.Subtract(ACollection: ICollection);
 begin
   RemoveAll(ACollection);
 end;
 
-procedure THashSet.Union(ACollection: ICollection);
+procedure TJclHashSet.Union(ACollection: ICollection);
 begin
   AddAll(ACollection);
 end;

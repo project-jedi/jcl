@@ -1,40 +1,62 @@
-//------------------------------------------------------------------------------
-// The Delphi Container Library
-// Jean-Philippe BEMPEL aka RDM
-// rdm_30@yahoo.com
-//------------------------------------------------------------------------------
-unit LinkedList;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is LinkedList.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
+{ Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
+{ All rights reserved.                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ The Delphi Container Library                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
+
+unit JclLinkedList;
 
 {$I dcl.inc}
 
 interface
 
 uses
-  DCL_intf, AbstractContainer;
+  JclDCL_intf, JclAbstractContainer;
 
 type
-  PIntfLinkedListItem = ^TIntfLinkedListItem;
-  TIntfLinkedListItem = record
+  PJclIntfLinkedListItem = ^TJclIntfLinkedListItem;
+  TJclIntfLinkedListItem = record
     Obj: IInterface;
-    Next: PIntfLinkedListItem;
+    Next: PJclIntfLinkedListItem;
   end;
 
-  PStrLinkedListItem = ^TStrLinkedListItem;
-  TStrLinkedListItem = record
+  PJclStrLinkedListItem = ^TJclStrLinkedListItem;
+  TJclStrLinkedListItem = record
     Str: string;
-    Next: PStrLinkedListItem;
+    Next: PJclStrLinkedListItem;
   end;
 
-  PLinkedListItem = ^TLinkedListItem;
-  TLinkedListItem = record
+  PJclLinkedListItem = ^TJclLinkedListItem;
+  TJclLinkedListItem = record
     Obj: TObject;
-    Next: PLinkedListItem;
+    Next: PJclLinkedListItem;
   end;
 
-  TIntfLinkedList = class(TAbstractContainer, IIntfCollection, IIntfList, IIntfCloneable)
+  TJclIntfLinkedList = class(TJclAbstractContainer, IIntfCollection, IIntfList, IIntfCloneable)
   private
-    FStart: PIntfLinkedListItem;
-    FEnd: PIntfLinkedListItem;
+    FStart: PJclIntfLinkedListItem;
+    FEnd: PJclIntfLinkedListItem;
     FSize: Integer;
   protected
     procedure AddFirst(AObject: IInterface);
@@ -68,10 +90,10 @@ type
     destructor Destroy; override;
   end;
 
-  TStrLinkedList = class(TAbstractContainer, IStrCollection, IStrList, ICloneable)
+  TJclStrLinkedList = class(TJclAbstractContainer, IStrCollection, IStrList, ICloneable)
   private
-    FStart: PStrLinkedListItem;
-    FEnd: PStrLinkedListItem;
+    FStart: PJclStrLinkedListItem;
+    FEnd: PJclStrLinkedListItem;
     FSize: Integer;
   protected
     procedure AddFirst(const AString: string);
@@ -105,15 +127,15 @@ type
     destructor Destroy; override;
   end;
 
-  TLinkedList = class(TAbstractContainer, ICollection, IList, ICloneable)
+  TJclLinkedList = class(TJclAbstractContainer, ICollection, IList, ICloneable)
   private
-    FEnd: PLinkedListItem;
+    FEnd: PJclLinkedListItem;
     FOwnsObjects: Boolean;
     FSize: Integer;
-    FStart: PLinkedListItem;
+    FStart: PJclLinkedListItem;
   protected
     procedure AddFirst(AObject: TObject);
-    procedure FreeObject(AObject: TObject);
+    procedure FreeObject(var AObject: TObject);
     { ICollection }
     function Add(AObject: TObject): Boolean; overload;
     function AddAll(ACollection: ICollection): Boolean; overload;
@@ -147,14 +169,14 @@ type
 implementation
 
 uses
-  DCLUtil;
+  JclDCLUtil;
 
 type
-  TIntfItr = class(TAbstractContainer, IIntfIterator)
+  TIntfItr = class(TJclAbstractContainer, IIntfIterator)
   private
-    FCursor: PIntfLinkedListItem;
-    FOwnList: TIntfLinkedList;
-    FLastRet: PIntfLinkedListItem;
+    FCursor: PJclIntfLinkedListItem;
+    FOwnList: TJclIntfLinkedList;
+    FLastRet: PJclIntfLinkedListItem;
     FSize: Integer;
   protected
     { IIterator}
@@ -169,15 +191,15 @@ type
     procedure Remove;
     procedure SetObject(AObject: IInterface);
   public
-    constructor Create(OwnList: TIntfLinkedList; Start: PIntfLinkedListItem);
+    constructor Create(OwnList: TJclIntfLinkedList; Start: PJclIntfLinkedListItem);
     destructor Destroy; override;
   end;
 
-  TStrItr = class(TAbstractContainer, IStrIterator)
+  TStrItr = class(TJclAbstractContainer, IStrIterator)
   private
-    FCursor: PStrLinkedListItem;
-    FOwnList: TStrLinkedList;
-    FLastRet: PStrLinkedListItem;
+    FCursor: PJclStrLinkedListItem;
+    FOwnList: TJclStrLinkedList;
+    FLastRet: PJclStrLinkedListItem;
     FSize: Integer;
   protected
     { IStrIterator}
@@ -192,15 +214,15 @@ type
     procedure Remove;
     procedure SetString(const AString: string);
   public
-    constructor Create(OwnList: TStrLinkedList; Start: PStrLinkedListItem);
+    constructor Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
     destructor Destroy; override;
   end;
 
-  TItr = class(TAbstractContainer, IIterator)
+  TItr = class(TJclAbstractContainer, IIterator)
   private
-    FCursor: PLinkedListItem;
-    FOwnList: TLinkedList;
-    FLastRet: PLinkedListItem;
+    FCursor: PJclLinkedListItem;
+    FOwnList: TJclLinkedList;
+    FLastRet: PJclLinkedListItem;
     FSize: Integer;
   public
     { IIterator}
@@ -215,13 +237,13 @@ type
     procedure Remove;
     procedure SetObject(AObject: TObject);
   public
-    constructor Create(OwnList: TLinkedList; Start: PLinkedListItem);
+    constructor Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
     destructor Destroy; override;
   end;
 
 //=== { TIntfItr } ===========================================================
 
-constructor TIntfItr.Create(OwnList: TIntfLinkedList; Start: PIntfLinkedListItem);
+constructor TIntfItr.Create(OwnList: TJclIntfLinkedList; Start: PJclIntfLinkedListItem);
 begin
   inherited Create;
   FCursor := Start;
@@ -239,7 +261,7 @@ end;
 
 procedure TIntfItr.Add(AObject: IInterface);
 var
-  NewItem: PIntfLinkedListItem;
+  NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -322,7 +344,7 @@ end;
 
 procedure TIntfItr.Remove;
 var
-  Current: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -359,7 +381,7 @@ end;
 
 //=== { TStrItr } ============================================================
 
-constructor TStrItr.Create(OwnList: TStrLinkedList; Start: PStrLinkedListItem);
+constructor TStrItr.Create(OwnList: TJclStrLinkedList; Start: PJclStrLinkedListItem);
 begin
   inherited Create;
   FCursor := Start;
@@ -377,7 +399,7 @@ end;
 
 procedure TStrItr.Add(const AString: string);
 var
-  NewItem: PStrLinkedListItem;
+  NewItem: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -460,7 +482,7 @@ end;
 
 procedure TStrItr.Remove;
 var
-  Current: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -497,7 +519,7 @@ end;
 
 //=== { TItr } ===============================================================
 
-constructor TItr.Create(OwnList: TLinkedList; Start: PLinkedListItem);
+constructor TItr.Create(OwnList: TJclLinkedList; Start: PJclLinkedListItem);
 begin
   inherited Create;
   FCursor := Start;
@@ -515,7 +537,7 @@ end;
 
 procedure TItr.Add(AObject: TObject);
 var
-  NewItem: PLinkedListItem;
+  NewItem: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -598,7 +620,7 @@ end;
 
 procedure TItr.Remove;
 var
-  Current: PLinkedListItem;
+  Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -635,9 +657,9 @@ begin
   FCursor.Obj := AObject;
 end;
 
-//=== { TIntfLinkedList } ====================================================
+//=== { TJclIntfLinkedList } =================================================
 
-constructor TIntfLinkedList.Create(ACollection: IIntfCollection = nil);
+constructor TJclIntfLinkedList.Create(ACollection: IIntfCollection = nil);
 var
   It: IIntfIterator;
 begin
@@ -653,17 +675,17 @@ begin
   end;
 end;
 
-destructor TIntfLinkedList.Destroy;
+destructor TJclIntfLinkedList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TIntfLinkedList.Add(Index: Integer; AObject: IInterface);
+procedure TJclIntfLinkedList.Add(Index: Integer; AObject: IInterface);
 var
   I: Integer;
-  Current: PIntfLinkedListItem;
-  NewItem: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
+  NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -700,9 +722,9 @@ begin
   end;
 end;
 
-function TIntfLinkedList.Add(AObject: IInterface): Boolean;
+function TJclIntfLinkedList.Add(AObject: IInterface): Boolean;
 var
-  NewItem: PIntfLinkedListItem;
+  NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -713,10 +735,10 @@ begin
   Result := False;
   if AObject = nil then
     Exit;
+  Result := True;
   if FStart = nil then
   begin
     AddFirst(AObject);
-    Result := True;
     Exit;
   end;
   New(NewItem);
@@ -725,10 +747,9 @@ begin
   FEnd.Next := NewItem;
   FEnd := NewItem;
   Inc(FSize);
-  Result := True;
 end;
 
-function TIntfLinkedList.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   {$IFDEF THREADSAFE}
@@ -743,17 +764,15 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Add(It.Next);
-  Result := True;
+    Result := Result or Add(It.Next);
 end;
 
-function TIntfLinkedList.AddAll(Index: Integer;
-  ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
 var
   I: Integer;
   It: IIntfIterator;
-  Current: PIntfLinkedListItem;
-  NewItem: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
+  NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -797,7 +816,7 @@ begin
   Result := True;
 end;
 
-procedure TIntfLinkedList.AddFirst(AObject: IInterface);
+procedure TJclIntfLinkedList.AddFirst(AObject: IInterface);
 begin
   New(FStart);
   FStart.Obj := AObject;
@@ -806,10 +825,10 @@ begin
   Inc(FSize);
 end;
 
-procedure TIntfLinkedList.Clear;
+procedure TJclIntfLinkedList.Clear;
 var
   I: Integer;
-  Old, Current: PIntfLinkedListItem;
+  Old, Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -828,19 +847,19 @@ begin
   FSize := 0;
 end;
 
-function TIntfLinkedList.Clone: IInterface;
+function TJclIntfLinkedList.Clone: IInterface;
 var
   NewList: IIntfList;
 begin
-  NewList := TIntfLinkedList.Create;
+  NewList := TJclIntfLinkedList.Create;
   NewList.AddAll(Self);
   Result := NewList;
 end;
 
-function TIntfLinkedList.Contains(AObject: IInterface): Boolean;
+function TJclIntfLinkedList.Contains(AObject: IInterface): Boolean;
 var
   I: Integer;
-  Current: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -863,7 +882,7 @@ begin
   end;
 end;
 
-function TIntfLinkedList.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   {$IFDEF THREADSAFE}
@@ -885,7 +904,7 @@ begin
     end;
 end;
 
-function TIntfLinkedList.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.Equals(ACollection: IIntfCollection): Boolean;
 var
   It, ItSelf: IIntfIterator;
   {$IFDEF THREADSAFE}
@@ -908,10 +927,10 @@ begin
   Result := True;
 end;
 
-function TIntfLinkedList.GetObject(Index: Integer): IInterface;
+function TJclIntfLinkedList.GetObject(Index: Integer): IInterface;
 var
   I: Integer;
-  Current: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -928,10 +947,10 @@ begin
   Result := Current.Obj;
 end;
 
-function TIntfLinkedList.IndexOf(AObject: IInterface): Integer;
+function TJclIntfLinkedList.IndexOf(AObject: IInterface): Integer;
 var
   I: Integer;
-  Current: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -956,25 +975,25 @@ begin
   end;
 end;
 
-function TIntfLinkedList.First: IIntfIterator;
+function TJclIntfLinkedList.First: IIntfIterator;
 begin
   Result := TIntfItr.Create(Self, FStart);
 end;
 
-function TIntfLinkedList.IsEmpty: Boolean;
+function TJclIntfLinkedList.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
 end;
 
-function TIntfLinkedList.Last: IIntfIterator;
+function TJclIntfLinkedList.Last: IIntfIterator;
 begin
   Result := TIntfItr.Create(Self, FStart);
 end;
 
-function TIntfLinkedList.LastIndexOf(AObject: IInterface): Integer;
+function TJclIntfLinkedList.LastIndexOf(AObject: IInterface): Integer;
 var
   I: Integer;
-  Current: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -996,10 +1015,10 @@ begin
   end;
 end;
 
-function TIntfLinkedList.Remove(AObject: IInterface): Boolean;
+function TJclIntfLinkedList.Remove(AObject: IInterface): Boolean;
 var
   I: Integer;
-  Old, Current: PIntfLinkedListItem;
+  Old, Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1029,6 +1048,7 @@ begin
         FStart := Current.Next;
       Dispose(Current);
       Dec(FSize);
+      Result := True;
       Exit;
     end;
     Old := Current;
@@ -1036,10 +1056,10 @@ begin
   end;
 end;
 
-function TIntfLinkedList.Remove(Index: Integer): IInterface;
+function TJclIntfLinkedList.Remove(Index: Integer): IInterface;
 var
   I: Integer;
-  Old, Current: PIntfLinkedListItem;
+  Old, Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1070,7 +1090,7 @@ begin
   Dec(FSize);
 end;
 
-function TIntfLinkedList.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.RemoveAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1080,15 +1100,15 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  Result := False;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Remove(It.Next);
+    Result := Result and Remove(It.Next);
 end;
 
-function TIntfLinkedList.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfLinkedList.RetainAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   {$IFDEF THREADSAFE}
@@ -1107,10 +1127,10 @@ begin
       It.Remove;
 end;
 
-procedure TIntfLinkedList.SetObject(Index: Integer; AObject: IInterface);
+procedure TJclIntfLinkedList.SetObject(Index: Integer; AObject: IInterface);
 var
   I: Integer;
-  Current: PIntfLinkedListItem;
+  Current: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1126,12 +1146,12 @@ begin
   Current.Obj := AObject;
 end;
 
-function TIntfLinkedList.Size: Integer;
+function TJclIntfLinkedList.Size: Integer;
 begin
   Result := FSize;
 end;
 
-function TIntfLinkedList.SubList(First, Count: Integer): IIntfList;
+function TJclIntfLinkedList.SubList(First, Count: Integer): IIntfList;
 var
   I: Integer;
   It: IIntfIterator;
@@ -1146,7 +1166,7 @@ begin
   Last := First + Count - 1;
   if Last > FSize then
     Last := FSize - 1;
-  Result := TIntfLinkedList.Create;
+  Result := TJclIntfLinkedList.Create;
   I := 0;
   It := Self.First;
   while (I < First) and It.HasNext do
@@ -1162,9 +1182,9 @@ begin
   end;
 end;
 
-//=== { TStrLinkedList } =====================================================
+//=== { TJclStrLinkedList } ==================================================
 
-constructor TStrLinkedList.Create(ACollection: IStrCollection = nil);
+constructor TJclStrLinkedList.Create(ACollection: IStrCollection = nil);
 var
   It: IStrIterator;
 begin
@@ -1180,17 +1200,17 @@ begin
   end;
 end;
 
-destructor TStrLinkedList.Destroy;
+destructor TJclStrLinkedList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TStrLinkedList.Add(Index: Integer; const AString: string);
+procedure TJclStrLinkedList.Add(Index: Integer; const AString: string);
 var
   I: Integer;
-  Current: PStrLinkedListItem;
-  NewItem: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
+  NewItem: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1227,9 +1247,9 @@ begin
   end;
 end;
 
-function TStrLinkedList.Add(const AString: string): Boolean;
+function TJclStrLinkedList.Add(const AString: string): Boolean;
 var
-  NewItem: PStrLinkedListItem;
+  NewItem: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1240,10 +1260,10 @@ begin
   Result := False;
   if AString = '' then
     Exit;
+  Result := True;
   if FStart = nil then
   begin
     AddFirst(AString);
-    Result := True;
     Exit;
   end;
   New(NewItem);
@@ -1252,10 +1272,9 @@ begin
   FEnd.Next := NewItem;
   FEnd := NewItem;
   Inc(FSize);
-  Result := True;
 end;
 
-function TStrLinkedList.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   {$IFDEF THREADSAFE}
@@ -1270,16 +1289,15 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Add(It.Next);
-  Result := True;
+    Result := Result or Add(It.Next);
 end;
 
-function TStrLinkedList.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   I: Integer;
   It: IStrIterator;
-  Current: PStrLinkedListItem;
-  NewItem: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
+  NewItem: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1323,7 +1341,7 @@ begin
   Result := True;
 end;
 
-procedure TStrLinkedList.AddFirst(const AString: string);
+procedure TJclStrLinkedList.AddFirst(const AString: string);
 begin
   New(FStart);
   FStart.Str := AString;
@@ -1332,10 +1350,10 @@ begin
   Inc(FSize);
 end;
 
-procedure TStrLinkedList.Clear;
+procedure TJclStrLinkedList.Clear;
 var
   I: Integer;
-  Old, Current: PStrLinkedListItem;
+  Old, Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1354,19 +1372,19 @@ begin
   FSize := 0;
 end;
 
-function TStrLinkedList.Clone: TObject;
+function TJclStrLinkedList.Clone: TObject;
 var
-  NewList: TStrLinkedList;
+  NewList: TJclStrLinkedList;
 begin
-  NewList := TStrLinkedList.Create;
+  NewList := TJclStrLinkedList.Create;
   NewList.AddAll(Self);
   Result := NewList;
 end;
 
-function TStrLinkedList.Contains(const AString: string): Boolean;
+function TJclStrLinkedList.Contains(const AString: string): Boolean;
 var
   I: Integer;
-  Current: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1389,7 +1407,7 @@ begin
   end;
 end;
 
-function TStrLinkedList.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.ContainsAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   {$IFDEF THREADSAFE}
@@ -1411,7 +1429,7 @@ begin
     end;
 end;
 
-function TStrLinkedList.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.Equals(ACollection: IStrCollection): Boolean;
 var
   It, ItSelf: IStrIterator;
   {$IFDEF THREADSAFE}
@@ -1434,15 +1452,15 @@ begin
   Result := True;
 end;
 
-function TStrLinkedList.First: IStrIterator;
+function TJclStrLinkedList.First: IStrIterator;
 begin
   Result := TStrItr.Create(Self, FStart);
 end;
 
-function TStrLinkedList.GetString(Index: Integer): string;
+function TJclStrLinkedList.GetString(Index: Integer): string;
 var
   I: Integer;
-  Current: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1459,10 +1477,10 @@ begin
   Result := Current.Str;
 end;
 
-function TStrLinkedList.IndexOf(const AString: string): Integer;
+function TJclStrLinkedList.IndexOf(const AString: string): Integer;
 var
   I: Integer;
-  Current: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1487,20 +1505,20 @@ begin
   end;
 end;
 
-function TStrLinkedList.IsEmpty: Boolean;
+function TJclStrLinkedList.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
 end;
 
-function TStrLinkedList.Last: IStrIterator;
+function TJclStrLinkedList.Last: IStrIterator;
 begin
   Result := TStrItr.Create(Self, FStart);
 end;
 
-function TStrLinkedList.LastIndexOf(const AString: string): Integer;
+function TJclStrLinkedList.LastIndexOf(const AString: string): Integer;
 var
   I: Integer;
-  Current: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1522,10 +1540,10 @@ begin
   end;
 end;
 
-function TStrLinkedList.Remove(Index: Integer): string;
+function TJclStrLinkedList.Remove(Index: Integer): string;
 var
   I: Integer;
-  Old, Current: PStrLinkedListItem;
+  Old, Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1556,10 +1574,10 @@ begin
   Dec(FSize);
 end;
 
-function TStrLinkedList.Remove(const AString: string): Boolean;
+function TJclStrLinkedList.Remove(const AString: string): Boolean;
 var
   I: Integer;
-  Old, Current: PStrLinkedListItem;
+  Old, Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1589,6 +1607,7 @@ begin
         FStart := Current.Next;
       Dispose(Current);
       Dec(FSize);
+      Result := True;
       Exit;
     end;
     Old := Current;
@@ -1596,7 +1615,7 @@ begin
   end;
 end;
 
-function TStrLinkedList.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.RemoveAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   {$IFDEF THREADSAFE}
@@ -1606,15 +1625,15 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  Result := False;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Remove(It.Next);
+    Result := Result and Remove(It.Next);
 end;
 
-function TStrLinkedList.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrLinkedList.RetainAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   {$IFDEF THREADSAFE}
@@ -1633,10 +1652,10 @@ begin
       It.Remove;
 end;
 
-procedure TStrLinkedList.SetString(Index: Integer; const AString: string);
+procedure TJclStrLinkedList.SetString(Index: Integer; const AString: string);
 var
   I: Integer;
-  Current: PStrLinkedListItem;
+  Current: PJclStrLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1652,12 +1671,12 @@ begin
   Current.Str := AString;
 end;
 
-function TStrLinkedList.Size: Integer;
+function TJclStrLinkedList.Size: Integer;
 begin
   Result := FSize;
 end;
 
-function TStrLinkedList.SubList(First, Count: Integer): IStrList;
+function TJclStrLinkedList.SubList(First, Count: Integer): IStrList;
 var
   I: Integer;
   It: IStrIterator;
@@ -1672,7 +1691,7 @@ begin
   Last := First + Count - 1;
   if Last > FSize then
     Last := FSize - 1;
-  Result := TStrLinkedList.Create;
+  Result := TJclStrLinkedList.Create;
   I := 0;
   It := Self.First;
   while (I < First) and It.HasNext do
@@ -1688,9 +1707,9 @@ begin
   end;
 end;
 
-//=== { TLinkedList } ========================================================
+//=== { TJclLinkedList } =====================================================
 
-constructor TLinkedList.Create(ACollection: ICollection = nil; AOwnsObjects: Boolean = True);
+constructor TJclLinkedList.Create(ACollection: ICollection = nil; AOwnsObjects: Boolean = True);
 var
   It: IIterator;
 begin
@@ -1707,17 +1726,17 @@ begin
   end;
 end;
 
-destructor TLinkedList.Destroy;
+destructor TJclLinkedList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TLinkedList.Add(Index: Integer; AObject: TObject);
+procedure TJclLinkedList.Add(Index: Integer; AObject: TObject);
 var
   I: Integer;
-  Current: PLinkedListItem;
-  NewItem: PLinkedListItem;
+  Current: PJclLinkedListItem;
+  NewItem: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1753,9 +1772,9 @@ begin
   end;
 end;
 
-function TLinkedList.Add(AObject: TObject): Boolean;
+function TJclLinkedList.Add(AObject: TObject): Boolean;
 var
-  NewItem: PLinkedListItem;
+  NewItem: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1766,6 +1785,7 @@ begin
   Result := False;
   if AObject = nil then
     Exit;
+  Result := True;
   if FStart = nil then
   begin
     AddFirst(AObject);
@@ -1779,7 +1799,7 @@ begin
   Inc(FSize);
 end;
 
-function TLinkedList.AddAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.AddAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
   {$IFDEF THREADSAFE}
@@ -1794,16 +1814,16 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Add(It.Next);
+    Result := Result or Add(It.Next);
   Result := True;
 end;
 
-function TLinkedList.AddAll(Index: Integer; ACollection: ICollection): Boolean;
+function TJclLinkedList.AddAll(Index: Integer; ACollection: ICollection): Boolean;
 var
   I: Integer;
   It: IIterator;
-  Current: PLinkedListItem;
-  NewItem: PLinkedListItem;
+  Current: PJclLinkedListItem;
+  NewItem: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1847,7 +1867,7 @@ begin
   Result := True;
 end;
 
-procedure TLinkedList.AddFirst(AObject: TObject);
+procedure TJclLinkedList.AddFirst(AObject: TObject);
 begin
   New(FStart);
   FStart.Obj := AObject;
@@ -1856,10 +1876,10 @@ begin
   Inc(FSize);
 end;
 
-procedure TLinkedList.Clear;
+procedure TJclLinkedList.Clear;
 var
   I: Integer;
-  Old, Current: PLinkedListItem;
+  Old, Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1878,19 +1898,19 @@ begin
   FSize := 0;
 end;
 
-function TLinkedList.Clone: TObject;
+function TJclLinkedList.Clone: TObject;
 var
-  NewList: TLinkedList;
+  NewList: TJclLinkedList;
 begin
-  NewList := TLinkedList.Create;
+  NewList := TJclLinkedList.Create;
   NewList.AddAll(Self);
   Result := NewList;
 end;
 
-function TLinkedList.Contains(AObject: TObject): Boolean;
+function TJclLinkedList.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
-  Current: PLinkedListItem;
+  Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1913,7 +1933,7 @@ begin
   end;
 end;
 
-function TLinkedList.ContainsAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.ContainsAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
   {$IFDEF THREADSAFE}
@@ -1935,7 +1955,7 @@ begin
     end;
 end;
 
-function TLinkedList.Equals(ACollection: ICollection): Boolean;
+function TJclLinkedList.Equals(ACollection: ICollection): Boolean;
 var
   It, ItSelf: IIterator;
   {$IFDEF THREADSAFE}
@@ -1958,16 +1978,19 @@ begin
   Result := True;
 end;
 
-procedure TLinkedList.FreeObject(AObject: TObject);
+procedure TJclLinkedList.FreeObject(var AObject: TObject);
 begin
   if FOwnsObjects then
+  begin
     AObject.Free;
+    AObject := nil;
+  end;
 end;
 
-function TLinkedList.GetObject(Index: Integer): TObject;
+function TJclLinkedList.GetObject(Index: Integer): TObject;
 var
   I: Integer;
-  Current: PLinkedListItem;
+  Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -1984,10 +2007,10 @@ begin
   Result := Current.Obj;
 end;
 
-function TLinkedList.IndexOf(AObject: TObject): Integer;
+function TJclLinkedList.IndexOf(AObject: TObject): Integer;
 var
   I: Integer;
-  Current: PLinkedListItem;
+  Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2012,25 +2035,25 @@ begin
   end;
 end;
 
-function TLinkedList.First: IIterator;
+function TJclLinkedList.First: IIterator;
 begin
   Result := TItr.Create(Self, FStart);
 end;
 
-function TLinkedList.IsEmpty: Boolean;
+function TJclLinkedList.IsEmpty: Boolean;
 begin
   Result := FSize = 0;
 end;
 
-function TLinkedList.Last: IIterator;
+function TJclLinkedList.Last: IIterator;
 begin
   Result := TItr.Create(Self, FStart);
 end;
 
-function TLinkedList.LastIndexOf(AObject: TObject): Integer;
+function TJclLinkedList.LastIndexOf(AObject: TObject): Integer;
 var
   I: Integer;
-  Current: PLinkedListItem;
+  Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2052,10 +2075,10 @@ begin
   end;
 end;
 
-function TLinkedList.Remove(AObject: TObject): Boolean;
+function TJclLinkedList.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
-  Old, Current: PLinkedListItem;
+  Old, Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2075,7 +2098,6 @@ begin
     if Current.Obj = AObject then
     begin
       FreeObject(Current.Obj);
-      Current.Obj := nil;
       if Old <> nil then
       begin
         Old.Next := Current.Next;
@@ -2086,6 +2108,7 @@ begin
         FStart := Current.Next;
       Dispose(Current);
       Dec(FSize);
+      Result := True;
       Exit;
     end;
     Old := Current;
@@ -2093,10 +2116,10 @@ begin
   end;
 end;
 
-function TLinkedList.Remove(Index: Integer): TObject;
+function TJclLinkedList.Remove(Index: Integer): TObject;
 var
   I: Integer;
-  Old, Current: PLinkedListItem;
+  Old, Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2115,7 +2138,6 @@ begin
     Current := Current.Next;
   end;
   FreeObject(Current.Obj);
-  Current.Obj := nil;
   if Old <> nil then
   begin
     Old.Next := Current.Next;
@@ -2128,7 +2150,7 @@ begin
   Dec(FSize);
 end;
 
-function TLinkedList.RemoveAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.RemoveAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
   {$IFDEF THREADSAFE}
@@ -2138,15 +2160,15 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  Result := False;
+  Result := True;
   if ACollection = nil then
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Remove(It.Next);
+    Result := Result and Remove(It.Next);
 end;
 
-function TLinkedList.RetainAll(ACollection: ICollection): Boolean;
+function TJclLinkedList.RetainAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
   {$IFDEF THREADSAFE}
@@ -2165,10 +2187,10 @@ begin
       It.Remove;
 end;
 
-procedure TLinkedList.SetObject(Index: Integer; AObject: TObject);
+procedure TJclLinkedList.SetObject(Index: Integer; AObject: TObject);
 var
   I: Integer;
-  Current: PLinkedListItem;
+  Current: PJclLinkedListItem;
   {$IFDEF THREADSAFE}
   CS: IInterface;
   {$ENDIF THREADSAFE}
@@ -2184,12 +2206,12 @@ begin
   Current.Obj := AObject;
 end;
 
-function TLinkedList.Size: Integer;
+function TJclLinkedList.Size: Integer;
 begin
   Result := FSize;
 end;
 
-function TLinkedList.SubList(First, Count: Integer): IList;
+function TJclLinkedList.SubList(First, Count: Integer): IList;
 var
   I: Integer;
   It: IIterator;
@@ -2204,7 +2226,7 @@ begin
   Last := First + Count - 1;
   if Last > FSize then
     Last := FSize - 1;
-  Result := TLinkedList.Create;
+  Result := TJclLinkedList.Create;
   I := 0;
   It := Self.First;
   while (I < First) and It.HasNext do

@@ -1,22 +1,44 @@
-//------------------------------------------------------------------------------
-// The Delphi Container Library
-// Jean-Philippe BEMPEL aka RDM
-// rdm_30@yahoo.com
-//------------------------------------------------------------------------------
-unit Queue;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is Queue.pas.                                                                  }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
+{ Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
+{ All rights reserved.                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ The Delphi Container Library                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
+
+unit JclQueue;
 
 {$I dcl.inc}
 
 interface
 
 uses
-  DCL_intf, DCLUtil, AbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer;
 
 type
-  TIntfQueue = class(TAbstractContainer, IIntfQueue)
+  TJclIntfQueue = class(TJclAbstractContainer, IIntfQueue)
   private
     FCapacity: Integer;
-    FElements: TIInterfaceArray;
+    FElements: TDynIInterfaceArray;
     FHead: Integer;
     FTail: Integer;
   protected
@@ -30,10 +52,10 @@ type
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
-  TStrQueue = class(TAbstractContainer, IStrQueue)
+  TJclStrQueue = class(TJclAbstractContainer, IStrQueue)
   private
     FCapacity: Integer;
-    FElements: TStringArray;
+    FElements: TDynStringArray;
     FHead: Integer;
     FTail: Integer;
   protected
@@ -47,10 +69,10 @@ type
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
   end;
 
-  TQueue = class(TAbstractContainer, IQueue)
+  TJclQueue = class(TJclAbstractContainer, IQueue)
   private
     FCapacity: Integer;
-    FElements: TObjectArray;
+    FElements: TDynObjectArray;
     FHead: Integer;
     FTail: Integer;
   protected
@@ -66,9 +88,9 @@ type
 
 implementation
 
-//=== { TIntfQueue } =========================================================
+//=== { TJclIntfQueue } ======================================================
 
-constructor TIntfQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfQueue.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FHead := 0;
@@ -77,7 +99,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TIntfQueue.Contains(AObject: IInterface): Boolean;
+function TJclIntfQueue.Contains(AObject: IInterface): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -102,7 +124,7 @@ begin
   end;
 end;
 
-function TIntfQueue.Dequeue: IInterface;
+function TJclIntfQueue.Dequeue: IInterface;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -119,12 +141,12 @@ begin
   FHead := (FHead + 1) mod FCapacity;
 end;
 
-function TIntfQueue.Empty: Boolean;
+function TJclIntfQueue.Empty: Boolean;
 begin
   Result := FTail = FHead;
 end;
 
-procedure TIntfQueue.Enqueue(AObject: IInterface);
+procedure TJclIntfQueue.Enqueue(AObject: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -139,14 +161,14 @@ begin
   FTail := (FTail + 1) mod FCapacity;
 end;
 
-function TIntfQueue.Size: Integer;
+function TJclIntfQueue.Size: Integer;
 begin
   Result := FTail - FHead;
 end;
 
-//=== { TStrQueue } ==========================================================
+//=== { TJclStrQueue } =======================================================
 
-constructor TStrQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrQueue.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FHead := 0;
@@ -155,7 +177,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TStrQueue.Contains(const AString: string): Boolean;
+function TJclStrQueue.Contains(const AString: string): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -180,7 +202,7 @@ begin
   end;
 end;
 
-function TStrQueue.Dequeue: string;
+function TJclStrQueue.Dequeue: string;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -197,12 +219,12 @@ begin
   FHead := (FHead + 1) mod FCapacity;
 end;
 
-function TStrQueue.Empty: Boolean;
+function TJclStrQueue.Empty: Boolean;
 begin
   Result := FTail = FHead;
 end;
 
-procedure TStrQueue.Enqueue(const AString: string);
+procedure TJclStrQueue.Enqueue(const AString: string);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -217,21 +239,21 @@ begin
   FTail := (FTail + 1) mod FCapacity;
 end;
 
-function TStrQueue.Size: Integer;
+function TJclStrQueue.Size: Integer;
 begin
   Result := FTail - FHead;
 end;
 
-//=== { TQueue } =============================================================
+//=== { TJclQueue } ==========================================================
 
-constructor TQueue.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclQueue.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FCapacity := Capacity;
   SetLength(FElements, FCapacity);
 end;
 
-function TQueue.Contains(AObject: TObject): Boolean;
+function TJclQueue.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -256,7 +278,7 @@ begin
   end;
 end;
 
-function TQueue.Dequeue: TObject;
+function TJclQueue.Dequeue: TObject;
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -273,12 +295,12 @@ begin
   FHead := (FHead + 1) mod FCapacity;
 end;
 
-function TQueue.Empty: Boolean;
+function TJclQueue.Empty: Boolean;
 begin
   Result := FTail = FHead;
 end;
 
-procedure TQueue.Enqueue(AObject: TObject);
+procedure TJclQueue.Enqueue(AObject: TObject);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -293,7 +315,7 @@ begin
   FTail := (FTail + 1) mod FCapacity;
 end;
 
-function TQueue.Size: Integer;
+function TJclQueue.Size: Integer;
 begin
   Result := FTail - FHead;
 end;

@@ -28,18 +28,18 @@ requires
   rtl;
 
 contains
-  Vector in 'Vector.pas',
-  AbstractContainer in 'AbstractContainer.pas',
-  Algorithms in 'Algorithms.pas',
-  ArrayList in 'ArrayList.pas',
-  ArraySet in 'ArraySet.pas',
-  DCL_intf in 'DCL_intf.pas',
-  DCLUtil in 'DCLUtil.pas',
-  HashMap in 'HashMap.pas',
-  HashSet in 'HashSet.pas',
-  LinkedList in 'LinkedList.pas',
-  Queue in 'Queue.pas',
-  Stack in 'Stack.pas';
+  JclVector in 'JclVector.pas',
+  JclAbstractContainer in 'JclAbstractContainer.pas',
+  JclAlgorithms in 'JclAlgorithms.pas',
+  JclArrayList in 'JclArrayList.pas',
+  JclArraySet in 'JclArraySet.pas',
+  JclDCL_intf in 'JclDCL_intf.pas',
+  JclDCLUtil in 'JclDCLUtil.pas',
+  JclHashMap in 'JclHashMap.pas',
+  JclHashSet in 'JclHashSet.pas',
+  JclLinkedList in 'JclLinkedList.pas',
+  JclQueue in 'JclQueue.pas',
+  JclStack in 'JclStack.pas';
 
 
 end.

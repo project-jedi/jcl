@@ -1,20 +1,42 @@
-//------------------------------------------------------------------------------
-// The Delphi Container Library
-// Jean-Philippe BEMPEL aka RDM
-// rdm_30@yahoo.com
-//------------------------------------------------------------------------------
-unit Vector;
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is Vector.pas.                                                                 }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Jean-Philippe BEMPEL aka RDM. Portions created by  }
+{ Jean-Philippe BEMPEL are Copyright (C) Jean-Philippe BEMPEL (rdm_30 att yahoo dott com)          }
+{ All rights reserved.                                                                             }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ The Delphi Container Library                                                                     }
+{                                                                                                  }
+{**************************************************************************************************}
+
+// Last modified: $Date$
+// For history see end of file
+
+unit JclVector;
 
 {$I dcl.inc}
 
 interface
 
 uses
-  DCL_intf, DCLUtil, AbstractContainer;
+  JclDCL_intf, JclDCLUtil, JclAbstractContainer;
 
 type
-  TIntfVector = class(TAbstractContainer, IIntfCollection, IIntfList,
-      IIntfArray, IIntfCloneable)
+  TJclIntfVector = class(TJclAbstractContainer, IIntfCollection, IIntfList,
+    IIntfArray, IIntfCloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -23,7 +45,7 @@ type
     { ICloneable }
     function Clone: IInterface;
   public
-    Items: TIInterfaceArray;
+    Items: TDynIInterfaceArray;
     { IIntfCollection }
     function Add(AObject: IInterface): Boolean; overload;
     function AddAll(ACollection: IIntfCollection): Boolean; overload;
@@ -54,8 +76,8 @@ type
     procedure BeforeDestruction; override;
   end;
 
-  TStrVector = class(TAbstractContainer, IStrCollection, IStrList,
-      IStrArray, ICloneable)
+  TJclStrVector = class(TJclAbstractContainer, IStrCollection, IStrList,
+    IStrArray, ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
@@ -64,7 +86,7 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    Items: TStringArray;
+    Items: TDynStringArray;
     { IStrCollection }
     function Add(const AString: string): Boolean; overload;
     function AddAll(ACollection: IStrCollection): Boolean; overload;
@@ -95,16 +117,16 @@ type
     procedure BeforeDestruction; override;
   end;
 
-  TVector = class(TAbstractContainer, ICollection, IList, IArray, ICloneable)
+  TJclVector = class(TJclAbstractContainer, ICollection, IList, IArray, ICloneable)
   private
     FCount: Integer;
     FCapacity: Integer;
     FOwnsObjects: Boolean;
   protected
     procedure Grow; virtual;
-    procedure FreeObject(AObject: TObject);
+    procedure FreeObject(var AObject: TObject);
   public
-    Items: TObjectArray;
+    Items: TDynObjectArray;
     { ICollection }
     function Add(AObject: TObject): Boolean; overload;
     function AddAll(ACollection: ICollection): Boolean; overload;
@@ -140,10 +162,10 @@ type
 implementation
 
 type
-  TIntfItr = class(TAbstractContainer, IIntfIterator)
+  TIntfItr = class(TJclAbstractContainer, IIntfIterator)
   private
     FCursor: Integer;
-    FOwnList: TIntfVector;
+    FOwnList: TJclIntfVector;
     FLastRet: Integer;
     FSize: Integer;
   protected
@@ -159,14 +181,14 @@ type
     procedure Remove;
     procedure SetObject(AObject: IInterface);
   public
-    constructor Create(OwnList: TIntfVector);
+    constructor Create(OwnList: TJclIntfVector);
     destructor Destroy; override;
   end;
 
-  TStrItr = class(TAbstractContainer, IStrIterator)
+  TStrItr = class(TJclAbstractContainer, IStrIterator)
   private
     FCursor: Integer;
-    FOwnList: TStrVector;
+    FOwnList: TJclStrVector;
     FLastRet: Integer;
     FSize: Integer;
   protected
@@ -182,14 +204,14 @@ type
     procedure Remove;
     procedure SetString(const AString: string);
   public
-    constructor Create(OwnList: TStrVector);
+    constructor Create(OwnList: TJclStrVector);
     destructor Destroy; override;
   end;
 
-  TItr = class(TAbstractContainer, IIterator)
+  TItr = class(TJclAbstractContainer, IIterator)
   private
     FCursor: Integer;
-    FOwnList: TVector;
+    FOwnList: TJclVector;
     FLastRet: Integer;
     FSize: Integer;
   protected
@@ -205,13 +227,13 @@ type
     procedure Remove;
     procedure SetObject(AObject: TObject);
   public
-    constructor Create(OwnList: TVector);
+    constructor Create(OwnList: TJclVector);
     destructor Destroy; override;
   end;
 
 //=== { TIntfItr } ===========================================================
 
-constructor TIntfItr.Create(OwnList: TIntfVector);
+constructor TIntfItr.Create(OwnList: TJclIntfVector);
 begin
   inherited Create;
   FCursor := 0;
@@ -300,7 +322,7 @@ end;
 
 //=== { TStrItr } ============================================================
 
-constructor TStrItr.Create(OwnList: TStrVector);
+constructor TStrItr.Create(OwnList: TJclStrVector);
 begin
   inherited Create;
   FCursor := 0;
@@ -393,7 +415,7 @@ end;
 
 //=== { TItr } ===============================================================
 
-constructor TItr.Create(OwnList: TVector);
+constructor TItr.Create(OwnList: TJclVector);
 begin
   inherited Create;
   FCursor := 0;
@@ -484,9 +506,9 @@ begin
   FOwnList.Items[FCursor] := AObject;
 end;
 
-//=== { TIntfVector } ========================================================
+//=== { TJclIntfVector } =====================================================
 
-constructor TIntfVector.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclIntfVector.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -494,13 +516,13 @@ begin
   SetLength(Items, FCapacity);
 end;
 
-destructor TIntfVector.Destroy;
+destructor TJclIntfVector.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TIntfVector.Add(Index: Integer; AObject: IInterface);
+procedure TJclIntfVector.Add(Index: Integer; AObject: IInterface);
 begin
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
@@ -509,7 +531,7 @@ begin
   Inc(FCount);
 end;
 
-function TIntfVector.Add(AObject: IInterface): Boolean;
+function TJclIntfVector.Add(AObject: IInterface): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
@@ -518,7 +540,7 @@ begin
   Result := True;
 end;
 
-function TIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
   Size: Integer;
@@ -540,7 +562,7 @@ begin
   Result := True;
 end;
 
-function TIntfVector.AddAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.AddAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
@@ -553,7 +575,7 @@ begin
   Result := True;
 end;
 
-procedure TIntfVector.Clear;
+procedure TJclIntfVector.Clear;
 var
   I: Integer;
 begin
@@ -562,16 +584,16 @@ begin
   FCount := 0;
 end;
 
-function TIntfVector.Clone: IInterface;
+function TJclIntfVector.Clone: IInterface;
 var
   NewList: IIntfList;
 begin
-  NewList := TIntfVector.Create(FCapacity);
+  NewList := TJclIntfVector.Create(FCapacity);
   NewList.AddAll(Self);
   Result := NewList;
 end;
 
-function TIntfVector.Contains(AObject: IInterface): Boolean;
+function TJclIntfVector.Contains(AObject: IInterface): Boolean;
 var
   I: Integer;
 begin
@@ -586,7 +608,7 @@ begin
     end;
 end;
 
-function TIntfVector.ContainsAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.ContainsAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
@@ -602,7 +624,7 @@ begin
     end;
 end;
 
-function TIntfVector.Equals(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.Equals(ACollection: IIntfCollection): Boolean;
 var
   I: Integer;
   It: IIntfIterator;
@@ -619,7 +641,7 @@ begin
   Result := True;
 end;
 
-function TIntfVector.GetObject(Index: Integer): IInterface;
+function TJclIntfVector.GetObject(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
   begin
@@ -629,13 +651,13 @@ begin
   Result := Items[Index];
 end;
 
-procedure TIntfVector.Grow;
+procedure TJclIntfVector.Grow;
 begin
   FCapacity := FCapacity + FCapacity div 4;
   SetLength(Items, FCapacity);
 end;
 
-function TIntfVector.IndexOf(AObject: IInterface): Integer;
+function TJclIntfVector.IndexOf(AObject: IInterface): Integer;
 var
   I: Integer;
 begin
@@ -650,17 +672,17 @@ begin
     end;
 end;
 
-function TIntfVector.First: IIntfIterator;
+function TJclIntfVector.First: IIntfIterator;
 begin
   Result := TIntfItr.Create(Self);
 end;
 
-function TIntfVector.IsEmpty: Boolean;
+function TJclIntfVector.IsEmpty: Boolean;
 begin
   Result := FCount = 0;
 end;
 
-function TIntfVector.Last: IIntfIterator;
+function TJclIntfVector.Last: IIntfIterator;
 var
   NewIterator: TIntfItr;
 begin
@@ -670,7 +692,7 @@ begin
   Result := NewIterator;
 end;
 
-function TIntfVector.LastIndexOf(AObject: IInterface): Integer;
+function TJclIntfVector.LastIndexOf(AObject: IInterface): Integer;
 var
   I: Integer;
 begin
@@ -685,7 +707,7 @@ begin
     end;
 end;
 
-function TIntfVector.Remove(Index: Integer): IInterface;
+function TJclIntfVector.Remove(Index: Integer): IInterface;
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
@@ -696,7 +718,7 @@ begin
   Dec(FCount);
 end;
 
-function TIntfVector.Remove(AObject: IInterface): Boolean;
+function TJclIntfVector.Remove(AObject: IInterface): Boolean;
 var
   I: Integer;
 begin
@@ -714,7 +736,7 @@ begin
     end;
 end;
 
-function TIntfVector.RemoveAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.RemoveAll(ACollection: IIntfCollection): Boolean;
 var
   It: IIntfIterator;
 begin
@@ -726,7 +748,7 @@ begin
     Remove(It.Next);
 end;
 
-function TIntfVector.RetainAll(ACollection: IIntfCollection): Boolean;
+function TJclIntfVector.RetainAll(ACollection: IIntfCollection): Boolean;
 var
   I: Integer;
 begin
@@ -738,7 +760,7 @@ begin
       Remove(I);
 end;
 
-procedure TIntfVector.SetObject(Index: Integer;
+procedure TJclIntfVector.SetObject(Index: Integer;
   AObject: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
@@ -746,12 +768,12 @@ begin
   Items[Index] := AObject;
 end;
 
-function TIntfVector.Size: Integer;
+function TJclIntfVector.Size: Integer;
 begin
   Result := FCount;
 end;
 
-function TIntfVector.SubList(First, Count: Integer): IIntfList;
+function TJclIntfVector.SubList(First, Count: Integer): IIntfList;
 var
   I: Integer;
   Last: Integer;
@@ -759,22 +781,22 @@ begin
   Last := First + Count - 1;
   if Last >= FCount then
     Last := FCount - 1;
-  Result := TIntfVector.Create(Count);
+  Result := TJclIntfVector.Create(Count);
   for I := First to Last do
     Result.Add(Items[I]);
 end;
 
-procedure TIntfVector.AfterConstruction;
+procedure TJclIntfVector.AfterConstruction;
 begin
 end;
 
-procedure TIntfVector.BeforeDestruction;
+procedure TJclIntfVector.BeforeDestruction;
 begin
 end;
 
-//=== { TStrVector } =========================================================
+//=== { TJclStrVector } ======================================================
 
-constructor TStrVector.Create(Capacity: Integer = DCLDefaultCapacity);
+constructor TJclStrVector.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
   inherited Create;
   FCount := 0;
@@ -782,13 +804,13 @@ begin
   SetLength(Items, FCapacity);
 end;
 
-destructor TStrVector.Destroy;
+destructor TJclStrVector.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TStrVector.Add(Index: Integer; const AString: string);
+procedure TJclStrVector.Add(Index: Integer; const AString: string);
 begin
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(string));
@@ -797,7 +819,7 @@ begin
   Inc(FCount);
 end;
 
-function TStrVector.Add(const AString: string): Boolean;
+function TJclStrVector.Add(const AString: string): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
@@ -806,7 +828,7 @@ begin
   Result := True;
 end;
 
-function TStrVector.AddAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
@@ -819,7 +841,7 @@ begin
   Result := True;
 end;
 
-function TStrVector.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
+function TJclStrVector.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
   Size: Integer;
@@ -841,15 +863,15 @@ begin
   Result := True;
 end;
 
-procedure TStrVector.AfterConstruction;
+procedure TJclStrVector.AfterConstruction;
 begin
 end;
 
-procedure TStrVector.BeforeDestruction;
+procedure TJclStrVector.BeforeDestruction;
 begin
 end;
 
-procedure TStrVector.Clear;
+procedure TJclStrVector.Clear;
 var
   I: Integer;
 begin
@@ -858,16 +880,16 @@ begin
   FCount := 0;
 end;
 
-function TStrVector.Clone: TObject;
+function TJclStrVector.Clone: TObject;
 var
-  NewList: TStrVector;
+  NewList: TJclStrVector;
 begin
-  NewList := TStrVector.Create(FCapacity);
+  NewList := TJclStrVector.Create(FCapacity);
   NewList.AddAll(Self);
   Result := NewList;
 end;
 
-function TStrVector.Contains(const AString: string): Boolean;
+function TJclStrVector.Contains(const AString: string): Boolean;
 var
   I: Integer;
 begin
@@ -882,7 +904,7 @@ begin
     end;
 end;
 
-function TStrVector.ContainsAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.ContainsAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
@@ -898,7 +920,7 @@ begin
     end;
 end;
 
-function TStrVector.Equals(ACollection: IStrCollection): Boolean;
+function TJclStrVector.Equals(ACollection: IStrCollection): Boolean;
 var
   I: Integer;
   It: IStrIterator;
@@ -915,12 +937,12 @@ begin
   Result := True;
 end;
 
-function TStrVector.First: IStrIterator;
+function TJclStrVector.First: IStrIterator;
 begin
   Result := TStrItr.Create(Self);
 end;
 
-function TStrVector.GetString(Index: Integer): string;
+function TJclStrVector.GetString(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
   begin
@@ -930,13 +952,13 @@ begin
   Result := Items[Index];
 end;
 
-procedure TStrVector.Grow;
+procedure TJclStrVector.Grow;
 begin
   FCapacity := FCapacity + FCapacity div 4;
   SetLength(Items, FCapacity);
 end;
 
-function TStrVector.IndexOf(const AString: string): Integer;
+function TJclStrVector.IndexOf(const AString: string): Integer;
 var
   I: Integer;
 begin
@@ -951,12 +973,12 @@ begin
     end;
 end;
 
-function TStrVector.IsEmpty: Boolean;
+function TJclStrVector.IsEmpty: Boolean;
 begin
   Result := FCount = 0;
 end;
 
-function TStrVector.Last: IStrIterator;
+function TJclStrVector.Last: IStrIterator;
 var
   NewIterator: TStrItr;
 begin
@@ -966,7 +988,7 @@ begin
   Result := NewIterator;
 end;
 
-function TStrVector.LastIndexOf(const AString: string): Integer;
+function TJclStrVector.LastIndexOf(const AString: string): Integer;
 var
   I: Integer;
 begin
@@ -981,7 +1003,7 @@ begin
     end;
 end;
 
-function TStrVector.Remove(const AString: string): Boolean;
+function TJclStrVector.Remove(const AString: string): Boolean;
 var
   I: Integer;
 begin
@@ -999,7 +1021,7 @@ begin
     end;
 end;
 
-function TStrVector.Remove(Index: Integer): string;
+function TJclStrVector.Remove(Index: Integer): string;
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
@@ -1010,7 +1032,7 @@ begin
   Dec(FCount);
 end;
 
-function TStrVector.RemoveAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.RemoveAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
 begin
@@ -1022,7 +1044,7 @@ begin
     Remove(It.Next);
 end;
 
-function TStrVector.RetainAll(ACollection: IStrCollection): Boolean;
+function TJclStrVector.RetainAll(ACollection: IStrCollection): Boolean;
 var
   I: Integer;
 begin
@@ -1034,19 +1056,19 @@ begin
       Remove(I);
 end;
 
-procedure TStrVector.SetString(Index: Integer; const AString: string);
+procedure TJclStrVector.SetString(Index: Integer; const AString: string);
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AString;
 end;
 
-function TStrVector.Size: Integer;
+function TJclStrVector.Size: Integer;
 begin
   Result := FCount;
 end;
 
-function TStrVector.SubList(First, Count: Integer): IStrList;
+function TJclStrVector.SubList(First, Count: Integer): IStrList;
 var
   I: Integer;
   Last: Integer;
@@ -1054,14 +1076,14 @@ begin
   Last := First + Count - 1;
   if Last >= FCount then
     Last := FCount - 1;
-  Result := TStrVector.Create(Count);
+  Result := TJclStrVector.Create(Count);
   for I := First to Last do
     Result.Add(Items[I]);
 end;
 
-//=== { TVector } ============================================================
+//=== { TJclVector } =========================================================
 
-constructor TVector.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
+constructor TJclVector.Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObjects: Boolean = True);
 begin
   inherited Create;
   FCount := 0;
@@ -1070,13 +1092,13 @@ begin
   SetLength(Items, FCapacity);
 end;
 
-destructor TVector.Destroy;
+destructor TJclVector.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-procedure TVector.Add(Index: Integer; AObject: TObject);
+procedure TJclVector.Add(Index: Integer; AObject: TObject);
 begin
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(TObject));
@@ -1085,7 +1107,7 @@ begin
   Inc(FCount);
 end;
 
-function TVector.Add(AObject: TObject): Boolean;
+function TJclVector.Add(AObject: TObject): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
@@ -1094,7 +1116,7 @@ begin
   Result := True;
 end;
 
-function TVector.AddAll(Index: Integer; ACollection: ICollection): Boolean;
+function TJclVector.AddAll(Index: Integer; ACollection: ICollection): Boolean;
 var
   It: IIterator;
   Size: Integer;
@@ -1116,7 +1138,7 @@ begin
   Result := True;
 end;
 
-function TVector.AddAll(ACollection: ICollection): Boolean;
+function TJclVector.AddAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
@@ -1129,28 +1151,25 @@ begin
   Result := True;
 end;
 
-procedure TVector.Clear;
+procedure TJclVector.Clear;
 var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-  begin
     FreeObject(Items[I]);
-    Items[I] := nil;
-  end;
   FCount := 0;
 end;
 
-function TVector.Clone: TObject;
+function TJclVector.Clone: TObject;
 var
-  NewList: TVector;
+  NewList: TJclVector;
 begin
-  NewList := TVector.Create(FCapacity, False); // Only one can have FOwnsObject = True
+  NewList := TJclVector.Create(FCapacity, False); // Only one can have FOwnsObject = True
   NewList.AddAll(Self);
   Result := NewList;
 end;
 
-function TVector.Contains(AObject: TObject): Boolean;
+function TJclVector.Contains(AObject: TObject): Boolean;
 var
   I: Integer;
 begin
@@ -1165,7 +1184,7 @@ begin
     end;
 end;
 
-function TVector.ContainsAll(ACollection: ICollection): Boolean;
+function TJclVector.ContainsAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
@@ -1181,7 +1200,7 @@ begin
     end;
 end;
 
-function TVector.Equals(ACollection: ICollection): Boolean;
+function TJclVector.Equals(ACollection: ICollection): Boolean;
 var
   I: Integer;
   It: IIterator;
@@ -1198,13 +1217,16 @@ begin
   Result := True;
 end;
 
-procedure TVector.FreeObject(AObject: TObject);
+procedure TJclVector.FreeObject(var AObject: TObject);
 begin
   if FOwnsObjects then
+  begin
     AObject.Free;
+    AObject := nil;
+  end;
 end;
 
-function TVector.GetObject(Index: Integer): TObject;
+function TJclVector.GetObject(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
   begin
@@ -1214,13 +1236,13 @@ begin
   Result := Items[Index];
 end;
 
-procedure TVector.Grow;
+procedure TJclVector.Grow;
 begin
   FCapacity := FCapacity + FCapacity div 4;
   SetLength(Items, FCapacity);
 end;
 
-function TVector.IndexOf(AObject: TObject): Integer;
+function TJclVector.IndexOf(AObject: TObject): Integer;
 var
   I: Integer;
 begin
@@ -1235,17 +1257,17 @@ begin
     end;
 end;
 
-function TVector.First: IIterator;
+function TJclVector.First: IIterator;
 begin
   Result := TItr.Create(Self);
 end;
 
-function TVector.IsEmpty: Boolean;
+function TJclVector.IsEmpty: Boolean;
 begin
   Result := FCount = 0;
 end;
 
-function TVector.Last: IIterator;
+function TJclVector.Last: IIterator;
 var
   NewIterator: TItr;
 begin
@@ -1255,7 +1277,7 @@ begin
   Result := NewIterator;
 end;
 
-function TVector.LastIndexOf(AObject: TObject): Integer;
+function TJclVector.LastIndexOf(AObject: TObject): Integer;
 var
   I: Integer;
 begin
@@ -1270,7 +1292,7 @@ begin
     end;
 end;
 
-function TVector.Remove(AObject: TObject): Boolean;
+function TJclVector.Remove(AObject: TObject): Boolean;
 var
   I: Integer;
 begin
@@ -1288,7 +1310,7 @@ begin
     end;
 end;
 
-function TVector.Remove(Index: Integer): TObject;
+function TJclVector.Remove(Index: Integer): TObject;
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
@@ -1299,7 +1321,7 @@ begin
   Dec(FCount);
 end;
 
-function TVector.RemoveAll(ACollection: ICollection): Boolean;
+function TJclVector.RemoveAll(ACollection: ICollection): Boolean;
 var
   It: IIterator;
 begin
@@ -1311,7 +1333,7 @@ begin
     Remove(It.Next);
 end;
 
-function TVector.RetainAll(ACollection: ICollection): Boolean;
+function TJclVector.RetainAll(ACollection: ICollection): Boolean;
 var
   I: Integer;
 begin
@@ -1323,19 +1345,19 @@ begin
       Remove(I);
 end;
 
-procedure TVector.SetObject(Index: Integer; AObject: TObject);
+procedure TJclVector.SetObject(Index: Integer; AObject: TObject);
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBounds.Create(RsEOutOfBounds);
   Items[Index] := AObject;
 end;
 
-function TVector.Size: Integer;
+function TJclVector.Size: Integer;
 begin
   Result := FCount;
 end;
 
-function TVector.SubList(First, Count: Integer): IList;
+function TJclVector.SubList(First, Count: Integer): IList;
 var
   I: Integer;
   Last: Integer;
@@ -1343,16 +1365,16 @@ begin
   Last := First + Count - 1;
   if Last >= FCount then
     Last := FCount - 1;
-  Result := TVector.Create(Count, FOwnsObjects);
+  Result := TJclVector.Create(Count, FOwnsObjects);
   for I := First to Last do
     Result.Add(Items[I]);
 end;
 
-procedure TVector.AfterConstruction;
+procedure TJclVector.AfterConstruction;
 begin
 end;
 
-procedure TVector.BeforeDestruction;
+procedure TJclVector.BeforeDestruction;
 begin
 end;
 
