@@ -32,6 +32,7 @@
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert Rossmair (rrossmair)                                                                    }
 {   Rudy Velthuis                                                                                  }
+{   Scott Price                                                                                    }
 {   Wim De Cleen                                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -207,6 +208,8 @@ function FileMove(const ExistingFileName, NewFileName: string; ReplaceExisting: 
 function FileRestore(const FileName: string): Boolean;
 function GetBackupFileName(const FileName: string): string;
 function FileGetDisplayName(const FileName: string): string;
+function FileGetGroupName(const FileName: string): string;
+function FileGetOwnerName(const FileName: string): string;
 function FileGetSize(const FileName: string): Integer;
 function FileGetTempName(const Prefix: string): string;
 {$IFDEF MSWINDOWS}
@@ -2900,6 +2903,68 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Donator: Scott Price; Contributor: Robert Rossmair }
+function FileGetGroupName(const FileName: string): string;
+{$IFDEF MSWINDOWS}
+var
+  DomainName: AnsiString;
+  pSD: PSecurityDescriptor;
+  BufSize: DWORD;
+begin
+  if IsWinNT then
+  begin
+    GetFileSecurity(PChar(FileName), GROUP_SECURITY_INFORMATION, nil, 0, BufSize);
+    if BufSize > 0 then
+    begin
+      GetMem(pSD, BufSize);
+      GetFileSecurity(PChar(FileName), GROUP_SECURITY_INFORMATION,
+        pSD, BufSize, BufSize);
+      LookupAccountBySid(Pointer(Integer(pSD) + Integer(pSD^.Group)), Result, DomainName);
+      FreeMem(pSD);
+      Result := Trim(Result);
+    end;
+  end;
+end;
+{$ENDIF ~MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  { TODO:  Implementation to retrieve similar data from Nix type systems }
+end;
+{$ENDIF ~UNIX}
+
+//--------------------------------------------------------------------------------------------------
+
+{ TODO -cHelp : Donator: Scott Price; Contributor: Robert Rossmair }
+function FileGetOwnerName(const FileName: string): string;
+{$IFDEF MSWINDOWS}
+var
+  DomainName: AnsiString;
+  pSD: PSecurityDescriptor;
+  BufSize: DWORD;
+begin
+  if IsWinNT then
+  begin
+    GetFileSecurity(PChar(FileName), OWNER_SECURITY_INFORMATION, nil, 0, BufSize);
+    if BufSize > 0 then
+    begin
+      GetMem(pSD, BufSize);
+      GetFileSecurity(PChar(FileName), OWNER_SECURITY_INFORMATION,
+        pSD, BufSize, BufSize);
+      LookupAccountBySid(Pointer(Integer(pSD) + Integer(pSD^.Owner)), Result, DomainName);
+      FreeMem(pSD);
+      Result := Trim(Result);
+    end;
+  end;
+end;
+{$ENDIF ~MSWINDOWS}
+{$IFDEF UNIX}
+begin
+  { TODO:  Implementation to retrieve similar data from Nix type systems }
+end;
+{$ENDIF ~UNIX}
+
+//--------------------------------------------------------------------------------------------------
+
 function FileGetSize(const FileName: string): Integer;
 var
   SearchRec: TSearchRec;
@@ -2997,7 +3062,7 @@ var
   RetVal: DWORD;
 begin
   FillChar(FileInfo, SizeOf(FileInfo), #0);
-  RetVal := SHGetFileInfo(PChar(FileNAme), 0, FileInfo, SizeOf(FileInfo),
+  RetVal := SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo),
     SHGFI_TYPENAME or SHGFI_USEFILEATTRIBUTES);
   if RetVal <> 0 then
     Result := FileInfo.szTypeName;
@@ -5945,6 +6010,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.35  2004/12/20 04:03:25  rrossmair
+// - added FileGetOwnerName, FileGetGroupName functions (Windows part)
+//
 // Revision 1.34  2004/11/18 10:13:24  rrossmair
 // - fixed for Unix
 //
