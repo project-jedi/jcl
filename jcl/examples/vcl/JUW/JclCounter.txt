@@ -1,5 +1,4 @@
-TJclCounter
-ContinueCount
+EJclCounterError
 StartCount
 StopCount
-EJclCounterError
+TJclCounter

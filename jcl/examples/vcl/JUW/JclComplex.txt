@@ -1,10 +1,4 @@
-TComplex_VERSION
-TComplexKind
-crRectangular
-crPolar
-TCoords
-TRectCoord
-TJclComplex
-ComplexPrecision
-MaxTerm
 EpsilonSqr
+MaxTerm
+TComplexKind
+TJclComplex

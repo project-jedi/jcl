@@ -1,12 +1,5 @@
-TJclAppInstDataKind
-AI_INSTANCECREATED
-AI_INSTANCEDESTROYED
-AI_USERMSG
-AppInstDataKindNoData
-AppInstCmdLineDataKind
-TJclAppInstances
-JclAppInstances
 ReadMessageCheck
 ReadMessageData
 ReadMessageString
 ReadMessageStrings
+TJclAppInstances
