@@ -3459,7 +3459,7 @@ begin
     wvWinXP:
       IsWinXP := True;
     wvWin2003:
-      IsWinXP := True;
+      IsWin2003 := True;
   end;
 end;
 
