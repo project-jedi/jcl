@@ -466,6 +466,7 @@ begin
       {$IFDEF LINUX}
       LoCaseChar := AnsiChar(tolower(Byte(CurrChar)));
       UpCaseChar := AnsiChar(toupper(Byte(CurrChar)));
+      {$DEFINE CASE_MAP_INITIALIZED}
       {$ENDIF LINUX}
       {$IFNDEF CASE_MAP_INITIALIZED}
       Implement case map initialization here
@@ -4179,6 +4180,9 @@ initialization
 //  - added AddStringToStrings() by Jeff
 
 // $Log$
+// Revision 1.19  2004/05/06 16:22:27  rrossmair
+// fixed LoadCaseMap for Kylix
+//
 // Revision 1.18  2004/05/06 05:09:55  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //
