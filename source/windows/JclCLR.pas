@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclTD32.pas.                                                                }
+{ The Original Code is JclCLR.pas.                                                                }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
@@ -20,7 +20,7 @@
 { Microsoft .Net framework CLR information support routines and classes.                           }
 {                                                                                                  }
 { Unit owner: Flier Lu <flier_lu@yahoo.com.cn>                                                     }
-{ Last modified: February 24, 2002                                                                 }
+{ Last modified: March 5, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -49,6 +49,46 @@ type
   TJclIndex = Cardinal;
 
 const
+  MAX_CLASS_NAME = 1024;
+  MAX_PATH_NAME  = 260;
+
+//==================================================================================================
+// Flag	Value	Description
+//==================================================================================================
+const  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
+  COMIMAGE_FLAGS_STRONGNAMESIGNED	= $00000008;	// Image has a strong name signature.
+  COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).
+type
+  TClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
+  TClrImageFlags = set of TClrImageFlag;
+
+//==================================================================================================
+// Non VOS v-table entries.  Define an array of these pointed to by
+// IMAGE_COR20_HEADER.VTableFixups.  Each entry describes a contiguous array of
+// v-table slots.  The slots start out initialized to the meta data token value
+// for the method they need to call.  At image load time, the CLR Loader will
+// turn each entry into a pointer to machine code for the CPU and can be
+// called directly.
+//==================================================================================================
+const
+  COR_VTABLE_32BIT             = $01;          // V-table slots are 32-bits in size.
+  COR_VTABLE_64BIT             = $02;          // V-table slots are 64-bits in size.
+  COR_VTABLE_FROM_UNMANAGED    = $04;          // If set, transition from unmanaged.
+  COR_VTABLE_CALL_MOST_DERIVED = $10;          // Call most derived method described by
+
+type
+  _IMAGE_COR_VTABLEFIXUP = packed record
+    RVA: DWord;            // Offset of v-table array in image.
+    EntriesCount,          // How many entries at location.
+    EntriesType: Word;     // COR_VTABLE_xxx type of entries.
+  end;
+  IMAGE_COR_VTABLEFIXUP = _IMAGE_COR_VTABLEFIXUP;
+  TImageCorVTableFixup = _IMAGE_COR_VTABLEFIXUP;
+  PImageCorVTableFixup = ^TImageCorVTableFixup;
+  TImageCorVTableFixupArray = array[0..MaxWord-1] of TImageCorVTableFixup;
+  PImageCorVTableFixupArray = ^TImageCorVTableFixupArray;
+
+const
   pdIn                        =   $0001;     // Param is [In]
   pdOut                       =   $0002;     // Param is [out]
   pdOptional                  =   $0010;     // Param is optional
@@ -62,6 +102,9 @@ const
 
 const
   MetadataHeaderSignature = $424A5342; // 'BSJB'
+
+type
+  TJclCLRToken = DWORD;
 
 type
   PCLRStreamHeader = ^TCLRStreamHeader;
@@ -156,23 +199,23 @@ type
     ttUnknown2b);           //  $2b
 
 type
-  TJclPeCLRInformation = class;
-  TJclPeMetadataHeader = class;
+  TJclPeCLRHeaderEx = class;
+  TJclPeMetadata = class;
 
   TJclPeCLRStreamClass = class of TJclPeCLRStream;
   TJclPeCLRStream = class
   private
-    FMetadata: TJclPeMetadataHeader;
+    FMetadata: TJclPeMetadata;
     FHeader: PCLRStreamHeader;
     function GetName: string;
     function GetOffset: DWORD;
     function GetSize: DWORD;
     function GetData: Pointer;
   protected
-    constructor Create(const AMetadata: TJclPeMetadataHeader;
+    constructor Create(const AMetadata: TJclPeMetadata;
                        const AHeader: PCLRStreamHeader); virtual;
   public
-    property Metadata: TJclPeMetadataHeader read FMetadata;
+    property Metadata: TJclPeMetadata read FMetadata;
     property Header: PCLRStreamHeader read FHeader;
 
     property Name: string read GetName;
@@ -188,7 +231,7 @@ type
     function GetString(const Idx: TJclIndex): WideString;
     function GetStringCount: TJclIndex;
   protected
-    constructor Create(const AMetadata: TJclPeMetadataHeader;
+    constructor Create(const AMetadata: TJclPeMetadata;
                        const AHeader: PCLRStreamHeader); override;
   public
     destructor Destroy; override;
@@ -205,7 +248,7 @@ type
     function GetGuid(const Idx: TJclIndex): TGUID;
     function GetGuidCount: TJclIndex;
   protected
-    constructor Create(const AMetadata: TJclPeMetadataHeader;
+    constructor Create(const AMetadata: TJclPeMetadata;
                        const AHeader: PCLRStreamHeader); override;
   public
     property Guids[const Idx: TJclIndex]: TGUID read GetGuid; default;
@@ -231,7 +274,7 @@ type
     function GetBlob(const Idx: TJclIndex): TJclPeCLRBlobRecord;
     function GetBlobCount: TJclIndex;
   protected
-    constructor Create(const AMetadata: TJclPeMetadataHeader;
+    constructor Create(const AMetadata: TJclPeMetadata;
                        const AHeader: PCLRStreamHeader); override;
   public
     destructor Destroy; override;
@@ -260,10 +303,14 @@ type
   TJclPeCLRTableRow = class
   private
     FTable: TJclPeCLRTable;
+    FIndex: TJclIndex;
   protected
     constructor Create(const ATable: TJclPeCLRTable); virtual;
+
+    procedure Update; virtual;
   public
     property Table: TJclPeCLRTable read FTable;
+    property Index: TJclIndex read FIndex;
   end;
 
   TJclPeCLRTableClass = class of TJclPeCLRTable;
@@ -284,7 +331,10 @@ type
     procedure Load; virtual;
     procedure SetSize(const Value: Integer);
 
+    procedure Update; virtual;
+
     function AddRow(const ARow: TJclPeCLRTableRow): Integer;
+    function RealRowCount: Integer;
 
     procedure Reset;
     function ReadIndex(const HeapKind: TJclPeCLRHeapKind): DWORD; overload;
@@ -295,7 +345,7 @@ type
 
     class function TableRowClass: TJclPeCLRTableRowClass; virtual;
 
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableRow read GetRow; default;
   public
     destructor Destroy; override;
 
@@ -427,7 +477,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableAssemblyRefRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableAssemblyRefRow read GetRow; default;
   end;
 
   TJclPeCLRTableAssemblyRefOS = class(TJclPeCLRTableAssemblyOS)
@@ -475,7 +525,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableConstantRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableConstantRow read GetRow; default;
   end;
 
   TJclPeCLRTableCustomAttributeRow = class(TJclPeCLRTableRow)
@@ -500,7 +550,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableCustomAttributeRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableCustomAttributeRow read GetRow; default;
   end;
 
   TJclPeCLRTableDeclSecurity = class(TJclPeCLRTable);
@@ -513,10 +563,13 @@ type
     FFlags: Word;
     FNameOffset: DWORD;
     FSignatureIdx: DWORD;
+    FParentToken: TJclPeCLRTableRow;
     function GetName: WideString;
     function GetSignature: TJclPeCLRBlobRecord;
   protected
     constructor Create(const ATable: TJclPeCLRTable); override;
+
+    procedure SetParentToken(const ARow: TJclPeCLRTableRow);
   public
     property Flags: Word read FFlags;
     property NameOffset: DWORD read FNameOffset;
@@ -524,6 +577,8 @@ type
 
     property Name: WideString read GetName;
     property Signature: TJclPeCLRBlobRecord read GetSignature;
+
+    property ParentToken: TJclPeCLRTableRow read FParentToken;
   end;
 
   TJclPeCLRTableField = class(TJclPeCLRTable)
@@ -532,13 +587,19 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableFieldRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableFieldRow read GetRow; default;
   end;
 
   TJclPeCLRTableFieldLayout = class(TJclPeCLRTable);
   TJclPeCLRTableFieldMarshal = class(TJclPeCLRTable);
   TJclPeCLRTableFieldRVA = class(TJclPeCLRTable);
-  TJclPeCLRTableFile = class(TJclPeCLRTable);
+
+  TJclPeCLRTableFileRow = class(TJclPeCLRTableRow)
+  end;
+
+  TJclPeCLRTableFile = class(TJclPeCLRTable)
+  end;
+
   TJclPeCLRTableImplMap = class(TJclPeCLRTable);
 
   TJclPeCLRTableInterfaceImplRow = class(TJclPeCLRTableRow)
@@ -558,7 +619,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableInterfaceImplRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableInterfaceImplRow read GetRow; default;
   end;
 
   TJclPeCLRTableManifestResource = class(TJclPeCLRTable);
@@ -587,7 +648,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableMemberRefRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableMemberRefRow read GetRow; default;
   end;
 
   TJclPeCLRTableMethodDefRow = class(TJclPeCLRTableRow)
@@ -598,10 +659,13 @@ type
     FNameOffset: DWORD;
     FSignatureIdx: DWORD;
     FParamListIdx: DWORD;
+    FParentToken: TJclPeCLRTableRow;
     function GetName: WideString;
     function GetSignature: TJclPeCLRBlobRecord;
   protected
     constructor Create(const ATable: TJclPeCLRTable); override;
+
+    procedure SetParentToken(const ARow: TJclPeCLRTableRow);
   public
     property RVA: DWORD read FRVA;
     property ImplFlags: Word read FImplFlags;
@@ -612,6 +676,8 @@ type
 
     property Name: WideString read GetName;
     property Signature: TJclPeCLRBlobRecord read GetSignature;
+
+    property ParentToken: TJclPeCLRTableRow read FParentToken;
   end;
 
   TJclPeCLRTableMethodDef = class(TJclPeCLRTable)
@@ -620,7 +686,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableMethodDefRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableMethodDefRow read GetRow; default;
   end;
 
   TJclPeCLRTableMethodImpl = class(TJclPeCLRTable);
@@ -649,7 +715,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableParamDefRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableParamDefRow read GetRow; default;
   end;
 
   TJclPeCLRTableProperty = class(TJclPeCLRTable);
@@ -673,7 +739,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableStandAloneSigRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableStandAloneSigRow read GetRow; default;
   end;
 
   TJclPeCLRTableTypeDefRow = class(TJclPeCLRTableRow)
@@ -684,11 +750,23 @@ type
     FExtendsIdx: DWORD;
     FFieldListIdx: DWORD;
     FMethodListIdx: DWORD;
+    FFields,
+    FMethods: TList;
     function GetName: WideString;
     function GetNamespace: WideString;
+    function GetField(const Idx: TJclIndex): TJclPeCLRTableFieldRow;
+    function GetFieldCount: TJclIndex;
+    function GetMethod(const Idx: TJclIndex): TJclPeCLRTableMethodDefRow;
+    function GetMethodCount: TJclIndex;
+    procedure UpdateFields;
+    procedure UpdateMethods;
   protected
     constructor Create(const ATable: TJclPeCLRTable); override;
+
+    procedure Update; override;
   public
+    destructor Destroy; override;
+
     property Flags: DWORD read FFlags;
     property NameOffset: DWORD read FNameOffset;
     property NamespaceOffset: DWORD read FNamespaceOffset;
@@ -698,6 +776,11 @@ type
 
     property Name: WideString read GetName;
     property Namespace: WideString read GetNamespace;
+
+    property Fields[const Idx: TJclIndex]: TJclPeCLRTableFieldRow read GetField;
+    property FieldCount: TJclIndex read GetFieldCount;
+    property Methods[const Idx: TJclIndex]: TJclPeCLRTableMethodDefRow read GetMethod;
+    property MethodCount: TJclIndex read GetMethodCount;
   end;
 
   TJclPeCLRTableTypeDef = class(TJclPeCLRTable)
@@ -706,7 +789,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableTypeDefRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableTypeDefRow read GetRow; default;
   end;
 
   TJclPeCLRTableTypeRefRow = class(TJclPeCLRTableRow)
@@ -734,7 +817,7 @@ type
   protected
     class function TableRowClass: TJclPeCLRTableRowClass; override;
   public
-    property Rows[const Idx: TJclIndex]: TJclPeCLRTableTypeRefRow read GetRow;
+    property Rows[const Idx: TJclIndex]: TJclPeCLRTableTypeRefRow read GetRow; default;
   end;
 
   TJclPeCLRTableTypeSpec = class(TJclPeCLRTable);
@@ -747,10 +830,12 @@ type
     function GetTable(const AKind: TJclPeCLRTableKind): TJclPeCLRTable;
     function GetBigHeap(const AHeapKind: TJclPeCLRHeapKind): Boolean;
   protected
-    constructor Create(const AMetadata: TJclPeMetadataHeader;
+    constructor Create(const AMetadata: TJclPeMetadata;
                        const AHeader: PCLRStreamHeader); override;
   public
     destructor Destroy; override;
+
+    procedure Update; virtual;
 
     function FindTable(const AKind: TJclPeCLRTableKind;
       var ATable: TJclPeCLRTable): Boolean;
@@ -764,7 +849,7 @@ type
     property TableCount: TJclIndex read FTableCount;
   end;
 
-  TJclPeMetadataHeader = class
+  TJclPeMetadata = class
   private
     FImage: TJclPeImage;
     FHeader: PCLRMetadataHeader;
@@ -772,6 +857,7 @@ type
     FStringStream: TJclPeCLRStringsStream;
     FGuidStream: TJclPeCLRGuidStream;
     FBlobStream: TJclPeCLRBlobStream;
+    FTableStream: TJclPeCLRTableStream;
     function GetVersionString: WideString;
     function GetStream(const Idx: TJclIndex): TJclPeCLRStream;
     function GetStreamCount: TJclIndex;
@@ -781,6 +867,8 @@ type
     function GetGuidCount: TJclIndex;
     function GetBlob(const Idx: TJclIndex): TJclPeCLRBlobRecord;
     function GetBlobCount: TJclIndex;
+    function GetTable(const AKind: TJclPeCLRTableKind): TJclPeCLRTable;
+    function GetTableCount: TJclIndex;
   protected
     constructor Create(const AImage: TJclPeImage);
   public
@@ -790,6 +878,10 @@ type
     function FindStream(const AClass: TJclPeCLRStreamClass; var Stream: TJclPeCLRStream): Boolean; overload;
 
     function StringAt(const Offset: DWORD): WideString;
+
+    class function TokenTable(const Token: DWORD): TJclPeCLRTableKind;
+    class function TokenIndex(const Token: DWORD): TJclIndex;
+    class function TokenCode(const Token: DWORD): Integer;
 
     property Image: TJclPeImage read FImage;
     property Header: PCLRMetadataHeader read FHeader;
@@ -803,27 +895,44 @@ type
     property StringCount: TJclIndex read GetStringCount;
     property Guids[const Idx: TJclIndex]: TGUID read GetGuid;
     property GuidCount: TJclIndex read GetGuidCount;
-    property Blobs[const Idx: TJclIndex]: TJclPeCLRBlobRecord read GetBlob; 
+    property Blobs[const Idx: TJclIndex]: TJclPeCLRBlobRecord read GetBlob;
     property BlobCount: TJclIndex read GetBlobCount;
+    property Tables[const AKind: TJclPeCLRTableKind]: TJclPeCLRTable read GetTable;
+    property TableCount: TJclIndex read GetTableCount;
   end;
 
-  TJclPeCLRInformation = class
+  TJclPeCLRHeaderEx = class(TJclPeCLRHeader)
   private
-    FImage: TJclPeImage;
-    FMetadataHeader: TJclPeMetadataHeader;
+    FMetadata: TJclPeMetadata;
+    FFlags: TClrImageFlags;
+    FResources,
+    FStrongNameSignature: TCustomMemoryStream;
+    function GetMetadata: TJclPeMetadata;
+    function GetResources: TCustomMemoryStream;
+    function GetStrongNameSignature: TCustomMemoryStream;
+    function GetEntryPointToken: TJclPeCLRTableRow;
   public
     constructor Create(const AImage: TJclPeImage);
     destructor Destroy; override;
 
-    property Image: TJclPeImage read FImage;
+    function HasResources: Boolean;
+    function HasStrongNameSignature: Boolean;
 
-    property MetadataHeader: TJclPeMetadataHeader read FMetadataHeader;
+    class function ClrImageFlag(const Flags: DWORD): TClrImageFlags; overload;
+    class function ClrImageFlag(const Flags: TClrImageFlags): DWORD; overload;
+
+    property Metadata: TJclPeMetadata read GetMetadata;
+
+    property Flags: TClrImageFlags read FFlags;
+    property EntryPointToken: TJclPeCLRTableRow read GetEntryPointToken; 
+    property Resources: TCustomMemoryStream read GetResources;
+    property StrongNameSignature: TCustomMemoryStream read GetStrongNameSignature;
   end;
 
 implementation
 
 uses
-  Math, TypInfo, JclUnicode;
+  Math, TypInfo, JclUnicode, JclResources;
 
 const
   ValidTableMapping: array[TJclPeCLRTableKind] of TJclPeCLRTableClass = (
@@ -872,15 +981,47 @@ const
     TJclPeCLRTable,                     //  $2A
     TJclPeCLRTable);                    //  $2B
 
+//==================================================================================================
+// TJclReferenceMemoryStream
+//==================================================================================================
+{ TODO : Move TJclReferenceMemoryStream to JclSysUtil unit or other }
+type
+  TJclReferenceMemoryStream = class (TCustomMemoryStream)
+  public
+    constructor Create(const Ptr: Pointer; Size: Longint);
+    function Write(const Buffer; Count: Longint): Longint; override;
+  end;
+
+//--------------------------------------------------------------------------------------------------
+
+constructor TJclReferenceMemoryStream.Create(const Ptr: Pointer; Size: Longint);
+begin
+  Assert(not IsBadReadPtr(Ptr, Size));
+  inherited Create;
+  SetPointer(Ptr, Size);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclReferenceMemoryStream.Write(const Buffer; Count: Longint): Longint;
+begin
+  raise EJclError.CreateResRec(@RsCannotWriteRefStream);
+end;
+
 { TODO -cDesign : Move FormatVersionString to other unit }
-function FormatVersionString(HiV, LoV: Word): string;
+function FormatVersionString(const HiV, LoV: Word): string; overload;
 begin
   Result := Format('%u.%.2u', [HiV, LoV]);
 end;
 
+function FormatVersionString(const Major, Minor, Build, Revision: Word): string; overload;
+begin
+  Result := Format('%u.%u.%u.%u', [Major, Minor, Build, Revision]);
+end;
+
 { TJclPeCLRStream }
 
-constructor TJclPeCLRStream.Create(const AMetadata: TJclPeMetadataHeader;
+constructor TJclPeCLRStream.Create(const AMetadata: TJclPeMetadata;
   const AHeader: PCLRStreamHeader);
 begin
   inherited Create;
@@ -912,7 +1053,7 @@ end;
 { TJclPeCLRStringsStream }
 
 constructor TJclPeCLRStringsStream.Create(
-  const AMetadata: TJclPeMetadataHeader; const AHeader: PCLRStreamHeader);
+  const AMetadata: TJclPeMetadata; const AHeader: PCLRStreamHeader);
 var
   pch: PChar;
   off: DWORD;
@@ -960,7 +1101,7 @@ end;
 { TJclPeCLRGuidStream }
 
 constructor TJclPeCLRGuidStream.Create(
-  const AMetadata: TJclPeMetadataHeader; const AHeader: PCLRStreamHeader);
+  const AMetadata: TJclPeMetadata; const AHeader: PCLRStreamHeader);
 var
   I: Integer;
   pg: PGUID;
@@ -1025,7 +1166,7 @@ end;
 { TJclPeCLRBlobStream }
 
 constructor TJclPeCLRBlobStream.Create(
-  const AMetadata: TJclPeMetadataHeader; const AHeader: PCLRStreamHeader);
+  const AMetadata: TJclPeMetadata; const AHeader: PCLRStreamHeader);
 var
   ABlob: TJclPeCLRBlobRecord;
 begin
@@ -1083,6 +1224,12 @@ begin
   inherited Create;
 
   FTable := ATable;
+  FIndex := Table.RealRowCount;
+end;
+
+procedure TJclPeCLRTableRow.Update;
+begin
+  // do nothing, just for override
 end;
 
 { TJclPeCLRTable }
@@ -1118,7 +1265,9 @@ procedure TJclPeCLRTable.Load;
 var
   I: Integer;
 begin
-  if (RowCount > 0) and (TableRowClass <> TJclPeCLRTableRow) then
+  Assert(RowCount > 0);
+
+  if TableRowClass <> TJclPeCLRTableRow then
     for I:=0 to RowCount-1 do
       AddRow(TableRowClass.Create(Self));
 end;
@@ -1150,6 +1299,14 @@ begin
     FRows := TObjectList.Create;
 
   Result := FRows.Add(ARow);
+end;
+
+function TJclPeCLRTable.RealRowCount: Integer;
+begin
+  if Assigned(FRows) then
+    Result := FRows.Count
+  else
+    Result := 0;
 end;
 
 function TJclPeCLRTable.ReadIndex(const HeapKind: TJclPeCLRHeapKind): DWORD;
@@ -1200,6 +1357,15 @@ end;
 class function TJclPeCLRTable.TableRowClass: TJclPeCLRTableRowClass;
 begin
   Result := TJclPeCLRTableRow;
+end;
+
+procedure TJclPeCLRTable.Update;
+var
+  I: Integer;
+begin
+  if Assigned(FRows) then
+  for I:=0 to RowCount-1 do
+    Rows[I].Update;
 end;
 
 { TJclPeCLRTableModule }
@@ -1446,6 +1612,7 @@ begin
   FFlags        := Table.ReadWord;
   FNameOffset   := Table.ReadIndex(hkString);
   FSignatureIdx := Table.ReadIndex(hkBlob);
+  FParentToken  := nil;
 end;
 
 function TJclPeCLRTableFieldRow.GetName: WideString;
@@ -1456,6 +1623,11 @@ end;
 function TJclPeCLRTableFieldRow.GetSignature: TJclPeCLRBlobRecord;
 begin
   Result := Table.Stream.Metadata.Blobs[FSignatureIdx];
+end;
+
+procedure TJclPeCLRTableFieldRow.SetParentToken(const ARow: TJclPeCLRTableRow);
+begin
+  FParentToken := ARow;
 end;
 
 { TJclPeCLRTableField }
@@ -1539,6 +1711,7 @@ begin
   FNameOffset   := Table.ReadIndex(hkString);
   FSignatureIdx := Table.ReadIndex(hkBlob);
   FParamListIdx := Table.ReadIndex([ttParamDef]);
+  FParentToken  := nil;
 end;
 
 function TJclPeCLRTableMethodDefRow.GetName: WideString;
@@ -1549,6 +1722,11 @@ end;
 function TJclPeCLRTableMethodDefRow.GetSignature: TJclPeCLRBlobRecord;
 begin
   Result := Table.Stream.Metadata.Blobs[FSignatureIdx];
+end;
+
+procedure TJclPeCLRTableMethodDefRow.SetParentToken(const ARow: TJclPeCLRTableRow);
+begin
+  FParentToken := ARow;
 end;
 
 { TJclPeCLRTableMethodDef }
@@ -1631,6 +1809,17 @@ begin
   FExtendsIdx      := Table.ReadIndex([ttTypeDef, ttTypeRef, ttTypeSpec]);
   FFieldListIdx    := Table.ReadIndex([ttFieldDef]);
   FMethodListIdx   := Table.ReadIndex([ttMethodDef]);
+
+  FFields          := nil;
+  FMethods         := nil;
+end;
+
+destructor TJclPeCLRTableTypeDefRow.Destroy;
+begin
+  FreeAndNil(FFields);
+  FreeAndNil(FMethods);
+
+  inherited;
 end;
 
 function TJclPeCLRTableTypeDefRow.GetName: WideString;
@@ -1641,6 +1830,88 @@ end;
 function TJclPeCLRTableTypeDefRow.GetNamespace: WideString;
 begin
   Result := Table.Stream.Metadata.StringAt(FNamespaceOffset);
+end;
+
+function TJclPeCLRTableTypeDefRow.GetField(const Idx: TJclIndex): TJclPeCLRTableFieldRow;
+begin
+  if not Assigned(FFields) then
+    UpdateFields;
+
+  Result := TJclPeCLRTableFieldRow(FFields.Items[Idx]);
+end;
+
+function TJclPeCLRTableTypeDefRow.GetFieldCount: TJclIndex;
+begin
+  if not Assigned(FFields) then
+    UpdateFields;
+
+  Result := FFields.Count;
+end;
+
+function TJclPeCLRTableTypeDefRow.GetMethod(const Idx: TJclIndex): TJclPeCLRTableMethodDefRow;
+begin
+  if not Assigned(FMethods) then
+    UpdateMethods;
+
+  Result := TJclPeCLRTableMethodDefRow(FMethods.Items[Idx]);
+end;
+
+function TJclPeCLRTableTypeDefRow.GetMethodCount: TJclIndex;
+begin
+  if not Assigned(FMethods) then
+    UpdateMethods;
+
+  Result := FMethods.Count;
+end;
+
+procedure TJclPeCLRTableTypeDefRow.UpdateFields;
+var
+  FieldTable: TJclPeCLRTableField;
+  Idx, MaxFieldListIdx: TJclIndex;
+begin
+  with Table as TJclPeCLRTableTypeDef do
+  if not Assigned(FFields) and Stream.FindTable(ttFieldDef, TJclPeCLRTable(FieldTable)) then
+  begin
+    FFields := TList.Create;
+    if RowCount > (Index+1) then
+      MaxFieldListIdx := Rows[Index+1].FieldListIdx
+    else
+      MaxFieldListIdx := FieldTable.RowCount;
+    for Idx:=FieldListIdx-1 to MaxFieldListIdx-1 do
+    begin
+      FFields.Add(FieldTable.Rows[Idx]);
+      FieldTable.Rows[Idx].SetParentToken(Self);
+    end;
+  end;
+end;
+
+procedure TJclPeCLRTableTypeDefRow.UpdateMethods;
+var
+  MethodTable: TJclPeCLRTableMethodDef;
+  Idx, MaxMethodListIdx: TJclIndex;
+begin
+  with Table as TJclPeCLRTableTypeDef do
+  if not Assigned(FMethods) and Stream.FindTable(ttMethodDef, TJclPeCLRTable(MethodTable)) then
+  begin
+    FMethods := TList.Create;
+    if RowCount > (Index+1) then
+      MaxMethodListIdx := Rows[Index+1].FieldListIdx
+    else
+      MaxMethodListIdx := MethodTable.RowCount;
+    for Idx:=FieldListIdx-1 to MaxMethodListIdx-1 do
+    begin
+      FMethods.Add(MethodTable.Rows[Idx]);
+      MethodTable.Rows[Idx].SetParentToken(Self);
+    end;
+  end;
+end;
+
+procedure TJclPeCLRTableTypeDefRow.Update;
+begin
+  inherited;
+
+  UpdateFields;
+  UpdateMethods;
 end;
 
 { TJclPeCLRTableTypeDef }
@@ -1696,7 +1967,7 @@ end;
 
 { TJclPeCLRTableStream }
 
-constructor TJclPeCLRTableStream.Create(const AMetadata: TJclPeMetadataHeader;
+constructor TJclPeCLRTableStream.Create(const AMetadata: TJclPeMetadata;
   const AHeader: PCLRStreamHeader);
 
   function BitCount(const Value: Int64): Integer;
@@ -1767,9 +2038,18 @@ begin
   Result := Assigned(ATable);
 end;
 
-{ TJclPeMetadataHeader }
+procedure TJclPeCLRTableStream.Update;
+var
+  AKind: TJclPeCLRTableKind;
+begin
+  for AKind:=Low(TJclPeCLRTableKind) to High(TJclPeCLRTableKind) do
+    if Assigned(FTables[AKind]) then
+      FTables[AKind].Update;
+end;
 
-constructor TJclPeMetadataHeader.Create(const AImage: TJclPeImage);
+{ TJclPeMetadata }
+
+constructor TJclPeMetadata.Create(const AImage: TJclPeImage);
 
   function GetStreamClass(const Name: string): TJclPeCLRStreamClass;
   begin
@@ -1799,6 +2079,7 @@ constructor TJclPeMetadataHeader.Create(const AImage: TJclPeImage);
     pStreamPart: PStreamPartitionHeader;
     pStream: PCLRStreamHeader;
     I: Integer;
+    TableStream: TJclPeCLRTableStream;
   begin
     pStreamPart := PStreamPartitionHeader(DWord(@Header.Version[0]) + Header.Length);
     pStream     := @pStreamPart.StreamHeaders[0];
@@ -1809,9 +2090,11 @@ constructor TJclPeMetadataHeader.Create(const AImage: TJclPeImage);
       pStream := PCLRStreamHeader(DWord(@pStream.Name[0]) +
                  (((StrLen(@pStream.Name[0])+1)+3) and (not $3)));
     end;
+    if FindStream(TJclPeCLRTableStream, TJclPeCLRStream(TableStream)) then
+      TableStream.Update;
   end;
 begin
-  Assert(AImage.CLRHeader.HasMetadata);
+  Assert(AImage.IsCLR and AImage.CLRHeader.HasMetadata);
 
   inherited Create;
 
@@ -1820,7 +2103,7 @@ begin
   with Image.CLRHeader.Header.MetaData do
   begin
     Assert(Size > SizeOf(FHeader^));
-    FHeader  := Image.RvaToVa(VirtualAddress);
+    FHeader := Image.RvaToVa(VirtualAddress);
     Assert(not IsBadReadPtr(FHeader, Size));
   end;
 
@@ -1830,16 +2113,17 @@ begin
   FStringStream := nil;
   FGuidStream   := nil;
   FBlobStream   := nil;
+  FTableStream  := nil;
 end;
 
-destructor TJclPeMetadataHeader.Destroy;
+destructor TJclPeMetadata.Destroy;
 begin
   FreeAndNil(FStreams);
 
   inherited;
 end;
 
-function TJclPeMetadataHeader.GetVersionString: WideString;
+function TJclPeMetadata.GetVersionString: WideString;
 var
   VerStr: string;
 begin
@@ -1848,18 +2132,18 @@ begin
   Result := UTF8ToWideString(VerStr)
 end;
 
-function TJclPeMetadataHeader.GetStream(const Idx: TJclIndex): TJclPeCLRStream;
+function TJclPeMetadata.GetStream(const Idx: TJclIndex): TJclPeCLRStream;
 begin
   Assert(Idx < GetStreamCount);
   Result := TJclPeCLRStream(FStreams.Items[Idx]);
 end;
 
-function TJclPeMetadataHeader.GetStreamCount: TJclIndex;
+function TJclPeMetadata.GetStreamCount: TJclIndex;
 begin
   Result := FStreams.Count;
 end;
 
-function TJclPeMetadataHeader.FindStream(const AName: string;
+function TJclPeMetadata.FindStream(const AName: string;
   var Stream: TJclPeCLRStream): Boolean;
 var
   I: Integer;
@@ -1877,7 +2161,7 @@ begin
   Stream := nil;
 end;
 
-function TJclPeMetadataHeader.FindStream(const AClass: TJclPeCLRStreamClass;
+function TJclPeMetadata.FindStream(const AClass: TJclPeCLRStreamClass;
   var Stream: TJclPeCLRStream): Boolean;
 var
   I: Integer;
@@ -1895,14 +2179,14 @@ begin
   Stream := nil;
 end;
 
-function TJclPeMetadataHeader.GetString(const Idx: TJclIndex): WideString;
+function TJclPeMetadata.GetString(const Idx: TJclIndex): WideString;
 begin
   if Assigned(FStringStream) or
      FindStream(TJclPeCLRStringsStream, TJclPeCLRStream(FStringStream)) then
     Result := FStringStream.Strings[Idx];
 end;
 
-function TJclPeMetadataHeader.GetStringCount: TJclIndex;
+function TJclPeMetadata.GetStringCount: TJclIndex;
 begin
   if Assigned(FStringStream) or
      FindStream(TJclPeCLRStringsStream, TJclPeCLRStream(FStringStream)) then
@@ -1911,21 +2195,21 @@ begin
     Result := 0;
 end;
 
-function TJclPeMetadataHeader.StringAt(const Offset: DWORD): WideString;
+function TJclPeMetadata.StringAt(const Offset: DWORD): WideString;
 begin
   if Assigned(FStringStream) or
      FindStream(TJclPeCLRStringsStream, TJclPeCLRStream(FStringStream)) then
     Result := TJclPeCLRStringsStream(FStringStream).At(Offset);
 end;
 
-function TJclPeMetadataHeader.GetGuid(const Idx: TJclIndex): TGUID;
+function TJclPeMetadata.GetGuid(const Idx: TJclIndex): TGUID;
 begin
   if Assigned(FGuidStream) or
      FindStream(TJclPeCLRGuidStream, TJclPeCLRStream(FGuidStream)) then
     Result := FGuidStream.Guids[Idx];
 end;
 
-function TJclPeMetadataHeader.GetGuidCount: TJclIndex;
+function TJclPeMetadata.GetGuidCount: TJclIndex;
 begin
   if Assigned(FGuidStream) or
      FindStream(TJclPeCLRGuidStream, TJclPeCLRStream(FGuidStream)) then
@@ -1934,7 +2218,7 @@ begin
     Result := 0;
 end;
 
-function TJclPeMetadataHeader.GetBlob(const Idx: TJclIndex): TJclPeCLRBlobRecord;
+function TJclPeMetadata.GetBlob(const Idx: TJclIndex): TJclPeCLRBlobRecord;
 begin
   if Assigned(FBlobStream) or
      FindStream(TJclPeCLRBlobStream, TJclPeCLRStream(FBlobStream)) then
@@ -1943,7 +2227,7 @@ begin
     Result := nil;
 end;
 
-function TJclPeMetadataHeader.GetBlobCount: TJclIndex;
+function TJclPeMetadata.GetBlobCount: TJclIndex;
 begin
   if Assigned(FBlobStream) or
      FindStream(TJclPeCLRBlobStream, TJclPeCLRStream(FBlobStream)) then
@@ -1952,25 +2236,134 @@ begin
     Result := 0;
 end;
 
-{ TJclPeCLRInformation }
-
-constructor TJclPeCLRInformation.Create(const AImage: TJclPeImage);
+function TJclPeMetadata.GetTable(const AKind: TJclPeCLRTableKind): TJclPeCLRTable;
 begin
-  Assert(Assigned(AImage));
-  Assert(AImage.IsCLR);
-
-  inherited Create;
-
-  FImage := AImage;
-
-  FMetadataHeader := TJclPeMetadataHeader.Create(Image);
+  if Assigned(FTableStream) or
+     FindStream(TJclPeCLRTableStream, TJclPeCLRStream(FTableStream)) then
+    Result := FTableStream.Tables[AKind]
+  else
+    Result := nil;
 end;
 
-destructor TJclPeCLRInformation.Destroy;
+function TJclPeMetadata.GetTableCount: TJclIndex;
 begin
-  FreeAndNil(FMetadataHeader);
+  if Assigned(FTableStream) or
+     FindStream(TJclPeCLRTableStream, TJclPeCLRStream(FTableStream)) then
+    Result := FTableStream.TableCount
+  else
+    Result := 0;
+end;
+
+class function TJclPeMetadata.TokenTable(const Token: DWORD): TJclPeCLRTableKind;
+begin
+  Result := TJclPeCLRTableKind(Token shr 24);
+end;
+
+class function TJclPeMetadata.TokenIndex(const Token: DWORD): TJclIndex;
+begin
+  Result := (Token and $FFFFFF) - 1;
+end;
+
+class function TJclPeMetadata.TokenCode(const Token: DWORD): Integer;
+begin
+  Result := Token and $FF000000;
+end;
+
+{ TJclPeCLRInformation }
+
+constructor TJclPeCLRHeaderEx.Create(const AImage: TJclPeImage);
+begin
+  inherited Create(AImage);
+
+  FFlags               := ClrImageFlag(Header.Flags);
+  FMetadata            := nil;
+  FResources           := nil;
+  FStrongNameSignature := nil;
+end;
+
+destructor TJclPeCLRHeaderEx.Destroy;
+begin
+  FreeAndNil(FStrongNameSignature);
+  FreeAndNil(FResources);
+  FreeAndNil(FMetadata);
 
   inherited;
+end;
+
+const
+  ClrImageFlagMapping: array[TClrImageFlag] of DWORD =
+    (COMIMAGE_FLAGS_ILONLY, COMIMAGE_FLAGS_32BITREQUIRED,
+     COMIMAGE_FLAGS_STRONGNAMESIGNED, COMIMAGE_FLAGS_TRACKDEBUGDATA);
+
+class function TJclPeCLRHeaderEx.ClrImageFlag(const Flags: DWORD): TClrImageFlags;
+var
+  AFlag: TClrImageFlag;
+begin
+  Result := [];
+  for AFlag:=Low(TClrImageFlag) to High(TClrImageFlag) do
+    if (ClrImageFlagMapping[AFlag] and Flags) = ClrImageFlagMapping[AFlag] then
+      Include(Result, AFlag);
+end;
+
+class function TJclPeCLRHeaderEx.ClrImageFlag(const Flags: TClrImageFlags): DWORD;
+var
+  AFlag: TClrImageFlag;
+begin
+  Result := 0;
+  for AFlag:=Low(TClrImageFlag) to High(TClrImageFlag) do
+    if AFlag in Flags then
+      Result := Result or ClrImageFlagMapping[AFlag];
+end;
+
+function TJclPeCLRHeaderEx.GetMetadata: TJclPeMetadata;
+begin
+  if not Assigned(FMetadata) and HasMetadata then
+    FMetadata := TJclPeMetadata.Create(Image);
+  Result := FMetadata;
+end;
+
+function TJclPeCLRHeaderEx.HasStrongNameSignature: Boolean;
+begin
+  with Header.StrongNameSignature do
+  Result := Assigned(FStrongNameSignature) or
+            ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+end;
+
+function TJclPeCLRHeaderEx.GetStrongNameSignature: TCustomMemoryStream;
+begin
+  if not Assigned(FStrongNameSignature) and HasStrongNameSignature then
+  with Header.StrongNameSignature do
+    FStrongNameSignature := TJclReferenceMemoryStream.Create(Image.RvaToVa(VirtualAddress), Size);
+  Result := FStrongNameSignature;
+end;
+
+function TJclPeCLRHeaderEx.HasResources: Boolean;
+begin
+  with Header.Resources do
+  Result := Assigned(FResources) or
+            ((Size > 0) and not IsBadReadPtr(Image.RvaToVa(VirtualAddress), Size));
+end;
+
+function TJclPeCLRHeaderEx.GetResources: TCustomMemoryStream;
+begin
+  if not Assigned(FResources) and HasResources then
+  with Header.Resources do
+  begin
+    Assert(PDWord(Image.RvaToVa(VirtualAddress))^ = (Size - SizeOf(DWORD)));
+    FResources := TJclReferenceMemoryStream.Create(
+      Image.RvaToVa(VirtualAddress{+SizeOf(DWORD)}), Size{-SizeOf(DWORD)});
+  end;
+  Result := FResources;
+end;
+
+function TJclPeCLRHeaderEx.GetEntryPointToken: TJclPeCLRTableRow;
+begin
+  try
+    Result := Metadata.Tables[Metadata.TokenTable(Header.EntryPointToken)].
+      Rows[Metadata.TokenIndex(Header.EntryPointToken)];
+  except
+    Result := nil;
+  end;
 end;
 
 end.
