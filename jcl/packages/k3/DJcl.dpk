@@ -62,6 +62,8 @@ contains
   JclStrings in '../../source/common/JclStrings.pas',
   JclSysInfo in '../../source/common/JclSysInfo.pas',
   JclSysUtils in '../../source/common/JclSysUtils.pas',
-  JclUnitConv in '../../source/common/JclUnitConv.pas';
+  JclUnitConv in '../../source/common/JclUnitConv.pas',
+  JclZlib in '../../source/common/JclZlib.pas',
+  zlibh in '../../source/unix/zlibh.pas';
 
 end.
