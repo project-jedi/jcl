@@ -881,7 +881,7 @@ function Sin(X: Float): Float;
 begin
   {$IFNDEF MATH_EXT_SPECIALVALUES}
   DomainCheck(Abs(X) > MaxAngle);
-  {$ENDIF MATH_EXT_SPECIALVALUES}
+  {$ENDIF ~MATH_EXT_SPECIALVALUES}
   Result := FSin(X);
 end;
 
@@ -3760,6 +3760,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.8  2004/06/16 07:30:27  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.7  2004/06/14 06:24:52  marquardt
 // style cleaning IFDEF
 //

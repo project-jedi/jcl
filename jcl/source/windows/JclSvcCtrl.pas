@@ -413,7 +413,7 @@ begin
   FreeAndNil(FDependentServices);
   FreeAndNil(FDependentGroups);
   FreeAndNil(FDependentByServices);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -841,7 +841,7 @@ end;
 destructor TJclServiceGroup.Destroy;
 begin
   FreeAndNil(FServices);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -901,7 +901,7 @@ begin
   FreeAndNil(FServices);
   Close;
   UnloadModule(FAdvApi32Handle);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1452,6 +1452,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.19  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

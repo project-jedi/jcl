@@ -31,11 +31,13 @@
 
 unit JclMIDI;
 
-interface
-
 {$I jcl.inc}
 
-uses JclBase, Classes;
+interface
+
+uses
+  Classes,
+  JclBase;
 
 // manifest constants for MIDI message protocol
 const
@@ -190,7 +192,7 @@ type
   TSingleNoteTuningData = packed record
   case Integer of
     0:
-      (Key: TMIDINote; Frequency: array[0..2] of TMIDIDataByte);
+      (Key: TMIDINote; Frequency: array [0..2] of TMIDIDataByte);
     1:
       (DWord: LongWord);
   end;
@@ -363,12 +365,12 @@ implementation
 
 uses
   JclResources,
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   JclWinMIDI,
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
   //JclUnixMIDI,
-{$ENDIF UNIX}
+  {$ENDIF UNIX}
   SysUtils;
 
 procedure ErrorNotImplemented;
@@ -381,35 +383,33 @@ end;
 function MIDIOut(DeviceID: Cardinal = 0): IJclMIDIOut;
 begin
   Result := nil;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Result := JclWinMIDI.MIDIOut(DeviceID);
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
   { TODO -oRobert Rossmair : Unix MIDI Out }
   //Result := JclUnixMIDI.MidiOut(DeviceID);
   ErrorNotImplemented;
-{$ENDIF UNIX}
+  {$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure GetMidiOutputs(const List: TStrings);
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   JclWinMIDI.GetMidiOutputs(List);
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-{ TODO -oRobert Rossmair : Unix GetMIDIOutputs }
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  { TODO -oRobert Rossmair : Unix GetMIDIOutputs }
   //JclUnixMIDI.GetMidiOutputs(List);
   ErrorNotImplemented;
-{$ENDIF UNIX}
+  {$ENDIF UNIX}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
-function MIDISingleNoteTuningData(
-  Key: TMIDINote;
-  Frequency: Single): TSingleNoteTuningData;
+function MIDISingleNoteTuningData(Key: TMIDINote; Frequency: Single): TSingleNoteTuningData;
 var
   F: Cardinal;
 begin
@@ -435,20 +435,32 @@ const
   HalftonesPerOctave = 12;
 begin
   case Note mod HalftonesPerOctave of
-     0: Result := RsOctaveC;
-     1: Result := RsOctaveCSharp;
-     2: Result := RsOctaveD;
-     3: Result := RsOctaveDSharp;
-     4: Result := RsOctaveE;
-     5: Result := RsOctaveF;
-     6: Result := RsOctaveFSharp;
-     7: Result := RsOctaveG;
-     8: Result := RsOctaveGSharp;
-     9: Result := RsOctaveA;
-    10: Result := RsOctaveASharp;
-    11: Result := RsOctaveB;
+     0:
+       Result := RsOctaveC;
+     1:
+       Result := RsOctaveCSharp;
+     2:
+       Result := RsOctaveD;
+     3:
+       Result := RsOctaveDSharp;
+     4:
+       Result := RsOctaveE;
+     5:
+       Result := RsOctaveF;
+     6:
+       Result := RsOctaveFSharp;
+     7:
+       Result := RsOctaveG;
+     8:
+       Result := RsOctaveGSharp;
+     9:
+       Result := RsOctaveA;
+    10:
+      Result := RsOctaveASharp;
+    11:
+      Result := RsOctaveB;
   end;
-  Result := Format('%s%d', [Result, Note div HalftonesPerOctave -2]);
+  Result := Format('%s%d', [Result, Note div HalftonesPerOctave - 2]);
 end;
 
 //==================================================================================================
@@ -458,7 +470,7 @@ end;
 destructor TJclMIDIOut.Destroy;
 begin
   SwitchActiveNotesOff;
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -550,8 +562,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclMIDIOut.SendChannelPressure(Channel: TMIDIChannel;
-  Value: TMIDIDataByte);
+procedure TJclMIDIOut.SendChannelPressure(Channel: TMIDIChannel; Value: TMIDIDataByte);
 begin
   SendChannelMessage(MIDIMsgChannelKeyPressure, Channel, Value, 0);
 end;
@@ -694,9 +705,9 @@ end;
 
 function TJclMIDIOut.IsRunningStatus(StatusByte: TMIDIStatusByte): Boolean;
 begin
-  Result := (StatusByte = FMIDIStatus)
-    and ((StatusByte and $F0) <> $F0)       // is channel message
-    and RunningStatusEnabled;
+  Result := (StatusByte = FMIDIStatus) and
+    ((StatusByte and $F0) <> $F0) and       // is channel message
+    RunningStatusEnabled;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -877,7 +888,7 @@ end;
 procedure TJclMIDIOut.SwitchOmniModeOff(Channel: TMIDIChannel);
 begin
   SendControlChange(Channel, MIDICCOmniModeOff, 0);
-  FActiveNotes[Channel] := []; // implicite All Notes Off
+  FActiveNotes[Channel] := []; // implicit All Notes Off
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -885,7 +896,7 @@ end;
 procedure TJclMIDIOut.SwitchOmniModeOn(Channel: TMIDIChannel);
 begin
   SendControlChange(Channel, MIDICCOmniModeOn, 0);
-  FActiveNotes[Channel] := []; // implicite All Notes Off
+  FActiveNotes[Channel] := []; // implicit All Notes Off
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -893,7 +904,7 @@ end;
 procedure TJclMIDIOut.SwitchMonoModeOn(Channel: TMIDIChannel; ChannelCount: Integer);
 begin
   SendControlChange(Channel, MIDICCMonoModeOn, ChannelCount);
-  FActiveNotes[Channel] := []; // implicite All Notes Off
+  FActiveNotes[Channel] := []; // implicit All Notes Off
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -901,12 +912,15 @@ end;
 procedure TJclMIDIOut.SwitchPolyModeOn(Channel: TMIDIChannel);
 begin
   SendControlChange(Channel, MIDICCPolyModeOn, 0);
-  FActiveNotes[Channel] := []; // implicite All Notes Off
+  FActiveNotes[Channel] := []; // implicit All Notes Off
 end;
 
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/16 07:30:27  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.6  2004/06/07 04:27:07  rrossmair
 // "Not implemented" error for Unix added as placeholder.
 //

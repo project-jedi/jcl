@@ -846,7 +846,7 @@ end;
 procedure TJclEmail.BeforeUnloadClientLib;
 begin
   LogOff;
-  inherited;
+  inherited BeforeUnloadClientLib;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1361,6 +1361,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/06/16 07:30:30  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.5  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

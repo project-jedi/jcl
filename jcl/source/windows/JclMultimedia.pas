@@ -559,7 +559,7 @@ end;
 destructor TJclMixerLineControl.Destroy;
 begin
   FreeAndNil(FListText);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -838,7 +838,7 @@ end;
 destructor TJclMixerLine.Destroy;
 begin
   FreeAndNil(FLineControls);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -949,7 +949,7 @@ end;
 destructor TJclMixerDestination.Destroy;
 begin
   FreeAndNil(FSources);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1035,7 +1035,7 @@ begin
   Close;
   FreeAndNil(FDestinations);
   FreeAndNil(FLines);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1210,7 +1210,7 @@ end;
 destructor TJclMixer.Destroy;
 begin
   FreeAndNil(FDeviceList);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1535,6 +1535,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/06/16 07:30:31  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.9  2004/06/14 11:05:53  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

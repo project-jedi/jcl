@@ -275,7 +275,7 @@ end;
 
 {$IFNDEF STACKFRAMES_ON}
 {$STACKFRAMES OFF}
-{$ENDIF STACKFRAMES_ON}
+{$ENDIF ~STACKFRAMES_ON}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -625,6 +625,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.5  2004/06/16 07:30:30  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.4  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

@@ -143,7 +143,7 @@ function PathGetDepth(const Path: string): Integer;
 {$IFDEF MSWINDOWS}
 {$IFNDEF FPC}
 function PathGetLongName(const Path: string): string;
-{$ENDIF FPC}
+{$ENDIF ~FPC}
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
 {$ENDIF MSWINDOWS}
@@ -192,7 +192,7 @@ function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
 {$IFNDEF FPC}
 function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
-{$ENDIF FPC}
+{$ENDIF ~FPC}
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 {$ENDIF MSWINDOWS}
@@ -269,7 +269,7 @@ procedure ShredFile(const FileName: string; Times: Integer = 1);
 function UnlockVolume(var Handle: THandle): Boolean;
 {$IFNDEF FPC}
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
-{$ENDIF FPC}
+{$ENDIF ~FPC}
 function Win32MoveFileReplaceExisting(const SrcFilename, DstFilename: string): Boolean;
 function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
 function Win32RestoreFile(const FileName: string): Boolean;
@@ -811,7 +811,7 @@ type
   {$IFNDEF FPC}
   PPCharArray = ^TPCharArray;
   TPCharArray = array [0..0] of PChar;
-  {$ENDIF FPC}
+  {$ENDIF ~FPC}
 
   TJclMappedTextReader = class(TPersistent)
   private
@@ -3638,7 +3638,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFNDEF FPC}  // needs JclShell
-
 { TODO -cHelp : Author: Jeff (but FileUtils.dtx says "Donator: Marcel van Brakel". Excuse me?) }
 
 function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
@@ -3648,7 +3647,6 @@ begin
   else
     Result := Windows.DeleteFile(PChar(FileName));
 end;
-
 {$ENDIF ~FPC}
 
 //--------------------------------------------------------------------------------------------------
@@ -5728,6 +5726,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.22  2004/06/16 07:30:27  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.21  2004/06/14 11:05:51  marquardt
 // symbols added to all ENDIFs and some other minor style changes like removing IFOPT
 //

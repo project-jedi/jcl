@@ -457,7 +457,7 @@ uses
 
 function GetZLibErrorText(const ErrorCode: Integer): PResStringRec;
 const
-  ErrorTexts: array[-6..2] of {$IFDEF FPC} AnsiString {$ELSE} PResStringRec {$ENDIF} =
+  ErrorTexts: array [-6..2] of {$IFDEF FPC} AnsiString {$ELSE} PResStringRec {$ENDIF} =
    (
     {$IFNDEF FPC}@{$ENDIF}RsZLibVersionError,
     {$IFNDEF FPC}@{$ENDIF}RsZLibBufError,
@@ -472,7 +472,7 @@ const
 begin
   case ErrorCode of
     Low(ErrorTexts)..High(ErrorTexts):
-      Result := {$IFDEF FPC}@{$ENDIF FPC}ErrorTexts[ErrorCode];
+      Result := {$IFDEF FPC}@{$ENDIF}ErrorTexts[ErrorCode];
   else
     Result := @RsZLibUnknownError;
   end;
@@ -2121,6 +2121,9 @@ end;
 //  History:                                                                  
 
 //  $Log$
+//  Revision 1.11  2004/06/16 07:30:28  marquardt
+//  added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 //  Revision 1.10  2004/06/14 13:05:18  marquardt
 //  style cleaning ENDIF, Tabs
 //

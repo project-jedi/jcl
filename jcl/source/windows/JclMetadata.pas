@@ -1630,7 +1630,7 @@ implementation
 uses
   {$IFNDEF RTL140_UP}
   ComObj,  // need for GuidToString
-  {$ENDIF RTL140_UP}
+  {$ENDIF ~RTL140_UP}
   Math,
   JclStrings, JclCIL, JclResources;
 
@@ -5471,6 +5471,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/06/16 07:30:30  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.7  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //

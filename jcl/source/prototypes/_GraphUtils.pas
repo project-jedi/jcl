@@ -269,7 +269,7 @@ procedure HSLToRGB(const H, S, L: Single; out R, G, B: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
 procedure RGBToHSL(const R, G, B: Single; out H, S, L: Single); overload;
   {$IFDEF SUPPORTS_DEPRECATED} deprecated; {$ENDIF}
-{$ENDIF DROP_OBSOLETE_CODE}
+{$ENDIF ~DROP_OBSOLETE_CODE}
 
 // keep HSL identifier to avoid ambiguidy with HLS overload
 function HSLToRGB(const H, S, L: Single): TColor32; overload;
@@ -2879,6 +2879,9 @@ finalization
 //  - ShortenString included
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.10  2004/06/16 07:30:28  marquardt
+// added tilde to all IFNDEF ENDIFs, inherited qualified
+//
 // Revision 1.9  2004/06/14 13:05:19  marquardt
 // style cleaning ENDIF, Tabs
 //
