@@ -227,6 +227,7 @@ begin
     System.Move(FElementData[FCursor], FElementData[FCursor + 1],
       (FOwnList.FSize - FCursor) * SizeOf(TObject));
     FCapacity := Length(FElementData);
+    FillChar(FElementData[FCursor], SizeOf(IInterface), 0);
     FElementData[FCursor] := AObject;
     Inc(FOwnList.FSize);
   end;
@@ -386,6 +387,7 @@ begin
     System.Move(FElementData[FCursor], FElementData[FCursor + 1],
       (FOwnList.FSize - FCursor) * SizeOf(string));
     FCapacity := Length(FElementData);
+    FillChar(FElementData[FCursor], SizeOf(string), 0);
     FElementData[FCursor] := AString;
     Inc(FOwnList.FSize);
   end;
@@ -655,17 +657,13 @@ begin
 end;
 
 constructor TJclIntfArrayList.Create(ACollection: IIntfCollection);
-var
-  It: IIntfIterator;
 begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
     raise EDCLIllegalArgumentError.Create(RsENoCollection);
   Create(ACollection.Size);
-  It := ACollection.First;
-  while It.HasNext do
-    Add(It.Next);
+  AddAll(ACollection);
 end;
 
 destructor TJclIntfArrayList.Destroy;
@@ -687,53 +685,13 @@ begin
     raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if FSize = FCapacity then
     Grow;
-  System.Move(FElementData[Index], FElementData[Index + 1],
-    (FSize - Index) * SizeOf(IInterface));
+  if FSize <> Index then
+    System.Move(FElementData[Index], FElementData[Index + 1],
+      (FSize - Index) * SizeOf(IInterface));
   // (rom) otherwise interface reference counting may crash
   FillChar(FElementData[Index], SizeOf(IInterface), 0);
   FElementData[Index] := AObject;
   Inc(FSize);
-end;
-
-function TJclIntfArrayList.Add(AObject: IInterface): Boolean;
-{$IFDEF THREADSAFE}
-var
-  CS: IInterface;
-{$ENDIF THREADSAFE}
-begin
-  {$IFDEF THREADSAFE}
-  CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  if FSize = FCapacity then
-    Grow;
-  FElementData[FSize] := AObject;
-  Inc(FSize);
-  Result := True;
-end;
-
-function TJclIntfArrayList.AddAll(ACollection: IIntfCollection): Boolean;
-var
-  It: IIntfIterator;
-  {$IFDEF THREADSAFE}
-  CS: IInterface;
-  {$ENDIF THREADSAFE}
-begin
-  {$IFDEF THREADSAFE}
-  CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  Result := False;
-  if ACollection = nil then
-    Exit;
-  It := ACollection.First;
-  while It.HasNext do
-  begin
-    // (rom) inlining Add() gives about 5 percent performance increase
-    if FSize = FCapacity then
-      Grow;
-    FElementData[FSize] := It.Next;
-    Inc(FSize);
-  end;
-  Result := True;
 end;
 
 function TJclIntfArrayList.InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean;
@@ -764,6 +722,49 @@ begin
     FElementData[Index] := It.Next;
     Inc(Index);
   end;
+end;
+
+function TJclIntfArrayList.Add(AObject: IInterface): Boolean;
+{$IFDEF THREADSAFE}
+var
+  CS: IInterface;
+{$ENDIF THREADSAFE}
+begin
+  {$IFDEF THREADSAFE}
+  CS := EnterCriticalSection;
+  {$ENDIF THREADSAFE}
+  if FSize = FCapacity then
+    Grow;
+  FillChar(FElementData[FSize], SizeOf(IInterface), 0);
+  FElementData[FSize] := AObject;
+  Inc(FSize);
+  Result := True;
+end;
+
+function TJclIntfArrayList.AddAll(ACollection: IIntfCollection): Boolean;
+var
+  It: IIntfIterator;
+  {$IFDEF THREADSAFE}
+  CS: IInterface;
+  {$ENDIF THREADSAFE}
+begin
+  {$IFDEF THREADSAFE}
+  CS := EnterCriticalSection;
+  {$ENDIF THREADSAFE}
+  Result := False;
+  if ACollection = nil then
+    Exit;
+  It := ACollection.First;
+  while It.HasNext do
+  begin
+    // (rom) inlining Add() gives about 5 percent performance increase
+    if FSize = FCapacity then
+      Grow;
+    FillChar(FElementData[FSize], SizeOf(IInterface), 0);
+    FElementData[FSize] := It.Next;
+    Inc(FSize);
+  end;
+  Result := True;
 end;
 
 procedure TJclIntfArrayList.Clear;
@@ -1062,17 +1063,13 @@ begin
 end;
 
 constructor TJclStrArrayList.Create(ACollection: IStrCollection);
-var
-  It: IStrIterator;
 begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
     raise EDCLIllegalArgumentError.Create(RsENoCollection);
   Create(ACollection.Size);
-  It := ACollection.First;
-  while It.HasNext do
-    Add(It.Next);
+  AddAll(ACollection);
 end;
 
 destructor TJclStrArrayList.Destroy;
@@ -1094,28 +1091,13 @@ begin
     raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if FSize = FCapacity then
     Grow;
-  System.Move(FElementData[Index], FElementData[Index + 1],
-    (FSize - Index) * SizeOf(string));
+  if FSize <> Index then
+    System.Move(FElementData[Index], FElementData[Index + 1],
+      (FSize - Index) * SizeOf(string));
   // (rom) otherwise string reference counting would crash
   FillChar(FElementData[Index], SizeOf(string), 0);
   FElementData[Index] := AString;
   Inc(FSize);
-end;
-
-function TJclStrArrayList.Add(const AString: string): Boolean;
-{$IFDEF THREADSAFE}
-var
-  CS: IInterface;
-{$ENDIF THREADSAFE}
-begin
-  {$IFDEF THREADSAFE}
-  CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  if FSize = FCapacity then
-    Grow;
-  FElementData[FSize] := AString;
-  Inc(FSize);
-  Result := True;
 end;
 
 function TJclStrArrayList.InsertAll(Index: Integer; ACollection: IStrCollection): Boolean;
@@ -1148,6 +1130,23 @@ begin
   end;
 end;
 
+function TJclStrArrayList.Add(const AString: string): Boolean;
+{$IFDEF THREADSAFE}
+var
+  CS: IInterface;
+{$ENDIF THREADSAFE}
+begin
+  {$IFDEF THREADSAFE}
+  CS := EnterCriticalSection;
+  {$ENDIF THREADSAFE}
+  if FSize = FCapacity then
+    Grow;
+  FillChar(FElementData[FSize], SizeOf(string), 0);
+  FElementData[FSize] := AString;
+  Inc(FSize);
+  Result := True;
+end;
+
 function TJclStrArrayList.AddAll(ACollection: IStrCollection): Boolean;
 var
   It: IStrIterator;
@@ -1168,6 +1167,7 @@ begin
     // without THREADSAFE and about 30 percent with THREADSAFE
     if FSize = FCapacity then
       Grow;
+    FillChar(FElementData[FSize], SizeOf(string), 0);
     FElementData[FSize] := It.Next;
     Inc(FSize);
   end;
@@ -1472,17 +1472,13 @@ begin
 end;
 
 constructor TJclArrayList.Create(ACollection: ICollection; AOwnsObjects: Boolean = True);
-var
-  It: IIterator;
 begin
   // (rom) disabled because the following Create already calls inherited
   // inherited Create;
   if ACollection = nil then
     raise EDCLIllegalArgumentError.Create(RsENoCollection);
   Create(ACollection.Size, AOwnsObjects);
-  It := ACollection.First;
-  while It.HasNext do
-    Add(It.Next);
+  AddAll(ACollection);
 end;
 
 destructor TJclArrayList.Destroy;
@@ -1504,10 +1500,39 @@ begin
     raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   if FSize = FCapacity then
     Grow;
-  System.Move(FElementData[Index], FElementData[Index + 1],
-    (FSize - Index) * SizeOf(TObject));
+  if FSize <> Index then
+    System.Move(FElementData[Index], FElementData[Index + 1],
+      (FSize - Index) * SizeOf(TObject));
   FElementData[Index] := AObject;
   Inc(FSize);
+end;
+
+function TJclArrayList.InsertAll(Index: Integer; ACollection: ICollection): Boolean;
+var
+  It: IIterator;
+  Size: Integer;
+  {$IFDEF THREADSAFE}
+  CS: IInterface;
+  {$ENDIF THREADSAFE}
+begin
+  {$IFDEF THREADSAFE}
+  CS := EnterCriticalSection;
+  {$ENDIF THREADSAFE}
+  Result := False;
+  if (Index < 0) or (Index >= FSize) then
+    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
+  if ACollection = nil then
+    Exit;
+  Size := ACollection.Size;
+  System.Move(FElementData[Index], FElementData[Index + Size],
+    Size * SizeOf(IInterface));
+  It := ACollection.First;
+  Result := It.HasNext;
+  while It.HasNext do
+  begin
+    FElementData[Index] := It.Next;
+    Inc(Index);
+  end;
 end;
 
 function TJclArrayList.Add(AObject: TObject): Boolean;
@@ -1549,34 +1574,6 @@ begin
     Inc(FSize);
   end;
   Result := True;
-end;
-
-function TJclArrayList.InsertAll(Index: Integer; ACollection: ICollection): Boolean;
-var
-  It: IIterator;
-  Size: Integer;
-  {$IFDEF THREADSAFE}
-  CS: IInterface;
-  {$ENDIF THREADSAFE}
-begin
-  {$IFDEF THREADSAFE}
-  CS := EnterCriticalSection;
-  {$ENDIF THREADSAFE}
-  Result := False;
-  if (Index < 0) or (Index >= FSize) then
-    raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
-  if ACollection = nil then
-    Exit;
-  Size := ACollection.Size;
-  System.Move(FElementData[Index], FElementData[Index + Size],
-    Size * SizeOf(IInterface));
-  It := ACollection.First;
-  Result := It.HasNext;
-  while It.HasNext do
-  begin
-    FElementData[Index] := It.Next;
-    Inc(Index);
-  end;
 end;
 
 procedure TJclArrayList.Clear;

@@ -117,20 +117,12 @@ var
   Idx: Integer;
 begin
   Idx := BinarySearch(AObject);
-  if Size = 0 then
-  begin
-    Result := True;
-    inherited Insert(0, AObject);
-  end
+  if Idx >= 0 then
+    Result := InterfaceCompare(GetObject(Idx), AObject) <> 0
   else
-  begin
-    if Idx >= 0 then
-      Result := InterfaceCompare(GetObject(Idx), AObject) <> 0
-    else
-      Result := True;
-    if Result then
-      inherited Insert(Idx + 1, AObject);
-  end;
+    Result := True;
+  if Result then
+    inherited Insert(Idx + 1, AObject);
 end;
 
 function TJclIntfArraySet.AddAll(ACollection: IIntfCollection): Boolean;
@@ -215,20 +207,12 @@ var
   Idx: Integer;
 begin
   Idx := BinarySearch(AString);
-  if Size = 0 then
-  begin
-    Result := True;
-    inherited Insert(0, AString);
-  end
+  if Idx >= 0 then
+    Result := CompareStr(GetString(Idx), AString) <> 0
   else
-  begin
-    if Idx >= 0 then
-      Result := CompareStr(GetString(Idx), AString) <> 0
-    else
-      Result := True;
-    if Result then
-      inherited Insert(Idx + 1, AString);
-  end;
+    Result := True;
+  if Result then
+    inherited Insert(Idx + 1, AString);
 end;
 
 function TJclStrArraySet.AddAll(ACollection: IStrCollection): Boolean;
@@ -313,20 +297,12 @@ var
   Idx: Integer;
 begin
   Idx := BinarySearch(AObject);
-  if Size = 0 then
-  begin
-    Result := True;
-    inherited Insert(0, AObject);
-  end
+  if Idx >= 0 then
+    Result := ObjectCompare(GetObject(Idx), AObject) <> 0
   else
-  begin
-    if Idx >= 0 then
-      Result := ObjectCompare(GetObject(Idx), AObject) <> 0
-    else
-      Result := True;
-    if Result then
-      inherited Insert(Idx + 1, AObject);
-  end;
+    Result := True;
+  if Result then
+    inherited Insert(Idx + 1, AObject);
 end;
 
 function TJclArraySet.AddAll(ACollection: ICollection): Boolean;
