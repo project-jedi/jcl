@@ -946,7 +946,7 @@ If the specified codepoint can be in an identifier the
 function returns True, otherwise the function returns False.
 [Notes]
 Count=1
-1=UnicodeIsIdentifierStart could be replace by (UnicodeIsIdentifierStart <B>or</B>
+1=UnicodeIsIdentifierPart could be replace by (UnicodeIsIdentifierStart <B>or</B>
 UnicodeIsNonSpacingMark <B>or</B> UnicodeIsSpacingMark <B>or</B> UnicodeIsDigit <B>or</B>
 UnicodeIsConnectionPunctuation <B>or</B> UnicodeIsFormatControl
 [Quick Info]
@@ -2732,3 +2732,302 @@ BCB=3,4,5
 [SeeAlso]
 Count=1
 1=WideStringToUTF8
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TSearchFlags = set of (sfCaseSensitive, sfIgnoreNonSpacing, sfSpaceCompress,
+  sfWholeWordOnly);
+[ShortDescr]
+Flags used in the search class.
+[Description]
+Flags used in the search class.
+[Enumeration]
+Count=4
+1=sfCaseSensitive=Match letter case
+2=sfIgnoreNonSpacing=Ignore non-spacing characters in search
+3=sfSpaceCompress=Handle several consecutive white spaces as one white space<BR>
+                  (this applies to the pattern as well as the search text)
+4=sfWholeWordOnly=Match only text at end/start and/or surrounded by white spaces
+[Quick Info]
+Kind=Type
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+[SeeAlso]
+Count=1
+1=TSearchEngine;..\TSearchEngine
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TSearchEngine = class (TObject)
+[ShortDescr]
+Abstract base class for the search engine.
+[Description]
+TSearchEngine is a generic search class defininition used for tuned Boyer-Moore
+and Unicode regular expression searches.
+[Quick Info]
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AOwner: TWideStrings); virtual;
+[ShortDescr]
+Instantiates a TSearchEngine object.
+[Description]
+Creates an instance of TSearchEngine and initializes the object for use. Since
+TSearchEngine is an abstract base class you cannot actually instantiate it, instead
+use a derived class such as TUTBMSearch or TURESearch. The TSearchEngine constructor only
+initializes the results list and sets the Owner.
+[Parameters]
+Count=1
+1=AOwner:TWideString=Owner of the search engine.
+[Notes]
+Count=1
+1=The AOwner parameter, although assigned to the engine, is not used at all and can
+therefore be <B>nil<B> 
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+destructor Destroy; override;
+[ShortDescr]
+Destroys a TSearchEngine object.
+[Description]
+Destroys the search engine after clearing all results and freeing the results list.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function GetCount: Integer; virtual;
+[ShortDescr]
+Returns the number of matches.
+[Description]
+GetCount returns the number of matches and is used by the Count property.
+[Result]
+The number of matches found.
+[Quick Info]
+Kind=Method
+Visibility=Protected
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure AddResult(Start, Stop: Cardinal); virtual;
+[ShortDescr]
+Adds a new match result.
+[Description]
+AddResult adds a new match result to the list.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Clear; virtual;
+[ShortDescr]
+Resets the search engine.
+[Description]
+Clear resets the search engine. TSearchEngine just calls ClearResult to clear the
+match result list, but derivatives will also clear search patterns.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure ClearResults; virtual;
+[ShortDescr]
+Clear the match results.
+[Description]
+ClearResults clears the match result list.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure DeleteResult(Index: Cardinal); virtual;
+[ShortDescr]
+Removes a match from the result list.
+[Description]
+DeleteResult removes the specified match from the result list.
+[Parameters]
+Count=1
+1=Index:Cardinal=Index of match to remove.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure FindPrepare(const Pattern: WideString; Options: <REF Target"..\Types\TSearchFlags">TSearchFlags</REF>); overload; virtual; abstract;
+procedure FindPrepare(const Pattern: PWideChar; PatternLength: Cardinal; Options: <REF Target"..\Types\TSearchFlags">TSearchFlags</REF>); overload; virtual; abstract;
+[ShortDescr]
+Prepares the engine for a pattern search.
+[Description]
+FindPrepare prepares the engine for pattern search. There are 2 versions of
+FindPrepare a WideString and a PWideChar version. 
+[Parameters]
+Count=3
+1=Pattern:Type=Search pattern
+2=PatternLength:Cardinal=Length of pattern (available only in the PWideChar version)
+3=Options:TSearchFlags=Search options. See <REF Target"..\Types\TSearchFlags">
+TSearchFlags</REF> for more information on this parameter.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindFirst(const Text: WideString; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
+function FindFirst(const Text: PWideChar; TextLen: Cardinal; var Start, Stop: Cardinal): Boolean; overload; virtual; abstract;
+[ShortDescr]
+Finds the first occurence of a search pattern.
+[Description]
+FindFirst finds the first occurence of the pattern passed to <REF>FindPrepare</REF>
+in Text and returns True if one could be found (in which case Start and Stop are
+set to the according indices) otherwise False. This function is in particular of
+interest if only one occurence needs to be found.
+[Parameters]
+Count=4
+1=Text:Type=Text to be searched
+2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
+3=Start:Cardinal=Start index of match if the function returned true, otherwise
+undefined.
+4=Stop:Cardinal=End index of match if the function returned true, otherwise
+undefined.
+[Result]
+True is the pattern provided in FindPrepare was found in the Text parameter,
+False otherwise
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+[SeeAlso]
+Count=1
+1=FindAll
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindAll(const Text: WideString): Boolean; overload; virtual; abstract;
+function FindAll(const Text: PWideChar; TextLen: Cardinal): Boolean; overload; virtual; abstract;
+[ShortDescr]
+Finds all occurences of a search pattern.
+[Description]
+FindAll finds all occurences of the pattern passed to <REF>FindPrepare</REF>
+in Text and returns True if any could be found otherwise False. 
+[Parameters]
+Count=2
+1=Text:Type=Text to be searched
+2=TextLen:Cardinal=Length of text (available only in the PWideChar version)
+[Result]
+True is the pattern provided in FindPrepare was found in the Text parameter,
+False otherwise
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+[SeeAlso]
+Count=2
+1=FindFirst
+2=GetResult
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure GetResult(Index: Cardinal; var Start, Stop: Integer); virtual;
+[ShortDescr]
+Returns a match result.
+[Description]
+GetResult returns the specified match result in the Start and Stop paramers. 
+[Parameters]
+Count=3
+1=Index:Cardinal=Index (0-based) of match result to return.
+2=Start:Cardinal=Start position of match result.
+3=Start:Cardinal=End position of match result.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
+[SeeAlso]
+Count=2
+1=FindAll
+2=Count;..\Properties\Count
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Count: Integer read GetCount;
+[ShortDescr]
+Indicates the number of matches found.
+[Description]
+Count determines the number of matches found after the last search
+(with either <REF Target"..\Methods\FindFirst">FindFirst</REF>
+or <REF Target"..\Methods\FindAll">FindAll</REF>).
+[Quick Info]
+Kind=Property
+Visibility=Public
+Unit=JclUnicode
+Category=Unicode
+SubCat=TSearchEngine
+Author=Mike Lischke;public@lischke-online.de
+Delphi=4,5
+BCB=4,5
