@@ -57,7 +57,6 @@ unit initialization.
 Kind=Variable
 Unit=JclSysInfo
 Category=System Information Routines
-SubCat=Common Folders
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -74,7 +73,6 @@ AllocGranularity contains the systems virtual memory allocation granularity.
 Kind=Variable
 Unit=JclSysInfo
 Category=System Information Routines
-SubCat=Common Folders
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -1313,8 +1311,8 @@ Count=2
 environment variables will be included in the result.
 2=AdditionalVars:TStrings=This list contains additional strings for the new
 environment block. The entries in this list must be name / value pairs (e.g. 'name=value').
-You may pass a nil value in this parameter, which makes the function behave exactly as
-<REF Target"..\..\Miscellaneous\CreateProcAsUser">CreateProcAsUser</REF>.
+You may pass a nil value in this parameter, which makes the function behave exactly
+as <REF Target"..\..\Miscellaneous\CreateProcAsUser">CreateProcAsUser</REF>.
 [Result]
 As the result, you will receive a PChar containing a list of environment variables. This
 PChar can directly be used with functions like <REF Target"..\..\Miscellaneous\CreateProcAsUser">CreateProcAsUserEx</REF>.
@@ -1361,14 +1359,15 @@ Count=1
 [Declaration]
 function GetUserDomainName(const CurUser: string): string;
 [ShortDescr]
-Looks up the domain the user is defined.
+Returns the name of the domain where a user account resides.
 [Description]
-GetUserDomainName looks up the domain the given user account is defined in.
+GetUserDomainName returns the name of the domain where a user account resides.
 [Parameters]
 Count=1
 1=CurUser:string=The name of the user account to look up.
 [Result]
-As the result, you will receive the name of the domain the user is defined in.
+As the result, you will receive the name of the domain the user is defined in,
+or an empty string if the function fails.
 [Notes]
 Count=1
 1=The function tries to find the user account on the local system first. Next,
@@ -1390,12 +1389,15 @@ Count=2
 [Declaration]
 function GetDomainName: string;
 [ShortDescr]
-Returns the name of the domain the workstation is signed in to.
+Returns the name of the domain where the current user account resides.
 [Description]
-GetDomainName returns the name of the domain the workstation is currently signed
-in to.
+GetDomainName returns the name of the domain where the user account associated
+with the calling thread resides. In client application this will usually be the
+interactively logged on user, but in server applications this could be any user
+that is currently impersonated.
 [Result]
-As the result, you will get the name of the domain.
+The name of the domain where the user account resides, or an empty string if
+the function fails.
 [Notes]
 Count=1
 1=The function determines the name of the domain by checking which domain the
