@@ -21,7 +21,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: March 6, 2003                                                                      }
-{ Last modified: March 21, 2003                                                                     }
+{ Last modified: March 25, 2003                                                                     }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   Help and Demos at http://24.54.82.216/DelphiJedi/Default.htm                                   }
@@ -48,7 +48,7 @@ unit JclEDIXML;
 interface
 
 uses
-  SysUtils, Classes, JclBase, JclStrings, JclEDI;
+  SysUtils, Classes, JclBase, JclStrings, JclEDI, JclEDI_ANSIX12;
 
 //Resource strings need to go in JclResources.pas
 resourcestring
@@ -113,7 +113,7 @@ resourcestring
   EDIXMLError059 = 'Could not find transaction set header.';
   EDIXMLError060 = 'Could not find transaction set trailer.';
   EDIXMLError061 = 'Could not find transaction set header and trailer.';
-  EDIXMLError062 = 'TEDIXMLFormatTranslator: Unexpected object [%s] found.';
+  EDIXMLError062 = 'TEDIXMLANSIX12FormatTranslator: Unexpected object [%s] found.';
 
 const
   XMLTag_Element = 'Element';
@@ -282,71 +282,6 @@ type
   end;
 
 //--------------------------------------------------------------------------------------------------
-//  EDI Segment Classes
-//--------------------------------------------------------------------------------------------------
-
-  TEDIXMLSegmentArray = array of TEDIXMLSegment;
-
-  TEDIXMLSegment = class(TEDIXMLDataObject)
-  private
-    FSegmentID: string;
-    FElements: TEDIXMLElementArray;
-    function GetElement(Index: Integer): TEDIXMLElement;
-    procedure SetElement(Index: Integer; Element: TEDIXMLElement);
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); overload;
-    destructor Destroy; override;
-    //
-    function InternalAssignDelimiters: TEDIXMLDelimiters; virtual;
-    function InternalCreateElement: TEDIXMLElement; virtual;
-    //
-    function AddElement: Integer;
-    function AppendElement(Element: TEDIXMLElement): Integer;
-    function InsertElement(InsertIndex: Integer): Integer; overload;
-    function InsertElement(InsertIndex: Integer; Element: TEDIXMLElement): Integer; overload;
-    procedure DeleteElement(Index: Integer); overload;
-    procedure DeleteElement(Element: TEDIXMLElement); overload;
-    //
-    function AddElements(Count: Integer): Integer;
-    function AppendElements(ElementArray: TEDIXMLElementArray): Integer;
-    function InsertElements(InsertIndex, Count: Integer): Integer; overload;
-    function InsertElements(InsertIndex: Integer;
-      ElementArray: TEDIXMLElementArray): Integer; overload;
-    procedure DeleteElements; overload;
-    procedure DeleteElements(Index, Count: Integer); overload;
-    //
-    function Assemble: string; override;
-    procedure Disassemble; override;
-    function GetIndexPositionFromParent: Integer;
-    property Element[Index: Integer]: TEDIXMLElement read GetElement write SetElement; default;
-    property Elements: TEDIXMLElementArray read FElements write FElements;
-  published
-    property SegmentID: string read FSegmentID write FSegmentID;
-  end;
-
-  TEDIXMLTransactionSetSegment = class(TEDIXMLSegment)
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); overload;
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
-  end;
-
-  TEDIXMLFunctionalGroupSegment = class(TEDIXMLSegment)
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); overload;
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
-  end;
-
-  TEDIXMLInterchangeControlSegment = class(TEDIXMLSegment)
-  public
-    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
-    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); overload;
-    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
-  end;
-
-//--------------------------------------------------------------------------------------------------
 //  EDI Data Object Group
 //--------------------------------------------------------------------------------------------------
 
@@ -379,6 +314,71 @@ type
     property EDIDataObject[Index: Integer]: TEDIXMLDataObject read GetEDIDataObject
       write SetEDIDataObject; default;
     property EDIDataObjects: TEDIXMLDataObjectArray read FEDIDataObjects write FEDIDataObjects;
+  end;
+
+//--------------------------------------------------------------------------------------------------
+//  EDI Segment Classes
+//--------------------------------------------------------------------------------------------------
+
+  TEDIXMLSegmentArray = array of TEDIXMLSegment;
+
+  TEDIXMLSegment = class(TEDIXMLDataObject)
+  private
+    FSegmentID: string;
+    FElements: TEDIXMLElementArray;
+    function GetElement(Index: Integer): TEDIXMLElement;
+    procedure SetElement(Index: Integer; Element: TEDIXMLElement);
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
+    destructor Destroy; override;
+    //
+    function InternalAssignDelimiters: TEDIXMLDelimiters; virtual;
+    function InternalCreateElement: TEDIXMLElement; virtual;
+    //
+    function AddElement: Integer;
+    function AppendElement(Element: TEDIXMLElement): Integer;
+    function InsertElement(InsertIndex: Integer): Integer; overload;
+    function InsertElement(InsertIndex: Integer; Element: TEDIXMLElement): Integer; overload;
+    procedure DeleteElement(Index: Integer); overload;
+    procedure DeleteElement(Element: TEDIXMLElement); overload;
+    //
+    function AddElements(Count: Integer): Integer;
+    function AppendElements(ElementArray: TEDIXMLElementArray): Integer;
+    function InsertElements(InsertIndex, Count: Integer): Integer; overload;
+    function InsertElements(InsertIndex: Integer;
+      ElementArray: TEDIXMLElementArray): Integer; overload;
+    procedure DeleteElements; overload;
+    procedure DeleteElements(Index, Count: Integer); overload;
+    //
+    function Assemble: string; override;
+    procedure Disassemble; override;
+    function GetIndexPositionFromParent: Integer;
+    property Element[Index: Integer]: TEDIXMLElement read GetElement write SetElement; default;
+    property Elements: TEDIXMLElementArray read FElements write FElements;
+  published
+    property SegmentID: string read FSegmentID write FSegmentID;
+  end;
+
+  TEDIXMLTransactionSetSegment = class(TEDIXMLSegment)
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
+  end;
+
+  TEDIXMLFunctionalGroupSegment = class(TEDIXMLSegment)
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
+  end;
+
+  TEDIXMLInterchangeControlSegment = class(TEDIXMLSegment)
+  public
+    constructor Create(Parent: TEDIXMLDataObject); reintroduce; overload;
+    constructor Create(Parent: TEDIXMLDataObject; ElementCount: Integer); reintroduce; overload;
+    function InternalAssignDelimiters: TEDIXMLDelimiters; override;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -519,7 +519,7 @@ type
 //  EDI XML Format Translator
 //--------------------------------------------------------------------------------------------------
 
-  TEDIXMLFormatTranslator = class(TEDIObject)
+  TEDIXMLANSIX12FormatTranslator = class(TEDIObject)
   private
     procedure ConvertTransactionSetLoopToXML(EDILoop: TEDITransactionSetLoop;
                                              XMLLoop: TEDIXMLTransactionSetLoop);
@@ -527,7 +527,7 @@ type
                                              XMLLoop: TEDIXMLTransactionSetLoop);
   protected
   public
-    constructor Create; reintroduce;
+    constructor Create;
     destructor Destroy; override;
     //
     function ConvertToXMLSegment(EDISegment: TEDISegment): TEDIXMLSegment;
@@ -2944,7 +2944,7 @@ begin
     end
     else
     begin
-    //Hey the header was not found
+      //Hey the header was not found
     end;
   end
   else
@@ -3162,12 +3162,12 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-// TEDIXMLFormatTranslator
+// TEDIXMLANSIX12FormatTranslator
 //--------------------------------------------------------------------------------------------------
 
-{ TEDIXMLFormatTranslator }
+{ TEDIXMLANSIX12FormatTranslator }
 
-function TEDIXMLFormatTranslator.ConvertToEDISegment(XMLSegment: TEDIXMLSegment): TEDISegment;
+function TEDIXMLANSIX12FormatTranslator.ConvertToEDISegment(XMLSegment: TEDIXMLSegment): TEDISegment;
 var
   ediE, xmlE: Integer;
 begin
@@ -3195,7 +3195,7 @@ begin
   end; //for ediE
 end;
 
-function TEDIXMLFormatTranslator.ConvertToEDITransaction(
+function TEDIXMLANSIX12FormatTranslator.ConvertToEDITransaction(
   XMLTransactionSet: TEDIXMLTransactionSet): TEDITransactionSet;
 var
   I: Integer;
@@ -3237,7 +3237,7 @@ begin
   end;
 end;
 
-function TEDIXMLFormatTranslator.ConvertToXMLSegment(EDISegment: TEDISegment): TEDIXMLSegment;
+function TEDIXMLANSIX12FormatTranslator.ConvertToXMLSegment(EDISegment: TEDISegment): TEDIXMLSegment;
 var
   ediE, xmlE: Integer;
 begin
@@ -3265,7 +3265,7 @@ begin
   end; //for ediE
 end;
 
-function TEDIXMLFormatTranslator.ConvertToXMLTransaction(
+function TEDIXMLANSIX12FormatTranslator.ConvertToXMLTransaction(
   EDITransactionSet: TEDITransactionSet;
   EDITransactionSetSpec: TEDITransactionSetSpec): TEDIXMLTransactionSet;
 var
@@ -3291,7 +3291,7 @@ begin
   end;
 end;
 
-function TEDIXMLFormatTranslator.ConvertToXMLTransaction(
+function TEDIXMLANSIX12FormatTranslator.ConvertToXMLTransaction(
   EDITransactionSet: TEDITransactionSet): TEDIXMLTransactionSet;
 var
   I: Integer;
@@ -3312,7 +3312,7 @@ begin
   Result.AppendEDIDataObject(XMLSegment);
 end;
 
-procedure TEDIXMLFormatTranslator.ConvertTransactionSetLoopToEDI(
+procedure TEDIXMLANSIX12FormatTranslator.ConvertTransactionSetLoopToEDI(
   EDITransactionSet: TEDITransactionSet;
   XMLLoop: TEDIXMLTransactionSetLoop);
 var
@@ -3341,7 +3341,7 @@ begin
   end;
 end;
 
-procedure TEDIXMLFormatTranslator.ConvertTransactionSetLoopToXML(EDILoop: TEDITransactionSetLoop;
+procedure TEDIXMLANSIX12FormatTranslator.ConvertTransactionSetLoopToXML(EDILoop: TEDITransactionSetLoop;
   XMLLoop: TEDIXMLTransactionSetLoop);
 var
   I, xmlL: Integer;
@@ -3373,12 +3373,12 @@ begin
   end;
 end;
 
-constructor TEDIXMLFormatTranslator.Create;
+constructor TEDIXMLANSIX12FormatTranslator.Create;
 begin
   inherited;
 end;
 
-destructor TEDIXMLFormatTranslator.Destroy;
+destructor TEDIXMLANSIX12FormatTranslator.Destroy;
 begin
   inherited;
 end;
