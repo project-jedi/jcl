@@ -2926,6 +2926,7 @@ const
 
 // line 3189
   
+{$IFDEF MSWINDOWS}
 
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   out lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
@@ -3021,6 +3022,7 @@ function GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint: LPCSTR;
   lpszVolumeName: LPSTR; cchBufferLength: DWORD): BOOL; stdcall;
 {$EXTERNALSYM GetVolumeNameForVolumeMountPoint}
 
+{$ENDIF MSWINDOWS}
 
 type
   {$EXTERNALSYM ULONG_PTR}
@@ -3034,10 +3036,12 @@ type
 
 // line 185
 
+{$IFDEF MSWINDOWS}
 function SetNamedSecurityInfoW(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
   SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
   pDacl, pSacl: PACL): DWORD; stdcall;
 {$EXTERNALSYM SetNamedSecurityInfoW}
+{$ENDIF MSWINDOWS}
 const
   IMAGE_SEPARATION = (64*1024);
   {$EXTERNALSYM IMAGE_SEPARATION}
@@ -4342,6 +4346,7 @@ const
 // Function Prototypes - User
 //
 
+{$IFDEF MSWINDOWS}
 
 function NetUserAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserAdd}
@@ -4376,6 +4381,7 @@ function NetUserModalsSet(servername: LPCWSTR; level: DWORD; buf: PByte; parm_er
 function NetUserChangePassword(domainname, username, oldpassword, newpassword: LPCWSTR): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetUserChangePassword}
 
+{$ENDIF MSWINDOWS}
 
 //
 //  Data Structures - User
@@ -4582,6 +4588,7 @@ const
 // Function Prototypes
 //
 
+{$IFDEF MSWINDOWS}
 
 function NetGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupAdd}
@@ -4611,6 +4618,7 @@ function NetGroupGetUsers(servername, groupname: LPCWSTR; level: DWORD; var bufp
 function NetGroupSetUsers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetGroupSetUsers}
 
+{$ENDIF MSWINDOWS}
 
 //
 //  Data Structures - Group
@@ -4654,6 +4662,7 @@ type
 // Function Prototypes
 //
 
+{$IFDEF MSWINDOWS}
 
 function NetLocalGroupAdd(servername: LPCWSTR; level: DWORD; buf: PByte; parm_err: LPDWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupAdd}
@@ -4689,6 +4698,7 @@ function NetLocalGroupAddMembers(servername, groupname: LPCWSTR; level: DWORD; b
 function NetLocalGroupDelMembers(servername, groupname: LPCWSTR; level: DWORD; buf: PByte; totalentries: DWORD): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetLocalGroupDelMembers}
 
+{$ENDIF MSWINDOWS}
 
 //
 //  Data Structures - LocalGroup
@@ -4791,8 +4801,10 @@ type
   TLocalGroupMembersInfo3 = LOCALGROUP_MEMBERS_INFO_3;
   PLocalGroupMembersInfo3 = PLOCALGROUP_MEMBERS_INFO_3;
 
+{$IFDEF MSWINDOWS}
 function NetApiBufferFree(Buffer: Pointer): NET_API_STATUS; stdcall;
 {$EXTERNALSYM NetApiBufferFree}
+{$ENDIF MSWINDOWS}
 
 (****************************************************************
  *                                                              *
@@ -5214,8 +5226,10 @@ const
  * Usage: result = Netbios( pncb );                             *
  ****************************************************************)
 
+{$IFDEF MSWINDOWS}
 function Netbios(pncb: PNCB): UCHAR; stdcall;
 {$EXTERNALSYM Netbios}
+{$ENDIF MSWINDOWS}
 
 type
   PRasDialDlg = ^TRasDialDlg;
@@ -6382,6 +6396,7 @@ type
 
 // line 1635
 
+{$IFDEF MSWINDOWS}
 
 function GetCalendarInfoA(Locale: LCID; Calendar: CALID; CalType: CALTYPE;
   lpCalData: LPSTR; cchData: Integer; lpValue: LPDWORD): Integer; stdcall;
@@ -6396,6 +6411,7 @@ function EnumCalendarInfoExA(lpCalInfoEnumProcEx: CALINFO_ENUMPROCEXA;
   Locale: LCID; Calendar: CALID; CalType: CALTYPE): BOOL; stdcall;
 {$EXTERNALSYM EnumCalendarInfoExA}
 
+{$ENDIF MSWINDOWS}
 
 type
   MAKEINTRESOURCEA = LPSTR;
@@ -6545,6 +6561,8 @@ type
 *)
 
 
+{$IFDEF MSWINDOWS}
+
 const
   RtdlSetNamedSecurityInfoW: function(pObjectName: LPWSTR; ObjectType: SE_OBJECT_TYPE;
     SecurityInfo: SECURITY_INFORMATION; psidOwner, psidGroup: PSID;
@@ -6608,6 +6626,8 @@ const
 
   RtdlNetBios: function(P: PNCB): UCHAR; stdcall = NetBios;
 
+{$ENDIF MSWINDOWS}
+
 implementation
 
 uses
@@ -6639,6 +6659,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 
 const
   aclapilib = 'advapi32.dll';
@@ -6656,7 +6677,9 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 
 const
   ImageHlpLib = 'imagehlp.dll';
@@ -6791,8 +6814,76 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
+{$IFDEF UNIX}
 
+function ReBaseImage(CurrentImageName: PAnsiChar; SymbolPath: PAnsiChar; fReBase: BOOL;
+  fRebaseSysfileOk: BOOL; fGoingDown: BOOL; CheckImageSize: ULONG;
+  var OldImageSize: ULONG; var OldImageBase: ULONG_PTR; var NewImageSize: ULONG;
+  var NewImageBase: ULONG_PTR; TimeStamp: ULONG): BOOL;
+begin
+  Result := False;
+end;
+
+function CheckSumMappedFile(BaseAddress: Pointer; FileLength: DWORD;
+  out HeaderSum, CheckSum: DWORD): PImageNtHeaders;
+begin
+  HeaderSum := 0;
+  CheckSum := 0;
+  Result := nil;
+end;
+
+function GetImageUnusedHeaderBytes(const LoadedImage: LOADED_IMAGE;
+  var SizeUnusedHeaderBytes: DWORD): DWORD;
+begin
+  SizeUnusedHeaderBytes := 0;
+  Result := 0;
+end;
+
+function MapAndLoad(ImageName, DllPath: PChar; var LoadedImage: LOADED_IMAGE;
+  DotDll: BOOL; ReadOnly: BOOL): BOOL;
+begin
+  Result := False;
+end;
+
+function UnMapAndLoad(const LoadedImage: LOADED_IMAGE): BOOL;
+begin
+  Result := False;
+end;
+
+function TouchFileTimes(const FileHandle: THandle; const pSystemTime: TSystemTime): BOOL;
+begin
+  Result := False;
+end;
+
+function ImageDirectoryEntryToData(Base: Pointer; MappedAsImage: ByteBool;
+  DirectoryEntry: USHORT; var Size: ULONG): Pointer;
+begin
+  Size := 0;
+  Result := nil;
+end;
+
+function ImageRvaToSection(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG): PImageSectionHeader;
+begin
+  Result := nil;
+end;
+
+function ImageRvaToVa(NtHeaders: PImageNtHeaders; Base: Pointer; Rva: ULONG;
+  LastRvaSection: PPImageSectionHeader): Pointer;
+begin
+  Result := nil;
+end;
+
+function UnDecorateSymbolName(DecoratedName: PAnsiChar; UnDecoratedName: PAnsiChar;
+  UndecoratedLength: DWORD; Flags: DWORD): DWORD;
+begin
+  Result := 0;
+end;
+
+{$ENDIF UNIX}
+
+{$IFDEF MSWINDOWS}
 
 var
   _NetUserAdd: Pointer;
@@ -7197,7 +7288,9 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 
 var
   _NetApiBufferFree: Pointer;
@@ -7212,7 +7305,9 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 
 var
   _Netbios: Pointer;
@@ -7227,7 +7322,9 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 
 var
   _BackupSeek: Pointer;
@@ -7392,7 +7489,9 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
+{$IFDEF MSWINDOWS}
 
 var
   _GetCalendarInfoA: Pointer;
@@ -7433,6 +7532,7 @@ begin
   end;
 end;
 
+{$ENDIF MSWINDOWS}
 
 // line 9078
 

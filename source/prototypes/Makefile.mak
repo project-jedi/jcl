@@ -11,6 +11,7 @@ CommonOptions   = $(Options) -f..\common\\
 VclOptions      = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
 VClxOptions	= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
 WinOptions      = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
+Win32Options    = $(Options) -uHAS_UNIT_LIBC -f..\windows\\
 UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
 ZlibOptions	= -uSTATIC_GZIO
 
@@ -54,7 +55,7 @@ zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 
 ..\windows\JclWin32.pas: \
                 JclWin32.pas
-        $(jpp) -ijcl.inc $(WinOptions) $?
+        $(jpp) -ijcl.inc $(Win32Options) $?
 
 ..\windows\zlibh.pas: \
 		zlibh.pas
