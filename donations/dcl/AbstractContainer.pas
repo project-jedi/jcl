@@ -13,9 +13,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Libc,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   DCL_Intf, DCLUtil;
 
 type

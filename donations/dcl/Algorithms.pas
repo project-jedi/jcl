@@ -98,10 +98,7 @@ uses
 
 function IntfSimpleCompare(Obj1, Obj2: IInterface): Integer;
 begin
-  if Obj1 = Obj2 then
-    Result := 0
-  else
-    Result := 1;
+  Result := Ord(Obj1 <> Obj2);
 end;
 
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
@@ -111,10 +108,7 @@ end;
 
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 begin
-  if Obj1 = Obj2 then
-    Result := 0
-  else
-    Result := 1;
+  Result := Ord(Obj1 <> Obj2);
 end;
 
 function IntegerCompare(Obj1, Obj2: TObject): Integer;
@@ -127,12 +121,13 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+    begin
+      First.SetObject(F(First.GetObject));
+      First.Next;
+    end
+    else
       Break;
-    First.SetObject(F(First.GetObject));
-    First.Next;
-  end;
 end;
 
 procedure Apply(First: IStrIterator; Count: Integer; F: TStrApplyFunction);
@@ -140,12 +135,13 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+    begin
+      First.SetString(F(First.GetString));
+      First.Next;
+    end
+    else
       Break;
-    First.SetString(F(First.GetString));
-    First.Next;
-  end;
 end;
 
 procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction);
@@ -153,12 +149,13 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+    begin
+      First.SetObject(F(First.GetObject));
+      First.Next;
+    end
+    else
       Break;
-    First.SetObject(F(First.GetObject));
-    First.Next;
-  end;
 end;
 
 function Find(First: IIntfIterator; Count: Integer; AObject: IInterface;
@@ -231,12 +228,10 @@ var
 begin
   Result := 0;
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+      Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
+    else
       Break;
-    if AComparator(First.Next, AObject) = 0 then
-      Inc(Result);
-  end;
 end;
 
 function CountObject(First: IStrIterator; Count: Integer; const AObject: string;
@@ -246,12 +241,10 @@ var
 begin
   Result := 0;
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+      Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
+    else
       Break;
-    if AComparator(First.Next, AObject) = 0 then
-      Inc(Result);
-  end;
 end;
 
 function CountObject(First: IIterator; Count: Integer; AObject: TObject;
@@ -261,12 +254,10 @@ var
 begin
   Result := 0;
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+      Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
+    else
       Break;
-    if AComparator(First.Next, AObject) = 0 then
-      Inc(Result);
-  end;
 end;
 
 procedure Copy(First: IIntfIterator; Count: Integer; Output: IIntfIterator);
@@ -274,13 +265,14 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if (not Output.HasNext) or (not First.HasNext) then
+    if Output.HasNext and First.HasNext then
+    begin
+      Output.SetObject(First.GetObject);
+      First.Next;
+      Output.Next;
+    end
+    else
       Break;
-    Output.SetObject(First.GetObject);
-    First.Next;
-    Output.Next;
-  end;
 end;
 
 procedure Copy(First: IStrIterator; Count: Integer; Output: IStrIterator);
@@ -288,13 +280,14 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if (not Output.HasNext) or (not First.HasNext) then
+    if Output.HasNext and First.HasNext then
+    begin
+      Output.SetString(First.GetString);
+      First.Next;
+      Output.Next;
+    end
+    else
       Break;
-    Output.SetString(First.GetString);
-    First.Next;
-    Output.Next;
-  end;
 end;
 
 procedure Copy(First: IIterator; Count: Integer; Output: IIterator);
@@ -302,13 +295,14 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if (not Output.HasNext) or (not First.HasNext) then
+    if Output.HasNext and First.HasNext then
+    begin
+      Output.SetObject(First.GetObject);
+      First.Next;
+      Output.Next;
+    end
+    else
       Break;
-    Output.SetObject(First.GetObject);
-    First.Next;
-    Output.Next;
-  end;
 end;
 
 procedure Generate(List: IIntfList; Count: Integer; AObject: IInterface);
@@ -343,12 +337,13 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+    begin
+      First.SetObject(AObject);
+      First.Next;
+    end
+    else
       Break;
-    First.SetObject(AObject);
-    First.Next;
-  end;
 end;
 
 procedure Fill(First: IStrIterator; Count: Integer; const AObject: string);
@@ -356,12 +351,13 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+    begin
+      First.SetString(AObject);
+      First.Next;
+    end
+    else
       Break;
-    First.SetString(AObject);
-    First.Next;
-  end;
 end;
 
 procedure Fill(First: IIterator; Count: Integer; AObject: TObject);
@@ -369,12 +365,13 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-  begin
-    if not First.HasNext then
+    if First.HasNext then
+    begin
+      First.SetObject(AObject);
+      First.Next;
+    end
+    else
       Break;
-    First.SetObject(AObject);
-    First.Next;
-  end;
 end;
 
 procedure Reverse(First, Last: IIntfIterator);
