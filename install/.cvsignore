@@ -1,4 +1,4 @@
-*.pas
-unchecked.bmp
-checked.bmp
-JediInstaller.drc
+*JediInstallerMain.pas
+*ProductFrames.pas
+*.drc
+*.bmp
