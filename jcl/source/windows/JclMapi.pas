@@ -1,29 +1,28 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclMapi.pas.                                            }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ Various classes and support routines for sending e-mail through Simple MAPI  }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: November 7, 2001                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclMapi.pas.                                                                }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ Various classes and support routines for sending e-mail through Simple MAPI                      }
+{                                                                                                  }
+{ Unit owner: Petr Vones                                                                           }
+{ Last modified: November 7, 2001                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclMapi;
 
@@ -46,9 +45,9 @@ type
     property ErrorCode: DWORD read FErrorCode;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Simple MAPI interface
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclMapiClient = record
     ClientName: string;
@@ -135,9 +134,9 @@ type
     property MapiSendMail: TFNMapiSendMail read FMapiSendMail;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Simple email classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclEmailRecipKind = (rkOriginator, rkTO, rkCC, rkBCC);
 
@@ -164,9 +163,9 @@ type
     function GetOriginator: TJclEmailRecip;
   public
     function Add(const Address: string;
-      const Name: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-      const Kind: TJclEmailRecipKind {$IFDEF SUPPORTS_DEFAULTPARAMS} = rkTO {$ENDIF};
-      const AddressType: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Integer;
+      const Name: string = '';
+      const Kind: TJclEmailRecipKind = rkTO;
+      const AddressType: string = ''): Integer;
     procedure SortRecips;
     property AddressesType: string read FAddressesType write FAddressesType;
     property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
@@ -212,23 +211,18 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Address(const Caption: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-      EditFields: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 3 {$ENDIF}): Boolean;
+    function Address(const Caption: string = ''; EditFields: Integer = 3): Boolean;
     procedure Clear;
     function Delete(const MessageID: string): Boolean;
     function FindFirstMessage: Boolean;
     function FindNextMessage: Boolean;
     procedure LogOff;
-    procedure LogOn(const ProfileName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-      const Password: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF});
-    function MessageReport(Strings: TStrings;
-      MaxWidth: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 80 {$ENDIF};
-      IncludeAddresses: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Integer;
-    function Read(const Options: TJclEmailReadOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
-    function ResolveName(var Name, Address: string;
-      ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
+    procedure LogOn(const ProfileName: string = ''; const Password: string = '');
+    function MessageReport(Strings: TStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
+    function Read(const Options: TJclEmailReadOptions = []): Boolean;
+    function ResolveName(var Name, Address: string; ShowDialog: Boolean = False): Boolean;
     function Save: Boolean;
-    function Send(ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): Boolean;
+    function Send(ShowDialog: Boolean = True): Boolean;
     procedure SortAttachments;
     property Attachments: TStrings read FAttachments;
     property Body: string read FBody write SetBody;
@@ -244,24 +238,21 @@ type
     property UserLogged: Boolean read GetUserLogged;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Simple email send function
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
-  const AAttachment: TFileName {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  ShowDialog: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
-  AParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+  const AAttachment: TFileName = ''; ShowDialog: Boolean = True; AParentWND: HWND = 0): Boolean;
 
 function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
-  const AAttachment: TFileName {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  AParentWND: HWND {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
+  const AAttachment: TFileName = ''; AParentWND: HWND = 0): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // MAPI Errors
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): DWORD;
+function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean = True): DWORD;
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
 
@@ -288,9 +279,9 @@ const
      'MAPISendMail'
      );
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // MAPI Errors check
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean): DWORD;
 var
@@ -306,7 +297,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function MapiErrorMessage(const ErrorCode: DWORD): string;
 begin
@@ -366,9 +357,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclSimpleMapi
-//==============================================================================
+//==================================================================================================
 
 procedure TJclSimpleMapi.BeforeUnloadClientLib;
 begin
@@ -376,7 +367,7 @@ begin
     FBeforeUnloadClient(Self);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSimpleMapi.CheckListIndex(I, ArrayLength: Integer);
 begin
@@ -384,14 +375,14 @@ begin
     raise EJclMapiError.CreateResRecFmt(@RsMapiInvalidIndex, [I]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.ClientLibLoaded: Boolean;
 begin
   Result := FClientLibHandle <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclSimpleMapi.Create;
 begin
@@ -414,7 +405,7 @@ begin
   ReadMapiSettings;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclSimpleMapi.Destroy;
 begin
@@ -422,14 +413,14 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.GetClientCount: Integer;
 begin
   Result := Length(FClients);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.GetClientLibName: string;
 begin
@@ -439,7 +430,7 @@ begin
     Result := FClients[FSelectedClientIndex].ClientPath;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.GetClients(Index: Integer): TJclMapiClient;
 begin
@@ -447,7 +438,7 @@ begin
   Result := FClients[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.GetCurrentClientName: string;
 begin
@@ -460,14 +451,14 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.GetProfileCount: Integer;
 begin
   Result := Length(FProfiles);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.GetProfiles(Index: Integer): string;
 begin
@@ -475,7 +466,7 @@ begin
   Result := FProfiles[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSimpleMapi.LoadClientLib;
 var
@@ -500,7 +491,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclSimpleMapi.ProfilesRegKey: string;
 begin
@@ -510,7 +501,7 @@ begin
     Result := 'SOFTWARE\Microsoft\Windows Messaging Subsystem\Profiles';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSimpleMapi.ReadMapiSettings;
 const
@@ -597,7 +588,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSimpleMapi.SetClientConnectKind(const Value: TJclMapiClientConnect);
 begin
@@ -608,7 +599,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSimpleMapi.SetSelectedClientIndex(const Value: Integer);
 begin
@@ -620,7 +611,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclSimpleMapi.UnloadClientLib;
 var
@@ -636,7 +627,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclSimpleMapi.UseMapi: Boolean;
 begin
@@ -652,9 +643,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclEmailRecip
-//==============================================================================
+//==================================================================================================
 
 function TJclEmailRecip.AddressAndName: string;
 var
@@ -667,7 +658,7 @@ begin
   Result := Format('"%s" <%s>', [N, Address]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmailRecip.SortingName: string;
 begin
@@ -677,9 +668,9 @@ begin
     Result := FName;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclEmailRecips
-//==============================================================================
+//==================================================================================================
 
 function TJclEmailRecips.Add(const Address, Name: string;
   const Kind: TJclEmailRecipKind; const AddressType: string): Integer;
@@ -699,14 +690,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmailRecips.GetItems(Index: Integer): TJclEmailRecip;
 begin
   Result := TJclEmailRecip(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmailRecips.GetOriginator: TJclEmailRecip;
 var
@@ -721,7 +712,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function EmailRecipsCompare(Item1, Item2: Pointer): Integer;
 var
@@ -739,9 +730,9 @@ begin
   Sort(EmailRecipsCompare);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclEmail
-//==============================================================================
+//==================================================================================================
 
 function TJclEmail.Address(const Caption: string; EditFields: Integer): Boolean;
 var
@@ -763,7 +754,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.BeforeUnloadClientLib;
 begin
@@ -771,7 +762,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.Clear;
 begin
@@ -785,7 +776,7 @@ begin
   FReadMsg.Flags := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclEmail.Create;
 begin
@@ -797,7 +788,7 @@ begin
   FRecipients.AddressesType := 'SMTP';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
 var
@@ -826,7 +817,7 @@ begin
   end;  
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.Delete(const MessageID: string): Boolean;
 begin
@@ -835,7 +826,7 @@ begin
     False) = SUCCESS_SUCCESS;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclEmail.Destroy;
 begin
@@ -844,7 +835,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.FindFirstMessage: Boolean;
 begin
@@ -852,7 +843,7 @@ begin
   Result := FindNextMessage;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.FindNextMessage: Boolean;
 var
@@ -879,7 +870,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.GetParentWnd: HWND;
 var
@@ -907,14 +898,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.GetUserLogged: Boolean;
 begin
   Result := (FSessionHandle <> 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.InternalSendOrSave(Save, ShowDialog: Boolean): Boolean;
 const
@@ -1028,7 +1019,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.LogOff;
 begin
@@ -1039,7 +1030,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.LogOn(const ProfileName, Password: string);
 begin
@@ -1051,7 +1042,7 @@ begin
   end; 
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.LogonOptionsToFlags(ShowDialog: Boolean): DWORD;
 begin
@@ -1069,7 +1060,7 @@ begin
     Inc(Result, MAPI_DIALOG);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer;
   IncludeAddresses: Boolean): Integer;
@@ -1115,7 +1106,7 @@ begin
   Strings.Add(WrapText(Body, AnsiCrLf, [AnsiTab, AnsiSpace, '-'], MaxWidth));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.Read(const Options: TJclEmailReadOptions): Boolean;
 var
@@ -1186,7 +1177,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.ResolveName(var Name, Address: string; ShowDialog: Boolean): Boolean;
 var
@@ -1206,21 +1197,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.Save: Boolean;
 begin
   Result := InternalSendOrSave(True, False);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclEmail.Send(ShowDialog: Boolean): Boolean;
 begin
   Result := InternalSendOrSave(False, ShowDialog);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.SetBody(const Value: string);
 begin
@@ -1230,16 +1221,16 @@ begin
     FBody := StrEnsureSuffix(AnsiCrLf, Value);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclEmail.SortAttachments;
 begin
   TStringList(FAttachments).Sort;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Simple email send function
-//==============================================================================
+//==================================================================================================
 
 function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
   const AAttachment: TFileName; ShowDialog: Boolean; AParentWND: HWND): Boolean;
@@ -1258,7 +1249,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
   const AAttachment: TFileName; AParentWND: HWND): Boolean;
