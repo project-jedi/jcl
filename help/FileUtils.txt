@@ -1926,7 +1926,7 @@ Count=6
 [Quick Info]
 BCB=3,4,5
 Kind=Type
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -1951,7 +1951,7 @@ If the specified file contains a version resource the result is True, if it does
 not or the file could not be found the result is False.
 [Quick Info]
 BCB=3,4,5
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -1974,7 +1974,7 @@ Count=1
 String representation of the OS identifier.
 [Quick Info]
 BCB=3,4,5
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -1990,7 +1990,7 @@ are available in the version resource.
 [Quick Info]
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2012,7 +2012,7 @@ setting this all string properties return values in that specific language.
 [Quick Info]
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2036,7 +2036,7 @@ for these identifiers.
 [Quick Info]
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2059,7 +2059,7 @@ return string properties. Use the LanguageIds property to get language identifie
 [Quick Info]
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2081,7 +2081,7 @@ Comments returns the value of the comments string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2097,7 +2097,7 @@ CompanyName returns the value of the company name string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brake;brakelm@bart.nl
@@ -2113,7 +2113,7 @@ FileDescription returns the value of the file description string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2131,7 +2131,7 @@ possible values in this set.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2218,7 +2218,7 @@ This member can be one of the following values:
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2311,7 +2311,7 @@ of the <REF>FileType</REF>. The possible values depend on the FileType property.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2363,7 +2363,7 @@ the version resource was read. This can be one of the following values:
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2379,7 +2379,7 @@ FileVersion returns the value of the file version string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brake;brakelm@bart.nl
@@ -2395,7 +2395,7 @@ InternalName returns the value of the internal name string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2411,7 +2411,7 @@ VersionLanguage returns the language identifier of the version resource.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2427,7 +2427,7 @@ LegalCopyright returns the value of the legal copyright string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2443,7 +2443,7 @@ LegalTradeMarks returns the value of the legal trademarks string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2459,7 +2459,7 @@ Returns the original filename string.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2475,7 +2475,7 @@ ProductName returns the value of the product name string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2491,7 +2491,7 @@ ProductVersion returns the value of the product version string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2508,7 +2508,7 @@ set in it's version resource. If it doesn't SpecialBuild is False.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2529,7 +2529,7 @@ set in it's version resource. If it doesn't PrivateBuild is False.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2552,7 +2552,7 @@ S := V.UserKeys['MyKey']; The property returns the value of the key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2568,7 +2568,7 @@ BinFileVersion returns the value of the binary file version string key.
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2584,7 +2584,7 @@ The BinProductVersion returns the value of the binary product version string key
 BCB=3,4,5
 Kind=Property
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2611,7 +2611,7 @@ and go to the "Version Info" tab.
 BCB=3,4,5
 Kind=Method
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2642,7 +2642,7 @@ and go to the "Version Info" tab.
 BCB=3,4,5
 Kind=Method
 Visibility=Public
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
@@ -2663,7 +2663,7 @@ key such as ProductName and FileVersion this class also allows you to read custo
 keys through the UserKeys property.
 [Quick Info]
 BCB=3,4,5
-Unit=JclSysInfo
+Unit=JclFileUtils
 Category=Files and IO
 SubCat=Files and Directories\TJclFileVersionInfo
 Author=Marcel van Brakel;brakelm@bart.nl
