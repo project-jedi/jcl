@@ -1,6 +1,6 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or (JclVersionRelease shl 8) or (JclVersionBuild shl 0);
+JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 JclVersionMajor   = Major;
 JclVersionMinor   = Minor;
 JclVersionRelease = Release;
@@ -119,7 +119,6 @@ BCB=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 constructor CreateRes(Ident: Integer);
-constructor CreateRes(ResStringRec: PResStringRec); overload;
 [ShortDescr]
 Instantiates an instance of EJclWin32Error with a string loaded from the apps resources.
 [Description]
@@ -127,9 +126,8 @@ CreateRes instantiates an EJclWin32Error exception class. Ident must be the uniq
 ID of a string resource which is displayed in the exception dialog box and is
 also available through the Message property.
 [Parameters]
-Count=2
+Count=1
 1=Ident:Integer=Unique ID of a string resource.
-2=ResStringRec:PResStringRec=ResStringRec is a pointer to a resource string.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -139,6 +137,32 @@ SubCat=EJclWin32Error
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CreateResRec
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateResRec(ResStringRec: PResStringRec);
+[ShortDescr]
+Instantiates an instance of EJclWin32Error with a string loaded from the apps resources.
+[Description]
+CreateRes instantiates an EJclWin32Error exception class. ResStringRec is a pointer
+to a message which is loaded from the application's resource.
+[Parameters]
+Count=1
+1=ResStringRec:PResStringRec=ResStringRec is a pointer to a resource string.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=EJclWin32Error
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CreateRes
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property LastError: DWORD read FLastError;
@@ -184,14 +208,78 @@ Base exception class for all JCL exceptions.
 EJclError is the base class used for all exception classes in the JCL. It inherits
 directly from Exception without adding any new functionality. It only exists to
 provide a distinction between exceptions raised by the JCL and those raised by
-the RTL/VCL and 3rd parties.
+the RTL/VCL and 3rd parties. It does introduce two constructors, CreateResRec and
+CreateResRecFmt, which are replacements for the Exception class methods CreateRes
+and CreateResFmt respectively (to remove the need for overloads and backwards
+compatibility).
 [Quick Info]
 Kind=Type
 Unit=JclBase
 Category=Base Services
+SubCat=EJclError
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateResRecFmt(ResStringRec: PResStringRec; const Args: array of const);
+[ShortDescr]
+Creates an instance of EJclError with a message loaded from the app's resource and then formatted.
+[Description]
+Creates an instance of EJclError with a message loaded from the application's
+resource and then formatted with additional information. The message is specified
+using the ResStringRec parameter and is used as:<BR>
+  <P class="syntax">
+  resourcestring<BR>
+    RsMyResource = 'Oeps, an error occured with code %u';<BR>
+  raise EJclError.CreateResRecFmt(@RsMyResource, [GetLastError]);<BR>
+  </P>
+[Parameters]
+Count=2
+1=ResStringRec:PResStringRec=Pointer to a resource string. See the exmple above.
+2=Args:array of const=Array of value used to format the message string with. See
+the Format function for more information on how to use these parameters (internally
+Format is used to do the formatting).
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=EJclError
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CreateResRec
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor CreateResRec(ResStringRec: PResStringRec);
+[ShortDescr]
+Creates an instance of EJclError with a simple message loaded from the app's resource.
+[Description]
+Creates an instance of EJclError with a simple message loaded from the application's
+resource. The message is specified using the ResStringRec parameter and is used as:<BR>
+  <P class="syntax">
+  resourcestring<BR>
+    RsMyResource = 'Oeps, an error occured';<BR>
+  raise EJclError.CreateResRec(@RsMyResource);<BR>
+  </P>
+[Parameters]
+Count=1
+1=ResStringRec:PResStringRec=Pointer to a resource string. See the exmple above.
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=EJclError
+Author=Marcel van Brakel;brakelm@bart.nl
+Delphi=3,4,5
+BCB=3,4,5
+[SeeAlso]
+Count=1
+1=CreateResRecFmt
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 Float = Extended
@@ -713,6 +801,47 @@ Clear empties the list, frees the memory used to store the Objects array, and
 sets Count and Capacity to 0. If OwnsObjects is True, Clear also frees the objects
 in the list.
 [Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=TObjectList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+constructor Create(AOwnsObjects: Boolean = False);
+[ShortDescr]
+Creates an instance of TObjectList
+[Description]
+Creates an instance of TObjectList and initializes the OwnsObjects property.
+[Parameters]
+Count=1
+1=AOwnsObjects:Boolean=Initial value for the OwnsObjects property. 
+[Quick Info]
+Kind=Method
+Visibility=Public
+Unit=JclBase
+Category=Base Services
+SubCat=TObjectList
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=3,4,5
+BCB=3,4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
+[ShortDescr]
+Determines whether the class owns it's items.
+[Description]
+The OwnsObjects property determines whether the class owns the objects it stores.
+If set to True, clearing the list through the Clear method will free all objects
+in addition to removing them from the list. If set to False, clearing the list
+through the Clear method merely removes the items from the list but does not free
+the objects.
+[Quick Info]
+Kind=Property
+Visibility=Public
 Unit=JclBase
 Category=Base Services
 SubCat=TObjectList
