@@ -22,7 +22,7 @@
 { declarations.                                                                                    }
 {                                                                                                  }
 { Unit owner: Peter Friese                                                                         }
-{ Last modified: May 26, 2002                                                                      }
+{ Last modified: June 1, 2002                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -698,6 +698,14 @@ const
 function BackupSeek(hFile: THandle; dwLowBytesToSeek, dwHighBytesToSeek: DWORD;
   var lpdwLowByteSeeked, lpdwHighByteSeeked: DWORD; var lpContext: Pointer): BOOL; stdcall;
   external kernel32 name 'BackupSeek';
+
+//--------------------------------------------------------------------------------------------------
+// Hard links
+//--------------------------------------------------------------------------------------------------
+
+function BackupWrite(hFile: THandle; lpBuffer: PByte; nNumberOfBytesToWrite: DWORD;
+  var lpNumberOfBytesWritten: DWORD; bAbort, bProcessSecurity: BOOL; lpContext: PPointer): BOOL; stdcall;
+  external kernel32 name 'BackupWrite';
 
 //==================================================================================================
 // Netbios (incorrect/inconvenient declarations in rtl)
