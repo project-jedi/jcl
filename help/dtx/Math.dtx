@@ -30,6 +30,8 @@ Parameters:
   Y - The second float
 Result:
   Modulus of the two floating point numbers.
+See also:
+  RemainderFloat
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -50,6 +52,8 @@ Parameters:
   Y - The second float
 Result:
   The remainder of the two floating point numbers.
+See also:
+  ModFloat
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -71,6 +75,8 @@ Parameters:
   Sec - Seconds
 Result:
   Degrees, Minutes and Seconds converted to a float.
+See also:
+  FloatToDegMinSec
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -90,6 +96,8 @@ Parameters:
   Deg - Receives the degrees.
   Min - Receives the minutes.
   Sec - Receives the seconds.
+See also:
+  DegMinSecToFloat
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -112,6 +120,8 @@ Result:
   If the supplied floating point value equals zero within the precision as defined
   by the PrecisionTolerance
   global variable, the function returns True, otherwise it returns False.
+See also:
+  FloatsEqual
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -136,6 +146,8 @@ Result:
   If the two supplied values are equal within the precision defined by
   the PrecisionTolerance
   global variable, the function returns True, otherwise it returns False.
+See also:
+  FloatIsZero
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -210,6 +222,10 @@ Parameters:
   Y - The exponent to raise 10 to.
 Result:
   10 to the power Y.
+See also:
+  Power
+  PowerInt
+  TwoToY
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -228,6 +244,10 @@ Parameters:
   Y - The exponent to raise 2 to.
 Result:
   2 to the power Y.
+See also:
+  Power
+  PowerInt
+  TenToY
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -250,6 +270,10 @@ Parameters:
   N - Exponent
 Result:
   X to the power N
+See also:
+  Power
+  TenToY
+  TwoToY
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -272,6 +296,9 @@ Parameters:
 Result:
   If the two numbers are relatively prime the result is True, otherwise the result is
   False.
+See also:
+  GCD
+  LCM
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -292,6 +319,9 @@ Parameters:
   Y - Second of the two values.
 Result:
   The least common multiple of X and Y.
+See also:
+  GCD
+  RelativePrime
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -313,6 +343,9 @@ Parameters:
   Y - Second of the two values.
 Result:
   The greatest common divisor of X and Y.
+See also:
+  LCM
+  RelativePrime
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -404,6 +437,9 @@ Parameters:
   X - Value whose log base N to calculate. N must be larger than 0.0.
 Result:
   Log base N of X.
+See also:
+  LogBase2
+  LogBase10
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -422,6 +458,9 @@ Parameters:
   X - Value whose log base 2 to calculate. X must be larger than 0.0.
 Result:
   Log base 2 of X.
+See also:
+  LogBase10
+  LogBaseN
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -440,6 +479,9 @@ Parameters:
   X - Value whose log base 10 to calculate. X must be larger than 0.0.
 Result:
   Log base 10 of X.
+See also:
+  LogBase2
+  LogBaseN
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -944,6 +986,10 @@ Parameters:
   Exponent - Exponent value.
 Result:
   Base to the power Exponent.
+See also:
+  PowerInt
+  TenToY
+  TwoToY
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1134,6 +1180,11 @@ Result:
    * 1 Correctable error. If the false bit was in the data, it has been corrected.
    * -1 Uncorrectable error (more than one false bit).
    
+See also:
+  ...CRC...
+  Crc32
+  InitCrc32
+  CheckCrc16
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1168,6 +1219,11 @@ Result:
   otherwise the function
     returns the residuum for the correction function.
    
+See also:
+  ...CRC...
+  CheckCrc32
+  InitCrc32
+  Crc16
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1194,6 +1250,11 @@ Parameters:
   Start - 32 bit starting value to be used with subsequent calls to 32 bit CRC functions
 Notes:
   As a standard in the Jedi Code Library the compiler option {$J-} is set to prevent modifying typed constants. So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, which temporarily sets {$J+} for the CRC functions.
+See also:
+  ...CRC...
+  Crc32
+  CheckCrc32
+  InitCrc16
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1222,6 +1283,11 @@ Result:
    * 1 Correctable error. If the false bit was in the data, it has been corrected.
    * -1 Uncorrectable error (more than one false bit).
    
+See also:
+  ...CRC...
+  Crc16
+  InitCrc16
+  CheckCrc32
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1256,6 +1322,11 @@ Result:
   otherwise the function
     returns the residuum for the correction function.
    
+See also:
+  ...CRC...
+  CheckCrc16
+  InitCrc16
+  Crc32
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1281,6 +1352,11 @@ Parameters:
   Start - 16 bit starting value to be used with subsequent calls to 16 bit CRC functions
 Notes:
   As a standard in the Jedi Code Library the compiler option {$J-} is set to prevent modifying typed constants. So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, which temporarily sets {$J+} for the CRC functions.
+See also:
+  ...CRC...
+  Crc16
+  CheckCrc16
+  InitCrc32
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1321,6 +1397,10 @@ EUnderflow       Denormal number             fpDenormal
 </TABLE>
 
    </P>
+See also:
+  FloatingPointClass
+  IsNaN
+  IsInfinite
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1351,6 +1431,8 @@ Parameters:
   Value - The value to classify.
 Result:
   The result is the class to which <I>Value</I> belongs.
+See also:
+  TFloatingPointClass
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1369,6 +1451,9 @@ Parameters:
   Value - The floating point value to examine.
 Result:
   The result is True when <I>Value</I> is infinite, False otherwise.
+See also:
+  TFloatingPointClass
+  FloatingPointClass
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1387,6 +1472,12 @@ Parameters:
   Value - The floating point value to examine.
 Result:
   The result is True when <I>Value</I> is a NaN, False otherwise.
+See also:
+  TFloatingPointClass
+  FloatingPointClass
+  MakeQuietNaN
+  MakeSignalingNaN
+  TNaNTag
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1401,6 +1492,10 @@ Summary:
   The data type used by JCL routines for tagging numeric information to NaN values.
 Description:
   The data type used by JCL routines for tagging numeric information to NaN values.
+See also:
+  GetNaNTag
+  MakeQuietNaN
+  MakeSignalingNaN
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1419,6 +1514,10 @@ Parameters:
   NaN - The NaN value to evaluate.
 Result:
   The value encoded in the NaN.
+See also:
+  TNaNTag
+  MakeQuietNaN
+  MakeSignalingNaN
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1439,6 +1538,11 @@ Description:
 Parameters:
   X - The floating point variable to change into a QNaN.
   Tag - An integer value to be encoded in the resulting NaN value. It may be used to propagate some information through a sequence of arithmetic operations.
+See also:
+  TFloatingPointClass
+  TNaNTag
+  MakeSignalingNaN
+  GetNaNTag
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1462,6 +1566,11 @@ Description:
 Parameters:
   X - The floating point variable to change into a SNaN.
   Tag - An integer value to be encoded in the resulting NaN value.
+See also:
+  TFloatingPointClass
+  TNaNTag
+  MakeQuietNaN
+  GetNaNTag
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1485,6 +1594,11 @@ Parameters:
   Buffer - The buffer to initialize with SNaN values.
   Count - The number of array elements.
   StartTag - The integer value assigned to the first array element. The tag is increased with each subsequent array element.
+See also:
+  TNaNTag
+  GetNaNTag
+  MineDoubleBuffer
+  MakeSignalingNaN
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1508,6 +1622,11 @@ Parameters:
   Buffer - The buffer to initialize with SNaN values.
   Count - The number of array elements.
   StartTag - The integer value assigned to the first array element. The tag is increased with each subsequent array element.
+See also:
+  TNaNTag
+  GetNaNTag
+  MineSingleBuffer
+  MakeSignalingNaN
 Quick info:
   Unit: JclMath
   Category: Math Routines
