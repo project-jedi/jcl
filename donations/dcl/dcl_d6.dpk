@@ -27,7 +27,6 @@ package DCL_D6;
 
 requires
   rtl,
-  vcl,
   DJcl;
 
 contains

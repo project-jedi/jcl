@@ -240,7 +240,7 @@ var
 begin
   Result := nil;
   for I := Count - 1 downto 0 do
-    if not First.HasNext then
+    if First.HasNext then
     begin
       if AComparator(First.GetObject, AObject) = 0 then
       begin
