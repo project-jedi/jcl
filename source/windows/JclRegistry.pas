@@ -124,7 +124,7 @@ procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TDynStringArray); overload;
 procedure RegWriteMultiString(const RootKey: DelphiHKEY; const Key, Name: string; const Value: TStrings); overload;
 
-procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
+procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
 
 function RegGetValueNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
 function RegGetKeyNames(const RootKey: DelphiHKEY; const Key: string; const List: TStrings): Boolean;
@@ -1184,7 +1184,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; const Value; const ValueSize: Cardinal);
+procedure RegWriteBinary(const RootKey: DelphiHKEY; const Key, Name: string; var Value; const ValueSize: Cardinal);
 begin
   InternalRegWriteA(RootKey, Key, Name, REG_BINARY, Value, ValueSize);
 end;
@@ -1373,6 +1373,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/05/28 14:18:20  obones
+// BCB compatibility, replaced const by var (see QC7224)
+//
 // Revision 1.13  2004/05/19 21:43:36  rrossmair
 // processed help TODOs
 //
