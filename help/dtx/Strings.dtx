@@ -1,3 +1,67 @@
+@@$Stringmanipulation
+<TITLE String manipulation>
+<TOPICORDER 2200>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.CharacterSearchandReplace
+<GROUP Stringmanipulation>
+<TITLE Character Search and Replace>
+<TOPICORDER 100>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.CharacterTestRoutines
+<GROUP Stringmanipulation>
+<TITLE Character Test Routines>
+<TOPICORDER 200>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.CharacterTransformationRoutines
+<GROUP Stringmanipulation>
+<TITLE Character Transformation Routines>
+<TOPICORDER 300>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.Miscellaneous
+<GROUP Stringmanipulation>
+<TITLE Miscellaneous>
+<TOPICORDER 400>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.MultiSz
+<GROUP Stringmanipulation>
+<TITLE MultiSz>
+<TOPICORDER 500>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.PCharVector
+<GROUP Stringmanipulation>
+<TITLE PCharVector>
+<TOPICORDER 600>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.StringExtraction
+<GROUP Stringmanipulation>
+<TITLE String Extraction>
+<TOPICORDER 700>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.StringManagement
+<GROUP Stringmanipulation>
+<TITLE String Management>
+<TOPICORDER 800>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.StringSearchandReplaceRoutines
+<GROUP Stringmanipulation>
+<TITLE String Search and Replace Routines>
+<TOPICORDER 900>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.StringTestRoutines
+<GROUP Stringmanipulation>
+<TITLE String Test Routines>
+<TOPICORDER 1000>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.StringTransformationRoutines
+<GROUP Stringmanipulation>
+<TITLE String Transformation Routines>
+<TOPICORDER 1100>
+--------------------------------------------------------------------------------
+@@$Stringmanipulation.TStringsManipulation
+<GROUP Stringmanipulation>
+<TITLE TStrings Manipulation>
+<TOPICORDER 1200>
+--------------------------------------------------------------------------------
 @@StrIsAlpha
 <GROUP Stringmanipulation.StringTestRoutines>
 Summary:
@@ -1108,35 +1172,45 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@StrCompareRange
-<GROUP Stringmanipulation.StringSearchandReplaceRoutines>
-Summary:
-  Compares two (sub) strings.
-Description:
-  StrCompareRange compares a sub-string from the first supplied string with the
-  second string. If the two strings are identical the function returns 0 otherwise
-  it returns an indication of difference between the two strings. See StrCompare
-  for more information. This function is particularly useful to avoid code such as:
-   "if Copy(S, 1, 4) = 'JEDI' then ..." which is quite inefficient. This code would
-  be rewritten to:
-   "if StrCompareRange(S1, 'JEDI', 1, 4) = 0 then ...".
-Parameters:
-  S1 - First string to compare.
-  S2 - Second string to compare.
-  Index - Starting index of sub-string in S1 to.
-  Count - Number of characters of the sub-string in S1 to compare to S2.
-Result:
-  StrCompareRange returns 0 if the two strings match or the number of different characters
-  in case of a mismatch.
-See also:
-  StrCompare
-Quick info:
-  Unit: JclStrings
+<GROUP $Stringmanipulation.StringSearchandReplaceRoutines>
+
+Description
+StrCompareRange compares, case-sensitive, a sub-string from the
+first supplied string with the second string. If the two
+strings are identical the function returns 0 otherwise it
+\returns an indication of difference between the two strings,
+Te result is equal to the result returned by StrCompare. This
+function is particularly useful to avoid code such as: "if
+Copy(S, 1, 4) = 'JEDI' then ..." which is quite inefficient.
+This code would be rewritten to: "if StrCompareRange(S1,
+'JEDI', 1, 4) = 0 then ...".
+
+Summary
+Compares two (sub) strings.
+
+Parameters
+Count :   Number of characters of the sub-string in S1 to
+          compare to S2.
+Index :   Starting index of sub-string in S1 to.
+S1 :      First string to compare.
+S2 :      Second string to compare.
+
+Returns
+StrCompareRange returns 0 if the two strings match or the
+number of different characters in case of a mismatch.
+
+QuickInfo
+Unit: JclStrings
   Category: String manipulation
   Donator: Azret Botash
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
+
+
+See Also
+StrCompare
+
 @@StrFillChar
 <GROUP Stringmanipulation.StringSearchandReplaceRoutines>
 Summary:
@@ -1833,25 +1907,32 @@ Quick info:
   Requirements: Shell32 Version 4.00 or later.
 --------------------------------------------------------------------------------
 @@CharIsPrintable
-<GROUP Stringmanipulation.CharacterTestRoutines>
-Summary:
-  Tests whether a character is printable.
-Description:
-  CharIsPrintable returns whether the specified character is printable. A printable
-  character is any character which is not a control character and as such has an
-  ordinal value larger than 31.
-Parameters:
-  C - The character to test.
-Result:
-  If C is printable the return value is True, otherwise the return value is False.
-Quick info:
-  Unit: JclStrings
+<GROUP $Stringmanipulation.CharacterTestRoutines>
+
+Description
+CharIsPrintable returns whether the specified character is
+printable. A printable character is any character which is
+not a control character and as such has an ordinal value
+larger than 31.
+
+Summary
+Tests whether a character is printable.
+
+Parameters
+C :   The character to test.
+
+Returns
+If C is printable the return value is True, otherwise the
+\return value is False.
+
+QuickInfo
+Unit: JclStrings
   Category: String manipulation
   Donator: Azret Botash
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
+
 @@CharIsPunctuation
 <GROUP Stringmanipulation.CharacterTestRoutines>
 Summary:
@@ -1893,27 +1974,35 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CharIsSpace
-<GROUP Stringmanipulation.CharacterTestRoutines>
-Summary:
-  Tests whether C represents space.
-Description:
-  CharIsSpace returns whether or not the C character represents space(s).
-  In this context that means the character is tested against both the space (' ') and
-  tab (#9) characters.
-Parameters:
-  C - Character to test.
-Result:
-  If the character represents a space the result is True, otherwise the result is False.
-See also:
-  CharIsWhiteSpace
-Quick info:
-  Unit: JclStrings
+<GROUP $Stringmanipulation.CharacterTestRoutines>
+
+Description
+CharIsSpace returns whether or not the C character represents
+space(s). In this context that means the character is tested
+against the space (' '), tab (#9), line feed (#10), vertical tab
+(#11), form feed (#12) and carriage return (#13) characters.
+
+Summary
+Tests whether C represents space.
+
+Parameters
+C :   Character to test.
+
+Returns
+If the character represents a space the result is True,
+otherwise the result is False.
+
+QuickInfo
+ Unit: JclStrings
   Category: String manipulation
   Donator: Anthony Steele
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
---------------------------------------------------------------------------------
+
+See Also
+CharIsWhiteSpace
+
 @@CharIsUpper
 <GROUP Stringmanipulation.CharacterTestRoutines>
 Summary:
