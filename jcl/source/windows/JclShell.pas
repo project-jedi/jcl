@@ -38,7 +38,7 @@ interface
 
 uses
   Windows, ShlObj,
-  SysUtils,
+  Graphics, SysUtils,
   JclBase;
 
 //------------------------------------------------------------------------------
