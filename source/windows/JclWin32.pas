@@ -23,7 +23,7 @@
 { intended for regular code, only API declarations.                            }
 {                                                                              }
 { Unit owner: Peter Friese                                                     }
-{ Last modified: Februari 17, 2001                                             }
+{ Last modified: November 18, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -69,9 +69,25 @@ function SignalObjectAndWait(hObjectToSignal: THandle; hObjectToWaitOn: THandle;
   name 'SignalObjectAndWait';
 
 const
-  VER_NT_WORKSTATION       = $0000001;
-  VER_NT_DOMAIN_CONTROLLER = $0000002;
-  VER_NT_SERVER            = $0000003;
+  // ProductType
+
+  VER_NT_WORKSTATION                 = $0000001;
+  VER_NT_DOMAIN_CONTROLLER           = $0000002;
+  VER_NT_SERVER                      = $0000003;
+
+  // SuiteMask
+
+  VER_SUITE_SMALLBUSINESS            = $00000001;
+  VER_SUITE_ENTERPRISE               = $00000002;
+  VER_SUITE_BACKOFFICE               = $00000004;
+  VER_SUITE_COMMUNICATIONS           = $00000008;
+  VER_SUITE_TERMINAL                 = $00000010;
+  VER_SUITE_SMALLBUSINESS_RESTRICTED = $00000020;
+  VER_SUITE_EMBEDDEDNT               = $00000040;
+  VER_SUITE_DATACENTER               = $00000080;
+  VER_SUITE_SINGLEUSERTS             = $00000100;
+  VER_SUITE_PERSONAL                 = $00000200;
+  VER_SUITE_SERVERAPPLIANCE          = $00000400;
 
 type
   POSVersionInfoEx = ^TOSVersionInfoEx;
@@ -939,6 +955,22 @@ type
 {$EXTERNALSYM GetVersionEx}
 {$EXTERNALSYM CreateMutex}
 
+{$EXTERNALSYM VER_NT_WORKSTATION}
+{$EXTERNALSYM VER_NT_DOMAIN_CONTROLLER}
+{$EXTERNALSYM VER_NT_SERVER}
+
+{$EXTERNALSYM VER_SUITE_SMALLBUSINESS}
+{$EXTERNALSYM VER_SUITE_ENTERPRISE}
+{$EXTERNALSYM VER_SUITE_BACKOFFICE}
+{$EXTERNALSYM VER_SUITE_COMMUNICATIONS}
+{$EXTERNALSYM VER_SUITE_TERMINAL}
+{$EXTERNALSYM VER_SUITE_SMALLBUSINESS_RESTRICTED}
+{$EXTERNALSYM VER_SUITE_EMBEDDEDNT}
+{$EXTERNALSYM VER_SUITE_DATACENTER}
+{$EXTERNALSYM VER_SUITE_SINGLEUSERTS}
+{$EXTERNALSYM VER_SUITE_PERSONAL}
+{$EXTERNALSYM VER_SUITE_SERVERAPPLIANCE}
+
 {$IFNDEF COMPILER4_UP}
 
   {$EXTERNALSYM IContextMenu2}
@@ -1265,8 +1297,7 @@ begin
   if not Assigned(_GetVolumeNameForVolumeMountPoint) then
   begin
     Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then
-      @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32, PChar('GetVolumeNameForVolumeMountPointA'));
+    if Kernel32 <> 0 then @_GetVolumeNameForVolumeMountPoint := GetProcAddress(Kernel32, PChar('GetVolumeNameForVolumeMountPointA'));
   end;
   if Assigned(_GetVolumeNameForVolumeMountPoint) then
     Result := _GetVolumeNameForVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName, cchBufferLength)
@@ -1281,8 +1312,7 @@ begin
   if not Assigned(_SetVolumeMountPoint) then
   begin
     Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then
-      @_SetVolumeMountPoint := GetProcAddress(Kernel32, PChar('SetVolumeMountPointA'));
+    if Kernel32 <> 0 then @_SetVolumeMountPoint := GetProcAddress(Kernel32, PChar('SetVolumeMountPointA'));
   end;
   if Assigned(_SetVolumeMountPoint) then
     Result := _SetVolumeMountPoint(lpszVolumeMountPoint, lpszVolumeName)
@@ -1290,15 +1320,14 @@ begin
     Result := False;
 end;
 
-function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL; 
+function DeleteVolumeMountPoint(lpszVolumeMountPoint: LPCSTR): BOOL;
 var
   Kernel32: THandle;
 begin
   if not Assigned(_DeleteVolumeMountPoint) then
   begin
     Kernel32 := GetModuleHandle(PChar('kernel32.dll'));
-    if Kernel32 <> 0 then
-      @_DeleteVolumeMountPoint := GetProcAddress(Kernel32, PChar('DeleteVolumeMountPointA'));
+    if Kernel32 <> 0 then @_DeleteVolumeMountPoint := GetProcAddress(Kernel32, PChar('DeleteVolumeMountPointA'));
   end;
   if Assigned(_DeleteVolumeMountPoint) then
     Result := _DeleteVolumeMountPoint(lpszVolumeMountPoint)
