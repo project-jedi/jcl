@@ -31,6 +31,12 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
+{ 04/05/2003 Update 2 (R.A.)                                                                       }
+{                                                                                                  }
+{   Some last minute additions again.                                                              }
+{                                                                                                  }
+{   Added compiler directives for Delphi 5, 6, and 7 compatibility.                                }
+{                                                                                                  }
 { 04/05/2003 (R.A.)                                                                                }
 {                                                                                                  }
 {   Some last minute additions.                                                                    }
@@ -138,6 +144,8 @@
 unit JclEDI;
 
 {$I jcl.inc}
+
+{$I jedi.Inc}
 
 {$WEAKPACKAGEUNIT ON}
 
@@ -320,9 +328,14 @@ type
     procedure Dissassemble; override;
     function GetIndexPositionFromParent: Integer;
     property Element[Index: Integer]: TEDIElement read GetElement write SetElement; default;
+{$IFDEF DELPHI5 THEN}
+    property Elements: TEDIElementArray read FElements write FElements;
+{$ENDIF}
   published
     property SegmentID: string read FSegmentID write FSegmentID;
+{$IFDEF DELPHI6_UP THEN}
     property Elements: TEDIElementArray read FElements write FElements;
+{$ENDIF}
   end;
 
   TEDITransactionSetSegment = class(TEDISegment)
@@ -467,10 +480,15 @@ type
     function Assemble: string; override;
     procedure Dissassemble; override;
     property Segment[Index: Integer]: TEDISegment read GetSegment write SetSegment; default;
+{$IFDEF DELPHI5 THEN}
+    property Segments: TEDISegmentArray read FSegments write FSegments;
+{$ENDIF}
   published
     property SegmentST: TEDITransactionSetSegment read FSTSegment write FSTSegment;
     property SegmentSE: TEDITransactionSetSegment read FSESegment write FSESegment;
+{$IFDEF DELPHI6_UP THEN}
     property Segments: TEDISegmentArray read FSegments write FSegments;
+{$ENDIF}
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -514,13 +532,17 @@ type
     procedure DeleteEDIDataObjects;
     property EDIDataObject[Index: Integer]: TEDIDataObject read GetEDIDataObject
       write SetEDIDataObject; default;
+{$IFDEF DELPHI5 THEN}
+    property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects write FEDIDataObjects;
+{$ENDIF}
   published
     property OwnerLoopId: string read FOwnerLoopId write FOwnerLoopId;
     property ParentLoopId: string read FParentLoopId write FParentLoopId;
     property ParentTransactionSet: TEDITransactionSet read FParentTransactionSet
       write FParentTransactionSet;
-    //
+{$IFDEF DELPHI6_UP THEN}
     property EDIDataObjects: TEDIDataObjectArray read FEDIDataObjects write FEDIDataObjects;
+{$ENDIF}
   end;
 
   TEDILoopStackRecord = record
@@ -552,8 +574,13 @@ type
     procedure Update(SegmentId, OwnerLoopId, ParentLoopId: string; StartIndex: Integer;
       Loop: TEDITransactionSetLoop);
     function Debug: string;
-  published
+{$IFDEF DELPHI5 THEN}
     property Stack: TEDILoopStackArray read FEDILoopStack write FEDILoopStack;
+{$ENDIF}
+  published
+{$IFDEF DELPHI6_UP THEN}
+    property Stack: TEDILoopStackArray read FEDILoopStack write FEDILoopStack;
+{$ENDIF}
     property AltStackPointer: Boolean read FAltStackPointer write FAltStackPointer;
     property StackResized: Boolean read FStackResized write FStackResized;
   end;
@@ -630,10 +657,15 @@ type
     procedure Dissassemble; override;
     property TransactionSet[Index: Integer]: TEDITransactionSet read GetTransactionSet
       write SetTransactionSet; default;
+{$IFDEF DELPHI5 THEN}
+    property TransactionSets: TEDITransactionSetArray read FTransactionSets write FTransactionSets;
+{$ENDIF}
   published
     property SegmentGS: TEDIFunctionalGroupSegment read FGSSegment write FGSSegment;
     property SegmentGE: TEDIFunctionalGroupSegment read FGESegment write FGESegment;
+{$IFDEF DELPHI6_UP THEN}
     property TransactionSets: TEDITransactionSetArray read FTransactionSets write FTransactionSets;
+{$ENDIF}
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -695,11 +727,17 @@ type
     procedure Dissassemble; override;
     property FunctionalGroup[Index: Integer]: TEDIFunctionalGroup read GetFunctionalGroup
       write SetFunctionalGroup; default;
+{$IFDEF DELPHI5 THEN}
+    property FunctionalGroups: TEDIFunctionalGroupArray read FFunctionalGroups
+      write FFunctionalGroups;
+{$ENDIF}
   published
     property SegmentISA: TEDIInterchangeControlSegment read FISASegment write FISASegment;
     property SegmentIEA: TEDIInterchangeControlSegment read FIEASegment write FIEASegment;
+{$IFDEF DELPHI6_UP THEN}
     property FunctionalGroups: TEDIFunctionalGroupArray read FFunctionalGroups
       write FFunctionalGroups;
+{$ENDIF}
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -759,10 +797,15 @@ type
     procedure Dissassemble; override;
     property Interchange[Index: Integer]: TEDIInterchangeControl read GetInterchangeControl
       write SetInterchangeControl; default;
+{$IFDEF DELPHI5 THEN}
+    property Interchanges: TEDIInterchangeControlArray read FInterchanges write FInterchanges;
+{$ENDIF}
   published
     property FileID: Integer read FFileID write FFileID;
     property FileName: string read FFileName write FFileName;
+{$IFDEF DELPHI6_UP THEN}
     property Interchanges: TEDIInterchangeControlArray read FInterchanges write FInterchanges;
+{$ENDIF}
     property Options: TEDIFileOptions read FEDIFileOptions write FEDIFileOptions;
   end;
 
