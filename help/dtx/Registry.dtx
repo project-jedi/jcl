@@ -3,14 +3,12 @@
 Summary:
   Deletes a registry key including all subkeys.
 Description:
-
   RegDeleteKeyTree deletes the specified key under RootKey. This function deletes
   all subkeys first thus working also on Windows NT.
 Parameters:
   RootKey - The rootkey from which to delete, one of the HKEY_XXX constants.
   Key - Subkey of rootkey to delete.
 Result:
-
   If the function succeeds it returns True else False.
   The failure may happen somewhere in the recursive deletion leaving you with
   only some remaining keys.
@@ -31,14 +29,12 @@ Quick info:
 Summary:
   Creates and initializes a key.
 Description:
-
   RegCreateKey creates the specified key under the HKEY_CLASSES_ROOT and writes
   the specified value to the default value of this key.
 Parameters:
   Key - Subkey of HKEY_CLASSES_ROOT to create.
   Value - The value to write to the default value of the specified key.
 Result:
-
   If the function succeeds it returns ERROR_SUCCESS as defined in Windows.pas. If
   it fails it returns a non-zero error code. You can use the Windows FormatMessage
   API call to get a description for the error code.
@@ -57,7 +53,6 @@ Quick info:
 Summary:
   Reads a boolean key from the registry.
 Description:
-
   RegReadBool reads a single boolean value from the registry. If the function fails
   it returns the value specified by Def. The function only accepts key values
   of type REG_DWORD.
@@ -67,7 +62,6 @@ Parameters:
   Name - Name of the value to read.
   Def - The value to return in case of failure.
 Result:
-
   The value of the specified key, or the specified default value in case of failure.
 Quick info:
   Unit: JclRegistry
@@ -84,7 +78,6 @@ Quick info:
 Summary:
   Reads an integer key from the registry.
 Description:
-
   RegReadInteger reads a single integer value from the registry. If the function fails
   it returns the specified default value. The function accepts only key values of type
   REG_DWORD.
@@ -94,7 +87,6 @@ Parameters:
   Name - Name of the value to read.
   Def - The value to return in case of failure.
 Result:
-
   The value of the specified key, or the specified default value in case of failure.
 Quick info:
   Unit: JclRegistry
@@ -111,7 +103,6 @@ Quick info:
 Summary:
   Reads a string key from the registry.
 Description:
-
   RegReadStringDef reads a single string value from the registry. If the function fails
   it returns the value specified by Def. The function accepts only key values of type
   REG_SZ and REG_EXPAND_SZ.
@@ -121,7 +112,6 @@ Parameters:
   Name - Name of the value to read.
   Def - Value to return in case of failure.
 Result:
-
   The value of the specified key, or the specified default value on failure.
 Quick info:
   Unit: JclRegistry
@@ -138,7 +128,6 @@ Quick info:
 Summary:
   Reads binary data from the registry.
 Description:
-
   RegReadBinaryDef reads binary data from the registry. If the function fails
   it fills all ValueSize bytes of Value with the specified default value.
   Value is untyped to allow to hand in a variable of any type. ValueSize should
@@ -152,7 +141,6 @@ Parameters:
   ValueSize - Size of Value in bytes.
   Def - Value to fill value with in case of failure.
 Result:
-
   The return value is not the data itself but the amount of data read.
   The value is never bigger than ValueSize.
 Quick info:
@@ -170,14 +158,12 @@ Quick info:
 Summary:
   Deletes an entry from the registry.
 Description:
-
   RegDeleteEntry deletes a single value from the registry.
 Parameters:
   RootKey - The rootkey which to write to, one of the HKEY_XXX constants.
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to delete.
 Result:
-
   The function return True if it succeeds else False. The most probable
   failure reasons are a nonexistent key or name or insufficient permissions
   on Windows NT.
@@ -196,7 +182,6 @@ Quick info:
 Summary:
   Writes a boolean key to the registry.
 Description:
-
   RegWriteBool writes a single boolean value to the registry. If the function fails
   it raises an EJclRegistryError exception. The specified Key must already exist.
   The value is written as REG_DWORD of either 0 or 1.
@@ -220,7 +205,6 @@ Quick info:
 Summary:
   Writes an integer key to the registry.
 Description:
-
   RegWriteInteger writes a single integer value to the registry. If the function fails
   it raises an EJclRegistryError exception. The specified Key must already exist.
 Parameters:
@@ -243,7 +227,6 @@ Quick info:
 Summary:
   Writes a string key to the registry.
 Description:
-
   RegWriteString writes a single string value to the registry. If the function fails
   it raises an EJclRegistryError exception. The specified Key must already exist.
 Parameters:
@@ -266,7 +249,6 @@ Quick info:
 Summary:
   Writes binary data to the registry.
 Description:
-
   RegWriteBinary writes binary data to the registry. If the function fails
   it raises an EJclRegistryError exception. The specified Key must already exist.
 Parameters:
@@ -290,7 +272,6 @@ Quick info:
 Summary:
   Reads a boolean key from the registry.
 Description:
-
   RegReadBool reads a single boolean value from the registry. If the function fails
   it raises an EJclRegistryError exception.
 Parameters:
@@ -298,7 +279,6 @@ Parameters:
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to read.
 Result:
-
   The value of the specified key.
 Quick info:
   Unit: JclRegistry
@@ -315,7 +295,6 @@ Quick info:
 Summary:
   Reads an integer key from the registry.
 Description:
-
   RegReadInteger reads a single integer value from the registry. If the function fails
   it raises an EJclRegistryError exception.
 Parameters:
@@ -323,7 +302,6 @@ Parameters:
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to read.
 Result:
-
   The value of the specified key.
 Quick info:
   Unit: JclRegistry
@@ -340,7 +318,6 @@ Quick info:
 Summary:
   Reads a string key from the registry.
 Description:
-
   RegReadString reads a single string value from the registry. If the function fails
   it raises an EJclRegistryError exception.
 Parameters:
@@ -348,7 +325,6 @@ Parameters:
   Key - The key (path) where the desired value is located, relative to RootKey.
   Name - Name of the value to read.
 Result:
-
   The value of the specified key.
 Quick info:
   Unit: JclRegistry
@@ -365,7 +341,6 @@ Quick info:
 Summary:
   Reads binary data from the registry.
 Description:
-
   RegReadBinary reads binary data from the registry.
   Value is untyped to allow to hand in a variable of any type. ValueSize should
   give the size of Value in bytes. The function accepts only key values of type
@@ -377,7 +352,6 @@ Parameters:
    - Destination for the data of any type.
   ValueSize - Size of Value in bytes.
 Result:
-
   The return value is not the data itself but the amount of data read.
   The value is never bigger than ValueSize.
 Quick info:
@@ -395,7 +369,6 @@ Quick info:
 Summary:
   Unregisters the specified application for execution at logon.
 Description:
-
   UnregisterAutoExec unregisters an application that is registered for autoexecution.
   You can use this function to remove an application that was registered as run always,
   or 'run once' if you change your mind (before reboot). If a file is registered
@@ -405,7 +378,6 @@ Parameters:
   ExecKind - Specifies how the file was registered. See TExecKind for more information.
   Name - Name of registry value to delete.
 Result:
-
   The return value is that of a RegDeleteEntry except for
   calling UnregisterAutoExec with ekServiceRun or ekServiceRunOnce on Windows NT/2000
   which causes the function to return False and do nothing.
@@ -424,7 +396,6 @@ Quick info:
 Summary:
   Registers the specified application for execution at logon.
 Description:
-
   RegisterAutoExec registers the file specified by Path in the system registry so
   that it will automatically be executed by the system at the next logon. The
   ExecKind parameter specifies the details about user vs. machine and once vs. always.
@@ -441,7 +412,6 @@ Parameters:
   Name - Name of the registry value to add.
   Path - The command line of an executable file including command line parameters to register for auto execution.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. Note that
   calling RegisterAutoExec with ekServiceRun or ekServiceRunOnce on Windows NT/2000
   always causes the function to return False (the file is not registered).
@@ -488,7 +458,6 @@ Quick info:
 Summary:
   Reads a list of value names from the registry.
 Description:
-
   Use RegGetValueNames to obtain a list of values contained in the specified registry key.
   The string list is cleared before the values are added.
 Parameters:
@@ -496,7 +465,6 @@ Parameters:
   Key - The key (path) where the desired value list is located, relative to RootKey.
   List - This string list will contain the names of the values.
 Result:
-
   If the function succeeds it returns True. If it fails it returns False.
   Failure is normally caused by either a nonexistent key or insufficient
   permissions on Windows NT.
@@ -516,7 +484,6 @@ Quick info:
 Summary:
   Reads a list of key names from the registry.
 Description:
-
   RegGetKeyNames returns a list of the specified key's subkeys.
   The string list is cleared before the values are added.
 Parameters:
@@ -524,7 +491,6 @@ Parameters:
   Key - The key (path) where the desired value list is located, relative to RootKey.
   List - On exit, this string list will contain the names of the values. The caller is responsible for creating and destroying this list.
 Result:
-
   If the function succeeds it returns True. If it fails it returns False.
   Failure is normally caused by either a nonexistent key or insufficient
   permissions on Windows NT.
@@ -544,14 +510,12 @@ Quick info:
 Summary:
   Checks whether the specified key has any children.
 Description:
-
   RegHasSubKeys checks whether the subkey specified by Key has any subkeys. Use this
   function when you want to browse the registry hierarchically.
 Parameters:
   RootKey - The rootkey from which to read, one of the HKEY_XXX constants.
   Key - The key (path) that is to be checked, relative to RootKey.
 Result:
-
   If there are any children of the specified key, the function will return True.
   If there are no children, it will return False.
 Quick info:
@@ -569,7 +533,6 @@ Quick info:
 Summary:
   Saves a stringlist to the registry.
 Description:
-
   The list of strings is saved in the registry as under the key
   "RootKey\Key\ListName" with each string stored as registry value named
   "1", "2", etc. The number of items in the list is stored as DWORD value
@@ -580,7 +543,6 @@ Parameters:
   ListName - Name of the subkey relative to Key to write the list to.
   Items - List of the items to store in the registry.
 Result:
-
   The function returns True if the key "RootKey\Key\ListName" could be
   created False otherwise.
 Quick info:
@@ -598,7 +560,6 @@ Quick info:
 Summary:
   Reads a stringlist from the registry.
 Description:
-
   RegLoadList reads a list of strings from the registry which was stored
   with RegSaveList. The function expects to find a DWORD value
   named 'Items' under the key "RootKey\Key\ListName" and reads in the amount
@@ -609,7 +570,6 @@ Parameters:
   ListName - Name of the subkey relative to Key to read the list from.
   SaveTo - List of the items to load from the registry.
 Result:
-
   The function returns True if a list with at least one element is read in.
   If 'Items' does not exist the function throws an exception.
 Quick info:
@@ -627,7 +587,6 @@ Quick info:
 Summary:
   Deletes a stringlist from the registry.
 Description:
-
   RegDelList deletes a list of strings from the registry which was stored
   with RegSaveList. The function expects to find a DWORD value
   named 'Items' under the key "RootKey\Key\ListName" and deletes the values
@@ -638,7 +597,6 @@ Parameters:
   Key - The key (path) to delete the list from, relative to RootKey.
   ListName - Name of the subkey relative to Key to delete the list from.
 Result:
-
   The function returns True if it finds a value named 'Items' and all the
   values of the list False otherwise. If the number of items is 0 then
   'Items' is deleted, but the function returns False.
