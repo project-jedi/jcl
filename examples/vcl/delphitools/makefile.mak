@@ -8,14 +8,15 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-SRC = ..\..\..\Source
-DCU = ..\..\..\Dcu
-BIN = ..\..\..\Bin
+INC = ..\..\..\..\source\common
+LIB = ..\..\..\..\lib\d5;..\..\..\..\lib\d6;..\..\..\..\lib\d7
+DCU =
+BIN = ..\..\..\..\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -q -u$(SRC) -w $(DCCOPT)
+DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -n$(DCU) -r$(SRC) -q -u$(LIB) -w $(DCCOPT)
 BRCC = $(ROOT)\bin\brcc32.exe $**
 MAKEJCLDBG = $(BIN)\makejcldbg.exe -e
 #---------------------------------------------------------------------------------------------------
