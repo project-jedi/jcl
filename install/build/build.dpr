@@ -1040,12 +1040,14 @@ begin
     while not EOF(f) and not Found do
     begin
       ReadLn(f, S);
-      Found := SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
-               SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
-               SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj') or
-               SameText(S, '-u"' + Edition.RootDir + '\lib"') or
-               SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
-               SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib');
+      if Edition.Typ = Delphi then
+        Found := SameText(S, '-u"' + Edition.RootDir + '\lib"') or
+                 SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
+                 SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib')
+      else
+        Found := SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
+                 SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
+                 SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj');
     end;
     CloseFile(f);
     if not Found then
