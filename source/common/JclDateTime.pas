@@ -244,12 +244,13 @@ function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 {$ENDIF MSWINDOWS}
 
 type
-  EJclDateTimeError = class (EJclError);
+  EJclDateTimeError = class(EJclError);
 
 implementation
 
 const
-  DaysInMonths: array [1..12] of Integer = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+  DaysInMonths: array [1..12] of Integer =
+    (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
   MinutesPerDay     = 60 * 24;
   SecondsPerDay     = MinutesPerDay * 60;
@@ -1126,18 +1127,16 @@ begin
           end
         end;
     else
-      begin
-        Inc(N);
-      end;
-    end; // case
-  end; // while
+      Inc(N);
+    end;
+  end;
   Result := SysUtils.FormatDateTime(Result + Form, DateTime);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 // FAT has a granularity of 2 seconds
-// The intervals are /10 of a second
+// The intervals are 1/10 of a second
 
 function FATDatesEqual(const FileTime1, FileTime2: Int64): Boolean;
 const
