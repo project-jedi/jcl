@@ -1211,17 +1211,49 @@ Author=Clayton Collie;ccollie@cau.edu
 Delphi=3,4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
+function ...CRC...;
+[ShortDescr]
+Comments on the CRC method used here
+[Description]
+The CRC method used here is a quite "native" translation of a hardware CRC generator to software.
+The data array is interpreted as a bit stream with Byte 0 Bit 7 sent first. 
+Mathematically when calculating an m-Bit CRC on a n Byte data-array, this is like calculating the "modulus" of an
+an 8*n + m Bit word, Byte 0 bit 7 of the array being the most significant Bit, m Zero Bits added to the end of the array.
+To check the CRC the Zero Bits are replaced by the CRC to be checked, thus the CRC forming the low order bits of the 8*n + m Bit word.
+If the CRC is correct the result of this operation is Zero, otherwise it's the "syndrome" that can be used to calculate the order of the false bit to correct it.
+The software comes with the CRC calculating function in two kinds. A "basic" one that works bitwise, like a hardware CRC generator would do and 
+a fast one that uses a lookup table for complete bytes. The bitwise function can be used to calculate the table.
+So this kind of CRC calculating offers some specialities: (1) the table based operation creates the same result as the bitwise calculation.
+(2) the table is reproduced by calculating the CRC of a single byte, using the starting value Zero. (3) the CRC check immediately creates the syndrome. 
+Beware, that the results of different CRC software algorithms might be different even if the same Polynomial and starting value is used.
+The algorithm might use another order of bits in the byte stream to be checked or another order of bits in the calculated CRC-value. 
+Moreover the input and/or output bits might be used inverted and as the CRC-result the contents of the shift register 
+after 8*n shifts might be used instead shifting the m bits out through the generator the additional m steps as done here.
+E.g. as far as I know the CRC result used by "ZIP" is our CRC32 result xor $FFFFFFFF.
+[Quick Info]
+Unit=JCLMath
+Category=Math Routines
+SubCat=CRC
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
 function CheckCrc32(var X: array of Byte; N: Integer; Crc: Cardinal): Integer;
 function CheckCrc32_A(var X: array of Byte; Crc: Cardinal): Integer;
 function CheckCrc32_P(X: PByteArray; N: Integer; Crc: Cardinal): Integer;
 [ShortDescr]
-Checks and, if possible, corrects the data.
+Checks and, if possible, corrects the data protected by a 32 bit CRC.
 [Description]
-Checks and, if possible, corrects the data.
+Checks and, if possible, corrects the data protected by the same 32 bit CRC the function Crc32 uses. 
+With  a 32 bit CRC a single bit error in 2^31-32 bit (2^28-4 = 268435454 byte) of data can be corrected.
+Beware that when trying to correct an error in a greater array of bytes, you will not get an error indicator but 
+an unwanted  bit might be changed. In arrays small enough, multiple bit errors are not corrected, but by 
+far most multiple bit errors are detected (see CRC32).
 [Parameters]
 Count=3
-1=X:array of Byte=The array which contains the data.
-2=N:Integer=The number of elements in X.
+1=X:array of Byte=The array which contains the data. With CheckCrc32 and CheckCrc32_A this is an open array parameter, 
+with CheckCrC32_P this is a pointer to the first byte of the array of bytes.
+2=N:Integer=The number of elements in X. CheckCrc32_A uses all bytes in the array X.
 3=Crc:Cardinal=Transmitted CRC value to check the data against.
 [Result]
  <UL>
@@ -1230,31 +1262,44 @@ Count=3
  <LI>-1 Uncorrectable error (more than one false bit).
  </UL>
 [Quick Info]
-BCB=3,4,5
+BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
-Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
 [SeeAlso]
-Count=1
-1=Crc32
+Count=4
+1=...CRC...
+2=Crc32
+3=InitCrc32
+4=CheckCrc16
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function Crc32(const X: array of Byte; N: Integer; Crc: Cardinal = 0): Cardinal;
 function Crc32_A(const X: array of Byte; Crc: Cardinal = 0): Cardinal;
 function Crc32_P(X: PByteArray; N: Integer; Crc: Cardinal = 0): Cardinal;
 [ShortDescr]
-Calculates or checks a CRC.
+Calculates or checks a 32 Bit CRC.
 [Description]
-Calculates or checks a CRC.
+32 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array, 
+with a 32 bit CRC any single and double bit error can be detected. By far most multiple bit errors
+are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and 
+all burst errors with up to 32 bits length (so any sequence of up to 4 incorrect bytes) are detected. 
+Burst error with a length of more than 32 are detected with a probability of 99,9999999767 %. 
+All this is true only if an appropriate polynomial is used.
+By default the 32 Bit CRC "generator polynomial" suggested by the CCITT is used: 
+x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1 ($104C11DB7).
+This polynomial has a "maximum cycle" and is used by Ethernet and Zip, too. The default starting value is
+$FFFFFFFF. By InitCrc32 a different polynomial and starting value can be defined.
 [Parameters]
 Count=3
-1=X:array of Byte=The array which contains the data.
-2=N:Integer=The number of elements in X.
+1=X:array of Byte=The array which contains the data. With Crc32 and Crc32_A this is an open array parameter, 
+with CrC32_P this is a pointer to the first byte of the array of bytes.
+2=N:Integer=The number of elements in X. Crc32_A calculates the checksum of all bytes in the array X.
 3=Crc:Cardinal=(optional) if not defined or = 0: Crc32 calculates the CRC
-for the data array or transmitted; if CRC is defined: the CRC value is
-checked against the data.
+for the data array transmitted; if CRC is defined: the CRC value is
+checked against the data and the result is 0 if the CRC was correct.
 [Result]
  <UL>
  <LI>If on input CRC not defined or = 0: The result is the created CRC.
@@ -1263,15 +1308,175 @@ otherwise the function
   returns the residuum for the correction function.
  </UL>
 [Quick Info]
-BCB=3,4,5
+BCB=4,5
 Unit=JclMath
 Category=Math Routines
 SubCat=CRC
-Author=Michael Schnell;Michael.Schnell@MARIANNE.gihub.de
-Delphi=3,4,5
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
 [SeeAlso]
+Count=4
+1=...CRC...
+2=CheckCrc32
+3=InitCrc32
+4=Crc16
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure InitCrc32 (polynomial, Start: Cardinal);
+[ShortDescr]
+Defines a new polynomial and starting value for the 32 bit CRC functions. 
+[Description]
+Defines a new "generator polynomial" and starting value for the 32 bit CRC functions. Beware that the check and the correction
+only works if the polynomial is "appropriate". Two of these polynomials are predefined: Crc32PolynomCCITT = $04C11DB7 
+represents the polynomial x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1 that is 
+suggested by the CCITT and used by Ethernet and ZIP. Crc32PolynomXXXXX = $9DB11213 represents the polynomial 
+x^32 + x^31 + x^28 + x^27 + x^26 + x^24 + x^23 + x^21 + x^20 + x^16 + x^12 + x^9 + x^4 + x + 1 which is another 
+"appropriate" polynomial (as far as I know). Beware that not appropriate polynomials result in highly undesirable behaviour
+of the CRC.
+The starting value can by anything. $FFFFFFFF and 0 are usual definitions.
+[Parameters]
+Count=2
+1=polynomial:Cardinal=Generator polynomial to be used with subsequent calls to 32 bit CRC functions. 
+The polynomial is given without the highest bit (bit x^32)
+2=Start:Cardinal=32 bit starting value to be used with subsequent calls to 32 bit CRC functions
+[Notes]
 Count=1
-1=CheckCrc32
+1=As a standard in the Jedi Code Library the compiler option {$J-} is set to prevent modifying typed constants. 
+So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, 
+which temporarily sets {$J+} for the CRC functions.
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=CRC
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=...CRC...
+2=Crc32
+3=CheckCrc32
+4=InitCrc16
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CheckCrc16(var X: array of Byte; N: Integer; Crc: Word): Integer;
+function CheckCrc16_A(var X: array of Byte; Crc: Word): Integer;
+function CheckCrc16_P(X: PByteArray; N: Integer; Crc: Word): Integer;
+[ShortDescr]
+Checks and, if possible, corrects the data protected by a 16 bit CRC.
+[Description]
+Checks and, if possible, corrects the data protected by the same 16 bit CRC the function Crc16 uses. 
+With  a 16 bit CRC a single bit error in 2^15-16 bit (2^12-2 = 4094 byte) of data can be corrected.
+Beware that when trying to correct an error in a greater array of bytes, you will not get an error indicator but 
+an unwanted bit might be changed. In arrays small enough, multiple bit errors are not corrected, but by 
+far most multiple bit errors are detected (see CRC16).
+[Parameters]
+Count=3
+1=X:array of Byte=The array which contains the data. With CheckCrc16 and CheckCrc16_A this is an open array parameter, 
+with CheckCrC16_P this is a pointer to the first byte of the array of bytes.
+2=N:Integer=The number of elements in X. CheckCrc16_A uses all bytes in the array X.
+3=Crc:Cardinal=Transmitted CRC value to check the data against.
+[Result]
+ <UL>
+ <LI>0 No CRC error.
+ <LI>1 Correctable error. If the false bit was in the data, it has been corrected.
+ <LI>-1 Uncorrectable error (more than one false bit).
+ </UL>
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=CRC
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=...CRC...
+2=Crc16
+3=InitCrc16
+4=CheckCrc32
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Crc16(const X: array of Byte; N: Integer; Crc: Word = 0): Word;
+function Crc16_A(const X: array of Byte; Crc: Word = 0): Word;
+function Crc16_P(X: PByteArray; N: Integer; Crc: Word = 0): Word;
+[ShortDescr]
+Calculates or checks a 16 Bit CRC.
+[Description]
+16 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array, 
+with a 16 bit CRC any single and double bit error can be detected. By far most multiple bit errors
+are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and 
+all burst errors with up to 16 bits length (so any sequence of up to two incorrect bytes) are detected. 
+Burst error with a length of more than 16 are detected with a probability of 99,99998474 %. 
+All this is true only if an appropriate polynomial is used.
+By default the 16 Bit CRC "generator polynomial" suggested by the CCITT is used: 
+x^16 + x^12 + x^5 + 1 ($11021).
+This polynomial has a "maximum cycle" and is used to protect data on floppy disks, too. The default starting value is
+$FFFF. By InitCrc16 a different polynomial and starting value can be defined.
+[Parameters]
+Count=3
+1=X:array of Byte=The array which contains the data. With Crc16 and Crc16_A this is an open array parameter, 
+with CrC16_P this is a pointer to the first byte of the array of bytes.
+2=N:Integer=The number of elements in X. Crc16_A calculates the checksum of all bytes in the array X.
+3=Crc:Cardinal=(optional) if not defined or = 0: Crc16 calculates the CRC
+for the data array transmitted; if CRC is defined: the CRC value is
+checked against the data and the result is 0 if the CRC was correct.
+[Result]
+ <UL>
+ <LI>If on input CRC not defined or = 0: The result is the created CRC.
+ <LI>If on input CRC is defined: The result is 0 if the CRC was OK,
+otherwise the function
+  returns the residuum for the correction function.
+ </UL>
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=CRC
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=...CRC...
+2=CheckCrc16
+3=InitCrc16
+4=Crc32
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure InitCrc16 (polynomial, Start: Word);
+[ShortDescr]
+Defines a new polynomial and starting value for the 16 bit CRC functions. 
+[Description]
+Defines a new "generator polynomial" and starting value for the 16 bit CRC functions. Beware that the check and the correction
+only works if the polynomial is "appropriate". Two of these polynomials are predefined: Crc16PolynomCCITT = $1021 
+represents the polynomial x^16 + x^12 + x^5 + 1 that is 
+suggested by the CCITT and used to protect floppy disks. Crc16PolynomXXXXX = $8005 represents the polynomial 
+x^16 + x^15 + x^2 + 1 which is another "appropriate" polynomial and used to protect magnetic tapes. Beware that not appropriate polynomials result in highly undesirable behaviour
+of the CRC.
+The starting value can by anything. $FFFF and 0 are usual definitions.
+[Parameters]
+Count=2
+1=polynomial:Cardinal=Generator polynomial to be used with subsequent calls to 16 bit CRC functions. 
+The polynomial is given without the highest bit (bit x^16)
+2=Start:Cardinal=16 bit starting value to be used with subsequent calls to 16 bit CRC functions
+[Notes]
+Count=1
+1=As a standard in the Jedi Code Library the compiler option {$J-} is set to prevent modifying typed constants. 
+So the function CRC32Init only exists if JCLMath is recompiled with the compiler environment variable "CRCINIT" defined, 
+which temporarily sets {$J+} for the CRC functions.
+[Quick Info]
+BCB=4,5
+Unit=JclMath
+Category=Math Routines
+SubCat=CRC
+Author=Michael Schnell;MSchnell@bschnell.de
+Delphi=4,5
+[SeeAlso]
+Count=4
+1=...CRC...
+2=Crc16
+3=CheckCrc16
+4=InitCrc32
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TFloatingPointClass = (fpZero, fpNormal, fpDenormal, fpInfinite, fpNaN, fpInvalid);
