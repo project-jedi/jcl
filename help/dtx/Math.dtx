@@ -1256,43 +1256,59 @@ Quick info:
 --------------------------------------------------------------------------------
 
 @@Crc32
-<GROUP MathRoutines.CRC>
-Summary:
-  Calculates or checks a 32 Bit CRC.
-Description:
-  32 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array,
-  with a 32 bit CRC any single and double bit error can be detected. By far most multiple bit errors
-  are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and
-  all burst errors with up to 32 bits length (so any sequence of up to 4 incorrect bytes) are detected.
-  Burst error with a length of more than 32 are detected with a probability of 99,9999999767 %.
-  All this is true only if an appropriate polynomial is used.
-  By default the 32 Bit CRC "generator polynomial" suggested by the CCITT is used:
-  x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1 ($104C11DB7).
-  This polynomial has a "maximum cycle" and is used by Ethernet and Zip, too. The default starting value is
-  $FFFFFFFF. By InitCrc32 a different polynomial and starting value can be defined.
-Parameters:
-  X - The array which contains the data. With Crc32 and Crc32_A this is an open array parameter, with CrC32_P this is a pointer to the first byte of the array of bytes.
-  N - The number of elements in X. Crc32_A calculates the checksum of all bytes in the array X.
-  Crc - (optional) if not defined or = 0: Crc32 calculates the CRC for the data array transmitted; if CRC is defined: the CRC value is checked against the data and the result is 0 if the CRC was correct.
-Result:
-   
-   * If on input CRC not defined or = 0: The result is the created CRC.
-   * If on input CRC is defined: The result is 0 if the CRC was OK,
-  otherwise the function
-    returns the residuum for the correction function.
-   
-See also:
-  CheckCrc32
-  InitCrc32
-  Crc16
-Quick info:
-  Unit: JclMath
+<GROUP $MathRoutines.CRC>
+
+Description
+32 Bit CRC function. Calculates or checks a CRC. In a data
+array of less than 2^32-32 bit (2^29-4 = 536870908 byte), with a 32 bit CRC any
+single and double bit error can be detected. By far most
+multiple bit errors are detected, too: E.g. all even (or odd)
+count of bit errors (depending on the polynomial used) and
+all burst errors with up to 32 bits length (so any sequence
+of up to 4 incorrect bytes) are detected. Burst error with a
+length of more than 32 are detected with a probability of
+99,9999999767 %. All this is true only if an appropriate
+polynomial is used. By default the 32 Bit CRC "generator
+polynomial" suggested by the CCITT is used: x^32 + x^26 +
+x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 +
+x^4 + x^2 + x + 1 ($104C11DB7). This polynomial has a
+"maximum cycle" and is used by Ethernet and Zip, too. The
+default starting value is $FFFFFFFF. By InitCrc32 a different
+polynomial and starting value can be defined.
+
+Summary
+Calculates or checks a 32 Bit CRC.
+
+Parameters
+Crc :   (optional) if not defined or = 0: Crc32 calculates the CRC
+        for the data array transmitted; if CRC is defined: the CRC
+        value is checked against the data and the result is 0 if
+        the CRC was correct.
+N :     The number of elements in X. Crc32_A calculates the
+        checksum of all bytes in the array X.
+X :     The array which contains the data. With Crc32 and Crc32_A
+        this is an open array parameter, with CrC32_P this is a
+        pointer to the first byte of the array of bytes.
+
+Returns
+
+    *   If on input CRC not defined or = 0: The result is the
+        created CRC.
+    *   If on input CRC is defined: The result is 0 if the
+        CRC was OK,
+otherwise the function returns the residuum for the
+correction function.
+
+QuickInfo
+ Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 
+See Also
+CheckCrc32, InitCrc32, Crc16
 
 @@Crc32_A
 <COMBINE Crc32>
@@ -1375,7 +1391,7 @@ Quick info:
 Summary:
   Calculates or checks a 16 Bit CRC.
 Description:
-  16 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array,
+  16 Bit CRC function. Calculates or checks a CRC. In a data array 2^16-16 bit (2^13-2 = 8190 byte),
   with a 16 bit CRC any single and double bit error can be detected. By far most multiple bit errors
   are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and
   all burst errors with up to 16 bits length (so any sequence of up to two incorrect bytes) are detected.
