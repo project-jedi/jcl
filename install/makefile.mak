@@ -12,7 +12,7 @@ VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x.\Q
 VclOptions      = -c -dVCL -dVCL -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -uKYLIX -x.\\
 #---------------------------------------------------------------------------------------------------
 SRC = ..\source
-UNIT = $(ROOT)\Lib;$(SRC)\common;$(SRC)\windows
+UNIT = $(ROOT)\Lib;$(ROOT)\Lib\Obj;$(SRC)\common;$(SRC)\windows
 RES =
 BIN = ..\bin
 MAP = $(BIN)\$&.map
@@ -23,7 +23,7 @@ DCC = $(ROOT)\bin\dcc32.exe -dJCLINSTALL -e$(BIN) -i$(SRC) -q -r$(RES) -u$(UNIT)
 BRCC = $(ROOT)\bin\brcc32.exe $**
 jpp = ..\source\prototypes\jpp.exe
 #---------------------------------------------------------------------------------------------------
-default:	clean prototypes install
+default:	clean prototypes prepare install
 #---------------------------------------------------------------------------------------------------
 
 .dpr.exe:
@@ -59,6 +59,11 @@ clean:
 	cd ..\install
 
 prototypes: VclUnits ClxUnits
+
+prepare:	BCB5
+
+BCB5:
+	if exist "$(ROOT)\Lib\Obj\vcl50.dcp" $(MAKEDIR)\make.exe -fBCB5-dcc32.cfg.mak
 
 VclUnits:
 	if exist prototypes $(MAKEDIR)\make.exe -fprototypes.mak VclUnits
