@@ -13,20 +13,25 @@
 { The Initial Developer of the Original Code is Project JEDI                   }
 { http://www.delphi-jedi.org                                                   }
 {                                                                              }
-{ Last modified: October 27 2000                                               }
+{******************************************************************************}
+{                                                                              }
+{ This file defines various generic compiler directives used in the JEDI Code  }
+{ Library (JCL) and JEDI Visual Component Library Library (J-VCL). The         }
+{ directives in this file are of generic nature and consist mostly of mappings }
+{ from the VERXXX directives defined by Delphi and C++ Builder to friendly     }
+{ names such as DELPHI5 and SUPPORTS_WIDESTRING. These friendly names are      }
+{ subsequently used in both libraries to test for compiler versions and/or     }
+{ whether the compiler supports certain features (such as widestring's or 64   }
+{ bit integers. Both libraries provide an additional, library specific,        }
+{ include file. For the JCL this is JCL.INC. These files should be included in }
+{ source files instead of this file (which is pulled in automatically).        }
+{                                                                              }
+{ Maintainer: Marcel van Brakel                                                }
+{ Last modified: Februari 21, 2001                                             }
 {                                                                              }
 {******************************************************************************}
 
-{ This file defines various generic compiler directives used in the JEDI Code
-  Library (JCL) and JEDI Visual Component Library Library (J-VCL). The directives
-  in this file are of generic nature and consist mostly of mappings from the
-  VERXXX directives defined by Delphi and C++ Builder to friendly names such as
-  DELPHI5 and SUPPORTS_WIDESTRING. These friendly names or subsequently used in
-  both libraries to test for compiler versions and/or whether the compiler
-  supports certain features (such as widestring's or 64 bit integers. Both
-  libraries provide an additional, library specific, include file. For the JCL
-  this is JCL.INC. These files should be included in source files instead of
-  this file, which is included through the library specific file.
+(*
 
 - Development environment directives
 
@@ -131,9 +136,67 @@
   SUPPORTS_DYNAMICARRAYS Compiler supports dynamic arrays (D4/BCB4)
   SUPPORTS_DEFAULTPARAMS Compiler supports default parameters (D4/BCB4)
   SUPPORTS_OVERLOAD      Compiler supports overloading (D4/BCB4)
-}
 
+- Compiler Settings
+
+  The compiler settings directives indicate whether a specific compiler setting
+  is in effect. This facilitates changing compiler settings locally in a more
+  compact and readible manner.
+
+  Directive              Description
+  ------------------------------------------------------------------------------
+  ALIGN_ON               Compiling in the A+ state (no alignment)
+  BOOLEVAL_ON            Compiling in the B+ state (complete boolean evaluation)
+  ASSERTIONS_ON          Compiling in the C+ state (assertions on)
+  DEBUGINFO_ON           Compiling in the D+ state (debug info generation on)
+  IMPORTEDDATA_ON        Compiling in the G+ state (creation of imported data references)
+  LONGSTRINGS_ON         Compiling in the H+ state (string defined as AnsiString)
+  IOCHECKS_ON            Compiling in the I+ state (I/O checking enabled)
+  WRITEABLECONST_ON      Compiling in the J+ state (typed constants can be modified)
+  LOCALSYMBOLS           Compiling in the L+ state (local symbol generation)
+  TYPEINFO_ON            Compiling in the M+ state (RTTI generation on)
+  OPTIMIZATION_ON        Compiling in the O+ state (code optimization on)
+  OPENSTRINGS_ON         Compiling in the P+ state (variable string parameters are openstrings)
+  OVERFLOWCHECKS_ON      Compiling in the Q+ state (overflow checing on)
+  RANGECHECKS_ON         Compiling in the R+ state (range checking on)
+  TYPEDADDRESS_ON        Compiling in the T+ state (pointers obtained using the @ operator are typed)
+  SAFEDIVIDE_ON          Compiling in the U+ state (save FDIV instruction through RTL emulation)
+  VARSTRINGCHECKS_ON     Compiling in the V+ state (type checking of shortstrings)
+  STACKFRAMES_ON         Compiling in the W+ state (generation of stack frames)
+  EXTENDEDSYNTAX_ON      Compiling in the X+ state (Delphi extended syntax enabled)
+
+*)
+
+//------------------------------------------------------------------------------
+// Compiler settings
+//------------------------------------------------------------------------------
+
+{$IFOPT A+} {$DEFINE ALIGN_ON} {$ENDIF}
+{$IFOPT B+} {$DEFINE BOOLEVAL_ON} {$ENDIF}
+{$IFOPT C+} {$DEFINE ASSERTIONS_ON} {$ENDIF}
+{$IFOPT D+} {$DEFINE DEBUGINFO_ON} {$ENDIF}
+{$IFOPT G+} {$DEFINE IMPORTEDDATA_ON} {$ENDIF}
+{$IFOPT H+} {$DEFINE LONGSTRINGS_ON} {$ENDIF}
+//HINTS
+{$IFOPT I+} {$DEFINE IOCHECKS_ON} {$ENDIF}
+{$IFOPT J+} {$DEFINE WRITEABLECONST_ON} {$ENDIF}
+{$IFOPT L+} {$DEFINE LOCALSYMBOLS} {$ENDIF}
+{$IFOPT M+} {$DEFINE TYPEINFO_ON} {$ENDIF}
+{$IFOPT O+} {$DEFINE OPTIMIZATION_ON} {$ENDIF}
+{$IFOPT P+} {$DEFINE OPENSTRINGS_ON} {$ENDIF}
+{$IFOPT Q+} {$DEFINE OVERFLOWCHECKS_ON} {$ENDIF}
+{$IFOPT R+} {$DEFINE RANGECHECKS_ON} {$ENDIF}
+//REALCOMPATIBILITY
+{$IFOPT T+} {$DEFINE TYPEDADDRESS_ON} {$ENDIF}
+{$IFOPT U+} {$DEFINE SAFEDIVIDE_ON} {$ENDIF}
+{$IFOPT V+} {$DEFINE VARSTRINGCHECKS_ON} {$ENDIF}
+{$IFOPT W+} {$DEFINE STACKFRAMES_ON} {$ENDIF}
+//WARNINGS
+{$IFOPT X+} {$DEFINE EXTENDEDSYNTAX_ON} {$ENDIF}
+
+//------------------------------------------------------------------------------
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
+//------------------------------------------------------------------------------
 
 {$IFDEF VER140}
   {$DEFINE COMPILER6}
@@ -198,7 +261,9 @@
   {$DEFINE DELPHI}
 {$ENDIF}
 
+//------------------------------------------------------------------------------
 // DELPHIX_UP from DELPHIX mappings
+//------------------------------------------------------------------------------
 
 {$IFDEF DELPHI6}
   {$DEFINE DELPHI6_UP}
@@ -239,7 +304,9 @@
   {$DEFINE DELPHI1_UP}
 {$ENDIF}
 
+//------------------------------------------------------------------------------
 // BCBX_UP from BCBX mappings
+//------------------------------------------------------------------------------
 
 {$IFDEF BCB6}
   {$DEFINE BCB6_UP}
@@ -271,7 +338,9 @@
   {$DEFINE BCB1_UP}
 {$ENDIF}
 
+//------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
+//------------------------------------------------------------------------------
 
 {$IFDEF COMPILER6}
   {$DEFINE COMPILER6_UP}
@@ -322,7 +391,9 @@
   {$DEFINE COMPILER1_UP}
 {$ENDIF}
 
+//------------------------------------------------------------------------------
 // Map COMPILERX_UP to friendly feature names
+//------------------------------------------------------------------------------
 
 {$IFDEF COMPILER3_UP}
   {$DEFINE SUPPORTS_WIDESTRING}
