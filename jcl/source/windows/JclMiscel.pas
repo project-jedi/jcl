@@ -29,7 +29,7 @@ unit JclMiscel;
 interface
 
 uses
-  Windows, Classes,
+  Windows,
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -64,8 +64,8 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
 implementation
 
 uses
-  Registry, SysUtils,
-  JclRegistry, JclResources, JclSecurity, JclSysUtils, JclWin32;
+  SysUtils,
+  JclResources, JclSecurity, JclWin32;
 
 //==============================================================================
 
