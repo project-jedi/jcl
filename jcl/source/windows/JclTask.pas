@@ -40,8 +40,8 @@ interface
 
 uses
   Windows, Messages, Classes, SysUtils, Contnrs,
-  MSTask, MSTaskError,
-  JclBase, JclSysUtils, JclSysInfo, JclWideStrings;
+  MSTask,
+  JclBase, JclSysUtils, JclSysInfo, JclWideStrings, JclWin32;
 
 type
   TDateTimeArray = array of TDateTime;
@@ -1214,6 +1214,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2004/10/19 21:26:03  rrossmair
+// got rid of MSTaskError unit
+//
 // Revision 1.16  2004/10/17 21:00:16  mthoma
 // cleaning
 //
