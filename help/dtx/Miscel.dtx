@@ -1,8 +1,8 @@
 @@SetDisplayResolution
+<GROUP Miscellaneous>
 Summary:
   Changes the resolution of the screen.
 Description:
-
   Dynamically changes the resolution (width and height) of the visible device
   surface of the default display device. In simpler terms, changes the width and
   height of the screen. If the function succeeds the system automatically sends a
@@ -11,7 +11,6 @@ Parameters:
   XRes - New Width of the screen, in pixels.
   YRes - New Height of the screen, in pixels.
 Result:
-
   Internally the ChangeDisplaySettings function is used to obtain the result. The possible return values are:
     <TABLE>
 Value                   Meaning
@@ -34,10 +33,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CreateProcAsUserEx
+<GROUP Miscellaneous>
 Summary:
   Spawns a new process in the context of the specified user account.
 Description:
-
   CreateProcessAsUserEx launches a new process in the context of the specified user.
   This user does not neccessarily have to be the same user as the currently logged in
   user. You can use this function to run a child process in an adminstrative context,
@@ -57,10 +56,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@CreateProcAsUser
+<GROUP Miscellaneous>
 Summary:
   Spawns a new process in the context of the specified user account.
 Description:
-
   CreateProcessAsUserEx launches a new process in the context of the specified user.
   This user does not neccessarily have to be the same user as the currently logged in
   user. You can use this function to run a child process in an adminstrative context,
@@ -79,6 +78,7 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@EJclCreateProcessError
+<GROUP Miscellaneous>
 Summary:
   Class for exceptions raised due to errors in the CreateProcAsUser / CreateProcAsUserEx procedure pair.
 Quick info:
