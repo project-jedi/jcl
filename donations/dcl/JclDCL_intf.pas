@@ -176,8 +176,7 @@ type
     procedure SetString(Index: Integer; const AString: string);
     function SubList(First, Count: Integer): IStrList;
     //Daniele Teti
-    property Items[Key: Integer]: string read GetString write SetString;
-    default;
+    property Items[Key: Integer]: string read GetString write SetString; default;
   end;
 
   IList = interface(ICollection)
@@ -192,8 +191,7 @@ type
     procedure SetObject(Index: Integer; AObject: TObject);
     function SubList(First, Count: Integer): IList;
     //Daniele Teti
-    property Items[Key: Integer]: TObject read GetObject write SetObject;
-    default;
+    property Items[Key: Integer]: TObject read GetObject write SetObject; default;
   end;
 
   IIntfArray = interface(IIntfList)
@@ -204,14 +202,12 @@ type
 
   IStrArray = interface(IStrList)
     ['{B055B427-7817-43FC-97D4-AD1845643D63}']
-    property Items[Index: Integer]: string read GetString write SetString;
-    default;
+    property Items[Index: Integer]: string read GetString write SetString; default;
   end;
 
   IArray = interface(IList)
     ['{A69F6D35-54B2-4361-852E-097ED75E648A}']
-    property Items[Index: Integer]: TObject read GetObject write SetObject;
-    default;
+    property Items[Index: Integer]: TObject read GetObject write SetObject; default;
   end;
 
   IIntfSet = interface(IIntfCollection)
@@ -241,24 +237,21 @@ type
     ['{5A21688F-113D-41B4-A17C-54BDB0BD6559}']
     function GetTraverseOrder: TTraverseOrder;
     procedure SetTraverseOrder(Value: TTraverseOrder);
-    property TraverseOrder: TTraverseOrder read GetTraverseOrder write
-      SetTraverseOrder;
+    property TraverseOrder: TTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IStrTree = interface(IStrCollection)
     ['{1E1896C0-0497-47DF-83AF-A9422084636C}']
     function GetTraverseOrder: TTraverseOrder;
     procedure SetTraverseOrder(Value: TTraverseOrder);
-    property TraverseOrder: TTraverseOrder read GetTraverseOrder write
-      SetTraverseOrder;
+    property TraverseOrder: TTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   ITree = interface(ICollection)
     ['{B0C658CC-FEF5-4178-A4C5-442C0DEDE207}']
     function GetTraverseOrder: TTraverseOrder;
     procedure SetTraverseOrder(Value: TTraverseOrder);
-    property TraverseOrder: TTraverseOrder read GetTraverseOrder write
-      SetTraverseOrder;
+    property TraverseOrder: TTraverseOrder read GetTraverseOrder write SetTraverseOrder;
   end;
 
   IIntfIntfMap = interface
@@ -316,8 +309,7 @@ type
     //Daniele Teti
     function KeyOfValue(const Value: string): string;
     //Daniele Teti
-    property Items[const Key: string]: string read GetValue write PutValue;
-    default;
+    property Items[const Key: string]: string read GetValue write PutValue; default;
   end;
 
   IStrMap = interface
@@ -335,8 +327,7 @@ type
     function Size: Integer;
     function Values: ICollection;
     //Daniele Teti
-    property Items[const Key: string]: TObject read GetValue write PutValue;
-    default;
+    property Items[const Key: string]: TObject read GetValue write PutValue; default;
   end;
 
   IMap = interface

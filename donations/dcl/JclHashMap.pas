@@ -408,7 +408,6 @@ begin
     Exit;
   Result := True;
   for I := 0 to FCapacity - 1 do
-  begin
     for J := 0 to FBuckets[I].Count - 1 do
       if AMap.ContainsKey(FBuckets[I].Entries[J].Key) then
       begin
@@ -423,7 +422,6 @@ begin
         Result := False;
         Exit;
       end;
-  end;
 end;
 
 function TJclIntfIntfHashMap.GetValue(Key: IInterface): IInterface;
@@ -565,7 +563,7 @@ begin
         System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
           (Bucket.Count - I) * SizeOf(TJclStrStrEntry));
       Dec(Bucket.Count);
-      Exit;
+      Break;
     end;
 end;
 
@@ -725,7 +723,6 @@ begin
     Exit;
   Result := True;
   for I := 0 to FCapacity - 1 do
-  begin
     for J := 0 to FBuckets[I].Count - 1 do
       if AMap.ContainsKey(FBuckets[I].Entries[J].Key) then
       begin
@@ -740,7 +737,6 @@ begin
         Result := False;
         Exit;
       end;
-  end;
 end;
 
 function TJclStrIntfHashMap.GetValue(const Key: string): IInterface;
@@ -899,7 +895,7 @@ begin
         System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
           (Bucket.Count - I) * SizeOf(TJclStrStrEntry));
       Dec(Bucket.Count);
-      Exit;
+      Break;
     end;
 end;
 
@@ -1059,7 +1055,6 @@ begin
     Exit;
   Result := True;
   for I := 0 to FCapacity - 1 do
-  begin
     for J := 0 to FBuckets[I].Count - 1 do
       if AMap.ContainsKey(FBuckets[I].Entries[J].Key) then
       begin
@@ -1074,7 +1069,6 @@ begin
         Result := False;
         Exit;
       end;
-  end;
 end;
 
 function TJclStrStrHashMap.GetValue(const Key: string): string;
@@ -1418,7 +1412,6 @@ begin
     Exit;
   Result := True;
   for I := 0 to FCapacity - 1 do
-  begin
     for J := 0 to FBuckets[I].Count - 1 do
       if AMap.ContainsKey(FBuckets[I].Entries[J].Key) then
       begin
@@ -1433,7 +1426,6 @@ begin
         Result := False;
         Exit;
       end;
-  end;
 end;
 
 function TJclStrHashMap.GetValue(const Key: string): TObject;
@@ -1604,7 +1596,7 @@ begin
         System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
           (Bucket.Count - I) * SizeOf(TJclStrEntry));
       Dec(Bucket.Count);
-      Exit;
+      Break;
     end;
 end;
 
@@ -1765,7 +1757,6 @@ begin
     Exit;
   Result := True;
   for I := 0 to FCapacity - 1 do
-  begin
     for J := 0 to FBuckets[I].Count - 1 do
       if AMap.ContainsKey(FBuckets[I].Entries[J].Key) then
       begin
@@ -1780,7 +1771,6 @@ begin
         Result := False;
         Exit;
       end;
-  end;
 end;
 
 procedure TJclHashMap.FreeObject(var AObject: TObject);
@@ -1938,7 +1928,7 @@ begin
         System.Move(Bucket.Entries[I + 1], Bucket.Entries[I],
           (Bucket.Count - I) * SizeOf(TJclEntry));
       Dec(Bucket.Count);
-      Exit;
+      Break;
     end;
 end;
 

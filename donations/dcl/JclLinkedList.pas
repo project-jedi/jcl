@@ -776,7 +776,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
 end;
 
 function TJclIntfLinkedList.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
@@ -1121,7 +1121,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclIntfLinkedList.RetainAll(ACollection: IIntfCollection): Boolean;
@@ -1305,7 +1305,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
 end;
 
 function TJclStrLinkedList.AddAll(Index: Integer; ACollection: IStrCollection): Boolean;
@@ -1650,7 +1650,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclStrLinkedList.RetainAll(ACollection: IStrCollection): Boolean;
@@ -1834,7 +1834,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
   Result := True;
 end;
 
@@ -2189,7 +2189,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclLinkedList.RetainAll(ACollection: ICollection): Boolean;

@@ -724,7 +724,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
 end;
 
 function TJclIntfArrayList.AddAll(Index: Integer; ACollection: IIntfCollection): Boolean;
@@ -815,7 +815,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-    Result := Result and Contains(It.Next);
+    Result := Contains(It.Next) and Result;
 end;
 
 function TJclIntfArrayList.Equals(ACollection: IIntfCollection): Boolean;
@@ -981,7 +981,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclIntfArrayList.RetainAll(ACollection: IIntfCollection): Boolean;
@@ -1146,7 +1146,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
 end;
 
 procedure TJclStrArrayList.Clear;
@@ -1209,7 +1209,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-    Result := Result and Contains(It.Next);
+    Result := Contains(It.Next) and Result;
 end;
 
 function TJclStrArrayList.Equals(ACollection: IStrCollection): Boolean;
@@ -1375,7 +1375,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclStrArrayList.RetainAll(ACollection: IStrCollection): Boolean;
@@ -1514,7 +1514,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
 end;
 
 function TJclArrayList.AddAll(Index: Integer; ACollection: ICollection): Boolean;
@@ -1605,7 +1605,7 @@ begin
     Exit;
   It := ACollection.First;
   while Result and It.HasNext do
-    Result := Result and Contains(It.Next);
+    Result := Contains(It.Next) and Result;
 end;
 
 function TJclArrayList.Equals(ACollection: ICollection): Boolean;
@@ -1780,7 +1780,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclArrayList.RetainAll(ACollection: ICollection): Boolean;

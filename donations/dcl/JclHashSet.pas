@@ -32,11 +32,11 @@ unit JclHashSet;
 interface
 
 uses
-  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer, Classes, Dialogs;
+  Classes,
+  JclDCL_intf, JclDCLUtil, JclHashMap, JclAbstractContainer;
 
 type
-  TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet,
-      IIntfCloneable)
+  TJclIntfHashSet = class(TJclAbstractContainer, IIntfCollection, IIntfSet, IIntfCloneable)
   private
     FMap: IIntfIntfMap;
   protected
@@ -65,8 +65,7 @@ type
     destructor Destroy; override;
   end;
 
-  TJclStrHashSet = class(TJclAbstractContainer, IStrCollection, IStrSet,
-      ICloneable)
+  TJclStrHashSet = class(TJclAbstractContainer, IStrCollection, IStrSet, ICloneable)
   private
     FMap: IStrMap;
   protected
@@ -129,15 +128,14 @@ type
     { ICloneable }
     function Clone: TObject;
   public
-    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject:
-      Boolean = False);
+    constructor Create(Capacity: Integer = DCLDefaultCapacity; AOwnsObject: Boolean = False);
     destructor Destroy; override;
   end;
 
 implementation
 
 uses
-  jclStrings;
+  JclStrings;
 
 const
   // (rom) this needs an explanation
@@ -146,7 +144,7 @@ const
 var
   IRefUnique: IInterface = nil;
 
-  //=== { TJclIntfHashSet } ====================================================
+//=== { TJclIntfHashSet } ====================================================
 
 constructor TJclIntfHashSet.Create(Capacity: Integer = DCLDefaultCapacity);
 begin
@@ -178,7 +176,7 @@ begin
   begin
     It := ACollection.First;
     while It.HasNext do
-      Result := Result and Add(It.Next);
+      Result := Add(It.Next) and Result;
   end;
 end;
 
@@ -210,11 +208,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TJclIntfHashSet.Equals(ACollection: IIntfCollection): Boolean;
@@ -269,7 +267,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclIntfHashSet.RetainAll(ACollection: IIntfCollection): Boolean;
@@ -311,6 +309,7 @@ end;
 destructor TJclStrHashSet.Destroy;
 begin
   Clear;
+  // (rom) no Free of FMap?
   inherited Destroy;
 end;
 
@@ -331,7 +330,7 @@ begin
   It := ACollection.First;
   while It.HasNext do
   begin
-    //Result := Result or Add(It.Next);
+    //Result := Add(It.Next) or Result;
     //Daniele Teti 28/12/2004
     if Add(It.Next) then
       Result := True;
@@ -366,11 +365,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TJclStrHashSet.Equals(ACollection: IStrCollection): Boolean;
@@ -425,7 +424,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    //Result := Result and Remove(It.Next);
+    //Result := Remove(It.Next) and Result;
 
     //Daniele Teti 28/12/2004
     if not Remove(It.Next) then
@@ -472,6 +471,7 @@ end;
 destructor TJclHashSet.Destroy;
 begin
   Clear;
+  // (rom) no Free of FMap?
   inherited Destroy;
 end;
 
@@ -491,7 +491,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result or Add(It.Next);
+    Result := Add(It.Next) or Result;
 end;
 
 procedure TJclHashSet.Clear;
@@ -522,11 +522,11 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-  if not contains(It.Next) then
-  begin
-    Result := False;
-    Break;
-  end;
+    if not Contains(It.Next) then
+    begin
+      Result := False;
+      Break;
+    end;
 end;
 
 function TJclHashSet.Equals(ACollection: ICollection): Boolean;
@@ -581,7 +581,7 @@ begin
     Exit;
   It := ACollection.First;
   while It.HasNext do
-    Result := Result and Remove(It.Next);
+    Result := Remove(It.Next) and Result;
 end;
 
 function TJclHashSet.RetainAll(ACollection: ICollection): Boolean;
