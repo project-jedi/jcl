@@ -677,7 +677,7 @@ end;
                              
 procedure TJclCriticalSectionEx.SetSpinCount(const Value: Cardinal);
 begin
-  FSpinCount := SetCriticalSectionSpinCount(FCriticalSection, Value);
+  FSpinCount := RtdlSetCriticalSectionSpinCount(FCriticalSection, Value);
   { TODO : Exception for Win9x, older WinNT? }
   // RaiseLastOSError;
 end;
@@ -1617,6 +1617,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/07/26 03:47:36  rrossmair
+// replaced SetCriticalSectionSpinCount by RtdlSetCriticalSectionSpinCount to make it Win95 compatible
+//
 // Revision 1.8  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //
