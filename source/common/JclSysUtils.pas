@@ -481,6 +481,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 type
   PUsed = ^TUsed;
   TUsed = record
@@ -511,6 +512,22 @@ begin
     end;
   end;
 end;
+{$ENDIF MSWINDOWS}
+
+{$IFDEF LINUX}
+function SizeOfMem(const APointer: Pointer): Integer;
+begin
+  if IsMemoryManagerSet then
+    Result:= -1
+  else
+  begin
+    if APointer <> nil then
+      Result := malloc_usable_size(APointer)
+    else
+      Result := 0;
+  end;
+end;
+{$ENDIF LINUX}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -556,19 +573,8 @@ end;
 
 procedure FlushInstructionCache;
 { TODO -cHelp : Author: Andreas Hausladen }
-// Cannot find any glibc function that can flush the instruction code
-{ TODO : Needs commenting }
-asm
-        JMP     @@Exit
-        NOP
-        NOP
-        NOP
-        NOP
-        NOP
-        NOP
-        NOP
-        NOP
-@@Exit:
+begin
+  // do nothing
 end;
 
 {$ENDIF LINUX}
@@ -2317,6 +2323,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.19  2004/05/27 20:27:26  ahuser
+// Updated Linux code
+//
 // Revision 1.18  2004/05/14 15:28:06  rrossmair
 // removed duplicate entry in Contributors list
 //
