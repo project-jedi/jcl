@@ -874,8 +874,8 @@ function StrMoveW(Dest, Source: PWideChar; Count: Cardinal): PWideChar;
 function StrCopyW(Dest, Source: PWideChar): PWideChar;
 function StrECopyW(Dest, Source: PWideChar): PWideChar;
 function StrLCopyW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
+function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
+function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
 function StrCatW(Dest, Source: PWideChar): PWideChar;
 function StrLCatW(Dest, Source: PWideChar; MaxLen: Cardinal): PWideChar;
 function StrCompW(Str1, Str2: PWideChar): Integer;
@@ -4530,7 +4530,7 @@ end;
 
 function TWideStrings.GetText: WideString;
 begin
-  Result := GetSeparatedText(WideLineSeparator);
+  Result := GetSeparatedText(WideCRLF);
 end;
 
 function TWideStrings.GetValue(const Name: WideString): WideString;
@@ -4851,7 +4851,8 @@ begin
   Writer.WriteWideString(GetText);
 end;
 
-// { TWideStringList }
+//=== { TWideStringList } ====================================================
+
 destructor TWideStringList.Destroy;
 begin
   FOnChange := nil;
@@ -5358,30 +5359,16 @@ asm
        POP     EDI
 end;
 
-function StrPCopyW(Dest: PWideChar; const Source: string): PWideChar;
-// copies a Pascal-style string to a null-terminated wide string
+function StrPCopyW(Dest: PWideChar; const Source: WideString): PWideChar;
+// copies a Pascal-style WideString to a null-terminated wide string
 begin
-  Result := StrPLCopyW(Dest, Source, Length(Source));
-  Result[Length(Source)] := WideNull;
+  Result := StrLCopyW(Dest, PWideChar(Source), Length(Source));
 end;
 
-function StrPLCopyW(Dest: PWideChar; const Source: string; MaxLen: Cardinal): PWideChar;
-// copies characters from a Pascal-style string into a null-terminated wide string
-asm
-       PUSH    EDI
-       PUSH    ESI
-       MOV     EDI, EAX
-       MOV     ESI, EDX
-       MOV     EDX, EAX
-       XOR     AX, AX
-@@1:
-       LODSB
-       STOSW
-       DEC     ECX
-       JNZ     @@1
-       MOV     EAX, EDX
-       POP     ESI
-       POP     EDI
+function StrPLCopyW(Dest: PWideChar; const Source: WideString; MaxLen: Cardinal): PWideChar;
+// copies characters from a Pascal-style WideString into a null-terminated wide string
+begin
+  Result := StrLCopyW(Dest, PWideChar(Source), MaxLen);
 end;
 
 function StrCatW(Dest, Source: PWideChar): PWideChar;
@@ -7178,6 +7165,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.21  2005/03/01 15:37:40  marquardt
+// addressing Mantis 0714, 0716, 0720, 0731, 0740 partly or completely
+//
 // Revision 1.20  2005/02/24 16:34:53  marquardt
 // remove divider lines, add section lines (unfinished)
 //
