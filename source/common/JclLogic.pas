@@ -716,30 +716,24 @@ end;
 
 function LRot(const Value: Byte; const Count: TBitRange): Byte; assembler;
 asm
-        MOV     CL, Count
-        MOV     AL, Value
-        ROL     AL, CL
-        MOV     Result, AL
+  MOV CL, Count
+  ROL AL, CL
 end;
 
 //------------------------------------------------------------------------------
 
 function LRot(const Value: Word; const Count: TBitRange): Word; assembler;
 asm
-        MOV     CL, Count
-        MOV     AX, Value
-        ROL     AX, CL
-        MOV     Result, AX
+   MOV     CL, Count
+   ROL     AX, CL
 end;
 
 //------------------------------------------------------------------------------
 
 function LRot(const Value: Integer; const Count: TBitRange): Integer; assembler;
 asm
-        MOV     CL, Count
-        MOV     EAX, Value
-        ROL     EAX, CL
-        MOV     Result, EAX
+  MOV     CL, Count
+  ROL     EAX, CL
 end;
 
 //------------------------------------------------------------------------------
