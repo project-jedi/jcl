@@ -18,7 +18,7 @@
 { Contributor(s):                                                                                  }
 {  Heri Bender, Bernhard Berger, Marcel van Brakel, Bernhard Berger, Peter J. Haas, Peter Friese,  }
 {  Robert Marquardt, Robert R. Marsh, Python, Alexander Radchenko, Robert Rossmair,                }
-{  Jeroen Speldekamp, Anthony Steele, Rudy Velthuis, Petr Vones                                    \
+{  Jeroen Speldekamp, Anthony Steele, Rudy Velthuis, Petr Vones                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -179,10 +179,8 @@ function Iff(const Condition: Boolean; const TruePart, FalsePart: Boolean): Bool
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Pointer): Pointer; overload;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Int64): Int64; overload;
 {$IFDEF SUPPORTS_VARIANT}
-{$IFDEF COMPILER6_UP}  { TODO -cFPC : Check FPC }
 // because Compiler 5 can not differentiate between Variant and Byte, Integer, ... in case of overload
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
-{$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
 //--------------------------------------------------------------------------------------------------
@@ -1285,7 +1283,6 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 {$IFDEF SUPPORTS_VARIANT}
-{$IFDEF COMPILER6_UP}
 function Iff(const Condition: Boolean; const TruePart, FalsePart: Variant): Variant; overload;
 begin
   if Condition then
@@ -1293,7 +1290,6 @@ begin
   else
     Result := FalsePart;
 end;
-{$ENDIF COMPILER6_UP}
 {$ENDIF SUPPORTS_VARIANT}
 
 //==================================================================================================
@@ -2256,6 +2252,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.12  2004/05/05 07:06:48  rrossmair
+// corrected typo ('\\' instead of '}'); removed COMPILER6_UP symbol.
+//
 // Revision 1.11  2004/05/05 00:15:47  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
