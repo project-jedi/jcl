@@ -1,0 +1,31 @@
+object Form1: TForm1
+  Left = 228
+  Top = 165
+  Width = 729
+  Height = 540
+  ActiveControl = EnvironmentGrid
+  Caption = 'Environment Variables'
+  Color = clButton
+  Font.CharSet = fcsLatin2
+  Font.Color = clText
+  Font.Height = 12
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  ParentFont = False
+  Scaled = False
+  OnCreate = FormCreate
+  PixelsPerInch = 80
+  object EnvironmentGrid: TStringGrid
+    Left = 0
+    Top = 0
+    Width = 729
+    Height = 540
+    Align = alClient
+    ColCount = 2
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
+    TabOrder = 0
+    OnSetEditText = EnvironmentGridSetEditText
+  end
+end
