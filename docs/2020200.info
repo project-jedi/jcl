@@ -1,2 +1,2 @@
-Make units for debugging, i.e. optimization off, debug information included.
+Make precompiled units for debugging, i.e.optimization off, debug information included. 
 When installed, available through Project Options|Compiler|Use Debug DCUs.
