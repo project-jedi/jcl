@@ -7,8 +7,8 @@ Returns whether DCOM is installed.
 IsDCOMInstalled returns whether DCOM is installed on the target computer. This
 routine works on all versions of Windows but since DCOM is installed by default
 on all operating systems except Windows 95 (in it's various incarnations) the
-routine only performs an actual test on Windows 95. Note that DCOM being intalled
-does not necessarilly mean it's all enabled. To determine that use the IsDCOMEnabled
+routine only performs an actual test on Windows 95. Note that DCOM being installed
+does not necessarily mean it's all enabled. To determine that use the IsDCOMEnabled
 routine.
 [Result]
 If DCOM is installed the routine returns True, otherwise it returns False.
@@ -83,7 +83,7 @@ The MDAC version in the form a.b.c.d
 [Quick Info]
 Unit=
 Category=Component Object Model
-SubCat=Version Utilties
+SubCat=Version Utilities
 Author=Kevin S. Gallagher
 Delphi=4,5,6
 Kylix=1
