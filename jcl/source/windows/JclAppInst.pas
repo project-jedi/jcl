@@ -1,32 +1,30 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclAppInst.pas.                                         }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains a class and support routines for controlling the number   }
-{ of concurrent instances of your application that can exists at any time. In  }
-{ addition there is support for simple interprocess communication between      }
-{ these instance including a notifaction mechanism.                            }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: January 22, 2002                                              }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclAppInst.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains a class and support routines for controlling the number of concurrent         }
+{ instances of your application that can exists at any time. In addition there is support for      }
+{ simple interprocess communication between these instance including a notifaction mechanism.      }
+{                                                                                                  }
+{ Unit owner: Petr Vones                                                                           }
+{ Last modified: January 22, 2002                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclAppInst;
 
@@ -38,9 +36,9 @@ uses
   Windows, Classes, Messages,
   JclBase, JclFileUtils, JclSynch;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Message constants and types
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclAppInstDataKind = Integer;
@@ -53,9 +51,9 @@ const
   AppInstDataKindNoData = -1;
   AppInstCmdLineDataKind = 1;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Application instances manager class
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclAppInstances = class (TObject)
@@ -102,9 +100,9 @@ type
 function JclAppInstances: TJclAppInstances; overload;
 function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances; overload;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Interprocess communication routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
@@ -139,9 +137,8 @@ const
 
 type
 
-{ management data to keep track of application instances. this data is shared
-  amongst all instances and must be appropriately protected from concurrent
-  access at all time }
+{ management data to keep track of application instances. this data is shared amongst all instances
+  and must be appropriately protected from concurrent access at all time }
 
   PJclAISharedData = ^TJclAISharedData;
   TJclAISharedData = packed record
@@ -157,9 +154,9 @@ var
   AppInstances: TJclAppInstances;
   ExplicitUniqueAppId: string;
 
-//==============================================================================
+//==================================================================================================
 // TJclAppInstances
-//==============================================================================
+//==================================================================================================
 
 class function TJclAppInstances.BringAppWindowToFront(const Wnd: HWND): Boolean;
 begin
@@ -168,7 +165,7 @@ begin
   Result := SetForegroundWindow98(Wnd);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.CheckInstance(const MaxInstances: Word): Boolean;
 begin
@@ -189,7 +186,7 @@ begin
     NotifyInstances(AI_INSTANCECREATED, FCPID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.CheckMultipleInstances(const MaxInstances: Word);
 begin
@@ -200,14 +197,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.CheckSingleInstance;
 begin
   CheckMultipleInstances(1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclAppInstances.Create;
 begin
@@ -216,7 +213,7 @@ begin
   InitData;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclAppInstances.Destroy;
 begin
@@ -227,7 +224,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclAppInstances.GetApplicationWnd(const ProcessID: DWORD): HWND;
 type
@@ -263,14 +260,14 @@ begin
   Result := TopLevelWnd.Wnd;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.GetAppWnds(Index: Integer): HWND;
 begin
   Result := GetApplicationWnd(GetProcessIDs(Index));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.GetInstanceCount: Integer;
 begin
@@ -282,7 +279,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.GetInstanceIndex(ProcessID: DWORD): Integer;
 var
@@ -305,7 +302,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.GetProcessIDs(Index: Integer): DWORD;
 begin
@@ -321,7 +318,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.InitData;
 var
@@ -346,14 +343,14 @@ begin
   FMessageID := RegisterWindowMessage(PChar(UniqueAppID + JclAIMessage));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class procedure TJclAppInstances.KillInstance;
 begin
   Halt(0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.NotifyInstances(const W, L: Integer);
 var
@@ -394,7 +391,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.RemoveInstance;
 var
@@ -417,7 +414,7 @@ begin
   NotifyInstances(AI_INSTANCEDESTROYED, FCPID);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
 var
@@ -434,7 +431,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendData(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer;
@@ -492,7 +489,7 @@ begin
   Result := EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendString(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const S: string; const OriginatorWnd: HWND): Boolean;
@@ -501,7 +498,7 @@ begin
     OriginatorWnd);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
   const DataKind: TJclAppInstDataKind; const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
@@ -512,7 +509,7 @@ begin
   Result := SendData(WindowClassName, DataKind, Pointer(S), Length(S), OriginatorWnd);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclAppInstances.SetForegroundWindow98(const Wnd: HWND): Boolean;
 var
@@ -537,21 +534,21 @@ begin
     Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SwitchTo(const Index: Integer): Boolean;
 begin
   Result := BringAppWindowToFront(AppWnds[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclAppInstances.UserNotify(const Param: Integer);
 begin
   NotifyInstances(AI_USERMSG, Param);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclAppInstances: TJclAppInstances;
 begin
@@ -560,7 +557,7 @@ begin
   Result := AppInstances;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function JclAppInstances(const UniqueAppIdGuidStr: string): TJclAppInstances;
 begin
@@ -569,9 +566,9 @@ begin
   Result := JclAppInstances;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Interprocess communication routines
-//==============================================================================
+//==================================================================================================
 
 function ReadMessageCheck(var Message: TMessage; const IgnoredOriginatorWnd: HWND): TJclAppInstDataKind;
 begin
@@ -587,7 +584,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ReadMessageData(const Message: TMessage; var Data: Pointer; var Size: Integer);
 begin
@@ -600,7 +597,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ReadMessageString(const Message: TMessage; var S: string);
 begin
@@ -609,7 +606,7 @@ begin
       SetString(S, PChar(CopyDataStruct^.lpData), CopyDataStruct^.cbData);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure ReadMessageStrings(const Message: TMessage; const Strings: TStrings);
 var
@@ -623,7 +620,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 initialization
 
