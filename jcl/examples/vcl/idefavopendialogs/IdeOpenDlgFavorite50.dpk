@@ -1,0 +1,42 @@
+package IdeOpenDlgFavorite50;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $58050000}
+{$DESCRIPTION 'JCL Open and Save IDE dialogs with favorite folders for Delphi 5'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  vclx50,
+  dsnide50,
+  DJCL50;
+
+{%RC 'FavDlg.rc'}
+
+contains
+  IdeOpenDlgFavoriteUnit in 'IdeOpenDlgFavoriteUnit.pas',
+  OpenDlgFavAdapter in 'OpenDlgFavAdapter.pas',
+  JclOtaUtils in '..\debugextension\JclOtaUtils.pas';
+
+end.

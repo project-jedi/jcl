@@ -1,0 +1,39 @@
+package ThreadNameExpert50;
+
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $58020000}
+{$DESCRIPTION 'JCL Thread Name IDE expert for Delphi 5'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  dsnide50,
+  djcl50;
+
+contains
+  ThreadExpertUnit in 'ThreadExpertUnit.pas',
+  ThreadExpertSharedNames in 'ThreadExpertSharedNames.pas',
+  JclOtaUtils in '..\JclOtaUtils.pas';
+
+end.
