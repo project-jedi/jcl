@@ -27,7 +27,10 @@ Description:
   Creates an instance of a TJclCounter class. If the hardware does not support
   high performance counters the constructor raises an exception.
 Parameters:
-  Compensate - If compensate is True the class internal determines the overhead associated with calling the user calling the Start and Stop methods and corrects the resulting time; thereby providing a more accurate timing. By default, for backwards compatibility, no compensation takes place.
+  Compensate - If compensate is True the class internally determines the overhead
+    associated with calling the user calling the Start and Stop methods and
+    corrects the resulting time; thereby providing a more accurate timing.
+    By default, for backwards compatibility, no compensation takes place.
 See also:
   StartCount
   StopCount
@@ -93,6 +96,21 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@TJclCounter.Overhead
+Summary:
+  Returns the overhead time.
+Description:
+  Overhead returns the time it takes between issueing a Start/Stop and the
+  actual execution. The value is the number of ticks, not the number of seconds.
+Quick info:
+  Unit: JclCounter
+  Category: Date and Time
+  Visibility: Public
+  Donator: Theo Bebekis
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
 @@TJclCounter.Counting
 Summary:
   Returns the status of the counter.
@@ -121,6 +139,10 @@ Description:
   of instantiating a TJclCouter and immediately calling it's Start method.
 Parameters:
   Counter - Counter object instantiated by this function.
+  Compensate - If compensate is True the class internally determines the overhead
+    associated with calling the user calling the Start and Stop methods and
+    corrects the resulting time; thereby providing a more accurate timing.
+    By default, for backwards compatibility, no compensation takes place.
 Notes:
   If the hardware does not support high performance resolution counters an exception is raised.
 See also:
