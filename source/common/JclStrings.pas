@@ -187,7 +187,8 @@ function StrDoubleQuote(const S: AnsiString): AnsiString;
 function StrEnsurePrefix(const Prefix, Text: AnsiString): AnsiString;
 function StrEnsureSuffix(const Suffix, Text: AnsiString): AnsiString;
 function StrEscapedToString(const S: AnsiString): AnsiString;
-procedure StrLower(var S: AnsiString);
+function StrLower(const S: AnsiString): AnsiString;
+procedure StrLowerInPlace(var S: AnsiString);
 procedure StrLowerBuff(S: PAnsiChar);
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString; const ToIndex,
   FromIndex, Count: Integer);
@@ -210,7 +211,8 @@ function StrStringToEscaped(const S: AnsiString): AnsiString;
 function StrStripNonNumberChars(const S: AnsiString): AnsiString;
 function StrToHex(const Source: AnsiString): AnsiString;
 function StrTrimQuotes(const S: AnsiString): AnsiString;
-procedure StrUpper(var S: AnsiString);
+function StrUpper(const S: AnsiString): AnsiString;
+procedure StrUpperInPlace(var S: AnsiString);
 procedure StrUpperBuff(S: PAnsiChar);
 
 //------------------------------------------------------------------------------
@@ -922,7 +924,20 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure StrLower(var S: AnsiString); assembler;
+function StrLower(const S: AnsiString): AnsiString;
+var
+  L: Integer;
+begin
+  L := Length(S);
+  SetLength(Result, L);
+  Move(S[1], Result[1], L);
+  StrLowerInPlace(Result);
+end;
+
+
+//------------------------------------------------------------------------------
+
+procedure StrLowerInPlace(var S: AnsiString); assembler;
 asm
         // StrCase(Str, LoOffset)
 
@@ -1131,7 +1146,7 @@ begin
   if Length(S) > 0 then
   begin
     Pointer(Result) := Pointer(S); // let StrLower call UniqueString
-    StrLower(Result);
+    StrLowerInPlace(Result);
     P := Pointer(Result);
     P^ := CharUpper(P^);
   end;
@@ -1590,7 +1605,19 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure StrUpper(var S: AnsiString); assembler;
+function StrUpper(const S: AnsiString): AnsiString;
+var
+  L: Integer;
+begin
+  L := Length(S);
+  SetLength(Result, L);
+  Move(S[1], Result[1], L);
+  StrUpperInPlace(Result);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure StrUpperInPlace(var S: AnsiString); assembler;
 asm
         // StrCase(Str, UpOffset)
         MOV     EDX, AnsiUpOffset
@@ -2179,7 +2206,7 @@ end;
 
 function StrILastPos(const SubStr, S: AnsiString): Integer;
 begin
-  Result := JclStrings.StrLastPos(AnsiUpperCase(SubStr), AnsiUpperCase(S));
+  Result := JclStrings.StrLastPos(StrUpper(SubStr), StrUpper(S));
 end;
 
 //------------------------------------------------------------------------------
