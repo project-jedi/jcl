@@ -553,6 +553,14 @@ resourcestring
   RsMetSectNameEmpty          = 'Name cannot be empty when using the Open constructor.';
 
 //------------------------------------------------------------------------------
+// JclSysInfo
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsSystemProcess = 'System Process';
+  RsSystemIdleProcess = 'System Idle Process';
+
+//------------------------------------------------------------------------------
 // JclUnicode
 //------------------------------------------------------------------------------
 
