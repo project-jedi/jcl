@@ -1,116 +1,32 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-EJclMapiError = EJclError;
+EJclMapiError = class (EJclError)
 [ShortDescr]
 Exception class for MAPI-errors
 [Description]
 The exception class that is raised when an MAPI error occurs
 [Quick Info]
-Kind=Type
 BCB=4,5
 Unit=JclMapi
 Category=Internet and E-mail
-SubCat=MAPI
-Author=unknown
+SubCat=MAPI\EJclMapiError
+Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclMapiTaskWindows = class (TObject)
+property ErrorCode: DWORD read FErrorCode;
 [ShortDescr]
-Store / restore MAPI-task windows
+MAPI error-code
 [Description]
-TJclMapiTaskWindows class is able to save and/or restore Task windows. This
-class is used when sending mail with TJclEmail.SendMail or TJclEmail.SimpleSendMail.
+The error-code for which the exception is raised.
 [Quick Info]
+Kind=Property
 BCB=4,5
 Unit=JclMapi
 Category=Internet and E-mail
-SubCat=MAPI\TJclMapiTaskWindows
-Author=unknown
+SubCat=MAPI\EJclMapiError
+Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
-[SeeAlso]
-Count=3
-1=TJclMail;..\TJclMail\TJclMail
-2=TJclMail.SendMail;..\TJclMail\Methods\SendMail
-3=TJclMail.SimpleSendMail;..\TJclMail\Methods\SimpleSendMail
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-constructor Create;
-[ShortDescr]
-Creates an instance of a JclMapiTaskWindows class.
-[Description]
-Creates an instance of a <REF Target"..\TJclMapiTaskWindows>JclMapiTaskWindows</REF> class.
-[Quick Info]
-Kind=Method
-Visibility=Public
-BCB=4,5
-Unit=JclMapi
-Category=Internet and E-mail
-SubCat=MAPI\TJclMapiTaskWindows
-Author=unknown
-Delphi=4,5
-[SeeAlso]
-Count=1
-1=Destroy
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-destructor Destroy; override
-[ShortDescr]
-Destroys an instance of a JclMapiTaskWindows class.
-[Description]
-Destroys an instance of a <REF Target"..\TJclMapiTaskWindows>JclMapiTaskWindows</REF> class.
-[Quick Info]
-Kind=Method
-Visibility=Public
-BCB=4,5
-Unit=JclMapi
-Category=Internet and E-mail
-SubCat=MAPI\TJclMapiTaskWindows
-Author=unknown
-Delphi=4,5
-[SeeAlso]
-Count=1
-1=Create
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-procedure RestoreTaskWindowsState;
-[ShortDescr]
-Restores the saved state of all task windows.
-[Description]
-Reverts the state of all task windows to the state when <REF>SaveTaskWindowsState</REF>
-was called.
-[Quick Info]
-Kind=Method
-Visibility=Public
-BCB=4,5
-Unit=JclMapi
-Category=Internet and E-mail
-SubCat=MAPI\TJclMapiTaskWindows
-Author=unknown
-Delphi=4,5
-[SeeAlso]
-Count=1
-1=SaveTaskWindowsState
-<DECL>--------------------------------------------------------------------------
-[Declaration]
-procedure SaveTaskWindowsState;
-[ShortDescr]
-Saves the state of all task windows.
-[Description]
-Saves the state of all task windows. This state can later be restored by
-calling <REF>RestoreTaskWindowsState</REF>.
-[Quick Info]
-Kind=Method
-Visibility=Public
-BCB=4,5
-Unit=JclMapi
-Category=Internet and E-mail
-SubCat=MAPI\TJclMapiTaskWindows
-Author=unknown
-Delphi=4,5
-[SeeAlso]
-Count=1
-1=RestoreTaskWindowsState
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclMapiClient = record
@@ -135,25 +51,1277 @@ BCB=4,5
 Unit=JclMapi
 Category=Internet and E-mail
 SubCat=MAPI
-Author=unknown
+Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclMapiClientType = (ctAutomatic, ctMapi, ctDirect);
+TJclMapiClientConnect = (ctAutomatic, ctMapi, ctDirect);
 [ShortDescr]
 MAPI-Client type
 [Description]
-TJclMapiClientType determines the type of client
+TJclMapiClientConnect determines the type of connection to make with a MAPI-client.
 [Enumeration]
 Count=3
-1=ctAutomatic=TODO
-2=ctMapi=TODO
-3=ctDirect=TODO
+1=ctAutomatic=If Simple MAPI is installed it will be used, otherwise
+the client library will be used directly.
+2=ctMapi=Always use the MAPI library.
+3=ctDirect=Always use the client library (Simple MAPI is not required).
 [Quick Info]
 Kind=Type
 BCB=4,5
 Unit=JclMapi
 Category=Internet and E-mail
 SubCat=MAPI
-Author=unknown
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclSimpleMapi = class (TObject)
+[ShortDescr]
+Simple MAPI class.
+[Description]
+TJclSimpleMapi is the Simple MAPI interface class.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ClientLibLoaded: Boolean;
+[ShortDescr]
+Checks if a client library has been loaded.
+[Description]
+ClientLibLoaded determines if a client library has been loaded.
+[Result]
+If a valid client library has been loaded, the function returns True, otherwise
+it returns False.
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure LoadClientLib;
+[ShortDescr]
+Loads a client library.
+[Description]
+LoadClientLib loads either the Simple MAPI library of the currently selected
+library (set by the <REF Target"..\Properties\SelectedClientIndex">SelectedClientIndex</REF> 
+property), depending on the <REF Target"..\Properties\ClientConnectKind">ClientConnectKind</REF> 
+property.
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure UnloadClientLib;
+[ShortDescr]
+Unloads the client library.
+[Description]
+UnloadClientLib loads the client library currently loaded (if any).
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AnyClientInstalled: Boolean read FAnyClientInstalled;
+[ShortDescr]
+Checks if MAPI clients are installed.
+[Description]
+AnyClientInstalled determines if any MAPI clients are installed.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ClientConnectKind: <REF Target"..\..\Types\TJclMapiClientConnect">TJclMapiClientConnect</REF> read FClientConnectKind write SetClientConnectKind;
+[ShortDescr]
+Type of connection to make.
+[Description]
+ClientConnectKind allows you to choose the type of connection you want, Simple 
+MAPI or direct library calls. When you set this property to ctAutomatic, Simple
+MAPI will be used when installed, otherwise it uses direct library calls.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ClientCount: Integer read GetClientCount;
+[ShortDescr]
+Number of clients found
+[Description]
+ClientCount shows the number of client libraries found.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Clients[Index: Integer]: TJclMapiClient read GetClients; default;
+[ShortDescr]
+Installed clients.
+[Description]
+Clients is an array to the installed clients found during initialization.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property CurrentClientName: string read GetCurrentClientName;
+[ShortDescr]
+Name of the currently selected client
+[Description]
+CurrentClientName holds the name of currently selected client. This property will
+hold 'MAPI' if simple MAPI is used, otherwise it's the name of the currently 
+selected library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property DefaultClientIndex: Integer read FDefaultClientIndex;
+[ShortDescr]
+Index of default library.
+[Description]
+DefaultClientIndex holds the index of library that is configured as the default
+MAPI client.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiInstalled: Boolean read FMapiInstalled;
+[ShortDescr]
+Flag if MAPI installed.
+[Description]
+MapiInstalled shows if MAPI is installed.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiVersion: string read FMapiVersion;
+[ShortDescr]
+Version of MAPI
+[Description]
+MapiVersion holds the MAPI version.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property SelectedClientIndex: Integer read FSelectedClientIndex write SetSelectedClientIndex;
+[ShortDescr]
+Index of currently selected client.
+[Description]
+With SelectedClientIndex you can determine or set the client library to use.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property SimpleMapiInstalled: Boolean read FSimpleMapiInstalled;
+[ShortDescr]
+Flag if Simple MAPI installed
+[Description]
+SimpleMapiInstalled shows if Simple MAPI is installed.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property BeforeUnloadClient: TNotifyEvent read FBeforeUnloadClient write FBeforeUnloadClient;
+[ShortDescr]
+Event called before a client library unloads.
+[Description]
+The BeforeUnloadClient event gets called before a client library is unloaded.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiAddress: TFNMapiAddress read FMapiAddress;
+[ShortDescr]
+MAPIAddress function in loaded library.
+[Description]
+MAPIAddress points to the MAPIAddress function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiDeleteMail: TFNMapiDeleteMail read FMapiDeleteMail;
+[ShortDescr]
+MAPIDeleteMail function in loaded library.
+[Description]
+MAPIDeleteMail points to the MAPIDeleteMail function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiDetails: TFNMapiDetails read FMapiDetails;
+[ShortDescr]
+MapiDetails function in loaded library.
+[Description]
+MapiDetails points to the MapiDetails function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiFindNext: TFNMapiFindNext read FMapiFindNext;
+[ShortDescr]
+MapiFindNext function in loaded library.
+[Description]
+MapiFindNext points to the MapiFindNext function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiFreeBuffer: TFNMapiFreeBuffer read FMapiFreeBuffer;
+[ShortDescr]
+MapiFreeBuffer function in loaded library.
+[Description]
+MapiFreeBuffer points to the MapiFreeBuffer function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiLogOff: TFNMapiLogOff read FMapiLogOff;
+[ShortDescr]
+MapiLogOff function in loaded library.
+[Description]
+MapiLogOff points to the MapiLogOff function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiLogOn: TFNMapiLogOn read FMapiLogOn;
+[ShortDescr]
+MapiLogOn function in loaded library.
+[Description]
+MapiLogOn points to the MapiLogOn function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiReadMail: TFNMapiReadMail read FMapiReadMail;
+[ShortDescr]
+MapiReadMail function in loaded library.
+[Description]
+MapiReadMail points to the MapiReadMail function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiResolveName: TFNMapiResolveName read FMapiResolveName;
+[ShortDescr]
+MapiResolveName function in loaded library.
+[Description]
+MapiResolveName points to the MapiResolveName function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiSaveMail: TFNMapiSaveMail read FMapiSaveMail;
+[ShortDescr]
+MapiSaveMail function in loaded library.
+[Description]
+MapiSaveMail points to the MapiSaveMail function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiSendDocuments: TFNMapiSendDocuments read FMapiSendDocuments;
+[ShortDescr]
+MapiSendDocuments function in loaded library.
+[Description]
+MapiSendDocuments points to the MapiSendDocuments function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property MapiSendMail: TFNMapiSendMail read FMapiSendMail;
+[ShortDescr]
+MapiSendMail function in loaded library.
+[Description]
+MapiSendMail points to the MapiSendMail function in the loaded library.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclSimpleMapi
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailRecipKind = (rkOriginator, rkTO, rkCC, rkBCC);
+[ShortDescr]
+E-mail recipient type
+[Description]
+The TJclEmailRecipKind type defines the recipient type of an address.
+[Enumeration]
+Count=4
+1=rkOriginator=Address is the address of the sender or originator.
+2=rkTO=Address is of a primairy recipient.
+3=rkCC=Address is of a copy recipient.
+4=rkBCC=Address is of a blind copy recipient.
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailRecip = class (TObject)
+[ShortDescr]
+E-mail recipient object
+[Description]
+TJclEmailRecip is an e-mail recipient address.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecip
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function AddressAndName: string;
+[ShortDescr]
+Returns an address with a name
+[Description]
+AddressAndName returns a formats a string so that the result is "<I>name</I>" <<I>address</I>>.
+If the recipient name is unknown, the name part is replaced by the address.
+[Result]
+Returns a formatted string containing the name and address of the recipient.
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecip
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AddressType: string read FAddressType write FAddressType;
+[ShortDescr]
+Determines the address type of a recipient.
+[Description]
+AddressType holds the address type of a recipient. Do not confuse AddressType with
+the <REF>Kind</REF> property. Kind tells you wether the recipient is a primairy 
+recipient, a copy recipient, while AddressType tells you the type of e-mail 
+address used.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecip
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Address: string read FAddress write FAddress;
+[ShortDescr]
+The mail address for the recipient
+[Description]
+Address holds the mail address of the recipient.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecip
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Kind: TJclEmailRecipKind read FKind write FKind;
+[ShortDescr]
+The recipient type
+[Description]
+Kind holds the type of recipient (ie. message originator, primairy recipient,
+copy recipient or blind copy recipient). Do not confuse Kind with AddressType.
+Address type holds the type of mail address (eg. SMTP).
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecip
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Name: string read FName write FName;
+[ShortDescr]
+The name of the recipient
+[Description]
+Name holds the full name of recipient.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecip
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailRecips = class (TObjectList)
+[ShortDescr]
+E-mail recipients list object
+[Description]
+TJclEmailRecips is a list of e-mail recipient addresses.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecips
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Add(const Address: string; const Name: string = ''; 
+  const Kind: TJclEmailRecipKind = rkTO; 
+  const AddressType: string = ''): Integer;
+[ShortDescr]
+Adds a new recipient to the list.
+[Description]
+Add adds a new recipient to the list. If the recipient was added succesfully,
+the index of the new item is returned.
+[Parameters]
+Count=4
+1=Address:string=Address of recipient.
+2=Name:string=Name of recipient (optional).
+3=Kind:TJclEmailRecipKind=Type of recipient (defaults to rkTO).
+4=AddressType:string=Type of address (optional).
+[Result]
+If the recipient was succesfully added, the function returns the index.
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecips
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortRecips;
+[ShortDescr]
+Sorts the recipient list.
+[Description]
+SortRecips sorts the recipients. The order is determined by recipient type and
+the name (unless the name is empty, in which case the address is used).
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecips
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property AddressesType: string read FAddressesType write FAddressesType;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecips
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Items[Index: Integer]: TJclEmailRecip read GetItems; default;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecips
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Originator: TJclEmailRecip read GetOriginator;
+[ShortDescr]
+The message originator
+[Description]
+Originator holds the first e-mail recipient that is marked as Originator.
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmailRecips
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailFindOptions = set of (foFifo, foUnreadOnly);
+[ShortDescr]
+Search options
+[Description]
+Search options
+[Enumeration]
+Count=2
+1=foFifo=First in first out.
+2=foUnreadOnly=Find unread messages only
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailLogonOptions = set of (loLogonUI, loNewSession);
+[ShortDescr]
+Logon options
+[Description]
+Logon options
+[Enumeration]
+Count=2
+1=loLoginUI=Login with a user interface (ie. show login dialog of client).
+2=loNewSession=Start a new session.
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailReadOptions = set of (roAttachments, roHeaderOnly, roMarkAsRead);
+[ShortDescr]
+Read options
+[Description]
+Read options
+[Enumeration]
+Count=3
+1=roAttachments=Read attachments.
+2=roHeaderOnly=Read header only (no body).
+3=roMarkAsRead=Mark the message as read.
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmailReadMsg = record
+  ConversationID: string;
+  DateReceived: TDateTime;
+  MessageType: string;
+  Flags: FLAGS;
+end;
+[ShortDescr]
+Message information record
+[Description]
+TjcEmailReadMsg holds messages information of a read message.
+[RecordFields]
+Count=4
+1=ConversationID:string=Conversation ID.
+2=DateReceived:TDateTime=Date and time of reception.
+3=MessageType:string=Kind of message
+4=Flags:FLAGS=Message flags as specified by MAPI
+[Quick Info]
+Kind=Type
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclEmail = class (<REF Target"..\TJclSimpleMapi\TJclSimpleMapi">TJclSimpleMapi</REF>)
+[ShortDescr]
+E-mail class
+[Description]
+TJclEmail is an e-mail reading class.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Address(const Caption: string  = ''; EditFields: Integer  = 3): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure Clear;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Delete(const MessageID: string): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindFirstMessage: Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function FindNextMessage: Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure LogOff;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure LogOn(const ProfileName: string = ''; const Password: string = '');
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MessageReport(Strings: TStrings; MaxWidth: Integer = 80; IncludeAddresses: Boolean = False): Integer;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Read(const Options: TJclEmailReadOptions = []): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function ResolveName(var Name, Address: string; ShowDialog: Boolean = False): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Save: Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function Send(ShowDialog: Boolean = True): Boolean;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+procedure SortAttachments;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Result]
+TODO
+[Quick Info]
+Kind=Method
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Attachments: TStrings read FAttachments;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Body: string read FBody write SetBody;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ParentWnd: HWND read GetParentWnd write FParentWnd;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ReadMsg: TJclEmailReadMsg read FReadMsg;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Recipients: TJclEmailRecips read FRecipients;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property SessionHandle: THandle read FSessionHandle;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property Subject: string read FSubject write FSubject;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property UserLogged: Boolean read GetUserLogged;
+[ShortDescr]
+TODO
+[Description]
+TODO
+[Quick Info]
+Kind=Property
+Visiblity=Public
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI\TJclEmail
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
+  const AAttachment: TFileName = ''; ShowDialog: Boolean = True;
+  AParentWND: HWND = 0): Boolean;
+[ShortDescr]
+Sends an email to a recipient.
+[Description]
+JclSimpleSendMail sends an e-mail with optionally an attachment to 1 recipient.
+[Parameters]
+Count=7
+1=ARecipient:string=Address of the recipient.
+2=AName:string=Name of the recipient (can be left empty).
+3=ASubject:string=Subject of the message.
+4=ABody:string=Body of the message.
+5=AAttachment:TFileName=Filename of attachment (optional).
+6=ShowDialog:Boolean=Set to True if a dialog should be shown (default to True).
+7=AParentWND:HWND=If non-zero it should be the handle of the main window of 
+your application. In that case, any MAPI dialogs are shown modal. If left 0,
+MAPI dialogs are not shown modal.
+[Result]
+If the message was succesfully handed over to the MAPI client, the function 
+returns True, otherwise it returns False.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MapiCheck(const Res: DWORD; IgnoreUserAbort: Boolean = True): DWORD;
+[ShortDescr]
+Checks the MAPI result code
+[Description]
+MapiCheck checks the MAPI result code, optionally ignoring user abort codes. If
+an error occured, an exception is raised, otherwise the result code will be
+returned (which is either SUCCESS_SUCCESS or MAPI_E_USER_ABORT).
+[Parameters]
+Count=2
+1=Res:DWORD=MAPI result code.
+2=IgnoreUserAbort:Boolean=Set to True (default) to ignore MAPI_E_USER_ABORT, 
+otherwise MAPI_E_USER_ABORT will be seen as an error.
+[Result]
+If MAPI result code is not an error the function returns the result code, otherwise
+an EJclMAPIError exception is raised.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
+Delphi=4,5
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function MapiErrorMessage(const ErrorCode: DWORD): string;
+[ShortDescr]
+Retreives the MAPI error message for a given MAPI result code.
+[Description]
+MapiErrorMessage translates a MAPI result code into a message.
+[Parameters]
+Count=1
+1=ErrorCode:DWORD=MAPI result code
+[Result]
+The MAPI error message belonging to the given MAPI result code.
+[Quick Info]
+BCB=4,5
+Unit=JclMapi
+Category=Internet and E-mail
+SubCat=MAPI
+Author=Petr Vones;petr.v@mujmail.cz
 Delphi=4,5
