@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: October 14, 2003                                                                  }
+{ Last modified: October 22, 2003                                                                  }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -88,8 +88,6 @@ type
 //  EDI Element
 //--------------------------------------------------------------------------------------------------
 
-  TEDIElementArray = array of TEDIElement;
-
   TEDIElement = class(TEDIDataObject)
   public
     constructor Create(Parent: TEDIDataObject); reintroduce;
@@ -98,11 +96,11 @@ type
     function GetIndexPositionFromParent: Integer;
   end;
 
+  TEDIElementArray = array of TEDIElement;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Composite Element Classes
 //--------------------------------------------------------------------------------------------------
-
-  TEDICompositeElementArray = array of TEDICompositeElement;
 
   TEDICompositeElement = class(TEDIDataObjectGroup)
   private
@@ -145,11 +143,11 @@ type
     {$ENDIF}
   end;
 
+  TEDICompositeElementArray = array of TEDICompositeElement;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Segment Classes
 //--------------------------------------------------------------------------------------------------
-
-  TEDISegmentArray = array of TEDISegment;
 
   TEDISegment = class(TEDIDataObjectGroup)
   private
@@ -197,6 +195,8 @@ type
     property SegmentID: string read FSegmentID write FSegmentID;
   end;
 
+  TEDISegmentArray = array of TEDISegment;
+
   TEDIMessageSegment = class(TEDISegment)
   public
     constructor Create(Parent: TEDIDataObject; ElementCount: Integer = 0); reintroduce;
@@ -218,8 +218,6 @@ type
 //--------------------------------------------------------------------------------------------------
 //  EDI Message (Transaction Set)
 //--------------------------------------------------------------------------------------------------
-
-  TEDIMessageArray = array of TEDIMessage;
 
   TEDIMessage = class(TEDIDataObjectGroup)
   private
@@ -271,11 +269,11 @@ type
     property SegmentCount: Integer read GetCount;
   end;
 
+  TEDIMessageArray = array of TEDIMessage;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Functional Group
 //--------------------------------------------------------------------------------------------------
-
-  TEDIFunctionalGroupArray = array of TEDIFunctionalGroup;
 
   TEDIFunctionalGroup = class(TEDIDataObjectGroup)
   private
@@ -329,11 +327,11 @@ type
     property MessageCount: Integer read GetCount;
   end;
 
+  TEDIFunctionalGroupArray = array of TEDIFunctionalGroup;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI Interchange Control
 //--------------------------------------------------------------------------------------------------
-
-  TEDIInterchangeControlArray = array of TEDIInterchangeControl;
 
   TEDIInterchangeControl = class(TEDIDataObjectGroup)
   private
@@ -383,11 +381,11 @@ type
     property SegmentUNZ: TEDIInterchangeControlSegment read FUNZSegment write SetUNZSegment;
   end;
 
+  TEDIInterchangeControlArray = array of TEDIInterchangeControl;
+
 //--------------------------------------------------------------------------------------------------
 //  EDI File
 //--------------------------------------------------------------------------------------------------
-
-  TEDIFileArray = array of TEDIFile;
 
   TEDIFileOptions = set of (foVariableDelimiterDetection, foRemoveCrLf, foRemoveCr, foRemoveLf);
 
@@ -450,6 +448,8 @@ type
     property Options: TEDIFileOptions read FEDIFileOptions write FEDIFileOptions;
     property InterchangeControlCount: Integer read GetCount;
   end;
+
+  TEDIFileArray = array of TEDIFile;  
 
 implementation
 
