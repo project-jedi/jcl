@@ -1,32 +1,31 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JclPeImage.pas.                                         }
-{                                                                              }
-{ The Initial Developer of the Original Code is documented in the accompanying }
-{ help file JCL.chm. Portions created by these individuals are Copyright (C)   }
-{ of these individuals.                                                        }
-{                                                                              }
-{******************************************************************************}
-{                                                                              }
-{ This unit contains various classes and support routines to read the contents }
-{ of portable executable (PE) files. You can use these classes to, for example }
-{ examine the contents of the imports section of an executable. In addition    }
-{ the unit contains support for API hooking and name unmangling.               }
-{                                                                              }
-{ Unit owner: Petr Vones                                                       }
-{ Last modified: February 01, 2002                                             }
-{                                                                              }
-{******************************************************************************}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is JclPeImage.pas.                                                             }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is documented in the accompanying                     }
+{ help file JCL.chm. Portions created by these individuals are Copyright (C) of these individuals. }
+{                                                                                                  }
+{**************************************************************************************************}
+{                                                                                                  }
+{ This unit contains various classes and support routines to read the contents of portable         }
+{ executable (PE) files. You can use these classes to, for example examine the contents of the     }
+{ imports section of an executable. In addition the unit contains support for Borland specific     }
+{ structures and name unmangling.                                                                  }
+{                                                                                                  }
+{ Unit owner: Petr Vones                                                                           }
+{ Last modified: February 01, 2002                                                                 }
+{                                                                                                  }
+{**************************************************************************************************}
 
 unit JclPeImage;
 
@@ -43,9 +42,9 @@ uses
   {$ENDIF DELPHI5_UP}
   JclBase, JclDateTime, JclFileUtils, JclStrings, JclSysInfo, JclWin32;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Smart name compare function
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclSmartCompOption = (scSimpleCompare, scIgnoreCase);
@@ -54,11 +53,11 @@ type
 function PeStripFunctionAW(const FunctionName: string): string;
 
 function PeSmartFunctionNameSame(const ComparedName, FunctionName: string;
-  Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+  Options: TJclSmartCompOptions = []): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Base list
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   EJclPeImageError = class (EJclError);
@@ -76,9 +75,9 @@ type
     property Image: TJclPeImage read FImage;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Images cache
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeImagesCache = class (TObject)
   private
@@ -104,9 +103,9 @@ type
     property Images[const FileName: TFileName]: TJclPeBorImage read GetImages; default;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Import section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeImportSort = (isName, isOrdinal, isHint, isLibImport);
   TJclPeImportLibSort = (ilName, ilIndex);
@@ -163,7 +162,7 @@ type
     procedure CreateList;
   public
     constructor Create(AImage: TJclPeImage);
-    procedure SortList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    procedure SortList(SortType: TJclPeImportSort; Descending: Boolean = False);
     property Count: Integer read GetCount;
     property FileName: TFileName read GetFileName;
     property ImportDescriptor: Pointer read FImportDescriptor;
@@ -199,11 +198,10 @@ type
   public
     constructor Create(AImage: TJclPeImage);
     destructor Destroy; override;
-    procedure CheckImports(PeImageCache: TJclPeImagesCache {$IFDEF SUPPORTS_DEFAULTPARAMS} = nil {$ENDIF});
+    procedure CheckImports(PeImageCache: TJclPeImagesCache = nil);
     function MakeBorlandImportTableForMappedImage: Boolean;
-    function SmartFindName(const CompareName, LibName: string;
-      Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): TJclPeImportFuncItem;
-    procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    function SmartFindName(const CompareName, LibName: string; Options: TJclSmartCompOptions = []): TJclPeImportFuncItem;
+    procedure SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean = False);
     procedure SortList(SortType: TJclPeImportLibSort);
     procedure TryGetNamesForOrdinalImports;
     property AllItems[Index: Integer]: TJclPeImportFuncItem read GetAllItems;
@@ -217,12 +215,11 @@ type
     property UniqueLibNames[Index: Integer]: string read GetUniqueLibNames;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Export section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
-  TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded,
-    esAddrOrFwd, esSection);
+  TJclPeExportSort = (esName, esOrdinal, esHint, esAddress, esForwarded,  esAddrOrFwd, esSection);
 
   TJclPeExportFuncList = class;
 
@@ -291,13 +288,12 @@ type
   public
     constructor Create(AImage: TJclPeImage);
     destructor Destroy; override;
-    procedure CheckForwards(PeImageCache: TJclPeImagesCache {$IFDEF SUPPORTS_DEFAULTPARAMS} = nil {$ENDIF});
+    procedure CheckForwards(PeImageCache: TJclPeImagesCache = nil);
     class function ItemName(Item: TJclPeExportFuncItem): string;
     function OrdinalValid(Ordinal: DWORD): Boolean;
     procedure PrepareForFastNameSearch;
-    function SmartFindName(const CompareName: string;
-      Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): TJclPeExportFuncItem;
-    procedure SortList(SortType: TJclPeExportSort; Descending: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF});
+    function SmartFindName(const CompareName: string; Options: TJclSmartCompOptions = []): TJclPeExportFuncItem;
+    procedure SortList(SortType: TJclPeExportSort; Descending: Boolean = False);
     property AnyForwards: Boolean read FAnyForwards;
     property Base: DWORD read FBase;
     property ExportDir: PImageExportDirectory read FExportDir;
@@ -311,9 +307,9 @@ type
     property TotalResolveCheck: TJclPeResolveCheck read FTotalResolveCheck;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Resource section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeResourceKind = (
     rtUnknown0,
@@ -413,15 +409,15 @@ type
   TJclPeRootResourceList = class (TJclPeResourceList)
   public
     function FindResource(ResourceType: TJclPeResourceKind;
-      const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem; overload;
+      const ResourceName: string = ''): TJclPeResourceItem; overload;
     function FindResource(const ResourceType: PChar;
-      const ResourceName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): TJclPeResourceItem; overload;
+      const ResourceName: string = ''): TJclPeResourceItem; overload;
     function ListResourceNames(ResourceType: TJclPeResourceKind; const Strings: TStrings): Boolean;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Relocation section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeRelocation = record
     Address: Word;
@@ -457,9 +453,9 @@ type
     property Items[Index: Integer]: TJclPeRelocEntry read GetItems; default;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Debug section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeDebugList = class (TJclPeImageBaseList)
   private
@@ -471,9 +467,9 @@ type
     property Items[Index: Integer]: TImageDebugDirectory read GetItems; default;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Certificates section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeCertificate = class (TObject)
   private
@@ -494,9 +490,9 @@ type
     property Items[Index: Integer]: TJclPeCertificate read GetItems; default;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Common Language Runtime section related classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeCLRHeader = class (TObject)
   private
@@ -512,9 +508,9 @@ type
     property Image: TJclPeImage read FImage;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // PE Image
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeHeader = (
     JclPeHeader_Signature,
@@ -636,7 +632,7 @@ type
       AParentItem: TJclPeResourceItem): TJclPeResourceList; virtual;
     property ReadOnlyAccess: Boolean read FReadOnlyAccess write FReadOnlyAccess;
   public
-    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); virtual;
+    constructor Create(ANoExceptions: Boolean = False); virtual;
     destructor Destroy; override;
     procedure AttachLoadedModule(const Handle: HMODULE);
     function CalculateCheckSum: DWORD;
@@ -686,9 +682,9 @@ type
     property VersionInfoAvailable: Boolean read GetVersionInfoAvailable;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Borland Delphi PE Image specific information
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPePackageInfo = class (TObject)
   private
@@ -764,7 +760,7 @@ type
     procedure Clear; override;
     procedure CreateFormsList;
   public
-    constructor Create(ANoExceptions: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}); override;
+    constructor Create(ANoExceptions: Boolean = False); override;
     destructor Destroy; override;
     function DependedPackages(List: TStrings; FullPathName, Descriptions: Boolean): Boolean;
     function FreeLibHandle: Boolean;
@@ -779,9 +775,9 @@ type
     property PackageInfo: TJclPePackageInfo read GetPackageInfo;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Threaded function search
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
   TJclPeNameSearchOption = (seImports, seDelayImports, seBoundImports, seExports);
   TJclPeNameSearchOptions = set of TJclPeNameSearchOption;
@@ -809,16 +805,15 @@ type
     procedure DoProcessFile;
     procedure Execute; override;
   public
-    constructor Create(const FunctionName, Path: string;
-      Options: TJclPeNameSearchOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [seImports, seExports] {$ENDIF});
+    constructor Create(const FunctionName, Path: string; Options: TJclPeNameSearchOptions = [seImports, seExports]);
     procedure Start;
     property OnFound: TJclPeNameSearchFoundEvent read FOnFound write FOnFound;
     property OnProcessFile: TJclPeNameSearchNotifyEvent read FOnProcessFile write FOnProcessFile;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // PE Image miscellaneous functions
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclRebaseImageInfo = record
@@ -832,39 +827,34 @@ function IsValidPeFile(const FileName: TFileName): Boolean;
 
 function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 
-function PeRebaseImage(const ImageName: TFileName;
-  NewBase: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF};
-  TimeStamp: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF};
-  MaxNewSize: DWORD {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): TJclRebaseImageInfo;
+function PeRebaseImage(const ImageName: TFileName; NewBase: DWORD = 0; TimeStamp: DWORD = 0;
+  MaxNewSize: DWORD = 0): TJclRebaseImageInfo;
 
 function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Various simple PE Image functions
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
-  Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+  Options: TJclSmartCompOptions = []): Boolean;
 
 function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
-  var ForwardedName: string; Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+  var ForwardedName: string; Options: TJclSmartCompOptions = []): Boolean;
 function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
-  Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+  Options: TJclSmartCompOptions = []): Boolean;
 
 function PeDoesImportFunction(const FileName: TFileName; const FunctionName: string;
-  const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  Options: TJclSmartCompOptions {$IFDEF SUPPORTS_DEFAULTPARAMS} = [] {$ENDIF}): Boolean;
+  const LibraryName: string = ''; Options: TJclSmartCompOptions = []): Boolean;
 
 function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
-  Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
+  Recursive: Boolean = False): Boolean;
 
 function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
-  Recursive: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF};
-  FullPathName: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
+  Recursive: Boolean = False; FullPathName: Boolean = False): Boolean;
 
 function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
-  const LibraryName: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
-  IncludeLibNames: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = False {$ENDIF}): Boolean;
+  const LibraryName: string = ''; IncludeLibNames: Boolean = False): Boolean;
 
 function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 function PeExportedNames(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
@@ -882,9 +872,9 @@ function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeader
 
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Mapped or loaded image related routines
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 
@@ -913,9 +903,9 @@ type
     property SectionHeader: TImageSectionHeader read FSectionHeader;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // API hooking classes
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclPeMapImgHookItem = class (TObject)
@@ -955,9 +945,9 @@ type
     property ItemFromNewAddress[NewAddress: Pointer]: TJclPeMapImgHookItem read GetItemFromNewAddress;
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Image access under a debbuger
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
   var NtHeaders: TImageNtHeaders): Boolean;
@@ -965,9 +955,9 @@ function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
 function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
   var Name: string): Boolean;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 // Borland BPL packages name unmangling
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 type
   TJclBorUmSymbolKind = (skData, skFunction, skConstructor, skDestructor, skRTTI, skVTable);
@@ -1008,16 +998,16 @@ const
   DebugSectionName = '.debug';
   ReadOnlySectionName = '.rdata';
 
-//==============================================================================
+//==================================================================================================
 // Helper routines
-//==============================================================================
+//==================================================================================================
 
 function FormatVersionString(HiV, LoV: Word): string;
 begin
   Result := Format('%u.%.2u', [HiV, LoV]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function AddFlagTextRes(var Text: string; const FlagText: PResStringRec;
   const Value, Mask: Integer): Boolean;
@@ -1031,7 +1021,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function CompareResourceType(T1, T2: PChar): Boolean;
 begin
@@ -1041,7 +1031,7 @@ begin
     Result := (StrIComp(T1, T2) = 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function InternalImportedLibraries(const FileName: TFileName;
   Recursive, FullPathName: Boolean; ExternalCache: TJclPeImagesCache): TStringList;
@@ -1092,9 +1082,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Smart name compare function
-//==============================================================================
+//==================================================================================================
 
 function PeStripFunctionAW(const FunctionName: string): string;
 var
@@ -1107,7 +1097,7 @@ begin
     Delete(Result, L, 1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeSmartFunctionNameSame(const ComparedName, FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
@@ -1133,9 +1123,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeImagesCache
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeImagesCache.Clear;
 var
@@ -1147,7 +1137,7 @@ begin
   FList.Clear;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeImagesCache.Create;
 begin
@@ -1157,7 +1147,7 @@ begin
   FList.Duplicates := dupIgnore;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPeImagesCache.Destroy;
 begin
@@ -1166,14 +1156,14 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImagesCache.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImagesCache.GetImages(const FileName: TFileName): TJclPeImage;
 var
@@ -1190,32 +1180,32 @@ begin
     Result := TJclPeImage(FList.Objects[I]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImagesCache.GetPeImageClass: TJclPeImageClass;
 begin
   Result := TJclPeImage;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeBorImagesCache
-//==============================================================================
+//==================================================================================================
 
 function TJclPeBorImagesCache.GetImages(const FileName: TFileName): TJclPeBorImage;
 begin
   Result := TJclPeBorImage(inherited Images[FileName]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImagesCache.GetPeImageClass: TJclPeImageClass;
 begin
   Result := TJclPeBorImage;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeImageBaseList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeImageBaseList.Create(AImage: TJclPeImage);
 begin
@@ -1223,9 +1213,9 @@ begin
   FImage := AImage;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Import sort functions
-//==============================================================================
+//==================================================================================================
 
 function ImportSortByName(Item1, Item2: Pointer): Integer;
 begin
@@ -1241,7 +1231,7 @@ begin
   Result := ImportSortByName(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ImportSortByHint(Item1, Item2: Pointer): Integer;
 begin
@@ -1253,7 +1243,7 @@ begin
   Result := ImportSortByHint(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ImportSortByDll(Item1, Item2: Pointer): Integer;
 begin
@@ -1268,7 +1258,7 @@ begin
   Result := ImportSortByDll(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ImportSortByOrdinal(Item1, Item2: Pointer): Integer;
 begin
@@ -1283,7 +1273,7 @@ begin
   Result := ImportSortByOrdinal(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetImportSortFunction(SortType: TJclPeImportSort; Descending: Boolean): TListSortCompare;
 const
@@ -1297,7 +1287,7 @@ begin
   Result := SortFunctions[SortType, Descending];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ImportLibSortByIndex(Item1, Item2: Pointer): Integer;
 begin
@@ -1305,7 +1295,7 @@ begin
     TJclPeImportLibItem(Item2).ImportDirectoryIndex;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ImportLibSortByName(Item1, Item2: Pointer): Integer;
 begin
@@ -1314,7 +1304,7 @@ begin
     Result := ImportLibSortByIndex(Item1, Item2);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function GetImportLibSortFunction(SortType: TJclPeImportLibSort): TListSortCompare;
 const
@@ -1324,9 +1314,9 @@ begin
   Result := SortFunctions[SortType];
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeImportFuncItem
-//==============================================================================
+//==================================================================================================
 
 destructor TJclPeImportFuncItem.Destroy;
 begin
@@ -1334,21 +1324,21 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportFuncItem.GetIsByOrdinal: Boolean;
 begin
   Result := FOrdinal <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportFuncItem.GetName: string;
 begin
   Result := FName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportFuncItem.SetIndirectImportName(P: PChar);
 begin
@@ -1365,9 +1355,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeImportLibItem
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeImportLibItem.CheckImports(ExportImage: TJclPeImage);
 var
@@ -1411,7 +1401,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeImportLibItem.Create(AImage: TJclPeImage);
 begin
@@ -1419,7 +1409,7 @@ begin
   FTotalResolveCheck := icNotChecked;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportLibItem.CreateList;
 var
@@ -1459,7 +1449,7 @@ begin
   FThunk := nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportLibItem.GetCount: Integer;
 begin
@@ -1468,35 +1458,35 @@ begin
   Result := inherited Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportLibItem.GetFileName: TFileName;
 begin
   Result := FImage.ExpandModuleName(Name);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportLibItem.GetItems(Index: Integer): TJclPeImportFuncItem;
 begin
   Result := TJclPeImportFuncItem(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportLibItem.GetName: string;
 begin
   Result := AnsiLowerCase(OriginalName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportLibItem.GetOriginalName: string;
 begin
   Result := FName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportLibItem.SortList(SortType: TJclPeImportSort; Descending: Boolean);
 begin
@@ -1510,9 +1500,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeImportList
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeImportList.CheckImports(PeImageCache: TJclPeImagesCache);
 var
@@ -1541,7 +1531,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeImportList.Create(AImage: TJclPeImage);
 begin
@@ -1556,7 +1546,7 @@ begin
   CreateList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportList.CreateList;
 var
@@ -1635,7 +1625,7 @@ begin
     Items[I].FImportDirectoryIndex := I;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPeImportList.Destroy;
 var
@@ -1648,7 +1638,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetAllItemCount: Integer;
 begin
@@ -1660,28 +1650,28 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetAllItems(Index: Integer): TJclPeImportFuncItem;
 begin
   Result := TJclPeImportFuncItem(FAllItemsList[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetItems(Index: Integer): TJclPeImportLibItem;
 begin
   Result := TJclPeImportLibItem(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetUniqueLibItemCount: Integer;
 begin
   Result := FUniqueNamesList.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetUniqueLibItemFromName(const Name: string): TJclPeImportLibItem;
 var
@@ -1694,21 +1684,21 @@ begin
     Result := TJclPeImportLibItem(FUniqueNamesList.Objects[I]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetUniqueLibItems(Index: Integer): TJclPeImportLibItem;
 begin
   Result := TJclPeImportLibItem(FUniqueNamesList.Objects[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.GetUniqueLibNames(Index: Integer): string;
 begin
   Result := FUniqueNamesList[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.MakeBorlandImportTableForMappedImage: Boolean;
 var
@@ -1742,7 +1732,7 @@ begin
     Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportList.RefreshAllItems;
 var
@@ -1759,7 +1749,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportList.SetFilterModuleName(const Value: string);
 begin
@@ -1771,7 +1761,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImportList.SmartFindName(const CompareName, LibName: string;
   Options: TJclSmartCompOptions): TJclPeImportFuncItem;
@@ -1793,7 +1783,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportList.SortAllItemsList(SortType: TJclPeImportSort; Descending: Boolean);
 begin
@@ -1803,14 +1793,14 @@ begin
   FLastAllSortDescending := Descending;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportList.SortList(SortType: TJclPeImportLibSort);
 begin
   Sort(GetImportLibSortFunction(SortType));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImportList.TryGetNamesForOrdinalImports;
 var
@@ -1876,9 +1866,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeExportFuncItem
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeExportFuncItem.FindForwardedDotPos;
 begin
@@ -1886,7 +1876,7 @@ begin
     FForwardedDotPos := StrPos(FForwardedName, '.');
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetAddressOrForwardStr: string;
 begin
@@ -1896,7 +1886,7 @@ begin
     FmtStr(Result, '%.8x', [Address]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetForwardedFuncName: string;
 begin
@@ -1907,7 +1897,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetForwardedFuncOrdinal: DWORD;
 begin
@@ -1918,7 +1908,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetForwardedLibName: string;
 begin
@@ -1932,42 +1922,42 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetForwardedName: string;
 begin
   Result := FForwardedName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetIsExportedVariable: Boolean;
 begin
   Result := (Address >= FExportList.FImage.OptionalHeader.BaseOfData); 
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetIsForwarded: Boolean;
 begin
   Result := FForwardedName <> nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetMappedAddress: Pointer;
 begin
   Result := FExportList.FImage.RvaToVa(FAddress);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetName: string;
 begin
   Result := FName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncItem.GetSectionName: string;
 begin
@@ -1978,9 +1968,9 @@ begin
       Result := ImageSectionNameFromRva[Address];
 end;
 
-//==============================================================================
+//==================================================================================================
 // Export sort functions
-//==============================================================================
+//==================================================================================================
 
 function ExportSortByName(Item1, Item2: Pointer): Integer;
 begin
@@ -1992,7 +1982,7 @@ begin
   Result := ExportSortByName(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExportSortByOrdinal(Item1, Item2: Pointer): Integer;
 begin
@@ -2004,7 +1994,7 @@ begin
   Result := ExportSortByOrdinal(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExportSortByHint(Item1, Item2: Pointer): Integer;
 begin
@@ -2016,7 +2006,7 @@ begin
   Result := ExportSortByHint(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExportSortByAddress(Item1, Item2: Pointer): Integer;
 begin
@@ -2030,7 +2020,7 @@ begin
   Result := ExportSortByAddress(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExportSortByForwarded(Item1, Item2: Pointer): Integer;
 begin
@@ -2044,7 +2034,7 @@ begin
   Result := ExportSortByForwarded(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExportSortByAddrOrFwd(Item1, Item2: Pointer): Integer;
 begin
@@ -2056,7 +2046,7 @@ begin
   Result := ExportSortByAddrOrFwd(Item2, Item1);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function ExportSortBySection(Item1, Item2: Pointer): Integer;
 begin
@@ -2070,16 +2060,16 @@ begin
   Result := ExportSortBySection(Item2, Item1);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeExportFuncList
-//==============================================================================
+//==================================================================================================
 
 function TJclPeExportFuncList.CanPerformFastNameSearch: Boolean;
 begin
   Result := FSorted and (FLastSortType = esName) and not FLastSortDescending;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeExportFuncList.CheckForwards(PeImageCache: TJclPeImagesCache);
 var
@@ -2143,7 +2133,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeExportFuncList.Create(AImage: TJclPeImage);
 begin
@@ -2152,7 +2142,7 @@ begin
   CreateList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeExportFuncList.CreateList;
 var
@@ -2205,7 +2195,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPeExportFuncList.Destroy;
 begin
@@ -2213,7 +2203,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.GetForwardedLibsList: TStrings;
 var
@@ -2233,7 +2223,7 @@ begin
   Result := FForwardedLibsList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.GetItemFromAddress(Address: DWORD): TJclPeExportFuncItem;
 var
@@ -2248,7 +2238,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.GetItemFromName(const Name: string): TJclPeExportFuncItem;
 var
@@ -2289,7 +2279,7 @@ begin
       end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.GetItemFromOrdinal(Ordinal: DWORD): TJclPeExportFuncItem;
 var
@@ -2304,14 +2294,14 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.GetItems(Index: Integer): TJclPeExportFuncItem;
 begin
   Result := TJclPeExportFuncItem(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.GetName: string;
 begin
@@ -2321,7 +2311,7 @@ begin
     Result := PChar(Image.RvaToVa(FExportDir^.Name));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeExportFuncList.ItemName(Item: TJclPeExportFuncItem): string;
 begin
@@ -2331,7 +2321,7 @@ begin
     Result := Item.Name;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.OrdinalValid(Ordinal: DWORD): Boolean;
 begin
@@ -2339,7 +2329,7 @@ begin
     (Ordinal < FunctionCount + Base);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeExportFuncList.PrepareForFastNameSearch;
 begin
@@ -2347,7 +2337,7 @@ begin
     SortList(esName, False);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeExportFuncList.SmartFindName(const CompareName: string;
   Options: TJclSmartCompOptions): TJclPeExportFuncItem;
@@ -2365,7 +2355,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeExportFuncList.SortList(SortType: TJclPeExportSort; Descending: Boolean);
 const
@@ -2388,9 +2378,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeResourceRawStream
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeResourceRawStream.Create(AResourceItem: TJclPeResourceItem);
 begin
@@ -2399,16 +2389,16 @@ begin
   SetPointer(AResourceItem.RawEntryData, AResourceItem.RawEntryDataSize);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceRawStream.Write(const Buffer; Count: Integer): Longint;
 begin
   raise EJclPeImageError.CreateResRec(@SCantWriteResourceStreamError);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeResourceItem
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeResourceItem.Create(AImage: TJclPeImage;
   AParentItem: TJclPeResourceItem; AEntry: PImageResourceDirectoryEntry);
@@ -2423,7 +2413,7 @@ begin
     FLevel := AParentItem.Level + 1;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPeResourceItem.Destroy;
 begin
@@ -2431,7 +2421,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetDataEntry: PImageResourceDataEntry;
 begin
@@ -2441,21 +2431,21 @@ begin
     Result := PImageResourceDataEntry(OffsetToRawData(FEntry^.OffsetToData));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetIsDirectory: Boolean;
 begin
   Result := FEntry^.OffsetToData and IMAGE_RESOURCE_DATA_IS_DIRECTORY <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetIsName: Boolean;
 begin
   Result := FEntry^.Name and IMAGE_RESOURCE_NAME_IS_STRING <> 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetList: TJclPeResourceList;
 begin
@@ -2474,7 +2464,7 @@ begin
   Result := FList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetName: string;
 begin
@@ -2492,7 +2482,7 @@ begin
     Result := IntToStr(FEntry^.Name and $FFFF);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetParameterName: string;
 begin
@@ -2502,7 +2492,7 @@ begin
     Result := Format('#%d', [FEntry^.Name and $FFFF]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetRawEntryData: Pointer;
 begin
@@ -2512,7 +2502,7 @@ begin
     Result := FImage.RvaToVa(GetDataEntry^.OffsetToData);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetRawEntryDataSize: Integer;
 begin
@@ -2522,7 +2512,7 @@ begin
     Result := PImageResourceDataEntry(OffsetToRawData(FEntry^.OffsetToData))^.Size;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetResourceType: TJclPeResourceKind;
 begin
@@ -2535,7 +2525,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.GetResourceTypeStr: string;
 begin
@@ -2548,7 +2538,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.Level1Item: TJclPeResourceItem;
 begin
@@ -2557,23 +2547,23 @@ begin
     Result := Result.FParentItem;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.OffsetToRawData(Ofs: DWORD): DWORD;
 begin
   Result := (Ofs and $7FFFFFFF) + FImage.FResourceVA;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceItem.SubDirData: PImageResourceDirectory;
 begin
   Result := Pointer(OffsetToRawData(FEntry^.OffsetToData));
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeResourceList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeResourceList.Create(AImage: TJclPeImage;
   AParentItem: TJclPeResourceItem; ADirectory: PImageResourceDirectory);
@@ -2584,7 +2574,7 @@ begin
   CreateList(AParentItem);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeResourceList.CreateList(AParentItem: TJclPeResourceItem);
 var
@@ -2603,7 +2593,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceList.FindName(const Name: string): TJclPeResourceItem;
 var
@@ -2618,16 +2608,16 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeResourceList.GetItems(Index: Integer): TJclPeResourceItem;
 begin
   Result := TJclPeResourceItem(inherited Items[Index]);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeRootResourceList
-//==============================================================================
+//==================================================================================================
 
 function TJclPeRootResourceList.FindResource(ResourceType: TJclPeResourceKind;
   const ResourceName: string): TJclPeResourceItem;
@@ -2658,7 +2648,7 @@ begin
           end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeRootResourceList.FindResource(const ResourceType: PChar;
   const ResourceName: string): TJclPeResourceItem;
@@ -2687,7 +2677,7 @@ begin
           end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeRootResourceList.ListResourceNames(ResourceType: TJclPeResourceKind;
   const Strings: TStrings): Boolean;
@@ -2703,9 +2693,9 @@ begin
         Strings.Add(Items[I].Name);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeRelocEntry
-//==============================================================================
+//==================================================================================================
 
 function TJclPeRelocEntry.GetRelocations(Index: Integer): TJclPeRelocation;
 var
@@ -2717,23 +2707,23 @@ begin
   Result.VirtualAddress := Result.Address + VirtualAddress;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeRelocEntry.GetSize: DWORD;
 begin
   Result := FChunk^.SizeOfBlock;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeRelocEntry.GetVirtualAddress: DWORD;
 begin
   Result := FChunk^.VirtualAddress;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeRelocList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeRelocList.Create(AImage: TJclPeImage);
 begin
@@ -2741,7 +2731,7 @@ begin
   CreateList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeRelocList.CreateList;
 var
@@ -2768,7 +2758,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeRelocList.GetAllItems(Index: Integer): TJclPeRelocation;
 var
@@ -2787,16 +2777,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeRelocList.GetItems(Index: Integer): TJclPeRelocEntry;
 begin
   Result := TJclPeRelocEntry(inherited Items[Index]);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeDebugList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeDebugList.Create(AImage: TJclPeImage);
 begin
@@ -2805,7 +2795,7 @@ begin
   CreateList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeDebugList.CreateList;
 var
@@ -2843,16 +2833,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeDebugList.GetItems(Index: Integer): TImageDebugDirectory;
 begin
   Result := PImageDebugDirectory(inherited Items[Index])^;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeCertificateList
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeCertificateList.Create(AImage: TJclPeImage);
 begin
@@ -2860,7 +2850,7 @@ begin
   CreateList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeCertificateList.CreateList;
 var
@@ -2884,16 +2874,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeCertificateList.GetItems(Index: Integer): TJclPeCertificate;
 begin
   Result := TJclPeCertificate(inherited Items[Index]);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeCLRHeader
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeCLRHeader.Create(AImage: TJclPeImage);
 begin
@@ -2901,14 +2891,14 @@ begin
   ReadHeader;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeCLRHeader.GetVersionString: string;
 begin
   Result := FormatVersionString(Header.MajorRuntimeVersion, Header.MinorRuntimeVersion);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeCLRHeader.ReadHeader;
 var
@@ -2919,15 +2909,15 @@ begin
     FHeader := HeaderPtr^;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeImage
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeImage.AfterOpen;
 begin
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.AttachLoadedModule(const Handle: HMODULE);
 var
@@ -2961,7 +2951,7 @@ begin
   RaiseStatusException;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.CalculateCheckSum: DWORD;
 var
@@ -2978,7 +2968,7 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.CheckNotAttached;
 begin
@@ -2986,7 +2976,7 @@ begin
     raise EJclPeImageError.CreateResRec(@RsPeNotAvailableForAttached);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.Clear;
 begin
@@ -3006,7 +2996,7 @@ begin
   FAttachedImage := False;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeImage.Create(ANoExceptions: Boolean);
 begin
@@ -3015,7 +3005,7 @@ begin
   FImageSections := TStringList.Create;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.DebugTypeNames(DebugType: DWORD): string;
 begin
@@ -3043,7 +3033,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPeImage.Destroy;
 begin
@@ -3052,7 +3042,7 @@ begin
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.DirectoryEntryToData(Directory: Word): Pointer;
 var
@@ -3061,7 +3051,7 @@ begin
   Result := ImageDirectoryEntryToData(FLoadedImage.MappedAddress, FAttachedImage, Directory, Size);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.DirectoryNames(Directory: Word): string;
 begin
@@ -3101,7 +3091,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.ExpandBySearchPath(const ModuleName, BasePath: string): TFileName;
 var
@@ -3117,14 +3107,14 @@ begin
     Result := FullName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.ExpandModuleName(const ModuleName: string): TFileName;
 begin
   Result := ExpandBySearchPath(ModuleName, ExtractFilePath(FFileName));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetCertificateList: TJclPeCertificateList;
 begin
@@ -3133,7 +3123,7 @@ begin
   Result := FCertificateList;   
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetCLRHeader: TJclPeCLRHeader;
 begin
@@ -3142,7 +3132,7 @@ begin
   Result := FCLRHeader;  
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetDebugList: TJclPeDebugList;
 begin
@@ -3151,7 +3141,7 @@ begin
   Result := FDebugList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetDescription: string;
 begin
@@ -3161,7 +3151,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetDirectories(Directory: Word): TImageDataDirectory;
 begin
@@ -3174,14 +3164,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetDirectoryExists(Directory: Word): Boolean;
 begin
   Result := (Directories[Directory].VirtualAddress <> 0);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetExportList: TJclPeExportFuncList;
 begin
@@ -3190,7 +3180,7 @@ begin
   Result := FExportList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetFileProperties: TJclPeFileProperties;
 const
@@ -3212,7 +3202,7 @@ begin
   FindClose(Se);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetHeaderValues(Index: TJclPeHeader): string;
 
@@ -3339,35 +3329,35 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetImageSectionCount: Integer;
 begin
   Result := FImageSections.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetImageSectionHeaders(Index: Integer): TImageSectionHeader;
 begin
   Result := PImageSectionHeader(FImageSections.Objects[Index])^;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetImageSectionNameFromRva(const Rva: DWORD): string;
 begin
   Result := GetSectionName(RvaToSection(Rva));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetImageSectionNames(Index: Integer): string;
 begin
   Result := FImageSections[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetImportList: TJclPeImportList;
 begin
@@ -3376,7 +3366,7 @@ begin
   Result := FImportList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetLoadConfigValues(Index: TJclLoadConfig): string;
 var
@@ -3424,7 +3414,7 @@ begin
       end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetMappedAddress: DWORD;
 begin
@@ -3434,14 +3424,14 @@ begin
     Result := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetOptionalHeader: TImageOptionalHeader;
 begin
   Result := FLoadedImage.FileHeader.OptionalHeader;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetRelocationList: TJclPeRelocList;
 begin
@@ -3450,7 +3440,7 @@ begin
   Result := FRelocationList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetResourceList: TJclPeRootResourceList;
 begin
@@ -3464,7 +3454,7 @@ begin
   Result := FResourceList;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetSectionHeader(const SectionName: string;
   var Header: PImageSectionHeader): Boolean;
@@ -3484,7 +3474,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetSectionName(const Header: PImageSectionHeader): string;
 var
@@ -3497,7 +3487,7 @@ begin
     Result := FImageSections[I];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetUnusedHeaderBytes: TImageDataDirectory;
 begin
@@ -3507,7 +3497,7 @@ begin
     RaiseLastOSError;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetVersionInfo: TJclFileVersionInfo;
 var
@@ -3526,14 +3516,14 @@ begin
   Result := FVersionInfo;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.GetVersionInfoAvailable: Boolean;
 begin
   Result := StatusOK and (ResourceList.FindResource(rtVersion, '1') <> nil);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.HeaderNames(Index: TJclPeHeader): string;
 begin
@@ -3611,21 +3601,21 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.IsCLR: Boolean;
 begin
   Result := DirectoryExists[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.IsSystemImage: Boolean;
 begin
   Result := StatusOK and FLoadedImage.fSystemImage;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.LoadConfigNames(Index: TJclLoadConfig): string;
 begin
@@ -3669,7 +3659,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.RaiseStatusException;
 begin
@@ -3684,14 +3674,14 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.RawToVa(Raw: DWORD): Pointer;
 begin
   Result := Pointer(DWORD(FLoadedImage.MappedAddress) + Raw);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.ReadImageSections;
 var
@@ -3708,7 +3698,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.ResourceItemCreate(AEntry: PImageResourceDirectoryEntry;
   AParentItem: TJclPeResourceItem): TJclPeResourceItem;
@@ -3716,7 +3706,7 @@ begin
   Result := TJclPeResourceItem.Create(Self, AParentItem, AEntry);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.ResourceListCreate(ADirectory: PImageResourceDirectory;
   AParentItem: TJclPeResourceItem): TJclPeResourceList;
@@ -3724,7 +3714,7 @@ begin
   Result := TJclPeResourceList.Create(Self, AParentItem, ADirectory);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.RvaToSection(Rva: DWORD): PImageSectionHeader;
 var
@@ -3750,7 +3740,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.RvaToVa(Rva: DWORD): Pointer;
 begin
@@ -3760,7 +3750,7 @@ begin
     Result := ImageRvaToVa(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva, nil);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.SetFileName(const Value: TFileName);
 begin
@@ -3789,7 +3779,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.ShortSectionInfo(Characteristics: DWORD): string;
 type
@@ -3819,14 +3809,14 @@ begin
         Result := Result + InfoChar;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.StatusOK: Boolean;
 begin
   Result := (FStatus = stOk);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeImage.StampToDateTime(TimeDateStamp: DWORD): TDateTime;
 var
@@ -3842,7 +3832,7 @@ begin
   Result := EncodeTime(Hour, Min, Sec, 0) + EncodeDate(1970, 1, 1) + Days;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeImage.TryGetNamesForOrdinalImports;
 begin
@@ -3853,7 +3843,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeImage.VerifyCheckSum: Boolean;
 begin
@@ -3862,9 +3852,9 @@ begin
     Result := StatusOK and ((CheckSum = 0) or (CalculateCheckSum = CheckSum));
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPePackageInfo
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPePackageInfo.Create(ALibHandle: THandle);
 begin
@@ -3874,7 +3864,7 @@ begin
   ReadPackageInfo(ALibHandle);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPePackageInfo.Destroy;
 begin
@@ -3883,35 +3873,35 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetContainsCount: Integer;
 begin
   Result := FContains.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetContainsFlags(Index: Integer): Byte;
 begin
   Result := Byte(FContains.Objects[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetContainsNames(Index: Integer): string;
 begin
   Result := FContains[Index];
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetRequiresCount: Integer;
 begin
   Result := FRequires.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPePackageInfo.GetRequiresNames(Index: Integer): string;
 begin
@@ -3920,7 +3910,7 @@ begin
     StrEnsureSuffix(BPLExtension, Result);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPePackageInfo.PackageModuleTypeToString(Flags: Integer): string;
 begin
@@ -3936,7 +3926,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPePackageInfo.PackageOptionsToString(Flags: Integer): string;
 begin
@@ -3947,7 +3937,7 @@ begin
   AddFlagTextRes(Result, @RsPePkgIgnoreDupUnits, Flags, pfIgnoreDupUnits);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPePackageInfo.ProducerToString(Flags: Integer): string;
 begin
@@ -3965,7 +3955,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure PackageInfoProc(const Name: string; NameType: TNameType; AFlags: Byte; Param: Pointer);
 begin
@@ -4003,7 +3993,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPePackageInfo.UnitInfoFlagsToString(UnitFlags: Byte): string;
 begin
@@ -4015,9 +4005,9 @@ begin
   AddFlagTextRes(Result, @RsPePkgImplicit, UnitFlags, ufImplicitUnit);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeBorForm
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeBorForm.ConvertFormToText(const Stream: TStream);
 var
@@ -4031,7 +4021,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeBorForm.ConvertFormToText(const Strings: TStrings);
 var
@@ -4047,7 +4037,7 @@ begin
   end;    
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorForm.GetDisplayName: string;
 begin
@@ -4058,9 +4048,9 @@ begin
   Result := Result + FFormClassName;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeBorImage
-//==============================================================================
+//==================================================================================================
 
 procedure TJclPeBorImage.AfterOpen;
 var
@@ -4078,7 +4068,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeBorImage.Clear;
 begin
@@ -4091,7 +4081,7 @@ begin
   FPackageCompilerVersion := 0;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeBorImage.Create(ANoExceptions: Boolean);
 begin
@@ -4099,7 +4089,7 @@ begin
   inherited Create(ANoExceptions);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeBorImage.CreateFormsList;
 var
@@ -4149,7 +4139,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.DependedPackages(List: TStrings; FullPathName, Descriptions: Boolean): Boolean;
 var
@@ -4178,7 +4168,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 destructor TJclPeBorImage.Destroy;
 begin
@@ -4186,7 +4176,7 @@ begin
   FreeAndNil(FForms);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.FreeLibHandle: Boolean;
 begin
@@ -4199,7 +4189,7 @@ begin
     Result := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetFormCount: Integer;
 begin
@@ -4208,7 +4198,7 @@ begin
   Result := FForms.Count;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetFormFromName(const FormClassName: string): TJclPeBorForm;
 var
@@ -4223,14 +4213,14 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetForms(Index: Integer): TJclPeBorForm;
 begin
   Result := TJclPeBorForm(FForms[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetIsTD32DebugPresent: Boolean;
 const
@@ -4249,7 +4239,7 @@ begin
     Result := False;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetLibHandle: THandle;
 begin
@@ -4262,7 +4252,7 @@ begin
   Result := FLibHandle;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetPackageCompilerVersion: Integer;
 var
@@ -4305,7 +4295,7 @@ begin
   Result := FPackageCompilerVersion;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeBorImage.GetPackageInfo: TJclPePackageInfo;
 begin
@@ -4318,16 +4308,16 @@ begin
   Result := FPackageInfo;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeNameSearch
-//==============================================================================
+//==================================================================================================
 
 function TJclPeNameSearch.CompareName(const FunctionName, ComparedName: string): Boolean;
 begin
   Result := PeSmartFunctionNameSame(ComparedName, FunctionName, [scIgnoreCase]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 constructor TJclPeNameSearch.Create(const FunctionName, Path: string; Options: TJclPeNameSearchOptions);
 begin
@@ -4338,7 +4328,7 @@ begin
   FreeOnTerminate := True;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeNameSearch.DoFound;
 begin
@@ -4346,7 +4336,7 @@ begin
     FOnFound(Self, F_FileName, F_FunctionName, F_Option);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeNameSearch.DoProcessFile;
 begin
@@ -4354,7 +4344,7 @@ begin
     FOnProcessFile(Self, FPeImage, F_Process);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeNameSearch.Execute;
 var
@@ -4455,16 +4445,16 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeNameSearch.Start;
 begin
   Resume;
 end;
 
-//==============================================================================
+//==================================================================================================
 // PE Image miscellaneous functions
-//==============================================================================
+//==================================================================================================
 
 function IsValidPeFile(const FileName: TFileName): Boolean;
 var
@@ -4473,7 +4463,7 @@ begin
   Result := PeGetNtHeaders(FileName, NtHeaders);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeCreateNameHintTable(const FileName: TFileName): Boolean;
 var
@@ -4529,7 +4519,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeRebaseImage(const ImageName: TFileName; NewBase, TimeStamp, MaxNewSize: DWORD): TJclRebaseImageInfo;
 
@@ -4556,7 +4546,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeUpdateCheckSum(const FileName: TFileName): Boolean;
 var
@@ -4567,9 +4557,9 @@ begin
     Result := UnMapAndLoad(@LI);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Various simple PE Image functions
-//==============================================================================
+//==================================================================================================
 
 function CreatePeImage(const FileName: TFileName): TJclPeImage;
 begin
@@ -4577,7 +4567,7 @@ begin
   Result.FileName := FileName;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDoesExportFunction(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
@@ -4590,7 +4580,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeIsExportFunctionForwardedEx(const FileName: TFileName; const FunctionName: string;
   var ForwardedName: string; Options: TJclSmartCompOptions): Boolean;
@@ -4619,7 +4609,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeIsExportFunctionForwarded(const FileName: TFileName; const FunctionName: string;
   Options: TJclSmartCompOptions): Boolean;
@@ -4629,7 +4619,7 @@ begin
   Result := PeIsExportFunctionForwardedEx(FileName, FunctionName, Dummy, Options);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDoesImportFunction(const FileName: TFileName; const FunctionName: string;
   const LibraryName: string; Options: TJclSmartCompOptions): Boolean;
@@ -4648,7 +4638,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDoesImportLibrary(const FileName: TFileName; const LibraryName: string;
   Recursive: Boolean): Boolean;
@@ -4672,7 +4662,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeImportedLibraries(const FileName: TFileName; const LibrariesList: TStrings;
   Recursive, FullPathName: Boolean): Boolean;
@@ -4696,7 +4686,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeImportedFunctions(const FileName: TFileName; const FunctionsList: TStrings;
   const LibraryName: string; IncludeLibNames: Boolean): Boolean;
@@ -4726,7 +4716,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeExportedFunctions(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
@@ -4746,7 +4736,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeExportedNames(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
@@ -4764,7 +4754,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeExportedVariables(const FileName: TFileName; const FunctionsList: TStrings): Boolean;
 var
@@ -4784,7 +4774,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeResourceKindNames(const FileName: TFileName;
   ResourceType: TJclPeResourceKind; const NamesList: TStrings): Boolean;
@@ -4797,7 +4787,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeBorFormNames(const FileName: TFileName; const NamesList: TStrings): Boolean;
 var
@@ -4820,7 +4810,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeBorDependedPackages(const FileName: TFileName; PackagesList: TStrings;
   FullPathName, Descriptions: Boolean): Boolean;
@@ -4836,7 +4826,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeGetNtHeaders(const FileName: TFileName; var NtHeaders: TImageNtHeaders): Boolean;
 var
@@ -4871,7 +4861,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeVerifyCheckSum(const FileName: TFileName): Boolean;
 begin
@@ -4883,9 +4873,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Mapped or loaded image related functions
-//==============================================================================
+//==================================================================================================
 
 function PeMapImgNtHeaders(const BaseAddress: Pointer): PImageNtHeaders;
 begin
@@ -4901,7 +4891,7 @@ begin
       Result := nil
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeMapImgLibraryName(const BaseAddress: Pointer): string;
 var
@@ -4922,7 +4912,7 @@ begin
   Result := PChar(DWORD(BaseAddress) + ExportDir^.Name);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeMapImgSections(const NtHeaders: PImageNtHeaders): PImageSectionHeader;
 begin
@@ -4933,7 +4923,7 @@ begin
       NtHeaders^.FileHeader.SizeOfOptionalHeader);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeMapImgFindSection(const NtHeaders: PImageNtHeaders;
   const SectionName: string): PImageSectionHeader;
@@ -4959,7 +4949,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeMapImgExportedVariables(const Module: HMODULE; const VariablesList: TStrings): Boolean;
 var
@@ -4980,7 +4970,7 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeMapFindResource(const Module: HMODULE; const ResourceType: PChar;
   const ResourceName: string): Pointer;
@@ -5002,9 +4992,9 @@ begin
   end;
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeSectionStream
-//==============================================================================
+//==================================================================================================
 
 constructor TJclPeSectionStream.Create(Instance: HMODULE; const ASectionName: string);
 begin
@@ -5012,7 +5002,7 @@ begin
   Initialize(Instance, ASectionName);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 procedure TJclPeSectionStream.Initialize(Instance: HMODULE; const ASectionName: string);
 var
@@ -5033,16 +5023,16 @@ begin
   FSectionHeader := Header^;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeSectionStream.Write(const Buffer; Count: Integer): Longint;
 begin
   raise EJclPeImageError.CreateResRec(@SCantWriteResourceStreamError);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeMapImgHookItem
-//==============================================================================
+//==================================================================================================
 
 destructor TJclPeMapImgHookItem.Destroy;
 begin
@@ -5051,7 +5041,7 @@ begin
   inherited;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHookItem.InternalUnhook: Boolean;
 begin
@@ -5060,7 +5050,7 @@ begin
     FBaseAddress := nil;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHookItem.Unhook: Boolean;
 begin
@@ -5069,9 +5059,9 @@ begin
     FList.Remove(Self);
 end;
 
-//==============================================================================
+//==================================================================================================
 // TJclPeMapImgHooks
-//==============================================================================
+//==================================================================================================
 
 type
   PWin9xDebugThunk = ^TWin9xDebugThunk;
@@ -5082,7 +5072,7 @@ type
     Rel: Integer;  // Relative displacement (a Kernel32 address)
   end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHooks.GetItemFromNewAddress(NewAddress: Pointer): TJclPeMapImgHookItem;
 var
@@ -5097,7 +5087,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHooks.GetItemFromOriginalAddress(OriginalAddress: Pointer): TJclPeMapImgHookItem;
 var
@@ -5112,14 +5102,14 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHooks.GetItems(Index: Integer): TJclPeMapImgHookItem;
 begin
   Result := TJclPeMapImgHookItem(inherited Items[Index]);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHooks.HookImport(Base: Pointer; const ModuleName, FunctionName: string;
   NewAddress: Pointer; var OriginalAddress: Pointer): Boolean;
@@ -5165,7 +5155,7 @@ begin
     SetLastError(ERROR_INVALID_PARAMETER);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeMapImgHooks.IsWin9xDebugThunk(P: Pointer): Boolean;
 begin
@@ -5173,7 +5163,7 @@ begin
     Result := (PUSH = $68) and (JMP = $E9);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeMapImgHooks.ReplaceImport(Base: Pointer; ModuleName: string;
   FromProc, ToProc: Pointer): Boolean;
@@ -5224,14 +5214,14 @@ begin
   end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 class function TJclPeMapImgHooks.SystemBase: Pointer;
 begin
   Result := Pointer(FindClassHInstance(System.TObject));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function TJclPeMapImgHooks.UnhookByNewAddress(NewAddress: Pointer): Boolean;
 var
@@ -5241,9 +5231,9 @@ begin
   Result := (Item <> nil) and Item.Unhook;
 end;
 
-//==============================================================================
+//==================================================================================================
 // Image access under a debbuger
-//==============================================================================
+//==================================================================================================
 
 function InternalReadProcMem(ProcessHandle: THandle; Address: DWORD;
   Buffer: Pointer; Size: Integer): Boolean;
@@ -5253,7 +5243,7 @@ begin
   Result := ReadProcessMemory(ProcessHandle, Pointer(Address), Buffer, Size, BR);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDbgImgNtHeaders(ProcessHandle: THandle; BaseAddress: Pointer;
   var NtHeaders: TImageNtHeaders): Boolean;
@@ -5271,7 +5261,7 @@ begin
     @NtHeaders, SizeOf(TImageNtHeaders));
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeDbgImgLibraryName(ProcessHandle: THandle; BaseAddress: Pointer;
   var Name: string): Boolean;
@@ -5299,9 +5289,9 @@ begin
     Name := ''; 
 end;
 
-//==============================================================================
+//==================================================================================================
 // Borland BPL packages name unmangling
-//==============================================================================
+//==================================================================================================
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription; var BasePos: Integer): TJclBorUmResult;
@@ -5460,7 +5450,7 @@ begin
   StrResetLength(Unmangled);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string;
   var Description: TJclBorUmDescription): TJclBorUmResult;
@@ -5470,7 +5460,7 @@ begin
   Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeBorUnmangleName(const Name: string; var Unmangled: string): TJclBorUmResult;
 var
@@ -5480,7 +5470,7 @@ begin
   Result := PeBorUnmangleName(Name, Unmangled, Description, BasePos);
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeBorUnmangleName(const Name: string): string;
 var
@@ -5494,7 +5484,7 @@ begin
     Result := '';
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeIsNameMangled(const Name: string): TJclPeUmResult;
 begin
@@ -5508,7 +5498,7 @@ begin
     end;
 end;
 
-//------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
 
 function PeUnmangleName(const Name: string; var Unmangled: string): TJclPeUmResult;
 var
