@@ -31,7 +31,7 @@ unit JclDebug;
 
 interface
 
-{$I JCL.INC}
+{$I jcl.inc}
 
 uses
   {$IFDEF WIN32}
