@@ -36,7 +36,7 @@
 {  Delphi, C++ Builder and FPC to friendly names such as DELPHI5 and           }
 {  SUPPORTS_WIDESTRING. These friendly names are subsequently used in the      }
 {  libraries to test for compiler versions and/or whether the compiler         }
-{  supports certain features (such as widestring's or 64 bit integers. The     }
+{  supports certain features (such as widestrings or 64 bit integers. The      }
 {  libraries provide an additional, library specific, include file. For the    }
 {  JCL e.g. this is jcl.inc. These files should be included in source files    }
 {  instead of this file (which is pulled in automatically).                    }
@@ -58,12 +58,13 @@
   ------------------------------------------------------------------------------
   DELPHI           Defined if compiled with Delphi
   KYLIX            Defined if compiled with Kylix
-  DELPHICOMPILER   Defined if compiled with Delphi or Kylix (not BCB)
+  DELPHICOMPILER   Defined if compiled with Delphi or Kylix/Delphi
   BCB              Defined if compiled with C++ Builder
+  CPPBUILDER       Defined if compiled with C++ Builder (alias for BCB)
+  BCBCOMPILER      Defined if compiled with C++ Builder or Kylix/C++
   DELPHILANGUAGE   Defined if compiled with Delphi, Kylix or C++ Builder
+  BORLAND          Defined if compiled with Delphi, Kylix or C++ Builder
   FPC              Defined if compiled with FPC
-  NONBORLAND       Defined if compiled with FPC (or other non Borland compilers)
-
 
 - Platform Directives
 
@@ -301,57 +302,57 @@
   EXTENDEDSYNTAX_ON      Compiling in the X+ state (Delphi extended syntax enabled)
 *)
 
+{$DEFINE BORLAND}
+
 { Set FreePascal to Delphi mode }
 {$IFDEF FPC}
   {$MODE DELPHI}
   {$ASMMODE Intel}
-  {$DEFINE NONBORLAND}
+  {$UNDEF BORLAND}
 {$ENDIF}
+
+{$IFDEF BORLAND}
+  {$IFDEF LINUX}
+    {$DEFINE KYLIX}
+  {$ENDIF LINUX}
+{$ENDIF BORLAND}
 
 {------------------------------------------------------------------------------}
 { VERXXX to COMPILERX, DELPHIX and BCBX mappings                               }
 {------------------------------------------------------------------------------}
 
-{$IFNDEF NONBORLAND}
-  {$IFDEF LINUX}
-    {$DEFINE KYLIX}
-    {$IFDEF CONDITIONALEXPRESSIONS}
-      {$IF not Declared(CompilerVersion)}
-        {$DEFINE KYLIX1}
-        {$IFNDEF BCB}
-          {$DEFINE DELPHICOMPILER6}
-          {$DEFINE DELPHICOMPILER}
-        {$ENDIF}
-        {$DEFINE RTL140_UP}
-      {$ELSEIF Declared(CompilerVersion) and (CompilerVersion >= 14.1) and (CompilerVersion < 14.5)}
-        {$DEFINE KYLIX2}
-        {$IFNDEF BCB}
-          {$DEFINE DELPHICOMPILER6}
-          {$DEFINE DELPHICOMPILER}
-        {$ENDIF}
-        {$DEFINE RTL140_UP}
-      {$ELSEIF Declared(CompilerVersion) and (CompilerVersion = 14.5)}
-        {$DEFINE KYLIX3}
-        {$IFNDEF BCB}
-          {$DEFINE DELPHICOMPILER6}
-          {$DEFINE DELPHICOMPILER}
-        {$ENDIF}
-        {$DEFINE RTL140_UP}
-      {$ELSEIF Declared(CompilerVersion) and (CompilerVersion > 14.5)}
-        Add new Kylix version
-      {$IFEND}
-    {$ENDIF}
-  {$ELSE}
+{$IFDEF BORLAND}
+  {$IFDEF KYLIX}
+
+    {$IFDEF FPC} (* {$ENDIF}  // FPC workaround
+    {$IF not Declared(CompilerVersion)}
+      {$DEFINE KYLIX1}
+      {$DEFINE DELPHICOMPILER6}
+      {$DEFINE RTL140_UP}
+    {$ELSEIF Declared(CompilerVersion) and (CompilerVersion >= 14.1) and (CompilerVersion < 14.5)}
+      {$DEFINE KYLIX2}
+      {$DEFINE DELPHICOMPILER6}
+      {$DEFINE RTL140_UP}
+    {$ELSEIF Declared(CompilerVersion) and (CompilerVersion = 14.5)}
+      {$DEFINE KYLIX3}
+      {$IFNDEF BCB}
+        {$DEFINE DELPHICOMPILER6}
+      {$ENDIF}
+      {$DEFINE RTL140_UP}
+    {$ELSEIF Declared(CompilerVersion) and (CompilerVersion > 14.5)}
+      Add new Kylix version
+    {$IFEND}
+    {$IFDEF FPC} *) {$ENDIF}  // FPC workaround
+
+  {$ELSE ~KYLIX}
+  
     {$IFDEF VER150}
       {$DEFINE COMPILER7}
       {$IFDEF BCB}
         {$DEFINE BCB7}
-        {$DEFINE BCB}
       {$ELSE}
         {$DEFINE DELPHI7}
-        {$DEFINE DELPHI}
         {$DEFINE DELPHICOMPILER7}
-        {$DEFINE DELPHICOMPILER}
       {$ENDIF}
       {$DEFINE RTL150_UP}
     {$ENDIF}
@@ -360,12 +361,9 @@
       {$DEFINE COMPILER6}
       {$IFDEF BCB}
         {$DEFINE BCB6}
-        {$DEFINE BCB}
       {$ELSE}
         {$DEFINE DELPHI6}
-        {$DEFINE DELPHI}
         {$DEFINE DELPHICOMPILER6}
-        {$DEFINE DELPHICOMPILER}
       {$ENDIF}
       {$DEFINE RTL140_UP}
     {$ENDIF}
@@ -374,12 +372,9 @@
       {$DEFINE COMPILER5}
       {$IFDEF BCB}
         {$DEFINE BCB5}
-        {$DEFINE BCB}
       {$ELSE}
         {$DEFINE DELPHI5}
-        {$DEFINE DELPHI}
         {$DEFINE DELPHICOMPILER5}
-        {$DEFINE DELPHICOMPILER}
       {$ENDIF}
       {$DEFINE RTL130_UP}
     {$ENDIF}
@@ -394,9 +389,7 @@
     {$IFDEF VER120}
       {$DEFINE COMPILER4}
       {$DEFINE DELPHI4}
-      {$DEFINE DELPHI}
       {$DEFINE DELPHICOMPILER4}
-      {$DEFINE DELPHICOMPILER}
       {$DEFINE RTL120_UP}
     {$ENDIF}
 
@@ -409,9 +402,7 @@
     {$IFDEF VER100}
       {$DEFINE COMPILER3}
       {$DEFINE DELPHI3}
-      {$DEFINE DELPHI}
       {$DEFINE DELPHICOMPILER3}
-      {$DEFINE DELPHICOMPILER}
       {$DEFINE RTL100_UP}
     {$ENDIF}
 
@@ -425,22 +416,28 @@
     {$IFDEF VER90}
       {$DEFINE COMPILER2}
       {$DEFINE DELPHI2}
-      {$DEFINE DELPHI}
       {$DEFINE DELPHICOMPILER2}
-      {$DEFINE DELPHICOMPILER}
       {$DEFINE RTL90_UP}
     {$ENDIF}
 
     {$IFDEF VER80}
       {$DEFINE COMPILER1}
       {$DEFINE DELPHI1}
-      {$DEFINE DELPHI}
       {$DEFINE DELPHICOMPILER1}
-      {$DEFINE DELPHICOMPILER}
       {$DEFINE RTL80_UP}
     {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
+
+  {$ENDIF ~KYLIX}
+
+  {$IFDEF BCB}
+    {$DEFINE CPPBUILDER}
+    {$DEFINE BCBCOMPILER}
+  {$ELSE ~BCB}
+    {$DEFINE DELPHI}
+    {$DEFINE DELPHICOMPILER}
+  {$ENDIF ~BCB}
+
+{$ENDIF BORLAND}
 
 {------------------------------------------------------------------------------}
 { DELPHIX_UP from DELPHIX mappings                                             }
@@ -680,7 +677,7 @@
   {$DEFINE DELPHILANGUAGE}
 {$ENDIF}
 
-{$IFDEF BCB}
+{$IFDEF BCBCOMPILER}
   {$DEFINE DELPHILANGUAGE}
 {$ENDIF}
 
@@ -932,6 +929,12 @@
 //  - add SUPPORTS_WEAKPACKAGEUNIT
 
 // $Log$
+// Revision 1.9  2004/04/30 18:25:15  rrossmair
+// added symbols BORLAND, CPPBUILDER, BCBCOMPILER
+// removed symbol NONBORLAND
+// cleanup (reduced redundancy)
+// corrected embarrassing typo "widestring's" (for the 3rd time, I believe)
+//
 // Revision 1.8  2004/04/14 20:26:33  mthoma
 // Changed data to date
 // Local is Delphi 6 - removed todo comment
