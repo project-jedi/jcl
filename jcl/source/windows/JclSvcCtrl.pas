@@ -19,7 +19,6 @@
 {   Flier Lu (flier)                                                                               }
 {   Matthias Thoma (mthoma)                                                                        }
 {   Olivier Sannier (obones)                                                                       }
-{   Peter J. Haas (peterjhaas)                                                                     }
 {   Petr Vones (pvones)                                                                            }
 {   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
@@ -57,60 +56,64 @@ uses
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclServiceType = (stKernelDriver,        // SERVICE_KERNEL_DRIVER
-                     stFileSystemDriver,    // SERVICE_FILE_SYSTEM_DRIVER
-                     stAdapter,             // SERVICE_ADAPTER
-                     stRecognizerDriver,    // SERVICE_RECOGNIZER_DRIVER
-                     stWin32OwnProcess,     // SERVICE_WIN32_OWN_PROCESS
-                     stWin32ShareProcess,   // SERVICE_WIN32_SHARE_PROCESS
-                     stInteractiveProcess); // SERVICE_INTERACTIVE_PROCESS
+  TJclServiceType =
+   (stKernelDriver,        // SERVICE_KERNEL_DRIVER
+    stFileSystemDriver,    // SERVICE_FILE_SYSTEM_DRIVER
+    stAdapter,             // SERVICE_ADAPTER
+    stRecognizerDriver,    // SERVICE_RECOGNIZER_DRIVER
+    stWin32OwnProcess,     // SERVICE_WIN32_OWN_PROCESS
+    stWin32ShareProcess,   // SERVICE_WIN32_SHARE_PROCESS
+    stInteractiveProcess); // SERVICE_INTERACTIVE_PROCESS
+
   TJclServiceTypes = set of TJclServiceType;
 
 const
-  stDriverService  = [stKernelDriver, stFileSystemDriver, stRecognizerDriver];
-  stWin32Service   = [stWin32OwnProcess, stWin32ShareProcess];
-  stAllTypeService = stDriverService + stWin32Service +
-                     [stAdapter, stInteractiveProcess];
+  stDriverService = [stKernelDriver, stFileSystemDriver, stRecognizerDriver];
+  stWin32Service = [stWin32OwnProcess, stWin32ShareProcess];
+  stAllTypeService = stDriverService + stWin32Service + [stAdapter, stInteractiveProcess];
 
 //--------------------------------------------------------------------------------------------------
 // Service State
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclServiceState = (ssUnknown,         // Just fill the value 0
-                      ssStopped,         // SERVICE_STOPPED
-                      ssStartPending,    // SERVICE_START_PENDING
-                      ssStopPending,     // SERVICE_STOP_PENDING
-                      ssRunning,         // SERVICE_RUNNING
-                      ssContinuePending, // SERVICE_CONTINUE_PENDING
-                      ssPausePending,    // SERVICE_PAUSE_PENDING
-                      ssPaused);         // SERVICE_PAUSED
+  TJclServiceState =
+   (ssUnknown,         // Just fill the value 0
+    ssStopped,         // SERVICE_STOPPED
+    ssStartPending,    // SERVICE_START_PENDING
+    ssStopPending,     // SERVICE_STOP_PENDING
+    ssRunning,         // SERVICE_RUNNING
+    ssContinuePending, // SERVICE_CONTINUE_PENDING
+    ssPausePending,    // SERVICE_PAUSE_PENDING
+    ssPaused);         // SERVICE_PAUSED
 
   TJclServiceStates = set of TJclServiceState;
 
 const
-  ssPendingStates =   [ssStartPending, ssStopPending, ssContinuePending, ssPausePending];
+  ssPendingStates = [ssStartPending, ssStopPending, ssContinuePending, ssPausePending];
 
 //--------------------------------------------------------------------------------------------------
 // Start Type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclServiceStartType = (sstBoot,      // SERVICE_BOOT_START
-                          sstSystem,    // SERVICE_SYSTEM_START
-                          sstAuto,      // SERVICE_AUTO_START
-                          sstDemand,    // SERVICE_DEMAND_START
-                          sstDisabled); // SERVICE_DISABLED
+  TJclServiceStartType =
+   (sstBoot,      // SERVICE_BOOT_START
+    sstSystem,    // SERVICE_SYSTEM_START
+    sstAuto,      // SERVICE_AUTO_START
+    sstDemand,    // SERVICE_DEMAND_START
+    sstDisabled); // SERVICE_DISABLED
 
 //--------------------------------------------------------------------------------------------------
 // Error control type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclServiceErrorControlType = (ectIgnore,    // SSERVICE_ERROR_IGNORE
-                                 ectNormal,    // SSERVICE_ERROR_NORMAL
-                                 ectSevere,    // SSERVICE_ERROR_SEVERE
-                                 ectCritical); // SERVICE_ERROR_CRITICAL
+  TJclServiceErrorControlType =
+   (ectIgnore,    // SSERVICE_ERROR_IGNORE
+    ectNormal,    // SSERVICE_ERROR_NORMAL
+    ectSevere,    // SSERVICE_ERROR_SEVERE
+    ectCritical); // SERVICE_ERROR_CRITICAL
 
 
 //--------------------------------------------------------------------------------------------------
@@ -118,9 +121,11 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclServiceControlAccepted = (caStop,          // SERVICE_ACCEPT_STOP
-                                caPauseContinue, // SERVICE_ACCEPT_PAUSE_CONTINUE
-                                caShutdown);     // SERVICE_ACCEPT_SHUTDOWN
+  TJclServiceControlAccepted =
+   (caStop,          // SERVICE_ACCEPT_STOP
+    caPauseContinue, // SERVICE_ACCEPT_PAUSE_CONTINUE
+    caShutdown);     // SERVICE_ACCEPT_SHUTDOWN
+
   TJclServiceControlAccepteds = set of TJclServiceControlAccepted;
 
 //--------------------------------------------------------------------------------------------------
@@ -128,33 +133,34 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TJclServiceSortOrderType = (sotServiceName,
-                              sotDisplayName,
-                              sotDescription,
-                              sotFileName,
-                              sotServiceState,
-                              sotStartType,
-                              sotErrorControlType,
-                              sotLoadOrderGroup,
-                              sotWin32ExitCode);
+  TJclServiceSortOrderType =
+   (sotServiceName,
+    sotDisplayName,
+    sotDescription,
+    sotFileName,
+    sotServiceState,
+    sotStartType,
+    sotErrorControlType,
+    sotLoadOrderGroup,
+    sotWin32ExitCode);
 
 const
   // Everyone in WinNT/2K or Authenticated users in WinXP
-  EveryoneSCMDesiredAccess = SC_MANAGER_CONNECT or
-                             SC_MANAGER_ENUMERATE_SERVICE or
-                             SC_MANAGER_QUERY_LOCK_STATUS or
-                             STANDARD_RIGHTS_READ;
+  EveryoneSCMDesiredAccess =
+    SC_MANAGER_CONNECT or
+    SC_MANAGER_ENUMERATE_SERVICE or
+    SC_MANAGER_QUERY_LOCK_STATUS or
+    STANDARD_RIGHTS_READ;
 
-  LocalSystemSCMDesiredAccess = SC_MANAGER_CONNECT or
-                                SC_MANAGER_ENUMERATE_SERVICE or
-                                SC_MANAGER_MODIFY_BOOT_CONFIG or
-                                SC_MANAGER_QUERY_LOCK_STATUS or
-                                STANDARD_RIGHTS_READ;
+  LocalSystemSCMDesiredAccess =
+    SC_MANAGER_CONNECT or
+    SC_MANAGER_ENUMERATE_SERVICE or
+    SC_MANAGER_MODIFY_BOOT_CONFIG or
+    SC_MANAGER_QUERY_LOCK_STATUS or
+    STANDARD_RIGHTS_READ;
 
   AdministratorsSCMDesiredAccess = SC_MANAGER_ALL_ACCESS;
-
   DefaultSCMDesiredAccess = EveryoneSCMDesiredAccess;
-
   DefaultSvcDesiredAccess = SERVICE_ALL_ACCESS;
 
 //--------------------------------------------------------------------------------------------------
@@ -169,31 +175,16 @@ const
 type
   LPSERVICE_DESCRIPTIONA = ^SERVICE_DESCRIPTIONA;
   {$EXTERNALSYM LPSERVICE_DESCRIPTIONA}
-  _SERVICE_DESCRIPTIONA = record
+  SERVICE_DESCRIPTIONA = record
     lpDescription: LPSTR;
   end;
-  {$EXTERNALSYM _SERVICE_DESCRIPTIONA}
-  SERVICE_DESCRIPTIONA = _SERVICE_DESCRIPTIONA;
   {$EXTERNALSYM SERVICE_DESCRIPTIONA}
   TServiceDescriptionA = SERVICE_DESCRIPTIONA;
   PServiceDescriptionA = LPSERVICE_DESCRIPTIONA;
 
 type
-  TQueryServiceConfig2AFunction = function (hService: SC_HANDLE; dwInfoLevel: DWORD;
-  lpBuffer: PByte; cbBufSize: DWORD; var pcbBytesNeeded: DWORD): BOOL; stdcall;
-
-{$IFDEF SUPPORTS_EXTSYM}
-{$EXTERNALSYM stDriverService}
-{$EXTERNALSYM stWin32Service}
-{$EXTERNALSYM stAllTypeService}
-
-{$EXTERNALSYM DefaultSCMDesiredAccess}
-{$EXTERNALSYM DefaultSvcDesiredAccess}
-
-{$EXTERNALSYM SERVICE_CONFIG_DESCRIPTION}
-{$EXTERNALSYM SERVICE_CONFIG_FAILURE_ACTIONS}
-
-{$ENDIF SUPPORTS_EXTSYM}
+  TQueryServiceConfig2A = function(hService: SC_HANDLE; dwInfoLevel: DWORD;
+    lpBuffer: PByte; cbBufSize: DWORD; var pcbBytesNeeded: DWORD): BOOL; stdcall;
 
 //--------------------------------------------------------------------------------------------------
 // Service related classes
@@ -304,7 +295,7 @@ type
     FServices: TObjectList;
     FGroups: TObjectList;
     FAdvApi32Handle: TModuleHandle;
-    FQueryServiceConfig2A: TQueryServiceConfig2AFunction;
+    FQueryServiceConfig2A: TQueryServiceConfig2A;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
     function GetService(const Idx: Integer): TJclNtService;
@@ -314,7 +305,7 @@ type
     procedure SetOrderAsc(const Value: Boolean);
     procedure SetOrderType(const Value: TJclServiceSortOrderType);
     function GetAdvApi32Handle: TModuleHandle;
-    function GetQueryServiceConfig2A: TQueryServiceConfig2AFunction;
+    function GetQueryServiceConfig2A: TQueryServiceConfig2A;
   protected
     FOrderType: TJclServiceSortOrderType;
     FOrderAsc: Boolean;
@@ -324,7 +315,7 @@ type
     function AddGroup(const AGroup: TJclServiceGroup): Integer;
     function GetServiceLockStatus: PQueryServiceLockStatus;
     property AdvApi32Handle: TModuleHandle read GetAdvApi32Handle;
-    property QueryServiceConfig2A: TQueryServiceConfig2AFunction read GetQueryServiceConfig2A;
+    property QueryServiceConfig2A: TQueryServiceConfig2A read GetQueryServiceConfig2A;
   public
     constructor Create(const AMachineName: string = '';
       const ADesiredAccess: DWORD = DefaultSCMDesiredAccess;
@@ -367,19 +358,20 @@ type
   end;
 
 // helper functions
-function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
-function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWord;
+function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
+function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 
 implementation
 
 uses
   {$IFDEF FPC}
-  WinSysUt, JwaRegStr,
+  WinSysUt,
+  JwaRegStr,
   {$ELSE}
   RegStr,
   {$ENDIF FPC}
   Math,
-  JclRegistry, JclStrings, JclSysInfo, JclWideStrings;
+  JclRegistry, JclStrings, JclSysInfo;
 
 const
   INVALID_SCM_HANDLE = 0;
@@ -428,22 +420,22 @@ procedure TJclNtService.UpdateDescription;
 var
   Ret: BOOL;
   BytesNeeded: DWORD;
-  pSvcDesc: PServiceDescriptionA;
+  PSvcDesc: PServiceDescriptionA;
 begin
   if Assigned(SCManager.QueryServiceConfig2A) then
   try
-    pSvcDesc    := nil;
+    PSvcDesc := nil;
     BytesNeeded := 4096;
     repeat
-      ReallocMem(pSvcDesc, BytesNeeded);
+      ReallocMem(PSvcDesc, BytesNeeded);
       Ret := SCManager.QueryServiceConfig2A(FHandle, SERVICE_CONFIG_DESCRIPTION,
-        PByte(pSvcDesc), BytesNeeded, BytesNeeded);
+        PByte(PSvcDesc), BytesNeeded, BytesNeeded);
     until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
     Win32Check(Ret);
 
-    FDescription := pSvcDesc.lpDescription;
+    FDescription := PSvcDesc.lpDescription;
   finally
-    FreeMem(pSvcDesc);
+    FreeMem(PSvcDesc);
   end;
 end;
 
@@ -474,8 +466,8 @@ procedure TJclNtService.UpdateDependents;
 var
   I: Integer;
   Ret: BOOL;
-  pBuf: Pointer;
-  pEss: PEnumServiceStatus;
+  PBuf: Pointer;
+  PEss: PEnumServiceStatus;
   NtSvc: TJclNtService;
   BytesNeeded, ServicesReturned: DWORD;
 begin
@@ -487,25 +479,25 @@ begin
       FDependentByServices := TList.Create;
 
     try
-      pBuf        := nil;
+      PBuf := nil;
       BytesNeeded := 40960;
       repeat
-        ReallocMem(pBuf, BytesNeeded);
+        ReallocMem(PBuf, BytesNeeded);
         Ret := EnumDependentServices(FHandle, SERVICE_STATE_ALL,
-          PEnumServiceStatus(pBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned);
+          PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
-      pEss := pBuf;
+      PEss := PBuf;
       for I := 0 to ServicesReturned - 1 do
       begin
-        if (pEss.lpServiceName[1] <> SC_GROUP_IDENTIFIER) and
-           (SCManager.FindService(pEss.lpServiceName, NtSvc)) then
+        if (PEss.lpServiceName[1] <> SC_GROUP_IDENTIFIER) and
+          (SCManager.FindService(PEss.lpServiceName, NtSvc)) then
           FDependentByServices.Add(NtSvc);
-        Inc(pEss);
+        Inc(PEss);
       end;
     finally
-      FreeMem(pBuf);
+      FreeMem(PBuf);
     end;
   finally
     Close;
@@ -546,7 +538,6 @@ function TJclNtService.GetDependentByService(const Idx: Integer): TJclNtService;
 begin
   if not Assigned(FDependentByServices) then
     UpdateDependents;
-
   Result := TJclNtService(FDependentByServices.Items[Idx])
 end;
 
@@ -600,25 +591,25 @@ procedure TJclNtService.UpdateConfig(const SvcConfig: TQueryServiceConfig);
 
   procedure UpdateDependencies;
   var
-    pch: PChar;
+    P: PChar;
     NtSvc: TJclNtService;
     SvcGrp: TJclServiceGroup;
   begin
-    pch := SvcConfig.lpDependencies;
+    P := SvcConfig.lpDependencies;
     FDependentServices.Clear;
     FDependentGroups.Clear;
-    if Assigned(pch) then
-    while pch^ <> #0 do
+    if Assigned(P) then
+    while P^ <> #0 do
     begin
-      if pch^ = SC_GROUP_IDENTIFIER then
+      if P^ = SC_GROUP_IDENTIFIER then
       begin
-        SCManager.FindGroup(pch + 1, SvcGrp);
+        SCManager.FindGroup(P + 1, SvcGrp);
         FDependentGroups.Add(SvcGrp);
       end
       else
-      if SCManager.FindService(pch, NtSvc) then
+      if SCManager.FindService(P, NtSvc) then
         FDependentServices.Add(NtSvc);
-      Inc(pch, StrLen(pch) + 1);
+      Inc(P, StrLen(P) + 1);
     end;
   end;
 
@@ -659,25 +650,24 @@ procedure TJclNtService.Refresh;
 var
   Ret: BOOL;
   BytesNeeded: DWORD;
-  pQrySvcCnfg: PQueryServiceConfig;
+  PQrySvcCnfg: PQueryServiceConfig;
 begin
   Open(SERVICE_QUERY_STATUS or SERVICE_QUERY_CONFIG);
   try
     UpdateDescription;
     UpdateStatus(GetServiceStatus);
-
     try
-      pQrySvcCnfg := nil;
+      PQrySvcCnfg := nil;
       BytesNeeded := 4096;
       repeat
-        ReallocMem(pQrySvcCnfg, BytesNeeded);
-        Ret := QueryServiceConfig(FHandle, pQrySvcCnfg, BytesNeeded, BytesNeeded);
+        ReallocMem(PQrySvcCnfg, BytesNeeded);
+        Ret := QueryServiceConfig(FHandle, PQrySvcCnfg, BytesNeeded, BytesNeeded);
       until Ret or (GetLastError <> ERROR_INSUFFICIENT_BUFFER);
       Win32Check(Ret);
 
-      UpdateConfig(pQrySvcCnfg^);
+      UpdateConfig(PQrySvcCnfg^);
     finally
-      FreeMem(pQrySvcCnfg);
+      FreeMem(PQrySvcCnfg);
     end;
   finally
     Close;
@@ -708,22 +698,22 @@ type
   TStrArray = array [0..32767] of PChar;
 var
   I: Integer;
-  lpServiceArgVectors: PChar;
+  PServiceArgVectors: PChar;
 begin
   Open(SERVICE_START);
   try
     try
       if Length(Args) = 0 then
-        lpServiceArgVectors := nil
+        PServiceArgVectors := nil
       else
       begin
-        GetMem(lpServiceArgVectors, SizeOf(PChar)*Length(Args));
+        GetMem(PServiceArgVectors, SizeOf(PChar)*Length(Args));
         for I := 0 to Length(Args) - 1 do
-          PStrArray(lpServiceArgVectors)^[I] := PChar(Args[I]);
+          PStrArray(PServiceArgVectors)^[I] := PChar(Args[I]);
       end;
-      Win32Check(StartService(FHandle, Length(Args), lpServiceArgVectors));
+      Win32Check(StartService(FHandle, Length(Args), PServiceArgVectors));
     finally
-      FreeMem(lpServiceArgVectors);
+      FreeMem(PServiceArgVectors);
     end;
   finally
     Close;
@@ -783,16 +773,13 @@ end;
 function TJclNtService.WaitFor(const State: TJclServiceState; const TimeOut: DWORD): Boolean;
 var
   SvcStatus: TServiceStatus;
-  WaitedState,
-  StartTickCount,
-  OldCheckPoint,
-  WaitTime: DWORD;
+  WaitedState, StartTickCount, OldCheckPoint, WaitTime: DWORD;
 begin
   WaitedState := DWORD(State);
   Open(SERVICE_QUERY_STATUS);
   try
     StartTickCount := GetTickCount;
-    OldCheckPoint  := 0;
+    OldCheckPoint := 0;
     while True do
     begin
       SvcStatus := GetServiceStatus;
@@ -801,7 +788,7 @@ begin
       if SvcStatus.dwCheckPoint > OldCheckPoint then
       begin
         StartTickCount := GetTickCount;
-        OldCheckPoint  := SvcStatus.dwCheckPoint;
+        OldCheckPoint := SvcStatus.dwCheckPoint;
       end
       else
       begin
@@ -962,8 +949,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclSCManager.SetOrderType(
-  const Value: TJclServiceSortOrderType);
+procedure TJclSCManager.SetOrderType(const Value: TJclServiceSortOrderType);
 begin
   if FOrderType <> Value then
     Sort(Value, FOrderAsc);
@@ -994,17 +980,19 @@ end;
 
 procedure TJclSCManager.Open;
 begin
-  FHandle := OpenSCManager(Pointer(FMachineName), Pointer(FDatabaseName), FDesiredAccess);
-  Win32Check(FHandle <> INVALID_SCM_HANDLE);
+  if not Active then
+  begin
+    FHandle := OpenSCManager(Pointer(FMachineName), Pointer(FDatabaseName), FDesiredAccess);
+    Win32Check(FHandle <> INVALID_SCM_HANDLE);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclSCManager.Close;
 begin
-  if FHandle <> INVALID_SCM_HANDLE then
+  if Active then
     Win32Check(CloseServiceHandle(FHandle));
-
   FHandle := INVALID_SCM_HANDLE;
 end;
 
@@ -1044,8 +1032,8 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
   var
     I: Integer;
     Ret: BOOL;
-    pBuf: Pointer;
-    pEss: PEnumServiceStatus;
+    PBuf: Pointer;
+    PEss: PEnumServiceStatus;
     NtSvc: TJclNtService;
     BytesNeeded, ServicesReturned, ResumeHandle: DWORD;
   begin
@@ -1053,24 +1041,25 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     // Enum the services
     ResumeHandle := 0; // Must set this value to zero !!!
     try
-      pBuf        := nil;
+      PBuf := nil;
       BytesNeeded := 40960;
       repeat
-        ReallocMem(pBuf, BytesNeeded);
+        ReallocMem(PBuf, BytesNeeded);
         Ret := EnumServicesStatus(FHandle, SERVICE_TYPE_ALL, SERVICE_STATE_ALL,
-          PEnumServiceStatus(pBuf){$IFNDEF FPC}^{$ENDIF}, BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
+          PEnumServiceStatus(PBuf){$IFNDEF FPC}^{$ENDIF},
+          BytesNeeded, BytesNeeded, ServicesReturned, ResumeHandle);
       until Ret or (GetLastError <> ERROR_MORE_DATA);
       Win32Check(Ret);
 
-      pEss := pBuf;
+      PEss := PBuf;
       for I := 0 to ServicesReturned - 1 do
       begin
-        NtSvc := TJclNtService.Create(Self, pEss^);
+        NtSvc := TJclNtService.Create(Self, PEss^);
         NtSvc.Refresh;
-        Inc(pEss);
+        Inc(PEss);
       end;
     finally
-      FreeMem(pBuf);
+      FreeMem(PBuf);
     end;
   end;
 
@@ -1081,7 +1070,7 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     cValList              = 'List';
   var
     Buf: array of Char;
-    pch: PChar;
+    P: PChar;
     DataSize: DWORD;
   begin
     // Get the service groups
@@ -1091,11 +1080,11 @@ procedure TJclSCManager.Refresh(const RefreshAll: Boolean);
     begin
       DataSize := RegReadBinary(HKEY_LOCAL_MACHINE, cKeyServiceGroupOrder, cValList, Buf[0], DataSize);
 
-      pch := @Buf[0];
-      while pch^ <> #0 do
+      P := @Buf[0];
+      while P^ <> #0 do
       begin
-        AddGroup(TJclServiceGroup.Create(Self, pch, GetGroupCount));
-        Inc(pch, StrLen(pch) + 1);
+        AddGroup(TJclServiceGroup.Create(Self, P, GetGroupCount));
+        Inc(P, StrLen(P) + 1);
       end;
     end;
   end;}
@@ -1239,7 +1228,7 @@ begin
   Active := True;
 
   try
-    Result      := nil;
+    Result := nil;
     BytesNeeded := 10240;
     repeat
       ReallocMem(Result, BytesNeeded);
@@ -1256,39 +1245,39 @@ end;
 
 function TJclSCManager.IsLocked: Boolean;
 var
-  pQsls: PQueryServiceLockStatus;
+  PQsls: PQueryServiceLockStatus;
 begin
-  pQsls := GetServiceLockStatus;
-  Result := Assigned(pQsls) and (pQsls.fIsLocked <> 0);
-  FreeMem(pQsls);
+  PQsls := GetServiceLockStatus;
+  Result := Assigned(PQsls) and (PQsls.fIsLocked <> 0);
+  FreeMem(PQsls);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.LockOwner: string;
 var
-  pQsls: PQueryServiceLockStatus;
+  PQsls: PQueryServiceLockStatus;
 begin
-  pQsls := GetServiceLockStatus;
-  if Assigned(pQsls) then
-    Result := pQsls.lpLockOwner
+  PQsls := GetServiceLockStatus;
+  if Assigned(PQsls) then
+    Result := PQsls.lpLockOwner
   else
     Result := '';
-  FreeMem(pQsls);
+  FreeMem(PQsls);
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 function TJclSCManager.LockDuration: DWORD;
 var
-  pQsls: PQueryServiceLockStatus;
+  PQsls: PQueryServiceLockStatus;
 begin
-  pQsls := GetServiceLockStatus;
-  if Assigned(pQsls) then
-    Result := pQsls.dwLockDuration
+  PQsls := GetServiceLockStatus;
+  if Assigned(PQsls) then
+    Result := PQsls.dwLockDuration
   else
     Result := INFINITE;
-  FreeMem(pQsls);
+  FreeMem(PQsls);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1305,12 +1294,12 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 { TODO : Standard Rtdl }
-function TJclSCManager.GetQueryServiceConfig2A: TQueryServiceConfig2AFunction;
+function TJclSCManager.GetQueryServiceConfig2A: TQueryServiceConfig2A;
 const
   cQueryServiceConfig2 = 'QueryServiceConfig2A'; // don't localize
 begin
   // Win2K or later
-  If (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
+  if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
     FQueryServiceConfig2A := GetModuleSymbol(AdvApi32Handle, cQueryServiceConfig2);
 
   Result := FQueryServiceConfig2A;
@@ -1318,8 +1307,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclSCManager.Install(
-  const ServiceName, DisplayName, ImageName, Description: string;
+function TJclSCManager.Install(const ServiceName, DisplayName, ImageName, Description: string;
   ServiceTypes: TJclServiceTypes; StartType: TJclServiceStartType;
   ErrorControlType: TJclServiceErrorControlType; DesiredAccess: DWORD;
   const LoadOrderGroup: TJclServiceGroup;
@@ -1332,12 +1320,12 @@ var
 begin
   if Assigned(LoadOrderGroup) then
   begin
-    LoadOrderGroupName    := LoadOrderGroup.Name;
+    LoadOrderGroupName := LoadOrderGroup.Name;
     LoadOrderGroupNamePtr := PChar(LoadOrderGroupName);
   end
   else
   begin
-    LoadOrderGroupName    := '';
+    LoadOrderGroupName := '';
     LoadOrderGroupNamePtr := nil;
   end;
 
@@ -1345,11 +1333,13 @@ begin
     DesiredAccess, TJclSCManager.ServiceType(ServiceTypes), DWORD(StartType),
     DWORD(ErrorControlType), PChar(ImageName), LoadOrderGroupNamePtr, nil,
     Dependencies, Account, Password);
-  if Svc = 0 then RaiseLastOsError;
+  if Svc = 0 then
+    RaiseLastOsError;
   CloseServiceHandle(Svc);
 
   if (Description <> '') and (IsWin2K or IsWinXP) then
-    RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES + '\' + ServiceName, 'Description', Description);
+    RegWriteString(HKEY_LOCAL_MACHINE, '\' + REGSTR_PATH_SERVICES + '\' + ServiceName,
+      'Description', Description);
 
   EnumServiceStatus.lpServiceName := PChar(ServiceName);
   EnumServiceStatus.lpDisplayName := PChar(DisplayName);
@@ -1408,7 +1398,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetServiceStatus(ServiceHandle: SC_HANDLE): DWord;
+function GetServiceStatus(ServiceHandle: SC_HANDLE): DWORD;
 var
   ServiceStatus: TServiceStatus;
 begin
@@ -1419,41 +1409,39 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWord;
+
+function GetServiceStatusWaitingIfPending(ServiceHandle: SC_HANDLE): DWORD;
 var
-   ServiceStatus: TServiceStatus;
-   WaitDuration: Dword;
-   LastCheckPoint: Dword;
+  ServiceStatus: TServiceStatus;
+  WaitDuration: DWORD;
+  LastCheckPoint: DWORD;
 begin
   if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
     RaiseLastOSError;
 
-  Result:=ServiceStatus.dwCurrentState;
+  Result := ServiceStatus.dwCurrentState;
 
   while TJclServiceState(Result) in ssPendingStates do
   begin
-    LastCheckPoint:=ServiceStatus.dwCheckPoint;
+    LastCheckPoint := ServiceStatus.dwCheckPoint;
 
-    //Multiple operations might alter the expected wait duration, so check inside the loop
-    if ServiceStatus.dwWaitHint < 1000 then
-      WaitDuration:=1000
+    // Multiple operations might alter the expected wait duration, so check inside the loop
+    WaitDuration := ServiceStatus.dwWaitHint;
+    if WaitDuration < 1000 then
+      WaitDuration := 1000
     else
-    begin
-      if ServiceStatus.dwWaitHint > 10000 then
-        WaitDuration:=10000
-      else
-        WaitDuration:=ServiceStatus.dwWaitHint;
-    end;
+    if WaitDuration > 10000 then
+      WaitDuration := 10000;
 
     Sleep(WaitDuration);
 
-    //Get the new status
+    // Get the new status
     if not QueryServiceStatus(ServiceHandle, ServiceStatus) then
       RaiseLastOSError;
 
-    Result:=ServiceStatus.dwCurrentState;
+    Result := ServiceStatus.dwCurrentState;
 
-    if ServiceStatus.dwCheckPoint = LastCheckPoint then    //No progress made
+    if ServiceStatus.dwCheckPoint = LastCheckPoint then  // No progress made
       Break;
   end;
 end;
@@ -1461,6 +1449,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.26  2004/10/21 06:38:53  marquardt
+// style clenaing, bugfixes, improvements
+//
 // Revision 1.25  2004/10/20 09:35:06  rikbarker
 // EnumServiceGroups Modified to use new JclRegistry MULTI_SZ enabled functions.
 // PH cleaning of GetServiceStatus.
