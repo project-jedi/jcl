@@ -606,17 +606,16 @@ procedure FillLongword(var X; Count: Integer; Value: LongWord);
 // EAX = X
 // EDX = Count
 // ECX = Value
-        PUSH    EDI
+        TEST    EDX, EDX
+        JLE     @@EXIT
 
+        PUSH    EDI
         MOV     EDI, EAX  // Point EDI to destination
         MOV     EAX, ECX
         MOV     ECX, EDX
-        TEST    ECX, ECX
-        JS      @@EXIT
-
         REP     STOSD    // Fill count dwords
-@@EXIT:
         POP     EDI
+@@EXIT:
 end;}
 var
   P: PLongWord;
@@ -651,16 +650,22 @@ procedure TestSwap(var A, B: Integer);
         MOV     ECX, [EAX]     // ECX := [A]
         CMP     ECX, [EDX]     // ECX <= [B]? Exit
         JLE     @@EXIT
-        XCHG    ECX, [EDX]     // ECX <-> [B];
-        MOV     [EAX], ECX     // [A] := ECX
+        //Replaced on more fast code
+        //XCHG    ECX, [EDX]     // ECX <-> [B];
+        //MOV     [EAX], ECX     // [A] := ECX
+        PUSH    EBX
+        MOV     EBX,[EDX]      // EBX := [B]
+        MOV     [EAX],EBX      // [A] := EBX
+        MOV     [EDX],ECX      // [B] := ECX
+        POP     EBX
 @@EXIT:
 end;}
 var
   X: integer;
 begin
-  if A > B then begin
-    X := A;
-    A := B;   
+  X := A; // optimization
+  if X > B then begin
+    A := B;
     B := X;
   end;
 end;
