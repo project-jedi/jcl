@@ -7,16 +7,21 @@
 !ifndef ROOT
 ROOT = $(MAKEDIR)\..
 !endif
+
+!ifndef JCL
+JCL = ..\..\..\..
+!endif
+
 #---------------------------------------------------------------------------------------------------
-INC = ..\..\..\..\source\common
-LIB = ..\..\..\..\lib\d7;..\..\..\..\lib\d6;..\..\..\..\lib\d5
-DCU =
-BIN = ..\..\..\..\bin
+VCLEXAMP = $(JCL)\examples\vcl
+INC = $(JCL)\source
+SRC = $(JCL)\lib\d7;..\bin;vcl\peimage
+BIN = $(JCL)\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
-MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -n$(DCU) -r$(SRC) -q -u$(LIB) -w $(DCCOPT)
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS)
+DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -w -u$(SRC)
 BRCC = $(ROOT)\bin\brcc32.exe $**
 MAKEJCLDBG = $(BIN)\makejcldbg.exe -e
 #---------------------------------------------------------------------------------------------------
@@ -32,7 +37,7 @@ default: \
 MakeJclDbg.exe: ..\debugextension\tools\MakeJclDbg.dpr
   cd ..\debugextension\tools
   $(DCC) $&.dpr
-  cd ..\..\DelphiTools
+  cd ..\..\delphitools
 
 DependView.exe: DependencyViewer\DependView.dpr
   cd DependencyViewer
