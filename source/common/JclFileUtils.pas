@@ -16,11 +16,11 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: June 21, 2000                                                 }
+{ Last modified: September 15, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
-unit JclFileUtils2;
+unit JclFileUtils;
 
 {$I JCL.INC}
 
@@ -882,7 +882,7 @@ end;
 function PathIsUNC(const Path: string): Boolean;
 begin
   {$IFDEF LINUX}
-  Result := Path;
+  Result := False;
   {$ENDIF}
   {$IFDEF WIN32}
   Result := ((Copy(Path, 1, Length(PathUncPrefix)) = PathUncPrefix) and
@@ -1005,7 +1005,9 @@ begin
     Result := SetFileAttributes(PChar(Path), FILE_ATTRIBUTE_NORMAL);
     if Result then
     begin
-      {$I-} RmDir(Path); {$I+}
+      {$I-}
+      RmDir(Path);
+      {$I+}
       Result := IOResult = 0;
     end;
   end;
