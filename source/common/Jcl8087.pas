@@ -54,10 +54,10 @@ function ClearPending8087Exceptions: T8087Exceptions;
 function GetPending8087Exceptions: T8087Exceptions;
 function GetMasked8087Exceptions: T8087Exceptions;
 function SetMasked8087Exceptions(Exceptions: T8087Exceptions;
-  ClearBefore: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True{$ENDIF}): T8087Exceptions;
+  ClearBefore: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): T8087Exceptions;
 function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
 function Unmask8087Exceptions(Exceptions: T8087Exceptions;
-  ClearBefore: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True{$ENDIF}): T8087Exceptions;
+  ClearBefore: Boolean {$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF}): T8087Exceptions;
 
 implementation
 
