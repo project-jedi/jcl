@@ -10,7 +10,7 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclDateTime.pas.                                                                }
+{ The Original Code is JclDateTime.pas.                                                            }
 {                                                                                                  }
 { The Initial Developer of the Original Code is documented in the accompanying                     }
 { help file JCL.chm. Portions created by these individuals are Copyright (C)                       }
@@ -22,7 +22,7 @@
 { different formats but also some date testing routines (is leap year? etc)                        }
 {                                                                                                  }
 { Unit Owner: Michael Schnell                                                                      }
-{ Last modified: June 18, 2000                                                                     }
+{ Last modified: July 08, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -653,9 +653,9 @@ begin
   Result := EncodeDate(Year, Month, Day);
 end;
 
-//==============================================================================
+//==================================================================================================
 // Conversion
-//==============================================================================
+//==================================================================================================
 
 {$IFDEF MSWINDOWS}
 
@@ -665,7 +665,7 @@ var
 begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
-    TIME_ZONE_ID_STANDARD:
+    TIME_ZONE_ID_STANDARD, TIME_ZONE_ID_UNKNOWN:
       Result := DateTime + (TimeZoneInfo.Bias / MinutesPerDay);
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime - ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
@@ -682,7 +682,7 @@ var
 begin
   FillChar(TimeZoneInfo, SizeOf(TimeZoneInfo), #0);
   case GetTimeZoneInformation(TimeZoneInfo) of
-    TIME_ZONE_ID_STANDARD:
+    TIME_ZONE_ID_STANDARD, TIME_ZONE_ID_UNKNOWN:
       Result := DateTime + (TimeZoneInfo.Bias / MinutesPerDay);
     TIME_ZONE_ID_DAYLIGHT:
       Result := DateTime + ((TimeZoneInfo.Bias + TimeZoneInfo.DaylightBias) / MinutesPerDay);
