@@ -29,7 +29,7 @@ interface
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+  {$ENDIF WIN32}
   Classes, SysUtils,
   {$IFDEF DELPHI5_UP}
   Contnrs,
@@ -491,7 +491,7 @@ uses
 {$UNDEF StackFramesWasOn}
 {$IFOPT W+}
   {$DEFINE StackFramesWasOn}
-{$ENDIF}
+{$ENDIF W+}
 
 //==============================================================================
 // Crash
@@ -2001,7 +2001,7 @@ begin
 end;
 {$IFNDEF StackFramesWasOn}
   {$STACKFRAMES OFF}
-{$ENDIF}
+{$ENDIF StackFramesWasOn}
 
 //------------------------------------------------------------------------------
 
@@ -2082,7 +2082,7 @@ end;
 
 {$IFNDEF StackFramesWasOn}
   {$STACKFRAMES OFF}
-{$ENDIF}
+{$ENDIF StackFramesWasOn}
 
 //------------------------------------------------------------------------------
 
@@ -2460,7 +2460,7 @@ end;
 
 {$IFNDEF StackFramesWasOn}
   {$STACKFRAMES OFF}
-{$ENDIF}
+{$ENDIF StackFramesWasOn}
 
 //==============================================================================
 // Exception frame info routines
@@ -2689,7 +2689,7 @@ const
   cDelphiException = $0EEDFACE;
   {$ELSE}
   cDelphiException = $0EEDFADE;
-  {$ENDIF}
+  {$ENDIF DELPHI2}
   cNonContinuable = 1;
 begin
   if (ExceptionFlags = cNonContinuable) and (ExceptionCode = cDelphiException) and
