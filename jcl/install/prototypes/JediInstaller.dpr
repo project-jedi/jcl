@@ -14,7 +14,12 @@ uses
   JediInstallerMain in 'JediInstallerMain.pas' {MainForm},
   ProductFrames in 'ProductFrames.pas' {ProductFrame: TFrame},
   {$ENDIF VCL}
+  {$IFDEF MSWINDOWS}
   JclBorlandTools in '..\source\common\JclBorlandTools.pas';
+  {$ELSE}
+  JclBorlandTools in '../source/common/JclBorlandTools.pas';
+  {$ENDIF MSWINDOWS}
+
 
 {$R *.res}
 
