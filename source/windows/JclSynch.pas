@@ -40,7 +40,7 @@ interface
 uses
   {$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+  {$ENDIF WIN32}
   JclBase;
 
 //------------------------------------------------------------------------------
@@ -758,7 +758,7 @@ begin
   DT := DueTime;
   {$ELSE}
   I64Copy(DT, DueTime);
-  {$ENDIF}
+  {$ENDIF SUPPORTS_INT64}
   Result := SetWaitableTimer(FHandle, DT, Period, nil, nil, FResume);
 end;
 
@@ -773,7 +773,7 @@ begin
   DT := DueTime;
   {$ELSE}
   I64Copy(DT, DueTime);
-  {$ENDIF}
+  {$ENDIF SUPPORTS_INT64}
   Result := SetWaitableTimer(FHandle, DT, Period, Apc, Arg, FResume);
 end;
 
