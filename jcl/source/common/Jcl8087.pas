@@ -63,6 +63,7 @@ function Mask8087Exceptions(Exceptions: T8087Exceptions): T8087Exceptions;
 function Unmask8087Exceptions(Exceptions: T8087Exceptions; ClearBefore: Boolean = True): T8087Exceptions;
 
 implementation
+
 uses
   JclBase;
 
