@@ -146,6 +146,9 @@ uses
   JclBase, JclFileUtils, JclStrings, JclSysInfo, JclSysUtils;
 
 const
+  {$IFNDEF COMPILER6_UP}
+  PathSep = ';';
+  {$ENDIF COMPILER6_UP}
   DelphiSupportURL  = 'http://www.borland.com/devsupport/delphi/';
   DelphiJediURL     = 'http://delphi-jedi.org';
   VersionSignature  = 'D%d';
@@ -260,7 +263,7 @@ var
 begin
   if GetEnvironmentVar('PATH', PathVar, False) then
   begin
-    StrToStrings(PathVar, ';', FSystemPaths, False);
+    StrToStrings(PathVar, PathSep, FSystemPaths, False);
     for I := 0 to FSystemPaths.Count - 1 do
     begin
       PathVar := StrTrimQuotes(FSystemPaths[I]);
@@ -276,7 +279,7 @@ end;
 
 function TMainForm.SystemPathValid(const Path: string): Boolean;
 begin
-  Result := FSystemPaths.IndexOf(AnsiUpperCase(Path)) <> -1;
+  Result := FSystemPaths.IndexOf({$IFDEF MSWINDOWS}AnsiUpperCase{$ENDIF}(Path)) <> -1;
 end;
 
 procedure TMainForm.UpdateButtons;
