@@ -620,8 +620,8 @@ type
     property IsName: Boolean read GetIsName;
     property List: TJclPeResourceList read GetList;
     property Name: string read GetName;
-    property ParameterName: string read GetParameterName; 
-    property ParentItem: TJclPeResourceItem read FParentItem; 
+    property ParameterName: string read GetParameterName;
+    property ParentItem: TJclPeResourceItem read FParentItem;
     property RawEntryData: Pointer read GetRawEntryData;
     property RawEntryDataSize: Integer read GetRawEntryDataSize;
     property ResourceType: TJclResourceType read GetResourceType;
@@ -2285,7 +2285,7 @@ begin
         end
         else
           ExportItem.FForwardedName := nil;
-        List^[I] := ExportItem; 
+        List^[I] := ExportItem;
         Inc(NameOrdinals);
         Inc(Names);
       end;
@@ -2555,7 +2555,7 @@ begin
 // TODO : Put name to local variable to increase the performance
   if IsName then
     with PImageResourceDirStringU(OffsetToRawData(FEntry^.Name))^ do
-      Result := WideCharLenToString(NameString, Length) 
+      Result := WideCharLenToString(NameString, Length)
   else
     Result := IntToStr(FEntry^.Name and $FFFF);
 end;
@@ -2733,7 +2733,7 @@ begin
   Temp := PWord(DWORD(FChunk) + SizeOf(TImageBaseRelocation) + DWORD(Index) * SizeOf(Word))^;
   Result.Address := Temp and $0FFF;
   Result.RelocType := (Temp and $F000) shr 12;
-  Result.VirtualAddress := Result.Address + VirtualAddress; 
+  Result.VirtualAddress := Result.Address + VirtualAddress;
 end;
 
 //------------------------------------------------------------------------------
@@ -2988,7 +2988,7 @@ begin
       Result := RsPeDEBUG_OMAP_FROM_SRC;
   else
     Result := '???';
-  end;  
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -3078,7 +3078,7 @@ function TJclPeImage.GetDebugList: TJclPeDebugList;
 begin
   if FDebugList = nil then
     FDebugList := TJclPeDebugList.Create(Self);
-  Result := FDebugList; 
+  Result := FDebugList;
 end;
 
 //------------------------------------------------------------------------------
@@ -3445,7 +3445,7 @@ begin
         FVersionInfo := TJclFileVersionInfo.Attach(RawEntryData, RawEntryDataSize);
       except
         FreeAndNil(FVersionInfo);
-      end;  
+      end;
   end;
   Result := FVersionInfo;
 end;
@@ -3583,7 +3583,7 @@ begin
       Result := RsPeReserved;
   else
     Result := '';
-  end;    
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -3635,7 +3635,7 @@ var
 begin
 { TODO -cTEST : Test on NT system whether ImageRvaToSection is allowed without previous MapAndLoad call }
   Result := ImageRvaToSection(FLoadedImage.FileHeader, FLoadedImage.MappedAddress, Rva);
-  if Result = nil then 
+  if Result = nil then
     for I := 0 to FImageSections.Count - 1 do
     begin
       SectionHeader := PImageSectionHeader(FImageSections.Objects[I]);
@@ -3649,7 +3649,7 @@ begin
         Result := SectionHeader;
         Break;
       end;
-    end;      
+    end;
 end;
 
 //------------------------------------------------------------------------------
@@ -4994,7 +4994,7 @@ begin
   if InternalReadProcMem(ProcessHandle, DWORD(BaseAddress) + ExportDir.Name, PChar(Name), MAX_PATH) then
     StrResetLength(Name)
   else
-    Name := '';    
+    Name := ''; 
 end;
 
 //==============================================================================
@@ -5141,7 +5141,7 @@ begin
   SetLength(UnMangled, 1024);
   NameU := Pointer(UnMangled);
   NameUFirst := NameU;
-  Description.Modifiers := [];                 
+  Description.Modifiers := [];
   BasePos := 1;
   case NameP^ of
     '$':
