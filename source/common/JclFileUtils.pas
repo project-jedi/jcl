@@ -403,7 +403,7 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF}
-  JclResources, JclSecurity, JclSysUtils, JclWin32, JclStrings;
+  JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
 
 { Some general notes:
 
@@ -2209,7 +2209,8 @@ var
       TempKey := PWideChar(P);
       Inc(P, (lstrlenW(TempKey) + 1) * SizeOf(WideChar)); // length + #0#0
       Key := TempKey;
-    end else
+    end
+    else
     begin
       DataType := 1;
       Key := PAnsiChar(P);
@@ -2505,7 +2506,8 @@ begin
   begin
     NamePart := NameExt;
     ExtPart := '';
-  end else
+  end
+  else
   begin
     NamePart := Copy(NameExt, 1, I - 1);
     ExtPart := Copy(NameExt, I + 1, Length(NameExt));
@@ -2559,7 +2561,8 @@ begin
       begin
         NS := List[I];
         ES := '';
-      end else
+      end
+      else
       begin
         NS := Copy(List[I], 1, N - 1);
         ES := Copy(List[I], N + 1, 255);
