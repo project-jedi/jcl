@@ -4,14 +4,14 @@
 # $Id$
 #
 
-jpp		= jpp.exe
+jpp		= ..\..\devtools\jpp.exe
 
 Options         = -c -dJCL -dSUPPORTS_DEFAULTPARAMS -dSUPPORTS_INT64
-CommonOptions   = $(Options) -x..\common\\
+CommonOptions   = $(Options) -f..\common\\
 VclOptions      = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1:..\vcl\Jcl
 VClxOptions	= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
-WinOptions      = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -x..\windows\\
-UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -x..\unix\\
+WinOptions      = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -f..\windows\\
+UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -f..\unix\\
 ZlibOptions	= -uSTATIC_GZIO
 
 
@@ -23,7 +23,8 @@ VCL:    	..\vcl\JclGraphics.pas \
 VisualCLX:    	..\visclx\JclQGraphics.pas \
 		..\visclx\JclQGraphUtils.pas
 
-Windows:        ..\windows\Hardlinks.pas \
+Windows:        ..\windows\JclWin32.pas \
+                ..\windows\Hardlinks.pas \
                 ..\windows\zlibh.pas
 
 Unix:		..\unix\zlibh.pas
@@ -50,6 +51,10 @@ zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 		zlibh.pas
         echo Unix-zlib
 	$(jpp) $(UnixOptions) $(ZlibOptions) -dZLIB_DLL $?
+
+..\windows\JclWin32.pas: \
+                JclWin32.pas
+        $(jpp) -ijcl.inc $(WinOptions) $?
 
 ..\windows\zlibh.pas: \
 		zlibh.pas
