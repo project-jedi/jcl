@@ -510,6 +510,7 @@ procedure GetCpuInfo(var CpuInfo: TCpuInfo);
 
 function GetIntelCacheDescription(const D: Byte): string;
 function RoundFrequency(const Frequency: Integer): Integer;
+function GetCPUFreq(var FreqInfo: TFreqInfo): Boolean;
 function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
 function CPUID: TCpuInfo;
 function TestFDIVInstruction: Boolean;
@@ -2345,7 +2346,7 @@ begin
   if CpuInfo.HasInstruction then
   begin
     if (CpuInfo.Features and TSC_FLAG) = TSC_FLAG then
-      GetCpuSpeed(CpuInfo.FrequencyInfo);
+      GetCpuFreq(CpuInfo.FrequencyInfo);
     CpuInfo.MMX := (CpuInfo.Features and MMX_FLAG) = MMX_FLAG;
   end;
 end;
@@ -2380,14 +2381,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean;
+function GetCPUSpeed(var CpuSpeed: TFreqInfo): Boolean; overload;
 var
-  T0, T1: TULargeInteger;
-  CountFreq: TULargeInteger;
+  T0, T1: Int64;
+  CountFreq: Int64;
   Freq, Freq2, Freq3, Total: Integer;
   TotalCycles, Cycles: Int64;
   Stamp0, Stamp1: Int64;
-  TotalTicks, Ticks: Cardinal;
+  TotalTicks, Ticks: Double;
   Tries, Priority: Integer;
   Thread: THandle;
 begin
@@ -2402,7 +2403,7 @@ begin
   Total := 0;
 
   Thread := GetCurrentThread();
-  Result := QueryPerformanceFrequency(Int64(CountFreq));
+  Result := QueryPerformanceFrequency(CountFreq);
   if Result then
   begin
     while ((Tries < 3 ) or ((Tries < 20) and ((Abs(3 * Freq - Total) > 3) or
@@ -2411,25 +2412,23 @@ begin
       Inc(Tries);
       Freq3 := Freq2;
       Freq2 := Freq;
-      QueryPerformanceCounter(Int64(T0));
-      T1.LowPart := T0.LowPart;
-      T1.HighPart := T0.HighPart;
+      QueryPerformanceCounter(T0);
+      T1 := T0;
 
       Priority := GetThreadPriority(Thread);
       if Priority <> THREAD_PRIORITY_ERROR_RETURN then
         SetThreadPriority(Thread, THREAD_PRIORITY_TIME_CRITICAL);
       try
-        while (T1.LowPart - T0.LowPart) < 50 do
+        while T1 - T0 < 50 do
         begin
-          QueryPerformanceCounter(Int64(T1));
+          QueryPerformanceCounter(T1);
           Stamp0 := ReadTimeStampCounter;
         end;
-        T0.LowPart := T1.LowPart;
-        T0.HighPart := T1.HighPart;
+        T0 := T1;
 
-        while (T1.LowPart - T0.LowPart) < 1000 do
+        while T1 - T0 < 1000 do
         begin
-          QueryPerformanceCounter(Int64(T1));
+          QueryPerformanceCounter(T1);
           Stamp1 := ReadTimeStampCounter;
         end;
       finally
@@ -2438,16 +2437,16 @@ begin
       end;
 
       Cycles := Stamp1 - Stamp0;
-      Ticks := T1.LowPart - T0.LowPart;
+      Ticks := T1 - T0;
       Ticks := Ticks * 100000;
-      Ticks := Round(Ticks / (CountFreq.LowPart / 10));
+      Ticks := Ticks / (CountFreq / 10);
       TotalTicks := TotalTicks + Ticks;
       TotalCycles := TotalCycles + Cycles;
       Freq := Round(Cycles / Ticks);
       Total := Freq + Freq2 + Freq3;
     end;
-    Freq3 := Round((TotalCycles * 10) / TotalTicks);
-    Freq2 := Round((TotalCycles * 100) / TotalTicks);
+    Freq3 := Round((TotalCycles *  10) / TotalTicks); // freq. in multiples of 10^5 Hz
+    Freq2 := Round((TotalCycles * 100) / TotalTicks); // freq. in multiples of 10^4 Hz
 
     if Freq2 - (Freq3 * 10) >= 6 then
       Inc(Freq3);
@@ -2459,11 +2458,55 @@ begin
     if (Freq3 - Freq) >= 6 then
       Inc(CpuSpeed.NormFreq);
 
-    CpuSpeed.ExTicks := TotalTicks;
+    CpuSpeed.ExTicks := Round(TotalTicks);
     CpuSpeed.InCycles := TotalCycles;
 
     CpuSpeed.NormFreq := RoundFrequency(CpuSpeed.NormFreq);
     Result := True;
+  end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function GetCPUFreq(var FreqInfo: TFreqInfo): Boolean;
+const
+  MHz = 1.0E6;
+var
+  TickFreq: Int64;
+  Cycles, Ticks: Int64;
+  StartTicks: Int64;
+  Priority: Integer;
+  PriorityClass: LongWord;
+  Process, Thread: THandle;
+begin
+  Result := QueryPerformanceFrequency(TickFreq);
+  if Result then
+  begin
+    Process := GetCurrentProcess;
+    Thread := GetCurrentThread;
+    PriorityClass := GetPriorityClass(Process);
+    if PriorityClass <> 0 then
+      SetPriorityClass(Process, REALTIME_PRIORITY_CLASS);
+    Priority := GetThreadPriority(Thread);
+    if Priority <> THREAD_PRIORITY_ERROR_RETURN then
+      SetThreadPriority(Thread, THREAD_PRIORITY_TIME_CRITICAL);
+    try
+      QueryPerformanceCounter(StartTicks);
+      Cycles := ReadTimeStampCounter;
+      Sleep(2);
+      QueryPerformanceCounter(Ticks);
+      Cycles := ReadTimeStampCounter - Cycles;
+      Ticks := Ticks - StartTicks;
+    finally
+      if Priority <> THREAD_PRIORITY_ERROR_RETURN then
+        SetThreadPriority(Thread, Priority);
+      if PriorityClass <> 0 then
+        SetPriorityClass(Process, PriorityClass);
+    end;
+    FreqInfo.RawFreq := Round(TickFreq  * Cycles / (Ticks * MHz));
+    FreqInfo.NormFreq := RoundFrequency(FreqInfo.RawFreq);
+    FreqInfo.InCycles := Cycles;
+    FreqInfo.ExTicks := Round(Ticks / TickFreq * MHz);
   end;
 end;
 
