@@ -54,7 +54,7 @@ procedure CreateProcAsUserEx(const UserDomain, UserName, Password, CommandLine: 
 Spawns a new process in the context of the specified user account.
 [Description]
 CreateProcessAsUserEx launches a new process in the context of the specified user.
-This user does not neccessairly have to be the same user as the currently logged in
+This user does not neccessarily have to be the same user as the currently logged in
 user. You can use this function to run a child process in an adminstrative context,
 although the calling process is running in a normal (i.e.:restricted) user context.
 [Parameters]
@@ -68,7 +68,7 @@ databases until the specified account is found.
 3=Password:string=The password for the specified user account.
 4=CommandLine:string=This string specifies the command line for the application
 to be executed.
-5=Environment:PCHar=Points to an environment block for the new process. If this
+5=Environment:PChar=Points to an environment block for the new process. If this
 parameter is nil, the new process uses the environment of the calling process.
 You can create a new environment block using
 the <REF Target"..\System Information Routines\Environment\CreateEnvironmentBlock">CreateEnvironmentBlock</REF>
