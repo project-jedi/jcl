@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: August 23, 2000                                               }
+{ Last modified: September 23, 2000                                            }
 {                                                                              }
 {******************************************************************************}
 
@@ -53,11 +53,9 @@ type
   end;
 
 function NtfsSetSparse(const FileName: string): Boolean;
-{$IFDEF SUPPORTS_INT64}
 function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
 function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
 function NtfsQueryAllocRanges(const FileName: string; Offset, Count: Int64; var Ranges: TNtfsAllocRanges): Boolean;
-{$ENDIF}
 function NtfsGetAllocRangeEntry(const Ranges: TNtfsAllocRanges; Index: Integer): TFileAllocatedRangeBuffer;
 function NtfsSparseStreamsSupported(const Volume: string): Boolean;
 function NtfsGetSparse(const FileName: string): Boolean;
@@ -112,8 +110,8 @@ type
 implementation
 
 uses
-  FileCtrl, SysUtils,
-  JclResources, JclUnicode;
+  SysUtils,
+  JclFileUtils, JclResources;
 
 //==============================================================================
 // NTFS - Compression
@@ -125,12 +123,13 @@ var
   BytesReturned: DWORD;
 begin
   Result := False;
-  Handle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
     Result := DeviceIoControl(Handle, FSCTL_GET_COMPRESSION, nil, 0, @State,
       SizeOf(Short), BytesReturned, nil);
-    FileClose(Handle);
+  finally
+    CloseHandle(Handle);
   end;
 end;
 
@@ -143,13 +142,14 @@ var
   Buffer: Short;
 begin
   Result := False;
-  Handle := FileOpen(FileName, fmOpenReadWrite or fmShareExclusive);
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
     Buffer := State;
     Result := DeviceIoControl(Handle, FSCTL_SET_COMPRESSION, @Buffer,
       SizeOf(Short), nil, 0, BytesReturned, nil);
-    FileClose(Handle);
+  finally
+    CloseHandle(Handle);
   end;
 end;
 
@@ -163,18 +163,16 @@ var
   BytesReturned: DWORD;
 begin
   Result := False;
-  Handle := FileOpen(FileName, fmOpenWrite or fmShareExclusive);
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
-    Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil, 0, nil, 0,
-      BytesReturned, nil);
-    FileClose(Handle);
+  try
+    Result := DeviceIoControl(Handle, FSCTL_SET_SPARSE, nil, 0, nil, 0, BytesReturned, nil);
+  finally
+    CloseHandle(Handle);
   end;
 end;
 
 //------------------------------------------------------------------------------
-
-{$IFDEF SUPPORTS_INT64}
 
 function NtfsZeroDataByHandle(const Handle: THandle; const First, Last: Int64): Boolean;
 var
@@ -197,26 +195,21 @@ begin
   end;
 end;
 
-{$ENDIF}
-
 //------------------------------------------------------------------------------
-
-{$IFDEF SUPPORTS_INT64}
 
 function NtfsZeroDataByName(const FileName: string; const First, Last: Int64): Boolean;
 var
   Handle: THandle;
 begin
   Result := False;
-  Handle := FileOpen(FileName, fmOpenWrite or fmShareDenyWrite);
+  Handle := CreateFile(PChar(FileName), GENERIC_WRITE, 0, nil, OPEN_EXISTING, 0, 0);  
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
     Result := NtfsZeroDataByHandle(Handle, First, Last);
-    FileClose(Handle);
+  finally
+    CloseHandle(Handle);
   end;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -231,8 +224,6 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-
-{$IFDEF SUPPORTS_INT64}
 
 function __QueryAllocRanges(const Handle: THandle; const Offset, Count: Int64;
   var Ranges: PFileAllocatedRangeBuffer; var MoreData: Boolean; var Size: Cardinal): Boolean;
@@ -267,9 +258,9 @@ var
   Size: Cardinal;
 begin
   Result := False;
-  Handle := FileOpen(FileName, fmOpenRead or fmShareDenyWrite);
+  Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
     R := __QueryAllocRanges(Handle, Offset, Count, CurrRanges, MoreData, Size);
     Ranges.MoreData := MoreData;
     Result := R;
@@ -283,11 +274,10 @@ begin
       Ranges.Entries := 0;
       Ranges.Data := nil;
     end;
-    FileClose(Handle);
+  finally
+    CloseHandle(Handle);
   end;
 end;
-
-{$ENDIF}
 
 //------------------------------------------------------------------------------
 
@@ -311,10 +301,11 @@ begin
   Handle := CreateFile(PChar(FileName), 0, FILE_SHARE_READ or FILE_SHARE_WRITE,
     nil, OPEN_EXISTING, 0, 0);
   if Handle <> INVALID_HANDLE_VALUE then
-  begin
+  try
     GetFileInformationByHandle(Handle, Info);
     Result := (Info.dwFileAttributes and FILE_ATTRIBUTE_SPARSE_FILE) <> 0;
-    FileClose(Handle);
+  finally
+    CloseHandle(Handle);
   end;
 end;
 
@@ -397,11 +388,8 @@ begin
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
   if Handle <> INVALID_HANDLE_VALUE then
   try
-//    Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
-//      SizeOf(ReparseData) + ReparseData.ReparseDataLength, nil, 0, BytesReturned, nil);
     Result := DeviceIoControl(Handle, FSCTL_SET_REPARSE_POINT, @ReparseData,
       Size, nil, 0, BytesReturned, nil);
-
   finally
     CloseHandle(Handle);
   end;
@@ -418,6 +406,7 @@ begin
   Result := False;
   Handle := CreateFile(PChar(FileName), GENERIC_READ, FILE_SHARE_READ, nil,
     OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT, 0);
+  LastError := GetLastError;
   if Handle <> INVALID_HANDLE_VALUE then
   try
     Result := DeviceIoControl(Handle, FSCTL_GET_REPARSE_POINT, nil, 0, @ReparseData,
@@ -426,11 +415,10 @@ begin
     begin
       ReparseData.ReparseDataLength := BytesReturned;
       LastError := GetLastError;
-      CloseHandle(Handle);
-      SetLastError(LastError);
     end;
   finally
     CloseHandle(Handle);
+    SetLastError(LastError);
   end;
 end;
 
@@ -466,6 +454,9 @@ begin
     SetLength(VolumeName, 1024);
     Result := GetVolumeNameForVolumeMountPoint(PChar(DriveStr + '\'),
       PChar(VolumeName), 1024);
+    // Attempt to delete the symbolic link, if it fails then don't attempt to
+    // set the mountpoint either but raise an exception instead, there's something
+    // seriously wrong so let's try to control the damage done already :)
     if not DefineDosDevice(DDD_FLAGS, PChar(DriveStr), PChar(Device)) then
       raise EJclNtfsError.CreateResRec(@RsNtfsUnableToDeleteSymbolicLink);
     if Result then
@@ -566,8 +557,8 @@ end;
 
 function NtfsCreateJunctionPoint(const Source, Destination: string): Boolean;
 var
-  Dest: array [0..1024] of Char;
-  WideSrc: WideString;
+  Dest: array [0..1024] of Char; // Writable copy of Destination
+  DestW: WideString;             // Unicode version of Dest
   FullDir: array [0..1024] of Char;
   FilePart: PChar;
   Buffer: array [0..MAXIMUM_REPARSE_DATA_BUFFER_SIZE] of Char;
@@ -575,12 +566,15 @@ var
   NameLength: Longword;
 begin
   Result := False;
+  // For some reason the destination string must be prefixed with \??\ otherwise
+  // the IOCTL will fail, ensure it's there.
   if Copy(Destination, 1, 2) = '\??' then
     StrPCopy(Dest, Destination)
   else
   begin
+    // Make sure Destination is a directory or again, the IOCTL will fail.
     if (GetFullPathName(PChar(Destination), 1024, FullDir, FilePart) = 0) or
-      (GetFileAttributes(FullDir) = $FFFFFFFF) then
+      (GetFileAttributes(FullDir) = DWORD(-1)) then
     begin
       SetLastError(ERROR_PATH_NOT_FOUND);
       Exit;
@@ -593,8 +587,10 @@ begin
   ReparseData.ReparseDataLength := NameLength + 12;
   ReparseData.SubstituteNameLength := NameLength;
   ReparseData.PrintNameOffset := NameLength + 2;
-  WideSrc := WideString(Dest); // TODO User MultiByte....
-  StrPCopyW(ReparseData.PathBuffer, WideSrc);
+  // Not the most ellegant way to copy an AnsiString into an Unicode buffer but
+  // let's avoid dependencies on JclUnicode.pas (adds significant resources).
+  DestW := WideString(Dest);
+  Move(DestW[1], ReparseData.PathBuffer, Length(DestW) * SizeOf(WideChar));
   Result := NtfsSetReparsePoint(Source, ReparseData,
     ReparseData.ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE);
 end;
