@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: May 27, 2000                                                  }
+{ Last modified: August 13, 2000                                               }
 {                                                                              }
 {******************************************************************************}
 
@@ -250,6 +250,46 @@ type
   end;
 
 //------------------------------------------------------------------------------
+// TJclMeteredSection
+//------------------------------------------------------------------------------
+
+type
+  PMetSectSharedInfo = ^TMetSectSharedInfo;
+  TMetSectSharedInfo = record
+    Initialized: LongBool;    // Is the metered section initialized?
+    SpinLock: Longint;        // Used to gain access to this structure
+    ThreadsWaiting: Longint;  // Count of threads waiting
+    AvailableCount: Longint;  // Available resource count
+    MaximumCount: Longint;    // Maximum resource count
+  end;
+
+  PMeteredSection = ^TMeteredSection;
+  TMeteredSection = record
+    Event: THandle;           // Handle to a kernel event object
+    FileMap: THandle;         // Handle to memory mapped file
+    SharedInfo: PMetSectSharedInfo;
+  end;
+
+  TJclMeteredSection = class (TObject)
+  private
+    FMetSect: PMeteredSection;
+    procedure CloseMeteredSection;
+    function InitMeteredSection(InitialCount, MaxCount: Longint; const Name: string; OpenOnly: Boolean): Boolean;
+    function CreateMetSectEvent(const Name: string; OpenOnly: Boolean): Boolean;
+    function CreateMetSectFileView(InitialCount, MaxCount: Longint; const Name: string; OpenOnly: Boolean): Boolean;
+  protected
+    procedure AcquireLock;
+    procedure ReleaseLock;
+  public
+    constructor Create(InitialCount, MaxCount: Longint; const Name: string); overload;
+    constructor Open(const Name: string);
+    destructor Destroy; override;
+    function Enter(TimeOut: Longword): TJclWaitResult;
+    function Leave(ReleaseCount: Longint): Boolean; overload;
+    function Leave(ReleaseCount: Longint; var PrevCount: Longint): Boolean; overload;
+  end;
+
+//------------------------------------------------------------------------------
 // Debugging
 //------------------------------------------------------------------------------
 
@@ -297,12 +337,13 @@ type
   EJclWaitableTimerError = class (EJclWin32Error);
   EJclSemaphoreError = class (EJclWin32Error);
   EJclMutexError = class (EJclWin32Error);
+  EJclMeteredSectionError = class (EJclError);
 
 implementation
 
 uses
   SysUtils,
-  JclRegistry, JclResources, JclSysInfo, JclSysUtils, JclWin32;
+  JclLogic, JclRegistry, JclResources, JclSysInfo, JclSysUtils, JclWin32;
 
 const
   RegSessionManager = {HKLM\}'System\CurrentControlSet\Control\Session Manager';
@@ -1173,6 +1214,221 @@ begin
   L := Length(FThreads);
   Move(FThreads[Index + 1], FThreads[Index], SizeOf(TMrewThreadInfo) * (L - Index - 1));
   SetLength(FThreads, L - 1);
+end;
+
+//==============================================================================
+// TJclMeteredSection
+//==============================================================================
+
+const
+  MAX_METSECT_NAMELEN = 128;
+
+procedure TJclMeteredSection.AcquireLock;
+begin
+  while InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 1) <> 0 do
+    Sleep(0);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclMeteredSection.CloseMeteredSection;
+begin
+  if FMetSect <> nil then
+  begin
+    if FMetSect^.SharedInfo <> nil then
+      UnmapViewOfFile(FMetSect^.SharedInfo);
+    if FMetSect^.FileMap <> 0 then
+      CloseHandle(FMetSect^.FileMap);
+    if FMetSect^.Event <> 0 then
+      CloseHandle(FMetSect^.Event);
+    FreeMem(FMetSect);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclMeteredSection.Create(InitialCount, MaxCount: Integer; const Name: string);
+begin
+  if (MaxCount < 1) or (InitialCount > MaxCount) or (InitialCount < 0) or
+    (Length(Name) > MAX_METSECT_NAMELEN) then
+    raise EJclMeteredSectionError.Create(RsMetSectInvalidParameter);
+  FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
+  if FMetSect <> nil then
+  begin
+    if not InitMeteredSection(InitialCount, MaxCount, Name, False) then
+    begin
+      CloseMeteredSection;
+      FMetSect := nil;
+      raise EJclMeteredSectionError.Create(RsMetSectInitialize);
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMeteredSection.CreateMetSectEvent(const Name: string; OpenOnly: Boolean): Boolean;
+var
+  FullName: string;
+begin
+  if Name = '' then
+    FMetSect^.Event := CreateEvent(nil, False, False, nil)
+  else
+  begin
+    FullName :=  'JCL_MSECT_EVT_' + Name;
+    if OpenOnly then
+      FMetSect^.Event := OpenEvent(0, False, PChar(FullName))
+    else
+      FMetSect^.Event := CreateEvent(nil, False, False, PChar(FullName));
+  end;
+  Result := FMetSect^.Event <> 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMeteredSection.CreateMetSectFileView(InitialCount, MaxCount: Longint;
+  const Name: string; OpenOnly: Boolean): Boolean;
+var
+  FullName: string;
+  LastError: DWORD;
+begin
+  Result := False;
+  if Name = '' then
+    FMetSect^.FileMap := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), nil)
+  else
+  begin
+    FullName := 'JCL_MSECT_MMF_' + Name;
+    if OpenOnly then
+      FMetSect^.FileMap := OpenFileMapping(0, False, PChar(FullName))
+    else
+      FMetSect^.FileMap := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0, SizeOf(TMetSectSharedInfo), PChar(FullName));
+  end;
+  if FMetSect^.FileMap <> 0 then
+  begin
+    LastError := GetLastError;
+    FMetSect^.SharedInfo := MapViewOfFile(FMetSect^.FileMap, FILE_MAP_WRITE, 0, 0, 0);
+    if FMetSect^.SharedInfo <> nil then
+    begin
+      if LastError = ERROR_ALREADY_EXISTS then
+        while not FMetSect^.SharedInfo^.Initialized do Sleep(0)
+      else
+      begin
+        FMetSect^.SharedInfo^.SpinLock := 0;
+        FMetSect^.SharedInfo^.ThreadsWaiting := 0;
+        FMetSect^.SharedInfo^.AvailableCount := InitialCount;
+        FMetSect^.SharedInfo^.MaximumCount := MaxCount;
+        InterlockedExchange(Integer(FMetSect^.SharedInfo^.Initialized), 1);
+      end;
+      Result := True;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+destructor TJclMeteredSection.Destroy;
+begin
+  CloseMeteredSection;
+  inherited Destroy;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMeteredSection.Enter(TimeOut: Longword): TJclWaitResult;
+begin
+  while True do
+  begin
+    AcquireLock;
+    try
+      if FMetSect^.SharedInfo^.AvailableCount >= 1 then
+      begin
+        Dec(FMetSect^.SharedInfo^.AvailableCount);
+        Result := MapSignalResult(WAIT_OBJECT_0);
+        Exit;
+      end;
+      Inc(FMetSect^.SharedInfo^.ThreadsWaiting);
+      ResetEvent(FMetSect^.Event);
+    finally
+      ReleaseLock;
+    end;
+    Result := MapSignalResult(WaitForSingleObject(FMetSect^.Event, TimeOut);
+    if Result <> wrSignaled then
+      Exit;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMeteredSection.InitMeteredSection(InitialCount, MaxCount: Longint;
+  const Name: string; OpenOnly: Boolean): Boolean;
+begin
+  Result := False;
+  if CreateMetSectEvent(Name, OpenOnly) then
+    Result := CreateMetSectFileView(InitialCount, MaxCount, Name, OpenOnly);
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMeteredSection.Leave(ReleaseCount: Integer; var PrevCount: Integer): Boolean;
+var
+  Count: Integer;
+begin
+  AcquireLock;
+  try
+    PrevCount := FMetSect^.SharedInfo^.AvailableCount;
+    if (ReleaseCount < 0) or
+      (FMetSect^.SharedInfo^.AvailableCount + ReleaseCount > FMetSect^.SharedInfo^.MaximumCount) then
+    begin
+      SetLastError(ERROR_INVALID_PARAMETER);
+      Result := False;
+      Exit;
+    end;
+    Inc(FMetSect^.SharedInfo^.AvailableCount, ReleaseCount);
+    ReleaseCount := Min(ReleaseCount, FMetSect^.SharedInfo^.ThreadsWaiting);
+    if FMetSect^.SharedInfo^.ThreadsWaiting > 0 then
+    begin
+      for Count := 0 to ReleaseCount - 1 do
+      begin
+        Dec(FMetSect^.SharedInfo^.ThreadsWaiting);
+        SetEvent(FMetSect^.Event);
+      end;
+    end;
+  finally
+    ReleaseLock;
+  end;
+  Result := True;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJclMeteredSection.Leave(ReleaseCount: Integer): Boolean;
+var
+  Previous: Longint;
+begin
+  Result := Leave(ReleaseCount, Previous);
+end;
+
+//------------------------------------------------------------------------------
+
+constructor TJclMeteredSection.Open(const Name: string);
+begin
+  FMetSect := nil;
+  if Name = '' then
+    raise EJclMeteredSectionError.Create(RsMetSectNameEmpty);
+  FMetSect := PMeteredSection(AllocMem(SizeOf(TMeteredSection)));
+  Assert(FMetSect <> nil);
+  if not InitMeteredSection(0, 0, Name, True) then
+  begin
+    CloseMeteredSection;
+    FMetSect := nil;
+    raise EJclMeteredSectionError.Create(RsMetSectInitialize);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure TJclMeteredSection.ReleaseLock;
+begin
+  InterlockedExchange(FMetSect^.SharedInfo^.SpinLock, 0);
 end;
 
 //==============================================================================
