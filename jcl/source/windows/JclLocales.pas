@@ -22,7 +22,7 @@
 { formatting numbers and dates.                                                                    }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 5, 2002                                                                      }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -35,10 +35,7 @@ unit JclLocales;
 interface
 
 uses
-  Windows, Classes, SysUtils,
-  {$IFDEF COMPILER5_UP}
-  Contnrs,
-  {$ENDIF COMPILER5_UP}
+  Windows, Classes, SysUtils, Contnrs,
   JclBase, JclWin32;
 
 //--------------------------------------------------------------------------------------------------
