@@ -243,6 +243,17 @@ function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; 
 
 {$ENDIF WIN32}
 
+//==============================================================================
+// Conversion Utilities
+//==============================================================================
+
+type
+  EJclConversionError = class (EJclError);
+
+function StrToBoolean(const S: string): Boolean;
+function IntToBool(I: Integer): Boolean;
+function BoolToInt(B: Boolean): Integer;
+
 implementation
 
 uses
@@ -1034,5 +1045,45 @@ begin
 end;
 
 {$ENDIF WIN32}
+
+//==============================================================================
+// Conversion Utilities
+//==============================================================================
+
+{ TODOC
+  Author: Jeff
+
+  StrToBoolean: converts a string S to a boolean. S may be 'Yes/No', 'True/False' or '0/1'.
+                raises an EJclConversionError exception on failure.
+  IntToBool: converts an integer to a boolean where 0 means false and anything else is tue.
+  BoolToInt: converts a boolean to an integer: True=>1 and False=>0
+}
+
+const
+  DefaultYesBoolStr = 'Yes';  // DO NOT LOCALIZE
+  DefaultNoBoolStr  = 'No';   // DO NOT LOCALIZE
+
+resourcestring
+  RsStringToBoolean = 'Unable to convert the string "%s" to a boolean';
+
+function StrToBoolean(const S: string): Boolean;
+begin
+  Result := ((S = '1') or (LowerCase(S) = LowerCase(DefaultTrueBoolStr)) or (LowerCase(S) = LowerCase(DefaultYesBoolStr)));
+  if not Result then
+  begin
+    Result := not ((S = '0') or (LowerCase(S) = LowerCase(DefaultFalseBoolStr)) or (LowerCase(S) = LowerCase(DefaultNoBoolStr)));
+    if Result then raise EJclConversionError.CreateResRecFmt(@RsStringToBoolean, [S]);
+  end;
+end;
+
+function IntToBool(I: Integer): Boolean;
+begin
+  Result := I <> 0;
+end;
+
+function BoolToInt(B: Boolean): Integer;
+begin
+  Result := Ord(B);
+end;
 
 end.
