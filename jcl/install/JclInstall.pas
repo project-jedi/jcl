@@ -569,6 +569,7 @@ begin
     InitProgress;
     Result := Tool.BorRADToolInstallations.Iterate(InstallFor);
   finally
+    FOnProgress(100);  // cheat and show 100% completion
     Tool.UpdateStatus('');
   end;
 end;
@@ -729,12 +730,15 @@ function TJclInstall.PopulateTreeView(Installation: TJclBorRADToolInstallation; 
 var
   InstallationNode, ProductNode, TempNode, MakeNode: TTreeNode;
 
-  function AddNode(Parent: TTreeNode; const Caption: string; FeatureID: Cardinal): TTreeNode;
+  function AddNode(Parent: TTreeNode; const Caption: string; FeatureID: Cardinal; Checked: Boolean = True): TTreeNode;
+  const
+    Icon: array[Boolean] of Integer = (IcoUnchecked, IcoChecked);
   begin
-    FeatureID := FeatureID or FID_Checked;
+    if Checked then
+      FeatureID := FeatureID or FID_Checked;
     Result := Nodes.AddChildObject(Parent, Caption, Pointer(FeatureID));
-    Result.ImageIndex := IcoChecked;
-    Result.SelectedIndex := IcoChecked;
+    Result.ImageIndex := Icon[Checked];
+    Result.SelectedIndex := Icon[Checked];
   end;
 
   procedure AddMakeNodes(Parent: TTreeNode; DebugSettings: Boolean);
@@ -795,12 +799,15 @@ begin
       TempNode := AddNode(ProductNode, RsJCLPackages, FID_JCL_Packages + FID_StandaloneParent);
       if not (Installation is TJclBCBInstallation) then
       begin
-        TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts);
-        AddNode(TempNode, RsJCLIdeDebug, FID_JCL_ExpertDebug);
-        AddNode(TempNode, RsJCLIdeAnalyzer, FID_JCL_ExpertAnalyzer);
-        AddNode(TempNode, RsJCLIdeFavorite, FID_JCL_ExpertFavorite);
+        { TODO -orrossmair : 
+It has been reported that IDE experts don't work under Win98.  
+Leave these options unchecked for Win9x/WinME until that has been examined. }
+        TempNode := AddNode(TempNode, RsIdeExperts, FID_JCL_Experts, IsWinNT);
+        AddNode(TempNode, RsJCLIdeDebug, FID_JCL_ExpertDebug, IsWinNT);
+        AddNode(TempNode, RsJCLIdeAnalyzer, FID_JCL_ExpertAnalyzer, IsWinNT);
+        AddNode(TempNode, RsJCLIdeFavorite, FID_JCL_ExpertFavorite, IsWinNT);
         if Installation.VersionNumber <= 6 then
-          AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames);
+          AddNode(TempNode, RsJCLIdeThrNames, FID_JCL_ExpertsThrNames, IsWinNT);
       end;
       {$ENDIF MSWINDOWS}
       InstallationNode.Expand(True);
@@ -856,7 +863,7 @@ end;
 
 procedure TJclInstall.InstallationFinished(Installation: TJclBorRADToolInstallation);
 begin
-  if FVersionLogSize > FIniFile.ReadInteger(RsLogSize, Installation.Name, 0) then
+  if FIniFile.ReadInteger(RsLogSize, Installation.Name, 0) = 0 then
     FIniFile.WriteInteger(RsLogSize, Installation.Name, FVersionLogSize);
   if Assigned(FOnEnding) then
     FOnEnding(Installation);
