@@ -503,7 +503,7 @@ function GetAntialiasedBitmap(const Bitmap: TBitmap): TBitmap;
 procedure BlockTransfer(Dst: TJclBitmap32; DstX: Integer; DstY: Integer; Src: TJclBitmap32;
   SrcRect: TRect; CombineOp: TDrawMode);
 
-procedure StretchTransfer( Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
+procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; SrcRect: TRect;
   StretchFilter: TStretchFilter; CombineOp: TDrawMode);
 
 procedure Transform(Dst, Src: TJclBitmap32; SrcRect: TRect; Transformation: TJclTransformation);
@@ -1555,7 +1555,6 @@ procedure StretchTransfer(Dst: TJclBitmap32; DstRect: TRect; Src: TJclBitmap32; 
   StretchFilter: TStretchFilter; CombineOp: TDrawMode);
 var
   SrcW, SrcH, DstW, DstH: Integer;
-  t: Single;
   MapX, MapY: TMappingTable;
   DstX, DstY: Integer;
   R: TRect;
@@ -6159,10 +6158,13 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.19  2004/11/25 22:00:07  rrossmair
+// - removed orphaned local variable
+//
+{$ENDIF PROTOTYPE}
 // Revision 1.18  2004/11/14 06:05:05  rrossmair
 // - some source formatting
 //
-{$ENDIF PROTOTYPE}
 // Revision 1.17  2004/11/06 02:19:45  mthoma
 // history cleaning.
 //

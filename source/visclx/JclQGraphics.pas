@@ -1589,6 +1589,9 @@ initialization
   SetGamma(0.7);
 
 // History:
+// Revision 1.18  2004/11/14 06:05:05  rrossmair
+// - some source formatting
+//
 // Revision 1.17  2004/11/06 02:19:45  mthoma
 // history cleaning.
 //
