@@ -17,14 +17,15 @@ only some remaining keys.
 Think twice before using this function. It will happily delete vital parts
 of the registry without complaining.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Charlie Calvert;ccalvert@inprise.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegCreateKey(const Key, Value: string): Longint;
@@ -42,14 +43,15 @@ If the function succeeds it returns ERROR_SUCCESS as defined in Windows.pas. If
 it fails it returns a non-zero error code. You can use the Windows FormatMessage
 API call to get a description for the error code.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Charlie Calvert;ccalvert@inprise.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function RegReadBoolDef(const RootKey: HKEY; const Key, Name: string; Def: Boolean): Boolean;
@@ -68,14 +70,15 @@ Count=4
 [Result]
 The value of the specified key, or the specified default value in case of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadIntegerDef
@@ -99,14 +102,15 @@ Count=4
 [Result]
 The value of the specified key, or the specified default value in case of failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadBoolDef
@@ -130,14 +134,15 @@ Count=4
 [Result]
 The value of the specified key, or the specified default value on failure.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadBoolDef
@@ -166,14 +171,15 @@ Count=6
 The return value is not the data itself but the amount of data read.
 The value is never bigger than ValueSize.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Stephane Fillon;sfillon@ifrance.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadBoolDef
@@ -196,14 +202,15 @@ The function return True if it succeeds else False. The most probable
 failure reasons are a nonexistent key or name or insufficient permissions
 on Windows NT.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RegWriteBool(const RootKey: HKEY; const Key, Name: string; Value: Boolean);
@@ -220,14 +227,15 @@ Count=4
 3=Name:string=Name of the value to write.
 4=Value:Boolean=Value to write.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegWriteInteger
@@ -248,14 +256,15 @@ Count=4
 3=Name:string=Name of the value to write.
 4=Value:Integer=Value to write.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegWriteBool
@@ -276,14 +285,15 @@ Count=4
 3=Name:string=Name of the value to write.
 4=Value:string=Value to write.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegWriteBool
@@ -305,14 +315,15 @@ Count=5
 4=Value=Value of any type to write.
 5=ValueSize:Cardinal=Size of data to write.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Stephane Fillon;sfillon@ifrance.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegWriteBool
@@ -334,14 +345,15 @@ Count=3
 [Result]
 The value of the specified key.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadInteger
@@ -363,14 +375,15 @@ Count=3
 [Result]
 The value of the specified key.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadBool
@@ -392,14 +405,15 @@ Count=3
 [Result]
 The value of the specified key.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=John C Molyneux;jaymol@hotmail.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadBool
@@ -426,14 +440,15 @@ Count=5
 The return value is not the data itself but the amount of data read.
 The value is never bigger than ValueSize.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Stephane Fillon;sfillon@ifrance.com
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=3
 1=RegReadBool
@@ -459,14 +474,15 @@ The return value is that of a <REF>RegDeleteEntry</REF> except for
 calling UnregisterAutoExec with ekServiceRun or ekServiceRunOnce on Windows NT/2000
 which causes the function to return False and do nothing.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RegisterAutoExec
@@ -498,14 +514,15 @@ If the function succeeds it returns True, otherwise it returns False. Note that
 calling RegisterAutoExec with ekServiceRun or ekServiceRunOnce on Windows NT/2000
 always causes the function to return False (the file is not registered).
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=UnregisterAutoExec
@@ -524,14 +541,15 @@ Count=6
 5=ekServiceRun=Register under HKCU\..\RunServices. Not supported on NT - simulates services on Windows 9x. The specified file is executed before each logon untl it is unregistered.
 6=ekServiceRunOnce=Register under HKCU\..\RunServicesOnce. Not supported on NT - simulates services on Windows 9x. The specified file is executed once before the next logon.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Marcel van Brakel;brakelm@bart.nl
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=UnregisterAutoExec
@@ -561,14 +579,15 @@ for I := 0 to SubKeys.Count - 1 do
   ShowMessage(ValueNames[I]);
 ValueNames.Free;
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RegGetKeyNames
@@ -597,14 +616,15 @@ RegGetKeyNames(HKEY_LOCAL_MACHINE, '\Software\Borland\Delphi\5.0', SubKeys);
 for I := 0 to SubKeys.Count - 1 do 
   ShowMessage(SubKeys[I]);
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RegGetValueNames
@@ -625,14 +645,15 @@ Count=2
 If there are any children of the specified key, the function will return True. 
 If there are no children, it will return False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Peter Friese;freter@gmx.net
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RegGetKeyNames
@@ -657,14 +678,15 @@ Count=4
 The function returns True if the key "RootKey\Key\ListName" could be
 created False otherwise.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=1
 1=RegLoadList
@@ -689,14 +711,15 @@ Count=4
 The function returns True if a list with at least one element is read in.
 If 'Items' does not exist the function throws an exception.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RegSaveList
@@ -722,14 +745,15 @@ The function returns True if it finds a value named 'Items' and all the
 values of the list False otherwise. If the number of items is 0 then
 'Items' is deleted, but the function returns False.
 [Quick Info]
-BCB=3,4,5
 Unit=JclRegistry
 Category=Registry and Ini files
 SubCat=Registry
 Author=Robert Marquardt;robert_marquardt@gmx.de
-Delphi=3,4,5
+Delphi=4,5,6
 Windows NT/2000=Requires Windows NT 3.1 or later.
 Windows 95/98=Requires Windows 95 or later.
+Kylix=1
+FPC=1.x
 [SeeAlso]
 Count=2
 1=RegSaveList
