@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { of these individuals.                                                        }
 {                                                                              }
-{ Last modified: November 28, 2000                                             }
+{ Last modified: December 6, 2000                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -174,13 +174,15 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure MessageReport(Strings: TStrings; MaxWidth: Integer{$IFDEF SUPPORTS_DEFAULTPARAMS} = 80{$ENDIF});
     function Send(ShowDialog: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
       ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
     class function SimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
+      const AAttachment: TFileName{$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF};
       ShowDialog: Boolean{$IFDEF SUPPORTS_DEFAULTPARAMS} = True {$ENDIF};
       ParentWND: HWND{$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF}): Boolean;
     procedure SortAttachments;
-    property Attachments: TStrings read FAttachments write FAttachments;
+    property Attachments: TStrings read FAttachments;
     property Body: string read FBody write FBody;
     property Recipients: TJclEmailRecips read FRecipients;
     property Subject: string read FSubject write FSubject;
@@ -198,7 +200,7 @@ implementation
 
 uses
   Consts, Registry,
-  JclResources, JclStrings, JclSysInfo, JclSysUtils;
+  JclLogic, JclResources, JclStrings, JclSysInfo, JclSysUtils;
 
 const
   mapidll = 'mapi32.dll';
@@ -694,6 +696,49 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure TJclEmail.MessageReport(Strings: TStrings; MaxWidth: Integer);
+const
+  NameDelimiter = ', ';
+  KindNames: array [TJclEmailRecipKind] of string =
+    (RsMapiMailTO, RsMapiMailCC, RsMapiMailBCC);
+var
+  LabelsWidth: Integer;
+  NamesList: array [TJclEmailRecipKind] of string;
+  ReportKind: TJclEmailRecipKind;
+  I: Integer;
+  BreakStr, S: string;
+begin
+  LabelsWidth := Length(RsMapiMailSubject);
+  for ReportKind := Low(ReportKind) to High(ReportKind) do
+  begin
+    NamesList[ReportKind] := '';
+    LabelsWidth := Max(LabelsWidth, Length(KindNames[ReportKind]));
+  end;
+  BreakStr := AnsiCrLf + StringOfChar(' ', LabelsWidth + 2);
+  for I := 0 to FRecipients.Count - 1 do
+    with FRecipients[I] do
+      NamesList[Kind] := NamesList[Kind] + AddressAndName + NameDelimiter;
+  for ReportKind := Low(ReportKind) to High(ReportKind) do
+    if NamesList[ReportKind] <> '' then
+    begin
+      S := StrPadRight(KindNames[ReportKind], LabelsWidth) + ': ' +
+        Copy(NamesList[ReportKind], 1, Length(NamesList[ReportKind]) - Length(NameDelimiter));
+      Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+    end;
+  S := RsMapiMailSubject + ': ' + Subject;
+  Strings.Add(WrapText(S, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+  Strings.Add('');
+  Strings.Add(WrapText(Body, BreakStr, [AnsiTab, AnsiSpace], MaxWidth));
+  if FAttachments.Count > 0 then
+  begin
+    Strings.Add('');
+    Strings.Add(RsMapiMailAttachments + ':');
+    Strings.AddStrings(FAttachments);
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function TJclEmail.Send(ShowDialog: Boolean; ParentWND: HWND): Boolean;
 const
   RecipClasses: array [TJclEmailRecipKind] of DWORD =
@@ -706,6 +751,9 @@ var
   I: Integer;
   TaskWindows: TJclMapiTaskWindows;
 begin
+  if not AnyClientInstalled then
+    raise EJclMapiError.CreateResRec(@RsMapiMailNoClient);
+
   if FAttachments.Count > 0 then
   begin
     SetLength(AttachArray, FAttachments.Count);
@@ -777,13 +825,16 @@ end;
 //------------------------------------------------------------------------------
 
 class function TJclEmail.SimpleSendMail(const ARecipient, AName, ASubject,
-  ABody: string; ShowDialog: Boolean; ParentWND: HWND): Boolean;
+  ABody: string; const AAttachment: TFileName; ShowDialog: Boolean;
+  ParentWND: HWND): Boolean;
 begin
   with Create do
   try
     Recipients.Add(ARecipient, AName, rkTO);
     Subject := ASubject;
     Body := ABody;
+    if AAttachment <> '' then
+      Attachments.Add(AAttachment);
     Result := Send(ShowDialog, ParentWND);
   finally
     Free;
