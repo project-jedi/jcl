@@ -129,8 +129,8 @@ type
     procedure SaveToStream(Stream: TStream;
       WideFileOptions: TWideFileOptions = []); virtual;
     procedure SetText(Text: PWideChar); virtual;
-    function GetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
-    procedure SetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar; const Value: WideString);
+    function GetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
+    procedure SetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar; const Value: WideString);
     property Capacity: Integer read GetCapacity write SetCapacity;
     property CommaText: WideString read GetCommaText write SetCommaText;
     property Count: Integer read GetCount;
@@ -1080,15 +1080,15 @@ end;
 
 function TWStrings.GetCommaText: WideString;
 begin
-  Result := GetDelimtedTextEx(',', '"');
+  Result := GetDelimitedTextEx(',', '"');
 end;
 
 function TWStrings.GetDelimitedText: WideString;
 begin
-  Result := GetDelimtedTextEx(FDelimiter, FQuoteChar);
+  Result := GetDelimitedTextEx(FDelimiter, FQuoteChar);
 end;
 
-function TWStrings.GetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
+function TWStrings.GetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar): WideString;
 var
   S: WideString;
   P: PWideChar;
@@ -1361,33 +1361,37 @@ end;
 
 procedure TWStrings.SetCommaText(const Value: WideString);
 begin
-  SetDelimtedTextEx(',', '"', Value);
+  SetDelimitedTextEx(',', '"', Value);
 end;
 
 procedure TWStrings.SetDelimitedText(const Value: WideString);
 begin
-  SetDelimtedTextEx(Delimiter, QuoteChar, Value);
+  SetDelimitedTextEx(Delimiter, QuoteChar, Value);
 end;
 
-procedure TWStrings.SetDelimtedTextEx(ADelimiter, AQuoteChar: WideChar;
+procedure TWStrings.SetDelimitedTextEx(ADelimiter, AQuoteChar: WideChar;
   const Value: WideString);
 var
   P, P1: PWideChar;
   S: WideString;
-begin
-  BeginUpdate;
-  try
-    Clear;
-    P := PWideChar(Value);
+
+  procedure IgnoreWhiteSpace(var P: PWideChar);
+  begin
     while True do
-    begin
-      case P[0] of
+      case P^ of
         WideChar(1)..WideChar(32):
           Inc(P);
       else
         Break;
       end;
-    end;
+  end;
+
+begin
+  BeginUpdate;
+  try
+    Clear;
+    P := PWideChar(Value);
+    IgnoreWhiteSpace(P);
     while P[0] <> WideChar(0) do
     begin
       if P[0] = AQuoteChar then
@@ -1401,23 +1405,12 @@ begin
       end;
       Add(S);
 
-      while True do
-        case P[0] of
-          WideChar(1)..WideChar(32):
-            Inc(P);
-        else
-          Break;
-        end;
+      IgnoreWhiteSpace(P);
       if P[0] = ADelimiter then
-        repeat
-          Inc(P);
-          case P[0] of
-            WideChar(1)..WideChar(32):
-              ;
-          else
-            Break;
-          end;
-        until False;
+      begin
+        Inc(P);
+        IgnoreWhiteSpace(P);
+      end;
     end;
   finally
     EndUpdate;
@@ -1810,6 +1803,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2005/03/01 15:37:40  marquardt
+// addressing Mantis 0714, 0716, 0720, 0731, 0740 partly or completely
+//
 // Revision 1.9  2005/02/24 16:34:40  marquardt
 // remove divider lines, add section lines (unfinished)
 //
