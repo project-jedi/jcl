@@ -72,7 +72,6 @@ object JclDebugResultForm: TJclDebugResultForm
         Caption = 'Line errors'
       end>
     ColumnClick = False
-    HotTrackStyles = []
     ReadOnly = True
     RowSelect = True
     SmallImages = ImageList1
