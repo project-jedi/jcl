@@ -675,8 +675,8 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32); assembler;
-asm
+procedure _BlendMemEx(F: TColor32; var B: TColor32; M: TColor32);
+{asm
   // EAX <- F
   // [EDX] <- B
   // ECX <- M
@@ -734,7 +734,11 @@ asm
 
 @1:     POP     EBX
 @2:     RET
+end;}
+begin
+  B := _BlendRegEx(F, B, M);
 end;
+
 
 //------------------------------------------------------------------------------
 
