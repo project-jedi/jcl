@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: March 5, 2003                                                                     }
+{ Last modified: April 16, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -867,22 +867,23 @@ resourcestring
   RsIntelCacheDescr45 = 'Unified cache, 32 byte cache line, 4-way set associative, 2Mb';
 
 resourcestring
-  RsOSVersionWin95 = 'Windows 95';
+  RsOSVersionWin95     = 'Windows 95';
   RsOSVersionWin95OSR2 = 'Windows 95 OSR2';
-  RsOSVersionWin98 = 'Windows 98';
-  RsOSVersionWin98SE = 'Windows 98 SE';
-  RsOSVersionWinME = 'Windows ME';
-  RsOSVersionWinNT3 = 'Windows NT 3.%u';
-  RsOSVersionWinNT4 = 'Windows NT 4.%u';
-  RsOSVersionWin2000 = 'Windows 2000';
-  RsOSVersionWinXP = 'Windows XP';
+  RsOSVersionWin98     = 'Windows 98';
+  RsOSVersionWin98SE   = 'Windows 98 SE';
+  RsOSVersionWinME     = 'Windows ME';
+  RsOSVersionWinNT3    = 'Windows NT 3.%u';
+  RsOSVersionWinNT4    = 'Windows NT 4.%u';
+  RsOSVersionWin2000   = 'Windows 2000';
+  RsOSVersionWinXP     = 'Windows XP';
+  RsOSVersionWin2003   = 'Windows Server 2003';
 
 resourcestring
-  RsProductTypeWorkStation = 'Workstation';
-  RsProductTypeServer = 'Server';
-  RsProductTypeAdvancedServer = 'Advanced Server';
-  RsProductTypePersonal = 'Home Edition';
-  RsProductTypeProfessional = 'Professional';
+  RsProductTypeWorkStation      = 'Workstation';
+  RsProductTypeServer           = 'Server';
+  RsProductTypeAdvancedServer   = 'Advanced Server';
+  RsProductTypePersonal         = 'Home Edition';
+  RsProductTypeProfessional     = 'Professional';
   RsProductTypeDatacenterServer = 'Datacenter Server';
 
 //--------------------------------------------------------------------------------------------------
