@@ -1,19 +1,19 @@
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclMultiMediaTimer = class (TObject)
+TJclMultimediaTimer = class (TObject)
 [ShortDescr]
 Wrapper for a Win32 multi-media timer 'object'.
 [Description]
-TJclMultiMediaTimer is a wrapper class for the Win32 multi-media timer services.
+TJclMultimediaTimer is a wrapper class for the Win32 multi-media timer services.
 In a nutshell, a multi-media timer provides services similar to a normal Win32
 timer (the one that sends a WM_TIMER message) except that it allows for a higher,
 programmable timer resolution, and provides guarantees about delivery of timer
 notifications. In addition it's much more flexible.
 [Quick Info]
 BCB=3,4,5
-Unit=JclMultiMedia
+Unit=JclMultimedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 [SeeAlso]
@@ -24,9 +24,9 @@ Count=2
 [Declaration]
 constructor Create(Kind: TMmTimerKind; Notification: TMmNotificationKind);
 [ShortDescr]
-Creates an instance of TJclMultiMediaTimer.
+Creates an instance of TJclMultimediaTimer.
 [Description]
-Creates an instance of TJclMultiMediaTimer. The constructor also initializes the
+Creates an instance of TJclMultimediaTimer. The constructor also initializes the
 object for a specific usage. You can choose between a 'one-shot' timer or a
 periodic timer. Additionally you can choose how you want to be notified when the
 timer 'fires'. To keep the class simple, these attributes are fixed for the objects
@@ -42,9 +42,9 @@ for more information.
 [Quick Info]
 Kind=Method
 Visibility=Public
-Unit=JclMultiMedia
+Unit=JclMultimedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -70,7 +70,7 @@ Kind=Method
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -93,7 +93,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -109,7 +109,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -125,7 +125,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -141,7 +141,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -157,7 +157,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -181,7 +181,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TTJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -199,7 +199,7 @@ Kind=Property
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -228,7 +228,7 @@ Kind=Method
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -245,7 +245,7 @@ Kind=Method
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -274,7 +274,7 @@ Kind=Method
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -304,7 +304,7 @@ Kind=Method
 Visibility=Public
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -327,7 +327,7 @@ you use the nkSetTimer notification type you must call Event.ResetEvent manually
 Kind=Type
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
@@ -359,7 +359,7 @@ the ResetEvent method.
 Kind=Type
 Unit=JclMultiMedia
 Category=Date and Time
-SubCat=Timers and Counters\TJclMultiMediaTimer
+SubCat=Timers and Counters\TJclMultimediaTimer
 Author=Marcel van Brakel;brakelm@bart.nl
 Delphi=3,4,5
 BCB=3,4,5
