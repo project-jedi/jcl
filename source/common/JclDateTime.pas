@@ -160,6 +160,7 @@ function LastWriteDateTimeOfFile(const Sr: TSearchRec): TDateTime;
 type
   TJclUnixTime32 = Longword;
 
+function DateTimeToUnixTime(DateTime : TDateTime) : TJclUnixTime32;
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 
 {$IFDEF MSWINDOWS}
@@ -177,6 +178,8 @@ const
     (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
   MinutesPerDay     = 60 * 24;
+  SecondsPerMinute = 60;
+  SecondsPerHour = 3600;
   SecondsPerDay     = MinutesPerDay * 60;
   MsecsPerMinute    = 60 * 1000;
   MsecsPerHour      = 60 * MsecsPerMinute;
@@ -199,6 +202,9 @@ const
   //   4 : first week has at least four days (according to ISO 8601)
   //   7 : first full week
   ISOFirstWeekMinDays = 4;
+
+  // 1970-01-01T00:00:00 in TDateTime
+  UnixTimeStart = 25569;
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1083,13 +1089,6 @@ end;
 //==================================================================================================
 
 const
-  SecsPerMin  = 60;
-  SecsPerHour = SecsPerMin * 60;
-  SecsPerDay  = SecsPerHour * 24;
-
-  // 1970-01-01T00:00:00 in TDateTime
-  UnixTimeStart = 25569;
-
   {$IFDEF MSWINDOWS}
   // 1 second in FileTime resolution
   FileTimeSecond = 1000 * 1000 * 10;
@@ -1106,9 +1105,14 @@ const
 // Conversion Unix time <--> TDateTime
 //==================================================================================================
 
+function DateTimeToUnixTime(DateTime : TDateTime) : TJclUnixTime32;
+begin
+  Result := Trunc ((DateTime-UnixTimeStart) * SecondsPerDay);
+end;
+
 function UnixTimeToDateTime(const UnixTime: TJclUnixTime32): TDateTime;
 begin
-  Result := UnixTime / SecsPerDay + UnixTimeStart;
+  Result:= UnixTimeStart + (UnixTime / SecondsPerDay);
 end;
 
 //==================================================================================================
@@ -1133,7 +1137,7 @@ end;
 
 // History:
 
-// 2000-06-22, Michael Schnell:                                                                 
+// 2000-06-22, Michael Schnell:
 //  Name changed GetCenturyOfDate -> CenturyOfDate
 //  Name changed GetCenturyBaseYear -> CenturyBaseYear
 //
@@ -1203,7 +1207,7 @@ end;
 //  added functions DayOfTheYear and DayOfTheYearToDateTime                                       
                                                                                                
 // 2000-09-18, Michael Schnell                                                                       
-//  added function FormatDateTime                                                                 
+//  added function FormatDateTime
                                                                                                
 // 2000-10-15, Michael Schnell
 //  avoiding "absolute" (in locations where stated)                                               
@@ -1219,6 +1223,11 @@ end;
 //    FileTimeToSystemTime, SystemTimeToFileTime                                                 
 
 // $Log$
+// Revision 1.11  2004/10/14 14:38:50  rikbarker
+// Added DateTimeToUnixTime
+// Rewrote UnixTimeToDateTime to remove PH Code
+// Removed unnecessary constants and moved the relevant ones to the top of the unit
+//
 // Revision 1.10  2004/07/29 07:58:20  marquardt
 // inc files updated
 //
