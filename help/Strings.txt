@@ -1164,7 +1164,7 @@ supplied string.
 [Parameters]
 Count=2
 1=S:AnsiString=Source string.
-2=Len:Integer=The character whose occurrences to count.
+2=C:AnsiChar=The character whose occurrences to count.
 [Result]
 The number of occurrences of C in S.
 [Quick Info]
