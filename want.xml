@@ -165,6 +165,7 @@ $Id$
           <exclude name="${pack.dir}/k2/**" />
           <exclude name="${pack.dir}/JclPackagesDK1.bpg" />
           <exclude name="${pack.dir}/JclPackagesDK2.bpg" />
+          <exclude name="${pack.dir}/**/*.xml" />
           <exclude name="${pack.dir}/**/template.*" />
           <exclude name="${src.dir}/prototypes/**" />
           <exclude name="${src.dir}/common/JclD4Compatibility.pas" />
@@ -186,7 +187,6 @@ $Id$
           <include name="${lib.dir}/**/*.exc" />
           <include name="${pack.dir}/**/*.bmk" />
           <include name="${pack.dir}/**/*.gmk" />
-          <include name="${pack.dir}/**/*.xml" />
           <include name="${src.dir}/**/*.obj" />
           <include name="${src.dir}/common/*.fpc" />
           <include name="${src.dir}/windows/win32api/*.int" />
