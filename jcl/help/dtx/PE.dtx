@@ -21,7 +21,6 @@ Quick info:
 Summary:
   Returns the base name of the supplied function name.
 Description:
-
   Many Win32 dynamic link libraries export functions in two forms, one for ansi and
   one for unicode, and distinquish between these functions using a single letter
   suffix, A and W respectively. The name without this suffix is refered to as the
@@ -30,7 +29,6 @@ Description:
 Parameters:
   FunctionName - Name of a function as it appears in the import or export section of an image file.
 Result:
-
   The base name of the supplied function.
 Quick info:
   Unit: JclPeImage
@@ -45,7 +43,6 @@ Quick info:
 Summary:
   Compares two function names.
 Description:
-
   The PeSmartFunctionNameSame function compares two function names and returns
   whether they are equal observing the comparison rules specified through the
   options parameter.
@@ -54,7 +51,6 @@ Parameters:
   FunctionName - Second function name to be compared.
   Options - A set of options which determine how the names are compared. See TJclSmartCompOptions for more information.
 Result:
-
   If the two function names are considered equal the function returns True, otherwise
   it returns False.
 Quick info:
@@ -70,7 +66,6 @@ Quick info:
 Summary:
   Base exception class for exceptions raised by the JclPeImage module.
 Description:
-
   EJclPeImageError is the base exception class for exception raised by the JclPeImage
   module. EJclPeImageError does not introduce any new methods or properties and
   merely serves to identify exceptions raised explicitly by the JclPeImage module.
@@ -83,11 +78,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImageBaseList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImageBaseList>
 Summary:
   Baseclass for list-like classes which require a TJclPeImage instance reference.
 Description:
-
   TJclPeImageBaseList is the baseclass for all list classes in the JclPeImage module
   which require a reference to the TJclPeImage instance for which they were created.
   TJclPeImageBaseList does not introduce any new behaviours and serves merely as a
@@ -102,11 +96,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImageBaseList.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Instantiates a TJclPeImageBaseList class.
 Description:
-
   Creates an instance of the TJclPeImageBaseList class and stores the reference
   to AImage in the Image property for later use. The constructor calls the inherited
   constructor specifying True for the AOwnsObjects parameter and as such the list
@@ -126,11 +118,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImageBaseList.Image
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Reference to the TJclPeImage specified during construction.
 Description:
-
   Reference to the TJclPeImage instance for which the class was instantiated. This
   is a direct copy of the AImage parameter as specified when the constructor was
   called.
@@ -144,11 +134,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImagesCache>
 Summary:
   Cahce for TJclPeImage objects.
 Description:
-
   Provides a cache for TJclPeImage instances. The cache is used internally (though
   you can also use it outside of the module) by the JclPeImage module to prevent
   frequent loading and unloading of image files, thereby increasing performance.
@@ -163,11 +152,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache.Clear
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Clears the list of image objects
 Description:
-
   Clears the list of image objects. Before the list is cleared all instances are
   freed first. Therefore you should make sure not to use any cached references to
   any of image objects retrieved from the cache earlier.
@@ -181,11 +168,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache.Images
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns a TJclPeImage instance for the specified image file.
 Description:
-
   The Images property returns an TJclPeImage object for the image file specified
   by the FileName index. If there is already an object for that image in the cache
   the property returns a reference to it. If there isn't an object in the cache yet
@@ -206,11 +191,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImagesCache.Count
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the number of TJclPeImage instances currently in the cache.
 Description:
-
   Returns the number of TJclPeImage instances currently in the cache.
 Quick info:
   Unit: JclPeImage
@@ -320,11 +303,10 @@ Quick info:
   The image was produced by the Borland C++ Builder or Microsoft Visual C++ linker.
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportFuncItem>
 Summary:
   Represents a single imported function.
 Description:
-
   The TJclPeImportFuncItem class represents a single imported function from some
   image file. The class provides detailed information about how the function was
   imported such as it's name or ordinal. You'll normally won't instantiate this
@@ -339,11 +321,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.Ordinal
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   The ordinal value by which the function was imported.
 Description:
-
   If the function was imported by ordinal the property reads the ordinal value by
   which it was imported, otherwise it reads 0. You can determine whether the function
   was imported by ordinal or name through the IsByOrdinal property.
@@ -357,11 +337,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.Hint
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Hint of the imported function.
 Description:
-
   Returns the hint value of the function. The hint is an index into the exports
   table of the image from which the function is imported which allows the OS loader
   to find the correct export a little faster. Note that the hint value may be
@@ -377,11 +355,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.ImportLib
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Reference to the TJclPeImportLibItem which owns this TJclPeImportFuncItem.
 Description:
-
   Reference to the TJclPeImportLibItem which owns this TJclPeImportFuncItem. See
   the description of TJclPeImportFunctItem for more information.
 Quick info:
@@ -394,11 +370,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.IndirectImportName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the name of a function which was imported by ordinal (if available).
 Description:
-
   If the function was imported by ordinal the IndirectImportName property returns
   the name of the function. The JclPeImage module has to look up this name from the
   exports section of the image from which the function is imported. Since an image
@@ -416,11 +390,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.IsByOrdinal
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Specifies whether the function was imported by ordinal.
 Description:
-
   Specifies whether the function was imported by ordinal. If the function is imported
   by Ordinal the property reads True, otherwise it reads False (and as such the
   function was imported by name).
@@ -434,11 +406,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.Name
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the name of the imported function.
 Description:
-
   The Name property returns the name of the imported function. If the function
   was imported by name the property simply returns that name. If the function was
   imported by ordinal the property returns the value of the IndirectImportName
@@ -453,11 +423,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportFuncItem.ResolveCheck
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Specifies whether the function could be resolved.
 Description:
-
   Specifies whether the function could be resolved. The intial value of this property
   will be icNotChecked. You have to request function resolving explicitly through
   the CheckImports method of the TJclPeImportList class.
@@ -471,11 +439,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportLibItem>
 Summary:
   Abstraction of an import descriptor.
 Description:
-
   The import section of an image file consists of a variable number of entries
   named import descriptors. Each individual import descriptor is basically a table
   that describes the imports from one specific image. The TJclPeImportLibItem is
@@ -494,11 +461,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.SortList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Sorts the list of imports.
 Description:
-
   Sorts the list of imports in this import descriptor according to the supplied
   parameters. You can sort the list on things such as the name of the imports
   and specify an ascending or descending sort.
@@ -515,11 +480,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.Count
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the number of items in the Items property.
 Description:
-
   Returns the number of items in the Items property. As such it returns the number
   of imports described by, or contained in, this import descriptor.
 Quick info:
@@ -532,11 +495,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.FileName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the fully qualified filename of the image described by this entry.
 Description:
-
   Returns the fully qualified name of the image file from which the functions
   described by this import descriptor are imported.
 Quick info:
@@ -549,11 +510,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ImportDescriptor
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -565,11 +524,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ImportDirectoryIndex
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Position within the Items list of the TJclImportList class.
 Description:
-
   Zero based index into the Items property of the TJclImportList class at which
   this TJclPeImportLibItem is positioned.
 Quick info:
@@ -582,11 +539,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ImportKind
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Specifies the kind of import.
 Description:
-
   Specifies the kind of import. It can be either a normal import, a bound import
   or a delay loaded import. See the description of TJclPeImportKind for more information.
   Note that this has nothing to do with the method by which a function is imported,
@@ -601,11 +556,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Provides indexed access to the items in the list.
 Description:
-
   Provides (zero based) indexed access to the items contained in the import
   descriptor. Each entry in the list is a reference to a TJclPeImportFuncItem
   which describes a single imported function from the image described by this
@@ -621,11 +574,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.Name
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the lowercase filename of the image described by this entry.
 Description:
-
   Returns the filename of the image file from which the functions described by this
   import descriptor are imported. The returned filename is returned as it appears
   in the image file, except that it's converted to lowercase before it's returned.
@@ -641,11 +592,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.OriginalName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the filename of the image described by this entry.
 Description:
-
   Returns the filename of the image file from which the functions described by this
   import descriptor are imported. The returned filename is returned as it appears
   in the image file, often uppercase and without path or drive indication.
@@ -659,11 +608,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.ThunkData
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -675,11 +622,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportLibItem.TotalResolveCheck
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Specifies whether all imported functions in this import directory could be resolved.
 Description:
-
   Specifies whether all imported functions in this import directory could be resolved.
   If as little as one function could not be resolved, the property returns icUnresolved.
   This property starts out with the icNotChecked value indicating that resolvement
@@ -695,11 +640,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection.TJclPeImportList>
 Summary:
   Represents the import section of an image file.
 Description:
-
   The TJclPeImportList class represents the import section of an image file. The
   import section contains a list of import descriptors (represented by the
   TJclPeImportLibItem class) each of which in turn contain all imports from a
@@ -716,11 +660,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.CheckImports
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Determines whether all imported functions can be resolved.
 Description:
-
   This method determines whether all imported functions can be resolved  by looking
   them up in the exports section of the image from which the function is imported.
   If the function is found there the import is considered resolved, otherwise it is
@@ -738,11 +680,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.SmartFindName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Searches the import section for a specific function.
 Description:
-
   The SmartFindName method searches through the all the import directories that apply
   to the specified image name (LibName parameter) for the specified function
   name (CompareName). Through the Options parameter you can specify whether the
@@ -753,7 +693,6 @@ Parameters:
   LibName - Image from which the function should be imported. If you specify an empty string the search includes all images.
   Options - Set of options that influence the name comparison such as whether it's case-sensitive. See the description of TJclSmartCompOptions for more information.
 Result:
-
   If the specified function was found SmartFindName returns a reference to the
   TJclPeImportFuncItem that represents the found imported function. This reference
   remains owned by the class so you shouldn't free it. It also remains valid only
@@ -769,11 +708,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.SortAllItemsList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Sorts the list of imported functions as accesible through the AllItems property.
 Description:
-
   Sorts the list of imported functions as accesible through the AllItems property.
 Parameters:
   SortType - Specifies by which property the list is sorted. You can sort on Name, Ordinal, Hint or Image name. See the description of TJclPeImportSort for more information.
@@ -788,11 +725,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.SortList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Sorts the list of import directories (the Items property).
 Description:
-
   Sorts the list of import directories (the Items property) according to the property
   specified by the SortType parameter. You can sort either on Index or Name.
 Parameters:
@@ -807,11 +742,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.TryGetNamesForOrdinalImports
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Attempts to resolve the names of functions that were imported by ordinal.
 Description:
-
   The TryGetNamesForOrdinalImports method searches the export sections of each image
   that is linked against in an attempt to find the names of those functions that
   were imported by ordinal instead of by name. See also the description of the
@@ -826,11 +759,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.AllItems
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Provides indexed access to all imported functions.
 Description:
-
   Provides (zero-based) indexed access to all imported functions, bypassing the
   import directories. Note that this list is initially empty and has to be explicitly
   initialized either by reading the AllItemsCount property (which subsequently returns
@@ -847,11 +778,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.AllItemCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the number of items in the AllItems list.
 Description:
-
   Returns the number of items in the AllItems list. Note that if the list is empty
   the property read method will first trigger the initialisation of the list before
   returning the count.
@@ -865,11 +794,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.FilterModuleName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Filters the items that are included in the AllItems list.
 Description:
-
   Allows you to filter the items that are included in the AllItems list. Setting
   this property to a non-empty string will cause only those functions to be added
   that are imported from the specified image.
@@ -883,11 +810,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Provides indexed access to the import directories list.
 Description:
-
   Provides (zero-based) indexed access to the import directories list. Read the
   Count property to determine the number of items in the list. Each item in the
   list represents a single import directory but multiple items may exist for one
@@ -902,11 +827,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.LinkerProducer
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the manufacturer of the linker that produced the image.
 Description:
-
   Returns the manufacturer of the linker that produced the image. See the
   description of TJclPeLinkerProducer for more information.
 Quick info:
@@ -919,11 +842,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibItemCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   Returns the number of items in the UniqueLibItems list.
 Description:
-
   Returns the number of items in the UniqueLibItems list.
 Quick info:
   Unit: JclPeImage
@@ -935,11 +856,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibItemFromName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -951,11 +870,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibItems
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   List of unique import directories.
 Description:
-
   As you may recall, an import section may contain multiple import directories for
   one and the same image (for example, it may contains two or more import directories
   for the user32.dll image). The UniqueLibItems list provides (zero-based) indexed
@@ -974,11 +891,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImportList.UniqueLibNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
   List of image names from which functions are imported.
 Description:
-
   As you may recall, an import section may contain multiple import directories for
   one and the same image (for example, it may contains two or more import directories
   for the user32.dll image). The UniqueLibNames list provides (zero-based) indexed
@@ -1022,11 +937,10 @@ Quick info:
   Sorted on address or name of the function to which the export is forwarded depending on whether the function is forwarded or not.
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection.TJclPeExportFuncItem>
 Summary:
   Represents a single exported function.
 Description:
-
   The TJclPeExportFuncItem represents a single exported function in the exports
   section of an image. The class provides all the details about the function such
   as the name or ordinal by which it is exported.
@@ -1039,11 +953,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Address
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1055,11 +967,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.AddressOrForwardStr
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1071,11 +981,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.IsForwarded
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Specifies whether the export is a function forwarder.
 Description:
-
   If the export is a function forwarder the IsForwarded property returns True, if
   it is not forwarded the property returns False.
 Quick info:
@@ -1088,11 +996,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Name of the image and function to which the export is forwarded.
 Description:
-
   If the export is a function forwarder, as can be determined by reading the
   IsForwarded property, the ForwardedName property returns the name of the image
   to which the function is forwarded and the name of that function, separated with
@@ -1107,11 +1013,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedLibName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the name of the image to which the export is forwarded.
 Description:
-
   Returns the name of the image, including extension, to which the export is forwarded.
   If the export isn't forwarded the property returns an empty string. You can
   determine whether the export is forwarded by reading the IsForwarded property.
@@ -1125,11 +1029,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedFuncOrdinal
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the ordinal of the function to which the export is forwarded.
 Description:
-
   If the export is forwarded the ForwardedFuncOrdinal property returns the ordinal
   of the function to which the export is forwarded. If the export is not forwarded
   the property returns 0. You can determine whether the export is
@@ -1144,11 +1046,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ForwardedFuncName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the name of the function to which the export is forwarded.
 Description:
-
   If the export is forwarded the ForwardedFuncOrdinal property returns the name
   of the function to which the export is forwarded. If the export is not forwarded
   the property returns an empty string. You can determine whether the export is
@@ -1163,11 +1063,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Hint
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Contains the index into TJclPeExportFuncList.Items property at which the function is located.
 Description:
-
   The Hint property contains the (zero based) index into Items property of the
   TJclPeExportFuncList at which this function is located. This is also the position
   in the export table at which the function is located.
@@ -1181,11 +1079,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Name
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the name by which the function is exported.
 Description:
-
   If the function is exported by name the Name property returns the name by which
   the function is exported. If the function is not exported by name the property
   returns an empty string.
@@ -1199,11 +1095,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.Ordinal
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the ordinal value by which the function is exported.
 Description:
-
   If the function is exported by ordinal the Ordinal property returns the ordinal
   value by which  the function is exported. If the function is not exported by
   ordinal the property returns 0.
@@ -1217,11 +1111,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncItem.ResolveCheck
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1233,11 +1125,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection.TJclPeExportFuncList>
 Summary:
   The TJclPeExportFuncList class represents the export section of an image file.
 Description:
-
   The TJclPeExportFuncList class represents the export section of an image file.
   As such it allowsaccess to the list of exported functions in various ways and
   provides some information about the exports section itself.
@@ -1250,11 +1141,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.CheckForwards
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Determines the validity of all forwarded function exports.
 Description:
-
   CheckForwards determines whether all forwarded function exports are valid. That is,
   it determines whether the function which is forwarded to atually exist. When the
   method returns the TotalResolveCheck property indicates whether or not all function
@@ -1272,18 +1161,15 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the Name propery of a function item.
 Description:
-
   Helper class methods which returns the name of the specified item (it's name
   property) if the Item is valid (non-nil) or an empty string if the Item parameter
   is nil.
 Parameters:
   Item - The Item for which to retrieve the Name property. Can be nil.
 Result:
-
   If Item is non-nil the method returns the Name property of the Item, otherwise
   it returns an empty string.
 Quick info:
@@ -1296,11 +1182,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.OrdinalValid
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Ordinal - TODO
@@ -1314,11 +1198,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.PrepareForFastNameSearch
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Prepares the list for fast name searching.
 Description:
-
   Prepares the list for fast name searching. It does so basically by sorting the
   list in ascending order on the Name property of the individual function exports.
 Quick info:
@@ -1331,17 +1213,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.SmartFindName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Searches the list of function exports for a specific function.
 Description:
-
   The SmartFindName method searches the list of function exports for the specified function.
 Parameters:
   CompareName - The name of the function to search for.
   Options - Set of options which determine how the method performs the name comparison. You can specify, for example, that the comparison should be case insensitive. See the description of TJclSmartCompOptions for more information.
 Result:
-
   If the method finds the specified export it returns a reference to a TJclPeExportFuncItem
   instance which represents the found export. You can use this instance to find out more
   details about it. The instance remains owned by the class so never free it.
@@ -1355,11 +1234,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.SortList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Sorts the exported functions list.
 Description:
-
   Sorts the exported functions list.
 Parameters:
   SortType - Determines the key on which the list is sorted. An example is sorting based on the name by which the functions are exported. See the description of TJclPeExportSort for more information.
@@ -1374,11 +1251,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.AnyForwards
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   AnyFowards determines whether the image contains any function forwarderes.
 Description:
-
   AnyFowards determines whether the image contains any function forwarderes. It
   reads True if there is at least one function forwarder, otherwise it reads False.
 Quick info:
@@ -1391,11 +1266,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.Base
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   The starting ordinal number for exports in this image. Will usually be 1.
 Description:
-
   The starting ordinal number for exports in this image. Will usually be 1.
 Quick info:
   Unit: JclPeImage
@@ -1407,11 +1280,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ExportDir
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Pointer to a TImageExportDirectory record which describes the Export Directory Table.
 Description:
-
   Pointer to a TImageExportDirectory record which describes the Export Directory Table.
   The Export Directory Table contains address information that is used to resolve
   fix-up references to the entry points within this image.
@@ -1425,11 +1296,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ForwardedLibsList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns a list containing the names of forwarded functions.
 Description:
-
   Returns a list containing the names of forwarded functions, if any. The list
   remains owned by the class so never free it.
 Quick info:
@@ -1442,11 +1311,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.FunctionCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Returns the number of items in the Items property.
 Description:
-
   Returns the number of items in the Items property. In other words, it returns the
   number of function exports in this image.
 Quick info:
@@ -1459,11 +1326,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Provides indexed access to the items contained in the export table.
 Description:
-
   Provides (zero based) indexed access to the items contained in the export table.
   As such it contains all exported funtions in the image. Initially the list is
   in the same order as the functions appear in the export table but they may be
@@ -1478,11 +1343,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemFromAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1494,11 +1357,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemFromName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Provides, name based, indexed access to the list of exported functions.
 Description:
-
   Provides indexed access to the list of exported functions where the index is the
   name by which the function is exported. If a function by the specified name is
   exported from the image the property returns a reference to a TJclPeExportFuncItem
@@ -1515,11 +1376,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.ItemFromOrdinal
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   Provides, ordinal based, indexed access to the list of exported functions.
 Description:
-
   Provides indexed access to the list of exported functions where the index is the
   ordinal value by which the function is exported. If a function by the orindal value
   is exported from the image the property returns a reference to a TJclPeExportFuncItem
@@ -1536,11 +1395,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.Name
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1552,11 +1409,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeExportFuncList.TotalResolveCheck
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ExportSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1632,11 +1487,10 @@ Quick info:
   TODO
 --------------------------------------------------------------------------------
 @@TJclPeResourceRawStream
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceRawStream>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1647,11 +1501,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceRawStream.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   AResourceItem - TODO
@@ -1665,17 +1517,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceRawStream.Write
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Buffer - TODO
   Count - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1687,11 +1536,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceItem>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1702,11 +1550,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceItem>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   AImage - TODO
@@ -1721,11 +1568,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.DataEntry
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1737,11 +1582,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Entry
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1753,11 +1596,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Image
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1769,11 +1610,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.IsDirectory
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1785,11 +1624,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.IsName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1801,11 +1638,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.List
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1817,11 +1652,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Level
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1833,11 +1666,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.Name
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1849,11 +1680,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ParameterName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1865,11 +1694,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ParentItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1881,11 +1708,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.RawEntryDataSize
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1897,11 +1722,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.RawEntryData
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1913,11 +1736,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ResourceType
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1929,11 +1750,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceItem.ResourceTypeStr
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1945,11 +1764,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeResourceList>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1960,11 +1778,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   ADirectory - TODO
@@ -1980,11 +1796,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.Directory
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -1996,11 +1810,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2012,11 +1824,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeResourceList.ParentItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2028,11 +1838,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRootResourceList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection.TJclPeRootResourceList>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2043,17 +1852,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRootResourceList.FindResource
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ResourceSection>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   ResourceType - TODO
   ResourceName - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2069,7 +1875,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   The TJclPeRelocation record represents a single address fix up in the relocation
   table of the imagefile.
 Quick info:
@@ -2087,11 +1892,10 @@ Quick info:
   The relative virtual address specifying the memory address which needs to be fixed up (equal to Address + TJclPeRelocEntry.VirtualAddress).
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection.TJclPeRelocEntry>
 Summary:
   Represents a block of relocation entries.
 Description:
-
   The TJclPeRelocEntry class represents a block of relocation entries. Each such
   block specifies the address fix-ups for a single 4KB block within the image file.
 Quick info:
@@ -2103,11 +1907,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.Count
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   Returns the number of elements in the Relocations property.
 Description:
-
   Returns the number of elements in the Relocations property. That is, it returns
   the number of address fix-ups defined in this block.
 Quick info:
@@ -2120,11 +1922,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.Relocations
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   Provides indexed access to the address fix-ups defined in this block.
 Description:
-
   The Relocations property provides (zero-based) indexed access to the address
   fix-ups defined in this block. To learn the number of entries in the list read
   the Count property. Each entry defines a single address fix-up as it appears in
@@ -2139,11 +1939,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.Size
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   The Size property returns the size, in bytes, occupied by the relocation block.
 Description:
-
   The Size property returns the size, in bytes, occupied by the relocation block.
   Since each block is a variable length structure representing a single 4KB of the
   image file, each block may need a different ammount of memory to hold all necessary
@@ -2158,11 +1956,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocEntry.VirtualAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   Returns the starting relative virtual address (RVA) for this block of relocations.
 Description:
-
   The VirtualAddress property returns the starting relative virtual address (RVA)
   for this block of relocations. The offset of each relocation (the Address field
   of the TJclPeRelocation record) is added to this value to form the actual RVA
@@ -2177,11 +1973,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection.TJclPeRelocList>
 Summary:
   The TJclPeRelocList class represents the fix-up table of the image.
 Description:
-
   The TJclPeRelocList class represents the fix-up table of the image. The fix-up
   table contains entries for all fixups in the image. The fixup table is broken into
   blocks of fixups. Each block represents the fixups for a 4K page. Each block is
@@ -2195,11 +1990,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList.AllItems
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   Provides indexed access to the complete list of individual address fix ups.
 Description:
-
   The AllItems property provides (zero based) indexed access to the complete list
   of individual address fix ups. See the description of TJclPeRelocation for more
   information on how to interpret the returned record.
@@ -2213,11 +2006,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList.AllItemCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   Contains the number of entries in the Items property.
 Description:
-
   Contains the number of entries in the Items property.
 Quick info:
   Unit: JclPeImage
@@ -2229,11 +2020,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeRelocList.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.RelocationSection>
 Summary:
   Provides indexed access to the fixup blocks.
 Description:
-
   The Items property provides (zero-based) indexed access to the fixup blocks. Each
   entry represents a 4 KB block within the image and contains a list of address
   fix-ups. To directly access these individual fix-up use the AllItems property. To
@@ -2248,11 +2037,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeDebugList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection.TJclPeDebugList>
 Summary:
   The TJclPeDebugList represent the debug section of an image file.
 Description:
-
   The TJclPeDebugList represent the debug section of an image file.
 Quick info:
   Unit: JclPeImage
@@ -2263,11 +2051,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeDebugList.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.DebugSection>
 Summary:
   Provides indexed access to the list of debug directories.
 Description:
-
   The Items property provides (zero based) indexed access to the list of debug
   directories maintained by the class. Each entry in the list describes a single
   debug directory including it's locations, size and the type of debug information
@@ -2418,7 +2204,6 @@ Quick info:
 Summary:
   Record which contains some common attributes of an image file.
 Description:
-
   Record which contains some common attributes of an image file.
 Quick info:
   Unit: JclPeImage
@@ -2443,7 +2228,6 @@ Quick info:
 Summary:
   TJclPeImageStatus defines the various states a TJclPeImage instance can be in.
 Description:
-
   TJclPeImageStatus defines the various states a TJclPeImage instance can be in.
 Quick info:
   Unit: JclPeImage
@@ -2464,11 +2248,10 @@ Quick info:
   An unexpected error occured while loading a PE image file.
 --------------------------------------------------------------------------------
 @@TJclPeImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImage>
 Summary:
   Abstraction of a portable executable file.
 Description:
-
   The TJclPeImage class provides an abstraction of a portable executable (PE) file,
   referred to throughout this documentation as simply image or PE file. PE is
   the standard format for executable files on the Windows platform. This includes
@@ -2483,11 +2266,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Creates an instance of the TJclPeImage class.
 Description:
-
   Creates an instance of the TJclPeImage class. Use the FileName property or
   AttachLoadedModule method to attach the class to a specific image.
 Parameters:
@@ -2502,11 +2283,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.AttachLoadedModule
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Attaches the TJclPeImage instance to an already loaded image.
 Description:
-
   Attaches the TJclPeImage instance to an already loaded image. This causes the
   currently loaded image to be discarded and the class to reinitialize itself to
   the image specified by the Handle parameter.
@@ -2522,14 +2301,11 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.CalculateCheckSum
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2541,16 +2317,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DirectoryEntryToData
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Directory - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2562,17 +2335,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.GetSectionHeader
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns a pointer to the section header of the specified named section in the image.
 Description:
-
   Returns a pointer to the section header of the specified named section in the image.
 Parameters:
   SectionName - Name of the section for which to retrieve the section header.
   Header - Receives a pointer to a TImageSectionHeader record which describes the section header of the requested section. If the method fails the contents of this parameter are undefined.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclPeImage
@@ -2584,16 +2354,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.GetSectionName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the name of the section specified by the Header parameter.
 Description:
-
   Returns the name of the section specified by the Header parameter.
 Parameters:
   Header - Pointer to the section header record for which you want to retrieve the name.
 Result:
-
   If the function succeeds it returns the name of the specified section, otherwise
   it returns an empty string.
 Quick info:
@@ -2606,11 +2373,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.IsSystemImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns True if the image is a kernel mode executable.
 Description:
-
   Returns True if the image is a kernel mode executable.
 Quick info:
   Unit: JclPeImage
@@ -2622,16 +2387,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RawToVa
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Raw - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2643,16 +2405,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RvaToSection
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Rva - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2664,16 +2423,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RvaToVa
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Rva - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2685,11 +2441,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.StatusOK
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Indicates whether the object is correctly initialized.
 Description:
-
   Indicates whether the object is correctly initialized. That is, if it was
   succesfully attached to a valid image file. If this poperty returns False you
   should not use any of it's properties or methods until reinitialized using the
@@ -2704,11 +2458,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.TryGetNamesForOrdinalImports
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Looks up the names of functions that we're imported by ordinal.
 Description:
-
   The TryGetNamesForOrdinalImports method searches the export sections of each image
   that it is linked against in an attempt to find the names of those functions that
   were imported by ordinal instead of by name. See also the description of the
@@ -2724,14 +2476,11 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.VerifyCheckSum
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Verifies the checksum of a portable executable file.
 Description:
-
   VerifyCheckSum verifies the correctness of the checksum of the image file.
 Result:
-
   If the checksum is valid the method returns True, otherwise it returns False. Note
   that 0 is considered a valid checksum.
 Quick info:
@@ -2744,16 +2493,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DebugTypeNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   DebugType - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2765,16 +2511,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DirectoryNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Directory - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2786,17 +2529,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ExpandBySearchPath
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   ModuleName - TODO
   BasePath - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2808,16 +2548,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.HeaderNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Index - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2829,16 +2566,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.LoadConfigNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Index - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2850,16 +2584,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ShortSectionInfo
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   Characteristics - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2871,16 +2602,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.StampToDateTime
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TimeDateStamp - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2892,11 +2620,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.AttachedImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2908,11 +2634,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DebugList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Allows access to the debug section of the file.
 Description:
-
   The DebugList property returns a TJclPeDebugList instance which allows access
   to the debug section (.debug) of the loaded PE image file.
   See TJclPeDebugList for more information.
@@ -2926,11 +2650,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Description
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2942,11 +2664,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Directories
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2958,11 +2678,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.DirectoryExists
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -2974,11 +2692,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ExportList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Allows access to the export section of the image file.
 Description:
-
   The ExportList property returns a TJclPeExportFuncList instance which allows
   access to the export section (.edata) of the loaded PE image file.
   See TJclPeExportFuncList for more information.
@@ -2992,11 +2708,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.FileName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Name of the loaded PE image file.
 Description:
-
   Read the FileName property to determine which PE image file is currently loaded.
   Set FileName to load different image file. Note that depending on how the TJclPeImage
   instance was constructed, loading an invalid image file may either raise an
@@ -3012,11 +2726,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.FileProperties
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns standard information about the file.
 Description:
-
   The FileProperties property returns a TJclPeFileProperties record containing
   standard (non PE specific) information about the loaded image file. This includes
   it's size, creation time and attributes.
@@ -3030,11 +2742,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.HeaderValues
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3046,11 +2756,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the number of sections in the PE image.
 Description:
-
   The ImageSectionCount property returns the number of sections in the loaded
   PE image file. The returned Count minus one, is the highest valid index into
   the ImageSectionHeader and ImageSectionNames properties.
@@ -3064,11 +2772,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionHeaders
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the image section header of a specific section.
 Description:
-
   The ImageSectionHeaders array property returns the section header of the section
   indicated by the specified index. Valid indices are from 0 to ImageSectionCount - 1.
   To retrieve the name of a section use the ImageSectionNames property.
@@ -3085,11 +2791,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the name of a specific section.
 Description:
-
   The ImageSectionNames array property returns the name of the section indicated
   by the index. Valid indices are from 0 to ImageSectionCount - 1. Returned names
   are always 8 characters or shorter. Common names are ".reloc", ".text" and ".data".
@@ -3103,11 +2807,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImageSectionNameFromRva
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3119,11 +2821,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ImportList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Allows access to the import section.
 Description:
-
   The ImportList property returns a TJclPeImportList instance which allows access
   to the import section (.idata) of the loaded PE image file.
   See TJclPeImportList for more information.
@@ -3137,11 +2837,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.LoadConfigValues
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3153,11 +2851,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.LoadedImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns information about the loaded image.
 Description:
-
   Returns a TLoadedImage record which contains information about the loaded PE image
   file. See the LOADED_IMAGE topic in the Platform SDK for a description of this
   record.
@@ -3171,11 +2867,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.MappedAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the base address at which the file was loaded.
 Description:
-
   The MappedAddress property returns the (virtual) base address at which the PE
   file was loaded. The returned value is identical to LoadedImage.MappedAddress
   and is only provided for convenience (it's often used field).
@@ -3189,11 +2883,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.OptionalHeader
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Allows access to the image optional header.
 Description:
-
   Read OptionalHeader to gain access to the optional header of the loaded PE file.
   The optional header contains fields standard to all COFF implementations, Windows
   specific fields such as the target subsytem and allows access to all data
@@ -3213,11 +2905,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.RelocationList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Allows access to the relocations section of the PE file.
 Description:
-
   The RelocationList property returns a TJclPeRelocList instance which allows
   access to the relocations section (.reloc) of the loaded PE file. This is also
   known as the fix up table.
@@ -3232,11 +2922,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.ResourceList
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Allows access to the resource section of the PE file.
 Description:
-
   Returns a TJclPeRootResourceList instance which allows access to the resource
   section (.rsrc) of the loaded PE file.
   See TJclPeRootResourceList for more information.
@@ -3250,11 +2938,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.Status
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the status of the TJclPeImage instance.
 Description:
-
   Read status to determine the state of the TJclPeImage instance. Valid states include
   not loaded, ok, not a valid PE file and so forth. Depending on the NoExceptions
   parameter of the constructor, methods of the TJclPeImage may or may not raise
@@ -3270,11 +2956,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.UnusedHeaderBytes
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns the offset and size of the part of the PE header which is currently unused.
 Description:
-
   Returns the offset and size of the part of the PE header which is currently unused.
 Quick info:
   Unit: JclPeImage
@@ -3286,11 +2970,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.VersionInfo
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   Returns file version information.
 Description:
-
   VersionInfo returns a TJclFileVersionInfo instance which allows you to read the
   version information, if any, of the image file. If the file doesn't have a file
   version resource reading this property returns nil.
@@ -3305,11 +2987,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeImage.VersionInfoAvailable
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3321,11 +3001,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPePackageInfo>
 Summary:
   Allows you to obtain information about Delphi packages.
 Description:
-
   The TJclPackageInfo class allows you to obtain information about Delphi packages
   such as which units it contains and which packages it requires.
 Quick info:
@@ -3337,11 +3016,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Creates and initializes an instance of TJclPePackageInfo.
 Description:
-
   Creates and initializes an instance of TJclPePackageInfo.
 Parameters:
   ALibHandle - Handle to a loaded package. For example, the handle returned by the LoadPackage RTL function.
@@ -3355,11 +3032,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.PackageModuleTypeToString
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3371,11 +3046,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.PackageOptionsToString
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3387,11 +3060,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ProducerToString
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3403,11 +3074,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.UnitInfoFlagsToString
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3419,11 +3088,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Contains
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns a list containing the names of all units contained in the package.
 Description:
-
   Returns a list containing the names of all units contained in the package.
   Note that the returned TStrings instance remains owned by the class so you should
   never free it.
@@ -3437,11 +3104,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ContainsCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns the number of items in the ContainsNames property.
 Description:
-
   Returns the number of items in the ContainsNames property.
 Quick info:
   Unit: JclPeImage
@@ -3453,11 +3118,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ContainsNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Provides indexed access to the list of unit names contained in the package.
 Description:
-
   The ContainsNames property provides (zero based) indexed access to the list of
   unit names contained in the package. To learn the number of items in the list
   read the ContainsCount property. To read the flags associated with the contained
@@ -3472,11 +3135,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.ContainsFlags
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Flags associated with a particular contained unit.
 Description:
-
   The ContainsFlags property provides (zero based) indexed access to the list of
   flags associated with the list of units contained in the package. This list is
   parallel to the ContainsNames property; to determine the flags associated with
@@ -3501,11 +3162,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Description
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns the description string for the package as it appears in the package resource.
 Description:
-
   Returns the description string for the package as it appears in the package resource.
 Quick info:
   Unit: JclPeImage
@@ -3517,11 +3176,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Flags
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns a set of flags for the package encoded as a set of bits.
 Description:
-
   Returns a set of flags for the package. The valid values for this property are
   defined in SysUtils
     <TABLE>
@@ -3552,11 +3209,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.Requires
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns a list of package names that the package requires.
 Description:
-
   Returns a list of package names that the package requires. Note that the returned
   TStrings object remains owned by the class so you should never free it.
 Quick info:
@@ -3569,11 +3224,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.RequiresCount
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns the number of items in the RequiresNames property.
 Description:
-
   Returns the number of items in the RequiresNames property.
 Quick info:
   Unit: JclPeImage
@@ -3585,11 +3238,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPePackageInfo.RequiresNames
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Provides indexed access to the list of package names that are required by the package.
 Description:
-
   The RequiresNames property provides (zero based) indexed access to the list of
   package names that are required by the package. To learn the number of items in
   the list read the RequiresCount property.
@@ -3603,11 +3254,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific.TJclPeBorImage>
 Summary:
   Specialisation of TJclPeImage for Borland produced images.
 Description:
-
   The TJclPeBorImage class is a specialisation of TJclPeImage which allows access
   to information contained in the image file which is specific, and therefore unique,
   to images produced by a Borland linker.
@@ -3620,11 +3270,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.FreeLibHandle
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Closes the library handle as returned by the LibHandle property.
 Description:
-
   Closes the library handle as returned by the LibHandle property.
 Quick info:
   Unit: JclPeImage
@@ -3636,11 +3284,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsTD32DebugPresent
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns whether or not the image contains TD32 symbolic debugging information.
 Description:
-
   The IsTD32DebugPresent returns whether or not the image contains TD32 symbolic
   debugging information.
 Quick info:
@@ -3653,11 +3299,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsBorlandImage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns whether or not the image is an image produced by a Borland linker.
 Description:
-
   Returns whether or not the image is an image produced by a Borland linker.
 Quick info:
   Unit: JclPeImage
@@ -3669,11 +3313,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.IsPackage
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns whether the image is Borland package file.
 Description:
-
   Returns whether the image is Borland package file.
 Quick info:
   Unit: JclPeImage
@@ -3685,11 +3327,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.LibHandle
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns a handle to the loaded library (image).
 Description:
-
   The LibHandle property loads the image file as a datafile (if necessary) and
   returns a handle to the loaded image. Use the FreeLibHandle method when you no
   longer need the handle.
@@ -3703,11 +3343,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeBorImage.PackageInfo
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.BorlandDelphiSpecific>
 Summary:
   Returns an object which provides additional information about a package.
 Description:
-
   Returns an instance of TJclPePackageInfo which provides additional information
   about the image such as the units contained in it. This property is only valid
   if the image is a package.
@@ -3725,7 +3363,6 @@ Quick info:
 Summary:
   Flags that determine which parts of an image is searched.
 Description:
-
   TJclPeNameSearchOptions is a set of flags used by the TJclPeNameSearch class to
   determine the scope of the search. In other word, these flags determine which
   parts of an image is searched.
@@ -3750,7 +3387,6 @@ Quick info:
 Summary:
   Event which is fired immediately before a new image is searched.
 Description:
-
   Event exposed by the TJclPeNameSearch class which is fired each time the search
   continues it search in a new image. The event is fired immediately before the
   image is searched and you can use it, for example, to display user progress
@@ -3772,7 +3408,6 @@ Quick info:
 Summary:
   Event which is fired each time a name is found.
 Description:
-
   Event exposed by the TJclPeNameSearch class which is fired each time the class
   finds the name it's searching for.
 Parameters:
@@ -3789,11 +3424,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch.TJclPeNameSearch>
 Summary:
   Searches a set of image files for occurences of a specific function.
 Description:
-
   TJclPeNameSearch is a thread class which allows you to search through a set of
   image files for occurences of a specific function. You can search through both
   the import and export section ofthe image files and through a mask specify
@@ -3808,11 +3442,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
 Summary:
   Creates and initializes an instance of the TJclPeNameSearch class.
 Description:
-
   Creates and initializes an instance of the TJclPeNameSearch class. The thread
   starts off in the suspended state and has to be explicitly resumed using the
   Start method to actually start the search.
@@ -3830,11 +3462,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.Start
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
 Summary:
   Starts the search operation.
 Description:
-
   Starts the search operation. To temporarily pause the search set the Suspended
   property to True. To cancel the search set the Terminated property to True.
 Quick info:
@@ -3847,11 +3477,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.OnFound
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
 Summary:
   Event fired whenever an occurence of the specified function is found.
 Description:
-
   Event which is fired whenever an occurence of the specified function is found.
   Note that the event is automatically synchronized with the main thread by firing
   it through the standard TThread method Synchronize.
@@ -3866,11 +3494,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeNameSearch.OnProcessFile
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.ThreadedSearch>
 Summary:
   Event which is fired whenever the class is about to search an image file.
 Description:
-
   Event which is fired whenever the class is about to search an image file.
   Note that the event is automatically synchronized with the main thread by firing
   it through the standard TThread method Synchronize.
@@ -3889,7 +3515,6 @@ Quick info:
 Summary:
   Record used by the PeRebaseImage function to return information about a rebase operation.
 Description:
-
   Record used by the PeRebaseImage function to return information about
   a rebase operation.
 Quick info:
@@ -3913,14 +3538,12 @@ Quick info:
 Summary:
   Determines whether a file is a valid portable executable file.
 Description:
-
   IsValidPeFile determines whether the specified file is a valid portable executable file.
   Examples of valid PE files are Win32 .exe, .dll and .obj files as generated by
   Delphi or any other Win32 compiler.
 Parameters:
   FileName - Fully qualified filename of the executable image file to test.
 Result:
-
   If the specified file is a valid portable executable file the function returns
   True, otherwise it returns False.
 Quick info:
@@ -3936,12 +3559,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   FileName - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -3956,7 +3577,6 @@ Quick info:
 Summary:
   Rebases an image.
 Description:
-
   PeRebaseImage modifies the load address of the specified image. Rebasing all the
   images an application uses in such a manner that they can all be loaded at their
   preferred base address (load address) can dramatically reduce the load time of
@@ -3969,7 +3589,6 @@ Parameters:
   TimeStamp - Specifies the new time stamp for the image. The value must be represented in the number of seconds elapsed since midnight (00:00:00), January 1, 1970, Universal Coordinated Time, according to the system clock.
   MaxNewSize - Maximum allowed size of the rebased image. If 0 is specified (the default) the maximum size is unlimited.
 Result:
-
   The function returns a TJclRebaseImageInfo
   record which contains information about the rebase such as the new base address
   and image size. If the function fails it raises an EWin32Error exception.
@@ -3986,7 +3605,6 @@ Quick info:
 Summary:
   Updates the image checksum.
 Description:
-
   PeUpdateCheckSum updates the specified image's checksum value. If the routine
   succeeds it writes the calculated checksum back to the image file. If it fails
   it raises an exception.
@@ -4005,7 +3623,6 @@ Quick info:
 Summary:
   Tests whether an image exports a specific fuction.
 Description:
-
   PeDoesExportFunction determines whether the specified image file exports a function
   by the specified name. The Options parameter allows you to fine tune the search.
 Parameters:
@@ -4013,7 +3630,6 @@ Parameters:
   FunctionName - Name of the function to search for.
   Options - Optional parameter which determine various aspects of the search such as case sensitivity. See TJclSmartCompOptions for more detailed information.
 Result:
-
   If the image exports the specified function the function returns True, otherwise
   it returns False.
 Quick info:
@@ -4029,7 +3645,6 @@ Quick info:
 Summary:
   Tests whether a function is forwarded.
 Description:
-
   PeIsExportFunctionForwardedEx detemines whether the specified function is forwarded
   to another image/function or not. If it is forwarded the ForwardedName parameter
   receives the location to which the function is forwarded.
@@ -4039,7 +3654,6 @@ Parameters:
   ForwardedName - If the specified function is forwarded this parameters receives a string of the format DLL.FunctionName which is where the function is forwarded to.
   Options - Optional parameters which determine various aspects of the functionname matching such as case sensitivity. See TJclSmartCompOptions for more detailed information.
 Result:
-
   If the specified function is forwarded to another module the function returns True,
   otherwise it returns False. In the latter case the contents of the ForwardedName
   parameter is undefined.
@@ -4056,7 +3670,6 @@ Quick info:
 Summary:
   Tests whether a function is forwarded.
 Description:
-
   PeIsExportFunctionForwardedEx detemines whether the specified function is forwarded
   to another image/function or not.
 Parameters:
@@ -4064,7 +3677,6 @@ Parameters:
   FunctionName - Name of the function to test.
   Options - Optional parameters which determine various aspects of the functionname matching such as case sensitivity. See TJclSmartCompOptions for more detailed information.
 Result:
-
   If the specified function is forwarded to another module the function returns True,
   otherwise it returns False.
 Quick info:
@@ -4080,7 +3692,6 @@ Quick info:
 Summary:
   Tests whether an image imports a specific function.
 Description:
-
   PeDoesImportFunction determines whether the specified image imports the specified
   function from a specific library. If LibraryName is left empty the function test
   if the image imports the function from any library.
@@ -4090,7 +3701,6 @@ Parameters:
   LibraryName - Filename of the library from FunctionName is supposedly imported. If this parameter is left empty the function simply tests if the function is imported at all from any library. If however this parameter is specified the function only returns True if the function is actually imported from the specified library.
   Options - Optional parameter which determine various aspects of the functionname matching such as case sensitivity. See TJclSmartCompOptions for more detailed information.
 Result:
-
   If the function is imported (optionally from the specified library) the function
   returns True, otherwise ut returns False.
 Quick info:
@@ -4106,7 +3716,6 @@ Quick info:
 Summary:
   Tests whether an image is implicitly linked against a library.
 Description:
-
   PeDoesImportLibrary determines whether the specified image implicitly links
   against the specified library. Thus it tests whether the image imports anything
   from the library.
@@ -4115,7 +3724,6 @@ Parameters:
   LibraryName - Name of the library to test against.
   Recursive - If False the function only tests for direct imports (library A links directly against lbrary B). If True the function performs the test recursively and therefore includes indirect imports (library A links against library B which links against library C therefore library A links against library C).
 Result:
-
   If the image directly imports the library the function returns True, otherwise it
   returns False.
 Quick info:
@@ -4131,7 +3739,6 @@ Quick info:
 Summary:
   Returns a list of all libraries an image imports.
 Description:
-
   PeImportedLibraries returns a list of all libraries which the specified image
   imports (implicitly links against).
 Parameters:
@@ -4140,11 +3747,9 @@ Parameters:
   Recursive - If False the function only includes direct imports. If True the function includes indirect imports as well (library A imports library B which in turn imports library C and therefore library A indirectly imports library C).
   FullPathName - Determines whether the list of libraries includes the full path of the image files.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the
   latter case the contents of the list is undefined.
 Notes:
-
   This function preserves the contents of the libraries list.
 Quick info:
   Unit: JclPeImage
@@ -4159,7 +3764,6 @@ Quick info:
 Summary:
   Returns a list of all libraries an image imports.
 Description:
-
   PeImportedLibrariesArray returns a list of all libraries which the specified image
   imports (implicitly links against). Note that the list only includes direct imports.
   If Lib1 imports Lib2 and Lib2 imports Lib3 then Lib3 will not be included in the
@@ -4170,7 +3774,6 @@ Parameters:
   Recursive - If False the function only includes direct imports. If True the function includes indirect imports as well (library A imports library B which in turn imports library C and therefore library A indirectly imports library C).
   FullPathName - Determines whether the list of libraries includes the full path of the image files.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the
   latter case the contents of the list is undefined.
 Quick info:
@@ -4186,7 +3789,6 @@ Quick info:
 Summary:
   Returns a list of all directly imported functions for an image.
 Description:
-
   PeImportedFunctions returns a list of all directly imported functions by the
   specified image.
 Parameters:
@@ -4195,7 +3797,6 @@ Parameters:
   LibraryName - Name of the from which to list imports. If this parameters is empty (the default) all imports from all libraries are included. If on the other hand a library is specified only imports from that library are included. Note that the library name must include the extension.
   IncludeLibNames - If True the imported functions are prefixed by the name of the library from which they are imported. The library and function name are separated by a dot ('.').
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. In the
   latter case the contents of the list are undefined. Note that even in the case
   of success, the list may not contain any entries (the image may not import anything).
@@ -4212,7 +3813,6 @@ Quick info:
 Summary:
   Returns a list of all directly imported functions for an image.
 Description:
-
   PeImportedFunctions returns a list of all directly imported functions by the
   specified image.
 Parameters:
@@ -4221,7 +3821,6 @@ Parameters:
   LibraryName - Name of the from which to list imports. If this parameters is empty (the default) all imports from all libraries are included. If on the other hand a library is specified only imports from that library are included. Note that the library name must include the extension.
   IncludeLibNames - If True the imported functions are prefixed by the name of the library from which they are imported. The library and function name are separated by a dot ('.').
 Result:
-
   If the function succeeds it returns True, otherwise it returns False. Note that in
   the case of success, the list may not contain any entries (the image may not import
   anything).
@@ -4238,13 +3837,11 @@ Quick info:
 Summary:
   Returns a list of exported function from an image.
 Description:
-
   PeExportedFunctions returns a list of functions exported from the specified image.
 Parameters:
   FileName - FileName of the image for which to receive a list of exports.
   FunctionsList - Receives the list of exported functions. Note that the contents of the list upon entry are preserved.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclPeImage
@@ -4259,13 +3856,11 @@ Quick info:
 Summary:
   Returns a list of exported function from an image.
 Description:
-
   PeExportedFunctions returns a list of functions exported from the specified image.
 Parameters:
   FileName - FileName of the image for which to receive a list of exports.
   FunctionsList - Receives the list of exported functions.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclPeImage
@@ -4280,7 +3875,6 @@ Quick info:
 Summary:
   Returns a TImageNtHeaders record for an image.
 Description:
-
   PeGetNtHeaders returns a TImageNtHeaders record for the specified image. A TImageNtHeaders
   record contains a lot of standard information about the image included in all
   valid portable executable files. For information about the interpretation of this
@@ -4290,7 +3884,6 @@ Parameters:
   FileName - Filename of the image for which to retrieve the TImageNtHeader.
   NtHeaders - Receives the TImageNtHeaders record.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclPeImage
@@ -4305,14 +3898,12 @@ Quick info:
 Summary:
   Verifies the checksum of a portable executable file.
 Description:
-
   PeVerifyCheckSum verifies the correctness of the checksum of the specified image.
   The image must be a valid portable executable file. Note that 0 is considered a
   valid checksum.
 Parameters:
   FileName - Filename of the image whose checksum to verify.
 Result:
-
   If the image's checksum is correct the function returns True, otherwise it
   returns False.
 Quick info:
@@ -4328,14 +3919,12 @@ Quick info:
 Summary:
   Returns a pointer to the TImageNtHeaders record.
 Description:
-
   Returns a pointer to the TImageNtHeaders record for the image whose address is
   specified as the BaseAddress parameter. This record contains a signature for the
   PE image ('PE#0#0') and two subrecords for the COFF header and optional header.
 Parameters:
   BaseAddress - Base address at which the image file for which you want to retrieve the TImageNtHeader record is mapped. This address is returned by the MapAndLoad and LoadLibrary API functions.
 Result:
-
   If the function succeeds it returns a pointer to the requested TImageNtHeaders
   record. If the function fails it returns nil. Note that the returned pointer is
   only valid as long as the image file remains mapped in memory.
@@ -4352,12 +3941,10 @@ Quick info:
 Summary:
   Returns the name of the image file mapped at the specified address.
 Description:
-
   Returns the name of the image file mapped at the specified address.
 Parameters:
   BaseAddress - Base address at which the image file for which you want to retrieve the name is mapped. This address is returned by the MapAndLoad and LoadLibrary API functions.
 Result:
-
   If the function succeeds it returns the name of the image mapped at the specified
   address. If the function fails it returns an empty string.
 Quick info:
@@ -4373,7 +3960,6 @@ Quick info:
 Summary:
   Returns a pointer to the header of the first section in an image.
 Description:
-
   The PeMapImgSections function returns a pointer to a TImageSectionHeader record
   which describes the first section in the image file specified (indirectly) by the
   NtHeaders parameter. That pointer can be retrieved, for example, by using the
@@ -4383,7 +3969,6 @@ Description:
 Parameters:
   NtHeader - Pointer to the TImageNtHeaders record which specifies the mapped image for which to retrieve the header of the first section.
 Result:
-
   If the function succeeds it returns a pointer to the TImageSectionHeader of the
   first section in the image. If the function fails it returns nil. Note that the
   returned pointer is valid only as long as the image remains mapped in memory.
@@ -4400,13 +3985,11 @@ Quick info:
 Summary:
   Searches the image, specified by NtHeaders, for a specific named section.
 Description:
-
   Searches the image, specified by NtHeaders, for a specific named section.
 Parameters:
   NtHeaders - Pointer to the TImageNtHeaders record which specifies the mapped image in which to search for a specific section.
   SectionName - Name of the section to search for. Note that the search is case insensitive.
 Result:
-
   If the function finds the specified named section it returns a pointer to the
   section header. If the function doesn't find the named section it returns nil.
 Quick info:
@@ -4418,11 +4001,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines.TJclPeSectionStream>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4433,11 +4015,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.Create
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
@@ -4452,17 +4032,14 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.Write
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
   TODO - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4474,11 +4051,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.Instance
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4490,11 +4065,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeSectionStream.SectionHeader
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.MappedImageRoutines>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4506,11 +4079,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking.TJclPeMapImgHookItem>
 Summary:
   The TJclPeMapImgHookItem represents a single hooked API function.
 Description:
-
   The TJclPeMapImgHookItem represents a single hooked API function. The class
   provides detailed information about the hooked function, such as it's name and
   the image it resides in, as well as methods to unhook the function. You perform
@@ -4524,11 +4096,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.Unhook
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Unhooks the function.
 Description:
-
   Call the UnHook method to unhook the function represented by this TJclPeMapImgHookItem
   instance. This will cause the import to revert to the state before the hooking took
   place and will destroy the TJclPeMapImgHookItem instance on which the method was
@@ -4543,11 +4113,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.BaseAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Base address at which the image in which the hooked function resides, is mapped.
 Description:
-
   Base address at which the image in which the hooked function resides, is mapped.
 Quick info:
   Unit: JclPeImage
@@ -4559,11 +4127,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.FunctionName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Name of the hooked function.
 Description:
-
   Name of the hooked function.
 Quick info:
   Unit: JclPeImage
@@ -4575,11 +4141,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.ModuleName
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Name of the image in which the hooked function resides.
 Description:
-
   Name of the image in which the hooked function resides.
 Quick info:
   Unit: JclPeImage
@@ -4591,11 +4155,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.NewAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Address of the function that replaced the original, hooked function.
 Description:
-
   Address of the function that replaced the original, hooked function.
 Quick info:
   Unit: JclPeImage
@@ -4607,11 +4169,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHookItem.OriginalAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Address of the original, hooked funcion.
 Description:
-
   Address of the original, hooked funcion.
 Quick info:
   Unit: JclPeImage
@@ -4623,11 +4183,10 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
+<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking.TJclPeMapImgHooks>
 Summary:
   Provides hooking and unhooking of API functions.
 Description:
-
   The TJclPeMapImgHooks provides the functionality to hook and unhook API functions
   as well as manage a set of those hooks. The class automatically unhooks all functions
   it manages when it is destroyed. The class does not allow you to hook a single
@@ -4641,11 +4200,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.HookImport
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Hooks a imported function.
 Description:
-
   The HookImports method hooks the specified function. That is, it replaces the
   imported function with the one supplied. Thereafter all calls to the original
   function anywhere in the application automatically call this new function. When
@@ -4658,7 +4215,6 @@ Parameters:
   NewAddress - Address of the new function which should replace the original function.
   OriginalAddress - Upon success receives the address of the function which was hooked.
 Result:
-
   If the function succeeds it returns True and adds an item representing the hooked
   function to the list.
 Quick info:
@@ -4671,16 +4227,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.IsWin9xDebugThunk
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   P - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4692,11 +4245,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.ReplaceImport
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   Hooks an imported function by replacing it with the new function.
 Description:
-
   Hooks an imported function by replacing it with the new function. Unlike the
   HookImport function this class method does not add an entry representing the
   hooked function to the list (how could it, being a class method!).
@@ -4706,7 +4257,6 @@ Parameters:
   FromProc - Address of the function you want to hook.
   ToProc - Address of the function that is to replace the original function.
 Result:
-
   If the function succeeds it returns True, otherwise it returns False.
 Quick info:
   Unit: JclPeImage
@@ -4718,16 +4268,13 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.UnhookByNewAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   NewAddress - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4739,11 +4286,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.Items
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4755,11 +4300,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.ItemFromOriginalAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4771,11 +4314,9 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@TJclPeMapImgHooks.ItemFromNewAddress
-<GROUP LibrariesProcessesandThreads.PortableExecutableFileFormat.APIHooking>
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4791,12 +4332,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4811,12 +4350,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4831,7 +4368,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4850,7 +4386,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4877,7 +4412,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4896,7 +4430,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4919,7 +4452,6 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4940,12 +4472,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4960,12 +4490,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
@@ -4980,12 +4508,10 @@ Quick info:
 Summary:
   TODO
 Description:
-
   TODO
 Parameters:
   TODO - TODO
 Result:
-
   TODO
 Quick info:
   Unit: JclPeImage
