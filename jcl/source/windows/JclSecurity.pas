@@ -52,7 +52,7 @@ function EnableProcessPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
 function EnableThreadPrivilege(const Enable: Boolean;
   const Privilege: string): Boolean;
-function PrivilegeEnabled(const Privilege: string): Boolean;
+function IsPrivilegeEnabled(const Privilege: string): Boolean;
 
 function GetPrivilegeDisplayName(const PrivilegeName: string): string;
 function SetUserObjectFullAccess(hUserObject: THandle): Boolean;
@@ -220,7 +220,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function PrivilegeEnabled(const Privilege: string): Boolean;
+function IsPrivilegeEnabled(const Privilege: string): Boolean;
 var
   Token: THandle;
   TokenPriv: TPrivilegeSet;
