@@ -122,12 +122,12 @@ end;
 [ShortDescr]
 MAPI-Client record
 [Description]
-TJclMapiClient show information on each installed and registered MAPI-Client.
+TJclMapiClient shows information on each installed and registered MAPI-Client.
 [RecordFields]
 Count=4
-1=ClientName:string=Name of MAPI-client
-2=ClientPath:string=Path where MAPI-client is located
-3=RegKeyName:string=Registry key for MAPI-client
+1=ClientName:string=Name of MAPI-Client
+2=ClientPath:string=Path where MAPI-Client is located
+3=RegKeyName:string=Registry key for MAPI-Client
 4=Valid:Boolean=Validity of client (i.e. does it actually support Simple MAPI calls?)
 [Quick Info]
 Kind=Type
