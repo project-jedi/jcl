@@ -24,7 +24,7 @@ package DJclVClx;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI Code Library VisualCLX package for Kylix 3'}
 {$LIBSUFFIX 'K3'}
-{$LIBVERSION '1.92.1'}
+{$LIBVERSION '1.93.1'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 

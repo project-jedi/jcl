@@ -1314,7 +1314,9 @@ begin
   FileSetAttr(ChangeFileExt(FVclDialogSendFileName, '.dfm'), faArchive);
   Result := FileExists(FClxDialogFileName) and FileExists(FClxDialogIconFileName)
     and FileExists(FVclDialogFileName)  and FileExists(FVclDialogIconFileName)
-  {$ENDIF MSWINDOWS};
+  {$ELSE ~MSWINDOWS}
+  Result := True;
+  {$ENDIF ~MSWINDOWS};
   FJclReadmeFileName := DocFileName(RsReadmeFileName);
   if FileExists(FJclReadmeFileName) then
     Tool.Readme := FJclReadmeFileName;
@@ -1431,6 +1433,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.41  2004/11/18 10:14:54  rrossmair
+// - changes for release 1.93
+//
 // Revision 1.40  2004/11/17 06:34:01  marquardt
 // suppress warning about unused UninstallOption
 //

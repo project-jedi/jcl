@@ -17,9 +17,11 @@ jcl/makedist.sh
 jcl/want.exe
 jcl/want.xml
 jcl/bin/QJediInstaller*
+jcl/devtools
 jcl/dist
 jcl/dist-excludes
 jcl/docs/Contributors.txt
+jcl/docs/*.info
 jcl/install/Makefile
 jcl/install/prototypes.mak
 jcl/install/prototypes
