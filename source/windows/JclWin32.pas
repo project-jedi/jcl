@@ -46,6 +46,29 @@ function SignalObjectAndWait(hObjectToSignal: THandle; hObjectToWaitOn: THandle;
   dwMilliseconds: DWORD; bAlertable: BOOL): DWORD; stdcall; external kernel32
   name 'SignalObjectAndWait';
 
+const
+  VER_NT_WORKSTATION       = $0000001;
+  VER_NT_DOMAIN_CONTROLLER = $0000002;
+  VER_NT_SERVER            = $0000003;
+
+type
+  POSVersionInfoEx = ^TOSVersionInfoEx;
+  TOSVersionInfoEx = record
+    dwOSVersionInfoSize: DWORD;
+    dwMajorVersion: DWORD;
+    dwMinorVersion: DWORD;
+    dwBuildNumber: DWORD;
+    dwPlatformId: DWORD;
+    szCSDVersion: array [0..127] of CHAR;     // Maintenance string for PSS usage
+    wServicePackMajor: WORD;
+    wServicePackMinor: WORD;
+    wSuiteMask: WORD;
+    wProductType: BYTE;
+    wReserved: BYTE;
+  end;
+
+function GetVersionEx(lpVersionInformation: POSVersionInfoEx): BOOL; stdcall;
+
 //------------------------------------------------------------------------------
 // Shell related declarations (missing/incorrect in different delphi versions)
 //------------------------------------------------------------------------------
@@ -697,6 +720,8 @@ function SetVolumeMountPoint; external kernel32 name 'SetVolumeMountPointA';
 function DeleteVolumeMountPointA; external kernel32 name 'DeleteVolumeMountPointA';
 function DeleteVolumeMountPointW; external kernel32 name 'DeleteVolumeMountPointW';
 function DeleteVolumeMountPoint; external kernel32 name 'DeleteVolumeMountPointA';
+
+function GetVersionEx; external kernel32 name 'GetVersionExA';
 
 //==============================================================================
 // Netbios
