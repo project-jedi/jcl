@@ -1173,26 +1173,30 @@ Description
 @@_DLLVERSIONINFO
 <GROUP $Windows.Win32API>
 Summary:
-  This record is used by SHDllGetVersion to return version information about a specified DLL.
+  Receives dynamic-link library (DLL)-specific version information.
 Description:
   This record is used by SHDllGetVersion to return version information about a specified DLL.
 See also:
   SHDllGetVersion
 Donator:
   Marcel van Brakel
-  
+
 @@_DLLVERSIONINFO.cbSize
-  Set to the size of this record. Initialize is done by SHDllGetVersion.
+Set to the size of this record. Initialize is done by SHDllGetVersion.
+
 @@_DLLVERSIONINFO.dwMajorVersion
-  Major version of the DLL
+Major version of the DLL
+
 @@_DLLVERSIONINFO.dwMinorVersion
-  Minor version of the DLL
+Minor version of the DLL
+
 @@_DLLVERSIONINFO.dwBuildNumber
-  Build number of the DLL
-@@_DLLVERSIONINFO.dwPlatformId
-  Identifies the platform for which this DLL was built. Can be
-  DLLVER_PLATFORM_WINDOWS or DLLVER_PLATFORM_NT which indicate generic Windows
-  and Windows NT respectively.
+Build number of the DLL
+
+@@_DLLVERSIONINFO.dwPlatformID
+Identifies the platform for which this DLL was built. Can be
+DLLVER_PLATFORM_WINDOWS or DLLVER_PLATFORM_NT which indicate
+generic Windows and Windows NT respectively.
 
 @@DLLVERSIONINFO
 <COMBINE _DLLVERSIONINFO>
@@ -1200,3 +1204,5 @@ Donator:
 @@TDllVersionInfo
 <COMBINE _DLLVERSIONINFO>
 --------------------------------------------------------------------------------
+
+

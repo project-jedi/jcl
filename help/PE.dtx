@@ -290,7 +290,7 @@ Quick info:
 @@TJclPeImagesCache
 <GROUP $LibrariesProcessesandThreads.PortableExecutableFileFormat.TJclPeImagesCache>
 Summary:
-  Cahce for TJclPeImage objects.
+  Cache for TJclPeImage objects.
 Description:
   Provides a cache for TJclPeImage instances. The cache is used internally (though
   you can also use it outside of the module) by the JclPeImage module to prevent
@@ -337,7 +337,7 @@ Quick info:
 @@TJclPeImportSort
 <GROUP $LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
-  Enumeration used by the various import section related classes to determine how a list of imported functions should be sorted. Usually the method called to perform the sort operation allows for further options such as whether the sort should be ascending or descending.
+  Enumeration used to determine how a list of imported functions should be sorted. 
 Description:
   Enumeration used by the various import section related classes to determine how a list of imported functions should be sorted. Usually the method called to perform the sort operation allows for further options such as whether the sort should be ascending or descending.
 Quick info:
@@ -367,9 +367,10 @@ Quick info:
 @@TJclPeImportKind
 <GROUP $LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
-  Specifies how a function was imported. This does not include whether or not the function was imported by name or ordinal.
+  Specifies how a function was imported.
 Description:
-  Specifies how a function was imported. This does not include whether or not the function was imported by name or ordinal.
+  Specifies how a function was imported. This does not include whether or not 
+  the function was imported by name or ordinal.
 Quick info:
   Donator: Petr Vones
 @@TJclPeImportKind.ikImport
@@ -382,9 +383,22 @@ Quick info:
 @@TJclPeResolveCheck
 <GROUP $LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
-  Both the classes that wrap the import section as well as the class that wraps the export section have methods to perform a resolve check. This means slightly different things for an import section than it does for an export section. For example, for the import section it means that the method tries to resolve all imported function by looking them up in the exports section of the image from which the function is imported. If the function is found there the import is considered resolved, otherwise it is unresolved. This latter case would indicate that the OS loader would probably also be unable to resolve the import and loading of the image would fail. The TJclPeResolveCheck type is used by the imports and exports classes to specify whether a function could be resolved. Note that all items start off begin unchecked, you have to request function resolving explicitly through the appropriate method call.
+  Specifies the resolution status of imported resp. exported functions.
 Description:
-  Both the classes that wrap the import section as well as the class that wraps the export section have methods to perform a resolve check. This means slightly different things for an import section than it does for an export section. For example, for the import section it means that the method tries to resolve all imported function by looking them up in the exports section of the image from which the function is imported. If the function is found there the import is considered resolved, otherwise it is unresolved. This latter case would indicate that the OS loader would probably also be unable to resolve the import and loading of the image would fail. The TJclPeResolveCheck type is used by the imports and exports classes to specify whether a function could be resolved. Note that all items start off begin unchecked, you have to request function resolving explicitly through the appropriate method call.
+  Both the classes that wrap the import section as well as the class that wraps 
+  the export section have methods to perform a resolve check. This means 
+  slightly different things for an import section than it does for an export 
+  section. For example, for the import section it means that the method tries 
+  to resolve all imported function by looking them up in the exports section of 
+  the image from which the function is imported. If the function is found there 
+  the import is considered resolved, otherwise it is unresolved. This latter 
+  case would indicate that the OS loader would probably also be unable to resolve 
+  the import and loading of the image would fail. The TJclPeResolveCheck type is 
+  used by the imports and exports classes to specify whether a function could be 
+  resolved. 
+  
+  Note that all items start off begin unchecked, you have to request function 
+  resolving explicitly through the appropriate method call.
 Quick info:
   Donator: Petr Vones
 @@TJclPeResolveCheck.icNotChecked
@@ -392,14 +406,17 @@ Quick info:
 @@TJclPeResolveCheck.icResolved
   The function could be resolved.
 @@TJclPeResolveCheck.icUnresolved
-  The function could not be resolved. This would indicate an error in the image file evantually causing the OS loader to fail loading the image.
+  The function could not be resolved. This would indicate an error in the image 
+  file evantually causing the OS loader to fail loading the image.
 --------------------------------------------------------------------------------
 @@TJclPeLinkerProducer
 <GROUP $LibrariesProcessesandThreads.PortableExecutableFileFormat.ImportSection>
 Summary:
-  Specifies the manufacturer of the linker that produced an image file. The function uses a heauristic which is not perfect and is only capable of recognizing Borland Delphi, C++ Builder and Microsoft Visual Studio linkers.
+  Specifies the manufacturer of the linker that produced an image file. 
 Description:
-  Specifies the manufacturer of the linker that produced an image file. The function uses a heauristic which is not perfect and is only capable of recognizing Borland Delphi, C++ Builder and Microsoft Visual Studio linkers.
+  Specifies the manufacturer of the linker that produced an image file. The 
+  function uses a heuristic which is not perfect and is only capable of 
+  recognizing Borland Delphi, C++ Builder and Microsoft Visual Studio linkers.
 Quick info:
   Donator: Petr Vones
 @@TJclPeLinkerProducer.lrBorland

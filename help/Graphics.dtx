@@ -53,14 +53,6 @@
 <TITLE Types>
 <TOPICORDER 1000>
 --------------------------------------------------------------------------------
-@@JclGraphics.pas
-The resampling algorithms and methods used in this library
-were adapted by Anders Melander from the article "General
-Filtered Image Rescaling" by Dale Schumacher which appeared
-in the book Graphics Gems III, published by Academic Press,
-Inc. Additional improvements were done by David Ullrich,
-Josha Beukema and Mike Lischke.
---------------------------------------------------------------------------------
 @@BrightColorChannel
 <GROUP $Graphics.Colors>
 Summary:
@@ -707,8 +699,6 @@ Parameters:
   DeltaY - The amount to move the rectangle in the vertical direction.
 See also:
   RectMoveTo
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectMoveTo
@@ -724,8 +714,6 @@ Parameters:
   Y - The new Y coordinate of the top-left corner of the rectangle.
 See also:
   RectMove
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectGrow
@@ -743,8 +731,6 @@ Parameters:
 See also:
   RectGrowX
   RectGrowY
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectGrowX
@@ -762,8 +748,6 @@ Parameters:
 See also:
   RectGrow
   RectGrowY
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectGrowY
@@ -781,8 +765,6 @@ Parameters:
 See also:
   RectGrow
   RectGrowX
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectHeight
@@ -797,8 +779,6 @@ Result:
   The height of the rectangle in pixels.
 See also:
   RectWidth
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@RectWidth
@@ -813,8 +793,6 @@ Result:
   The width of the rectangle in pixels.
 See also:
   RectHeight
-
-
 Donator: Pelle F. S. Liljendal
 --------------------------------------------------------------------------------
 @@DrawBitmap
@@ -833,8 +811,6 @@ Parameters:
   Y - Vertical position of the upper left corner in the destination DC where to draw the bitmap.
   Width - Width of the destination bitmap.
   Height - Height of the destination bitmap.
-
-
 Donator: Charlie Calvert
 --------------------------------------------------------------------------------
 @@BitmapToJPeg
@@ -849,8 +825,6 @@ Parameters:
   FileName - Name of the bitmap file to convert to a JPEG image.
 See also:
   JPegToBitmap
-
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@JPegToBitmap
@@ -865,8 +839,6 @@ Parameters:
   FileName - Name of the JPEG image file to convert to a bitmap.
 See also:
   BitmapToJpeg
-
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ExtractIconCount
@@ -884,8 +856,6 @@ Parameters:
 Result:
   The number of icons in the specified file. If the file does not contain icons
   the result is 0.
-
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@BitmapToIcon
@@ -901,8 +871,6 @@ Parameters:
 Result:
   Handle to the icon or 0 on failure. Caller is responsible for eventually releasing
   the icon resource by calling DestroyIcon.
-
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@IconToBitmap
@@ -916,8 +884,6 @@ Parameters:
 Result:
   Handle to the bitmap or 0 on failure. The caller is responsible for freeing the
   resources associated with this bitmap by calling DeleteObject.
-
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@Stretch@Cardinal@Cardinal@TResamplingFilter@Single@TGraphic@TBitmap
@@ -975,8 +941,6 @@ Description:
   filters are suitable. The quality resulting from those filters is only on average level.
   Filters like Lanczos3 or Bell produce much better results which are well comparable with those of
   Photoshop's bicubic interpolation.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@GetAntialiasedBitmap
@@ -990,8 +954,6 @@ Parameters:
 Result:
   An antialiased true color bitmap shrunk 2 times on each dimension. Output bitmap is
   created inside the function and should be manually freed.
-
-
 Donator: Marcin Wieczorek (T-1000)
 --------------------------------------------------------------------------------
 @@CIED65ToCIED50
@@ -1005,8 +967,6 @@ Parameters:
   X - X Color D65.
   Y - Y Color D65.
   Z - Z Color D65.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@Gray16
@@ -1020,8 +980,6 @@ Parameters:
   Source - The source pointer to a stream of 16 bit colors.
   Target - The target pointer to a stream of 8 bit colors.
   Count - Number of samples to convert.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@CMYK2BGR
@@ -1035,8 +993,6 @@ Parameters:
   Target - Target pointer of the stream of BRG records, this are 3 byte records representing BGR colors
   BitsPerSample - The bits per color component of the source stream, this can be 8 or 16 bits.
   Count - Number of samples to convert.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@CIELAB2BGR
@@ -1050,8 +1006,6 @@ Parameters:
   Source - The source pointer to a stream of CIELAB records, the size of the records is always 3 bytes per record.
   Target - The target pointer to a stream of BGR records, the size is always 3 bytes per record.
   Count - Number of samples to convert.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@RGB2BGR
@@ -1065,8 +1019,6 @@ Parameters:
   Target - Target pointer to a stream of BGR records that are 3 bytes long.
   BitsPerSample - The bits per sample of the source stream, this can be 8 or 16 bits.
   Count - Number of samples to convert.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@RGBA2BGRA
@@ -1081,8 +1033,6 @@ Parameters:
   Target - The pointer to the target stream of BGRA records, the size of the records is 4 bytes per record.
   BitsPerSample - The bits per sample of the source stream, this can be 8 or 16 bits.
   Count - Number of samples to convert.
-
-
 Donator: Mike Lischke
 --------------------------------------------------------------------------------
 @@WinColor2OpenGLColor
@@ -1096,8 +1046,6 @@ Parameters:
   Red - The Red OpenGLColor channel between 0.0 and 1.0.
   Green - The Green OpenGLColor channel between 0.0 and 1.0.
   Blue - The Blue OpenGLColor channel between 0.0 and 1.0.
-
-
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
 @@OpenGLColor2WinColor
@@ -1112,8 +1060,6 @@ Parameters:
   Blue - The Blue OpenGLColor channel between 0.0 and 1.0.
 Result:
   The windows color.
-
-
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas
@@ -1124,8 +1070,6 @@ Description:
   This class gives you access to the desktop canvas. It inherits everything from the canvas
   class. When using this canvas don't change the handle of the canvas this will remove the
   functionality of the class.
-
-
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
 @@TJclDesktopCanvas.Create
@@ -1133,8 +1077,7 @@ Summary:
   Creates the desktop canvas class.
 Description:
   Gets the desktop graphics device handle from the operating system and initializes the canvas.
-
-
+Quick Info:
   Visibility: Public
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
@@ -1143,8 +1086,7 @@ Summary:
   Destroys the desktop canvas class.
 Description:
   Destroys the desktop canvas class.
-
-
+Quick Info:
   Visibility: Public
 Donator: Pelle Liljendal
 --------------------------------------------------------------------------------
@@ -1154,8 +1096,6 @@ Summary:
   TColor32 represents an ARGB color quad.
 Description:
   TColor32 represents an ARGB color quad.
-
-
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TColor32Array
@@ -1164,8 +1104,6 @@ Summary:
   TColor32 Arrays.
 Description:
   TColor32 Arrays.
-
-
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@TPalette32
@@ -1174,7 +1112,6 @@ Summary:
   TPalette32 types are mostly used to simulate palette-based operations.
 Description:
   TPalette32 types are mostly used to simulate palette-based operations.
-
 Donator: Alex Denissov
 --------------------------------------------------------------------------------
 @@PointIsNull
@@ -1188,7 +1125,6 @@ Parameters:
 Result:
   If the supplied point equals the null point (a TPoint with both X and Y set to 0)
   the function returns True, otherwise it returns False.
-
 Donator: Marcel van Brakel
 --------------------------------------------------------------------------------
 @@ClipLine
@@ -1207,7 +1143,6 @@ Parameters:
 Result:
   True, if some section of the line lies inside of the clipping rectangle (and eventually shall be
   drawn), False otherwise.
-
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@DrawPolyLine
@@ -1222,7 +1157,6 @@ Parameters:
   Canvas - The canvas to draw on.
   Points - The array of points that define the line sequence.
   ClipRect - The clipping rectangle.
-
 Donator: Robert Rossmair
 --------------------------------------------------------------------------------
 @@GetIconFromBitmap
@@ -1257,7 +1191,7 @@ In contrast to TIcon.SaveToStream, WriteIcon does not force
 the number of colors in the icon image down to 16.
 
 Summary
-Writes an icon to a stream.
+Writes an icon to a stream, allowing for > 16 colors.
 
 Parameters
 Icon :          Handle of the icon
@@ -1311,7 +1245,7 @@ In contrast to TIcon.SaveToFile, WriteIcon does not force
 the number of colors in the icon image down to 16.
 
 Summary
-Writes an icon to a file.
+Writes an icon to a file, allowing for > 16 colors.
 
 Parameters
 FileName :   The name of the file to which to write the icon
