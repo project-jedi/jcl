@@ -225,7 +225,7 @@ var
             Process(pppState, iter.Name, NewName);
           except
             on e: Exception do
-              Writeln('Error: ', iter.Name, e.Message);
+              Writeln(Format('Error: %s %s', [e.Message, iter.Name]));
           end;
         until not iter.Next
       else
@@ -238,7 +238,8 @@ var
   cp: PChar;
 begin
   cp := ACommandLine;
-
+  StripLength := 0;
+  
   pppState := TJppState.Create;
   try
     repeat
@@ -276,6 +277,10 @@ begin
 
 // Modifications by Robert Rossmair:  Added options "-u", "-x" and related code
 // $Log$
+// Revision 1.6  2004/06/04 02:49:24  rrossmair
+// - bug fix: StripLength was eventually not initialized
+// - better error message formatting
+//
 // Revision 1.5  2004/04/18 06:25:07  rrossmair
 // extension change for processed file only when necessary
 //
