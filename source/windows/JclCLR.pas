@@ -50,16 +50,17 @@ const
 
   MetadataHeaderSignature = $424A5342; // 'BSJB'
 
+  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).
+  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
+  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;	// Image has a strong name signature.
+  COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).
 type
   TJclClrToken = DWORD;
 
 //==================================================================================================
 // Flag	Value	Description
 //==================================================================================================
-const  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).
-  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
-  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;	// Image has a strong name signature.
-  COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).type  TJclClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
+type  TJclClrImageFlag = (cifILOnly, cif32BitRequired, cifStrongNameSinged, cifTrackDebugData);
   TJclClrImageFlags = set of TJclClrImageFlag;
 
 //==================================================================================================
@@ -276,6 +277,72 @@ type
     ttNestedClass,          //  $29
     ttUnknown2a,            //  $2a
     ttUnknown2b);           //  $2b
+(*
+{$IFDEF SUPPORTS_EXTSYM}
+
+{$EXTERNALSYM MAX_CLASS_NAME}
+{$EXTERNALSYM MAX_PATH_NAME}
+
+{$EXTERNALSYM MetadataHeaderSignature}
+
+{$EXTERNALSYM COMIMAGE_FLAGS_ILONLY}
+{$EXTERNALSYM COMIMAGE_FLAGS_32BITREQUIRED}
+{$EXTERNALSYM COMIMAGE_FLAGS_STRONGNAMESIGNED}
+{$EXTERNALSYM COMIMAGE_FLAGS_TRACKDEBUGDATA}
+{$EXTERNALSYM afPublicKey}
+{$EXTERNALSYM afCompatibilityMask}
+{$EXTERNALSYM afSideBySideCompatible}
+{$EXTERNALSYM afNonSideBySideAppDomain}
+{$EXTERNALSYM afNonSideBySideProcess}
+{$EXTERNALSYM afNonSideBySideMachine}
+{$EXTERNALSYM afEnableJITcompileTracking}
+{$EXTERNALSYM afDisableJITcompileOptimizer}
+
+{$EXTERNALSYM COR_VTABLE_32BIT}
+{$EXTERNALSYM COR_VTABLE_64BIT}
+{$EXTERNALSYM COR_VTABLE_FROM_UNMANAGED}
+{$EXTERNALSYM COR_VTABLE_CALL_MOST_DERIVED}
+
+{$EXTERNALSYM tdVisibilityMask}
+{$EXTERNALSYM tdNotPublic}
+{$EXTERNALSYM tdPublic}
+{$EXTERNALSYM tdNestedPublic}
+{$EXTERNALSYM tdNestedPrivate}
+{$EXTERNALSYM tdNestedFamily}
+{$EXTERNALSYM tdNestedAssembly}
+{$EXTERNALSYM tdNestedFamANDAssem}
+{$EXTERNALSYM tdNestedFamORAssem}
+{$EXTERNALSYM tdLayoutMask}
+{$EXTERNALSYM tdAutoLayout}
+{$EXTERNALSYM tdSequentialLayout}
+{$EXTERNALSYM tdExplicitLayout}
+{$EXTERNALSYM tdClassSemanticsMask}
+{$EXTERNALSYM tdClass}
+{$EXTERNALSYM tdInterface}
+{$EXTERNALSYM tdAbstract}
+{$EXTERNALSYM tdSealed}
+{$EXTERNALSYM tdSpecialName}
+{$EXTERNALSYM tdImport}
+{$EXTERNALSYM tdSerializable}
+{$EXTERNALSYM tdStringFormatMask}
+{$EXTERNALSYM tdAnsiClass}
+{$EXTERNALSYM tdUnicodeClass}
+{$EXTERNALSYM tdAutoClass}
+{$EXTERNALSYM tdBeforeFieldInit}
+{$EXTERNALSYM tdReservedMask}
+{$EXTERNALSYM tdRTSpecialName}
+{$EXTERNALSYM tdHasSecurity}
+
+{$EXTERNALSYM pdIn}
+{$EXTERNALSYM pdOut}
+{$EXTERNALSYM pdOptional}
+{$EXTERNALSYM pdReservedMask}
+{$EXTERNALSYM pdHasDefault}
+{$EXTERNALSYM pdHasFieldMarshal}
+{$EXTERNALSYM pdUnused}
+
+{$ENDIF SUPPORTS_EXTSYM}
+*)
 
 type
   TJclClrHeaderEx = class;
@@ -1195,7 +1262,7 @@ type
   public
     property Semantics: Word read FSemantics;
     property MethodIdx: DWORD read FMethodIdx;
-    property AssociationIdx: DWORD read FAssociationIdx;  
+    property AssociationIdx: DWORD read FAssociationIdx;
   end;
 
   TJclClrTableMethodSemantics = class(TJclClrTable)
