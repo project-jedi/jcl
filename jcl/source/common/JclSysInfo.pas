@@ -484,7 +484,7 @@ uses
   {$IFNDEF DELPHI5_UP}
   JclSysUtils,
   {$ENDIF DELPHI5_UP}
-  JclFileUtils, JclRegistry, JclShell, JclStrings, JclWin32;
+  JclFileUtils, JclRegistry, JclResources, JclShell, JclStrings, JclWin32;
 
 //==============================================================================
 // Environment
