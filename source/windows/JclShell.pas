@@ -17,6 +17,7 @@
 { All Rights Reserved.                                                                             }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Rik Barker (rikbarker)                                                                         }
 {   Marcel van Brakel                                                                              }
 {   Jeff                                                                                           }
 {   Aleksej Kudinov                                                                                }
@@ -1036,6 +1037,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function ShellLinkResolve(const FileName: string; var Link: TShellLink): HRESULT;
+const
+  SLR_INVOKE_MSI = 128;
 var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
@@ -1056,11 +1059,16 @@ begin
     Result := PersistFile.Load(LinkName, STGM_READ);
     if Succeeded(Result) then
     begin
-      Result := ShellLink.Resolve(0, SLR_ANY_MATCH);
+      Result := ShellLink.Resolve(0, SLR_ANY_MATCH or SLR_INVOKE_MSI);
       if Succeeded(Result) then
       begin
         SetLength(Buffer, MAX_PATH);
-        ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData, SLGP_SHORTPATH);
+        ShellLink.GetIDList(Link.IdList);
+
+        //GetPath doesn't support SLR_INVOKE_MSI - need to use the PIDL to get the path
+        if not SHGetPathFromIDList(Link.IdList,PChar(Buffer)) then
+          ShellLink.GetPath(PChar(Buffer), MAX_PATH, Win32FindData, SLGP_SHORTPATH);
+
         Link.Target := PChar(Buffer);
         ShellLink.GetArguments(PChar(Buffer), MAX_PATH);
         Link.Arguments := PChar(Buffer);
@@ -1072,7 +1080,6 @@ begin
         ShellLink.GetIconLocation(PChar(Buffer), MAX_PATH, Link.IconIndex);
         Link.IconLocation := PChar(Buffer);
         ShellLink.GetHotkey(Link.HotKey);
-        ShellLink.GetIDList(Link.IdList);
       end;
     end;
   end;
@@ -1463,6 +1470,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/12/03 15:36:04  rikbarker
+// Fixed ShellLinkResolve to correctly Resolve TargetPath for MS-Office style link files.
+//
 // Revision 1.15  2004/10/17 21:48:07  mthoma
 // Removed ShellRasDial contribution. Rewrite needed as soon as dynmic linking support in JclWin32 has been redesigned.
 //
