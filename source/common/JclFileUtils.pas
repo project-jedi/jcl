@@ -72,6 +72,7 @@ function PathAddSeparator(const Path: string): string;
 function PathAddExtension(const Path, Extension: string): string;
 function PathAppend(const Path, Append: string): string;
 function PathBuildRoot(const Drive: Byte): string;
+function PathCanonicalize(const Path: string): string;
 function PathCommonPrefix(const Path1, Path2: string): Integer;
 function PathCompactPath(const DC: HDC; const Path: string; const Width: Integer;
   CmpFmt: TCompactPath): string; overload;
@@ -80,6 +81,8 @@ function PathCompactPath(const Canvas: TCanvas; const Path: string; const Width:
 procedure PathExtractElements(const Source: string; var Drive, Path, FileName, Ext: string);
 function PathExtractFileDirFixed(const S: AnsiString): AnsiString;
 function PathExtractFileNameNoExt(const Path: string): string;
+function PathExtractPathDepth(const Path: string; Depth: Integer): string;
+function PathGetDepth(const Path: string): Integer;
 function PathGetLongName(const Path: string): string;
 function PathGetLongName2(Path: string): string;
 function PathGetShortName(const Path: string): string;
@@ -109,6 +112,7 @@ function AdvBuildFileList(const Path: string; const Attr: Integer;
   const SubfoldersMask: string {$IFDEF SUPPORTS_DEFAULTPARAMS} = '' {$ENDIF}): Boolean;
 function CloseVolume(var Volume: THandle): Boolean;
 procedure CreateEmptyFile(const FileName: string);
+function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
 function DelTree(const Path: string): Boolean;
 function DelTreeEx(const Path: string; AbortOnFailure: Boolean; Progress: TDelTreeProgress): Boolean;
 function DirectoryExists(const Name: string): Boolean;
@@ -117,6 +121,7 @@ function DiskInDrive(Drive: Char): Boolean;
 {$ENDIF WIN32}
 function FileCreateTemp(var Prefix: string): THandle;
 function FileExists(const FileName: string): Boolean;
+function GetBackupFileName(const FileName: string): string;
 function FileGetDisplayName(const FileName: string): string;
 function FileGetSize(const FileName: string): Integer;
 function FileGetTempName(const Prefix: string): string;
@@ -147,6 +152,9 @@ function SetFileLastAccess(const FileName: string; const DateTime: TDateTime): B
 function SetFileCreation(const FileName: string; const DateTime: TDateTime): Boolean;
 procedure ShredFile(const FileName: string; Times: Integer {$IFDEF SUPPORTS_DEFAULTPARAMS} = 1 {$ENDIF});
 function UnlockVolume(var Handle: THandle): Boolean;
+function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
+function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
+function Win32RestoreFile(const FileName: string): Boolean;
 
 //------------------------------------------------------------------------------
 // TFileVersionInfo
@@ -408,7 +416,7 @@ uses
   {$IFDEF WIN32}
   ActiveX, ShellApi, ShlObj,
   {$ENDIF WIN32}
-  JclDateTime, JclResources, JclSecurity, JclStrings, JclSysUtils, JclWin32;
+  JclDateTime, JclResources, JclSecurity, JclShell, JclStrings, JclSysUtils, JclWin32;
 
 { Some general notes:
 
@@ -953,6 +961,56 @@ end;
 
 //------------------------------------------------------------------------------
 
+{ todoc
+
+  Canonicalizes a path. Meaning, it parses the specified path for the character
+  sequences '.' and '..' where '.' means skip over the next path part and '..'
+  means remove the previous path part.
+
+  For example:
+    c:\users\.\delphi\data => c:\users\delphi\data
+    c:\users\..\delphi\data => c:\brakelm\delphi\data
+    c:\users\.\delphi\.. => c:\users
+    c:\users\.\..\data => c:\data
+
+  Thus, the '.' and '..' sequences have similar meaning to their counterparts in
+  the filesystem.
+
+  Path: the path to canonicalize
+  Result: the canonicalized path
+  Author: Jeff
+  Notes: This function does not behave exactly like the one from shlwapi.dll!!
+         Especially 'c:\..' => 'c:' whereas shlwapi returns 'c:\'
+}
+
+function PathCanonicalize(const Path: string): string;
+var
+  List: TStrings;
+  I: Integer;
+begin
+  List := TStringList.Create;
+  try
+    StrIToStrings(Path, '\', List, False);
+    I := 0;
+    while I < List.Count do
+    begin
+      if List[I] = '.' then List.Delete(I)
+      else if (List[I] = '..') then
+      begin
+        List.Delete(I);
+        Dec(I);
+        if I > 0 then List.Delete(I);
+      end
+      else Inc(I);
+    end;
+    Result := StringsToStr(List, '\', False);
+  finally
+    List.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
 function PathCommonPrefix(const Path1, Path2: string): Integer;
 var
   P1, P2: PChar;
@@ -977,13 +1035,11 @@ begin
     while (P1^ = P2^) and (P1^ <> #0) do
     begin
       Inc(Result);
-      if P1^ in [PathSeparator, ':'] then
-        LastSeparator := Result;
+      if P1^ in [PathSeparator, ':'] then LastSeparator := Result;
       Inc(P1);
       Inc(P2);
     end;
-    if (LastSeparator < Result) and (P1^ <> #0) then
-      Result := LastSeparator;
+    if (LastSeparator < Result) and (P1^ <> #0) then Result := LastSeparator;
   end;
 end;
 
@@ -1057,6 +1113,78 @@ end;
 function PathExtractFileNameNoExt(const Path: string): string;
 begin
   Result := PathRemoveExtension(ExtractFileName(Path));
+end;
+
+//------------------------------------------------------------------------------
+
+{ todoc
+
+  Returns the first Depth path parts of the specified path exclusing drive.
+  Example: PathExtractPathDepth('c:\users\brakelm\data', 2) => 'c:\users\brakelm'
+  Path: the path to extract from
+  Depth: the depth of the path to return (i.e. the number of directory parts).
+  Author: Jeff
+}
+
+function PathExtractPathDepth(const Path: string; Depth: Integer): string;
+var
+  List: TStrings;
+  LocalPath: string;
+  I: Integer;
+begin
+  List := TStringList.Create;
+  try
+    if IsDirectory(Path) then
+      LocalPath := Path
+    else
+      LocalPath := ExtractFilePath(Path);
+    StrIToStrings(LocalPath, '\', List, True);
+    I := Depth + 1;
+    if PathIsUNC(LocalPath) then
+      I := I + 2;
+    while (I < List.Count) do List.Delete(I);
+    Result := PathAddSeparator(StringsToStr(List, '\', True));
+  finally
+    List.Free;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+{ todoc
+
+  Returns the depth of a path. That is the number of subdirectories in the path.
+  Path: the path for which to return the depth
+  Result: depth of the path
+  Author: Jeff
+  Notes: maybe this function should first apply PathCanonicalize() ?
+}
+
+function PathGetDepth(const Path: string): Integer;
+var
+  List: TStrings;
+  LocalPath: string;
+  I, Start: Integer;
+begin
+  Result := 0;
+  List := TStringList.Create;
+  try
+    if IsDirectory(Path) then
+      LocalPath := Path
+    else
+      LocalPath := ExtractFilePath(Path);
+    StrIToStrings(LocalPath, '\', List, False);
+    if PathIsUNC(LocalPath) then
+      Start := 1
+    else
+      Start := 0;
+    for I := Start to List.Count - 1 do
+    begin
+      if (Pos(':', List[I]) = 0) then Inc(Result);
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
 //------------------------------------------------------------------------------
@@ -1384,6 +1512,18 @@ end;
 
 //------------------------------------------------------------------------------
 
+// todoc author Jeff
+
+function DeleteDirectory(const DirectoryName: string; MoveToRecycleBin: Boolean): Boolean;
+begin
+  if MoveToRecycleBin then
+    Result := SHDeleteFolder(0, DirectoryName, [doSilent, doAllowUndo])
+  else
+    Result := DelTree(DirectoryName);
+end;
+
+//------------------------------------------------------------------------------
+
 function DelTree(const Path: string): Boolean;
 begin
   Result := DelTreeEx(Path, False, nil);
@@ -1515,6 +1655,30 @@ begin
   // Attempt to access the file, doesn't matter how, using FileGetSize is as
   // good as anything else.
   Result := FileGetSize(FileName) <> -1;
+end;
+
+//------------------------------------------------------------------------------
+
+{ todoc
+
+  returns a filename that can be used for backup purposes. this is similar to
+  how delphi uses backup's: it simply prepends a tilde (~) to the extension.
+  filename: the filename for which to return a backup filename
+  result: the filename used for backup purposes 
+  author: Jeff
+}
+
+function GetBackupFileName(const FileName: string): string;
+var
+  NewExt: string;
+begin
+  NewExt := ExtractFileExt(FileName);
+  if Length(NewExt) > 0 then
+  begin
+    NewExt[1] := '~';
+    NewExt := '.' + NewExt
+  end;
+  Result := ChangeFileExt(FileName, NewExt);
 end;
 
 //------------------------------------------------------------------------------
@@ -2094,6 +2258,45 @@ begin
       Handle := INVALID_HANDLE_VALUE;
     end;
   end;
+end;
+
+//------------------------------------------------------------------------------
+
+// todoc Author: Jeff
+
+function Win32DeleteFile(const FileName: string; MoveToRecycleBin: Boolean): Boolean;
+begin
+  if MoveToRecycleBin then
+    Result := SHDeleteFiles(0, FileName, [doSilent, doAllowUndo, doFilesOnly])
+  else
+    Result := Windows.DeleteFile(PChar(FileName));
+end;
+
+//------------------------------------------------------------------------------
+
+// todoc Author: Jeff
+
+function Win32BackupFile(const FileName: string; Move: Boolean): Boolean;
+begin
+  if Move then
+    Result := MoveFile(PChar(FileName), PChar(GetBackupFileName(FileName)))
+  else
+    Result := CopyFile(PChar(FileName), PChar(GetBackupFileName(FileName)), False)
+end;
+
+//------------------------------------------------------------------------------
+
+// todoc Author: Jeff
+
+function Win32RestoreFile(const FileName: string): Boolean;
+var
+  TempFileName: string;
+begin
+  Result := False;
+  TempFileName := FileGetTempName('');
+  if MoveFile(PChar(GetBackupFileName(FileName)), PChar(TempFileName)) then
+    if Win32BackupFile(FileName, False) then
+      Result := MoveFile(PChar(TempFileName), PChar(FileName));
 end;
 
 //==============================================================================
