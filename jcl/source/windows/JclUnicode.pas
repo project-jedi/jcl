@@ -136,6 +136,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  Dialogs,
   Classes;
 
 {$IFDEF SUPPORTS_WIDESTRING}
@@ -6319,6 +6320,8 @@ begin
       Inc(Source);
     end;
   end;
+
+  SetLength(Result, (Integer(Dest) - Integer(Result)) div 2);
 end;
 
 
