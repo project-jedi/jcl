@@ -764,7 +764,7 @@ end;
 
 function TJclComplex.CoreLn(const LnValue: TRectCoord): TRectCoord;
 begin
-  Result.X := Ln(LnValue.X);
+  Result.X := System.Ln(LnValue.X);
   Result.Y := NormalizeAngle(LnValue.Y);
 end;
 
@@ -1770,6 +1770,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/10/12 17:21:54  rrossmair
+// restore JclMath compatibility
+//
 // Revision 1.8  2004/09/16 19:47:32  rrossmair
 // check-in in preparation for release 1.92
 //
