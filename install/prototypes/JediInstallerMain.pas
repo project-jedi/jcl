@@ -15,7 +15,9 @@
 { The Initial Developer of the Original Code is Petr Vones. Portions created by Petr Vones are     }
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
-{ Contributor(s): Robert Rossmair (crossplatform & BCB support, refactoring)                       }
+{ Contributors:                                                                                    }
+{   Andreas Hausladen (ahuser)                                                                     }
+{   Robert Rossmair (rrossmair) - crossplatform & BCB support, refactoring                         }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -550,6 +552,7 @@ begin
   P := View(Installation);
   P.InfoDisplay.Lines.Clear;
   ProductsPageControl.ActivePage := P.Parent as TTabSheet;
+  P.StartCompilation(Installation);
 end;
 
 procedure TMainForm.InstallationFinished(Installation: TJclBorRADToolInstallation);
@@ -557,6 +560,7 @@ var
   P: TProductFrame;
 begin
   P := View(Installation);
+  P.StopCompilation(Installation);
   P.InfoDisplay.Lines.SaveToFile(JclInstall.LogFileName(Installation));
 end;
 
