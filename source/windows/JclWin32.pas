@@ -151,17 +151,129 @@ type
 // Security related declarations from winnt.h
 //==============================================================================
 
-const
-  SECURITY_BUILTIN_DOMAIN_RID = $00000020;
-  DOMAIN_ALIAS_RID_ADMINS     = $00000220;
-  DOMAIN_ALIAS_RID_GUESTS     = $00000222;
+/////////////////////////////////////////////////////////////////////////////
+//                                                                         //
+// Universal well-known SIDs                                               //
+//                                                                         //
+//     Null SID                     S-1-0-0                                //
+//     World                        S-1-1-0                                //
+//     Local                        S-1-2-0                                //
+//     Creator Owner ID             S-1-3-0                                //
+//     Creator Group ID             S-1-3-1                                //
+//     Creator Owner Server ID      S-1-3-2                                //
+//     Creator Group Server ID      S-1-3-3                                //
+//                                                                         //
+//     (Non-unique IDs)             S-1-4                                  //
+//                                                                         //
+/////////////////////////////////////////////////////////////////////////////
 
+const
   SECURITY_NULL_SID_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 0));
   SECURITY_WORLD_SID_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 1));
   SECURITY_LOCAL_SID_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 2));
   SECURITY_CREATOR_SID_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 3));
   SECURITY_NON_UNIQUE_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 4));
+
+  SECURITY_NULL_RID                 = ($00000000);
+  SECURITY_WORLD_RID                = ($00000000);
+  SECURITY_LOCAL_RID                = ($00000000);
+
+  SECURITY_CREATOR_OWNER_RID        = ($00000000);
+  SECURITY_CREATOR_GROUP_RID        = ($00000001);
+
+  SECURITY_CREATOR_OWNER_SERVER_RID = ($00000002);
+  SECURITY_CREATOR_GROUP_SERVER_RID = ($00000003);
+
+/////////////////////////////////////////////////////////////////////////////
+//                                                                         //
+// NT well-known SIDs                                                      //
+//                                                                         //
+//     NT Authority          S-1-5                                         //
+//     Dialup                S-1-5-1                                       //
+//                                                                         //
+//     Network               S-1-5-2                                       //
+//     Batch                 S-1-5-3                                       //
+//     Interactive           S-1-5-4                                       //
+//     Service               S-1-5-6                                       //
+//     AnonymousLogon        S-1-5-7       (aka null logon session)        //
+//     Proxy                 S-1-5-8                                       //
+//     ServerLogon           S-1-5-9       (aka domain controller account) //
+//     Self                  S-1-5-10      (self RID)                      //
+//     Authenticated User    S-1-5-11      (Authenticated user somewhere)  //
+//     Restricted Code       S-1-5-12      (Running restricted code)       //
+//     Terminal Server       S-1-5-13      (Running on Terminal Server)    //
+//                                                                         //
+//     (Logon IDs)           S-1-5-5-X-Y                                   //
+//                                                                         //
+//     (NT non-unique IDs)   S-1-5-0x15-...                                //
+//                                                                         //
+//     (Built-in domain)     s-1-5-0x20                                    //
+//                                                                         //
+/////////////////////////////////////////////////////////////////////////////
+
+const
   SECURITY_NT_AUTHORITY: TSidIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 5));
+
+  SECURITY_DIALUP_RID                 = ($00000001);
+  SECURITY_NETWORK_RID                = ($00000002);
+  SECURITY_BATCH_RID                  = ($00000003);
+  SECURITY_INTERACTIVE_RID            = ($00000004);
+  SECURITY_SERVICE_RID                = ($00000006);
+  SECURITY_ANONYMOUS_LOGON_RID        = ($00000007);
+  SECURITY_PROXY_RID                  = ($00000008);
+  SECURITY_ENTERPRISE_CONTROLLERS_RID = ($00000009);
+  SECURITY_SERVER_LOGON_RID           = SECURITY_ENTERPRISE_CONTROLLERS_RID;
+  SECURITY_PRINCIPAL_SELF_RID         = ($0000000A);
+  SECURITY_AUTHENTICATED_USER_RID     = ($0000000B);
+  SECURITY_RESTRICTED_CODE_RID        = ($0000000C);
+  SECURITY_TERMINAL_SERVER_RID        = ($0000000D);
+
+  SECURITY_LOGON_IDS_RID       = ($00000005);
+  SECURITY_LOGON_IDS_RID_COUNT = (3);
+  SECURITY_LOCAL_SYSTEM_RID    = ($00000012);
+  SECURITY_NT_NON_UNIQUE       = ($00000015);
+  SECURITY_BUILTIN_DOMAIN_RID  = ($00000020);
+
+/////////////////////////////////////////////////////////////////////////////
+//                                                                         //
+// well-known domain relative sub-authority values (RIDs)...               //
+//                                                                         //
+/////////////////////////////////////////////////////////////////////////////
+
+// Well-known users ...
+
+  DOMAIN_USER_RID_ADMIN  = ($000001F4);
+  DOMAIN_USER_RID_GUEST  = ($000001F5);
+  DOMAIN_USER_RID_KRBTGT = ($000001F6);
+
+// well-known groups ...
+
+  DOMAIN_GROUP_RID_ADMINS            = ($00000200);
+  DOMAIN_GROUP_RID_USERS             = ($00000201);
+  DOMAIN_GROUP_RID_GUESTS            = ($00000202);
+  DOMAIN_GROUP_RID_COMPUTERS         = ($00000203);
+  DOMAIN_GROUP_RID_CONTROLLERS       = ($00000204);
+  DOMAIN_GROUP_RID_CERT_ADMINS       = ($00000205);
+  DOMAIN_GROUP_RID_SCHEMA_ADMINS     = ($00000206);
+  DOMAIN_GROUP_RID_ENTERPRISE_ADMINS = ($00000207);
+  DOMAIN_GROUP_RID_POLICY_ADMINS     = ($00000208);
+
+// well-known aliases ...
+
+  DOMAIN_ALIAS_RID_ADMINS           = ($00000220);
+  DOMAIN_ALIAS_RID_USERS            = ($00000221);
+  DOMAIN_ALIAS_RID_GUESTS           = ($00000222);
+  DOMAIN_ALIAS_RID_POWER_USERS      = ($00000223);
+
+  DOMAIN_ALIAS_RID_ACCOUNT_OPS      = ($00000224);
+  DOMAIN_ALIAS_RID_SYSTEM_OPS       = ($00000225);
+  DOMAIN_ALIAS_RID_PRINT_OPS        = ($00000226);
+  DOMAIN_ALIAS_RID_BACKUP_OPS       = ($00000227);
+
+  DOMAIN_ALIAS_RID_REPLICATOR       = ($00000228);
+  DOMAIN_ALIAS_RID_RAS_SERVERS      = ($00000229);
+  DOMAIN_ALIAS_RID_PREW2KCOMPACCESS = ($0000022A);
+
 
   SE_CREATE_TOKEN_NAME        = 'SeCreateTokenPrivilege';
   SE_ASSIGNPRIMARYTOKEN_NAME  = 'SeAssignPrimaryTokenPrivilege';
@@ -845,16 +957,74 @@ type
 
 {$ENDIF COMPILER4_UP}
 
-  {$EXTERNALSYM SECURITY_BUILTIN_DOMAIN_RID}
-  {$EXTERNALSYM DOMAIN_ALIAS_RID_ADMINS}
-  {$EXTERNALSYM DOMAIN_ALIAS_RID_GUESTS}
-
   {$EXTERNALSYM SECURITY_NULL_SID_AUTHORITY}
   {$EXTERNALSYM SECURITY_WORLD_SID_AUTHORITY}
   {$EXTERNALSYM SECURITY_LOCAL_SID_AUTHORITY}
   {$EXTERNALSYM SECURITY_CREATOR_SID_AUTHORITY}
   {$EXTERNALSYM SECURITY_NON_UNIQUE_AUTHORITY}
+
+  {$EXTERNALSYM SECURITY_NULL_RID}
+  {$EXTERNALSYM SECURITY_WORLD_RID}
+  {$EXTERNALSYM SECURITY_LOCAL_RID}
+
+  {$EXTERNALSYM SECURITY_CREATOR_OWNER_RID}
+  {$EXTERNALSYM SECURITY_CREATOR_GROUP_RID}
+
+  {$EXTERNALSYM SECURITY_CREATOR_OWNER_SERVER_RID}
+  {$EXTERNALSYM SECURITY_CREATOR_GROUP_SERVER_RID}
+
+
   {$EXTERNALSYM SECURITY_NT_AUTHORITY}
+
+  {$EXTERNALSYM SECURITY_DIALUP_RID}
+  {$EXTERNALSYM SECURITY_NETWORK_RID}
+  {$EXTERNALSYM SECURITY_BATCH_RID}
+  {$EXTERNALSYM SECURITY_INTERACTIVE_RID}
+  {$EXTERNALSYM SECURITY_SERVICE_RID}
+  {$EXTERNALSYM SECURITY_ANONYMOUS_LOGON_RID}
+  {$EXTERNALSYM SECURITY_PROXY_RID}
+  {$EXTERNALSYM SECURITY_ENTERPRISE_CONTROLLERS_RID}
+  {$EXTERNALSYM SECURITY_SERVER_LOGON_RID}
+  {$EXTERNALSYM SECURITY_PRINCIPAL_SELF_RID}
+  {$EXTERNALSYM SECURITY_AUTHENTICATED_USER_RID}
+  {$EXTERNALSYM SECURITY_RESTRICTED_CODE_RID}
+  {$EXTERNALSYM SECURITY_TERMINAL_SERVER_RID}
+
+  {$EXTERNALSYM SECURITY_LOGON_IDS_RID}
+  {$EXTERNALSYM SECURITY_LOGON_IDS_RID_COUNT}
+  {$EXTERNALSYM SECURITY_LOCAL_SYSTEM_RID}
+  {$EXTERNALSYM SECURITY_NT_NON_UNIQUE}
+  {$EXTERNALSYM SECURITY_BUILTIN_DOMAIN_RID}
+
+  {$EXTERNALSYM DOMAIN_USER_RID_ADMIN}
+  {$EXTERNALSYM DOMAIN_USER_RID_GUEST}
+  {$EXTERNALSYM DOMAIN_USER_RID_KRBTGT}
+
+  {$EXTERNALSYM DOMAIN_GROUP_RID_ADMINS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_USERS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_GUESTS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_COMPUTERS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_CONTROLLERS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_CERT_ADMINS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_SCHEMA_ADMINS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_ENTERPRISE_ADMINS}
+  {$EXTERNALSYM DOMAIN_GROUP_RID_POLICY_ADMINS}
+
+
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_ADMINS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_USERS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_GUESTS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_POWER_USERS}
+
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_ACCOUNT_OPS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_SYSTEM_OPS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_PRINT_OPS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_BACKUP_OPS}
+
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_REPLICATOR}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_RAS_SERVERS}
+  {$EXTERNALSYM DOMAIN_ALIAS_RID_PREW2KCOMPACCESS}
+
 
   {$EXTERNALSYM SE_CREATE_TOKEN_NAME}
   {$EXTERNALSYM SE_ASSIGNPRIMARYTOKEN_NAME}
