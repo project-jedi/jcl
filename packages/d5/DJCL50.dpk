@@ -21,9 +21,9 @@ package DJCL50;
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $400000}
-{$DESCRIPTION 'JEDI Code Library Design-time package for Delphi 5'}
-{$DESIGNONLY}
+{$IMAGEBASE $48000000}
+{$DESCRIPTION 'JEDI Code Library package for Delphi 5'}
+{$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
