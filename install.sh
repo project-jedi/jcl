@@ -6,7 +6,7 @@
 #
 
 eval `grep 'DelphiRoot=' ~/.borland/delphi69rc`
-DCC=$DelphiRoot/bin/dcc\ -I../source\ -R$DelphiRoot/lib\ -U../source/common
+DCC=$DelphiRoot/bin/dcc\ -E../bin\ -I../source\ -R$DelphiRoot/lib\ -U../source/common
 source "$DelphiRoot/bin/kylixpath"
 cd install
 $DCC QJediInstaller.dpr         # build...
