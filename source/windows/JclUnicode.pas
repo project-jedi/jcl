@@ -24,7 +24,10 @@ unit JclUnicode;
 
 // Copyright (c) 1999-2000 Mike Lischke (public@lischke-online.de)
 // Portions Copyright (c) 1999-2000 Azret Botash (az)
-//    
+//
+// 26-JAN-2001:
+//   - ExpandANSIString
+//   - TWideStrings.SaveUnicode is by default True now    
 // 20..21-JAN-2001:
 //   - StrUpperW, StrLowerW and StrTitleW removed because they potentially would need
 //     a reallocation to work correctly (use the WideString versions instead)
@@ -718,7 +721,7 @@ type
     property Objects[Index: Integer]: TObject read GetObject write PutObject;
     property Values[const Name: WideString]: WideString read GetValue write SetValue;
     property Saved: Boolean read FSaved;
-    property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode;
+    property SaveUnicode: Boolean read FSaveUnicode write FSaveUnicode default True;
     property Strings[Index: Integer]: WideString read Get write Put; default;
     property Text: WideString read GetText write SetText;
 
@@ -932,6 +935,7 @@ function TranslateString(const S: string; CP1, CP2: Word): string;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
 
 // WideString conversion routines
+procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
 function WideStringToUTF8(S: WideString): AnsiString;
 function UTF8ToWideString(S: AnsiString): WideString;
 
@@ -4407,6 +4411,7 @@ begin
 
   FLanguage := GetUserDefaultLCID;
   FNormalizationForm := nfC;
+  FSaveUnicode := True;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7818,6 +7823,30 @@ begin
 end;
 
 //----------------- conversion routines --------------------------------------------------------------------------------
+
+procedure ExpandANSIString(const Source: PChar; Target: PWideChar; Count: Cardinal);
+
+// Converts the given source ANSI string into a Unicode string by expanding each character
+// from one byte to two bytes.
+// EAX contains Source, EDX contains Target, ECX contains Count
+
+asm
+       JECXZ   @@Finish           // go out if there is nothing to do
+       PUSH    ESI
+       MOV     ESI, EAX
+       XOR     EAX, EAX
+@@1:
+       MOV     AL, [ESI]
+       INC     ESI
+       MOV     [EDX], AX
+       ADD     EDX, 2
+       DEC     ECX
+       JNZ     @@1
+       POP     ESI
+@@Finish:
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
 
 const
   HalfShift: Integer = 10;
