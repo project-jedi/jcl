@@ -57,7 +57,10 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  SysUtils,
+  {$IFDEF HAS_UNIT_LIBC}
+  Libc,
+  {$ENDIF HAS_UNIT_LIBC}
+  SysUtils, 
   JclBase, JclResources;
 
 { Encode / Decode functions }
@@ -116,15 +119,16 @@ function SecondsToMSecs(Seconds: Integer): Integer;
 function TimeOfDateTimeToSeconds(DateTime: TDateTime): Integer;
 function TimeOfDateTimeToMSecs(DateTime: TDateTime): Integer;
 
-{$IFDEF MSWINDOWS}
 function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
+function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
+
+{$IFDEF MSWINDOWS}
 function DateTimeToDosDateTime(const DateTime: TDateTime): TDosDateTime;
 function DateTimeToFileTime(DateTime: TDateTime): TFileTime;
 function DateTimeToSystemTime(DateTime: TDateTime): TSystemTime; overload;
 procedure DateTimeToSystemTime(DateTime: TDateTime; var SysTime : TSystemTime); overload;
 
 function LocalDateTimeToFileTime(DateTime: TDateTime): FileTime;
-function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 {$ENDIF MSWINDOWS}
 
 function DosDateTimeToDateTime(const DosTime: TDosDateTime): TDateTime;
@@ -503,7 +507,7 @@ var
 begin
   // Applying the rule: The first calender week is the week that includes January, 4th
   TmpYear := YearOfDate(DateTime);
-
+  WeekDay := ISODayOfWeek(DateTime);
   // adjust if we are between 12/29 and 12/31
   if (MonthOfDate(DateTime) = 12) and (DayOfDate(DateTime) >= 29) and
     (ISODayOfWeek(DateTime) <= 3) then
@@ -520,7 +524,10 @@ begin
     Exit;
   end
   else
+  begin
+    YearOfWeekNumber := TmpYear;
     Result := (Trunc(DateTime - FirstMonday) div 7) + 1;
+  end;
 
   if Result > GetISOYearNumberOfDays(YearOfDate(DateTime)) then
     Result := GetISOYearNumberOfDays(YearOfDate(DateTime));
@@ -685,8 +692,27 @@ begin
   end;
 end;
 
+{$ENDIF}
+
+{$IFDEF UNIX}
+function DateTimeToLocalDateTime(DateTime: TDateTime): TDateTime;
+var
+  timenow: time_t;
+  local, UTCTime: TUnixTime;
+  offset: double;
+
+begin
+  timenow := __time(nil);
+  UTCTime := gmtime(@timenow)^;
+  local   := localtime(@timenow)^;
+  offset  := difftime(mktime(UTCTime), mktime(local));
+  result  := ((DateTime * SecsPerDay) - Offset) / SecsPerDay;
+end;
+{$ENDIF}
+
 //--------------------------------------------------------------------------------------------------
 
+{$IFDEF MSWINDOWS}
 function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
 var
   TimeZoneInfo: TTimeZoneInformation;
@@ -700,9 +726,26 @@ begin
   else
     raise EJclDateTimeError.Create(RsMakeUTCTime);
   end;
-end;                    
+end;
 
 {$ENDIF MSWINDOWS}
+
+{$IFDEF UNIX}
+function LocalDateTimeToDateTime(DateTime: TDateTime): TDateTime;
+var
+  timenow: time_t;
+  local, UTCTime: TUnixTime;
+  offset: double;
+
+begin
+  timenow := __time(nil);
+  UTCTime := gmtime(@timenow)^;
+  local   := localtime(@timenow)^;
+  offset  := difftime(mktime(UTCTime), mktime(local));
+  result  := ((DateTime * SecsPerDay) + Offset) / SecsPerDay;
+end;
+{$ENDIF}
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -1218,6 +1261,11 @@ end;
 // History:
 
 // $Log$
+// Revision 1.17  2005/02/12 16:29:53  mthoma
+// Linux version of DateTimeToLocalDateTime and LocalDateTimeToDateTime  added.
+//
+// Fixed #0002500 JclDateTime.FormatDateTime returns incorrect week result
+//
 // Revision 1.16  2004/10/19 06:26:48  marquardt
 // JclRegistry extended, JclNTFS made compiling, JclDateTime style cleaned
 //
