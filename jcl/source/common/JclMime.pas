@@ -22,7 +22,7 @@
 { Junker (ralfjunker@gmx.de).                                                  }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 09, 2000                                             }
+{ Last modified: November 20, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -35,11 +35,10 @@ unit JclMime;
 interface
 
 uses
-  Classes, SysUtils,
-  JclBase;
+  Classes, SysUtils;
 
 // MimeEncodeString takes a string, encodes it, and returns the result as a string.
-// To decode the result string, use MimeDecodeString.
+// To decode the result string, use MimeDecodefString.
 
 function MimeEncodeString(const S: AnsiString): AnsiString;
 
@@ -55,7 +54,7 @@ function MimeDecodeString(const S: AnsiString): AnsiString;
 // OutputStream at the last write position (which can, but most not be the end).
 // To encode the entire InputStream from beginning to end, make sure
 // that its offset is positioned at the beginning of the stream. You can
-// force this by issuing Seek (0, soFromBeginning) before calling this function.
+// force this by issuing InputStream.Seek(0, soFromBeginning) before calling this function.
 
 procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStream);
 
@@ -66,19 +65,19 @@ procedure MimeEncodeStream(const InputStream: TStream; const OutputStream: TStre
 // OutputStream at the last write position (which can, but most not be the end).
 // To decode the entire InputStream from beginning to end, make sure
 // that its offset is positioned at the beginning of the stream. You can
-// force this by issuing Seek (0, soFromBeginning) before calling this function.
+// force this by issuing InputStream.Seek(0, soFromBeginning) before calling this function.
 
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
 
 // Calculates the output size of i MimeEncoded bytes. Use for MimeEncode only.
 
-function MimeEncodedSize(const I: Integer): Integer;
+function MimeEncodedSize(const I: Cardinal): Cardinal;
 
 // Calculates the maximum output size of i MimeDecoded bytes.
 // You may use it for MimeDecode to calculate the maximum amount of memory
 // required for decoding in one single pass.
 
-function MimeDecodedSize(const I: Integer): Integer;
+function MimeDecodedSize(const I: Cardinal): Cardinal;
 
 // The primary Mime encoding routine.
 //
@@ -92,8 +91,8 @@ function MimeDecodedSize(const I: Integer): Integer;
 // but you must be very careful about the size of the InputBuffer.
 // See comments on BUFFER_SIZE below for details.
 
-procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer;
-  const OutputBuffer: Pointer);
+procedure MimeEncode(var InputBuffer; const InputByteCount: Cardinal;
+  var OutputBuffer);
 
 // The primary Mime decoding routines.
 //
@@ -106,26 +105,20 @@ procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer;
 // MimeDecode, simply cut the allocated memory down to OutputBytesCount,
 // i.e. SetLength(OutString, OutputBytesCount).
 
-function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer;
-  const OutputBuffer: Pointer): Integer;
+function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal;
+  var OutputBuffer): Cardinal;
 
 // The MimeDecodePartial_ functions are mostly for internal use.
 // They serve the purpose of decoding very large data in multiple parts of
 // smaller chunks, as used in MimeDecodeStream.
 
-function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer;
-  const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartial(var InputBuffer; const InputBytesCount: Cardinal;
+  var OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
   
-function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal;
-  const ByteBufferSpace: Cardinal): Integer;
-
-type
-  EJclMimeError = class (EJclError);
+function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
+  const ByteBufferSpace: Cardinal): Cardinal;
 
 implementation
-
-uses
-  JclResources;
 
 // Caution: For MimeEncodeStream and all other kinds of multi-buffered
 // Mime encodings (i.e. Files etc.), BufferSize must be set to a multiple of 3.
@@ -205,13 +198,13 @@ type
 
 function MimeEncodeString(const S: AnsiString): AnsiString;
 var
-  L: Integer;
+  L: Cardinal;
 begin
   L := Length(S);
   if L > 0 then
   begin
-    SetLength(Result, (L + 2) div 3 * 4 {MimeEncodedSize});
-    MimeEncode(Pointer(S), L, Pointer(Result));
+    SetLength(Result, MimeEncodedSize(L));
+    MimeEncode(PChar(S)^, L, PChar(Result)^);
   end
   else
     Result := '';
@@ -222,16 +215,16 @@ end;
 function MimeDecodeString(const S: AnsiString): AnsiString;
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
-  L: Integer;
+  L: Cardinal;
 begin
   L := Length(S);
   if L > 0 then
   begin
-    SetLength(Result, (L + 3 div 4 * 3 {MimeDecodedSize});
+    SetLength(Result, MimeDecodedSize(L));
     ByteBuffer := 0;
     ByteBufferSpace := 4;
-    L := MimeDecodePartial(Pointer(S), L, Pointer(Result), ByteBuffer, ByteBufferSpace);
-    Inc(L MimeDecodePartialEnd(Pointer(Integer(Result) + L), ByteBuffer, ByteBufferSpace));
+    L := MimeDecodePartial(PChar(S)^, L, PChar(Result)^, ByteBuffer, ByteBufferSpace);
+    Inc(L, MimeDecodePartialEnd(PChar(Cardinal(Result) + L)^, ByteBuffer, ByteBufferSpace));
     SetLength(Result, L);
   end;
 end;
@@ -245,16 +238,11 @@ var
   BytesRead: Integer;
 begin
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
-  while BytesRead = SizeOf(InputBuffer) do
+  while BytesRead > 0 do
   begin
-    MimeEncode(@InputBuffer, SizeOf(InputBuffer), @OutputBuffer);
-    OutputStream.Write(OutputBuffer, SizeOf(OutputBuffer));
+    MimeEncode(InputBuffer, BytesRead, OutputBuffer);
+    OutputStream.Write(OutputBuffer, MimeEncodedSize(BytesRead));
     BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
-  end;
-  if BytesRead > 0 then
-  begin
-    MimeEncode(@InputBuffer, BytesRead, @OutputBuffer);
-    OutputStream.Write(OutputBuffer, (BytesRead + 2) div 3 * 4 {MimeEncodedSize(BytesRead)});
   end;
 end;
 
@@ -263,8 +251,8 @@ end;
 procedure MimeDecodeStream(const InputStream: TStream; const OutputStream: TStream);
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
-  InputBuffer: array [0..BUFFER_SIZE - 1] of Byte;
-  OutputBuffer: array [0..(BUFFER_SIZE + 3) div 4 * 3 - 1] of Byte;
+  InputBuffer: array [0..(BUFFER_SIZE + 3) div 4 * 3 - 1] of Byte;
+  OutputBuffer: array [0..BUFFER_SIZE - 1] of Byte;
   BytesRead: Integer;
 begin
   ByteBuffer := 0;
@@ -272,22 +260,22 @@ begin
   BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
   while BytesRead > 0 do
   begin
-    OutputStream.Write(OutputBuffer, MimeDecodePartial(@InputBuffer, BytesRead, @OutputBuffer, ByteBuffer, ByteBufferSpace));
+    OutputStream.Write(OutputBuffer, MimeDecodePartial(InputBuffer, BytesRead, OutputBuffer, ByteBuffer, ByteBufferSpace));
     BytesRead := InputStream.Read(InputBuffer, SizeOf(InputBuffer));
   end;
-  OutputStream.Write(OutputBuffer, MimeDecodePartialEnd(@OutputBuffer, ByteBuffer, ByteBufferSpace));
+  OutputStream.Write(OutputBuffer, MimeDecodePartialEnd(OutputBuffer, ByteBuffer, ByteBufferSpace));
 end;
 
 //------------------------------------------------------------------------------
 // Helper functions
 //------------------------------------------------------------------------------
 
-function MimeEncodedSize(const I: Integer): Integer;
+function MimeEncodedSize(const I: Cardinal): Cardinal;
 begin
-  Result := (I+ 2) div 3 * 4;
+  Result := (I + 2) div 3 * 4;
 end;
 
-function MimeDecodedSize(const I: Integer): Integer;
+function MimeDecodedSize(const I: Cardinal): Cardinal;
 begin
   Result := (I + 3) div 4 * 3;
 end;
@@ -296,26 +284,24 @@ end;
 // Primary functions & procedures
 //------------------------------------------------------------------------------
 
-procedure MimeEncode(const InputBuffer: Pointer; const InputByteCount: Integer; const OutputBuffer: Pointer);
+procedure MimeEncode(var InputBuffer; const InputByteCount: Cardinal; var OutputBuffer);
 var
   B: Cardinal;
-  InMax3: Integer;
+  InMax3: Cardinal;
   InPtr, InLimitPtr: ^Byte;
   OutPtr: PByte4;
 begin
-  Assert(InputBuffer <> nil, RsInputBufferNil);
-  Assert(OutputBuffer <> nil, RsOutputBufferNil);
   if InputByteCount <= 0 then
     Exit;
 
-  InPtr := InputBuffer;
+  InPtr := @InputBuffer;
   InMax3 := InputByteCount div 3 * 3;
-  OutPTr := OutputBuffer;
-  Integer(InLimitPtr) := Integer(InPtr) + InMax3;
+  OutPTr := @OutputBuffer;
+  Cardinal(InLimitPtr) := Cardinal(InPtr) + InMax3;
 
   while InPtr <> InLimitPtr do
   begin
-    B := pIn^;
+    B := InPtr^;
     B := B shl 8;
     Inc(InPtr);
     B := B or InPtr^;
@@ -364,33 +350,31 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecode(const InputBuffer: Pointer; const InputBytesCount: Integer;
-  const OutputBuffer: Pointer): Integer;
+function MimeDecode(var InputBuffer; const InputBytesCount: Cardinal;
+  var OutputBuffer): Cardinal;
 var
   ByteBuffer, ByteBufferSpace: Cardinal;
 begin
   ByteBuffer := 0;
   ByteBufferSpace := 4;
   Result := MimeDecodePartial(InputBuffer, InputBytesCount, OutputBuffer, ByteBuffer, ByteBufferSpace);
-  Inc(Result, MimeDecodePartialEnd(Pointer(Integer(OutputBuffer) + Result), ByteBuffer, ByteBufferSpace));
+  Inc(Result, MimeDecodePartialEnd(PChar(Cardinal(OutputBuffer) + Result)^, ByteBuffer, ByteBufferSpace));
 end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecodePartial(const InputBuffer: Pointer; const InputBytesCount: Integer;
-  const OutputBuffer: Pointer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartial(var InputBuffer; const InputBytesCount: Cardinal;
+  var OutputBuffer; var ByteBuffer: Cardinal; var ByteBufferSpace: Cardinal): Cardinal;
 var
   lByteBuffer, lByteBufferSpace, C: Cardinal;
   InPtr, InLimitPtr: ^Byte;
   OutPtr: PByte3;
 begin
-  Assert(InputBuffer <> nil, RsInputBufferNil);
-  Assert(OutputBuffer <> nil, RsOutputBufferNil);
   if InputBytesCount > 0 then
   begin
-    InPtr := InputBuffer;
-    Integer(InLimitPtr) := Integer(InPtr) + InputBytesCount;
-    OutPtr := OutputBuffer;
+    InPtr := @InputBuffer;
+    Cardinal(InLimitPtr) := Cardinal(InPtr) + InputBytesCount;
+    OutPtr := @OutputBuffer;
     lByteBuffer := ByteBuffer;
     lByteBufferSpace := ByteBufferSpace;
     while InPtr <> InLimitPtr do
@@ -417,7 +401,7 @@ begin
     end;
     ByteBuffer := lByteBuffer;
     ByteBufferSpace := lByteBufferSpace;
-    Result := Cardinal(POut) - Cardinal(OutputBuffer);
+    Result := Cardinal(OutPtr) - Cardinal(@OutputBuffer);
   end
   else
     Result := 0;
@@ -425,25 +409,24 @@ end;
 
 //------------------------------------------------------------------------------
 
-function MimeDecodePartialEnd(const OutputBuffer: Pointer; const ByteBuffer: Cardinal;
-  const ByteBufferSpace: Cardinal): Integer;
+function MimeDecodePartialEnd(var OutputBuffer; const ByteBuffer: Cardinal;
+  const ByteBufferSpace: Cardinal): Cardinal;
 var
   lByteBuffer: Cardinal;
 begin
-  Assert(OutputBuffer <> nil, RsOutputBufferNil);
   case ByteBufferSpace of
     1:
       begin
         lByteBuffer := ByteBuffer shr 2;
-        PByte3(OutputBuffer).B2 := Byte(lByteBuffer);
+        PByte3(@OutputBuffer).B2 := Byte(lByteBuffer);
         lByteBuffer := lByteBuffer shr 8;
-        PByte3(OutputBuffer).B1 := Byte(lByteBuffer);
+        PByte3(@OutputBuffer).B1 := Byte(lByteBuffer);
         Result := 2;
       end;
     2:
       begin
         lByteBuffer := ByteBuffer shr 4;
-        PByte3(OutputBuffer).B1 := Byte(lByteBuffer);
+        PByte3(@OutputBuffer).B1 := Byte(lByteBuffer);
         Result := 1;
       end;
   else
