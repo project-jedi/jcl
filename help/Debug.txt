@@ -2558,7 +2558,61 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclStackInfoList = class (TObjectList)
+TJclStackBaseList = class (TObjectList)
+[ShortDescr]
+Base stack information list
+[Description]
+TJclStackBaseList is the base class for the track list's (TJclStackInfoList and
+TJclExceptFrameList). It provides properties that hold information on the thread
+and timestamp of the info list.
+[Quick Info]
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Tracking routines\TJclStackBaseList
+Author=Petr Vones
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ThreadID: DWORD read FThreadID;
+[ShortDescr]
+ID of thread that made the trace.
+[Description]
+ThreadID is ID of the thread that executed the trace.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Tracking routines\TJclStackBaseList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property TimeStamp: TDateTime read FTimeStamp;
+[ShortDescr]
+Time stamp of list creation
+[Description]
+TimeStamp holds the date and time of creation of the list.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Tracking routines\TJclStackBaseList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TJclStackInfoList = class (TJclStackBaseList)
 [ShortDescr]
 Stack information list
 [Description]
@@ -3013,13 +3067,13 @@ function CodeLocation: Pointer;
 Returns the location of the code for non efkOnException frames.
 [Description]
 CodeLocation determines the location of the code for non efkOnException frames.
-The Delphi linker sometimes adds a JMP-instruction that jumps to handler. With
-this method you'll always get the location of the handler, inspite of a JMP-
-instruction being inserted or not.
+The Delphi linker sometimes adds a JMP-instruction that jumps to the handler.
+With this method you'll always get the location of the handler, inspite of a
+JMP instruction being inserted or not.
 [Result]
-If there's a JMP-instruction at the "official" location, the function will return
-the destination of that address, otherwise the function just returns the "official"
-location.
+If there's a JMP instruction at the "official" location, the function will
+return the destination of that address, otherwise the function just returns
+the "official" location.
 [Quick Info]
 Kind=Method
 Visibility=Public
@@ -3072,7 +3126,7 @@ Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-TJclExceptFrameList = class(TObjectList)
+TJclExceptFrameList = class(TJclStackBaseList)
 [ShortDescr]
 List of except frame item.
 [Description]
@@ -3164,6 +3218,42 @@ Unit=JclDebug
 Category=Debugging
 SubCat=Except frame info routines\TJclExceptFrameList
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property ThreadID: DWORD read FThreadID;
+[ShortDescr]
+ID of thread that made the trace.
+[Description]
+ThreadID is ID of the thread that executed the trace.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+property TimeStamp: TDateTime read FTimeStamp;
+[ShortDescr]
+Time stamp of list creation
+[Description]
+TimeStamp holds the date and time of creation of the list.
+[Quick Info]
+BCB=4,5
+Kind=Property
+Visibility=Public
+Unit=JclDebug
+Category=Debugging
+SubCat=Except frame info routines\TJclExceptFrameList
+Author=Hallvard Vassbotn;hallvard.vassbotn@c2i.net
 Delphi=4,5
 Windows NT/2000=Requires Windows NT 4 or later.
 Windows 95/98=Requires Windows 95 or later.
@@ -3482,3 +3572,23 @@ Count=6
 4=ExceptNotifyProc
 5=ExceptNotifyMethod
 6=StackTrackingEnable
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TrackAllModules: Boolean;
+[ShortDescr]
+Track all modules or Borland modules only.
+[Description]
+TrackAllModules is a flag that enables or disables tracking of all modules
+when exception hooking is on and stack tracking is enabled. When set to True all
+modules are reported in the stack list, otherwise only addresses that are within
+a Borland module are reported.
+[Quick Info]
+Kind=Variable
+BCB=4,5
+Unit=JclDebug
+Category=Debugging
+SubCat=Exception hooking
+Author=Petr Vones
+Delphi=4,5
+Windows NT/2000=Requires Windows NT 4 or later.
+Windows 95/98=Requires Windows 95 or later.
