@@ -18,15 +18,19 @@ Delphi: http://info.borland.com/devsupport/delphi/
 C++Builder: http://info.borland.com/devsupport/bcppbuilder/
 
 ******************************* IMPORTANT **************************************
+*                                                                              *
 * If you have installed any previous version of the JCL/JVCL you have to       *
 * delete them.                                                                 *
+*                                                                              *
+*                                                                              *
 * It is also necessary to remove all installed JCL/JVCL packages from the IDE. *
 * Do not mix files or compiled packages from older versions of the JCL with    *
 * current version.                                                             *
 *                                                                              *
 * JCL 1.94 is not compatible with JVCL versions < 3 and _will_ break them!     *
-* JVCL v. 3 is still under development; daily snapshots are available from     *
+* JVCL v. 3 will get released shortly after JCL 1.94; it is available from     *
 * http://jvcl.sourceforge.net/daily/                                           *
+*                                                                              *
 ********************************************************************************
 
 JEDI INSTALLER
@@ -40,6 +44,7 @@ Helps you to integrate JCL with Delphi/BCB IDE. Currently it assists with:
 - Adding JCL directories to Library Path / Browsing Path in Environment Options
 - Adding JCL debug .dcu directory to Debug DCU Path in Debugger Options
 - Integrating JCL help file to the IDE.
+- in undoing above changes to the IDE settings ("Uninstall", new in 1.94 final).
 
 To execute for
 
@@ -60,4 +65,4 @@ To execute for
   Kylix 3 installation) in case your system is not set up to do that at startup.
 
 --------------------------------
-Document last updated 2004-11-30
+Document last updated 2005-02-05

@@ -8,8 +8,8 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uDevelop -uVCL -x.\Q
-VclOptions      = -c -dVCL -dMSWINDOWS -uDevelop -uVisualCLX -uUnix -uKYLIX -x.\\
+VClxOptions     = -c -dVisualCLX -dHAS_UNIT_TYPES -uVCL -x.\Q
+VclOptions      = -c -dVCL -dMSWINDOWS -uVisualCLX -uUnix -uKYLIX -x.\\
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 jpp = ..\devtools\jpp.exe

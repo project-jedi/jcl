@@ -6,10 +6,10 @@ Conditionals=JCLINSTALL;VisualCLX
 [Version Info Keys]
 CompanyName=Project JEDI
 FileDescription=JCL x-platform installer
-FileVersion=2.0.0.0
+FileVersion=2.1.0.1802
 InternalName=QJediInstaller
-LegalCopyright=Copyright (C) 1999, 2004 Project JEDI
+LegalCopyright=Copyright (C) 1999, 2005 Project JEDI
 LegalTrademarks=
 OriginalFilename=QJediInstaller.dpr
 ProductName=Jedi X-Platform Installer
-ProductVersion=2.0
+ProductVersion=2.1
