@@ -25,7 +25,7 @@
 { mutex etc). It also includes three user defined classes to complement these. }
 {                                                                              }
 { Unit owner: Marcel van Brakel                                                }
-{ Last modified: November 02, 2000                                             }
+{ Last modified: January 30, 2001                                              }
 {                                                                              }
 {******************************************************************************}
 
@@ -50,7 +50,8 @@ uses
 //------------------------------------------------------------------------------
 
 function LockedAdd(var Target: Integer; Value: Integer): Integer;
-function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer;
+function LockedCompareExchange(var Target: Integer; Exch, Comp: Integer): Integer; overload;
+function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; overload;
 function LockedDec(var Target: Integer): Integer;
 function LockedExchange(var Target: Integer; Value: Integer): Integer;
 function LockedExchangeAdd(var Target: Integer; Value: Integer): Integer;
@@ -92,7 +93,7 @@ type
 //------------------------------------------------------------------------------
 // Wait functions
 //
-// Object enabled Wait functions (takes TJclDispaycher objects as parameter as
+// Object enabled Wait functions (takes TJclDispatcher objects as parameter as
 // opposed to handles) mostly for convenience
 //------------------------------------------------------------------------------
 
@@ -112,6 +113,7 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    class procedure CreateAndEnter(var CS: TJclCriticalSection);
     procedure Enter;
     procedure Leave;
   end;
@@ -388,6 +390,14 @@ end;
 
 //------------------------------------------------------------------------------
 
+function LockedCompareExchange(var Target: Pointer; Exch, Comp: Pointer): Pointer; assembler;
+asm
+        XCHG    EAX, ECX
+        LOCK CMPXCHG [ECX], EDX
+end;
+
+//------------------------------------------------------------------------------
+
 function LockedDec(var Target: Integer): Integer; assembler;
 asm
         MOV     ECX, EAX
@@ -573,6 +583,21 @@ constructor TJclCriticalSection.Create;
 begin
   inherited Create;
   InitializeCriticalSection(FCriticalSection);
+end;
+
+//------------------------------------------------------------------------------
+
+class procedure TJclCriticalSection.CreateAndEnter(var CS: TJclCriticalSection);
+var
+  NewCritSect: TJclCriticalSection;
+begin
+  NewCritSect := TJclCriticalSection.Create;
+  if LockedCompareExchange(Pointer(CS), Pointer(NewCritSect), nil) <> nil then
+  begin
+    // LoadInProgress was <> nil -> no exchange took place, free the CS
+    NewCritSect.Free;
+  end;
+  CS.Enter;
 end;
 
 //------------------------------------------------------------------------------
