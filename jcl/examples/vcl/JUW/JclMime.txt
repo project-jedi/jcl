@@ -1,0 +1,10 @@
+MimeEncodeString
+MimeDecodeString
+MimeEncodeStream
+MimeDecodeStream
+MimeEncodedSize
+MimeDecodedSize
+MimeEncode
+MimeDecode
+MimeDecodePartial
+MimeDecodePartialEnd
