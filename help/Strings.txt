@@ -1631,15 +1631,16 @@ Delphi=3,4,5
 [Declaration]
 function StrRestOf(const S: AnsiString; N: Integer): AnsiString;
 [ShortDescr]
-Returns a string composed of the last N characters of the source string.
+Returns the remainder of a string starting at the specified index.
 [Description]
-StrRestOf returns a string composed of the last (rightmost) N characters of the string.
+StrRestOf returns the remainder of the the string starting at index N. For example,
+StrRestOf('Project JEDI', 9) returns 'JEDI' (index 9 through Length(S)).
 [Parameters]
 Count=2
-1=S:AnsiString=The source string from which to copy the last N characters.
-2=N:Integer=The number of characters to copy from the source string.
+1=S:AnsiString=The source string from which to copy.
+2=N:Integer=The starting index of the characters to copy.
 [Result]
-A string composed of the last N characters of the source string. 
+The remainder of the string starting at the specified index. 
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2454,16 +2455,19 @@ Count=1
 1=StrToStrings
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure TrimStrings(const List: TStrings);
+procedure TrimStrings(const List: TStrings; DeleteIfEmpty: Boolean);
 [ShortDescr]
 Trims all strings in a string list.
 [Description]
 TrimStrings trims all strings in the specified stringlist using the standard
 Delphi Trim procedure. If an entry in the list is empty or trimming it causes
-it to become empty, the entry is deleted from the list.
+it to become empty, the entry is optionally deleted from the list depending the
+DeleteIfEmpty parameter.
 [Parameters]
-Count=1
+Count=2
 1=List:TStrings=The stringlist whose contents to trim.
+2=DeleteIfEmpty:Boolean=If True and a list entry is empty, or trimming it results
+in an empty string, the entry is deleted from the list.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2477,16 +2481,19 @@ Count=2
 2=TrimStringsLeft
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure TrimStringsRight(const List: TStrings);
+procedure TrimStringsRight(const List: TStrings; DeleteIfEmpty: Boolean);
 [ShortDescr]
 Right trims all strings in a stringlist.
 [Description]
 TrimStringsRight right trims all strings in the specified stringlist using the
 standard Delphi TrimRight procedure. If an entry in the list is empty or trimming
-it causes it to become empty, the entry is deleted from the list.
+it causes it to become empty, the entry is optionally deleted from the list
+depending on the DeleteIfEmpty parameter.
 [Parameters]
-Count=1
+Count=2
 1=List:TStrings=The stringlist whose contents to right trim.
+2=DeleteIfEmpty:Boolean=If True and a list entry is empty, or trimming it results
+in an empty string, the entry is deleted from the list.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
@@ -2500,16 +2507,19 @@ Count=2
 2=TrimStringsLeft
 <DECL>--------------------------------------------------------------------------
 [Declaration]
-procedure TrimStringsLeft(const List: TStrings);
+procedure TrimStringsLeft(const List: TStrings; DeleteIfEmpty: Boolean);
 [ShortDescr]
 Left trims all strings in a stringlist.
 [Description]
 TrimStringsLeft left trims all strings in the specified stringlist using the
 standard Delphi TrimLeft procedure. If an entry in the list is empty or trimming
-it causes it to become empty, the entry is deleted from the list.
+it causes it to become empty, the entry is optionally deleted from the list
+depending on the DeleteIfEmpty parameter.
 [Parameters]
-Count=1
+Count=2
 1=List:TStrings=The stringlist whose contents to left trim.
+2=DeleteIfEmpty:Boolean=If True and a list entry is empty, or trimming it results
+in an empty string, the entry is deleted from the list.
 [Quick Info]
 BCB=3,4,5
 Unit=JclStrings
