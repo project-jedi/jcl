@@ -37,7 +37,7 @@ TFindStreamData = record
 end;
 [ShortDescr]
 Record type used by the NtfsFindFirstStream, NtfsFindNextStream and
-NtfsFindStreamClose functions which contains information about the streams in an
+NtfsFindStreamClose functions which contains information about the streams in a
 NTFS file.
 [RecordFields]
 Count=5
@@ -64,7 +64,7 @@ Note that there are in fact a few more attributes but these are undocumented.
 Search WinBase for "Stream Attributes" to find them.
 3=StreamID:TStreamId=Stream ID which denotes the type of data stored in the stream.
 See TStreamId for more information.
-4=Name:WideString=Name of the stream or an empty stream if the stream is unnamed.
+4=Name:WideString=Name of the stream or an empty string if the stream is unnamed.
 5=Size:TLargeInteger=Size, in bytes, of the data part of the stream.
 [Quick Info]
 Kind=Type
@@ -82,14 +82,14 @@ function NtfsFindFirstStream(const FileName: string; StreamIds: TStreamIds; var 
 [ShortDescr]
 Starts the enumeration of streams in a file.
 [Description]
-Use NtfsFindFirstStream to kick of the enumeration of streams in the specified file.
+Use NtfsFindFirstStream to kick off the enumeration of streams in the specified file.
 You can limit the enumeration to specific streams through the StreamIds set and
 information about the first found stream is returned through the Data parameter.
 Use NtfsFindStreamNext to continue the enumeration and NtfsFindStreamClose to end it.
 Note that the enumeration of streams requires that the caller has the
 SE_BACKUP_NAME and SE_RESTORE_NAME privileges. To avoid confusion, the streams
 enumerated by this function are the kind of streams that have been supported by
-the NTFS filesystem since it's inception, not the kind of streams referred to
+the NTFS filesystem since its inception, not the kind of streams referred to
 when one speaks of (COM) structured storage files.
 [Parameters]
 Count=3
@@ -97,7 +97,7 @@ Count=3
 streams it contains. The specified file must reside on an NTFS formatted volume.
 2=StreamIds:TStreamIds=Set of stream IDs which denotes which streams are enumerated.
 For more information about stream IDs see the documentation for TStreamIds.
-3=Data:TFindStreamData=Record which, upon successfull return, contains information
+3=Data:TFindStreamData=Record which, upon successful return, contains information
 about the first found stream. This information includes the stream name, size
 and attributes. For more information see the documentation for TFindStreamData.
 [Result]
@@ -139,7 +139,7 @@ reason you must eventually call NtfsFindStreamClose to release the context resou
 stored in the Data record.
 [Parameters]
 Count=1
-1=Data:TFindStreamData=Record which, upon successfull return, contains information
+1=Data:TFindStreamData=Record which, upon successful return, contains information
 about the next found stream. This information includes the stream name, size
 and attributes. For more information see the documentation for TFindStreamData.
 [Result]
@@ -216,7 +216,7 @@ into a juntion point. This directory must exist and be empty or the function fai
 2=Destination:string=Fully qualified name of the target directory for the mountpoint.
 Naturally it must exist but doesn't have to be empty.
 [Result]
-If the function succeeds it returns True, otherwise it fails. Upon failure you
+If the function succeeds it returns True, otherwise it returns False. Upon failure you
 can call GetLastError to get a more specific failure description. The most common
 reason for failure is that either the Source doesn't exist or isn't empty or
 that the destination directory doesn't exist.
@@ -369,7 +369,7 @@ all other filesystems the function always returns False.
 Count=1
 1=Volume:string=The volume to test e.g. 'c:'.
 [Result]
-If the specified volume supports sparse stream the function returns True, otherwise
+If the specified volume supports sparse streams the function returns True, otherwise
 it returns False.
 [Quick Info]
 BCB=3,4,5
@@ -468,7 +468,7 @@ first 256 are returned. To query for the other ranges call NtfsQueryAllocRanges
 again, this time starting at offset = Entry.FileOffset + Entry.Length and with
 count = FILE_SIZE - offset (FILE_SIZE is the total size of the file and Entry
 is the last entry returned by the previous call). The <REF>TNtfsAllocRanges</REF>.MoreData
-is set to True if the file contained more 256 ranges. You can use the <REF>NtfsGetAllocRangeEntry</REF>
+is set to True if the file contains more than 256 ranges. You can use the <REF>NtfsGetAllocRangeEntry</REF>
 function to extract the individual ranges from the returned Ranges variable.
 [Parameters]
 Count=4
@@ -504,7 +504,7 @@ function NtfsGetSparse(const FileName: string): Boolean;
 [ShortDescr]
 Tests whether the file is a sparse file.
 [Description]
-NtfsSetSparseFile tests if the specified file is a sparse file. A sparse file is
+NtfsGetSparse tests if the specified file is a sparse file. A sparse file is
 a normal file but one which only uses disk space for those portions of the file
 that actually contain data. This however is not automatic, see the other NtfsXxxx
 functions and the Platform SDK for details.
@@ -536,7 +536,7 @@ function NtfsSetSparse(const FileName: string): Boolean;
 [ShortDescr]
 Sets the sparse file attribute.
 [Description]
-NtfsSetSparseFile makes the specified file a sparse file. A sparse file is a
+NtfsSetSparse makes the specified file a sparse file. A sparse file is a
 normal file but one which only uses disk space for those portions of the file
 that actually contain data. This however is not automatic, see the other NtfsXxxx
 functions and the Platform SDK for details. Keep in mind that no storage is
@@ -744,7 +744,7 @@ of NTFS (version 5) supports reparse points.
 [Parameters]
 Count=1
 1=Volume:string=Name of the volume to test. This parameter must be of the form
-x:\ or x: where x is the volume to test.
+"x:\" or "x:" where x is the volume to test.
 [Result]
 If the specified volume supports reparse points the function returns True. If the
 volume does not support reparse points or the function fails, the return value is False.
@@ -834,7 +834,7 @@ the mounting succeeds you can then access the CD-Rom by specifying K. Note that
 a particular device can only be mounted once. If the specified device is already
 mounted to a drive, you must first delete that mount point using the DeleteVolumeMountPoint
 API function. Also, keep in mind that mounting a device can have side effects.
-For example mounting a volume (hard disk partition or cd-rom) which has an
+For example mounting a volume (hard disk partition or CD-Rom) which has an
 autorun file, will trigger execution of that autorun file (assuming the autorun
 feature is enabled).
 [Parameters]
@@ -844,7 +844,7 @@ where MyDevice is replaced with the appropriate device name. For example the
 first CD-Rom drive would be \Device\CdRom0 and the first partition on the
 harddrive would be \Device\HarddiskVolume1.
 2=Drive:Char=The drive letter to mount the device on. Note that if the drive already
-exist the previously mounted device is not automatically unmounted first. You must
+exists the previously mounted device is not automatically unmounted first. You must
 explicitly unmount it or the call will fail.
 [Result]
 If the function succeeds it returns True, otherwise it returns False. Failure
@@ -856,7 +856,7 @@ Count=1
 1=Internally this function has to temporarily create a symbolic link for the
 specified device. This link is deleted as soon as possible. Although very unlikely,
 it is possible that deleting this link will fail. If so, the function raises an
-EJclNtfsError exception and exits <B>without</B> mounting the device. If this happens to
+EJclNtfsError exception and exits <B>without</B> mounting the device. If this happens
 you should try to delete the symbolic link at a later time and retry. See the
 implementation of this function for how to achieve this.
 [Quick Info]
@@ -880,7 +880,7 @@ function NtfsMountVolume(const Volume: Char; const MountPoint: string): Boolean;
 Mounts a volume to a specified directory.
 [Description]
 NtfsMountVolume mounts the specified volume to the the specified mount point. You
-can, for example, use NtfsMoundVolume('c', 'd:\mnt\c\') to mount the C drive to
+can, for example, use NtfsMountVolume('c', 'd:\mnt\c\') to mount the C drive to
 the d:\mnt\c folder. If the call succeeds you can subsequently access the C drive
 through the d:\mnt\c folder.
 [Parameters]
@@ -966,7 +966,7 @@ Currently this can be one of the following values:
   <LI>All other values: Reserved for future use.
   </UL>
 [Result]
-If the function succeeds in retrieving the compression state the result it True,
+If the function succeeds in retrieving the compression state the result is True,
 otherwise it's False. In the latter case the content of the State parameter is
 undefined upon return.
 [Notes]
