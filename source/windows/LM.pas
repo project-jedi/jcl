@@ -3021,11 +3021,11 @@ const
 
 {$EXTERNALSYM NetGetDCName}
 function NetGetDCName(servername: LPCWSTR; domainname: LPCWSTR;
-  bufptr: Pointer): NET_API_STATUS; stdcall;
+  out bufptr: LPCWSTR): NET_API_STATUS; stdcall;
 
 {$EXTERNALSYM NetGetAnyDCName}
 function NetGetAnyDCName(servername: LPCWSTR; domainname: LPCWSTR;
-  bufptr: Pointer): NET_API_STATUS; stdcall;
+  out bufptr: LPCWSTR): NET_API_STATUS; stdcall;
 
 {$EXTERNALSYM I_NetLogonControl}
 function I_NetLogonControl(ServerName: LPCWSTR; FunctionCode: DWORD;
@@ -10026,9 +10026,9 @@ var
   _NetAccessGetUserPerms: function (servername: LPCWSTR; UGname: LPCWSTR;
     resource: LPCWSTR; var Perms: DWORD): NET_API_STATUS; stdcall;
   _NetGetDCName: function (servername: LPCWSTR; domainname: LPCWSTR;
-    bufptr: Pointer): NET_API_STATUS; stdcall;
+    out bufptr: LPCWSTR): NET_API_STATUS; stdcall;
   _NetGetAnyDCName: function (servername: LPCWSTR; domainname: LPCWSTR;
-    bufptr: Pointer): NET_API_STATUS; stdcall;
+    out bufptr: LPCWSTR): NET_API_STATUS; stdcall;
   _I_NetLogonControl: function (ServerName: LPCWSTR; FunctionCode: DWORD;
     QueryLevel: DWORD; Buffer: Pointer): NET_API_STATUS; stdcall;
   _I_NetLogonControl2: function (ServerName: LPCWSTR; FunctionCode: DWORD;
@@ -10392,7 +10392,7 @@ begin
 end;
 
 function NetGetDCName(servername: LPCWSTR; domainname: LPCWSTR;
-  bufptr: Pointer): NET_API_STATUS;
+  out bufptr: LPCWSTR): NET_API_STATUS;
 begin
   if CheckNetAPILoaded(@_NetGetDCName, 'NetGetDCName') then
     Result := _NetGetDCName(servername, domainname, bufptr)
@@ -10401,7 +10401,7 @@ begin
 end;
 
 function NetGetAnyDCName(servername: LPCWSTR; domainname: LPCWSTR;
-  bufptr: Pointer): NET_API_STATUS;
+  out bufptr: LPCWSTR): NET_API_STATUS;
 begin
   if CheckNetAPILoaded(@_NetGetAnyDCName, 'NetGetAnyDCName') then
     Result := _NetGetAnyDCName(servername, domainname, bufptr)
