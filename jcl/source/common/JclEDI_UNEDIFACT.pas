@@ -24,7 +24,7 @@
 {                                                                                                  }
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: May 22, 2003                                                                       }
-{ Last modified: October 28, 2003                                                                  }
+{ Last modified: March 22, 2004                                                                    }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
@@ -153,7 +153,7 @@ type
   TEDISegment = class(TEDIDataObjectGroup)
   private
     FSegmentID: string;
-    //FSegmentIdData: T???// ToDo: ex: AAA:1:1:2+data1+data2'
+    //FSegmentIdData: T??? // ToDo: ex: AAA:1:1:2+data1+data2'
   protected
     function InternalCreateElement: TEDIElement; virtual;
     function InternalCreateCompositeElement: TEDICompositeElement; virtual;
