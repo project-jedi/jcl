@@ -6,10 +6,11 @@ uses
   {$IFDEF MSWINDOWS}
   Forms,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF KYLIX}
   QForms,
-  {$ENDIF LINUX}
-  ContainerPerformanceMain in 'ContainerPerformanceMain.pas' {MainForm};
+  {$ENDIF KYLIX}
+  ContainerPerformanceMain in 'ContainerPerformanceMain.pas' {MainForm},
+  ContainerPerformanceTests in 'ContainerPerformanceTests.pas';
 
 {$R *.res}
 
