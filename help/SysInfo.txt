@@ -1295,3 +1295,65 @@ Windows 95/98=Requires Windows 95 or later.
 Count=2
 1=IsWinNT
 2=IsWin2K
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+function CreateEnvironmentBlock(const Options: TEnvironmentOptions; const AdditionalVars: TStrings): PChar;
+[ShortDescr]
+Prepares a new environment block for <REF Target"..\..\Miscellaneous\CreateProcAsUserEx">CreateProcAsUserEx</REF>
+[Description]
+CreateEnvironmentBlock prepares a process environment block. It is used
+by <REF Target"..\..\Miscellaneous\CreateProcAsUserEx">CreateProcAsUserEx</REF>,
+which launches a new process with a new environment block. By setting the appropriate
+options, you can determine whether the function will include the current environment
+block within the new environment block. Also, you can add a customized set of environment
+variables by supplying the AdditionalVars parameter.
+[Parameters]
+Count=2
+1=Options:TEnvironmentOptions=Determines whether the global and / or user related
+environment variables will be included in the result.
+2=AdditionalVars:TStrings=This list contains additional strings for the new
+environment block. The entries in this list must be name / value pairs (e.g. 'name=value').
+You may pass a nil value in this parameter, which makes the function behave exactly as
+<REF Target"..\..\Miscellaneous\CreateProcAsUser">CreateProcAsUser</REF>.
+[Result]
+As the result, you will receive a PChar containing a list of environment variables. This
+PChar can directly be used with functions like <REF Target"..\..\Miscellaneous\CreateProcAsUser">CreateProcAsUserEx</REF>.
+[Notes]
+Count=1
+1=The caller is responsible to release the returned PChar when it is no longer needed.
+[Quick Info]
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+Windows NT/2000=Requires Windows NT 3.1 or later.
+Windows 95/98=Not tested.
+[SeeAlso]
+Count=3
+1=CreateProcAsUserEx;..\..\Miscellaneous\CreateProcAsUserEx
+2=CreateProcAsUser;..\..\Miscellaneous\CreateProcAsUser
+3=TEnvironmentOptions;Types\TEnvironmentOptions
+<DECL>--------------------------------------------------------------------------
+[Declaration]
+TEnvironmentOptions = set of (eoLocalMachine, eoCurrentUser, eoAdditional);
+[ShortDescr]
+This set of options for <REF Target"..\CreateEnvironmentBlock">CreateEnvironmentBlock</REF>
+will determine which environment variables will be copied to the new environemt block.
+[Enumeration]
+Count=3
+1=eoLocalMachine=Copy the environment block defined globally for the local machine.
+2=eoCurrentUser=Copy the environment of the user that is running the process.
+3=eoAdditional=Copy additional name / value pairs to the new environment block.
+These additional pairs must be passed in the AdditionalVars parameter of
+the <REF Target"..\CreateEnvironmentBlock">CreateEnvironmentBlock</REF> function.
+[Quick Info]
+Kind=Type
+Unit=JclSysInfo
+Category=System Information Routines
+SubCat=Environment
+Author=Peter Friese;freter@gmx.net
+Delphi=3,4,5
+[SeeAlso]
+Count=1
+1=CreateEnvironmentBlock;..\CreateEnvironmentBlock
