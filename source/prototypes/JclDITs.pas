@@ -1,10 +1,47 @@
+{$IFDEF JCL}
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Code Library (JCL)                                                                  }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is: DITs.pas.                                                                  }
+{ The Initial Developer of the Original Code is Peter J. Haas. Portions created by Peter J. Haas   }
+{ are Copyright (C) 2001 Peter J. Haas. All Rights Reserved.                                       }
+{                                                                                                  }
+{ The Original Code Version 2.0 is: JclDITs.pas.                                                   } 
+{ The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions created by            }
+{ Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights Reserved.                         }
+{ You may retrieve the latest version of the Original Code at the homepage                         }
+{ of Peter J. Haas (delphi@pjh2.de) located at http://delphi.pjh2.de/                              }
+{                                                                                                  }
+{  Contributor(s):                                                                                 }
+{    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                                                  }
+{                                                                                                  }
+{ Alternatively, the contents of this file may be used under the terms of the GNU Lesser General   }
+{ Public License (the  "LGPL License"), in which case the provisions of the LGPL License are       }
+{ applicable instead of those above.                                                               }
+{                                                                                                  }
+{ If you wish to allow use of your version of this file only under the terms of the LGPL License   }
+{ and not to allow others to use your version of this file under the MPL, indicate your decision by}
+{ deleting the provisions above and replace them with the notice and other provisions required by  }
+{ the LGPL License. If you do not delete the provisions above, a recipient may use your version of }
+{ this file under either the MPL or the LGPL License.                                              }
+{                                                                                                  }
+{  For more information about the LGPL:                                                            }
+{  http://www.gnu.org/copyleft/lesser.html                                                         }
+{                                                                                                  }
+{**************************************************************************************************}
+{$ELSE JCL}
 {******************************************************************************}
 {                                                                              }
-{$IFDEF JCL}
-{  Project JEDI Code Library (JCL)                                             }
-{$ELSE JCL}
 {  JclDITs V2.0 -  Data Interchange per Text                                   }
-{$ENDIF JCL}
 {                                                                              }
 {  The contents of this file are subject to the Mozilla Public License         }
 {  Version 1.1 (the "License"); you may not use this file except in            }
@@ -26,16 +63,8 @@
 {  created by Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights   }
 {  Reserved.                                                                   }
 {                                                                              }
-{$IFDEF JCL}
-{  You may retrieve the latest version of the Original Code at the homepage    }
-{  of Peter J. Haas (delphi@pjh2.de), located at http://delphi.pjh2.de/        }
-{                                                                              }
-{  You may retrieve the latest version of this file at the homepage of         }
-{  JEDI, located at http://www.delphi-jedi.org/                                }
-{$ELSE JCL}
 {  You may retrieve the latest version of this file at the homepage of         }
 {  Peter J. Haas (delphi@pjh2.de), located at http://delphi.pjh2.de/           }
-{$ENDIF JCL}
 {                                                                              }
 {  Contributor(s):                                                             }
 {    Peter J. Haas (PeterJHaas), jediplus@pjh2.de                              }
@@ -54,6 +83,8 @@
 {  http://www.gnu.org/copyleft/lesser.html                                     }
 {                                                                              }
 {******************************************************************************}
+{$ENDIF JCL}
+
 
 // Last modified: $Date$
 // For history see end of file
@@ -86,7 +117,14 @@ uses
 {$ENDIF}
 
 {$ENDIF}
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+// Date and Time Data Interchange (ISO 8601)
+//--------------------------------------------------------------------------------------------------
+{$ELSE JCL}
 // ***********  Date and Time Data Interchange (ISO 8601)  **********
+{$ENDIF JCL}
 
 type
   TISODateTimeOption = (dtoDate, dtoTime, dtoMilliseconds, dtoBasic);
@@ -174,7 +212,13 @@ function ISOStrToDateTime(const Value: String): TDateTime;
 function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+// Float Data Interchange (ISO 31-0)
+//--------------------------------------------------------------------------------------------------
+{$ELSE JCL}
 // ***********  Float Data Interchange (ISO 31-0)  ******************
+{$ENDIF JCL}
 
 // Converts a float value to a string
 // DecimalSeparator is decimal separator, no thousand separator
@@ -217,7 +261,13 @@ uses
   JclResources;
 {$ENDIF JCL}
 
+{$IFDEF JCL}
+//==================================================================================================
+// Date and Time Data Interchange (ISO 8601)
+//==================================================================================================
+{$ELSE JCL}
 // ***********  Date and Time Data Interchange (ISO 8601)  **********
+{$ENDIF JCL}
 
 // Convert TDateTime to string
 function ISODateTimeToStrCustom(const Value: TDateTime;
@@ -270,11 +320,19 @@ begin
   {$ENDIF ~FormatWithMilliseconds}
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Converts TDateTime to date string 'YYYY-MM-DD'
 function ISODateToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISODateFormat, Value);
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 // Converts TDateTime to time string 'hh:mm:ss'
 function ISOTimeToStr(const Value: TDateTime): String;
@@ -282,11 +340,19 @@ begin
   Result := FormatDateTime(ISOTimeFormat, Value);
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Converts TDateTime to date time string 'YYYY-MM-DDThh:mm:ss'
 function ISODateTimeToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISODateTimeFormat, Value);
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 // Converts TDateTime to date string 'YYYYMMDD'
 function ISOBasicDateToStr(const Value: TDateTime): String;
@@ -294,17 +360,29 @@ begin
   Result := FormatDateTime(ISOBasicDateFormat, Value);
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Convert TDateTime to time string 'hhmmss'
 function ISOBasicTimeToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISOBasicTimeFormat, Value);
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Converts TDateTime to date time string 'YYYYMMDDThhmmss'
 function ISOBasicDateTimeToStr(const Value: TDateTime): String;
 begin
   Result := FormatDateTime(ISOBasicDateTimeFormat, Value);
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 function CheckDateTimeFormat(const Value, DTFormat: String): Boolean;
 var
@@ -329,6 +407,10 @@ begin
   Result := True;
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Converts an ISO date string to TDateTime and replace the date part of Date
 function TryISOStrToDate(const Value: String; var Date: TDateTime): Boolean;
 var
@@ -352,6 +434,10 @@ begin
     on EConvertError do;
   end;
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 // Converts an ISO time string to TDateTime and replace the time part of Time
 function TryISOStrToTime(const Value: String; var Time: TDateTime): Boolean;
@@ -429,6 +515,10 @@ begin
   end;
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
 function TryISOStrToDateTime(const Value: String; out DateTime: TDateTime): Boolean;
@@ -449,6 +539,10 @@ begin
   end;
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Converts an ISO date string to TDateTime
 // Valid strings:
 //   'CCYY-MM-DD' and 'CCYYMMDD'
@@ -463,12 +557,20 @@ begin
     {$ENDIF DELPHI3}
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 function ISOStrToDateDef(const Value: String; const Default: TDateTime): TDateTime;
 begin
   Result := 0;
   if not TryISOStrToDate(Value, Result) then
     Result := Default;
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 // Converts an ISO time string to TDateTime
 // Valid strings:
@@ -485,12 +587,20 @@ begin
     {$ENDIF DELPHI3}
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 function ISOStrToTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 begin
   Result := 0;
   if not TryISOStrToTime(Value, Result) then
     Result := Default;
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 // Converts an ISO time stamp to a TDateTime,
 // date and time are separated with 'T' or ' '
@@ -504,13 +614,23 @@ begin
     {$ENDIF DELPHI3}
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 function ISOStrToDateTimeDef(const Value: String; const Default: TDateTime): TDateTime;
 begin
   if not TryISOStrToDateTime(Value, Result) then
     Result := Default;
 end;
 
+{$IFDEF JCL}
+//==================================================================================================
+// Float Data Interchange (ISO 31-0)
+//==================================================================================================
+{$ELSE JCL}
 // ***********  Float Data Interchange (ISO 31-0)  ******************
+{$ENDIF JCL}
 
 function ISOFloatRecToStr(const Rec: TFloatRec;
   DecimalSeparator: TISOFloatDecimalSeparator{$IFDEF SUPPORTS_DEFAULTPARAMS} = fdsComma{$ENDIF}): String;
@@ -554,6 +674,10 @@ begin
   end;
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 // Convert a float value to string
 // with DecimalSeparator as decimal separator and without thousand separator
 function ISOFloatToStr(const Value: Extended;
@@ -565,6 +689,10 @@ begin
   FloatToDecimal(FloatRec, Value, fvExtended, Precision, High(Integer) div 2);
   Result := ISOFloatRecToStr(FloatRec, DecimalSeparator);
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 // Convert a string to a float value
 // Decimal separator ',' or '.'
@@ -606,6 +734,10 @@ begin
   end;
 end;
 
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
+
 function ISOStrToFloat(const Value: String): Extended;
 begin
   if not ISOTextToFloat(Value, Result) then
@@ -615,6 +747,10 @@ begin
     raise EConvertError.CreateResFmt(@RsDITInvalidISOFloat, [Value]);
     {$ENDIF DELPHI3}
 end;
+
+{$IFDEF JCL}
+//--------------------------------------------------------------------------------------------------
+{$ENDIF JCL}
 
 function ISOStrToFloatDef(const Value: String; const Default: Extended): Extended;
 begin
@@ -637,6 +773,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.2  2004/05/05 00:36:15  mthoma
+//   Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
+//
 //   Revision 1.1  2004/04/18 00:40:02  peterjhaas
 //   add prototypes for standalone library / JCL
 //   be careful with any modification to avoid breaks
