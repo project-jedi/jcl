@@ -60,8 +60,12 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  SysUtils, 
+  SysUtils,
   JclBase, JclResources;
+
+const
+  // 1970-01-01T00:00:00 in TDateTime
+  UnixTimeStart = 25569;
 
 { Encode / Decode functions }
 
@@ -203,9 +207,6 @@ const
   //   4 : first week has at least four days (according to ISO 8601)
   //   7 : first full week
   ISOFirstWeekMinDays = 4;
-
-  // 1970-01-01T00:00:00 in TDateTime
-  UnixTimeStart = 25569;
 
 function EncodeDate(const Year: Integer; Month, Day: Word): TDateTime; overload;
 begin
@@ -1114,6 +1115,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.20  2005/03/09 23:09:01  rrossmair
+// - published UnixTimeStart constant
+//
 // Revision 1.19  2005/03/08 08:33:16  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
