@@ -837,7 +837,7 @@ begin
   Result := False;
   // For some reason the destination string must be prefixed with \??\ otherwise
   // the IOCTL will fail, ensure it's there.
-  if Copy(Destination, 1, 2) = '\??' then
+  if Copy(Destination, 1, 3) = '\??' then
     StrPCopy(Dest, Destination)
   else
   begin
@@ -1334,6 +1334,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.11  2004/07/14 03:00:34  rrossmair
+// fixed bug #1962 ( NtfsCreateJunctionPoint fails if a \\??\\ path is used)
+//
 // Revision 1.10  2004/06/16 07:30:31  marquardt
 // added tilde to all IFNDEF ENDIFs, inherited qualified
 //
