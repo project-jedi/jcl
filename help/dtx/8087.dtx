@@ -25,16 +25,15 @@ Quick info:
   Underflow mask.
 @@T8087Exception.emPrecision
   Precision error mask.
-@@T8087Exceptions
+@@T8087Exception
 <GROUP MathRoutines.Hardware>
-<COMBINEWITH T8087Exception>
+<COMBINE T8087Exception>
 --------------------------------------------------------------------------------
 @@All8087Exceptions
 <GROUP MathRoutines.Hardware>
 Summary:
   A set containing all FPU exception flags.
 Description:
-
   All8087Exceptions is a pre-initialized set which contains all of the
   available FPU exception flags (from the T8087Exception enumeration).
 Quick info:
@@ -110,9 +109,7 @@ Description:
   do not appear in the Exception parameter.
 Parameters:
   Exceptions - Set of exceptions to mask.
-  ClearBefore - If set to True the routine clears pending exceptions, if any,
-                before modifying the exception mask. This is the default behavior.
-                If set to False the routine does not clear pending exceptions.
+  ClearBefore - If set to True the routine clears pending exceptions, if any, before modifying the exception mask. This is the default behavior.  If set to False the routine does not clear pending exceptions.
 Result:
   The result is the exception mask before it was modified.
 Quick info:
@@ -363,51 +360,38 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@Get8087ControlWord
-<GROUP $MathRoutines.Hardware>
-Description
-Get8087ControlWord returns the 80x87 control word (register).
-This is the FPU's register that controls how the FPU operates
-with regard to things such as precision, rounding and
-infinity control. See the table below for the meaning of the
-individual bits. Note that although this routine might be
-handy at times, the Get8087Infinity, Get8087Precision and
-Get8087Rounding functions are preferred as they shield you
-from the low level bit manipulation.
-<TABLE>
-Bit(s)       \Description
------------  ---------------------------------------------
-0 (IM)       Invalid operation mask
-1 (DM)       Denormalized operand mask
-2 (ZM)       Division by zero mask
-3 (OM)       Overflow mask
-4 (UM)       Underflow mask
-5 (PM)       Precision error mask
-8,9 (PC)     Precision control
-              * 00 Single precision
-              * 01 Reserved
-              * 10 Double precision
-              * 11 Extended
-              precision
-10,11 (RC)   Rounding control
-              * 00 Round to nearest or even
-              * 01 Round down
-              * 10 Round up
-              * Chop or truncate toward 0
-12 (IC)      Infinity control
-              * 0 projective
-              * 1 affine
-</TABLE>
-Summary
+<GROUP MathRoutines.Hardware>
+Summary:
   Returns the 80x87 control word.
-Returns
+Description:
+  Get8087ControlWord returns the 80x87 control word (register). This is the FPU's
+  register that controls how the FPU operates with regard to things such as precision,
+  rounding and infinity control. See the table below for the meaning of the individual
+  bits. Note that although this routine might be handy at times, the Get8087Infinity, Get8087Precision and Get8087Rounding functions are preferred as they shield you from the low level bit manipulation.
+   <TABLE>
+Bit(s)      Description
+----------  --------------------------------------------------------------------------------------------------------
+0 (IM)      Invalid operation mask
+1 (DM)      Denormalized operand mask
+2 (ZM)      Division by zero mask
+3 (OM)      Overflow mask
+4 (UM)      Underflow mask
+5 (PM)      Precision error mask
+8,9 (PC)    Precision control * 00 Single precision * 01 Reserved * 10 Double precision * 11 Extended precision
+10,11 (RC)  Rounding control * 00 Round to nearest or even * 01 Round down * 10 Round up * Chop or truncate toward 0
+12 (IC)     Infinity control * 0 projective * 1 affine
+</TABLE>
+
+Result:
   The 80x87 control word.
-QuickInfo
+Quick info:
   Unit: Jcl8087
   Category: Math Routines
   Donator: ESB Consultancy
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
 @@Get8087StatusWord
 <GROUP MathRoutines.Hardware>
 Summary:
@@ -417,10 +401,7 @@ Description:
   reflects it's overall status. The meaning of the individual bits are documented
   in the table below.
 Parameters:
-  ClearExceptions - If True the function clears any pending floating point
-                    exceptions before returning the status word. If False the
-                    function does not clear pending exceptions (it's the
-                    difference between using FSTSW and FNSTSW).
+  ClearExceptions - If True the function clears any pending floating point exceptions before returning the status word. If False the function does not clear pending exceptions (it's the difference between using FSTSW and FNSTSW).
 Result:
   The contents of the 80x87 status word.
    <TABLE>
@@ -438,6 +419,7 @@ Bit(s)               Description
 11-13 (TOP)          Stack top pointer. Register which functions as top of stack, usually 0.
 15 (B)               Busy bit indicating the coprocessor is performing some task.
 </TABLE>
+
 Quick info:
   Unit: Jcl8087
   Category: Math Routines
