@@ -8,22 +8,26 @@
 ROOT = $(MAKEDIR)\..
 !endif
 #---------------------------------------------------------------------------------------------------
-INC = ..\..\..\source\common
+SRC = ..\..\..\source
 LIB = ..\..\..\lib\d7;..\..\..\lib\d6;..\..\..\lib\d5
+SRCs = $(SRC)\common;$(SRC)\windows
 RES = 
 BIN = ..\..\..\bin
 MAP = $(BIN)\$&.map
 DRC = $&.drc
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -q -r$(RES) -u$(LIB) -w $**
+DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(SRC) -q -r$(RES) -u$(SRCs) -w $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
   JediInstaller.exe
 #---------------------------------------------------------------------------------------------------
 
+#  ..\..\..\want.exe compile
+
 JediInstaller.exe: JediInstaller.dpr
-  ..\..\..\want.exe compile
   $(DCC) -D$(Script)
+  del $(SRC)\common\*.dcu
+  del $(SRC)\windows\*.dcu
 
