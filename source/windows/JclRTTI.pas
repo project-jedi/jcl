@@ -22,7 +22,7 @@
 { operator hooking.                                                                                }
 {                                                                                                  }
 { Unit owner: Marcel Bestebroer                                                                    }
-{ Last modified: July 21, 2001                                                                     }
+{ Last modified: April 1, 2003                                                                     }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -336,10 +336,8 @@ function JclGenerateSubRange(const BaseType: PTypeInfo; const TypeName: string;
 // Integer types
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF COMPILER5_UP}
 function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
 function JclTypedIntToStr(Value: Integer; TypeInfo: PTypeInfo): string;
-{$ENDIF COMPILER5_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Sets
@@ -386,11 +384,6 @@ implementation
 uses
   Consts, SysConst,
   JclLogic, JclResources, JclStrings, JclSysUtils;
-
-{$IFNDEF COMPILER5_UP}
-function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: DWORD;
-  var flOldProtect: DWORD): BOOL; stdcall; external 'kernel32.dll' name 'VirtualProtect';
-{$ENDIF COMPILER5_UP}
 
 //--------------------------------------------------------------------------------------------------
 // TJclInfoWriter
@@ -663,11 +656,9 @@ type
 
 function TJclOrdinalRangeTypeInfo.GetMinValue: Int64;
 begin
-  {$IFDEF COMPILER5_UP}
   if OrdinalType = otULong then
     Result := Longword(TypeData.MinValue)
   else
-  {$ENDIF COMPILER5_UP}
     Result := TypeData.MinValue;
 end;
 
@@ -675,11 +666,9 @@ end;
 
 function TJclOrdinalRangeTypeInfo.GetMaxValue: Int64;
 begin
-  {$IFDEF COMPILER5_UP}
   if OrdinalType = otULong then
     Result := Longword(TypeData.MaxValue)
   else
-  {$ENDIF COMPILER5_UP}
     Result := TypeData.MaxValue;
 end;
 
@@ -2332,10 +2321,8 @@ begin
       EnumVal := Word(Value);
     otSLong:
       EnumVal := Integer(Value);
-    {$IFDEF COMPILER5_UP}
     otULong:
       EnumVal := Longword(Value);
-    {$ENDIF COMPILER5_UP}
   else
     EnumVal := 0;
   end;
@@ -2380,11 +2367,7 @@ begin
     if Length(Literals) < 65536 then
       TypeData^.OrdType := otUWord
     else
-      {$IFDEF COMPILER5_UP}
       TypeData^.OrdType := otULong;
-      {$ELSE}
-      TypeData^.OrdType := otSLong;
-      {$ENDIF COMPILER5_UP}
     TypeData^.MinValue := 0;
     TypeData^.MaxValue := Length(Literals)-1;
     TypeData^.BaseType^ := Result;   // No sub-range: basetype points to itself
@@ -2498,7 +2481,6 @@ end;
 // Integers
 //--------------------------------------------------------------------------------------------------
 
-{$IFDEF COMPILER5_UP}
 function JclStrToTypedInt(Value: string; TypeInfo: PTypeInfo): Integer;
 var
   Conv: TIdentToInt;
@@ -2550,7 +2532,6 @@ begin
       Result := IntToStr(Value)
   end;
 end;
-{$ENDIF COMPILER_5_UP}
 
 //--------------------------------------------------------------------------------------------------
 // Sets
@@ -2692,11 +2673,7 @@ begin
       9..16:
         TypeData^.OrdType := otUWord;
       17..32:
-        {$IFDEF COMPILER5_UP}
         TypeData^.OrdType := otULong;
-        {$ELSE}
-        TypeData^.OrdType := otSLong;
-        {$ENDIF COMPILER5_UP}
       33..64:
         Byte(TypeData^.OrdType) := 8;
       65..128:
