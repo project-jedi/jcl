@@ -39,6 +39,8 @@ unit Snmp;
 
 interface
 
+{$I jcl.inc}
+
 {$DEFINE SNMP_DYNAMIC_LINK}
 {$DEFINE SNMP_DYNAMIC_LINK_EXPLICIT}
 {$DEFINE SNMPSTRICT}
