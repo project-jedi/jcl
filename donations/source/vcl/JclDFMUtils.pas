@@ -23,7 +23,7 @@
 {   This is a preview - class and functionnames might be changed                                   }
 {                                                                                                  }
 { Unit owner: Uwe Schuster                                                                         }
-{ Last modified: October 27, 2003                                                                  }
+{ Last modified: December 7, 2003                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -38,58 +38,58 @@ uses
   ComCtrls;
 
 procedure ReadImageListFromDFMComponent(AImageList: TCustomImageList;
-  ADFMComponent: TDFMComponent);
+  ADFMComponent: TJclDFMComponent);
 procedure ExtractImageList2BitmapsFromDFMComponent(ABitmapList: TList;
-  ADFMComponent: TDFMComponent);
-procedure LoadLayout(AControl: TControl; ADFMComponent: TDFMComponent); overload;
+  ADFMComponent: TJclDFMComponent);
+procedure LoadLayout(AControl: TControl; ADFMComponent: TJclDFMComponent); overload;
 procedure LoadLayout(AControl: TControl; AStream: TStream); overload;
 procedure LoadLayout(AControl: TControl; AFileName: string); overload;
 procedure ReadTreeViewItemsFromDFMComponent(ATreeView: TCustomTreeView;
-  ADFMComponent: TDFMComponent);
+  ADFMComponent: TJclDFMComponent);
 
 implementation
 
 type
-  TDFMImagelist = class(TCustomImageList);
-  TDFMTreeView = class(TCustomTreeView);
-  TDFMTreeNodes = class(TTreeNodes);
+  TJclDFMImagelist = class(TCustomImageList);
+  TJclDFMTreeView = class(TCustomTreeView);
+  TJclDFMTreeNodes = class(TTreeNodes);
 
 procedure ReadImageListFromDFMComponent(AImageList: TCustomImageList;
-  ADFMComponent: TDFMComponent);
+  ADFMComponent: TJclDFMComponent);
 var
-  DFMFiler: TDFMFiler;
+  DFMFiler: TJclDFMFiler;
   FilerStream, BitmapStream: TMemoryStream;
-  i: Integer;
+  I: Integer;
   BitmapReadProc: TStreamProc;
 begin
   if Assigned(AImageList) and Assigned(ADFMComponent) then
   begin
     BitmapStream := nil;
-    for i := 0 to Pred(ADFMComponent.Propertys.Count) do
-      if (ADFMComponent.Propertys[i].Typ = vaBinary) and
-        SameText(ADFMComponent.Propertys[i].Name, 'Bitmap')
-      then
+    for I := 0 to ADFMComponent.Properties.Count - 1 do
+      if (ADFMComponent.Properties[I].Typ = vaBinary) and
+        SameText(ADFMComponent.Properties[I].Name, 'Bitmap') then
       begin
-        BitmapStream := ADFMComponent.Propertys[i].AsStream;
+        BitmapStream := ADFMComponent.Properties[I].AsStream;
         Break;
       end;
     if Assigned(BitmapStream) then
     begin
-      FilerStream := nil;
-      DFMFiler := nil;
+      FilerStream := TMemoryStream.Create;
       try
-        FilerStream := TMemoryStream.Create;
-        DFMFiler := TDFMFiler.Create(FilerStream, 0);
-        TDFMImagelist(AImageList).DefineProperties(DFMFiler);
-        if BitmapStream.Size > 0 then
-        begin
-          BitmapStream.Position := 0;
-          BitmapReadProc := DFMFiler.GetBinaryReadProcByName('Bitmap');
-          if Assigned(BitmapReadProc) then
-            BitmapReadProc(BitmapStream);
+        DFMFiler := TJclDFMFiler.Create(FilerStream, 0);
+        try
+          TJclDFMImagelist(AImageList).DefineProperties(DFMFiler);
+          if BitmapStream.Size > 0 then
+          begin
+            BitmapStream.Position := 0;
+            BitmapReadProc := DFMFiler.GetBinaryReadProcByName('Bitmap');
+            if Assigned(BitmapReadProc) then
+              BitmapReadProc(BitmapStream);
+          end;
+        finally
+          DFMFiler.Free;
         end;
       finally
-        DFMFiler.Free;
         FilerStream.free;
       end;
     end;
@@ -97,28 +97,24 @@ begin
 end;
 
 procedure ExtractImageList2BitmapsFromDFMComponent(ABitmapList: TList;
-  ADFMComponent: TDFMComponent);
+  ADFMComponent: TJclDFMComponent);
 var
   ImageList: TImageList;
-  i: Integer;
+  I: Integer;
   Bitmap: TBitmap;
 begin
   if Assigned(ABitmapList) and Assigned(ADFMComponent) then
   begin
-    ImageList := nil;
+    ImageList := TImageList.Create(nil);
     try
-      ImageList := TImageList.Create(nil);
       ReadImageListFromDFMComponent(ImageList, ADFMComponent);
-      if ImageList.Count > 0 then
+      for I := 0 to ImageList.Count - 1 do
       begin
-        for i := 0 to Pred(ImageList.Count) do
-        begin
-          Bitmap := TBitmap.Create;
-          Bitmap.Width := ImageList.Width;
-          Bitmap.Height := ImageList.Height;
-          ImageList.Draw(Bitmap.Canvas, 0, 0, i);
-          ABitmapList.Add(Bitmap);
-        end;
+        Bitmap := TBitmap.Create;
+        Bitmap.Width := ImageList.Width;
+        Bitmap.Height := ImageList.Height;
+        ImageList.Draw(Bitmap.Canvas, 0, 0, I);
+        ABitmapList.Add(Bitmap);
       end;
     finally
       ImageList.Free;
@@ -128,28 +124,26 @@ end;
 
 procedure Controls2List(AList: TList; AControl: TControl);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Assigned(AList) and Assigned(AControl) then
   begin
     if AList.IndexOf(AControl) = -1 then
       AList.Add(AControl);
     if (AControl is TWinControl) and
-      (csAcceptsControls in AControl.ControlStyle)
-    then
-      for i := 0 to Pred(TWinControl(AControl).ControlCount) do
-        Controls2List(AList, TWinControl(AControl).Controls[i]);
+      (csAcceptsControls in AControl.ControlStyle) then
+      for I := 0 to TWinControl(AControl).ControlCount - 1 do
+        Controls2List(AList, TWinControl(AControl).Controls[I]);
   end;
 end;
 
-procedure LoadControlFromDFMComponent(ADFMComponent: TDFMComponent;
+procedure LoadControlFromDFMComponent(ADFMComponent: TJclDFMComponent;
   AControl: TControl);
 var
   ObjectStream: TMemoryStream;
 begin
-  ObjectStream := nil;
+  ObjectStream := TMemoryStream.Create;
   try
-    ObjectStream := TMemoryStream.Create;
     ADFMComponent.GetObjectBinary(ObjectStream, False);
     ObjectStream.Position := 0;
     ObjectStream.ReadComponent(AControl);
@@ -158,17 +152,17 @@ begin
   end;
 end;
 
-procedure LoadControlsFromDFMComponent(ADFMComponent: TDFMComponent;
+procedure LoadControlsFromDFMComponent(ADFMComponent: TJclDFMComponent;
   AParentControl: TControl; AControlList: TList);
 var
-  i: Integer;
+  I: Integer;
   CControl: TControl;
 begin
   CControl := nil;
-  for i := 0 to AControlList.Count - 1 do
-    if TControl(AControlList[i]).Name = ADFMComponent.ComponentName then
+  for I := 0 to AControlList.Count - 1 do
+    if TControl(AControlList[I]).Name = ADFMComponent.ComponentName then
     begin
-      CControl := AControlList[i];
+      CControl := AControlList[I];
       Break;
     end;
   if Assigned(CControl) then
@@ -177,31 +171,29 @@ begin
       CControl.Parent := TWinControl(AParentControl);
     CControl.Visible := True; 
     LoadControlFromDFMComponent(ADFMComponent, CControl);
-    if ADFMComponent.SubComponents.Count > 0 then
-      for i := 0 to ADFMComponent.SubComponents.Count - 1 do
-        LoadControlsFromDFMComponent(ADFMComponent.SubComponents[i], CControl,
-          AControlList);
+    for I := 0 to ADFMComponent.SubComponents.Count - 1 do
+      LoadControlsFromDFMComponent(ADFMComponent.SubComponents[I], CControl,
+        AControlList);
   end;
 end;
 
-procedure LoadLayout(AControl: TControl; ADFMComponent: TDFMComponent); overload;
+procedure LoadLayout(AControl: TControl; ADFMComponent: TJclDFMComponent); overload;
 var
   ControlList: TList;
-  ControlComponent: TDFMComponent;
-  i: Integer;
+  ControlComponent: TJclDFMComponent;
+  I: Integer;
 begin
   if Assigned(AControl) and Assigned(ADFMComponent) then
   begin
     ControlComponent := ADFMComponent.FindComponent(AControl.Name);
     if Assigned(ControlComponent) then
     begin
-      ControlList := nil;
+      ControlList := TList.Create;
       try
-        ControlList := TList.Create;
         Controls2List(ControlList, AControl);
-        for i := 0 to ControlList.Count - 1 do
-          if ControlList[i] <> AControl then
-            with TControl(ControlList[i]) do
+        for I := 0 to ControlList.Count - 1 do
+          if ControlList[I] <> AControl then
+            with TControl(ControlList[I]) do
             begin
               if AControl is TWinControl then
                 Parent := TWinControl(AControl);
@@ -217,75 +209,73 @@ end;
 
 procedure LoadLayout(AControl: TControl; AStream: TStream); overload;
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
 begin
   if Assigned(AControl) and Assigned(AStream) then
   begin
-    RCOMP := nil;
+    RComp := TJclDFMRootComponent.Create;
     try
-      RCOMP := TDFMRootComponent.Create;
-      RCOMP.LoadFromStream(AStream);
-      LoadLayout(AControl, RCOMP);
+      RComp.LoadFromStream(AStream);
+      LoadLayout(AControl, RComp);
     finally
-      RCOMP.Free;
+      RComp.Free;
     end;
   end;
 end;
 
 procedure LoadLayout(AControl: TControl; AFileName: string);
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
 begin
   if Assigned(AControl) and FileExists(AFileName) then
   begin
-    RCOMP := nil;
+    RComp := TJclDFMRootComponent.Create;
     try
-      RCOMP := TDFMRootComponent.Create;
-      RCOMP.LoadFromFile(AFileName);
-      LoadLayout(AControl, RCOMP);
+      RComp.LoadFromFile(AFileName);
+      LoadLayout(AControl, RComp);
     finally
-      RCOMP.Free;
+      RComp.Free;
     end;
   end;
 end;
 
 procedure ReadTreeViewItemsFromDFMComponent(ATreeView: TCustomTreeView;
-  ADFMComponent: TDFMComponent);
+  ADFMComponent: TJclDFMComponent);
 var
-  DFMFiler: TDFMFiler;
+  DFMFiler: TJclDFMFiler;
   FilerStream, ItemsStream: TMemoryStream;
-  i: Integer;
+  I: Integer;
   ItemsReadProc: TStreamProc;
 begin
   if Assigned(ATreeView) and Assigned(ADFMComponent) then
   begin
-    TDFMTreeView(ATreeView).Items.Clear;
+    TJclDFMTreeView(ATreeView).Items.Clear;
     ItemsStream := nil;
-    for i := 0 to Pred(ADFMComponent.Propertys.Count) do
-      if (ADFMComponent.Propertys[i].Typ = vaBinary) and
-        SameText(ADFMComponent.Propertys[i].Name, 'Items.Data')
-      then
+    for I := 0 to ADFMComponent.Properties.Count - 1 do
+      if (ADFMComponent.Properties[I].Typ = vaBinary) and
+        SameText(ADFMComponent.Properties[I].Name, 'Items.Data') then
       begin
-        ItemsStream := ADFMComponent.Propertys[i].AsStream;
+        ItemsStream := ADFMComponent.Properties[I].AsStream;
         Break;
       end;
     if Assigned(ItemsStream) then
     begin
-      FilerStream := nil;
-      DFMFiler := nil;
+      FilerStream := TMemoryStream.Create;
       try
-        FilerStream := TMemoryStream.Create;
-        DFMFiler := TDFMFiler.Create(FilerStream, 0);
-        TDFMTreeNodes(TDFMTreeView(ATreeView).Items).DefineProperties(DFMFiler);
-        if ItemsStream.Size > 0 then
-        begin
-          ItemsStream.Position := 0;
-          ItemsReadProc := DFMFiler.GetBinaryReadProcByName('Data');
-          if Assigned(ItemsReadProc) then
-            ItemsReadProc(ItemsStream);
+        DFMFiler := TJclDFMFiler.Create(FilerStream, 0);
+        try
+          TJclDFMTreeNodes(TJclDFMTreeView(ATreeView).Items).DefineProperties(DFMFiler);
+          if ItemsStream.Size > 0 then
+          begin
+            ItemsStream.Position := 0;
+            ItemsReadProc := DFMFiler.GetBinaryReadProcByName('Data');
+            if Assigned(ItemsReadProc) then
+              ItemsReadProc(ItemsStream);
+          end;
+        finally
+          DFMFiler.Free;
         end;
       finally
-        DFMFiler.Free;
         FilerStream.free;
       end;
     end;

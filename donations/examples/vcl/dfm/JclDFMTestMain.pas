@@ -20,7 +20,7 @@ type
     tsSkipList: TTabSheet;
     Memo1: TMemo;
     tvDFMTree: TTreeView;
-    memSkipPropertys: TMemo;
+    memSkipProperties: TMemo;
     btnExtractImageLists: TButton;
     tsImage: TTabSheet;
     Image: TImage;
@@ -51,74 +51,81 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
-procedure AddDFMObject2Tree(ATreeView: TTreeView; ANode: TTreeNode; ADFMObj: TDFMComponent);
+procedure AddDFMObject2Tree(ATreeView: TTreeView; ANode: TTreeNode; ADFMObj: TJclDFMComponent);
 var
-  i: Integer;
-  an,an2: TTreeNode;
+  I: Integer;
+  an, an2: TTreeNode;
   s: string;
   PropertyValueString: string;
 begin
-  an := ATreeView.Items.AddChild(ANode, ADFMObj.ComponentName + ':' + ADFMObj.ComponentClassName);
-  if ADFMObj.Propertys.Count > 0 then
+  an := ATreeView.Items.AddChild(ANode, ADFMObj.ComponentName + ':' +
+    ADFMObj.ComponentClassName);
+  if ADFMObj.Properties.Count > 0 then
   begin
-    an2 := ATreeView.Items.AddChild(an, 'Propertys');
-    for i := 0 to Pred(ADFMObj.Propertys.Count) do
+    an2 := ATreeView.Items.AddChild(an, 'Properties');
+    for I := 0 to ADFMObj.Properties.Count - 1 do
     begin
-      PropertyValueString := ADFMObj.Propertys[i].AsString;
+      PropertyValueString := ADFMObj.Properties[I].AsString;
       if Length(PropertyValueString) > 100 then
         PropertyValueString := Copy(PropertyValueString, 1, 100) + '...';
-      s := Format('=%s', [PropertyValueString]);
-      ATreeView.Items.AddChild(an2, ADFMObj.Propertys[i].Name + ' ' +
-        ValueType2String(ADFMObj.Propertys[i].Typ) + s);
+      S := Format('=%s', [PropertyValueString]);
+      ATreeView.Items.AddChild(an2, ADFMObj.Properties[I].Name + ' ' +
+        ValueTypeToString(ADFMObj.Properties[I].Typ) + S);
     end;
   end;
   if ADFMObj.SubComponents.Count > 0 then
   begin
     an2 := ATreeView.Items.AddChild(an, 'SubComponents');
-    for i := 0 to Pred(ADFMObj.SubComponents.Count) do
-      AddDFMObject2Tree(ATreeView, an2, ADFMObj.SubComponents[i]);
+    for I := 0 to ADFMObj.SubComponents.Count - 1 do
+      AddDFMObject2Tree(ATreeView, an2, ADFMObj.SubComponents[I]);
   end;
 end;
 
-procedure DrawImageList2CanvasFromDFMComponent(ADFMComponent: TDFMComponent;
+procedure DrawImageList2CanvasFromDFMComponent(ADFMComponent: TJclDFMComponent;
   ACanvas: TCanvas; Ax, Ay: Integer);
 var
   BitmapList: TList;
-  i: Integer;
+  I: Integer;
   Bitmap: TBitmap;
   cx: Integer;
 begin
   BitmapList := TList.Create;
-  ExtractImageList2BitmapsFromDFMComponent(BitmapList, ADFMComponent);
-  if BitmapList.Count > 0 then
-  begin
-    cx := 0;
-    for i := 0 to Pred(BitmapList.Count) do
+  try
+    ExtractImageList2BitmapsFromDFMComponent(BitmapList, ADFMComponent);
+    if BitmapList.Count > 0 then
     begin
-      Bitmap := BitmapList[i];
-      if Assigned(Bitmap) then
+      cx := 0;
+      for I := 0 to BitmapList.Count - 1 do
       begin
-        ACanvas.Draw(Ax + cx, Ay, Bitmap);
-        Inc(cx, Bitmap.Width);
-        Bitmap.Free;
+        Bitmap := BitmapList[I];
+        if Assigned(Bitmap) then
+        begin
+          ACanvas.Draw(Ax + cx, Ay, Bitmap);
+          Inc(cx, Bitmap.Width);
+          Bitmap.Free;
+        end;
       end;
     end;
+  finally
+    BitmapList.Free;
   end;
-  BitmapList.Free;
 end;
 
 procedure TfmJclDFMTest.btnDFM2TreeClick(Sender: TObject);
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
 begin
   if OpenDialog.Execute then
   begin
-    RCOMP := TDFMRootComponent.Create;
-    RCOMP.LoadFromFile(OpenDialog.FileName);
-    AddDFMObject2Tree(tvDFMTree, nil, RCOMP);
-    RCOMP.Free;
+    RComp := TJclDFMRootComponent.Create;
+    try
+      RComp.LoadFromFile(OpenDialog.FileName);
+      AddDFMObject2Tree(tvDFMTree, nil, RComp);
+    finally
+      RComp.Free;
+    end;
     PageControl1.ActivePage := tsTV;
   end;
 end;
@@ -134,59 +141,68 @@ end;
 
 procedure TfmJclDFMTest.btnCleanDFMClick(Sender: TObject);
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
 begin
   if OpenDialog.Execute then
   begin
-    RCOMP := TDFMRootComponent.Create;
-    RCOMP.LoadFromFile(OpenDialog.FileName);
-    DFMRemoveUnwantedComponentsAndProps(RCOMP, nil, memSkipPropertys.Lines);
-    SaveDialog.FileName := ChangeFileExt(OpenDialog.FileName, '.cleaned_dfm');
-    if SaveDialog.Execute then
-      RCOMP.SaveToFile(SaveDialog.FileName);
-    RCOMP.Free;
+    RComp := TJclDFMRootComponent.Create;
+    try
+      RComp.LoadFromFile(OpenDialog.FileName);
+      DFMRemoveUnwantedComponentsAndProps(RComp, nil, memSkipProperties.Lines);
+      SaveDialog.FileName := ChangeFileExt(OpenDialog.FileName, '.cleaned_dfm');
+      if SaveDialog.Execute then
+        RComp.SaveToFile(SaveDialog.FileName);
+    finally
+      RComp.Free;
+    end;
   end;
 end;
 
 procedure TfmJclDFMTest.btnExtractImageListsClick(Sender: TObject);
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
   ComponentList: TList;
-  i,j, imgcy, tw, imgh: Integer;
-  s: string;
+  I, J, imgcy, tw, imgh: Integer;
+  S: string;
 begin
   if OpenDialog.Execute then
   begin
     Image.Canvas.FillRect(Rect(0,0,Image.Width, Image.Height));
-    RCOMP := TDFMRootComponent.Create;
-    RCOMP.LoadFromFile(OpenDialog.FileName);
-    ComponentList := TList.Create;
-    if RCOMP.FindComponentsByClass('TImageList', ComponentList) > 0 then
-    begin
-      imgcy := 2;
-      for i := 0 to Pred(ComponentList.Count) do
-      with TDFMComponent(ComponentList[i]) do
-      begin
-        s := Format('%s.%s', [RCOMP.ComponentClassName, ComponentName]);
-        with Image.Canvas do
+    RComp := TJclDFMRootComponent.Create;
+    try
+      RComp.LoadFromFile(OpenDialog.FileName);
+      ComponentList := TList.Create;
+      try
+        if RComp.FindComponentsByClass('TImageList', ComponentList) > 0 then
         begin
-          tw := TextWidth(s);
-          TextOut(2, imgcy, s);
+          imgcy := 2;
+          for I := 0 to ComponentList.Count - 1 do
+            with TJclDFMComponent(ComponentList[I]) do
+            begin
+              S := Format('%s.%s', [RComp.ComponentClassName, ComponentName]);
+              with Image.Canvas do
+              begin
+                tw := TextWidth(S);
+                TextOut(2, imgcy, S);
+              end;
+              DrawImageList2CanvasFromDFMComponent(ComponentList[I],
+                Image.Canvas, tw + 7, imgcy);
+              imgh := 16;
+              for J := 0 to Properties.Count - 1 do
+                if SameText(Properties[J].Name, 'Height') then
+                begin
+                  imgh := Properties[J].AsInteger;
+                  Break;
+                end;
+              Inc(imgcy, imgh + 4);
+            end;
         end;
-        DrawImageList2CanvasFromDFMComponent(ComponentList[i],
-          Image.Canvas, tw + 7, imgcy);
-        imgh := 16;
-        for j := 0 to Pred(Propertys.Count) do
-          if SameText(Propertys[j].Name, 'Height') then
-          begin
-            imgh := Propertys[j].AsInteger;
-            Break;
-          end;
-        Inc(imgcy, imgh + 4);
+      finally
+        ComponentList.Free;
       end;
+    finally
+      RComp.Free;
     end;
-    ComponentList.Free;
-    RCOMP.Free;
     PageControl1.ActivePage := tsImage;
   end;
 end;
@@ -213,18 +229,24 @@ end;
 
 procedure TfmJclDFMTest.btnLoadTreeViewItemsClick(Sender: TObject);
 var
-  RCOMP: TDFMRootComponent;
+  RComp: TJclDFMRootComponent;
   ComponentList: TList;
 begin
   if OpenDialog.Execute then
   begin
-    RCOMP := TDFMRootComponent.Create;
-    RCOMP.LoadFromFile(OpenDialog.FileName);
-    ComponentList := TList.Create;
-    if RCOMP.FindComponentsByClass('TTreeView', ComponentList) > 0 then
-      ReadTreeViewItemsFromDFMComponent(tvItems, ComponentList[0]);
-    ComponentList.Free;
-    RCOMP.Free;
+    RComp := TJclDFMRootComponent.Create;
+    try
+      RComp.LoadFromFile(OpenDialog.FileName);
+      ComponentList := TList.Create;
+      try
+        if RComp.FindComponentsByClass('TTreeView', ComponentList) > 0 then
+          ReadTreeViewItemsFromDFMComponent(tvItems, ComponentList[0]);
+      finally
+        ComponentList.Free;
+      end;
+    finally
+      RComp.Free;
+    end;
     PageControl1.ActivePage := tsTVItems;
   end;
 end;

@@ -76,6 +76,7 @@ object fmJclDFMTest: TfmJclDFMTest
     Height = 412
     ActivePage = tsTV
     Align = alClient
+    TabIndex = 0
     TabOrder = 1
     object tsTV: TTabSheet
       Caption = 'TreeView'
@@ -106,7 +107,7 @@ object fmJclDFMTest: TfmJclDFMTest
     object tsSkipList: TTabSheet
       Caption = 'SkipList'
       ImageIndex = 2
-      object memSkipPropertys: TMemo
+      object memSkipProperties: TMemo
         Left = 0
         Top = 0
         Width = 680
@@ -118,7 +119,10 @@ object fmJclDFMTest: TfmJclDFMTest
           'TJvPageControl.TabIndex'
           'TImage.Proportional'
           'TJvComboBox.AutoDropDown'
-          'TComboBox.AutoDropDown')
+          'TComboBox.AutoDropDown'
+          'TMenuItem.AutoCheck'
+          'TAction.AutoCheck'
+          'TAction.GroupIndex')
         ScrollBars = ssVertical
         TabOrder = 0
       end
