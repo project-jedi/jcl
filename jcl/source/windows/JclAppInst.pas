@@ -407,4 +407,5 @@ initialization
 
 finalization
   FreeAndNil(AppInstances);
+
 end.
