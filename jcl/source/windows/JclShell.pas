@@ -1446,6 +1446,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.13  2004/07/28 18:00:54  marquardt
 // various style cleanings, some minor fixes
 //
@@ -1461,7 +1464,7 @@ end;
 // Revision 1.9  2004/04/09 20:46:30  mthoma
 // Fixed 0000923 (ShellRunControlPanel). Changed $data$ to date.
 //
-// Revision 1.8  2004/04/06 04:55:18  peterjhaas
+// Revision 1.8  2004/04/06 04:55:18
 // adapt compiler conditions, add log entry
 //
 

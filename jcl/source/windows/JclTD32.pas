@@ -1356,13 +1356,16 @@ end;
 // History:
 
 // $Log$
+// Revision 1.10  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.9  2004/06/14 13:05:21  marquardt
 // style cleaning ENDIF, Tabs
 //
 // Revision 1.8  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.7  2004/04/06 04:55:18  peterjhaas
+// Revision 1.7  2004/04/06 04:55:18  
 // adapt compiler conditions, add log entry
 //
 

@@ -1457,6 +1457,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.24  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.23  2004/10/11 08:13:04  marquardt
 // PH cleaning of JclStrings
 //
@@ -1493,11 +1496,11 @@ end;
 // Revision 1.12  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.11  2004/04/26 04:25:46  peterjhaas
+// Revision 1.11  2004/04/26 04:25:46
 // - add GetServiceStatus
 // - add GetServiceStatusWaitingIfPending
 //
-// Revision 1.10  2004/04/12 22:04:38  peterjhaas
+// Revision 1.10  2004/04/12 22:04:38
 // Bugfix: TJclSCManager.Refresh EnumServiceGroups
 //
 // Revision 1.9  2004/04/08 19:49:26  mthoma
@@ -1513,7 +1516,7 @@ end;
 //
 // Revision 1.5  2004/04/07 14:01:15  obones
 //
-// Revision 1.4  2004/04/06 04:55:18  peterjhaas
+// Revision 1.4  2004/04/06 04:55:18
 // adapt compiler conditions, add log entry
 //
 

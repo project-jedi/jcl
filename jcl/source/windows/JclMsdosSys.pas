@@ -733,13 +733,16 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/10/17 21:00:15  mthoma
+// cleaning
+//
 // Revision 1.5  2004/08/09 06:38:08  marquardt
 // add JvWStrUtils.pas as JclWideStrings.pas
 //
 // Revision 1.4  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.3  2004/04/06 04:55:17  peterjhaas
+// Revision 1.3  2004/04/06 04:55:17  
 // adapt compiler conditions, add log entry
 //
 

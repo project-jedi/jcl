@@ -1214,6 +1214,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.16  2004/10/17 21:00:16  mthoma
+// cleaning
+//
 // Revision 1.15  2004/10/08 20:13:03  rrossmair
 // replaced JclUnicode routines by JclWideStrings equivalents
 //
@@ -1238,11 +1241,11 @@ end;
 // Revision 1.8  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.7  2004/04/26 04:28:16  peterjhaas
+// Revision 1.7  2004/04/26 04:28:16  
 // - add TaskSchedulerServiceControl
 // - some bugfixes for Win9x
 //
-// Revision 1.6  2004/04/06 04:55:18  peterjhaas
+// Revision 1.6  2004/04/06 04:55:18
 // adapt compiler conditions, add log entry
 //
 

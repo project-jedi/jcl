@@ -1540,6 +1540,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.14  2004/10/17 21:00:15  mthoma
+// cleaning
+//
 // Revision 1.13  2004/08/01 11:40:23  marquardt
 // move constructors/destructors
 //
@@ -1561,7 +1564,7 @@ end;
 // Revision 1.7  2004/04/08 16:59:17  mthoma
 // Fixed #1115. Changed $Data$ to $Date$
 //
-// Revision 1.6  2004/04/06 04:55:17  peterjhaas
+// Revision 1.6  2004/04/06 04:55:17
 // adapt compiler conditions, add log entry
 //
 

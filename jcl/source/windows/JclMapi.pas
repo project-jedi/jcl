@@ -1375,6 +1375,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/10/17 21:00:15  mthoma
+// cleaning
+//
 // Revision 1.8  2004/07/31 06:21:03  marquardt
 // fixing TStringLists, adding BeginUpdate/EndUpdate, finalization improved
 //
@@ -1390,7 +1393,7 @@ end;
 // Revision 1.4  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.3  2004/04/06 04:55:17  peterjhaas
+// Revision 1.3  2004/04/06 04:55:17
 // adapt compiler conditions, add log entry
 //
 

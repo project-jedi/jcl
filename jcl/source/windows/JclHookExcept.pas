@@ -622,6 +622,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.8  2004/10/17 21:00:15  mthoma
+// cleaning
+//
 // Revision 1.7  2004/08/02 15:30:17  marquardt
 // hunting down (rom) comments
 //
@@ -634,7 +637,7 @@ finalization
 // Revision 1.4  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //
-// Revision 1.3  2004/04/06 04:55:17  peterjhaas
+// Revision 1.3  2004/04/06 04:55:17  
 // adapt compiler conditions, add log entry
 //
 
