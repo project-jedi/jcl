@@ -1094,7 +1094,9 @@ begin
   begin
     Result := ShellLinkIcon(Link);
     ShellLinkFree(Link);
-  end;
+  end
+  else
+    Result := 0;
 end;
 
 //==================================================================================================
