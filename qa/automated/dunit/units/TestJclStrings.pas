@@ -41,7 +41,7 @@ type
     procedure _CharIsControl;
     procedure _CharIsDelete;
     procedure _CharIsDigit;
-    procedure _CharIsNumber;
+    procedure _CharIsNumberChar;
     procedure _CharIsPrintable;
     procedure _CharIsPunctuation;
     procedure _CharIsReturn;
@@ -65,7 +65,7 @@ type
     procedure _StrIsAlpha_StrIsAlpaNum_StrIsAlphaNumUnderscore;
     procedure _StrContainsChars;
     procedure _StrSame;
-    procedure _StrIsDigit_StrIsNumber_StrIsSubset;
+    procedure _StrIsDigit_StrConsistsOfNumberChars_StrIsSubset;
     procedure _StrCenter;
     procedure _StrCharPosLower;
     procedure _StrCharPosUpper;
@@ -409,13 +409,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringTransormation._StrIsDigit_StrIsNumber_StrIsSubset;
+procedure TJclStringTransormation._StrIsDigit_StrConsistsOfNumberChars_StrIsSubset;
 begin
   // StrIsDigit
   CheckEquals(StrIsDigit('') , False,'StrIsDigit');  // per doc
 
-  // StrIsNumber
-  CheckEquals(StrIsNumber('') , False,'StrIsNumber');  // per doc
+  // StrConsistsOfNumberChars
+  CheckEquals(StrConsistsOfNumberChars('') , False,'StrConsistsOfNumberChars');  // per doc
 
   // StrIsSubset
   CheckEquals(StrIsSubset('',[' ']), False,'StrIsSubset');  // per doc
@@ -1643,13 +1643,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure TJclStringCharacterTestRoutines._CharIsNumber;
+procedure TJclStringCharacterTestRoutines._CharIsNumberChar;
 var
   c1: char;
 
 begin
   for c1 := #0 to #255 do
-    CheckEquals(CharIsNumber(c1) , (c1 in ['0'..'9', '+', '-', DecimalSeparator]),'CharIsNumber');
+    CheckEquals(CharIsNumberChar(c1) , (c1 in ['0'..'9', '+', '-', DecimalSeparator]),'CharIsNumberChar');
 end;
 
 //--------------------------------------------------------------------------------------------------

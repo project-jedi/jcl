@@ -1,9 +1,9 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { Project JEDI Code Library (JCL)                                                                  }
-{ DUnit Test                                                                                       }
+{ DUnit Test                                                                                  }
 {                                                                                                  }
-{ Last Update: 2004-01-27                                                                                }
+{ Last Update: 14-10-2004
 {                                                                                                  }
 { The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
 { you may not use this file except in compliance with the License. You may obtain a copy of the    }
@@ -14,21 +14,40 @@
 { and limitations under the License.                                                               }
 {                                                                                                  }
 {**************************************************************************************************}
+unit TestJclDateTime;
 
-program JclTests;
-
+interface
 uses
-  Forms,
-  GUITestRunner,
-  TestJcl8087 in 'units\TestJcl8087.pas',
-  TestJclMath in 'units\TestJclMath.pas',
-  TestJclStrings in 'units\TestJclStrings.pas',
-  TestJclDateTime in 'units\TestJclDateTime.pas';
+  TestFramework,
+{$IFDEF MSWINDOWS}
+  Windows,
+{$ENDIF MSWINDOWS}
+  JclDateTime;
 
-{$R *.res}
+type
+   TDateTransformationTest=class(TTestCase)
+   published
+      procedure _DateTimeToUnixTime;
+      procedure _UnixTimeToDateTime;
+   end;
+implementation
 
+{ TDateTransformationTest }
+
+procedure TDateTransformationTest._DateTimeToUnixTime;
 begin
-  Application.Initialize;
-  Application.Run;
-  GUITestRunner.RunRegisteredTests;
+   //TODO: DateTimeToUnixTime
+   CheckEquals(DateTimeToUnixTime(EncodeDate(1970,1,1)),0,'DateTimeToUnixTime');
+end;
+
+procedure TDateTransformationTest._UnixTimeToDateTime;
+begin
+   //TODO: UnixTimeToDateTime
+   CheckEquals(UnixTimeToDateTime(0),EncodeDate(1970,1,1),'UnixTimeToDateTime');
+end;
+
+initialization
+   RegisterTest('JCLDateTime', TDateTransformationTest.Suite);
+
 end.
+ 
