@@ -272,10 +272,6 @@ object MainForm: TMainForm
         Align = alClient
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -283,28 +279,9 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
           inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
             inherited BplPathEdit: TEdit
-              Height = 22
-            end
-            inherited Button2: TButton
-              OnClick = nil
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 22
-              OnChange = nil
+              OnChange = BplPathEditChange
             end
           end
         end
@@ -323,10 +300,6 @@ object MainForm: TMainForm
         Align = alClient
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -334,28 +307,9 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
           inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
             inherited BplPathEdit: TEdit
-              Height = 22
-            end
-            inherited Button2: TButton
-              OnClick = nil
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 22
-              OnChange = nil
+              OnChange = BplPathEditChange
             end
           end
         end
@@ -374,10 +328,6 @@ object MainForm: TMainForm
         Align = alClient
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -385,28 +335,9 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
           inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
             inherited BplPathEdit: TEdit
-              Height = 22
-            end
-            inherited Button2: TButton
-              OnClick = nil
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 22
-              OnChange = nil
+              OnChange = BplPathEditChange
             end
           end
         end
@@ -425,10 +356,6 @@ object MainForm: TMainForm
         Align = alClient
         TabOrder = 0
         inherited ComponentsTreePanel: TPanel
-          inherited Label1: TLabel
-            Width = 134
-            Height = 14
-          end
           inherited TreeView: TTreeView
             Images = ImageList
             OnChange = TreeViewChange
@@ -436,28 +363,9 @@ object MainForm: TMainForm
           end
         end
         inherited InfoPanel: TPanel
-          inherited Label2: TLabel
-            Width = 53
-            Height = 14
-          end
           inherited OptionsGroupBox: TGroupBox
-            inherited Label3: TLabel
-              Width = 43
-              Height = 14
-            end
-            inherited Label4: TLabel
-              Width = 44
-              Height = 14
-            end
             inherited BplPathEdit: TEdit
-              Height = 22
-            end
-            inherited Button2: TButton
-              OnClick = nil
-            end
-            inherited DcpPathEdit: TEdit
-              Height = 22
-              OnChange = nil
+              OnChange = BplPathEditChange
             end
           end
         end
