@@ -173,9 +173,13 @@ type
     property Originator: TJclEmailRecip read GetOriginator;
   end;
 
-  TJclEmailFindOptions = set of (foFifo, foUnreadOnly);
-  TJclEmailLogonOptions = set of (loLogonUI, loNewSession, loForceDownload);
-  TJclEmailReadOptions = set of (roAttachments, roHeaderOnly, roMarkAsRead);
+  TJclEmailFindOption = (foFifo, foUnreadOnly);
+  TJclEmailLogonOption = (loLogonUI, loNewSession, loForceDownload);
+  TJclEmailReadOption = (roAttachments, roHeaderOnly, roMarkAsRead);
+
+  TJclEmailFindOptions = set of TJclEmailFindOption;
+  TJclEmailLogonOptions = set of TJclEmailLogonOption;
+  TJclEmailReadOptions = set of TJclEmailReadOption;
 
   TJclEmailReadMsg = record
     ConversationID: string;
