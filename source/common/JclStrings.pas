@@ -1198,6 +1198,83 @@ end;
 
 //------------------------------------------------------------------------------
 
+{ Temporary replacement of StrReplace. Basic algorithm is the same except that
+  it has been simplified a little. This version is a little slower than the one
+  below but at least it works. Someone will have to go over this sometime. }
+
+procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString);
+var
+  Result: string;        { result string }
+  SourcePtr: PChar;      { pointer into S of character under examination }
+  SourceMatchPtr: PChar; { pointers into S and Search when first character has }
+  SearchMatchPtr: PChar; { been matched and we're probing for a complete match }
+  ResultPtr: PChar;      { pointer into Result of character being written }
+  SearchLength,          { length of search string }
+  ReplaceLength,         { length of replace string }
+  ResultLength: Integer; { length of result string (maximum, worst-case scenario) }
+  C: Char;               { first character of search string }
+begin
+  if (S <> '') and (Search <> '') then
+  begin
+    { avoid having to call Length() within the loop }
+    SearchLength := Length(Search);
+    ReplaceLength := Length(Replace);
+    { initialize result string to maximum (worst case scenario) length }
+    if Length(Search) >= ReplaceLength then
+      ResultLength := Length(S)
+    else
+      ResultLength := ((Length(S) div Length(Search)) + 1) * Length(Replace);
+    SetLength(Result, ResultLength);
+    { get pointers to begin of source and result }
+    ResultPtr := PChar(Result);
+    SourcePtr := PChar(S);
+    C := Search[1];
+    { while we haven't reached the end of the string }
+    while SourcePtr^ <> #0 do
+    begin
+      { copy characters until we find the first character of the search string }
+      while (SourcePtr^ <> #0) and (SourcePtr^ <> C) do
+      begin
+        ResultPtr^ := SourcePtr^;
+        Inc(ResultPtr);
+        Inc(SourcePtr);
+      end;
+      { did we find that first character or did we hit the end of the string? }
+      if SourcePtr^ <> #0 then
+      begin
+        { continue comparing, +1 because first character was matched already }
+        SourceMatchPtr := SourcePtr + 1;
+        SearchMatchPtr := PChar(Search) + 1;
+        while (SourceMatchPtr^ <> #0) and (SearchMatchPtr^ <> #0) and (SourceMatchPtr^ = SearchMatchPtr^) do
+        begin
+          Inc(SourceMatchPtr);
+          Inc(SearchMatchPtr);
+        end;
+        { did we find a complete match? }
+        if SearchMatchPtr^ = #0 then
+        begin
+          { append replace to result and move past the search string in source }
+          Move((@Replace[1])^, ResultPtr^, ReplaceLength);
+          Inc(SourcePtr, SearchLength);
+          Inc(ResultPtr, ReplaceLength);
+        end
+        else
+        begin
+          { copy current character and start over with the next }
+          ResultPtr^ := SourcePtr^;
+          Inc(ResultPtr);
+          Inc(SourcePtr);
+        end;
+      end;
+    end;
+    { append null terminator, copy into S and reset the string length }
+    ResultPtr^ := #0;
+    S := Result;
+    SetLength(S, StrLen(PChar(S)));
+  end;
+end;
+
+(*
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString);
 var
   SearchPtr: PChar;
@@ -1288,7 +1365,7 @@ begin
   SetLength(WorkStr, jstr-PChar(WorkStr));
   S := WorkStr;
 end;
-
+*)
 //------------------------------------------------------------------------------
 
 function StrReverse(const S: AnsiString): AnsiString;
