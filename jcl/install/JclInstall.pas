@@ -843,6 +843,8 @@ begin
   if (Target is TJclBCBInstallation) then
     AddNode(MakeNode, ioJclCopyHppFiles, False, False);
   {$IFDEF MSWINDOWS}
+  { TODO : Help integration for Delphi 2005 }
+  if Target.VersionNumber <= 7 then
   with Distribution do
     if (HlpHelpFileName <> '') or (ChmHelpFileName <> '') then
     begin
@@ -852,14 +854,18 @@ begin
       if ChmHelpFileName <> '' then
         AddNode(TempNode, ioJclHelpChm);
     end;
-  {$ENDIF MSWINDOWS}
-  TempNode := AddNode(ProductNode, ioJclExcDialog);
-  {$IFDEF MSWINDOWS}
-  AddNode(TempNode, ioJclExcDialogVCL);
-  AddNode(TempNode, ioJclExcDialogVCLSnd);
-  if Target.SupportsVisualCLX then
-  {$ENDIF MSWINDOWS}
-    AddNode(TempNode, ioJclExcDialogCLX);
+  { TODO : Object Repository access for D 2005 }
+  if Target.VersionNumber <= 7 then
+  begin
+    {$ENDIF MSWINDOWS}
+    TempNode := AddNode(ProductNode, ioJclExcDialog);
+    {$IFDEF MSWINDOWS}
+    AddNode(TempNode, ioJclExcDialogVCL);
+    AddNode(TempNode, ioJclExcDialogVCLSnd);
+    if Target.SupportsVisualCLX then
+    {$ENDIF MSWINDOWS}
+      AddNode(TempNode, ioJclExcDialogCLX);
+  end;
   TempNode := AddNode(ProductNode, ioJclPackages, True);
   if (Target is TJclBCBInstallation) then
     AddNode(TempNode, ioJclCopyPackagesHppFiles, False, False);
@@ -1442,6 +1448,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.45  2004/12/23 05:09:26  rrossmair
+// - except dialog and help integration disabled for D 2005
+//
 // Revision 1.44  2004/12/15 21:49:35  rrossmair
 // - denotes D2005 as supported now
 //
