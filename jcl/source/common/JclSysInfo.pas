@@ -1333,7 +1333,7 @@ function RunningProcessesList(const List: TStrings; FullPath: Boolean): Boolean;
   end;
 
 begin
-  if GetWindowsVersion in [wvWinNT31, wvWinNT31, wvWinNT351, wvWinNT4] then
+  if GetWindowsVersion in [wvWinNT31, wvWinNT35, wvWinNT351, wvWinNT4] then
     Result := BuildListPS
   else
     Result := BuildListTH;
