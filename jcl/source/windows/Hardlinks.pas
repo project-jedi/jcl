@@ -29,6 +29,8 @@
 {                                                                                                  }
 { Contributor(s):                                                                                  }
 {   Oliver Schneider (assarbad)                                                                    }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -83,7 +85,7 @@ var
 
 var
   hNtDll: THandle = 0; // For runtime dynamic linking
-  bRtdlFunctionsLoaded: Boolean = False; // To show whether the RTDL functions had been loaded
+  bRtdlFunctionsLoaded: Boolean = False; // To show wether the RTDL functions had been loaded
 
 implementation
 
@@ -118,34 +120,43 @@ type
 // Constants
 // =================================================================
 const
-  FileDirectoryInformation = 1;
-  FileLinkInformation      = 11;
-  FILE_SYNCHRONOUS_IO_NONALERT = $00000020;
-  FILE_OPEN_FOR_BACKUP_INTENT  = $00004000;
+  FileLinkInformation          = 11;
+  FILE_SYNCHRONOUS_IO_NONALERT = $00000020; // All operations on the file are
+                                            // performed synchronously. Waits
+                                            // in the system to synchronize I/O
+                                            // queuing and completion are not
+                                            // subject to alerts. This flag
+                                            // also causes the I/O system to
+                                            // maintain the file position context.
+                                            // If this flag is set, the
+                                            // DesiredAccess SYNCHRONIZE flag also
+                                            // must be set.
+  FILE_OPEN_FOR_BACKUP_INTENT  = $00004000; // The file is being opened for backup
+                                            // intent, hence, the system should
+                                            // check for certain access rights
+                                            // and grant the caller the appropriate
+                                            // accesses to the file before checking
+                                            // the input DesiredAccess against the
+                                            // file's security descriptor.
   FILE_OPEN_REPARSE_POINT      = $00200000;
-  FILE_LIST_DIRECTORY = 1;
-  FILE_DIRECTORY_FILE = $00000001;
-  STATUS_SUCCESS       = NTSTATUS(0);
-  STATUS_NO_MORE_FILES = NTSTATUS($80000006);
-  OBJ_CASE_INSENSITIVE = $00000040;
+  DELETE                       = $00010000;
+  SYNCHRONIZE                  = $00100000;
+  STATUS_SUCCESS               = NTSTATUS(0);
+  OBJ_CASE_INSENSITIVE         = $00000040;
+  SYMBOLIC_LINK_QUERY          = $00000001;
 
   // Should be defined, but isn't
-  HEAP_ZERO_MEMORY = $00000008;
+  HEAP_ZERO_MEMORY             = $00000008;
 
   // Related constant(s) for RtlDetermineDosPathNameType_U()
-  INVALID_PATH        = 0;
-  UNC_PATH            = 1;
-  ABSOLUTE_DRIVE_PATH = 2;
-  RELATIVE_DRIVE_PATH = 3;
-  ABSOLUTE_PATH       = 4;
-  RELATIVE_PATH       = 5;
-  DEVICE_PATH         = 6;
-  UNC_DOT_PATH        = 7;
-
-  MAXIMUM_REPARSE_DATA_BUFFER_SIZE = 16 * 1024;
-  IO_REPARSE_TAG_MOUNT_POINT = $A0000003;
-  FSCTL_SET_REPARSE_POINT = $900A4;
-  REPARSE_DATA_BUFFER_HEADER_SIZE = 2 * SizeOf(DWORD);
+  INVALID_PATH                 = 0;
+  UNC_PATH                     = 1;
+  ABSOLUTE_DRIVE_PATH          = 2;
+  RELATIVE_DRIVE_PATH          = 3;
+  ABSOLUTE_PATH                = 4;
+  RELATIVE_PATH                = 5;
+  DEVICE_PATH                  = 6;
+  UNC_DOT_PATH                 = 7;
 
 // =================================================================
 // Type definitions
@@ -167,23 +178,6 @@ type
     Buffer: PAnsiChar;
   end;
   PANSI_STRING = ^ANSI_STRING;
-
-
-  REPARSE_DATA_BUFFER = record
-    ReparseTag: DWORD;
-    ReparseDataLength: WORD;
-    Reserved: WORD;
-    case Integer of
-      0:
-       (SubstituteNameOffset: WORD;
-        SubstituteNameLength: WORD;
-        PrintNameOffset: WORD;
-        PrintNameLength: WORD;
-        PathBuffer: array [0..0] of WideChar;);
-      1:
-        (DataBuffer: array [0..0] of Byte;);
-  end;
-  PREPARSE_DATA_BUFFER = ^REPARSE_DATA_BUFFER;
 
   OBJECT_ATTRIBUTES = record
     Length: ULONG;
@@ -215,21 +209,6 @@ type
   PFILE_LINK_INFORMATION = ^FILE_LINK_INFORMATION;
   FILE_RENAME_INFORMATION = _FILE_LINK_RENAME_INFORMATION;
   PFILE_RENAME_INFORMATION = ^FILE_RENAME_INFORMATION;
-
-  FILE_DIRECTORY_INFORMATION = record // File Information Class 1
-    NextEntryOffset: ULONG;
-    Unknown: ULONG;
-    CreationTime: LARGE_INTEGER;
-    LastAccessTime: LARGE_INTEGER;
-    LastWriteTime: LARGE_INTEGER;
-    ChangeTime: LARGE_INTEGER;
-    EndOfFile: LARGE_INTEGER;
-    AllocationSize: LARGE_INTEGER;
-    FileAttributes: ULONG;
-    FileNameLength: ULONG;
-    FileName: array [0..0] of WideChar;
-  end;
-  PFILE_DIRECTORY_INFORMATION = ^FILE_DIRECTORY_INFORMATION;
 
 // =================================================================
 // PROCESS ENVIRONMENT BLOCK (PEB)
@@ -448,6 +427,7 @@ type
 // Function prototypes
 // =================================================================
 
+
 type
   TRtlCreateUnicodeStringFromAsciiz = function(var destination: UNICODE_STRING;
     source: PChar): Boolean; stdcall;
@@ -487,16 +467,6 @@ type
 
   TRtlNtStatusToDosError = function(status: NTSTATUS): ULONG; stdcall;
 
-  TZwQueryDirectoryFile = function(FileHandle, Event: THandle;
-    ApcRoutine: Pointer; ApcContext: Pointer; var IoStatusBlock: IO_STATUS_BLOCK;
-    FileInformation: Pointer; FileInformationLength: ULONG; FileInformationClass: DWORD;
-    ReturnSingleEntry: Boolean; var FileName: UNICODE_STRING;
-    RestartScan: Boolean): NTSTATUS; stdcall;
-
-  TZwQueryInformationFile = function(FileHandle: THandle;
-    var IoStatusBlock: IO_STATUS_BLOCK; FileInformation: Pointer;
-    FileInformationLength: ULONG; FileInformationClass: DWORD): NTSTATUS; stdcall;
-
 // Declare all the _global_ function pointers for RTDL
 var
   RtlCreateUnicodeStringFromAsciiz: TRtlCreateUnicodeStringFromAsciiz = nil;
@@ -512,15 +482,13 @@ var
   RtlInitUnicodeString: TRtlInitUnicodeString = nil;
   RtlDetermineDosPathNameType_U: TRtlDetermineDosPathNameType_U = nil;
   RtlNtStatusToDosError: TRtlNtStatusToDosError = nil;
-  ZwQueryDirectoryFile: TZwQueryDirectoryFile = nil;
-  ZwQueryInformationFile: TZwQueryInformationFile = nil;
 
 function NtMyGetProcessHeap: Pointer; assembler;
 asm
-        // To understand this a deep understanding of the NT Native API and its
-        // structures is required.
-        MOV    EAX, FS:[0]._TEB.Peb // FS points to TEB/TIB which has a pointer to the PEB
-        MOV    EAX, [EAX]._PEB.ProcessHeap // Get the process heap's handle
+  // To understand this a deep understanding of the NT Native API and its
+  // structures is required.
+  MOV    EAX, FS:[0]._TEB.Peb // FS points to TEB/TIB which has a pointer to the PEB
+  MOV    EAX, [EAX]._PEB.ProcessHeap // Get the process heap's handle
 end;
 
 (******************************************************************************
@@ -536,7 +504,7 @@ end;
 
  Compatibility:
  --------------
-  The function can only work on file systems that support hard links through the
+  The function can only work on file systems that support hardlinks through the
   underlying FS driver layer. Currently this only includes NTFS on the NT
   platform (as far as I know).
   The function works fine on Windows NT4/2000/XP and is considered to work on
@@ -602,10 +570,20 @@ function
   MyCreateHardLinkW // ... otherwise this one
   (szLinkName, szLinkTarget: PWideChar; lpSecurityAttributes: PSecurityAttributes): BOOL;
 const
+// Mask for any DOS style drive path in object manager notation
   wcsC_NtName: PWideChar = '\??\C:';
+// Prefix of a mapped path's symbolic link
   wcsLanMan: PWideChar = '\Device\LanmanRedirector\';
-  cbC_NtName = $10;
-  dwUnknownAccess = $110000;
+// Size required to hold a number of wide characters to compare drive notation
+  cbC_NtName = $10; // 16 bytes
+// Access mask to use for opening - just two bits
+  dwDesiredAccessHL = DELETE or SYNCHRONIZE;
+// OpenOptions for opening of the link target
+// The flag FILE_OPEN_REPARSE_POINT has been found by comparison. Probably it carries
+// some information wether the file is on the same volume?!
+  dwOpenOptionsHL = FILE_SYNCHRONOUS_IO_NONALERT or FILE_OPEN_FOR_BACKUP_INTENT or FILE_OPEN_REPARSE_POINT;
+// ShareAccess flags
+  dwShareAccessHL = FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE;
 var
   usNtName_LinkName, usNtName_LinkTarget, usNtFilePath: UNICODE_STRING;
   usCheckDrive, usSymLinkDrive, usLanMan: UNICODE_STRING;
@@ -623,150 +601,172 @@ begin
     Exit;
   // Get process' heap
   hHeap := NtMyGetProcessHeap;
-  // If both are assigned ...
-  if (szLinkName <> nil) and (szLinkTarget <> nil) then
-      // Determine DOS path type for both link name and target
-      if (RtlDetermineDosPathNameType_U(szLinkName) <> UNC_PATH) and
-        (RtlDetermineDosPathNameType_U(szLinkTarget) <> UNC_PATH) then
-          // Convert the link target into a UNICODE_STRING
-          if RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, usNtFilePath) then
-          try
-            // Initialise the length members
-            RtlInitUnicodeString(usNtName_LinkTarget, usNtName_LinkTarget.Buffer);
-            // Get needed buffer size (in TCHARs)
-            NeededSize := GetFullPathNameW(szLinkTarget, 0, nil, PWideChar(nil^));
-            if NeededSize <> 0 then
-            begin
-              // Calculate needed size (in TCHARs)
-              NeededSize := NeededSize + 1; // times 2
-              // Freed in FINALLY
-              wcsNtName_LinkTarget := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, NeededSize shl 1);
-              // If successfully allocated buffer ...
-              if wcsNtName_LinkTarget <> nil then
-              try
-                // Get the full unicode path name
-                if GetFullPathNameW(szLinkTarget, NeededSize, wcsNtName_LinkTarget, wcsFilePart_LinkTarget) <> 0 then
-                begin
-                  // Allocate memory to check the drive object
-                  usCheckDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, cbC_NtName);
-                  // On success ...
-                  if usCheckDrive.Buffer <> nil then
-                  try
-                    // Copy to buffer and set length members
-                    lstrcpynW(usCheckDrive.Buffer, wcsC_NtName, lstrlenW(wcsC_NtName) + 1);
-                    RtlInitUnicodeString(usCheckDrive, usCheckDrive.Buffer);
-                    // Replace drive letter by the drive letter we want
-                    usCheckDrive.Buffer[4] := wcsNtName_LinkTarget[0];
-                    // Init OBJECT_ATTRIBUTES
-                    oaMisc.Length := SizeOf(oaMisc);
-                    oaMisc.RootDirectory := 0;
-                    oaMisc.ObjectName := @usCheckDrive;
-                    oaMisc.Attributes := OBJ_CASE_INSENSITIVE;
-                    oaMisc.SecurityDescriptor := nil;
-                    oaMisc.SecurityQualityOfService := nil;
-                    // Open symbolic link object
-                    if ZwOpenSymbolicLinkObject(hDrive, 1, oaMisc) = STATUS_SUCCESS then
+  {-------------------------------------------------------------
+  Preliminary parameter checks which do Exit with error code set
+  --------------------------------------------------------------}
+  // If any is not assigned ...
+  if (szLinkName = nil) or (szLinkTarget = nil) then
+  begin
+    SetLastError(ERROR_INVALID_PARAMETER);
+    Exit;
+  end;
+  // Determine DOS path type for both link name and target
+  if (RtlDetermineDosPathNameType_U(szLinkName) = UNC_PATH) or
+    (RtlDetermineDosPathNameType_U(szLinkTarget) = UNC_PATH) then
+  begin
+    SetLastError(ERROR_INVALID_NAME);
+    Exit;
+  end;
+  // Convert the link target into a UNICODE_STRING
+  if not RtlDosPathNameToNtPathName_U(szLinkTarget, usNtName_LinkTarget, nil, usNtFilePath) then
+  begin
+    SetLastError(ERROR_PATH_NOT_FOUND);
+    Exit;
+  end;
+  {------------------------
+  Actual main functionality
+  -------------------------}
+  // Initialise the length members
+  RtlInitUnicodeString(usNtName_LinkTarget, usNtName_LinkTarget.Buffer);
+  // Get needed buffer size (in TCHARs)
+  NeededSize := GetFullPathNameW(szLinkTarget, 0, nil, PWideChar(nil^));
+  if NeededSize <> 0 then
+  begin
+    // Calculate needed size (in TCHARs)
+    NeededSize := NeededSize + 1; // times SizeOf(WideChar)
+    // Freed in FINALLY
+    wcsNtName_LinkTarget := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, NeededSize * SizeOf(WideChar));
+    // If successfully allocated buffer ...
+    if wcsNtName_LinkTarget <> nil then
+      try
+        {----------------------------------------------------
+        Preparation of the checking for mapped network drives
+        -----------------------------------------------------}
+        // Get the full unicode path name
+        if GetFullPathNameW(szLinkTarget, NeededSize, wcsNtName_LinkTarget, wcsFilePart_LinkTarget) <> 0 then
+        begin
+          // Allocate memory to check the drive object
+          usCheckDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, cbC_NtName);
+          // On success ...
+          if usCheckDrive.Buffer <> nil then
+            try
+              // Copy to buffer and set length members
+              lstrcpynW(usCheckDrive.Buffer, wcsC_NtName, lstrlenW(wcsC_NtName) + 1);
+              RtlInitUnicodeString(usCheckDrive, usCheckDrive.Buffer);
+              // Replace drive letter by the drive letter we want
+              usCheckDrive.Buffer[4] := wcsNtName_LinkTarget[0];
+              // Init OBJECT_ATTRIBUTES
+              oaMisc.Length := SizeOf(oaMisc);
+              oaMisc.RootDirectory := 0;
+              oaMisc.ObjectName := @usCheckDrive;
+              oaMisc.Attributes := OBJ_CASE_INSENSITIVE;
+              oaMisc.SecurityDescriptor := nil;
+              oaMisc.SecurityQualityOfService := nil;
+              {--------------------------------------------
+              Checking for (illegal!) mapped network drives
+              ---------------------------------------------}
+              // Open symbolic link object
+              if ZwOpenSymbolicLinkObject(hDrive, SYMBOLIC_LINK_QUERY, oaMisc) = STATUS_SUCCESS then
+                try
+                  usSymLinkDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, MAX_PATH * SizeOf(WideChar));
+                  if usSymLinkDrive.Buffer <> nil then
                     try
-                      usSymLinkDrive.Buffer := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, MAX_PATH * SizeOf(WideChar));
-                      if usSymLinkDrive.Buffer <> nil then
-                      try
-                        // Query the path the symbolic link points to ...
-                        ZwQuerySymbolicLinkObject(hDrive, usSymLinkDrive, nil);
-                        // Initialise the length members
-                        RtlInitUnicodeString(usLanMan, wcsLanMan);
-                        // The path must not be a mapped drive ... check this!
-                        if not RtlPrefixUnicodeString(usLanMan, usSymLinkDrive, True) then
-                        begin
-                          // Initialise OBJECT_ATTRIBUTES
-                          oaMisc.Length := SizeOf(oaMisc);
-                          oaMisc.RootDirectory := 0;
-                          oaMisc.ObjectName := @usNtName_LinkTarget;
-                          oaMisc.Attributes := OBJ_CASE_INSENSITIVE;
-                          // Set security descriptor in OBJECT_ATTRIBUTES if they were given
-                          if lpSecurityAttributes <> nil then
-                            oaMisc.SecurityDescriptor := lpSecurityAttributes.lpSecurityDescriptor
-                          else
-                            oaMisc.SecurityDescriptor := nil;
-                          oaMisc.SecurityQualityOfService := nil;
-                          // Try open the target file
-                          Status := ZwOpenFile(hLinkTarget, dwUnknownAccess, oaMisc, IOStats,
-                            FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE,
-                            FILE_SYNCHRONOUS_IO_NONALERT or FILE_OPEN_FOR_BACKUP_INTENT or FILE_OPEN_REPARSE_POINT);
-                          if Status = STATUS_SUCCESS then
+                      // Query the path the symbolic link points to ...
+                      ZwQuerySymbolicLinkObject(hDrive, usSymLinkDrive, nil);
+                      // Initialise the length members
+                      RtlInitUnicodeString(usLanMan, wcsLanMan);
+                      // The path must not be a mapped drive ... check this!
+                      if not RtlPrefixUnicodeString(usLanMan, usSymLinkDrive, True) then
+                      begin
+                        // Initialise OBJECT_ATTRIBUTES
+                        oaMisc.Length := SizeOf(oaMisc);
+                        oaMisc.RootDirectory := 0;
+                        oaMisc.ObjectName := @usNtName_LinkTarget;
+                        oaMisc.Attributes := OBJ_CASE_INSENSITIVE;
+                        // Set security descriptor in OBJECT_ATTRIBUTES if they were given
+                        if lpSecurityAttributes <> nil then
+                          oaMisc.SecurityDescriptor := lpSecurityAttributes^.lpSecurityDescriptor
+                        else
+                          oaMisc.SecurityDescriptor := nil;
+                        oaMisc.SecurityQualityOfService := nil;
+                        {----------------------
+                        Opening the target file
+                        -----------------------}
+                        Status := ZwOpenFile(hLinkTarget, dwDesiredAccessHL, oaMisc,
+                          IOStats, dwShareAccessHL, dwOpenOptionsHL);
+                        if Status = STATUS_SUCCESS then
                           try
                             // Wow ... target opened ... let's try to
                             if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName, nil, usNtFilePath) then
-                            try
-                              // Initialise the length members
-                              RtlInitUnicodeString(usNtName_LinkName, usNtName_LinkName.Buffer);
-                              // Now almost everything is done to create a link!
-                              NeededSize := usNtName_LinkName.Length + SizeOf(FILE_LINK_INFORMATION) + SizeOf(WideChar);
-                              lpFileLinkInfo := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, NeededSize);
-                              if lpFileLinkInfo <> nil then
                               try
-                                lpFileLinkInfo^.ReplaceIfExists := False;
-                                lpFileLinkInfo^.RootDirectory := 0;
-                                lpFileLinkInfo^.FileNameLength := usNtName_LinkName.Length;
-                                lstrcpynW(lpFileLinkInfo.FileName, usNtName_LinkName.Buffer, usNtName_LinkName.Length);
-                                // Hard link the file as intended
-                                Status := ZwSetInformationFile(hLinkTarget, IOStats, lpFileLinkInfo, NeededSize, FileLinkInformation);
-                                // On success return TRUE
-                                if Status >= 0 then
-                                  Result := True;
+                                // Initialise the length members
+                                RtlInitUnicodeString(usNtName_LinkName, usNtName_LinkName.Buffer);
+                                // Now almost everything is done to create a link!
+                                NeededSize := usNtName_LinkName.Length +
+                                  SizeOf(FILE_LINK_INFORMATION) + SizeOf(WideChar);
+                                lpFileLinkInfo := RtlAllocateHeap(hHeap, HEAP_ZERO_MEMORY, NeededSize);
+                                if lpFileLinkInfo <> nil then
+                                  try
+                                    lpFileLinkInfo^.ReplaceIfExists := False;
+                                    lpFileLinkInfo^.RootDirectory := 0;
+                                    lpFileLinkInfo^.FileNameLength := usNtName_LinkName.Length;
+                                    lstrcpynW(lpFileLinkInfo.FileName, usNtName_LinkName.Buffer,
+                                      usNtName_LinkName.Length);
+                                    {----------------------------------------------------
+                                    Final creation of the link - "center" of the function
+                                    -----------------------------------------------------}
+                                    // Hard-link the file as intended
+                                    Status := ZwSetInformationFile(hLinkTarget, IOStats,
+                                      lpFileLinkInfo, NeededSize, FileLinkInformation);
+                                    // On success return TRUE
+                                    Result := Status >= 0;
+                                  finally
+                                    // Free the buffer
+                                    RtlFreeHeap(hHeap, 0, lpFileLinkInfo);
+                                    // Set last error code
+                                    SetLastError(RtlNtStatusToDosError(Status));
+                                  end
+                                else // if lpFileLinkInfo <> nil then
+                                  SetLastError(ERROR_NOT_ENOUGH_MEMORY);
                               finally
-                                // Free the buffer
-                                RtlFreeHeap(hHeap, 0, lpFileLinkInfo);
-                                // Set last error code
-                                SetLastError(RtlNtStatusToDosError(Status));
+                                RtlFreeHeap(hHeap, 0, usNtName_LinkName.Buffer);
                               end
-                              else // if lpFileLinkInfo <> nil then
-                                SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-                            finally
-                              RtlFreeHeap(hHeap, 0, usNtName_LinkName.Buffer);
-                            end
-                            else // if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName, nil, usNtFilePath) then
+                            else // if RtlDosPathNameToNtPathName_U(szLinkName, usNtName_LinkName...
                               SetLastError(ERROR_INVALID_NAME);
                           finally
                             ZwClose(hLinkTarget);
                           end
-                          else // if Status = STATUS_SUCCESS then
-                            SetLastError(RtlNtStatusToDosError(Status));
-                        end
-                        else // if not RtlPrefixUnicodeString(usLanMan, usSymLinkDrive, True) then
-                          SetLastError(ERROR_INVALID_NAME);
-                      finally
-                        RtlFreeHeap(hHeap, 0, usSymLinkDrive.Buffer);
+                        else // if Status = STATUS_SUCCESS then
+                          SetLastError(RtlNtStatusToDosError(Status));
                       end
-                      else // if usSymLinkDrive.Buffer <> nil then
-                        SetLastError(ERROR_NOT_ENOUGH_MEMORY);
+                      else // if not RtlPrefixUnicodeString(usLanMan, usSymLinkDrive, True) then
+                        SetLastError(ERROR_INVALID_NAME);
                     finally
-                      ZwClose(hDrive);
-                    end;
-                  finally
-                    RtlFreeHeap(hHeap, 0, usCheckDrive.Buffer);
-                  end
-                  else // if usCheckDrive.Buffer <> nil then
+                      RtlFreeHeap(hHeap, 0, usSymLinkDrive.Buffer);
+                    end
+                  else // if usSymLinkDrive.Buffer <> nil then
                     SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-                end
-                else // if GetFullPathNameW(lpExistingFileName, NeededSize shr 2, pwsPathName, pwsFilePart)<>0 then
-                  SetLastError(ERROR_INVALID_NAME);
-              finally
-                RtlFreeHeap(hHeap, 0, wcsNtName_LinkTarget);
-              end
-              else // if p <> nil then
-                SetLastError(ERROR_NOT_ENOUGH_MEMORY);
+                finally
+                  ZwClose(hDrive);
+                end;
+            finally
+              RtlFreeHeap(hHeap, 0, usCheckDrive.Buffer);
             end
-            else // if NeededSize <> 0 then
-              SetLastError(ERROR_INVALID_NAME);
-          finally
-            RtlFreeHeap(hHeap, 0, usNtName_LinkTarget.Buffer);
-          end
-          else // if RtlDosPathNameToNtPathName_U(lpExistingFileName, NtName, nil, NtFilePath) then
-            SetLastError(ERROR_PATH_NOT_FOUND)
-      else // if (RtlDetermineDosPathNameType_U(szLinkName) <> UNC_PATH) and ...
-        SetLastError(ERROR_INVALID_NAME)
-  else // if (lpFileName <> nil) and (lpExistingFileName <> nil) then
-    SetLastError(ERROR_INVALID_PARAMETER);
+          else // if usCheckDrive.Buffer <> nil then
+            SetLastError(ERROR_NOT_ENOUGH_MEMORY);
+        end
+        else // if GetFullPathNameW(szLinkTarget, NeededSize, wcsNtName_LinkTarget...
+          SetLastError(ERROR_INVALID_NAME);
+      finally
+        RtlFreeHeap(hHeap, 0, wcsNtName_LinkTarget);
+      end
+    else // if wcsNtName_LinkTarget <> nil then
+      SetLastError(ERROR_NOT_ENOUGH_MEMORY);
+  end
+  else // if NeededSize <> 0 then
+    SetLastError(ERROR_INVALID_NAME);
+  // Finally free the buffer
+  RtlFreeHeap(hHeap, 0, usNtName_LinkTarget.Buffer);
 end;
 
 (******************************************************************************
@@ -776,7 +776,7 @@ end;
 
  Specific to the ANSI-version:
  -----------------------------
-  The ANSI-Version can be used as if it were used on Windows 2000. This holds
+  The ANSI-Version can be used as if it was used on Windows 2000. This holds
   for all supported systems for now.
 
  ******************************************************************************)
@@ -795,15 +795,19 @@ begin
   // Get the process' heap
   hHeap := NtMyGetProcessHeap;
   // Create and allocate a UNICODE_STRING from the zero-terminated parameters
-  if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) and
-    RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
+  if RtlCreateUnicodeStringFromAsciiz(usLinkName, szLinkName) then
   try
-    // Call the Unicode version
-    Result := CreateHardLinkW(usLinkName.Buffer, usLinkTarget.Buffer, lpSecurityAttributes);
+    if RtlCreateUnicodeStringFromAsciiz(usLinkTarget, szLinkTarget) then
+    try
+      // Call the Unicode version
+      Result := CreateHardLinkW(usLinkName.Buffer, usLinkTarget.Buffer, lpSecurityAttributes);
+    finally
+      // free the allocated buffer
+      RtlFreeHeap(hHeap, 0, usLinkTarget.Buffer);
+    end;
   finally
-    // free the allocated buffers
+    // free the allocate buffer
     RtlFreeHeap(hHeap, 0, usLinkName.Buffer);
-    RtlFreeHeap(hHeap, 0, usLinkTarget.Buffer);
   end;
 end;
 
@@ -822,8 +826,6 @@ const
   szRtlInitUnicodeString             = 'RtlInitUnicodeString';
   szRtlDetermineDosPathNameType_U    = 'RtlDetermineDosPathNameType_U';
   szRtlNtStatusToDosError            = 'RtlNtStatusToDosError';
-  szZwQueryDirectoryFile             = 'ZwQueryDirectoryFile';
-  szZwQueryInformationFile           = 'ZwQueryInformationFile';
 
 var
   hKernel32: THandle = 0;
@@ -860,8 +862,6 @@ initialization
     @RtlInitUnicodeString := GetProcAddress(hNtDll, szRtlInitUnicodeString);
     @RtlDetermineDosPathNameType_U := GetProcAddress(hNtDll, szRtlDetermineDosPathNameType_U);
     @RtlNtStatusToDosError := GetProcAddress(hNtDll, szRtlNtStatusToDosError);
-    @ZwQueryDirectoryFile := GetProcAddress(hNtDll, szZwQueryDirectoryFile);
-    @ZwQueryInformationFile := GetProcAddress(hNtDll, szZwQueryInformationFile);
     // Check whether we could retrieve all of them
     bRtdlFunctionsLoaded := // Update the "loaded" status
       Assigned(@RtlCreateUnicodeStringFromAsciiz) and
@@ -876,9 +876,7 @@ initialization
       Assigned(@RtlDosPathNameToNtPathName_U) and
       Assigned(@RtlInitUnicodeString) and
       Assigned(@RtlDetermineDosPathNameType_U) and
-      Assigned(@RtlNtStatusToDosError) and
-      Assigned(@ZwQueryDirectoryFile) and
-      Assigned(@ZwQueryInformationFile);
+      Assigned(@RtlNtStatusToDosError);
   end;
 
     @CreateHardLinkA := @MyCreateHardLinkA;
@@ -891,6 +889,19 @@ initialization
 
 
 {
+   Version 1.12c - 2004-10-26
+   + Implementation of Robert Marquardts proposals for the sake of brevity
+     in the CreateHardLinkW() implementation - C-like returns
+   + Removal of potential bug in CreateHardLinkA() implementation
+   + Removal of two unused function prototypes
+   + Some more comments and corrections and indentations
+   + Perl script to create "my" version from JCL prototype
+   + Compiles fine on Delphi 4 (minor changes would be necessary for D3)
+
+   Version 1.12b - 2004-10-26
+   + Added some constants and replaced literals by them
+   + Removed some superfluous constants and records
+
    Version 1.12a - 2004-10-21
    + "Original" file renamed according to the change in the JCL prototype
      Hardlink.pas -> Hardlinks.pas
