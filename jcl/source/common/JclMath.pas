@@ -2854,7 +2854,7 @@ end;
 
 function IsSpecialValue(const X: Float): Boolean;
 begin
-  Result := IsNan(X) or IsInfinite(X);
+  Result := IsNaN(X) or IsInfinite(X);
 end;
 
 
@@ -3732,6 +3732,9 @@ end;
 //  - Removed "uses JclUnitConv"
 
 // $Log$
+// Revision 1.16  2004/10/01 06:50:13  marquardt
+// IsNan use to IsNaN
+//
 // Revision 1.15  2004/09/16 22:45:56  rrossmair
 // - David Butler added to list of original authors
 //
