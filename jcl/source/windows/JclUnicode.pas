@@ -28,6 +28,7 @@ unit JclUnicode;
 // 29-JAN-2001:
 //   - PrepareUnicodeData
 //   - LoadInProgress critical section is now created at init time to avoid critical thread races
+//   - bug fixes
 // 26-JAN-2001:
 //   - ExpandANSIString
 //   - TWideStrings.SaveUnicode is by default True now    
@@ -7784,12 +7785,14 @@ end;
 function StringToWideStringEx(const S: string; CodePage: Word): WideString;
 
 var
-  L: Integer;
-  
+  InputLength,
+  OutputLength: Integer;
+
 begin
-  L:= MultiByteToWideChar(CodePage, 0, PChar(S), -1, nil, 0);
-  SetLength(Result, L - 1);
-  MultiByteToWideChar(CodePage, 0, PChar(S), -1, PWideChar(Result), L - 1);
+  InputLength := Length(S);
+  OutputLength := MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, nil, 0);
+  SetLength(Result, OutputLength - 1);
+  MultiByteToWideChar(CodePage, 0, PChar(S), InputLength, PWideChar(Result), OutputLength - 1);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7797,12 +7800,14 @@ end;
 function WideStringToStringEx(const WS: WideString; CodePage: Word): string;
 
 var
-  L: Integer;
+  InputLength,
+  OutputLength: Integer;
 
 begin
-  L := WideCharToMultiByte(CodePage, 0, PWideChar(WS), -1, nil, 0, nil, nil);
-  SetLength(Result, L - 1);
-  WideCharToMultiByte(CodePage, 0, PWideChar(WS), -1, PChar(Result), L - 1, nil, nil);
+  InputLength := Length(WS);
+  OutputLength := WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, nil, 0, nil, nil);
+  SetLength(Result, OutputLength - 1);
+  WideCharToMultiByte(CodePage, 0, PWideChar(WS), InputLength, PChar(Result), OutputLength - 1, nil, nil);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
