@@ -76,7 +76,7 @@ type
     function Add(AObject: TObject): Boolean;
     function AddAll(ACollection: IJclCollection): Boolean;
     function Contains(AObject: TObject): Boolean;
-    { IJclStrList }
+    { IJclList }
     procedure Insert(Index: Integer; AObject: TObject); overload;
     { IJclSet }
     procedure Intersect(ACollection: IJclCollection);
@@ -385,6 +385,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2005/03/09 22:44:10  rrossmair
+// - fixed comment
+//
 // Revision 1.6  2005/03/08 08:33:15  marquardt
 // overhaul of exceptions and resourcestrings, minor style cleaning
 //
