@@ -3,12 +3,12 @@ unit EnvironmentExampleMain;
 interface
 
 uses
-  SysUtils, Classes, QControls, QForms, QGrids, QStdCtrls, QExtCtrls,
-  JclSysInfo; 
+  SysUtils, Classes, QControls, QForms, QComCtrls, 
+  JclSysInfo;
 
 type
   TForm1 = class(TForm)
-    EnvironmentGrid: TStringGrid;
+    EnvironmentView: TListView;
     procedure FormCreate(Sender: TObject);
     procedure EnvironmentGridSetEditText(Sender: TObject; ACol,
       ARow: Integer; const Value: WideString);
@@ -29,10 +29,6 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  EnvironmentGrid.Cells[0, 0] := 'Variable';
-  EnvironmentGrid.Cells[1, 0] := 'Value';
-  EnvironmentGrid.ColWidths[0] := 200;
-  EnvironmentGrid.ColWidths[1] := 1000;
   GetEnvironment;
 end;
 
@@ -41,10 +37,10 @@ procedure TForm1.EnvironmentGridSetEditText(Sender: TObject; ACol,
 var
   Key: string;
 begin
-  with EnvironmentGrid do
+  with EnvironmentView.Items[ARow] do
   begin
-    Key := Cells[0, Row];
-    SetEnvironmentVar(Key, Value);
+    Key := Caption;
+    SetEnvironmentVar(Caption, SubItems[0]);
   end;
 end;
 
@@ -62,14 +58,15 @@ begin
   S := TStringList.Create;
   try
     GetEnvironmentVars(S);
-    EnvironmentGrid.RowCount := S.Count + 1;
     for I := 0 to S.Count - 1 do
     begin
       Key := S.Names[I];
-      EnvironmentGrid.Cells[0, I + 1] := Key;
-      EnvironmentGrid.Cells[1, I + 1] := S.Values[Key];
+      with EnvironmentView.Items.Add do
+      begin
+        Caption := Key;
+        SubItems.Add(S.Values[Key]);
+      end;
     end;
-    S.Sorted := True;
   finally
     S.Free;
   end;
