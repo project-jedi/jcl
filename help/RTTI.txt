@@ -2494,7 +2494,8 @@ property VarType: Integer;
 [ShortDescr]
 The OLE Automation varType equivalent.
 [Description]
-VarType holds the OLE Automation varType equivalent. [Quick Info]
+VarType holds the OLE Automation varType equivalent.
+[Quick Info]
 Kind=Property
 Visibility=Public
 Unit=JclRTTI
