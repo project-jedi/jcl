@@ -13,11 +13,15 @@
 { The Original Code is JclIniFiles.pas.                                                            }
 {                                                                                                  }
 { The Initial Developer of the Original Code is John C Molyneux.                                   }
-{ Portions created by Marcel van Brakel are Copyright (C) John C Molyneux.                         }
+{ Portions created by John C Molyneux are Copyright (C) John C Molyneux.                           }
 {                                                                                                  }
-{ Contributor(s):                                                                                  }
-{   Eric S. Fisher, Peter J. Haas (PeterJHaas) jediplus@pjh2.de, Robert Marquardt, John C Molyneux,}
-{   Robert Rossmair, Petr Vones                                                                    }
+{ Contributors:                                                                                    }
+{   Eric S. Fisher                                                                                 }
+{   John C Molyneux                                                                                }
+{   Peter J. Haas (PeterJHaas) jediplus@pjh2.de                                                    }
+{   Petr Vones (pvones)                                                                            }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -296,6 +300,9 @@ end;
 //  - add TJclISOMemIniFile, TJclISOIniFile
 
 // $Log$
+// Revision 1.5  2004/05/14 15:24:46  rrossmair
+// fixed header
+//
 // Revision 1.4  2004/05/05 00:04:11  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
