@@ -1234,14 +1234,14 @@ begin
   SearchResult := StrSearch(FDelimiters.SD, FData, StartPos);
   while SearchResult <> 0 do
   begin
-    S := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1), Length(TSHSegmentId));
-    S2 := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1), Length(TSTSegmentId));
+    S := Copy(FData, StartPos, Length(TSHSegmentId));
+    S2 := Copy(FData, StartPos, Length(TSTSegmentId));
     if (S <> TSHSegmentId) and (S2 <> TSTSegmentId) then
     begin
       I := AddSegment;
       if (SearchResult - StartPos) > 0 then // data exists
       begin
-        FEDIDataObjects[I].Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+        FEDIDataObjects[I].Data := Copy(FData, StartPos,
           ((SearchResult - StartPos) + FDelimiters.SDLen));
         FEDIDataObjects[I].Disassemble;
       end;
@@ -1251,7 +1251,7 @@ begin
     begin
       if (SearchResult - StartPos) > 0 then // data exists
       begin
-        FSTSegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+        FSTSegment.Data := Copy(FData, StartPos,
           ((SearchResult - StartPos) + FDelimiters.SDLen));
         FSTSegment.Disassemble;
       end;
@@ -1261,7 +1261,7 @@ begin
     begin
       if (SearchResult - StartPos) > 0 then // data exists
       begin
-        FSESegment.Data := Copy(FData, ((StartPos + FDelimiters.SDLen) - 1),
+        FSESegment.Data := Copy(FData, StartPos,
           ((SearchResult - StartPos) + FDelimiters.SDLen));
         FSESegment.Disassemble;
       end;
@@ -2167,7 +2167,7 @@ begin
   // Search for Interchange Control Header
   if ICHSegmentId = Copy(FData, StartPos, Length(ICHSegmentId)) then
   begin
-    if foVariableDelimiterDetection in FEDIFileOptions then
+    if foVariableDelimiterDetection in FEDIFileOptions then          
       if foUseAltDelimiterDetection in FEDIFileOptions then
         InternalAlternateDelimitersDetection(StartPos)
       else
@@ -2355,9 +2355,12 @@ begin
   begin
     SearchResult := StrSearch(FDelimiters.ED, FData, SearchResult);
     SearchResult := SearchResult + 1;
-  end;
+  end;                                                            
   FDelimiters.SS := Copy(FData, SearchResult, 1);
-  FDelimiters.SD := Copy(FData, SearchResult + 1, 1);
+  if Copy(FData, SearchResult + 1, 2) = AnsiCrLf then
+    FDelimiters.SD := Copy(FData, SearchResult + 1, 2)
+  else
+    FDelimiters.SD := Copy(FData, SearchResult + 1, 1);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2370,9 +2373,17 @@ begin
   FDelimiters.ED := Copy(FData, StartPos + Length(ICHSegmentId), 1);
   SearchResult := StrSearch(FGHSegmentId + FDelimiters.ED, FData, SearchResult);
   if SearchResult = 0 then
-    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1);
-  FDelimiters.SS := Copy(FData, SearchResult - 2, 1);
-  FDelimiters.SD := Copy(FData, SearchResult - 1, 1);
+    SearchResult := StrSearch(TA1SegmentId + FDelimiters.ED, FData, 1); 
+  if Copy(FData, SearchResult - 2, 2) = AnsiCrLf then
+  begin
+    FDelimiters.SS := Copy(FData, SearchResult - 3, 1);
+    FDelimiters.SD := Copy(FData, SearchResult - 2, 2);
+  end
+  else
+  begin
+    FDelimiters.SS := Copy(FData, SearchResult - 2, 1);
+    FDelimiters.SD := Copy(FData, SearchResult - 1, 1);
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
