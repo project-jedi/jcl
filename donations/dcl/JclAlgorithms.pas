@@ -50,8 +50,8 @@ function IntfSimpleCompare(Obj1, Obj2: IInterface): Integer;
 function StrSimpleCompare(const Obj1, Obj2: string): Integer;
 function SimpleCompare(Obj1, Obj2: TObject): Integer;
 
-function IntegerCompare(Obj1, Obj2: Pointer): Integer;
-function AddressCompare(Obj1, Obj2: Pointer): Integer;
+function IntegerCompare(Obj1, Obj2: TObject): Integer;
+function AddressCompare(Obj1, Obj2: TObject): Integer;
 
 // Apply algorithms
 procedure Apply(First: IIntfIterator; Count: Integer; F: TIntfApplyFunction); overload;
@@ -135,12 +135,12 @@ begin
   Result := Ord(Obj1 <> Obj2);
 end;
 
-function IntegerCompare(Obj1, Obj2: Pointer): Integer;
+function IntegerCompare(Obj1, Obj2: TObject): Integer;
 begin
   Result := Integer(Obj1) - Integer(Obj2);
 end;
 
-function AddressCompare(Obj1, Obj2: Pointer): Integer;
+function AddressCompare(Obj1, Obj2: TObject): Integer;
 begin
   if Cardinal(Obj1) < Cardinal(Obj2) then
     Result := -1
