@@ -246,14 +246,18 @@ type
     function GetUpdateNeeded: Boolean;
     function GetValid: Boolean;
     procedure SetLibrarySearchPath(const Value: TJclDelphiPath);
+    function GetLibraryBrowsingPath: TJclDelphiPath;
+    procedure SetLibraryBrowsingPath(const Value: TJclDelphiPath);
   protected
     constructor Create(const ARegKey: string);
     procedure ReadInformation;
+    function AddMissingPathElements(var Path: string; const NewPath: string): Boolean;
   public
     destructor Destroy; override;
     class procedure ExtractPaths(const Path: TJclDelphiPath; List: TStrings);
     function AnyInstanceRunning: Boolean;
     function AddToLibrarySearchPath(const Path: string): Boolean;
+    function AddToLibraryBrowsingPath(const Path: string): Boolean;
     function FindFolderInDelphiPath(Folder: string; List: TStrings): Integer;
     function SubstitutePath(const Path: string): string;
     property BinFolderName: string read FBinFolderName;
@@ -270,6 +274,7 @@ type
     property InstalledUpdatePack: Integer read FInstalledUpdatePack;
     property LatestUpdatePack: Integer read FLatestUpdatePack;
     property LibrarySearchPath: TJclDelphiPath read GetLibrarySearchPath write SetLibrarySearchPath;
+    property LibraryBrowsingPath: TJclDelphiPath read GetLibraryBrowsingPath write SetLibraryBrowsingPath;
     property OpenHelp: TJclDelphiOpenHelp read FOpenHelp;
     property Name: string read GetName;
     property Palette: TJclDelphiPalette read GetPalette;
@@ -326,6 +331,7 @@ const
 
   LibraryKeyName             = 'Library';
   LibrarySearchPathValueName = 'Search Path';
+  LibraryBrowsingPathValueName = 'Browsing Path';
   LibraryBPLOutputValueName  = 'Package DPL Output';
   LibraryDCPOutputValueName  = 'Package DCP Output';
 
@@ -1104,22 +1110,22 @@ end;
 
 function TJclDelphiInstallation.AddToLibrarySearchPath(const Path: string): Boolean;
 var
-  Items: TStringList;
   TempLibraryPath: TJclDelphiPath;
 begin
   TempLibraryPath := LibrarySearchPath;
-  Items := TStringList.Create;
-  try
-    ExtractPaths(TempLibraryPath, Items);
-    Result := FindFolderInDelphiPath(Path, Items) = -1;
-    if Result then
-    begin
-      TempLibraryPath := StrEnsureSuffix(DelphiLibraryPathSeparator, TempLibraryPath) + Path;
-      LibrarySearchPath := TempLibraryPath;
-    end;
-  finally
-    Items.Free;
-  end;
+  Result := AddMissingPathElements(TempLibraryPath, Path);
+  LibrarySearchPath := TempLibraryPath;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDelphiInstallation.AddToLibraryBrowsingPath(const Path: string): Boolean;
+var
+  TempLibraryPath: TJclDelphiPath;
+begin
+  TempLibraryPath := LibraryBrowsingPath;
+  Result := AddMissingPathElements(TempLibraryPath, Path);
+  LibraryBrowsingPath := TempLibraryPath;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1176,6 +1182,39 @@ end;
 class procedure TJclDelphiInstallation.ExtractPaths(const Path: TJclDelphiPath; List: TStrings);
 begin
   StrToStrings(Path, DelphiLibraryPathSeparator, List);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDelphiInstallation.AddMissingPathElements(var Path: string; const NewPath: string): Boolean;
+var
+  PathItems, NewItems: TStringList;
+  Folder: string;
+  I: Integer;
+  Missing: Boolean;
+begin
+  Result := False;
+  PathItems := nil;
+  NewItems := nil;
+  try
+    PathItems := TStringList.Create;
+    NewItems := TStringList.Create;
+    ExtractPaths(Path, PathItems);
+    ExtractPaths(NewPath, NewItems);
+    for I := 0 to NewItems.Count - 1 do
+    begin
+      Folder := NewItems[I];
+      Missing := FindFolderInDelphiPath(Folder, PathItems) = -1;
+      if Missing then
+      begin
+        Path := StrEnsureSuffix(DelphiLibraryPathSeparator, Path) + Folder;
+        Result := True;
+      end;
+    end;
+  finally
+    PathItems.Free;
+    NewItems.Free;
+  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1292,6 +1331,13 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+function TJclDelphiInstallation.GetLibraryBrowsingPath: TJclDelphiPath;
+begin
+  Result := RegReadStringDef(HKEY_CURRENT_USER, RegKey + '\' + LibraryKeyName, LibraryBrowsingPathValueName, '');
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclDelphiInstallation.GetName: string;
 begin
   Result := Format(RsDelphiName, [VersionNumber, EditionAsText]);
@@ -1305,7 +1351,7 @@ function TJclDelphiInstallation.GetPalette: TJclDelphiPalette;
 begin
   if not Assigned(FPalette) then
     FPalette := TJclDelphiPalette.Create(Self);
-  Result := FPalette;  
+  Result := FPalette;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1375,6 +1421,13 @@ end;
 procedure TJclDelphiInstallation.SetLibrarySearchPath(const Value: TJclDelphiPath);
 begin
   RegWriteString(HKEY_CURRENT_USER, RegKey + '\' + LibraryKeyName, LibrarySearchPathValueName, Value);
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+procedure TJclDelphiInstallation.SetLibraryBrowsingPath(const Value: TJclDelphiPath);
+begin
+  RegWriteString(HKEY_CURRENT_USER, RegKey + '\' + LibraryKeyName, LibraryBrowsingPathValueName, Value);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1507,6 +1560,5 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
-
 
 end.

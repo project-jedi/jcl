@@ -1,4 +1,3 @@
 [Directories]
-UnitOutputDir=..\..\lib\d6
-
-
+UnitOutputDir=..\..\..\lib\d6
+SearchPath=..\..\..\source

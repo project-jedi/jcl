@@ -11,6 +11,7 @@ type
   TJclInstall = class (TInterfacedObject, IJediInstall)
   private
     FJclPath: string;
+    FJclLibraryPath: string;
     FJclSourcePath: string;
     FClxDialogFileName: string;
     FVclDialogFileName: string;
@@ -40,7 +41,7 @@ uses
   JclBase, JclFileUtils, JclStrings, DelphiInstall;
 
 const
-  DialogsPath       = 'examples\debugextension\dialog\';
+  DialogsPath       = 'examples\vcl\debugextension\dialog\';
   ClxDialogFileName = 'ClxExceptDlg.pas';
   VclDialogFileName = 'ExceptDlg.pas';
   VclDlgSndFileName = 'ExceptDlgMail.pas';
@@ -51,17 +52,20 @@ const
   DialogAuthor      = 'Project JEDI';
   DialogPage        = 'Dialogs';
 
-  JclChmHelpFile    = 'Help\JCLHelp.chm';
-  JclHlpHelpFile    = 'Help\JCLHelp.hlp';
-  JclHelpTitle      = 'JCL 1.22 Help';
+  JclChmHelpFile    = 'help\JCLHelp.chm';
+  JclHlpHelpFile    = 'help\JCLHelp.hlp';
+  JclHelpTitle      = 'JCL 1.90 Help';
   JclHelpIndexName  = 'Jedi Code Library Reference';
   HHFileName        = 'HH.EXE';
 
-  JclRuntimeDpk     = 'packages\DJCL%d0.dpk';
-  JclIdeDebugDpk    = 'examples\debugextension\JclDebugIde%d0.dpk';
-  JclIdeAnalyzerDpk = 'examples\projectanalyzer\ProjectAnalyzer%d0.dpk';
-  JclIdeFavoriteDpk = 'examples\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
-  JclIdeThrNamesDpk = 'examples\debugextension\threadnames\ThreadNameExpert%d0.dpk';
+  JclD5RuntimeDpk   = 'packages\d5\DJcl50.dpk';
+  JclRuntimeDpk     = 'packages\d%d\DJcl.dpk';
+  JclVclDpk         = 'packages\d%d\DJclVcl.dpk';
+  JclVClxDpk        = 'packages\d%d\DJclVClx.dpk';
+  JclIdeDebugDpk    = 'examples\vcl\debugextension\JclDebugIde%d0.dpk';
+  JclIdeAnalyzerDpk = 'examples\vcl\projectanalyzer\ProjectAnalyzer%d0.dpk';
+  JclIdeFavoriteDpk = 'examples\vcl\idefavopendialogs\IdeOpenDlgFavorite%d0.dpk';
+  JclIdeThrNamesDpk = 'examples\vcl\debugextension\threadnames\ThreadNameExpert%d0.dpk';
 
   // Feature IDs
   FID_JCL                  = $02000000;
@@ -119,7 +123,8 @@ var
   ReadmeText: string;
 begin
   FJclPath := PathAddSeparator(PathCanonicalize(PathExtractFileDirFixed(ApplicationFileName) + '..'));
-  FJclSourcePath := FJclPath + 'Source';
+  FJclLibraryPath := Format('%slib\d%%d;%0:ssource', [FJclPath]);
+  FJclSourcePath := Format('%0:scommon;%0:swindows;%0:sunix;%0:svcl;%0:svisclx', [FJclPath + 'source\']);
   FClxDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + ClxDialogFileName);
   FVclDialogFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDialogFileName);
   FVclDialogSendFileName := AnsiUpperCase(FJclPath + DialogsPath + VclDlgSndFileName);
@@ -207,17 +212,25 @@ var
     Tool.WriteInstallLog(StrPadRight(Format('%s Build %s ', [Installation.Name, Installation.IdeExeBuildNumber]), 120, '='));
   end;
 
-  procedure D5Install;
+  procedure DxInstall;
   begin
     Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
     WriteDelphiVersionToLog;
     CleanupRepository;
     if Tool.FeatureChecked(FID_JCL_EnvLibPath, Installation.VersionNumber) then
-      Installation.AddToLibrarySearchPath(FJclSourcePath);
+    begin
+      Installation.AddToLibrarySearchPath(Format(FJclLibraryPath, [Installation.VersionNumber]));
+      Installation.AddToLibraryBrowsingPath(FJclSourcePath);
+    end;
     if Tool.FeatureChecked(FID_JCL_HelpHlp, Installation.VersionNumber) then
       AddHelpToDelphiHelp;
     if Tool.FeatureChecked(FID_JCL_HelpChm, Installation.VersionNumber) then
       AddHelpToIdeTools;
+  end;
+
+  procedure D5Install;
+  begin
+    DxInstall;
     if Tool.FeatureChecked(FID_JCL_ExcDialogVCL, Installation.VersionNumber) then
       Installation.Repository.AddObject(FVclDialogFileName, DelphiRepositoryFormTemplate,
         Installation.Repository.FindPage(DialogPage, 1), VclDialogName, FVclDialogIconFileName,
@@ -227,7 +240,7 @@ var
         Installation.Repository.FindPage(DialogPage, 1), VclDialogNameSend, FVclDialogSendIconFileName,
         DialogDescription, DialogAuthor, DelphiRepositoryDesignerDfm, FVclDialogFileName);
     if Tool.FeatureChecked(FID_JCL_Experts, Installation.VersionNumber) then
-      InstallPackage(FJclPath, JclRuntimeDpk);
+      InstallPackage(FJclPath, JclD5RuntimeDpk);
     if Tool.FeatureChecked(FID_JCL_ExpertDebug, Installation.VersionNumber) then
       InstallPackage(FJclPath, JclIdeDebugDpk);
     if Tool.FeatureChecked(FID_JCL_ExpertAnalyzer, Installation.VersionNumber) then
@@ -240,15 +253,7 @@ var
 
   procedure D6Install;
   begin
-    Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
-    WriteDelphiVersionToLog;
-    CleanupRepository;
-    if Tool.FeatureChecked(FID_JCL_EnvLibPath, Installation.VersionNumber) then
-      Installation.AddToLibrarySearchPath(FJclSourcePath);
-    if Tool.FeatureChecked(FID_JCL_HelpHlp, Installation.VersionNumber) then
-      AddHelpToDelphiHelp;
-    if Tool.FeatureChecked(FID_JCL_HelpChm, Installation.VersionNumber) then
-      AddHelpToIdeTools;
+    DxInstall;
     if Tool.FeatureChecked(FID_JCL_ExcDialogVCL, Installation.VersionNumber) then
       Installation.Repository.AddObject(FVclDialogFileName, DelphiRepositoryFormTemplate,
         Installation.Repository.FindPage(DialogPage, 1), VclDialogName, FVclDialogIconFileName,
@@ -275,15 +280,7 @@ var
 
   procedure D7Install;
   begin
-    Tool.UpdateStatus(Format(RsStatusMessage, [Installation.Name]));
-    WriteDelphiVersionToLog;
-    CleanupRepository;
-    if Tool.FeatureChecked(FID_JCL_EnvLibPath, Installation.VersionNumber) then
-      Installation.AddToLibrarySearchPath(FJclSourcePath);
-    if Tool.FeatureChecked(FID_JCL_HelpHlp, Installation.VersionNumber) then
-      AddHelpToDelphiHelp;
-    if Tool.FeatureChecked(FID_JCL_HelpChm, Installation.VersionNumber) then
-      AddHelpToIdeTools;
+    DxInstall;
     if Tool.FeatureChecked(FID_JCL_ExcDialogVCL, Installation.VersionNumber) then
       Installation.Repository.AddObject(FVclDialogFileName, DelphiRepositoryFormTemplate,
         Installation.Repository.FindPage(DialogPage, 1), VclDialogName, FVclDialogIconFileName,
