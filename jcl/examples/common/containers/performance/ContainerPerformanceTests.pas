@@ -20,16 +20,20 @@ implementation
 {$I jcl.inc}
 
 uses
-  SysUtils, Forms, Controls,
-  {$IFDEF DELPHI5_UP}
+  SysUtils, Forms, Controls, Math,
+  {$IFDEF RTL140_UP}
   Contnrs, IniFiles,
-  {$ENDIF DELPHI5_UP}
-  Math,
+  {$ENDIF RTL140_UP}
   JclContainerIntf, JclArrayLists, JclLinkedLists, JclHashMaps, JclVectors;
 
 const
   ResultFormat = '%.1f ms';
   MsecsPerDay = 24 * 60 * 60 * 1000;
+
+{$IFNDEF RTL140_UP}
+const
+  SNeedRTL140Up = 'requires RTL > 14.0';
+{$ENDIF ~RTL140_UP}
 
 procedure TestList(Results: TStrings);
 var
@@ -188,7 +192,7 @@ begin
 end;
 
 procedure TestBucketList(Results: TStrings);
-{$IFDEF DELPHI6_UP}
+{$IFDEF RTL140_UP}
 var
   I, Res: Integer;
   Start: TDateTime;
@@ -214,12 +218,14 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{$ELSE ~DELPHI6_UP}
+{$ELSE ~RTL140_UP}
+var
+  I: Integer;
 begin
   for I := 1 to 3 do
-    Results[I] := '(requires Delphi >6)';
+    Results[I] := SNeedRTL140Up;
 end;
-{$ENDIF ~DELPHI6_UP}
+{$ENDIF ~RTL140_UP}
 
 procedure TestJclHashMap(Results: TStrings);
 var
@@ -247,15 +253,13 @@ begin
   end;
 end;
 
-{$IFDEF DELPHI6_UP}
 function GenId(Value: Integer): string;
 begin
   Result := IntToStr(Value);
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure TestHashedStringList(Results: TStrings);
-{$IFDEF DELPHI6_UP}
+{$IFDEF RTL140_UP}
 var
   I: Integer;
   Index: Integer;
@@ -284,12 +288,14 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{$ELSE ~DELPHI6_UP}
+{$ELSE ~RTL140_UP}
+var
+  I: Integer;
 begin
   for I := 1 to 3 do
-    Results[I] := '(requires Delphi >6)';
+    Results[I] := SNeedRTL140Up;
 end;
-{$ENDIF ~DELPHI6_UP}
+{$ENDIF ~RTL140_UP}
 
 procedure TestJclStrStrHashMap(Results: TStrings);
 var
