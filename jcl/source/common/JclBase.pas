@@ -21,7 +21,7 @@
 { versions of Delphi as well as FPC.                                                               }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: April 1, 2003                                                                     }
+{ Last modified: December 30, 2003                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -45,9 +45,9 @@ uses
 
 const
   JclVersionMajor   = 1;    // 0=pre-release|beta/1, 2, ...=final
-  JclVersionMinor   = 20;   // Forth minor release JCL 1.20
-  JclVersionRelease = 1;    // 0=pre-release|beta/1=release
-  JclVersionBuild   = 749;  // build number, days since march 1, 2000
+  JclVersionMinor   = 90;   // Forth minor release JCL 1.20
+  JclVersionRelease = 0;    // 0=pre-release|beta/1=release
+  JclVersionBuild   = 1400;  // build number, days since march 1, 2000
   JclVersion = (JclVersionMajor shl 24) or (JclVersionMinor shl 16) or
     (JclVersionRelease shl 15) or (JclVersionBuild shl 0);
 
@@ -149,14 +149,7 @@ procedure CardinalsToI64(var I: Int64; const LowPart, HighPart: Cardinal);
 
 type
   PLargeInteger = ^TLargeInteger;
-  TLargeInteger = record
-    case Integer of
-    0:
-     (LowPart: LongWord;
-      HighPart: Longint);
-    1:
-     (QuadPart: Int64);
-  end;
+  TLargeInteger = Int64;
 
 // Redefinition of TULargeInteger to relieve dependency on Windows.pas
 
@@ -267,7 +260,7 @@ end;
 
 function QueryPerformanceFrequency(var Frequency: Int64): Boolean;
 var
-  T: TLargeInteger;
+  T: TULargeInteger;
 begin
   Windows.QueryPerformanceFrequency(@T);
   CardinalsToI64(Frequency, T.LowPart, T.HighPart);
@@ -277,7 +270,7 @@ end;
 
 procedure QueryPerformanceCounter(var C: Int64);
 var
-  T: TLargeInteger;
+  T: TULargeInteger;
 begin
   Windows.QueryPerformanceCounter(@T);
   CardinalsToI64(C, T.LowPart, T.HighPart);
