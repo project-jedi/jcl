@@ -255,7 +255,7 @@ uses
   RTLConsts,
   {$ELSE}
   {$IFDEF FPC}
-  rtlconst,     // nicht RTLConsts!
+  rtlconst,
   {$ELSE ~FPC}
   Consts,
   {$ENDIF ~FPC}
@@ -2036,6 +2036,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2005/02/14 00:47:23  rrossmair
+// - removed (redundant) comment in German language.
+//
 // Revision 1.7  2004/10/25 15:12:30  marquardt
 // fix internal error
 //
