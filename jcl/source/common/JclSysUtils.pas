@@ -27,7 +27,7 @@
 { retrieving the coprocessor's status word.                                                        }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: March 10, 2002                                                                    }
+{ Last modified: April 28, 2002                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -159,7 +159,7 @@ type
   end;
 
 //--------------------------------------------------------------------------------------------------
-// replacement for the C ternary conditional operator ? :
+// Replacement for the C ternary conditional operator ? :
 //--------------------------------------------------------------------------------------------------
 
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
@@ -272,7 +272,6 @@ function IsObject(Address: Pointer): Boolean;
 //--------------------------------------------------------------------------------------------------
 
 function GetImplementorOfInterface(const I: IInterface): TObject;
-{ TODO -cDOC : Original code by Hallvard Vassbotn }
 
 //--------------------------------------------------------------------------------------------------
 // Numeric formatting routines
@@ -302,9 +301,9 @@ function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; 
 
 {$ENDIF MSWINDOWS}
 
-//==================================================================================================
+//--------------------------------------------------------------------------------------------------
 // Conversion Utilities
-//==================================================================================================
+//--------------------------------------------------------------------------------------------------
 
 type
   EJclConversionError = class (EJclError);
@@ -312,6 +311,13 @@ type
 function StrToBoolean(const S: string): Boolean;
 function IntToBool(I: Integer): Boolean;
 function BoolToInt(B: Boolean): Integer;
+
+//--------------------------------------------------------------------------------------------------
+// RTL package information
+//--------------------------------------------------------------------------------------------------
+
+function SystemTObjectInstance: LongWord;
+function IsCompiledWithPackages: Boolean;
 
 implementation
 
@@ -1357,6 +1363,7 @@ end;
 //==================================================================================================
 
 function GetImplementorOfInterface(const I: IInterface): TObject;
+{ TODO -cDOC : Original code by Hallvard Vassbotn }
 { TODO -cTesting : Check the implemetation for any further version of compiler }
 const
   AddByte = $04244483; // opcode for ADD DWORD PTR [ESP+4], Shortint
@@ -1528,5 +1535,27 @@ function BoolToInt(B: Boolean): Integer;
 begin
   Result := Ord(B);
 end;
+
+//==================================================================================================
+// RTL package information
+//==================================================================================================
+
+function SystemTObjectInstance: LongWord;
+begin
+  {$IFDEF DELPHI4}
+  Result := LongWord(FindClassHInstance(System.TObject));
+  {$ELSE DELPHI4}
+  Result := FindClassHInstance(System.TObject);
+  {$ENDIF DELPHI4}
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function IsCompiledWithPackages: Boolean;
+begin
+  Result := SystemTObjectInstance <> HInstance;
+end;
+
+//--------------------------------------------------------------------------------------------------
 
 end.
