@@ -14,6 +14,7 @@
     <File Name="..\..\source\common\JclUnitConv.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclBase.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclComplex.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
+    <File Name="..\..\source\common\JclCompression.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclCounter.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclDateTime.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclEDI.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
@@ -38,7 +39,6 @@
     <File Name="..\..\source\common\JclSysInfo.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclSysUtils.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\Jcl8087.pas" Targets="c5,c6,d5,d6,d7,k3,D9" Formname="" Condition=""/>
-    <File Name="..\..\source\common\JclZlib.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclWideStrings.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\common\JclUnitVersioning.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
     <File Name="..\..\source\windows\Snmp.pas" Targets="C5,C6,D5,D6,D7,D9" Formname="" Condition=""/>
