@@ -18,7 +18,7 @@
 { The Initial Developer of the Original Code V2.0 is Peter J. Haas. Portions created by            }
 { Peter J. Haas are Copyright (C) 2004 Peter J. Haas. All Rights Reserved.                         }
 { You may retrieve the latest version of the Original Code at the homepage                         }
-{ of Peter J. Haas (delphi@pjh2.de) located at http://delphi.pjh2.de/                              }
+{ of Peter J. Haas (delphi att pjh2 dott de) located at http://delphi.pjh2.de/                     }
 {                                                                                                  }
 {--------------------------------------------------------------------------------------------------}
 {                                                                                                  }
@@ -642,6 +642,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.7  2004/06/14 13:05:16  marquardt
+//   style cleaning ENDIF, Tabs
+//
 //   Revision 1.6  2004/05/31 22:49:29  rrossmair
 //   resolved $IFDEF DEFAULTPARAMS (always true in supported versions)
 //

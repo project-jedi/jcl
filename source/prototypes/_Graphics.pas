@@ -2643,7 +2643,9 @@ begin
   Result := TJclRegionInfo.Create(Self);
 end;
 {$ENDIF VCL}
+
 {$IFDEF Bitmap32}
+
 //==================================================================================================
 // TJclThreadPersistent
 //==================================================================================================
@@ -2651,14 +2653,22 @@ end;
 constructor TJclThreadPersistent.Create;
 begin
   inherited Create;
-  {$IFDEF VCL}InitializeCriticalSection(FLock);{$ELSE}FLock := TCriticalSection.Create;{$ENDIF}
+  {$IFDEF VCL}
+  InitializeCriticalSection(FLock);
+  {$ELSE}
+  FLock := TCriticalSection.Create;
+  {$ENDIF VCL}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 destructor TJclThreadPersistent.Destroy;
 begin
-  {$IFDEF VCL}DeleteCriticalSection(FLock);{$ELSE}FLock.Free;{$ENDIF}
+  {$IFDEF VCL}
+  DeleteCriticalSection(FLock);
+  {$ELSE}
+  FLock.Free;
+  {$ENDIF VCL}
   inherited Destroy;
 end;
 
@@ -2698,14 +2708,22 @@ end;
 procedure TJclThreadPersistent.Lock;
 begin
   InterlockedIncrement(FLockCount);
-  {$IFDEF VCL}EnterCriticalSection(FLock);{$ELSE}FLock.Enter;{$ENDIF}
+  {$IFDEF VCL}
+  EnterCriticalSection(FLock);
+  {$ELSE}
+  FLock.Enter;
+  {$ENDIF VCL}
 end;
 
 //--------------------------------------------------------------------------------------------------
 
 procedure TJclThreadPersistent.Unlock;
 begin
-  {$IFDEF VCL}LeaveCriticalSection(FLock);{$ELSE}FLock.Leave;{$ENDIF}
+  {$IFDEF VCL}
+  LeaveCriticalSection(FLock);
+  {$ELSE}
+  FLock.Leave;
+  {$ENDIF VCL}
   InterlockedDecrement(FLockCount);
 end;
 
@@ -2790,7 +2808,9 @@ begin
   FOuterColor := $00000000;  // by default as full transparency black
   FFont := TFont.Create;
   FFont.OnChange := FontChanged;
-  {$IFDEF VCL}FFont.OwnerCriticalSection := @FLock;{$ENDIF}
+  {$IFDEF VCL}
+  FFont.OwnerCriticalSection := @FLock;
+  {$ENDIF VCL}
   FMasterAlpha := $FF;
   FPenColor := clWhite32;
   FStippleStep := 1;
@@ -6129,6 +6149,9 @@ initialization
 // History:
 {$IFDEF PROTOTYPE}
 // $Log$
+// Revision 1.11  2004/06/14 13:05:19  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.10  2004/05/14 15:20:44  rrossmair
 // added Marcin Wieczorek to Contributors list
 //

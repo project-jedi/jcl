@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclMetadata.pas.                                                            }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu att yahoo dott com dott cn>).  }
 { Portions created by Flier Lu are Copyright (C) Flier Lu. All Rights Reserved.                    }
 {                                                                                                  }
 { Contributors:                                                                                    }
@@ -5471,6 +5471,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.6  2004/06/02 03:23:47  rrossmair
 // cosmetic changes in several units (code formatting, help TODOs processed etc.)
 //

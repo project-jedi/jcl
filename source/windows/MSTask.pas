@@ -23,7 +23,7 @@
 {  All Rights Reserved.                                                        }
 {                                                                              }
 {  You may retrieve the latest version of this file at the homepage of         }
-{  JEDI+ (jediplus@pjh2.de), located at http://jediplus.pjh2.de/               }
+{  JEDI+ (jediplus att pjh2 dott de), located at http://jediplus.pjh2.de/      }
 {                                                                              }
 {------------------------------------------------------------------------------}
 {                                                                              }

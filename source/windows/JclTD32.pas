@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclTD32.pas.                                                                }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu att yahoo dott com dott cn>).  }
 { Portions created by Flier Lu are Copyright (C) Flier Lu.  All Rights Reserved.                   }
 {                                                                                                  }
 { Contributors:                                                                                    }
@@ -45,7 +45,7 @@ uses
   Classes, SysUtils, Contnrs,
   JclBase, JclFileUtils, JclPeImage;
 
-{ TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
+{ TODO -cDOC : Original code: "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 
 //--------------------------------------------------------------------------------------------------
 // TD32 constants and structures
@@ -1356,6 +1356,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.9  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.8  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

@@ -12,7 +12,7 @@
 {                                                                                                  }
 { The Original Code is JclCLR.pas.                                                                 }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu att yahoo dott com dott cn>).  }
 { Portions created by Flier Lu are Copyright (C) Flier Lu. All Rights Reserved.                    }
 {                                                                                                  }
 { Contributors:                                                                                    }
@@ -543,10 +543,15 @@ const
 // CLR Header entry point flags.
 //==================================================================================================
 const
-  COMIMAGE_FLAGS_ILONLY	          = $00000001;	// Always 1 (see Section 23.1).
-  COMIMAGE_FLAGS_32BITREQUIRED	  = $00000002;	// Image may only be loaded into a 32-bit process, for instance if there are 32-bit vtablefixups, or casts from native integers to int32. CLI implementations that have 64 bit native integers shall refuse loading binaries with this flag set.
-  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;	// Image has a strong name signature.
-  COMIMAGE_FLAGS_TRACKDEBUGDATA	  = $00010000;	// Always 0 (see Section 23.1).
+  COMIMAGE_FLAGS_ILONLY           = $00000001;  // Always 1 (see Section 23.1).
+  COMIMAGE_FLAGS_32BITREQUIRED    = $00000002;
+    // Image may only be loaded into a 32-bit process,
+    // for instance if there are 32-bit vtablefixups,
+    // or casts from native integers to int32.
+    // CLI implementations that have 64 bit native integers shall refuse
+    // loading binaries with this flag set.
+  COMIMAGE_FLAGS_STRONGNAMESIGNED = $00000008;  // Image has a strong name signature.
+  COMIMAGE_FLAGS_TRACKDEBUGDATA   = $00010000;  // Always 0 (see Section 23.1).
   ClrImageFlagMapping: array [TJclClrImageFlag] of DWORD =
     (COMIMAGE_FLAGS_ILONLY, COMIMAGE_FLAGS_32BITREQUIRED,
      COMIMAGE_FLAGS_STRONGNAMESIGNED, COMIMAGE_FLAGS_TRACKDEBUGDATA);
@@ -1973,6 +1978,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.6  2004/05/13 07:35:09  rrossmair
 // removed obsolete TODO
 //

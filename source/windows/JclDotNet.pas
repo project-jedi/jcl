@@ -10,9 +10,9 @@
 { ANY KIND, either express or implied. See the License for the specific language governing rights  }
 { and limitations under the License.                                                               }
 {                                                                                                  }
-{ The Original Code is JclDotNet.pas.                                                                }
+{ The Original Code is JclDotNet.pas.                                                              }
 {                                                                                                  }
-{ The Initial Developer of the Original Code is Flier Lu (<flier_lu@yahoo.com.cn>).                }
+{ The Initial Developer of the Original Code is Flier Lu (<flier_lu att yahoo dott com dott cn>).  }
 { Portions created by Flier Lu are Copyright (C) Flier Lu. All Rights Reserved.                    }
 {                                                                                                  }
 { Contributors:                                                                                    }
@@ -59,7 +59,7 @@ uses
   JclBase,
   mscoree_TLB, mscorlib_TLB;
 
-{ TODO -cDOC : Original code: "Flier Lu" <flier_lu@yahoo.com.cn> }
+{ TODO -cDOC : Original code: "Flier Lu" <flier_lu att yahoo dott com dott cn> }
 
 type
   TJclClrBase = TInterfacedObject;
@@ -291,13 +291,13 @@ const
   CLR_MINOR_VERSION = 0;
   CLR_BUILD_VERSION = 3705;
 
-  STARTUP_CONCURRENT_GC	                        = $1;
-  STARTUP_LOADER_OPTIMIZATION_MASK	        = $3 shl 1;
+  STARTUP_CONCURRENT_GC                         = $1;
+  STARTUP_LOADER_OPTIMIZATION_MASK              = $3 shl 1;
   STARTUP_LOADER_OPTIMIZATION_SINGLE_DOMAIN     = $1 shl 1;
   STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN      = $2 shl 1;
-  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST	= $3 shl 1;
-  STARTUP_LOADER_SAFEMODE	                = $10;
-  STARTUP_LOADER_SETPREFERENCE	                = $100;
+  STARTUP_LOADER_OPTIMIZATION_MULTI_DOMAIN_HOST = $3 shl 1;
+  STARTUP_LOADER_SAFEMODE                       = $10;
+  STARTUP_LOADER_SETPREFERENCE                  = $100;
 
 //==================================================================================================
 // TJclClrHost
@@ -860,6 +860,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 13:05:21  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.6  2004/05/05 07:33:49  rrossmair
 // header updated according to new policy: initial developers & contributors listed
 //

@@ -20,8 +20,8 @@
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
-{ Lightening fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf Junker               }
-{ (ralfjunker@gmx.de).                                                                             }
+{ Lightning fast Mime (Base64) Encoding and Decoding routines. Coded by Ralf Junker                }
+{ (ralfjunker att gmx dott de).                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 { Migration Guide from JCL 1.90 and older:                                                         }
@@ -543,6 +543,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.7  2004/06/14 13:05:18  marquardt
+// style cleaning ENDIF, Tabs
+//
 // Revision 1.6  2004/05/05 00:09:59  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //

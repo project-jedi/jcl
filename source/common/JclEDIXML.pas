@@ -25,7 +25,7 @@
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: March 6, 2003                                                                      }
 { Additional Info:                                                                                 }
-{   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
+{   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }

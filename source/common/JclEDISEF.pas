@@ -27,7 +27,7 @@
 { Unit owner: Raymond Alexander                                                                    }
 { Date created: July, 20, 2003                                                                     }
 { Additional Info:                                                                                 }
-{   E-Mail at RaysDelphiBox3@hotmail.com                                                           }
+{   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
 {   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
@@ -189,11 +189,11 @@ type
     function Assemble: string; virtual; abstract;
     procedure Disassemble; virtual; abstract;
     procedure UpdateOwnerItemName;
-    {$IFNDEF DELPHI6_UP} // Hide warnings in D5
-    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual;
-    {$ELSE}
+    {$IFDEF DELPHI6_UP} // Hide warnings in D5
     function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual; abstract;
-    {$ENDIF}
+    {$ELSE}
+    function Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject; virtual;
+    {$ENDIF DELPHI6_UP}
   published
     property State: TEDIDataObjectDataState read FState;
     property Id: string read FId write SetId;
@@ -946,7 +946,7 @@ begin
     Temp.CommaText := Temp.ValueFromIndex[0];
     {$ELSE}
     Temp.CommaText := Temp.Values[Element.Id];
-    {$ENDIF}
+    {$ENDIF DELPHI7_UP}
     if Temp.Count >= 1 then
       Element.ElementType := Temp[0];
     if Temp.Count >= 2 then
@@ -2577,12 +2577,14 @@ begin
 end;
 
 //--------------------------------------------------------------------------------------------------
+
 {$IFNDEF DELPHI6_UP}
 function TEDISEFDataObject.Clone(NewParent: TEDISEFDataObject): TEDISEFDataObject;
 begin
   Result := nil;
 end;
-{$ENDIF}
+{$ENDIF DELPHI6_UP}
+
 //--------------------------------------------------------------------------------------------------
 
 destructor TEDISEFDataObject.Destroy;
@@ -4495,7 +4497,7 @@ begin
   FData := '';
   if FFileName <> '' then
   begin
-    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead	or fmShareDenyNone);
+    EDIFileStream := TFileStream.Create(FFileName, fmOpenRead or fmShareDenyNone);
     try
       SetLength(FData, EDIFileStream.Size);
       EDIFileStream.Read(Pointer(FData)^, EDIFileStream.Size);
@@ -4640,8 +4642,8 @@ begin
   {$IFDEF DELPHI6_UP}
   FEDISEFIni.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
-
-  {$ENDIF}
+  // TODO : (rom) ?
+  {$ENDIF DELPHI6_UP}
   SearchResult := StrSearch(SectionTag_INI, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4736,8 +4738,8 @@ begin
   {$IFDEF DELPHI6_UP}
   FEDISEFStd.Delimiter := SEFDelimiter_Comma;
   {$ELSE}
-
-  {$ENDIF}
+  // TODO : (rom) ?
+  {$ENDIF DELPHI6_UP}
   SearchResult := StrSearch(SectionTag_STD, FData, 1);
   if SearchResult > 0 then
   begin
@@ -4749,7 +4751,7 @@ begin
       FEDISEFStd.DelimitedText := Copy(FData, SearchResult, SearchResult2 - SearchResult);
       {$ELSE}
       FEDISEFStd.Text := Copy(FData, SearchResult, SearchResult2 - SearchResult);
-      {$ENDIF}
+      {$ENDIF DELPHI6_UP}
     end
     else
     begin
@@ -4757,7 +4759,7 @@ begin
       FEDISEFStd.DelimitedText := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
       {$ELSE}
       FEDISEFStd.Text := Copy(FData, SearchResult, (Length(FData) - SearchResult) + 1);
-      {$ENDIF}
+      {$ENDIF DELPHI6_UP}
     end;
   end;
 end;
