@@ -448,18 +448,14 @@ var
   var
     I: Integer;
     CompilationOptions: string;
-    SavedDelimiter : Char;
   begin
     Result := True;
     with Installation.DCC do
     begin
       if Installation.RADToolKind = brCppBuilder then
       begin
-        SavedDelimiter := Options.Delimiter;
-        Options.Delimiter := ' ';
-        CompilationOptions := Options.DelimitedText + ' ';
+        CompilationOptions := StringsToStr(Options, ' ') + ' ';
         CompilationOptions := StringReplace(CompilationOptions, '$(BCB)', Installation.RootDir, [rfReplaceAll]);
-        Options.Delimiter := SavedDelimiter;
       end
       else
         CompilationOptions := '';
