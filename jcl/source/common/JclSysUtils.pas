@@ -32,6 +32,9 @@ unit JclSysUtils;
 interface
 
 uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ENDIF WIN32}
   Classes, TypInfo,
   JclBase;
 
@@ -194,12 +197,31 @@ function IsObject(Address: Pointer): Boolean;
 
 function IntToStrZeroPad(Value, Count: Integer): AnsiString;
 
+//------------------------------------------------------------------------------
+// Loading of modules (DLLs)
+//------------------------------------------------------------------------------
+
+{$IFDEF WIN32}
+
+type
+  TModuleHandle = HINST;
+
+const
+  INVALID_MODULEHANDLE_VALUE = TModuleHandle(0);
+
+function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
+function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
+procedure UnloadModule(var Module: TModuleHandle);
+function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
+function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
+function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+
+{$ENDIF WIN32}
+
 implementation
 
 uses
-  {$IFDEF WIN32}
-  Windows,
-  {$ENDIF WIN32}
   SysUtils,
   JclResources, JclStrings;
 
@@ -782,5 +804,81 @@ begin
   Result := IntToStr(Value);
   Result := StrFillChar('0', Count - Length(Result)) + Result;
 end;
+
+//==============================================================================
+// Loading of modules (DLLs)
+//==============================================================================
+
+{$IFDEF WIN32}
+
+function LoadModule(var Module: TModuleHandle; FileName: string): Boolean;
+begin
+  if Module = INVALID_MODULEHANDLE_VALUE then
+    Module := LoadLibrary(PChar(FileName));
+  Result := Module <> INVALID_MODULEHANDLE_VALUE;
+end;
+
+//------------------------------------------------------------------------------
+
+function LoadModuleEx(var Module: TModuleHandle; FileName: string; Flags: Cardinal): Boolean;
+begin
+  if Module = INVALID_MODULEHANDLE_VALUE then
+    Module := LoadLibraryEx(PChar(FileName), 0, Flags);
+  Result := Module <> INVALID_MODULEHANDLE_VALUE;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure UnloadModule(var Module: TModuleHandle);
+begin
+  if Module <> INVALID_MODULEHANDLE_VALUE then
+    FreeLibrary(Module);
+  Module := INVALID_MODULEHANDLE_VALUE;
+end;
+
+//------------------------------------------------------------------------------
+
+function GetModuleSymbol(Module: TModuleHandle; SymbolName: string): Pointer;
+begin
+  Result := nil;
+  if Module <> INVALID_MODULEHANDLE_VALUE then
+    Result := GetProcAddress(Module, PChar(SymbolName));
+end;
+
+//------------------------------------------------------------------------------
+
+function GetModuleSymbolEx(Module: TModuleHandle; SymbolName: string; var Accu: Boolean): Pointer;
+begin
+  Result := nil;
+  if Module <> INVALID_MODULEHANDLE_VALUE then
+    Result := GetProcAddress(Module, PChar(SymbolName));
+  Accu := Accu and (Result <> nil);
+end;
+
+//------------------------------------------------------------------------------
+
+function ReadModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+var
+  Sym: Pointer;
+begin
+  Result := True;
+  Sym := GetModuleSymbolEx(Module, SymbolName, Result);
+  if Result then
+    Move(Sym^, Buffer, Size);
+end;
+
+//------------------------------------------------------------------------------
+
+function WriteModuleData(Module: TModuleHandle; SymbolName: string; var Buffer; Size: Cardinal): Boolean;
+var
+  Sym: Pointer;
+begin
+  Result := True;
+  Sym := GetModuleSymbolEx(Module, SymbolName, Result);
+  if Result then
+    Move(Buffer, Sym^, Size);
+end;
+
+{$ENDIF WIN32}
 
 end.
