@@ -26,7 +26,7 @@
 { Date created: March 6, 2003                                                                      }
 { Additional Info:                                                                                 }
 {   E-Mail at RaysDelphiBox3 att hotmail dott com                                                  }
-{   For latest EDI specific updates see http://sourceforge.net/projects/edisdk                     }
+{   For latest EDI specific demos see http://sourceforge.net/projects/edisdk                       }
 {   See home page for latest news & events and online help.                                        }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -34,8 +34,6 @@
 { 04/21/2003 (R.A.)                                                                                }
 {                                                                                                  }
 {   The current status of this unit is experimental.                                               }
-{                                                                                                  }
-{   Release notes have been moved to ReleaseNotes.rtf                                              }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -166,8 +164,6 @@ type
 
   TEDIXMLObjectArray = array of TEDIXMLObject;
 
-  TEDIXMLDataObjectArray = array of TEDIXMLDataObject;
-
   TEDIXMLDataObject = class(TEDIXMLObject)
   private
     procedure SetDelimiters(const Delimiters: TEDIXMLDelimiters);
@@ -202,11 +198,10 @@ type
     property Attributes: TEDIXMLAttributes read FAttributes write FAttributes;
   end;
 
+  TEDIXMLDataObjectArray = array of TEDIXMLDataObject;
 //--------------------------------------------------------------------------------------------------
 //  EDI Element
 //--------------------------------------------------------------------------------------------------
-
-  TEDIXMLElementArray = array of TEDIXMLElement;
 
   TEDIXMLElement = class(TEDIXMLDataObject)
     FCData: Boolean;
@@ -219,6 +214,8 @@ type
   published
     property CData: Boolean read FCData write FCData;
   end;
+
+  TEDIXMLElementArray = array of TEDIXMLElement;
 
 //--------------------------------------------------------------------------------------------------
 //  EDI Data Object Group
@@ -259,8 +256,6 @@ type
 //  EDI Segment Classes
 //--------------------------------------------------------------------------------------------------
 
-  TEDIXMLSegmentArray = array of TEDIXMLSegment;
-
   TEDIXMLSegment = class(TEDIXMLDataObject)
   private
     FSegmentID: string;
@@ -298,6 +293,8 @@ type
   published
     property SegmentID: string read FSegmentID write FSegmentID;
   end;
+
+  TEDIXMLSegmentArray = array of TEDIXMLSegment;  
 
   TEDIXMLTransactionSetSegment = class(TEDIXMLSegment)
   public
