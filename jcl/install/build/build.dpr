@@ -1010,7 +1010,7 @@ procedure FixDcc32Cfg(Edition: TEdition);
 var
   f: TextFile;
   S: string;
-  Found: Boolean;
+  FoundU, FoundLU: Boolean;
 begin
   AssignFile(f, Edition.RootDir + '\bin\dcc32.cfg');
   if not FileExists(Edition.RootDir + '\bin\dcc32.cfg') then
@@ -1025,42 +1025,53 @@ begin
         WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
       else
         WriteLn(f, '-u"', Edition.RootDir, '\lib"');
+      if Edition.Typ = BCB then
+        WriteLn(f, '-LUvcl50');
       CloseFile(f);
     end
     else
     begin
-      WriteLn('Cannot create default ', Edition.RootDir, '\bin\dcc32.cfg'); 
+      WriteLn('Cannot create default ', Edition.RootDir, '\bin\dcc32.cfg');
       Halt(0);
     end;
   end
   else
   begin
-    Found := False;
+    FoundU := False;
+    FoundLU := Edition.Typ <> BCB;
     Reset(f);
-    while not EOF(f) and not Found do
+    while not EOF(f) and not (FoundU and FoundLU) do
     begin
       ReadLn(f, S);
       if Edition.Typ = Delphi then
-        Found := SameText(S, '-u"' + Edition.RootDir + '\lib"') or
-                 SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
-                 SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib')
+        FoundU := FoundU or SameText(S, '-u"' + Edition.RootDir + '\lib"') or
+                  SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib"') or
+                  SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib')
       else
-        Found := SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
-                 SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
-                 SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj');
+        FoundU := FoundU or SameText(S, '-u"' + Edition.RootDir + '\lib";"' + Edition.RootDir + '\lib\obj"') or
+                  SameText(S, '-u"' + ExtractShortPathName(Edition.RootDir) + '\lib";"' + ExtractShortPathName(Edition.RootDir) + '\lib\obj"') or
+                  SameText(S, '-u' + ExtractShortPathName(Edition.RootDir) + '\lib;' + ExtractShortPathName(Edition.RootDir) + '\lib\obj');
+      if Edition.Typ = BCB then
+        FoundLU := FoundLU or SameText(S, '-LUvcl50');
     end;
     CloseFile(f);
-    if not Found then
+    if not FoundU or not FoundLU then
     begin
       {$I-}
       Append(f);
       {$I+}
+      WriteLn(f);
       if IOResult = 0 then
       begin
-        if Edition.Typ <> Delphi then
-          WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
-        else
-          WriteLn(f, '-u"', Edition.RootDir, '\lib"');
+        if not FoundU then
+        begin
+          if Edition.Typ <> Delphi then
+            WriteLn(f, '-u"', Edition.RootDir, '\lib";"', Edition.RootDir, '\lib\obj"')
+          else
+            WriteLn(f, '-u"', Edition.RootDir, '\lib"');
+        end;
+        if not FoundLU and (Edition.Typ = BCB) then
+          WriteLn(f, '-LUvcl50');
         CloseFile(f);
       end
       else
