@@ -255,10 +255,8 @@ procedure MineSingleBuffer(var Buffer; Count: Integer;
 procedure MineDoubleBuffer(var Buffer; Count: Integer;
   StartTag: TNaNTag {$IFDEF SUPPORTS_DEFAULTPARAMS} = 0 {$ENDIF});
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
 function MinedSingleArray(Length: Integer): TDynSingleArray;
 function MinedDoubleArray(Length: Integer): TDynDoubleArray;
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 function GetNaNTag(const NaN: Single): TNaNTag; overload;
 function GetNaNTag(const NaN: Double): TNaNTag; overload;
@@ -278,7 +276,7 @@ type
   end;
 
 type
-  TFlatSet = class (ASet)
+  TJclFlatSet = class (ASet)
   private
     FBits: TBits;
   public
@@ -293,7 +291,7 @@ type
   end;
 
 type
-  TRangeSet = class (ASet)
+  TJclRangeSet = class (ASet)
   private
     FRanges: TList;
   public
@@ -308,7 +306,7 @@ type
   end;
 
 type
-  TRange = class (TObject)
+  TJclRange = class (TObject)
   protected
     FLow: Integer;
     FHigh: Integer;
@@ -332,7 +330,7 @@ const
   CompleteDelphiSet: TDelphiSet = [0..255];
 
 type
-  TSparseFlatSet = class (ASet)
+  TJclSparseFlatSet = class (ASet)
   private
     FSetList: PPointerArray;
     FSetListEntries: Integer;
@@ -443,7 +441,7 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  Jcl8087, JclResources;
+  Jcl8087, JclResources, JclUnitConv;
 
 //==============================================================================
 // Internal helper routines
@@ -833,16 +831,9 @@ var
 begin
   DomainCheck(Abs(X) > MaxAngle);
 
-  {$IFDEF MATH_ANGLES_DEGREES}
-  X := X * RadPerDeg;
-  {$ENDIF MATH_ANGLES_DEGREES}
-  {$IFDEF MATH_ANGLES_GRADS}
-  X := X * RadPerGrad;
-  {$ENDIF MATH_ANGLES_GRADS}
-
   Y := Sin(X);
   DomainCheck(Y = 0.0);
-  Result := 1 / Y;
+  Result := 1.0 / Y;
 end;
 
 //------------------------------------------------------------------------------
@@ -1716,7 +1707,7 @@ end;
 // Set support
 //==============================================================================
 
-constructor TRange.Create(const Low, High: Integer);
+constructor TJclRange.Create(const Low, High: Integer);
 begin
   inherited Create;
   FLow := Low;
@@ -1736,35 +1727,35 @@ end;
 { 5..10    1      0      0      1       1    }
 { 6..7     1      0      0      1       1    }
 
-function TRange.Overlap(const Low, High: Integer): Boolean;
+function TJclRange.Overlap(const Low, High: Integer): Boolean;
 begin
   Result := (High >= FLow) xor (Low <= FHigh);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRange.Touch(const Low, High: Integer): Boolean;
+function TJclRange.Touch(const Low, High: Integer): Boolean;
 begin
   Result := (High >= FLow - 1) xor (Low <= FHigh + 1);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRange.Inside(const Low, High: Integer): Boolean;
+function TJclRange.Inside(const Low, High: Integer): Boolean;
 begin
   Result := (FLow >= Low) and (FHigh <= High);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRange.HasElement(const I: Integer): Boolean;
+function TJclRange.HasElement(const I: Integer): Boolean;
 begin
   Result := (I >= FLow) and (I <= FHigh);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRange.Merge(const Low, High: Integer);
+procedure TJclRange.Merge(const Low, High: Integer);
 begin
   if (High >= FLow - 1) xor (Low <= FHigh + 1) then
   begin
@@ -1780,7 +1771,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-constructor TRangeSet.Create;
+constructor TJclRangeSet.Create;
 begin
   inherited Create;
   FRanges := TList.Create;
@@ -1788,7 +1779,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-destructor TRangeSet.Destroy;
+destructor TJclRangeSet.Destroy;
 begin
   Clear;
   FRanges.Free;
@@ -1798,42 +1789,42 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRangeSet.Clear;
+procedure TJclRangeSet.Clear;
 var
   I: Integer;
 begin
   for I := 0 to FRanges.Count - 1 do
-    TRange(FRanges[I]).Free;
+    TJclRange(FRanges[I]).Free;
   FRanges.Clear;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRangeSet.Invert;
+procedure TJclRangeSet.Invert;
 var
   I: Integer;
-  R, Pre: TRange;
+  R, Pre: TJclRange;
 begin
-  if (FRanges.Count > 0) and (TRange(FRanges[0]).FLow > 0) then
-    Pre := TRange.Create(0, TRange(FRanges[0]).FLow - 1)
+  if (FRanges.Count > 0) and (TJclRange(FRanges[0]).FLow > 0) then
+    Pre := TJclRange.Create(0, TJclRange(FRanges[0]).FLow - 1)
   else
     Pre := nil;
   for I := 0 to FRanges.Count - 2 do
   begin
-    R := TRange(FRanges[I]);
+    R := TJclRange(FRanges[I]);
     R.FLow := R.FHigh + 1;
-    R.FHigh := TRange(FRanges[I + 1]).FLow - 1;
+    R.FHigh := TJclRange(FRanges[I + 1]).FLow - 1;
   end;
   if FRanges.Count > 0 then
-    if TRange(FRanges[FRanges.Count - 1]).FHigh = MaxInt then
+    if TJclRange(FRanges[FRanges.Count - 1]).FHigh = MaxInt then
     begin
-      TRange(FRanges[FRanges.Count - 1]).Free;
+      TJclRange(FRanges[FRanges.Count - 1]).Free;
       FRanges.Delete(FRanges.Count - 1);
     end
     else
     begin
-      TRange(FRanges[FRanges.Count - 1]).FLow := TRange(FRanges[FRanges.Count - 1]).FHigh + 1;
-      TRange(FRanges[FRanges.Count - 1]).FHigh := MaxInt;
+      TJclRange(FRanges[FRanges.Count - 1]).FLow := TJclRange(FRanges[FRanges.Count - 1]).FHigh + 1;
+      TJclRange(FRanges[FRanges.Count - 1]).FHigh := MaxInt;
     end;
   if Pre <> nil then
     FRanges.Insert(0, Pre);
@@ -1841,26 +1832,26 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TRangeSet.SetRange(const Low, High: Integer; const Value: Boolean);
+procedure TJclRangeSet.SetRange(const Low, High: Integer; const Value: Boolean);
 var
   I, J, K: Integer;
-  R: TRange;
+  R: TJclRange;
 begin
   I := 0;
   K := FRanges.Count;
-  while (I <= K - 1) and (Low > TRange(FRanges[I]).FHigh) do
+  while (I <= K - 1) and (Low > TJclRange(FRanges[I]).FHigh) do
     Inc(I);
   if (I = K) or // append
-    ((Low < TRange(FRanges[I]).FLow) and (High < TRange(FRanges[I]).FLow)) then // insert
+    ((Low < TJclRange(FRanges[I]).FLow) and (High < TJclRange(FRanges[I]).FLow)) then // insert
   begin
     if Value then
-      FRanges.Insert(I, TRange.Create(Low, High));
+      FRanges.Insert(I, TJclRange.Create(Low, High));
     Exit;
   end;
   // I = first block that overlaps
 
   J := I;
-  while (J < K - 1) and (TRange(FRanges[J + 1]).FLow <= High) do
+  while (J < K - 1) and (TJclRange(FRanges[J + 1]).FLow <= High) do
     Inc(J);
   // J = last block that overlaps
 
@@ -1880,7 +1871,7 @@ begin
     begin
       for K := I + 1 to J - 1 do
       begin
-        TRange(FRanges[I + 1]).Free;
+        TJclRange(FRanges[I + 1]).Free;
         FRanges.Delete(I + 1);
       end;
     end;
@@ -1901,7 +1892,7 @@ begin
       R.FHigh := High;
       for K := I + 1 to J do
       begin
-        TRange(FRanges[I + 1]).Free;
+        TJclRange(FRanges[I + 1]).Free;
         FRanges.Delete(I + 1);
       end;
     end;
@@ -1910,40 +1901,40 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TRangeSet.GetBit(const Idx: Integer): Boolean;
+function TJclRangeSet.GetBit(const Idx: Integer): Boolean;
 var
   I, J: Integer;
 begin
   I := 0;
   J := FRanges.Count - 1;
-  while (I <= J) and (Idx > TRange(FRanges[I]).FHigh) do
+  while (I <= J) and (Idx > TJclRange(FRanges[I]).FHigh) do
     Inc(I);
-  Result := (I <= J) and (Idx >= TRange(FRanges[I]).FLow);
+  Result := (I <= J) and (Idx >= TJclRange(FRanges[I]).FLow);
 end;
 
 //------------------------------------------------------------------------------
 
-function TRangeSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
+function TJclRangeSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
 var
   I, J: Integer;
 begin
   I := 0;
   J := FRanges.Count - 1;
-  while (I <= J) and (Low > TRange(FRanges[I]).FHigh) do
+  while (I <= J) and (Low > TJclRange(FRanges[I]).FHigh) do
     Inc(I);
-  Result := (I <= J) and (Low >= TRange(FRanges[I]).FLow) and (High <= TRange(FRanges[I]).FHigh);
+  Result := (I <= J) and (Low >= TJclRange(FRanges[I]).FLow) and (High <= TJclRange(FRanges[I]).FHigh);
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TRangeSet.SetBit(const Idx: Integer; const Value: Boolean);
+procedure TJclRangeSet.SetBit(const Idx: Integer; const Value: Boolean);
 begin
   SetRange(Idx, Idx, Value);
 end;
 
 //------------------------------------------------------------------------------
 
-constructor TFlatSet.Create;
+constructor TJclFlatSet.Create;
 begin
   inherited Create;
   FBits := TBits.Create;
@@ -1951,7 +1942,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-destructor TFlatSet.Destroy;
+destructor TJclFlatSet.Destroy;
 begin
   FBits.Free;
   FBits := nil;
@@ -1960,14 +1951,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TFlatSet.Clear;
+procedure TJclFlatSet.Clear;
 begin
   FBits.Size := 0;
 end;
 
 //------------------------------------------------------------------------------
 
-procedure TFlatSet.Invert;
+procedure TJclFlatSet.Invert;
 var
   I: Integer;
 begin
@@ -1977,7 +1968,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TFlatSet.SetRange(const Low, High: Integer; const Value: Boolean);
+procedure TJclFlatSet.SetRange(const Low, High: Integer; const Value: Boolean);
 var
   I: Integer;
 begin
@@ -1987,14 +1978,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TFlatSet.GetBit(const Idx: Integer): Boolean;
+function TJclFlatSet.GetBit(const Idx: Integer): Boolean;
 begin
   Result := FBits[Idx];
 end;
 
 //------------------------------------------------------------------------------
 
-function TFlatSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
+function TJclFlatSet.GetRange(const Low, High: Integer; const Value: Boolean): Boolean;
 var
   I: Integer;
 begin
@@ -2014,14 +2005,14 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TFlatSet.SetBit(const Idx: Integer; const Value: Boolean);
+procedure TJclFlatSet.SetBit(const Idx: Integer; const Value: Boolean);
 begin
   FBits[Idx] := Value;
 end;
 
 //------------------------------------------------------------------------------
 
-destructor TSparseFlatSet.Destroy;
+destructor TJclSparseFlatSet.Destroy;
 begin
   Clear;
   inherited Destroy;
@@ -2029,7 +2020,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TSparseFlatSet.Clear;
+procedure TJclSparseFlatSet.Clear;
 var
   F: Integer;
 begin
@@ -2046,7 +2037,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TSparseFlatSet.Invert;
+procedure TJclSparseFlatSet.Invert;
 var
   F: Integer;
 begin
@@ -2057,7 +2048,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-function TSparseFlatSet.GetBit(const Idx: Integer): Boolean;
+function TJclSparseFlatSet.GetBit(const Idx: Integer): Boolean;
 var
   SetIdx: Integer;
 begin
@@ -2068,7 +2059,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TSparseFlatSet.SetBit(const Idx: Integer; const Value: Boolean);
+procedure TJclSparseFlatSet.SetBit(const Idx: Integer; const Value: Boolean);
 var
   I, SetIdx: Integer;
   S: PDelphiSet;
@@ -2099,7 +2090,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TSparseFlatSet.SetRange(const Low, High: Integer; const Value: Boolean);
+procedure TJclSparseFlatSet.SetRange(const Low, High: Integer; const Value: Boolean);
 var
   I, LowSet, HighSet: Integer;
 
@@ -2153,13 +2144,13 @@ const
   PrimeCacheLimit = 65537; // 8K lookup table. Note: Sqr(65537) > MaxLongint
 
 var
-  PrimeSet: TFlatSet = nil;
+  PrimeSet: TJclFlatSet = nil;
 
 procedure InitPrimeSet;
 var
   I, J: Integer;
 begin
-  PrimeSet := TFlatSet.Create;
+  PrimeSet := TJclFlatSet.Create;
   PrimeSet.SetRange(2, PrimeCacheLimit, True);
   PrimeSet.SetRange(0, 1, False);
   for I := 2 to System.Trunc(System.Sqrt(PrimeCacheLimit)) do
@@ -2920,8 +2911,6 @@ end;
 
 //------------------------------------------------------------------------------
 
-{$IFDEF SUPPORTS_DYNAMICARRAYS}
-
 function MinedSingleArray(Length: Integer): TDynSingleArray;
 begin
   SetLength(Result, Length);
@@ -2936,7 +2925,6 @@ begin
   MineDoubleBuffer(Result[0], Length, 0);
 end;
 
-{$ENDIF SUPPORTS_DYNAMICARRAYS}
 
 //==============================================================================
 // Rational Numbers
