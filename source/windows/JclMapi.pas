@@ -20,7 +20,7 @@
 { Various classes and support routines for sending e-mail through Simple MAPI                      }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: July 25, 2002                                                                     }
+{ Last modified: August 21, 2002                                                                   }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -205,6 +205,7 @@ type
     FHtmlBody: Boolean;
     FLogonOptions: TJclEmailLogonOptions;
     FParentWnd: HWND;
+    FParentWndValid: Boolean;
     FReadMsg: TJclEmailReadMsg;
     FRecipients: TJclEmailRecips;
     FSeedMessageID: string;
@@ -214,6 +215,7 @@ type
     function GetParentWnd: HWND;
     function GetUserLogged: Boolean;
     procedure SetBody(const Value: string);
+    procedure SetParentWnd(const Value: HWND);
   protected
     procedure BeforeUnloadClientLib; override;
     procedure DecodeRecips(RecipDesc: PMapiRecipDesc; Count: Integer);
@@ -242,7 +244,7 @@ type
     property FindOptions: TJclEmailFindOptions read FFindOptions write FFindOptions;
     property HtmlBody: Boolean read FHtmlBody write FHtmlBody;
     property LogonOptions: TJclEmailLogonOptions read FLogonOptions write FLogonOptions;
-    property ParentWnd: HWND read GetParentWnd write FParentWnd;
+    property ParentWnd: HWND read GetParentWnd write SetParentWnd;
     property ReadMsg: TJclEmailReadMsg read FReadMsg;
     property Recipients: TJclEmailRecips read FRecipients;
     property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
@@ -780,7 +782,7 @@ end;
 
 function TJclEmailRecips.GetItems(Index: Integer): TJclEmailRecip;
 begin
-  Result := TJclEmailRecip(inherited Items[Index]);
+  Result := TJclEmailRecip(Get(Index));
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -959,29 +961,11 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclEmail.GetParentWnd: HWND;
-var
-  FoundWnd: HWND;
-
-  function EnumThreadWndProc(Wnd: HWND; Param: LPARAM): Boolean; stdcall;
-  begin
-    if IsWindowVisible(Wnd) and (GetWindowLong(Wnd, GWL_STYLE) and WS_POPUP <> 0) then
-    begin
-      PDWORD(Param)^ := Wnd;
-      Result := False;
-    end
-    else
-      Result := True;
-  end;
-
 begin
-  if IsWindow(FParentWnd) then
+  if FParentWndValid then
     Result := FParentWnd
   else
-  begin
-    FoundWnd := 0;
-    EnumThreadWindows(MainThreadID, @EnumThreadWndProc, Integer(@FoundWnd));
-    Result := FoundWnd;
-  end;
+    Result := GetMainAppWndFromPid(GetCurrentProcessId);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1088,7 +1072,7 @@ begin
     Flags := LogonOptionsToFlags(ShowDialog);
     if Save then
     begin
-      StrPCopy(MsgID, FSeedMessageID);
+      StrPLCopy(MsgID, FSeedMessageID, SizeOf(MsgID));
       Res := MapiSaveMail(FSessionHandle, ParentWND, MapiMessage, Flags, 0, MsgID);
       if Res = SUCCESS_SUCCESS then
         FSeedMessageID := MsgID;
@@ -1215,8 +1199,7 @@ var
       wDay := CopyAndStrToInt(S, 9, 2);
       wHour := CopyAndStrToInt(S, 12, 2);
       wMinute := CopyAndStrToInt(S, 15,2);
-      Result := EncodeDate(wYear, wMonth, wDay) +
-        EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
+      Result := EncodeDate(wYear, wMonth, wDay) + EncodeTime(wHour, wMinute, wSecond, wMilliseconds);
     end;
   end;
 
@@ -1321,6 +1304,14 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+procedure TJclEmail.SetParentWnd(const Value: HWND);
+begin
+  FParentWnd := Value;
+  FParentWndValid := True;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 procedure TJclEmail.SortAttachments;
 begin
   TStringList(FAttachments).Sort;
@@ -1335,7 +1326,8 @@ function JclSimpleSendMail(const ARecipient, AName, ASubject, ABody: string;
 begin
   with TJclEmail.Create do
   try
-    ParentWnd := AParentWND;
+    if AParentWND <> 0 then
+      ParentWnd := AParentWND;
     Recipients.Add(ARecipient, AName, rkTO, MapiAddressTypeSMTP);
     Subject := ASubject;
     Body := ABody;
@@ -1354,7 +1346,8 @@ function JclSimpleSendFax(const ARecipient, AName, ASubject, ABody: string;
 begin
   with TJclEmail.Create do
   try
-    ParentWnd := AParentWND;
+    if AParentWND <> 0 then
+      ParentWnd := AParentWND;
     Recipients.Add(ARecipient, AName, rkTO, MapiAddressTypeFAX);
     Subject := ASubject;
     Body := ABody;
@@ -1373,7 +1366,8 @@ function JclSimpleBringUpSendMailDialog(const ASubject, ABody: string;
 begin
   with TJclEmail.Create do
   try
-    ParentWnd := AParentWND;
+    if AParentWND <> 0 then
+      ParentWnd := AParentWND;
     Subject := ASubject;
     Body := ABody;
     if AAttachment <> '' then
