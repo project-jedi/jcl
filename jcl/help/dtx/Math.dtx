@@ -89,7 +89,7 @@ Description:
   it returns Int(Sqrt(I)). Valid values for I are 0..32767. The function does not
   check the validity of the argument, i.e. it must be within the aforementioned range.
 Parameters:
-  I - The value for which to calculate ISqrt(I). Must be greater than or equal to 0.
+  I - The value for which to calculate ISqrt(I). Must be greater than or equal to zero.
 Result:
   The integral part of the square root of the argument.
 Quick info:
@@ -105,8 +105,8 @@ Quick info:
 Summary:
   Returns the modulus of two floating point numbers.
 Description:
-  ModFloat calculates the modulus of the two floating point numbers. For floating
-  point numbers the modulus is calculated as: X - Floor(X / Y) * Y
+  ModFloat calculates the modulus (remainder) of the two floating point numbers.
+  For floating point numbers the modulus is calculated as: X - Floor(X / Y) * Y.
 Parameters:
   X - The first float
   Y - The second float
@@ -364,12 +364,12 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@RelativePrime
+@@IsRelativePrime
 <GROUP MathRoutines.Miscellaneous>
 Summary:
   Tests if two numbers are relatively prime.
 Description:
-  RelativePrime returns whether the two supplied numbers are relatively prime to each
+  IsRelativePrime returns whether the two supplied numbers are relatively prime to each
   other. Two numbers are said to be relatively prime if their greatest common divisor
   equals 1. Another term used for relative prime is coprime.
 Parameters:
@@ -403,7 +403,7 @@ Result:
   The least common multiple of X and Y.
 See also:
   GCD
-  RelativePrime
+  IsRelativePrime
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -427,7 +427,7 @@ Result:
   The greatest common divisor of X and Y.
 See also:
   LCM
-  RelativePrime
+  IsRelativePrime
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -725,17 +725,23 @@ Quick info:
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
 @@ArcSin
-<GROUP MathRoutines.Transcendental>
-Summary:
-  Calculates the inverse sine.
-Description:
-  ArcSin calculates the inverse sine. Meaning it returns the angle whose sine
-  equals X.
-Parameters:
-  X - The value whose inverse sine to calculate. X must be smaller than or equal to 1.0.
-Result:
-  ArcSin of X in radians.
-Quick info:
+<GROUP $MathRoutines.Transcendental>
+
+Description
+ArcSin calculates the inverse sine. Meaning it returns the
+angle whose sine equals X.
+
+Summary
+Calculates the inverse sine.
+
+Parameters
+X :   The value whose inverse sine to calculate. X must be
+      smaller than or equal to 1.0.
+
+Returns
+ArcSin of X in radians.
+
+QuickInfo:
   Unit: JclMath
   Category: Math Routines
   Donator: Clayton Collie
@@ -781,7 +787,7 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
-@@Arctan2
+@@ArcTan2
 <GROUP MathRoutines.Transcendental>
 Summary:
   Calculates the inverse tangent of Y / X
@@ -878,11 +884,10 @@ Quick info:
 Summary:
   Returns the hyperbolic cotangent of X.
 Description:
-  Returns the hyperbolic cotangent of X. TODO add formula
+  Returns the hyperbolic cotangent of X. CotH(x) equals
+  cosh(x) / sinh(x).
 Parameters:
   X - Value whose hyperbolic cotangent to calculate.
-Result:
-  TODO
 Quick info:
   Unit: JclMath
   Category: Math Routines
@@ -1256,59 +1261,43 @@ Quick info:
 --------------------------------------------------------------------------------
 
 @@Crc32
-<GROUP $MathRoutines.CRC>
+<GROUP MathRoutines.CRC>
+Summary:
+  Calculates or checks a 32 Bit CRC.
+Description:
+  32 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array,
+  with a 32 bit CRC any single and double bit error can be detected. By far most multiple bit errors
+  are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and
+  all burst errors with up to 32 bits length (so any sequence of up to 4 incorrect bytes) are detected.
+  Burst error with a length of more than 32 are detected with a probability of 99,9999999767 %.
+  All this is true only if an appropriate polynomial is used.
+  By default the 32 Bit CRC "generator polynomial" suggested by the CCITT is used:
+  x^32 + x^26 + x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 + x^4 + x^2 + x + 1 ($104C11DB7).
+  This polynomial has a "maximum cycle" and is used by Ethernet and Zip, too. The default starting value is
+  $FFFFFFFF. By InitCrc32 a different polynomial and starting value can be defined.
+Parameters:
+  X - The array which contains the data. With Crc32 and Crc32_A this is an open array parameter, with CrC32_P this is a pointer to the first byte of the array of bytes.
+  N - The number of elements in X. Crc32_A calculates the checksum of all bytes in the array X.
+  Crc - (optional) if not defined or = 0: Crc32 calculates the CRC for the data array transmitted; if CRC is defined: the CRC value is checked against the data and the result is 0 if the CRC was correct.
+Result:
+   
+   * If on input CRC not defined or = 0: The result is the created CRC.
+   * If on input CRC is defined: The result is 0 if the CRC was OK,
+  otherwise the function
+    returns the residuum for the correction function.
 
-Description
-32 Bit CRC function. Calculates or checks a CRC. In a data
-array of less than 2^32-32 bit (2^29-4 = 536870908 byte), with a 32 bit CRC any
-single and double bit error can be detected. By far most
-multiple bit errors are detected, too: E.g. all even (or odd)
-count of bit errors (depending on the polynomial used) and
-all burst errors with up to 32 bits length (so any sequence
-of up to 4 incorrect bytes) are detected. Burst error with a
-length of more than 32 are detected with a probability of
-99,9999999767 %. All this is true only if an appropriate
-polynomial is used. By default the 32 Bit CRC "generator
-polynomial" suggested by the CCITT is used: x^32 + x^26 +
-x^23 + x^22 + x^16 + x^12 + x^11 + x^10 + x^8 + x^7 + x^5 +
-x^4 + x^2 + x + 1 ($104C11DB7). This polynomial has a
-"maximum cycle" and is used by Ethernet and Zip, too. The
-default starting value is $FFFFFFFF. By InitCrc32 a different
-polynomial and starting value can be defined.
-
-Summary
-Calculates or checks a 32 Bit CRC.
-
-Parameters
-Crc :   (optional) if not defined or = 0: Crc32 calculates the CRC
-        for the data array transmitted; if CRC is defined: the CRC
-        value is checked against the data and the result is 0 if
-        the CRC was correct.
-N :     The number of elements in X. Crc32_A calculates the
-        checksum of all bytes in the array X.
-X :     The array which contains the data. With Crc32 and Crc32_A
-        this is an open array parameter, with CrC32_P this is a
-        pointer to the first byte of the array of bytes.
-
-Returns
-
-    *   If on input CRC not defined or = 0: The result is the
-        created CRC.
-    *   If on input CRC is defined: The result is 0 if the
-        CRC was OK,
-otherwise the function returns the residuum for the
-correction function.
-
-QuickInfo
- Unit: JclMath
+See also:
+  CheckCrc32
+  InitCrc32
+  Crc16
+Quick info:
+  Unit: JclMath
   Category: Math Routines
   Donator: Michael Schnell
   Delphi Versions: 4,5,6
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 
-See Also
-CheckCrc32, InitCrc32, Crc16
 
 @@Crc32_A
 <COMBINE Crc32>
@@ -1391,7 +1380,7 @@ Quick info:
 Summary:
   Calculates or checks a 16 Bit CRC.
 Description:
-  16 Bit CRC function. Calculates or checks a CRC. In a data array 2^16-16 bit (2^13-2 = 8190 byte),
+  16 Bit CRC function. Calculates or checks a CRC. Independently from the size of the data array,
   with a 16 bit CRC any single and double bit error can be detected. By far most multiple bit errors
   are detected, too: E.g. all even (or odd) count of bit errors (depending on the polynomial used) and
   all burst errors with up to 16 bits length (so any sequence of up to two incorrect bytes) are detected.
@@ -1730,3 +1719,533 @@ Quick info:
   Kylix Versions: 1
   Free Pascal Compiler Versions: 1.x
 --------------------------------------------------------------------------------
+@@CalcMachineEps
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Calculates the Machine Epsilon value for the current precision.
+Description:
+  This procedure calculates the Machine Epsilon value for the current precision
+  and stores it in the variable <i>Epsilon</i>. Nontheless <i>Epsilon</i> is not used
+  for any calculations. Per definition, all JCL functions which need a specific epsilon
+  use the PrecisionTolerance variable instead. Therefor you need to call either
+  SetPrecisionTolerance or SetPrecisionToleranceToEpsilon.
+See also:
+  CalcMachineEpsSingle
+  CalcMachineEpsDouble
+  CalcMachineEpsExtended
+  SetPrecisionTolerance
+  SetPrecisionToleranceToEpsilon
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@CalcMachineEpsSingle
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Calculates the Machine Epsilon value for single precision.
+Description:
+  This procedure calculates the Machine Epsilon value for single precision
+  and stores it within the variable <i>EpsSingle</i>. Both, the variable Epsilon as well as the variable
+  PrecisionTolerance stay untouched.
+See also:
+  CalcMachineEps
+  CalcMachineEpsDouble
+  CalcMachineEpsExtended
+  SetPrecisionTolerance
+  SetPrecisionToleranceToEpsilon
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@CalcMachineEpsDouble
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Calculates the Machine Epsilon value for double precision.
+Description:
+  This procedure calculates the Machine Epsilon value for double precision
+  and stores it within the variable <i>EpsDouble</i>. Both, the variable Epsilon as well as the variable
+  PrecisionTolerance stay untouched.
+See also:
+  CalcMachineEps
+  CalcMachineEpsSingle
+  CalcMachineEpsExtended
+  SetPrecisionTolerance
+  SetPrecisionToleranceToEpsilon
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@CalcMachineEpsExtended
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Calculates the Machine Epsilon value for extended precision.
+Description:
+  This procedure calculates the Machine Epsilon value for extended precision
+  and stores it within the variable <i>EpsExtended</i>. Both, the variable Epsilon as well as the variable
+  PrecisionTolerance stay untouched.
+See also:
+  CalcMachineEps
+  CalcMachineEpsSingle
+  CalcMachineEpsDouble
+  SetPrecisionTolerance
+  SetPrecisionToleranceToEpsilon
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@Exp
+<GROUP MathRoutines.Exponential>
+Summary:
+  Calculates e raised to a power x.
+Description:
+  Calculates e raised to a power x.
+Parameters:
+  X - Value for which to calculate the exp.
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IsFloatZero
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Determines whether value X is zero.
+Description:
+  Determines whether value X is zero or near by zero. To determine if a value is
+  near by zero the function takes advance of the PrecisionTolerance variable.
+Parameters:
+  X - Value to test.
+See also:
+  IsNaN
+  IsInfinite
+  IsSpecialValue
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IsPrimeFactor
+<GROUP MathRoutines.Miscellaneous>
+Summary:
+  Determines if a specific value is a prime factor of another value.
+Description:
+  IsPrimeFactor determines if a specific value F is a prime factor of another value N.
+  F is a prime factor if (F mod N) = 0 and, of course, the value F is a prime number. To
+  determine if F is a prime number the IsPrime function is used.
+Parameters:
+  F - The value to test if it is a prime factor.
+  N - The value for which to determine if F is a prime factor.
+See also:
+  IsPrime
+  IsPrimeRM
+  IsPrimeTD
+  IsRelativePrime
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IsPrimeRM
+<GROUP MathRoutines.Miscellaneous>
+Summary:
+  Determines whether a value is a prime number according the Rabin-Miller Strong
+  Primality Test.
+Description:
+  Determines whether the value <i>N</I> is a prime number according the Rabin-Miller Strong
+  Primality Test. Instead of using this function directly you should set the Primality Test
+  using the SetPrimalityTest function and use the function IsPrime to check if a value is
+  prime.
+Parameters:
+  N - The value to test.
+See also:
+  SetPrimalityTest
+  IsPrime
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IsPrimeTD
+<GROUP MathRoutines.Miscellaneous>
+Summary:
+  Determines whether a Value is a prime number according the Trial Division primality
+  test.
+Description:
+  Determines whether the value <i>N</I> is a prime number according the Trial Division
+  Primality Test. Instead of using this function directly you should set the Primality Test
+  using the SetPrimalityTest function and use the function IsPrime to check if a value is
+  prime.
+Parameters:
+  N - The value to test.
+See also:
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@IsSpecialValue
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Determines of a value is either NaN or infinite.
+Description:
+  IsSpecialValue returns true if the value is either a NaN, positive Infinite or
+  negative Infinite.
+Parameters:
+  X - The value to test.
+See also:
+  IsNaN
+  IsInfinite
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: Matthias Thoma
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@PrimeFactors
+<GROUP MathRoutines.Miscellaneous>
+Summary:
+  Determines all prime factors of a value.
+Description:
+  PrimeFactors determines all prime factors of a given value.
+Parameters:
+  N - The number for which the prime factors should be determined.
+See also:
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@SetPrecisionTolerance
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Set the precision tolerance to a new value.
+Description:
+  This function sets the PrecisionTolerance variable to
+  a new value <i>NewTolerance</i>.
+Parameters:
+  NewTolerance - The new tolerance to use.
+See also:
+  SetPrecisionToleranceToEpsilon
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@SetPrecisionToleranceToEpsilon
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Set the PrecisionTolerance variable to Epsilon.
+Description:
+  This procedure sets the PrecisionTolerance variable to
+  Epsilon. Epsilon is (re-) calaculated using the
+  CalcMachineEps function.
+Parameters:
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@SetPrimalityTest
+<GROUP MathRoutines.Miscellaneous>
+Summary
+Set the primality test to use within the JCL.
+
+Description
+This procedures sets the primality test to use within the
+JCL. Currently two different algorithms are available:
+Rabin-Miller strong primality test and the more traditional
+and straight forward Trial Division method.
+
+If you need to implement a new primality test please follow
+these rules:
+
+First you need to add a function similar to IsPrimeRM. Per
+definition, each new primality test function name starts with
+IsPrime followed by the kind of primality test. A future
+function concerning the Lehmann primality test would be
+called, for example, IsPrimeLehmann.
+
+
+<CODE>
+function IsPrimeLehmann(X: Cardinal): Boolean;
+begin
+[...]
+end;
+</CODE>
+
+
+The next step is to add your new test to the
+TPrimalityTestMethod set.
+
+
+<CODE>
+type
+  TPrimalityTestMethod = (ptTrialDivision, ptRabinMiller, ptLehmann);
+</CODE>
+
+
+Furthermore you'll need to add a new case to SetPrimality
+test.
+
+
+<CODE>
+case Method of
+  ptTrialDivision: IsPrime := IsPrimeTD;
+  ptRabinMiller: IsPrime := IsPrimeRM;
+  ptLehmann: IsPrime := IsPrimeLehmann;
+end;
+</CODE>
+
+Now you are done. Anyway, please consider to donate your
+function to the main JCL branch.
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: IDK
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@MathConstants
+<TITLE Constants used in JclMath>
+
+The JCL provides many mathematical constants. Some to speed
+up a function and some just because they are common within
+math calculations. All these constants are provided with the
+greatest possible precision.
+
+
+<TABLE>
+constant name           Description         Value
+------------------      -----------------   -------------------------------------
+Cbrt2                   CubeRoot (2)         1.2599210498948731647672106072782
+Cbrt3                   CubeRoot (3)         1.4422495703074083823216383107801
+Cbrt10                  CubeRoot (10)        2.1544346900318837217592935665194
+Cbrt100                 CubeRoot (100)       4.6415888336127788924100763509194
+CbrtPi                  CubeRoot (PI)        1.4645918875615232630201425272638
+PiOn2                   PI / 2               1.5707963267948966192313216916398
+PiOn3                   PI / 3               1.0471975511965977461542144610932
+PiOn4                   PI / 4               0.78539816339744830961566084581988
+Sqrt2                   Sqrt (2)             1.4142135623730950488016887242097
+Sqrt3                   Sqrt (3)             1.7320508075688772935274463415059
+Sqrt5                   Sqrt (5)             2.2360679774997896964091736687313
+Sqrt10                  Sqrt (10)            3.1622776601683793319988935444327
+SqrtPi                  Sqrt (PI)            1.7724538509055160272981674833411
+Sqrt2Pi                 Sqrt (2 * PI)        2.506628274631000502415765284811
+TwoPi                   2 * PI               6.283185307179586476925286766559;
+ThreePi                 3 * PI               9.4247779607693797153879301498385
+Ln2                     Ln(2)                0.69314718055994530941723212145818
+Ln10                    Ln(10)               2.3025850929940456840179914546844
+LnPi                    Ln(PI)               1.1447298858494001741434273513531
+Log2                    Log10(2)             0.30102999566398119521373889472449
+Log3                    Log10(3)             0.47712125471966243729502790325512
+LogPi                   Log10(PI)            0.4971498726941338543512682882909
+LogE                    Log10(E)             0.43429448190325182765112891891661
+E                       Natural constant     2.7182818284590452353602874713527
+hLn2Pi                  Ln(2*PI)/2           0.91893853320467274178032973640562
+inv2Pi                  0.5 / Pi             0.159154943091895
+TwoToPower63            2^63                 9223372036854775808.0
+MaxAngle                                     Depends on selected float data type.
+MaxTanH                                      Depends on selected float data type.
+MaxFactorial                                 Depends on selected float data type.
+MaxFloatingPoint                             Depends on selected float data type.
+MinFloatingPoint                             Depends on selected float data type.
+</TABLE>
+
+@@Cbrt2
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Cbrt3
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Cbrt10
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Cbrt100
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@CbrtPi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Pi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@PiOn2
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@PiOn3
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@PiOn4
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Sqrt2
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Sqrt3
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Sqrt5
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Sqrt10
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@SqrtPi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Sqrt2Pi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@TwoPi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@ThreePi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Ln2
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Ln10
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@LnPi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Log2
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@Log3
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@LogPi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@LogE
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@E
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@hLn2Pi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@inv2Pi
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@TwoToPower63
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@MaxAngle
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@MaxTanH
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@MaxFactorial
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@MaxFloatingPoint
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@MinFloatingPoint
+<ALIAS MathConstants>
+--------------------------------------------------------------------------------
+@@IsPrime
+<GROUP MathRoutines.Miscellaneous>
+Summary:
+  Determines whether a value is a prime number.
+Description:
+  Determines whether the value <i>N</I> is a prime number according the currently active
+  Primality Test. You should set the Primality Test using the SetPrimalityTest function.
+Parameters:
+  N - The value to test.
+See also:
+  SetPrimalityTest
+Quick info:
+  Unit: JclMath
+  Category: Math Routines
+  Donator: Matthias Thoma
+  Delphi Versions: 4,5,6
+  Kylix Versions: 1
+  Free Pascal Compiler Versions: 1.x
+--------------------------------------------------------------------------------
+@@Epsilon
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  Epsilon and related variables hold the calculated machine Epsilon.
+Description:
+  Epsilon holds the calculated machine Epsilon. If no Epsilon has been calaculated
+  by the CalcMachineEps procedure the value of Epsilon is undetermined.
+  <P>
+  Nontheless <i>Epsilon</i> is not used for any calculations. Per definition,
+  all JCL functions which need a specific epsilon use the PrecisionTolerance
+  variable instead. Therefor you need to call either SetPrecisionTolerance or
+  SetPrecisionToleranceToEpsilon.
+--------------------------------------------------------------------------------
+@@ThreeEpsilon
+<COMBINE Epsilon>
+@@EpsSingle
+<COMBINE Epsilon>
+@@EpsDouble
+<COMBINE Epsilon>
+@@EpsExtended
+<COMBINE Epsilon>
+@@ThreeEpsSingle
+<COMBINE Epsilon>
+@@ThreeEpsDouble
+<COMBINE Epsilon>
+@@ThreeEpsExtended
+<COMBINE Epsilon>
+--------------------------------------------------------------------------------
+@@PrecisionTolerance
+<GROUP MathRoutines.Floatsupport>
+Summary:
+  PrecisionTolerance holds the value of the tolerance used within the JCL.
+Description:
+  Several JCL functions and procedures are using PrecisionTolerance. For example,
+  IsFloatZero uses this variable to determine if a value is zero or near by zero.
+--------------------------------------------------------------------------------
+
