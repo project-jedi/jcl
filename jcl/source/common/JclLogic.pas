@@ -90,10 +90,11 @@ function LRot(const Value: Byte; const Count: TBitRange): Byte; overload;
 function LRot(const Value: Word; const Count: TBitRange): Word; overload;
 function LRot(const Value: Integer; const Count: TBitRange): Integer; overload;
 
-function ReverseBits(const Value: Byte): Byte; overload;
-function ReverseBits(const Value: Word): Word; overload;
-function ReverseBits(const Value: Integer): Integer; overload;
-function ReverseBits(const Value: Int64): Int64; overload;
+function ReverseBits(Value: Byte): Byte; overload;
+function ReverseBits(Value: Word): Word; overload;
+function ReverseBits(Value: Integer): Integer; overload;
+function ReverseBits(Value: Cardinal): Cardinal; overload;
+function ReverseBits(Value: Int64): Int64; overload;
 function ReverseBits(P: Pointer; Count: Integer): Pointer; overload;
 
 function RRot(const Value: Byte; const Count: TBitRange): Byte; overload;
@@ -569,71 +570,83 @@ end;
 
 //------------------------------------------------------------------------------
 
-function ReverseBits(const Value: Byte): Byte;
+const
+  // Lookup table of reversed nibbles, used by simple overloads of ReverseBits
+  RevNibbles: array [0..15] of Byte =
+    ($0, $8, $4, $C, $2, $A, $6, $E, $1, $9, $5, $D, $3, $B, $7, $F);
+
+function ReverseBits(Value: Byte): Byte;
 var
-  B, I: Byte;
+  I: Integer;
 begin
   Result := 0;
-  B := Value;
+  for I := 0 to 1 do
+  begin
+    Result := (Result shl 4) or RevNibbles[Value and $F];
+    Value := Value shr 4;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function ReverseBits(Value: Word): Word;
+var
+  I: Integer;
+begin
+  Result := 0;
+  for I := 0 to 3 do
+  begin
+    Result := (Result shl 4) or RevNibbles[Value and $F];
+    Value := Value shr 4;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function ReverseBits(Value: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := 0;
   for I := 0 to 7 do
   begin
-    Result := (Result shl 1) or (B and $01);
-    B := B shr 1;
+    Result := (Result shl 4) or RevNibbles[Value and $F];
+    Value := Value shr 4;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
-function ReverseBits(const Value: Word): Word;
+function ReverseBits(Value: Cardinal): Cardinal;
 var
-  I: Byte;
-  W: Word;
+  I: Integer;
 begin
   Result := 0;
-  W := Value;
+  for I := 0 to 7 do
+  begin
+    Result := (Result shl 4) or RevNibbles[Value and $F];
+    Value := Value shr 4;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+function ReverseBits(Value: Int64): Int64;
+var
+  I: Integer;
+begin
+  Result := 0;
   for I := 0 to 15 do
   begin
-    Result := (Result shl 1) or (W and $0001);
-    W := W shr 1;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-function ReverseBits(const Value: Integer): Integer;
-var
-  I: Byte;
-  J: Integer;
-begin
-  Result := 0;
-  J := Value;
-  for I := 0 to 31 do
-  begin
-    Result := (Result shl 1) or (J and $00000001);
-    J := J shr 1;
-  end;
-end;
-
-//------------------------------------------------------------------------------
-
-
-function ReverseBits(const Value: Int64): Int64;
-var
-  I: Byte;
-  I64: Int64;
-begin
-  Result := 0;
-  I64 := Value;
-  for I := 0 to 63 do
-  begin
-    Result := (Result shl Int64(1)) or (I64 and Int64(1));
-    I64 := I64 shr Int64(1);
+    Result := (Result shl 4) or RevNibbles[Value and $F];
+    Value := Value shr 4;
   end;
 end;
 
 //------------------------------------------------------------------------------
 
 const
+  // Lookup table of reversed bytes, used by pointer overload of ReverseBits
   ReverseTable: array [0..255] of Byte = (
     $00, $80, $40, $C0, $20, $A0, $60, $E0,
     $10, $90, $50, $D0, $30, $B0, $70, $F0,
