@@ -106,7 +106,7 @@ function DegToDmsStr(const Degrees: Float; const SecondPrecision: Cardinal = 3):
 procedure CartesianToPolar(const X, Y: Float; out R, Phi: Float);
 procedure PolarToCartesian(const R, Phi: Float; out X, Y: Float);
 procedure CartesianToCylinder(const X, Y, Z: Float; out R, Phi, Zeta: Float);
-procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Theta, Phi: Float);
+procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Phi, Theta: Float);
 procedure CylinderToCartesian(const R, Phi, Zeta: Float; out X, Y, Z: Float);
 procedure SphericToCartesian(const Rho, Theta, Phi: Float; out X, Y, Z: Float);
 
@@ -389,13 +389,15 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Theta, Phi: Float);
+procedure CartesianToSpheric(const X, Y, Z: Float; out Rho, Phi, Theta: Float);
 begin
   Rho := Sqrt(X*X+Y*Y+Z*Z);
   Phi := ArcTan2(Y, X);
   if Phi < 0 then
     Phi := Phi + TwoPi;
-  Theta := ArcCos(Z/Rho);
+  Theta := 0;
+  if Rho > 0 then
+    Theta := ArcCos(Z/Rho);
 end;
 
 //--------------------------------------------------------------------------------------------------
