@@ -13,10 +13,15 @@
 { The Original Code is JclExprEval.pas.                                                            }
 {                                                                                                  }
 { The Initial Developer of the Original Code is Barry Kelly.                                       }
-{ Portions created by Raymond Alexander are Copyright (C) Barry Kelly. All rights reserved.        }
+{ Portions created by Barry Kelly are Copyright (C) Barry Kelly. All rights reserved.              }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
-{   Peter Haas, Barry Kelly, Robert Marquardt, Robert Rossmair, Matthias Thoma, Petr Vones         }
+{   Barry Kelly                                                                                    }
+{   Matthias Thoma (mthoma)                                                                        }
+{   Peter Haas (peterjhaas)                                                                        }
+{   Petr Vones (pvones)                                                                            }
+{   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -29,16 +34,29 @@
 // Last modified: $Date$
 // For history see end of file
 
-{ Brief: This unit contains the expression evaluator.
-  Description:
-    The key classes are TEvaluator, TCompiledEvaluator and
-    TExpressionCompiler.
-    <p>
-    * For single evaluations of multiple expressions, use TEvaluator.
-    * For many evaluations of the same expression, use TCompiledEvaluator.
-    * For many evaluations of many expressions, use TExpressionCompiler.
-    <p>
-    Customized evaluators can be put together from constituent parts. }
+  {@@ <GROUP $ExprEval>
+   <TOPICORDER 100>
+   Description
+   The key classes are TEvaluator, TCompiledEvaluator and
+   TExpressionCompiler.
+       *   For single evaluations of multiple expressions, use
+           TEvaluator.
+       *   For many evaluations of the same expression, use
+           TCompiledEvaluator.
+       *   For many evaluations of many expressions, use
+           TExpressionCompiler.
+   Customized evaluators can be put together from constituent
+   parts.
+   
+   Summary
+   This unit contains the expression evaluator.
+   
+   Donator
+   Barry Kelly
+
+   Contributors
+   Barry Kelly, Matthias Thoma, Peter Haas, Petr Vones, Robert Marquardt, Robert Rossmair
+   }
 
 unit JclExprEval;
 
@@ -51,75 +69,86 @@ uses
   JclBase, JclSysUtils, JclStrHashMap, JclResources;
 
 const
-  { Brief: Initial size of internal hash lists created by TEasyEvaluator
+  {@@ <GROUP $ExprEval>
+     Brief: Initial size of internal hash lists created by TEasyEvaluator
       descendants, and also TExpressionCompiler. }
   cExprEvalHashSize = 127;
 
 type
-  { Brief: Exception class used by the expression evaluator. }
+  {@@ <GROUP $ExprEval>
+     Brief: Exception class used by the expression evaluator. }
   EJclExprEvalError = class(EJclError);
 
 const
-  { Brief: Set of characters that will be skipped before a token read
+  {@@ <GROUP $ExprEval>
+     Brief: Set of characters that will be skipped before a token read
     commences.
     See Also: TExprLexer }
   ExprWhiteSpace = [#1..#32];
 
 type
-  { Brief: Floating-point type used by TLexer and TParser.Evaluate. }
+  {@@ <GROUP $ExprEval>
+     Brief: Floating-point type used by TLexer and TParser.Evaluate. }
   TFloat = Double;
-  { Brief: Pointer to TFloat. }
+  {@@ <COMBINE TFloat> }
   PFloat = ^TFloat;
 
-  { Brief: 32-bit IEEE standard floating-point value. }
+  {@@ <GROUP $ExprEval>
+     Brief: 32-bit IEEE standard floating-point value. }
   TFloat32 = Single;
-  { <COMBINE TFloat32> }
+  {@@ <COMBINE TFloat32> }
   PFloat32 = ^TFloat32;
 
-  { Brief: 64-bit IEEE standard floating-point value. }
+  {@@ <GROUP $ExprEval>
+     Brief: 64-bit IEEE standard floating-point value. }
   TFloat64 = Double;
-  { <COMBINE TFloat64> }
+  {@@ <COMBINE TFloat64> }
   PFloat64 = ^TFloat64;
 
-  { Brief: 80-bit Intel extended precision floating-point value. }
+  {@@ <GROUP $ExprEval>
+     Brief: 80-bit Intel extended precision floating-point value. }
   TFloat80 = Extended;
-  { <COMBINE TFloat80> }
+  {@@ <COMBINE TFloat80> }
   PFloat80 = ^TFloat80;
 
-  { Brief: A function type taking no parameters. }
+  {@@ <GROUP $ExprEval>
+     Brief: A function type taking no parameters. }
   TFloatFunc = function: TFloat;
-  { <COMBINE TFloatFunc> }
+  {@@ <COMBINE TFloatFunc> }
   TFloat32Func = function: TFloat32;
-  { <COMBINE TFloatFunc> }
+  {@@ <COMBINE TFloatFunc> }
   TFloat64Func = function: TFloat64;
-  { <COMBINE TFloatFunc> }
+  {@@ <COMBINE TFloatFunc> }
   TFloat80Func = function: TFloat80;
 
-  { Brief: A function type taking a single parameter. }
+  {@@ <GROUP $ExprEval>
+     Brief: A function type taking a single parameter. }
   TUnaryFunc = function(X: TFloat): TFloat;
-  { <COMBINE TUnaryFunc> }
+  {@@ <COMBINE TUnaryFunc> }
   TUnary32Func = function(X: TFloat32): TFloat32;
-  { <COMBINE TUnaryFunc> }
+  {@@ <COMBINE TUnaryFunc> }
   TUnary64Func = function(X: TFloat64): TFloat64;
-  { <COMBINE TUnaryFunc> }
+  {@@ <COMBINE TUnaryFunc> }
   TUnary80Func = function(X: TFloat80): TFloat80;
 
-  { Brief: A function type taking two parameters. }
+  {@@ <GROUP $ExprEval>
+     Brief: A function type taking two parameters. }
   TBinaryFunc = function(X, Y: TFloat): TFloat;
-  { <COMBINE TBinaryFunc> }
+  {@@ <COMBINE TBinaryFunc> }
   TBinary32Func = function(X, Y: TFloat32): TFloat32;
-  { <COMBINE TBinaryFunc> }
+  {@@ <COMBINE TBinaryFunc> }
   TBinary64Func = function(X, Y: TFloat64): TFloat64;
-  { <COMBINE TBinaryFunc> }
+  {@@ <COMBINE TBinaryFunc> }
   TBinary80Func = function(X, Y: TFloat80): TFloat80;
 
-  { Brief: A function type taking three parameters. }
+  {@@ <GROUP $ExprEval>
+     Brief: A function type taking three parameters. }
   TTernaryFunc = function(X, Y, Z: TFloat): TFloat;
-  { <COMBINE TTernaryFunc> }
+  {@@ <COMBINE TTernaryFunc> }
   TTernary32Func = function(X, Y, Z: TFloat32): TFloat32;
-  { <COMBINE TTernaryFunc> }
+  {@@ <COMBINE TTernaryFunc> }
   TTernary64Func = function(X, Y, Z: TFloat64): TFloat64;
-  { <COMBINE TTernaryFunc> }
+  {@@ <COMBINE TTernaryFunc> }
   TTernary80Func = function(X, Y, Z: TFloat80): TFloat80;
 
 type
@@ -131,7 +160,8 @@ type
   TExprNode = class;
   TExprNodeFactory = class;
 
-  { Brief: Finds a symbol corresponding to an identifier.
+  {@@ <GROUP $ExprEval>
+    Brief: Finds a symbol corresponding to an identifier.
     Description:
       Expressions composed solely of numbers and operators may be
       evaluated quite easily, but to make an expression evaluator really
@@ -165,7 +195,8 @@ type
     function Find(const AName: string): TExprSym; virtual; abstract;
   end;
 
-  { Brief: A context class that uses a hash map for its implementation.
+  {@@ <GROUP $ExprEval>
+    Brief: A context class that uses a hash map for its implementation.
     Description:
       This is a concrete context class that uses a hash map for symbol
       lookup. The fact that it uses a hash for its implementation means that
@@ -179,7 +210,7 @@ type
   private
     FHashMap: TStringHashMap;
   public
-    { Brief: Creates an instance of THashContext.
+    {@@ Brief: Creates an instance of THashContext.
       Parameters:
         ACaseSensitive: Whether this context should be case sensitive or not.
         AHashSize: The hash size to pass on to the internal
@@ -203,10 +234,10 @@ type
       ACaseSensitive: Boolean = False;
       AHashSize: Integer = 127);
 
-    { Brief: Destroys this instance. Use Free instead. }
+    {@@ Brief: Destroys this instance. Use Free instead. }
     destructor Destroy; override;
 
-    { Brief: Adds a symbol to this context.
+    {@@ Brief: Adds a symbol to this context.
       Parameters:
         ASymbol: The symbol object to add.
       Description:
@@ -214,7 +245,7 @@ type
         of it, and will free it when it is itself destroyed. }
     procedure Add(ASymbol: TExprSym);
 
-    { Brief: Removes a symbol from this context.
+    {@@ Brief: Removes a symbol from this context.
       Parameters:
         AName: symbol to remove and free.
       Description:
@@ -224,7 +255,8 @@ type
     function Find(const AName: string): TExprSym; override;
   end;
 
-  { Brief: A compound context object for combining multiple contexts.
+  {@@ <GROUP $ExprEval>
+    Brief: A compound context object for combining multiple contexts.
     Description:
       A context class that contains a set of other contexts, which it
       searches in order, starting with the most recently added. }
@@ -235,29 +267,29 @@ type
     function GetContexts(AIndex: Integer): TExprContext;
     function GetCount: Integer;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AOwnsContexts: Determines whether this context object
           should free contexts when they are deleted. You can use
           Extract to remove a context while keeping it intact. }
     constructor Create(AOwnsContexts: Boolean);
 
-    { Brief: Destroys the TExprSetContext instance. Use Free instead. }
+    {@@ Brief: Destroys the TExprSetContext instance. Use Free instead. }
     destructor Destroy; override;
 
-    { Brief: Adds a context to the set.
+    {@@ Brief: Adds a context to the set.
       Parameters:
         AContext: Context to add to the set of contexts. }
     procedure Add(AContext: TExprContext);
-    { Brief: Removes a context.
+    {@@ Brief: Removes a context.
       Parameters:
         AContext: Context to remove. }
     procedure Remove(AContext: TExprContext);
-    { Brief: Removes a context by index.
+    {@@ Brief: Removes a context by index.
       Parameters:
         AIndex: Index of context to remove. }
     procedure Delete(AIndex: Integer);
-    { Brief: Removes a context without freeing it (if AOwnsContexts was
+    {@@ Brief: Removes a context without freeing it (if AOwnsContexts was
         passed as True in the constructor Create).
       Parameters:
         AContext: Context to remove.
@@ -265,19 +297,20 @@ type
         The context passed in (AContext). }
     function Extract(AContext: TExprContext): TExprContext;
 
-    { Brief: Returns the number of contexts held by this set. }
+    {@@ Brief: Returns the number of contexts held by this set. }
     property Count: Integer read GetCount;
-    { Brief: Accesses an internal context by index. }
+    {@@ Brief: Accesses an internal context by index. }
     property Contexts[AIndex: Integer]: TExprContext read GetContexts;
 
-    { Brief: Access to the internal list of contexts for advanced
+    {@@ Brief: Access to the internal list of contexts for advanced
         operations. }
     property InternalList: TList read FList;
 
     function Find(const AName: string): TExprSym; override;
   end;
 
-  { Brief: Represents a symbol that may be found in an input stream.
+  {@@ <GROUP $ExprEval>
+    Brief: Represents a symbol that may be found in an input stream.
     Description:
       An instance of this class is responsible for turning input lexemes
       (from the lexer) into either a concrete result (Evaluate) or
@@ -300,12 +333,12 @@ type
     FCompileParser: TExprCompileParser;
     FNodeFactory: TExprNodeFactory;
   public
-    { Brief: Constructs a new instance.
+    {@@ Brief: Constructs a new instance.
       Parameters:
         AIdent: Identifier token that should trigger this symbol. }
     constructor Create(const AIdent: string);
 
-    { Brief: Evaluates this symbol.
+    {@@ Brief: Evaluates this symbol.
       Description:
         This method is called by an evaluating Parser when it finds this
         symbol in its stream. It should call methods of the lexer and parser
@@ -316,7 +349,7 @@ type
         TExprSym.Compile, TExprSym.Lexer, TExprSym.EvalParser }
     function Evaluate: TFloat; virtual; abstract;
 
-    { Brief: Compiles this symbol.
+    {@@ Brief: Compiles this symbol.
       Description:
         This method is called by a compiling Parser when it finds this symbol
         in its stream. It should call methods of the lexer and parser
@@ -328,10 +361,10 @@ type
         TExprNode, TExprSym.Evaluate, TExprSym.Lexer, TExprSym.CompileParser }
     function Compile: TExprNode; virtual; abstract;
 
-    { Brief: Identifier token that should trigger this symbol. }
+    {@@ Brief: Identifier token that should trigger this symbol. }
     property Ident: string read FIdent;
 
-    { Brief: The lexical analyser that found this symbol in its stream.
+    {@@ Brief: The lexical analyser that found this symbol in its stream.
       Description:
         This property is set by the parser when it finds this symbol in the
         input stream. This is done so that the Evaluate and Compile methods
@@ -341,7 +374,7 @@ type
         TExprSym.NodeFactory, TExprLexer }
     property Lexer: TExprLexer read FLexer write FLexer;
 
-    { Brief: The compile parser that found this symbol in its stream.
+    {@@ Brief: The compile parser that found this symbol in its stream.
       Description:
         This property is set by a compiling parser when it finds this
         symbol in its input stream. This is done so that the Compile method
@@ -352,7 +385,7 @@ type
     property CompileParser: TExprCompileParser read FCompileParser
       write FCompileParser;
 
-    { Brief: The evaluation parser that found this symbol in its stream.
+    {@@ Brief: The evaluation parser that found this symbol in its stream.
       Description:
         This property is set by an evaluating parser when it finds this
         symbol in its input stream. This is done so that the Evaluate method
@@ -362,7 +395,7 @@ type
         TExprEvalParser }
     property EvalParser: TExprEvalParser read FEvalParser write FEvalParser;
 
-    { Brief: The expression node factory object for creating expression
+    {@@ Brief: The expression node factory object for creating expression
         node instances.
       Description:
         This property is set by a compiling parser when it finds this symbol
@@ -375,7 +408,8 @@ type
     property NodeFactory: TExprNodeFactory read FNodeFactory write FNodeFactory;
   end;
 
-  { Brief: The type of token found by TExprLexer. }
+  {@@ <GROUP $ExprEval>
+     Brief: The type of token found by TExprLexer. }
   TExprToken = (
     // specials
     etEof,
@@ -568,7 +602,8 @@ type
     etInvalid // invalid token type
   );
 
-  { Brief: A lexical analyser.
+  {@@ <GROUP $ExprEval>
+    Brief: A lexical analyser.
     Description:
       An object of this class breaks up an input stream into lexemes -
       that is, it breaks down the input stream into tokens with two
@@ -592,17 +627,17 @@ type
         NextTok won't do anything (i.e. CurrTok will remain equal to etEof). }
   TExprLexer = class(TObject)
   protected
-    { Brief: NextTok should set as appropriate. }
+    {@@ Brief: NextTok should set as appropriate. }
     FCurrTok: TExprToken;
-    { Brief: NextTok should set as appropriate. }
+    {@@ Brief: NextTok should set as appropriate. }
     FTokenAsNumber: TFloat;
-    { Brief: NextTok should set as appropriate. }
+    {@@ Brief: NextTok should set as appropriate. }
     FTokenAsString: string;
   public
-    { Brief: Constructs an instance and calls Reset. }
+    {@@ Brief: Constructs an instance and calls Reset. }
     constructor Create;
 
-    { Brief: Skips the current token and gets the next token.
+    {@@ Brief: Skips the current token and gets the next token.
       Description:
         This method is called by Reset (and thus implicitly by Create), so
         it doesn't need to be called to get the first token in the stream.
@@ -620,14 +655,14 @@ type
         information as appropriate for the token type. }
     procedure NextTok; virtual; abstract;
 
-    { Brief: Resets the position of the lexer to the start of its
+    {@@ Brief: Resets the position of the lexer to the start of its
         input stream.
       Description:
         Overridden implementations should call this at the <b>end</b> of
         their implementations, because it calls NextTok by default. }
     procedure Reset; virtual;
 
-    { Brief: String information about the current token if that is
+    {@@ Brief: String information about the current token if that is
         appropriate.
       Description:
         This property is usually valid for tokens that don't have a fixed
@@ -639,7 +674,7 @@ type
       See Also: NextTok, TokenAsNumber, CurrTok }
     property TokenAsString: string read FTokenAsString;
 
-    { Brief: Number information about the current token if that is
+    {@@ Brief: Number information about the current token if that is
         appropriate.
       Description:
         This property is usually only valid for well-formed integer or
@@ -648,14 +683,15 @@ type
       See Also: NextTok, TokenAsString, CurrTok }
     property TokenAsNumber: TFloat read FTokenAsNumber;
 
-    { Brief: The current token type.
+    {@@ Brief: The current token type.
       Description:
         This contains the type of the token just read by NextTok.
       See Also: NextTok, TokenAsString, TokenAsNumber }
     property CurrTok: TExprToken read FCurrTok;
   end;
 
-  { Brief: A node in an expression DAG (directed acyclic graph).
+  {@@ <GROUP $ExprEval>
+    Brief: A node in an expression DAG (directed acyclic graph).
     Description:
       This is the abstract object from which all expression DAG nodes
       descend. TExprNodeFactory has responsibility for constructing
@@ -669,7 +705,7 @@ type
     function GetDepCount: Integer;
     function GetDeps(AIndex: Integer): TExprNode;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         ADepList: A list of dependancies, nodes this expression node
           depends on.
@@ -677,24 +713,25 @@ type
         The dependancy list passed into this constructor should be the
         <b>direct</b> dependancies of this node. }
     constructor Create(const ADepList: array of TExprNode);
-    { Brief: Destroys an instance. Use Free instead. }
+    {@@ Brief: Destroys an instance. Use Free instead. }
     destructor Destroy; override;
-    { Brief: Adds a dependancy.
+    {@@ Brief: Adds a dependancy.
       Parameters:
         ADep: Dependancy to add.
       Description:
         This method adds a dependancy to this node. }
     procedure AddDep(ADep: TExprNode);
-    { Brief: Number of dependancies this node has. }
+    {@@ Brief: Number of dependancies this node has. }
     property DepCount: Integer read GetDepCount;
-    { Brief: Accesses a dependancy based on index. }
+    {@@ Brief: Accesses a dependancy based on index. }
     property Deps[AIndex: Integer]: TExprNode read GetDeps; default;
-    { Brief: Access to the internal dependancy list for advanced
+    {@@ Brief: Access to the internal dependancy list for advanced
       optimization strategies. }
     property DepList: TList read FDepList;
   end;
 
-  { Brief: A factory class for TExprNode objects.
+  {@@ <GROUP $ExprEval>
+    Brief: A factory class for TExprNode objects.
     Description:
       When compiling an expression, the expression must be broken down
       into 'atomic' components, like add, subtract, load constant,
@@ -710,7 +747,7 @@ type
       sub-expression elimination, constant sub-expression evaluation, etc. }
   TExprNodeFactory = class(TObject)
   public
-    { Brief: Loads the variable pointed to by ALoc.
+    {@@ Brief: Loads the variable pointed to by ALoc.
       Description:
         Generates a node that will load a variable from a pointer. The
         type is important, because variables of different types are of
@@ -718,76 +755,76 @@ type
       Parameters:
         ALoc: Location of the variable to load. }
     function LoadVar32(ALoc: PFloat32): TExprNode; virtual; abstract;
-    { <COMBINE LoadVar32> }
+    {@@ <COMBINE LoadVar32> }
     function LoadVar64(ALoc: PFloat64): TExprNode; virtual; abstract;
-    { <COMBINE LoadVar32> }
+    {@@ <COMBINE LoadVar32> }
     function LoadVar80(ALoc: PFloat80): TExprNode; virtual; abstract;
 
-    { Brief: Loads a constant value.
+    {@@ Brief: Loads a constant value.
       Description:
         Generates a node that will load a constant value. The type is
         important because less precision will mean faster evaluation.
       Parameters:
         AValue: The value to load. }
     function LoadConst32(AValue: TFloat32): TExprNode; virtual; abstract;
-    { <COMBINE LoadConst32> }
+    {@@ <COMBINE LoadConst32> }
     function LoadConst64(AValue: TFloat64): TExprNode; virtual; abstract;
-    { <COMBINE LoadConst32> }
+    {@@ <COMBINE LoadConst32> }
     function LoadConst80(AValue: TFloat80): TExprNode; virtual; abstract;
 
-    { Brief: Calls a function.
+    {@@ Brief: Calls a function.
       Description:
         Generates a node that will call a function, possibly with
         parameters. There are 4 basic types of functions directly supported
         here: no parameters (Float*), 1 parameter (Unary*), 2 parameters
         (Binary*) and 3 parameters (Ternary*). }
     function CallFloatFunc(AFunc: TFloatFunc): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallFloat32Func(AFunc: TFloat32Func): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallFloat64Func(AFunc: TFloat64Func): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallFloat80Func(AFunc: TFloat80Func): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallUnaryFunc(AFunc: TUnaryFunc; X: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallUnary32Func(AFunc: TUnary32Func; X: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallUnary64Func(AFunc: TUnary64Func; X: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallUnary80Func(AFunc: TUnary80Func; X: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallBinaryFunc(AFunc: TBinaryFunc; X, Y: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallBinary32Func(AFunc: TBinary32Func; X, Y: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallBinary64Func(AFunc: TBinary64Func; X, Y: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallBinary80Func(AFunc: TBinary80Func; X, Y: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallTernaryFunc(AFunc: TTernaryFunc; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallTernary32Func(AFunc: TTernary32Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallTernary64Func(AFunc: TTernary64Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE CallFloatFunc> }
+    {@@ <COMBINE CallFloatFunc> }
     function CallTernary80Func(AFunc: TTernary80Func; X, Y, Z: TExprNode): TExprNode; virtual; abstract;
 
-    { Brief: Performs an arithmetic operation.
+    {@@ Brief: Performs an arithmetic operation.
       Description:
         These functions generate nodes that perform an arithmetic operation
         on their operands. }
     function Add(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE Add> }
+    {@@ <COMBINE Add> }
     function Subtract(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE Add> }
+    {@@ <COMBINE Add> }
     function Multiply(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE Add> }
+    {@@ <COMBINE Add> }
     function Divide(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
-    { <COMBINE Add> }
+    {@@ <COMBINE Add> }
     function Negate(AValue: TExprNode): TExprNode; virtual; abstract;
 
-    { Brief: Performs a comparison.
+    {@@ Brief: Performs a comparison.
       Parameters:
         ALeft: Left side of comparison.
         ARight: Right side of comparison.
@@ -799,25 +836,26 @@ type
         respectively. }
     function Compare(ALeft, ARight: TExprNode): TExprNode; virtual; abstract;
 
-    { Brief: Overloaded declarations for auto-selection of correct
+    {@@ Brief: Overloaded declarations for auto-selection of correct
         function in code.
       Description:
         These functions should auto-select the correct function for
         the input variable in code, making it more maintainable. }
     function LoadVar(ALoc: PFloat32): TExprNode; overload;
-    { <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
+    {@@ <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
     function LoadVar(ALoc: PFloat64): TExprNode; overload;
-    { <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
+    {@@ <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
     function LoadVar(ALoc: PFloat80): TExprNode; overload;
-    { <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
+    {@@ <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
     function LoadConst(AValue: TFloat32): TExprNode; overload;
-    { <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
+    {@@ <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
     function LoadConst(AValue: TFloat64): TExprNode; overload;
-    { <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
+    {@@ <COMBINE TExprNodeFactory.LoadVar@PFloat32> }
     function LoadConst(AValue: TFloat80): TExprNode; overload;
   end;
 
-  { Brief: A compiling parser.
+  {@@ <GROUP $ExprEval>
+    Brief: A compiling parser.
     Description:
       This is a compiling parser. It analyses the input stream of tokens
       from its lexer using a grammar and builds a graph of nodes that
@@ -832,7 +870,7 @@ type
     FLexer: TExprLexer;
     FNodeFactory: TExprNodeFactory;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         ALexer: The source of tokens to use. It doesn't take ownership
           of the lexer.
@@ -840,20 +878,20 @@ type
           nodes. It doesn't take ownership of the factory. }
     constructor Create(ALexer: TExprLexer; ANodeFactory: TExprNodeFactory);
 
-    { Brief: Compiles an expression from the lexical source.
+    {@@ Brief: Compiles an expression from the lexical source.
       Description:
         This method compiles the expression by descending through its
         grammatical methods, starting with CompileExpr.
       Returns: The top-level expression node. }
     function Compile: TExprNode; virtual;
 
-    { Brief: The source of tokens for this parser. }
+    {@@ Brief: The source of tokens for this parser. }
     property Lexer: TExprLexer read FLexer;
 
-    { Brief: The node factory object that constructs concrete node types. }
+    {@@ Brief: The node factory object that constructs concrete node types. }
     property NodeFactory: TExprNodeFactory read FNodeFactory;
 
-    { Brief: The context object used for symbol lookup.
+    {@@ Brief: The context object used for symbol lookup.
       Description:
         This property gives the context object that will be used for
         symbol lookup. Whenever an identifier is found in the input
@@ -865,23 +903,24 @@ type
 
     // grammar starts here
 
-    { Brief: Compiles relational operators and uses CompileSimpleExpr. }
+    {@@ Brief: Compiles relational operators and uses CompileSimpleExpr. }
     function CompileExpr(ASkip: Boolean): TExprNode; virtual;
-    { Brief: Compiles +, -, etc and uses CompileTerm. }
+    {@@ Brief: Compiles +, -, etc and uses CompileTerm. }
     function CompileSimpleExpr(ASkip: Boolean): TExprNode;
-    { Brief: Compiles *, /, etc and uses CompileSignedFactor. }
+    {@@ Brief: Compiles *, /, etc and uses CompileSignedFactor. }
     function CompileTerm(ASkip: Boolean): TExprNode;
-    { Brief: Compiles unary negate etc, and uses CompileFactor. }
+    {@@ Brief: Compiles unary negate etc, and uses CompileFactor. }
     function CompileSignedFactor(ASkip: Boolean): TExprNode;
-    { Brief: Compiles subexpressions (i.e. '(' & ')'), numbers, but defers
+    {@@ Brief: Compiles subexpressions (i.e. '(' & ')'), numbers, but defers
         identifiers to CompileIdentFactor. }
     function CompileFactor: TExprNode;
-    { Brief: Looks up the symbol corresponding to an identifier and
+    {@@ Brief: Looks up the symbol corresponding to an identifier and
         returns its compilation. }
     function CompileIdentFactor: TExprNode;
   end;
 
-  { Brief: An evaluating parser.
+  {@@ <GROUP $ExprEval>
+    Brief: An evaluating parser.
     Description:
       This is an evaluating parser. It evaluates the result of an expression
       as it grammatically analyses the input stream of tokens from its lexer.
@@ -892,23 +931,23 @@ type
     FContext: TExprContext;
     FLexer: TExprLexer;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         ALexer: The source of tokens to use. It doesn't take ownership
           of the lexer. }
     constructor Create(ALexer: TExprLexer);
 
-    { Brief: Evaluates an expression from the lexical source.
+    {@@ Brief: Evaluates an expression from the lexical source.
       Description:
         This method evaluates the expression by descending through its
         grammatical methods, starting with EvalExpr.
       Returns: The result of the evaluation. }
     function Evaluate: TFloat; virtual;
 
-    { Brief: The source of tokens for this parser. }
+    {@@ Brief: The source of tokens for this parser. }
     property Lexer: TExprLexer read FLexer;
 
-    { Brief: The context object used for symbol lookup.
+    {@@ Brief: The context object used for symbol lookup.
       Description:
         This property gives the context object that will be used for
         symbol lookup. Whenever an identifier is found in the input
@@ -920,35 +959,36 @@ type
 
     // grammar starts here
 
-    { Brief: Evaluates relational operators and uses EvalSimpleExpr. }
+    {@@ Brief: Evaluates relational operators and uses EvalSimpleExpr. }
     function EvalExpr(ASkip: Boolean): TFloat; virtual;
-    { Brief: Evaluates +, -, etc and uses EvalTerm. }
+    {@@ Brief: Evaluates +, -, etc and uses EvalTerm. }
     function EvalSimpleExpr(ASkip: Boolean): TFloat;
-    { Brief: Evaluates *, /, etc and uses EvalSignedFactor. }
+    {@@ Brief: Evaluates *, /, etc and uses EvalSignedFactor. }
     function EvalTerm(ASkip: Boolean): TFloat;
-    { Brief: Evaluates unary negate etc, and uses EvalFactor. }
+    {@@ Brief: Evaluates unary negate etc, and uses EvalFactor. }
     function EvalSignedFactor(ASkip: Boolean): TFloat;
-    { Brief: Evaluates subexpressions (i.e. '(' & ')'), numbers, but defers
+    {@@ Brief: Evaluates subexpressions (i.e. '(' & ')'), numbers, but defers
         identifiers to EvalIdentFactor. }
     function EvalFactor: TFloat;
-    { Brief: Looks up the symbol corresponding to an identifier and
+    {@@ Brief: Looks up the symbol corresponding to an identifier and
         returns its evaluation. }
     function EvalIdentFactor: TFloat;
   end;
 
 { some concrete class descendants follow... }
 
-  { Brief: A simple expression lexical analyser. }
+  {@@ <GROUP $ExprEval>
+     Brief: A simple expression lexical analyser. }
   TExprSimpleLexer = class(TExprLexer)
   protected
-    { Brief: Current position in buffer. }
+    {@@ Brief: Current position in buffer. }
     FCurrPos: PChar;
-    { Brief: Buffer containing expression. }
+    {@@ Brief: Buffer containing expression. }
     FBuf: string;
-    { Brief: Sets a new buffer and calls Reset. }
+    {@@ Brief: Sets a new buffer and calls Reset. }
     procedure SetBuf(const ABuf: string);
   public
-    { Brief: Constructs an instance with a buffer ABuf.
+    {@@ Brief: Constructs an instance with a buffer ABuf.
       Parameters:
         ABuf: A string containing an expression. }
     constructor Create(const ABuf: string);
@@ -956,7 +996,7 @@ type
     procedure NextTok; override;
     procedure Reset; override;
 
-    { Brief: Buffer to read expression from.
+    {@@ Brief: Buffer to read expression from.
       Description:
         Set this to change the source text the lexer extracts its tokens
         from. When it is set, the property setter calls the Reset method,
@@ -964,7 +1004,8 @@ type
     property Buf: string read FBuf write SetBuf;
   end;
 
-  { Brief: An operation that can be executed by a TExprVirtMach instance.
+  {@@ <GROUP $ExprEval>
+    Brief: An operation that can be executed by a TExprVirtMach instance.
     Description:
       TExprVirtMachOp is the kernel of TExprVirtMach's operation. The
       containing class (TExprVirtMach) is just that - a container, and
@@ -982,7 +1023,7 @@ type
   private
     function GetOutputLoc: PFloat;
   protected
-    { Brief: The actual variable this operation will write its output to.
+    {@@ Brief: The actual variable this operation will write its output to.
       Description:
         This is the internal storage variable this operation will write
         its output to. Operations that use this operation for input should
@@ -993,44 +1034,45 @@ type
       See Also: OutputLoc }
     FOutput: TFloat;
   public
-    { Brief: Executes this instruction.
+    {@@ Brief: Executes this instruction.
       Description:
         This method executes this instruction, reading from its inputs
         and writing to its output location. It returns False to terminate
         the execution sequence early; usually it returns True. }
     procedure Execute; virtual; abstract;
 
-    { Brief: The address to which this operation will write its output to.
+    {@@ Brief: The address to which this operation will write its output to.
       See Also: FOutput }
     property OutputLoc: PFloat read GetOutputLoc;
   end;
 
-  { Brief: A virtual machine for evaluating expressions relatively quickly.
+  {@@ <GROUP $ExprEval>
+    Brief: A virtual machine for evaluating expressions relatively quickly.
     See Also: TExprVirtMachNodeFactory, TExprVirtMachOp }
   TExprVirtMach = class(TObject)
   private
     FCodeList: TList;
     FConstList: TList;
   public
-    { Brief: Constructs an instance. }
+    {@@ Brief: Constructs an instance. }
     constructor Create;
-    { Brief: Destroys an instance. Use Free instead. }
+    {@@ Brief: Destroys an instance. Use Free instead. }
     destructor Destroy; override;
 
-    { Brief: Adds an operation to the end of the list of operations.
+    {@@ Brief: Adds an operation to the end of the list of operations.
       Parameters:
         AOp: The operation to add. }
     procedure Add(AOp: TExprVirtMachOp);
 
-    { Brief: Adds a constant to the constant list.
+    {@@ Brief: Adds a constant to the constant list.
       Parameters:
         AOp: The constant to add. }
     procedure AddConst(AOp: TExprVirtMachOp);
 
-    { Brief: Clears any stored code. }
+    {@@ Brief: Clears any stored code. }
     procedure Clear;
 
-    { Brief: Executes the stored code and returns the result.
+    {@@ Brief: Executes the stored code and returns the result.
       Returns:
         The value output by the last instruction executed (the result).
       Description:
@@ -1040,7 +1082,8 @@ type
     function Execute: TFloat;
   end;
 
-  { Brief: A node factory for virtual machine instructions.
+  {@@ <GROUP $ExprEval>
+    Brief: A node factory for virtual machine instructions.
     Description:
       This is a factory class for the default virtual machine.
     See Also: TExprVirtMach }
@@ -1052,13 +1095,13 @@ type
     procedure DoConsts(AVirtMach: TExprVirtMach);
     procedure DoCode(AVirtMach: TExprVirtMach);
   public
-    { Brief: Constructs an instance. }
+    {@@ Brief: Constructs an instance. }
     constructor Create;
 
-    { Brief: Destroys an instance. Use Free instead. }
+    {@@ Brief: Destroys an instance. Use Free instead. }
     destructor Destroy; override;
 
-    { Brief: Generates code for a virtual machine.
+    {@@ Brief: Generates code for a virtual machine.
       Parameters:
         AVirtMach: The virtual machine to generate code for.
       Description:
@@ -1100,12 +1143,13 @@ type
 
   { some concrete symbols }
 
-  { Brief: Symbol for a constant of type TFloat. }
+  {@@ <GROUP $ExprEval>
+     Brief: Symbol for a constant of type TFloat. }
   TExprConstSym = class(TExprSym)
   private
     FValue: TFloat;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this constant.
         AValue: Value this identifier should evaluate to. }
@@ -1114,12 +1158,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Symbol for a constant of type TFloat32. }
+  {@@ <GROUP $ExprEval>
+     Brief: Symbol for a constant of type TFloat32. }
   TExprConst32Sym = class(TExprSym)
   private
     FValue: TFloat32;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this constant.
         AValue: Value this identifier should evaluate to. }
@@ -1128,12 +1173,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Symbol for a constant of type TFloat64. }
+  {@@ <GROUP $ExprEval>
+     Brief: Symbol for a constant of type TFloat64. }
   TExprConst64Sym = class(TExprSym)
   private
     FValue: TFloat64;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this constant.
         AValue: Value this identifier should evaluate to. }
@@ -1142,12 +1188,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Symbol for a constant of type TFloat80. }
+  {@@ <GROUP $ExprEval>
+     Brief: Symbol for a constant of type TFloat80. }
   TExprConst80Sym = class(TExprSym)
   private
     FValue: TFloat80;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this constant.
         AValue: Value this identifier should evaluate to. }
@@ -1156,13 +1203,14 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: This class evaluates and / or compiles code for a 32-bit
+  {@@ <GROUP $ExprEval>
+    Brief: This class evaluates and / or compiles code for a 32-bit
     FP variable. }
   TExprVar32Sym = class(TExprSym)
   private
     FLoc: PFloat32;
   public
-    { Brief: Constructs a symbol representing a 32-bit FP variable.
+    {@@ Brief: Constructs a symbol representing a 32-bit FP variable.
       Parameters:
         AIdent: Name of the variable.
         ALoc: Address of the variable. }
@@ -1172,13 +1220,14 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: This class evaluates and / or compiles code for a 64-bit
+  {@@ <GROUP $ExprEval>
+    Brief: This class evaluates and / or compiles code for a 64-bit
     FP variable. }
   TExprVar64Sym = class(TExprSym)
   private
     FLoc: PFloat64;
   public
-    { Brief: Constructs a symbol representing a 64-bit FP variable.
+    {@@ Brief: Constructs a symbol representing a 64-bit FP variable.
       Parameters:
         AIdent: Name of the variable.
         ALoc: Address of the variable. }
@@ -1188,13 +1237,14 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: This class evaluates and / or compiles code for an 80-bit
+  {@@ <GROUP $ExprEval>
+    Brief: This class evaluates and / or compiles code for an 80-bit
     FP variable. }
   TExprVar80Sym = class(TExprSym)
   private
     FLoc: PFloat80;
   public
-    { Brief: Constructs a symbol representing an 80-bit FP variable.
+    {@@ Brief: Constructs a symbol representing an 80-bit FP variable.
       Parameters:
         AIdent: Name of the variable.
         ALoc: Address of the variable. }
@@ -1204,53 +1254,55 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: A helper ancestor for function symbols.
+  {@@ <GROUP $ExprEval>
+    Brief: A helper ancestor for function symbols.
     Description:
       This is a useful class to use as an ancestor for function symbols
       because it has protected methods to read parameters. }
   TExprAbstractFuncSym = class(TExprSym)
   protected
-    { Brief: Evaluates the first argument using the EvalParser.
+    {@@ Brief: Evaluates the first argument using the EvalParser.
       Returns:
         The evaluation of the first argument.
       Description:
         This method will raise an exception if there is a missing '(' or
         missing first argument. }
     function EvalFirstArg: TFloat;
-    { Brief: Evaluates a second or subsequent argument using EvalParser.
+    {@@ Brief: Evaluates a second or subsequent argument using EvalParser.
       Returns:
         The evaluation of the next argument.
       Description:
         This method will raise an exception if there is a missing ',' or
         missing argument after the comma. }
     function EvalNextArg: TFloat;
-    { Brief: Compiles the first argument using the CompileParser.
+    {@@ Brief: Compiles the first argument using the CompileParser.
       Returns:
         The compiled node for the first argument.
       Description:
         This method will raise an exception if there is a missing '(' or
         missing first argument. }
     function CompileFirstArg: TExprNode;
-    { Brief: Compiles a second or subsequent argument using CompileParser.
+    {@@ Brief: Compiles a second or subsequent argument using CompileParser.
       Returns:
         The compiled node for the next argument.
       Description:
         This method will raise an exception if there is a missing ',' or
         missing argument after the comma. }
     function CompileNextArg: TExprNode;
-    { Brief: Reads in the end of an argument list.
+    {@@ Brief: Reads in the end of an argument list.
       Description:
         This method will raise an exception if the current token isn't ')'.
         After checking, it skips the right parenthesis. }
     procedure EndArgs;
   end;
 
-  { Brief: Function symbol for TFloatFunc. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TFloatFunc. }
   TExprFuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TFloatFunc;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1259,12 +1311,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TFloat32Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TFloat32Func. }
   TExprFloat32FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TFloat32Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1273,12 +1326,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TFloat64Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TFloat64Func. }
   TExprFloat64FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TFloat64Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1287,12 +1341,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TFloat80Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TFloat80Func. }
   TExprFloat80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TFloat80Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1301,12 +1356,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TUnaryFunc. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TUnaryFunc. }
   TExprUnaryFuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TUnaryFunc;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1315,12 +1371,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TUnary32Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TUnary32Func. }
   TExprUnary32FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TUnary32Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1329,12 +1386,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TUnary64Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TUnary64Func. }
   TExprUnary64FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TUnary64Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1343,12 +1401,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TUnary80Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TUnary80Func. }
   TExprUnary80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TUnary80Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1357,12 +1416,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TBinaryFunc. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TBinaryFunc. }
   TExprBinaryFuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TBinaryFunc;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1371,12 +1431,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TBinary32Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TBinary32Func. }
   TExprBinary32FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TBinary32Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1385,12 +1446,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TBinary64Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TBinary64Func. }
   TExprBinary64FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TBinary64Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1399,12 +1461,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TBinary80Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TBinary80Func. }
   TExprBinary80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TBinary80Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1413,12 +1476,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TTernaryFunc. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TTernaryFunc. }
   TExprTernaryFuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TTernaryFunc;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1427,12 +1491,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TTernary32Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TTernary32Func. }
   TExprTernary32FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TTernary32Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1441,12 +1506,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TTernary64Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TTernary64Func. }
   TExprTernary64FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TTernary64Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1455,12 +1521,13 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: Function symbol for TTernary80Func. }
+  {@@ <GROUP $ExprEval>
+     Brief: Function symbol for TTernary80Func. }
   TExprTernary80FuncSym = class(TExprAbstractFuncSym)
   private
     FFunc: TTernary80Func;
   public
-    { Brief: Constructs an instance.
+    {@@ Brief: Constructs an instance.
       Parameters:
         AIdent: Identifier for this function.
         AFunc: Function that evaluates this symbol. }
@@ -1469,7 +1536,8 @@ type
     function Compile: TExprNode; override;
   end;
 
-  { Brief: This is an abstract class that provides friendly methods for
+  {@@ <GROUP $ExprEval>
+     Brief: This is an abstract class that provides friendly methods for
       adding constanst, variables, functions and external contexts.
     Description:
       This is an abstract class provided so that symbols can be added
@@ -1481,18 +1549,18 @@ type
     FExtContextSet: TExprSetContext;
     FInternalContextSet: TExprSetContext;
   protected
-    { Brief: Provides protected access to the internal context set.
+    {@@ Brief: Provides protected access to the internal context set.
       Description:
         This is provided so that descendants can set their parser's Context
         property. }
     property InternalContextSet: TExprSetContext read FInternalContextSet;
   public
-    { Brief: Creates an instance. }
+    {@@ Brief: Creates an instance. }
     constructor Create;
-    { Brief: Destroys an instance. Use Free instead. }
+    {@@ Brief: Destroys an instance. Use Free instead. }
     destructor Destroy; override;
 
-    { Brief: Adds a variable.
+    {@@ Brief: Adds a variable.
       Parameters:
         AName: Identifier of variable to add.
         AVar: Location of variable to add.
@@ -1506,12 +1574,12 @@ type
         identifiers of the same name in external contexts added through
         ExtContextSet. }
     procedure AddVar(const AName: string; var AVar: TFloat32); overload;
-    { <COMBINE TEasyEvaluator.AddVar@string@TFloat32> }
+    {@@ <COMBINE TEasyEvaluator.AddVar@string@TFloat32> }
     procedure AddVar(const AName: string; var AVar: TFloat64); overload;
-    { <COMBINE TEasyEvaluator.AddVar@string@TFloat32> }
+    {@@ <COMBINE TEasyEvaluator.AddVar@string@TFloat32> }
     procedure AddVar(const AName: string; var AVar: TFloat80); overload;
 
-    { Brief: Adds a constant.
+    {@@ Brief: Adds a constant.
       Parameters:
         AName: Identifier for the constant.
         AConst: Value of constant.
@@ -1524,12 +1592,12 @@ type
         identifiers of the same name in external contexts added through
         ExtContextSet. }
     procedure AddConst(const AName: string; AConst: TFloat32); overload;
-    { <COMBINE TEasyEvaluator.AddConst@string@TFloat32> }
+    {@@ <COMBINE TEasyEvaluator.AddConst@string@TFloat32> }
     procedure AddConst(const AName: string; AConst: TFloat64); overload;
-    { <COMBINE TEasyEvaluator.AddConst@string@TFloat32> }
+    {@@ <COMBINE TEasyEvaluator.AddConst@string@TFloat32> }
     procedure AddConst(const AName: string; AConst: TFloat80); overload;
 
-    { Brief: Adds a function.
+    {@@ Brief: Adds a function.
       Parameters:
         AName: Identifier for the function.
         AFunc: Function pointer that evaluates the function.
@@ -1543,30 +1611,30 @@ type
         identifiers of the same name in external contexts added through
         ExtContextSet. }
     procedure AddFunc(const AName: string; AFunc: TFloat32Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TFloat64Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TFloat80Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TUnary32Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TUnary64Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TUnary80Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TBinary32Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TBinary64Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TBinary80Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TTernary32Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TTernary64Func); overload;
-    { <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
+    {@@ <COMBINE TEasyEvaluator.AddFunc@string@TFloat32Func> }
     procedure AddFunc(const AName: string; AFunc: TTernary80Func); overload;
 
-    { Brief: Removes an identifier from the internal context.
+    {@@ Brief: Removes an identifier from the internal context.
       Parameters:
         AName: Identifier to remove.
       Description:
@@ -1575,13 +1643,13 @@ type
       Note: This is the only way to remove a single identifier from the
         internal context (call Clear to remove all identifiers). }
     procedure Remove(const AName: string);
-    { Brief: Clears all identifiers from the internal context.
+    {@@ Brief: Clears all identifiers from the internal context.
       Description:
         This method clears the internal context of symbols. It doesn't
         affect any contexts added through ExtContextSet. }
     procedure Clear;
 
-    { Brief: A set of external contexts that are looked up after
+    {@@ Brief: A set of external contexts that are looked up after
         the internal context.
       Description:
         This property allows the addition of multiple utility contexts
@@ -1591,7 +1659,8 @@ type
     property ExtContextSet: TExprSetContext read FExtContextSet;
   end;
 
-  { Brief: Quick evaluator shell object.
+  {@@ <GROUP $ExprEval>
+    Brief: Quick evaluator shell object.
     Description:
       This is an encapsulation of a simple lexer and an evaluating
       parser. It evaluates while parsing, and it doesn't store any
@@ -1636,12 +1705,12 @@ type
     FLexer: TExprSimpleLexer;
     FParser: TExprEvalParser;
   public
-    { Brief: Constructs an instance. }
+    {@@ Brief: Constructs an instance. }
     constructor Create;
-    { Brief: Destroys an instance. Use Free instead. }
+    {@@ Brief: Destroys an instance. Use Free instead. }
     destructor Destroy; override;
 
-    { Brief: Evaluates an expression.
+    {@@ Brief: Evaluates an expression.
       Parameters:
         AExpr: The expression to evaluate.
       Returns:
@@ -1652,7 +1721,8 @@ type
     function Evaluate(const AExpr: string): TFloat;
   end;
 
-  { Brief: An evaluator that first compiles an expression into an
+  {@@ <GROUP $ExprEval>
+    Brief: An evaluator that first compiles an expression into an
       intermediate form, then evaluates it on demand.
     Description:
       This evaluator is suitable for applications like graphing, where
@@ -1665,18 +1735,18 @@ type
     FExpr: string;
     FVirtMach: TExprVirtMach;
   public
-    { Brief: Constructs an instance. }
+    {@@ Brief: Constructs an instance. }
     constructor Create;
     destructor Destroy; override;
 
-    { Brief: Compiles an expression.
+    {@@ Brief: Compiles an expression.
       Parameters:
         AExpr: The expression to compile.
       Description:
         Compiles the expression given by AExpr, and stores its compiled
         state internally, so that it can be evaluated quickly. }
     procedure Compile(const AExpr: string);
-    { Brief: Evaluates the internal compiled expression.
+    {@@ Brief: Evaluates the internal compiled expression.
       Returns: The result of the evaluation.
       Description:
         Executes the internal compiled state, and returns the evaluation.
@@ -1694,10 +1764,12 @@ type
     contexts. Parameters won't be supported, though; I'll think about
     this. }
 
-  { Brief: A compiled expression, which may be called directly to evaluate. }
+  {@@ <GROUP $ExprEval>
+     Brief: A compiled expression, which may be called directly to evaluate. }
   TCompiledExpression = function: TFloat of object;
 
-  { Brief: An expression compiler, for multiple expressions.
+  {@@ <GROUP $ExprEval>
+    Brief: An expression compiler, for multiple expressions.
     Description:
       This is a multiple expression compiler. It compiles expressions into
       function pointers, so that the function pointer can be called as if
@@ -1712,11 +1784,11 @@ type
   private
     FExprHash: TStringHashMap;
   public
-    { Brief: Constructs an instance. }
+    {@@ Brief: Constructs an instance. }
     constructor Create;
     destructor Destroy; override;
 
-    { Brief: Compiles an expression into a function pointer.
+    {@@ Brief: Compiles an expression into a function pointer.
       Parameters:
         AExpr: Expression to compile.
       Returns:
@@ -1733,7 +1805,7 @@ type
         methods must be called. Calling Clear will free all expressions,
         as will freeing this compiler. }
     function Compile(const AExpr: string): TCompiledExpression;
-    { Brief: Frees a compiled expression.
+    {@@ Brief: Frees a compiled expression.
       Parameters:
         AExpr: Expression to remove.
       Description:
@@ -1741,13 +1813,13 @@ type
         used as a string to look up a hash map, so it should be identical
         to the string passed in to Compile. }
     procedure Remove(const AExpr: string);
-    { Brief: Frees a compiled expression.
+    {@@ Brief: Frees a compiled expression.
       Parameters:
         ACompiledExpression: Expression to remove.
       Description:
         Delete frees the expression referenced by ACompiledExpression. }
     procedure Delete(ACompiledExpression: TCompiledExpression);
-    { Brief: Clears all compiled expressions.
+    {@@ Brief: Clears all compiled expressions.
       Description:
         This method frees all internal compiled expressions; this will
         invalidate any remaining compiled expression function pointers,
@@ -5498,6 +5570,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.5  2004/05/13 07:43:26  rrossmair
+// reworked comments for DOM2 inclusion
+//
 // Revision 1.4  2004/05/05 00:04:11  mthoma
 // Updated headers: Added donors as contributors, adjusted the initial authors, added cvs names when they were not obvious. Changed $data to $date where necessary,
 //
