@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: March 31, 2002                                                                    }
+{ Last modified: May 5, 2002                                                                       }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -1096,8 +1096,10 @@ begin
   Count := MAX_COMPUTERNAME_LENGTH + 1;
   // set buffer size to MAX_COMPUTERNAME_LENGTH + 2 characters for safety
   SetLength(Result, Count);
-  Win32Check(GetComputerName(PChar(Result), Count));
-  StrResetLength(Result);
+  if GetComputerName(PChar(Result), Count) then
+    StrResetLength(Result)
+  else
+    Result := '';
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1109,8 +1111,10 @@ begin
   Count := 256 + 1; // UNLEN + 1
   // set buffer size to 256 + 2 characters
   SetLength(Result, Count);
-  Win32Check(GetUserName(PChar(Result), Count));
-  StrResetLength(Result);
+  if GetUserName(PChar(Result), Count) then
+    StrResetLength(Result)
+  else
+    Result := '';  
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -3132,8 +3136,7 @@ function GetKeyState(const VirtualKey: Cardinal): Boolean;
 var
   Keys: TKeyboardState;
 begin
-  GetKeyBoardState(Keys);
-  Result := Keys[VirtualKey] and $80 <> 0;
+  Result := GetKeyBoardState(Keys) and (Keys[VirtualKey] and $01 <> 0);
 end;
 
 //--------------------------------------------------------------------------------------------------
