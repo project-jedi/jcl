@@ -660,7 +660,8 @@ resourcestring
 
 resourcestring
   RsInvalidEmptyStringItem = 'String list passed to StringsToMultiSz cannot contain empty strings.';
-
+  RsNumericConstantTooLarge = 'Numeric constant too large.';
+  
 //--------------------------------------------------------------------------------------------------
 // JclSynch
 //--------------------------------------------------------------------------------------------------
