@@ -1,0 +1,537 @@
+
+$Id: Extending_ExprEval.dtx,v 1.1 2001/05/04 17:05:30 gothmog Exp $
+
+@@$ExtExprEval
+<title Extending the Expression Evaluator System>
+The expression evaluator can be extended in several ways, depending on
+your needs. Before trying to extend the evaluator, it is useful to
+understand <link ExtExprEval_DataFlow, how data flows through the system>;
+read this topic first.
+<p>
+Different extension ideas could be:
+  * <link ExtExprEval_LibContext, Create a library context> that can be
+    added to multiple evaluators.
+  * <link $ExtExprEval_CustomSymbol, Create a symbol with custom effects>.
+  * Use the compiling parser and
+    <link ExtExprEval_AddEvalSystem, add an evaluation system>.
+  * Use the evaluation system in a
+    <link ExtExprEval_AddParseSystem, different parser>.
+
+
+@@ExtExprEval_DataFlow
+  <group $ExtExprEval>
+  <title Data Flow in the Expression Evaluator system>
+  Brief: This topic describes how data flows through the expression
+    evaluator system.
+
+  * Data Flow Outline *
+
+    A string expression is fed into a <link TExprLexer, lexical analyser>.
+    The job of the lexical analyser (lexer) is to break up this string
+    expression into component parts - operators, identifiers and numbers.
+    <p>
+    Methods of the lexer are called by a parser (TExprEvalParser,
+    TExprCompileParser). The parser drives the system - it pulls tokens
+    from the lexer and either returns a concrete value (TExprEvalParser)
+    or constructs an expression node (TExprCompileParser).
+    <p>
+    When a parser meets an identifier, it looks it up using a context
+    object. The <link TExprContext, context> object is responsible for
+    mapping an identifier to a <link TExprSym, symbol object>. A little
+    more on symbol objects later.
+    <p>
+    If the parser is an evaluating parser, it returns a concrete
+    floating-point value, and returns to whatever called it - job done.
+    The situation is a little more interesting with a compiling parser,
+    however. To compile expressions, the expression is first converted into
+    an intermediate representation - a graph of expression nodes. This
+    graph is directed (i.e. there is a direction in the relationship between
+    nodes) and acyclic (it isn't possible to follow relationships from a node
+    n and arrive back at node n through any positive number of intermediate
+    nodes); in other words, it is a DAG.
+    <p>
+    The expression is converted into a DAG by calling a
+    <link TExprNodeFactory, node factory object's> methods. The job of
+    creating DAG nodes is devolved to a factory object to allow TExprNode
+    descendants to be customized to create code for a particular
+    implementation strategy.
+    <p>
+    The created nodes are stored in the node factory, in a linear list.
+    After all nodes have been created, graph rewriting patterns may be
+    applied to the DAG to perform optimizations like common sub-expression
+    elimination (CSE), constant sub-expression evaluation and strength
+    reduction (like converting constant divides to multiply by inverse),
+    etc.
+    <p>
+    A concrete descendant of the node factory will have a GenCode method
+    (which takes in some object capable of code generation) which iterates
+    over all its internal nodes, telling each of them to generate code for
+    the passed in object.
+    <p>
+    The job of the factory is now done; depending on the implementation
+    strategy, the code generator may also be the code executor, or further
+    steps may be needed to put it all together.
+
+
+  * Different classes of classes *
+
+    It follows from the above outline that the system's classes can be sorted
+    into classes of their own:
+
+    * <b>Lexer</b>: Lexical analysis is performed by a concrete descendant of
+      TExprLexer. This is usually TExprSimpleLexer.
+
+    * <b>Parser</b>: Parsing is performed by an object that implements a
+      grammar and takes in a lexical source and context as parameters. Because
+      the Parser drives the system, it doesn't necessarily have an abstract
+      ancestor. Two main classes: TExprEvalParser (evaluating parser) and
+      TExprCompileParser (compiling parser).
+
+    * <b>Context</b>: Context (symbol lookup) is performed by a concrete
+      descendant of TExprContext, usually a TExprSetContext containg multiple
+      TExprSetContext and TExprHashContext instances.
+
+    * <b>Symbol</b>: Symbol evaluation / compiling is performed by a
+      concrete descendant of TExprSym. Evaluation and compiling are combined
+      into a single object for ease of implementing new symbols. Evaluation
+      depends on a TExprEvalParser, compiling depends on a TExprCompileParser
+      and TExprNodeFactory descendant, and both depend on a TExprLexer
+      descendant. <i>All symbols have names like TExpr\<name\>Sym</i>.
+
+    * <b>Node Factory</b>: Expression node construction, optimization and
+      code generation is the responsibility of a node factory. A concrete
+      descendant is TExprVirtMachNodeFactory, which constructs customized
+      node classes descended from TExprVirtMachNode.
+
+    * <b>Expression Node</b>: Expression nodes represent elements of
+      an expression, in a format that is suitable for optimization and
+      code generation without a restriction to a particular compiled
+      format. <i>All of the provided virtual machine's nodes have names
+      like TExpr\<name\>VmNode</i>.
+
+    * <b>Generated Code</b>: Depending on the implementation strategy,
+      different methods of generating code and different generated code
+      objects will be produced. For the provided virtual machine,
+      code operations descend from TExprVirtMachOp. <i>All of the
+      provided virtual machine's operations have names like
+      TExpr\<name\>VmOp</i>.
+
+
+  * The Shell Objects *
+
+    The evaluator shell objects (TEvaluator, TCompiledEvaluator and
+    TExpressionCompiler) orchistrate connections between component parts of
+    the evaluation system. They use different components to achieve their
+    respective properties.
+
+    * TEvaluator uses a lexer (TExprSimpleLexer) and an evaluating parser
+      (TExprEvalParser), with a user-provided context object.
+
+    * TCompiledEvaluator uses a lexer (TExprSimpleLexer), a compiling
+      parser (TExprCompileParser), a virtual machine (VM) (TExprVirtMach)
+      and VM expression node factory (TExprVirtMachNodeFactory).
+
+    * TExpressionCompiler uses a similar system to TCompiledEvaluator,
+      but it maintains an internal list of created virtual machines,
+      and creates a new virtual machine for every expression it compiles.
+
+@@ExtExprEval_LibContext
+  <group $ExtExprEval>
+  <title Creating a library context>
+
+  It is useful to create a context object that combines a library of
+  often used and conceptually grouped symbols (functions, variables and
+  constants), so that it support for these symbols can be added to an
+  evaluator with minimum fuss. The easiest way to do it is like this:
+
+  * Create a function that that constructs a context object. See Example 1.
+
+  * Add this context to an evaluator's external context list. <b>Note that
+    contexts added to an evaluator's external context list <i>are not</i>
+    automatically freed</b>. You need to manage the context list's
+    lifetime yourself; this is done so that multiple evaluators can use
+    the same plug-in context. See Example 2.
+
+    Example:
+      <code>
+      function TrigSin(x: TFloat64): TFloat64; // whatever
+
+      function MakeTrigContext: TExprContext;
+      begin
+        // create context object with case insensitivity and
+        // a hash size of 127
+        Result := TExprHashContext.Create(False, 127);
+        try
+
+          // add functions; the correct symbol class must be chosen
+          // to correspond to the function signature
+          Result.Add(TExprFloat64FuncSym.Create('sin', TrigSin));
+
+          // add constants
+          // precision probably isn't important, but can be specfied
+          // if desired anyway.
+          Result.Add(TExprConstSym.Create('PI', Pi));
+
+          // add other symbols similarly
+        except
+          Result.Free;
+          raise;
+        end;
+      end;
+      </code>
+
+    Example:
+      <code>
+        var
+          myEvaluator: TEvaluator;
+          myTrigContext: TExprContext;
+        // ...
+          myTrigContext := MakeTrigContext;
+          try
+            myEvaluator.ExtContextSet.Add(MakeTrigContext);
+            // ... use evaluator with trig stuff
+            myEvaluator.ExtContextSet.Remove(MakeTrigContext);
+          finally
+            myTrigContext.Free;
+          end;
+      </code>
+
+@@$ExtExprEval_CustomSymbol
+  <group $ExtExprEval>
+  <title Creating a custom symbol>
+
+  An advantage the expression evaluation system has is that the way
+  symbols are evaluated is not fixed; each symbol can individually
+  communicate with the lexer and parser (which may be customized
+  themselves) to produce a result (a floating-point value or an expression
+  node) with any desired semantics.
+  <p>
+  To demonstrate the flexibility of the system, I'm going to develop
+  a scoped namespace; a symbol will be added that, upon application of
+  the dot '.' operator, will resolve a subsequent symbol within a
+  smaller and unambiguous namespace.
+  <p>
+  For example, following on from the
+  <link ExtExprEval_LibContext, Trig Context Library> article, we could
+  set up our symbols so they are parsed like this:
+    <code>
+      'trig.sin(trig.pi * x / 180)'
+    </code>
+  while both of these would produce a syntax error:
+    <code>
+      'sin(pi * x / 180)'
+      'trig.sin(pi * x / 180)'
+    </code>
+  <p>
+  Steps:
+    * <link ExtExprEval_CustomSymbol_Interface, Creating the class interface>
+      The layout of the symbol class, specifying its ancestor and private
+      fields.
+    * <link ExtExprEval_CustomSymbol_CreateDestroy, The constructor and destructor>
+      The implementation of the constructor and destructor.
+    * <link ExtExprEval_CustomSymbol_GetNested, The helper GetNestedSymbol implementation>
+      The implementation of the Evaluate method, for evaluating parsers.
+    * <link ExtExprEval_CustomSymbol_EvalImpl, The Evaluate implementation>
+      The implementation of the Evaluate method, for evaluating parsers.
+    * <link ExtExprEval_CustomSymbol_CompileImpl, The Compile implementation>
+      The implementation of the Compile method, for compiling parsers.
+
+@@ExtExprEval_CustomSymbol_Interface
+  <group $ExtExprEval_CustomSymbol>
+  <title Creating the class interface>
+
+  Here is the interface for our namespace symbol:
+  <code>
+    TExprNamespaceSym = class(TExprSym)
+    private
+      FContext: TExprContext;
+      function GetNestedSymbol: TExprSym;
+    public
+      constructor Create(const AIdent: string; AContext: TExprContext);
+      destructor Destroy; override;
+
+      function Evaluate: TFloat; override;
+      function Compile: TExprNode; override;
+
+      property Context: TExprContext read FContext write FContext;
+    end;
+  </code>
+  We descend from TExprSym, because that has everything we need (just
+  a lexer, a couple of parsers and a node factory).
+  <p>
+  The private field FContext will hold the nested context; the namespace
+  symbol will only act as a filter to this context, and won't manually
+  resolve symbols itself.
+  <p>
+  The helper function GetNestedSymbol does some syntactic analysis using
+  the lexer. It is a separate function because the job it does is needed for
+  both evaluating and compiling.
+  <p>
+  The constructor takes in an identifier and a context. An identifier must
+  be provided for all symbols, and be passed on to the inherited Create.
+  The constructor also loads the internal context with the passed in context.
+  <p>
+  The destructor frees the internal context and calls the inherited
+  destructor.
+  <p>
+  The Evaluate method reads in a '.' followed by an identifier, looks that
+  identifier up in the internal context, and calls the found symbol's
+  Evaluate method after setting up state. If no symbol is found, an
+  exception is raised.
+  <p>
+  The Compile method reads in a '.' followed by an identifier, looks that
+  identifier up in the internal context, and calls the found symbol's
+  Compile method after setting up state. If no symbol is found, an
+  exception is raised.
+  <p>
+  The Context property allows access to the symbol's internal context
+  object.
+
+@@ExtExprEval_CustomSymbol_CreateDestroy
+  <group $ExtExprEval_CustomSymbol>
+  <title The constructor and destructor>
+
+  Here is the implementation of the constructor and destructor.
+  <code>
+    constructor TExprNamespaceSym.Create(const AIdent: string;
+      AContext: TExprContext);
+    begin
+      inherited Create(AIdent);
+      FContext := AContext;
+    end;
+
+    destructor TExprNamespaceSym.Destroy;
+    begin
+      FContext.Free;
+      inherited Destroy;
+    end;
+  </code>
+  It is important to call the inherited Create with the identifier
+  for this symbol, otherwise the symbol will never be found, and it will
+  conflict with any other unnamed symbol.
+  <p>
+  This namespace symbol owns its internal context, so the destructor frees
+  it.
+
+@@ExtExprEval_CustomSymbol_GetNested
+  <group $ExtExprEval_CustomSymbol>
+  <title The helper GetNestedSymbol implementation>
+
+  Here is the helper method GetNestedSymbol.
+  <code>
+    function TExprNamespaceSym.GetNestedSymbol: TExprSym;
+    begin
+      // check for and skip '.'
+      if Lexer.CurrTok <> etDot then
+        raise Exception.Create('Expected: ''.''');
+      Lexer.NextTok;
+
+      // read an identifier
+      if Lexer.CurrTok <> etIdentifier then
+        raise Exception.Create('Expected: identifier');
+
+      // look up identifier in internal namespace context
+      Result := FContext.Find(Lexer.TokenAsString);
+      if Result = nil then
+        raise Exception.CreateFmt('Unknown identifier ''%s'' in namespace ''%s''',
+          [Lexer.TokenAsString, Ident]);
+    end;
+  </code>
+  This code demonstrates a dialog between the symbol and the lexer, doing
+  syntactic analysis: expecting a dot '.' followed by an identifier.
+
+@@ExtExprEval_CustomSymbol_EvalImpl
+  <group $ExtExprEval_CustomSymbol>
+  <title The Evaluate implementation>
+
+  Here is the Evaluate method's implementation.
+  <code>
+    function TExprNamespaceSym.Evaluate: TFloat;
+    var
+      sym: TExprSym;
+
+      oldLexer: TExprLexer;
+      oldParser: TExprEvalParser;
+    begin
+      sym := GetNestedSymbol;
+
+      // set up symbol's state
+      oldLexer := sym.Lexer;
+      oldParser := sym.EvalParser;
+      try
+        sym.Lexer := Lexer;
+        sym.EvalParser := EvalParser;
+
+        // get symbol's value
+        Result := sym.Evaluate;
+      finally
+        sym.Lexer := oldLexer;
+        sym.EvalParser := oldParser;
+      end;
+    end;
+  </code>
+
+  This sample shows how to set up a symbol's state for evaluation. It
+  is important to save and restore the symbol's state; a symbol may be
+  shared between evaluators (with different lexers etc.), and the
+  evaluation of a symbol might rely on itself recursively.
+  <p>
+  The example (Example 1, on the top row above) shows how to interact
+  with the parser to emualate array subscripting syntax.
+
+  Example:
+    This is an example of a different Evaluate method, which emulates
+    array syntax, like 'a[3]', etc. It has an internal array pointer,
+    FVarArray: PFloat32Array, which was passed in its constructor.
+
+    <code>
+      function TExprVar32ArraySym.Evaluate: TFloat;
+      var
+        idx: Integer;
+      begin
+        // check for and skip '['
+        if Lexer.CurrTok <> etLBracket then
+          raise Exception.Create('Expected: ''[''');
+        Lexer.NextTok;
+
+        // read index
+        idx := Trunc(EvalParser.eval_expr);
+
+        // check for and skip ']'
+        if Lexer.CurrTok <> etLBracket then
+          raise Exception.Create('Expected: '']''');
+        Lexer.NextTok;
+
+        // possibly do bounds-checking on array here
+
+        // return array value
+        Result := FVarArray^[idx];
+      end;
+    </code>
+
+@@ExtExprEval_CustomSymbol_CompileImpl
+  <group $ExtExprEval_CustomSymbol>
+  <title The Compile implementation>
+
+  Here is the implementation of the Compile method.
+  <code>
+    function TExprNamespaceSym.Compile: TExprNode;
+    var
+      sym: TExprSym;
+
+      oldLexer: TExprLexer;
+      oldParser: TExprCompileParser;
+      oldNodeFactory: TExprNodeFactory;
+    begin
+      sym := GetNestedSymbol;
+
+      // set up symbol's state
+      oldLexer := sym.Lexer;
+      oldParser := sym.CompileParser;
+      oldNodeFactory := sym.NodeFactory;
+      try
+        sym.Lexer := Lexer;
+        sym.EvalParser := EvalParser;
+        sym.NodeFactory := NodeFactory;
+
+        // compile symbol
+        Result := sym.Compile;
+      finally
+        sym.Lexer := oldLexer;
+        sym.CompileParser := oldParser;
+        sym.NodeFactory := oldNodeFactory;
+      end;
+    end;
+  </code>
+
+  It is similar to the evaluate method, but it works with expression nodes
+  instead of concrete values.
+  <p>
+  See the link to Example 1 (top row above) for a sample which demonstrates
+  interaction with the compiling parser.
+
+  Example:
+    This is an example of a different Compile method, which emulates
+    array syntax, like 'a[3]', etc. It has an internal array pointer,
+    FVarArray: PFloat32Array, which was passed in its constructor.
+    <p>
+    <b>It isn't complete, because it needs support from the NodeFactory
+    that it doesn't provide; it does provide an idea for
+    extension, though...</b>
+
+    <code>
+      function TExprVar32ArraySym.Compile: TExprNode;
+      var
+        idx: TExprNode;
+      begin
+        // check for and skip '['
+        if Lexer.CurrTok <> etLBracket then
+          raise Exception.Create('Expected: ''[''');
+        Lexer.NextTok;
+
+        // read index
+        idx := CompileParser.compile_expr;
+
+        // check for and skip ']'
+        if Lexer.CurrTok <> etLBracket then
+          raise Exception.Create('Expected: '']''');
+        Lexer.NextTok;
+
+        // we need to truncate the index and load
+        // an array value; this shows why compilation isn't as
+        // flexible as evaluation: we need a new expression node
+        // type, one to load a value from an array
+
+        // I'm going to pretend I've added support:
+
+        Result := NodeFactory.LoadVar32Array(FVarArray, idx);
+      end;
+    </code>
+
+@@ExtExprEval_AddEvalSystem
+  <group $ExtExprEval>
+  <title Adding an evaluation subsystem>
+
+  A separate evaluation subsystem can be implemented, but it does take
+  a bit of work. Here is an outline of the tasks to be done:
+
+  * Create a set of TExprNode descendants that are capable of some
+    form of code generation; see the TExpr\<name\>VmOp classes in the
+    unit source for examples.
+  * Create a concrete TExprNodeFactory descendant that constructs TExprNode
+    descendants in a way suitable for the desired evaluation subsystem
+    strategy.
+  * Add useful optimization methods and apply them, typically in the
+    GenCode method.
+  * Implement a GenCode method on the factory to spew out code into either
+    a virtual machine or some code generator.
+
+@@ExtExprEval_AddParseSystem
+  <group $ExtExprEval>
+  <title Adding a parsing subsystem>
+
+  A parsing system can be added, but it isn't as flexible as adding an
+  implementation system. The reason for this is that the way the system
+  is currently implemented, symbols must be able to communicate with
+  the lexer and parser. So, for evaluation they rely on TExprEvalParser
+  and for compilation on TExprCompileParser. It isn't anticipated that
+  adding a different parsing subsystem would be more useful than, say,
+  adding a different evaluation system.
+  <p>
+  To accomodate attempts at custom parsers, the compile_expr and
+  eval_expr methods are virtual; these are the methods that symbols
+  usually call to do their work. The Evaluate and Compile methods
+  are virtual too.
+  <p>
+  To accomodate custom lexers, the TExprLexer class is abstract, and the
+  TExprToken type has 32 custom token codes. Use constants that typecast
+  the token into a more readable name in this fasion:
+
+  <code>
+    const
+      etStringLiteral = TExprToken(etUser0);
+  </code>
+
+  The lack of an explicit type specifier means that this is still a
+  normal constant (i.e. never acts like an initialized variable),
+  but the typecast means it is also typed.
