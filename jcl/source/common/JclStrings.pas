@@ -46,26 +46,10 @@
 // - Changed to 100 chars per line style
 // - Note to Marcel:  Have a look at StrToStrings and StrItoStrings. They are untested but
 //                    should work more or less equal to the BreakApart functions by JFC.
-//
-// To doc: -  StrTrimCharsRight  d
-//         -  StrTrimCharsLeft   d
-//         -  AnsiSameText       d
-//         -  StrAnsiToOEM       d
-//         -  StrCharsCount      d
-//         -  StrKeepChars       d
-//         -  StrMatches         d
-//         -  StrNormIndex
-//         -  StrOEMToANI        d
-//         -  StrReplace         d
-//         -  StrReplaceButChars d
-//         -  StrReplaceChar     d
-//         -  StrReplaceChars    d
-//         -  StrStrCount
-//         -  StrFloatSafe
-//         -  StrIntSafe
-//         -  EJclStringError
-//         -  PPCharVector
-
+// - Changed StrNPos for special case
+// - Changed StrIPos for special case
+// - Fixed a bug in CharPos : didn'T work if index = length(s)
+// - Fixed a bug in CharIPos : didn'T work if index = length(s)
 
 unit JclStrings;
 
@@ -999,157 +983,20 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 procedure StrMove(var Dest: AnsiString; const Source: AnsiString;
-  const ToIndex, FromIndex, Count: Integer); assembler;
-asm
-        // make sure that Source is not null
+  const ToIndex, FromIndex, Count: Integer);
+begin
+  // Check strings
+  if (Source = '') or (Length(Dest) = 0) then
+    Exit;
 
-        TEST    EDX, EDX
-        JZ      @@NoMove
+  // Check FromIndex
+  if (FromIndex <= 0) or (FromIndex > Length(Source)) or
+     (ToIndex <= 0) or (ToIndex > Length(Dest)) or
+     ((FromIndex + Count - 1) > Length(Source)) or ((ToIndex + Count - 1) > Length(Dest)) then
+     Exit;
 
-        // save params before UniqueString call
-
-        PUSH    EDX
-        PUSH    ECX
-
-        // create a new AnsiString if Dest if ref-counted
-
-        CALL    UniqueString
-
-        // restore params
-
-        POP     ECX
-        POP     EDX
-
-        // make sure that the new AnsiString is not null
-
-        TEST    EAX, EAX
-        JZ      @@NoMove
-
-        // ToIndex >= 1
-
-        DEC     ECX
-        JS      @@NoMove
-
-        // FromIndex >= 1
-
-        DEC     FromIndex
-        JS      @@NoMove
-
-        PUSH    EBX
-        PUSH    EDI
-        PUSH    ESI
-
-        // AnsiString pointers
-
-        MOV     ESI, EDX
-        MOV     EDI, EAX
-
-        // get lengths of strings
-
-        MOV     EBX, [ESI - AnsiStrRecSize].TAnsiStrRec.Length
-        MOV     EDX, [EDI - AnsiStrRecSize].TAnsiStrRec.Length
-
-        // make sure that FromIndex index is <= Length(Source)
-
-        SUB     EBX, FromIndex
-        JLE     @@Skip
-
-        // make sure that count is less then # of chars available.
-        // if Count > Length(Source) then Count := Length(Source)
-
-        CMP     EBX, Count
-        JLE     @@Skip
-        MOV     EBX, Count
-
-@@Skip:
-        // make sure that we don't move data beyond Dest AnsiString
-        // if ToIndex > Length(Dest) then Exit;
-
-        SUB     EDX, ECX
-        JLE     @@Done
-
-        // make sure that Dest AnsiString is big enough for Count
-        // after subtructing indexes
-
-        CMP     EDX, EBX
-        JL      @@Done
-
-        // point Dest to requested index
-
-        ADD     EDI, ECX
-
-        // point Source to requested index
-
-        ADD     ESI, FromIndex
-
-        // move # of chars to move into ECX and leave EBX we'll need it
-
-        MOV     ECX, EBX
-
-        // # of DWORDs we have in Count, the long loop will be
-        // DWORD by DWORD, Count div 4
-
-        SHR     ECX, 2
-        JZ      @@moveRest
-
-@@longLoop:
-
-        // get 4 bytes from source
-
-        MOV     EAX, [ESI]
-
-        // move 'em into dest
-
-        MOV     [EDI], EAX
-
-        // check the counter
-
-        DEC     ECX
-        JZ      @@moveRest4
-
-        // do the same thing with next 4 bytes
-
-        MOV     EAX, [ESI + 4]
-        MOV     [EDI + 4], EAX
-
-        // inc AnsiString pointers by 8
-
-        ADD     ESI, 8
-        ADD     EDI, 8
-
-        // check the counter
-
-        DEC     ECX
-        JNE     @@longLoop
-        JMP     @@moveRest
-
-@@moveRest4:
-        ADD     ESI, 4
-        ADD     EDI, 4
-
-@@moveRest:
-        // get saved count back into ECX
-
-        MOV     ECX, EBX
-
-        // clear direction flag so that MOVSB goes forword
-
-        CLD
-
-        // get # of chars remaining, Count mod 4
-
-        AND     ECX, $03
-
-        // and move the rest of the Source
-
-        REP     MOVSB
-
-@@Done:
-        POP     ESI
-        POP     EDI
-        POP     EBX
-
-@@NoMove:
+  // Move
+  Move(Source[FromIndex], Dest[ToIndex], Count);
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1989,11 +1836,17 @@ begin
     Exit;
   end;
   I := StrSearch(SubS, S, 1);
-  while (I > 0) and (Length(S) > I+Length(SubS))
-  do begin
+
+  if I > 0 then
     Inc(Result);
+
+  while (I > 0) and (Length(S) > I+Length(SubS)) do
+  begin
     I := StrSearch(SubS, S, I+1);
-  end;
+
+    if I > 0 then
+      Inc(Result);
+  end
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -2775,6 +2628,12 @@ function StrNPos(const S, SubStr: AnsiString; N: Integer): Integer;
 var
   I, P: Integer;
 begin
+  if N < 1 then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
   Result := StrSearch(SubStr, S, 1);
   I := 1;
   while I < N do
@@ -2799,6 +2658,12 @@ function StrNIPos(const S, SubStr: AnsiString; N: Integer): Integer;
 var
   I, P: Integer;
 begin
+  if N < 1 then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
   Result := StrFind(SubStr, S, 1);
   I := 1;
   while I < N do
@@ -3323,7 +3188,7 @@ var
   P: PAnsiChar;
 begin
   Result := 0;
-  if (Index > 0) and (Index < Length(S)) then
+  if (Index > 0) and (Index <= Length(S)) then
   begin
     P := PAnsiChar(S);
     Inc(P, Index - 1);
@@ -3347,7 +3212,7 @@ var
   CU: AnsiChar;
 begin
   Result := 0;
-  if (Index > 0) and (Index < Length(S)) then
+  if (Index > 0) and (Index <= Length(S)) then
   begin
     CU := CharUpper(C);
     P := PAnsiChar(S);
@@ -3654,7 +3519,10 @@ var
   Token: string;
   Done: Boolean;
 begin
-  if List = nil then Exit;
+  Assert(List <> nil);
+  
+  if List = nil then
+    Exit;
 
   List.Clear;
   Start := Pointer(S);
@@ -3671,7 +3539,10 @@ procedure StrTokenToStrings(S: AnsiString; Separator: AnsiChar; const List: TStr
 var
   Token: AnsiString;
 begin
-  if List = nil then Exit;
+  Assert(List <> nil);
+
+  if List = nil then
+    Exit;
 
   List.Clear;
   while S <> '' do
