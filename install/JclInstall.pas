@@ -1188,7 +1188,13 @@ begin
     with TJclBCBInstallation(Target) do
     begin
       // to satisfy JVCL (and eventually other libraries), create a .dcp file;
-      // note that it is put out to .bpl path to make life easier for JVCL
+      // Note: it is put out to .bpl path to make life easier for JVCL
+      // Note: We must call make with the makefile below to ensure that the required
+      //       dcc32.cfg file is available. Further, we must ensure that the 
+      //       appropriate folders are set so that the file is put in the correct place
+      SetEnvironmentVar('ROOT', Target.RootDir);
+      SetEnvironmentVar('MAKEDIR', Target.RootDir+'\bin');
+      Make.Execute('"-f' + Distribution.Path+'install\BCB5-dcc32.cfg.mak"');
       Result := Target.InstallPackage(ChangeFileExt(PackageFileName, '.dpk'), BplPath, BplPath);
       // now create .bpi & .lib
       Bpr2Mak.Options.Clear;
@@ -1699,6 +1705,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.60  2005/03/21 11:09:49  obones
+// Now calls BCB5-dcc32.cfg.mak if required
+//
 // Revision 1.59  2005/03/21 04:03:58  rrossmair
 // - workarounds for DCC32 126 character path limit
 //
