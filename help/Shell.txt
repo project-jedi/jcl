@@ -64,7 +64,7 @@ Deletes the specified folder.
 SHDeleteFolder deletes the specified folder, either permanently or to the recycle
 bin depending on the Options parameter. Additionally the function provides
 visual feedback by displaying the familiar delete folder dialog you also see
-when deleting a folder through Explorer.
+when deleting a folder through explorer.
 [Parameters]
 Count=3
 1=Parent:HWND=Handle of the window to serve as the parent of any dialogs displayed
