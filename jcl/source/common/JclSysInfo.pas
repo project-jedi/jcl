@@ -22,7 +22,7 @@
 { details and the Windows version.                                                                 }
 {                                                                                                  }
 { Unit owner: Eric S. Fisher                                                                       }
-{ Last modified: June 07, 2003                                                                     }
+{ Last modified: July 8, 2003                                                                      }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -86,6 +86,7 @@ function GetTemplatesFolder: string;
 function GetInternetCacheFolder: string;
 function GetCookiesFolder: string;
 function GetHistoryFolder: string;
+function GetProfileFolder: string;
 
 //--------------------------------------------------------------------------------------------------
 // Advanced Power Management (APM)
@@ -988,6 +989,13 @@ begin
   Result := GetSpecialFolderLocation(CSIDL_HISTORY);
 end;
 
+//--------------------------------------------------------------------------------------------------
+
+function GetProfileFolder: string;
+begin
+  Result := GetSpecialFolderLocation(CSIDL_PROFILE);
+end;  
+
 // the following special folders are pure virtual and cannot be
 // mapped to a directory path:
 // CSIDL_INTERNET
@@ -1219,16 +1227,40 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+// Reference: How to Obtain BIOS Information from the Registry
+// http://support.microsoft.com/default.aspx?scid=kb;EN-US;195268
+
 function GetBIOSDate: TDateTime;
 const
-  REGSTR_PATH_SYSTEM = '\HARDWARE\DESCRIPTION\System';
-  REGSTR_SYSTEMBIOSDATE = 'SystemBiosDate';
+  WinNT_REG_PATH = '\HARDWARE\DESCRIPTION\System';
+  WinNT_REG_KEY  = 'SystemBiosDate';
+  Win9x_REG_PATH = '\Enum\Root\*PNP0C01\0000';
+  Win9x_REG_KEY  = 'BiosDate';
 var
-  RegStr, RegFormat: string;
+  RegStr: string;
+  {$IFDEF COMPILER7_UP}
+  FormatSettings: TFormatSettings;
+  {$ELSE COMPILER7_UP}
+  RegFormat: string;
   RegSeparator: Char;
+  {$ENDIF COMPILER7_UP}
 begin
+  if IsWinNT then
+    RegStr := RegReadString(HKEY_LOCAL_MACHINE, WinNT_REG_PATH, WinNT_REG_KEY)
+  else
+    RegStr := RegReadString(HKEY_LOCAL_MACHINE, Win9x_REG_PATH, Win9x_REG_KEY);
+  {$IFDEF COMPILER7_UP}
+  FillChar(FormatSettings, SizeOf(FormatSettings), 0);
+  FormatSettings.DateSeparator := '/';
+  FormatSettings.ShortDateFormat := 'm/d/y';
+  if not TryStrToDate(RegStr, Result, FormatSettings) then
+  begin
+    FormatSettings.ShortDateFormat := 'y/m/d';
+    if not TryStrToDate(RegStr, Result, FormatSettings) then
+      Result := 0;
+  end;
+  {$ELSE COMPILER7_UP}
   Result := 0;
-  RegStr := RegReadString(HKEY_LOCAL_MACHINE, REGSTR_PATH_SYSTEM, REGSTR_SYSTEMBIOSDATE);
   RegFormat := ShortDateFormat;
   RegSeparator := DateSeparator;
   try
@@ -1247,6 +1279,7 @@ begin
     ShortDateFormat := RegFormat;
     DateSeparator := RegSeparator;
   end;
+  {$ENDIF COMPILER7_UP}
 end;
 
 //==================================================================================================
@@ -2303,7 +2336,7 @@ begin
   Result := -1;
   Addresses.Clear;
   GetMacAddressesNetBios;
-  if (Result = -1) and (Machine = '') then
+  if (Result <= 0) and (Machine = '') then
     GetMacAddressesSnmp;
 end;
 
