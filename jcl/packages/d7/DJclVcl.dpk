@@ -28,9 +28,10 @@ package DJclVcl;
 {$IMPLICITBUILD OFF}
 
 requires
+  rtl,
   vcl,
   vcljpg,
-  Jcl;
+  DJcl;
   
 contains
   JclPrint in '..\..\source\vcl\JclPrint.pas' ,

@@ -30,7 +30,7 @@ package DJclVClx;
 requires
   rtl,
   visualclx,
-  Jcl;
+  DJcl;
   
 contains
   JclQGraphUtils in '..\..\source\visclx\JclQGraphUtils.pas' ,
