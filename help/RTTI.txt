@@ -30,7 +30,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclSetToStr(const TypeInfo: PTypeInfo; const Value;
@@ -60,7 +62,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure JclStrToSet(const TypeInfo: PTypeInfo; var SetVar;
@@ -82,7 +86,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure JclIntToSet(const TypeInfo: PTypeInfo; var SetVar;
@@ -104,7 +110,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclSetToInt(const TypeInfo: PTypeInfo; const SetVar): Integer;
@@ -126,7 +134,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclGUIDToString(const GUID: TGUID): string;
@@ -145,7 +155,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclStringToGUID(const S: string): TGUID;
@@ -164,7 +176,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclEnumValueToIdent(const TypeInfo: PTypeInfo; const Value): string;
@@ -188,7 +202,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Theo Bebekis;bebekis@otenet.gr
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclStrToTypedInt(const Value: string;
@@ -213,7 +229,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=5
+Delphi=5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclTypedIntToStr(const Value: Integer;
@@ -238,7 +256,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Conversions
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=5
+Delphi=5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclGenerateSetType(const BaseType: PTypeInfo;
@@ -263,7 +283,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI generation
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclGenerateEnumType(const TypeName: ShortString;
@@ -288,7 +310,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI generation
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclGenerateEnumTypeBasedOn(const TypeName: ShortString;
@@ -319,7 +343,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI generation
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclGenerateSubRange(const BaseType: PTypeInfo; const TypeName: string;
@@ -347,7 +373,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI generation
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure RemoveTypeInfo(const TypeInfo: PTypeInfo);
@@ -368,7 +396,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI generation
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclHookIs(const IsProc: TJclIsFunc): Boolean;
@@ -398,7 +428,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Class operator hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclIsHooked: Boolean;
@@ -413,7 +445,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Class operator hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclUnhookIs: Boolean;
@@ -433,7 +467,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Class operator hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
@@ -454,7 +490,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Class operator hooking
 Author=Borland
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclIsClassByName(const AnObj: TObject; const AClass: TClass): Boolean;
@@ -480,7 +518,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=Class operator hooking
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function JclTypeInfo(const ATypeInfo: PTypeInfo): IJclTypeInfo;
@@ -498,7 +538,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclBaseInfo = interface
@@ -512,7 +554,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclBaseInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure WriteTo(const Dest: IJclInfoWriter);
@@ -530,7 +574,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclBaseInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure DeclarationTo(const Dest: IJclInfoWriter);
@@ -551,7 +597,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclBaseInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclTypeInfo = interface(IJclBaseInfo)
@@ -566,7 +614,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetName: string;
@@ -582,7 +632,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetTypeData: PTypeData;
@@ -598,7 +650,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetTypeInfo: PTypeInfo;
@@ -614,7 +668,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetTypeKind: TTypeKind;
@@ -631,7 +687,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Name: string;
@@ -646,7 +704,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TypeData: PTypeData;
@@ -661,7 +721,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TypeInfo: PTypeInfo;
@@ -676,7 +738,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TypeKind: TTypeKind;
@@ -692,7 +756,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclOrdinalTypeInfo = interface(IJclTypeInfo)
@@ -706,7 +772,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetOrdinalType: TOrdType;
@@ -722,7 +790,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property OrdinalType: TOrdType;
@@ -737,7 +807,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclOrdinalRangeTypeInfo = interface(IJclOrdinalTypeInfo)
@@ -751,7 +823,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalRangeTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMinValue: Int64;
@@ -775,7 +849,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalRangeTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMaxValue: Int64;
@@ -799,7 +875,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalRangeTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MinValue: Int64;
@@ -820,7 +898,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalRangeTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MaxValue: Int64;
@@ -841,7 +921,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclOrdinalRangeTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclEnumerationTypeInfo = interface(IJclOrdinalRangeTypeInfo)
@@ -855,7 +937,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetBaseType: IJclEnumerationTypeInfo;
@@ -878,7 +962,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetNames(const I: Integer): string;
@@ -900,7 +986,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetUnitName: string;
@@ -919,6 +1007,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function IndexOfName(const Name: string): Integer;
@@ -940,7 +1030,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property BaseType: IJclEnumerationTypeInfo;
@@ -959,7 +1051,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Names[const I: Integer]: string; default;
@@ -975,7 +1069,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property UnitName: string;
@@ -991,6 +1087,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEnumerationTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclSetTypeInfo = interface(IJclOrdinalTypeInfo)
@@ -1004,7 +1102,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclSetTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetBaseType: IJclOrdinalTypeInfo;
@@ -1029,7 +1129,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclSetTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure GetAsList(const Value;  const WantRanges: Boolean; const Strings: TStrings);
@@ -1051,7 +1153,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclSetTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 procedure SetAsList(out Value; const Strings: TStrings);
@@ -1072,7 +1176,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclSetTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property BaseType: IJclOrdinalTypeInfo;
@@ -1094,7 +1200,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclSetTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclFloatTypeInfo = interface(IJclTypeInfo)
@@ -1108,7 +1216,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclFloatTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetFloatType: TFloatType;
@@ -1126,7 +1236,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclFloatTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property FloatType: TFloatType;
@@ -1142,7 +1254,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclFloatTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclStringTypeInfo = interface(IJclTypeInfo)
@@ -1156,7 +1270,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclStringTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMaxLength: Integer;
@@ -1174,7 +1290,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclStringTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MaxLength: Integer;
@@ -1189,7 +1307,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclStringTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 TJclPropSpecKind = (pskNone, pskStaticMethod, pskVirtualMethod, pskField, pskConstant);
@@ -1215,7 +1335,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclPropInfo = interface
@@ -1230,7 +1352,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo\IJclPropInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclClassTypeInfo = interface(IJclTypeInfo)
@@ -1245,7 +1369,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetClassRef: TClass;
@@ -1263,7 +1389,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetParent: IJclClassTypeInfo;
@@ -1283,7 +1411,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetTotalPropertyCount: Integer;
@@ -1303,7 +1433,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetPropertyCount: Integer;
@@ -1323,7 +1455,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetProperties(const PropIdx: Integer): IJclPropInfo;
@@ -1346,7 +1480,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetUnitName: string;
@@ -1364,7 +1500,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ClassRef: TClass;
@@ -1379,7 +1517,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Parent: IJclClassTypeInfo;
@@ -1395,7 +1535,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TotalPropertyCount: Integer;
@@ -1412,7 +1554,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property PropertyCount: Integer;
@@ -1429,7 +1573,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Properties[const PropIdx: Integer]: IJclPropInfo;
@@ -1446,7 +1592,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property UnitName: string;
@@ -1461,7 +1609,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclClassTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclEventParamInfo = interface
@@ -1477,7 +1627,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetFlags: TParamFlags;
@@ -1496,7 +1648,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetName: string;
@@ -1514,7 +1668,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetRecSize: Integer;
@@ -1532,7 +1688,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetTypeName: string;
@@ -1552,7 +1710,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetParam: Pointer;
@@ -1570,7 +1730,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Flags: TParamFlags;
@@ -1587,7 +1749,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Name: string;
@@ -1602,7 +1766,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property RecSize: Integer;
@@ -1617,7 +1783,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property TypeName: string;
@@ -1633,7 +1801,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Param: Pointer;
@@ -1648,7 +1818,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo\IJclEventParamInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclEventTypeInfo = interface(IJclTypeInfo)
@@ -1663,7 +1835,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMethodKind: TMethodKind;
@@ -1682,7 +1856,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetParameterCount: Integer;
@@ -1700,7 +1876,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetParameters(const ParamIdx: Integer): IJclEventParamInfo;
@@ -1721,7 +1899,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetResultTypeName: string;
@@ -1741,7 +1921,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MethodKind: TMethodKind;
@@ -1756,7 +1938,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ParameterCount: Integer;
@@ -1771,7 +1955,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Parameters[const ParamIdx: Integer]: IJclEventParamInfo;
@@ -1786,7 +1972,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ResultTypeName: string;
@@ -1802,7 +1990,9 @@ Visibility=Public
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclEventTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclInterfaceTypeInfo = interface(IJclTypeInfo)
@@ -1817,7 +2007,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetParent: IJclInterfaceTypeInfo;
@@ -1837,7 +2029,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetFlags: TIntfFlagsBase;
@@ -1858,7 +2052,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetGUID: TGUID;
@@ -1876,7 +2072,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetPropertyCount: Integer;
@@ -1896,6 +2094,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetUnitName: string;
@@ -1913,7 +2113,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Parent: IJclInterfaceTypeInfo;
@@ -1929,7 +2131,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property Flags: TIntfFlagsBase;
@@ -1947,7 +2151,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property GUID: TGUID;
@@ -1963,7 +2169,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property UnitName: string;
@@ -1978,7 +2186,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property PropertyCount: Integer;
@@ -1996,6 +2206,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInterfaceTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclInt64TypeInfo = interface(IJclTypeInfo)
@@ -2009,7 +2221,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInt64TypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMinValue: Int64;
@@ -2027,7 +2241,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInt64TypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetMaxValue: Int64;
@@ -2045,7 +2261,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInt64TypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MinValue: Int64;
@@ -2060,7 +2278,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInt64TypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property MaxValue: Int64;
@@ -2075,7 +2295,9 @@ Unit=JclRTTI
 Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclInt64TypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
-Delphi=4,5
+Delphi=4,5,6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 IJclDynArrayTypeInfo = interface(IJclTypeInfo)
@@ -2092,6 +2314,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetElementSize: Longint;
@@ -2110,6 +2334,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetElementType: IJclTypeInfo;
@@ -2131,6 +2357,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetElementsNeedCleanup: Boolean;
@@ -2158,6 +2386,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetVarType: Integer;
@@ -2176,6 +2406,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetUnitName: string;
@@ -2194,6 +2426,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetElementSize: Longint;
@@ -2209,6 +2443,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 function GetElementType: IJclTypeInfo;
@@ -2226,6 +2462,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property ElementsNeedCleanup: Boolean;
@@ -2248,6 +2486,8 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
 <DECL>--------------------------------------------------------------------------
 [Declaration]
 property VarType: Integer;
@@ -2277,3 +2517,5 @@ Category=Runtime Type Information
 SubCat=RTTI retrieval\IJclDynArrayTypeInfo
 Author=Marcel Bestebroer;marcelb@zeelandnet.nl
 Delphi=6
+Kylix=1
+FPC=1.x
