@@ -936,7 +936,7 @@ begin
   AddMakeNodes(MakeNode, False);
   AddMakeNodes(MakeNode, True);
   if (Target is TJclBCBInstallation) then
-    AddNode(MakeNode, ioJclCopyHppFiles, []);
+    AddNode(MakeNode, ioJclCopyHppFiles);
   {$IFDEF MSWINDOWS}
   { TODO : Help integration for Delphi 2005 }
   if Target.VersionNumber <= 7 then
@@ -963,7 +963,7 @@ begin
   end;
   TempNode := AddNode(ProductNode, ioJclPackages, [goStandAloneParent, goChecked]);
   if (Target is TJclBCBInstallation) then
-    AddNode(TempNode, ioJclCopyPackagesHppFiles, []);
+    AddNode(TempNode, ioJclCopyPackagesHppFiles);
   {$IFDEF MSWINDOWS}
   if not (Target is TJclBCBInstallation) then
   begin
@@ -1689,6 +1689,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.57  2005/03/16 18:11:33  rrossmair
+// - "Copy HPP files to ..." options now checked by default.
+//
 // Revision 1.56  2005/03/14 16:10:43  rrossmair
 // - compiler hints resolved
 //
