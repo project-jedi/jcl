@@ -2685,14 +2685,6 @@ const
   IO_REPARSE_TAG_VALID_VALUES = DWORD($E000FFFF);
 
 //==================================================================================================
-// from WinSpool.h
-//==================================================================================================
-
-// need Win2k or later
-function RtdlSetDefaultPrinter(pszPrinter: LPCSTR): BOOL; 
-function RtdlGetDefaultPrinter(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL;
-
-//==================================================================================================
 // from winternl.h
 //==================================================================================================
 
@@ -2951,7 +2943,6 @@ procedure ExitNetbios; // do nothing, obsolete
 function Kernel32Handle: HMODULE;
 function Advapi32Handle: HMODULE;
 function NetApi32Handle: HMODULE;
-function WinSpoolHandle: HMODULE;
 function ImageHlpHandle: HMODULE;
 function RasDlgHandle: HMODULE;
 function NTDllHandle: HMODULE;
@@ -2966,12 +2957,12 @@ function Glu32Handle: HMODULE;
 type
   TCoCreateInstanceExProc = function (const clsid: TGUID;
     unkOuter: IUnknown; dwClsCtx: Longint; ServerInfo: Pointer{PCoServerInfo};
-    dwCount: Longint; rgmqResults: Pointer{PMultiQIArray}): HResult stdcall;
+    dwCount: Longint; rgmqResults: Pointer{PMultiQIArray}): HRESULT stdcall;
 
 (* correct conversion
   TFNCoCreateInstanceExProc = function (const clsid: TGUID;
     unkOuter: IUnknown; dwClsCtx: DWORD; ServerInfo: Pointer{PCOSERVERINFO};
-    dwCount: ULONG; rgmqResults: Pointer{PMULTI_QI}): HResult stdcall;
+    dwCount: ULONG; rgmqResults: Pointer{PMULTI_QI}): HRESULT stdcall;
 *)
 
 implementation
@@ -3008,7 +2999,8 @@ end;
 procedure JclFreeLibrary(var LibHandle: HMODULE);
 begin
   case LibHandle of
-    0, INVALID_HANDLE_VALUE: ;
+    0, INVALID_HANDLE_VALUE:
+      ;
   else
     FreeLibrary(LibHandle);
     LibHandle := 0;
@@ -3031,7 +3023,7 @@ begin
   Result := Call <> CallNotImplemented;
 end;
 
-function JclGetProcAddressResult(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): HResult;
+function JclGetProcAddressResult(var Call: Pointer; LibHandle: HMODULE; ProcName: LPCSTR): HRESULT;
 begin
   if JclGetProcAddress(Call, LibHandle, ProcName) then
     Result := ERROR_SUCCESS
@@ -3077,7 +3069,6 @@ var
   // LoadLibrary, need to be released in the finalization section
   _Advapi32Handle: HMODULE{ = 0};
   _NetApi32Handle: HMODULE{ = 0};
-  _WinSpoolHandle: HMODULE{ = 0};
   _ImageHlpHandle: HMODULE{ = 0};
   _RasDlgHandle: HMODULE{ = 0};
   _NTDllHandle: HMODULE{ = 0};
@@ -3097,11 +3088,6 @@ end;
 function NetApi32Handle: HMODULE;
 begin
   Result := JclLoadLibrary(_NetApi32Handle, 'NetApi32.dll');
-end;
-
-function WinSpoolHandle: HMODULE;
-begin
-  Result := JclLoadLibrary(_WinSpoolHandle, 'winspool.drv');
 end;
 
 function ImageHlpHandle: HMODULE;
@@ -3800,36 +3786,6 @@ begin
 end;
 
 //==================================================================================================
-// from WinSpool.h
-//==================================================================================================
-
-type
-  TFNSetDefaultPrinterA = function(pszPrinter: LPCSTR): BOOL; stdcall;
-  TFNGetDefaultPrinterA = function(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL; stdcall;
-
-var
-  _SetDefaultPrinterA: TFNSetDefaultPrinterA{ = nil};
-  _GetDefaultPrinterA: TFNGetDefaultPrinterA{ = nil};
-
-//--------------------------------------------------------------------------------------------------
-
-function RtdlSetDefaultPrinter(pszPrinter: LPCSTR): BOOL;
-begin
-  Result := JclGetProcAddressBool(@_SetDefaultPrinterA, WinSpoolHandle, 'SetDefaultPrinterA');
-  if Result then
-    Result := _SetDefaultPrinterA(pszPrinter);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function RtdlGetDefaultPrinter(pszBuffer: LPTSTR; pcchBuffer: LPDWORD): BOOL;
-begin
-  Result := JclGetProcAddressBool(@_GetDefaultPrinterA, WinSpoolHandle, 'GetDefaultPrinterA');
-  if Result then
-     Result := _GetDefaultPrinterA(pszBuffer, pcchBuffer);
-end;
-
-//==================================================================================================
 // from Gl.h
 //==================================================================================================
 
@@ -3859,10 +3815,8 @@ function RtdlglGetError: GLenum;
 begin
   Result := GL_INVALID_OPERATION;  // error code, if the last or this call failed
   if not LastOpenGlCallFailed then
-  begin
     if JclGetProcAddressOpenGl(@_glGetError, OpenGl32Handle, 'glGetError') then
       Result := _glGetError;
-  end;
   LastOpenGlCallFailed := False;  // Reset the error flag
 end;
 
@@ -4027,7 +3981,6 @@ initialization
 finalization
   JclFreeLibrary(_Advapi32Handle);
   JclFreeLibrary(_NetApi32Handle);
-  JclFreeLibrary(_WinSpoolHandle);
   JclFreeLibrary(_ImageHlpHandle);
   JclFreeLibrary(_RasDlgHandle);
   JclFreeLibrary(_NTDllHandle);
@@ -4037,6 +3990,10 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.28  2004/10/09 13:58:52  marquardt
+// style cleaning JclPrint
+// remove WinSpool related functions from JclWin32
+//
 // Revision 1.27  2004/08/02 06:34:59  marquardt
 // minor string literal improvements
 //
