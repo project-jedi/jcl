@@ -126,7 +126,8 @@ type
 
 {$IFDEF FPC}
 type
-  LongWord = Cardinal;
+  Largeint    = Int64;
+  LongWord    = Cardinal;
   TSysCharSet = set of Char;
 {$ENDIF FPC}
 
