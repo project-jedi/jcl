@@ -36,10 +36,16 @@ interface
 uses
   JclBase;
 
+{ Mean functions }
+
 function ArithmeticMean(const X: TDynFloatArray): Float;
-function BinomialCoeff(N, R: Cardinal): Float;
 function GeometricMean(const X: TDynFloatArray): Float;
 function HarmonicMean(const X: TDynFloatArray): Float;
+function HeronianMean(const a, b: Float): Float;
+
+{ Miscellanous }
+
+function BinomialCoeff(N, R: Cardinal): Float;
 function IsPositiveFloatArray(const X: TDynFloatArray): Boolean;
 function MaxFloatArray(const B: TDynFloatArray): Float;
 function MaxFloatArrayIndex(const B: TDynFloatArray): Integer;
@@ -80,47 +86,12 @@ begin
 end;
 
 //==================================================================================================
-// Statistics
+// Mean Functions
 //==================================================================================================
 
 function ArithmeticMean(const X: TDynFloatArray): Float;
 begin
   Result := SumFloatArray(X) / Length(X);
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-function BinomialCoeff(N, R: Cardinal): Float;
-var
-  I: Integer;
-  K: LongWord;
-begin
-  if (N = 0) or (R > N) or (N > MaxFactorial) then
-  begin
-    Result := 0.0;
-    Exit;
-  end;
-  Result := 1.0;
-  if not ((R = 0) or (R = N)) then
-  begin
-    if R > N div 2 then
-    R := N - R;
-    K := 2;
-    try
-      for I := N - R + 1 to N do
-      begin
-        Result := Result * I;
-        if K <= R then
-        begin
-          Result := Result / K;
-          Inc(K);
-        end;
-      end;
-      Result := Int(Result + 0.5);
-    except
-      Result := -1.0;
-    end;
-  end;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -156,6 +127,53 @@ begin
   end;
   Result := L / Result;
 end;
+
+//--------------------------------------------------------------------------------------------------
+
+function HeronianMean(const a, b: Float): Float;
+begin
+  Assert(a >= 0);
+  Assert(b >= 0);
+  Result := (a + sqrt(ab) + b) / 3;
+end;
+
+//==================================================================================================
+// Miscellanous
+//==================================================================================================
+
+function BinomialCoeff(N, R: Cardinal): Float;
+var
+  I: Integer;
+  K: LongWord;
+begin
+  if (N = 0) or (R > N) or (N > MaxFactorial) then
+  begin
+    Result := 0.0;
+    Exit;
+  end;
+  Result := 1.0;
+  if not ((R = 0) or (R = N)) then
+  begin
+    if R > N div 2 then
+    R := N - R;
+    K := 2;
+    try
+      for I := N - R + 1 to N do
+      begin
+        Result := Result * I;
+        if K <= R then
+        begin
+          Result := Result / K;
+          Inc(K);
+        end;
+      end;
+      Result := Int(Result + 0.5);
+    except
+      Result := -1.0;
+    end;
+  end;
+end;
+
 
 //--------------------------------------------------------------------------------------------------
 
@@ -437,5 +455,6 @@ begin
     Sum := Sum + X[I];
   end;
 end;
+
 
 end.
