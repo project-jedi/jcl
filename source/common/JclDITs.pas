@@ -313,8 +313,7 @@ begin
     Date := EncodeDate(Year, Month, Day) + Frac(Date);
     Result := True;
   except
-    // (rom) obviously incomplete
-    on EConvertError do;
+    on EConvertError do{ Result := False };
   end;
 end;
 
@@ -397,8 +396,7 @@ begin
     Time := EncodeTime(Hours, Minutes, Seconds, Milliseconds) + Int(Time);
     Result := True;
   except
-    // (rom) obviously incomplete
-    on EConvertError do;
+    on EConvertError do{ Result := False };
   end;
 end;
 
@@ -638,6 +636,9 @@ end;
 //      instead of arbitrary characters.
 //
 //   $Log$
+//   Revision 1.9  2004/07/28 20:59:01  rrossmair
+//   comments added to except blocks
+//
 //   Revision 1.8  2004/07/28 18:00:49  marquardt
 //   various style cleanings, some minor fixes
 //
