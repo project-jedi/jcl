@@ -25,7 +25,7 @@
 { routines as well but they are specific to the Windows shell.                                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: September 27, 2003                                                                    }
+{ Last modified: October 16, 2003                                                                    }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -189,6 +189,10 @@ procedure GetFileAttributeListEx(const Items: TStrings; const Attr: Integer);
 {$ENDIF MSWINDOWS}
 function GetFileInformation(const FileName: string; out FileInfo: TSearchRec): Boolean; overload;
 function GetFileInformation(const FileName: string): TSearchRec; overload;
+{$IFDEF UNIX}
+function GetFileStatus(const FileName: string; out StatBuf: TStatBuf64;
+  const DereferenceSymLinks: Boolean): Integer;
+{$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 function GetFileLastWrite(const FileName: string): TFileTime; overload;
 function GetFileLastWrite(const FileName: string; out LocalTime: TDateTime): Boolean; overload;
@@ -882,7 +886,7 @@ uses
   performance services or console apps.
 
   The routines which query files or directories for their attributes deliberately use FindFirst
-  eventhough there may be easier ways to get at the required information. This is because FindFirst
+  even though there may be easier ways to get at the required information. This is because FindFirst
   is about the only routine which doesn't cause the file's last modification/accessed time to be
   changed which is usually an undesired side-effect. }
 
@@ -2144,16 +2148,62 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function PathIsDiskDevice(const Path: string): Boolean;
+{$IFDEF UNIX}
+{ TODOc Author: André Snepvangers, contributor: Robert Rossmair }
+  procedure GetAvailableFileSystems(const List: TStrings);
+  var
+    F: TextFile;
+    S: string;
+  begin
+    AssignFile(F, '/proc/filesystems');
+    Reset(F);
+    repeat
+      ReadLn(F, S);
+      if Pos('nodev', S) = 0 then // how portable is this ?
+        List.Add(Trim(S));
+    until Eof(F);
+    List.Add('supermount');    
+    CloseFile(F);
+  end;
+
+var
+  FullPath: string;
+  F: PIOFile;
+  Buffer: array [0..255] of char;
+  MountEntry: TMountEntry;
+  FsTypes: TStrings;
 begin
-  {$IFDEF LINUX}
-  { TODO : PathIsDiskDevice/Linux: Program me! }
-  Assert(False, 'PathIsDiskDevice not implemented');
   Result := False;
-  {$ENDIF LINUX}
-  {$IFDEF MSWINDOWS}
-  Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
-  {$ENDIF MSWINDOWS}
+
+  SetLength(FullPath, _POSIX_PATH_MAX);
+  if realpath(PChar(Path), PChar(FullPath)) = nil then
+    RaiseLastOSError;
+  StrResetLength(FullPath);
+  
+  FsTypes := TStringlist.Create;
+  try
+    GetAvailableFileSystems(FsTypes);
+    F := setmntent(_PATH_MOUNTED, 'r'); // PATH_MOUNTED is deprecated,
+                                        // but PATH_MNTTAB is defective in Libc.pas
+    try
+      // get drives from mtab
+      while not Result and (getmntent_r(F, MountEntry, Buffer, SizeOf(Buffer)) <> nil) do
+        if FsTypes.IndexOf(MountEntry.mnt_type) <> -1 then
+          Result := MountEntry.mnt_dir = FullPath;
+
+    finally
+      endmntent(F);
+    end;
+  finally
+    FsTypes.Free;
+  end;
 end;
+{$ENDIF UNIX}
+{$IFDEF MSWINDOWS}
+begin
+  Result := Copy(Path, 1, Length(PathDevicePrefix)) = PathDevicePrefix;
+end;
+{$ENDIF MSWINDOWS}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -3449,8 +3499,11 @@ begin
     Inc(BufLen, BufLen);
     SetLength(Result, BufLen);
     N := readlink(PChar(Name), PChar(Result), BufLen);
-    if N < 0 then
-      RaiseLastOSError;
+    if N < 0 then // Error
+    begin
+      Result := '';
+      Exit;
+    end;
   until N < BufLen;
   SetLength(Result, N);
 end;
