@@ -1035,6 +1035,10 @@ resourcestring
   RsInvalidDigit         = 'Invalid base %d digit ''%s'' encountered.';
   RsInvalidDigitValue    = 'There is no valid base %d digit for decimal value %d';
 
+  {$IFDEF UNIX}
+  RsReadKeyError         = 'ReadKey: Problem waiting on stdin';
+  {$ENDIF UNIX}
+
 //--------------------------------------------------------------------------------------------------
 // JclTD32
 //--------------------------------------------------------------------------------------------------
@@ -1103,6 +1107,9 @@ implementation
 // History:
 
 // $Log$
+// Revision 1.24  2004/12/05 04:58:46  rrossmair
+// added ReadKey donation by Wayne Sherman
+//
 // Revision 1.23  2004/11/15 04:16:06  mthoma
 // JclCompression resource strings added.
 //

@@ -16,22 +16,23 @@
 { Portions created by Marcel van Brakel are Copyright (C) Marcel van Brakel. All rights reserved.  }
 {                                                                                                  }
 { Contributors:                                                                                    }
+{   Alexander Radchenko,                                                                           }
 {   Andreas Hausladen (ahuser)                                                                     }
-{   Heri Bender                                                                                    }
+{   Anthony Steele                                                                                 }
 {   Bernhard Berger                                                                                }
+{   Heri Bender                                                                                    }
+{   Jeff                                                                                           }
+{   Jeroen Speldekamp                                                                              }
 {   Marcel van Brakel                                                                              }
 {   Peter Friese                                                                                   }
-{   Jeff                                                                                           }
+{   Petr Vones (pvones)                                                                            }
+{   Python                                                                                         }
 {   Robert Marquardt (marquardt)                                                                   }
 {   Robert R. Marsh                                                                                }
-{   Python                                                                                         }
-{   Alexander Radchenko,                                                                           }
 {   Robert Rossmair (rrossmair)                                                                    }
+{   Rudy Velthuis                                                                                  }
 {   Uwe Schuster (uschuster)                                                                       }
-{   Jeroen Speldekamp                                                                              }
-{   Anthony Steele                                                                                 }
-{   Rudy Velthuis,                                                                                 }
-{   Petr Vones (pvones)                                                                            }
+{   Wayne Sherman                                                                                  }
 {                                                                                                  }
 {**************************************************************************************************}
 {                                                                                                  }
@@ -375,6 +376,12 @@ function Execute(const CommandLine: string; var Output: string; RawOutput: Boole
   AbortPtr: PBoolean = nil): Cardinal; overload;
 
 //--------------------------------------------------------------------------------------------------
+// Console Utilities
+//--------------------------------------------------------------------------------------------------
+
+function ReadKey: Char;
+
+//--------------------------------------------------------------------------------------------------
 // Loading of modules (DLLs)
 //--------------------------------------------------------------------------------------------------
 
@@ -430,6 +437,9 @@ uses
   dl,
   {$ENDIF ~HAS_UNIT_LIBC}
   {$ENDIF UNIX}
+  {$IFDEF MSWINDOWS}
+  JclConsole,
+  {$ENDIF MSWINDOWS}
   SysUtils,
   JclResources, JclStrings, JclMath;
 
@@ -2245,6 +2255,67 @@ begin
 end;
 
 //==================================================================================================
+// Console Utilities
+//==================================================================================================
+
+function ReadKey: Char;
+{$IFDEF MSWINDOWS}
+{ TODO -cHelp : Contributor: Robert Rossmair }
+var
+  Console: TJclConsole;
+  InputMode: TJclConsoleInputModes;
+begin
+  Console := TJclConsole.Default;
+  InputMode := Console.Input.Mode;
+  Console.Input.Mode := [imProcessed];
+  Console.Input.Clear;
+  Result := Console.Input.GetEvent.Event.KeyEvent.AsciiChar;
+  Console.Input.Mode := InputMode;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+{ TODO -cHelp : Donator: Wayne Sherman }
+var
+  ReadFileDescriptor: TFDSet;
+  TimeVal: TTimeVal;
+  SaveTerminalSettings: TTermIos;
+  RawTerminalSettings: TTermIos;
+begin
+  Result := #0;
+
+  //Save Original Terminal Settings
+  tcgetattr(stdin, SaveTerminalSettings);
+  tcgetattr(stdin, RawTerminalSettings);
+
+  //Put Terminal in RAW mode
+  cfmakeraw(RawTerminalSettings);
+  tcsetattr(stdin, TCSANOW, RawTerminalSettings);
+  try
+    //Setup file I/O descriptor for STDIN
+    FD_ZERO(ReadFileDescriptor);
+    FD_SET(stdin, ReadFileDescriptor);
+    TimeVal.tv_sec := High(LongInt); //wait forever
+    TimeVal.tv_usec := 0;
+
+    //clear keyboard buffer first
+    TCFlush(stdin, TCIFLUSH);
+
+    //wait for a key to be pressed
+    if select(1, @ReadFileDescriptor, nil, nil, @TimeVal) > 0 then
+    begin
+      //Now read the character
+      Result := Char(getchar);
+    end
+    else
+      raise EJclError.CreateResRec(RsReadKeyError);
+  finally
+    //Restore Original Terminal Settings
+    tcsetattr(stdin, TCSANOW, SaveTerminalSettings);
+  end;
+end;
+{$ENDIF UNIX}
+
+//==================================================================================================
 // Loading of modules (DLLs)
 //==================================================================================================
 
@@ -2442,6 +2513,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.28  2004/12/05 04:58:47  rrossmair
+// added ReadKey donation by Wayne Sherman
+//
 // Revision 1.27  2004/11/28 16:37:26  uschuster
 // added possibility to abort Execute
 //
