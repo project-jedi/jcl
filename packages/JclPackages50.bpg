@@ -15,17 +15,17 @@ PROJECTS = DJCL50.bpl IdeOpenDlgFavorite50.bpl JclDebugIde50.bpl ProjectAnalyzer
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-DJCL50.bpl: D5\DJCL50.dpk
+DJCL50.bpl: d5\DJCL50.dpk
   $(DCC)
 
-JclDebugIde50.bpl: ..\examples\debugextension\JclDebugIde50.dpk
+JclDebugIde50.bpl: ..\examples\vcl\debugextension\JclDebugIde50.dpk
   $(DCC)
 
-ThreadNameExpert50.bpl: ..\examples\debugextension\threadnames\ThreadNameExpert50.dpk
+ThreadNameExpert50.bpl: ..\examples\vcl\debugextension\threadnames\ThreadNameExpert50.dpk
   $(DCC)
 
-ProjectAnalyzer50.bpl: ..\examples\projectanalyzer\ProjectAnalyzer50.dpk
+ProjectAnalyzer50.bpl: ..\examples\vcl\projectanalyzer\ProjectAnalyzer50.dpk
   $(DCC)
 
-IdeOpenDlgFavorite50.bpl: ..\examples\idefavopendialogs\IdeOpenDlgFavorite50.dpk
+IdeOpenDlgFavorite50.bpl: ..\examples\vcl\idefavopendialogs\IdeOpenDlgFavorite50.dpk
   $(DCC)
