@@ -1,6 +1,6 @@
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION 1,92,1,1661
-PRODUCTVERSION 1,92,1,1661
+FILEVERSION 1,93,1,1722
+PRODUCTVERSION 1,93,1,1722
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
  FILEFLAGS VS_FF_DEBUG
@@ -17,12 +17,12 @@ BEGIN
          BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JCL IDE Favorite Dialogs expert\0"
-              VALUE "FileVersion", "1.92.1.1661\0"
+              VALUE "FileVersion", "1.93.1.1722\0"
               VALUE "InternalName", "IdeOpenDlgFavorite50\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2004 Project JEDI\0"
               VALUE "OriginalFilename", "IdeOpenDlgFavorite50.bpl\0"
               VALUE "ProductName", "Jedi Code Library Extension\0"
-              VALUE "ProductVersion", "1.92 Build 1661\0"
+              VALUE "ProductVersion", "1.93 Build 1722\0"
          END
     END
     BLOCK "VarFileInfo"
