@@ -100,10 +100,10 @@ procedure SphericToCartesian(const Rho, Theta, Phi: Float; var X, Y, Z: Float);
 
 function CmToInch(const Cm: Float): Float;
 function InchToCm(const Inch: Float): Float;
-function FeetToMeter(const Feet: Float): Float;
-function MeterToFeet(const Meter: Float): Float;
-function YardToMeter(const Yard: Float): Float;
-function MeterToYard(const Meter: Float): Float;
+function FeetToMetre(const Feet: Float): Float;
+function MetreToFeet(const Metre: Float): Float;
+function YardToMetre(const Yard: Float): Float;
+function MetreToYard(const Metre: Float): Float;
 function NmToKm(const Nm: Float): Float;
 function KmToNm(const Km: Float): Float;
 function KmToSm(const Km: Float): Float;
@@ -111,8 +111,8 @@ function SmToKm(const Sm: Float): Float;
 
 { Volume conversion }
 
-function LiterToGalUs(const Liter: Float): Float;
-function GalUsToLiter(const GalUs: Float): Float;
+function LitreToGalUs(const Litre: Float): Float;
+function GalUsToLitre(const GalUs: Float): Float;
 function GalUsToGalCan(const GalUs: Float): Float;
 function GalCanToGalUs(const GalCan: Float): Float;
 function GalUsToGalUk(const GalUs: Float): Float;
@@ -403,30 +403,30 @@ end;
 
 //------------------------------------------------------------------------------
 
-function FeetToMeter(const Feet: Float): Float;
+function FeetToMetre(const Feet: Float): Float;
 begin
   Result := Feet * 0.3048;
 end;
 
 //------------------------------------------------------------------------------
 
-function MeterToFeet(const Meter: Float): Float;
+function MetreToFeet(const Metre: Float): Float;
 begin
-  Result := Meter / 0.3048;
+  Result := Metre / 0.3048;
 end;
 
 //------------------------------------------------------------------------------
 
-function YardToMeter(const Yard: Float): Float;
+function YardToMetre(const Yard: Float): Float;
 begin
   Result := Yard * 0.9144;
 end;
 
 //------------------------------------------------------------------------------
 
-function MeterToYard(const Meter: Float): Float;
+function MetreToYard(const Metre: Float): Float;
 begin
-  Result := Meter / 0.9144;
+  Result := Metre / 0.9144;
 end;
 
 //------------------------------------------------------------------------------
@@ -461,14 +461,14 @@ end;
 // Volume conversion
 //==============================================================================
 
-function LiterToGalUs(const Liter: Float): Float;
+function LitreToGalUs(const Litre: Float): Float;
 begin
-  Result := Liter / 3.785411784;
+  Result := Litre / 3.785411784;
 end;
 
 //------------------------------------------------------------------------------
 
-function GalUsToLiter(const GalUs: Float): Float;
+function GalUsToLitre(const GalUs: Float): Float;
 begin
   Result := GalUs * 3.785411784;
 end;
@@ -721,3 +721,4 @@ end;
 //------------------------------------------------------------------------------
 
 end.
+
