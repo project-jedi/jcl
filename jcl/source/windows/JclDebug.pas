@@ -21,7 +21,7 @@
 { routines, Stack tracing and Source Locations a la the C/C++ __FILE__ and __LINE__ macros.        }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
-{ Last modified: February 14, 2002                                                                 }
+{ Last modified: February 18, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -39,7 +39,7 @@ uses
   {$IFDEF DELPHI5_UP}
   Contnrs,
   {$ENDIF DELPHI5_UP}
-  JclBase, JclFileUtils, JclPeImage, JclSynch;
+  JclBase, JclFileUtils, JclPeImage, JclSynch, JclTD32;
 
 //--------------------------------------------------------------------------------------------------
 // Diagnostics
@@ -324,6 +324,16 @@ type
   TJclDebugInfoExports = class (TJclDebugInfoSource)
   private
     FBorImage: TJclPeBorImage;
+  protected
+    function InitializeSource: Boolean; override;
+  public
+    destructor Destroy; override;
+    function GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean; override;
+  end;
+
+  TJclDebugInfoTD32 = class(TJclDebugInfoSource)
+  private
+    FImage: TJclPeBorTD32Image;
   protected
     function InitializeSource: Boolean; override;
   public
@@ -2122,8 +2132,8 @@ end;
 
 function TJclDebugInfoList.CreateDebugInfo(const Module: HMODULE): TJclDebugInfoSource;
 const
-  DebugInfoSources: array [1..3] of TJclDebugInfoSourceClass =
-    (TJclDebugInfoMap, TJclDebugInfoBinary, TJclDebugInfoExports);
+  DebugInfoSources: array [1..4] of TJclDebugInfoSourceClass =
+    (TJclDebugInfoMap, TJclDebugInfoBinary, TJclDebugInfoTD32, TJclDebugInfoExports);
 var
   I: Integer;
 begin
@@ -2365,6 +2375,49 @@ begin
   FBorImage := TJclPeBorImage.Create(True);
   FBorImage.AttachLoadedModule(FModule);
   Result := FBorImage.StatusOK and (FBorImage.ExportList.Count > 0);
+end;
+
+//==================================================================================================
+// TJclDebugInfoTD32
+//==================================================================================================
+
+destructor TJclDebugInfoTD32.Destroy;
+begin
+  FreeAndNil(FImage);
+  inherited;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDebugInfoTD32.GetLocationInfo(const Addr: Pointer; var Info: TJclLocationInfo): Boolean;
+var
+  VA: DWORD;
+begin
+  VA := VAFromAddr(Addr);
+  Info.UnitName := FImage.ModuleNameFromAddr(VA);
+  Result := (Info.UnitName) <> '';
+  if Result then
+    with Info do
+    begin
+      Address := Addr;
+      ProcedureName := FImage.ProcNameFromAddr(VA);
+      LineNumber := FImage.LineNumberFromAddr(VA);
+      SourceName := FImage.SourceNameFromAddr(VA);
+      DebugInfo := Self;
+    end;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclDebugInfoTD32.InitializeSource: Boolean;
+begin
+  FImage := TJclPeBorTD32Image.Create(True);
+  try
+    FImage.FileName := FileName;
+    Result := TJclTD32InfoParser.Parse(FImage, True);
+  except
+    Result := False;
+  end;
 end;
 
 //==================================================================================================
