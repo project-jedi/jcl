@@ -242,10 +242,15 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclOTAUtils.GetRootDir: string;
+const
+  cRootDir = 'RootDir';
 begin
   if FRootDir = '' then
   begin
-    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, BaseRegistryKey, 'RootDir', '');
+    FRootDir := RegReadStringDef(HKEY_LOCAL_MACHINE, BaseRegistryKey, cRootDir, '');
+    // (rom) bugfix if using -r switch of D9 by Dan Miser
+    if FRootDir = '' then
+      FRootDir := RegReadStringDef(HKEY_CURRENT_USER, BaseRegistryKey, cRootDir, '');
     Assert(FRootDir <> '');
   end;  
   Result := FRootDir;
