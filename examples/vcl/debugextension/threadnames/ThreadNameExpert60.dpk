@@ -1,0 +1,40 @@
+package ThreadNameExpert60;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $58020000}
+{$DESCRIPTION 'JCL Thread Name IDE expert for Delphi 6'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  designide,
+  DJcl;
+
+contains
+  ThreadExpertUnit in 'ThreadExpertUnit.pas',
+  ThreadExpertSharedNames in 'ThreadExpertSharedNames.pas',
+  JclOtaUtils in '..\JclOtaUtils.pas';
+
+end.

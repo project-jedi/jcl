@@ -1,0 +1,87 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = ApiHookExample.exe AppInstExample.exe CreateProcAsUserExample.exe FramesTrackExample.exe \
+  LanManExample.exe LocalesExample.exe MapiExample.exe MidiOutExample.exe MultiMediaExample.exe \
+  NtSvcExample.exe PeFuncExample.exe ReadMailExample.exe RegistryExample.exe RTTIExample.exe \
+  SingleInstExample.exe SourceLocExample.exe StackTrackExample.exe SysInfoExample.exe \
+  TextReaderExample.exe ThreadExceptExample.exe UnmangleNameExample.exe VerInfoExample.exe
+#------------------------------------------------------------------------------
+default: vcl\$(PROJECTS)
+#------------------------------------------------------------------------------
+
+MapiExample.exe: vcl\mapi\MapiExample.dpr
+  $(DCC)
+
+LocalesExample.exe: vcl\locales\LocalesExample.dpr
+  $(DCC)
+
+AppInstExample.exe: vcl\appinst\AppInstExample.dpr
+  $(DCC)
+
+CreateProcAsUserExample.exe: vcl\asuser\CreateProcAsUserExample.dpr
+  $(DCC)
+
+SysInfoExample.exe: vcl\sysinfo\SysInfoExample.dpr
+  $(DCC)
+
+ApiHookExample.exe: vcl\peimage\ApiHookExample.dpr
+  $(DCC)
+
+UnmangleNameExample.exe: vcl\peimage\UnmangleNameExample.dpr
+  $(DCC)
+
+VerInfoExample.exe: vcl\fileversion\VerInfoExample.dpr
+  $(DCC)
+
+RegistryExample.exe: vcl\registry\RegistryExample.dpr
+  $(DCC)
+
+SourceLocExample.exe: vcl\debug\sourceloc\SourceLocExample.dpr
+  $(DCC)
+
+StackTrackExample.exe: vcl\debug\stacktrack\StackTrackExample.dpr
+  $(DCC)
+
+FramesTrackExample.exe: vcl\debug\framestrack\FramesTrackExample.dpr
+  $(DCC)
+
+ReadMailExample.exe: vcl\mapi\ReadMailExample.dpr
+  $(DCC)
+
+PeFuncExample.exe: vcl\peimage\PeFuncExample.dpr
+  $(DCC)
+
+SingleInstExample.exe: vcl\appinst\SingleInstExample.dpr
+  $(DCC)
+
+LanManExample.exe: vcl\lanman\LanManExample.dpr
+  $(DCC)
+
+MultiMediaExample.exe: vcl\multimedia\MultiMediaExample.dpr
+  $(DCC)
+
+MidiOutExample.exe: vcl\multimedia\MidiOutExample.dpr
+  $(DCC)
+
+NtSvcExample.exe: vcl\ntservice\NtSvcExample.dpr
+  $(DCC)
+
+RTTIExample.exe: vcl\rtti\RTTIExample.dpr
+  $(DCC)
+
+TextReaderExample.exe: vcl\textreader\TextReaderExample.dpr
+  $(DCC)
+
+ThreadExceptExample.exe: vcl\debug\threadexcept\ThreadExceptExample.dpr
+  $(DCC)
+
+
