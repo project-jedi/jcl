@@ -25,7 +25,7 @@ DCC = $(ROOT)\bin\dcc32.exe -e$(BIN) -i$(INC) -q -r$(RES) -u$(LIB) -w $<
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
-  ApiInstExample.exe \
+  AppInstExample.exe \
   SingleInstExample.exe
 #---------------------------------------------------------------------------------------------------
 .dpr.exe:
