@@ -92,11 +92,12 @@ type
     procedure CheckSingleInstance;
     function SendCmdLineParams(const WindowClassName: string; const OriginatorWnd: HWND): Boolean;
     function SendData(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
-      const Data: Pointer; const Size: Integer; const OriginatorWnd: HWND): Boolean;
+      Data: Pointer; const Size: Integer;
+      OriginatorWnd: HWND): Boolean;
     function SendString(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
-      const S: string; const OriginatorWnd: HWND): Boolean;
+      const S: string; OriginatorWnd: HWND): Boolean;
     function SendStrings(const WindowClassName: string; const DataKind: TJclAppInstDataKind;
-      const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
+      const Strings: TStrings; OriginatorWnd: HWND): Boolean;
     function SwitchTo(const Index: Integer): Boolean;
     procedure UserNotify(const Param: Longint);
     property AppWnds[Index: Integer]: HWND read GetAppWnds;
@@ -444,8 +445,9 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendData(const WindowClassName: string;
-  const DataKind: TJclAppInstDataKind; const Data: Pointer; const Size: Integer;
-  const OriginatorWnd: HWND): Boolean;
+  const DataKind: TJclAppInstDataKind;
+  Data: Pointer; const Size: Integer;
+  OriginatorWnd: HWND): Boolean;
 type
   PEnumWinRec = ^TEnumWinRec;
   TEnumWinRec = record
@@ -502,7 +504,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendString(const WindowClassName: string;
-  const DataKind: TJclAppInstDataKind; const S: string; const OriginatorWnd: HWND): Boolean;
+  const DataKind: TJclAppInstDataKind; const S: string;
+  OriginatorWnd: HWND): Boolean;
 begin
   Result := SendData(WindowClassName, DataKind, PChar(S), Length(S) + 1,
     OriginatorWnd);
@@ -511,7 +514,8 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclAppInstances.SendStrings(const WindowClassName: string;
-  const DataKind: TJclAppInstDataKind; const Strings: TStrings; const OriginatorWnd: HWND): Boolean;
+  const DataKind: TJclAppInstDataKind; const Strings: TStrings;
+  OriginatorWnd: HWND): Boolean;
 var
   S: string;
 begin
@@ -640,6 +644,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.11  2004/09/22 20:38:49  obones
+// Removed "const" specifiers that were triggering the well known HPP generation bug in C++ Builder
+//
 // Revision 1.10  2004/08/01 11:40:23  marquardt
 // move constructors/destructors
 //
