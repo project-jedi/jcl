@@ -12,7 +12,7 @@ VclOptions      = $(Options) -dVCL -uVisualCLX -dMSWINDOWS -uUnix -dBitmap32 -x1
 VClxOptions	= $(Options) -uVCL -dVisualCLX -dHAS_UNIT_TYPES -uBitmap32 -x1:..\visclx\JclQ
 WinOptions      = $(Options) -dMSWINDOWS -uUNIX -uHAS_UNIT_LIBC -x..\windows\\
 UnixOptions     = $(Options) -uMSWINDOWS -dUNIX -x..\unix\\
-ZlibOptions	= -uPLATFORM_SPECIFIC_COMMENT -uZLIB_WIN32DLL
+ZlibOptions	= -uSTATIC_GZIO
 
 
 release:	VCL VisualCLX Windows Unix
@@ -49,12 +49,12 @@ zlib:		..\windows\zlibh.pas ..\unix\zlibh.pas
 ..\unix\zlibh.pas: \
 		zlibh.pas
         echo Unix-zlib
-	$(jpp) $(UnixOptions) $(ZlibOptions) $?
+	$(jpp) $(UnixOptions) $(ZlibOptions) -dZLIB_DLL $?
 
 ..\windows\zlibh.pas: \
 		zlibh.pas
         echo Win-zlib
-	$(jpp) $(WinOptions) $(ZlibOptions) $?
+	$(jpp) $(WinOptions) $(ZlibOptions) -uZLIB_DLL $?
 
 {.}.pas{..\common}.pas:
 	$(jpp) $(CommonOptions) $<
