@@ -24,7 +24,8 @@ uses
   TestJclMath in 'units\TestJclMath.pas',
   TestJclStrings in 'units\TestJclStrings.pas',
   TestJclDateTime in 'units\TestJclDateTime.pas',
-  TestJclEDI in 'units\TestJclEDI.pas';
+  TestJclEDI in 'units\TestJclEDI.pas',
+  TestJclEDI_ANSIX12 in 'units\TestJclEDI_ANSIX12.pas';
 
 {$R *.res}
 
