@@ -127,13 +127,25 @@ unit zlibh;
 {$ENDIF ~ZLIB_DYNAMIC}
 
 interface
+
+{$IFDEF MSWINDOWS}
 uses
-  {$IFDEF MSWINDOWS}
   Windows;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_LIBC}
+{$ENDIF MSWINDOWS}
+{$IFDEF UNIX}
+{$IFDEF HAS_UNIT_LIBC}
+uses
   Libc;
-  {$ENDIF HAS_UNIT_LIBC}
+{$ELSE ~HAS_UNIT_LIBC}
+type
+  uLong = LongWord;
+  {$EXTERNALSYM ulong}
+  uShort = Word;
+  {$EXTERNALSYM ushort}
+  uInt = Cardinal;
+  {$EXTERNALSYM uint}
+{$ENDIF ~HAS_UNIT_LIBC}
+{$ENDIF UNIX}
 
 {$IFDEF MSWINDOWS}
 {$IFDEF ZLIB_WIN32DLL}
@@ -1625,6 +1637,9 @@ end;
 
 {$IFDEF PROTOTYPE}
 //   $Log$
+//   Revision 1.12  2004/07/26 03:43:44  rrossmair
+//   added uLong, uInt, uShort declaration for not-Linux Unices
+//
 //   Revision 1.11  2004/06/27 23:38:07  rrossmair
 //   some style cleaning (case, spaces, $ENDIF)
 //
