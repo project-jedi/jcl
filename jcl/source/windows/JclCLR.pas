@@ -557,8 +557,8 @@ const
     TJclClrTableTypeSpec,             //  $1b ttTypeSpec
     TJclClrTableImplMap,              //  $1c ttImplMap
     TJclClrTableFieldRVA,             //  $1d ttFieldRVA
-    TJclClrTable,                     //  $1e ttENCLog
-    TJclClrTable,                     //  $1f ttENCMap
+    TJclClrTableENCLog,               //  $1e ttENCLog
+    TJclClrTableENCMap,               //  $1f ttENCMap
     TJclClrTableAssembly,             //  $20 ttAssembly
     TJclClrTableAssemblyProcessor,    //  $21 ttAssemblyProcessor
     TJclClrTableAssemblyOS,           //  $22 ttAssemblyOS
@@ -569,8 +569,8 @@ const
     TJclClrTableExportedType,         //  $27 ttExportedType
     TJclClrTableManifestResource,     //  $28 ttManifestResource
     TJclClrTableNestedClass,          //  $29 ttNestedClass
-    TJclClrTable,                     //  $2A ttTypeTyPar
-    TJclClrTable);                    //  $2B ttMethodTyPar         
+    TJclClrTable,                     //  $2A ttGenericPar
+    TJclClrTableMethodSpec);          //  $2B ttMethodSpec
 
 //==================================================================================================
 // CLR Header entry point flags.
