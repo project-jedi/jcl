@@ -18,6 +18,7 @@
 { Contributors:                                                                                    }
 {   Flier Lu (flier)                                                                               }
 {   Robert Marquardt (marquardt)                                                                   }
+{   Robert Rossmair (rrossmair)                                                                    }
 {   Petr Vones (pvones)                                                                            }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -1721,6 +1722,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.8  2004/05/06 22:37:09  rrossmair
+// contributor list updated
+//
 // Revision 1.7  2004/05/06 05:09:55  rrossmair
 // Changes for FPC v1.9.4 compatibility
 //
