@@ -18,8 +18,8 @@
 {**************************************************************************************************}
 {                                                                                                  }
 { This unit contains a class and support routines for controlling the number of concurrent         }
-{ instances of your application that can exists at any time. In addition there is support for      }
-{ simple interprocess communication between these instance including a notifaction mechanism.      }
+{ instances of your application that can exist at any time. In addition there is support for       }
+{ simple interprocess communication between these instance including a notification mechanism.     }
 {                                                                                                  }
 { Unit owner: Petr Vones                                                                           }
 { Last modified: March 03, 2002                                                                    }
