@@ -160,6 +160,8 @@ uses
 //==============================================================================
 
 procedure DirectPrint(const Printer, Data: string);
+const
+  cRaw = 'RAW';
 type
   TDoc_Info_1 = record
     DocName: PChar;
@@ -176,7 +178,7 @@ begin
   // Defaults added for network printers. Supposedly the last member is ignored
   // by Windows 9x but is necessary for Windows NT. Code was copied from a msg
   // by Alberto Toledo to the C++ Builder techlist and fwd by Theo Bebekis.
-  Defaults.pDatatype := PChar('RAW');
+  Defaults.pDatatype := cRaw;
   Defaults.pDevMode := nil;
   Defaults.DesiredAccess := PRINTER_ACCESS_USE;
   Count := Length(Data);
@@ -185,7 +187,7 @@ begin
   // Fill in the structure with info about this "document"
   DocInfo.DocName := 'My Document';
   DocInfo.OutputFile := nil;
-  DocInfo.Datatype := 'RAW';
+  DocInfo.Datatype := cRaw;
   try
     // Inform the spooler the document is beginning
     if StartDocPrinter(PrinterHandle, 1, @DocInfo) = 0 then
@@ -711,20 +713,20 @@ var
 begin
   PrIniFile := TIniFile.Create(IniFileName);
   CurrentName := Printer.Printers[Printer.PrinterIndex];
-  PrIniFile.WriteString(Section, 'PrinterName', CurrentName);
-  PrIniFile.WriteString(Section, 'PrinterPort', PrinterPort);
-  PrIniFile.WriteInteger(Section, 'Orientation', Orientation);
-  PrIniFile.WriteInteger(Section, 'PaperSize', PaperSize);
-  PrIniFile.WriteInteger(Section, 'PaperLength', PaperLength);
-  PrIniFile.WriteInteger(Section, 'PaperWidth', PaperWidth);
-  PrIniFile.WriteInteger(Section, 'Scale', Scale);
-  PrIniFile.WriteInteger(Section, 'Copies', Copies);
-  PrIniFile.WriteInteger(Section, 'DefaultSource', DefaultSource);
-  PrIniFile.WriteInteger(Section, 'PrintQuality', PrintQuality);
-  PrIniFile.WriteInteger(Section, 'Color', Color);
-  PrIniFile.WriteInteger(Section, 'Duplex', Duplex);
-  PrIniFile.WriteInteger(Section, 'YResolution', YResolution);
-  PrIniFile.WriteInteger(Section, 'TTOption', TrueTypeOption);
+  PrIniFile.WriteString(Section, RsPrintIniPrinterName, CurrentName);
+  PrIniFile.WriteString(Section, RsPrintIniPrinterPort, PrinterPort);
+  PrIniFile.WriteInteger(Section, RsPrintIniOrientation, Orientation);
+  PrIniFile.WriteInteger(Section, RsPrintIniPaperSize, PaperSize);
+  PrIniFile.WriteInteger(Section, RsPrintIniPaperLength, PaperLength);
+  PrIniFile.WriteInteger(Section, RsPrintIniPaperWidth, PaperWidth);
+  PrIniFile.WriteInteger(Section, RsPrintIniScale, Scale);
+  PrIniFile.WriteInteger(Section, RsPrintIniCopies, Copies);
+  PrIniFile.WriteInteger(Section, RsPrintIniDefaultSource, DefaultSource);
+  PrIniFile.WriteInteger(Section, RsPrintIniPrintQuality, PrintQuality);
+  PrIniFile.WriteInteger(Section, RsPrintIniColor, Color);
+  PrIniFile.WriteInteger(Section, RsPrintIniDuplex, Duplex);
+  PrIniFile.WriteInteger(Section, RsPrintIniYResolution, YResolution);
+  PrIniFile.WriteInteger(Section, RsPrintIniTTOption, TrueTypeOption);
   PrIniFile.Free;
 end;
 
@@ -738,7 +740,7 @@ var
 begin
   Result := False;
   PrIniFile := TIniFile.Create(IniFileName);
-  SavedName := PrIniFile.ReadString(Section, 'PrinterName', PrinterName);
+  SavedName := PrIniFile.ReadString(Section, RsPrintIniPrinterName, PrinterName);
   if PrinterName <> SavedName then
   begin
     NewIndex := Printer.Printers.IndexOf(SavedName);
@@ -746,19 +748,19 @@ begin
     begin
       Result := True;
       Printer.PrinterIndex := NewIndex;
-      PrinterPort := PrIniFile.ReadString(Section, 'PrinterPort', PrinterPort);
-      Orientation := PrIniFile.ReadInteger(Section, 'Orientation', Orientation);
-      PaperSize := PrIniFile.ReadInteger(Section, 'PaperSize', PaperSize);
-      PaperLength := PrIniFile.ReadInteger(Section, 'PaperLength', PaperLength);
-      PaperWidth := PrIniFile.ReadInteger(Section, 'PaperWidth', PaperWidth);
-      Scale := PrIniFile.ReadInteger(Section, 'Scale', Scale);
-      Copies := PrIniFile.ReadInteger(Section, 'Copies', Copies);
-      DefaultSource := PrIniFile.ReadInteger(Section, 'DefaultSource', DefaultSource);
-      PrintQuality := PrIniFile.ReadInteger(Section, 'PrintQuality', PrintQuality);
-      Color := PrIniFile.ReadInteger(Section, 'Color', Color);
-      Duplex := PrIniFile.ReadInteger(Section, 'Duplex', Duplex);
-      YResolution := PrIniFile.ReadInteger(Section, 'YResolution', YResolution);
-      TrueTypeOption := PrIniFile.ReadInteger(Section, 'TTOption', TrueTypeOption);
+      PrinterPort := PrIniFile.ReadString(Section, RsPrintIniPrinterPort, PrinterPort);
+      Orientation := PrIniFile.ReadInteger(Section, RsPrintIniOrientation, Orientation);
+      PaperSize := PrIniFile.ReadInteger(Section, RsPrintIniPaperSize, PaperSize);
+      PaperLength := PrIniFile.ReadInteger(Section, RsPrintIniPaperLength, PaperLength);
+      PaperWidth := PrIniFile.ReadInteger(Section, RsPrintIniPaperWidth, PaperWidth);
+      Scale := PrIniFile.ReadInteger(Section, RsPrintIniScale, Scale);
+      Copies := PrIniFile.ReadInteger(Section, RsPrintIniCopies, Copies);
+      DefaultSource := PrIniFile.ReadInteger(Section, RsPrintIniDefaultSource, DefaultSource);
+      PrintQuality := PrIniFile.ReadInteger(Section, RsPrintIniPrintQuality, PrintQuality);
+      Color := PrIniFile.ReadInteger(Section, RsPrintIniColor, Color);
+      Duplex := PrIniFile.ReadInteger(Section, RsPrintIniDuplex, Duplex);
+      YResolution := PrIniFile.ReadInteger(Section, RsPrintIniYResolution, YResolution);
+      TrueTypeOption := PrIniFile.ReadInteger(Section, RsPrintIniTTOption, TrueTypeOption);
     end
     else
       Result := False;
