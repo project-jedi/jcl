@@ -23,22 +23,26 @@ package JediUsesD60;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JEDI Code Library Uses Wizard'}
-{$LIBSUFFIX '60'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
   rtl,
   designide,
-  vclx;
+  vclx,
+  DJcl;
 
 {%File 'JediUsesWizard.ini'}
 {%File 'ReadMe.txt'}
+{%File 'History.txt'}
 {%File 'Jcl8087.txt'}
 {%File 'JclAppInst.txt'}
 {%File 'JclBase.txt'}
+{%File 'JclCIL.txt'}
+{%File 'JclCLR.txt'}
 {%File 'JclCOM.txt'}
 {%File 'JclComplex.txt'}
+{%File 'JclCompression.txt'}
 {%File 'JclConsole.txt'}
 {%File 'JclCounter.txt'}
 {%File 'JclDateTime.txt'}
@@ -54,6 +58,7 @@ requires
 {%File 'JclLogic.txt'}
 {%File 'JclMapi.txt'}
 {%File 'JclMath.txt'}
+{%File 'JclMetadata.txt'}
 {%File 'JclMIDI.txt'}
 {%File 'JclMime.txt'}
 {%File 'JclMiscel.txt'}
@@ -78,9 +83,10 @@ requires
 {%File 'JclTD32.txt'}
 {%File 'JclUnicode.txt'}
 {%File 'JclUnitConv.txt'}
+{%File 'JclUnitVersioning.txt'}
+{%File 'JclWideStrings.txt'}
 {%File 'JclWin32.txt'}
 {%File 'JclWinMIDI.txt'}
-{%File 'History.txt'}
 
 contains
   JclUsesWizard in 'JCLUsesWizard.pas',
