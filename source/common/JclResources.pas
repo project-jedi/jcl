@@ -20,7 +20,7 @@
 { Unit which provides a central place for all resource strings used in the JCL                     }
 {                                                                                                  }
 { Unit owner: Marcel van Brakel                                                                    }
-{ Last modified: February 18, 2002                                                                 }
+{ Last modified: February 27, 2002                                                                 }
 {                                                                                                  }
 {**************************************************************************************************}
 
@@ -47,6 +47,16 @@ resourcestring
 
 resourcestring
   RsVMTMemoryWriteError = 'Error writing VMT memory (%s)';
+
+//--------------------------------------------------------------------------------------------------
+// JclCOM
+//--------------------------------------------------------------------------------------------------
+
+resourcestring
+  RsComInvalidParam      = 'An invalid parameter was passed to the routine. If a parameter was' +
+   ' expected, it might be an unassigned item or nil pointer';
+  RsComFailedStreamRead  = 'Failed to read all of the data from the specified stream';
+  RsComFailedStreamWrite = 'Failed to write all of the data into the specified stream';
 
 //--------------------------------------------------------------------------------------------------
 // JclComplex
