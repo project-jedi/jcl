@@ -47,7 +47,7 @@ type
   TJclLocalesMonths = 1..13;
   TJclLocaleDateFormats = (ldShort, ldLong, ldYearMonth);
 
-  TJclLocaleInfo = class (TObject)
+  TJclLocaleInfo = class(TObject)
   private
     FCalendars: TStringList;
     FDateFormats: array [TJclLocaleDateFormats] of TStringList;
@@ -186,7 +186,7 @@ type
 
   TJclLocalesKind = (lkInstalled, lkSupported);
 
-  TJclLocalesList = class (TObjectList)
+  TJclLocalesList = class(TObjectList)
   private
     FCodePages: TStrings;
     FKind: TJclLocalesKind;
@@ -220,7 +220,7 @@ type
 
   TJclKeyboardLayoutList = class;
 
-  TJclAvailableKeybLayout = class (TObject)
+  TJclAvailableKeybLayout = class(TObject)
   private
     FIdentifier: DWORD;
     FLayoutID: Word;
@@ -239,7 +239,7 @@ type
     property Name: string read FName;
   end;
 
-  TJclKeyboardLayout = class (TObject)
+  TJclKeyboardLayout = class(TObject)
   private
     FLayout: HKL;
     FLocaleInfo: TJclLocaleInfo;
@@ -262,7 +262,7 @@ type
     property VariationName: string read GetVariationName;
   end;
 
-  TJclKeyboardLayoutList = class (TObject)
+  TJclKeyboardLayoutList = class(TObject)
   private
     FAvailableLayouts: TObjectList;
     FList: TObjectList;
@@ -364,7 +364,7 @@ begin
   for DateFormat := Low(DateFormat) to High(DateFormat) do
     FreeAndNil(FDateFormats[DateFormat]);
   FreeAndNil(FTimeFormats);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -525,22 +525,25 @@ end;
 //--------------------------------------------------------------------------------------------------
 
 function TJclLocaleInfo.GetFontCharset: Byte;
-const
-  CharsetTable: array [1..10] of record
+type
+  TCharsetEntry = record
     CodePage: Word;
     Charset: Byte;
-  end = (
-   (CodePage: 1252; Charset: ANSI_CHARSET),
-   (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
-   (CodePage: 1251; Charset: RUSSIAN_CHARSET),
-   (CodePage: 1253; Charset: GREEK_CHARSET),
-   (CodePage: 1254; Charset: TURKISH_CHARSET),
-   (CodePage: 1255; Charset: HEBREW_CHARSET),
-   (CodePage: 1256; Charset: ARABIC_CHARSET),
-   (CodePage: 1257; Charset: BALTIC_CHARSET),
-   (CodePage:  874; Charset: THAI_CHARSET),
-   (CodePage:  932; Charset: SHIFTJIS_CHARSET)
-  );
+  end;
+const
+  CharsetTable: array [1..10] of TCharsetEntry =
+   (
+    (CodePage: 1252; Charset: ANSI_CHARSET),
+    (CodePage: 1250; Charset: EASTEUROPE_CHARSET),
+    (CodePage: 1251; Charset: RUSSIAN_CHARSET),
+    (CodePage: 1253; Charset: GREEK_CHARSET),
+    (CodePage: 1254; Charset: TURKISH_CHARSET),
+    (CodePage: 1255; Charset: HEBREW_CHARSET),
+    (CodePage: 1256; Charset: ARABIC_CHARSET),
+    (CodePage: 1257; Charset: BALTIC_CHARSET),
+    (CodePage:  874; Charset: THAI_CHARSET),
+    (CodePage:  932; Charset: SHIFTJIS_CHARSET)
+   );
 var
   I, CpANSI: Integer;
 begin
@@ -753,7 +756,7 @@ end;
 destructor TJclLocalesList.Destroy;
 begin
   FreeAndNil(FCodePages);
-  inherited;
+  inherited Destroy;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -846,13 +849,6 @@ end;
 // TJclKeyboardLayout
 //==================================================================================================
 
-function TJclKeyboardLayout.Activate(ActivateFlags: TJclKeybLayoutFlags): Boolean;
-begin
-  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
 constructor TJclKeyboardLayout.Create(AOwner: TJclKeyboardLayoutList; ALayout: HKL);
 begin
   inherited Create;
@@ -865,7 +861,14 @@ end;
 destructor TJclKeyboardLayout.Destroy;
 begin
   FreeAndNil(FLocaleInfo);
-  inherited;
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+function TJclKeyboardLayout.Activate(ActivateFlags: TJclKeybLayoutFlags): Boolean;
+begin
+  Result := ActivateKeyboardLayout(FLayout, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -935,6 +938,25 @@ end;
 // TJclKeyboardLayoutList
 //==================================================================================================
 
+constructor TJclKeyboardLayoutList.Create;
+begin
+  inherited Create;
+  FList := TObjectList.Create(True);
+  CreateAvailableLayouts;
+  Refresh;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
+destructor TJclKeyboardLayoutList.Destroy;
+begin
+  FreeAndNil(FAvailableLayouts);
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclKeyboardLayoutList.ActivateNextLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
@@ -947,16 +969,6 @@ function TJclKeyboardLayoutList.ActivatePrevLayout(
   ActivateFlags: TJclKeybLayoutFlags): Boolean;
 begin
   Result := ActivateKeyboardLayout(HKL_PREV, KeybLayoutFlagsToDWORD(ActivateFlags, False)) <> 0;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-constructor TJclKeyboardLayoutList.Create;
-begin
-  inherited Create;
-  FList := TObjectList.Create(True);
-  CreateAvailableLayouts;
-  Refresh;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -988,15 +1000,6 @@ begin
   finally
     KeyNames.Free;
   end;
-end;
-
-//--------------------------------------------------------------------------------------------------
-
-destructor TJclKeyboardLayoutList.Destroy;
-begin
-  FreeAndNil(FAvailableLayouts);
-  FreeAndNil(FList);
-  inherited;
 end;
 
 //--------------------------------------------------------------------------------------------------
