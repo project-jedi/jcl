@@ -48,27 +48,27 @@ type
   public
     Items: TDynIInterfaceArray;
     { IIntfCollection }
-    function Add(AObject: IInterface): Boolean; overload;
+    function Add(AInterface: IInterface): Boolean; overload;
     function AddAll(ACollection: IIntfCollection): Boolean; overload;
     procedure Clear;
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function ContainsAll(ACollection: IIntfCollection): Boolean;
     function Equals(ACollection: IIntfCollection): Boolean;
     function First: IIntfIterator;
     function IsEmpty: Boolean;
     function Last: IIntfIterator;
-    function Remove(AObject: IInterface): Boolean; overload;
+    function Remove(AInterface: IInterface): Boolean; overload;
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
     { IIntfList }
-    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    procedure Insert(Index: Integer; AInterface: IInterface); overload;
     function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
-    function IndexOf(AObject: IInterface): Integer;
-    function LastIndexOf(AObject: IInterface): Integer;
+    function IndexOf(AInterface: IInterface): Integer;
+    function LastIndexOf(AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
-    procedure SetObject(Index: Integer; AObject: IInterface);
+    procedure SetObject(Index: Integer; AInterface: IInterface);
     function SubList(First, Count: Integer): IIntfList;
 
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
@@ -184,7 +184,7 @@ type
     FSize: Integer;
   protected
     { IIntfIterator}
-    procedure Add(AObject: IInterface);
+    procedure Add(AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -193,7 +193,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetObject(AObject: IInterface);
+    procedure SetObject(AInterface: IInterface);
   public
     constructor Create(OwnList: TJclIntfVector);
     destructor Destroy; override;
@@ -263,14 +263,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TIntfItr.Add(AObject: IInterface);
+procedure TIntfItr.Add(AInterface: IInterface);
 begin
   with FOwnList do
   begin
     System.Move(Items[FCursor], Items[FCursor + 1],
       (FCount - FCursor) * SizeOf(TObject));
     FCapacity := Length(Items);
-    Items[FCursor] := AObject;
+    Items[FCursor] := AInterface;
     Inc(FCount);
   end;
   Inc(FSize);
@@ -329,9 +329,9 @@ begin
   Dec(FSize);
 end;
 
-procedure TIntfItr.SetObject(AObject: IInterface);
+procedure TIntfItr.SetObject(AInterface: IInterface);
 begin
-  FOwnList.Items[FCursor] := AObject;
+  FOwnList.Items[FCursor] := AInterface;
 end;
 
 //=== { TStrItr } ============================================================
@@ -536,22 +536,22 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfVector.Insert(Index: Integer; AObject: IInterface);
+procedure TJclIntfVector.Insert(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index > FCount) then
     raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
   System.Move(Items[Index], Items[Index - 1],
     (FCount - Index) * SizeOf(IInterface));
   FCapacity := Length(Items);
-  Items[Index] := AObject;
+  Items[Index] := AInterface;
   Inc(FCount);
 end;
 
-function TJclIntfVector.Add(AObject: IInterface): Boolean;
+function TJclIntfVector.Add(AInterface: IInterface): Boolean;
 begin
   if FCount = FCapacity then
     Grow;
-  Items[FCount] := AObject;
+  Items[FCount] := AInterface;
   Inc(FCount);
   Result := True;
 end;
@@ -608,15 +608,15 @@ begin
   Result := NewList;
 end;
 
-function TJclIntfVector.Contains(AObject: IInterface): Boolean;
+function TJclIntfVector.Contains(AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   for I := 0 to FCount - 1 do
-    if Items[I] = AObject then
+    if Items[I] = AInterface then
     begin
       Result := True;
       Break;
@@ -672,15 +672,15 @@ begin
   SetLength(Items, FCapacity);
 end;
 
-function TJclIntfVector.IndexOf(AObject: IInterface): Integer;
+function TJclIntfVector.IndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
 begin
   Result := -1;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   for I := 0 to FCount - 1 do
-    if Items[I] = AObject then
+    if Items[I] = AInterface then
     begin
       Result := I;
       Break;
@@ -707,15 +707,15 @@ begin
   Result := NewIterator;
 end;
 
-function TJclIntfVector.LastIndexOf(AObject: IInterface): Integer;
+function TJclIntfVector.LastIndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
 begin
   Result := -1;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   for I := FCount - 1 downto 0 do
-    if Items[I] = AObject then
+    if Items[I] = AInterface then
     begin
       Result := I;
       Break;
@@ -733,15 +733,15 @@ begin
   Dec(FCount);
 end;
 
-function TJclIntfVector.Remove(AObject: IInterface): Boolean;
+function TJclIntfVector.Remove(AInterface: IInterface): Boolean;
 var
   I: Integer;
 begin
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   for I := FCount - 1 downto 0 do
-    if Items[I] = AObject then // Removes all AObject
+    if Items[I] = AInterface then // Removes all AInterface
     begin
       Items[I] := nil; // Force Release
       System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(IInterface));
@@ -774,12 +774,11 @@ begin
       Remove(I);
 end;
 
-procedure TJclIntfVector.SetObject(Index: Integer;
-  AObject: IInterface);
+procedure TJclIntfVector.SetObject(Index: Integer; AInterface: IInterface);
 begin
   if (Index < 0) or (Index >= FCount) then
     raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
-  Items[Index] := AObject;
+  Items[Index] := AInterface;
 end;
 
 function TJclIntfVector.Size: Integer;
@@ -1025,7 +1024,7 @@ begin
   if AString = '' then
     Exit;
   for I := FCount - 1 downto 0 do
-    if Items[I] = AString then // Removes all AObject
+    if Items[I] = AString then // Removes all AString
     begin
       Items[I] := ''; // Force Release
       System.Move(Items[I + 1], Items[I], (FCount - I) * SizeOf(string));

@@ -48,7 +48,7 @@ type
 
   IIntfIterator = interface
     ['{E121A98A-7C43-4587-806B-9189E8B2F106}']
-    procedure Add(AObject: IInterface);
+    procedure Add(AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -57,7 +57,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetObject(AObject: IInterface);
+    procedure SetObject(AInterface: IInterface);
   end;
 
   IStrIterator = interface
@@ -90,16 +90,16 @@ type
 
   IIntfCollection = interface
     ['{8E178463-4575-487A-B4D5-DC2AED3C7ACA}']
-    function Add(AObject: IInterface): Boolean;
+    function Add(AInterface: IInterface): Boolean;
     function AddAll(ACollection: IIntfCollection): Boolean;
     procedure Clear;
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function ContainsAll(ACollection: IIntfCollection): Boolean;
     function Equals(ACollection: IIntfCollection): Boolean;
     function First: IIntfIterator;
     function IsEmpty: Boolean;
     function Last: IIntfIterator;
-    function Remove(AObject: IInterface): Boolean;
+    function Remove(AInterface: IInterface): Boolean;
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
@@ -150,13 +150,13 @@ type
 
   IIntfList = interface(IIntfCollection)
     ['{E14EDA4B-1DAA-4013-9E6C-CDCB365C7CF9}']
-    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    procedure Insert(Index: Integer; AInterface: IInterface); overload;
     function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
-    function IndexOf(AObject: IInterface): Integer;
-    function LastIndexOf(AObject: IInterface): Integer;
+    function IndexOf(AInterface: IInterface): Integer;
+    function LastIndexOf(AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
-    procedure SetObject(Index: Integer; AObject: IInterface);
+    procedure SetObject(Index: Integer; AInterface: IInterface);
     function SubList(First, Count: Integer): IIntfList;
   end;
 
@@ -344,10 +344,10 @@ type
 
   IIntfQueue = interface
     ['{B88756FE-5553-4106-957E-3E33120BFA99}']
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
-    procedure Enqueue(AObject: IInterface);
+    procedure Enqueue(AInterface: IInterface);
     function Size: Integer;
   end;
 
@@ -407,10 +407,10 @@ type
 
   IIntfStack = interface
     ['{CA1DC7A1-8D8F-4A5D-81D1-0FE32E9A4E84}']
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function Empty: Boolean;
     function Pop: IInterface;
-    procedure Push(AObject: IInterface);
+    procedure Push(AInterface: IInterface);
     function Size: Integer;
   end;
 

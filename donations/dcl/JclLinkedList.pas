@@ -60,29 +60,29 @@ type
     FEnd: PJclIntfLinkedListItem;
     FSize: Integer;
   protected
-    procedure AddFirst(AObject: IInterface);
+    procedure AddFirst(AInterface: IInterface);
     { IIntfCollection }
-    function Add(AObject: IInterface): Boolean; overload;
+    function Add(AInterface: IInterface): Boolean; overload;
     function AddAll(ACollection: IIntfCollection): Boolean; overload;
     procedure Clear;
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function ContainsAll(ACollection: IIntfCollection): Boolean;
     function Equals(ACollection: IIntfCollection): Boolean;
     function First: IIntfIterator;
     function IsEmpty: Boolean;
     function Last: IIntfIterator;
-    function Remove(AObject: IInterface): Boolean; overload;
+    function Remove(AInterface: IInterface): Boolean; overload;
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
     { IIntfList }
-    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    procedure Insert(Index: Integer; AInterface: IInterface); overload;
     function InsertAll(Index: Integer; ACollection: IIntfCollection): Boolean; overload;
     function GetObject(Index: Integer): IInterface;
-    function IndexOf(AObject: IInterface): Integer;
-    function LastIndexOf(AObject: IInterface): Integer;
+    function IndexOf(AInterface: IInterface): Integer;
+    function LastIndexOf(AInterface: IInterface): Integer;
     function Remove(Index: Integer): IInterface; overload;
-    procedure SetObject(Index: Integer; AObject: IInterface);
+    procedure SetObject(Index: Integer; AInterface: IInterface);
     function SubList(First, Count: Integer): IIntfList;
     { IIntfCloneable }
     function Clone: IInterface;
@@ -192,7 +192,7 @@ type
     FSize: Integer;
   protected
     { IIterator}
-    procedure Add(AObject: IInterface);
+    procedure Add(AInterface: IInterface);
     function GetObject: IInterface;
     function HasNext: Boolean;
     function HasPrevious: Boolean;
@@ -201,7 +201,7 @@ type
     function Previous: IInterface;
     function PreviousIndex: Integer;
     procedure Remove;
-    procedure SetObject(AObject: IInterface);
+    procedure SetObject(AInterface: IInterface);
   public
     constructor Create(OwnList: TJclIntfLinkedList; Start: PJclIntfLinkedListItem);
     destructor Destroy; override;
@@ -271,7 +271,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TIntfItr.Add(AObject: IInterface);
+procedure TIntfItr.Add(AInterface: IInterface);
 var
   NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
@@ -281,10 +281,10 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   New(NewItem);
-  NewItem.Obj := AObject;
+  NewItem.Obj := AInterface;
   if FCursor = nil then
   begin
     FCursor := NewItem;
@@ -379,7 +379,7 @@ begin
   Dec(FSize);
 end;
 
-procedure TIntfItr.SetObject(AObject: IInterface);
+procedure TIntfItr.SetObject(AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -388,7 +388,7 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  FCursor.Obj := AObject;
+  FCursor.Obj := AInterface;
 end;
 
 //=== { TStrItr } ============================================================
@@ -693,7 +693,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJclIntfLinkedList.Insert(Index: Integer; AObject: IInterface);
+procedure TJclIntfLinkedList.Insert(Index: Integer; AInterface: IInterface);
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
@@ -707,15 +707,15 @@ begin
   {$ENDIF THREADSAFE}
   if (Index < 0) or (Index > FSize) then
     raise EDCLOutOfBoundsError.Create(RsEOutOfBounds);
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   if FStart = nil then
   begin
-    AddFirst(AObject);
+    AddFirst(AInterface);
     Exit;
   end;
   New(NewItem);
-  NewItem.Obj := AObject;
+  NewItem.Obj := AInterface;
   if Index = 0 then
   begin
     NewItem.Next := FStart;
@@ -734,7 +734,7 @@ begin
   end;
 end;
 
-function TJclIntfLinkedList.Add(AObject: IInterface): Boolean;
+function TJclIntfLinkedList.Add(AInterface: IInterface): Boolean;
 var
   NewItem: PJclIntfLinkedListItem;
   {$IFDEF THREADSAFE}
@@ -745,16 +745,16 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   Result := True;
   if FStart = nil then
   begin
-    AddFirst(AObject);
+    AddFirst(AInterface);
     Exit;
   end;
   New(NewItem);
-  NewItem.Obj := AObject;
+  NewItem.Obj := AInterface;
   NewItem.Next := nil;
   FEnd.Next := NewItem;
   FEnd := NewItem;
@@ -829,10 +829,10 @@ begin
   Result := True;
 end;
 
-procedure TJclIntfLinkedList.AddFirst(AObject: IInterface);
+procedure TJclIntfLinkedList.AddFirst(AInterface: IInterface);
 begin
   New(FStart);
-  FStart.Obj := AObject;
+  FStart.Obj := AInterface;
   FStart.Next := nil;
   FEnd := FStart;
   Inc(FSize);
@@ -873,7 +873,7 @@ begin
   Result := NewList;
 end;
 
-function TJclIntfLinkedList.Contains(AObject: IInterface): Boolean;
+function TJclIntfLinkedList.Contains(AInterface: IInterface): Boolean;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
@@ -885,12 +885,12 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-    if Current.Obj = AObject then
+    if Current.Obj = AInterface then
     begin
       Result := True;
       Exit;
@@ -964,7 +964,7 @@ begin
   Result := Current.Obj;
 end;
 
-function TJclIntfLinkedList.IndexOf(AObject: IInterface): Integer;
+function TJclIntfLinkedList.IndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
@@ -976,14 +976,14 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := -1;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   if FStart = nil then
     Exit;
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-    if Current.Obj = AObject then
+    if Current.Obj = AInterface then
     begin
       Result := I;
       Break;
@@ -1007,7 +1007,7 @@ begin
   Result := TIntfItr.Create(Self, FStart);
 end;
 
-function TJclIntfLinkedList.LastIndexOf(AObject: IInterface): Integer;
+function TJclIntfLinkedList.LastIndexOf(AInterface: IInterface): Integer;
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
@@ -1019,20 +1019,20 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := -1;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   if FStart = nil then
     Exit;
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-    if Current.Obj = AObject then
+    if Current.Obj = AInterface then
       Result := I;
     Current := Current.Next;
   end;
 end;
 
-function TJclIntfLinkedList.Remove(AObject: IInterface): Boolean;
+function TJclIntfLinkedList.Remove(AInterface: IInterface): Boolean;
 var
   I: Integer;
   Old, Current: PJclIntfLinkedListItem;
@@ -1044,7 +1044,7 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   if FStart = nil then
     Exit;
@@ -1052,7 +1052,7 @@ begin
   Current := FStart;
   for I := 0 to FSize - 1 do
   begin
-    if Current.Obj = AObject then
+    if Current.Obj = AInterface then
     begin
       Current.Obj := nil;
       if Old <> nil then
@@ -1144,7 +1144,7 @@ begin
       It.Remove;
 end;
 
-procedure TJclIntfLinkedList.SetObject(Index: Integer; AObject: IInterface);
+procedure TJclIntfLinkedList.SetObject(Index: Integer; AInterface: IInterface);
 var
   I: Integer;
   Current: PJclIntfLinkedListItem;
@@ -1160,7 +1160,7 @@ begin
   Current := FStart;
   for I := 0 to Index - 1 do
     Current := Current.Next;
-  Current.Obj := AObject;
+  Current.Obj := AInterface;
 end;
 
 function TJclIntfLinkedList.Size: Integer;

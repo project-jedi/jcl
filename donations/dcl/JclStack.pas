@@ -43,10 +43,10 @@ type
   protected
     procedure Grow; virtual;
     { IIntfStack }
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function Empty: Boolean;
     function Pop: IInterface;
-    procedure Push(AObject: IInterface);
+    procedure Push(AInterface: IInterface);
     function Size: Integer;
   public
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
@@ -98,7 +98,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TJclIntfStack.Contains(AObject: IInterface): Boolean;
+function TJclIntfStack.Contains(AInterface: IInterface): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -109,10 +109,10 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   for I := 0 to FCount - 1 do
-    if FElements[I] = AObject then
+    if FElements[I] = AInterface then
     begin
       Result := True;
       Break;
@@ -145,7 +145,7 @@ begin
   Result := FElements[FCount];
 end;
 
-procedure TJclIntfStack.Push(AObject: IInterface);
+procedure TJclIntfStack.Push(AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -154,11 +154,11 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   if FCount = FCapacity then
     Grow;
-  FElements[FCount] := AObject;
+  FElements[FCount] := AInterface;
   Inc(FCount);
 end;
 

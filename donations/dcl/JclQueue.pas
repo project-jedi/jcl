@@ -43,10 +43,10 @@ type
     FTail: Integer;
   protected
     { IIntfQueue }
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function Dequeue: IInterface;
     function Empty: Boolean;
-    procedure Enqueue(AObject: IInterface);
+    procedure Enqueue(AInterface: IInterface);
     function Size: Integer;
   public
     constructor Create(Capacity: Integer = DCLDefaultCapacity);
@@ -99,7 +99,7 @@ begin
   SetLength(FElements, FCapacity);
 end;
 
-function TJclIntfQueue.Contains(AObject: IInterface): Boolean;
+function TJclIntfQueue.Contains(AInterface: IInterface): Boolean;
 var
   I: Integer;
   {$IFDEF THREADSAFE}
@@ -110,12 +110,12 @@ begin
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
   Result := False;
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
   I := FHead;
   while I <> FTail do
   begin
-    if FElements[I] = AObject then
+    if FElements[I] = AInterface then
     begin
       Result := True;
       Break;
@@ -146,7 +146,7 @@ begin
   Result := FTail = FHead;
 end;
 
-procedure TJclIntfQueue.Enqueue(AObject: IInterface);
+procedure TJclIntfQueue.Enqueue(AInterface: IInterface);
 {$IFDEF THREADSAFE}
 var
   CS: IInterface;
@@ -155,9 +155,9 @@ begin
   {$IFDEF THREADSAFE}
   CS := EnterCriticalSection;
   {$ENDIF THREADSAFE}
-  if AObject = nil then
+  if AInterface = nil then
     Exit;
-  FElements[FTail] := AObject;
+  FElements[FTail] := AInterface;
   FTail := (FTail + 1) mod FCapacity;
 end;
 

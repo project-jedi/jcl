@@ -37,14 +37,14 @@ uses
 type
   TJclIntfArraySet = class(TJclIntfArrayList, IIntfCollection, IIntfSet, IIntfCloneable)
   private
-    function BinarySearch(AObject: IInterface): Integer;
+    function BinarySearch(AInterface: IInterface): Integer;
   protected
     { IIntfCollection }
-    function Add(AObject: IInterface): Boolean;
+    function Add(AInterface: IInterface): Boolean;
     function AddAll(ACollection: IIntfCollection): Boolean;
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     { IIntfList }
-    procedure Insert(Index: Integer; AObject: IInterface); overload;
+    procedure Insert(Index: Integer; AInterface: IInterface); overload;
     { IIntfSet }
     procedure Intersect(ACollection: IIntfCollection);
     procedure Subtract(ACollection: IIntfCollection);
@@ -112,17 +112,17 @@ end;
 
 //=== { TJclIntfArraySet } ===================================================
 
-function TJclIntfArraySet.Add(AObject: IInterface): Boolean;
+function TJclIntfArraySet.Add(AInterface: IInterface): Boolean;
 var
   Idx: Integer;
 begin
-  Idx := BinarySearch(AObject);
+  Idx := BinarySearch(AInterface);
   if Idx >= 0 then
-    Result := InterfaceCompare(GetObject(Idx), AObject) <> 0
+    Result := InterfaceCompare(GetObject(Idx), AInterface) <> 0
   else
     Result := True;
   if Result then
-    inherited Insert(Idx + 1, AObject);
+    inherited Insert(Idx + 1, AInterface);
 end;
 
 function TJclIntfArraySet.AddAll(ACollection: IIntfCollection): Boolean;
@@ -143,7 +143,7 @@ begin
     Result := Add(It.Next) or Result;
 end;
 
-function TJclIntfArraySet.BinarySearch(AObject: IInterface): Integer;
+function TJclIntfArraySet.BinarySearch(AInterface: IInterface): Integer;
 var
   HiPos, LoPos, CompPos: Integer;
   Comp: Integer;
@@ -153,7 +153,7 @@ begin
   CompPos := (HiPos - LoPos) div 2;
   while HiPos >= LoPos do
   begin
-    Comp := InterfaceCompare(GetObject(CompPos), AObject);
+    Comp := InterfaceCompare(GetObject(CompPos), AInterface);
     if Comp < 0 then
       LoPos := CompPos + 1
     else
@@ -169,18 +169,18 @@ begin
   Result := HiPos;
 end;
 
-function TJclIntfArraySet.Contains(AObject: IInterface): Boolean;
+function TJclIntfArraySet.Contains(AInterface: IInterface): Boolean;
 var
   Idx: Integer;
 begin
-  Idx := BinarySearch(AObject);
+  Idx := BinarySearch(AInterface);
   if Idx >= 0 then
-    Result := InterfaceCompare(GetObject(Idx), AObject) = 0
+    Result := InterfaceCompare(GetObject(Idx), AInterface) = 0
   else
     Result := False;
 end;
 
-procedure TJclIntfArraySet.Insert(Index: Integer; AObject: IInterface);
+procedure TJclIntfArraySet.Insert(Index: Integer; AInterface: IInterface);
 begin
   raise EDCLOperationNotSupportedError.Create(RsEOperationNotSupported);
 end;

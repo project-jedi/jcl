@@ -37,8 +37,8 @@ uses
 // function pointer types
 type
   // pointer functions for Apply Algorithms
-  TIntfApplyFunction = function(AObject: IInterface): IInterface;
-  TStrApplyFunction = function(const AObject: string): string;
+  TIntfApplyFunction = function(AInterface: IInterface): IInterface;
+  TStrApplyFunction = function(const AString: string): string;
   TApplyFunction = function(AObject: TObject): TObject;
   // Pointer functions for comparator
   TIntfCompare = function(Obj1, Obj2: IInterface): Integer;
@@ -58,17 +58,17 @@ procedure Apply(First: IStrIterator; Count: Integer; F: TStrApplyFunction); over
 procedure Apply(First: IIterator; Count: Integer; F: TApplyFunction); overload;
 
 // Find algorithms
-function Find(First: IIntfIterator; Count: Integer; AObject: IInterface;
+function Find(First: IIntfIterator; Count: Integer; AInterface: IInterface;
   AComparator: TIntfCompare): IIntfIterator; overload;
-function Find(First: IStrIterator; Count: Integer; const AObject: string;
+function Find(First: IStrIterator; Count: Integer; const AString: string;
   AComparator: TStrCompare): IStrIterator; overload;
 function Find(First: IIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): IIterator; overload;
 
 // CountObject algorithms
-function CountObject(First: IIntfIterator; Count: Integer; AObject: IInterface;
+function CountObject(First: IIntfIterator; Count: Integer; AInterface: IInterface;
   AComparator: TIntfCompare): Integer; overload;
-function CountObject(First: IStrIterator; Count: Integer; const AObject: string;
+function CountObject(First: IStrIterator; Count: Integer; const AString: string;
   AComparator: TStrCompare): Integer; overload;
 function CountObject(First: IIterator; Count: Integer; AObject: TObject;
   AComparator: TCompare): Integer; overload;
@@ -79,13 +79,13 @@ procedure Copy(First: IStrIterator; Count: Integer; Output: IStrIterator); overl
 procedure Copy(First: IIterator; Count: Integer; Output: IIterator); overload;
 
 // Generate algorithms
-procedure Generate(List: IIntfList; Count: Integer; AObject: IInterface); overload;
-procedure Generate(List: IStrList; Count: Integer; const AObject: string); overload;
+procedure Generate(List: IIntfList; Count: Integer; AInterface: IInterface); overload;
+procedure Generate(List: IStrList; Count: Integer; const AString: string); overload;
 procedure Generate(List: IList; Count: Integer; AObject: TObject); overload;
 
 // Fill algorithms
-procedure Fill(First: IIntfIterator; Count: Integer; AObject: IInterface); overload;
-procedure Fill(First: IStrIterator; Count: Integer; const AObject: string); overload;
+procedure Fill(First: IIntfIterator; Count: Integer; AInterface: IInterface); overload;
+procedure Fill(First: IStrIterator; Count: Integer; const AString: string); overload;
 procedure Fill(First: IIterator; Count: Integer; AObject: TObject); overload;
 
 // Reverse algorithms
@@ -193,7 +193,7 @@ begin
       Break;
 end;
 
-function Find(First: IIntfIterator; Count: Integer; AObject: IInterface;
+function Find(First: IIntfIterator; Count: Integer; AInterface: IInterface;
   AComparator: TIntfCompare): IIntfIterator;
 var
   I: Integer;
@@ -202,7 +202,7 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      if AComparator(First.GetObject, AObject) = 0 then
+      if AComparator(First.GetObject, AInterface) = 0 then
       begin
         Result := First;
         Break;
@@ -213,7 +213,7 @@ begin
       Break;
 end;
 
-function Find(First: IStrIterator; Count: Integer; const AObject: string;
+function Find(First: IStrIterator; Count: Integer; const AString: string;
   AComparator: TStrCompare): IStrIterator;
 var
   I: Integer;
@@ -222,7 +222,7 @@ begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      if AComparator(First.GetString, AObject) = 0 then
+      if AComparator(First.GetString, AString) = 0 then
       begin
         Result := First;
         Break;
@@ -253,7 +253,7 @@ begin
       Break;
 end;
 
-function CountObject(First: IIntfIterator; Count: Integer; AObject: IInterface;
+function CountObject(First: IIntfIterator; Count: Integer; AInterface: IInterface;
   AComparator: TIntfCompare): Integer;
 var
   I: Integer;
@@ -261,12 +261,12 @@ begin
   Result := 0;
   for I := Count - 1 downto 0 do
     if First.HasNext then
-      Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
+      Inc(Result, Ord(AComparator(First.Next, AInterface) = 0))
     else
       Break;
 end;
 
-function CountObject(First: IStrIterator; Count: Integer; const AObject: string;
+function CountObject(First: IStrIterator; Count: Integer; const AString: string;
   AComparator: TStrCompare): Integer;
 var
   I: Integer;
@@ -274,7 +274,7 @@ begin
   Result := 0;
   for I := Count - 1 downto 0 do
     if First.HasNext then
-      Inc(Result, Ord(AComparator(First.Next, AObject) = 0))
+      Inc(Result, Ord(AComparator(First.Next, AString) = 0))
     else
       Break;
 end;
@@ -337,22 +337,22 @@ begin
       Break;
 end;
 
-procedure Generate(List: IIntfList; Count: Integer; AObject: IInterface);
+procedure Generate(List: IIntfList; Count: Integer; AInterface: IInterface);
 var
   I: Integer;
 begin
   List.Clear;
   for I := 0 to Count - 1 do
-    List.Add(AObject);
+    List.Add(AInterface);
 end;
 
-procedure Generate(List: IStrList; Count: Integer; const AObject: string);
+procedure Generate(List: IStrList; Count: Integer; const AString: string);
 var
   I: Integer;
 begin
   List.Clear;
   for I := Count - 1 downto 0 do
-    List.Add(AObject);
+    List.Add(AString);
 end;
 
 procedure Generate(List: IList; Count: Integer; AObject: TObject);
@@ -364,28 +364,28 @@ begin
     List.Add(AObject);
 end;
 
-procedure Fill(First: IIntfIterator; Count: Integer; AObject: IInterface);
+procedure Fill(First: IIntfIterator; Count: Integer; AInterface: IInterface);
 var
   I: Integer;
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetObject(AObject);
+      First.SetObject(AInterface);
       First.Next;
     end
     else
       Break;
 end;
 
-procedure Fill(First: IStrIterator; Count: Integer; const AObject: string);
+procedure Fill(First: IStrIterator; Count: Integer; const AString: string);
 var
   I: Integer;
 begin
   for I := Count - 1 downto 0 do
     if First.HasNext then
     begin
-      First.SetString(AObject);
+      First.SetString(AString);
       First.Next;
     end
     else

@@ -41,16 +41,16 @@ type
     FMap: IIntfIntfMap;
   protected
     { IIntfCollection }
-    function Add(AObject: IInterface): Boolean;
+    function Add(AInterface: IInterface): Boolean;
     function AddAll(ACollection: IIntfCollection): Boolean;
     procedure Clear;
-    function Contains(AObject: IInterface): Boolean;
+    function Contains(AInterface: IInterface): Boolean;
     function ContainsAll(ACollection: IIntfCollection): Boolean;
     function Equals(ACollection: IIntfCollection): Boolean;
     function First: IIntfIterator;
     function IsEmpty: Boolean;
     function Last: IIntfIterator;
-    function Remove(AObject: IInterface): Boolean;
+    function Remove(AInterface: IInterface): Boolean;
     function RemoveAll(ACollection: IIntfCollection): Boolean;
     function RetainAll(ACollection: IIntfCollection): Boolean;
     function Size: Integer;
@@ -157,11 +157,11 @@ begin
   inherited Destroy;
 end;
 
-function TJclIntfHashSet.Add(AObject: IInterface): Boolean;
+function TJclIntfHashSet.Add(AInterface: IInterface): Boolean;
 begin
-  Result := not FMap.ContainsKey(AObject);
+  Result := not FMap.ContainsKey(AInterface);
   if Result then
-    FMap.PutValue(AObject, IRefUnique);
+    FMap.PutValue(AInterface, IRefUnique);
 end;
 
 function TJclIntfHashSet.AddAll(ACollection: IIntfCollection): Boolean;
@@ -191,9 +191,9 @@ begin
   Result := NewSet;
 end;
 
-function TJclIntfHashSet.Contains(AObject: IInterface): Boolean;
+function TJclIntfHashSet.Contains(AInterface: IInterface): Boolean;
 begin
-  Result := FMap.ContainsKey(AObject);
+  Result := FMap.ContainsKey(AInterface);
 end;
 
 function TJclIntfHashSet.ContainsAll(ACollection: IIntfCollection): Boolean;
@@ -250,9 +250,9 @@ begin
   Result := FMap.KeySet.Last;
 end;
 
-function TJclIntfHashSet.Remove(AObject: IInterface): Boolean;
+function TJclIntfHashSet.Remove(AInterface: IInterface): Boolean;
 begin
-  Result := FMap.Remove(AObject) = IInterface(IRefUnique);
+  Result := FMap.Remove(AInterface) = IInterface(IRefUnique);
 end;
 
 function TJclIntfHashSet.RemoveAll(ACollection: IIntfCollection): Boolean;
