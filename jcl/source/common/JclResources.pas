@@ -16,7 +16,7 @@
 { help file JCL.chm. Portions created by these individuals are Copyright (C)   }
 { 2000 of these individuals.                                                   }
 {                                                                              }
-{ Last modified: January 21, 2001                                              }
+{ Last modified: December 13, 2000                                             }
 {                                                                              }
 {******************************************************************************}
 
@@ -37,27 +37,18 @@ resourcestring
   RsDynArrayError = 'DynArrayInitialize: ElementSize out of bounds';
 
 //------------------------------------------------------------------------------
-// JclUnicode
-//------------------------------------------------------------------------------
-
-resourcestring
-  RsUREBaseString = 'Error in regular expression: %s' + #13;
-  RsUREUnexpectedEOS = 'Unexpected end of pattern.';
-  RsURECharacterClassOpen = 'Character class not closed, '']'' is missing.';
-  RsUREUnbalancedGroup = 'Unbalanced group expression, '')'' is missing.';
-  RsUREInvalidCharProperty = 'A character property is invalid';
-  RsUREInvalidRepeatRange = 'Invalid repeation range.';
-  RsURERepeatRangeOpen = 'Repeation range not closed, ''}'' is missing.';
-  RsUREExpressionEmpty = 'Expression is empty.';
-
-//------------------------------------------------------------------------------
 // JclClasses
 //------------------------------------------------------------------------------
 
-  // VMT
-
 resourcestring
   RsVMTMemoryWriteError = 'Error writing VMT memory (%s)';
+
+//------------------------------------------------------------------------------
+// JclComplex
+//------------------------------------------------------------------------------
+
+resourcestring
+  RsComplexInvalidString = 'Failed to create a complex number from the string provided';
 
 //------------------------------------------------------------------------------
 // JclCounter
@@ -82,7 +73,7 @@ resourcestring
 
 resourcestring
   RsDebugAssertValidPointer = 'Invalid Pointer passed to AssertValid';
-  RsDebugAssertValidString = 'Invalid string passed to AssertValid';
+  RsDebugAssertValidString  = 'Invalid string passed to AssertValid';
 
   // TMapFiles
 
@@ -131,26 +122,26 @@ resourcestring
 
   // Strings returned from OSFileTypeToString()
 
-  RsVftUnknown = 'Unknown';
-  RsVftApp = 'Application';
-  RsVftDll = 'Library';
-  RsVftDrv = 'Driver';
-  RsVftFont = 'Font';
-  RsVftVxd = 'Virtual device';
-  RsVftStaticLib = 'Static-link library';
-  RsVft2DrvPRINTER = 'Printer';
-  RsVft2DrvKEYBOARD = 'Keyboard';
-  RsVft2DrvLANGUAGE = 'Language';
-  RsVft2DrvDISPLAY = 'Display';
-  RsVft2DrvMOUSE = 'Mouse';
-  RsVft2DrvNETWORK = 'Network';
-  RsVft2DrvSYSTEM = 'System';
+  RsVftUnknown         = 'Unknown';
+  RsVftApp             = 'Application';
+  RsVftDll             = 'Library';
+  RsVftDrv             = 'Driver';
+  RsVftFont            = 'Font';
+  RsVftVxd             = 'Virtual device';
+  RsVftStaticLib       = 'Static-link library';
+  RsVft2DrvPRINTER     = 'Printer';
+  RsVft2DrvKEYBOARD    = 'Keyboard';
+  RsVft2DrvLANGUAGE    = 'Language';
+  RsVft2DrvDISPLAY     = 'Display';
+  RsVft2DrvMOUSE       = 'Mouse';
+  RsVft2DrvNETWORK     = 'Network';
+  RsVft2DrvSYSTEM      = 'System';
   RsVft2DrvINSTALLABLE = 'Installable';
-  RsVft2DrvSOUND = 'Sound';
-  RsVft2DrvCOMM = 'Communications';
-  RsVft2FontRASTER = 'Raster';
-  RsVft2FontVECTOR = 'Vector';
-  RsVft2FontTRUETYPE = 'TrueType';
+  RsVft2DrvSOUND       = 'Sound';
+  RsVft2DrvCOMM        = 'Communications';
+  RsVft2FontRASTER     = 'Raster';
+  RsVft2FontVECTOR     = 'Vector';
+  RsVft2FontTRUETYPE   = 'TrueType';
 
   // TJclFileStream
 
@@ -161,7 +152,7 @@ resourcestring
   RsCreateFileMapping        = 'Failed to create FileMapping';
   RsCreateFileMappingView    = 'Failed to create FileMappingView';
   RsLoadFromStreamSize       = 'Not enough space in View in procedure LoadFromStream';
-  RsFileMappingInvalidHandle = 'Invalid filehandle';
+  RsFileMappingInvalidHandle = 'Invalid file handle';
   RsViewNeedsMapping         = 'FileMap argument of TJclFileMappingView constructor cannot be nil';
   RsFailedToObtainSize       = 'Failed to obtain size of file';
 
@@ -203,7 +194,7 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
-  RsAssertUnpairedEndUpdate  = 'Unpaired beginupdate endupdate';
+  RsAssertUnpairedEndUpdate  = 'Unpaired BeginUpdate EndUpdate';
   RsCreateCompatibleDc       = 'Could not create compatible DC';
   RsDestinationBitmapEmpty   = 'Destination bitmap is empty';
   RsDibHandleAllocation      = 'Could not allocate handle for DIB';
@@ -214,7 +205,7 @@ resourcestring
   RsNoBitmapForRegion        = 'No bitmap for region';
   RsNoDeviceContextForWindow = 'Cannot get device context of the window';
   RsInvalidRegion            = 'Invalid Region defined for RegionInfo';
-  RsRegionDataOutOfBound     = 'Out of bound index on regiondata';
+  RsRegionDataOutOfBound     = 'Out of bound index on RegionData';
   RsRegionCouldNotCreated    = 'Region could not be created';
   RsInvalidHandleForRegion   = 'Invalid handle for region';
   RsInvalidRegionInfo        = 'Invalid RegionInfo';
@@ -253,7 +244,7 @@ resourcestring
   RsMapiErrINVALID_RECIPS           = 'Invalid recipients';
   RsMapiErrNOT_SUPPORTED            = 'Not supported';
 
-  RsMapiMailNoClient = 'No Simple MAPI client installed, can''t send the message';
+  RsMapiMailNoClient = 'No Simple MAPI client installed, cannot send the message';
 
   RsMapiMailORIG        = 'From';
   RsMapiMailTO          = 'To';
@@ -276,17 +267,9 @@ resourcestring
   RsInvalidRational    = 'Invalid rational number';
   RsDivByZero          = 'Division by zero';
   RsRationalDivByZero  = 'Rational division by zero';
-  RsNoNaN	       = 'NaN expected';
-  RsNaNTagError	       = 'NaN Tag value %d out of range';
-  RsNaNSignal	       = 'NaN signaling %d';
-
-//------------------------------------------------------------------------------
-// JclMime
-//------------------------------------------------------------------------------
-
-resourcestring
-  RsInputBufferNil  = 'MIME (Base64) Conversion: Input Buffer must not be NIL';
-  RsOutputBufferNil = 'MIME (Base64) Conversion: Output Buffer must not be NIL';
+  RsNoNaN              = 'NaN expected';
+  RsNaNTagError        = 'NaN Tag value %d out of range';
+  RsNaNSignal          = 'NaN signaling %d';
 
 //------------------------------------------------------------------------------
 // JclMiscel
@@ -294,20 +277,20 @@ resourcestring
 
 resourcestring
   // StrLstSaveLoad
-  RsErrNotExist = 'Specified list ["%s"] does not exist';
+  RsErrNotExist                       = 'Specified list ["%s"] does not exist';
 
   // CreateProcAsUser
   RsCreateProcOSVersionError          = 'Unable to determine OS version';
   RsCreateProcNTRequiredError         = 'Windows NT required';
   RsCreateProcBuild1057Error          = 'NT version 3.51 build 1057 or later required';
 
-  RsCreateProcPrivilegeMissing        = 'This account does not have the privilege "%s"(%s)';
+  RsCreateProcPrivilegeMissing        = 'This account does not have the privilege "%s" (%s)';
   RsCreateProcLogonUserError          = 'LogonUser failed';
   RsCreateProcAccessDenied            = 'Access denied';
   RsCreateProcLogonFailed             = 'Unable to logon';
-  RsCreateProcSetStationSecurityError = 'Can''t set WindowStation "%s" security.';
-  RsCreateProcSetDesktopSecurityError = 'Can''t set Desktop "%s" security.';
-  RsCreateProcPrivilegesMissing       = 'This account does not have on (or more) of ' +
+  RsCreateProcSetStationSecurityError = 'Cannot set WindowStation "%s" security.';
+  RsCreateProcSetDesktopSecurityError = 'Cannot set Desktop "%s" security.';
+  RsCreateProcPrivilegesMissing       = 'This account does not have one (or more) of ' +
     'the following privileges: ' + '"%s"(%s)' + #13 + '"%s"(%s)' + #13;
   RsCreateProcCommandNotFound         = 'Command or filename not found: "%s"';
   RsCreateProcFailed                  = 'CreateProcessAsUser failed';
@@ -320,12 +303,12 @@ resourcestring
   RsMmTimerGetCaps     = 'Error retrieving multimedia timer device capabilities';
   RsMmTimerBeginPeriod = 'The supplied timer period value is out of range';
   RsMmSetEvent         = 'Error setting multimedia event timer';
-  RsMmInconsistentId   = 'Multimedia timer callback was called with inconsistent id';
+  RsMmInconsistentId   = 'Multimedia timer callback was called with inconsistent Id';
   RsMmTimerActive      = 'This operation cannot be performed while the timer is active';
 
-  RsMmNoCdAudio        = 'Cannot open CDAUDIO-Device!';
+  RsMmNoCdAudio        = 'Cannot open CDAUDIO-Device';
 
-  RsMmUnknownError     = 'Unknown MCI error Nr. %d';
+  RsMmUnknownError     = 'Unknown MCI error No. %d';
   RsMmMciErrorPrefix   = 'MCI-Error: ';
 
 //------------------------------------------------------------------------------
@@ -342,11 +325,11 @@ resourcestring
   // TJclPeImage
 
 resourcestring
-  RsPeCantOpen = 'Can''t open file "%s"';
-  RsPeNotPE = 'This is not a PE format';
-  RsPeNotResDir = 'Not a resource directory';
+  RsPeCantOpen                = 'Cannot open file "%s"';
+  RsPeNotPE                   = 'This is not a PE format';
+  RsPeNotResDir               = 'Not a resource directory';
   RsPeNotAvailableForAttached = 'Feature is not available for attached images';
-  RsPeSectionNotFound = 'Section "%s" not found';
+  RsPeSectionNotFound         = 'Section "%s" not found';
 
   // PE directory names
 
@@ -368,116 +351,116 @@ resourcestring
 
   // NT Header names
 
-  RsPeSignature = 'Signature';
-  RsPeMachine = 'Machine';
-  RsPeNumberOfSections = 'Number of Sections';
-  RsPeTimeDateStamp = 'Time Date Stamp';
-  RsPePointerToSymbolTable = 'Symbols Pointer';
-  RsPeNumberOfSymbols = 'Number of Symbols';
-  RsPeSizeOfOptionalHeader = 'Size of Optional Header';
-  RsPeCharacteristics = 'Characteristics';
-  RsPeMagic = 'Magic';
-  RsPeLinkerVersion = 'Linker Version';
-  RsPeSizeOfCode = 'Size of Code';
-  RsPeSizeOfInitializedData = 'Size of Initialized Data';
+  RsPeSignature               = 'Signature';
+  RsPeMachine                 = 'Machine';
+  RsPeNumberOfSections        = 'Number of Sections';
+  RsPeTimeDateStamp           = 'Time Date Stamp';
+  RsPePointerToSymbolTable    = 'Symbols Pointer';
+  RsPeNumberOfSymbols         = 'Number of Symbols';
+  RsPeSizeOfOptionalHeader    = 'Size of Optional Header';
+  RsPeCharacteristics         = 'Characteristics';
+  RsPeMagic                   = 'Magic';
+  RsPeLinkerVersion           = 'Linker Version';
+  RsPeSizeOfCode              = 'Size of Code';
+  RsPeSizeOfInitializedData   = 'Size of Initialized Data';
   RsPeSizeOfUninitializedData = 'Size of Uninitialized Data';
-  RsPeAddressOfEntryPoint = 'Address of Entry Point';
-  RsPeBaseOfCode = 'Base of Code';
-  RsPeBaseOfData = 'Base of Data';
-  RsPeImageBase = 'Image Base';
-  RsPeSectionAlignment = 'Section Alignment';
-  RsPeFileAlignment = 'File Alignment';
-  RsPeOperatingSystemVersion = 'Operating System Version';
-  RsPeImageVersion = 'Image Version';
-  RsPeSubsystemVersion = 'Subsystem Version';
-  RsPeWin32VersionValue = 'Win32 Version';
-  RsPeSizeOfImage = 'Size of Image';
-  RsPeSizeOfHeaders = 'Size of Headers';
-  RsPeCheckSum = 'CheckSum';
-  RsPeSubsystem = 'Subsystem';
-  RsPeDllCharacteristics = 'Dll Characteristics';
-  RsPeSizeOfStackReserve = 'Size of Stack Reserve';
-  RsPeSizeOfStackCommit = 'Size of Stack Commit';
-  RsPeSizeOfHeapReserve = 'Size of Heap Reserve';
-  RsPeSizeOfHeapCommit = 'Size of Heap Commit';
-  RsPeLoaderFlags = 'Loader Flags';
-  RsPeNumberOfRvaAndSizes = 'Number of RVA';
+  RsPeAddressOfEntryPoint     = 'Address of Entry Point';
+  RsPeBaseOfCode              = 'Base of Code';
+  RsPeBaseOfData              = 'Base of Data';
+  RsPeImageBase               = 'Image Base';
+  RsPeSectionAlignment        = 'Section Alignment';
+  RsPeFileAlignment           = 'File Alignment';
+  RsPeOperatingSystemVersion  = 'Operating System Version';
+  RsPeImageVersion            = 'Image Version';
+  RsPeSubsystemVersion        = 'Subsystem Version';
+  RsPeWin32VersionValue       = 'Win32 Version';
+  RsPeSizeOfImage             = 'Size of Image';
+  RsPeSizeOfHeaders           = 'Size of Headers';
+  RsPeCheckSum                = 'CheckSum';
+  RsPeSubsystem               = 'Subsystem';
+  RsPeDllCharacteristics      = 'Dll Characteristics';
+  RsPeSizeOfStackReserve      = 'Size of Stack Reserve';
+  RsPeSizeOfStackCommit       = 'Size of Stack Commit';
+  RsPeSizeOfHeapReserve       = 'Size of Heap Reserve';
+  RsPeSizeOfHeapCommit        = 'Size of Heap Commit';
+  RsPeLoaderFlags             = 'Loader Flags';
+  RsPeNumberOfRvaAndSizes     = 'Number of RVA';
 
   // Load config names
 
-  RsPeVersion = 'Version';
-  RsPeGlobalFlagsClear = 'GlobalFlagsClear';
-  RsPeGlobalFlagsSet = 'GlobalFlagsSet';
+  RsPeVersion                       = 'Version';
+  RsPeGlobalFlagsClear              = 'GlobalFlagsClear';
+  RsPeGlobalFlagsSet                = 'GlobalFlagsSet';
   RsPeCriticalSectionDefaultTimeout = 'CriticalSectionDefaultTimeout';
-  RsPeDeCommitFreeBlockThreshold = 'DeCommitFreeBlockThreshold';
-  RsPeDeCommitTotalFreeThreshold = 'DeCommitTotalFreeThreshold';
-  RsPeLockPrefixTable = 'LockPrefixTable';
-  RsPeMaximumAllocationSize = 'MaximumAllocationSize';
-  RsPeVirtualMemoryThreshold = 'VirtualMemoryThreshold';
-  RsPeProcessHeapFlags = 'ProcessHeapFlags';
-  RsPeProcessAffinityMask = 'ProcessAffinityMask';
-  RsPeCSDVersion = 'CSDVersion';
-  RsPeReserved = 'Reserved';
-  RsPeEditList = 'EditList';
+  RsPeDeCommitFreeBlockThreshold    = 'DeCommitFreeBlockThreshold';
+  RsPeDeCommitTotalFreeThreshold    = 'DeCommitTotalFreeThreshold';
+  RsPeLockPrefixTable               = 'LockPrefixTable';
+  RsPeMaximumAllocationSize         = 'MaximumAllocationSize';
+  RsPeVirtualMemoryThreshold        = 'VirtualMemoryThreshold';
+  RsPeProcessHeapFlags              = 'ProcessHeapFlags';
+  RsPeProcessAffinityMask           = 'ProcessAffinityMask';
+  RsPeCSDVersion                    = 'CSDVersion';
+  RsPeReserved                      = 'Reserved';
+  RsPeEditList                      = 'EditList';
 
   // Machine names
 
   RsPeMACHINE_UNKNOWN = 'Unknown';
-  RsPeMACHINE_I386 = 'Intel 386';
-  RsPeMACHINE_R3000 = 'MIPS little-endian R3000';
-  RsPeMACHINE_R4000 = 'MIPS little-endian R4000';
-  RsPeMACHINE_R10000 = 'MIPS little-endian R10000';
-  RsPeMACHINE_ALPHA = 'Alpha_AXP';
+  RsPeMACHINE_I386    = 'Intel 386';
+  RsPeMACHINE_R3000   = 'MIPS little-endian R3000';
+  RsPeMACHINE_R4000   = 'MIPS little-endian R4000';
+  RsPeMACHINE_R10000  = 'MIPS little-endian R10000';
+  RsPeMACHINE_ALPHA   = 'Alpha_AXP';
   RsPeMACHINE_POWERPC = 'IBM PowerPC Little-Endian';
 
   // Subsystem names
 
-  RsPeSUBSYSTEM_UNKNOWN = 'Unknown';
-  RsPeSUBSYSTEM_NATIVE = 'Native';
+  RsPeSUBSYSTEM_UNKNOWN     = 'Unknown';
+  RsPeSUBSYSTEM_NATIVE      = 'Native';
   RsPeSUBSYSTEM_WINDOWS_GUI = 'GUI';
   RsPeSUBSYSTEM_WINDOWS_CUI = 'Console';
-  RsPeSUBSYSTEM_OS2_CUI = 'OS/2';
-  RsPeSUBSYSTEM_POSIX_CUI = 'Posix';
-  RsPeSUBSYSTEM_RESERVED8 = 'Reserved 8';
+  RsPeSUBSYSTEM_OS2_CUI     = 'OS/2';
+  RsPeSUBSYSTEM_POSIX_CUI   = 'Posix';
+  RsPeSUBSYSTEM_RESERVED8   = 'Reserved 8';
 
   // Debug symbol type names
 
-  RsPeDEBUG_UNKNOWN = 'UNKNOWN';
-  RsPeDEBUG_COFF = 'COFF';
-  RsPeDEBUG_CODEVIEW = 'CODEVIEW';
-  RsPeDEBUG_FPO = 'FPO';
-  RsPeDEBUG_MISC = 'MISC';
-  RsPeDEBUG_EXCEPTION = 'EXCEPTION';
-  RsPeDEBUG_FIXUP = 'FIXUP';
-  RsPeDEBUG_OMAP_TO_SRC = 'OMAP_TO_SRC';
+  RsPeDEBUG_UNKNOWN       = 'UNKNOWN';
+  RsPeDEBUG_COFF          = 'COFF';
+  RsPeDEBUG_CODEVIEW      = 'CODEVIEW';
+  RsPeDEBUG_FPO           = 'FPO';
+  RsPeDEBUG_MISC          = 'MISC';
+  RsPeDEBUG_EXCEPTION     = 'EXCEPTION';
+  RsPeDEBUG_FIXUP         = 'FIXUP';
+  RsPeDEBUG_OMAP_TO_SRC   = 'OMAP_TO_SRC';
   RsPeDEBUG_OMAP_FROM_SRC = 'OMAP_FROM_SRC';
-  RsPeDEBUG_BORLAND = 'BORLAND';
+  RsPeDEBUG_BORLAND       = 'BORLAND';
 
   // TJclPePackageInfo.PackageModuleTypeToString
 
   RsPePkgExecutable = 'Executable';
-  RsPePkgPackage = 'Package';
-  PsPePkgLibrary = 'Library';
+  RsPePkgPackage    = 'Package';
+  PsPePkgLibrary    = 'Library';
 
   // TJclPePackageInfo.PackageOptionsToString
 
-  RsPePkgNeverBuild = 'NeverBuild';
-  RsPePkgDesignOnly = 'DesignOnly';
-  RsPePkgRunOnly = 'RunOnly';
+  RsPePkgNeverBuild     = 'NeverBuild';
+  RsPePkgDesignOnly     = 'DesignOnly';
+  RsPePkgRunOnly        = 'RunOnly';
   RsPePkgIgnoreDupUnits = 'IgnoreDupUnits';
 
   // TJclPePackageInfo.ProducerToString
 
-  RsPePkgV3Produced = 'Delphi 3 or C++ Builder 3';
+  RsPePkgV3Produced        = 'Delphi 3 or C++ Builder 3';
   RsPePkgProducerUndefined = 'Undefined';
-  RsPePkgBCB4Produced = 'C++ Builder 4 or later';
-  RsPePkgDelphi4Produced = 'Delphi 4 or later';
+  RsPePkgBCB4Produced      = 'C++ Builder 4 or later';
+  RsPePkgDelphi4Produced   = 'Delphi 4 or later';
 
   // TJclPePackageInfo.UnitInfoFlagsToString
 
-  RsPePkgMain = 'Main';
-  RsPePkgWeak = 'Weak';
-  RsPePkgOrgWeak = 'OrgWeak';
+  RsPePkgMain     = 'Main';
+  RsPePkgWeak     = 'Weak';
+  RsPePkgOrgWeak  = 'OrgWeak';
   RsPePkgImplicit = 'Implicit';
 
 //------------------------------------------------------------------------------
@@ -485,16 +468,16 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
-  RsInvalidPrinter  = 'Invalid printer';
-  RsNAStartDocument = 'Unable to "Start document"';
-  RsNASendData      = 'Unable to send data to printer';
-  RsNAStartPage     = 'Unable to "Start page"';
-  RsNAEndPage       = 'Unable to "End page"';
-  RsNAEndDocument   = 'Unable to "End document"';
-  RsNATransmission  = 'Not all chars have been sent correctly to printer';
-  RsDeviceMode      = 'Error retrieving DeviceMode';
-  RsUpdatingPrinter = 'Error updating printer driver';
-  RsIndexOutOfRange = 'Index out of range setting bin';
+  RsInvalidPrinter        = 'Invalid printer';
+  RsNAStartDocument       = 'Unable to "Start document"';
+  RsNASendData            = 'Unable to send data to printer';
+  RsNAStartPage           = 'Unable to "Start page"';
+  RsNAEndPage             = 'Unable to "End page"';
+  RsNAEndDocument         = 'Unable to "End document"';
+  RsNATransmission        = 'Not all chars have been sent correctly to printer';
+  RsDeviceMode            = 'Error retrieving DeviceMode';
+  RsUpdatingPrinter       = 'Error updating printer driver';
+  RsIndexOutOfRange       = 'Index out of range setting bin';
   RsRetrievingSource      = 'Error retrieving Bin Source Info';
   RsRetrievingPaperSource = 'Error retrieving Paper Source Info';
   RsIndexOutOfRangePaper  = 'Index out of range setting paper';
@@ -516,8 +499,8 @@ resourcestring
   RsPSB5          = 'B5 182 x 257 mm';
   RsPSFolio       = 'Folio 8 1/2 x 13 in';
   RsPSQuarto      = 'Quarto 215 x 275 mm';
-  RsPS10X14       = '10x14 in';
-  RsPS11X17       = '11x17 in';
+  RsPS10X14       = '10 x 14 in';
+  RsPS11X17       = '11 x 17 in';
   RsPSNote        = 'Note 8 1/2 x 11 in';
   RsPSEnv9        = 'Envelope #9 3 7/8 x 8 7/8 in';
   RsPSEnv10       = 'Envelope #10 4 1/8 x 9 1/2 in';
@@ -545,7 +528,7 @@ resourcestring
 resourcestring
   RsSscanfBadSet       = 'Bad set: ';
   RsSscanfBadFormat    = 'Bad format string';
-  RsSscanfInsufficient = 'Insufficent pointers for format specifiers';
+  RsSscanfInsufficient = 'Insufficient pointers for format specifiers';
 
 //------------------------------------------------------------------------------
 // JclSynch
@@ -569,11 +552,18 @@ resourcestring
   RsMetSectNameEmpty          = 'Name cannot be empty when using the Open constructor.';
 
 //------------------------------------------------------------------------------
-// JclComplex
+// JclUnicode
 //------------------------------------------------------------------------------
 
 resourcestring
-  RsComplexInvalidString = 'Failed to create a complex number from the string provided';
+  RsUREBaseString = 'Error in regular expression: %s' + #13;
+  RsUREUnexpectedEOS       = 'Unexpected end of pattern.';
+  RsURECharacterClassOpen  = 'Character class not closed, '']'' is missing.';
+  RsUREUnbalancedGroup     = 'Unbalanced group expression, '')'' is missing.';
+  RsUREInvalidCharProperty = 'A character property is invalid';
+  RsUREInvalidRepeatRange  = 'Invalid repetition range.';
+  RsURERepeatRangeOpen     = 'Repetition range not closed, ''}'' is missing.';
+  RsUREExpressionEmpty     = 'Expression is empty.';
 
 implementation
 
