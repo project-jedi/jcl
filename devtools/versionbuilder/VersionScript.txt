@@ -8,12 +8,6 @@ CompanyName=Project JEDI
 LegalCopyright=Copyright (C) 1999, 2002 Project JEDI
 
 
-[packages\DJCL40.RES]
-FileDescription=JCL runtime package for Delphi 4
-InternalName=DJCL40
-OriginalFilename=DJCL40.dpk
-ProductName=JEDI Code Library
-
 [packages\DJCL50.RES]
 FileDescription=JCL runtime package for Delphi 5
 InternalName=DJCL50
@@ -38,12 +32,6 @@ InternalName=CJCL50
 OriginalFilename=CJCL50.bpk
 ProductName=JEDI Code Library
 
-[examples\debugextension\JclDebugIde40.res]
-FileDescription=JCL Debug IDE expert
-InternalName=JCLDEBUGIDE40
-OriginalFilename=JclDebugIde40.dpk
-ProductName=Jedi Code Library Extension
-
 [examples\debugextension\JclDebugIde50.res]
 FileDescription=JCL Debug IDE expert
 InternalName=JCLDEBUGIDE50
@@ -62,12 +50,6 @@ InternalName=JCLDEBUGIDE70
 OriginalFilename=JclDebugIde70.dpk
 ProductName=Jedi Code Library Extension
 
-[examples\debugextension\threadnames\ThreadNameExpert40.res]
-FileDescription=JCL Thread Name Debug IDE Expert
-InternalName=THREADNAMEEXPERT40
-OriginalFilename=ThreadNameExpert40.dpk
-ProductName=Jedi Code Library Extension
-
 [examples\debugextension\threadnames\ThreadNameExpert50.res]
 FileDescription=JCL Thread Name Debug IDE Expert
 InternalName=THREADNAMEEXPERT50
@@ -78,12 +60,6 @@ ProductName=Jedi Code Library Extension
 FileDescription=JCL Thread Name Debug IDE Expert
 InternalName=THREADNAMEEXPERT60
 OriginalFilename=ThreadNameExpert60.dpk
-ProductName=Jedi Code Library Extension
-
-[examples\idefavopendialogs\IdeOpenDlgFavorite40.res]
-FileDescription=JCL IDE Favorite Dialogs expert
-InternalName=IDEOPENDLGFAVORITE40
-OriginalFilename=IdeOpenDlgFavorite40.dpk
 ProductName=Jedi Code Library Extension
 
 [examples\idefavopendialogs\IdeOpenDlgFavorite50.res]
@@ -102,12 +78,6 @@ ProductName=Jedi Code Library Extension
 FileDescription=JCL IDE Favorite Dialogs expert
 InternalName=IDEOPENDLGFAVORITE70
 OriginalFilename=IdeOpenDlgFavorite70.dpk
-ProductName=Jedi Code Library Extension
-
-[examples\projectanalyzer\ProjectAnalyzer40.res]
-FileDescription=JCL project analyzer IDE expert
-InternalName=PROJECTANALYZER40
-OriginalFilename=ProjectAnalyzer40.dpk
 ProductName=Jedi Code Library Extension
 
 [examples\projectanalyzer\ProjectAnalyzer50.res]
