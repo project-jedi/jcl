@@ -79,16 +79,16 @@ object ProductFrame: TProductFrame
       object BPLPathLabel: TLabel
         Left = 8
         Top = 19
-        Width = 41
+        Width = 42
         Height = 13
-        Caption = '.bpl path'
+        Caption = '.bpl Path'
       end
       object DCPPathLabel: TLabel
         Left = 8
         Top = 51
-        Width = 45
+        Width = 46
         Height = 13
-        Caption = '.dcp path'
+        Caption = '.dcp Path'
       end
       object BplPathEdit: TEdit
         Left = 68
@@ -97,6 +97,7 @@ object ProductFrame: TProductFrame
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
+        OnChange = PathEditChange
       end
       object DcpPathEdit: TEdit
         Left = 68
@@ -105,7 +106,7 @@ object ProductFrame: TProductFrame
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
-        OnChange = DcpPathEditChange
+        OnChange = PathEditChange
       end
       object Button1: TButton
         Left = 388

@@ -19,19 +19,7 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-// $Log$
-// Revision 1.7  2004/03/17 17:39:03  rrossmair
-// Win32 installation fixed
-//
-// Revision 1.6  2004/03/15 01:25:07  rrossmair
-// label caption changed for BCB
-//
-// Revision 1.5  2004/03/13 07:46:49  rrossmair
-// Kylix/Delphi installation fixed; C++ incomplete
-//
-// Revision 1.4  2004/03/12 04:59:56  rrossmair
-// BCB/Win32 support basically working now
-//
+// $Id$
 
 {$IFNDEF Develop}unit {$IFDEF VisualCLX}QProductFrames{$ELSE}ProductFrames{$ENDIF};{$ENDIF}
 
@@ -71,7 +59,7 @@ type
     Button1: TButton;
     Button2: TButton;
     DcpPathEdit: TEdit;
-    procedure DcpPathEditChange(Sender: TObject);
+    procedure PathEditChange(Sender: TObject);
     procedure PathSelectBtnClick(Sender: TObject);
     procedure SplitterCanResize(Sender: TObject; var NewSize: Integer;
       var Accept: Boolean);
@@ -115,7 +103,7 @@ resourcestring
   RsSelectPath      = 'Select path';
   RsEnterValidPath  = '(Enter valid path)';
 
-procedure TProductFrame.DcpPathEditChange(Sender: TObject);
+procedure TProductFrame.PathEditChange(Sender: TObject);
 begin
   with (Sender as TEdit) do
     if DirectoryExists(Text) then
@@ -166,7 +154,7 @@ const
 begin
   FInstallation := Value;
   Name := Format('%s%dProduct', [Prefixes[Value.RADToolKind], Value.VersionNumber]);
-  if Value.RadToolKind = brCBuilder then
+  if Value.RadToolKind = brCppBuilder then
     DcpPathLabel.Caption := '.bpi Path';
   BplPathEdit.Text := GetPathForEdit(Installation.BPLOutputPath);
   DcpPathEdit.Text := GetPathForEdit(Installation.DCPOutputPath);
