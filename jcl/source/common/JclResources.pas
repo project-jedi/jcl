@@ -276,9 +276,6 @@ resourcestring
 //------------------------------------------------------------------------------
 
 resourcestring
-  // StrLstSaveLoad
-  RsErrNotExist                       = 'Specified list ["%s"] does not exist';
-
   // CreateProcAsUser
   RsCreateProcOSVersionError          = 'Unable to determine OS version';
   RsCreateProcNTRequiredError         = 'Windows NT required';
