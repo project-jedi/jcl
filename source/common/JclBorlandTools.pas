@@ -16,6 +16,7 @@
 { Copyright (C) of Petr Vones. All Rights Reserved.                                                }
 {                                                                                                  }
 { Contributor(s):                                                                                  }
+{   Andreas Hausladen (ahuser)                                                                     }
 {   Robert Rossmair (rrossmair) - crossplatform & BCB support                                      }
 {                                                                                                  }
 {**************************************************************************************************}
@@ -322,6 +323,8 @@ type
     FPalette: TJclBorRADToolPalette;
     FRepository: TJclBorRADToolRepository;
     FVersionNumber: Integer;
+    FVersionNumberStr: string;
+    FIDEVersionNumber: Integer; // Delphi 2005: 3   -  Delphi 7: 7
     function GetBPLOutputPath: string;
     function GetDCC: TJclDCC;
     function GetDCPOutputPath: string;
@@ -347,6 +350,7 @@ type
     procedure SetDebugDCUPath(const Value: string);
   protected
     constructor Create(const AConfigDataLocation: string); virtual;
+    function GetBorlandStudioProjectsDir: string;
     procedure ReadInformation;
     function AddMissingPathItems(var Path: string; const NewPath: string): Boolean;
   public
@@ -365,7 +369,7 @@ type
     {$ENDIF KYLIX}
     function FindFolderInPath(Folder: string; List: TStrings): Integer;
     function InstallPackage(const PackageName, BPLPath, DCPPath: string): Boolean; virtual;
-    function IsBDS: Boolean;
+    function IsBDSPersonality: Boolean;
     function SubstitutePath(const Path: string): string;
     function SupportsVisualCLX: Boolean;
     property BinFolderName: string read FBinFolderName;
@@ -398,7 +402,9 @@ type
     property RootDir: string read FRootDir;
     property UpdateNeeded: Boolean read GetUpdateNeeded;
     property Valid: Boolean read GetValid;
+    property IDEVersionNumber: Integer read FIDEVersionNumber;
     property VersionNumber: Integer read FVersionNumber;
+    property VersionNumberStr: string read FVersionNumberStr;
   end;
 
   TJclBCBInstallation = class(TJclBorRADToolInstallation)
@@ -486,17 +492,52 @@ type
   TKylixVersion = 1..3;
   {$ENDIF KYLIX}
 
+  {$IFDEF MSWINDOWS}
+  TBDSVersionInfo = record
+    Name: string;
+    VersionStr: string;
+    Version: Integer;
+    CoreIdeVersion: string;
+    ProjectsDirResId: Integer;
+    Supported: Boolean;
+  end;
+  {$ENDIF MSWINDOWS}
+
 const
   {$IFDEF MSWINDOWS}
   {$IFNDEF RTL140_UP}
   PathSep = ';';
   {$ENDIF ~RTL140_UP}
 
-  MSHelpSystemKeyName        = 'SOFTWARE\Microsoft\Windows\Help';
+  MSHelpSystemKeyName           = 'SOFTWARE\Microsoft\Windows\Help';
 
-  BCBKeyName                 = 'SOFTWARE\Borland\C++Builder';
-  BDSKeyName                 = 'SOFTWARE\Borland\BDS';
-  DelphiKeyName              = 'SOFTWARE\Borland\Delphi';
+  BCBKeyName                    = 'SOFTWARE\Borland\C++Builder';
+  BDSKeyName                    = 'SOFTWARE\Borland\BDS';
+  DelphiKeyName                 = 'SOFTWARE\Borland\Delphi';
+
+  BDSVersions: array[1..3] of TBDSVersionInfo = (
+    (
+      Name: 'C#Builder';
+      VersionStr: '1.0';
+      Version: 1;
+      CoreIdeVersion: '71';
+      ProjectsDirResId: 64507;
+      Supported: False),
+    (
+      Name: 'Delphi';
+      VersionStr: '8';
+      Version: 8;
+      CoreIdeVersion: '71';
+      ProjectsDirResId: 64460;
+      Supported: False),
+    (
+      Name: 'Delphi';
+      VersionStr: '2005';
+      Version: 9;
+      CoreIdeVersion: '90';
+      ProjectsDirResId: 64431;
+      Supported: True)
+  );
   {$ENDIF MSWINDOWS}
 
   {$IFDEF KYLIX}
@@ -505,6 +546,7 @@ const
   RootDirValueName           = 'RootDir';
   {$ENDIF KYLIX}
 
+  EditionValueName           = 'Edition';
   VersionValueName           = 'Version';
 
   DebuggingKeyName           = 'Debugging';
@@ -533,11 +575,6 @@ const
   PaletteHiddenTag           = '.Hidden';
 
   {$IFDEF MSWINDOWS}
-  {
-  BCBIdeExeName              = 'bcb.exe';
-  BDSIdeExeName              = 'bds.exe';
-  Delphi32IdeExeName         = 'delphi32.exe';
-  }
   MakeExeName                = 'make.exe';
   Bpr2MakExeName             = 'bpr2mak.exe';
   DCCExeName                 = 'dcc32.exe';
@@ -1632,6 +1669,56 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
+{ TODO -cHelp : Donator: Adreas Hausladen }
+{$IFDEF MSWINDOWS}
+function TJclBorRADToolInstallation.GetBorlandStudioProjectsDir: string;
+var
+  h: HMODULE;
+  LocaleName: array[0..4] of Char;
+  Filename: string;
+begin
+  if IsBDSPersonality then
+  begin
+    Result := 'Borland Studio Projects'; // do not localize
+
+    FillChar(LocaleName, SizeOf(LocaleName[0]), 0);
+    GetLocaleInfo(GetThreadLocale, LOCALE_SABBREVLANGNAME, LocaleName, SizeOf(LocaleName));
+    if LocaleName[0] <> #0 then
+    begin
+      Filename := RootDir + '\Bin\coreide' + BDSVersions[IDEVersionNumber].CoreIdeVersion + '.';
+      if FileExists(Filename + LocaleName) then
+        Filename := Filename + LocaleName
+      else
+      begin
+        LocaleName[2] := #0;
+        if FileExists(Filename + LocaleName) then
+          Filename := Filename + LocaleName
+        else
+          Filename := '';
+      end;
+
+      if Filename <> '' then
+      begin
+        h := LoadLibraryEx(PChar(Filename), 0,
+          LOAD_LIBRARY_AS_DATAFILE or DONT_RESOLVE_DLL_REFERENCES);
+        if h <> 0 then
+        begin
+          SetLength(Result, 1024);
+          SetLength(Result, LoadString(h, BDSVersions[IDEVersionNumber].ProjectsDirResId, PChar(Result), Length(Result) - 1));
+          FreeLibrary(h);
+        end;
+      end;
+    end;
+
+    Result := PathAddSeparator(GetPersonalFolder) + Result;
+  end
+  else
+    Result := '';
+end;
+{$ENDIF MSWINDOWS}
+
+//--------------------------------------------------------------------------------------------------
+
 function TJclBorRADToolInstallation.GetBPLOutputPath: string;
 begin
   Result := SubstitutePath(ConfigData.ReadString(LibraryKeyName, LibraryBPLOutputValueName, ''));
@@ -1669,8 +1756,8 @@ begin
   {$ELSE ~KYLIX}
   Result := Globals.Values['DefaultProjectsDirectory'];
   if Result = '' then
-    if IsBDS then
-      Result := PathAddSeparator(GetPersonalFolder) + RsBorlandStudioProjects
+    if IsBDSPersonality then
+      Result := GetBorlandStudioProjectsDir
     else
       Result := PathAddSeparator(RootDir) + 'Projects';
   {$ENDIF ~KYLIX}
@@ -1746,7 +1833,7 @@ begin
         EnvNames.Free;
       end;
     end;
-    if IsBDS then
+    if IsBDSPersonality then
     begin
       FEnvironmentVariables.Values['BDS'] := PathRemoveSeparator(RootDir);
       FEnvironmentVariables.Values['BDSPROJECTSDIR'] := DefaultProjectsDir;
@@ -1885,7 +1972,7 @@ end;
 
 //--------------------------------------------------------------------------------------------------
 
-function TJclBorRADToolInstallation.IsBDS: Boolean;
+function TJclBorRADToolInstallation.IsBDSPersonality: Boolean;
 begin
   {$IFDEF MSWINDOWS}
   Result := Pos('bds.exe', Globals.Values['App']) > 0;
@@ -1946,19 +2033,24 @@ begin
 
   KeyLen := Length(Key);
   if (KeyLen > 3) and StrIsDigit(Key[KeyLen - 2]) and (Key[KeyLen - 1] = '.') and (Key[KeyLen] = '0') then
-    FVersionNumber := Ord(Key[KeyLen - 2]) - Ord('0')
+    FIDEVersionNumber := Ord(Key[KeyLen - 2]) - Ord('0')
   else
-    FVersionNumber := 0;
+    FIDEVersionNumber := 0;
 
   // BDS 3.0 goes as Delphi 9
-  if IsBDS then
-    Inc(FVersionNumber, 6);
+  if IsBDSPersonality then
+    FVersionNumber := FIDEVersionNumber + 6
+  else
+    FVersionNumber := FIDEVersionNumber;
   {$ENDIF ~KYLIX}
 
   FRootDir := Globals.Values[RootDirValueName];
   FBinFolderName := PathAddSeparator(RootDir) + BinDir;
 
-  Key := Globals.Values[VersionValueName];
+  if IsBDSPersonality then
+    Key := Globals.Values[EditionValueName]
+  else
+    Key := Globals.Values[VersionValueName];
   for Ed := Low(Ed) to High(Ed) do
     if BorRADToolEditionIDs[Ed] = Key then
       FEdition := Ed;
@@ -2307,7 +2399,7 @@ end;
 var
   VersionNumbers: TStringList;
 
-  procedure EnumVersions(const KeyName: string; CreateClass: TJclBorRADToolInstallationClass);
+  procedure EnumVersions(const KeyName, Personality: string; CreateClass: TJclBorRADToolInstallationClass);
   var
     I: Integer;
     VersionKeyName: string;
@@ -2318,7 +2410,12 @@ var
       begin
         VersionKeyName := KeyName + PathSeparator + VersionNumbers[I];
         if RegKeyExists(HKEY_LOCAL_MACHINE, VersionKeyName) then
+        begin
+          { TODO : Check if that works as assumed }
+          if (Personality <> '') and (RegReadStringDef(HKEY_LOCAL_MACHINE, VersionKeyName + '\Personalities', Personality, '') = '') then
+            Continue;
           FList.Add(CreateClass.Create(VersionKeyName));
+        end;
       end;
   end;
 
@@ -2326,9 +2423,9 @@ begin
   FList.Clear;
   VersionNumbers := TStringList.Create;
   try
-    EnumVersions(DelphiKeyName, TJclDelphiInstallation);
-    EnumVersions(BDSKeyName, TJclDelphiInstallation);
-    EnumVersions(BCBKeyName, TJclBCBInstallation);
+    EnumVersions(DelphiKeyName, '', TJclDelphiInstallation);
+    EnumVersions(BDSKeyName, 'Delphi.Win32', TJclDelphiInstallation);
+    EnumVersions(BCBKeyName, '', TJclBCBInstallation);
   finally
     VersionNumbers.Free;
   end;
@@ -2411,6 +2508,9 @@ end;
 // History:
 
 // $Log$
+// Revision 1.28  2004/12/18 04:03:30  rrossmair
+// - more D2005 support
+//
 // Revision 1.27  2004/12/16 19:56:58  rrossmair
 // - fixed for Windows
 //
