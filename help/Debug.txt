@@ -120,7 +120,7 @@ Sends a message to the debugger including location information.
 TraceLoc sends the specified message to the debugger but first prepends it with
 the source file location from which TraceLoc is called. For example, when calling
 TraceLoc from a method called TForm1.Button1Click located in unit1.pas like
-this: TraceLoc('Trace me.') the resulting string send to the debugger will be:<BR>
+this: TraceLoc('Trace me.') the resulting string sent to the debugger will be:<BR>
   unit.pas:123 (TForm1.ButtonClick) "Trace me." <BR>
 assuming the TraceLoc statement is on line 123 in the source. Note that this
 function requires a detailed map file!
