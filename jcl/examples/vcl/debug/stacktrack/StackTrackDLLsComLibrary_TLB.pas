@@ -28,7 +28,7 @@ unit StackTrackDLLsComLibrary_TLB;
 
 interface
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF DELPHI6_UP}
   {$WARN SYMBOL_PLATFORM OFF}

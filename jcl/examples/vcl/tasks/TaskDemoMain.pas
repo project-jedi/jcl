@@ -1,6 +1,6 @@
 unit TaskDemoMain;
 
-{$INCLUDE jedi.inc}
+{$INCLUDE jcl.inc}
 
 interface
 

@@ -37,6 +37,11 @@
 
 {$I jedi.inc} // Pull in the JCL/J-VCL shared directives
 
+{$IFNDEF JEDI_INC}
+ALERT_jedi_inc_incompatible
+// secure against old versions of jedi.inc.
+{$ENDIF ~JEDI_INC}
+
 // Math precision selection, mutually exclusive
 
 {$DEFINE MATH_EXTENDED_PRECISION}
@@ -66,6 +71,10 @@
 {.$DEFINE DROP_OBSOLETE_CODE}
 
 // $Log$
+// Revision 1.8  2004/10/02 05:47:28  marquardt
+// added check for incompatible jedi.inc
+// replaced jedi.inc with jvcl.inc
+//
 // Revision 1.7  2004/07/29 07:58:21  marquardt
 // inc files updated
 //

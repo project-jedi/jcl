@@ -57,7 +57,7 @@ of "structured storage"...
 
 unit JclStructStorage;
 
-{$I jedi.inc}
+{$I jcl.inc}
 
 interface
 
@@ -834,6 +834,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.6  2004/10/02 05:47:29  marquardt
+// added check for incompatible jedi.inc
+// replaced jedi.inc with jvcl.inc
+//
 // Revision 1.5  2004/08/02 15:30:17  marquardt
 // hunting down (rom) comments
 //

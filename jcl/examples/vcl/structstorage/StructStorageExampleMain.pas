@@ -28,15 +28,17 @@ Description:
  slightly modified by me. It is still copyrighted by Borland, of course.
 
 -----------------------------------------------------------------------------}
-{$I jedi.inc}
 
 unit StructStorageExampleMain;
+
+{$I jcl.inc}
 
 interface
 
 uses
   Windows, SysUtils, Classes, Messages, Forms, Menus, StdActns, StdCtrls, ComCtrls,
-  ActnList, ImgList, Controls, Dialogs, ExtCtrls, Graphics, HexDump, JclStructStorage;
+  ActnList, ImgList, Controls, Dialogs, ExtCtrls, Graphics, HexDump,
+  JclStructStorage;
 
 const
   WM_SHOWABOUT = WM_USER + 1;
@@ -935,6 +937,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.3  2004/10/02 05:47:27  marquardt
+// added check for incompatible jedi.inc
+// replaced jedi.inc with jvcl.inc
+//
 // Revision 1.2  2004/06/12 04:44:16  rrossmair
 // mistakenly commited the wrong (outdated) file version at first; corrected
 //

@@ -3,7 +3,7 @@
 //          revised 2003-01-12
 //
 
-{$INCLUDE jedi.inc}
+{$I jcl.inc}
 
 {$IFDEF COMPILER6_UP}
   {$IFDEF VCL}
@@ -17,22 +17,22 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, Messages, JPEG, ShellAPI,
-{$ENDIF}
-{$IFDEF VCL}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
   Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, Menus, ExtCtrls, ExtDlgs,
   JclGraphics,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Qt, QGraphics, QMenus, QTypes, QExtCtrls, QComCtrls, QStdCtrls,
   QControls, QForms, QDialogs,
   JclQGraphics,
-{$ENDIF VisualCLX}
-{$IFDEF HasShellCtrls}
+  {$ENDIF VisualCLX}
+  {$IFDEF HasShellCtrls}
   ShellCtrls,
-{$ENDIF HasShellCtrls}
+  {$ENDIF HasShellCtrls}
   JclFileUtils;
 
 type
@@ -66,9 +66,9 @@ type
     FileListView: TListView;
     OriginalImage: TImage;
     procedure FormCreate(Sender: TObject);
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure FormDestroy(Sender: TObject);
-  {$ENDIF VCL}
+    {$ENDIF VCL}
     procedure OpenFile(Sender: TObject);
     procedure SelectFilter(Sender: TObject);
     procedure PreserveAspectRatio1Click(Sender: TObject);
@@ -109,9 +109,9 @@ type
     procedure UpdateStretched;
     function GetFileListIndex: Integer;
     procedure SetFileListIndex(const Value: Integer);
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DropFiles;
-  {$ENDIF VCL}
+    {$ENDIF VCL}
   protected
     property FileListIndex: Integer read GetFileListIndex write SetFileListIndex;
   end;
@@ -178,17 +178,17 @@ end;
 procedure TStretchDemoForm.FormCreate(Sender: TObject);
 begin
   StretchedPage.Brush.Color := clGray;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   ScrollBox.DoubleBuffered := True;
   StretchedPage.DoubleBuffered := True;
-{$ENDIF VCL}
+  {$ENDIF VCL}
   FileMask := GraphicFileMask(TGraphic);
   //Format('%s;%s', [GraphicFileMask(TJPEGImage), GraphicFileMask(TBitmap)]);
   OpenDialog.Filter := GraphicFilter(TGraphic);
   FResamplingFilter := rfSpline; // rfLanczos3;
   FPreserveAspectRatio := True;
   UpdateNavButtons;
-{$IFDEF HasShellCtrls}
+  {$IFDEF HasShellCtrls}
   FShellChangeNotifier := TShellChangeNotifier.Create(Self);
   with FShellChangeNotifier do
   begin
@@ -201,10 +201,10 @@ begin
         nfWriteChange,
         nfSecurityChange];
   end;
-{$ENDIF HasShellCtrls}
-{$IFDEF VCL}
+  {$ENDIF HasShellCtrls}
+  {$IFDEF VCL}
   DragAcceptFiles(Handle, True);
-{$ENDIF VCL}
+  {$ENDIF VCL}
   if ParamCount > 0 then
   with OpenDialog do
   begin
@@ -215,12 +215,10 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TStretchDemoForm.FormDestroy(Sender: TObject);
 begin
   DragAcceptFiles(Handle, False);
 end;
-
 {$ENDIF VCL}
 
 procedure TStretchDemoForm.ExitApp(Sender: TObject);
@@ -291,11 +289,11 @@ begin
   InvalidateStretched;
   if PageControl.ActivePage = FilesPage then
   begin
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     if OriginalImage.Picture.Graphic is TMetaFile then
       PageControl.ActivePage := OriginalPage
     else
-  {$ENDIF VCL}
+    {$ENDIF VCL}
       PageControl.ActivePage := FLastImagePage;
     FocusControl(PageControl);
   end;
@@ -322,7 +320,7 @@ var
   W, H: Integer;
 begin
   with OriginalImage.Picture do
-    if (Graphic = nil) {$IFDEF VCL}or (Graphic is TMetafile){$ENDIF} then
+    if (Graphic = nil) {$IFDEF VCL} or (Graphic is TMetafile) {$ENDIF} then
       Exit;
   W := StretchedPage.Width-2;
   H := StretchedPage.Height-2;
@@ -482,7 +480,6 @@ end;
 procedure TStretchDemoForm.FileListViewKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-
   if Key = VK_RETURN then
     LoadSelected;
 end;

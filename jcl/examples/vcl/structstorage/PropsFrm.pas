@@ -25,8 +25,10 @@ Description:
 Displays statistics for a TStatStg record
 
 -----------------------------------------------------------------------------}
-{$I jedi.inc}
+
 unit PropsFrm;
+
+{$I jcl.inc}
 
 interface
 
@@ -169,6 +171,10 @@ end;
 // History:
 
 // $Log$
+// Revision 1.2  2004/10/02 05:47:27  marquardt
+// added check for incompatible jedi.inc
+// replaced jedi.inc with jvcl.inc
+//
 // Revision 1.1  2004/06/12 03:44:00  rrossmair
 // structured storage demo initial check-in; adapted for JCL
 //

@@ -32,11 +32,12 @@
 {                                                                                                  }
 {**************************************************************************************************}
 
-{$I jedi.inc}
-
 unit pcre;
 
+{$I jedi.inc}
+
 interface
+
 (*************************************************
 *       Perl-Compatible Regular Expressions      *
 *************************************************)
@@ -394,11 +395,15 @@ function pcre_info; external libpcremodulename name 'pcre_info';
 function pcre_version; external libpcremodulename name 'pcre_version';
 function pcre_malloc; external libpcremodulename name 'pcre_malloc';
 procedure pcre_free; external libpcremodulename name 'pcre_free';
-{$ENDIF PCRE_LINKONREQUEST}
+{$ENDIF ~PCRE_LINKONREQUEST}
 
 // History
 
 // $Log$
+// Revision 1.5  2004/10/02 05:47:28  marquardt
+// added check for incompatible jedi.inc
+// replaced jedi.inc with jvcl.inc
+//
 // Revision 1.4  2004/07/27 06:42:23  marquardt
 // style cleaning of pcre files
 //
