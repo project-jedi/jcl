@@ -112,7 +112,7 @@ interface
 
 uses
   Windows, SysUtils,
-  JclBase;
+  JclBase,JclResources;
 
 function EncodeDate(Year: Integer; Month, Day: Word): TDateTime; 
 procedure DecodeDate(Date: TDateTime; var Year, Month, Day: Word); overload;
