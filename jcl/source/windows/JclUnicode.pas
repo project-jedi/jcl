@@ -985,11 +985,11 @@ implementation
 {$R JclUnicode.res}
 
 uses
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   RtlConsts,
   {$ELSE}
   Consts,
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   SysUtils,
   JclBase, JclResources, JclSynch;
 
