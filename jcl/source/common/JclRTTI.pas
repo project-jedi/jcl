@@ -2763,10 +2763,7 @@ type
 
 //--------------------------------------------------------------------------------------------------
 
-// Assembler implementation copied from System.pas, Delphi 5 (_IsClass function)
-
 function JclIsClass(const AnObj: TObject; const AClass: TClass): Boolean;
-{$IFDEF PUREPASCAL}
 type
   PClass = ^TClass;
 var
@@ -2775,7 +2772,7 @@ var
 begin
   Result := False;
   ClassPtr := PClass(AnObj);
-  while Assigned(ClassPtr) do       
+  while Assigned(ClassPtr) do
   begin
     CurrentClass := ClassPtr^;
     Result := CurrentClass = AClass;
@@ -2784,26 +2781,6 @@ begin
     ClassPtr := PClass(PPointer(Integer(CurrentClass) + vmtParent)^);
   end;
 end;
-{$ELSE}
-asm
-        { ->    EAX     left operand (class)    }
-        {       EDX VMT of right operand        }
-        { <-    AL      left is derived from right      }
-        TEST    EAX,EAX
-        JE      @@exit
-@@loop:
-        MOV     EAX,[EAX]
-        CMP     EAX,EDX
-        JE      @@success
-        MOV     EAX,[EAX].vmtParent
-        TEST    EAX,EAX
-        JNE     @@loop
-        JMP     @@exit
-@@success:
-        MOV     AL,1
-@@exit:
-end;
-{$ENDIF}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2861,6 +2838,9 @@ finalization
 // History:
 
 // $Log$
+// Revision 1.7  2004/04/23 22:08:39  mthoma
+// Removed non delphi language version of JclIsClass.
+//
 // Revision 1.6  2004/04/15 16:19:36  peterjhaas
 // add pure pascal implementation (JclIsClass)
 //
