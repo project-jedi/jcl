@@ -144,22 +144,7 @@ unit JclEDI;
 interface
 
 uses
-  SysUtils, Classes, JclBase, JclStrings, Forms, Dialogs;
-
-//The following resource strings need to be moved to JclResources.pas
-resourcestring
-  EDIError075 = 'Could not get data object in transaction set loop at index [%s], Data object does not exist.';
-  EDIError076 = 'Could not get data object in transaction set loop at index [%s], Index too high.';
-  EDIError077 = 'Could not get data object in transaction set loop at index [%s], Index too low.';
-  EDIError078 = 'Could not get data object in transaction set loop at index [%s].';
-  EDIError079 = 'Could not set data object in transaction set loop at index [%s], Index too high.';
-  EDIError080 = 'Could not set data object in transaction set loop at index [%s], Index too low.';
-  EDIError081 = 'Could not set data object in transaction set loop at index [%s].';
-  EDIError082 = 'Loop in loop stack record at index [%s] does not exist.';
-  EDIError083 = 'Could not get loop stack record at index [%s], Index too high.';
-  EDIError084 = 'Could not get loop stack record at index [%s], Index too low.';
-  EDIError085 = 'Could not get loop stack record at index [%s].';
-  EDIError086 = 'Could not get safe loop stack index [%s].';
+  SysUtils, Classes, JclBase, JclStrings;
 
 const
   ICHSegmentId = 'ISA'; //Interchange Control Header Segment Id
